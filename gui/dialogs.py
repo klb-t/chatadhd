@@ -30,9 +30,10 @@ log = logging.getLogger(__name__)
 class SettingsPopup(Popup):
     """API keys and core configuration."""
 
-    def __init__(self, config, secrets, on_save=None, **kw):
+    def __init__(self, config, secrets, models=None, on_save=None, **kw):
         self.config = config
         self.secrets = secrets
+        self.models = models  # ModelRegistry for picker
         self.on_save = on_save
 
         content = BoxLayout(orientation="vertical", padding=dp(6), spacing=dp(3))
@@ -82,15 +83,18 @@ class SettingsPopup(Popup):
         )
         content.add_widget(self.sys_prompt)
 
-        # Semantic Model
+        # Semantic Model — picker button (same as main model selector)
         sem_row = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(4))
         sem_row.add_widget(Label(text="Semantic:", color=C["text"],
                                   size_hint_x=0.25, font_size=sp(9)))
-        self.sem_model = DarkInput(
-            text=config.get("semantic_model", "anthropic/claude-3.5-haiku"),
-            font_size=sp(9),
+        cur_sem = config.get("semantic_model", "")
+        self._sem_model_id = cur_sem
+        sem_label = cur_sem.split("/")[-1][:20] if cur_sem else "(none)"
+        self.sem_model_btn = RBtn(
+            text=sem_label, bg=C["card"], font_size=sp(8),
+            on_press=self._pick_semantic_model,
         )
-        sem_row.add_widget(self.sem_model)
+        sem_row.add_widget(self.sem_model_btn)
         content.add_widget(sem_row)
 
         # Semantic analysis toggle
@@ -122,6 +126,17 @@ class SettingsPopup(Popup):
         self.sem_btn.text = "ON" if self._sem_enabled else "OFF"
         self.sem_btn.background_color = C["ok"] if self._sem_enabled else C["card"]
 
+    def _pick_semantic_model(self, *_):
+        if not self.models:
+            show_toast("No model list available")
+            return
+
+        def on_sel(model_id):
+            self._sem_model_id = model_id
+            self.sem_model_btn.text = model_id.split("/")[-1][:20]
+
+        ModelSelectorPopup(self.models, self._sem_model_id, on_sel).open()
+
     def _save(self, *_):
         self.secrets.set("api_key", self.api_key.text.strip())
         self.secrets.set("github_token", self.gh_token.text.strip())
@@ -130,7 +145,7 @@ class SettingsPopup(Popup):
 
         self.config.set("base_url", self.base_url.text.strip())
         self.config.set("system_prompt", self.sys_prompt.text.strip())
-        self.config.set("semantic_model", self.sem_model.text.strip())
+        self.config.set("semantic_model", self._sem_model_id or "")
         self.config.set("semantic_analysis", self._sem_enabled)
         self.config.save()
 

@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 DEFAULTS: dict[str, Any] = {
     "base_url": "https://openrouter.ai/api/v1",
     "default_model": "anthropic/claude-sonnet-4-20250514",
-    "semantic_model": "anthropic/claude-3.5-haiku",
+    "semantic_model": "",
     "temperature": 0.7,
     "max_tokens": 4096,
     "theme": "dark",

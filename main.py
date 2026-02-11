@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.06 — Mobile-First AI Chat Client
+ChatADHD v0.07.07 — Mobile-First AI Chat Client
 ================================================
 
 Hierarchical memory · Branching conversations · Multi-model API ·
@@ -12,7 +12,7 @@ Environment variables:
   CHATADHD_DATA   Override data directory path
   KIVY_LOG_LEVEL  Kivy log verbosity (debug, info, warning, error)
 """
-__version__ = "0.07.06"
+__version__ = "0.07.07"
 
 import logging
 import os
@@ -205,6 +205,7 @@ class ChatADHDApp(App):
     def _show_settings(self):
         SettingsPopup(
             self.cfg, self.secrets,
+            models=self.models,
             on_save=self._on_settings_save,
         ).open()
 
