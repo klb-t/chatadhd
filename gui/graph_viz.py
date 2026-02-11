@@ -58,49 +58,93 @@ class GraphNode:
 
 
 class GraphWidget(Widget):
-    """Force-directed graph with big readable nodes."""
-    
+    """Force-directed graph with LOD and auto-settling physics."""
+
+    # LOD thresholds: zoom level → which node types to show.
+    _LOD_TIERS = {
+        0.0: {'topic', 'conversation', 'folder'},                    # far out
+        0.5: {'topic', 'conversation', 'folder', 'entity', 'org',
+               'person', 'concept', 'code_ref'},                     # mid
+        1.0: {'topic', 'conversation', 'folder', 'entity', 'org',
+               'person', 'concept', 'code_ref', 'user', 'assistant',
+               'memory', 'file'},                                    # full
+    }
+    _MAX_PHYSICS_NODES = 120
+    _SETTLE_THRESHOLD = 0.5  # total kinetic energy to auto-pause
+
     def __init__(self, engine, memory, **kwargs):
         super().__init__(**kwargs)
         self.engine = engine
         self.memory = memory
         self.nodes = {}
         self.edges = []
-        
+        self._all_nodes = {}   # full set, LOD filters from here
+        self._all_edges = []
+
         self.zoom = 1.0
         self.offset = Vector(0, 0)
         self.selected_node = None
         self.dragged_node = None
-        
-        # Physics - more spread out
+
+        # Physics
         self.repulsion = 25000
         self.spring_length = 180
         self.spring_k = 0.03
         self.friction = 0.85
         self.gravity = 0.005
-        
+        self._energy = 999
+        self._settled = False
+
         self.running = False
         self.bind(size=self._on_resize, pos=self._on_resize)
-    
+
     def start(self):
         if not self.running:
             self.running = True
+            self._settled = False
+            self._energy = 999
             Clock.schedule_interval(self._update_physics, 1.0 / 25.0)
-    
+
     def stop(self):
         self.running = False
         Clock.unschedule(self._update_physics)
-        # Clear canvas when stopped
         self.canvas.clear()
-    
+
+    def _apply_lod(self):
+        """Filter nodes/edges based on current zoom level."""
+        # Find which tier we're in.
+        visible_types = set()
+        for threshold in sorted(self._LOD_TIERS.keys()):
+            if self.zoom >= threshold:
+                visible_types = self._LOD_TIERS[threshold]
+
+        self.nodes = {
+            k: v for k, v in self._all_nodes.items()
+            if v.type in visible_types
+        }
+        # Also cap at _MAX_PHYSICS_NODES — keep higher-weight nodes.
+        if len(self.nodes) > self._MAX_PHYSICS_NODES:
+            by_weight = sorted(self.nodes.values(),
+                               key=lambda n: n.weight, reverse=True)
+            keep_ids = {n.id for n in by_weight[:self._MAX_PHYSICS_NODES]}
+            self.nodes = {k: v for k, v in self.nodes.items() if k in keep_ids}
+
+        visible_ids = set(self.nodes.keys())
+        self.edges = [
+            e for e in self._all_edges
+            if e[0] in visible_ids and e[1] in visible_ids
+        ]
+
     def load_data(self):
+        self._all_nodes.clear()
+        self._all_edges.clear()
         self.nodes.clear()
         self.edges.clear()
-        
+
         cx, cy = self.width / 2, self.height / 2
         if cx == 0: cx = 200
         if cy == 0: cy = 300
-        
+
         # Load conversation messages as nodes.
         if self.engine.conv and self.engine.db:
             msgs = self.engine.db.get_msgs(self.engine.conv['id'], include_all=True)
@@ -109,111 +153,127 @@ class GraphWidget(Widget):
                 r = 200 + random() * 100
                 x = cx + r * math.cos(angle)
                 y = cy + r * math.sin(angle)
-                
+
                 n_type = 'user' if m['role'] == 'user' else 'assistant'
-                self.nodes[m['id']] = GraphNode(m['id'], m['text'][:30], n_type, x, y, m)
-                
-                if m.get('parent_id') and m['parent_id'] in self.nodes:
-                    self.edges.append((m['parent_id'], m['id'], 1.0, 'reply'))
-            
-            # Load graph nodes (entities, topics, etc.) from DB.
+                self._all_nodes[m['id']] = GraphNode(
+                    m['id'], m['text'][:30], n_type, x, y, m)
+
+                if m.get('parent_id') and m['parent_id'] in self._all_nodes:
+                    self._all_edges.append(
+                        (m['parent_id'], m['id'], 1.0, 'reply'))
+
+            # Load graph nodes from DB.
             try:
                 graph_data = self.engine.db.get_graph_data(self.engine.conv['id'])
                 for n in graph_data.get('nodes', []):
-                    if n['id'] not in self.nodes:
+                    if n['id'] not in self._all_nodes:
                         kind = n.get('kind', n.get('type', 'entity'))
                         x = cx + (random() - 0.5) * 500
                         y = cy + (random() - 0.5) * 500
-                        self.nodes[n['id']] = GraphNode(
+                        self._all_nodes[n['id']] = GraphNode(
                             n['id'], n['label'], kind, x, y, n)
-                
+
                 for e in graph_data.get('edges', []):
-                    if e['src'] in self.nodes and e['dst'] in self.nodes:
-                        self.edges.append((
+                    if e['src'] in self._all_nodes and e['dst'] in self._all_nodes:
+                        self._all_edges.append((
                             e['src'], e['dst'],
                             e.get('weight', 1.0),
                             e.get('type', 'related'),
                         ))
             except Exception:
-                pass  # Graph data is supplementary — don't block on errors.
-        
+                pass
+
         # Load memory.
         if self.memory:
             mem_data = self.memory.get_graph_data()
             for n in mem_data['nodes']:
-                if n['id'] not in self.nodes:
+                if n['id'] not in self._all_nodes:
                     x = cx + (random() - 0.5) * 400
                     y = cy + (random() - 0.5) * 400
                     ntype = n.get('node_type', 'memory')
-                    self.nodes[n['id']] = GraphNode(n['id'], n['label'], ntype, x, y, n)
-            
+                    self._all_nodes[n['id']] = GraphNode(
+                        n['id'], n['label'], ntype, x, y, n)
+
             for e in mem_data['edges']:
-                if e['src'] in self.nodes and e['dst'] in self.nodes:
-                    self.edges.append((e['src'], e['dst'], e.get('weight', 1.0), 'child'))
-        
+                if e['src'] in self._all_nodes and e['dst'] in self._all_nodes:
+                    self._all_edges.append(
+                        (e['src'], e['dst'], e.get('weight', 1.0), 'child'))
+
+        self._apply_lod()
+        self._settled = False
+        self._energy = 999
         self.redraw()
     
     def _on_resize(self, *args):
         self.redraw()
     
     def _update_physics(self, dt):
-        if not self.nodes:
+        if not self.nodes or self._settled:
             return
-        
+
         ids = list(self.nodes.keys())
-        center = Vector(self.width / 2 if self.width else 200, 
+        center = Vector(self.width / 2 if self.width else 200,
                        self.height / 2 if self.height else 300)
-        
+
+        # Cap physics to avoid O(N²) explosion.
+        physics_ids = ids[:self._MAX_PHYSICS_NODES]
+
         # Repulsion
-        for i, id1 in enumerate(ids):
+        for i, id1 in enumerate(physics_ids):
             n1 = self.nodes[id1]
             if n1.pinned:
                 continue
-            
-            for id2 in ids[i+1:]:
+
+            for id2 in physics_ids[i+1:]:
                 n2 = self.nodes[id2]
                 dist_vec = n1.pos - n2.pos
                 dist = max(dist_vec.length(), 1)
-                
+
                 force_mag = self.repulsion / (dist * dist)
                 force = dist_vec.normalize() * min(force_mag, 50)
-                
+
                 if not n1.pinned:
                     n1.velocity += force
                 if not n2.pinned:
                     n2.velocity -= force
-        
+
         # Springs
         for src_id, dst_id, weight, _ in self.edges:
             if src_id not in self.nodes or dst_id not in self.nodes:
                 continue
-            
+
             n1, n2 = self.nodes[src_id], self.nodes[dst_id]
             dist_vec = n2.pos - n1.pos
             dist = max(dist_vec.length(), 1)
-            
+
             target = self.spring_length / max(weight, 0.1)
             force_mag = (dist - target) * self.spring_k
             force = dist_vec.normalize() * force_mag
-            
+
             if not n1.pinned:
                 n1.velocity += force
             if not n2.pinned:
                 n2.velocity -= force
-        
-        # Apply
+
+        # Apply + measure energy
+        total_energy = 0.0
         for n in self.nodes.values():
             if n.pinned or n == self.dragged_node:
                 continue
-            
+
             n.velocity += (center - n.pos) * self.gravity
             n.pos += n.velocity * dt * 50
             n.velocity *= self.friction
-            
+
             margin = 80
             n.pos.x = max(margin, min(self.width - margin if self.width else 400, n.pos.x))
             n.pos.y = max(margin, min(self.height - margin if self.height else 600, n.pos.y))
-        
+            total_energy += n.velocity.length2()
+
+        self._energy = total_energy
+        if total_energy < self._SETTLE_THRESHOLD and len(self.nodes) > 0:
+            self._settled = True
+
         self.redraw()
     
     def redraw(self, *args):
@@ -414,11 +474,19 @@ class GraphExplorerPanel(BoxLayout):
                             on_press=lambda *a: self.refresh()))
         ctrl.add_widget(RBtn(text="Center", bg=C['card'], font_size=sp(10), 
                             on_press=self._reset))
+        self.freeze_btn = RBtn(text="⏸", bg=C['card'], font_size=sp(12),
+                               size_hint_x=0.2, on_press=self._toggle_freeze)
+        ctrl.add_widget(self.freeze_btn)
         ctrl.add_widget(RBtn(text="+", bg=C['ok'], font_size=sp(14), size_hint_x=0.2,
                             on_press=self._zoom_in))
         ctrl.add_widget(RBtn(text="-", bg=C['card'], font_size=sp(14), size_hint_x=0.2,
                             on_press=self._zoom_out))
         self.add_widget(ctrl)
+
+        # Node count / status
+        self.status_lbl = Label(text="", font_size=sp(8), color=C['dim'],
+                                 size_hint_y=None, height=dp(16))
+        self.add_widget(self.status_lbl)
         
         # Graph
         self.graph = GraphWidget(engine, memory)
@@ -451,16 +519,46 @@ class GraphExplorerPanel(BoxLayout):
     def refresh(self):
         self.graph.load_data()
         self.graph.start()
-    
+        self._update_status()
+
+    def _update_status(self):
+        total = len(self.graph._all_nodes)
+        visible = len(self.graph.nodes)
+        settled = "settled" if self.graph._settled else "active"
+        self.status_lbl.text = f"{visible}/{total} nodes · zoom {self.graph.zoom:.1f}x · {settled}"
+
+    def _toggle_freeze(self, *_):
+        if self.graph._settled or not self.graph.running:
+            self.graph._settled = False
+            self.graph._energy = 999
+            self.graph.start()
+            self.freeze_btn.text = "⏸"
+        else:
+            self.graph._settled = True
+            self.freeze_btn.text = "▶"
+        self._update_status()
+
     def _reset(self, *args):
         self.graph.zoom = 1.0
         self.graph.offset = Vector(0, 0)
+        self.graph._apply_lod()
+        self.graph._settled = False
+        self.graph._energy = 999
         self.graph.redraw()
-    
+        self._update_status()
+
     def _zoom_in(self, *args):
         self.graph.zoom = min(3.0, self.graph.zoom * 1.25)
+        self.graph._apply_lod()
+        self.graph._settled = False
+        self.graph._energy = 999
         self.graph.redraw()
-    
+        self._update_status()
+
     def _zoom_out(self, *args):
-        self.graph.zoom = max(0.3, self.graph.zoom / 1.25)
+        self.graph.zoom = max(0.2, self.graph.zoom / 1.25)
+        self.graph._apply_lod()
+        self.graph._settled = False
+        self.graph._energy = 999
         self.graph.redraw()
+        self._update_status()

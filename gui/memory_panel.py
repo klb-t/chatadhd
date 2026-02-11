@@ -1,8 +1,8 @@
 """
-ChatADHD v0.07.01 - Memory Panel
+ChatADHD v0.07.03 - Notes Panel
 
-Sliding panel that displays the hierarchical memory tree with
-toggle (active/inactive), add, edit, delete, file/dir import, and ZIP export.
+Sliding panel for user notes, code snippets, and file references.
+Backed by the hierarchical memory tree engine.
 """
 import logging
 import os
@@ -38,7 +38,7 @@ class MemoryPanel(Panel):
 
         # Header
         hdr = BoxLayout(size_hint_y=None, height=dp(34))
-        hdr.add_widget(Label(text="Memory", font_size=sp(12),
+        hdr.add_widget(Label(text="Notes", font_size=sp(12),
                              color=C["text"], bold=True))
         hdr.add_widget(RBtn(text="X", size_hint_x=None, width=dp(34),
                             bg=C["card"], on_press=lambda *_: self.close()))

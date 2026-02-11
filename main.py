@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.03 — Mobile-First AI Chat Client
+ChatADHD v0.07.04 — Mobile-First AI Chat Client
 ================================================
 
 Hierarchical memory · Branching conversations · Multi-model API ·
@@ -12,7 +12,7 @@ Environment variables:
   CHATADHD_DATA   Override data directory path
   KIVY_LOG_LEVEL  Kivy log verbosity (debug, info, warning, error)
 """
-__version__ = "0.07.03"
+__version__ = "0.07.04"
 
 import logging
 import os
@@ -124,13 +124,14 @@ class ChatADHDApp(App):
             on_press=lambda *_: self._toggle_conv(),
         ))
         self.title_label = Label(
-            text=(self.engine.conv["title"][:20]
+            text=(self.engine.conv["title"][:40]
                   if self.engine.conv else "ChatADHD"),
-            color=C["text"], font_size=sp(11), bold=True,
+            color=C["text"], font_size=sp(10), bold=True,
+            shorten=True, shorten_from="right",
         )
         header.add_widget(self.title_label)
         header.add_widget(RBtn(
-            text="Mem", size_hint_x=None, width=dp(44), bg=C["card"],
+            text="Notes", size_hint_x=None, width=dp(50), bg=C["card"],
             font_size=sp(9), on_press=lambda *_: self._toggle_memory(),
         ))
         header.add_widget(RBtn(
@@ -184,7 +185,7 @@ class ChatADHDApp(App):
     def _on_conv_select(self):
         self.chat_panel.refresh()
         self.title_label.text = (
-            self.engine.conv["title"][:20] if self.engine.conv else "New"
+            self.engine.conv["title"][:40] if self.engine.conv else "New"
         )
         if self.graph_panel._visible:
             self.graph_panel.refresh()

@@ -32,15 +32,17 @@ log = logging.getLogger(__name__)
 # ═══════════════════════════════════════════════════════════════════
 
 class MsgBubble(BoxLayout):
-    """Collapsible message display with artifact detection."""
+    """Message display with scrollable expand and inline artifact preview."""
 
     _COLLAPSE_THRESHOLD = 300  # chars
+    _EXPAND_MAX_H = 500  # dp — max expanded height before scroll kicks in
 
     def __init__(self, msg: dict, models, on_exclude=None, on_include=None, **kw):
         super().__init__(orientation="vertical", size_hint_y=None,
                          padding=dp(4), spacing=dp(2), **kw)
         self.msg = msg
         self._expanded = False
+        self._artifacts = detect_artifacts(msg["text"])
 
         is_user = msg["role"] == "user"
         is_excluded = msg.get("status") == "excluded"
@@ -61,7 +63,7 @@ class MsgBubble(BoxLayout):
             size=lambda *_: setattr(self._rect, "size", self.size),
         )
 
-        # Header
+        # ── Header ────────────────────────────────────────────
         hdr = BoxLayout(size_hint_y=None, height=dp(20), spacing=dp(2))
         role_label = msg["role"].upper()[:4]
         hdr.add_widget(Label(text=role_label, font_size=sp(8), color=C["accent"],
@@ -74,7 +76,6 @@ class MsgBubble(BoxLayout):
             hdr.add_widget(Label(text=f"w:{msg['weight']:.1f}", font_size=sp(7),
                                  color=C["warn"], size_hint_x=None, width=dp(30)))
 
-        # Exclude/include toggle
         if is_excluded and on_include:
             hdr.add_widget(RBtn(text="[+]", size_hint_x=None, width=dp(26),
                                 bg=C["ok"], font_size=sp(7),
@@ -84,66 +85,92 @@ class MsgBubble(BoxLayout):
                                 bg=C["dim"], font_size=sp(7),
                                 on_press=lambda *_: on_exclude(msg["id"])))
 
-        # Copy
         hdr.add_widget(RBtn(text="Cp", size_hint_x=None, width=dp(26),
                             bg=C["card"], font_size=sp(7),
                             on_press=lambda *_: (Clipboard.copy(msg["text"]),
                                                  show_toast("Copied"))))
         self.add_widget(hdr)
 
-        # Text content
+        # ── Text in scrollable container ──────────────────────
         text = msg["text"]
-        is_long = len(text) > self._COLLAPSE_THRESHOLD
+        # Strip code blocks from display text — show them as artifacts below.
+        display_text = text
+        for art in reversed(self._artifacts):
+            display_text = display_text[:art["start"]] + f'[{art["lang"]} code — see below]' + display_text[art["end"]:]
 
-        display_text = text[:self._COLLAPSE_THRESHOLD] + "..." if is_long else text
-        self._full_text = text
+        is_long = len(display_text) > self._COLLAPSE_THRESHOLD
+        self._full_display = display_text
+        collapsed_text = display_text[:self._COLLAPSE_THRESHOLD] + "..." if is_long else display_text
 
-        self.txt = DarkInput(text=display_text, readonly=True, font_size=sp(10),
+        # The text widget lives inside a ScrollView for expanded mode.
+        self.txt = DarkInput(text=collapsed_text, readonly=True, font_size=sp(10),
                              size_hint_y=None, multiline=True)
-        self.add_widget(self.txt)
 
-        # Expand button for long messages
+        self.txt_scroll = ScrollView(size_hint_y=None, do_scroll_x=False,
+                                     bar_width=dp(4))
+        self.txt_scroll.add_widget(self.txt)
+        self.add_widget(self.txt_scroll)
+
+        # ── Expand / Collapse ─────────────────────────────────
         if is_long:
             self.expand_btn = RBtn(text="Expand", size_hint_y=None, height=dp(22),
                                    bg=C["card"], font_size=sp(8),
                                    on_press=self._toggle_expand)
             self.add_widget(self.expand_btn)
+        else:
+            self.expand_btn = None
 
-        # Artifact detection
-        artifacts = detect_artifacts(text)
-        for art in artifacts[:3]:
-            bar = ArtifactBar(art)
-            self.add_widget(bar)
+        # ── Artifact previews ─────────────────────────────────
+        for art in self._artifacts[:5]:
+            self.add_widget(ArtifactBar(art))
 
-        # Reasoning metadata
+        # ── Reasoning metadata ────────────────────────────────
         reasoning = msg.get("metadata", {}).get("reasoning", "")
         if reasoning:
-            r_label = Label(
+            self.add_widget(Label(
                 text=f"[Reasoning: {len(reasoning)} chars]",
                 font_size=sp(7), color=C["dim"],
                 size_hint_y=None, height=dp(16),
-            )
-            self.add_widget(r_label)
+            ))
 
         self._update_height()
 
     def _toggle_expand(self, *_):
         self._expanded = not self._expanded
         if self._expanded:
-            self.txt.text = self._full_text
+            self.txt.text = self._full_display
             self.expand_btn.text = "Collapse"
         else:
-            self.txt.text = self._full_text[:self._COLLAPSE_THRESHOLD] + "..."
+            self.txt.text = self._full_display[:self._COLLAPSE_THRESHOLD] + "..."
             self.expand_btn.text = "Expand"
         self._update_height()
 
     def _update_height(self):
+        """Recalculate heights so ScrollView works properly."""
         lines = self.txt.text.count("\n") + 1
         cpl = max(1, int((Window.width - dp(50)) / dp(7)))
         wrapped = max(lines, len(self.txt.text) // cpl + 1)
-        self.txt.height = min(dp(400), max(dp(28), wrapped * dp(14)))
-        self.height = dp(24) + self.txt.height + dp(8) + dp(22) * len(
-            [c for c in self.children if isinstance(c, (ArtifactBar, RBtn))])
+        text_h = max(dp(28), wrapped * dp(14))
+
+        if self._expanded:
+            # Text widget gets full height, scroll container gets capped.
+            self.txt.height = text_h
+            self.txt_scroll.height = min(dp(self._EXPAND_MAX_H), text_h)
+        else:
+            # Collapsed: no scroll needed.
+            capped = min(dp(200), text_h)
+            self.txt.height = capped
+            self.txt_scroll.height = capped
+
+        extra = dp(24)  # header
+        extra += self.txt_scroll.height
+        if self.expand_btn:
+            extra += dp(22)
+        extra += dp(26) * len([c for c in self.children if isinstance(c, ArtifactBar)])
+        extra += dp(16) if any(isinstance(c, Label) and "Reasoning" in (c.text or "")
+                               for c in self.children) else 0
+        extra += dp(8)
+        self.height = extra
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -151,32 +178,71 @@ class MsgBubble(BoxLayout):
 # ═══════════════════════════════════════════════════════════════════
 
 class ArtifactBar(BoxLayout):
-    """Detected code artifact with Copy and Save actions."""
+    """Detected code artifact with preview, Copy and Save actions."""
 
     def __init__(self, artifact: dict, **kw):
-        super().__init__(size_hint_y=None, height=dp(26), spacing=dp(2), **kw)
+        super().__init__(orientation="vertical", size_hint_y=None,
+                         spacing=dp(1), **kw)
         self.artifact = artifact
+        self._preview_shown = False
+        self.height = dp(26)
+
+        # ── Header bar ────────────────────────────────────────
+        bar = BoxLayout(size_hint_y=None, height=dp(26), spacing=dp(2))
 
         from kivy.graphics import Color as GColor, RoundedRectangle
-        with self.canvas.before:
+        with bar.canvas.before:
             GColor(*C["artifact"])
-            self._rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(4)])
-        self.bind(
-            pos=lambda *_: setattr(self._rect, "pos", self.pos),
-            size=lambda *_: setattr(self._rect, "size", self.size),
+            bar._rect = RoundedRectangle(pos=bar.pos, size=bar.size, radius=[dp(4)])
+        bar.bind(
+            pos=lambda *_: setattr(bar._rect, "pos", bar.pos),
+            size=lambda *_: setattr(bar._rect, "size", bar.size),
         )
 
         lang = artifact.get("lang", "code")
         lines = artifact["content"].count("\n") + 1
-        self.add_widget(Label(text=f"{lang} ({lines}L)", font_size=sp(8),
-                              color=C["dim"], size_hint_x=0.4))
-        self.add_widget(RBtn(text="Copy", bg=C["card"], font_size=sp(8),
-                             size_hint_x=0.3,
-                             on_press=lambda *_: (Clipboard.copy(artifact["content"]),
-                                                  show_toast("Code copied"))))
-        self.add_widget(RBtn(text="->Mem", bg=C["ok"], font_size=sp(8),
-                             size_hint_x=0.3,
-                             on_press=lambda *_: show_toast("Save to memory: TODO")))
+        bar.add_widget(RBtn(text=f"▶ {lang} ({lines}L)", bg=C["card"],
+                            font_size=sp(8), size_hint_x=0.4,
+                            on_press=self._toggle_preview))
+        bar.add_widget(RBtn(text="Copy", bg=C["card"], font_size=sp(8),
+                            size_hint_x=0.3,
+                            on_press=lambda *_: (Clipboard.copy(artifact["content"]),
+                                                 show_toast("Code copied"))))
+        bar.add_widget(RBtn(text="->Mem", bg=C["ok"], font_size=sp(8),
+                            size_hint_x=0.3,
+                            on_press=lambda *_: show_toast("Save to notes: TODO")))
+        self.add_widget(bar)
+        self._bar = bar
+
+        # ── Preview (initially hidden) ────────────────────────
+        self._preview_box = None
+
+    def _toggle_preview(self, *_):
+        if self._preview_shown:
+            if self._preview_box:
+                self.remove_widget(self._preview_box)
+                self._preview_box = None
+            self.height = dp(26)
+            self._preview_shown = False
+        else:
+            content = self.artifact["content"]
+            preview_lines = min(20, content.count("\n") + 1)
+            preview_h = max(dp(40), min(dp(250), preview_lines * dp(13)))
+
+            txt = DarkInput(
+                text=content, readonly=True, font_size=sp(8),
+                size_hint_y=None, multiline=True,
+            )
+            txt.height = preview_h + dp(20)
+
+            scroll = ScrollView(size_hint_y=None, height=preview_h,
+                                do_scroll_x=True, bar_width=dp(3))
+            scroll.add_widget(txt)
+
+            self._preview_box = scroll
+            self.add_widget(scroll)
+            self.height = dp(26) + preview_h
+            self._preview_shown = True
 
 
 # ═══════════════════════════════════════════════════════════════════

@@ -52,9 +52,22 @@ class ConvPanel(Panel):
         if not self.engine.db:
             return
         for c in self.engine.db.list_convs():
-            card = Card(size_hint_y=None, height=dp(40))
-            card.add_widget(Label(text=c["title"][:22], font_size=sp(9),
-                                  color=C["text"], halign="left"))
+            card = Card(size_hint_y=None, height=dp(44))
+            title_text = c["title"][:40] or "Untitled"
+            # Show message count if available.
+            msg_count = c.get("msg_count", "")
+            sub = f"{msg_count} msgs" if msg_count else ""
+
+            col = BoxLayout(orientation="vertical", padding=(dp(4), 0))
+            col.add_widget(Label(text=title_text, font_size=sp(9),
+                                  color=C["text"], halign="left",
+                                  text_size=(dp(240), None), shorten=True))
+            if sub:
+                col.add_widget(Label(text=sub, font_size=sp(7),
+                                      color=C["dim"], halign="left",
+                                      text_size=(dp(240), None),
+                                      size_hint_y=None, height=dp(12)))
+            card.add_widget(col)
             card.conv = c
             card.bind(on_touch_down=lambda w, t, cv=c:
                       self._select(cv) if w.collide_point(*t.pos) else None)
