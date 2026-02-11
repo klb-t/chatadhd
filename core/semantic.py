@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Semantic Analysis Pipeline
+ChatADHD v0.07.01 - Semantic Analysis Pipeline
 
 Multi-level extraction with zero external dependencies at the base level:
   Level 1: Regex-based NER — fast, local, always available.

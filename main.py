@@ -1,10 +1,10 @@
 """
-ChatADHD v0.07.00 — Mobile-First AI Chat Client
+ChatADHD v0.07.01 — Mobile-First AI Chat Client
 ================================================
 
 Hierarchical memory · Branching conversations · Multi-model API ·
-Streaming · Graph explorer · Zero-knowledge encryption (optional) ·
-Voice input · GitHub sync · Conversation import (7 formats)
+Streaming · Real-time knowledge graph · Zero-knowledge encryption ·
+Voice input · GitHub sync · Universal import (ZIP, JSON, HTML, DB…)
 
 Run: ``python main.py``
 
@@ -12,7 +12,7 @@ Environment variables:
   CHATADHD_DATA   Override data directory path
   KIVY_LOG_LEVEL  Kivy log verbosity (debug, info, warning, error)
 """
-__version__ = "0.07.00"
+__version__ = "0.07.01"
 
 import logging
 import os
@@ -52,6 +52,10 @@ from engine.db import Database
 from engine.chat_engine import ChatEngine
 from engine.memory_engine import MemoryEngine
 from engine.models import ModelRegistry
+from engine.graph_engine import GraphEngine
+from engine.semantic_llm import SemanticLLM
+from engine.graph_memory import GraphMemorySelector
+from engine.events import bus, GRAPH_CHANGED, IMPORT_DONE
 from core.semantic import analyzer
 
 # ── GUI imports ────────────────────────────────────────────────────
@@ -85,7 +89,17 @@ class ChatADHDApp(App):
         self.models = ModelRegistry(data_dir / "models.json", self.cfg, self.secrets)
         self.memory = MemoryEngine(data_dir / "memory.json",
                                    semantic_analyzer=analyzer)
-        self.engine = ChatEngine(self.cfg, self.secrets, self.db, self.memory)
+        self.semantic_llm = SemanticLLM(self.cfg, self.secrets)
+        self.graph_memory = GraphMemorySelector(self.db, self.cfg)
+        self.engine = ChatEngine(self.cfg, self.secrets, self.db,
+                                 self.memory, self.graph_memory)
+        self.graph_engine = GraphEngine(self.db, self.semantic_llm)
+
+        # Auto-refresh graph panel when graph data changes.
+        bus.on(GRAPH_CHANGED, lambda _: Clock.schedule_once(
+            lambda dt: self._auto_refresh_graph(), 0))
+        bus.on(IMPORT_DONE, lambda data: Clock.schedule_once(
+            lambda dt: self._on_import_done(data), 0))
 
         # ── Theme ──────────────────────────────────────────────────
         set_theme(self.cfg.get("theme", "dark"))
@@ -174,6 +188,18 @@ class ChatADHDApp(App):
         )
         if self.graph_panel._visible:
             self.graph_panel.refresh()
+
+    def _auto_refresh_graph(self):
+        """Called from event bus when graph data changes."""
+        if hasattr(self, 'graph_panel') and self.graph_panel._visible:
+            self.graph_panel.refresh()
+
+    def _on_import_done(self, data):
+        """Called after bulk import finishes."""
+        if hasattr(self, 'conv_panel'):
+            self.conv_panel.refresh()
+        log.info("Import complete: %d conversations from %s",
+                 data.get("count", 0), data.get("source", "?"))
 
     def _show_settings(self):
         SettingsPopup(

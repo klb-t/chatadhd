@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - GUI Base Components
+ChatADHD v0.07.01 - GUI Base Components
 
 Shared widgets, theme engine, colour constants, and utility functions
 used by every other GUI module.  Import from here, not from Kivy directly

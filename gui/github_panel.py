@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - GitHub Sync Popup
+ChatADHD v0.07.01 - GitHub Sync Popup
 
 UI for configuring and executing GitHub synchronisation.
 """

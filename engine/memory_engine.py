@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Hierarchical Memory Engine
+ChatADHD v0.07.01 - Hierarchical Memory Engine
 
 Universal tree structure where every node can hold text, files,
 directories, or folders.  Integrates with SemanticAnalyzer for

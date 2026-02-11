@@ -1,23 +1,36 @@
 """
-ChatADHD v0.07.00 - Conversation Importer
-Imports conversations from various formats:
+ChatADHD v0.07.01 - Universal Conversation Importer
+
+Imports conversations from virtually any chatbot export format:
+- ZIP archives (bulk import — walks contents recursively)
 - SQLite DB (Claude.ai, ChatGPT exports)
-- JSON (OpenAI, Anthropic API logs)
-- HTML (web exports)
-- MHT (single-file web archives)
+- JSON (OpenAI conversations.json, Anthropic, generic API logs,
+        Claude shared links, single or multi-conversation)
+- HTML (web exports, saved pages)
+- MHT/MHTML (single-file web archives)
+- Markdown (.md chat logs)
+- Plain text (.txt)
 - Screenshot (OCR via basic pattern matching)
-- Markdown
-- Plain text
+
+Design: maximally universal.  Every format handler tries multiple
+heuristics and falls back gracefully.  ZIP ingestion unpacks and
+recurses into each file.
 """
 import os
 import re
+import io
 import json
 import sqlite3
 import base64
+import zipfile
+import tempfile
+import shutil
 from pathlib import Path
 from datetime import datetime
 from html.parser import HTMLParser
 import logging
+
+from engine.events import bus, MSG_CREATED, IMPORT_DONE
 
 log = logging.getLogger('importer')
 
@@ -34,28 +47,34 @@ class ConversationImporter:
         p = Path(path)
         ext = p.suffix.lower()
         
-        if ext == '.db':
+        if ext == '.zip':
+            return 'zip'
+        elif ext == '.db':
             return 'sqlite'
         elif ext == '.json':
             return 'json'
-        elif ext == '.html' or ext == '.htm':
+        elif ext in ('.jsonl', '.ndjson'):
+            return 'jsonl'
+        elif ext in ('.html', '.htm'):
             return 'html'
-        elif ext == '.mht' or ext == '.mhtml':
+        elif ext in ('.mht', '.mhtml'):
             return 'mht'
         elif ext in ('.png', '.jpg', '.jpeg', '.webp'):
             return 'screenshot'
         elif ext == '.md':
             return 'markdown'
-        elif ext == '.txt':
+        elif ext in ('.txt', '.log'):
             return 'text'
         else:
             # Try to detect by content
             try:
                 with open(path, 'rb') as f:
-                    header = f.read(100)
+                    header = f.read(200)
+                if header[:4] == b'PK\x03\x04':
+                    return 'zip'
                 if b'SQLite format' in header:
                     return 'sqlite'
-                if header.startswith(b'{') or header.startswith(b'['):
+                if header.lstrip()[:1] in (b'{', b'['):
                     return 'json'
                 if b'<html' in header.lower() or b'<!doctype' in header.lower():
                     return 'html'
@@ -65,25 +84,100 @@ class ConversationImporter:
         return 'unknown'
     
     def import_file(self, path, title=None):
-        """Import conversation from file, auto-detecting format."""
+        """Import conversation from file, auto-detecting format.
+        Returns list of created conversation dicts."""
         fmt = self.detect_format(path)
+        log.info("Importing %s (detected format: %s)", path, fmt)
         
-        if fmt == 'sqlite':
-            return self.import_sqlite(path, title)
+        results = []
+        if fmt == 'zip':
+            results = self.import_zip(path, title)
+        elif fmt == 'sqlite':
+            results = self.import_sqlite(path, title)
         elif fmt == 'json':
-            return self.import_json(path, title)
+            results = self.import_json(path, title)
+        elif fmt == 'jsonl':
+            results = self.import_jsonl(path, title)
         elif fmt == 'html':
-            return self.import_html(path, title)
+            results = self.import_html(path, title)
         elif fmt == 'mht':
-            return self.import_mht(path, title)
+            results = self.import_mht(path, title)
         elif fmt == 'screenshot':
-            return self.import_screenshot(path, title)
+            results = self.import_screenshot(path, title)
         elif fmt == 'markdown':
-            return self.import_markdown(path, title)
+            results = self.import_markdown(path, title)
         elif fmt == 'text':
-            return self.import_text(path, title)
+            results = self.import_text(path, title)
         else:
             raise ValueError(f"Unknown format: {path}")
+        
+        # Flatten if needed (some handlers return single conv, some return list).
+        if isinstance(results, dict):
+            results = [results]
+        results = [r for r in (results or []) if r is not None]
+        
+        if results:
+            bus.emit(IMPORT_DONE, {
+                "count": len(results),
+                "source": str(path),
+                "format": fmt,
+            })
+        
+        return results
+    
+    # === ZIP ===
+    def import_zip(self, path, title=None):
+        """Extract ZIP and import every recognized file inside."""
+        results = []
+        tmpdir = tempfile.mkdtemp(prefix="chatadhd_import_")
+        try:
+            with zipfile.ZipFile(path, 'r') as zf:
+                zf.extractall(tmpdir)
+            
+            # Walk extracted tree, sort for determinism.
+            files = sorted(Path(tmpdir).rglob("*"))
+            importable = [f for f in files if f.is_file()
+                          and self.detect_format(str(f)) != 'unknown']
+            
+            log.info("ZIP contains %d importable files out of %d total",
+                     len(importable), len(files))
+            
+            for fpath in importable:
+                try:
+                    # Use relative path inside ZIP as title hint.
+                    rel = fpath.relative_to(tmpdir)
+                    file_title = title or str(rel)
+                    sub_results = self.import_file(str(fpath), file_title)
+                    results.extend(sub_results)
+                except Exception:
+                    log.warning("Failed to import %s from ZIP", fpath, exc_info=True)
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
+        
+        return results
+    
+    # === JSONL / NDJSON ===
+    def import_jsonl(self, path, title=None):
+        """Import newline-delimited JSON (one object per line)."""
+        results = []
+        with open(path, 'r', encoding='utf-8') as f:
+            lines = [line.strip() for line in f if line.strip()]
+        
+        # Heuristic: if lines look like messages, batch into one conv.
+        messages = []
+        for line in lines:
+            try:
+                obj = json.loads(line)
+                if isinstance(obj, dict) and ('role' in obj or 'content' in obj):
+                    messages.append(obj)
+                elif isinstance(obj, dict) and 'messages' in obj:
+                    results.append(self._import_conversation_obj(obj, title))
+            except json.JSONDecodeError:
+                log.debug("Skipped non-JSON line in JSONL")
+        
+        if messages:
+            results.append(self._import_message_list(messages, title))
+        return results
     
     # === SQLITE ===
     def import_sqlite(self, path, title=None):
@@ -178,47 +272,175 @@ class ConversationImporter:
     
     # === JSON ===
     def import_json(self, path, title=None):
-        """Import from JSON file (API logs, exports)."""
+        """Import from JSON file — handles every known chatbot export format."""
         with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
+        return self._import_json_data(data, title, source_path=path)
+    
+    def _import_json_data(self, data, title=None, source_path=None):
+        """Route parsed JSON to the right handler."""
         results = []
         
-        # Handle different JSON structures
         if isinstance(data, list):
-            # List of messages or conversations
-            if data and isinstance(data[0], dict):
-                if 'role' in data[0]:
+            if not data:
+                return results
+            first = data[0]
+            if isinstance(first, dict):
+                if 'mapping' in first:
+                    # ChatGPT conversations.json (list of convs with mapping trees)
+                    for conv_data in data:
+                        r = self._import_chatgpt_mapping(conv_data, title)
+                        if r:
+                            results.append(r)
+                elif 'role' in first or 'content' in first:
                     # Direct message list
                     results.append(self._import_message_list(data, title))
-                elif 'messages' in data[0]:
-                    # List of conversations
+                elif 'messages' in first:
+                    # List of conversation objects
                     for conv_data in data:
                         results.append(self._import_conversation_obj(conv_data, title))
+                elif 'chat_messages' in first:
+                    # Claude.ai export format
+                    for conv_data in data:
+                        r = self._import_claude_export(conv_data, title)
+                        if r:
+                            results.append(r)
+                else:
+                    # Unknown list format — try each as conversation
+                    for item in data:
+                        try:
+                            r = self._import_conversation_obj(item, title)
+                            if r:
+                                results.append(r)
+                        except Exception:
+                            log.debug("Skipped unrecognized list item")
         
         elif isinstance(data, dict):
-            if 'messages' in data:
-                # Single conversation
+            if 'mapping' in data:
+                # Single ChatGPT conversation with mapping
+                r = self._import_chatgpt_mapping(data, title)
+                if r:
+                    results.append(r)
+            elif 'chat_messages' in data:
+                # Single Claude.ai conversation
+                r = self._import_claude_export(data, title)
+                if r:
+                    results.append(r)
+            elif 'messages' in data:
                 results.append(self._import_conversation_obj(data, title))
             elif 'conversations' in data:
-                # Export with multiple conversations
                 for conv_data in data['conversations']:
                     results.append(self._import_conversation_obj(conv_data, title))
             elif 'role' in data:
-                # Single message? Wrap in list
                 results.append(self._import_message_list([data], title))
+            elif 'data' in data and isinstance(data['data'], list):
+                # Wrapped export: {"data": [...conversations...]}
+                return self._import_json_data(data['data'], title, source_path)
+            else:
+                # Last resort: try as conversation
+                try:
+                    results.append(self._import_conversation_obj(data, title))
+                except Exception:
+                    log.warning("Unrecognized JSON structure in %s", source_path)
         
         return results
     
+    def _import_chatgpt_mapping(self, conv_data, title=None):
+        """Import ChatGPT conversation with tree/mapping structure.
+        ChatGPT exports conversations as a tree where each node has
+        an ID, parent, and message content."""
+        conv_title = title or conv_data.get('title', f"ChatGPT Import {datetime.now():%H:%M}")
+        mapping = conv_data.get('mapping', {})
+        
+        if not mapping:
+            return None
+        
+        # Build ordered message list by walking the tree.
+        # Find root (node with no parent or parent not in mapping).
+        children_of = {}
+        for node_id, node in mapping.items():
+            parent = node.get('parent')
+            children_of.setdefault(parent, []).append(node_id)
+        
+        # Walk from root down the "active" path.
+        messages = []
+        
+        def walk(node_id):
+            node = mapping.get(node_id, {})
+            msg = node.get('message')
+            if msg:
+                author = msg.get('author', {}).get('role', 'unknown')
+                content = msg.get('content', {})
+                
+                # Content can be: {"parts": ["text"]} or {"content_type": "text", "parts": [...]}
+                text = ""
+                if isinstance(content, dict):
+                    parts = content.get('parts', [])
+                    text_parts = []
+                    for part in parts:
+                        if isinstance(part, str):
+                            text_parts.append(part)
+                        elif isinstance(part, dict) and part.get('content_type') == 'text':
+                            text_parts.append(part.get('text', ''))
+                    text = '\n'.join(text_parts)
+                elif isinstance(content, str):
+                    text = content
+                
+                if text.strip() and author in ('user', 'assistant'):
+                    messages.append({'role': author, 'content': text})
+            
+            for child_id in children_of.get(node_id, []):
+                walk(child_id)
+        
+        # Find roots (nodes whose parent is None or not in mapping).
+        roots = [nid for nid, node in mapping.items()
+                 if node.get('parent') is None or node.get('parent') not in mapping]
+        for root in roots:
+            walk(root)
+        
+        if not messages:
+            return None
+        
+        return self._import_message_list(messages, conv_title)
+    
+    def _import_claude_export(self, conv_data, title=None):
+        """Import Claude.ai export format (chat_messages array)."""
+        conv_title = title or conv_data.get('name',
+                         conv_data.get('title', f"Claude Import {datetime.now():%H:%M}"))
+        messages = []
+        for msg in conv_data.get('chat_messages', []):
+            sender = msg.get('sender', 'human')
+            role = 'user' if sender == 'human' else 'assistant'
+            text = msg.get('text', '')
+            
+            # Claude exports can have content blocks.
+            if not text and 'content' in msg:
+                content = msg['content']
+                if isinstance(content, list):
+                    text = '\n'.join(
+                        c.get('text', '') for c in content
+                        if isinstance(c, dict) and c.get('type') == 'text'
+                    )
+                elif isinstance(content, str):
+                    text = content
+            
+            if text.strip():
+                messages.append({'role': role, 'content': text})
+        
+        if not messages:
+            return None
+        return self._import_message_list(messages, conv_title)
+    
     def _import_message_list(self, messages, title):
-        """Import list of message objects."""
+        """Import list of message objects.  Core method — all importers converge here."""
         conv_title = title or f"Import {datetime.now():%Y-%m-%d %H:%M}"
         new_conv = self.db.create_conv(f"[Import] {conv_title}")
+        count = 0
         
         for msg in messages:
-            role = msg.get('role', 'user')
+            role = msg.get('role', msg.get('sender', 'user'))
             if role in ('system',):
-                continue  # Skip system messages or import as metadata
+                continue
             
             role = 'user' if role in ('user', 'human') else 'assistant'
             content = msg.get('content', msg.get('text', ''))
@@ -227,25 +449,52 @@ class ConversationImporter:
             if isinstance(content, list):
                 text_parts = []
                 for part in content:
-                    if isinstance(part, dict) and part.get('type') == 'text':
-                        text_parts.append(part.get('text', ''))
+                    if isinstance(part, dict):
+                        if part.get('type') == 'text':
+                            text_parts.append(part.get('text', ''))
+                        elif part.get('type') == 'image_url':
+                            text_parts.append('[image]')
                     elif isinstance(part, str):
                         text_parts.append(part)
                 content = '\n'.join(text_parts)
             
-            if content:
-                self.db.create_msg(new_conv['id'], content, role)
+            if not isinstance(content, str):
+                content = str(content) if content else ''
+            
+            if content.strip():
+                mid = self.db.create_msg(new_conv['id'], content, role)
+                bus.emit(MSG_CREATED, {
+                    "id": mid, "text": content,
+                    "conv_id": new_conv['id'], "role": role,
+                })
+                count += 1
         
+        log.info("Imported %d messages into '%s'", count, conv_title)
         return new_conv
     
     def _import_conversation_obj(self, conv_data, title):
-        """Import conversation object with messages."""
-        conv_title = title or conv_data.get('title', conv_data.get('name', f"Import {datetime.now():%H:%M}"))
-        messages = conv_data.get('messages', conv_data.get('mapping', {}).values())
+        """Import conversation object with messages. Handles multiple key names."""
+        if not isinstance(conv_data, dict):
+            return None
         
-        # Handle ChatGPT's nested mapping format
+        conv_title = title or conv_data.get('title',
+                         conv_data.get('name',
+                         conv_data.get('conversation_name',
+                         f"Import {datetime.now():%H:%M}")))
+        
+        # Try multiple message keys.
+        messages = (conv_data.get('messages')
+                    or conv_data.get('chat_messages')
+                    or conv_data.get('items')
+                    or conv_data.get('data')
+                    or [])
+        
+        # Handle ChatGPT's nested mapping format.
         if isinstance(messages, dict):
-            messages = list(messages)
+            messages = list(messages.values())
+        
+        if not messages:
+            return None
         
         return self._import_message_list(list(messages), conv_title)
     

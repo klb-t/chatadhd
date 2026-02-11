@@ -1,6 +1,6 @@
 """
-ChatADHD v0.07.00 - Graph Explorer
-Force-directed visualization with BIGGER nodes and READABLE labels
+ChatADHD v0.07.01 - Graph Explorer
+Force-directed visualization with semantic nodes (entities, topics, code refs)
 """
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
@@ -21,7 +21,7 @@ class GraphNode:
     """Node in the graph with physics properties."""
     def __init__(self, uid, label, n_type, x, y, data=None):
         self.id = uid
-        self.label = label[:25]  # Longer labels
+        self.label = label[:25]
         self.full_label = label
         self.type = n_type
         self.pos = Vector(x, y)
@@ -29,19 +29,29 @@ class GraphNode:
         self.data = data or {}
         self.pinned = False
         
-        # Colors by type - more vibrant
+        # Colors by type
         colors = {
-            'user': (0.2, 0.75, 0.5, 1),      # Green
-            'assistant': (0.4, 0.5, 0.95, 1),  # Blue
+            'user': (0.2, 0.75, 0.5, 1),       # Green
+            'assistant': (0.4, 0.5, 0.95, 1),   # Blue
             'chat': (0.5, 0.6, 0.9, 1),
-            'memory': (0.95, 0.6, 0.2, 1),     # Orange
-            'file': (0.3, 0.85, 0.5, 1),       # Bright green
-            'folder': (0.9, 0.8, 0.2, 1),      # Yellow
+            'memory': (0.95, 0.6, 0.2, 1),      # Orange
+            'file': (0.3, 0.85, 0.5, 1),        # Bright green
+            'folder': (0.9, 0.8, 0.2, 1),       # Yellow
+            'entity': (0.85, 0.4, 0.9, 1),      # Purple
+            'topic': (0.95, 0.55, 0.3, 1),      # Orange-red
+            'code_ref': (0.3, 0.9, 0.85, 1),    # Cyan
+            'concept': (0.9, 0.85, 0.3, 1),     # Gold
+            'conversation': (0.5, 0.65, 0.8, 1),# Muted blue
         }
         self.color = colors.get(n_type, (0.6, 0.6, 0.6, 1))
         
         # Size based on type and weight
-        base_sizes = {'user': 35, 'assistant': 40, 'memory': 30, 'file': 25, 'folder': 35}
+        base_sizes = {
+            'user': 35, 'assistant': 40, 'memory': 30,
+            'file': 25, 'folder': 35,
+            'entity': 22, 'topic': 28, 'code_ref': 22,
+            'concept': 26, 'conversation': 20,
+        }
         self.base_size = base_sizes.get(n_type, 30)
         self.weight = data.get('weight', 1.0) if data else 1.0
         self.size = self.base_size + self.weight * 10
@@ -91,7 +101,7 @@ class GraphWidget(Widget):
         if cx == 0: cx = 200
         if cy == 0: cy = 300
         
-        # Load conversation
+        # Load conversation messages as nodes.
         if self.engine.conv and self.engine.db:
             msgs = self.engine.db.get_msgs(self.engine.conv['id'], include_all=True)
             for i, m in enumerate(msgs):
@@ -105,8 +115,29 @@ class GraphWidget(Widget):
                 
                 if m.get('parent_id') and m['parent_id'] in self.nodes:
                     self.edges.append((m['parent_id'], m['id'], 1.0, 'reply'))
+            
+            # Load graph nodes (entities, topics, etc.) from DB.
+            try:
+                graph_data = self.engine.db.get_graph_data(self.engine.conv['id'])
+                for n in graph_data.get('nodes', []):
+                    if n['id'] not in self.nodes:
+                        kind = n.get('kind', n.get('type', 'entity'))
+                        x = cx + (random() - 0.5) * 500
+                        y = cy + (random() - 0.5) * 500
+                        self.nodes[n['id']] = GraphNode(
+                            n['id'], n['label'], kind, x, y, n)
+                
+                for e in graph_data.get('edges', []):
+                    if e['src'] in self.nodes and e['dst'] in self.nodes:
+                        self.edges.append((
+                            e['src'], e['dst'],
+                            e.get('weight', 1.0),
+                            e.get('type', 'related'),
+                        ))
+            except Exception:
+                pass  # Graph data is supplementary — don't block on errors.
         
-        # Load memory
+        # Load memory.
         if self.memory:
             mem_data = self.memory.get_graph_data()
             for n in mem_data['nodes']:
@@ -221,6 +252,16 @@ class GraphWidget(Widget):
                     Color(0.4, 0.5, 0.7, 0.7)
                 elif link_type == 'child':
                     Color(0.7, 0.5, 0.3, 0.7)
+                elif link_type == 'mentions':
+                    Color(0.8, 0.4, 0.9, 0.5)   # Purple
+                elif link_type == 'tagged_with':
+                    Color(0.9, 0.5, 0.3, 0.5)    # Orange
+                elif link_type == 'depends_on':
+                    Color(0.9, 0.3, 0.3, 0.7)    # Red
+                elif link_type == 'references':
+                    Color(0.3, 0.8, 0.8, 0.5)    # Cyan
+                elif link_type == 'part_of':
+                    Color(0.5, 0.5, 0.5, 0.3)    # Dim grey
                 else:
                     Color(0.5, 0.5, 0.5, 0.5)
                 
@@ -384,11 +425,12 @@ class GraphExplorerPanel(BoxLayout):
         self.add_widget(self.graph)
         
         # Legend
-        legend = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(6), padding=dp(4))
+        legend = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(4), padding=dp(4))
         for name, color in [("You", (0.2, 0.75, 0.5)), ("AI", (0.4, 0.5, 0.95)), 
-                           ("Memory", (0.95, 0.6, 0.2))]:
-            row = BoxLayout(size_hint_x=None, width=dp(55))
-            row.add_widget(Label(text=f"● {name}", font_size=sp(9), color=(*color, 1)))
+                           ("Mem", (0.95, 0.6, 0.2)), ("Entity", (0.85, 0.4, 0.9)),
+                           ("Topic", (0.95, 0.55, 0.3)), ("Code", (0.3, 0.9, 0.85))]:
+            row = BoxLayout(size_hint_x=None, width=dp(48))
+            row.add_widget(Label(text=f"● {name}", font_size=sp(8), color=(*color, 1)))
             legend.add_widget(row)
         self.add_widget(legend)
     

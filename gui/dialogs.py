@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Dialog Popups
+ChatADHD v0.07.01 - Dialog Popups
 
 Settings, QuickAPI, Theme, FilePicker, LogViewer, ModelSelector,
 NodeEditor — all popups that overlay the main UI.
@@ -77,9 +77,34 @@ class SettingsPopup(Popup):
                                  size_hint_y=None, height=dp(16), font_size=sp(9)))
         self.sys_prompt = DarkInput(
             text=config.get("system_prompt", ""),
-            multiline=True, size_hint_y=0.3, font_size=sp(9),
+            multiline=True, size_hint_y=0.25, font_size=sp(9),
         )
         content.add_widget(self.sys_prompt)
+
+        # Semantic Model
+        sem_row = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(4))
+        sem_row.add_widget(Label(text="Semantic:", color=C["text"],
+                                  size_hint_x=0.25, font_size=sp(9)))
+        self.sem_model = DarkInput(
+            text=config.get("semantic_model", "anthropic/claude-haiku-4-20250414"),
+            font_size=sp(9),
+        )
+        sem_row.add_widget(self.sem_model)
+        content.add_widget(sem_row)
+
+        # Semantic analysis toggle
+        sem_toggle = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(4))
+        sem_toggle.add_widget(Label(text="LLM Analysis:", color=C["text"],
+                                     size_hint_x=0.4, font_size=sp(9)))
+        self._sem_enabled = config.get("semantic_analysis", True)
+        self.sem_btn = RBtn(
+            text="ON" if self._sem_enabled else "OFF",
+            bg=C["ok"] if self._sem_enabled else C["card"],
+            font_size=sp(9),
+            on_press=self._toggle_semantic,
+        )
+        sem_toggle.add_widget(self.sem_btn)
+        content.add_widget(sem_toggle)
 
         # Buttons
         btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
@@ -91,6 +116,11 @@ class SettingsPopup(Popup):
         super().__init__(title="Settings", content=content,
                          size_hint=(0.95, 0.7), **kw)
 
+    def _toggle_semantic(self, *_):
+        self._sem_enabled = not self._sem_enabled
+        self.sem_btn.text = "ON" if self._sem_enabled else "OFF"
+        self.sem_btn.background_color = C["ok"] if self._sem_enabled else C["card"]
+
     def _save(self, *_):
         self.secrets.set("api_key", self.api_key.text.strip())
         self.secrets.set("github_token", self.gh_token.text.strip())
@@ -99,6 +129,8 @@ class SettingsPopup(Popup):
 
         self.config.set("base_url", self.base_url.text.strip())
         self.config.set("system_prompt", self.sys_prompt.text.strip())
+        self.config.set("semantic_model", self.sem_model.text.strip())
+        self.config.set("semantic_analysis", self._sem_enabled)
         self.config.save()
 
         show_toast("Settings saved")

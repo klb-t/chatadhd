@@ -1,12 +1,14 @@
 """
-ChatADHD v0.07.00 - Database Layer
-Thread-safe SQLite with WAL mode, message versioning, and graph links.
+ChatADHD v0.07.01 - Database Layer
+Thread-safe SQLite with WAL mode, message versioning, graph nodes/edges.
 
 Design notes:
   - Every write acquires ``_lock`` so the DB is safe from concurrent threads
     (Kivy UI thread + background API thread).
   - WAL journal mode gives crash resilience.
   - Schema migrations are versioned so future upgrades never lose data.
+  - ``nodes`` table: first-class graph entities (entities, topics, concepts).
+  - ``links`` table: typed, weighted edges between any IDs (messages, nodes, convs).
 """
 import json
 import logging
@@ -19,7 +21,7 @@ from typing import Any, Optional
 
 log = logging.getLogger(__name__)
 
-_SCHEMA_VERSION = 2  # Bump when you add migrations.
+_SCHEMA_VERSION = 3  # Bump when you add migrations.
 
 
 def _gen_id(prefix: str = "") -> str:
@@ -27,12 +29,12 @@ def _gen_id(prefix: str = "") -> str:
 
 
 class Database:
-    """Persistent storage for conversations, messages, and graph links."""
+    """Persistent storage for conversations, messages, graph nodes & edges."""
 
     def __init__(self, path: Path) -> None:
         self._path = Path(path)
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        self._lock = threading.RLock()  # Reentrant so nested calls work.
+        self._lock = threading.RLock()
 
         self._conn = sqlite3.connect(
             str(self._path),
@@ -44,6 +46,7 @@ class Database:
         self._conn.execute("PRAGMA synchronous=NORMAL")
         self._conn.execute("PRAGMA foreign_keys=ON")
         self._init_schema()
+        self._migrate()
         log.info("Database opened: %s", self._path)
 
     # ------------------------------------------------------------------
@@ -62,6 +65,7 @@ class Database:
                     title    TEXT NOT NULL,
                     created  TEXT NOT NULL,
                     updated  TEXT NOT NULL,
+                    source   TEXT NOT NULL DEFAULT 'user',
                     metadata TEXT NOT NULL DEFAULT '{}'
                 );
 
@@ -82,6 +86,18 @@ class Database:
                     FOREIGN KEY (conv_id) REFERENCES conversations(id) ON DELETE CASCADE
                 );
 
+                /* ── Graph nodes ─────────────────────────────────── */
+                CREATE TABLE IF NOT EXISTS nodes (
+                    id        TEXT PRIMARY KEY,
+                    kind      TEXT NOT NULL DEFAULT 'entity',
+                    label     TEXT NOT NULL,
+                    content   TEXT NOT NULL DEFAULT '',
+                    tags      TEXT NOT NULL DEFAULT '[]',
+                    metadata  TEXT NOT NULL DEFAULT '{}',
+                    created   TEXT NOT NULL
+                );
+
+                /* ── Graph edges ─────────────────────────────────── */
                 CREATE TABLE IF NOT EXISTS links (
                     id        TEXT PRIMARY KEY,
                     src       TEXT NOT NULL,
@@ -96,10 +112,39 @@ class Database:
                 CREATE INDEX IF NOT EXISTS idx_msg_parent    ON messages(parent_id);
                 CREATE INDEX IF NOT EXISTS idx_msg_vgroup    ON messages(version_group_id);
                 CREATE INDEX IF NOT EXISTS idx_msg_status    ON messages(conv_id, status);
+                CREATE INDEX IF NOT EXISTS idx_nodes_kind    ON nodes(kind);
                 CREATE INDEX IF NOT EXISTS idx_links_src     ON links(src);
                 CREATE INDEX IF NOT EXISTS idx_links_dst     ON links(dst);
+                CREATE INDEX IF NOT EXISTS idx_links_type    ON links(link_type);
             """)
-            self._set_meta("schema_version", str(_SCHEMA_VERSION))
+            self._conn.commit()
+
+    def _migrate(self) -> None:
+        """Run forward-only migrations."""
+        cur_ver = int(self._get_meta("schema_version") or "0")
+        if cur_ver < 3:
+            with self._lock:
+                # Add nodes table if upgrading from v2.
+                self._conn.executescript("""
+                    CREATE TABLE IF NOT EXISTS nodes (
+                        id TEXT PRIMARY KEY, kind TEXT NOT NULL DEFAULT 'entity',
+                        label TEXT NOT NULL, content TEXT NOT NULL DEFAULT '',
+                        tags TEXT NOT NULL DEFAULT '[]', metadata TEXT NOT NULL DEFAULT '{}',
+                        created TEXT NOT NULL
+                    );
+                    CREATE INDEX IF NOT EXISTS idx_nodes_kind ON nodes(kind);
+                    CREATE INDEX IF NOT EXISTS idx_links_type ON links(link_type);
+                """)
+                # Add source column to conversations if missing.
+                try:
+                    self._conn.execute("SELECT source FROM conversations LIMIT 1")
+                except sqlite3.OperationalError:
+                    self._conn.execute(
+                        "ALTER TABLE conversations ADD COLUMN source TEXT NOT NULL DEFAULT 'user'"
+                    )
+                self._conn.commit()
+        self._set_meta("schema_version", str(_SCHEMA_VERSION))
+        with self._lock:
             self._conn.commit()
 
     # ------------------------------------------------------------------
@@ -308,6 +353,18 @@ class Database:
         lid = _gen_id("l_")
         now = datetime.utcnow().isoformat() + "Z"
         with self._lock:
+            # Upsert: don't create duplicate src→dst of same type.
+            existing = self._conn.execute(
+                "SELECT id FROM links WHERE src=? AND dst=? AND link_type=?",
+                (src, dst, link_type),
+            ).fetchone()
+            if existing:
+                self._conn.execute(
+                    "UPDATE links SET weight=?, metadata=? WHERE id=?",
+                    (weight, json.dumps(metadata or {}), existing[0]),
+                )
+                self._conn.commit()
+                return existing[0]
             self._conn.execute(
                 "INSERT INTO links (id, src, dst, link_type, weight, metadata, created) "
                 "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -316,12 +373,22 @@ class Database:
             self._conn.commit()
         return lid
 
-    def get_links(self, node_id: Optional[str] = None) -> list[dict[str, Any]]:
+    def get_links(self, node_id: Optional[str] = None,
+                  link_type: Optional[str] = None) -> list[dict[str, Any]]:
         with self._lock:
-            if node_id:
+            if node_id and link_type:
                 rows = self._conn.execute(
-                    "SELECT * FROM links WHERE src = ? OR dst = ?",
+                    "SELECT * FROM links WHERE (src=? OR dst=?) AND link_type=?",
+                    (node_id, node_id, link_type),
+                ).fetchall()
+            elif node_id:
+                rows = self._conn.execute(
+                    "SELECT * FROM links WHERE src=? OR dst=?",
                     (node_id, node_id),
+                ).fetchall()
+            elif link_type:
+                rows = self._conn.execute(
+                    "SELECT * FROM links WHERE link_type=?", (link_type,),
                 ).fetchall()
             else:
                 rows = self._conn.execute("SELECT * FROM links").fetchall()
@@ -333,6 +400,102 @@ class Database:
             self._conn.commit()
 
     # ------------------------------------------------------------------
+    # Nodes (graph entities: extracted concepts, topics, files, etc.)
+    # ------------------------------------------------------------------
+    def create_node(
+        self, label: str, kind: str = "entity",
+        content: str = "", tags: Optional[list[str]] = None,
+        metadata: Optional[dict] = None, node_id: Optional[str] = None,
+    ) -> str:
+        nid = node_id or _gen_id("n_")
+        now = datetime.utcnow().isoformat() + "Z"
+        with self._lock:
+            self._conn.execute(
+                "INSERT OR IGNORE INTO nodes (id, kind, label, content, tags, metadata, created) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (nid, kind, label, content,
+                 json.dumps(tags or []), json.dumps(metadata or {}), now),
+            )
+            self._conn.commit()
+        return nid
+
+    def get_node(self, nid: str) -> Optional[dict[str, Any]]:
+        with self._lock:
+            row = self._conn.execute(
+                "SELECT * FROM nodes WHERE id=?", (nid,)
+            ).fetchone()
+        if not row:
+            return None
+        n = dict(row)
+        n["tags"] = json.loads(n["tags"] or "[]")
+        n["metadata"] = json.loads(n["metadata"] or "{}")
+        return n
+
+    def find_node(self, label: str, kind: Optional[str] = None) -> Optional[dict[str, Any]]:
+        """Find node by exact label (optionally filtered by kind)."""
+        with self._lock:
+            if kind:
+                row = self._conn.execute(
+                    "SELECT * FROM nodes WHERE label=? AND kind=?", (label, kind),
+                ).fetchone()
+            else:
+                row = self._conn.execute(
+                    "SELECT * FROM nodes WHERE label=?", (label,),
+                ).fetchone()
+        if not row:
+            return None
+        n = dict(row)
+        n["tags"] = json.loads(n["tags"] or "[]")
+        n["metadata"] = json.loads(n["metadata"] or "{}")
+        return n
+
+    def list_nodes(self, kind: Optional[str] = None,
+                   limit: int = 200) -> list[dict[str, Any]]:
+        with self._lock:
+            if kind:
+                rows = self._conn.execute(
+                    "SELECT * FROM nodes WHERE kind=? ORDER BY created DESC LIMIT ?",
+                    (kind, limit),
+                ).fetchall()
+            else:
+                rows = self._conn.execute(
+                    "SELECT * FROM nodes ORDER BY created DESC LIMIT ?", (limit,),
+                ).fetchall()
+        result = []
+        for r in rows:
+            n = dict(r)
+            n["tags"] = json.loads(n["tags"] or "[]")
+            n["metadata"] = json.loads(n["metadata"] or "{}")
+            result.append(n)
+        return result
+
+    def update_node(self, nid: str, **kwargs: Any) -> None:
+        if "tags" in kwargs:
+            kwargs["tags"] = json.dumps(kwargs["tags"])
+        if "metadata" in kwargs:
+            kwargs["metadata"] = json.dumps(kwargs["metadata"])
+        sets = ", ".join(f"{k} = ?" for k in kwargs)
+        with self._lock:
+            self._conn.execute(
+                f"UPDATE nodes SET {sets} WHERE id = ?", (*kwargs.values(), nid)
+            )
+            self._conn.commit()
+
+    def delete_node(self, nid: str) -> None:
+        with self._lock:
+            self._conn.execute("DELETE FROM links WHERE src=? OR dst=?", (nid, nid))
+            self._conn.execute("DELETE FROM nodes WHERE id=?", (nid,))
+            self._conn.commit()
+
+    def get_or_create_node(self, label: str, kind: str = "entity",
+                           **kwargs: Any) -> str:
+        """Return existing node ID or create a new one."""
+        existing = self.find_node(label, kind)
+        if existing:
+            return existing["id"]
+        return self.create_node(label, kind, **kwargs)
+
+    # ------------------------------------------------------------------
     # Graph data for visualization
     # ------------------------------------------------------------------
     def get_graph_data(
@@ -340,17 +503,21 @@ class Database:
     ) -> dict[str, list]:
         nodes: list[dict] = []
         edges: list[dict] = []
+        seen_ids: set[str] = set()
 
+        # Messages as graph nodes.
         if conv_id:
             for m in self.get_msgs(conv_id, include_all=True):
                 nodes.append({
                     "id": m["id"],
                     "label": m["text"][:25],
                     "type": m["role"],
+                    "kind": "message",
                     "status": m["status"],
                     "weight": m.get("weight", 1.0),
                     "version_group": m.get("version_group_id"),
                 })
+                seen_ids.add(m["id"])
                 if m.get("parent_id"):
                     edges.append({
                         "src": m["parent_id"],
@@ -359,6 +526,21 @@ class Database:
                         "weight": 1.0,
                     })
 
+        # Explicit graph nodes.
+        for n in self.list_nodes():
+            if n["id"] not in seen_ids:
+                nodes.append({
+                    "id": n["id"],
+                    "label": n["label"],
+                    "type": n["kind"],
+                    "kind": n["kind"],
+                    "status": "active",
+                    "weight": 1.0,
+                    "tags": n.get("tags", []),
+                })
+                seen_ids.add(n["id"])
+
+        # All edges.
         for link in self.get_links():
             edges.append({
                 "src": link["src"],

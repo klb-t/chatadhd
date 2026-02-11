@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Conversation Panel
+ChatADHD v0.07.01 - Conversation Panel
 
 Sliding panel listing all conversations with import and clear options.
 """

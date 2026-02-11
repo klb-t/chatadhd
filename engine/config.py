@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Configuration Management
+ChatADHD v0.07.01 - Configuration Management
 Secrets are stored separately from config.  Config is auditable; secrets are not.
 """
 import json
@@ -15,12 +15,16 @@ log = logging.getLogger(__name__)
 DEFAULTS: dict[str, Any] = {
     "base_url": "https://openrouter.ai/api/v1",
     "default_model": "anthropic/claude-sonnet-4-20250514",
+    "semantic_model": "anthropic/claude-haiku-4-20250414",
     "temperature": 0.7,
     "max_tokens": 4096,
     "theme": "dark",
     "system_prompt": "You are a helpful assistant with access to the user's hierarchical memory.",
     "auto_title": True,
     "stream": True,
+    "semantic_analysis": True,
+    "graph_memory_depth": 2,
+    "graph_memory_max_nodes": 20,
 }
 
 
@@ -92,6 +96,23 @@ class Config(_JsonStore):
 
     def __init__(self, path: Path) -> None:
         super().__init__(path, defaults=DEFAULTS)
+        # Auto-upgrade: if on-disk config is missing new keys, save merged version.
+        self._auto_upgrade()
+
+    def _auto_upgrade(self) -> None:
+        """Add new default keys that didn't exist in older config files."""
+        upgraded = False
+        cur = self._data.copy()
+        for key, value in DEFAULTS.items():
+            if key not in cur or (key == "semantic_model" and not cur.get(key)):
+                self._data[key] = value
+                upgraded = True
+        if upgraded:
+            ver_old = self._data.get("_config_version", 0)
+            self._data["_config_version"] = 2
+            if ver_old < 2:
+                log.info("Config: Upgrading from v%d to v2 (added new defaults)", ver_old)
+                self.save()
 
 
 class Secrets(_JsonStore):

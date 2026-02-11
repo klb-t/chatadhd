@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Memory Panel
+ChatADHD v0.07.01 - Memory Panel
 
 Sliding panel that displays the hierarchical memory tree with
 toggle (active/inactive), add, edit, delete, file/dir import, and ZIP export.

@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Chat Engine
+ChatADHD v0.07.01 - Chat Engine
 
 Handles OpenRouter API communication with:
   - Streaming and non-streaming responses
@@ -7,6 +7,7 @@ Handles OpenRouter API communication with:
   - Reasoning / extended thinking tokens
   - Attachment processing (images, text files)
   - Semantic analysis of responses
+  - Event emission for real-time graph building
 
 All errors are logged and raised — no silent ``except: pass``.
 """
@@ -19,6 +20,7 @@ from typing import Any, Callable, Optional
 import requests
 
 from core.semantic import analyzer as semantic_analyzer
+from engine.events import bus, MSG_CREATED
 
 log = logging.getLogger(__name__)
 
@@ -40,11 +42,13 @@ _MAX_FILE_CHARS = 15_000
 class ChatEngine:
     """Orchestrates conversation flow: context → API call → storage."""
 
-    def __init__(self, config, secrets, db, memory=None) -> None:
+    def __init__(self, config, secrets, db, memory=None,
+                 graph_memory=None) -> None:
         self.config = config
         self.secrets = secrets
         self.db = db
         self.memory = memory
+        self.graph_memory = graph_memory  # GraphMemorySelector
         self.conv: Optional[dict] = None
         self.last_reasoning: Optional[str] = None
 
@@ -84,9 +88,13 @@ class ChatEngine:
             self.new_conv()
 
         # Persist user message.
-        self.db.create_msg(
+        user_mid = self.db.create_msg(
             self.conv["id"], text, "user", attachments=attachments
         )
+        bus.emit(MSG_CREATED, {
+            "id": user_mid, "text": text,
+            "conv_id": self.conv["id"], "role": "user",
+        })
 
         # Build API payload.
         messages = self._build_messages(text, attachments)
@@ -112,10 +120,14 @@ class ChatEngine:
         except Exception:
             log.debug("Semantic analysis failed", exc_info=True)
 
-        self.db.create_msg(
+        asst_mid = self.db.create_msg(
             self.conv["id"], response_text, "assistant",
             model=model, metadata=metadata,
         )
+        bus.emit(MSG_CREATED, {
+            "id": asst_mid, "text": response_text,
+            "conv_id": self.conv["id"], "role": "assistant",
+        })
 
         # Auto-title from first exchange.
         msgs = self.db.get_msgs(self.conv["id"])
@@ -138,7 +150,7 @@ class ChatEngine:
         if sys_prompt:
             messages.append({"role": "system", "content": sys_prompt})
 
-        # Memory context.
+        # Memory context (hierarchical tree).
         if self.memory:
             mem_ctx = self.memory.get_active_context()
             if mem_ctx:
@@ -146,6 +158,21 @@ class ChatEngine:
                     "role": "system",
                     "content": f"User's memory/context:\n{mem_ctx}",
                 })
+
+        # Graph memory (semantically related past messages).
+        if self.graph_memory:
+            try:
+                conv_id = self.conv["id"] if self.conv else None
+                graph_ctx = self.graph_memory.select_context(
+                    current_text, current_conv_id=conv_id,
+                )
+                if graph_ctx:
+                    messages.append({
+                        "role": "system",
+                        "content": graph_ctx,
+                    })
+            except Exception:
+                log.debug("Graph memory selection failed", exc_info=True)
 
         # Conversation history.
         if self.conv:

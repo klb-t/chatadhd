@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Chat Panel
+ChatADHD v0.07.01 - Chat Panel
 
 Main chat interface: message list, input area, streaming display,
 feature toggles (web search, deep research, reasoning), and

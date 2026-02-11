@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Selector Engine (Semantic Search)
+ChatADHD v0.07.01 - Selector Engine (Semantic Search)
 
 Three-tier fallback for memory/message retrieval:
   1. Embedding similarity (sentence-transformers) — best quality.

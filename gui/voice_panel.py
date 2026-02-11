@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Voice Input Popup
+ChatADHD v0.07.01 - Voice Input Popup
 
 Records audio via subprocess, sends to ASR provider (Groq/Google),
 returns transcription to the caller.

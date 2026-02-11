@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - GitHub Sync
+ChatADHD v0.07.01 - GitHub Sync
 Bidirectional sync with GitHub repositories.
 """
 import os

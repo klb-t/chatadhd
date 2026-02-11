@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Path Resolution
+ChatADHD v0.07.01 - Path Resolution
 Implements KOD≠DANE architecture:
   CODE lives wherever you unzip it (versioned, replaceable).
   DATA lives in a fixed, persistent location (never overwritten by upgrades).

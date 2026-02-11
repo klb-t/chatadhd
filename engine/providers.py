@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Provider Abstraction Layer
+ChatADHD v0.07.01 - Provider Abstraction Layer
 Unified interface for external services:
 - OCR: ocr.space
 - ASR: Groq (Whisper), Google Speech (with alternatives)

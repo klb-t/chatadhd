@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Import Conversation Popup
+ChatADHD v0.07.01 - Import Conversation Popup
 
 Wraps engine.importer.ConversationImporter in a file-picker UI.
 """

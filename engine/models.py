@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Model Registry
+ChatADHD v0.07.01 - Model Registry
 
 Fetches and caches the list of available models from OpenRouter.
 Provides human-friendly short names and provider grouping.
@@ -25,12 +25,52 @@ class ModelRegistry:
         self._load()
 
     def _load(self) -> None:
-        if self._path.exists():
+        if not self._path.exists():
+            return
+        try:
+            raw_text = self._path.read_text(encoding="utf-8")
+            if not raw_text.strip():
+                return
+            raw = json.loads(raw_text)
+
+            models: list[dict[str, Any]] = []
+
+            if isinstance(raw, list):
+                for m in raw:
+                    if isinstance(m, dict) and "id" in m:
+                        models.append(m)
+                    elif isinstance(m, str):
+                        # v0.06.x stored plain model ID strings.
+                        models.append({"id": m, "name": m.split("/")[-1],
+                                       "context_length": 0})
+                    # Skip anything else silently.
+
+            elif isinstance(raw, dict):
+                # Raw API response cached by v0.06.x.
+                data = raw.get("data", raw.get("models", []))
+                if isinstance(data, list):
+                    for m in data:
+                        if isinstance(m, dict) and "id" in m:
+                            models.append({
+                                "id": m["id"],
+                                "name": m.get("name", m["id"]),
+                                "context_length": m.get("context_length", 0),
+                            })
+
+            self._models = models
+            if models:
+                log.info("Loaded %d cached models", len(models))
+                # Re-save in canonical format so next load is clean.
+                self._save()
+            else:
+                log.info("Model cache empty or unrecognized — will refresh from API")
+        except Exception:
+            log.warning("Corrupted model cache — removing %s", self._path)
             try:
-                self._models = json.loads(self._path.read_text(encoding="utf-8"))
-                log.info("Loaded %d cached models", len(self._models))
-            except Exception:
-                log.exception("Failed to load model cache")
+                self._path.unlink()
+            except OSError:
+                pass
+            self._models = []
 
     def _save(self) -> None:
         self._path.parent.mkdir(parents=True, exist_ok=True)

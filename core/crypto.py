@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.00 - Zero-Knowledge Encryption Engine
+ChatADHD v0.07.01 - Zero-Knowledge Encryption Engine
 
 Provides AES-256-GCM encryption with key derivation from a user-supplied
 password.  The server (or anyone without the password) never sees plaintext.
