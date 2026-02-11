@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.08 - Background Semantic Worker
+ChatADHD v0.07.09 - Background Semantic Worker
 
 Persistent daemon thread that drains 'pending' messages.  Three modes:
 

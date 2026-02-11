@@ -53,6 +53,12 @@ class Database:
     # Schema
     # ------------------------------------------------------------------
     def _init_schema(self) -> None:
+        """Create base tables if missing.
+
+        IMPORTANT: Do *not* create indexes here that rely on columns added later
+        via migrations. ``CREATE TABLE IF NOT EXISTS`` does not evolve existing
+        tables, so index creation must be guarded and/or deferred.
+        """
         with self._lock:
             self._conn.executescript("""
                 CREATE TABLE IF NOT EXISTS _meta (
@@ -87,7 +93,7 @@ class Database:
                     FOREIGN KEY (conv_id) REFERENCES conversations(id) ON DELETE CASCADE
                 );
 
-                /* ── Graph nodes ─────────────────────────────────── */
+                -- Graph nodes
                 CREATE TABLE IF NOT EXISTS nodes (
                     id        TEXT PRIMARY KEY,
                     kind      TEXT NOT NULL DEFAULT 'entity',
@@ -98,7 +104,7 @@ class Database:
                     created   TEXT NOT NULL
                 );
 
-                /* ── Graph edges ─────────────────────────────────── */
+                -- Graph edges
                 CREATE TABLE IF NOT EXISTS links (
                     id        TEXT PRIMARY KEY,
                     src       TEXT NOT NULL,
@@ -108,60 +114,172 @@ class Database:
                     metadata  TEXT NOT NULL DEFAULT '{}',
                     created   TEXT NOT NULL
                 );
-
-                CREATE INDEX IF NOT EXISTS idx_msg_conv     ON messages(conv_id);
-                CREATE INDEX IF NOT EXISTS idx_msg_parent    ON messages(parent_id);
-                CREATE INDEX IF NOT EXISTS idx_msg_vgroup    ON messages(version_group_id);
-                CREATE INDEX IF NOT EXISTS idx_msg_status    ON messages(conv_id, status);
-                CREATE INDEX IF NOT EXISTS idx_msg_semantic  ON messages(semantic_status);
-                CREATE INDEX IF NOT EXISTS idx_nodes_kind    ON nodes(kind);
-                CREATE INDEX IF NOT EXISTS idx_links_src     ON links(src);
-                CREATE INDEX IF NOT EXISTS idx_links_dst     ON links(dst);
-                CREATE INDEX IF NOT EXISTS idx_links_type    ON links(link_type);
             """)
             self._conn.commit()
 
     def _migrate(self) -> None:
-        """Run forward-only migrations."""
+        """Run forward-only migrations.
+
+        Goal: accept *any* reasonable legacy DB state without crashing.
+        We therefore:
+          1) ensure required tables exist
+          2) ensure required columns exist (ALTER TABLE if missing)
+          3) create indexes *only if* the referenced columns exist
+          4) bump schema_version
+        """
+
+        def has_table(name: str) -> bool:
+            row = self._conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                (name,),
+            ).fetchone()
+            return bool(row)
+
+        def has_column(table: str, col: str) -> bool:
+            try:
+                rows = self._conn.execute(f"PRAGMA table_info({table})").fetchall()
+            except sqlite3.OperationalError:
+                return False
+            return any(r[1] == col for r in rows)
+
+        def ensure_column(table: str, col: str, ddl: str) -> None:
+            if not has_column(table, col):
+                log.warning("DB migrate: adding missing column %s.%s", table, col)
+                self._conn.execute(ddl)
+
+        def ensure_index(sql: str, required: list[tuple[str, str]]) -> None:
+            for t, c in required:
+                if not has_column(t, c):
+                    log.warning("DB migrate: skipping index (missing column %s.%s)", t, c)
+                    return
+            try:
+                self._conn.execute(sql)
+            except sqlite3.OperationalError as e:
+                log.warning("DB migrate: index create failed (%s): %s", sql, e)
+
         cur_ver = int(self._get_meta("schema_version") or "0")
-        if cur_ver < 3:
-            with self._lock:
-                self._conn.executescript("""
-                    CREATE TABLE IF NOT EXISTS nodes (
-                        id TEXT PRIMARY KEY, kind TEXT NOT NULL DEFAULT 'entity',
-                        label TEXT NOT NULL, content TEXT NOT NULL DEFAULT '',
-                        tags TEXT NOT NULL DEFAULT '[]', metadata TEXT NOT NULL DEFAULT '{}',
-                        created TEXT NOT NULL
-                    );
-                    CREATE INDEX IF NOT EXISTS idx_nodes_kind ON nodes(kind);
-                    CREATE INDEX IF NOT EXISTS idx_links_type ON links(link_type);
-                """)
-                try:
-                    self._conn.execute("SELECT source FROM conversations LIMIT 1")
-                except sqlite3.OperationalError:
-                    self._conn.execute(
-                        "ALTER TABLE conversations ADD COLUMN source TEXT NOT NULL DEFAULT 'user'"
-                    )
-                self._conn.commit()
-        if cur_ver < 4:
-            with self._lock:
-                # semantic_status: 'pending' | 'done' | 'skip'
-                try:
-                    self._conn.execute("SELECT semantic_status FROM messages LIMIT 1")
-                except sqlite3.OperationalError:
-                    self._conn.execute(
-                        "ALTER TABLE messages ADD COLUMN semantic_status "
-                        "TEXT NOT NULL DEFAULT 'pending'"
-                    )
-                self._conn.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_msg_semantic "
-                    "ON messages(semantic_status)"
-                )
-                self._conn.commit()
-                log.info("Schema v4: added semantic_status column")
-        self._set_meta("schema_version", str(_SCHEMA_VERSION))
+
         with self._lock:
+            # Ensure base tables exist (for very old DBs).
+            if not has_table("_meta"):
+                self._conn.execute("CREATE TABLE IF NOT EXISTS _meta (key TEXT PRIMARY KEY, value TEXT)")
+
+            if not has_table("conversations"):
+                self._conn.execute(
+                    "CREATE TABLE IF NOT EXISTS conversations ("
+                    "id TEXT PRIMARY KEY, title TEXT NOT NULL, created TEXT NOT NULL, "
+                    "updated TEXT NOT NULL, source TEXT NOT NULL DEFAULT 'user', "
+                    "metadata TEXT NOT NULL DEFAULT '{}'"
+                    ")"
+                )
+
+            if not has_table("messages"):
+                self._conn.execute(
+                    "CREATE TABLE IF NOT EXISTS messages ("
+                    "id TEXT PRIMARY KEY, conv_id TEXT NOT NULL, parent_id TEXT, "
+                    "role TEXT NOT NULL, text TEXT NOT NULL, model TEXT, "
+                    "status TEXT NOT NULL DEFAULT 'active', "
+                    "version_group_id TEXT, version_num INTEGER NOT NULL DEFAULT 1, "
+                    "weight REAL NOT NULL DEFAULT 1.0, attachments TEXT NOT NULL DEFAULT '[]', "
+                    "metadata TEXT NOT NULL DEFAULT '{}', created TEXT NOT NULL, "
+                    "semantic_status TEXT NOT NULL DEFAULT 'pending', "
+                    "FOREIGN KEY (conv_id) REFERENCES conversations(id) ON DELETE CASCADE"
+                    ")"
+                )
+
+            if not has_table("nodes"):
+                self._conn.execute(
+                    "CREATE TABLE IF NOT EXISTS nodes ("
+                    "id TEXT PRIMARY KEY, kind TEXT NOT NULL DEFAULT 'entity', "
+                    "label TEXT NOT NULL, content TEXT NOT NULL DEFAULT '', "
+                    "tags TEXT NOT NULL DEFAULT '[]', metadata TEXT NOT NULL DEFAULT '{}', "
+                    "created TEXT NOT NULL"
+                    ")"
+                )
+
+            if not has_table("links"):
+                self._conn.execute(
+                    "CREATE TABLE IF NOT EXISTS links ("
+                    "id TEXT PRIMARY KEY, src TEXT NOT NULL, dst TEXT NOT NULL, "
+                    "link_type TEXT NOT NULL DEFAULT 'related', "
+                    "weight REAL NOT NULL DEFAULT 1.0, metadata TEXT NOT NULL DEFAULT '{}', "
+                    "created TEXT NOT NULL"
+                    ")"
+                )
+
+            # Columns that older DBs may miss.
+            ensure_column(
+                "conversations",
+                "source",
+                "ALTER TABLE conversations ADD COLUMN source TEXT NOT NULL DEFAULT 'user'",
+            )
+
+            ensure_column(
+                "messages",
+                "status",
+                "ALTER TABLE messages ADD COLUMN status TEXT NOT NULL DEFAULT 'active'",
+            )
+            ensure_column(
+                "messages",
+                "version_group_id",
+                "ALTER TABLE messages ADD COLUMN version_group_id TEXT",
+            )
+            ensure_column(
+                "messages",
+                "semantic_status",
+                "ALTER TABLE messages ADD COLUMN semantic_status TEXT NOT NULL DEFAULT 'pending'",
+            )
+
+            ensure_column(
+                "links",
+                "link_type",
+                "ALTER TABLE links ADD COLUMN link_type TEXT NOT NULL DEFAULT 'related'",
+            )
+
+            # Create indexes guarded by column existence.
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conv_id)",
+                [("messages", "conv_id")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_msg_parent ON messages(parent_id)",
+                [("messages", "parent_id")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_msg_vgroup ON messages(version_group_id)",
+                [("messages", "version_group_id")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_msg_status ON messages(conv_id, status)",
+                [("messages", "conv_id"), ("messages", "status")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_msg_semantic ON messages(semantic_status)",
+                [("messages", "semantic_status")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_nodes_kind ON nodes(kind)",
+                [("nodes", "kind")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_links_src ON links(src)",
+                [("links", "src")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_links_dst ON links(dst)",
+                [("links", "dst")],
+            )
+            ensure_index(
+                "CREATE INDEX IF NOT EXISTS idx_links_type ON links(link_type)",
+                [("links", "link_type")],
+            )
+
+            # Bump schema version.
+            self._set_meta("schema_version", str(_SCHEMA_VERSION))
             self._conn.commit()
+
+        if cur_ver < _SCHEMA_VERSION:
+            log.info("Schema upgraded: v%s -> v%s", cur_ver, _SCHEMA_VERSION)
 
     # ------------------------------------------------------------------
     # Meta helpers

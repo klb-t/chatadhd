@@ -1,4 +1,4 @@
-# ChatADHD v0.07.08
+# ChatADHD v0.07.09
 
 Mobile-first AI chat client with hierarchical memory, branching conversations,
 and zero-knowledge encryption.
@@ -8,7 +8,7 @@ and zero-knowledge encryption.
 ```
 KOD (versioned, replaceable)          DANE (persistent, user-owned)
 ───────────────────────               ──────────────────────────────
-chatadhd_v0.07.08/                    ~/Documents/ChatADHD/
+chatadhd_v0.07.09/                    ~/Documents/ChatADHD/
 ├── main.py                           ├── .chatadhd_data   (sentinel)
 ├── core/                             ├── config.json
 │   ├── crypto.py      AES-256-GCM    ├── secrets.json     (600 perms)

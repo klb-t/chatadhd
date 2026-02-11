@@ -1,5 +1,5 @@
 """
-ChatADHD v0.07.08 - Batch Semantic API
+ChatADHD v0.07.09 - Batch Semantic API
 
 Bulk semantic analysis using:
   1. Anthropic Message Batches API (50% cheaper, async, up to 100k reqs)
