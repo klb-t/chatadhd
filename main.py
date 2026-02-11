@@ -1,12 +1,12 @@
 """
-ChatADHD v0.06.00 - Major UI Overhaul
+ChatADHD v0.06.01 - Major UI Overhaul
 - Collapsible messages
 - Artifact detection & auto-integration
 - Quick API panel with presets
 - Fixed keyboard handling
 - Voice input (simplified)
 """
-__version__ = "0.06.00"
+__version__ = "0.06.01"
 
 import os
 import sys

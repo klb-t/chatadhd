@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.00 - Complete GUI
+ChatADHD v0.06.01 - Complete GUI
 - Collapsible messages with expand
 - Artifact detection & floating panel
 - Quick API panel with presets
@@ -1061,11 +1061,46 @@ class ConvPanel(Panel):
                            on_press=lambda *a: self.close()))
         self.add_widget(hdr)
         
+        # Import button
+        import_row = BoxLayout(size_hint_y=None, height=dp(30), spacing=dp(2), padding=dp(2))
+        import_row.add_widget(RBtn(text="📥 Import", bg=C['accent'], font_size=sp(9),
+                                  on_press=self._open_import))
+        import_row.add_widget(RBtn(text="🗑️ Clear", bg=C['err'], font_size=sp(9),
+                                  on_press=self._confirm_clear))
+        self.add_widget(import_row)
+        
         self.scroll = ScrollView()
         self.lst = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(2))
         self.lst.bind(minimum_height=self.lst.setter('height'))
         self.scroll.add_widget(self.lst)
         self.add_widget(self.scroll)
+    
+    def _open_import(self, *a):
+        ImportConversationPopup(self.engine.db, self.engine, on_import=self._on_import_done).open()
+    
+    def _on_import_done(self):
+        self.refresh()
+        if self.on_select:
+            self.on_select()
+    
+    def _confirm_clear(self, *a):
+        content = BoxLayout(orientation='vertical', padding=dp(10))
+        content.add_widget(Label(text="Delete ALL conversations?", color=C['text']))
+        btns = BoxLayout(size_hint_y=None, height=dp(40), spacing=dp(4))
+        
+        def do_clear(*a):
+            # Delete all conversations
+            for conv in self.engine.db.list_convs():
+                self.engine.db.delete_conv(conv['id'])
+            self.refresh()
+            popup.dismiss()
+            show_toast("Cleared all conversations")
+        
+        btns.add_widget(RBtn(text="Cancel", bg=C['card'], on_press=lambda *a: popup.dismiss()))
+        btns.add_widget(RBtn(text="DELETE ALL", bg=C['err'], on_press=do_clear))
+        content.add_widget(btns)
+        popup = Popup(title="Confirm", content=content, size_hint=(0.8, 0.3))
+        popup.open()
     
     def refresh(self):
         self.lst.clear_widgets()
@@ -1426,3 +1461,137 @@ class ChatPanel(BoxLayout):
             ))
         
         Clock.schedule_once(lambda dt: setattr(self.scroll, 'scroll_y', 0))
+
+
+# === IMPORT CONVERSATION POPUP ===
+class ImportConversationPopup(Popup):
+    """Import conversations from various formats."""
+    
+    SUPPORTED = {
+        '.db': 'SQLite Database',
+        '.json': 'JSON (API logs)',
+        '.html': 'HTML Page',
+        '.htm': 'HTML Page',
+        '.mht': 'MHT Archive',
+        '.mhtml': 'MHT Archive',
+        '.md': 'Markdown',
+        '.txt': 'Plain Text',
+        '.png': 'Screenshot',
+        '.jpg': 'Screenshot',
+    }
+    
+    def __init__(self, db, engine, on_import=None, **kw):
+        self.db = db
+        self.engine = engine
+        self.on_import = on_import
+        self.selected_file = None
+        
+        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
+        
+        # Info
+        content.add_widget(Label(
+            text="Import conversation from:",
+            color=C['text'], size_hint_y=None, height=dp(20), font_size=sp(11)
+        ))
+        
+        # Format list
+        formats_text = "• DB (Claude.ai, ChatGPT)\n• JSON (API logs)\n• HTML/MHT (web saves)\n• Markdown, Text\n• Screenshot (placeholder)"
+        content.add_widget(Label(
+            text=formats_text, color=C['dim'], size_hint_y=None, 
+            height=dp(80), font_size=sp(9), halign='left'
+        ))
+        
+        # Selected file
+        self.file_label = Label(
+            text="No file selected", color=C['dim'],
+            size_hint_y=None, height=dp(24), font_size=sp(9)
+        )
+        content.add_widget(self.file_label)
+        
+        # Title override
+        title_row = BoxLayout(size_hint_y=None, height=dp(34))
+        title_row.add_widget(Label(text="Title:", color=C['text'], size_hint_x=0.2, font_size=sp(10)))
+        self.title_input = DarkInput(hint_text="Auto-detect", multiline=False, size_hint_x=0.8)
+        title_row.add_widget(self.title_input)
+        content.add_widget(title_row)
+        
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(38), spacing=dp(4))
+        btns.add_widget(RBtn(text="Browse...", bg=C['accent'], on_press=self._browse))
+        btns.add_widget(RBtn(text="Import", bg=C['ok'], on_press=self._import))
+        btns.add_widget(RBtn(text="Cancel", bg=C['card'], on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+        
+        # Status
+        self.status = Label(text="", color=C['dim'], size_hint_y=None, height=dp(20), font_size=sp(9))
+        content.add_widget(self.status)
+        
+        super().__init__(title="Import Conversation", content=content, size_hint=(0.95, 0.55), **kw)
+    
+    def _browse(self, *a):
+        def on_file(path):
+            if path:
+                self.selected_file = path
+                name = os.path.basename(path)
+                ext = os.path.splitext(path)[1].lower()
+                fmt = self.SUPPORTED.get(ext, 'Unknown')
+                self.file_label.text = f"{name} ({fmt})"
+                self.file_label.color = C['text']
+        
+        FilePickerPopup(on_file, "Select file to import").open()
+    
+    def _import(self, *a):
+        if not self.selected_file:
+            self.status.text = "Select a file first!"
+            self.status.color = C['err']
+            return
+        
+        if not os.path.exists(self.selected_file):
+            self.status.text = "File not found!"
+            self.status.color = C['err']
+            return
+        
+        self.status.text = "Importing..."
+        self.status.color = C['warn']
+        
+        # Run in thread
+        def do_import():
+            try:
+                from engine.importer import ConversationImporter
+                
+                importer = ConversationImporter(self.db, self.engine)
+                title = self.title_input.text.strip() or None
+                
+                results = importer.import_file(self.selected_file, title)
+                
+                if results:
+                    if isinstance(results, list):
+                        count = len(results)
+                        msg = f"Imported {count} conversation(s)"
+                    else:
+                        msg = "Imported 1 conversation"
+                    
+                    Clock.schedule_once(lambda dt: self._success(msg))
+                else:
+                    Clock.schedule_once(lambda dt: self._error("No conversations found"))
+                    
+            except Exception as e:
+                Clock.schedule_once(lambda dt: self._error(str(e)))
+        
+        threading.Thread(target=do_import).start()
+    
+    def _success(self, msg):
+        self.status.text = msg
+        self.status.color = C['ok']
+        show_toast(msg)
+        
+        if self.on_import:
+            self.on_import()
+        
+        # Close after short delay
+        Clock.schedule_once(lambda dt: self.dismiss(), 1.5)
+    
+    def _error(self, msg):
+        self.status.text = f"Error: {msg[:30]}"
+        self.status.color = C['err']
+        LOGBUF.add(f"Import error: {msg}")

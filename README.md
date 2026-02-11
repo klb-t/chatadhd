@@ -1,87 +1,97 @@
-# ChatADHD v0.06.00 - Major UI Overhaul
+# ChatADHD v0.06.01 - Conversation Import
 
-## New Features
+## Import Conversations 📥
 
-### 📦 Collapsible Messages
-- Long messages show first 4 lines
-- Click **▼ więcej** to expand
-- Click **▲ mniej** to collapse
+Import chats from various sources into ChatADHD.
 
-### 🎨 Artifact Detection
-- Auto-detects code blocks (```...```)
-- Floating bar with: Copy | →Mem
-- One-click save to Memory
+### Supported Formats
 
-### ⚡ Quick API Panel
-- Click **⚙️** for fast settings
-- **Favorite models** (6 quick buttons)
-- **Presets**: Creative, Balanced, Precise, Code, Long
-- **Temperature** slider (0.0-1.5)
-- **Max tokens** slider (1k-32k)
+| Format | Source | Detection |
+|--------|--------|-----------|
+| `.db` | Claude.ai, ChatGPT SQLite | Auto-detect tables |
+| `.json` | API logs, exports | messages array |
+| `.html` | Browser "Save as HTML" | Class-based parsing |
+| `.mht/.mhtml` | Single-file web archive | MIME extraction |
+| `.md` | Markdown exports | ## Human/## Assistant |
+| `.txt` | Plain text | Pattern matching |
+| `.png/.jpg` | Screenshots | **OCR** (EasyOCR/pytesseract) |
 
-### 📁 Full Directory Import
-- +Dir imports ALL file contents
-- Warning if >50 files or >500KB
-- Supports: .py, .md, .txt, .json, .js, .html, .css
-- Skips: __pycache__, .git, node_modules
+### Screenshot OCR
 
-### 📊 API Preview (long-press Send)
-- Shows request structure
-- Token count estimate
-- Copy to clipboard
-
-### 🔧 Fixed Issues
-- ✅ NodeEditorPopup import error in Graph
-- ✅ Keyboard visibility (softinput_mode)
-- ✅ Voice button (uses system keyboard mic)
-
-## UI Layout
-
-```
-[Model▾] [⚙️] [Ref] [New] [Cfg] [Log]
-[🌐Web] [🔬Deep] [🧠Auto] [💭    ]
-┌─────────────────────────────────────┐
-│ Messages (collapsible)              │
-│ ┌─────────────────────────────────┐ │
-│ │ You: message preview...         │ │
-│ │ ▼ więcej                        │ │
-│ └─────────────────────────────────┘ │
-│ ┌─────────────────────────────────┐ │
-│ │ AI: response with artifact      │ │
-│ │ [📄 python] [Copy] [→Mem]       │ │
-│ └─────────────────────────────────┘ │
-└─────────────────────────────────────┘
-┌─────────────────────────────────────┐
-│ [Message input................] [Send] │
-│ [📎 Attach                    ] [🎤]   │
-└─────────────────────────────────────┘
-[Ready                                  ]
-```
-
-## Quick API Presets
-
-| Preset | Temperature | Max Tokens |
-|--------|-------------|------------|
-| Creative | 0.9 | 4096 |
-| Balanced | 0.7 | 4096 |
-| Precise | 0.3 | 4096 |
-| Code | 0.2 | 8192 |
-| Long | 0.7 | 16384 |
-
-## Version Scheme
-
-Switching to x.yy.zz for future versions:
-- **0.6.0** = current
-- Next: **0.06.01**, **0.06.02**, etc.
-
-## Installation
+For screenshot import, install one OCR library:
 
 ```bash
-pip install kivy requests
+# Recommended - pure Python, works in Pydroid3
+pip install easyocr
+
+# Alternative - requires tesseract binary
+pip install pytesseract
 ```
 
-Copy to `/storage/emulated/0/Download/chatadhd_v0.06.00/`
-Run `main.py` in Pydroid 3
+**Supported patterns in screenshots:**
+- "Human:", "User:", "You:" → user messages
+- "Claude:", "Assistant:", "AI:" → assistant messages
+- Time stamps and UI indicators
+- Polish: "Ja:", "Ty:"
+
+### How to Import
+
+1. Open **☰ Conversations** panel
+2. Click **📥 Import**
+3. Browse to your file
+4. (Optional) Set custom title
+5. Click **Import**
+
+### JSON Format Examples
+
+**OpenAI/Anthropic style:**
+```json
+{
+  "messages": [
+    {"role": "user", "content": "Hello"},
+    {"role": "assistant", "content": "Hi!"}
+  ]
+}
+```
+
+**Message list:**
+```json
+[
+  {"role": "user", "content": "Hello"},
+  {"role": "assistant", "content": "Hi!"}
+]
+```
+
+### Markdown Format
+
+```markdown
+## Human
+Your message here
+
+## Assistant
+Response here
 
 ---
-ChatADHD v0.06.00 - Artifacts, Presets, Full Control
+
+## Human
+Another message
+```
+
+### Database Import
+
+Auto-detects Claude.ai and ChatGPT SQLite schemas:
+- Finds `conversations` and `messages` tables
+- Falls back to any table with `role` + `content` columns
+
+---
+
+## Previous Features
+
+- 📦 Collapsible messages (v0.06.00)
+- 🎨 Artifact detection
+- ⚡ Quick API Panel
+- 📁 Full directory import
+- 📊 Graph visualization
+
+---
+ChatADHD v0.06.01 - Import from anywhere
