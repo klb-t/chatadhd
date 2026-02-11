@@ -1,0 +1,30 @@
+# OpenRouter Multi-Model Chat Client
+# Requirements for Pydroid 3
+
+# === CORE (Required) ===
+requests>=2.28.0
+
+# === RECOMMENDED ===
+openai>=1.0.0          # OpenAI-compatible client (easier API)
+
+# === OPTIONAL: Better CLI ===
+rich>=13.0.0           # Pretty terminal output
+prompt_toolkit>=3.0.0  # Better input handling
+
+# === OPTIONAL: Future phases ===
+# kivy>=2.1.0          # Mobile UI (Phase 5+)
+# pillow>=9.0.0        # Image attachments
+# python-magic>=0.4.0  # File type detection
+
+# === Built-in (no install needed) ===
+# sqlite3              # Database
+# json                 # JSON handling
+# uuid                 # ID generation
+# datetime             # Timestamps
+# dataclasses          # Data models
+# enum                 # Enums
+# typing               # Type hints
+# hashlib              # Content hashing
+
+# === INSTALL COMMAND FOR PYDROID ===
+# pip install requests openai rich prompt_toolkit

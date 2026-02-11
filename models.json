@@ -1,0 +1,120 @@
+{
+  "_metadata": {
+    "last_updated": null,
+    "source": "manual",
+    "update_url": "https://openrouter.ai/api/v1/models"
+  },
+  "models": {
+    "anthropic/claude-sonnet-4": {
+      "name": "Claude Sonnet 4",
+      "provider": "Anthropic",
+      "context_length": 200000,
+      "pricing": {"prompt": 3.0, "completion": 15.0},
+      "capabilities": ["chat", "vision", "function_calling"]
+    },
+    "anthropic/claude-haiku": {
+      "name": "Claude Haiku",
+      "provider": "Anthropic",
+      "context_length": 200000,
+      "pricing": {"prompt": 0.25, "completion": 1.25},
+      "capabilities": ["chat", "vision"]
+    },
+    "anthropic/claude-opus-4": {
+      "name": "Claude Opus 4",
+      "provider": "Anthropic",
+      "context_length": 200000,
+      "pricing": {"prompt": 15.0, "completion": 75.0},
+      "capabilities": ["chat", "vision", "function_calling"]
+    },
+    "openai/gpt-4o": {
+      "name": "GPT-4o",
+      "provider": "OpenAI",
+      "context_length": 128000,
+      "pricing": {"prompt": 2.5, "completion": 10.0},
+      "capabilities": ["chat", "vision", "function_calling"]
+    },
+    "openai/gpt-4o-mini": {
+      "name": "GPT-4o Mini",
+      "provider": "OpenAI",
+      "context_length": 128000,
+      "pricing": {"prompt": 0.15, "completion": 0.6},
+      "capabilities": ["chat", "vision", "function_calling"]
+    },
+    "openai/o3-mini": {
+      "name": "o3 Mini",
+      "provider": "OpenAI",
+      "context_length": 128000,
+      "pricing": {"prompt": 1.1, "completion": 4.4},
+      "capabilities": ["chat", "reasoning"]
+    },
+    "google/gemini-2.5-pro-preview": {
+      "name": "Gemini 2.5 Pro",
+      "provider": "Google",
+      "context_length": 1000000,
+      "pricing": {"prompt": 0, "completion": 0},
+      "capabilities": ["chat", "vision"]
+    },
+    "google/gemini-2.5-flash-preview": {
+      "name": "Gemini 2.5 Flash",
+      "provider": "Google",
+      "context_length": 1000000,
+      "pricing": {"prompt": 0, "completion": 0},
+      "capabilities": ["chat", "vision"]
+    },
+    "deepseek/deepseek-chat": {
+      "name": "DeepSeek V3",
+      "provider": "DeepSeek",
+      "context_length": 65536,
+      "pricing": {"prompt": 0.14, "completion": 0.28},
+      "capabilities": ["chat"]
+    },
+    "deepseek/deepseek-reasoner": {
+      "name": "DeepSeek R1",
+      "provider": "DeepSeek",
+      "context_length": 65536,
+      "pricing": {"prompt": 0.55, "completion": 2.19},
+      "capabilities": ["chat", "reasoning"]
+    },
+    "mistralai/mistral-large": {
+      "name": "Mistral Large",
+      "provider": "Mistral",
+      "context_length": 128000,
+      "pricing": {"prompt": 2.0, "completion": 6.0},
+      "capabilities": ["chat", "function_calling"]
+    },
+    "mistralai/mistral-small": {
+      "name": "Mistral Small",
+      "provider": "Mistral",
+      "context_length": 32000,
+      "pricing": {"prompt": 0.2, "completion": 0.6},
+      "capabilities": ["chat"]
+    },
+    "x-ai/grok-2": {
+      "name": "Grok 2",
+      "provider": "xAI",
+      "context_length": 131072,
+      "pricing": {"prompt": 2.0, "completion": 10.0},
+      "capabilities": ["chat", "vision"]
+    },
+    "meta-llama/llama-3.3-70b-instruct": {
+      "name": "Llama 3.3 70B",
+      "provider": "Meta",
+      "context_length": 131072,
+      "pricing": {"prompt": 0.12, "completion": 0.3},
+      "capabilities": ["chat"]
+    },
+    "qwen/qwen-2.5-72b-instruct": {
+      "name": "Qwen 2.5 72B",
+      "provider": "Alibaba",
+      "context_length": 131072,
+      "pricing": {"prompt": 0.15, "completion": 0.4},
+      "capabilities": ["chat"]
+    }
+  },
+  "favorites": [
+    "anthropic/claude-sonnet-4",
+    "deepseek/deepseek-reasoner",
+    "google/gemini-2.5-flash-preview"
+  ],
+  "hidden": []
+}
