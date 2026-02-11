@@ -191,6 +191,3 @@ With $10 OpenRouter credits:
 - ~10M tokens DeepSeek
 - Unlimited Llama 3.3 (free model)
 
-## License
-
-MIT - do whatever you want with it.
