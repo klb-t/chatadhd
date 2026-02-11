@@ -1,8 +1,14 @@
 """
-ChatADHD v0.07.01 - Dialog Popups
+ChatADHD v0.07.10 - Dialog Popups
 
 Settings, QuickAPI, Theme, FilePicker, LogViewer, ModelSelector,
 NodeEditor — all popups that overlay the main UI.
+
+v0.7.10 adds:
+  - Provider filtering with colored tabs
+  - Model pricing and description display
+  - Cost estimation
+  - Better search and organization
 """
 import json
 import logging
@@ -16,6 +22,7 @@ from kivy.uix.slider import Slider
 from kivy.uix.spinner import Spinner
 from kivy.uix.filechooser import FileChooserListView
 from kivy.core.clipboard import Clipboard
+from kivy.graphics import Color, Rectangle
 from kivy.metrics import dp, sp
 
 from gui.base import C, RBtn, Card, DarkInput, LOGBUF, show_toast
@@ -399,45 +406,183 @@ class LogViewer(Popup):
 # ═══════════════════════════════════════════════════════════════════
 
 class ModelSelectorPopup(Popup):
-    """Full model picker grouped by provider."""
+    """Full model picker with provider filtering, pricing, and descriptions."""
+
+    # Provider colors (RGB)
+    PROVIDER_COLORS = {
+        "openai": (0.2, 0.7, 0.45),      # Green
+        "anthropic": (0.9, 0.55, 0.3),   # Orange
+        "google": (0.3, 0.55, 0.9),      # Blue
+        "meta-llama": (0.3, 0.4, 0.8),   # Purple
+        "mistralai": (0.8, 0.45, 0.25),  # Brown
+        "deepseek": (0.55, 0.35, 0.75),  # Magenta
+        "x-ai": (0.2, 0.8, 0.6),         # Cyan
+        "perplexity": (0.8, 0.2, 0.2),   # Red
+    }
 
     def __init__(self, models, current_id, on_select, **kw):
+        self.models = models
         self._on_select = on_select
-        content = BoxLayout(orientation="vertical", padding=dp(4))
+        self.current_id = current_id
+        self._search_text = ""
+        self._current_provider = None  # None = All
 
-        scroll = ScrollView()
-        lst = BoxLayout(orientation="vertical", size_hint_y=None, spacing=dp(2))
-        lst.bind(minimum_height=lst.setter("height"))
+        content = BoxLayout(orientation="vertical", padding=dp(4), spacing=dp(3))
 
+        # Search bar
+        search_row = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(3))
+        self._search_input = DarkInput(
+            hint_text="Search models...", multiline=False, font_size=sp(9)
+        )
+        self._search_input.bind(text=self._on_search_text)
+        search_row.add_widget(self._search_input)
+        search_row.add_widget(RBtn(
+            text="X", size_hint_x=None, width=dp(32), bg=C["card"], font_size=sp(9),
+            on_press=lambda *a: setattr(self._search_input, "text", "")
+        ))
+        content.add_widget(search_row)
+
+        # Provider tabs
         grouped = models.grouped()
-        for provider, provider_models in sorted(grouped.items()):
-            lst.add_widget(Label(
-                text=f"--- {provider} ---", color=C["dim"],
-                size_hint_y=None, height=dp(22), font_size=sp(9),
-            ))
-            for m in provider_models:
-                is_current = m["id"] == current_id
-                btn = RBtn(
-                    text=m["name"][:28],
-                    bg=C["accent"] if is_current else C["card"],
-                    size_hint_y=None, height=dp(30), font_size=sp(8),
-                )
-                btn.model_id = m["id"]
-                btn.bind(on_press=self._pick)
-                lst.add_widget(btn)
+        providers = sorted(grouped.keys())
 
-        scroll.add_widget(lst)
-        content.add_widget(scroll)
-        content.add_widget(RBtn(text="Close", bg=C["card"], size_hint_y=None,
-                                height=dp(34), on_press=lambda *a: self.dismiss()))
+        tabs_row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+        self._tabs = {}
+
+        # "All" tab
+        all_btn = RBtn(text="All", bg=C["accent"], font_size=sp(8), size_hint_x=0.15)
+        all_btn.provider = None
+        all_btn.bind(on_press=self._on_provider_tab)
+        tabs_row.add_widget(all_btn)
+        self._tabs[None] = all_btn
+
+        # Provider tabs
+        for prov in providers:
+            short_name = prov[:4].upper()
+            btn = RBtn(text=short_name, bg=C["card"], font_size=sp(7), size_hint_x=0.15)
+            btn.provider = prov
+            btn.bind(on_press=self._on_provider_tab)
+            tabs_row.add_widget(btn)
+            self._tabs[prov] = btn
+
+        content.add_widget(tabs_row)
+
+        # Model list
+        self._scroll = ScrollView()
+        self._lst = BoxLayout(orientation="vertical", size_hint_y=None, spacing=dp(2))
+        self._lst.bind(minimum_height=self._lst.setter("height"))
+        self._scroll.add_widget(self._lst)
+        content.add_widget(self._scroll)
+
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(4))
+        btns.add_widget(RBtn(text="Close", bg=C["card"], on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
 
         super().__init__(title="Select Model", content=content,
-                         size_hint=(0.95, 0.8), **kw)
+                         size_hint=(0.98, 0.85), **kw)
 
-    def _pick(self, btn):
-        self._on_select(btn.model_id)
-        show_toast(f"Model: {btn.model_id.split('/')[-1]}")
-        self.dismiss()
+        # Initial render
+        self._build_list()
+
+    def _on_search_text(self, _, text):
+        self._search_text = text.lower()
+        self._build_list()
+
+    def _on_provider_tab(self, btn):
+        self._current_provider = btn.provider
+        for provider, tab_btn in self._tabs.items():
+            if tab_btn.provider == self._current_provider:
+                tab_btn.background_color = C["accent"]
+            else:
+                tab_btn.background_color = C["card"]
+        self._build_list()
+
+    def _build_list(self):
+        self._lst.clear_widgets()
+
+        grouped = self.models.grouped()
+        if self._current_provider:
+            grouped = {k: v for k, v in grouped.items() if k == self._current_provider}
+
+        for provider, provider_models in sorted(grouped.items()):
+            # Provider header with color
+            prov_color = self.PROVIDER_COLORS.get(provider, (0.5, 0.5, 0.5))
+            header = BoxLayout(size_hint_y=None, height=dp(24), padding=dp(2))
+            header.canvas.before.clear()
+            with header.canvas.before:
+                Color(*prov_color, 0.3)
+                Rectangle(pos=header.pos, size=header.size)
+            header.add_widget(Label(
+                text=f"🔹 {provider.upper()}",
+                color=prov_color + (1,),
+                size_hint_y=None, height=dp(22),
+                font_size=sp(9), bold=True,
+                halign="left",
+            ))
+            self._lst.add_widget(header)
+
+            # Models in this provider
+            for m in sorted(provider_models, key=lambda x: x.get("name", x["id"])):
+                if self._search_text:
+                    if (self._search_text not in m["id"].lower() and
+                        self._search_text not in m.get("name", "").lower() and
+                        self._search_text not in m.get("description", "").lower()):
+                        continue
+
+                is_current = m["id"] == self.current_id
+                model_name = m.get("name", m["id"])[:22]
+
+                # Model button card
+                card_height = dp(48) if m.get("pricing") else dp(38)
+                model_card = Card(
+                    size_hint_y=None, height=card_height,
+                    bg=C["accent"] if is_current else C["card"],
+                )
+
+                card_layout = BoxLayout(orientation="vertical", padding=dp(2), spacing=dp(1))
+
+                # Name + context
+                header_row = BoxLayout(size_hint_y=None, height=dp(18))
+                header_row.add_widget(Label(
+                    text=model_name + ("*" if is_current else ""),
+                    font_size=sp(9), color=C["text"], bold=is_current,
+                    halign="left",
+                ))
+                ctx = m.get("context_length", 0)
+                if ctx > 0:
+                    ctx_text = f"{ctx/1000:.0f}K" if ctx >= 1000 else f"{ctx}"
+                    header_row.add_widget(Label(
+                        text=ctx_text,
+                        font_size=sp(8), color=C["dim"],
+                        size_hint_x=0.2, halign="right",
+                    ))
+                card_layout.add_widget(header_row)
+
+                # Pricing info
+                pricing = m.get("pricing", {})
+                if pricing:
+                    prompt_price = pricing.get("prompt", 0) or 0
+                    completion_price = pricing.get("completion", 0) or 0
+                    price_text = f"${prompt_price:.2e} / ${completion_price:.2e}"
+                    card_layout.add_widget(Label(
+                        text=price_text,
+                        font_size=sp(7), color=C["dim"],
+                    ))
+
+                model_card.add_widget(card_layout)
+                model_card.model_id = m["id"]
+                model_card.bind(on_touch_down=self._on_model_tap)
+
+                self._lst.add_widget(model_card)
+
+    def _on_model_tap(self, widget, touch):
+        if widget.collide_point(*touch.pos):
+            self._on_select(widget.model_id)
+            show_toast(f"Model: {widget.model_id.split('/')[-1]}")
+            self.dismiss()
+            return True
+        return False
 
 
 # ═══════════════════════════════════════════════════════════════════

@@ -1,10 +1,11 @@
 """
-ChatADHD v0.07.09 — Mobile-First AI Chat Client
+ChatADHD v0.07.10 — Mobile-First AI Chat Client
 ================================================
 
 Hierarchical memory · Branching conversations · Multi-model API ·
 Streaming · Real-time knowledge graph · Zero-knowledge encryption ·
 Voice input · GitHub sync · Universal import (ZIP, JSON, HTML, DB…)
+Provider filtering · Pricing info · Cost estimation
 
 Run: ``python main.py``
 
@@ -12,7 +13,7 @@ Environment variables:
   CHATADHD_DATA   Override data directory path
   KIVY_LOG_LEVEL  Kivy log verbosity (debug, info, warning, error)
 """
-__version__ = "0.07.09"
+__version__ = "0.07.10"
 
 import logging
 import os

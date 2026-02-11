@@ -1,8 +1,9 @@
 """
-ChatADHD v0.07.01 - Model Registry
+ChatADHD v0.07.10 - Model Registry
 
 Fetches and caches the list of available models from OpenRouter.
-Provides human-friendly short names and provider grouping.
+Provides human-friendly short names, provider grouping, pricing, and descriptions.
+Supports semantic search and cost analysis.
 """
 import json
 import logging
@@ -96,8 +97,13 @@ class ModelRegistry:
             resp.raise_for_status()
             data = resp.json().get("data", [])
             self._models = [
-                {"id": m["id"], "name": m.get("name", m["id"]),
-                 "context_length": m.get("context_length", 0)}
+                {
+                    "id": m["id"],
+                    "name": m.get("name", m["id"]),
+                    "context_length": m.get("context_length", 0),
+                    "pricing": m.get("pricing", {}),
+                    "description": m.get("description", ""),
+                }
                 for m in data
             ]
             self._save()
@@ -124,3 +130,37 @@ class ModelRegistry:
             provider = m["id"].split("/")[0] if "/" in m["id"] else "other"
             groups.setdefault(provider, []).append(m)
         return groups
+
+    def get_pricing(self, model_id: str) -> dict[str, float]:
+        """Get pricing info for a model (input/output tokens per million)."""
+        for m in self._models:
+            if m["id"] == model_id:
+                return m.get("pricing", {})
+        return {}
+
+    def get_description(self, model_id: str) -> str:
+        """Get model description."""
+        for m in self._models:
+            if m["id"] == model_id:
+                return m.get("description", "")
+        return ""
+
+    def get_context_length(self, model_id: str) -> int:
+        """Get model context window."""
+        for m in self._models:
+            if m["id"] == model_id:
+                return m.get("context_length", 0)
+        return 0
+
+    def estimate_cost(self, model_id: str, input_tokens: int, output_tokens: int) -> float:
+        """Estimate cost in USD for a message (input + output tokens)."""
+        pricing = self.get_pricing(model_id)
+        if not pricing:
+            return 0.0
+
+        input_price = pricing.get("prompt", 0) or 0
+        output_price = pricing.get("completion", 0) or 0
+
+        # Prices are per million tokens
+        total_cost = (input_tokens * input_price + output_tokens * output_price) / 1_000_000
+        return round(total_cost, 8)
