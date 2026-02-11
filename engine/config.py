@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 DEFAULTS: dict[str, Any] = {
     "base_url": "https://openrouter.ai/api/v1",
     "default_model": "anthropic/claude-sonnet-4-20250514",
-    "semantic_model": "anthropic/claude-haiku-4-20250414",
+    "semantic_model": "anthropic/claude-3.5-haiku",
     "temperature": 0.7,
     "max_tokens": 4096,
     "theme": "dark",
@@ -104,14 +104,19 @@ class Config(_JsonStore):
         upgraded = False
         cur = self._data.copy()
         for key, value in DEFAULTS.items():
-            if key not in cur or (key == "semantic_model" and not cur.get(key)):
+            if key not in cur:
                 self._data[key] = value
                 upgraded = True
+        # Fix known bad model IDs from earlier versions.
+        sem = self._data.get("semantic_model", "")
+        if sem and "claude-haiku-4" in sem:
+            self._data["semantic_model"] = DEFAULTS["semantic_model"]
+            upgraded = True
         if upgraded:
             ver_old = self._data.get("_config_version", 0)
-            self._data["_config_version"] = 2
-            if ver_old < 2:
-                log.info("Config: Upgrading from v%d to v2 (added new defaults)", ver_old)
+            self._data["_config_version"] = 3
+            if ver_old < 3:
+                log.info("Config auto-upgraded to v3")
                 self.save()
 
 

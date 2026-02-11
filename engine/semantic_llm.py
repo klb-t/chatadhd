@@ -52,11 +52,14 @@ class SemanticLLM:
     def __init__(self, config, secrets) -> None:
         self.config = config
         self.secrets = secrets
+        self._consecutive_failures = 0
+        self._disabled_by_errors = False
 
     @property
     def enabled(self) -> bool:
         return bool(
-            self.config.get("semantic_analysis", True)
+            not self._disabled_by_errors
+            and self.config.get("semantic_analysis", True)
             and self.config.get("semantic_model")
             and self.secrets.get("api_key")
         )
@@ -75,10 +78,19 @@ class SemanticLLM:
         try:
             llm_result = self._call_llm(text)
             if llm_result:
+                self._consecutive_failures = 0
                 # Merge: LLM results + regex entities that LLM might have missed.
                 return self._merge(llm_result, regex_result)
+            else:
+                self._consecutive_failures += 1
         except Exception:
             log.debug("LLM semantic analysis failed — using regex", exc_info=True)
+            self._consecutive_failures += 1
+
+        if self._consecutive_failures >= 5:
+            self._disabled_by_errors = True
+            log.warning("Semantic LLM disabled after %d consecutive failures. "
+                        "Check model ID in Settings.", self._consecutive_failures)
 
         return self._convert_regex(regex_result)
 
@@ -114,7 +126,12 @@ class SemanticLLM:
         )
 
         if resp.status_code != 200:
-            log.warning("Semantic LLM error %d", resp.status_code)
+            try:
+                err_body = resp.json()
+                log.warning("Semantic LLM error %d: %s", resp.status_code,
+                            str(err_body.get("error", err_body))[:120])
+            except Exception:
+                log.warning("Semantic LLM error %d", resp.status_code)
             return None
 
         raw = resp.json()["choices"][0]["message"]["content"]

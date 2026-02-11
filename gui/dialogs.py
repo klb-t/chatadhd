@@ -11,6 +11,7 @@ import os
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.spinner import Spinner
 from kivy.uix.filechooser import FileChooserListView
@@ -86,7 +87,7 @@ class SettingsPopup(Popup):
         sem_row.add_widget(Label(text="Semantic:", color=C["text"],
                                   size_hint_x=0.25, font_size=sp(9)))
         self.sem_model = DarkInput(
-            text=config.get("semantic_model", "anthropic/claude-haiku-4-20250414"),
+            text=config.get("semantic_model", "anthropic/claude-3.5-haiku"),
             font_size=sp(9),
         )
         sem_row.add_widget(self.sem_model)
