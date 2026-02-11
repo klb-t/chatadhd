@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any, List, Set, Iterable
+from typing import Optional, Dict, Any, List, Set
 from datetime import datetime
 import uuid, logging
 
@@ -70,22 +70,5 @@ class MemoryEngine:
     def get_children(self, parent=None):
         return sorted([n for n in self.nodes.values() if n.parent == parent], key=lambda x: x.order)
     
-    def get_linked(self, id):
-        return [self.nodes[lid] for lid in self.nodes.get(id, Node('','','')).links if lid in self.nodes]
-    
-    def find(self, q):
-        return [n for n in self.nodes.values() if q.lower() in (n.content or '').lower()]
-    
     def all_nodes(self): return list(self.nodes.values())
     def active_nodes(self): return [n for n in self.nodes.values() if n.active]
-    
-    def to_text(self, active_only=True):
-        lines = []
-        def walk(p, i=0):
-            for n in self.get_children(p):
-                if active_only and not n.active: continue
-                icon = {'folder': '📁', 'file': '📎', 'audio': '🎵', 'image': '🖼️'}.get(n.node_type, '•')
-                lines.append('  '*i + f"{icon} {n.content}")
-                walk(n.id, i+1)
-        walk(None)
-        return '\n'.join(lines)

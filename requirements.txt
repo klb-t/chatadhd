@@ -2,10 +2,3 @@ kivy>=2.0.0
 requests
 openai
 plyer
-# Optional for semantic search:
-# sentence-transformers
-# sklearn
-# Optional for OCR/ASR:
-# pytesseract
-# pillow
-# openai-whisper
