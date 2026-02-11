@@ -406,6 +406,8 @@ class StreamingBubble(BoxLayout):
         self.txt = DarkInput(text="", readonly=True, font_size=sp(11), size_hint_y=None, height=dp(36), multiline=True)
         self.add_widget(self.txt)
         self._text = ""
+        self._reasoning = ""
+        self.reason_lbl = None
     
     def append(self, chunk):
         self._text += chunk
@@ -420,6 +422,14 @@ class StreamingBubble(BoxLayout):
     def finish(self):
         self.st.text = "OK"
         self.st.color = C['ok']
+    
+    def append_reasoning(self, chunk):
+        if not self.reason_lbl:
+            self.reason_lbl = Label(text="💭 ", font_size=sp(8), color=C['dim'], 
+                                   size_hint_y=None, height=dp(18))
+            self.add_widget(self.reason_lbl, index=0)
+        self._reasoning += chunk
+        self.reason_lbl.text = "💭 " + self._reasoning[-60:]
 
 
 # === MEMORY PANEL (with files/dirs as items) ===
@@ -695,6 +705,10 @@ class ChatPanel(BoxLayout):
         self.pending_files = []
         self.streaming_bubble = None
         self._long_press_ev = None
+        # Feature toggles
+        self.web_search = False
+        self.deep_research = False
+        self.reasoning_effort = None  # None=adaptive, low, medium, high, max
         self._build()
     
     def _build(self):
@@ -710,6 +724,21 @@ class ChatPanel(BoxLayout):
                              ("Log", C['warn'], lambda *a: LogViewer().open())]:
             top.add_widget(RBtn(text=txt, size_hint_x=0.16, bg=clr, font_size=sp(9), on_press=fn))
         self.add_widget(top)
+        
+        # Feature toggles row
+        feat = BoxLayout(size_hint_y=None, height=dp(30), padding=dp(2), spacing=dp(2))
+        self.web_btn = RBtn(text="Web", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
+        self.web_btn.bind(on_press=self._toggle_web)
+        feat.add_widget(self.web_btn)
+        self.research_btn = RBtn(text="Deep", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
+        self.research_btn.bind(on_press=self._toggle_research)
+        feat.add_widget(self.research_btn)
+        self.reason_btn = RBtn(text="Auto", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
+        self.reason_btn.bind(on_press=self._cycle_reasoning)
+        feat.add_widget(self.reason_btn)
+        self.think_lbl = Label(text="", size_hint_x=0.25, font_size=sp(9), color=C['dim'])
+        feat.add_widget(self.think_lbl)
+        self.add_widget(feat)
         
         self.scroll = ScrollView()
         self.msgs = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(4), padding=dp(4))
@@ -745,6 +774,32 @@ class ChatPanel(BoxLayout):
         
         self.status = Label(text="Ready", size_hint_y=None, height=dp(16), font_size=sp(8), color=C['dim'])
         self.add_widget(self.status)
+    
+    def _toggle_web(self, *a):
+        self.web_search = not self.web_search
+        self.web_btn.background_color = C['accent'] if self.web_search else C['card']
+        if self.web_search and self.deep_research:
+            self.deep_research = False
+            self.research_btn.background_color = C['card']
+        show_toast("Web: " + ("ON" if self.web_search else "OFF"))
+    
+    def _toggle_research(self, *a):
+        self.deep_research = not self.deep_research
+        self.research_btn.background_color = C['warn'] if self.deep_research else C['card']
+        if self.deep_research:
+            self.web_search = True
+            self.web_btn.background_color = C['accent']
+        show_toast("Deep Research: " + ("ON" if self.deep_research else "OFF"))
+    
+    def _cycle_reasoning(self, *a):
+        cycle = [None, 'low', 'medium', 'high', 'max']
+        labels = ['Auto', 'Low', 'Med', 'High', 'MAX']
+        idx = cycle.index(self.reasoning_effort) if self.reasoning_effort in cycle else 0
+        idx = (idx + 1) % len(cycle)
+        self.reasoning_effort = cycle[idx]
+        self.reason_btn.text = labels[idx]
+        self.reason_btn.background_color = C['accent'] if self.reasoning_effort else C['card']
+        show_toast(f"Reasoning: {labels[idx]}")
     
     def _open_models(self, *a):
         def on_sel(mid):
@@ -849,11 +904,19 @@ class ChatPanel(BoxLayout):
         def thread():
             try:
                 def on_chunk(c): Clock.schedule_once(lambda dt: self._on_chunk(c))
-                self.engine.send(text, attachments=att, on_chunk=on_chunk)
+                def on_reasoning(r): Clock.schedule_once(lambda dt: self._on_reasoning(r))
+                self.engine.send(text, attachments=att, on_chunk=on_chunk, on_reasoning=on_reasoning,
+                                web_search=self.web_search, deep_research=self.deep_research,
+                                reasoning_effort=self.reasoning_effort)
                 Clock.schedule_once(lambda dt: self._ok())
             except Exception as e:
                 Clock.schedule_once(lambda dt: self._err(str(e)))
         threading.Thread(target=thread).start()
+    
+    def _on_reasoning(self, chunk):
+        self.think_lbl.text = "💭"
+        if self.streaming_bubble:
+            self.streaming_bubble.append_reasoning(chunk)
     
     def _on_chunk(self, chunk):
         if self.streaming_bubble:
@@ -867,6 +930,7 @@ class ChatPanel(BoxLayout):
             self.streaming_bubble = None
         self.refresh()
         self.status.text = "Ready"
+        self.think_lbl.text = ""
     
     def _err(self, err):
         self.sending = False
@@ -874,6 +938,7 @@ class ChatPanel(BoxLayout):
             self.msgs.remove_widget(self.streaming_bubble)
             self.streaming_bubble = None
         self.status.text = f"Err: {err[:22]}"
+        self.think_lbl.text = ""
         LOGBUF.add(f"Error: {err}")
     
     def refresh(self):

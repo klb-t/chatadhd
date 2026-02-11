@@ -1,158 +1,94 @@
 # ChatADHD v0.5.0 - Non-Linear Context Editor
 
-Mobile-first AI chat client with hierarchical memory, graph visualization, and full context control.
+Mobile-first AI chat with graph visualization, message versioning, and full context control.
 
 ## What's New in v0.5.0
 
-### Graph Explorer
-- **Force-directed visualization** of conversations and memory as interactive graph
-- **Pan, zoom, drag** nodes to organize your knowledge
-- **Click nodes** to edit weight, content, links
-- Real-time physics simulation
+### 🌐 Web Search
+- Toggle **Web** button to enable real-time web search
+- Uses OpenRouter's web plugin with Exa/native search
 
-### Message Versioning
-- **Edit creates new version** - never lose original
-- **Version history** - restore any previous version
-- **Branch conversations** - explore different paths
+### 🔬 Deep Research
+- Toggle **Deep** for extensive search (10 results, high context)
+- Automatically enables Web Search
 
-### Weighted Context
-- **Adjust node importance** with weight slider (0.1 - 2.0)
-- High-weight nodes marked as `[IMPORTANT]` to model
-- Low-weight nodes marked as `[low priority]`
-- Affects context building for API calls
+### 🧠 Reasoning/Thinking
+- Cycle through: **Auto** → Low → Med → High → MAX
+- Auto = adaptive thinking (Claude 4.6)
+- Shows 💭 indicator when model is thinking
+- Reasoning tokens displayed in stream
 
-### Memory Improvements  
-- **Attach files and directories** to memory nodes
-- **Directory support** - add entire folders with contents
-- **ZIP export** - download memory folders as archives
-- Types: Text, Folder, File, Directory
+### 📊 Graph Explorer
+- Force-directed visualization of conversation + memory
+- **Bigger nodes** with readable labels
+- Drag to reposition, click to edit
+- Zoom +/- and Center controls
+
+### 📝 Message Versioning
+- Edit creates new version (never lose original)
+- Restore any previous version
+- Weight slider (0.1-2.0) for context priority
+
+### 📁 Memory Features
+- Attach files and directories
+- ZIP export for folders
+- Auto-import app code to memory
 
 ## Installation (Pydroid 3)
 
-1. Install Pydroid 3 from Play Store
-2. Install pip packages:
-   ```
-   pip install kivy requests
-   ```
-3. Copy `chatadhd_v0.5.0` folder to `/storage/emulated/0/Download/`
-4. Open `main.py` in Pydroid 3
-5. Run!
+```bash
+pip install kivy requests
+```
+
+Copy `chatadhd_v0.5.0/` to `/storage/emulated/0/Download/`
+Open `main.py` in Pydroid 3 and run.
 
 ## First Run
 
-1. Tap **Cfg** → Enter your OpenRouter API key
-2. Tap **Ref** to load available models
-3. Tap model name to select different model
-4. Start chatting!
+1. Tap **Cfg** → Enter OpenRouter API key
+2. Tap **Ref** to load models
+3. Select model by tapping model name
+4. Chat!
 
 ## UI Guide
 
 ### Top Bar
-- **Chats** - Open conversations panel
-- **[Model name]** - Tap to change model
-- **Ref** - Refresh model list
-- **New** - New conversation
-- **Cfg** - Settings (API key, theme)
-- **Log** - View debug logs
-- **Mem** - Memory panel
-- **Graph** - Graph Explorer
+`[Model] [Ref] [New] [Cfg] [Log]`
 
-### Chat
-- **Long-press Send** - Preview API request JSON
-- **Copy** - Copy message text
-- **Hide/Show** - Exclude/include from context
-- **Streaming** - Real-time response display
+### Feature Toggles
+`[Web] [Deep] [Auto] [💭]`
 
-### Memory Panel
-- **+Text** - Add text note
-- **+Folder** - Add logical folder (groups items)
-- **+File** - Attach file from storage
-- **+Dir** - Attach entire directory
-- **[+]/[-]** - Toggle node active/inactive
-- **[x]** - Delete node
-- **ZIP** - Download folder as archive
+- **Web** - Enable web search (blue when ON)
+- **Deep** - Deep research mode (orange when ON)
+- **Auto** - Reasoning effort (cycles through levels)
+- **💭** - Thinking indicator (shows when reasoning)
 
-### Graph Explorer
-- **Drag nodes** - Reposition manually
-- **Click node** - Edit properties
-- **+/-** buttons - Zoom in/out
-- **Reset** - Reset view
-- **Refresh** - Reload graph data
+### Side Panels
+- **Chats** - Conversation list
+- **Mem** - Memory tree with +Text/+Folder/+File/+Dir
+- **Graph** - Knowledge graph visualization
 
-### Node Editor (Graph)
-- **Content** - View/edit text
-- **Weight** - Importance slider
-- **Pin** - Lock position
-- **Versions** - Switch between edits
-- **Edit (new ver)** - Create new version
+## API Features (OpenRouter)
 
-## Architecture
-
-```
-chatadhd_v0.5.0/
-├── main.py              # App entry point
-├── engine/
-│   ├── config.py        # Config & secrets
-│   ├── db.py            # SQLite with WAL, versioning
-│   ├── chat_engine.py   # API calls, streaming
-│   ├── memory_engine.py # Hierarchical memory
-│   └── models.py        # Model registry
-└── gui/
-    ├── panels.py        # UI components
-    └── graph_viz.py     # Graph explorer
+```json
+{
+  "model": "anthropic/claude-4.6-opus",
+  "plugins": [{"id": "web", "max_results": 10}],
+  "reasoning": {"enabled": true},
+  "verbosity": "max",
+  "web_search_options": {"search_context_size": "high"}
+}
 ```
 
-## Data Storage
+## Data Location
 
-All data saved to `/storage/emulated/0/Download/chatadhd_data/`:
-- `config.json` - Settings
-- `secrets.json` - API key (local only)
-- `chatadhd.db` - Conversations & messages
-- `memory.json` - Memory tree
-- `models.json` - Cached model list
+`/storage/emulated/0/Download/chatadhd_pydroid_v0.4.6/` (uses existing data)
 
-## Security Model
-
-- **API key stored locally** only
-- **Memory stays on device** 
-- **WAL mode** prevents database corruption
-- Your data never leaves your device except API calls
+Or creates new in app folder.
 
 ## Themes
 
-Settings → Change Theme:
-- **Dark** - Default, good contrast
-- **AMOLED** - Pure black for OLED screens
-
-## Known Limitations
-
-- Graph performance may slow with 100+ nodes
-- Large file attachments not sent to API (just metadata)
-- No cloud sync (by design - privacy first)
-
-## Troubleshooting
-
-**White text on white background?**
-→ Update to v0.5.0 (uses DarkInput class)
-
-**Models not loading?**
-→ Check API key in Settings, tap Ref
-
-**App crashes?**
-→ Check Log panel, look for errors
-
-**Database corruption?**
-→ v0.5.0 uses WAL mode - should be fixed
-
-## Credits
-
-- Kivy framework
-- OpenRouter API
-- Graph visualization inspired by Gemini suggestions
-
-## License
-
-MIT - Use freely, modify freely, share freely.
+Settings → Theme: Dark / AMOLED
 
 ---
 **ChatADHD** - Your thoughts, your context, your control.

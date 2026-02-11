@@ -98,7 +98,21 @@ class ChatADHDApp(App):
     def _get_data_dir(self):
         from pathlib import Path
         if hasattr(sys, 'getandroidapilevel'):
-            base = Path("/storage/emulated/0/Download/chatadhd_data")
+            # Try to find existing data from previous versions
+            candidates = [
+                Path("/storage/emulated/0/Download/chatadhd_pydroid_v0.4.6"),
+                Path("/storage/emulated/0/Download/chatadhd_pydroid_v0.4.5"),
+                Path("/storage/emulated/0/Download/dev/chatadhd_pydroid_v0.4.6"),
+                Path("/storage/emulated/0/Download/chatadhd_data"),
+            ]
+            # Use first existing folder with data, or last candidate
+            for c in candidates:
+                if (c / "chatadhd.db").exists() or (c / "secrets.json").exists():
+                    base = c
+                    break
+            else:
+                # Default to app folder location
+                base = Path(__file__).parent / "data"
         else:
             base = Path.home() / ".chatadhd"
         base.mkdir(parents=True, exist_ok=True)

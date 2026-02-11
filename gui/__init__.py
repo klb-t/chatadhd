@@ -1,1 +1,0 @@
-"""ChatADHD GUI"""
