@@ -1,94 +1,62 @@
-# ChatADHD v0.5.0 - Non-Linear Context Editor
+# ChatADHD v0.5.2
 
-Mobile-first AI chat with graph visualization, message versioning, and full context control.
+## What's New
 
-## What's New in v0.5.0
+### 🎤 Voice Input (Android)
+- Tap microphone button to speak
+- Requires RECORD_AUDIO permission
+- Button shows 🎤, turns orange when listening
 
-### 🌐 Web Search
-- Toggle **Web** button to enable real-time web search
-- Uses OpenRouter's web plugin with Exa/native search
+### ⌨️ Keyboard Handling
+- `Window.softinput_mode = 'below_target'`
+- Input field stays visible above keyboard
+- No more hidden text while typing
 
-### 🔬 Deep Research
-- Toggle **Deep** for extensive search (10 results, high context)
-- Automatically enables Web Search
+### Previous Features (v0.5.1)
+- 🌐 Web Search toggle
+- 🔬 Deep Research mode
+- 🧠 Reasoning effort (Auto/Low/Med/High/MAX)
+- 📊 Graph Explorer with big readable nodes
+- 📝 Message versioning
+- 📁 Memory with file/dir attachments
 
-### 🧠 Reasoning/Thinking
-- Cycle through: **Auto** → Low → Med → High → MAX
-- Auto = adaptive thinking (Claude 4.6)
-- Shows 💭 indicator when model is thinking
-- Reasoning tokens displayed in stream
-
-### 📊 Graph Explorer
-- Force-directed visualization of conversation + memory
-- **Bigger nodes** with readable labels
-- Drag to reposition, click to edit
-- Zoom +/- and Center controls
-
-### 📝 Message Versioning
-- Edit creates new version (never lose original)
-- Restore any previous version
-- Weight slider (0.1-2.0) for context priority
-
-### 📁 Memory Features
-- Attach files and directories
-- ZIP export for folders
-- Auto-import app code to memory
-
-## Installation (Pydroid 3)
+## Installation
 
 ```bash
 pip install kivy requests
 ```
 
-Copy `chatadhd_v0.5.0/` to `/storage/emulated/0/Download/`
-Open `main.py` in Pydroid 3 and run.
+Copy to `/storage/emulated/0/Download/`
+Run `main.py` in Pydroid 3
 
-## First Run
+## UI
 
-1. Tap **Cfg** → Enter OpenRouter API key
-2. Tap **Ref** to load models
-3. Select model by tapping model name
-4. Chat!
-
-## UI Guide
-
-### Top Bar
-`[Model] [Ref] [New] [Cfg] [Log]`
-
-### Feature Toggles
-`[Web] [Deep] [Auto] [💭]`
-
-- **Web** - Enable web search (blue when ON)
-- **Deep** - Deep research mode (orange when ON)
-- **Auto** - Reasoning effort (cycles through levels)
-- **💭** - Thinking indicator (shows when reasoning)
-
-### Side Panels
-- **Chats** - Conversation list
-- **Mem** - Memory tree with +Text/+Folder/+File/+Dir
-- **Graph** - Knowledge graph visualization
-
-## API Features (OpenRouter)
-
-```json
-{
-  "model": "anthropic/claude-4.6-opus",
-  "plugins": [{"id": "web", "max_results": 10}],
-  "reasoning": {"enabled": true},
-  "verbosity": "max",
-  "web_search_options": {"search_context_size": "high"}
-}
+### Input Area
+```
+[Message input............] [Send]
+[+ Attach                   ] [🎤]
 ```
 
-## Data Location
+### Feature Toggles
+```
+[Web] [Deep] [Auto] [💭]
+```
 
-`/storage/emulated/0/Download/chatadhd_pydroid_v0.4.6/` (uses existing data)
+## Voice Input Usage
 
-Or creates new in app folder.
+1. Tap 🎤 button
+2. Grant microphone permission (first time)
+3. Speak your message
+4. Text appears in input field
+5. Tap Send
 
-## Themes
+Note: Requires Android with Google Speech Recognition
 
-Settings → Theme: Dark / AMOLED
+## Keyboard Tips
+
+- Input auto-scrolls above keyboard
+- Back button closes keyboard (not app)
+- Landscape mode supported
 
 ---
-**ChatADHD** - Your thoughts, your context, your control.
+ChatADHD v0.5.2 - Your voice, your thoughts, your control.

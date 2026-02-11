@@ -1,16 +1,9 @@
 """
-ChatADHD v0.5.0 - Non-Linear Context Editor
-Main application entry point
-
-Features:
-- Graph Explorer with force-directed layout
-- Message versioning (edit creates new version)
-- Weighted nodes for context priority
-- Memory with file/directory attachments
-- Streaming responses
-- Dark/AMOLED themes
+ChatADHD v0.5.2 - Non-Linear Context Editor
+- Keyboard resize handling (fixes input visibility)
+- Voice input support
 """
-__version__ = "0.5.0"
+__version__ = "0.5.2"
 
 import os
 import sys
@@ -24,6 +17,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.metrics import dp
 from kivy.clock import Clock
+from kivy.core.window import Window
 
 from engine.config import Config, Secrets
 from engine.db import Database
@@ -93,7 +87,17 @@ class ChatADHDApp(App):
         # Initial refresh
         Clock.schedule_once(lambda dt: self._initial_load(), 0.5)
         
+        # Keyboard handling - resize when keyboard shows/hides
+        Window.bind(on_keyboard=self._on_keyboard)
+        Window.softinput_mode = 'below_target'  # Keyboard pushes content up
+        
         return root
+    
+    def _on_keyboard(self, window, key, *args):
+        # ESC or back button
+        if key == 27:
+            return True  # Consume back button
+        return False
     
     def _get_data_dir(self):
         from pathlib import Path
