@@ -323,7 +323,7 @@ class FilePickerPopup(Popup):
         self.chooser = FileChooserListView(
             path=start_path,
             dirselect=allow_dirs,
-            filters=["*"] if allow_dirs else None,
+            filters=["*"] if allow_dirs else [],
         )
         content.add_widget(self.chooser)
 
