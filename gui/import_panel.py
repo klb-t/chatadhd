@@ -106,8 +106,8 @@ class ImportConversationPopup(Popup):
             # Hook into importer to get progress callbacks.
             original_import_msg_list = importer._import_message_list
 
-            def patched_import(msgs, conv_id, source="import"):
-                result = original_import_msg_list(msgs, conv_id, source)
+            def patched_import(msgs, title_arg=None):
+                result = original_import_msg_list(msgs, title_arg)
                 count[0] += 1
                 Clock.schedule_once(lambda dt: self._tick(
                     count[0], f"Conv {count[0]}: {len(msgs)} msgs"
@@ -120,9 +120,11 @@ class ImportConversationPopup(Popup):
             final = len(results) if isinstance(results, list) else 1
             Clock.schedule_once(lambda dt: self._finish(final), 0)
 
-        except Exception as e:
+        except Exception:
+            import traceback
+            err_msg = traceback.format_exc().splitlines()[-1][:60]
             log.exception("Import failed")
-            Clock.schedule_once(lambda dt: self._error(str(e)[:60]), 0)
+            Clock.schedule_once(lambda dt, m=err_msg: self._error(m), 0)
 
     def _tick(self, n, msg):
         self.status.text = f"[{n}] {msg}"

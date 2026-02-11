@@ -539,7 +539,7 @@ class ConversationImporter:
                 messages = [{'role': 'assistant', 'content': text[:50000]}]
         
         if messages:
-            return self._import_message_list(messages, title or Path(source_path).stem if source_path else None)
+            return self._import_message_list(messages, title or (Path(source_path).stem if source_path else None))
         
         return None
     
