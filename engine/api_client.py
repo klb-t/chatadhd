@@ -1,14 +1,23 @@
-
-import logging, json
-from typing import List, Dict, Any, Optional
-log = logging.getLogger('api_client')
+import logging
+from typing import List, Dict
+log = logging.getLogger('api')
 
 class APIClient:
-    def __init__(self, base_url: str = 'https://openrouter.ai/api/v1', api_key: Optional[str] = None):
-        self.base_url = base_url
-        self.api_key = api_key
-
-    def chat(self, system_prompt: str, messages: List[Dict[str,str]], model: str = 'local-echo', temperature: float = 0.7, max_tokens: int = 4096) -> str:
-        # Minimal fallback: echo recent user message and include system prompt summary
-        last_user = next((m for m in reversed(messages) if m.get('role')=='user'), None)
-        return (last_user.get('content') if last_user else '') + "\n\n[system-summary]\n" + (system_prompt[:1000] if system_prompt else '[no-system]')
+    def __init__(self, base_url='https://openrouter.ai/api/v1', api_key=None):
+        self.base_url, self.api_key = base_url, api_key
+    
+    def chat(self, messages: List[Dict], model: str, temperature=0.7, max_tokens=4096) -> str:
+        if not self.api_key: raise ValueError("No API key")
+        log.info(f"API: {model}, {len(messages)} msgs")
+        try:
+            from openai import OpenAI
+            return OpenAI(api_key=self.api_key, base_url=self.base_url).chat.completions.create(
+                model=model, messages=messages, temperature=temperature, max_tokens=max_tokens
+            ).choices[0].message.content
+        except ImportError:
+            import requests
+            r = requests.post(f"{self.base_url}/chat/completions",
+                headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                json={"model": model, "messages": messages, "temperature": temperature, "max_tokens": max_tokens}, timeout=120)
+            r.raise_for_status()
+            return r.json()['choices'][0]['message']['content']

@@ -1,7 +1,8 @@
-
+#!/usr/bin/env python3
+"""CLI interface for ChatADHD - graph memory demo"""
 import sys, argparse, logging
 from db import DB
-from engine.chat_engine import ChatEngine
+from engine import ChatEngine
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('cli')
@@ -12,10 +13,10 @@ def main():
     args = parser.parse_args()
 
     db = DB()
-    engine = ChatEngine(config={'default_model': args.model}, secrets={}, db=db)
+    engine = ChatEngine(config={'default_model': args.model, 'memory_k': 8}, secrets={}, db=db)
 
     print('ChatADHD CLI - graph memory demo')
-    print('Commands: /help /quit /mem-add <text> [/parent=id] /mem-list /mem-tree /link <src> <dst> /select <query> /buffer-add <text> /buffer-show /buffer-clear /send <text>')
+    print('Commands: /help /quit /mem-add <text> [/parent=id] /mem-list /mem-tree /link <src> <dst> /select <query> /buffer-add <text> /buffer-show /buffer-clear')
 
     while True:
         try:
@@ -23,58 +24,51 @@ def main():
         except EOFError:
             break
         if not line: continue
+        
         if line.startswith('/'):
-            parts = line.split(' ',2)
+            parts = line.split(' ', 2)
             cmd = parts[0]
-            if cmd=='/help':
-                print('See README for details.')
-            elif cmd=='/quit':
+            
+            if cmd == '/help':
+                print('Memory commands for testing graph structure.')
+            elif cmd == '/quit':
                 break
-            elif cmd=='/mem-add':
+            elif cmd == '/mem-add':
                 rest = line[len('/mem-add'):].strip()
                 parent = None
                 if '/parent=' in rest:
                     rest, p = rest.split('/parent=')
                     parent = p.strip()
-                n = engine.add_memory(rest, parent)
-                print('Added node', n.id)
-            elif cmd=='/mem-list':
+                n = engine.add_memory(rest.strip(), parent)
+                print(f'Added node {n.id}')
+            elif cmd == '/mem-list':
                 for n in engine.memory.all_nodes():
-                    print(f"{n.id} parent={n.parent} depth={n.depth} text={n.content[:80]}")
-            elif cmd=='/mem-tree':
+                    print(f"{n.id} parent={n.parent} depth={n.depth} active={n.active} text={n.content[:60]}")
+            elif cmd == '/mem-tree':
                 print(engine.memory.to_text())
             elif cmd.startswith('/link'):
                 _, src, dst = line.split(maxsplit=2)
                 engine.link(src.strip(), dst.strip())
-                print('Linked', src, '->', dst)
+                print(f'Linked {src} -> {dst}')
             elif cmd.startswith('/select'):
                 q = line[len('/select'):].strip()
-                sel = engine.get_relevant_memory(q, top_k=6)
-                for s in sel:
-                    print(f"{s.id} [{s.node_type}] ({s.created}) {s.content[:120]}")
+                for s in engine.get_relevant_memory(q, top_k=6):
+                    print(f"{s.id} [{s.node_type}] {s.content[:80]}")
             elif cmd.startswith('/buffer-add'):
                 txt = line[len('/buffer-add'):].strip()
                 sid = engine.buffer.add_stage(txt)
-                print('Added stage', sid)
-            elif cmd=='/buffer-show':
+                print(f'Added stage {sid}')
+            elif cmd == '/buffer-show':
                 for s in engine.buffer.list_stages():
                     print(s)
-            elif cmd=='/buffer-clear':
-                engine.buffer.stages = []
+            elif cmd == '/buffer-clear':
+                engine.buffer.clear()
                 print('Buffer cleared')
-            elif cmd.startswith('/send'):
-                txt = line[len('/send'):].strip()
-                if not txt:
-                    print('Provide text to send')
-                else:
-                    resp = engine.send(txt)
-                    print('\n--- assistant ---\n' + resp + '\n')
             else:
                 print('Unknown command. /help for help.')
         else:
-            # send as message
-            resp = engine.send(line)
-            print('\n--- assistant ---\n' + resp + '\n')
+            # Just echo for now (no API key in CLI demo)
+            print(f'\n[echo] {line}\n')
 
 if __name__ == '__main__':
     main()

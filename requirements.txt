@@ -1,9 +1,11 @@
-
-# Optional heavy dependencies:
-# sentence-transformers, torch, whisper, pytesseract, pillow, opencv-python
+kivy>=2.0.0
 requests
-python-dotenv
-# Lightweight optional for better selector:
-scikit-learn
-# GUI (optional):
-kivy>=2.1.0
+openai
+plyer
+# Optional for semantic search:
+# sentence-transformers
+# sklearn
+# Optional for OCR/ASR:
+# pytesseract
+# pillow
+# openai-whisper
