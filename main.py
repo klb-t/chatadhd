@@ -1,28 +1,56 @@
 #!/usr/bin/env python3
-"""ChatADHD v0.4.3 - Multi-model AI chat with graph memory"""
+"""
+ChatADHD v0.4.5
+
+Fixed Kivy FileChooser (bez plyer - nie działa w Pydroid)
+"""
 import os
+import sys
+from pathlib import Path
+
+# === PATH SETUP ===
+CODE_DIR = Path(__file__).parent.resolve()
+sys.path.insert(0, str(CODE_DIR))
+
+# === DATA DIRECTORY ===
+def get_data_dir():
+    """Persistent data directory - nie zależy od wersji kodu"""
+    if 'ANDROID_ROOT' in os.environ:
+        # Android - Documents folder
+        base = Path('/storage/emulated/0/Documents/ChatADHD')
+    else:
+        # Desktop
+        base = Path.home() / '.config' / 'chatadhd'
+    
+    base.mkdir(parents=True, exist_ok=True)
+    return base
+
+DATA_DIR = get_data_dir()
+
+# === KIVY CONFIG ===
 os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
-import sys
+# === LOGGING ===
 import logging
+__version__ = "0.4.5"
 
-__version__ = "0.4.3"
+log_file = DATA_DIR / 'logs' / f'kivy_{__version__}.log'
+log_file.parent.mkdir(parents=True, exist_ok=True)
 
-# Initialize paths FIRST
-from paths import init as init_paths
-DATA_DIR, CODE_DIR = init_paths()
-
-# Setup logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(str(log_file), mode='a')
+    ]
 )
 log = logging.getLogger('main')
 log.info(f"ChatADHD v{__version__}")
-log.info(f"Code: {CODE_DIR}")
-log.info(f"Data: {DATA_DIR}")
+log.info(f"CODE_DIR: {CODE_DIR}")
+log.info(f"DATA_DIR: {DATA_DIR}")
 
-# Kivy imports
+# === KIVY IMPORTS ===
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
@@ -32,37 +60,41 @@ from kivy.graphics import Color, Rectangle
 from kivy.metrics import dp, sp
 from kivy.clock import Clock
 
-# Local imports
+# === APP IMPORTS ===
 try:
     from db import DB
     from config import Config, Secrets, Models
     from engine import ChatEngine
-    from gui.colors import C
-    from gui.widgets import RBtn
-    from gui.panels import MemoryPanel, ConvPanel, ChatPanel, SettingsPopup, LOGBUF
-    log.info("Imports OK")
+    from gui import (
+        C, LOGBUF, RBtn, 
+        MemoryPanel, ConvPanel, ChatPanel, SettingsPopup
+    )
+    log.info("All imports OK")
 except ImportError as e:
     log.critical(f"Import failed: {e}")
     class ErrApp(App):
         def build(self):
-            return Label(text=f"Import Error:\n{e}\n\nCode: {CODE_DIR}\nData: {DATA_DIR}")
+            return Label(text=f"Import Error:\n{e}\n\nCODE_DIR: {CODE_DIR}")
     ErrApp().run()
     sys.exit(1)
 
-# Log buffer handler
+# === LOG HANDLER ===
 class BufHandler(logging.Handler):
     def emit(self, record):
         LOGBUF.add(self.format(record))
-log.addHandler(BufHandler())
 
+logging.getLogger().addHandler(BufHandler())
+
+# === WINDOW CONFIG ===
 Window.softinput_mode = 'below_target'
 
+# === MAIN LAYOUT ===
 class MainLayout(FloatLayout):
     def __init__(self, **kw):
         super().__init__(**kw)
         log.info("Building UI...")
         
-        # All data in DATA_DIR (persistent, version-independent)
+        # Initialize components
         self.config = Config(DATA_DIR)
         self.secrets = Secrets(DATA_DIR)
         self.models = Models(DATA_DIR, self.config, self.secrets)
@@ -73,17 +105,19 @@ class MainLayout(FloatLayout):
         with self.canvas.before:
             Color(*C['bg'])
             self.bg = Rectangle(pos=self.pos, size=self.size)
-        self.bind(pos=lambda *a: setattr(self.bg, 'pos', self.pos),
-                  size=lambda *a: setattr(self.bg, 'size', self.size))
+        self.bind(
+            pos=lambda *a: setattr(self.bg, 'pos', self.pos),
+            size=lambda *a: setattr(self.bg, 'size', self.size)
+        )
         
-        # Layout
+        # Main layout
         main = BoxLayout(orientation='horizontal', pos_hint={'x': 0, 'y': 0}, size_hint=(1, 1))
         
         # Left panel - conversations
         self.conv_panel = ConvPanel(self.engine, self._conv_selected)
         main.add_widget(self.conv_panel)
         
-        # Center
+        # Center - chat
         center = BoxLayout(orientation='vertical')
         
         # Nav bar
@@ -91,8 +125,10 @@ class MainLayout(FloatLayout):
         with nav.canvas.before:
             Color(*C['card'])
             nav.bg = Rectangle(pos=nav.pos, size=nav.size)
-        nav.bind(pos=lambda *a: setattr(nav.bg, 'pos', nav.pos),
-                 size=lambda *a: setattr(nav.bg, 'size', nav.size))
+        nav.bind(
+            pos=lambda *a: setattr(nav.bg, 'pos', nav.pos),
+            size=lambda *a: setattr(nav.bg, 'size', nav.size)
+        )
         
         chats_btn = RBtn(text="Chats", size_hint_x=0.25, bg=C['card'])
         chats_btn.bind(on_press=lambda *a: (self.conv_panel.toggle(), self.conv_panel.refresh()))
@@ -110,6 +146,7 @@ class MainLayout(FloatLayout):
         # Chat panel
         self.chat_panel = ChatPanel(self.engine, self.models, self._show_settings)
         center.add_widget(self.chat_panel)
+        
         main.add_widget(center)
         
         # Right panel - memory
@@ -118,7 +155,7 @@ class MainLayout(FloatLayout):
         
         self.add_widget(main)
         
-        # Load or create conversation
+        # Load last conversation or create new
         convs = self.db.list_convs(1)
         if convs:
             self.engine.load_conv(convs[0]['id'])
@@ -140,9 +177,11 @@ class MainLayout(FloatLayout):
     def _show_settings(self, *a):
         SettingsPopup(self.config, self.secrets, self.chat_panel._refresh_models).open()
 
+
 class ChatADHDApp(App):
     def build(self):
         return MainLayout()
+
 
 if __name__ == "__main__":
     ChatADHDApp().run()

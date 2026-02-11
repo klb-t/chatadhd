@@ -1,3 +1,11 @@
-from .colors import C
-from .widgets import RBtn, Card, Panel
-from .panels import MemoryPanel, ConvPanel, ChatPanel, SettingsPopup, LogViewer, LOGBUF
+from .panels import (
+    C, LOGBUF, RBtn, Card, Panel,
+    FilePickerPopup, LogViewer, SettingsPopup,
+    MsgBubble, MemoryPanel, ConvPanel, ChatPanel
+)
+
+__all__ = [
+    'C', 'LOGBUF', 'RBtn', 'Card', 'Panel',
+    'FilePickerPopup', 'LogViewer', 'SettingsPopup',
+    'MsgBubble', 'MemoryPanel', 'ConvPanel', 'ChatPanel'
+]

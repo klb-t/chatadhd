@@ -1,4 +1,4 @@
-"""Database - stored in DATA_DIR/data/"""
+"""Database layer"""
 import sqlite3
 import json
 import uuid
@@ -58,15 +58,25 @@ class DB:
     
     def create_msg(self, conv_id, role, text, parent_id=None, model=None, attachments=None):
         id, now = str(uuid.uuid4()), datetime.now().isoformat()
+        att_json = json.dumps(attachments or [])
         self.conn.execute("INSERT INTO messages VALUES (?,?,?,?,?,?,?,?,?)",
-                         (id, conv_id, parent_id, role, text, model, 'active', now, json.dumps(attachments or [])))
+                         (id, conv_id, parent_id, role, text, model, 'active', now, att_json))
         self.conn.commit()
         return {"id": id, "conv_id": conv_id, "role": role, "text": text}
     
     def get_msgs(self, conv_id, include_excluded=False):
         where = "AND status != 'deleted'" if include_excluded else "AND status = 'active'"
-        return [dict(r) for r in self.conn.execute(
-            f"SELECT * FROM messages WHERE conv_id=? {where} ORDER BY created", (conv_id,))]
+        rows = self.conn.execute(
+            f"SELECT * FROM messages WHERE conv_id=? {where} ORDER BY created", (conv_id,))
+        result = []
+        for r in rows:
+            msg = dict(r)
+            try:
+                msg['attachments'] = json.loads(msg.get('attachments', '[]'))
+            except:
+                msg['attachments'] = []
+            result.append(msg)
+        return result
     
     def set_msg_status(self, id, status):
         self.conn.execute("UPDATE messages SET status=? WHERE id=?", (status, id))

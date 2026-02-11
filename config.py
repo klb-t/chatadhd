@@ -1,4 +1,4 @@
-"""Configuration - stored in DATA_DIR (persistent across versions)"""
+"""Configuration management"""
 import json
 import logging
 from pathlib import Path
@@ -10,9 +10,6 @@ DEFAULTS = {
     "default_model": "anthropic/claude-sonnet-4",
     "temperature": 0.7,
     "max_tokens": 4096,
-    "memory_k": 8,
-    "sync_enabled": False,
-    "sync_provider": None  # 'google_drive', 'custom_server'
 }
 
 class Config:
@@ -36,11 +33,11 @@ class Config:
         self.data[key] = value
     
     def save(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         json.dump(self.data, open(self.path, 'w'), indent=2)
         log.info("Config saved")
 
 class Secrets:
-    """Sensitive data - API keys, tokens. NEVER in repo, NEVER in cloud without encryption"""
     def __init__(self, data_dir: Path):
         self.path = data_dir / "secrets.json"
         self.data = {}
@@ -61,12 +58,14 @@ class Secrets:
         self.save()
     
     def save(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         json.dump(self.data, open(self.path, 'w'), indent=2)
 
 class Models:
     def __init__(self, data_dir: Path, config, secrets):
         self.path = data_dir / "models.json"
-        self.config, self.secrets = config, secrets
+        self.config = config
+        self.secrets = secrets
         self.data = {"models": {}}
         if self.path.exists():
             try:
@@ -81,6 +80,7 @@ class Models:
         return self.data.get("models", {}).get(mid, {}).get("name", mid.split("/")[-1] if mid else "AI")
     
     def save(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         json.dump(self.data, open(self.path, 'w'), indent=2)
     
     def update_from_api(self):
@@ -90,8 +90,11 @@ class Models:
         try:
             import requests
             from datetime import datetime
-            r = requests.get(f"{self.config.get('base_url')}/models",
-                           headers={"Authorization": f"Bearer {key}"}, timeout=15)
+            r = requests.get(
+                f"{self.config.get('base_url')}/models",
+                headers={"Authorization": f"Bearer {key}"},
+                timeout=15
+            )
             r.raise_for_status()
             for m in r.json().get("data", []):
                 mid = m.get("id", "")
@@ -101,6 +104,7 @@ class Models:
                     }
             self.data["_updated"] = datetime.now().isoformat()
             self.save()
+            log.info(f"Updated {len(self.data['models'])} models")
             return True
         except Exception as e:
             log.error(f"Model update failed: {e}")
