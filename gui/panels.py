@@ -1,12 +1,18 @@
 """
-ChatADHD v0.5.2 - Voice input + Keyboard handling
+ChatADHD v0.06.00 - Complete GUI
+- Collapsible messages with expand
+- Artifact detection & floating panel
+- Quick API panel with presets
+- Node editor for graph
+- Voice input (simple subprocess)
 """
 import os
 import threading
 import logging
 import zipfile
-import shutil
 import json
+import re
+import subprocess
 from pathlib import Path
 from datetime import datetime
 
@@ -17,6 +23,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.spinner import Spinner
 from kivy.uix.button import Button
+from kivy.uix.slider import Slider
 from kivy.uix.filechooser import FileChooserListView
 from kivy.core.window import Window
 from kivy.metrics import dp, sp
@@ -24,46 +31,25 @@ from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.core.clipboard import Clipboard
 
-# Voice input (Android)
-try:
-    from android.permissions import request_permissions, Permission
-    from jnius import autoclass
-    PythonActivity = autoclass('org.kivy.android.PythonActivity')
-    Intent = autoclass('android.content.Intent')
-    RecognizerIntent = autoclass('android.speech.RecognizerIntent')
-    HAS_VOICE = True
-except:
-    HAS_VOICE = False
-
 log = logging.getLogger('panels')
 
 # === THEMES ===
 THEMES = {
     'dark': {
-        'bg': (0.08, 0.08, 0.10, 1),
-        'card': (0.16, 0.16, 0.20, 1),
-        'input_bg': (0.12, 0.12, 0.15, 1),  # Ciemne tło dla inputów
-        'text': (0.95, 0.95, 0.95, 1),
-        'dim': (0.55, 0.55, 0.60, 1),
-        'accent': (0.30, 0.55, 0.95, 1),
-        'user': (0.18, 0.22, 0.32, 1),
-        'ai': (0.14, 0.18, 0.14, 1),
-        'ok': (0.20, 0.55, 0.30, 1),
-        'err': (0.70, 0.25, 0.25, 1),
-        'warn': (0.80, 0.55, 0.20, 1),
+        'bg': (0.06, 0.06, 0.08, 1), 'card': (0.14, 0.14, 0.18, 1),
+        'input_bg': (0.10, 0.10, 0.13, 1), 'text': (0.95, 0.95, 0.95, 1),
+        'dim': (0.55, 0.55, 0.60, 1), 'accent': (0.30, 0.55, 0.95, 1),
+        'user': (0.15, 0.22, 0.30, 1), 'ai': (0.12, 0.18, 0.24, 1),
+        'ok': (0.20, 0.55, 0.30, 1), 'err': (0.70, 0.25, 0.25, 1),
+        'warn': (0.80, 0.55, 0.15, 1), 'artifact': (0.20, 0.25, 0.35, 1),
     },
     'amoled': {
-        'bg': (0.0, 0.0, 0.0, 1),
-        'card': (0.10, 0.10, 0.12, 1),
-        'input_bg': (0.06, 0.06, 0.08, 1),
-        'text': (1.0, 1.0, 1.0, 1),
-        'dim': (0.50, 0.50, 0.55, 1),
-        'accent': (0.35, 0.60, 1.0, 1),
-        'user': (0.12, 0.16, 0.25, 1),
-        'ai': (0.08, 0.12, 0.08, 1),
-        'ok': (0.15, 0.60, 0.25, 1),
-        'err': (0.80, 0.20, 0.20, 1),
-        'warn': (0.90, 0.60, 0.15, 1),
+        'bg': (0.0, 0.0, 0.0, 1), 'card': (0.08, 0.08, 0.10, 1),
+        'input_bg': (0.05, 0.05, 0.07, 1), 'text': (1.0, 1.0, 1.0, 1),
+        'dim': (0.50, 0.50, 0.55, 1), 'accent': (0.35, 0.60, 1.0, 1),
+        'user': (0.08, 0.12, 0.18, 1), 'ai': (0.05, 0.08, 0.12, 1),
+        'ok': (0.15, 0.60, 0.25, 1), 'err': (0.80, 0.20, 0.20, 1),
+        'warn': (0.90, 0.60, 0.10, 1), 'artifact': (0.12, 0.15, 0.22, 1),
     },
 }
 C = THEMES['dark'].copy()
@@ -74,16 +60,16 @@ def set_theme(name):
         C.clear()
         C.update(THEMES[name])
 
-# === LOG ===
+# === LOG BUFFER ===
 class LogBuffer:
     def __init__(self): self.lines = []
-    def add(self, msg):
+    def add(self, msg): 
         self.lines.append(f"{datetime.now():%H:%M:%S} {msg}")
-        self.lines = self.lines[-300:]
+        self.lines = self.lines[-500:]
     def get(self): return "\n".join(self.lines)
 LOGBUF = LogBuffer()
 
-# === WIDGETS ===
+# === BASIC WIDGETS ===
 class RBtn(Button):
     def __init__(self, bg=None, **kw):
         super().__init__(**kw)
@@ -102,7 +88,6 @@ class Card(BoxLayout):
                   size=lambda *a: setattr(self.rect, 'size', self.size))
 
 class DarkInput(TextInput):
-    """TextInput with forced dark background"""
     def __init__(self, **kw):
         kw.setdefault('background_color', C['input_bg'])
         kw.setdefault('foreground_color', C['text'])
@@ -122,135 +107,449 @@ class Panel(BoxLayout):
             self.bg = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=lambda *a: setattr(self.bg, 'pos', self.pos),
                   size=lambda *a: setattr(self.bg, 'size', self.size))
-    def toggle(self): self._visible = not self._visible; self.width = self.panel_width if self._visible else 0
-    def open(self): self._visible = True; self.width = self.panel_width
-    def close(self): self._visible = False; self.width = 0
-    def refresh(self): pass
-
+    
+    def toggle(self):
+        self._visible = not self._visible
+        self.width = self.panel_width if self._visible else 0
+    
+    def open(self):
+        self._visible = True
+        self.width = self.panel_width
+    
+    def close(self):
+        self._visible = False
+        self.width = 0
+    
+    def refresh(self):
+        pass
 
 def show_toast(msg, duration=2):
-    toast = Label(text=msg, size_hint=(None, None), size=(dp(200), dp(36)),
-                  pos_hint={'center_x': 0.5, 'y': 0.05}, color=C['text'])
+    toast = Label(text=msg, size_hint=(None, None), size=(dp(220), dp(36)),
+                  pos_hint={'center_x': 0.5, 'y': 0.05}, color=C['text'], font_size=sp(11))
     with toast.canvas.before:
         Color(*C['ok'])
-        toast.bg = RoundedRectangle(pos=toast.pos, size=toast.size, radius=[dp(6)])
+        toast.bg = RoundedRectangle(pos=toast.pos, size=toast.size, radius=[dp(8)])
     toast.bind(pos=lambda *a: setattr(toast.bg, 'pos', toast.pos))
     Window.add_widget(toast)
     Clock.schedule_once(lambda dt: Window.remove_widget(toast), duration)
 
+# === ARTIFACT DETECTION ===
+def detect_artifacts(text):
+    """Detect code blocks and other artifacts in text."""
+    artifacts = []
+    
+    # Code blocks with ```
+    code_pattern = r'```(\w*)\n(.*?)```'
+    for match in re.finditer(code_pattern, text, re.DOTALL):
+        lang = match.group(1) or 'code'
+        code = match.group(2)
+        artifacts.append({
+            'type': 'code',
+            'lang': lang,
+            'content': code,
+            'start': match.start(),
+            'end': match.end(),
+        })
+    
+    # Python files
+    if '# ===' in text or 'def ' in text and 'class ' in text:
+        if len(text) > 500 and text.count('\n') > 20:
+            artifacts.append({
+                'type': 'code',
+                'lang': 'python',
+                'content': text,
+                'start': 0,
+                'end': len(text),
+            })
+    
+    return artifacts
 
-# === THEME POPUP ===
+# === NODE EDITOR POPUP (for Graph) ===
+class NodeEditorPopup(Popup):
+    def __init__(self, node, engine, memory, on_update=None, **kwargs):
+        self.node = node
+        self.engine = engine
+        self.memory = memory
+        self.on_update = on_update
+        
+        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
+        
+        # Header
+        content.add_widget(Label(text=f"[{node.type}] {node.id[:10]}", 
+                                font_size=sp(9), color=C['dim'], 
+                                size_hint_y=None, height=dp(20)))
+        
+        # Content
+        content.add_widget(Label(text="Content:", color=C['text'], 
+                                size_hint_y=None, height=dp(16)))
+        self.content_input = DarkInput(
+            text=node.data.get('text', node.full_label) if hasattr(node, 'full_label') else node.label,
+            multiline=True, size_hint_y=0.4)
+        content.add_widget(self.content_input)
+        
+        # Weight
+        wr = BoxLayout(size_hint_y=None, height=dp(34))
+        wr.add_widget(Label(text="Weight:", color=C['text'], size_hint_x=0.25))
+        self.weight_slider = Slider(min=0.1, max=2.0, value=node.weight, size_hint_x=0.5)
+        wr.add_widget(self.weight_slider)
+        self.weight_label = Label(text=f"{node.weight:.1f}", color=C['text'], size_hint_x=0.25)
+        self.weight_slider.bind(value=lambda s, v: setattr(self.weight_label, 'text', f"{v:.1f}"))
+        wr.add_widget(self.weight_label)
+        content.add_widget(wr)
+        
+        # Pin
+        pr = BoxLayout(size_hint_y=None, height=dp(30))
+        pr.add_widget(Label(text="Pin:", color=C['text'], size_hint_x=0.4))
+        self.pin_btn = RBtn(text="PINNED" if node.pinned else "FREE",
+                           bg=C['warn'] if node.pinned else C['card'],
+                           size_hint_x=0.6, on_press=self._toggle_pin)
+        pr.add_widget(self.pin_btn)
+        content.add_widget(pr)
+        
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Save", bg=C['accent'], font_size=sp(10), on_press=self._save))
+        btns.add_widget(RBtn(text="Close", bg=C['card'], font_size=sp(10), 
+                            on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+        
+        super().__init__(title=f"Edit: {node.label[:18]}", content=content, 
+                        size_hint=(0.92, 0.55), **kwargs)
+    
+    def _toggle_pin(self, *a):
+        self.node.pinned = not self.node.pinned
+        self.pin_btn.text = "PINNED" if self.node.pinned else "FREE"
+        self.pin_btn.background_color = C['warn'] if self.node.pinned else C['card']
+    
+    def _save(self, *a):
+        self.node.weight = self.weight_slider.value
+        if self.node.type in ('user', 'assistant') and self.engine:
+            self.engine.db.update_msg(self.node.id, weight=self.node.weight)
+        elif self.memory:
+            self.memory.update_node(self.node.id, weight=self.node.weight)
+        show_toast("Saved")
+        self.dismiss()
+        if self.on_update:
+            self.on_update()
+
+# === QUICK API PANEL ===
+class QuickAPIPanel(Popup):
+    """Fast access to API parameters, presets, favorite models."""
+    
+    PRESETS = {
+        'Creative': {'temperature': 0.9, 'max_tokens': 4096},
+        'Balanced': {'temperature': 0.7, 'max_tokens': 4096},
+        'Precise': {'temperature': 0.3, 'max_tokens': 4096},
+        'Code': {'temperature': 0.2, 'max_tokens': 8192},
+        'Long': {'temperature': 0.7, 'max_tokens': 16384},
+    }
+    
+    FAVORITES = [
+        'anthropic/claude-sonnet-4-20250514',
+        'anthropic/claude-4.6-opus',
+        'openai/gpt-5.2',
+        'openai/gpt-5.3-codex',
+        'google/gemini-2.5-pro',
+        'deepseek/deepseek-r1',
+    ]
+    
+    def __init__(self, config, models, on_change=None, **kw):
+        self.config = config
+        self.models = models
+        self.on_change = on_change
+        
+        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
+        
+        # Favorite models
+        content.add_widget(Label(text="Quick Models:", color=C['text'], 
+                                size_hint_y=None, height=dp(18), font_size=sp(10)))
+        
+        fav_grid = BoxLayout(size_hint_y=None, height=dp(70), orientation='vertical', spacing=dp(2))
+        row1 = BoxLayout(spacing=dp(2))
+        row2 = BoxLayout(spacing=dp(2))
+        
+        current = config.get('default_model', '')
+        for i, mid in enumerate(self.FAVORITES[:6]):
+            short = mid.split('/')[-1][:10]
+            is_current = mid == current
+            btn = RBtn(text=short, bg=C['accent'] if is_current else C['card'], font_size=sp(8))
+            btn.model_id = mid
+            btn.bind(on_press=self._select_model)
+            if i < 3:
+                row1.add_widget(btn)
+            else:
+                row2.add_widget(btn)
+        
+        fav_grid.add_widget(row1)
+        fav_grid.add_widget(row2)
+        content.add_widget(fav_grid)
+        
+        # Presets
+        content.add_widget(Label(text="Presets:", color=C['text'], 
+                                size_hint_y=None, height=dp(18), font_size=sp(10)))
+        
+        preset_row = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(2))
+        for name in self.PRESETS.keys():
+            btn = RBtn(text=name, bg=C['card'], font_size=sp(8))
+            btn.preset_name = name
+            btn.bind(on_press=self._apply_preset)
+            preset_row.add_widget(btn)
+        content.add_widget(preset_row)
+        
+        # Temperature
+        temp_row = BoxLayout(size_hint_y=None, height=dp(34))
+        temp_row.add_widget(Label(text="Temp:", color=C['text'], size_hint_x=0.2, font_size=sp(9)))
+        self.temp_slider = Slider(min=0.0, max=1.5, value=config.get('temperature', 0.7), size_hint_x=0.6)
+        temp_row.add_widget(self.temp_slider)
+        self.temp_label = Label(text=f"{config.get('temperature', 0.7):.2f}", 
+                               color=C['text'], size_hint_x=0.2, font_size=sp(9))
+        self.temp_slider.bind(value=self._on_temp)
+        temp_row.add_widget(self.temp_label)
+        content.add_widget(temp_row)
+        
+        # Max tokens
+        tok_row = BoxLayout(size_hint_y=None, height=dp(34))
+        tok_row.add_widget(Label(text="Tokens:", color=C['text'], size_hint_x=0.2, font_size=sp(9)))
+        self.tok_slider = Slider(min=1000, max=32000, value=config.get('max_tokens', 4096), size_hint_x=0.6)
+        tok_row.add_widget(self.tok_slider)
+        self.tok_label = Label(text=f"{int(config.get('max_tokens', 4096)):,}", 
+                              color=C['text'], size_hint_x=0.2, font_size=sp(9))
+        self.tok_slider.bind(value=self._on_tok)
+        tok_row.add_widget(self.tok_label)
+        content.add_widget(tok_row)
+        
+        # Current stats
+        self.stats = Label(text="", color=C['dim'], size_hint_y=None, height=dp(20), font_size=sp(8))
+        self._update_stats()
+        content.add_widget(self.stats)
+        
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Apply", bg=C['accent'], on_press=self._apply))
+        btns.add_widget(RBtn(text="Close", bg=C['card'], on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+        
+        super().__init__(title="Quick API Settings", content=content, size_hint=(0.95, 0.55), **kw)
+    
+    def _select_model(self, btn):
+        self.config.set('default_model', btn.model_id)
+        show_toast(f"Model: {btn.model_id.split('/')[-1]}")
+        self._notify()
+    
+    def _apply_preset(self, btn):
+        preset = self.PRESETS.get(btn.preset_name, {})
+        for k, v in preset.items():
+            self.config.set(k, v)
+        self.temp_slider.value = preset.get('temperature', 0.7)
+        self.tok_slider.value = preset.get('max_tokens', 4096)
+        show_toast(f"Preset: {btn.preset_name}")
+        self._notify()
+    
+    def _on_temp(self, slider, val):
+        self.temp_label.text = f"{val:.2f}"
+        self._update_stats()
+    
+    def _on_tok(self, slider, val):
+        self.tok_label.text = f"{int(val):,}"
+        self._update_stats()
+    
+    def _update_stats(self):
+        model = self.config.get('default_model', 'none')
+        self.stats.text = f"Model: {model.split('/')[-1][:20]}"
+    
+    def _apply(self, *a):
+        self.config.set('temperature', round(self.temp_slider.value, 2))
+        self.config.set('max_tokens', int(self.tok_slider.value))
+        self.config.save()
+        show_toast("Settings applied")
+        self._notify()
+        self.dismiss()
+    
+    def _notify(self):
+        if self.on_change:
+            self.on_change()
+
+
+# === SETTINGS POPUP ===
+class SettingsPopup(Popup):
+    def __init__(self, config, secrets, on_save=None, **kw):
+        self.config = config
+        self.secrets = secrets
+        self.on_save = on_save
+        
+        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
+        
+        content.add_widget(Label(text="API Key:", color=C['text'], 
+                                size_hint_y=None, height=dp(16)))
+        self.key = DarkInput(text=secrets.get("api_key", ""), 
+                            hint_text="sk-or-v1-...",
+                            password=True, multiline=False, 
+                            size_hint_y=None, height=dp(36))
+        content.add_widget(self.key)
+        
+        content.add_widget(Label(text="Base URL:", color=C['text'], 
+                                size_hint_y=None, height=dp(16)))
+        self.url = DarkInput(text=config.get("base_url", "https://openrouter.ai/api/v1"), 
+                            multiline=False, size_hint_y=None, height=dp(36))
+        content.add_widget(self.url)
+        
+        content.add_widget(RBtn(text="Theme: Dark/AMOLED", bg=C['card'], 
+                               size_hint_y=None, height=dp(34),
+                               on_press=lambda *a: ThemePopup(self.on_save).open()))
+        
+        content.add_widget(BoxLayout())  # Spacer
+        
+        btns = BoxLayout(size_hint_y=None, height=dp(38), spacing=dp(4))
+        btns.add_widget(RBtn(text="Save", bg=C['accent'], on_press=self._save))
+        btns.add_widget(RBtn(text="Cancel", bg=C['card'], on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+        
+        super().__init__(title="Settings", content=content, size_hint=(0.9, 0.5), **kw)
+    
+    def _save(self, *a):
+        if self.key.text.strip():
+            self.secrets.set("api_key", self.key.text.strip())
+        self.config.set("base_url", self.url.text.strip())
+        self.config.save()
+        if self.on_save:
+            self.on_save()
+        self.dismiss()
+
+
 class ThemePopup(Popup):
     def __init__(self, on_change=None, **kw):
         self.on_change = on_change
         content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(6))
         for name in THEMES.keys():
-            btn = RBtn(text=name.upper(), size_hint_y=None, height=dp(48))
+            btn = RBtn(text=name.upper(), size_hint_y=None, height=dp(44))
             btn.theme_name = name
             btn.bind(on_press=self._sel)
             content.add_widget(btn)
         content.add_widget(BoxLayout())
-        content.add_widget(RBtn(text="Close", bg=C['card'], size_hint_y=None, height=dp(40),
+        content.add_widget(RBtn(text="Close", bg=C['card'], size_hint_y=None, height=dp(38),
                                on_press=lambda *a: self.dismiss()))
-        super().__init__(title="Theme", content=content, size_hint=(0.7, 0.45), **kw)
+        super().__init__(title="Theme", content=content, size_hint=(0.7, 0.4), **kw)
     
     def _sel(self, btn):
         set_theme(btn.theme_name)
-        if self.on_change: self.on_change()
-        self.dismiss()
         show_toast(f"Theme: {btn.theme_name}")
+        self.dismiss()
+        if self.on_change:
+            self.on_change()
 
 
-# === FILE/DIR PICKER ===
+# === FILE PICKER ===
 class FilePickerPopup(Popup):
     def __init__(self, callback, title="Select", allow_dirs=False, **kw):
         self.callback = callback
         self.allow_dirs = allow_dirs
-        content = BoxLayout(orientation='vertical', spacing=dp(4), padding=dp(4))
         
-        qk = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(2))
-        for txt, path in [("Home", "/storage/emulated/0"), ("DL", "/storage/emulated/0/Download")]:
-            if os.path.exists(path):
-                b = RBtn(text=txt, size_hint_x=None, width=dp(48), bg=C['card'], font_size=sp(9))
-                b.path = path
+        content = BoxLayout(orientation='vertical', spacing=dp(3), padding=dp(3))
+        
+        # Quick nav
+        qk = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+        for txt, p in [("Home", "/storage/emulated/0"), ("DL", "/storage/emulated/0/Download")]:
+            if os.path.exists(p):
+                b = RBtn(text=txt, size_hint_x=None, width=dp(44), bg=C['card'], font_size=sp(9))
+                b.path = p
                 b.bind(on_release=lambda b: setattr(self.fc, 'path', b.path))
                 qk.add_widget(b)
         content.add_widget(qk)
         
-        self.plbl = Label(text="", size_hint_y=None, height=dp(18), font_size=sp(8), color=C['dim'])
-        content.add_widget(self.plbl)
-        
         start = "/storage/emulated/0/Download" if os.path.exists("/storage/emulated/0/Download") else str(Path.home())
         self.fc = FileChooserListView(path=start, dirselect=allow_dirs)
-        self.fc.bind(path=lambda i, p: setattr(self.plbl, 'text', p[-40:]))
         content.add_widget(self.fc)
         
-        self.slbl = Label(text="", size_hint_y=None, height=dp(20), font_size=sp(9), color=C['ok'])
-        self.fc.bind(selection=lambda i, s: setattr(self.slbl, 'text', f"> {os.path.basename(s[0]) if s else ''}"))
-        content.add_widget(self.slbl)
-        
-        btns = BoxLayout(size_hint_y=None, height=dp(38), spacing=dp(4))
-        btns.add_widget(RBtn(text="Cancel", bg=C['card'], on_press=lambda *a: (self.dismiss(), self.callback(None))))
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Cancel", bg=C['card'], 
+                            on_press=lambda *a: (self.dismiss(), self.callback(None))))
         if allow_dirs:
-            btns.add_widget(RBtn(text="This Dir", bg=C['warn'], on_press=self._sel_dir))
+            btns.add_widget(RBtn(text="This Dir", bg=C['warn'], 
+                                on_press=lambda *a: (self.dismiss(), self.callback(self.fc.path))))
         btns.add_widget(RBtn(text="Select", bg=C['accent'], on_press=self._sel))
         content.add_widget(btns)
+        
         super().__init__(title=title, content=content, size_hint=(0.95, 0.85), **kw)
     
     def _sel(self, *a):
         s = self.fc.selection
         self.dismiss()
-        if s:
-            self.callback(s[0])
-        else:
-            self.callback(None)
-    
-    def _sel_dir(self, *a):
-        self.dismiss()
-        self.callback(self.fc.path)
+        self.callback(s[0] if s else None)
+
+
+# === LOG VIEWER ===
+class LogViewer(Popup):
+    def __init__(self, **kw):
+        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(4))
+        
+        scroll = ScrollView()
+        self.lbl = Label(text=LOGBUF.get(), font_size=sp(8), color=C['text'],
+                        text_size=(Window.width-dp(30), None), halign='left', valign='top',
+                        size_hint_y=None)
+        self.lbl.bind(texture_size=lambda *x: setattr(self.lbl, 'height', self.lbl.texture_size[1]))
+        scroll.add_widget(self.lbl)
+        content.add_widget(scroll)
+        
+        btns = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(4))
+        btns.add_widget(RBtn(text="Refresh", bg=C['accent'], 
+                            on_press=lambda *a: setattr(self.lbl, 'text', LOGBUF.get())))
+        btns.add_widget(RBtn(text="Close", bg=C['card'], on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+        
+        super().__init__(title="Logs", content=content, size_hint=(0.95, 0.85), **kw)
 
 
 # === MODEL SELECTOR ===
 class ModelSelectorPopup(Popup):
     PROVIDERS = {
-        'openai': {'name': 'OpenAI', 'color': (0.2, 0.65, 0.4, 1)},
-        'anthropic': {'name': 'Anthropic', 'color': (0.85, 0.5, 0.3, 1)},
-        'google': {'name': 'Google', 'color': (0.3, 0.5, 0.85, 1)},
-        'meta-llama': {'name': 'Meta', 'color': (0.3, 0.4, 0.75, 1)},
-        'mistralai': {'name': 'Mistral', 'color': (0.75, 0.4, 0.2, 1)},
-        'deepseek': {'name': 'DeepSeek', 'color': (0.5, 0.3, 0.65, 1)},
+        'openai': ('OpenAI', (0.2, 0.7, 0.45, 1)),
+        'anthropic': ('Anthropic', (0.9, 0.55, 0.3, 1)),
+        'google': ('Google', (0.3, 0.55, 0.9, 1)),
+        'meta-llama': ('Meta', (0.3, 0.4, 0.8, 1)),
+        'mistralai': ('Mistral', (0.8, 0.45, 0.25, 1)),
+        'deepseek': ('DeepSeek', (0.55, 0.35, 0.75, 1)),
     }
     
     def __init__(self, models, current_model, on_select=None, **kw):
-        self.models, self.current_model, self.on_select = models, current_model, on_select
+        self.models = models
+        self.current_model = current_model
+        self.on_select = on_select
         self.current_provider = None
         
-        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(4))
+        content = BoxLayout(orientation='vertical', padding=dp(5), spacing=dp(3))
         
-        sr = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(2))
-        self.search = DarkInput(hint_text="Search...", multiline=False, font_size=sp(11))
+        # Search
+        sr = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(2))
+        self.search = DarkInput(hint_text="Search...", multiline=False, font_size=sp(10))
         self.search.bind(text=lambda i, t: self._build(t.lower()))
         sr.add_widget(self.search)
-        sr.add_widget(RBtn(text="X", size_hint_x=None, width=dp(36), bg=C['card'],
+        sr.add_widget(RBtn(text="X", size_hint_x=None, width=dp(34), bg=C['card'],
                           on_press=lambda *a: setattr(self.search, 'text', '')))
         content.add_widget(sr)
         
-        self.tabs = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(2))
-        ab = RBtn(text="All", bg=C['accent'], font_size=sp(8)); ab.provider = None
-        ab.bind(on_press=self._sel_prov); self.tabs.add_widget(ab)
-        for pid, info in self.PROVIDERS.items():
-            b = RBtn(text=info['name'][:4], bg=C['card'], font_size=sp(7))
-            b.provider = pid; b.bind(on_press=self._sel_prov); self.tabs.add_widget(b)
+        # Provider tabs
+        self.tabs = BoxLayout(size_hint_y=None, height=dp(30), spacing=dp(2))
+        ab = RBtn(text="All", bg=C['accent'], font_size=sp(8))
+        ab.provider = None
+        ab.bind(on_press=self._sel_prov)
+        self.tabs.add_widget(ab)
+        for pid, (nm, col) in self.PROVIDERS.items():
+            b = RBtn(text=nm[:4], bg=C['card'], font_size=sp(7))
+            b.provider = pid
+            b.bind(on_press=self._sel_prov)
+            self.tabs.add_widget(b)
         content.add_widget(self.tabs)
         
+        # Model list
         self.scroll = ScrollView()
         self.lst = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(2))
         self.lst.bind(minimum_height=self.lst.setter('height'))
         self.scroll.add_widget(self.lst)
         content.add_widget(self.scroll)
         
-        content.add_widget(RBtn(text="Close", size_hint_y=None, height=dp(36), bg=C['card'],
+        content.add_widget(RBtn(text="Close", size_hint_y=None, height=dp(34), bg=C['card'],
                                on_press=lambda *a: self.dismiss()))
+        
         super().__init__(title="Models", content=content, size_hint=(0.95, 0.85), **kw)
         self._build()
     
@@ -264,8 +563,10 @@ class ModelSelectorPopup(Popup):
     def _build(self, filt=''):
         self.lst.clear_widgets()
         all_m = self.models.all()
+        
         if not all_m:
-            self.lst.add_widget(Label(text="No models - tap Ref", size_hint_y=None, height=dp(36), color=C['dim']))
+            self.lst.add_widget(Label(text="No models - tap Ref", size_hint_y=None, 
+                                     height=dp(34), color=C['dim']))
             return
         
         grp = {}
@@ -277,88 +578,55 @@ class ModelSelectorPopup(Popup):
             grp = {k: v for k, v in grp.items() if k == self.current_provider}
         
         for prov, models in sorted(grp.items()):
-            pi = self.PROVIDERS.get(prov, {'name': prov.title(), 'color': C['dim']})
-            hdr = BoxLayout(size_hint_y=None, height=dp(24))
+            nm, col = self.PROVIDERS.get(prov, (prov.title(), C['dim']))
+            
+            hdr = BoxLayout(size_hint_y=None, height=dp(22))
             with hdr.canvas.before:
-                Color(*pi['color'])
+                Color(*col)
                 hdr.bg = Rectangle(pos=hdr.pos, size=hdr.size)
-            hdr.bind(pos=lambda w, *a: setattr(w.bg, 'pos', w.pos), size=lambda w, *a: setattr(w.bg, 'size', w.size))
-            hdr.add_widget(Label(text=f"{pi['name']} ({len(models)})", font_size=sp(9), color=C['text'], bold=True))
+            hdr.bind(pos=lambda w, *a: setattr(w.bg, 'pos', w.pos),
+                    size=lambda w, *a: setattr(w.bg, 'size', w.size))
+            hdr.add_widget(Label(text=f"{nm} ({len(models)})", font_size=sp(9), 
+                                color=C['text'], bold=True))
             self.lst.add_widget(hdr)
             
             for mid, info in sorted(models, key=lambda x: x[1].get('name', x[0])):
                 name = info.get('name', mid.split('/')[-1])
-                if filt and filt not in name.lower() and filt not in mid.lower(): continue
+                if filt and filt not in name.lower() and filt not in mid.lower():
+                    continue
                 
                 cur = mid == self.current_model
-                card = Card(size_hint_y=None, height=dp(44), bg=C['accent'] if cur else C['card'])
-                card.add_widget(Label(text=name[:32]+("*" if cur else ""), font_size=sp(9), color=C['text']))
+                card = Card(size_hint_y=None, height=dp(38), bg=C['accent'] if cur else C['card'])
+                card.add_widget(Label(text=name[:28] + ("*" if cur else ""), 
+                                     font_size=sp(9), color=C['text']))
                 card.model_id = mid
                 card.bind(on_touch_down=lambda w, t, m=mid: self._sel(m) if w.collide_point(*t.pos) else None)
                 self.lst.add_widget(card)
     
     def _sel(self, mid):
-        if self.on_select: self.on_select(mid)
+        if self.on_select:
+            self.on_select(mid)
         self.dismiss()
 
 
-# === LOG VIEWER ===
-class LogViewer(Popup):
-    def __init__(self, **kw):
-        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(4))
-        scroll = ScrollView()
-        self.lbl = Label(text=LOGBUF.get(), font_size=sp(8), color=C['text'],
-                        text_size=(Window.width-dp(24), None), halign='left', valign='top', size_hint_y=None)
-        self.lbl.bind(texture_size=lambda *x: setattr(self.lbl, 'height', self.lbl.texture_size[1]))
-        scroll.add_widget(self.lbl)
-        content.add_widget(scroll)
-        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
-        btns.add_widget(RBtn(text="Refresh", bg=C['accent'], on_press=lambda *a: setattr(self.lbl, 'text', LOGBUF.get())))
-        btns.add_widget(RBtn(text="Close", bg=C['card'], on_press=lambda *a: self.dismiss()))
-        content.add_widget(btns)
-        super().__init__(title="Logs", content=content, size_hint=(0.95, 0.85), **kw)
-
-
-# === SETTINGS ===
-class SettingsPopup(Popup):
-    def __init__(self, config, secrets, on_save=None, **kw):
-        self.config, self.secrets, self.on_save = config, secrets, on_save
-        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
-        
-        content.add_widget(Label(text="API Key:", color=C['text'], size_hint_y=None, height=dp(18)))
-        self.key = DarkInput(text=secrets.get("api_key", ""), hint_text="sk-or-v1-...", password=True,
-                            multiline=False, size_hint_y=None, height=dp(36))
-        content.add_widget(self.key)
-        
-        content.add_widget(Label(text="Base URL:", color=C['text'], size_hint_y=None, height=dp(18)))
-        self.url = DarkInput(text=config.get("base_url", ""), multiline=False, size_hint_y=None, height=dp(36))
-        content.add_widget(self.url)
-        
-        content.add_widget(RBtn(text="Change Theme...", bg=C['card'], size_hint_y=None, height=dp(36),
-                               on_press=lambda *a: ThemePopup(self.on_save).open()))
-        content.add_widget(BoxLayout())
-        
-        btns = BoxLayout(size_hint_y=None, height=dp(40), spacing=dp(4))
-        btns.add_widget(RBtn(text="Save", bg=C['accent'], on_press=self._save))
-        btns.add_widget(RBtn(text="Cancel", bg=C['card'], on_press=lambda *a: self.dismiss()))
-        content.add_widget(btns)
-        super().__init__(title="Settings", content=content, size_hint=(0.9, 0.5), **kw)
-    
-    def _save(self, *a):
-        if self.key.text.strip(): self.secrets.set("api_key", self.key.text.strip())
-        self.config.set("base_url", self.url.text.strip())
-        self.config.save()
-        if self.on_save: self.on_save()
-        self.dismiss()
-
-
-# === MESSAGE BUBBLE ===
+# === COLLAPSIBLE MESSAGE BUBBLE ===
 class MsgBubble(BoxLayout):
+    """Message with collapse/expand functionality."""
+    
+    PREVIEW_LINES = 4
+    
     def __init__(self, msg, models, on_exclude=None, on_include=None, **kw):
-        super().__init__(orientation='vertical', size_hint_y=None, padding=dp(6), spacing=dp(2), **kw)
+        super().__init__(orientation='vertical', size_hint_y=None, padding=dp(5), spacing=dp(2), **kw)
+        
         self.msg = msg
+        self.models = models
+        self.on_exclude = on_exclude
+        self.on_include = on_include
+        self.expanded = False
+        
         excluded = msg.get('status') == 'excluded'
-        bg = C['user'] if msg['role'] == 'user' else C['ai']
+        is_user = msg['role'] == 'user'
+        bg = C['user'] if is_user else C['ai']
         
         with self.canvas.before:
             Color(*bg, 0.5 if excluded else 1)
@@ -366,56 +634,166 @@ class MsgBubble(BoxLayout):
         self.bind(pos=lambda *a: setattr(self.rect, 'pos', self.pos),
                   size=lambda *a: setattr(self.rect, 'size', self.size))
         
-        hdr = BoxLayout(size_hint_y=None, height=dp(22))
-        role = "You" if msg['role'] == 'user' else models.name(msg.get('model'))
-        hdr.add_widget(Label(text=role, font_size=sp(9), color=C['dim'], halign='left', size_hint_x=0.5))
-        hdr.add_widget(RBtn(text="Copy", font_size=sp(8), size_hint_x=0.2, bg=C['card'], on_press=self._copy))
-        hdr.add_widget(RBtn(text="Show" if excluded else "Hide", font_size=sp(8), size_hint_x=0.3, bg=C['card'],
-                           on_press=lambda *a: (on_include(msg['id']) if excluded else on_exclude(msg['id'])) if on_exclude and on_include else None))
+        # Header
+        hdr = BoxLayout(size_hint_y=None, height=dp(20))
+        role = "You" if is_user else models.name(msg.get('model'))
+        hdr.add_widget(Label(text=role[:20], font_size=sp(8), color=C['dim'], halign='left', size_hint_x=0.5))
+        
+        hdr.add_widget(RBtn(text="Copy", font_size=sp(7), size_hint_x=0.2, bg=C['card'],
+                           on_press=lambda *a: (Clipboard.copy(msg['text']), show_toast("Copied"))))
+        
+        toggle_text = "Show" if excluded else "Hide"
+        hdr.add_widget(RBtn(text=toggle_text, font_size=sp(7), size_hint_x=0.3, bg=C['card'],
+                           on_press=self._toggle_exclude))
         self.add_widget(hdr)
         
+        # Content - check for artifacts
         text = msg['text']
-        self.txt = DarkInput(text=text, readonly=True, font_size=sp(11), size_hint_y=None, multiline=True)
+        artifacts = detect_artifacts(text) if not is_user else []
+        
+        # Preview/full text
+        lines = text.split('\n')
+        if len(lines) > self.PREVIEW_LINES:
+            preview = '\n'.join(lines[:self.PREVIEW_LINES]) + '\n...'
+            self.full_text = text
+            self.preview_text = preview
+            display_text = preview
+            self.can_expand = True
+        else:
+            display_text = text
+            self.can_expand = False
+        
+        self.txt = DarkInput(text=display_text, readonly=True, font_size=sp(10), 
+                            size_hint_y=None, multiline=True)
         if excluded:
             self.txt.foreground_color = (*C['text'][:3], 0.5)
+        self._calc_height(display_text)
+        self.add_widget(self.txt)
         
+        # Expand button
+        if self.can_expand:
+            self.expand_btn = RBtn(text="▼ więcej", size_hint_y=None, height=dp(22),
+                                   bg=C['card'], font_size=sp(8), on_press=self._toggle_expand)
+            self.add_widget(self.expand_btn)
+        
+        # Artifacts
+        if artifacts:
+            for art in artifacts[:2]:  # Max 2 artifacts
+                self.add_widget(ArtifactBar(art, msg))
+        
+        # Attachments
+        att = msg.get('attachments', [])
+        if att:
+            self.add_widget(Label(text=f"📎 {len(att)} file(s)", font_size=sp(8), 
+                                 color=C['dim'], size_hint_y=None, height=dp(14)))
+        
+        self._update_total_height()
+    
+    def _calc_height(self, text):
         lines = text.count('\n') + 1
         cpl = max(1, int((Window.width - dp(50)) / dp(7)))
         wrapped = max(lines, len(text) // cpl + 1)
-        h = min(dp(280), max(dp(28), wrapped * dp(15)))
-        self.txt.height = h
-        self.add_widget(self.txt)
-        
-        att = msg.get('attachments', [])
-        if att:
-            self.add_widget(Label(text=f"[{len(att)} file(s)]", font_size=sp(8), color=C['dim'], size_hint_y=None, height=dp(14)))
-            h += dp(14)
-        
-        self.height = dp(22) + h + dp(10)
+        self.txt.height = min(dp(200), max(dp(28), wrapped * dp(14)))
     
-    def _copy(self, *a):
-        try: Clipboard.copy(self.msg['text']); show_toast("Copied!")
-        except: pass
+    def _update_total_height(self):
+        h = dp(20) + self.txt.height + dp(8)  # header + text + padding
+        if self.can_expand:
+            h += dp(22)
+        if hasattr(self, 'art_bars'):
+            h += len(self.art_bars) * dp(36)
+        if self.msg.get('attachments'):
+            h += dp(14)
+        self.height = h
+    
+    def _toggle_expand(self, *a):
+        self.expanded = not self.expanded
+        if self.expanded:
+            self.txt.text = self.full_text
+            self.expand_btn.text = "▲ mniej"
+        else:
+            self.txt.text = self.preview_text
+            self.expand_btn.text = "▼ więcej"
+        self._calc_height(self.txt.text)
+        self._update_total_height()
+    
+    def _toggle_exclude(self, *a):
+        excluded = self.msg.get('status') == 'excluded'
+        if excluded:
+            if self.on_include:
+                self.on_include(self.msg['id'])
+        else:
+            if self.on_exclude:
+                self.on_exclude(self.msg['id'])
+
+
+# === ARTIFACT BAR ===
+class ArtifactBar(BoxLayout):
+    """Floating bar for detected artifacts (code, etc)."""
+    
+    def __init__(self, artifact, msg, **kw):
+        super().__init__(size_hint_y=None, height=dp(34), spacing=dp(3), padding=dp(3), **kw)
+        
+        self.artifact = artifact
+        self.msg = msg
+        
+        with self.canvas.before:
+            Color(*C['artifact'])
+            self.rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(4)])
+        self.bind(pos=lambda *a: setattr(self.rect, 'pos', self.pos),
+                  size=lambda *a: setattr(self.rect, 'size', self.size))
+        
+        # Icon + type
+        icon = "📄" if artifact['type'] == 'code' else "📋"
+        lang = artifact.get('lang', 'text')[:8]
+        self.add_widget(Label(text=f"{icon} {lang}", font_size=sp(9), color=C['text'], size_hint_x=0.3))
+        
+        # Size info
+        size = len(artifact['content'])
+        self.add_widget(Label(text=f"{size:,}ch", font_size=sp(8), color=C['dim'], size_hint_x=0.2))
+        
+        # Actions
+        self.add_widget(RBtn(text="Copy", bg=C['card'], font_size=sp(8), size_hint_x=0.25,
+                            on_press=lambda *a: (Clipboard.copy(artifact['content']), show_toast("Copied"))))
+        self.add_widget(RBtn(text="→Mem", bg=C['accent'], font_size=sp(8), size_hint_x=0.25,
+                            on_press=self._to_memory))
+    
+    def _to_memory(self, *a):
+        """Auto-integrate artifact to memory."""
+        from kivy.app import App
+        app = App.get_running_app()
+        if app and app.memory:
+            content = self.artifact['content']
+            lang = self.artifact.get('lang', 'code')
+            
+            # Create memory node
+            title = f"[{lang}] {datetime.now():%Y-%m-%d %H:%M}"
+            app.memory.add_node(f"{title}\n{content[:500]}...", None, 'text')
+            show_toast("Added to Memory")
+        else:
+            show_toast("Memory not available")
 
 
 # === STREAMING BUBBLE ===
 class StreamingBubble(BoxLayout):
     def __init__(self, models, model_id, **kw):
-        super().__init__(orientation='vertical', size_hint_y=None, height=dp(60), padding=dp(6), **kw)
+        super().__init__(orientation='vertical', size_hint_y=None, height=dp(50), padding=dp(5), **kw)
+        
         with self.canvas.before:
             Color(*C['ai'])
             self.rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(6)])
         self.bind(pos=lambda *a: setattr(self.rect, 'pos', self.pos),
                   size=lambda *a: setattr(self.rect, 'size', self.size))
         
-        hdr = BoxLayout(size_hint_y=None, height=dp(18))
+        hdr = BoxLayout(size_hint_y=None, height=dp(16))
         hdr.add_widget(Label(text=models.name(model_id), font_size=sp(8), color=C['dim']))
         self.st = Label(text="...", font_size=sp(8), color=C['warn'], size_hint_x=0.2)
         hdr.add_widget(self.st)
         self.add_widget(hdr)
         
-        self.txt = DarkInput(text="", readonly=True, font_size=sp(11), size_hint_y=None, height=dp(36), multiline=True)
+        self.txt = DarkInput(text="", readonly=True, font_size=sp(10), 
+                            size_hint_y=None, height=dp(28), multiline=True)
         self.add_widget(self.txt)
+        
         self._text = ""
         self._reasoning = ""
         self.reason_lbl = None
@@ -423,46 +801,54 @@ class StreamingBubble(BoxLayout):
     def append(self, chunk):
         self._text += chunk
         self.txt.text = self._text
-        lines = self._text.count('\n') + 1
-        cpl = max(1, int((Window.width - dp(50)) / dp(7)))
-        wrapped = max(lines, len(self._text) // cpl + 1)
-        h = min(dp(280), max(dp(36), wrapped * dp(15)))
-        self.txt.height = h
-        self.height = dp(18) + h + dp(10)
-    
-    def finish(self):
-        self.st.text = "OK"
-        self.st.color = C['ok']
+        self._update_height()
     
     def append_reasoning(self, chunk):
         if not self.reason_lbl:
-            self.reason_lbl = Label(text="💭 ", font_size=sp(8), color=C['dim'], 
+            self.reason_lbl = Label(text="💭 ", font_size=sp(8), color=C['dim'],
                                    size_hint_y=None, height=dp(18))
             self.add_widget(self.reason_lbl, index=0)
         self._reasoning += chunk
         self.reason_lbl.text = "💭 " + self._reasoning[-60:]
+    
+    def _update_height(self):
+        lines = self._text.count('\n') + 1
+        cpl = max(1, int((Window.width - dp(50)) / dp(7)))
+        wrapped = max(lines, len(self._text) // cpl + 1)
+        self.txt.height = min(dp(200), max(dp(28), wrapped * dp(14)))
+        self.height = dp(16) + self.txt.height + dp(8) + (dp(18) if self.reason_lbl else 0)
+    
+    def finish(self):
+        self.st.text = "OK"
+        self.st.color = C['ok']
 
 
-# === MEMORY PANEL (with files/dirs as items) ===
+# === MEMORY PANEL ===
 class MemoryPanel(Panel):
     def __init__(self, memory, **kw):
         super().__init__(**kw)
         self.memory = memory
         self.panel_width = dp(280)
         
-        hdr = BoxLayout(size_hint_y=None, height=dp(36))
+        hdr = BoxLayout(size_hint_y=None, height=dp(34))
         hdr.add_widget(Label(text="Memory", font_size=sp(12), color=C['text'], bold=True))
-        hdr.add_widget(RBtn(text="X", size_hint_x=None, width=dp(36), bg=C['card'], on_press=lambda *a: self.close()))
+        hdr.add_widget(RBtn(text="X", size_hint_x=None, width=dp(34), bg=C['card'],
+                           on_press=lambda *a: self.close()))
         self.add_widget(hdr)
         
         # Add buttons
-        add_row = BoxLayout(size_hint_y=None, height=dp(30), spacing=dp(2))
-        add_row.add_widget(RBtn(text="+Text", bg=C['accent'], font_size=sp(9), on_press=lambda *a: self._add(None, 'text')))
-        add_row.add_widget(RBtn(text="+Folder", bg=C['ok'], font_size=sp(9), on_press=lambda *a: self._add(None, 'folder')))
-        add_row.add_widget(RBtn(text="+File", bg=C['warn'], font_size=sp(9), on_press=lambda *a: self._add_file(None)))
-        add_row.add_widget(RBtn(text="+Dir", bg=C['card'], font_size=sp(9), on_press=lambda *a: self._add_dir(None)))
+        add_row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+        add_row.add_widget(RBtn(text="+Text", bg=C['accent'], font_size=sp(8),
+                               on_press=lambda *a: self._add(None, 'text')))
+        add_row.add_widget(RBtn(text="+Folder", bg=C['ok'], font_size=sp(8),
+                               on_press=lambda *a: self._add(None, 'folder')))
+        add_row.add_widget(RBtn(text="+File", bg=C['warn'], font_size=sp(8),
+                               on_press=lambda *a: self._add_file(None)))
+        add_row.add_widget(RBtn(text="+Dir", bg=C['card'], font_size=sp(8),
+                               on_press=lambda *a: self._add_dir(None)))
         self.add_widget(add_row)
         
+        # Tree
         self.scroll = ScrollView()
         self.tree = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(1))
         self.tree.bind(minimum_height=self.tree.setter('height'))
@@ -472,38 +858,36 @@ class MemoryPanel(Panel):
     def refresh(self):
         self.tree.clear_widgets()
         if not self.memory:
-            self.tree.add_widget(Label(text="No memory", size_hint_y=None, height=dp(30), color=C['dim']))
+            self.tree.add_widget(Label(text="No memory", size_hint_y=None, height=dp(28), color=C['dim']))
             return
         self._build(None)
         if not self.tree.children:
-            self.tree.add_widget(Label(text="Empty", size_hint_y=None, height=dp(30), color=C['dim']))
+            self.tree.add_widget(Label(text="Empty - add items", size_hint_y=None, height=dp(28), color=C['dim']))
     
     def _build(self, parent_id):
         for n in self.memory.get_children(parent_id):
-            row = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(2))
+            row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
             
-            # Toggle
-            act = RBtn(text="+" if n.active else "-", size_hint_x=None, width=dp(28),
-                      bg=C['ok'] if n.active else C['dim'], font_size=sp(10))
+            # Toggle active
+            act = RBtn(text="+" if n.active else "-", size_hint_x=None, width=dp(24),
+                      bg=C['ok'] if n.active else C['dim'], font_size=sp(9))
             act.node_id = n.id
             act.bind(on_press=self._toggle)
             row.add_widget(act)
             
-            # Icon + indent
+            # Content
             indent = "  " * n.depth
-            icons = {'folder': '[D]', 'file': '[F]', 'dir': '[/]', 'text': '[.]'}
-            icon = icons.get(n.node_type, '[?]')
-            
+            icons = {'folder': '📁', 'file': '📄', 'dir': '📂', 'text': '📝'}
+            icon = icons.get(n.node_type, '•')
             txt = f"{indent}{icon} {n.content[:16]}"
-            if len(n.content) > 16: txt += ".."
             
-            btn = RBtn(text=txt, bg=C['card'], font_size=sp(9), halign='left')
+            btn = RBtn(text=txt, bg=C['card'], font_size=sp(8), halign='left')
             btn.node = n
             btn.bind(on_press=self._edit)
             row.add_widget(btn)
             
             # Delete
-            del_btn = RBtn(text="x", size_hint_x=None, width=dp(24), bg=C['err'], font_size=sp(9))
+            del_btn = RBtn(text="x", size_hint_x=None, width=dp(22), bg=C['err'], font_size=sp(8))
             del_btn.node_id = n.id
             del_btn.bind(on_press=self._delete)
             row.add_widget(del_btn)
@@ -512,106 +896,131 @@ class MemoryPanel(Panel):
             self._build(n.id)
     
     def _toggle(self, btn):
-        for n in self.memory._cache.values():
-            if n.id == btn.node_id:
-                self.memory.update_node(n.id, active=not n.active)
-                break
+        n = self.memory.get_node(btn.node_id)
+        if n:
+            self.memory.update_node(n.id, active=not n.active)
         self.refresh()
     
     def _delete(self, btn):
-        self.memory.delete_node(btn.node_id, True)
+        self.memory.delete_node(btn.node_id, recursive=True)
         self.refresh()
     
     def _edit(self, btn):
         n = btn.node
-        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(4))
         
-        # For file/dir types, show path
+        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(3))
+        
         if n.node_type in ('file', 'dir'):
             path = n.metadata.get('path', n.content)
-            content.add_widget(Label(text=f"Path: {path[-40:]}", color=C['dim'], size_hint_y=None, height=dp(20), font_size=sp(9)))
-            
-            # Show file list for dirs
-            if n.node_type == 'dir' and os.path.isdir(path):
-                files = os.listdir(path)[:10]
-                flist = "\n".join(files) + (f"\n...+{len(os.listdir(path))-10} more" if len(os.listdir(path)) > 10 else "")
-                content.add_widget(Label(text=flist, color=C['text'], size_hint_y=None, 
-                                        height=dp(min(150, 20+len(files)*14)), font_size=sp(9), halign='left'))
+            content.add_widget(Label(text=f"Path: {path[-35:]}", color=C['dim'],
+                                    size_hint_y=None, height=dp(18), font_size=sp(8)))
         
-        content.add_widget(Label(text="Content/Name:", color=C['text'], size_hint_y=None, height=dp(16)))
-        txt = DarkInput(text=n.content, multiline=True, size_hint_y=0.3)
+        txt = DarkInput(text=n.content, multiline=True, size_hint_y=0.5)
         content.add_widget(txt)
         
-        tr = BoxLayout(size_hint_y=None, height=dp(34))
+        # Type spinner
+        tr = BoxLayout(size_hint_y=None, height=dp(32))
         tr.add_widget(Label(text="Type:", color=C['text'], size_hint_x=0.25))
-        ts = Spinner(text=n.node_type, values=['folder', 'text', 'file', 'dir'], size_hint_x=0.75, background_color=C['card'])
+        ts = Spinner(text=n.node_type, values=['folder', 'text', 'file', 'dir'],
+                    size_hint_x=0.75, background_color=C['card'])
         tr.add_widget(ts)
         content.add_widget(tr)
         
-        info = f"ID: {n.id[:8]}.. | Depth: {n.depth}"
-        content.add_widget(Label(text=info, font_size=sp(8), color=C['dim'], size_hint_y=None, height=dp(16)))
-        
-        btns = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(3))
-        btns.add_widget(RBtn(text="+Child", bg=C['ok'], font_size=sp(9), on_press=lambda *a: self._add(n.id, 'text', popup)))
-        btns.add_widget(RBtn(text="Save", bg=C['accent'], font_size=sp(9), on_press=lambda *a: (
-            self.memory.update_node(n.id, content=txt.text.strip(), node_type=ts.text), popup.dismiss(), self.refresh())))
-        
-        # ZIP for folders/dirs
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(3))
+        btns.add_widget(RBtn(text="+Child", bg=C['ok'], font_size=sp(8),
+                            on_press=lambda *a: self._add(n.id, 'text', popup)))
+        btns.add_widget(RBtn(text="Save", bg=C['accent'], font_size=sp(8),
+                            on_press=lambda *a: (self.memory.update_node(n.id, content=txt.text.strip(),
+                                                node_type=ts.text), popup.dismiss(), self.refresh())))
         if n.node_type in ('folder', 'dir'):
-            btns.add_widget(RBtn(text="ZIP", bg=C['warn'], font_size=sp(9), on_press=lambda *a: self._zip(n)))
-        
+            btns.add_widget(RBtn(text="ZIP", bg=C['warn'], font_size=sp(8),
+                                on_press=lambda *a: self._zip(n)))
         content.add_widget(btns)
         
-        popup = Popup(title=f"Edit: {n.content[:16]}", content=content, size_hint=(0.92, 0.65))
+        popup = Popup(title=f"Edit: {n.content[:16]}", content=content, size_hint=(0.92, 0.55))
         popup.open()
     
     def _add(self, parent_id, node_type, parent_popup=None):
-        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(4))
-        content.add_widget(Label(text="Content:", color=C['text'], size_hint_y=None, height=dp(16)))
-        txt = DarkInput(hint_text="Enter...", multiline=True, size_hint_y=0.5)
+        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(3))
+        txt = DarkInput(hint_text="Content...", multiline=True, size_hint_y=0.6)
         content.add_widget(txt)
         
         def create(*a):
             if txt.text.strip():
                 self.memory.add_node(txt.text.strip(), parent_id, node_type)
                 popup.dismiss()
-                if parent_popup: parent_popup.dismiss()
+                if parent_popup:
+                    parent_popup.dismiss()
                 self.refresh()
-        content.add_widget(RBtn(text="Create", bg=C['accent'], size_hint_y=None, height=dp(36), on_press=create))
-        popup = Popup(title=f"Add {node_type}", content=content, size_hint=(0.9, 0.45))
+        
+        content.add_widget(RBtn(text="Create", bg=C['accent'], size_hint_y=None, height=dp(34),
+                               on_press=create))
+        popup = Popup(title=f"Add {node_type}", content=content, size_hint=(0.9, 0.4))
         popup.open()
     
     def _add_file(self, parent_id):
         def on_file(path):
             if path and os.path.isfile(path):
                 name = os.path.basename(path)
-                node_id = self.memory.add_node(name, parent_id, 'file')
-                self.memory.update_node(node_id, metadata={'path': path})
+                nid = self.memory.add_node(name, parent_id, 'file', metadata={'path': path})
                 self.refresh()
                 show_toast(f"Added: {name}")
         FilePickerPopup(on_file, "Select File").open()
     
     def _add_dir(self, parent_id):
+        """Add directory with full file contents to memory."""
         def on_dir(path):
             if path and os.path.isdir(path):
+                # Count files first
+                file_count = 0
+                total_size = 0
+                for root, dirs, files in os.walk(path):
+                    for f in files:
+                        if f.endswith(('.py', '.md', '.txt', '.json', '.js', '.html', '.css')):
+                            file_count += 1
+                            total_size += os.path.getsize(os.path.join(root, f))
+                
+                # Warn if large
+                if file_count > 50 or total_size > 500000:
+                    show_toast(f"⚠️ {file_count} files, {total_size//1000}KB - may be large!")
+                
+                # Create root folder
                 name = os.path.basename(path) or path
-                node_id = self.memory.add_node(name, parent_id, 'dir')
-                self.memory.update_node(node_id, metadata={'path': path})
+                root_id = self.memory.add_node(name, parent_id, 'folder', metadata={'path': path})
+                
+                # Add all files with content
+                added = 0
+                for root_dir, dirs, files in os.walk(path):
+                    dirs[:] = [d for d in dirs if d not in ('__pycache__', '.git', 'node_modules')]
+                    
+                    for f in files:
+                        if f.endswith(('.py', '.md', '.txt', '.json', '.js', '.html', '.css')):
+                            fpath = os.path.join(root_dir, f)
+                            try:
+                                content = Path(fpath).read_text(errors='replace')[:10000]
+                                self.memory.add_node(f"[{f}]\n{content}", root_id, 'file',
+                                                    metadata={'path': fpath})
+                                added += 1
+                            except Exception as e:
+                                LOGBUF.add(f"Skip {f}: {e}")
+                
                 self.refresh()
-                show_toast(f"Added dir: {name}")
+                show_toast(f"Added {added} files from {name}")
+        
         FilePickerPopup(on_dir, "Select Directory", allow_dirs=True).open()
     
     def _zip(self, node):
         try:
             dl = Path("/storage/emulated/0/Download")
-            if not dl.exists(): dl = Path.home() / "Downloads"
+            if not dl.exists():
+                dl = Path.home() / "Downloads"
             
-            zip_name = f"{node.content[:20].replace(' ', '_').replace('/', '_')}.zip"
+            zip_name = f"{node.content[:18].replace(' ', '_').replace('/', '_')}.zip"
             zip_path = dl / zip_name
             
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
                 if node.node_type == 'dir':
-                    # Real directory
                     dir_path = node.metadata.get('path', '')
                     if os.path.isdir(dir_path):
                         for root, dirs, files in os.walk(dir_path):
@@ -619,40 +1028,39 @@ class MemoryPanel(Panel):
                                 fp = os.path.join(root, f)
                                 zf.write(fp, os.path.relpath(fp, dir_path))
                 else:
-                    # Memory folder - add children
                     zf.writestr("README.txt", node.content)
+                    
                     def add_children(pid, prefix):
                         for ch in self.memory.get_children(pid):
-                            nm = ch.content[:30].replace('/', '_')
+                            nm = ch.content[:28].replace('/', '_')
                             if ch.node_type == 'file':
                                 fp = ch.metadata.get('path', '')
                                 if os.path.isfile(fp):
                                     zf.write(fp, f"{prefix}/{os.path.basename(fp)}")
-                            elif ch.node_type == 'dir':
-                                dp = ch.metadata.get('path', '')
-                                if os.path.isdir(dp):
-                                    for f in os.listdir(dp):
-                                        zf.write(os.path.join(dp, f), f"{prefix}/{nm}/{f}")
                             else:
                                 zf.writestr(f"{prefix}/{nm}.txt", ch.content)
                             add_children(ch.id, f"{prefix}/{nm}")
-                    add_children(node.id, node.content[:20])
+                    
+                    add_children(node.id, node.content[:16])
             
             show_toast(f"ZIP: {zip_name}")
         except Exception as e:
-            show_toast(f"ZIP error: {e}")
-            LOGBUF.add(f"ZIP error: {e}")
+            show_toast(f"ZIP error: {str(e)[:20]}")
 
 
 # === CONVERSATION PANEL ===
 class ConvPanel(Panel):
     def __init__(self, engine, on_select=None, **kw):
         super().__init__(**kw)
-        self.engine, self.on_select = engine, on_select
-        hdr = BoxLayout(size_hint_y=None, height=dp(36))
-        hdr.add_widget(Label(text="Chats", font_size=sp(12), color=C['text'], bold=True))
-        hdr.add_widget(RBtn(text="X", size_hint_x=None, width=dp(36), bg=C['card'], on_press=lambda *a: self.close()))
+        self.engine = engine
+        self.on_select = on_select
+        
+        hdr = BoxLayout(size_hint_y=None, height=dp(34))
+        hdr.add_widget(Label(text="Conversations", font_size=sp(11), color=C['text'], bold=True))
+        hdr.add_widget(RBtn(text="X", size_hint_x=None, width=dp(34), bg=C['card'],
+                           on_press=lambda *a: self.close()))
         self.add_widget(hdr)
+        
         self.scroll = ScrollView()
         self.lst = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(2))
         self.lst.bind(minimum_height=self.lst.setter('height'))
@@ -661,184 +1069,133 @@ class ConvPanel(Panel):
     
     def refresh(self):
         self.lst.clear_widgets()
-        if not self.engine.db: return
+        if not self.engine.db:
+            return
+        
         for c in self.engine.db.list_convs():
-            card = Card(size_hint_y=None, height=dp(44))
-            card.add_widget(Label(text=c['title'][:20], font_size=sp(10), color=C['text'], halign='left', size_hint_y=None, height=dp(22)))
-            card.add_widget(Label(text=c['updated'][:16], font_size=sp(8), color=C['dim'], size_hint_y=None, height=dp(14)))
+            card = Card(size_hint_y=None, height=dp(40))
+            card.add_widget(Label(text=c['title'][:22], font_size=sp(9), color=C['text'], halign='left'))
             card.conv = c
             card.bind(on_touch_down=lambda w, t, cv=c: self._sel(cv) if w.collide_point(*t.pos) else None)
             self.lst.add_widget(card)
     
     def _sel(self, conv):
         self.engine.load_conv(conv['id'])
-        if self.on_select: self.on_select()
         self.close()
+        if self.on_select:
+            self.on_select()
 
 
-# === API PREVIEW ===
-class ApiPreviewPopup(Popup):
-    def __init__(self, api_json, on_send=None, **kw):
-        self.on_send = on_send
-        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(4))
-        content.add_widget(Label(text="API Preview", font_size=sp(10), color=C['accent'], size_hint_y=None, height=dp(18)))
-        
-        self.editor = DarkInput(text=api_json, font_size=sp(8), multiline=True)
-        content.add_widget(self.editor)
-        
-        self.stats = Label(text="", font_size=sp(8), color=C['dim'], size_hint_y=None, height=dp(16))
-        self._upd()
-        self.editor.bind(text=lambda *a: self._upd())
-        content.add_widget(self.stats)
-        
-        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
-        btns.add_widget(RBtn(text="Copy", bg=C['card'], font_size=sp(9), on_press=lambda *a: (Clipboard.copy(self.editor.text), show_toast("Copied"))))
-        btns.add_widget(RBtn(text="Cancel", bg=C['card'], font_size=sp(9), on_press=lambda *a: self.dismiss()))
-        btns.add_widget(RBtn(text="Send", bg=C['accent'], font_size=sp(9), on_press=self._do))
-        content.add_widget(btns)
-        super().__init__(title="API", content=content, size_hint=(0.95, 0.85), **kw)
-    
-    def _upd(self):
-        t = self.editor.text
-        self.stats.text = f"~{len(t)//4:,} tok | {len(t):,} ch"
-    
-    def _do(self, *a):
-        self.dismiss()
-        if self.on_send: self.on_send(self.editor.text)
-
-
-# === CHAT PANEL ===
+# === MAIN CHAT PANEL ===
 class ChatPanel(BoxLayout):
-    def __init__(self, engine, models, on_settings=None, **kw):
+    def __init__(self, engine, models, config, on_settings=None, **kw):
         super().__init__(orientation='vertical', **kw)
-        self.engine, self.models, self.on_settings = engine, models, on_settings
+        
+        self.engine = engine
+        self.models = models
+        self.config = config
+        self.on_settings = on_settings
+        
         self.sending = False
         self.pending_files = []
         self.streaming_bubble = None
         self._long_press_ev = None
-        # Feature toggles
+        
+        # Features
         self.web_search = False
         self.deep_research = False
-        self.reasoning_effort = None  # None=adaptive, low, medium, high, max
+        self.reasoning_effort = None
         
-        # Keyboard handling - make input visible when keyboard shows
+        # Keyboard
         Window.softinput_mode = 'below_target'
         
         self._build()
     
     def _build(self):
-        top = BoxLayout(size_hint_y=None, height=dp(42), padding=dp(2), spacing=dp(2))
+        # Top bar
+        top = BoxLayout(size_hint_y=None, height=dp(38), padding=dp(2), spacing=dp(2))
         
-        self.model_btn = RBtn(text=self.models.name(self.engine.config.get('default_model'))[:12],
-                             size_hint_x=0.36, bg=C['card'], font_size=sp(9))
+        self.model_btn = RBtn(text=self.models.name(self.config.get('default_model'))[:10],
+                             size_hint_x=0.28, bg=C['card'], font_size=sp(9))
         self.model_btn.bind(on_press=self._open_models)
         top.add_widget(self.model_btn)
         
-        for txt, clr, fn in [("Ref", C['card'], self._refresh_models), ("New", C['accent'], self._new),
-                             ("Cfg", C['card'], lambda *a: self.on_settings() if self.on_settings else None),
-                             ("Log", C['warn'], lambda *a: LogViewer().open())]:
-            top.add_widget(RBtn(text=txt, size_hint_x=0.16, bg=clr, font_size=sp(9), on_press=fn))
+        for txt, clr, fn in [
+            ("⚙️", C['accent'], lambda *a: QuickAPIPanel(self.config, self.models, self._on_api_change).open()),
+            ("Ref", C['card'], self._refresh_models),
+            ("New", C['ok'], self._new),
+            ("Cfg", C['card'], lambda *a: self.on_settings() if self.on_settings else None),
+            ("Log", C['warn'], lambda *a: LogViewer().open()),
+        ]:
+            top.add_widget(RBtn(text=txt, size_hint_x=0.14, bg=clr, font_size=sp(9), on_press=fn))
         self.add_widget(top)
         
-        # Feature toggles row
+        # Feature toggles
         feat = BoxLayout(size_hint_y=None, height=dp(30), padding=dp(2), spacing=dp(2))
-        self.web_btn = RBtn(text="Web", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
+        
+        self.web_btn = RBtn(text="🌐Web", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
         self.web_btn.bind(on_press=self._toggle_web)
         feat.add_widget(self.web_btn)
-        self.research_btn = RBtn(text="Deep", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
+        
+        self.research_btn = RBtn(text="🔬Deep", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
         self.research_btn.bind(on_press=self._toggle_research)
         feat.add_widget(self.research_btn)
-        self.reason_btn = RBtn(text="Auto", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
+        
+        self.reason_btn = RBtn(text="🧠Auto", size_hint_x=0.25, bg=C['card'], font_size=sp(9))
         self.reason_btn.bind(on_press=self._cycle_reasoning)
         feat.add_widget(self.reason_btn)
+        
         self.think_lbl = Label(text="", size_hint_x=0.25, font_size=sp(9), color=C['dim'])
         feat.add_widget(self.think_lbl)
+        
         self.add_widget(feat)
         
+        # Messages
         self.scroll = ScrollView()
         self.msgs = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(4), padding=dp(4))
         self.msgs.bind(minimum_height=self.msgs.setter('height'))
         self.scroll.add_widget(self.msgs)
         self.add_widget(self.scroll)
         
-        # Attachment bar (hidden by default)
+        # Attachment bar
         self.att_bar = BoxLayout(size_hint_y=None, height=0, padding=[dp(4), 0], spacing=dp(2))
         self.att_lbl = Label(text="", font_size=sp(8), color=C['ok'], halign='left')
         self.att_bar.add_widget(self.att_lbl)
-        clear_btn = RBtn(text="X", size_hint_x=None, width=dp(28), bg=C['err'], font_size=sp(9))
+        clear_btn = RBtn(text="X", size_hint_x=None, width=dp(26), bg=C['err'], font_size=sp(9))
         clear_btn.bind(on_press=self._clear_files)
         self.att_bar.add_widget(clear_btn)
         self.add_widget(self.att_bar)
         
-        # Input
-        inp = Card(size_hint_y=None, height=dp(76), orientation='vertical', spacing=dp(2))
-        row = BoxLayout(spacing=dp(4))
+        # Input area
+        inp = Card(size_hint_y=None, height=dp(72), orientation='vertical', spacing=dp(2))
+        
+        row = BoxLayout(spacing=dp(3))
         self.txt_in = DarkInput(hint_text="Message...", multiline=True, font_size=sp(11))
         row.add_widget(self.txt_in)
         
-        self.send_btn = RBtn(text="Send", size_hint_x=None, width=dp(48), bg=C['accent'], font_size=sp(10))
+        self.send_btn = RBtn(text="Send", size_hint_x=None, width=dp(50), bg=C['accent'], font_size=sp(10))
         self.send_btn.bind(on_release=self._send)
         self.send_btn.bind(on_touch_down=self._on_send_td)
         self.send_btn.bind(on_touch_up=self._on_send_tu)
         row.add_widget(self.send_btn)
         inp.add_widget(row)
         
-        # Bottom row: Attach + Voice
-        bottom_row = BoxLayout(size_hint_y=None, height=dp(24), spacing=dp(3))
-        bottom_row.add_widget(RBtn(text="+ Attach", bg=C['card'], font_size=sp(9),
-                                   on_press=lambda *a: FilePickerPopup(self._on_file).open()))
+        # Bottom row
+        bottom = BoxLayout(size_hint_y=None, height=dp(24), spacing=dp(3))
+        bottom.add_widget(RBtn(text="📎 Attach", bg=C['card'], font_size=sp(9),
+                              on_press=lambda *a: FilePickerPopup(self._on_file).open()))
+        bottom.add_widget(RBtn(text="🎤", size_hint_x=None, width=dp(40), bg=C['card'], font_size=sp(11),
+                              on_press=self._voice_input))
+        inp.add_widget(bottom)
         
-        # Voice button (only on Android with speech recognition)
-        if HAS_VOICE:
-            self.voice_btn = RBtn(text="🎤", size_hint_x=None, width=dp(44), bg=C['card'], font_size=sp(12))
-            self.voice_btn.bind(on_press=self._start_voice)
-            bottom_row.add_widget(self.voice_btn)
-        
-        inp.add_widget(bottom_row)
         self.add_widget(inp)
         
+        # Status
         self.status = Label(text="Ready", size_hint_y=None, height=dp(16), font_size=sp(8), color=C['dim'])
         self.add_widget(self.status)
     
-    def _start_voice(self, *a):
-        """Start voice recognition on Android."""
-        if not HAS_VOICE:
-            show_toast("Voice not available")
-            return
-        
-        try:
-            # Request microphone permission
-            request_permissions([Permission.RECORD_AUDIO])
-            
-            # Create speech recognition intent
-            intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, 
-                           RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now...")
-            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-            
-            # Start activity
-            activity = PythonActivity.mActivity
-            activity.startActivityForResult(intent, 1001)
-            
-            self.voice_btn.background_color = C['warn']
-            self.status.text = "Listening..."
-            
-            # Poll for result (simplified - real impl needs ActivityResultListener)
-            Clock.schedule_once(self._check_voice_result, 0.5)
-            
-        except Exception as e:
-            show_toast(f"Voice error: {str(e)[:20]}")
-            LOGBUF.add(f"Voice error: {e}")
-    
-    def _check_voice_result(self, dt):
-        """Check if voice result is ready (polling fallback)."""
-        # Reset button color
-        if hasattr(self, 'voice_btn'):
-            self.voice_btn.background_color = C['card']
-        self.status.text = "Ready"
-        # Note: Full implementation requires ActivityResultListener
-        # This is a simplified version that shows the UI flow
+    def _on_api_change(self):
+        self.model_btn.text = self.models.name(self.config.get('default_model'))[:10]
     
     def _toggle_web(self, *a):
         self.web_search = not self.web_search
@@ -862,29 +1219,37 @@ class ChatPanel(BoxLayout):
         idx = cycle.index(self.reasoning_effort) if self.reasoning_effort in cycle else 0
         idx = (idx + 1) % len(cycle)
         self.reasoning_effort = cycle[idx]
-        self.reason_btn.text = labels[idx]
+        self.reason_btn.text = f"🧠{labels[idx]}"
         self.reason_btn.background_color = C['accent'] if self.reasoning_effort else C['card']
         show_toast(f"Reasoning: {labels[idx]}")
     
+    def _voice_input(self, *a):
+        """Simple voice input - opens system voice input if available."""
+        show_toast("Voice: Use system keyboard mic")
+        # On Android, the keyboard mic button works
+        # Full speech recognition requires android.speech which is complex
+    
     def _open_models(self, *a):
         def on_sel(mid):
-            self.engine.config.set('default_model', mid)
-            self.model_btn.text = self.models.name(mid)[:12]
-        ModelSelectorPopup(self.models, self.engine.config.get('default_model'), on_sel).open()
+            self.config.set('default_model', mid)
+            self.model_btn.text = self.models.name(mid)[:10]
+        ModelSelectorPopup(self.models, self.config.get('default_model'), on_sel).open()
     
     def _refresh_models(self, *a):
-        self.status.text = "Loading..."
+        self.status.text = "Loading models..."
+        
         def up():
             ok = self.models.update_from_api()
             Clock.schedule_once(lambda dt: self._models_done(ok))
+        
         threading.Thread(target=up).start()
     
     def _models_done(self, ok):
         if ok:
             self.status.text = f"{len(self.models.all())} models"
-            self.model_btn.text = self.models.name(self.engine.config.get('default_model'))[:12]
+            self.model_btn.text = self.models.name(self.config.get('default_model'))[:10]
         else:
-            self.status.text = "Failed"
+            self.status.text = "Failed to load models"
     
     def _new(self, *a):
         self.engine.new_conv()
@@ -900,7 +1265,7 @@ class ChatPanel(BoxLayout):
         if self.pending_files:
             names = [os.path.basename(f)[:10] for f in self.pending_files[:3]]
             self.att_lbl.text = f"[{len(self.pending_files)}] " + ", ".join(names)
-            self.att_bar.height = dp(24)
+            self.att_bar.height = dp(22)
         else:
             self.att_bar.height = 0
     
@@ -910,7 +1275,7 @@ class ChatPanel(BoxLayout):
     
     def _on_send_td(self, w, touch):
         if w.collide_point(*touch.pos):
-            self._long_press_ev = Clock.schedule_once(lambda dt: self._show_api(), 0.5)
+            self._long_press_ev = Clock.schedule_once(lambda dt: self._show_api_preview(), 0.6)
             touch.grab(w)
         return False
     
@@ -922,71 +1287,113 @@ class ChatPanel(BoxLayout):
                 self._long_press_ev = None
         return False
     
-    def _build_api_json(self):
+    def _show_api_preview(self):
+        """Show API request preview."""
         text = self.txt_in.text.strip()
-        if not text: return None
+        if not text:
+            show_toast("Type message first")
+            return
+        
+        # Build preview
         msgs = []
         if self.engine.memory:
             mem = self.engine.memory.get_active_context()
-            if mem: msgs.append({"role": "system", "content": f"Memory:\n{mem}"})
+            if mem:
+                msgs.append({"role": "system", "content": f"Memory:\n{mem[:500]}..."})
+        
         if self.engine.conv and self.engine.db:
             for m in self.engine.db.get_msgs(self.engine.conv['id']):
                 if m['status'] == 'active':
-                    msgs.append({"role": m['role'], "content": m['text']})
+                    msgs.append({"role": m['role'], "content": m['text'][:200] + "..."})
+        
         msgs.append({"role": "user", "content": text})
-        req = {"model": self.engine.config.get('default_model'), "messages": msgs,
-               "temperature": self.engine.config.get('temperature', 0.7),
-               "max_tokens": self.engine.config.get('max_tokens', 4096), "stream": True}
-        if self.pending_files: req["_attachments"] = self.pending_files.copy()
-        return json.dumps(req, indent=2, ensure_ascii=False)
-    
-    def _show_api(self):
-        api = self._build_api_json()
-        if not api: show_toast("Type msg"); return
-        ApiPreviewPopup(api, lambda e: self._send(None)).open()
+        
+        req = {
+            "model": self.config.get('default_model'),
+            "messages": f"{len(msgs)} messages",
+            "temperature": self.config.get('temperature', 0.7),
+            "max_tokens": self.config.get('max_tokens', 4096),
+            "web_search": self.web_search,
+            "deep_research": self.deep_research,
+            "reasoning": self.reasoning_effort,
+        }
+        
+        # Token estimate
+        total_chars = sum(len(m['content']) for m in msgs)
+        est_tokens = total_chars // 4
+        
+        info = json.dumps(req, indent=2)
+        info += f"\n\n~{est_tokens:,} tokens estimated"
+        
+        # Show popup
+        content = BoxLayout(orientation='vertical', padding=dp(8))
+        content.add_widget(DarkInput(text=info, readonly=True, font_size=sp(9)))
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Copy", bg=C['card'], on_press=lambda *a: (Clipboard.copy(info), show_toast("Copied"))))
+        btns.add_widget(RBtn(text="Close", bg=C['card'], on_press=lambda *a: popup.dismiss()))
+        content.add_widget(btns)
+        popup = Popup(title="API Preview", content=content, size_hint=(0.95, 0.6))
+        popup.open()
     
     def _send(self, *a):
-        if self.sending: return
+        if self.sending:
+            return
+        
         text = self.txt_in.text.strip()
-        if not text: return
+        if not text:
+            return
+        
         if not self.engine.secrets.get("api_key"):
-            if self.on_settings: self.on_settings()
+            if self.on_settings:
+                self.on_settings()
             return
         
         self.sending = True
         self.txt_in.text = ""
         self.status.text = "Sending..."
+        self.think_lbl.text = ""
         
         att = self.pending_files.copy()
         self.pending_files.clear()
         self._upd_att()
         
-        model = self.engine.config.get('default_model')
+        model = self.config.get('default_model')
         self.streaming_bubble = StreamingBubble(self.models, model)
         self.msgs.add_widget(self.streaming_bubble)
         Clock.schedule_once(lambda dt: setattr(self.scroll, 'scroll_y', 0), 0.1)
         
+        def on_chunk(c):
+            Clock.schedule_once(lambda dt: self._on_chunk(c))
+        
+        def on_reasoning(r):
+            Clock.schedule_once(lambda dt: self._on_reasoning(r))
+        
         def thread():
             try:
-                def on_chunk(c): Clock.schedule_once(lambda dt: self._on_chunk(c))
-                def on_reasoning(r): Clock.schedule_once(lambda dt: self._on_reasoning(r))
-                self.engine.send(text, attachments=att, on_chunk=on_chunk, on_reasoning=on_reasoning,
-                                web_search=self.web_search, deep_research=self.deep_research,
-                                reasoning_effort=self.reasoning_effort)
+                self.engine.send(
+                    text,
+                    attachments=att,
+                    on_chunk=on_chunk,
+                    on_reasoning=on_reasoning,
+                    web_search=self.web_search,
+                    deep_research=self.deep_research,
+                    reasoning_effort=self.reasoning_effort
+                )
                 Clock.schedule_once(lambda dt: self._ok())
             except Exception as e:
                 Clock.schedule_once(lambda dt: self._err(str(e)))
+        
         threading.Thread(target=thread).start()
-    
-    def _on_reasoning(self, chunk):
-        self.think_lbl.text = "💭"
-        if self.streaming_bubble:
-            self.streaming_bubble.append_reasoning(chunk)
     
     def _on_chunk(self, chunk):
         if self.streaming_bubble:
             self.streaming_bubble.append(chunk)
             Clock.schedule_once(lambda dt: setattr(self.scroll, 'scroll_y', 0), 0)
+    
+    def _on_reasoning(self, chunk):
+        self.think_lbl.text = "💭"
+        if self.streaming_bubble:
+            self.streaming_bubble.append_reasoning(chunk)
     
     def _ok(self):
         self.sending = False
@@ -1002,15 +1409,20 @@ class ChatPanel(BoxLayout):
         if self.streaming_bubble:
             self.msgs.remove_widget(self.streaming_bubble)
             self.streaming_bubble = None
-        self.status.text = f"Err: {err[:22]}"
+        self.status.text = f"Error: {err[:25]}"
         self.think_lbl.text = ""
         LOGBUF.add(f"Error: {err}")
     
     def refresh(self):
         self.msgs.clear_widgets()
-        if not self.engine.conv or not self.engine.db: return
-        for m in self.engine.db.get_msgs(self.engine.conv['id'], True):
-            self.msgs.add_widget(MsgBubble(m, self.models,
-                lambda mid: (self.engine.db.set_msg_status(mid, 'excluded'), self.refresh()),
-                lambda mid: (self.engine.db.set_msg_status(mid, 'active'), self.refresh())))
+        if not self.engine.conv or not self.engine.db:
+            return
+        
+        for m in self.engine.db.get_msgs(self.engine.conv['id'], include_all=True):
+            self.msgs.add_widget(MsgBubble(
+                m, self.models,
+                on_exclude=lambda mid: (self.engine.db.set_msg_status(mid, 'excluded'), self.refresh()),
+                on_include=lambda mid: (self.engine.db.set_msg_status(mid, 'active'), self.refresh())
+            ))
+        
         Clock.schedule_once(lambda dt: setattr(self.scroll, 'scroll_y', 0))
