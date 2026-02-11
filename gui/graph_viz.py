@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.02 - Graph Explorer
+ChatADHD v0.06.03 - Graph Explorer
 Force-directed visualization with BIGGER nodes and READABLE labels
 """
 from kivy.uix.widget import Widget
@@ -80,6 +80,8 @@ class GraphWidget(Widget):
     def stop(self):
         self.running = False
         Clock.unschedule(self._update_physics)
+        # Clear canvas when stopped
+        self.canvas.clear()
     
     def load_data(self):
         self.nodes.clear()
@@ -186,7 +188,18 @@ class GraphWidget(Widget):
     def redraw(self, *args):
         self.canvas.clear()
         
+        # Don't draw if not visible or too small
+        if self.width < 50 or self.height < 50:
+            return
+        
         with self.canvas:
+            # Clip to widget bounds using Stencil
+            from kivy.graphics import StencilPush, StencilUse, StencilUnUse, StencilPop
+            
+            StencilPush()
+            Rectangle(pos=self.pos, size=self.size)
+            StencilUse()
+            
             # Background
             Color(0.06, 0.06, 0.08, 1)
             Rectangle(pos=self.pos, size=self.size)
@@ -200,6 +213,10 @@ class GraphWidget(Widget):
                 p1 = self._transform(n1.pos)
                 p2 = self._transform(n2.pos)
                 
+                # Skip if both points outside visible area
+                if not self._in_bounds(p1) and not self._in_bounds(p2):
+                    continue
+                
                 if link_type == 'reply':
                     Color(0.4, 0.5, 0.7, 0.7)
                 elif link_type == 'child':
@@ -212,6 +229,11 @@ class GraphWidget(Widget):
             # Nodes
             for n in self.nodes.values():
                 pos = self._transform(n.pos)
+                
+                # Skip if outside visible area
+                if not self._in_bounds(pos):
+                    continue
+                
                 size = n.size * self.zoom
                 
                 # Selection glow
@@ -223,12 +245,11 @@ class GraphWidget(Widget):
                 Color(*n.color)
                 Ellipse(pos=(pos.x - size/2, pos.y - size/2), size=(size, size))
                 
-                # Label background
-                if self.zoom > 0.4:
+                # Label - only if in bounds with margin
+                if self.zoom > 0.4 and self._in_bounds(pos, margin=30):
                     lbl_text = n.label if self.zoom > 0.7 else n.label[:12]
                     font_sz = max(10, int(12 * self.zoom))
                     
-                    # Create label to get texture
                     lbl = Label(text=lbl_text, font_size=font_sz, bold=True)
                     lbl.texture_update()
                     
@@ -244,14 +265,32 @@ class GraphWidget(Widget):
                         # Text
                         Color(1, 1, 1, 1)
                         Rectangle(texture=lbl.texture, pos=(lx, ly), size=(tw, th))
+            
+            # End clipping
+            StencilUnUse()
+            Rectangle(pos=self.pos, size=self.size)
+            StencilPop()
+    
+    def _in_bounds(self, pos, margin=0):
+        """Check if position is within widget bounds."""
+        return (self.x - margin <= pos.x <= self.x + self.width + margin and
+                self.y - margin <= pos.y <= self.y + self.height + margin)
     
     def _transform(self, pos):
-        center = Vector(self.width/2 if self.width else 200, self.height/2 if self.height else 300)
-        return (pos - center) * self.zoom + self.offset + center
+        # Center relative to widget position
+        cx = self.x + self.width/2 if self.width else self.x + 200
+        cy = self.y + self.height/2 if self.height else self.y + 300
+        center = Vector(cx, cy)
+        # Get center of graph (without widget offset)
+        graph_center = Vector(self.width/2 if self.width else 200, self.height/2 if self.height else 300)
+        return (pos - graph_center) * self.zoom + self.offset + center
     
     def _inverse_transform(self, pos):
-        center = Vector(self.width/2 if self.width else 200, self.height/2 if self.height else 300)
-        return (Vector(*pos) - self.offset - center) / self.zoom + center
+        cx = self.x + self.width/2 if self.width else self.x + 200
+        cy = self.y + self.height/2 if self.height else self.y + 300
+        center = Vector(cx, cy)
+        graph_center = Vector(self.width/2 if self.width else 200, self.height/2 if self.height else 300)
+        return (Vector(*pos) - self.offset - center) / self.zoom + graph_center
     
     def on_touch_down(self, touch):
         if not self.collide_point(*touch.pos):
@@ -365,6 +404,7 @@ class GraphExplorerPanel(BoxLayout):
         self._visible = False
         self.width = 0
         self.graph.stop()
+        self.graph.canvas.clear()  # Extra clear to be sure
     
     def refresh(self):
         self.graph.load_data()

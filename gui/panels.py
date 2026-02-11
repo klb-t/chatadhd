@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.02 - Complete GUI
+ChatADHD v0.06.03 - Complete GUI
 - Collapsible messages with expand
 - Artifact detection & floating panel
 - Quick API panel with presets
@@ -1196,10 +1196,10 @@ class ChatPanel(BoxLayout):
         
         for txt, clr, fn in [
             ("⚙️", C['accent'], lambda *a: QuickAPIPanel(self.config, self.models, self._on_api_change).open()),
-            ("📝", C['warn'], self._open_api_editor),  # Full API editor
             ("🔄", C['ok'], self._open_github_sync),  # GitHub sync
             ("New", C['card'], self._new),
             ("Cfg", C['card'], lambda *a: self.on_settings() if self.on_settings else None),
+            ("Log", C['warn'], lambda *a: LogViewer().open()),
         ]:
             top.add_widget(RBtn(text=txt, size_hint_x=0.15, bg=clr, font_size=sp(9), on_press=fn))
         self.add_widget(top)
@@ -1419,7 +1419,7 @@ class ChatPanel(BoxLayout):
     
     def _on_send_td(self, w, touch):
         if w.collide_point(*touch.pos):
-            self._long_press_ev = Clock.schedule_once(lambda dt: self._show_api_preview(), 0.6)
+            self._long_press_ev = Clock.schedule_once(lambda dt: self._open_api_editor(), 0.6)
             touch.grab(w)
         return False
     

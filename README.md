@@ -1,105 +1,65 @@
-# ChatADHD v0.06.02 - Full API Control + GitHub Sync
+# ChatADHD v0.06.03 - Bug Fixes
 
-## New: API Request Editor 📝
+## Fixes in this version
 
-**Full control over every aspect of the API request.**
+### 1. Graph Explorer
+- ✅ Canvas clipping via Stencil (no more overflow)
+- ✅ Proper cleanup on close (canvas.clear())
+- ✅ Transform fixed to include widget position
 
-### Tabs:
-| Tab | Content |
-|-----|---------|
-| **System** | System prompt (editable, templates) |
-| **Memory** | Memory context sent to API |
-| **Msgs** | All messages with include/exclude toggle |
-| **Params** | Temperature, max_tokens, top_p, penalties |
+### 2. API Request Editor
+- ✅ Moved from top bar to **long-press Send** button
+- Long-press (0.6s) → Full API Editor opens
 
-### Features:
-- Edit system prompt with quick templates
-- View/edit full memory context
-- Toggle individual messages on/off
-- Adjust message weights (0.1-2.0)
-- Add new user messages
-- "Last 5" quick filter
-- Live token count estimate
-- Copy full JSON request
-- Send directly
+### 3. Top Bar
+```
+[Model▾] [⚙️] [🔄] [New] [Cfg] [Log]
+         │    │
+         │    └─ GitHub Sync
+         └─ Quick API Panel
 
-### Access:
-- Tap **📝** button in top bar
-- Or long-press **Send** for quick preview
+Long-press Send → Full API Editor
+```
 
----
+## All Features (v0.06.00 - v0.06.03)
 
-## New: GitHub Sync 🔄
-
-**Bidirectional synchronization with GitHub repositories.**
-
-### Setup:
-1. **Settings** → Add `github_token` (ghp_...)
-2. Tap **🔄** → **+New** to add repository
-3. Enter: `owner/repo`, local path, branch
-
-### Sync Modes:
-| Mode | Description |
-|------|-------------|
-| **↔️ Both** | Pull new remote, push new local |
-| **⬇️ Pull** | Only download from GitHub |
-| **⬆️ Push** | Only upload to GitHub |
-
-### File Status:
-| Icon | Meaning |
-|------|---------|
-| ✓ | Synced |
-| ~ | Modified (conflict) |
-| +L | New local file |
-| +R | New remote file |
-
-### Actions:
-- **⬇️ Pull** - Download selected files
-- **⬆️ Push** - Upload selected files  
-- **🔄 Sync** - Bidirectional sync
-- Select/deselect individual files
-
----
+| Feature | Access | Added |
+|---------|--------|-------|
+| Collapsible messages | Auto (4 lines) | v0.06.00 |
+| Artifact detection | Auto in AI responses | v0.06.00 |
+| Quick API Panel | ⚙️ button | v0.06.00 |
+| Directory import | Memory → +Dir | v0.06.00 |
+| Conversation import | ☰ → Import | v0.06.01 |
+| Voice input | 🎤 button | v0.06.01 |
+| OCR (screenshots) | Import → .png/.jpg | v0.06.01 |
+| Full API Editor | Long-press Send | v0.06.02 |
+| GitHub Sync | 🔄 button | v0.06.02 |
 
 ## API Keys (Settings)
 
-| Key | Service | Purpose |
-|-----|---------|---------|
-| `api_key` | OpenRouter | LLM chat |
-| `groq_api_key` | Groq | Voice input (ASR) |
-| `ocr_space_api_key` | OCR.space | Screenshot import |
-| `github_token` | GitHub | Repository sync |
+| Key | Provider | For |
+|-----|----------|-----|
+| `api_key` | OpenRouter | Chat |
+| `groq_api_key` | Groq | Voice |
+| `ocr_space_api_key` | ocr.space | Screenshots |
+| `github_token` | GitHub | Sync |
 
----
-
-## File Structure
+## Structure
 
 ```
-engine/
-  github_sync.py  (411)  ← NEW: GitHub sync
-  providers.py    (467)  Provider abstraction
-  importer.py     (693)  Conversation import
-  chat_engine.py  (272)
-  db.py           (274)
-gui/
-  panels.py      (2751)  ← +APIRequestEditor, +GitHubSyncPopup
-  graph_viz.py    (384)
-main.py           (152)
-─────────────────────────
-Total: 5698 lines
+5738 lines total
+├── engine/
+│   ├── chat_engine.py   (272)
+│   ├── db.py            (274)
+│   ├── github_sync.py   (411)
+│   ├── importer.py      (693)
+│   ├── memory_engine.py (166)
+│   ├── models.py        (65)
+│   └── providers.py     (467)
+└── gui/
+    ├── graph_viz.py     (424)
+    └── panels.py        (2751)
 ```
 
 ---
-
-## Top Bar
-
-```
-[Model▾] [⚙️] [📝] [🔄] [New] [Cfg]
-         │    │    │
-         │    │    └─ GitHub Sync
-         │    └─ API Request Editor  
-         └─ Quick API Panel
-```
-
----
-ChatADHD v0.06.02 - Full control over your AI conversations
+ChatADHD v0.06.03 - Fixes for graph, API editor location
