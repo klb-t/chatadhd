@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.01 - Complete GUI
+ChatADHD v0.06.02 - Complete GUI
 - Collapsible messages with expand
 - Artifact detection & floating panel
 - Quick API panel with presets
@@ -377,40 +377,79 @@ class SettingsPopup(Popup):
         self.secrets = secrets
         self.on_save = on_save
         
-        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
+        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(3))
         
-        content.add_widget(Label(text="API Key:", color=C['text'], 
-                                size_hint_y=None, height=dp(16)))
+        # OpenRouter API Key
+        content.add_widget(Label(text="OpenRouter API Key:", color=C['text'], 
+                                size_hint_y=None, height=dp(14), font_size=sp(8)))
         self.key = DarkInput(text=secrets.get("api_key", ""), 
                             hint_text="sk-or-v1-...",
                             password=True, multiline=False, 
-                            size_hint_y=None, height=dp(36))
+                            size_hint_y=None, height=dp(32))
         content.add_widget(self.key)
         
+        # Groq API Key (for ASR)
+        content.add_widget(Label(text="Groq API Key (voice):", color=C['text'], 
+                                size_hint_y=None, height=dp(14), font_size=sp(8)))
+        self.groq_key = DarkInput(text=secrets.get("groq_api_key", ""), 
+                                 hint_text="gsk_...",
+                                 password=True, multiline=False, 
+                                 size_hint_y=None, height=dp(32))
+        content.add_widget(self.groq_key)
+        
+        # OCR.space API Key
+        content.add_widget(Label(text="OCR.space API Key:", color=C['text'], 
+                                size_hint_y=None, height=dp(14), font_size=sp(8)))
+        self.ocr_key = DarkInput(text=secrets.get("ocr_space_api_key", ""), 
+                                hint_text="K1234...",
+                                password=True, multiline=False, 
+                                size_hint_y=None, height=dp(32))
+        content.add_widget(self.ocr_key)
+        
+        # GitHub Token
+        content.add_widget(Label(text="GitHub Token (for sync):", color=C['text'], 
+                                size_hint_y=None, height=dp(14), font_size=sp(8)))
+        self.github_token = DarkInput(text=secrets.get("github_token", ""), 
+                                     hint_text="ghp_...",
+                                     password=True, multiline=False, 
+                                     size_hint_y=None, height=dp(32))
+        content.add_widget(self.github_token)
+        
+        # Base URL
         content.add_widget(Label(text="Base URL:", color=C['text'], 
-                                size_hint_y=None, height=dp(16)))
+                                size_hint_y=None, height=dp(14), font_size=sp(8)))
         self.url = DarkInput(text=config.get("base_url", "https://openrouter.ai/api/v1"), 
-                            multiline=False, size_hint_y=None, height=dp(36))
+                            multiline=False, size_hint_y=None, height=dp(32))
         content.add_widget(self.url)
         
+        # Theme button
         content.add_widget(RBtn(text="Theme: Dark/AMOLED", bg=C['card'], 
-                               size_hint_y=None, height=dp(34),
+                               size_hint_y=None, height=dp(30),
                                on_press=lambda *a: ThemePopup(self.on_save).open()))
         
-        content.add_widget(BoxLayout())  # Spacer
-        
-        btns = BoxLayout(size_hint_y=None, height=dp(38), spacing=dp(4))
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
         btns.add_widget(RBtn(text="Save", bg=C['accent'], on_press=self._save))
         btns.add_widget(RBtn(text="Cancel", bg=C['card'], on_press=lambda *a: self.dismiss()))
         content.add_widget(btns)
         
-        super().__init__(title="Settings", content=content, size_hint=(0.9, 0.5), **kw)
+        super().__init__(title="Settings", content=content, size_hint=(0.9, 0.75), **kw)
     
     def _save(self, *a):
         if self.key.text.strip():
             self.secrets.set("api_key", self.key.text.strip())
+        if self.groq_key.text.strip():
+            self.secrets.set("groq_api_key", self.groq_key.text.strip())
+        if self.ocr_key.text.strip():
+            self.secrets.set("ocr_space_api_key", self.ocr_key.text.strip())
+        if self.github_token.text.strip():
+            self.secrets.set("github_token", self.github_token.text.strip())
+        
         self.config.set("base_url", self.url.text.strip())
         self.config.save()
+        
+        show_toast("Settings saved")
+        
         if self.on_save:
             self.on_save()
         self.dismiss()
@@ -1151,18 +1190,18 @@ class ChatPanel(BoxLayout):
         top = BoxLayout(size_hint_y=None, height=dp(38), padding=dp(2), spacing=dp(2))
         
         self.model_btn = RBtn(text=self.models.name(self.config.get('default_model'))[:10],
-                             size_hint_x=0.28, bg=C['card'], font_size=sp(9))
+                             size_hint_x=0.25, bg=C['card'], font_size=sp(9))
         self.model_btn.bind(on_press=self._open_models)
         top.add_widget(self.model_btn)
         
         for txt, clr, fn in [
             ("⚙️", C['accent'], lambda *a: QuickAPIPanel(self.config, self.models, self._on_api_change).open()),
-            ("Ref", C['card'], self._refresh_models),
-            ("New", C['ok'], self._new),
+            ("📝", C['warn'], self._open_api_editor),  # Full API editor
+            ("🔄", C['ok'], self._open_github_sync),  # GitHub sync
+            ("New", C['card'], self._new),
             ("Cfg", C['card'], lambda *a: self.on_settings() if self.on_settings else None),
-            ("Log", C['warn'], lambda *a: LogViewer().open()),
         ]:
-            top.add_widget(RBtn(text=txt, size_hint_x=0.14, bg=clr, font_size=sp(9), on_press=fn))
+            top.add_widget(RBtn(text=txt, size_hint_x=0.15, bg=clr, font_size=sp(9), on_press=fn))
         self.add_widget(top)
         
         # Feature toggles
@@ -1232,6 +1271,48 @@ class ChatPanel(BoxLayout):
     def _on_api_change(self):
         self.model_btn.text = self.models.name(self.config.get('default_model'))[:10]
     
+    def _open_api_editor(self, *a):
+        """Open full API request editor."""
+        def on_send(request_data):
+            # Apply edited request and send
+            self._send_with_request(request_data)
+        
+        APIRequestEditor(self.engine, self.config, self.engine.memory, on_send=on_send).open()
+    
+    def _send_with_request(self, request_data):
+        """Send message with custom request data from editor."""
+        if self.sending:
+            return
+        
+        # Get the last user message from edited request
+        user_msgs = [m for m in request_data['messages'] if m['role'] == 'user' and m['included']]
+        if not user_msgs:
+            show_toast("No user message to send")
+            return
+        
+        text = user_msgs[-1]['content']
+        self.txt_in.text = ""
+        self.sending = True
+        self.status.text = "Sending (custom)..."
+        
+        # TODO: implement sending with custom system prompt/memory from editor
+        # For now, use the text and trigger normal send flow
+        self.txt_in.text = text
+        self._send()
+    
+    def _open_github_sync(self, *a):
+        """Open GitHub sync popup."""
+        GitHubSyncPopup(
+            self.engine, self.config, self.engine.secrets,
+            on_sync=lambda: self._on_github_sync()
+        ).open()
+    
+    def _on_github_sync(self):
+        """Handle GitHub sync completion."""
+        # Refresh memory if synced files include memory content
+        if hasattr(self.engine, 'memory') and self.engine.memory:
+            show_toast("Synced - reload memory if needed")
+    
     def _toggle_web(self, *a):
         self.web_search = not self.web_search
         self.web_btn.background_color = C['accent'] if self.web_search else C['card']
@@ -1259,10 +1340,38 @@ class ChatPanel(BoxLayout):
         show_toast(f"Reasoning: {labels[idx]}")
     
     def _voice_input(self, *a):
-        """Simple voice input - opens system voice input if available."""
-        show_toast("Voice: Use system keyboard mic")
-        # On Android, the keyboard mic button works
-        # Full speech recognition requires android.speech which is complex
+        """Voice input using ASR providers (Groq/Google)."""
+        # Check if providers available
+        try:
+            from engine.providers import ProviderManager
+            providers = ProviderManager(self.engine.secrets)
+            
+            if not providers.get_asr_providers():
+                show_toast("Add groq_api_key to Settings for voice")
+                return
+        except Exception as e:
+            show_toast(f"Voice error: {str(e)[:20]}")
+            return
+        
+        # Open voice recording popup
+        VoiceInputPopup(self.engine, self._on_voice_result).open()
+    
+    def _on_voice_result(self, text, alternatives=None):
+        """Handle voice recognition result."""
+        if text:
+            # If alternatives available, let user pick
+            if alternatives and len(alternatives) > 1:
+                VoiceAlternativesPopup(alternatives, self._apply_voice_text).open()
+            else:
+                self._apply_voice_text(text)
+    
+    def _apply_voice_text(self, text):
+        """Apply voice text to input."""
+        current = self.txt_in.text
+        if current and not current.endswith(' '):
+            text = ' ' + text
+        self.txt_in.text = current + text
+        self.txt_in.cursor = (len(self.txt_in.text), 0)
     
     def _open_models(self, *a):
         def on_sel(mid):
@@ -1595,3 +1704,1048 @@ class ImportConversationPopup(Popup):
         self.status.text = f"Error: {msg[:30]}"
         self.status.color = C['err']
         LOGBUF.add(f"Import error: {msg}")
+
+
+# === VOICE INPUT POPUP ===
+class VoiceInputPopup(Popup):
+    """Record audio and transcribe via ASR."""
+    
+    def __init__(self, engine, on_result, **kw):
+        self.engine = engine
+        self.on_result = on_result
+        self.recording = False
+        self.audio_path = None
+        
+        content = BoxLayout(orientation='vertical', padding=dp(10), spacing=dp(6))
+        
+        # Status
+        self.status = Label(text="Tap Record to start", color=C['text'],
+                           size_hint_y=None, height=dp(30), font_size=sp(12))
+        content.add_widget(self.status)
+        
+        # Timer
+        self.timer = Label(text="0:00", color=C['dim'],
+                          size_hint_y=None, height=dp(40), font_size=sp(24))
+        content.add_widget(self.timer)
+        
+        # Provider info
+        try:
+            from engine.providers import ProviderManager
+            providers = ProviderManager(engine.secrets)
+            asr_list = providers.get_asr_providers()
+            prov_text = f"ASR: {', '.join(asr_list)}" if asr_list else "No ASR configured"
+        except:
+            prov_text = "ASR: checking..."
+        
+        content.add_widget(Label(text=prov_text, color=C['dim'],
+                                size_hint_y=None, height=dp(20), font_size=sp(9)))
+        
+        # Buttons
+        btn_row = BoxLayout(size_hint_y=None, height=dp(50), spacing=dp(6))
+        
+        self.rec_btn = RBtn(text="🎤 Record", bg=C['err'], font_size=sp(11))
+        self.rec_btn.bind(on_press=self._toggle_recording)
+        btn_row.add_widget(self.rec_btn)
+        
+        self.done_btn = RBtn(text="✓ Done", bg=C['ok'], font_size=sp(11))
+        self.done_btn.bind(on_press=self._finish)
+        self.done_btn.disabled = True
+        btn_row.add_widget(self.done_btn)
+        
+        content.add_widget(btn_row)
+        
+        content.add_widget(RBtn(text="Cancel", bg=C['card'], size_hint_y=None, height=dp(36),
+                               on_press=lambda *a: self.dismiss()))
+        
+        super().__init__(title="Voice Input", content=content, size_hint=(0.85, 0.45), **kw)
+        
+        self._timer_event = None
+        self._start_time = 0
+    
+    def _toggle_recording(self, *a):
+        if not self.recording:
+            self._start_recording()
+        else:
+            self._stop_recording()
+    
+    def _start_recording(self):
+        """Start audio recording."""
+        import tempfile
+        import time
+        
+        self.audio_path = tempfile.mktemp(suffix='.wav')
+        self.recording = True
+        self._start_time = time.time()
+        
+        self.rec_btn.text = "⏹ Stop"
+        self.rec_btn.background_color = C['warn']
+        self.status.text = "Recording..."
+        self.done_btn.disabled = True
+        
+        # Start timer
+        self._timer_event = Clock.schedule_interval(self._update_timer, 0.1)
+        
+        # Start recording (platform-specific)
+        try:
+            self._start_platform_recording()
+        except Exception as e:
+            self.status.text = f"Error: {str(e)[:25]}"
+            self._stop_recording()
+    
+    def _start_platform_recording(self):
+        """Platform-specific recording implementation."""
+        import sys
+        
+        if hasattr(sys, 'getandroidapilevel'):
+            # Android: use AudioRecord via pyjnius
+            self._start_android_recording()
+        else:
+            # Desktop: use pyaudio or sounddevice
+            self._start_desktop_recording()
+    
+    def _start_android_recording(self):
+        """Start recording on Android."""
+        try:
+            from jnius import autoclass
+            
+            MediaRecorder = autoclass('android.media.MediaRecorder')
+            AudioSource = autoclass('android.media.MediaRecorder$AudioSource')
+            OutputFormat = autoclass('android.media.MediaRecorder$OutputFormat')
+            AudioEncoder = autoclass('android.media.MediaRecorder$AudioEncoder')
+            
+            self.recorder = MediaRecorder()
+            self.recorder.setAudioSource(AudioSource.MIC)
+            self.recorder.setOutputFormat(OutputFormat.THREE_GPP)
+            self.recorder.setAudioEncoder(AudioEncoder.AMR_NB)
+            self.recorder.setOutputFile(self.audio_path.replace('.wav', '.3gp'))
+            self.audio_path = self.audio_path.replace('.wav', '.3gp')
+            
+            self.recorder.prepare()
+            self.recorder.start()
+            
+        except Exception as e:
+            # Fallback: request recording via intent
+            LOGBUF.add(f"Android recording error: {e}")
+            raise
+    
+    def _start_desktop_recording(self):
+        """Start recording on desktop."""
+        try:
+            import sounddevice as sd
+            import numpy as np
+            
+            self.sample_rate = 16000
+            self.audio_data = []
+            
+            def callback(indata, frames, time, status):
+                self.audio_data.append(indata.copy())
+            
+            self.stream = sd.InputStream(samplerate=self.sample_rate, channels=1,
+                                         dtype='int16', callback=callback)
+            self.stream.start()
+            
+        except ImportError:
+            raise Exception("Install sounddevice: pip install sounddevice")
+    
+    def _stop_recording(self):
+        """Stop recording."""
+        import time
+        
+        self.recording = False
+        
+        if self._timer_event:
+            self._timer_event.cancel()
+        
+        self.rec_btn.text = "🎤 Record"
+        self.rec_btn.background_color = C['err']
+        
+        duration = time.time() - self._start_time
+        
+        # Stop platform recording
+        try:
+            self._stop_platform_recording()
+            self.status.text = f"Recorded {duration:.1f}s - tap Done"
+            self.done_btn.disabled = False
+        except Exception as e:
+            self.status.text = f"Error: {str(e)[:25]}"
+    
+    def _stop_platform_recording(self):
+        """Platform-specific stop."""
+        import sys
+        
+        if hasattr(sys, 'getandroidapilevel'):
+            if hasattr(self, 'recorder'):
+                self.recorder.stop()
+                self.recorder.release()
+        else:
+            if hasattr(self, 'stream'):
+                self.stream.stop()
+                self.stream.close()
+                
+                # Save to file
+                import numpy as np
+                import wave
+                
+                audio = np.concatenate(self.audio_data, axis=0)
+                
+                with wave.open(self.audio_path, 'wb') as wf:
+                    wf.setnchannels(1)
+                    wf.setsampwidth(2)
+                    wf.setframerate(self.sample_rate)
+                    wf.writeframes(audio.tobytes())
+    
+    def _update_timer(self, dt):
+        """Update recording timer."""
+        import time
+        elapsed = time.time() - self._start_time
+        mins = int(elapsed // 60)
+        secs = int(elapsed % 60)
+        self.timer.text = f"{mins}:{secs:02d}"
+    
+    def _finish(self, *a):
+        """Transcribe and return result."""
+        if not self.audio_path or not os.path.exists(self.audio_path):
+            self.status.text = "No recording found"
+            return
+        
+        self.status.text = "Transcribing..."
+        self.done_btn.disabled = True
+        
+        def transcribe():
+            try:
+                from engine.providers import ProviderManager
+                providers = ProviderManager(self.engine.secrets)
+                
+                result = providers.transcribe(self.audio_path)
+                
+                Clock.schedule_once(lambda dt: self._on_transcribe_done(result))
+                
+            except Exception as e:
+                Clock.schedule_once(lambda dt: self._on_transcribe_error(str(e)))
+        
+        threading.Thread(target=transcribe).start()
+    
+    def _on_transcribe_done(self, result):
+        """Handle transcription result."""
+        self.dismiss()
+        
+        # Cleanup
+        if self.audio_path and os.path.exists(self.audio_path):
+            try:
+                os.remove(self.audio_path)
+            except:
+                pass
+        
+        # Return result with alternatives
+        if self.on_result:
+            alternatives = result.alternatives if result.alternatives else None
+            self.on_result(result.text, alternatives)
+    
+    def _on_transcribe_error(self, error):
+        """Handle transcription error."""
+        self.status.text = f"Error: {error[:25]}"
+        self.done_btn.disabled = False
+
+
+class VoiceAlternativesPopup(Popup):
+    """Show ASR alternatives for user to pick."""
+    
+    def __init__(self, alternatives, on_select, **kw):
+        self.alternatives = alternatives
+        self.on_select = on_select
+        
+        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
+        
+        content.add_widget(Label(text="Select transcription:", color=C['text'],
+                                size_hint_y=None, height=dp(24), font_size=sp(11)))
+        
+        scroll = ScrollView(size_hint_y=0.7)
+        lst = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(3))
+        lst.bind(minimum_height=lst.setter('height'))
+        
+        for i, alt in enumerate(alternatives[:5]):
+            text = alt.get('text', '')[:60]
+            conf = alt.get('confidence', 0)
+            
+            if not text:
+                continue
+            
+            card = Card(size_hint_y=None, height=dp(50), bg=C['card'])
+            card.alt_text = alt.get('text', '')
+            
+            inner = BoxLayout(orientation='vertical')
+            inner.add_widget(Label(text=text + ('...' if len(alt.get('text', '')) > 60 else ''),
+                                   color=C['text'], font_size=sp(10), halign='left'))
+            inner.add_widget(Label(text=f"Confidence: {conf:.0%}" if conf else f"Option {i+1}",
+                                   color=C['dim'], font_size=sp(8)))
+            card.add_widget(inner)
+            
+            card.bind(on_touch_down=lambda w, t, txt=alt.get('text', ''): 
+                     self._select(txt) if w.collide_point(*t.pos) else None)
+            
+            lst.add_widget(card)
+        
+        scroll.add_widget(lst)
+        content.add_widget(scroll)
+        
+        content.add_widget(RBtn(text="Cancel", bg=C['card'], size_hint_y=None, height=dp(34),
+                               on_press=lambda *a: self.dismiss()))
+        
+        super().__init__(title="Voice Alternatives", content=content, size_hint=(0.9, 0.6), **kw)
+    
+    def _select(self, text):
+        self.dismiss()
+        if self.on_select:
+            self.on_select(text)
+
+
+# === FULL API REQUEST EDITOR ===
+class APIRequestEditor(Popup):
+    """Full editor for API request - system prompt, memory, messages, parameters."""
+    
+    def __init__(self, engine, config, memory, on_send=None, **kw):
+        self.engine = engine
+        self.config = config
+        self.memory = memory
+        self.on_send = on_send
+        
+        # Build initial request
+        self.request_data = self._build_request()
+        
+        content = BoxLayout(orientation='vertical', padding=dp(4), spacing=dp(2))
+        
+        # Tabs
+        self.tabs = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(2))
+        self.current_tab = 'system'
+        
+        for name, label in [('system', 'System'), ('memory', 'Memory'), 
+                           ('messages', 'Msgs'), ('params', 'Params')]:
+            btn = RBtn(text=label, bg=C['accent'] if name == 'system' else C['card'], 
+                      font_size=sp(9))
+            btn.tab_name = name
+            btn.bind(on_press=self._switch_tab)
+            self.tabs.add_widget(btn)
+        
+        content.add_widget(self.tabs)
+        
+        # Content area
+        self.content_area = BoxLayout(orientation='vertical')
+        content.add_widget(self.content_area)
+        
+        # Token counter
+        self.token_label = Label(text="~0 tokens", color=C['dim'], 
+                                size_hint_y=None, height=dp(18), font_size=sp(9))
+        content.add_widget(self.token_label)
+        
+        # Bottom buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(40), spacing=dp(3))
+        btns.add_widget(RBtn(text="Copy JSON", bg=C['card'], font_size=sp(9),
+                            on_press=self._copy_json))
+        btns.add_widget(RBtn(text="Send", bg=C['accent'], font_size=sp(10),
+                            on_press=self._send))
+        btns.add_widget(RBtn(text="Close", bg=C['card'], font_size=sp(9),
+                            on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+        
+        super().__init__(title="API Request Editor", content=content, 
+                        size_hint=(0.98, 0.95), **kw)
+        
+        self._show_tab('system')
+    
+    def _build_request(self):
+        """Build initial request structure."""
+        messages = []
+        
+        # System prompt
+        system_prompt = self.config.get('system_prompt', '')
+        
+        # Memory context
+        memory_context = ""
+        if self.memory:
+            memory_context = self.memory.get_active_context()
+        
+        # Conversation messages
+        conv_messages = []
+        if self.engine.conv and self.engine.db:
+            for m in self.engine.db.get_msgs(self.engine.conv['id']):
+                if m['status'] == 'active':
+                    conv_messages.append({
+                        'id': m['id'],
+                        'role': m['role'],
+                        'content': m['text'],
+                        'weight': m.get('weight', 1.0),
+                        'included': True,
+                    })
+        
+        return {
+            'system_prompt': system_prompt,
+            'memory_context': memory_context,
+            'messages': conv_messages,
+            'model': self.config.get('default_model', ''),
+            'temperature': self.config.get('temperature', 0.7),
+            'max_tokens': self.config.get('max_tokens', 4096),
+            'top_p': self.config.get('top_p', 1.0),
+            'presence_penalty': self.config.get('presence_penalty', 0),
+            'frequency_penalty': self.config.get('frequency_penalty', 0),
+        }
+    
+    def _switch_tab(self, btn):
+        self.current_tab = btn.tab_name
+        
+        # Update tab buttons
+        for child in self.tabs.children:
+            if hasattr(child, 'tab_name'):
+                child.background_color = C['accent'] if child.tab_name == self.current_tab else C['card']
+        
+        self._show_tab(self.current_tab)
+    
+    def _show_tab(self, tab_name):
+        """Show content for selected tab."""
+        self.content_area.clear_widgets()
+        
+        if tab_name == 'system':
+            self._show_system_tab()
+        elif tab_name == 'memory':
+            self._show_memory_tab()
+        elif tab_name == 'messages':
+            self._show_messages_tab()
+        elif tab_name == 'params':
+            self._show_params_tab()
+        
+        self._update_token_count()
+    
+    def _show_system_tab(self):
+        """System prompt editor."""
+        self.content_area.add_widget(Label(text="System Prompt:", color=C['text'],
+                                          size_hint_y=None, height=dp(20), font_size=sp(10)))
+        
+        self.system_input = DarkInput(
+            text=self.request_data['system_prompt'],
+            multiline=True,
+            hint_text="Enter system prompt...",
+            font_size=sp(10)
+        )
+        self.system_input.bind(text=lambda i, t: self._update_field('system_prompt', t))
+        self.content_area.add_widget(self.system_input)
+        
+        # Quick templates
+        tmpl_row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+        for name, text in [
+            ("Default", "You are a helpful assistant."),
+            ("Coder", "You are an expert programmer. Write clean, efficient code."),
+            ("Analyst", "You are a data analyst. Be precise and thorough."),
+        ]:
+            btn = RBtn(text=name, bg=C['card'], font_size=sp(8))
+            btn.template = text
+            btn.bind(on_press=lambda b: setattr(self.system_input, 'text', b.template))
+            tmpl_row.add_widget(btn)
+        self.content_area.add_widget(tmpl_row)
+    
+    def _show_memory_tab(self):
+        """Memory context editor."""
+        self.content_area.add_widget(Label(text="Memory Context (sent as system message):", 
+                                          color=C['text'], size_hint_y=None, height=dp(20), font_size=sp(10)))
+        
+        self.memory_input = DarkInput(
+            text=self.request_data['memory_context'],
+            multiline=True,
+            font_size=sp(9)
+        )
+        self.memory_input.bind(text=lambda i, t: self._update_field('memory_context', t))
+        self.content_area.add_widget(self.memory_input)
+        
+        # Reload from memory button
+        btn_row = BoxLayout(size_hint_y=None, height=dp(30), spacing=dp(2))
+        btn_row.add_widget(RBtn(text="Reload from Memory", bg=C['accent'], font_size=sp(9),
+                               on_press=self._reload_memory))
+        btn_row.add_widget(RBtn(text="Clear", bg=C['err'], font_size=sp(9),
+                               on_press=lambda *a: setattr(self.memory_input, 'text', '')))
+        
+        # Char count
+        chars = len(self.request_data['memory_context'])
+        btn_row.add_widget(Label(text=f"{chars:,} chars", color=C['dim'], 
+                                font_size=sp(8), size_hint_x=0.3))
+        self.content_area.add_widget(btn_row)
+    
+    def _show_messages_tab(self):
+        """Messages list with include/exclude toggle."""
+        hdr = BoxLayout(size_hint_y=None, height=dp(24))
+        hdr.add_widget(Label(text="Conversation Messages:", color=C['text'], font_size=sp(10)))
+        
+        included = sum(1 for m in self.request_data['messages'] if m['included'])
+        total = len(self.request_data['messages'])
+        hdr.add_widget(Label(text=f"{included}/{total} included", color=C['dim'], 
+                            font_size=sp(9), size_hint_x=0.4))
+        self.content_area.add_widget(hdr)
+        
+        # Message list
+        scroll = ScrollView()
+        self.msg_list = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(2))
+        self.msg_list.bind(minimum_height=self.msg_list.setter('height'))
+        
+        for i, msg in enumerate(self.request_data['messages']):
+            self._add_message_row(i, msg)
+        
+        scroll.add_widget(self.msg_list)
+        self.content_area.add_widget(scroll)
+        
+        # Bulk actions
+        bulk_row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+        bulk_row.add_widget(RBtn(text="All On", bg=C['ok'], font_size=sp(8),
+                                on_press=lambda *a: self._set_all_messages(True)))
+        bulk_row.add_widget(RBtn(text="All Off", bg=C['err'], font_size=sp(8),
+                                on_press=lambda *a: self._set_all_messages(False)))
+        bulk_row.add_widget(RBtn(text="Last 5", bg=C['card'], font_size=sp(8),
+                                on_press=self._keep_last_n))
+        bulk_row.add_widget(RBtn(text="+User Msg", bg=C['accent'], font_size=sp(8),
+                                on_press=self._add_user_message))
+        self.content_area.add_widget(bulk_row)
+    
+    def _add_message_row(self, idx, msg):
+        """Add a message row to the list."""
+        row = BoxLayout(size_hint_y=None, height=dp(50), spacing=dp(2))
+        
+        # Include toggle
+        inc_btn = RBtn(text="✓" if msg['included'] else "✗", 
+                      size_hint_x=None, width=dp(28),
+                      bg=C['ok'] if msg['included'] else C['dim'],
+                      font_size=sp(10))
+        inc_btn.msg_idx = idx
+        inc_btn.bind(on_press=self._toggle_message)
+        row.add_widget(inc_btn)
+        
+        # Role indicator
+        role_color = C['user'] if msg['role'] == 'user' else C['ai']
+        role_lbl = Label(text=msg['role'][:1].upper(), size_hint_x=None, width=dp(20),
+                        color=role_color, font_size=sp(10), bold=True)
+        row.add_widget(role_lbl)
+        
+        # Content (editable)
+        content_inp = DarkInput(text=msg['content'][:200], multiline=True, 
+                               font_size=sp(8), readonly=False)
+        content_inp.msg_idx = idx
+        content_inp.bind(text=self._update_message_content)
+        row.add_widget(content_inp)
+        
+        # Weight slider
+        weight_box = BoxLayout(orientation='vertical', size_hint_x=None, width=dp(40))
+        weight_lbl = Label(text=f"{msg['weight']:.1f}", font_size=sp(7), color=C['dim'],
+                          size_hint_y=None, height=dp(12))
+        weight_slider = Slider(min=0.1, max=2.0, value=msg['weight'], orientation='vertical')
+        weight_slider.msg_idx = idx
+        weight_slider.weight_label = weight_lbl
+        weight_slider.bind(value=self._update_message_weight)
+        weight_box.add_widget(weight_lbl)
+        weight_box.add_widget(weight_slider)
+        row.add_widget(weight_box)
+        
+        self.msg_list.add_widget(row)
+    
+    def _toggle_message(self, btn):
+        idx = btn.msg_idx
+        self.request_data['messages'][idx]['included'] = not self.request_data['messages'][idx]['included']
+        btn.text = "✓" if self.request_data['messages'][idx]['included'] else "✗"
+        btn.background_color = C['ok'] if self.request_data['messages'][idx]['included'] else C['dim']
+        self._update_token_count()
+    
+    def _update_message_content(self, inp, text):
+        if hasattr(inp, 'msg_idx'):
+            self.request_data['messages'][inp.msg_idx]['content'] = text
+            self._update_token_count()
+    
+    def _update_message_weight(self, slider, value):
+        if hasattr(slider, 'msg_idx'):
+            self.request_data['messages'][slider.msg_idx]['weight'] = round(value, 1)
+            if hasattr(slider, 'weight_label'):
+                slider.weight_label.text = f"{value:.1f}"
+    
+    def _set_all_messages(self, included):
+        for msg in self.request_data['messages']:
+            msg['included'] = included
+        self._show_tab('messages')
+    
+    def _keep_last_n(self, *a, n=5):
+        for i, msg in enumerate(self.request_data['messages']):
+            msg['included'] = i >= len(self.request_data['messages']) - n
+        self._show_tab('messages')
+    
+    def _add_user_message(self, *a):
+        self.request_data['messages'].append({
+            'id': f'new_{len(self.request_data["messages"])}',
+            'role': 'user',
+            'content': '',
+            'weight': 1.0,
+            'included': True,
+        })
+        self._show_tab('messages')
+    
+    def _show_params_tab(self):
+        """Model parameters editor."""
+        # Model
+        model_row = BoxLayout(size_hint_y=None, height=dp(34))
+        model_row.add_widget(Label(text="Model:", color=C['text'], size_hint_x=0.25, font_size=sp(9)))
+        self.model_input = DarkInput(text=self.request_data['model'], multiline=False, font_size=sp(9))
+        self.model_input.bind(text=lambda i, t: self._update_field('model', t))
+        model_row.add_widget(self.model_input)
+        self.content_area.add_widget(model_row)
+        
+        # Temperature
+        temp_row = BoxLayout(size_hint_y=None, height=dp(34))
+        temp_row.add_widget(Label(text="Temp:", color=C['text'], size_hint_x=0.25, font_size=sp(9)))
+        self.temp_slider = Slider(min=0, max=2, value=self.request_data['temperature'], size_hint_x=0.5)
+        self.temp_label = Label(text=f"{self.request_data['temperature']:.2f}", 
+                               color=C['dim'], size_hint_x=0.25, font_size=sp(9))
+        self.temp_slider.bind(value=lambda s, v: (
+            self._update_field('temperature', round(v, 2)),
+            setattr(self.temp_label, 'text', f"{v:.2f}")
+        ))
+        temp_row.add_widget(self.temp_slider)
+        temp_row.add_widget(self.temp_label)
+        self.content_area.add_widget(temp_row)
+        
+        # Max tokens
+        tok_row = BoxLayout(size_hint_y=None, height=dp(34))
+        tok_row.add_widget(Label(text="Max tok:", color=C['text'], size_hint_x=0.25, font_size=sp(9)))
+        self.tok_slider = Slider(min=100, max=32000, value=self.request_data['max_tokens'], size_hint_x=0.5)
+        self.tok_label = Label(text=f"{int(self.request_data['max_tokens']):,}", 
+                              color=C['dim'], size_hint_x=0.25, font_size=sp(9))
+        self.tok_slider.bind(value=lambda s, v: (
+            self._update_field('max_tokens', int(v)),
+            setattr(self.tok_label, 'text', f"{int(v):,}")
+        ))
+        tok_row.add_widget(self.tok_slider)
+        tok_row.add_widget(self.tok_label)
+        self.content_area.add_widget(tok_row)
+        
+        # Top P
+        topp_row = BoxLayout(size_hint_y=None, height=dp(34))
+        topp_row.add_widget(Label(text="Top P:", color=C['text'], size_hint_x=0.25, font_size=sp(9)))
+        self.topp_slider = Slider(min=0, max=1, value=self.request_data['top_p'], size_hint_x=0.5)
+        self.topp_label = Label(text=f"{self.request_data['top_p']:.2f}", 
+                               color=C['dim'], size_hint_x=0.25, font_size=sp(9))
+        self.topp_slider.bind(value=lambda s, v: (
+            self._update_field('top_p', round(v, 2)),
+            setattr(self.topp_label, 'text', f"{v:.2f}")
+        ))
+        topp_row.add_widget(self.topp_slider)
+        topp_row.add_widget(self.topp_label)
+        self.content_area.add_widget(topp_row)
+        
+        # Presence penalty
+        pres_row = BoxLayout(size_hint_y=None, height=dp(34))
+        pres_row.add_widget(Label(text="Pres pen:", color=C['text'], size_hint_x=0.25, font_size=sp(9)))
+        self.pres_slider = Slider(min=-2, max=2, value=self.request_data['presence_penalty'], size_hint_x=0.5)
+        self.pres_label = Label(text=f"{self.request_data['presence_penalty']:.1f}", 
+                               color=C['dim'], size_hint_x=0.25, font_size=sp(9))
+        self.pres_slider.bind(value=lambda s, v: (
+            self._update_field('presence_penalty', round(v, 1)),
+            setattr(self.pres_label, 'text', f"{v:.1f}")
+        ))
+        pres_row.add_widget(self.pres_slider)
+        pres_row.add_widget(self.pres_label)
+        self.content_area.add_widget(pres_row)
+        
+        # Frequency penalty
+        freq_row = BoxLayout(size_hint_y=None, height=dp(34))
+        freq_row.add_widget(Label(text="Freq pen:", color=C['text'], size_hint_x=0.25, font_size=sp(9)))
+        self.freq_slider = Slider(min=-2, max=2, value=self.request_data['frequency_penalty'], size_hint_x=0.5)
+        self.freq_label = Label(text=f"{self.request_data['frequency_penalty']:.1f}", 
+                               color=C['dim'], size_hint_x=0.25, font_size=sp(9))
+        self.freq_slider.bind(value=lambda s, v: (
+            self._update_field('frequency_penalty', round(v, 1)),
+            setattr(self.freq_label, 'text', f"{v:.1f}")
+        ))
+        freq_row.add_widget(self.freq_slider)
+        freq_row.add_widget(self.freq_label)
+        self.content_area.add_widget(freq_row)
+        
+        # Spacer
+        self.content_area.add_widget(BoxLayout())
+    
+    def _update_field(self, field, value):
+        self.request_data[field] = value
+        self._update_token_count()
+    
+    def _reload_memory(self, *a):
+        if self.memory:
+            self.request_data['memory_context'] = self.memory.get_active_context()
+            if hasattr(self, 'memory_input'):
+                self.memory_input.text = self.request_data['memory_context']
+    
+    def _update_token_count(self):
+        """Estimate token count."""
+        total_chars = len(self.request_data['system_prompt'])
+        total_chars += len(self.request_data['memory_context'])
+        
+        for msg in self.request_data['messages']:
+            if msg['included']:
+                total_chars += len(msg['content'])
+        
+        # Rough estimate: 4 chars per token
+        est_tokens = total_chars // 4
+        self.token_label.text = f"~{est_tokens:,} tokens"
+    
+    def _copy_json(self, *a):
+        """Copy full request as JSON."""
+        # Build actual API request
+        messages = []
+        
+        # System message
+        system_content = ""
+        if self.request_data['system_prompt']:
+            system_content += self.request_data['system_prompt']
+        if self.request_data['memory_context']:
+            if system_content:
+                system_content += "\n\n---\n\n"
+            system_content += f"Context from memory:\n{self.request_data['memory_context']}"
+        
+        if system_content:
+            messages.append({"role": "system", "content": system_content})
+        
+        # Conversation messages
+        for msg in self.request_data['messages']:
+            if msg['included']:
+                messages.append({"role": msg['role'], "content": msg['content']})
+        
+        request = {
+            "model": self.request_data['model'],
+            "messages": messages,
+            "temperature": self.request_data['temperature'],
+            "max_tokens": self.request_data['max_tokens'],
+            "top_p": self.request_data['top_p'],
+        }
+        
+        if self.request_data['presence_penalty']:
+            request["presence_penalty"] = self.request_data['presence_penalty']
+        if self.request_data['frequency_penalty']:
+            request["frequency_penalty"] = self.request_data['frequency_penalty']
+        
+        Clipboard.copy(json.dumps(request, indent=2))
+        show_toast("JSON copied")
+    
+    def _send(self, *a):
+        """Send the request."""
+        self.dismiss()
+        if self.on_send:
+            self.on_send(self.request_data)
+
+
+# === GITHUB SYNC POPUP ===
+class GitHubSyncPopup(Popup):
+    """GitHub synchronization interface."""
+    
+    def __init__(self, engine, config, secrets, on_sync=None, **kw):
+        self.engine = engine
+        self.config = config
+        self.secrets = secrets
+        self.on_sync = on_sync
+        self.sync_manager = None
+        self.current_syncer = None
+        self.files = []
+        
+        content = BoxLayout(orientation='vertical', padding=dp(6), spacing=dp(3))
+        
+        # Config selector
+        cfg_row = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(2))
+        cfg_row.add_widget(Label(text="Repo:", color=C['text'], size_hint_x=0.15, font_size=sp(9)))
+        
+        self.config_spinner = Spinner(text="Select...", values=[], size_hint_x=0.55,
+                                      background_color=C['card'])
+        self.config_spinner.bind(text=self._on_config_select)
+        cfg_row.add_widget(self.config_spinner)
+        
+        cfg_row.add_widget(RBtn(text="+New", bg=C['ok'], size_hint_x=0.3, font_size=sp(8),
+                               on_press=self._add_config))
+        content.add_widget(cfg_row)
+        
+        # Direction selector
+        dir_row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+        dir_row.add_widget(Label(text="Direction:", color=C['text'], size_hint_x=0.25, font_size=sp(9)))
+        
+        for name, label in [('bidirectional', '↔️Both'), ('pull_only', '⬇️Pull'), ('push_only', '⬆️Push')]:
+            btn = RBtn(text=label, bg=C['card'], font_size=sp(8))
+            btn.direction = name
+            btn.bind(on_press=self._set_direction)
+            dir_row.add_widget(btn)
+        self.dir_row = dir_row
+        content.add_widget(dir_row)
+        
+        # Status
+        self.status = Label(text="Select a repository", color=C['dim'],
+                           size_hint_y=None, height=dp(20), font_size=sp(9))
+        content.add_widget(self.status)
+        
+        # File list with checkboxes
+        file_header = BoxLayout(size_hint_y=None, height=dp(24))
+        file_header.add_widget(Label(text="Files:", color=C['text'], font_size=sp(10)))
+        file_header.add_widget(RBtn(text="All", bg=C['card'], size_hint_x=0.2, font_size=sp(8),
+                                   on_press=lambda *a: self._select_all(True)))
+        file_header.add_widget(RBtn(text="None", bg=C['card'], size_hint_x=0.2, font_size=sp(8),
+                                   on_press=lambda *a: self._select_all(False)))
+        file_header.add_widget(RBtn(text="🔄", bg=C['accent'], size_hint_x=0.15, font_size=sp(10),
+                                   on_press=self._refresh_files))
+        content.add_widget(file_header)
+        
+        # File list
+        self.file_scroll = ScrollView()
+        self.file_list = BoxLayout(orientation='vertical', size_hint_y=None, spacing=dp(1))
+        self.file_list.bind(minimum_height=self.file_list.setter('height'))
+        self.file_scroll.add_widget(self.file_list)
+        content.add_widget(self.file_scroll)
+        
+        # Action buttons
+        action_row = BoxLayout(size_hint_y=None, height=dp(40), spacing=dp(3))
+        action_row.add_widget(RBtn(text="⬇️ Pull", bg=C['accent'], font_size=sp(10),
+                                  on_press=self._pull))
+        action_row.add_widget(RBtn(text="⬆️ Push", bg=C['warn'], font_size=sp(10),
+                                  on_press=self._push))
+        action_row.add_widget(RBtn(text="🔄 Sync", bg=C['ok'], font_size=sp(10),
+                                  on_press=self._sync))
+        content.add_widget(action_row)
+        
+        content.add_widget(RBtn(text="Close", bg=C['card'], size_hint_y=None, height=dp(34),
+                               on_press=lambda *a: self.dismiss()))
+        
+        super().__init__(title="GitHub Sync", content=content, size_hint=(0.95, 0.85), **kw)
+        
+        self._init_manager()
+    
+    def _init_manager(self):
+        """Initialize sync manager."""
+        try:
+            from engine.github_sync import GitHubSyncManager
+            
+            data_dir = Path(self.config.path).parent if hasattr(self.config, 'path') else Path.home() / '.chatadhd'
+            self.sync_manager = GitHubSyncManager(data_dir / 'github_sync.json', self.secrets)
+            
+            configs = self.sync_manager.list_configs()
+            self.config_spinner.values = configs if configs else ['(none)']
+            
+            if configs:
+                self.config_spinner.text = configs[0]
+                
+        except Exception as e:
+            self.status.text = f"Error: {str(e)[:30]}"
+            LOGBUF.add(f"GitHub sync init error: {e}")
+    
+    def _on_config_select(self, spinner, text):
+        """Handle config selection."""
+        if text == '(none)' or not self.sync_manager:
+            return
+        
+        self.current_syncer = self.sync_manager.get_syncer(text)
+        if self.current_syncer:
+            if self.current_syncer.test_connection():
+                self.status.text = f"Connected to {self.current_syncer.config.repo}"
+                self._refresh_files()
+            else:
+                self.status.text = "Connection failed - check token"
+    
+    def _add_config(self, *a):
+        """Add new sync configuration."""
+        content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(4))
+        
+        content.add_widget(Label(text="Repository (owner/repo):", color=C['text'],
+                                size_hint_y=None, height=dp(18), font_size=sp(9)))
+        repo_input = DarkInput(hint_text="username/repository", multiline=False,
+                              size_hint_y=None, height=dp(34))
+        content.add_widget(repo_input)
+        
+        content.add_widget(Label(text="Local path:", color=C['text'],
+                                size_hint_y=None, height=dp(18), font_size=sp(9)))
+        path_input = DarkInput(hint_text="/storage/emulated/0/Download/myproject",
+                              multiline=False, size_hint_y=None, height=dp(34))
+        content.add_widget(path_input)
+        
+        content.add_widget(Label(text="Branch:", color=C['text'],
+                                size_hint_y=None, height=dp(18), font_size=sp(9)))
+        branch_input = DarkInput(text="main", multiline=False,
+                                size_hint_y=None, height=dp(34))
+        content.add_widget(branch_input)
+        
+        content.add_widget(Label(text="GitHub Token (in Settings):", color=C['dim'],
+                                size_hint_y=None, height=dp(16), font_size=sp(8)))
+        
+        def save(*a):
+            if not repo_input.text or not path_input.text:
+                show_toast("Fill all fields")
+                return
+            
+            name = repo_input.text.split('/')[-1]
+            self.sync_manager.add_config(
+                name=name,
+                repo=repo_input.text,
+                local_path=path_input.text,
+                branch=branch_input.text or "main"
+            )
+            
+            self.config_spinner.values = self.sync_manager.list_configs()
+            self.config_spinner.text = name
+            popup.dismiss()
+            show_toast(f"Added: {name}")
+        
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Save", bg=C['accent'], on_press=save))
+        btns.add_widget(RBtn(text="Cancel", bg=C['card'], on_press=lambda *a: popup.dismiss()))
+        content.add_widget(btns)
+        
+        popup = Popup(title="Add Repository", content=content, size_hint=(0.9, 0.55))
+        popup.open()
+    
+    def _set_direction(self, btn):
+        if self.current_syncer:
+            self.current_syncer.config.sync_direction = btn.direction
+            show_toast(f"Direction: {btn.direction}")
+    
+    def _refresh_files(self, *a):
+        """Refresh file list."""
+        self.file_list.clear_widgets()
+        
+        if not self.current_syncer:
+            return
+        
+        self.status.text = "Loading files..."
+        
+        def load():
+            try:
+                self.files = self.current_syncer.get_sync_status()
+                Clock.schedule_once(lambda dt: self._show_files())
+            except Exception as e:
+                Clock.schedule_once(lambda dt: setattr(self.status, 'text', f"Error: {str(e)[:25]}"))
+        
+        threading.Thread(target=load).start()
+    
+    def _show_files(self):
+        """Display file list."""
+        self.file_list.clear_widgets()
+        
+        status_colors = {
+            'synced': C['ok'],
+            'modified': C['warn'],
+            'new_local': C['accent'],
+            'new_remote': C['dim'],
+        }
+        
+        status_icons = {
+            'synced': '✓',
+            'modified': '~',
+            'new_local': '+L',
+            'new_remote': '+R',
+        }
+        
+        for i, f in enumerate(self.files):
+            row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+            
+            # Checkbox
+            cb = RBtn(text="☑" if getattr(f, 'selected', True) else "☐",
+                     size_hint_x=None, width=dp(26), bg=C['card'], font_size=sp(10))
+            cb.file_idx = i
+            cb.bind(on_press=self._toggle_file)
+            row.add_widget(cb)
+            
+            # Status icon
+            status_icon = status_icons.get(f.status, '?')
+            status_color = status_colors.get(f.status, C['dim'])
+            row.add_widget(Label(text=status_icon, size_hint_x=None, width=dp(24),
+                                color=status_color, font_size=sp(9)))
+            
+            # Filename
+            row.add_widget(Label(text=f.path[-35:], color=C['text'], font_size=sp(8),
+                                halign='left'))
+            
+            # Size
+            size_str = f"{f.size//1000}K" if f.size > 1000 else f"{f.size}B"
+            row.add_widget(Label(text=size_str, size_hint_x=None, width=dp(35),
+                                color=C['dim'], font_size=sp(7)))
+            
+            self.file_list.add_widget(row)
+        
+        self.status.text = f"{len(self.files)} files"
+    
+    def _toggle_file(self, btn):
+        idx = btn.file_idx
+        current = getattr(self.files[idx], 'selected', True)
+        self.files[idx].selected = not current
+        btn.text = "☑" if self.files[idx].selected else "☐"
+    
+    def _select_all(self, selected):
+        for f in self.files:
+            f.selected = selected
+        self._show_files()
+    
+    def _get_selected_files(self):
+        return [f for f in self.files if getattr(f, 'selected', True)]
+    
+    def _pull(self, *a):
+        """Pull selected files."""
+        if not self.current_syncer:
+            return
+        
+        files = [f for f in self._get_selected_files() if f.status in ('new_remote', 'modified')]
+        if not files:
+            show_toast("No files to pull")
+            return
+        
+        self.status.text = f"Pulling {len(files)} files..."
+        
+        def do_pull():
+            result = self.current_syncer.pull_all(files)
+            Clock.schedule_once(lambda dt: self._on_pull_done(result))
+        
+        threading.Thread(target=do_pull).start()
+    
+    def _on_pull_done(self, result):
+        self.status.text = f"Pulled: {result['success']} OK, {result['failed']} failed"
+        self._refresh_files()
+        if self.on_sync:
+            self.on_sync()
+    
+    def _push(self, *a):
+        """Push selected files."""
+        if not self.current_syncer:
+            return
+        
+        files = [f for f in self._get_selected_files() if f.status in ('new_local', 'modified')]
+        if not files:
+            show_toast("No files to push")
+            return
+        
+        self.status.text = f"Pushing {len(files)} files..."
+        
+        def do_push():
+            result = self.current_syncer.push_all(files)
+            Clock.schedule_once(lambda dt: self._on_push_done(result))
+        
+        threading.Thread(target=do_push).start()
+    
+    def _on_push_done(self, result):
+        self.status.text = f"Pushed: {result['success']} OK, {result['failed']} failed"
+        self._refresh_files()
+    
+    def _sync(self, *a):
+        """Bidirectional sync."""
+        if not self.current_syncer:
+            return
+        
+        files = self._get_selected_files()
+        self.status.text = f"Syncing {len(files)} files..."
+        
+        def do_sync():
+            result = self.current_syncer.sync(files)
+            Clock.schedule_once(lambda dt: self._on_sync_done(result))
+        
+        threading.Thread(target=do_sync).start()
+    
+    def _on_sync_done(self, result):
+        pulled = result['pulled']['success']
+        pushed = result['pushed']['success']
+        conflicts = len(result['conflicts'])
+        
+        self.status.text = f"⬇️{pulled} ⬆️{pushed} ⚠️{conflicts}"
+        
+        if conflicts:
+            show_toast(f"{conflicts} conflicts - resolve manually")
+        
+        self._refresh_files()
+        if self.on_sync:
+            self.on_sync()

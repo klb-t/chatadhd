@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.01 - Graph Explorer
+ChatADHD v0.06.02 - Graph Explorer
 Force-directed visualization with BIGGER nodes and READABLE labels
 """
 from kivy.uix.widget import Widget

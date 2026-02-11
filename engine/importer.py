@@ -444,6 +444,18 @@ class ConversationImporter:
         except Exception as e:
             log.warning(f"pytesseract failed: {e}")
         
+        # Fallback: Try ocr.space API (via providers)
+        try:
+            from engine.providers import ProviderManager
+            providers = ProviderManager(self.engine.secrets if hasattr(self.engine, 'secrets') else None)
+            
+            if providers.get_ocr_providers():
+                result = providers.ocr(path)
+                if result.text:
+                    return result.text
+        except Exception as e:
+            log.warning(f"ocr.space failed: {e}")
+        
         # Fallback: Try with PIL only for basic info
         try:
             from PIL import Image
