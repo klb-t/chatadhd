@@ -1,3 +1,4 @@
+# Colors + text constants (no emoji - Android compatibility)
 C = {
     'bg': (0.11, 0.11, 0.13, 1),
     'card': (0.18, 0.18, 0.21, 1),
@@ -9,4 +10,19 @@ C = {
     'ok': (0.3, 0.72, 0.4, 1),
     'warn': (0.92, 0.65, 0.2, 1),
     'err': (0.85, 0.32, 0.32, 1)
+}
+
+# Icons as text (no emoji)
+ICONS = {
+    'refresh': 'R',
+    'settings': '*',
+    'folder': '[D]',
+    'file': '[F]',
+    'audio': '[A]',
+    'image': '[I]',
+    'text': '-',
+    'close': 'X',
+    'attach': '+',
+    'child': '>>',
+    'link': '->',
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ChatADHD v0.4.0-dev
+ChatADHD v0.4.1-dev
 ===================
 Multi-model AI chat with hierarchical graph memory.
 """
@@ -9,6 +9,9 @@ os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 import sys, logging
 from pathlib import Path
+
+# Version inline (avoid import issues on Android)
+__version__ = "0.4.1-dev"
 
 # Setup logging
 APP_DIR = Path(__file__).parent.resolve()
@@ -23,8 +26,6 @@ logging.basicConfig(
     ]
 )
 log = logging.getLogger('main')
-
-from version import __version__
 log.info("=" * 50)
 log.info(f"ChatADHD v{__version__} starting...")
 
@@ -38,13 +39,28 @@ from kivy.graphics import Color, Rectangle
 from kivy.metrics import dp, sp
 from kivy.clock import Clock
 
-# Local imports
-from db import DB
-from config import Config, Secrets, Presets, Models
-from engine import ChatEngine
-from gui.colors import C
-from gui.widgets import RBtn, Card
-from gui.panels import MemoryPanel, ConvPanel, ChatPanel, SettingsPopup, LOGBUF
+# Local imports - with fallback error handling
+try:
+    from db import DB
+    from config import Config, Secrets, Presets, Models
+    from engine import ChatEngine
+    from gui.colors import C
+    from gui.widgets import RBtn, Card
+    from gui.panels import MemoryPanel, ConvPanel, ChatPanel, SettingsPopup, LOGBUF
+except ImportError as e:
+    log.critical(f"Import failed: {e}")
+    log.critical(f"APP_DIR: {APP_DIR}")
+    log.critical(f"sys.path: {sys.path}")
+    log.critical(f"Files in APP_DIR: {list(APP_DIR.iterdir()) if APP_DIR.exists() else 'DIR NOT FOUND'}")
+    
+    # Show error in Kivy window
+    from kivy.app import App
+    from kivy.uix.label import Label
+    class ErrorApp(App):
+        def build(self):
+            return Label(text=f"Import Error:\n{e}\n\nCheck folder structure!", font_size='14sp')
+    ErrorApp().run()
+    sys.exit(1)
 
 # Log buffer handler
 class BufHandler(logging.Handler):
@@ -66,7 +82,7 @@ class MainLayout(FloatLayout):
         self.models = Models(APP_DIR, self.config, self.secrets)
         self.db = DB()
         
-        # Create engine with proper config access
+        # Create engine
         self.engine = ChatEngine(
             config=self.config,
             secrets=self.secrets,
