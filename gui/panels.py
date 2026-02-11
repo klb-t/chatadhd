@@ -1,4 +1,4 @@
-"""GUI panels - clean Android compatible version"""
+"""GUI panels - native Android file picker"""
 import threading
 from pathlib import Path
 from kivy.uix.boxlayout import BoxLayout
@@ -23,6 +23,39 @@ class LogBuffer:
     def get(self): return "\n".join(self.lines)
 
 LOGBUF = LogBuffer()
+
+def open_native_file_picker(callback, multiple=True):
+    """Open native Android file picker using Intent"""
+    try:
+        # Try Android-specific intent picker
+        from android.storage import primary_external_storage_path
+        from android import activity, mActivity
+        from jnius import autoclass, cast
+        
+        Intent = autoclass('android.content.Intent')
+        intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("*/*")
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        
+        # This would need proper activity result handling
+        # For now fall back to plyer
+        raise ImportError("Use plyer")
+        
+    except ImportError:
+        pass
+    
+    try:
+        # Plyer with native picker
+        from plyer import filechooser
+        filechooser.open_file(
+            on_selection=callback,
+            multiple=multiple
+        )
+        return True
+    except Exception as e:
+        LOGBUF.add(f"File picker error: {e}")
+        return False
 
 class LogViewer(Popup):
     def __init__(self, **kw):
@@ -60,7 +93,7 @@ class SettingsPopup(Popup):
             inp = TextInput(text=str(config.get(key, "")), multiline=False, size_hint_x=0.6, background_color=C['card'], foreground_color=C['text'])
             setattr(self, attr, inp); row.add_widget(inp); content.add_widget(row)
         
-        content.add_widget(BoxLayout())  # spacer
+        content.add_widget(BoxLayout())
         
         btns = BoxLayout(size_hint_y=None, height=dp(48), spacing=dp(10))
         save_btn = RBtn(text="Save", bg=C['accent']); save_btn.bind(on_press=self._save); btns.add_widget(save_btn)
@@ -326,42 +359,16 @@ class ChatPanel(BoxLayout):
         self.status.text = "New chat"
     
     def _attach(self, *a):
-        # File picker
-        try:
-            from plyer import filechooser
-            filechooser.open_file(on_selection=self._files_selected, multiple=True)
-        except:
-            # Fallback popup
-            content = BoxLayout(orientation='vertical', padding=dp(8), spacing=dp(8))
-            path_input = TextInput(text='/storage/emulated/0/Download', multiline=False, size_hint_y=None, height=dp(40),
-                                  background_color=C['card'], foreground_color=C['text'])
-            content.add_widget(path_input)
-            
-            from kivy.uix.filechooser import FileChooserListView
-            fc = FileChooserListView(path='/storage/emulated/0/Download')
-            fc.bind(path=lambda w, p: setattr(path_input, 'text', p))
-            content.add_widget(fc)
-            
-            btns = BoxLayout(size_hint_y=None, height=dp(44), spacing=dp(8))
-            def sel(*a):
-                if fc.selection:
-                    self._files_selected(fc.selection)
-                popup.dismiss()
-            def go(*a):
-                try: fc.path = path_input.text
-                except: pass
-            go_btn = RBtn(text="Go", bg=C['card'], size_hint_x=0.25); go_btn.bind(on_press=go); btns.add_widget(go_btn)
-            sel_btn = RBtn(text="Select", bg=C['accent']); sel_btn.bind(on_press=sel); btns.add_widget(sel_btn)
-            cancel_btn = RBtn(text="Cancel", bg=C['card']); cancel_btn.bind(on_press=lambda *a: popup.dismiss()); btns.add_widget(cancel_btn)
-            content.add_widget(btns)
-            
-            popup = Popup(title="Select Files", content=content, size_hint=(0.95, 0.85))
-            popup.open()
-    
-    def _files_selected(self, selection):
-        if selection:
-            self.pending_files.extend(selection)
-            self.status.text = f"{len(self.pending_files)} file(s)"
+        """Open native file picker"""
+        def on_selection(selection):
+            if selection:
+                self.pending_files.extend(selection)
+                self.status.text = f"{len(self.pending_files)} file(s)"
+                LOGBUF.add(f"Selected: {selection}")
+        
+        # Try native picker first
+        if not open_native_file_picker(on_selection):
+            self.status.text = "File picker not available"
     
     def _send(self, *a):
         if self.sending: return

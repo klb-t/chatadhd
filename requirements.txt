@@ -2,3 +2,4 @@ kivy>=2.0.0
 requests
 openai
 plyer
+pyjnius
