@@ -272,10 +272,131 @@ class ConversationImporter:
     
     # === JSON ===
     def import_json(self, path, title=None):
-        """Import from JSON file — handles every known chatbot export format."""
+        """Import from JSON file — streams large files to avoid OOM."""
+        file_size = os.path.getsize(path)
+
+        if file_size > 5_000_000:  # > 5MB → stream
+            log.info("Large JSON (%d MB) — streaming import", file_size // 1_000_000)
+            return self._stream_json_array(path, title)
+
+        # Small file — load normally.
         with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         return self._import_json_data(data, title, source_path=path)
+
+    def _stream_json_array(self, path, title=None):
+        """Stream-parse a JSON array of conversations without loading all into RAM.
+        Reads character by character, extracting one top-level element at a time.
+        Handles ChatGPT conversations.json (500MB+) and Claude exports.
+        """
+        results = []
+        conv_count = 0
+
+        with open(path, 'r', encoding='utf-8', buffering=8192) as f:
+            # Skip to first '['.
+            ch = ''
+            while ch != '[':
+                ch = f.read(1)
+                if not ch:
+                    # Not an array — fall back to full load.
+                    log.warning("Stream: not a JSON array, falling back")
+                    f.seek(0)
+                    data = json.load(f)
+                    return self._import_json_data(data, title, source_path=path)
+
+            # Parse elements one by one.
+            for element in self._iter_json_elements(f):
+                try:
+                    r = self._import_single_element(element, title)
+                    if r:
+                        results.append(r)
+                        conv_count += 1
+                        if conv_count % 50 == 0:
+                            log.info("Stream import: %d conversations processed", conv_count)
+                except Exception:
+                    log.debug("Stream: skipped one element", exc_info=True)
+
+        log.info("Stream import complete: %d conversations from %s",
+                 conv_count, os.path.basename(path))
+        return results
+
+    def _iter_json_elements(self, f):
+        """Yield individual JSON objects from an open file positioned after '['.
+        Tracks bracket/brace depth to find element boundaries.
+        """
+        buf = []
+        depth = 0
+        in_string = False
+        escape = False
+
+        while True:
+            ch = f.read(1)
+            if not ch:
+                break
+
+            if escape:
+                buf.append(ch)
+                escape = False
+                continue
+
+            if ch == '\\' and in_string:
+                buf.append(ch)
+                escape = True
+                continue
+
+            if ch == '"':
+                in_string = not in_string
+                buf.append(ch)
+                continue
+
+            if in_string:
+                buf.append(ch)
+                continue
+
+            # Outside string.
+            if ch in ('{', '['):
+                depth += 1
+                buf.append(ch)
+            elif ch in ('}', ']'):
+                if depth == 0:
+                    # End of top-level array.
+                    break
+                depth -= 1
+                buf.append(ch)
+                if depth == 0:
+                    # Complete element.
+                    raw = ''.join(buf).strip()
+                    buf.clear()
+                    if raw:
+                        try:
+                            yield json.loads(raw)
+                        except json.JSONDecodeError:
+                            log.debug("Stream: invalid JSON element (len=%d)", len(raw))
+            elif ch == ',' and depth == 0:
+                # Separator between elements — skip.
+                raw = ''.join(buf).strip()
+                buf.clear()
+                if raw:
+                    try:
+                        yield json.loads(raw)
+                    except json.JSONDecodeError:
+                        pass
+            else:
+                if depth > 0 or ch.strip():
+                    buf.append(ch)
+
+    def _import_single_element(self, element, title=None):
+        """Import a single conversation element (from streaming or normal)."""
+        if not isinstance(element, dict):
+            return None
+        if 'mapping' in element:
+            return self._import_chatgpt_mapping(element, title)
+        elif 'chat_messages' in element:
+            return self._import_claude_export(element, title)
+        elif 'messages' in element:
+            return self._import_conversation_obj(element, title)
+        else:
+            return self._import_conversation_obj(element, title)
     
     def _import_json_data(self, data, title=None, source_path=None):
         """Route parsed JSON to the right handler."""
@@ -432,20 +553,23 @@ class ConversationImporter:
         return self._import_message_list(messages, conv_title)
     
     def _import_message_list(self, messages, title):
-        """Import list of message objects.  Core method — all importers converge here."""
+        """Import list of message objects using batch DB inserts.
+        Core method — all importers converge here.
+        """
         conv_title = title or f"Import {datetime.now():%Y-%m-%d %H:%M}"
         new_conv = self.db.create_conv(f"[Import] {conv_title}")
-        count = 0
-        
+
+        # Normalise messages into batch format.
+        batch = []
         for msg in messages:
             role = msg.get('role', msg.get('sender', 'user'))
             if role in ('system',):
                 continue
-            
+
             role = 'user' if role in ('user', 'human') else 'assistant'
             content = msg.get('content', msg.get('text', ''))
-            
-            # Handle content that might be a list (OpenAI format)
+
+            # Handle content that might be a list (OpenAI format).
             if isinstance(content, list):
                 text_parts = []
                 for part in content:
@@ -457,18 +581,23 @@ class ConversationImporter:
                     elif isinstance(part, str):
                         text_parts.append(part)
                 content = '\n'.join(text_parts)
-            
+
             if not isinstance(content, str):
                 content = str(content) if content else ''
-            
+
             if content.strip():
-                mid = self.db.create_msg(new_conv['id'], content, role)
-                bus.emit(MSG_CREATED, {
-                    "id": mid, "text": content,
-                    "conv_id": new_conv['id'], "role": role,
-                })
-                count += 1
-        
+                batch.append({"role": role, "text": content})
+
+        # Batch insert (1000 per transaction).
+        count = self.db.batch_create_msgs(new_conv['id'], batch)
+
+        # Single event for the whole import (not per message).
+        bus.emit(IMPORT_DONE, {
+            "conv_id": new_conv['id'],
+            "count": count,
+            "title": conv_title,
+        })
+
         log.info("Imported %d messages into '%s'", count, conv_title)
         return new_conv
     

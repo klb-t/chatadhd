@@ -12,7 +12,7 @@ Environment variables:
   CHATADHD_DATA   Override data directory path
   KIVY_LOG_LEVEL  Kivy log verbosity (debug, info, warning, error)
 """
-__version__ = "0.07.07"
+__version__ = "0.07.08"
 
 import logging
 import os
@@ -95,11 +95,24 @@ class ChatADHDApp(App):
                                  self.memory, self.graph_memory)
         self.graph_engine = GraphEngine(self.db, self.semantic_llm)
 
+        # Background semantic worker.
+        from engine.semantic_worker import SemanticWorker
+        self.semantic_worker = SemanticWorker(
+            self.db, self.semantic_llm, self.graph_engine,
+            self.cfg, self.secrets,
+        )
+        self.semantic_worker.start()
+
         # Auto-refresh graph panel when graph data changes.
         bus.on(GRAPH_CHANGED, lambda _: Clock.schedule_once(
             lambda dt: self._auto_refresh_graph(), 0))
         bus.on(IMPORT_DONE, lambda data: Clock.schedule_once(
             lambda dt: self._on_import_done(data), 0))
+
+        # Semantic worker progress.
+        from engine.semantic_worker import SEMANTIC_PROGRESS
+        bus.on(SEMANTIC_PROGRESS, lambda data: Clock.schedule_once(
+            lambda dt: self._on_semantic_progress(data), 0))
 
         # ── Theme ──────────────────────────────────────────────────
         set_theme(self.cfg.get("theme", "dark"))
@@ -199,8 +212,29 @@ class ChatADHDApp(App):
         """Called after bulk import finishes."""
         if hasattr(self, 'conv_panel'):
             self.conv_panel.refresh()
+        count = data.get("count", 0)
         log.info("Import complete: %d conversations from %s",
-                 data.get("count", 0), data.get("source", "?"))
+                 count, data.get("source", "?"))
+        # Show semantic queue status.
+        if hasattr(self, 'semantic_worker'):
+            st = self.semantic_worker.status
+            pending = st.get("pending", 0)
+            if pending > 0:
+                LOGBUF.add(f"Imported {count} msgs. "
+                           f"Semantic analysis queued: {pending} pending")
+            self.semantic_worker.wake()
+
+    def _on_semantic_progress(self, data):
+        """Background semantic worker reports progress."""
+        pending = data.get("pending", 0)
+        processed = data.get("processed", 0)
+        mode = data.get("mode", "?")
+        if pending > 0 and processed > 0:
+            LOGBUF.add(f"Semantic [{mode}]: +{processed}, {pending} left")
+        elif pending == 0:
+            LOGBUF.add("Semantic analysis complete")
+        # Auto-refresh graph after enrichment.
+        self._auto_refresh_graph()
 
     def _show_settings(self):
         SettingsPopup(

@@ -74,6 +74,16 @@ class SettingsPopup(Popup):
         )
         content.add_widget(self.groq_key)
 
+        # Anthropic Batch API Key (for 50% cheaper bulk semantic analysis)
+        content.add_widget(Label(text="Anthropic Batch Key (optional):", color=C["text"],
+                                 size_hint_y=None, height=dp(16), font_size=sp(9)))
+        self.batch_key = DarkInput(
+            text=secrets.get("anthropic_batch_key", ""), password=True,
+            size_hint_y=None, height=dp(32), font_size=sp(10),
+            hint_text="sk-ant-... (enables 50% cheaper batch analysis)",
+        )
+        content.add_widget(self.batch_key)
+
         # System Prompt
         content.add_widget(Label(text="System Prompt:", color=C["text"],
                                  size_hint_y=None, height=dp(16), font_size=sp(9)))
@@ -141,6 +151,7 @@ class SettingsPopup(Popup):
         self.secrets.set("api_key", self.api_key.text.strip())
         self.secrets.set("github_token", self.gh_token.text.strip())
         self.secrets.set("groq_api_key", self.groq_key.text.strip())
+        self.secrets.set("anthropic_batch_key", self.batch_key.text.strip())
         self.secrets.save()
 
         self.config.set("base_url", self.base_url.text.strip())

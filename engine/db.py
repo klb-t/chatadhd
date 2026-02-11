@@ -21,7 +21,7 @@ from typing import Any, Optional
 
 log = logging.getLogger(__name__)
 
-_SCHEMA_VERSION = 3  # Bump when you add migrations.
+_SCHEMA_VERSION = 4  # Bump when you add migrations.
 
 
 def _gen_id(prefix: str = "") -> str:
@@ -83,6 +83,7 @@ class Database:
                     attachments      TEXT NOT NULL DEFAULT '[]',
                     metadata         TEXT NOT NULL DEFAULT '{}',
                     created          TEXT NOT NULL,
+                    semantic_status  TEXT NOT NULL DEFAULT 'pending',
                     FOREIGN KEY (conv_id) REFERENCES conversations(id) ON DELETE CASCADE
                 );
 
@@ -112,6 +113,7 @@ class Database:
                 CREATE INDEX IF NOT EXISTS idx_msg_parent    ON messages(parent_id);
                 CREATE INDEX IF NOT EXISTS idx_msg_vgroup    ON messages(version_group_id);
                 CREATE INDEX IF NOT EXISTS idx_msg_status    ON messages(conv_id, status);
+                CREATE INDEX IF NOT EXISTS idx_msg_semantic  ON messages(semantic_status);
                 CREATE INDEX IF NOT EXISTS idx_nodes_kind    ON nodes(kind);
                 CREATE INDEX IF NOT EXISTS idx_links_src     ON links(src);
                 CREATE INDEX IF NOT EXISTS idx_links_dst     ON links(dst);
@@ -124,7 +126,6 @@ class Database:
         cur_ver = int(self._get_meta("schema_version") or "0")
         if cur_ver < 3:
             with self._lock:
-                # Add nodes table if upgrading from v2.
                 self._conn.executescript("""
                     CREATE TABLE IF NOT EXISTS nodes (
                         id TEXT PRIMARY KEY, kind TEXT NOT NULL DEFAULT 'entity',
@@ -135,7 +136,6 @@ class Database:
                     CREATE INDEX IF NOT EXISTS idx_nodes_kind ON nodes(kind);
                     CREATE INDEX IF NOT EXISTS idx_links_type ON links(link_type);
                 """)
-                # Add source column to conversations if missing.
                 try:
                     self._conn.execute("SELECT source FROM conversations LIMIT 1")
                 except sqlite3.OperationalError:
@@ -143,6 +143,22 @@ class Database:
                         "ALTER TABLE conversations ADD COLUMN source TEXT NOT NULL DEFAULT 'user'"
                     )
                 self._conn.commit()
+        if cur_ver < 4:
+            with self._lock:
+                # semantic_status: 'pending' | 'done' | 'skip'
+                try:
+                    self._conn.execute("SELECT semantic_status FROM messages LIMIT 1")
+                except sqlite3.OperationalError:
+                    self._conn.execute(
+                        "ALTER TABLE messages ADD COLUMN semantic_status "
+                        "TEXT NOT NULL DEFAULT 'pending'"
+                    )
+                self._conn.execute(
+                    "CREATE INDEX IF NOT EXISTS idx_msg_semantic "
+                    "ON messages(semantic_status)"
+                )
+                self._conn.commit()
+                log.info("Schema v4: added semantic_status column")
         self._set_meta("schema_version", str(_SCHEMA_VERSION))
         with self._lock:
             self._conn.commit()
@@ -257,6 +273,95 @@ class Database:
             self.update_conv(conv_id)
             self._conn.commit()
         return mid
+
+    def batch_create_msgs(
+        self,
+        conv_id: str,
+        messages: list[dict],
+        batch_size: int = 1000,
+    ) -> int:
+        """Insert messages in batches within single transactions.
+        Each message dict: {role, text, model?, parent_id?, metadata?}.
+        Returns total inserted count.  Much faster than individual create_msg.
+        """
+        now = datetime.utcnow().isoformat() + "Z"
+        total = 0
+
+        with self._lock:
+            for i in range(0, len(messages), batch_size):
+                chunk = messages[i:i + batch_size]
+                rows = []
+                for msg in chunk:
+                    role = msg.get("role", "user")
+                    text = msg.get("text", msg.get("content", ""))
+                    if not text or not text.strip():
+                        continue
+                    mid = _gen_id("m_")
+                    vg = _gen_id("vg_")
+                    rows.append((
+                        mid, conv_id, msg.get("parent_id"),
+                        role, text, msg.get("model"),
+                        "active", vg, 1, msg.get("weight", 1.0),
+                        json.dumps(msg.get("attachments", [])),
+                        json.dumps(msg.get("metadata", {})),
+                        now, "pending",
+                    ))
+                if rows:
+                    self._conn.executemany(
+                        """INSERT INTO messages
+                           (id, conv_id, parent_id, role, text, model, status,
+                            version_group_id, version_num, weight, attachments,
+                            metadata, created, semantic_status)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                        rows,
+                    )
+                    self._conn.commit()
+                    total += len(rows)
+
+            self.update_conv(conv_id)
+        log.info("Batch inserted %d messages into %s", total, conv_id)
+        return total
+
+    def get_unanalysed_msgs(self, limit: int = 100) -> list[dict[str, Any]]:
+        """Get messages pending semantic analysis (uses indexed column)."""
+        with self._lock:
+            rows = self._conn.execute(
+                """SELECT id, conv_id, role, text, metadata FROM messages
+                   WHERE semantic_status = 'pending'
+                     AND status = 'active'
+                     AND length(text) >= 20
+                   ORDER BY created ASC LIMIT ?""",
+                (limit,),
+            ).fetchall()
+        return [dict(r) for r in rows]
+
+    def count_pending_semantic(self) -> int:
+        """Count messages awaiting semantic analysis."""
+        with self._lock:
+            row = self._conn.execute(
+                "SELECT COUNT(*) FROM messages WHERE semantic_status = 'pending'"
+            ).fetchone()
+        return row[0] if row else 0
+
+    def mark_analysed(self, msg_id: str, analysis: dict) -> None:
+        """Stamp message with semantic results + flip status to 'done'."""
+        with self._lock:
+            row = self._conn.execute(
+                "SELECT metadata FROM messages WHERE id = ?", (msg_id,),
+            ).fetchone()
+            if row:
+                meta = json.loads(row["metadata"] or "{}")
+                meta["semantic_source"] = analysis.get("source", "regex")
+                meta["entity_count"] = len(analysis.get("entities", []))
+                meta["topic_count"] = len(analysis.get("topics", []))
+                meta["summary"] = analysis.get("summary", "")[:200]
+                meta["sentiment"] = analysis.get("sentiment", "neutral")
+                self._conn.execute(
+                    "UPDATE messages SET metadata = ?, semantic_status = 'done' "
+                    "WHERE id = ?",
+                    (json.dumps(meta), msg_id),
+                )
+                self._conn.commit()
 
     def get_msgs(
         self, conv_id: str, include_all: bool = False

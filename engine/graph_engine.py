@@ -122,6 +122,8 @@ class GraphEngine:
                         "topic_count": len(analysis.get("topics", [])),
                     }
                 })
+                # Mark as done so background worker skips this message.
+                self.db.mark_analysed(mid, analysis)
             except Exception:
                 pass
 
@@ -133,6 +135,55 @@ class GraphEngine:
                           data.get("id", "?"))
 
     # ── Manual operations ─────────────────────────────────────────
+
+    def ingest_analysis(self, msg_id: str, conv_id: str, analysis: dict) -> bool:
+        """Ingest pre-computed analysis into graph (called by SemanticWorker).
+        Creates nodes and edges without re-running LLM.
+        """
+        try:
+            changed = False
+
+            for ent in analysis.get("entities", []):
+                name = ent.get("name", "")
+                kind = ent.get("kind", "entity")
+                relevance = ent.get("relevance", 0.5)
+                if not name or len(name) < 2 or relevance < 0.3:
+                    continue
+                nid = self.db.get_or_create_node(label=name, kind=kind)
+                self.db.create_link(msg_id, nid, "mentions", weight=relevance)
+                changed = True
+
+            for topic in analysis.get("topics", []):
+                label = topic.get("label", "") if isinstance(topic, dict) else str(topic)
+                conf = topic.get("confidence", 0.5) if isinstance(topic, dict) else 0.5
+                if not label or conf < 0.3:
+                    continue
+                nid = self.db.get_or_create_node(label=label.lower(), kind="topic")
+                self.db.create_link(msg_id, nid, "tagged_with", weight=conf)
+                changed = True
+
+            for rel in analysis.get("relations", []):
+                subj = rel.get("subject", "")
+                obj = rel.get("object", "")
+                pred = rel.get("predicate", "related")
+                if not subj or not obj:
+                    continue
+                src_node = self.db.find_node(subj)
+                dst_node = self.db.find_node(obj)
+                if src_node and dst_node:
+                    self.db.create_link(src_node["id"], dst_node["id"], pred, weight=0.7)
+                    changed = True
+
+            if conv_id:
+                self.db.create_link(msg_id, conv_id, "part_of", weight=0.3)
+
+            if changed:
+                bus.emit(GRAPH_CHANGED, {"conv_id": conv_id, "trigger": msg_id})
+            return changed
+
+        except Exception:
+            log.debug("ingest_analysis failed for %s", msg_id, exc_info=True)
+            return False
 
     def reindex_conversation(self, conv_id: str) -> int:
         msgs = self.db.get_msgs(conv_id, include_all=True)

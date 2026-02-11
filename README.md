@@ -1,4 +1,4 @@
-# ChatADHD v0.07.00
+# ChatADHD v0.07.08
 
 Mobile-first AI chat client with hierarchical memory, branching conversations,
 and zero-knowledge encryption.
@@ -8,7 +8,7 @@ and zero-knowledge encryption.
 ```
 KOD (versioned, replaceable)          DANE (persistent, user-owned)
 ───────────────────────               ──────────────────────────────
-chatadhd_v0.07.00/                    ~/Documents/ChatADHD/
+chatadhd_v0.07.08/                    ~/Documents/ChatADHD/
 ├── main.py                           ├── .chatadhd_data   (sentinel)
 ├── core/                             ├── config.json
 │   ├── crypto.py      AES-256-GCM    ├── secrets.json     (600 perms)
@@ -18,11 +18,17 @@ chatadhd_v0.07.00/                    ~/Documents/ChatADHD/
 │   ├── paths.py       KOD≠DANE       ├── attachments/
 │   ├── config.py      JSON store     ├── exports/
 │   ├── db.py          thread-safe     └── logs/
+│   ├── events.py      pub/sub bus
 │   ├── chat_engine.py API + stream
 │   ├── memory_engine.py  tree + tags
 │   ├── models.py      registry
 │   ├── providers.py   OCR/ASR
-│   ├── importer.py    7 formats
+│   ├── importer.py    7 formats + streaming
+│   ├── graph_engine.py  realtime graph
+│   ├── graph_memory.py  graph-based search
+│   ├── semantic_llm.py  LLM analysis
+│   ├── semantic_worker.py  bg daemon
+│   ├── batch_api.py   Anthropic batch
 │   └── github_sync.py bidir sync
 ├── gui/
 │   ├── base.py        themes, widgets
@@ -30,10 +36,10 @@ chatadhd_v0.07.00/                    ~/Documents/ChatADHD/
 │   ├── conv_panel.py  conversation list
 │   ├── memory_panel.py  memory tree
 │   ├── dialogs.py     settings, picker
-│   ├── import_panel.py
+│   ├── import_panel.py  threaded import
 │   ├── voice_panel.py
 │   ├── github_panel.py
-│   └── graph_viz.py   force-directed
+│   └── graph_viz.py   force-directed LOD
 └── requirements.txt
 ```
 
