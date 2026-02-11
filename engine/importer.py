@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.01 - Conversation Importer
+ChatADHD v0.07.00 - Conversation Importer
 Imports conversations from various formats:
 - SQLite DB (Claude.ai, ChatGPT exports)
 - JSON (OpenAI, Anthropic API logs)
@@ -59,8 +59,8 @@ class ConversationImporter:
                     return 'json'
                 if b'<html' in header.lower() or b'<!doctype' in header.lower():
                     return 'html'
-            except:
-                pass
+            except Exception:
+                log.debug("Format detection failed for %s", path, exc_info=True)
         
         return 'unknown'
     
@@ -114,8 +114,8 @@ class ConversationImporter:
                     cols = [r[1] for r in cur.fetchall()]
                     if 'role' in cols and ('content' in cols or 'text' in cols):
                         results.extend(self._import_generic_db(cur, table, title))
-                except:
-                    pass
+                except Exception:
+                    log.debug("Format detection failed for %s", path, exc_info=True)
         
         conn.close()
         return results
@@ -364,8 +364,8 @@ class ConversationImporter:
                             b64_data = part[b64_start:].strip()
                             html = base64.b64decode(b64_data).decode('utf-8', errors='replace')
                             break
-                    except:
-                        pass
+                    except Exception:
+                        log.debug("Format detection failed for %s", path, exc_info=True)
         
         if html:
             return self._parse_html_conversation(html, title, path)

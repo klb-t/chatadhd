@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.02 - GitHub Sync
+ChatADHD v0.07.00 - GitHub Sync
 Bidirectional sync with GitHub repositories.
 """
 import os
@@ -63,7 +63,7 @@ class GitHubSync:
                 timeout=10
             )
             return resp.status_code == 200
-        except:
+        except Exception:
             return False
     
     def list_remote_files(self, path: str = "") -> List[GitHubFile]:
@@ -356,7 +356,7 @@ class GitHubSyncManager:
                 data = json.loads(self.config_path.read_text())
                 for name, cfg in data.items():
                     self.configs[name] = SyncConfig(**cfg)
-            except:
+            except Exception:
                 pass
     
     def _save(self):

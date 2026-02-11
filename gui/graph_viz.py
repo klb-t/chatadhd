@@ -1,5 +1,5 @@
 """
-ChatADHD v0.06.03 - Graph Explorer
+ChatADHD v0.07.00 - Graph Explorer
 Force-directed visualization with BIGGER nodes and READABLE labels
 """
 from kivy.uix.widget import Widget
@@ -335,7 +335,7 @@ class GraphWidget(Widget):
         return True
     
     def _open_editor(self, node):
-        from gui.panels import NodeEditorPopup
+        from gui.dialogs import NodeEditorPopup
         NodeEditorPopup(node, self.engine, self.memory, on_update=self.load_data).open()
 
 
@@ -351,7 +351,7 @@ class GraphExplorerPanel(BoxLayout):
         self._visible = False
         self.panel_width = dp(340)
         
-        from gui.panels import C, RBtn
+        from gui.base import C, RBtn
         
         # Background
         with self.canvas.before:

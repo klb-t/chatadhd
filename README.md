@@ -1,65 +1,75 @@
-# ChatADHD v0.06.03 - Bug Fixes
+# ChatADHD v0.07.00
 
-## Fixes in this version
+Mobile-first AI chat client with hierarchical memory, branching conversations,
+and zero-knowledge encryption.
 
-### 1. Graph Explorer
-- ✅ Canvas clipping via Stencil (no more overflow)
-- ✅ Proper cleanup on close (canvas.clear())
-- ✅ Transform fixed to include widget position
-
-### 2. API Request Editor
-- ✅ Moved from top bar to **long-press Send** button
-- Long-press (0.6s) → Full API Editor opens
-
-### 3. Top Bar
-```
-[Model▾] [⚙️] [🔄] [New] [Cfg] [Log]
-         │    │
-         │    └─ GitHub Sync
-         └─ Quick API Panel
-
-Long-press Send → Full API Editor
-```
-
-## All Features (v0.06.00 - v0.06.03)
-
-| Feature | Access | Added |
-|---------|--------|-------|
-| Collapsible messages | Auto (4 lines) | v0.06.00 |
-| Artifact detection | Auto in AI responses | v0.06.00 |
-| Quick API Panel | ⚙️ button | v0.06.00 |
-| Directory import | Memory → +Dir | v0.06.00 |
-| Conversation import | ☰ → Import | v0.06.01 |
-| Voice input | 🎤 button | v0.06.01 |
-| OCR (screenshots) | Import → .png/.jpg | v0.06.01 |
-| Full API Editor | Long-press Send | v0.06.02 |
-| GitHub Sync | 🔄 button | v0.06.02 |
-
-## API Keys (Settings)
-
-| Key | Provider | For |
-|-----|----------|-----|
-| `api_key` | OpenRouter | Chat |
-| `groq_api_key` | Groq | Voice |
-| `ocr_space_api_key` | ocr.space | Screenshots |
-| `github_token` | GitHub | Sync |
-
-## Structure
+## Architecture
 
 ```
-5738 lines total
-├── engine/
-│   ├── chat_engine.py   (272)
-│   ├── db.py            (274)
-│   ├── github_sync.py   (411)
-│   ├── importer.py      (693)
-│   ├── memory_engine.py (166)
-│   ├── models.py        (65)
-│   └── providers.py     (467)
-└── gui/
-    ├── graph_viz.py     (424)
-    └── panels.py        (2751)
+KOD (versioned, replaceable)          DANE (persistent, user-owned)
+───────────────────────               ──────────────────────────────
+chatadhd_v0.07.00/                    ~/Documents/ChatADHD/
+├── main.py                           ├── .chatadhd_data   (sentinel)
+├── core/                             ├── config.json
+│   ├── crypto.py      AES-256-GCM    ├── secrets.json     (600 perms)
+│   ├── semantic.py    NER + topics    ├── chatadhd.db      (SQLite WAL)
+│   └── selector.py   3-tier search   ├── memory.json
+├── engine/                           ├── models.json
+│   ├── paths.py       KOD≠DANE       ├── attachments/
+│   ├── config.py      JSON store     ├── exports/
+│   ├── db.py          thread-safe     └── logs/
+│   ├── chat_engine.py API + stream
+│   ├── memory_engine.py  tree + tags
+│   ├── models.py      registry
+│   ├── providers.py   OCR/ASR
+│   ├── importer.py    7 formats
+│   └── github_sync.py bidir sync
+├── gui/
+│   ├── base.py        themes, widgets
+│   ├── chat_panel.py  main chat UI
+│   ├── conv_panel.py  conversation list
+│   ├── memory_panel.py  memory tree
+│   ├── dialogs.py     settings, picker
+│   ├── import_panel.py
+│   ├── voice_panel.py
+│   ├── github_panel.py
+│   └── graph_viz.py   force-directed
+└── requirements.txt
 ```
 
----
-ChatADHD v0.06.03 - Fixes for graph, API editor location
+## Quick Start
+
+```bash
+pip install kivy requests
+python main.py
+```
+
+## Optional Dependencies
+
+```bash
+pip install cryptography          # Zero-knowledge encryption
+pip install scikit-learn          # TF-IDF semantic search (tier 2)
+pip install sentence-transformers # Embedding search (tier 1)
+```
+
+## Features
+
+- Multi-model (OpenRouter: Claude, GPT, Gemini, DeepSeek, etc.)
+- Streaming responses with reasoning/thinking display
+- Branching conversations (edit → new version, old preserved)
+- Hierarchical memory tree with active/inactive toggle
+- Semantic auto-tagging, entity extraction, topic detection
+- 3-tier search: embeddings → TF-IDF → keyword
+- Optional AES-256-GCM encryption (PBKDF2, 600K iterations)
+- Import: SQLite, JSON, HTML, MHT, Markdown, text, screenshot (OCR)
+- Force-directed graph visualisation
+- Voice input (Groq Whisper / Google Speech)
+- Bidirectional GitHub sync
+- Themes: Dark / AMOLED
+
+## Security
+
+- secrets.json: owner-only file permissions
+- Encryption: optional, local-only, server never sees plaintext
+- LLM providers see plaintext (by design — unavoidable)
+- No telemetry, no analytics, no ads

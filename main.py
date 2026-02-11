@@ -1,18 +1,41 @@
 """
-ChatADHD v0.06.03 - Major UI Overhaul
-- Collapsible messages
-- Artifact detection & auto-integration
-- Quick API panel with presets
-- Fixed keyboard handling
-- Voice input (simplified)
-"""
-__version__ = "0.06.03"
+ChatADHD v0.07.00 — Mobile-First AI Chat Client
+================================================
 
+Hierarchical memory · Branching conversations · Multi-model API ·
+Streaming · Graph explorer · Zero-knowledge encryption (optional) ·
+Voice input · GitHub sync · Conversation import (7 formats)
+
+Run: ``python main.py``
+
+Environment variables:
+  CHATADHD_DATA   Override data directory path
+  KIVY_LOG_LEVEL  Kivy log verbosity (debug, info, warning, error)
+"""
+__version__ = "0.07.00"
+
+import logging
 import os
 import sys
 
-if hasattr(sys, 'getandroidapilevel'):
-    os.environ.setdefault('KIVY_GL_BACKEND', 'sdl2')
+# ── Logging (before any other imports) ─────────────────────────────
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)-5s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
+log = logging.getLogger("chatadhd")
+log.info("=" * 50)
+log.info("ChatADHD v%s starting", __version__)
+
+# ── Android GL backend ─────────────────────────────────────────────
+
+if hasattr(sys, "getandroidapilevel"):
+    os.environ.setdefault("KIVY_GL_BACKEND", "sdl2")
+
+# ── Kivy imports (after env setup) ─────────────────────────────────
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -21,132 +44,154 @@ from kivy.metrics import dp, sp
 from kivy.clock import Clock
 from kivy.core.window import Window
 
+# ── Engine imports ─────────────────────────────────────────────────
+
+from engine.paths import resolve_data_dir
 from engine.config import Config, Secrets
 from engine.db import Database
 from engine.chat_engine import ChatEngine
 from engine.memory_engine import MemoryEngine
 from engine.models import ModelRegistry
-from gui.panels import (C, ChatPanel, ConvPanel, MemoryPanel, SettingsPopup,
-                        LogViewer, LOGBUF, show_toast, RBtn, QuickAPIPanel)
+from core.semantic import analyzer
+
+# ── GUI imports ────────────────────────────────────────────────────
+
+from gui.base import C, LOGBUF, RBtn, set_theme
+from gui.chat_panel import ChatPanel
+from gui.conv_panel import ConvPanel
+from gui.memory_panel import MemoryPanel
+from gui.dialogs import SettingsPopup
 from gui.graph_viz import GraphExplorerPanel
 
 
 class ChatADHDApp(App):
+    """Application entry point."""
+
     def build(self):
         self.title = f"ChatADHD v{__version__}"
-        
-        # Keyboard handling
-        Window.softinput_mode = 'below_target'
+
+        # ── Keyboard ───────────────────────────────────────────────
+        Window.softinput_mode = "below_target"
         Window.bind(on_keyboard=self._on_keyboard)
-        
-        # Initialize engines
-        data_dir = self._get_data_dir()
-        self.config = Config(data_dir / "config.json")
+
+        # ── Data directory ─────────────────────────────────────────
+        data_dir = resolve_data_dir()
+        log.info("Data directory: %s", data_dir)
+
+        # ── Engines ────────────────────────────────────────────────
+        self.cfg = Config(data_dir / "config.json")
         self.secrets = Secrets(data_dir / "secrets.json")
         self.db = Database(data_dir / "chatadhd.db")
-        self.models = ModelRegistry(data_dir / "models.json", self.config, self.secrets)
-        self.memory = MemoryEngine(data_dir / "memory.json")
-        self.engine = ChatEngine(self.config, self.secrets, self.db, self.memory)
-        
+        self.models = ModelRegistry(data_dir / "models.json", self.cfg, self.secrets)
+        self.memory = MemoryEngine(data_dir / "memory.json",
+                                   semantic_analyzer=analyzer)
+        self.engine = ChatEngine(self.cfg, self.secrets, self.db, self.memory)
+
+        # ── Theme ──────────────────────────────────────────────────
+        set_theme(self.cfg.get("theme", "dark"))
+
         LOGBUF.add(f"ChatADHD v{__version__} started")
         LOGBUF.add(f"Data: {data_dir}")
-        
-        # Root
-        root = BoxLayout(orientation='horizontal')
-        
-        # Left - Conversations
+
+        # ── Layout ─────────────────────────────────────────────────
+        root = BoxLayout(orientation="horizontal")
+
+        # Left panel: conversations
         self.conv_panel = ConvPanel(self.engine, on_select=self._on_conv_select)
         root.add_widget(self.conv_panel)
-        
-        # Center
-        center = BoxLayout(orientation='vertical')
-        
-        # Header
-        header = BoxLayout(size_hint_y=None, height=dp(38), padding=dp(2), spacing=dp(2))
-        header.add_widget(RBtn(text="☰", size_hint_x=None, width=dp(36), bg=C['card'],
-                              on_press=lambda *a: self._toggle_conv()))
-        
+
+        # Centre: chat
+        centre = BoxLayout(orientation="vertical")
+
+        header = BoxLayout(size_hint_y=None, height=dp(38),
+                           padding=dp(2), spacing=dp(2))
+        header.add_widget(RBtn(
+            text="[=]", size_hint_x=None, width=dp(36), bg=C["card"],
+            on_press=lambda *_: self._toggle_conv(),
+        ))
         self.title_label = Label(
-            text=self.engine.conv['title'][:20] if self.engine.conv else "ChatADHD",
-            color=C['text'], font_size=sp(11), bold=True)
+            text=(self.engine.conv["title"][:20]
+                  if self.engine.conv else "ChatADHD"),
+            color=C["text"], font_size=sp(11), bold=True,
+        )
         header.add_widget(self.title_label)
-        
-        header.add_widget(RBtn(text="Mem", size_hint_x=None, width=dp(44), bg=C['card'], font_size=sp(9),
-                              on_press=lambda *a: self._toggle_memory()))
-        header.add_widget(RBtn(text="Graf", size_hint_x=None, width=dp(44), bg=C['accent'], font_size=sp(9),
-                              on_press=lambda *a: self._toggle_graph()))
-        center.add_widget(header)
-        
-        # Chat
-        self.chat_panel = ChatPanel(self.engine, self.models, self.config, 
-                                   on_settings=self._show_settings)
-        center.add_widget(self.chat_panel)
-        
-        root.add_widget(center)
-        
-        # Right - Memory
+        header.add_widget(RBtn(
+            text="Mem", size_hint_x=None, width=dp(44), bg=C["card"],
+            font_size=sp(9), on_press=lambda *_: self._toggle_memory(),
+        ))
+        header.add_widget(RBtn(
+            text="Graf", size_hint_x=None, width=dp(44), bg=C["accent"],
+            font_size=sp(9), on_press=lambda *_: self._toggle_graph(),
+        ))
+        centre.add_widget(header)
+
+        self.chat_panel = ChatPanel(
+            self.engine, self.models, self.cfg,
+            on_settings=self._show_settings,
+        )
+        centre.add_widget(self.chat_panel)
+        root.add_widget(centre)
+
+        # Right panel: memory
         self.memory_panel = MemoryPanel(self.memory)
         root.add_widget(self.memory_panel)
-        
-        # Graph (hidden)
+
+        # Graph (hidden by default)
         self.graph_panel = GraphExplorerPanel(self.engine, self.memory)
         root.add_widget(self.graph_panel)
-        
+
         Clock.schedule_once(lambda dt: self._initial_load(), 0.5)
-        
         return root
-    
-    def _get_data_dir(self):
-        from pathlib import Path
-        if hasattr(sys, 'getandroidapilevel'):
-            candidates = [
-                Path("/storage/emulated/0/Download/chatadhd_pydroid_v0.4.6"),
-                Path("/storage/emulated/0/Download/chatadhd_data"),
-                Path("/storage/emulated/0/Download/dev/chatadhd_pydroid_v0.4.6"),
-            ]
-            for c in candidates:
-                if (c / "chatadhd.db").exists() or (c / "secrets.json").exists():
-                    return c
-            return Path("/storage/emulated/0/Download/chatadhd_data")
-        return Path.home() / ".chatadhd"
-    
-    def _on_keyboard(self, window, key, *args):
-        if key == 27:  # Back/ESC
-            return True
-        return False
-    
+
+    # ── Init ───────────────────────────────────────────────────────
+
     def _initial_load(self):
         self.conv_panel.refresh()
         self.memory_panel.refresh()
         if self.engine.conv:
             self.chat_panel.refresh()
         self.chat_panel._refresh_models()
-    
+
+    # ── Navigation ─────────────────────────────────────────────────
+
     def _toggle_conv(self):
         self.conv_panel.toggle()
         self.conv_panel.refresh()
-    
+
     def _toggle_memory(self):
         self.memory_panel.toggle()
         self.memory_panel.refresh()
-    
+
     def _toggle_graph(self):
         self.graph_panel.toggle()
         if self.graph_panel._visible:
             self.graph_panel.refresh()
-    
+
     def _on_conv_select(self):
         self.chat_panel.refresh()
-        self.title_label.text = self.engine.conv['title'][:20] if self.engine.conv else "New"
+        self.title_label.text = (
+            self.engine.conv["title"][:20] if self.engine.conv else "New"
+        )
         if self.graph_panel._visible:
             self.graph_panel.refresh()
-    
+
     def _show_settings(self):
-        SettingsPopup(self.config, self.secrets, on_save=self._on_settings_save).open()
-    
+        SettingsPopup(
+            self.cfg, self.secrets,
+            on_save=self._on_settings_save,
+        ).open()
+
     def _on_settings_save(self):
         self.chat_panel._refresh_models()
 
+    # ── Keyboard ───────────────────────────────────────────────────
 
-if __name__ == '__main__':
+    @staticmethod
+    def _on_keyboard(window, key, *args):
+        if key == 27:  # Back / ESC
+            return True
+        return False
+
+
+if __name__ == "__main__":
     ChatADHDApp().run()
