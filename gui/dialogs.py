@@ -372,7 +372,9 @@ class FilePickerPopup(Popup):
     def _select(self, *_):
         sel = self.chooser.selection
         if sel:
-            self._on_select(sel[0])
+            # Convert to absolute path (FileChooserListView returns relative paths)
+            abs_path = os.path.abspath(sel[0])
+            self._on_select(abs_path)
         elif self._allow_dirs:
             self._on_select(self.chooser.path)
         self.dismiss()
