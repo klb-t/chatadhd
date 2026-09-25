@@ -145,7 +145,7 @@ if(LOOM_SHARED)
     VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_MAJOR}
     C_VISIBILITY_PRESET hidden CXX_VISIBILITY_PRESET hidden)
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR ANDROID)
-    target_link_options(loom PRIVATE -Wl,--exclude-libs,ALL -Wl,--no-undefined)
+    target_link_options(loom PRIVATE -Wl,--no-undefined)
   endif()
 endif()
 
