@@ -20,13 +20,20 @@ permissions:
 
 jobs:
   build-test:
-    name: ${{ matrix.preset }}
+    name: ${{ matrix.preset }} (${{ matrix.cxx }})
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        preset: [dev, asan]
+        include:
+          - { preset: dev, cc: gcc, cxx: g++ }
+          - { preset: asan, cc: gcc, cxx: g++ }
+          # Closest to the Android build: Clang + the vendored SQLite amalgamation.
+          - { preset: vendored, cc: clang, cxx: clang++ }
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
 
     steps:
       - name: Checkout
@@ -35,7 +42,7 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ninja-build ccache libsqlite3-dev libssl-dev
+          sudo apt-get install -y --no-install-recommends ninja-build ccache libsqlite3-dev libssl-dev clang
 
       # The Unicode tables are generated from CPython 3.11 (Unicode 14.0);
       # the compat tests compare against the same interpreter version.
@@ -51,8 +58,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ccache
-          key: ccache-${{ matrix.preset }}-${{ github.sha }}
-          restore-keys: ccache-${{ matrix.preset }}-
+          key: ccache-${{ matrix.preset }}-${{ matrix.cxx }}-${{ github.sha }}
+          restore-keys: ccache-${{ matrix.preset }}-${{ matrix.cxx }}-
 
       - name: Configure
         working-directory: loom

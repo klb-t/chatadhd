@@ -52,6 +52,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor
       -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference
       -Wimplicit-fallthrough -Wno-unused-parameter>)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # Wave-2 stubs keep their wiring references (cfg_, db_, http_, ...) before
+    # the implementations use them. Remove this once no "STUB: wave2" is left.
+    target_compile_options(loom_warnings INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-Wno-unused-private-field>)
+  endif()
   if(LOOM_WERROR)
     target_compile_options(loom_warnings INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-Werror>)
   endif()
