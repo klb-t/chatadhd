@@ -84,6 +84,11 @@ struct ImportOptions {
   const CancelToken* cancel = nullptr;
   bool record_provenance = true;  // store raw bytes + sources + provenance rows
   std::int64_t stream_threshold_bytes = 5'000'000;  // Python: > 5 MB -> streaming JSON
+  // Loom addition (MEGA MASTER 2.F): when record_provenance finds a prior
+  // loom_sources row with the same blob hash and parser_version, the import
+  // is skipped and the prior conversations are returned instead of being
+  // recreated. `force` re-imports (and re-registers a source row) anyway.
+  bool force = false;
 };
 
 struct ImportResult {
@@ -93,8 +98,12 @@ struct ImportResult {
   std::string blob_hash;
   std::int64_t messages = 0;
   bool cancelled = false;
+  // True when this call found a prior source with the same blob hash and
+  // parser version (see ImportOptions::force) and returned its prior
+  // conversations instead of importing again.
+  bool already_imported = false;
   std::vector<std::string> warnings;
-  // {"conversations":[...],"format","source_id","blob_hash","messages","cancelled","warnings"}
+  // {"conversations":[...],"format","source_id","blob_hash","messages","cancelled","warnings","already_imported"}
   Json to_json() const;
 };
 
@@ -159,11 +168,84 @@ class ConversationImporter {
   static Json parse_plain_text(std::string_view content);     // import_text's parser
 
  private:
+  // Threaded through one import_file()/import_<format>() call tree (a single
+  // ConversationImporter is not re-entrant across concurrent imports, same as
+  // the rest of Loom's "one call at a time per instance" pieces). Set by the
+  // RAII-ish prepare_source()/current_source_ pair in importer.cpp; consulted
+  // by import_message_list() to attach provenance rows without threading an
+  // extra parameter through every public Python-parity signature.
+  struct SourceCtx {
+    std::string source_id;
+    std::string blob_hash;
+    int conv_index = 0;
+    std::optional<std::string> zip_member;
+    std::optional<std::string> json_path;
+  };
+  class SourceCtxGuard {
+   public:
+    SourceCtxGuard(ConversationImporter& self, SourceCtx* ctx) : self_(self), prev_(self.current_source_) {
+      self_.current_source_ = ctx;
+    }
+    ~SourceCtxGuard() { self_.current_source_ = prev_; }
+    SourceCtxGuard(const SourceCtxGuard&) = delete;
+    SourceCtxGuard& operator=(const SourceCtxGuard&) = delete;
+
+   private:
+    ConversationImporter& self_;
+    SourceCtx* prev_;
+  };
+
+  // Hashes+stores `path` (when record_provenance && blobs_/prov_ are set),
+  // fills `ctx.source_id`/`blob_hash`, and registers a loom_sources row
+  // (kind "file" or "zip_member"). When a prior source with the same hash
+  // and parser_version already produced conversations (and !opts.force),
+  // returns them instead of nullopt so the caller can short-circuit.
+  Result<std::optional<std::vector<Conversation>>> prepare_source(const std::filesystem::path& path,
+                                                                   std::string_view fmt, const ImportOptions& opts,
+                                                                   std::string_view kind, SourceCtx& ctx);
+  // Wraps a *_body() call with prepare_source()/SourceCtxGuard for the
+  // public per-format entry points (import_zip, import_json, ...), which are
+  // independently testable/callable and so each self-registers its source.
+  Result<std::vector<Conversation>> with_source(const std::filesystem::path& path, std::string_view fmt,
+                                                const ImportOptions& opts, std::string_view kind,
+                                                const std::function<Result<std::vector<Conversation>>()>& body);
+  // import_file(), but lets zip recursion tag members as "zip_member" and
+  // annotate their provenance locator with the member's path inside the zip.
+  Result<ImportResult> import_file_as(const std::filesystem::path& path, const ImportOptions& opts,
+                                      std::string_view source_kind,
+                                      std::optional<std::string> zip_member_rel = std::nullopt);
+  // Pure parse+insert bodies (no source/blob bookkeeping of their own; the
+  // public import_<format>() wrappers and import_file_as() set up SourceCtx
+  // around a call to these).
+  Result<std::vector<Conversation>> zip_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> jsonl_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> sqlite_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> json_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> html_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> mht_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> screenshot_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> markdown_body(const std::filesystem::path& path, const ImportOptions& opts);
+  Result<std::vector<Conversation>> text_body(const std::filesystem::path& path, const ImportOptions& opts);
+  // Shared tail of import_message_list(): create_conv("[Import] "+title),
+  // batch_create_msgs(batch), record_provenance(), emit import:done
+  // {"conv_id","count","title"}. Used directly by handlers whose per-row
+  // role/content normalisation differs from normalize_message() (the SQLite
+  // importers: Python's _import_claude_db/_import_generic_db map roles
+  // without the shared "system" role skip).
+  Result<Conversation> finish_import(const std::string& conv_title, std::vector<BatchMessage> batch,
+                                     std::string_view handler);
+  // Records loom_provenance rows for one just-created conversation and its
+  // messages (best-effort: logged and ignored on failure, never fails the
+  // import). No-op when current_source_ or prov_ is null.
+  void record_provenance(const Conversation& conv, std::string_view handler);
+  bool cancelled(const ImportOptions& opts) const noexcept { return opts.cancel && opts.cancel->cancelled(); }
+
   Database& db_;
   EventBus& bus_;
   BlobStore* blobs_;
   ProvenanceStore* prov_;
   MediaProviders* media_;
+  SourceCtx* current_source_ = nullptr;
 };
 
 // Exports one conversation (active messages, or every version with
