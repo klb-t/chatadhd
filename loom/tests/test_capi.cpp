@@ -240,7 +240,10 @@ TEST_SUITE("capi") {
       s->done += done;
     };
     loom_chat(c.ctx, nullptr, "hello", nullptr, -1, cb, &ch);
-    REQUIRE(ch.chunks.size() == 1);
+    // ChatEngine is implemented now: no API key configured still fails, but
+    // a "start" chunk is emitted (once the user message is persisted) before
+    // the final "error" chunk, so 1 or 2 chunks are both legitimate.
+    REQUIRE((ch.chunks.size() == 1 || ch.chunks.size() == 2));
     CHECK(ch.done == 1);
     Json last = Json::parse(ch.chunks.back());
     CHECK(last["type"] == "error");
