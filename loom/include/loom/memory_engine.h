@@ -88,6 +88,8 @@ class MemoryEngine {
  private:
   Status save_locked() const;
   void load_locked();
+  // mu_ must already be held.
+  std::vector<MemoryNode> children_locked(std::optional<std::string_view> parent_id) const;
 
   std::filesystem::path path_;
   const SemanticAnalyzer* analyzer_;
