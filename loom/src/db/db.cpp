@@ -310,6 +310,7 @@ Result<std::unique_ptr<Database>> Database::open(const std::filesystem::path& pa
   return db;
 }
 
+Database::Database(PrivateTag) {}
 Database::~Database() { close(); }
 
 void Database::close() {

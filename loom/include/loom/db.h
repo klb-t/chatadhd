@@ -328,7 +328,7 @@ class Database {
   struct PrivateTag {};
 
  public:
-  explicit Database(PrivateTag) {}
+  explicit Database(PrivateTag);  // use Database::open()
 
  private:
   Status init_schema();
