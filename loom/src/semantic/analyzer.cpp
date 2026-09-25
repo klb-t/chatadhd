@@ -1,11 +1,10 @@
-// OWNER: wave 2 semantic. Rule data + JSON (de)serialisation are real; the
-// extraction functions are stubs.
+// OWNER: wave 2 semantic. Exact port of core/semantic.py.
 #include "loom/semantic_analyzer.h"
 
 #include "loom/log.h"
 #include "loom/re/regex.h"
 #include "loom/util/time.h"
-#include "stub.h"
+#include "loom/util/utf8.h"
 
 namespace loom {
 namespace {
@@ -125,36 +124,108 @@ Json AnalyzerRules::to_json() const {
   return Json{{"entity_patterns", ep}, {"topics", tp}, {"relation_patterns", rp}};
 }
 
+struct CompiledEntityPattern {
+  std::string entity_type;
+  re::Regex regex;
+};
+struct CompiledRelationPattern {
+  std::string predicate;
+  re::Regex regex;
+  double confidence;
+};
+
 struct SemanticAnalyzer::Impl {
   AnalyzerRules rules;
+  std::vector<CompiledEntityPattern> entity_patterns;
+  std::vector<CompiledRelationPattern> relation_patterns;
 };
 
 SemanticAnalyzer::SemanticAnalyzer(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 SemanticAnalyzer::~SemanticAnalyzer() = default;
 
 Result<std::unique_ptr<SemanticAnalyzer>> SemanticAnalyzer::create(const AnalyzerRules& rules) {
-  // STUB: wave2 - must compile every pattern with re::Regex and fail on errors.
   auto impl = std::make_unique<Impl>();
   impl->rules = rules;
+  for (const auto& p : rules.entity_patterns) {
+    auto rx = re::Regex::compile(p.pattern, p.flags);
+    if (!rx) return Error(Errc::Parse, "entity pattern '" + p.entity_type + "': " + rx.error().message);
+    impl->entity_patterns.push_back(CompiledEntityPattern{p.entity_type, std::move(rx).value()});
+  }
+  for (const auto& p : rules.relation_patterns) {
+    auto rx = re::Regex::compile(p.pattern, p.flags);
+    if (!rx) return Error(Errc::Parse, "relation pattern '" + p.predicate + "': " + rx.error().message);
+    impl->relation_patterns.push_back(CompiledRelationPattern{p.predicate, std::move(rx).value(), p.confidence});
+  }
   return std::make_unique<SemanticAnalyzer>(std::move(impl));
 }
 
 const AnalyzerRules& SemanticAnalyzer::rules() const noexcept { return impl_->rules; }
 
-std::vector<ExtractedEntity> SemanticAnalyzer::extract_entities(std::string_view) const {
-  return {};  // STUB: wave2
+std::vector<ExtractedEntity> SemanticAnalyzer::extract_entities(std::string_view text) const {
+  std::vector<ExtractedEntity> out;
+  std::vector<std::pair<std::string, std::string>> seen;  // (type, value.lower())
+  std::u32string text32 = utf8::decode(text);
+
+  auto contains_seen = [&](const std::string& type, const std::string& value_lower) {
+    for (const auto& s : seen) {
+      if (s.first == type && s.second == value_lower) return true;
+    }
+    return false;
+  };
+
+  for (const auto& ep : impl_->entity_patterns) {
+    for (const auto& m : ep.regex.finditer(text32)) {
+      std::u32string_view raw = m.lastindex() ? m.group(1) : m.group(0);
+      std::string value = utf8::encode(raw);
+      value = std::string(utf8::strip(value));
+      std::string value_lower = utf8::to_lower(value);
+      if (contains_seen(ep.entity_type, value_lower)) continue;
+      seen.emplace_back(ep.entity_type, value_lower);
+      ExtractedEntity e;
+      e.text = value;
+      e.entity_type = ep.entity_type;
+      e.confidence = 1.0;
+      e.start = static_cast<std::size_t>(m.start(0));
+      e.end = static_cast<std::size_t>(m.end(0));
+      out.push_back(std::move(e));
+    }
+  }
+  return out;
 }
 
-std::vector<std::string> SemanticAnalyzer::extract_topics(std::string_view, int) const {
-  return {};  // STUB: wave2
+std::vector<std::string> SemanticAnalyzer::extract_topics(std::string_view text, int threshold) const {
+  std::vector<std::string> out;
+  std::string text_lower = utf8::to_lower(text);
+  for (const auto& [topic, keywords] : impl_->rules.topics) {
+    int hits = 0;
+    for (const auto& kw : keywords) {
+      std::string kw_lower = utf8::to_lower(kw);
+      if (!kw_lower.empty() && text_lower.find(kw_lower) != std::string::npos) hits++;
+    }
+    if (hits >= threshold) out.push_back(topic);
+  }
+  return out;
 }
 
-std::vector<ExtractedRelation> SemanticAnalyzer::extract_relations(std::string_view) const {
-  return {};  // STUB: wave2
+std::vector<ExtractedRelation> SemanticAnalyzer::extract_relations(std::string_view text) const {
+  std::vector<ExtractedRelation> out;
+  std::u32string text32 = utf8::decode(text);
+  for (const auto& rp : impl_->relation_patterns) {
+    for (const auto& m : rp.regex.finditer(text32)) {
+      ExtractedRelation r;
+      r.subject = std::string(utf8::strip(m.group_utf8(1)));
+      r.predicate = rp.predicate;
+      r.obj = std::string(utf8::strip(m.group_utf8(2)));
+      r.confidence = rp.confidence;
+      r.source_text = m.group_utf8(0);
+      out.push_back(std::move(r));
+    }
+  }
+  return out;
 }
 
 Analysis SemanticAnalyzer::analyse(std::string_view text) const {
-  Analysis a;  // STUB: wave2 (fields filled by the extractors above)
+  Analysis a;
   a.entities = extract_entities(text);
   a.topics = extract_topics(text);
   a.relations = extract_relations(text);
