@@ -1,0 +1,129 @@
+[
+ {
+  "title": "Loom design ✓",
+  "mapping": {
+   "root": {
+    "id": "root",
+    "parent": null,
+    "children": [
+     "a"
+    ],
+    "message": null
+   },
+   "a": {
+    "id": "a",
+    "parent": "root",
+    "children": [
+     "b"
+    ],
+    "message": {
+     "author": {
+      "role": "system"
+     },
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "sys"
+      ]
+     }
+    }
+   },
+   "b": {
+    "id": "b",
+    "parent": "a",
+    "children": [
+     "c",
+     "c2"
+    ],
+    "message": {
+     "author": {
+      "role": "user"
+     },
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "How should the kernel store blobs?"
+      ]
+     }
+    }
+   },
+   "c": {
+    "id": "c",
+    "parent": "b",
+    "children": [],
+    "message": {
+     "author": {
+      "role": "assistant"
+     },
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "Content-addressed by SHA-256.",
+       {
+        "content_type": "text",
+        "text": "Never rewrite."
+       }
+      ]
+     }
+    }
+   },
+   "c2": {
+    "id": "c2",
+    "parent": "b",
+    "children": [],
+    "message": {
+     "author": {
+      "role": "assistant"
+     },
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "An alternative branch (fork)."
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "title": "Empty mapping",
+  "mapping": {}
+ },
+ {
+  "title": "Zażółć 😀",
+  "mapping": {
+   "x": {
+    "id": "x",
+    "parent": "missing-parent",
+    "children": [
+     "y"
+    ],
+    "message": {
+     "author": {
+      "role": "user"
+     },
+     "content": {
+      "parts": [
+       "Polish: gęślą jaźń"
+      ]
+     }
+    }
+   },
+   "y": {
+    "id": "y",
+    "parent": "x",
+    "children": [],
+    "message": {
+     "author": {
+      "role": "tool"
+     },
+     "content": {
+      "parts": [
+       "tool output is skipped"
+      ]
+     }
+    }
+   }
+  }
+ }
+]
