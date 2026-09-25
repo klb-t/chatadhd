@@ -186,13 +186,18 @@ if(LOOM_BUILD_TESTS)
 
   find_package(Python3 COMPONENTS Interpreter)
   if(Python3_Interpreter_FOUND)
+    set(_loom_compat_env
+      "LOOM_COMPAT_TOOL=$<TARGET_FILE:loom_compat_tool>"
+      "PYTHONPATH=${LOOM_REPO_ROOT}"
+      "PYTHONDONTWRITEBYTECODE=1")
+    if(LOOM_SHARED)
+      list(APPEND _loom_compat_env "LOOM_LIBRARY=$<TARGET_FILE:loom>")
+    endif()
     file(GLOB LOOM_COMPAT_PY CONFIGURE_DEPENDS ${LOOM_ROOT}/tests/compat/test_*.py)
     foreach(_py ${LOOM_COMPAT_PY})
       get_filename_component(_name ${_py} NAME_WE)
       add_test(NAME compat.${_name} COMMAND ${Python3_EXECUTABLE} ${_py})
-      set_tests_properties(compat.${_name} PROPERTIES
-        ENVIRONMENT "LOOM_COMPAT_TOOL=$<TARGET_FILE:loom_compat_tool>;PYTHONPATH=${LOOM_REPO_ROOT};PYTHONDONTWRITEBYTECODE=1"
-        TIMEOUT 600)
+      set_tests_properties(compat.${_name} PROPERTIES ENVIRONMENT "${_loom_compat_env}" TIMEOUT 600)
     endforeach()
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
