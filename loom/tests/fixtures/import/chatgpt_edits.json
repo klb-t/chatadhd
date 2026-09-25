@@ -1,0 +1,81 @@
+[
+ {
+  "title": "Edited question",
+  "mapping": {
+   "root": {
+    "id": "root",
+    "parent": null,
+    "children": [
+     "u1"
+    ],
+    "message": null
+   },
+   "u1": {
+    "id": "u1",
+    "parent": "root",
+    "children": [
+     "a1"
+    ],
+    "message": {
+     "author": {
+      "role": "user"
+     },
+     "content": {
+      "parts": [
+       "Original question"
+      ]
+     }
+    }
+   },
+   "a1": {
+    "id": "a1",
+    "parent": "u1",
+    "children": [
+     "u2edit"
+    ],
+    "message": {
+     "author": {
+      "role": "assistant"
+     },
+     "content": {
+      "parts": [
+       "First answer"
+      ]
+     }
+    }
+   },
+   "u2edit": {
+    "id": "u2edit",
+    "parent": "a1",
+    "children": [
+     "a2"
+    ],
+    "message": {
+     "author": {
+      "role": "user"
+     },
+     "content": {
+      "parts": [
+       "Edited follow-up question"
+      ]
+     }
+    }
+   },
+   "a2": {
+    "id": "a2",
+    "parent": "u2edit",
+    "children": [],
+    "message": {
+     "author": {
+      "role": "assistant"
+     },
+     "content": {
+      "parts": [
+       "Second, deeper answer"
+      ]
+     }
+    }
+   }
+  }
+ }
+]
