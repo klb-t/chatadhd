@@ -35,3 +35,7 @@ desktop.ini
 *.pem
 *.key
 secrets.json
+
+# Loom (C++ kernel) build trees
+loom/build*/
+loom/out/

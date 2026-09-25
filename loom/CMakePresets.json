@@ -1,0 +1,104 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 24, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "LOOM_BUILD_TESTS": "ON",
+        "LOOM_WERROR": "ON"
+      }
+    },
+    {
+      "name": "dev",
+      "inherits": "base",
+      "displayName": "Debug, system SQLite",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "LOOM_USE_SYSTEM_SQLITE": "ON",
+        "LOOM_SHARED": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "displayName": "Release (vendored SQLite, shared lib)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "LOOM_USE_SYSTEM_SQLITE": "OFF",
+        "LOOM_SHARED": "ON"
+      }
+    },
+    {
+      "name": "asan",
+      "inherits": "base",
+      "displayName": "AddressSanitizer + UBSan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "LOOM_USE_SYSTEM_SQLITE": "ON",
+        "CMAKE_C_FLAGS": "-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined",
+        "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=address,undefined",
+        "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "tsan",
+      "inherits": "base",
+      "displayName": "ThreadSanitizer (vendored SQLite so it is instrumented too)",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "LOOM_USE_SYSTEM_SQLITE": "OFF",
+        "CMAKE_C_FLAGS": "-fsanitize=thread -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS": "-fsanitize=thread -fno-omit-frame-pointer",
+        "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=thread",
+        "CMAKE_SHARED_LINKER_FLAGS": "-fsanitize=thread"
+      }
+    },
+    {
+      "name": "vendored",
+      "inherits": "base",
+      "displayName": "Debug, vendored SQLite amalgamation",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "LOOM_USE_SYSTEM_SQLITE": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "dev", "configurePreset": "dev" },
+    { "name": "release", "configurePreset": "release" },
+    { "name": "asan", "configurePreset": "asan" },
+    { "name": "tsan", "configurePreset": "tsan" },
+    { "name": "vendored", "configurePreset": "vendored" }
+  ],
+  "testPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "stopOnFailure": false, "jobs": 4 }
+    },
+    { "name": "dev", "inherits": "base", "configurePreset": "dev" },
+    { "name": "release", "inherits": "base", "configurePreset": "release" },
+    {
+      "name": "asan",
+      "inherits": "base",
+      "configurePreset": "asan",
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1:strict_string_checks=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1"
+      }
+    },
+    {
+      "name": "tsan",
+      "inherits": "base",
+      "configurePreset": "tsan",
+      "environment": { "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1" }
+    },
+    { "name": "vendored", "inherits": "base", "configurePreset": "vendored" }
+  ]
+}
