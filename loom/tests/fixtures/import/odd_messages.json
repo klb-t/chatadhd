@@ -1,0 +1,52 @@
+[
+ {
+  "role": "user",
+  "content": null
+ },
+ {
+  "role": "user",
+  "content": ""
+ },
+ {
+  "role": "user",
+  "content": "   \n\t  "
+ },
+ {
+  "role": "SYSTEM",
+  "content": "not actually skipped"
+ },
+ {
+  "content": "no role key at all"
+ },
+ {
+  "role": "user",
+  "content": true
+ },
+ {
+  "role": "assistant",
+  "content": 3.5
+ },
+ {
+  "role": "user",
+  "content": [
+   "plain string part",
+   {
+    "type": "text",
+    "text": "typed part"
+   },
+   {
+    "type": "image_url",
+    "image_url": {
+     "url": "x"
+    }
+   },
+   {
+    "type": "other"
+   }
+  ]
+ },
+ {
+  "role": "assistant",
+  "content": "  padded on both sides  "
+ }
+]
