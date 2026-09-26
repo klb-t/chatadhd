@@ -1,0 +1,1 @@
+Evaluation answer key. The loom archive walker skips directories containing this file, so a self-hosting run over the repository never ingests the answer key.
