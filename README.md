@@ -38,6 +38,29 @@ main.py    application entry point
 
 Persistent user data defaults outside the source tree and includes configuration, SQLite state, memory, attachments, exports and logs. See `CLAUDE.md` for the detailed code/data contract and extension notes.
 
+## Loom (C++ core)
+
+`loom/` is a C++20 port of the `engine/`/`core/` packages: one kernel library
+(`libloom`) shared by every client — the Kivy app above, a CLI, an HTTP
+server + React web UI, and an Android shell — that reads and writes the same
+data directory (`chatadhd.db`, `config.json`, `memory.json`, …) as the Python
+app, byte-for-byte. It is not a rewrite that replaces this app; it is the
+same engine made reusable outside Kivy, kept in lockstep with `engine/` and
+`core/` by differential (Python-vs-C++) compat tests.
+
+```bash
+cd loom
+cmake --preset dev && cmake --build --preset dev && ctest --preset dev
+```
+
+See [`loom/README.md`](loom/README.md) for the full build matrix, C ABI,
+Archive Intelligence pipeline and CLI/server/web/Android layout;
+[`docs/selfhost/README.md`](docs/selfhost/README.md) for the self-hosting run
+where Loom compiled this repository's own history into a project
+description; and
+[`docs/architecture/MEGA_MASTER_2026-09-16.md`](docs/architecture/MEGA_MASTER_2026-09-16.md)
+for the architecture Loom implements.
+
 ## Quick start
 
 ```bash

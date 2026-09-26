@@ -338,6 +338,68 @@ _meta(key, value)
 3. Guard any new indexes with `ensure_index()` and a column check
 4. Never use `CREATE TABLE` with new columns — use `ALTER TABLE ADD COLUMN`
 
+## Loom (C++ Core)
+
+`loom/` is a C++20 port of `engine/` + `core/`: one kernel library
+(`libloom`) meant to be shared by every client (Kivy today via this repo,
+plus a CLI, an HTTP server + React web UI, and an Android/JNI shell), reading
+and writing the *same* data directory as the Python app. Full detail lives in
+`loom/README.md` — this section is only what an assistant needs to know
+before touching it.
+
+**Layout** (`loom/`):
+```
+include/loom/     public headers — the contract; loom.h is the C ABI
+src/               implementation; src/capi/ = C ABI, one file per area
+src/archive/       Archive Intelligence / Project Compiler pipeline
+tests/             doctest unit tests (test_<area>.cpp)
+tests/compat/      Python-vs-C++ differential tests + loom_compat_tool
+cli/               `loom` command line
+server/            REST/SSE facade over loom.h (cpp-httplib)
+web/               React + TypeScript web UI (Vite), talks to server/
+android/           JNI shell
+third_party/       vendored deps (nlohmann/json, cpp-httplib, doctest, SQLite, miniz)
+```
+
+**Build & test**:
+```bash
+cd loom
+cmake --preset dev && cmake --build --preset dev && ctest --preset dev
+```
+Presets: `dev` (debug + libloom.so), `release`, `asan` (ASan+UBSan), `tsan`
+(ThreadSanitizer, vendored SQLite), `vendored` (SQLite amalgamation, what
+Android uses). Sources/tests are picked up by glob — adding a file never
+needs a `CMakeLists.txt` edit. For `loom/web`: `npm ci && npm run build &&
+npm run e2e` (Playwright/Chromium, see `loom/web/e2e/`).
+
+**Ownership conventions**: each area owns its public header(s), its
+`src/<dir>/`, exactly one `src/capi/capi_<area>.cpp`, and its own
+`tests/test_<area>.cpp`. Constructor signatures in the headers are the
+wiring contract between areas — additive header changes are fine; anything
+else goes through the area's lead. The C ABI (`loom.h`) never throws across
+the boundary (every `capi_*.cpp` function is wrapped by an exception
+firewall), returns caller-freed heap JSON strings, and is covered by
+`test_abi_compat.py` so `libloom.so` never exports more or less than
+`loom.h` declares.
+
+**Python↔C++ compat invariant**: Loom and the Python app share one on-disk
+format and must stay indistinguishable to a reader of the data directory —
+same schema DDL (`schema_version` stays `"4"`), same forward-only guarded
+migrations, same ID/timestamp/JSON formatting (`uuid4().hex[:12]`,
+`utcnow().isoformat()+"Z"`, `json.dumps`-identical output), same file names
+and data-dir resolution order. `tests/compat/` enforces this by running the
+same operations through `engine.db.Database` and through Loom (separate
+files, one shared file in alternation, two processes at once) and diffing
+the results byte-for-byte; other compat tests cover JSON/float formatting,
+UTF-8/`str` semantics, config/secrets and the data-dir resolution order
+itself. **Any change to `engine/db.py`, `engine/config.py`, ID generation, or
+JSON serialization in Python must have a matching change on the Loom side
+(and vice versa) in the same commit/PR**, or a compat test will start
+failing — that failure is the invariant working, not a false positive.
+Deliberate, documented differences (e.g. row-ordering ties broken by rowid)
+are listed in `loom/README.md`'s Decisions table; anything not listed there
+is a bug.
+
 ## Security Notes
 
 - `secrets.json` stores all credentials; never log its contents
