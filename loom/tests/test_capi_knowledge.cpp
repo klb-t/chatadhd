@@ -54,7 +54,7 @@ TEST_SUITE("capi_knowledge") {
     CHECK(code_of(take(loom_catalog_scan(ctx, "{}", nullptr, nullptr))) == "not_implemented");
     CHECK(code_of(take(loom_extract_preview(ctx, "x", nullptr))) == "not_implemented");
     CHECK(code_of(take(loom_resolve_lineage(ctx, "{}"))) == "not_implemented");
-    CHECK(code_of(take(loom_generalize_predict(ctx, "{}"))) == "not_implemented");
+    CHECK(code_of(take(loom_generalize_predict(ctx, "{}"))) == "invalid_argument");  // generalize implemented: "cut" is required
     CHECK(code_of(take(loom_context_build(ctx, "{}"))) == "not_implemented");
     CHECK(code_of(take(loom_materialize(ctx, "{}"))) == "not_implemented");
     CHECK(code_of(take(loom_kb_pack(nullptr))) == "invalid_argument");

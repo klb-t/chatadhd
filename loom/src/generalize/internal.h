@@ -155,10 +155,18 @@ std::vector<const model::Claim*> slot_claims(const Match& m, std::string_view sl
 const model::DomainKind* slot_kind(const kb::Pack& pack, const Match& m, std::string_view slot,
                                    model::ProjectKind* pk_buf, model::Facet* facet_buf);
 
+// Puts a produced claim into its instance slot (replacing an absent value
+// unless the claim is extrapolated).
+void attach(Match& m, const model::Claim& c, const std::string& slot, std::optional<model::Role> role);
+
 // Principles considered active for principle_active / rule bases: visible
 // seeds (after the PriorFilter) that are not rejected, plus every principle
 // of the evidence.
 std::set<std::string> active_principles(const kb::Pack& pack, const Evidence& ev, const model::PriorFilter& priors);
+
+// The built-in pack (for functions whose contract has no pack parameter:
+// its normalizer tables). Null when it cannot be loaded.
+std::shared_ptr<const kb::Pack> builtin_pack();
 
 // sha256 over canonical JSON (the "output" hash of the stage).
 std::string hash_json(const Json& j);

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <mutex>
 #include <regex>
 
 #include "internal.h"
@@ -436,6 +437,15 @@ void dedupe(std::vector<Claim>& v) {
 
 std::string hash_json(const Json& j) { return Sha256::hex(json::canonical(j)); }
 
+std::shared_ptr<const kb::Pack> builtin_pack() {
+  static std::once_flag once;
+  static std::shared_ptr<const kb::Pack> pack;
+  std::call_once(once, [] {
+    if (auto p = kb::Pack::load_builtin()) pack = *p;
+  });
+  return pack;
+}
+
 // ── slots ───────────────────────────────────────────────────────────
 std::vector<const Claim*> slot_claims(const Match& m, std::string_view slot, const Index& ix) {
   std::vector<const Claim*> out;
@@ -486,9 +496,6 @@ std::set<std::string> active_principles(const kb::Pack& pack, const Evidence& ev
 // ── expressions ─────────────────────────────────────────────────────
 namespace {
 
-bool is_ref(const Json& a, std::string_view prefix) {
-  return a.is_string() && starts_with(a.get_ref<const std::string&>(), prefix);
-}
 
 const Match* instance_of(const ExprCtx& ctx, std::string_view paradigm) {
   if (!ctx.matches) return nullptr;
