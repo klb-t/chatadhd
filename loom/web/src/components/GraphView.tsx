@@ -28,6 +28,51 @@ function colorFor(kind: string): string {
   return KIND_COLORS[kind] ?? "#9d9dff";
 }
 
+// The regex-based analyzer (core/semantic.py, ported byte-for-byte to
+// include/loom/semantic_analyzer.h) is intentionally loose: its CODE_REF
+// pattern is `\b(?:class|def|import|from)\s+(\w+)` with no case-insensitivity
+// or dictionary check, so ordinary prose like "...every import records..." or
+// "...built from the ground up..." mints entity/code_ref nodes labelled
+// "records" or "the". That is correct, tested parity with the Python engine
+// (core/semantic.py has the exact same behaviour) and the graph/db layers
+// must keep producing those nodes unfiltered - other consumers (search,
+// context selection, the archive pipeline) may still want them. This is a
+// presentation-only filter: it only decides what the force-directed canvas
+// draws, never what gets written or returned by the API.
+const GRAPH_NOISE_WORDS = new Set([
+  // English function words / stopwords the CODE_REF and relation regexes
+  // most often latch onto right after "class/def/import/from/see/cf.".
+  "the", "a", "an", "and", "or", "nor", "but", "so", "yet", "for", "from",
+  "with", "without", "about", "into", "onto", "over", "under", "after",
+  "before", "during", "while", "when", "where", "what", "which", "who",
+  "whom", "whose", "this", "that", "these", "those", "there", "here", "it",
+  "its", "is", "are", "was", "were", "be", "been", "being", "have", "has",
+  "had", "will", "would", "can", "could", "should", "may", "might", "must",
+  "shall", "not", "no", "than", "then", "also", "very", "just", "only",
+  "more", "most", "some", "any", "all", "each", "every", "other", "another",
+  "such", "own", "same", "few", "many", "much", "both", "either", "neither",
+  "one", "two", "new", "old", "in", "on", "at", "by", "to", "of", "as", "if",
+  // Polish equivalents (the keyword lists are bilingual PL/EN).
+  "i", "oraz", "ale", "lub", "z", "do", "na", "od", "dla", "przez", "to",
+  "ten", "ta", "te", "tego", "tej", "tym",
+  // Common English nouns that repeatedly show up as CODE_REF false
+  // positives after "import"/"from" in prose (not code) in this corpus.
+  "records", "record", "data", "files", "file", "info", "information",
+]);
+
+function isNoiseNode(n: GraphNode): boolean {
+  const label = (n.label ?? "").trim().toLowerCase();
+  if (!label) return true;
+  if (label.length <= 2) return true;
+  return GRAPH_NOISE_WORDS.has(label);
+}
+
+function filterGraphNoise<N extends GraphNode>(nodes: N[], edges: GraphEdge[]): { nodes: N[]; edges: GraphEdge[] } {
+  const kept = nodes.filter((n) => !isNoiseNode(n));
+  const keptIds = new Set(kept.map((n) => n.id));
+  return { nodes: kept, edges: edges.filter((e) => keptIds.has(e.src) && keptIds.has(e.dst)) };
+}
+
 export default function GraphView({ convId }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +94,8 @@ export default function GraphView({ convId }: Props) {
   const load = useCallback(() => {
     api
       .getGraphData(convFilter || undefined)
-      .then((data) => {
+      .then((raw) => {
+        const data = filterGraphNoise(raw.nodes, raw.edges);
         const map = new Map<string, SimNode>();
         const w = containerRef.current?.clientWidth ?? 400;
         const h = containerRef.current?.clientHeight ?? 400;
@@ -245,7 +291,8 @@ export default function GraphView({ convId }: Props) {
         const node = nodesRef.current.get(drag.nodeId) ?? null;
         setSelected(node);
         try {
-          const expansion = await api.expandGraph([drag.nodeId], depth);
+          const rawExpansion = await api.expandGraph([drag.nodeId], depth);
+          const expansion = filterGraphNoise(rawExpansion.nodes, rawExpansion.edges);
           const w = containerRef.current?.clientWidth ?? 400;
           const h = containerRef.current?.clientHeight ?? 400;
           const origin = nodesRef.current.get(drag.nodeId);
@@ -291,7 +338,7 @@ export default function GraphView({ convId }: Props) {
   }, []);
 
   return (
-    <div data-testid="graph-view">
+    <div data-testid="graph-view" style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       <div className="form-row" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
         <input
           type="text"
@@ -327,12 +374,19 @@ export default function GraphView({ convId }: Props) {
       )}
       <div
         ref={containerRef}
-        style={{ height: 360, marginTop: 8, borderRadius: 8, overflow: "hidden", border: "1px solid var(--border)" }}
+        style={{
+          flex: "1 1 auto",
+          minHeight: 280,
+          marginTop: 8,
+          borderRadius: 8,
+          overflow: "hidden",
+          border: "1px solid var(--border)",
+        }}
       >
         <canvas
           ref={canvasRef}
           data-testid="graph-canvas"
-          style={{ touchAction: "none", cursor: "grab" }}
+          style={{ touchAction: "none", cursor: "grab", display: "block" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
