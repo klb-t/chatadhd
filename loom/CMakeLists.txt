@@ -207,4 +207,14 @@ if(LOOM_BUILD_TESTS)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
   endif()
+
+  # loom-server API smoke test (server/tests/test_server_smoke.py): only
+  # registered when the server is actually built and Python's `requests` is
+  # available at ctest time; the script itself SKIPs (exit 0) otherwise.
+  if(LOOM_BUILD_SERVER AND TARGET loom-server AND Python3_Interpreter_FOUND)
+    add_test(NAME server.smoke COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_smoke.py)
+    set_tests_properties(server.smoke PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>"
+      TIMEOUT 60)
+  endif()
 endif()
