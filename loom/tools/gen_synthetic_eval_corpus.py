@@ -714,7 +714,9 @@ add(id="nf-02-storage", provider="chatgpt", project=P_NF, kind="signal", model="
         ("user", "SQLite, Realm czy zwykle pliki JSON na notatki? nie chce sie pozniej meczyc z migracja"),
         ("assistant", "Realm daje ladne API ale to vendor lock-in i gorzej z multiplatform C++. Flat "
                       "JSON boli przy duzej liczbie notatek i braku transakcji. SQLite jest nudny ale "
-                      "dziala wszedzie i ma WAL."),
+                      "dziala wszedzie i ma WAL. Cos w stylu:\n\n"
+                      "```sql\nCREATE TABLE notes (id TEXT PRIMARY KEY, title TEXT, body TEXT, created TEXT);\n"
+                      "PRAGMA journal_mode=WAL;\n```"),
         ("user", "no to SQLite. structured data + osobny folder na blob/zalaczniki, tak jak "
                  "ustalilam w burzy mozgow.",
          {"decision": "dec.nf.storage",
@@ -1016,7 +1018,8 @@ add(id="wd-02-build-decision", provider="claude", project=P_WD, kind="signal", m
 add(id="wd-03-v01", provider="chatgpt", project=P_WD, kind="signal", model="gpt-4o",
     title="watcher + restart dziala", date="2025-11-10T22:00:00Z",
     messages=linear(
-        ("user", "0.1 gotowe: czyta log, wykrywa brak postepu przez >90s, zabija i odpala od nowa",
+        ("user", "0.1 gotowe: czyta log, wykrywa brak postepu przez >90s, zabija i odpala od nowa\n\n"
+                 "```python\nif time.time() - last_log_line_ts > 90:\n    kill(pid)\n    restart()\n```",
          {"feature": ["feat.wd.watcher_restart"]}),
         ("assistant", "Heartbeat plik czy tylko log?"),
         ("user", "na razie tylko log, heartbeat plik pozniej moze",
@@ -1268,9 +1271,11 @@ add(id="cx-02-changing-mind", provider="chatgpt", project=None, kind="signal", m
 add(id="cx-03-drifting-thread", provider="claude", project=None, kind="signal", model="claude-3-5-sonnet",
     title="hmm", date="2025-11-15T21:00:00Z",
     messages=linear(
-        ("user", "stroz mi dzis znowu cos dziwnego zrobil, restartowal 3 razy pod rzad"),
+        ("user", "stroz mi dzis znowu no żeby tak powiedzieć zrobił coś dziwnego przecinek restartował "
+                 "trzy razy pod rząd kropka"),  # dictation artefact: stray "no żeby tak powiedzieć",
+                                                 # literal punctuation words never cleaned up
         ("assistant", "Masz log z tych trzech restartow?"),
-        ("user", "nie mam, nie zapisalam, a szkoda, bo teraz nie wiem czy to ten sam powod"),
+        ("user", "nie mam nie mam, nie zapisalam, a szkoda, bo teraz nie wiem czy to ten sam sam powod"),
         ("assistant", "A jak tam poza tym?"),
         ("user", "zmeczona, sprawa z Kwiatowej mnie meczy psychicznie bardziej niz caly kod razem "
                  "wziety, ciagle mysle czy dobrze licze te terminy"),

@@ -2151,7 +2151,7 @@
               "conv_id": "wd-03-v01",
               "node_id": "u1",
               "date": "2025-11-10T22:00:00Z",
-              "quote": "0.1 gotowe: czyta log, wykrywa brak postepu przez >90s, zabija i odpala od nowa"
+              "quote": "0.1 gotowe: czyta log, wykrywa brak postepu przez >90s, zabija i odpala od nowa\n\n```python\nif time.time() - last_log_line_ts > 90:\n    kill(pid)\n    restart()\n```"
             }
           ]
         }
