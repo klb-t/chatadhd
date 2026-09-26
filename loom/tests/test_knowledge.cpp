@@ -54,11 +54,14 @@ TEST_SUITE("knowledge") {
   }
 
   TEST_CASE("with the area stubs a run stops at the first stage: not implemented") {
+    // catalog is implemented (its own tests: test_catalog*.cpp); with no
+    // configured sources it runs to completion over an empty corpus, so the
+    // run now stops at the next stub stage, "extract".
     fsutil::TempDir td;
     auto rt = open_rt(td.path());
     auto r = unwrap(rt->knowledge().run(KnowledgeConfig{}));
     CHECK(r.status == "failed");
-    CHECK(r.error.find("catalog") == 0);
+    CHECK(r.error.find("extract") == 0);
     CHECK(r.error.find("not implemented") != std::string::npos);
     CHECK(r.run.rfind("kr_", 0) == 0);
     auto st = unwrap(rt->knowledge().status());

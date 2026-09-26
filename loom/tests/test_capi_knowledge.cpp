@@ -41,17 +41,20 @@ TEST_SUITE("capi_knowledge") {
     CHECK(code_of(take(loom_kb_judge(ctx, R"({"target_kind":"observation","target":"ob_1","verdict":"edit","payload":{"text":"x"}})"))) ==
           "invalid_argument");
 
+    // catalog is implemented (test_catalog*.cpp): with no configured sources
+    // it runs to completion over an empty corpus instead of stubbing out.
     Json r = take(loom_knowledge_run(ctx, R"({"stages":["catalog"]})", nullptr, nullptr));
-    CHECK(r["status"] == "failed");
-    CHECK(json::get_string(r, "error").find("not implemented") != std::string::npos);
+    CHECK(r["status"] == "done");
     CHECK(take(loom_kb_runs(ctx, 10)).size() == 1);
     CHECK(take(loom_kb_query(ctx, R"({"what":"stats"})"))["items"]["claims"] == 0);
     CHECK(code_of(take(loom_kb_query(ctx, R"({"what":"claims","origin":"rumour"})"))) == "invalid_argument");
     CHECK(take(loom_knowledge_status(ctx, nullptr))["run"]["task_id"] == r["task_id"]);
     CHECK(loom_knowledge_cancel(ctx) == LOOM_E_NOT_FOUND);
 
-    CHECK(code_of(take(loom_catalog_query(ctx, "{}"))) == "not_implemented");
-    CHECK(code_of(take(loom_catalog_scan(ctx, "{}", nullptr, nullptr))) == "not_implemented");
+    // catalog is implemented: an empty query / a scan with no sources both
+    // succeed trivially (empty results) instead of stubbing out.
+    CHECK(take(loom_catalog_query(ctx, "{}")).empty());
+    CHECK(take(loom_catalog_scan(ctx, "{}", nullptr, nullptr))["units"] == 0);
     CHECK(code_of(take(loom_extract_preview(ctx, "x", nullptr))) == "not_implemented");
     CHECK(code_of(take(loom_resolve_lineage(ctx, "{}"))) == "not_implemented");
     CHECK(code_of(take(loom_generalize_predict(ctx, "{}"))) == "not_implemented");
