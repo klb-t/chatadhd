@@ -233,7 +233,8 @@ TEST_SUITE("kb_pack") {
     CHECK(kb::compare_versions("0.10", "0.9.5") > 0);
     CHECK(kb::compare_versions("0.7.10", "0.7.9") > 0);
     CHECK(kb::stable_id("e_", "project|chatadhd") == kb::stable_id("e_", "project|chatadhd"));
-    CHECK(kb::stable_id("e_", "project|chatadhd").size() == 14);
+    CHECK(kb::stable_id("e_", "project|chatadhd").size() == 18);  // 16 hex
+    CHECK(kb::stable_id("n_", "project|chatadhd", 12).size() == 14);  // Python id format
     CHECK(kb::stable_id("e_", "project|chatadhd") != kb::stable_id("e_", "project|loom"));
   }
 
