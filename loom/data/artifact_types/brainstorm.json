@@ -35,6 +35,10 @@
    {
     "op": "heading",
     "value": "burza mózgów"
+   },
+   {
+    "op": "cue",
+    "value": "generalization"
    }
   ],
   "min_score": 0.35
