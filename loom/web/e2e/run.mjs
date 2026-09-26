@@ -8,7 +8,11 @@
 // Prereqs: loom-server built (LOOM_BUILD_SERVER=ON) and `npm run build`
 // already run in loom/web (so dist/ exists). Both are checked below with a
 // clear error rather than a confusing Playwright failure.
-import { chromium } from "playwright";
+// Resolved dynamically (see below) so this works whether `playwright` is a
+// local devDependency or - as in this sandbox, per the task's instructions -
+// the preinstalled global package at PLAYWRIGHT_GLOBAL_MODULE /
+// /opt/node22/lib/node_modules/playwright (bare "import playwright from
+// 'playwright'" can't see global node_modules under ESM resolution).
 import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync, existsSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -84,6 +88,21 @@ function spawnLogged(name, cmd, args, opts) {
   return p;
 }
 
+async function loadChromium() {
+  // Prefer a locally installed `playwright` (normal ESM bare-specifier
+  // resolution); fall back to the global install this sandbox preinstalls
+  // at PLAYWRIGHT_GLOBAL_MODULE (see loom/web/package.json's "e2e" script).
+  try {
+    const mod = await import("playwright");
+    return mod.chromium;
+  } catch {
+    const globalPath =
+      process.env.PLAYWRIGHT_GLOBAL_MODULE || "/opt/node22/lib/node_modules/playwright/index.mjs";
+    const mod = await import(globalPath);
+    return mod.chromium;
+  }
+}
+
 async function main() {
   if (!existsSync(SERVER_BIN)) {
     console.error(
@@ -123,6 +142,7 @@ async function main() {
     await waitUp(`${serverBase}/api/healthz`, 15000);
     log("loom-server is up");
 
+    const chromium = await loadChromium();
     try {
       browser = await chromium.launch({ headless: true });
     } catch (err) {
