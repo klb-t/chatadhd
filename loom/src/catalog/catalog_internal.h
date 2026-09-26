@@ -166,7 +166,66 @@ struct ExtractedText {
   std::string prose;
   std::string code;
   std::string lang_hint;  // "" unless the caller already knows (unused here)
+  // Populated for kind == chatgpt|claude|claude_projects (0/"" otherwise):
+  // avoids a second walk_chatgpt/walk_claude pass in scan.cpp.
+  int n_msgs = 0;
+  int n_forks = 0;
+  std::string title;
+  std::string date;   // creation date, normalised ISO ("" unknown)
+  std::string head;   // first user message, clipped to ~200 code points
+  std::vector<std::string> attachments;
 };
 ExtractedText extract_text(const Json& element, std::string_view kind);
+
+// ── Streaming JSON array scanner with byte offsets ──────────────────────
+// Same bracket/string/escape state machine as loom::JsonArrayStreamer
+// (src/import/importer_core.cpp), plus the absolute [begin,end) byte range
+// of each flushed element in the ORIGINAL byte stream (needed for locators
+// and for re-reading one element later without a full rescan). Bounded
+// memory: only the current element's bytes are buffered, never the whole
+// member. Not shared code with the import area (see catalog.h ownership
+// map) because JsonArrayStreamer does not carry offsets and importer.h is
+// out of this area's ownership; the state machine itself is intentionally
+// identical so scan() sees exactly what the importer would see.
+class OffsetArrayScanner {
+ public:
+  // Returns false when `on_element` asked to stop, or once the closing ']'
+  // of the top level array is seen (`finished()` becomes true either way).
+  // `on_element(element_bytes, begin, end)` -> false to stop early.
+  using ElementFn = std::function<bool(std::string_view element, std::int64_t begin, std::int64_t end)>;
+  void feed(std::string_view chunk, const ElementFn& on_element);
+  bool not_array() const noexcept { return not_array_; }
+  bool finished() const noexcept { return done_; }
+  bool stopped() const noexcept { return stopped_; }
+
+ private:
+  std::string buf_;
+  int depth_ = 0;
+  bool started_ = false;
+  bool in_string_ = false;
+  bool escape_ = false;
+  bool done_ = false;
+  bool not_array_ = false;
+  bool have_start_ = false;
+  bool stopped_ = false;
+  std::int64_t abs_pos_ = 0;
+  std::int64_t elem_start_ = 0;
+};
+
+// ── Zip streaming (miniz), never extract-to-temp ────────────────────────
+struct ZipEntry {
+  std::string name;
+  unsigned index = 0;
+  std::int64_t uncompressed_size = 0;
+  bool is_dir = false;
+};
+// Central directory only (milliseconds even for huge archives).
+Result<std::vector<ZipEntry>> list_zip_entries(const std::filesystem::path& zip_path);
+// Streams member `index` of `zip_path` through `on_chunk` in <= kReadChunk
+// pieces via miniz's pull iterator (mz_zip_reader_extract_iter_*): the
+// member is inflated directly into a small caller buffer, never written to a
+// temp file and never held whole in memory.
+Status stream_zip_member(const std::filesystem::path& zip_path, unsigned index,
+                         const std::function<void(std::string_view)>& on_chunk);
 
 }  // namespace loom::catalog::internal

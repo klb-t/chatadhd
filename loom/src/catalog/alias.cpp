@@ -106,7 +106,12 @@ std::vector<Mention> AliasIndex::find(std::string_view folded_text, int max_ment
       }
       Mention m;
       m.kind = at.term_class == "principle" ? "principle" : "alias";
-      m.key = at.project.empty() ? at.surface : at.project;
+      // Principle/philosophy-probe hits carry no project: tag them "owner"
+      // (a project id "owner" never exists in profiles/self.json) so
+      // selection_rules.json's {"project": "owner"} rule (R2: philosophy
+      // chats are relevant even without an app name) can match on `key`
+      // exactly like a real project id, instead of a special case.
+      m.key = at.project.empty() ? std::string("owner") : at.project;
       m.snippet = make_snippet(folded_text, found, at.folded.size());
       m.offset = static_cast<std::int64_t>(found);
       m.trap = trap;

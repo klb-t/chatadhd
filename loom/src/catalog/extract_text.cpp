@@ -67,10 +67,19 @@ ExtractedText extract_text(const Json& element, std::string_view kind) {
   ExtractedText out;
   if (kind == "chatgpt" || kind == "claude") {
     archive::ChatWalk w = kind == "chatgpt" ? archive::walk_chatgpt(element) : archive::walk_claude(element);
-    for (const auto& m : w.messages) append_message(m, out.prose, out.code);
+    out.title = w.title;
+    out.date = w.date;
+    out.n_msgs = static_cast<int>(w.messages.size());
+    out.n_forks = static_cast<int>(w.forks.size());
+    for (const auto& m : w.messages) {
+      append_message(m, out.prose, out.code);
+      if (out.head.empty() && json::get_string(m, "role") == "user") out.head = archive::clip(json::get_string(m, "text"), 200);
+    }
     return out;
   }
   if (kind == "claude_projects") {
+    out.title = json::get_string(element, "name");
+    out.date = archive::normalize_date(json::get_string(element, "created_at"));
     std::string desc = json::get_string(element, "description");
     std::string prompt = json::get_string(element, "prompt_template");
     if (!desc.empty()) out.prose.append(desc).push_back('\n');
