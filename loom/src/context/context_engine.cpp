@@ -157,10 +157,10 @@ Result<ContextRequest> ContextRequest::from_json(const Json& j) {
 }
 
 Json ContextRequest::to_json() const {
-  Json targets = Json::array();
-  for (const auto& t : targets) targets.push_back(t);
+  Json targets_j = Json::array();
+  for (const auto& t : targets) targets_j.push_back(t);
   return Json{{"text", text},
-              {"targets", targets},
+              {"targets", targets_j},
               {"project", project},
               {"budget_tokens", budget_tokens},
               {"goal_type", goal_type ? Json(*goal_type) : Json(nullptr)},
