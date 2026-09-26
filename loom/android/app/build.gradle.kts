@@ -86,7 +86,9 @@ dependencies {
 // build). We only copy; we never write into loom/web ourselves. Using Sync
 // (not Copy) so files removed from a later `npm run build` are removed here
 // too instead of lingering as stale assets.
-val webDistDir = rootProject.projectDir.resolve("../../web/dist")
+// rootProject.projectDir is loom/android; loom/web/dist is one level up
+// from there, then into web/dist.
+val webDistDir = rootProject.projectDir.resolve("../web/dist")
 val copyWebAssets = tasks.register<Sync>("copyWebAssets") {
     description = "Copies loom/web/dist (npm run build output) into app/src/main/assets/web"
     group = "loom"

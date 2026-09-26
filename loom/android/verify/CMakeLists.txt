@@ -55,6 +55,7 @@ message(STATUS "loom_jni_host_verify: using ${LOOM_LIBRARY}")
 
 # ── the JNI glue itself, unmodified, linked against libloom.so ──────────
 add_library(loom_jni_host SHARED ${LOOM_JNI_CPP})
+target_include_directories(loom_jni_host SYSTEM PRIVATE "${LOOM_ROOT_DIR}/third_party/nlohmann")
 target_include_directories(loom_jni_host PRIVATE ${JNI_INCLUDE_DIRS} "${LOOM_ROOT_DIR}/include")
 target_link_libraries(loom_jni_host PRIVATE "${LOOM_LIBRARY}")
 set_target_properties(loom_jni_host PROPERTIES

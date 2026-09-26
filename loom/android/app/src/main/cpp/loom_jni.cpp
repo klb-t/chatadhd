@@ -32,9 +32,24 @@
 //   *not* accepted on the way in and is re-encoded as a 6-byte surrogate
 //   pair on the way out). Loom strings are plain UTF-8. To round-trip emoji
 //   and any other astral-plane text correctly we never call those two
-//   functions: jstring -> UTF-8 goes through GetStringChars (UTF-16) and
-//   loom::utf8::encode(), UTF-8 -> jstring goes through loom::utf8::decode()
-//   and NewString() (UTF-16). See utf16_to_utf8()/utf8_to_utf16() below.
+//   functions: jstring -> UTF-8 goes through GetStringChars (UTF-16) and a
+//   local utf8_encode(), UTF-8 -> jstring goes through a local utf8_decode()
+//   and NewString() (UTF-16). See the conversion helpers below.
+//
+// Why this file hand-rolls UTF-8 and JSON instead of reusing loom::utf8::*
+// and loom::json::* (which do the same job inside loom_core): loom/loom.h
+// is "the only interface platforms may use" (see loom/README.md and this
+// task's brief) — everything else under loom/include is Loom's own internal
+// C++ API, compiled with hidden symbol visibility in the shared build
+// (libloom.so exports only the extern "C" loom_* functions). Calling into
+// it here would link by accident when loom_jni.so statically absorbs
+// loom_core (the on-device Android build), but fail — as it did the first
+// time this file was written — the moment the JNI glue is linked against a
+// prebuilt libloom.so instead (exactly what loom/android/verify/CMakeLists.txt
+// does for the host smoke test, and a perfectly reasonable thing for a
+// future build to do on-device too). nlohmann::json is the one exception:
+// it is a header-only third-party library (loom/third_party/nlohmann, no
+// linkage of its own), so using it here creates no such dependency.
 #include <jni.h>
 
 #include <cstdlib>
@@ -45,10 +60,9 @@
 #include <string_view>
 #include <unordered_map>
 
+#include <nlohmann/json.hpp>
+
 #include "loom/loom.h"
-#include "loom/result.h"
-#include "loom/util/json.h"
-#include "loom/util/utf8.h"
 
 #if defined(__ANDROID__)
 #include <android/log.h>
@@ -56,7 +70,96 @@
 #include <cstdio>
 #endif
 
-using loom::Json;
+using Json = nlohmann::json;
+
+namespace {
+
+// Non-throwing parse: empty/invalid text -> fallback (loom::json::parse_or's
+// contract, reimplemented locally — see the file-header note above).
+Json parse_or(const std::string& text, Json fallback) {
+  if (text.empty()) return fallback;
+  Json j = Json::parse(text, nullptr, false);
+  return j.is_discarded() ? fallback : j;
+}
+
+std::string dump(const Json& j) { return j.dump(); }
+
+// Minimal well-formed-UTF-8 decoder (Unicode replacement character U+FFFD
+// for any ill-formed byte, matching the usual "errors=replace" behaviour).
+std::u32string utf8_decode(std::string_view s) {
+  std::u32string out;
+  out.reserve(s.size());
+  size_t i = 0, n = s.size();
+  while (i < n) {
+    auto c = static_cast<unsigned char>(s[i]);
+    int len;
+    char32_t cp;
+    if (c < 0x80) {
+      cp = c;
+      len = 1;
+    } else if ((c & 0xE0) == 0xC0) {
+      cp = c & 0x1F;
+      len = 2;
+    } else if ((c & 0xF0) == 0xE0) {
+      cp = c & 0x0F;
+      len = 3;
+    } else if ((c & 0xF8) == 0xF0) {
+      cp = c & 0x07;
+      len = 4;
+    } else {
+      out.push_back(0xFFFD);
+      ++i;
+      continue;
+    }
+    if (i + static_cast<size_t>(len) > n) {
+      out.push_back(0xFFFD);
+      break;
+    }
+    bool ok = true;
+    char32_t acc = cp;
+    for (int k = 1; k < len; ++k) {
+      auto cc = static_cast<unsigned char>(s[i + static_cast<size_t>(k)]);
+      if ((cc & 0xC0) != 0x80) {
+        ok = false;
+        break;
+      }
+      acc = (acc << 6) | (cc & 0x3F);
+    }
+    if (!ok) {
+      out.push_back(0xFFFD);
+      ++i;
+      continue;
+    }
+    out.push_back(acc);
+    i += static_cast<size_t>(len);
+  }
+  return out;
+}
+
+std::string utf8_encode(const std::u32string& s) {
+  std::string out;
+  out.reserve(s.size());
+  for (char32_t cp : s) {
+    if (cp <= 0x7F) {
+      out.push_back(static_cast<char>(cp));
+    } else if (cp <= 0x7FF) {
+      out.push_back(static_cast<char>(0xC0 | (cp >> 6)));
+      out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+    } else if (cp <= 0xFFFF) {
+      out.push_back(static_cast<char>(0xE0 | (cp >> 12)));
+      out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+      out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+    } else {
+      out.push_back(static_cast<char>(0xF0 | (cp >> 18)));
+      out.push_back(static_cast<char>(0x80 | ((cp >> 12) & 0x3F)));
+      out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+      out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+    }
+  }
+  return out;
+}
+
+}  // namespace
 
 // ── UTF-8 <-> UTF-16 (see file header) ───────────────────────────────────
 namespace {
@@ -104,12 +207,12 @@ std::string j2s(JNIEnv* env, jstring s) {
   if (!chars) return {};
   std::u32string u32 = utf16_to_utf32(reinterpret_cast<const char16_t*>(chars), static_cast<size_t>(len));
   env->ReleaseStringChars(s, chars);
-  return loom::utf8::encode(u32);
+  return utf8_encode(u32);
 }
 
 // UTF-8 -> jstring (surrogate-pair safe).
 jstring s2j(JNIEnv* env, std::string_view s) {
-  std::u32string u32 = loom::utf8::decode(s);
+  std::u32string u32 = utf8_decode(s);
   std::u16string u16 = utf32_to_utf16(u32);
   return env->NewString(reinterpret_cast<const jchar*>(u16.data()), static_cast<jsize>(u16.size()));
 }
@@ -209,19 +312,19 @@ const char* errc_name_for(int rc) {
 
 std::string err_json(int rc) {
   Json j{{"error", Json{{"code", errc_name_for(rc)}, {"message", std::string("loom error ") + std::to_string(rc)}}}};
-  return loom::json::dump(j);
+  return dump(j);
 }
 
 // int rc -> JSON. `ok` builds the success payload (default {"ok":true}).
 std::string wrap_int(int rc, const std::function<Json()>& ok = nullptr) {
   if (rc < 0) return err_json(rc);
-  return loom::json::dump(ok ? ok() : Json{{"ok", true}});
+  return dump(ok ? ok() : Json{{"ok", true}});
 }
 
 // loom_has_secret / loom_can: 1/0 on success, negative on error.
 std::string wrap_tri(int rc) {
   if (rc < 0) return err_json(rc);
-  return loom::json::dump(Json{{"value", rc != 0}});
+  return dump(Json{{"value", rc != 0}});
 }
 
 std::string take(const char* r) {
@@ -268,7 +371,7 @@ const std::unordered_map<std::string, Fn>& dispatch_table() {
       const char* kc = a_cstr(a, 0, k);
       const char* vc = a_cstr(a, 1, v);
       loom_set_config(g_ctx, kc, vc);
-      return loom::json::dump(Json{{"ok", true}});
+      return dump(Json{{"ok", true}});
     };
     table["set_config_json"] = [](const Json& a) {
       std::string p;
@@ -396,15 +499,15 @@ const std::unordered_map<std::string, Fn>& dispatch_table() {
     S1("semantic_status", loom_semantic_status(g_ctx));
     table["semantic_pause"] = [](const Json&) {
       loom_semantic_pause(g_ctx);
-      return loom::json::dump(Json{{"ok", true}});
+      return dump(Json{{"ok", true}});
     };
     table["semantic_resume"] = [](const Json&) {
       loom_semantic_resume(g_ctx);
-      return loom::json::dump(Json{{"ok", true}});
+      return dump(Json{{"ok", true}});
     };
     table["semantic_wake"] = [](const Json&) {
       loom_semantic_wake(g_ctx);
-      return loom::json::dump(Json{{"ok", true}});
+      return dump(Json{{"ok", true}});
     };
     // -- memory tree --
     S1("list_memory", loom_list_memory(g_ctx));
@@ -558,7 +661,7 @@ struct ImportProgressCtx {
 void import_progress_trampoline(int current, int total, const char* status, void* user_data) {
   auto* ctx = static_cast<ImportProgressCtx*>(user_data);
   Json j{{"type", "progress"}, {"current", current}, {"total", total}, {"status", status ? status : ""}};
-  deliver_chunk(ctx->callback_id, loom::json::dump(j), false);
+  deliver_chunk(ctx->callback_id, dump(j), false);
 }
 
 std::mutex g_sub_mu;
@@ -566,9 +669,9 @@ std::unordered_map<int64_t, std::unique_ptr<std::string>> g_subscriptions;  // t
 
 void event_trampoline(const char* event, const char* payload_json, void* user_data) {
   auto* id = static_cast<std::string*>(user_data);
-  Json payload = loom::json::parse_or(payload_json ? payload_json : "", Json(nullptr));
+  Json payload = parse_or(payload_json ? payload_json : "", Json(nullptr));
   Json j{{"event", event ? event : ""}, {"payload", payload}};
-  deliver_chunk(*id, loom::json::dump(j), false);
+  deliver_chunk(*id, dump(j), false);
 }
 
 }  // namespace
@@ -614,27 +717,27 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInit(JNIEnv
                                                                           jstring optionsJson) {
   std::lock_guard<std::mutex> lock(g_ctx_mu);
   if (g_ctx) {
-    return s2j(env, loom::json::dump(Json{{"ok", true}, {"info", loom::json::parse_or(take(loom_info(g_ctx)), Json::object())}}));
+    return s2j(env, dump(Json{{"ok", true}, {"info", parse_or(take(loom_info(g_ctx)), Json::object())}}));
   }
   loom_set_log_sink(log_sink_trampoline, LOOM_LOG_DEBUG, nullptr);
   loom_set_log_stderr(false);
 
-  Json opts = optionsJson ? loom::json::parse_or(j2s(env, optionsJson), Json::object()) : Json::object();
+  Json opts = optionsJson ? parse_or(j2s(env, optionsJson), Json::object()) : Json::object();
   std::string dd = j2s(env, dataDir);
   if (!dd.empty()) opts["data_dir"] = dd;
-  std::string opts_str = loom::json::dump(opts);
+  std::string opts_str = dump(opts);
 
   const char* err_json_out = nullptr;
   LoomContext* ctx = loom_init_ex(opts_str.c_str(), &err_json_out);
   if (!ctx) {
     std::string err = err_json_out ? take(err_json_out) : err_json(LOOM_E_INTERNAL);
-    return s2j(env, loom::json::dump(Json{{"ok", false}, {"error", loom::json::parse_or(err, Json::object())["error"]}}));
+    return s2j(env, dump(Json{{"ok", false}, {"error", parse_or(err, Json::object())["error"]}}));
   }
   g_ctx = ctx;
   loom_set_http_transport(g_ctx, http_send_trampoline, nullptr);
 
-  Json info = loom::json::parse_or(take(loom_info(g_ctx)), Json::object());
-  return s2j(env, loom::json::dump(Json{{"ok", true}, {"info", info}}));
+  Json info = parse_or(take(loom_info(g_ctx)), Json::object());
+  return s2j(env, dump(Json{{"ok", true}, {"info", info}}));
 }
 
 JNIEXPORT void JNICALL Java_com_chatadhd_android_LoomNative_nativeShutdown(JNIEnv*, jclass) {
@@ -656,17 +759,17 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInvoke(JNIE
   auto it = table.find(m);
   if (it == table.end()) {
     Json e{{"error", Json{{"code", "not_implemented"}, {"message", "no such bridge method: " + m}}}};
-    return s2j(env, loom::json::dump(e));
+    return s2j(env, dump(e));
   }
-  Json args = loom::json::parse_or(j2s(env, argsJson), Json::array());
+  Json args = parse_or(j2s(env, argsJson), Json::array());
   if (!args.is_array()) args = Json::array();
   std::string result;
   try {
     result = it->second(args);
   } catch (const std::exception& e) {
-    result = loom::json::dump(Json{{"error", Json{{"code", "internal"}, {"message", e.what()}}}});
+    result = dump(Json{{"error", Json{{"code", "internal"}, {"message", e.what()}}}});
   } catch (...) {
-    result = loom::json::dump(Json{{"error", Json{{"code", "internal"}, {"message", "unknown exception"}}}});
+    result = dump(Json{{"error", Json{{"code", "internal"}, {"message", "unknown exception"}}}});
   }
   return s2j(env, result);
 }

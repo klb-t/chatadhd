@@ -40,8 +40,12 @@ secrets.json
 loom/build*/
 loom/out/
 
-# Loom Android/web build outputs
+# Loom Android/web build outputs (never source)
 loom/android/.gradle/
-loom/android/**/build/
 loom/android/local.properties
+loom/android/**/build/
+loom/android/**/.cxx/
+loom/android/app/src/main/assets/web/**
+!loom/android/app/src/main/assets/web/index.html
+loom/android/verify/build*/
 loom/web/node_modules/
