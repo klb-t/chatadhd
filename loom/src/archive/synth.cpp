@@ -77,6 +77,7 @@ struct CodeIndex {
   };
   std::vector<File> files;
   std::map<std::string, std::vector<std::size_t>> symbol_owner;  // lower symbol -> files
+  std::map<std::string, std::vector<std::size_t>> used_by;       // identifier used in code lines -> files
   std::set<std::string> uris;
 };
 
@@ -106,6 +107,9 @@ CodeIndex build_code_index(const Corpus& c) {
     for (const auto& id : camel_identifiers(d.text)) f.weak.insert(norm_word(utf8::to_lower(id)));
     std::size_t idx = ix.files.size();
     for (const auto& s : f.symbols) ix.symbol_owner[utf8::to_lower(s)].push_back(idx);
+    if (const Json* uses = json::find(d.extra, "uses"); uses && uses->is_array()) {
+      for (const auto& u : *uses) ix.used_by[utf8::to_lower(u.get<std::string>())].push_back(idx);
+    }
     ix.uris.insert(f.uri);
     ix.files.push_back(std::move(f));
   }
@@ -178,7 +182,7 @@ bool is_spec_doc(const Doc& d) { return d.kind == "doc" || d.kind == "project" |
 // Words that are products/formats rather than components of this project.
 bool is_brand(const std::string& id) {
   static const std::set<std::string> k = {"ChatGPT", "GitHub", "PolyForm", "ThreadSanitizer", "UBSan",
-                                          "AddressSanitizer", "CMakeLists", "OpenSSL", "OpenRouter", "SQLite", "JavaScript", "TypeScript",
+                                          "AddressSanitizer", "CMakeLists", "OpenSSL", "CPython", "MiniLM", "OpenRouter", "SQLite", "JavaScript", "TypeScript",
                                           "PyPI",    "OpenAI", "DeepSeek",   "MacOS",  "iOS",        "YouTube",
                                           "LinkedIn", "PowerPoint", "JSONL", "WebSocket", "OkHttp", "CMake",
                                           "LLMs", "APIs", "IDs", "URLs", "UUIDs", "JSONs", "PDFs", "GPUs", "VMs",
@@ -306,6 +310,12 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       if (!is_spec_doc(d) && d.kind != "chat") continue;
       for (const auto& id : camel_identifiers(d.text)) {
         if (id.size() <= 3 || is_brand(id) || utf8::to_lower(id) == utf8::to_lower(in.project)) continue;
+        if (!std::isupper(static_cast<unsigned char>(id[0]))) continue;  // mixedCase = code-level name
+        if (id.back() == 's' && std::all_of(id.begin(), id.end() - 1, [](char ch) {
+              return std::isupper(static_cast<unsigned char>(ch));
+            })) {
+          continue;  // plural acronym ("ABIs")
+        }
         auto& n = named[id];
         if (n.name.empty()) {
           n.name = id;
@@ -342,7 +352,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       std::string text;
     };
     std::vector<Row> rows_bad;
-    std::vector<std::string> rows_ok;
+    std::vector<std::string> rows_ok, rows_used;
     std::size_t n_impl = 0, n_part = 0, n_miss = 0;
     for (const auto& [id, n] : named) {
       std::string low = utf8::to_lower(id);
@@ -357,6 +367,9 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
         const auto& own = ix.symbol_owner.at(utf8::to_lower(id.substr(1)));
         for (std::size_t k = 0; k < own.size() && k < 3; ++k) files.push_back(ix.files[own[k]].uri);
         note = "concrete `" + id.substr(1) + "` exists, no `" + id + "` interface";
+      } else if (auto u = ix.used_by.find(low); u != ix.used_by.end()) {
+        status = "used";  // external API used by the code (declared elsewhere)
+        for (std::size_t k = 0; k < u->second.size() && k < 2; ++k) files.push_back(ix.files[u->second[k]].uri);
       } else {
         status = "missing";
         for (const auto& f : ix.files) {
@@ -365,15 +378,17 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
             if (files.size() >= 2) break;
           }
         }
-        if (!files.empty()) note = "no declaration; named only in comments of";
+        if (!files.empty()) note = "no declaration, only named in code comments";
       }
       comps.push_back(Json{{"name", id}, {"kind", "identifier"}, {"status", status}, {"evidence", files},
                            {"mentions", n.mentions}, {"source", n.first_key}, {"note", note}});
       std::string ev;
       for (const auto& f : files) ev += (ev.empty() ? "" : ", ") + ("`" + f + "`");
-      std::string row = "| `" + id + "` | " + status + " | " + (note.empty() ? ev : note + (ev.empty() ? "" : " " + ev)) +
+      std::string row = "| `" + id + "` | " + status + " | " + (note.empty() ? ev : note + (ev.empty() ? "" : ": " + ev)) +
                         " | " + std::to_string(n.mentions) + " × " + ref(n.first_key) + " |\n";
-      if (status == "implemented") {
+      if (status == "used") {
+        rows_used.push_back("`" + id + "`");
+      } else if (status == "implemented") {
         ++n_impl;
         rows_ok.push_back(row);
       } else {
@@ -608,6 +623,11 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       for (const auto& r : rows_bad) g << r.text;
       g << "\n";
     }
+    if (!rows_used.empty()) {
+      g << "### External APIs used by the code (not gaps)\n\n";
+      for (std::size_t i = 0; i < rows_used.size(); ++i) g << (i ? ", " : "") << rows_used[i];
+      g << "\n\n";
+    }
     if (!rows_ok.empty()) {
       g << "### Implemented\n\n| Name | Status | Evidence | Mentioned in |\n|---|---|---|---|\n";
       for (const auto& r : rows_ok) g << r;
@@ -832,10 +852,22 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
   m << "- Spec features: " << json::get_int(gs, "features_with_evidence") << " of " << json::get_int(gs, "features_total")
     << " have code evidence, " << json::get_int(gs, "features_missing") << " have none.\n";
   std::vector<const Json*> bad;
+  std::vector<std::pair<std::int64_t, std::string>> phrase_gaps;
   for (const auto& comp : gap["components"]) {
     std::string st = json::get_string(comp, "status");
-    if (st == "missing" || st == "partial") bad.push_back(&comp);
+    if (st != "missing" && st != "partial") continue;
+    if (json::get_string(comp, "kind") == "named_phrase") {
+      phrase_gaps.emplace_back(-json::get_int(comp, "mentions"), json::get_string(comp, "name"));
+      continue;
+    }
+    bad.push_back(&comp);
   }
+  std::sort(phrase_gaps.begin(), phrase_gaps.end());
+  std::string missing_phrases;
+  for (std::size_t i = 0; i < phrase_gaps.size() && i < 15; ++i) {
+    missing_phrases += (i ? ", " : "") + phrase_gaps[i].second;
+  }
+  if (phrase_gaps.size() > 15) missing_phrases += " (+" + std::to_string(phrase_gaps.size() - 15) + " more)";
   std::stable_sort(bad.begin(), bad.end(), [](const Json* a, const Json* b) {
     auto key = [](const Json* x) {
       std::string n = json::get_string(*x, "name");
@@ -854,6 +886,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     if (!note.empty()) m << " — " << note;
     m << " " << ref(json::get_string(comp, "source")) << "\n";
   }
+  if (!missing_phrases.empty()) m << "- Named technologies without code evidence: " << missing_phrases << ".\n";
   m << "\nFull details: `gap_report.md`.\n";
 
   // ── source_map.csv ───────────────────────────────────────────────
@@ -939,7 +972,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
   auto items_of = [&](const std::string& type, bool active_only) {
     Json a = Json::array();
     std::size_t total = 0;
-    for (const Item* it : pick(type, 200, !active_only, &total)) {
+    for (const Item* it : pick(type, 80, !active_only, &total)) {
       a.push_back(Json{{"id", it->id}, {"text", clip(it->text, 240)}, {"theme", it->theme}, {"status", it->status},
                        {"confidence", it->confidence}, {"source", ref(it->doc)}});
     }

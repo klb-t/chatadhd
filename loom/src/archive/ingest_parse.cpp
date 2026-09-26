@@ -294,6 +294,30 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
                              language == "ruby" || language == "make" || language == "docker" || language == "r" ||
                              language == "julia";
   std::unordered_set<std::string> seen;
+  std::unordered_set<std::string> used_seen;
+  auto note_uses = [&](std::string_view line) {
+    if (d.uses.size() >= 500) return;
+    // identifiers inside string literals are data, not uses
+    std::string code;
+    char quote = 0;
+    for (std::size_t k = 0; k < line.size(); ++k) {
+      char ch = line[k];
+      if (quote) {
+        if (ch == '\\') ++k;
+        else if (ch == quote) quote = 0;
+        continue;
+      }
+      if (ch == '"' || ch == '\'' || ch == '`') {
+        quote = ch;
+        code.push_back(' ');
+        continue;
+      }
+      code.push_back(ch);
+    }
+    for (auto& id : camel_identifiers(code)) {
+      if (used_seen.insert(id).second) d.uses.push_back(std::move(id));
+    }
+  };
   std::vector<std::string> block;
   bool in_block_comment = false;
   bool in_docstring = false;
@@ -377,8 +401,12 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
         continue;
       }
       end_block();
+      note_uses(s.substr(0, s.find("//")));
       // trailing // comment on a code line: TODO scan only
-      if (std::size_t tc = s.find("//"); tc != std::string_view::npos) scan_todo(s.substr(tc + 2));
+      if (std::size_t tc = s.find("//"); tc != std::string_view::npos &&
+                                          std::count(s.begin(), s.begin() + static_cast<std::ptrdiff_t>(tc), '"') % 2 == 0) {
+        scan_todo(s.substr(tc + 2));
+      }
       // symbols
       std::string_view t = s;
       static const char* kPrefixes[] = {"export ", "public ", "private ", "internal ", "open ", "abstract ",
@@ -465,6 +493,7 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
         continue;
       }
       end_block();
+      note_uses(s.substr(0, s.find(" #")));
       if (std::size_t tc = s.find(" #"); tc != std::string_view::npos) scan_todo(s.substr(tc + 2));
       if (language == "python") {
         if (py_class_indent >= 0 && indent <= py_class_indent && !s.empty()) {

@@ -520,7 +520,9 @@ Status Ingestor::ingest_code(const PlannedFile& f, std::string_view content, con
   Json syms = Json::array();
   for (std::size_t i = 0; i < dg.symbols.size() && i < 400; ++i) syms.push_back(dg.symbols[i]);
   std::int64_t lines = static_cast<std::int64_t>(std::count(content.begin(), content.end(), '\n'));
-  d.extra = Json{{"language", lang}, {"symbols", syms}, {"todos", todos}, {"lines", lines}};
+  Json uses = Json::array();
+  for (const auto& used : dg.uses) uses.push_back(used);
+  d.extra = Json{{"language", lang}, {"symbols", syms}, {"todos", todos}, {"lines", lines}, {"uses", uses}};
   u.docs.push_back(std::move(d));
   LOOM_TRY(store_unit(u, sid, "archive.code@" + std::string(kPipelineVersion), prev));
   add_source_summary(f.uri, "code", lang, blob, 1, 1);

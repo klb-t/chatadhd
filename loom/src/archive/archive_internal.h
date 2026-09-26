@@ -111,6 +111,7 @@ struct CodeDigest {
   std::vector<std::string> symbols;  // declared classes/structs/functions (declaration order, unique)
   std::vector<std::string> comments; // comment blocks (normalised text)
   std::vector<std::pair<int, std::string>> todos;  // (line, "TODO: ...")
+  std::vector<std::string> uses;     // CamelCase identifiers used in code lines (not comments)
   std::string text;                  // the digest indexed as the document text
 };
 std::string code_language(const std::filesystem::path& p);  // "" when not code

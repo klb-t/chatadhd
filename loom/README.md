@@ -7,21 +7,23 @@ UI. In the terms of the architecture document
 ([`docs/architecture/MEGA_MASTER_2026-09-16.md`](../docs/architecture/MEGA_MASTER_2026-09-16.md)),
 Loom is the reusable kernel and ChatADHD is its first reference workbench.
 
-This is wave 1. The foundation is complete and tested, and every other module
-has a complete, documented header and a compiling stub:
+Every module is implemented and tested (waves 1–2), and wave 3 adds the
+first vertical slice of the architecture: the **Archive-to-Project
+self-hosting pipeline** (MEGA MASTER §4.9, §7, §16), the `loom` command line,
+the HTTP server and the Android shell.
 
 | Area | Status |
 |---|---|
-| `result.h`, `log.h`, `util/*` (ids, time, SHA-256/HMAC/PBKDF2, base64, UTF-8 + Unicode tables, JSON, fs) | **implemented** |
-| `db.h` (full `engine/db.py` port + `loom_*` tables + FTS5 search), `sqlite.h` | **implemented** |
-| `event_bus.h`, `config.h` (Config, Secrets, data-dir resolution) | **implemented** |
-| `provenance.h` (BlobStore, ProvenanceStore, EventLog), `tasks.h`, `relations.h` | **implemented** |
-| `runtime.h` (composition root), `loom.h` (C ABI, 82 functions) | **implemented** (wrappers call stubbed engines where noted) |
-| `net/http.h`: ScriptedTransport, URL/form/multipart helpers | **implemented** |
-| `re/regex.h`, `semantic_analyzer.h`, `semantic_llm.h`, `graph_engine.h`, `graph_memory.h`, `selector.h`, `memory_engine.h`, `net/http.h` (default transport), `net/sse.h`, `providers.h`, `chat_engine.h`, `batch_api.h`, `semantic_worker.h`, `importer.h`, `crypto.h`, `media_providers.h`, `github_sync.h` | **header + stub** (wave 2) |
-
-`grep -rn "STUB: wave2" loom/src` lists every function that still needs an
-implementation.
+| `result.h`, `log.h`, `util/*` (ids, time, SHA-256/HMAC/PBKDF2, base64, UTF-8 + Unicode tables, JSON, fs) | implemented |
+| `db.h` (full `engine/db.py` port + `loom_*` tables + FTS5 search), `sqlite.h` | implemented |
+| `event_bus.h`, `config.h`, `provenance.h`, `tasks.h`, `relations.h`, `runtime.h` | implemented |
+| `re/regex.h`, `semantic_analyzer.h`, `semantic_llm.h`, `graph_engine.h`, `graph_memory.h`, `selector.h`, `memory_engine.h` | implemented |
+| `net/http.h`, `net/sse.h`, `providers.h`, `chat_engine.h`, `batch_api.h`, `semantic_worker.h` | implemented |
+| `importer.h`, `crypto.h`, `media_providers.h`, `github_sync.h` | implemented |
+| `archive.h` — Archive Intelligence / Project Compiler | implemented (this README, [below](#archive-intelligence)) |
+| `loom.h` — C ABI (archive, artifacts, `loom_import_file_ex` added) | implemented |
+| `cli/` — `loom` command line | implemented |
+| `server/` (REST/SSE facade), `web/` (React UI), `android/` (JNI shell) | see their own READMEs |
 
 ## Build
 
@@ -59,6 +61,9 @@ loom/
   src/              implementation; src/capi/ = C ABI, one file per area
   tests/            doctest unit tests (test_<area>.cpp)
   tests/compat/     Python differential tests + loom_compat_tool (tool_<area>.cpp)
+  src/archive/      Archive Intelligence pipeline (see below)
+  cli/              the `loom` command line (+ tests/test_cli_smoke.py)
+  server/, web/, android/   HTTP server, web UI, Android shell (own READMEs)
   tools/            generators (Unicode tables, analyzer rules from core/semantic.py)
   third_party/      nlohmann/json, cpp-httplib, doctest, miniz, SQLite
 ```
@@ -144,21 +149,90 @@ Deliberate differences from the Python behaviour (each is documented in its head
 - Native TF-IDF is always available, so the default selector tier is 2.
 - The C ABI returns parsed JSON for metadata columns.
 
-## Wave 2: working in parallel
+## Command line
 
-Each area owns its headers, `src/<dir>/`, one `src/capi/capi_<area>.cpp`, its
-own `tests/test_<area>*.cpp` and `tests/compat/tool_<area>.cpp` /
-`test_<area>_compat.py`. Nobody edits `CMakeLists.txt`, `runtime.cpp` or
-another area's files. Constructor signatures in the headers are the wiring
-contract. Additive header changes (new methods) are fine. Any other change goes
-through the lead.
+`cli/main.cpp` builds the `loom` executable (`LOOM_BUILD_CLI`, on in every
+preset). Each command opens the data directory (shared with the Python app)
+without background workers, runs, and exits. `--json` switches every command to
+machine-readable output; `loom --help` lists everything.
 
-| Area | Headers | Sources | C ABI file |
-|---|---|---|---|
-| semantic / graph | `re/regex.h`, `semantic_analyzer.h`, `graph_engine.h`, `graph_memory.h`, `selector.h`, `memory_engine.h` | `src/re`, `src/semantic/analyzer.cpp`, `src/graph`, `src/search`, `src/memory` | `capi_graph.cpp` |
-| importer | `importer.h` | `src/import` | `capi_import.cpp` |
-| net / chat / worker | `net/http.h` (default transport), `net/sse.h`, `semantic_llm.h`, `providers.h`, `chat_engine.h`, `batch_api.h`, `semantic_worker.h` | `src/net/http_default.cpp`, `src/net/sse.cpp`, `src/semantic/semantic_llm.cpp`, `src/providers`, `src/chat`, `src/worker` | `capi_chat.cpp`, `capi_http.cpp` |
-| crypto / media / github | `crypto.h`, `media_providers.h`, `github_sync.h` | `src/crypto`, `src/media`, `src/github` | `capi_media.cpp` |
+```bash
+loom init                                  # create/open the data directory
+loom conv list | conv show ID [--all] | conv create/rename/delete
+loom msg edit ID "new text" | msg versions ID | msg restore ID | msg status ID excluded
+loom chat --model M --depth 2 "question"   # streams; reasoning is shown dimmed
+loom import ~/export.zip [--force]         # universal importer
+loom export CONV_ID --format markdown --out chat.md
+loom search "knowledge graph" | context "text" | graph nodes/edges/expand/reindex/stats
+loom semantic status|pause|resume|wake|run | memory list/add/delete/context
+loom config get/set | secret set KEY (value from stdin) | models [--refresh]
+loom tasks list/show/resume/cancel | provenance ID | sources | artifacts list/show
+loom archive run ... | archive status [RUN_ID] | crypto status/setup/unlock/lock
+```
 
-The importer needs `re::Regex` for its HTML and text heuristics. Land the regex
-engine first, or write those parsers as hand-written scanners.
+Secrets and passwords are read from stdin (with echo off on a terminal) and
+never accepted as arguments. Ctrl-C cancels a chat (the partial answer is kept)
+or pauses an archive run at its next checkpoint.
+
+## Archive Intelligence
+
+`include/loom/archive.h`, `src/archive/`. The Project Compiler workflow from
+the architecture document, built as the self-hosting test: it reads chat
+exports, documents, a repository and its git history, and compiles them into a
+project description with sources for every claim.
+
+```bash
+loom --data-dir /tmp/loom-archive archive run \
+     --source ~/chatgpt-export.zip --source ~/claude-export.zip \
+     --repo . --out out/ --seed ChatADHD --seed Loom
+```
+
+| Stage (task kind `archive.*`) | What it does |
+|---|---|
+| `ingest` | Files, directories and zips. ChatGPT and Claude exports are walked structurally: timestamps, branch forks and the current path, plus Claude `projects.json` and `memories.json`. Other formats go through the Importer. Markdown and text become sections. Code files become digests of symbols, comments and TODOs. Git history (`git log --name-status` via `popen`, desktop-only) turns each commit into a dated document. `--include-db` adds existing conversations and their version groups. Raw bytes go to the BlobStore, and there is a `loom_sources` row and a `loom_provenance` row per message. Document keys are content hashes, so the corpus is the same in every data directory. |
+| `retrieve` | BM25 over FTS5 (LIKE fallback) for each vocabulary term, top k per term (default: corpus size / 10). A conversation or document that is mostly relevant is completed. Titles are never used as a filter. |
+| `expand` | Adds salient terms of the prose hits: TF-IDF contrast against the whole corpus, regex NER / identifiers, and sentence co-occurrence with the vocabulary. Each term records its reasons and evidence (provenance `term:<t>`). `retrieve`/`expand` repeat until no new term appears or `max_passes` is reached. |
+| `graph` | Semantic analysis of the hits into the knowledge graph (SemanticLLM with `--llm auto` and a configured model, regex otherwise), plus per-document salient terms. |
+| `cluster` | Deterministic Louvain on the term co-occurrence graph, which gives the themes. |
+| `timeline` | Chronological path per theme, ChatGPT/Claude forks (kept or abandoned branch), version groups, commits. |
+| `items` | Typed items: `idea`, `decision`, `rejected_option`, `open_question`, `implementation`, `bug`, `requirement`, `invariant`, `rationale`. A bilingual PL+EN cue-phrase classifier with section-heading hints gives each a confidence. Optional LLM refinement of low-confidence items with `--llm auto`. |
+| `relate` | `supersedes` (a later decision reverses an earlier one on the same subject), `contradicts` and `resolves` (a later decision answers an open question). Nothing is deleted; items get a status. |
+| `synthesize` | Renders `MASTER.md` (themes, timeline, decisions, rejected options, open questions, requirements, invariants, every claim as `[title › location @ date]`), `source_map.csv`, `timeline.json`, `items.jsonl`, `graph.json`, `project_manifest.json` and `gap_report.md`. The gap report checks named components and interfaces against declared symbols, spec bullets against code, referenced files, themes without code and TODO/FIXME. CamelCase names that come up again in synthesis feed one more retrieval round (`max_synthesis_rounds`). |
+| `materialize` | Stores artifacts in the BlobStore and `loom_artifacts`, writes them plus `task_log.jsonl` to `--out`, and adds theme and item nodes with `supersedes`/`contradicts`/`resolves` edges to the graph. |
+
+Invariants (tested in `tests/test_archive.cpp`):
+
+- Every stage has an input hash over its parameters and the content hashes of
+  the stage outputs it reads. An unchanged re-run is a cache hit for every
+  stage.
+- Cancelling (`CancelToken`, Ctrl-C, `loom_archive_cancel`, a client
+  disconnecting from `/api/archive/run`) saves a checkpoint and pauses the
+  stage task. The next run with the same inputs resumes it, and the artifacts
+  come out identical to an uninterrupted run. A crashed process leaves the
+  task `running`, and `recover_interrupted()` requeues it.
+- Without network (`llm` = `off`, the default) the artifacts are
+  byte-identical across runs and data directories: no random ids, no clock.
+- The output directory gets a `.loom-archive` marker, and the walker skips
+  marked directories so a run never ingests its own output.
+
+C ABI: `loom_archive_run(ctx, config_json, cb, ud)`, `loom_archive_cancel`,
+`loom_archive_status`, `loom_list_artifacts`, `loom_get_artifact`,
+`loom_import_file_ex` (importer `force`). Server: `POST /api/archive/run`
+(SSE progress), `POST /api/archive/cancel`, `GET /api/archive/status`,
+`GET /api/artifacts[/{id}[/raw]]`.
+
+The self-hosting run over this repository, with its findings, is in
+[`docs/selfhost/`](../docs/selfhost/README.md).
+
+Known limits: the ChatGPT/Claude structural walker parses one conversation at a
+time, but a zip member is extracted to a temporary file first. Stage outputs
+(the corpus with its text) are stored as JSON blobs, which is fine for tens of
+thousands of messages but not yet for millions. The classifier is cue-based, so
+recall on implicit decisions is limited. That is the reason for the optional
+LLM refinement.
+
+## Code ownership
+
+Each area owns its headers, `src/<dir>/`, one `src/capi/capi_<area>.cpp` and
+its own tests. Constructor signatures in the headers are the wiring contract;
+additive header changes are fine, anything else goes through the lead.

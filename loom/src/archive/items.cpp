@@ -514,6 +514,10 @@ std::vector<Item> extract_items(const Doc& doc, std::string_view theme) {
   for (const auto& sent : split_sentences(doc.text)) {
     ++idx;
     if (sent.size() > 1200) continue;
+    // list intros ("Each decision is one of:") and bare noun-phrase bullets
+    std::string_view tail = utf8::rstrip(sent);
+    if (!tail.empty() && tail.back() == ':') continue;
+    if (tokenize(sent).size() < 3) continue;
     Classification c = classify_sentence(sent, heading);
     if (c.type.empty()) continue;
     out.push_back(make(c.type, sent, c.confidence, c.cues, idx));
