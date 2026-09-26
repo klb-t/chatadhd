@@ -5,6 +5,7 @@
 #include <mutex>
 
 #include "loom/archive.h"
+#include "loom/knowledge.h"
 #include "loom/batch_api.h"
 #include "loom/chat_engine.h"
 #include "loom/crypto.h"
@@ -139,6 +140,7 @@ struct Runtime::Impl {
   std::unique_ptr<CryptoVault> crypto;
   std::unique_ptr<GitHubSyncManager> github;
   std::unique_ptr<archive::ArchiveIntelligence> archive;  // needs the Runtime; created last
+  std::unique_ptr<knowledge::KnowledgeEngine> knowledge;  // needs the Runtime; registers knowledge.* handlers
 
   mutable std::mutex embed_mu;
   std::shared_ptr<EmbeddingProvider> embedder;
@@ -225,6 +227,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   auto rt = std::make_unique<Runtime>(std::move(impl));
   // Registers the archive.* task handlers (resumable by the task workers).
   rt->impl_->archive = std::make_unique<archive::ArchiveIntelligence>(*rt);
+  rt->impl_->knowledge = std::make_unique<knowledge::KnowledgeEngine>(*rt);
   return rt;
 }
 
@@ -267,6 +270,7 @@ ConversationExporter& Runtime::exporter() { return *impl_->exporter; }
 CryptoVault& Runtime::crypto() { return *impl_->crypto; }
 GitHubSyncManager& Runtime::github() { return *impl_->github; }
 archive::ArchiveIntelligence& Runtime::archive() { return *impl_->archive; }
+knowledge::KnowledgeEngine& Runtime::knowledge() { return *impl_->knowledge; }
 
 void Runtime::set_http_transport(std::shared_ptr<net::HttpTransport> transport) {
   impl_->http->set(transport ? std::move(transport) : net::make_default_transport());

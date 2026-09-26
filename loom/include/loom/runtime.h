@@ -61,6 +61,9 @@ class HttpTransport;
 namespace archive {
 class ArchiveIntelligence;
 }
+namespace knowledge {
+class KnowledgeEngine;
+}
 
 struct RuntimeOptions {
   std::optional<std::string> data_dir;   // default: resolve_data_dir()
@@ -113,6 +116,7 @@ class Runtime {
   CryptoVault& crypto();
   GitHubSyncManager& github();
   archive::ArchiveIntelligence& archive();  // Project Compiler (archive.h)
+  knowledge::KnowledgeEngine& knowledge();  // knowledge pipeline (knowledge.h)
 
   // Swap the HTTP stack at runtime (platform injection). nullptr restores
   // the default transport. In-flight requests finish on the old transport.
