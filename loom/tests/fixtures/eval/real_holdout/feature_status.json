@@ -1,0 +1,1062 @@
+{
+  "schema": "loom.eval.real_holdout.feature_status/1",
+  "description": "Per-feature status per branch/version with oscillation. Status values follow LOOM_CONCEPTUAL_MODEL §5: implemented · partial · planned · abandoned · superseded · lost (existed, then disappeared) · restored; plus 'absent' (never existed in that version). Branches: the main line (v2 → 0.7.10 → repo main → Loom), the 0.8.x fork (from 0.7.09) and the 0.9.0 fork (from 0.7.10). Columns without an entry mean 'not assessed'.",
+  "version_columns": [
+    "v2/0.2.0",
+    "gpt_0.3.0",
+    "0.4.0-0.4.1",
+    "0.4.2-0.4.5",
+    "v0.4.6-0.4.8(report)",
+    "0.5.x",
+    "0.06.00-0.06.03",
+    "0.7.0-0.7.9",
+    "0.7.10",
+    "0.8.3",
+    "0.9.0",
+    "loom_2026-09-26"
+  ],
+  "branch_of_column": {
+    "0.8.3": "fork from 0.7.09 (46d0ba7)",
+    "0.9.0": "fork from 0.7.10 (1e3fa2b)",
+    "v0.4.6-0.4.8(report)": "report-only versions (not in git); v1.0-zk side line is noted inline"
+  },
+  "features": [
+    {
+      "id": "api_request_editor",
+      "feature": "API request preview/editor (see and edit everything sent)",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "absent",
+          "evidence": "git 30b3da6 (only /exclude, /include commands)"
+        },
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "implemented",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:434 API Preview (long-press Send 0.5s)"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "partial",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:655-660 4-tab editor (v0.06.02), moved to long-press in v0.06.03 docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:681; but git 86c7508 gui/panels.py:1281-1301 sends only the last user message ('TODO: implement sending with custom system prompt/memory')"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "git f7fd0f4 gui/chat_panel.py:458-459 show_toast('API Editor: TODO')"
+        },
+        {
+          "version": "0.7.10",
+          "status": "lost",
+          "evidence": "git 1e3fa2b gui/chat_panel.py:524-525"
+        },
+        {
+          "version": "0.8.3",
+          "status": "restored",
+          "evidence": "history/chatadhd_v0.8.3/engine/chat_engine.py:260-312; gui/dialogs.py:514-544 raw JSON request spec, executed as edited"
+        },
+        {
+          "version": "0.9.0",
+          "status": "lost",
+          "evidence": "history/chatadhd_v0.9.0/gui/chat_panel.py:525 (inherits the 0.7.10 stub)"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "lost",
+          "evidence": "no request preview/editor in loom/include/loom/*.h (ContextSet only)"
+        }
+      ],
+      "oscillation": "absent → implemented → partial → lost → lost → restored → lost → lost",
+      "analiza_status": "lost; 0.8.3 has raw JSON (ANALIZA :81)",
+      "ambiguity": "The report lists 'Full API Editor' as implemented (:720); code shows it did not send the edited request."
+    },
+    {
+      "id": "system_prompt_presets",
+      "feature": "System-prompt presets (Default/Epistemic/Coding/Legal/Research/Writing/Brainstorm/Custom)",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "implemented",
+          "evidence": "git 30b3da6 presets.json (8 presets, external data file, default 'epistemic')"
+        },
+        {
+          "version": "gpt_0.3.0",
+          "status": "absent",
+          "evidence": "git 13a4d67"
+        },
+        {
+          "version": "0.4.0-0.4.1",
+          "status": "partial",
+          "evidence": "git 1afb834 config.py:18-19 (reduced 'epistemic', 'concise')"
+        },
+        {
+          "version": "0.4.2-0.4.5",
+          "status": "lost",
+          "evidence": "git 25c4d26..6aa700d"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "lost",
+          "evidence": "git 86c7508 gui/panels.py:239-245 QuickAPIPanel PRESETS are temperature/max_tokens presets, not system prompts"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "git f7fd0f4 gui/dialogs.py (parameter presets only)"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "lost",
+          "evidence": "-"
+        }
+      ],
+      "oscillation": "implemented → absent → partial → lost → lost → lost → lost → lost → lost",
+      "analiza_status": "utracone wszędzie (ANALIZA :80)",
+      "ambiguity": "The report maps 'System prompt presets' to QuickAPIPanel as implemented (:696); QuickAPIPanel holds parameter presets. A free-text system prompt field exists in settings from 0.7.x."
+    },
+    {
+      "id": "model_selector_prices",
+      "feature": "Model selector grouped by provider with prices/context",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "partial",
+          "evidence": "git 30b3da6 models.json pricing per model (data), no provider picker"
+        },
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "implemented",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:429,453-454 ModelSelectorPopup z dostawcami; Ceny/rozmiary modeli"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "partial",
+          "evidence": "git 86c7508 gui/panels.py:542-650 provider tabs + search, no price shown; engine/models.py:24-50 stores pricing"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "git 46d0ba7 gui/dialogs.py:401-440 plain grouped list, no search/prices"
+        },
+        {
+          "version": "0.7.10",
+          "status": "restored",
+          "evidence": "git 1e3fa2b message 'RESTORED FEATURES (from v0.6.0)'; engine/models.py:126-160 estimate_cost"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "forked from 0.7.09; engine/models.py identical to 46d0ba7"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "forked from 0.7.10; engine/models.py identical to 1e3fa2b"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "partial",
+          "evidence": "loom/include/loom/providers.h:43-49 get_pricing/estimate_cost (API only)"
+        }
+      ],
+      "oscillation": "partial → implemented → partial → lost → restored → lost → implemented → partial",
+      "analiza_status": "jest w 0.7.10 i 0.9.0, brak w 0.8.3, w Loomie tylko API (ANALIZA :90)"
+    },
+    {
+      "id": "log_file",
+      "feature": "Persistent log file",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "absent",
+          "evidence": "git 30b3da6 (KIVY_NO_CONSOLELOG, no FileHandler); the report says v2 added chatadhd.log (:109-112) - git 0.2.0 predates that change"
+        },
+        {
+          "version": "0.4.0-0.4.1",
+          "status": "implemented",
+          "evidence": "git 1afb834 main.py:15-21 LOG_FILE = APP_DIR/'chatadhd.log' (inside the code dir)"
+        },
+        {
+          "version": "0.4.2-0.4.5",
+          "status": "implemented",
+          "evidence": "git 6aa700d main.py:37-45 DATA_DIR/logs/kivy_{version}.log (0.4.3-0.4.4 without file handler)"
+        },
+        {
+          "version": "0.5.x",
+          "status": "lost",
+          "evidence": "git f0c5834 (in-app LOGBUF only)"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "lost",
+          "evidence": "LogViewer only (docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:780)"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.7.10",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "restored",
+          "evidence": "history/chatadhd_v0.9.0/engine/logging_setup.py:1-26 per-run DDMMYYYYHHMMSS.log"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "partial",
+          "evidence": "ring buffer, stderr, logcat; no file sink (ANALIZA :68)"
+        }
+      ],
+      "oscillation": "absent → implemented → implemented → lost → lost → lost → lost → lost → restored → partial",
+      "analiza_status": "utracony w repo; jest tylko w 0.9.0 (ANALIZA :82)"
+    },
+    {
+      "id": "data_migration_old_dirs",
+      "feature": "Automatic migration/reading of data from older version folders",
+      "history": [
+        {
+          "version": "0.5.x",
+          "status": "implemented",
+          "evidence": "git 928d566 main.py _get_data_dir; docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:513-515"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "implemented",
+          "evidence": "git 86c7508 main.py:99-110"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "git f7fd0f4 engine/paths.py (sentinel resolution, no import from old folders)"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "lost",
+          "evidence": "-"
+        }
+      ],
+      "oscillation": "implemented → implemented → lost → lost → lost → lost",
+      "analiza_status": "utracona (ANALIZA :83)",
+      "ambiguity": "The 0.5-0.6 mechanism was 'use the old folder as the data dir', not a copy/migration."
+    },
+    {
+      "id": "kod_ne_dane_paths",
+      "feature": "KOD≠DANE data-directory resolution without hardcoded paths",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "absent",
+          "evidence": "git 30b3da6 main.py:18-21 data next to code (APP_DIR/data)"
+        },
+        {
+          "version": "0.4.2-0.4.5",
+          "status": "implemented",
+          "evidence": "git 006af04 paths.py (v0.4.3); 0.4.5 removes paths.py (get_data_dir elsewhere, not verified)"
+        },
+        {
+          "version": "0.5.x",
+          "status": "partial",
+          "evidence": "git 928d566 main.py _get_data_dir: hardcoded version-named folders"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "partial",
+          "evidence": "git 86c7508 main.py:99-110"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "restored",
+          "evidence": "git f7fd0f4 engine/paths.py:1-55 (sentinel .chatadhd_data, CHATADHD_DATA)"
+        },
+        {
+          "version": "0.7.10",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "implemented",
+          "evidence": "loom/README.md:71-77 same resolution order"
+        }
+      ],
+      "oscillation": "absent → implemented → partial → partial → restored → implemented → implemented → implemented → implemented"
+    },
+    {
+      "id": "ascii_icons_no_emoji",
+      "feature": "ASCII icons instead of emoji (Pydroid rendering)",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "absent",
+          "evidence": "git 30b3da6 main.py:250,276 (📝 🤖 ⚙️ 🔄 ➕)"
+        },
+        {
+          "version": "0.4.0-0.4.1",
+          "status": "implemented",
+          "evidence": "0.4.1: docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:235; git 6b14dba panels emoji removed (memory_engine.py:87 still has icons)"
+        },
+        {
+          "version": "0.4.2-0.4.5",
+          "status": "lost",
+          "evidence": "git 6aa700d gui/panels.py:118-120 📁 📥 📄"
+        },
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "restored",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:451 ASCII ikony"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "lost",
+          "evidence": "git 86c7508 gui/panels.py:726 📎, main.py:66 ☰; top-bar 📝 removed in v0.06.03 ({R}:682)"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "partial",
+          "evidence": "0.7.0 clean except ●; 0.7.9 adds ▶ ⏸ (gui/chat_panel.py:204, gui/graph_viz.py:477)"
+        },
+        {
+          "version": "0.7.10",
+          "status": "lost",
+          "evidence": "git 1e3fa2b gui/dialogs.py:517 🔹"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "history/chatadhd_v0.8.3/gui/dialogs.py:363,485 ↻ 📁 📄"
+        },
+        {
+          "version": "0.9.0",
+          "status": "lost",
+          "evidence": "history/chatadhd_v0.9.0/gui/dialogs.py:517 🔹; gui/dock_renderer.py:417 ▸ ▾"
+        }
+      ],
+      "oscillation": "absent → implemented → lost → restored → lost → partial → lost → lost → lost",
+      "analiza_status": "regresja — emoji wróciły w repo, 0.8.3 i 0.9.0 (ANALIZA :86)",
+      "ambiguity": "Rendering of geometric shapes (● ▶ ▲ ▼ ☰ ▸) in Kivy's default font is not verified; pictographs are clear violations."
+    },
+    {
+      "id": "light_theme",
+      "feature": "Light theme",
+      "history": [
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "implemented",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:457 ThemePopup (dark/light/amoled)"
+        },
+        {
+          "version": "0.5.x",
+          "status": "lost",
+          "evidence": "git f0c5834: dark/amoled only"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "lost",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:778 ThemePopup Dark/AMOLED"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "gui/base.py THEMES dark, amoled"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "lost",
+          "evidence": "loom/web/src/App.tsx:12 dark | amoled"
+        }
+      ],
+      "oscillation": "implemented → lost → lost → lost → lost → lost → lost",
+      "analiza_status": "utracony (ANALIZA :85)",
+      "ambiguity": "The report lists light theme as implemented (:702) and its own class table says Dark/AMOLED (:778); no git version contains 'light'."
+    },
+    {
+      "id": "semantic_analysis_pipeline",
+      "feature": "Multi-level semantic analysis (regex NER → LLM → embeddings)",
+      "history": [
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "absent",
+          "evidence": "only on the v1.0-zk side line (docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:800-817)"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "lost",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:817 'NIE MA W v0.06.03'"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "restored",
+          "evidence": "git f7fd0f4 core/semantic.py; 0.7.1 LLM analyser + graph engine"
+        },
+        {
+          "version": "0.7.10",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "implemented",
+          "evidence": "loom/include/loom/semantic_analyzer.h, semantic_llm.h"
+        }
+      ],
+      "oscillation": "absent → lost → restored → implemented → implemented → implemented → implemented"
+    },
+    {
+      "id": "zero_knowledge_crypto",
+      "feature": "Zero-knowledge AES-256-GCM encryption",
+      "history": [
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "partial",
+          "evidence": "v1.0-zk side line only (docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:819-832)"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "absent",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:832"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "partial",
+          "evidence": "git f7fd0f4 core/crypto.py library; not used by the app"
+        },
+        {
+          "version": "0.7.10",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "partial",
+          "evidence": "loom/include/loom/crypto.h + CLI crypto setup/unlock; use for app data not verified"
+        }
+      ],
+      "oscillation": "partial → absent → partial → partial → partial → partial → partial",
+      "analiza_status": "biblioteka jest, nieużywana w aplikacji (ANALIZA :87)"
+    },
+    {
+      "id": "selector_3tier_search",
+      "feature": "3-tier semantic search (embeddings → TF-IDF → keywords)",
+      "history": [
+        {
+          "version": "gpt_0.3.0",
+          "status": "implemented",
+          "evidence": "git 13a4d67 engine/selector.py"
+        },
+        {
+          "version": "0.4.0-0.4.1",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.4.2-0.4.5",
+          "status": "lost",
+          "evidence": "removed in git 6aa700d (0.4.5)"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "lost",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:855-856"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "restored",
+          "evidence": "git f7fd0f4 core/selector.py"
+        },
+        {
+          "version": "0.7.10",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "implemented",
+          "evidence": "loom/include/loom/selector.h (native TF-IDF, tier 2 default)"
+        }
+      ],
+      "oscillation": "implemented → implemented → lost → lost → restored → implemented → implemented → implemented → implemented"
+    },
+    {
+      "id": "iterative_prompt_buffer",
+      "feature": "IterativePromptBuffer (aggregating prompt stages)",
+      "history": [
+        {
+          "version": "gpt_0.3.0",
+          "status": "partial",
+          "evidence": "git 13a4d67 engine/iterative_buffer.py (naive join)"
+        },
+        {
+          "version": "0.4.0-0.4.1",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "0.4.2-0.4.5",
+          "status": "lost",
+          "evidence": "removed in git 25c4d26"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "lost",
+          "evidence": "closest: ContextSet (ANALIZA :84)"
+        }
+      ],
+      "oscillation": "partial → partial → lost → lost → lost → lost → lost",
+      "analiza_status": "utracony (ANALIZA :84)"
+    },
+    {
+      "id": "keyboard_softinput_fix",
+      "feature": "Keyboard does not cover the input (softinput_mode below_target)",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "implemented",
+          "evidence": "git 30b3da6 main.py:37"
+        },
+        {
+          "version": "0.4.0-0.4.1",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.4.2-0.4.5",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.5.x",
+          "status": "lost",
+          "evidence": "git f0c5834/928d566 no softinput_mode; owner complaint docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:548-550"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "restored",
+          "evidence": "restored in 0.5.2 (git c21de36)"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.7.10",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "-"
+        }
+      ],
+      "oscillation": "implemented → implemented → implemented → lost → restored → implemented → implemented → implemented → implemented",
+      "ambiguity": "The '0.5.x' column mixes 0.5.0/0.5.1 (lost) and 0.5.2 (restored); restoration dated to git c21de36."
+    },
+    {
+      "id": "voice_input",
+      "feature": "Voice input end-to-end (record → ASR → text)",
+      "history": [
+        {
+          "version": "0.5.x",
+          "status": "partial",
+          "evidence": "v0.5.2 Android speech; 'JVM exception' (docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:554-559)"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "implemented",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:627-629,789-790 VoiceInputPopup + Groq/Google ASR"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "lost",
+          "evidence": "git f7fd0f4 gui/voice_panel.py:44-46 'Recording... (not yet implemented)' (ASR providers remain in engine/providers.py)"
+        },
+        {
+          "version": "0.7.10",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "lost",
+          "evidence": "history/chatadhd_v0.8.3/gui/voice_panel.py:45-46"
+        },
+        {
+          "version": "0.9.0",
+          "status": "lost",
+          "evidence": "history/chatadhd_v0.9.0/gui/voice_panel.py:46"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "partial",
+          "evidence": "media_providers.h ASR at engine level; recording UI not verified"
+        }
+      ],
+      "oscillation": "partial → implemented → lost → lost → lost → lost → partial",
+      "analiza_status": "OCR/ASR listed as implemented (ANALIZA :79)",
+      "ambiguity": "ANALIZA and the 0.7.10 commit message count voice as present because ASR providers exist; the UI recording path is a placeholder from 0.7.0."
+    },
+    {
+      "id": "automatic_memories",
+      "feature": "Automatic memories from conversations",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "partial",
+          "evidence": "git 30b3da6 main.py:236-244 regex extraction of 'I am / I work at / I live in' facts (auto_memory)"
+        },
+        {
+          "version": "gpt_0.3.0",
+          "status": "lost",
+          "evidence": "-"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "lost",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:737 'Nigdy nie zaimplementowane'"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "absent",
+          "evidence": "graph engine extracts entities automatically, not memories"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "absent",
+          "evidence": "-"
+        }
+      ],
+      "oscillation": "partial → lost → lost → absent → absent",
+      "ambiguity": "The report says never implemented; git 0.2.0 shows a rudimentary partial version (user facts, not 'interesting events')."
+    },
+    {
+      "id": "conversation_export",
+      "feature": "Conversation export (inverse of import)",
+      "history": [
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "planned",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:740 'Brak'"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "absent",
+          "evidence": "exports/ data folder only"
+        },
+        {
+          "version": "0.8.3",
+          "status": "absent",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "absent",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "implemented",
+          "evidence": "git 0159a73 ConversationExporter; loom/README.md:165 'loom export'"
+        }
+      ],
+      "oscillation": "planned → absent → absent → absent → implemented"
+    },
+    {
+      "id": "github_auto_sync",
+      "feature": "Automatic GitHub sync (timer/on change)",
+      "history": [
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "partial",
+          "evidence": "git c5a3120 engine/github_sync.py:38 auto_sync flag unused; manual sync (docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:741)"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "partial",
+          "evidence": "loom/include/loom/github_sync.h (scheduler not verified)"
+        }
+      ],
+      "oscillation": "partial → partial → partial → partial → partial"
+    },
+    {
+      "id": "artifact_viewer",
+      "feature": "Floating artifact viewer (collapsible, Download/Copy/Integrate)",
+      "history": [
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "implemented",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:428,452 found in corrupted DB, implemented in panels_v5"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "superseded",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:588,873 simplified to ArtifactBar (Copy, →Mem)"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "partial",
+          "evidence": "git f7fd0f4 gui/chat_panel.py:179 'Save to memory: TODO'"
+        },
+        {
+          "version": "0.7.10",
+          "status": "partial",
+          "evidence": "git 1e3fa2b gui/chat_panel.py:213 'Save to notes: TODO'"
+        },
+        {
+          "version": "0.8.3",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "partial",
+          "evidence": "-"
+        }
+      ],
+      "oscillation": "implemented → superseded → partial → partial → partial → partial",
+      "analiza_status": "uproszczony do ArtifactBar (ANALIZA :89)"
+    },
+    {
+      "id": "attachment_representations",
+      "feature": "Attachment pipeline: resources → representations with confidence → query-aware view",
+      "history": [
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "absent",
+          "evidence": "git 46d0ba7 engine/chat_engine.py raw text/image parts"
+        },
+        {
+          "version": "0.8.3",
+          "status": "implemented",
+          "evidence": "history/chatadhd_v0.8.3/engine/attachments.py"
+        },
+        {
+          "version": "0.9.0",
+          "status": "absent",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "absent",
+          "evidence": "ANALIZA :27 'Loom nie ma nic podobnego'"
+        }
+      ],
+      "oscillation": "absent → implemented → absent → absent"
+    },
+    {
+      "id": "panel_docking_system",
+      "feature": "Panels as plug-ins with docked/floating modes and layout presets",
+      "history": [
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "absent",
+          "evidence": "fixed sliding panels"
+        },
+        {
+          "version": "0.8.3",
+          "status": "absent",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "history/chatadhd_v0.9.0/gui/panel_system.py, gui/layout_manager.py (Kivy docking 'zepsuty' per ANALIZA :67)"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "planned",
+          "evidence": "docs/architecture/workbench_mockup_2026-09-26.webp; MEGA MASTER §4.11"
+        }
+      ],
+      "oscillation": "absent → absent → implemented → planned",
+      "ambiguity": "Implemented in 0.9.0 as code; ANALIZA verified dock_renderer/legacy_adapter as broken - 'implemented' means present, not working."
+    },
+    {
+      "id": "async_jobs",
+      "feature": "Generic async job abstraction (submit → poll → fetch, persisted)",
+      "history": [
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "partial",
+          "evidence": "git e994503 engine/batch_api.py (batches only)"
+        },
+        {
+          "version": "0.8.3",
+          "status": "partial",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "history/chatadhd_v0.9.0/engine/async_jobs.py"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "implemented",
+          "evidence": "loom/include/loom/tasks.h (TaskEngine with checkpoints; ANALIZA :61)"
+        }
+      ],
+      "oscillation": "partial → partial → implemented → implemented"
+    },
+    {
+      "id": "e2e_encrypted_sync",
+      "feature": "E2E encrypted server sync",
+      "history": [
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "partial",
+          "evidence": "v1.0-zk core/sync.py side line (docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:858-865)"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "absent",
+          "evidence": "-"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "absent",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "absent",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "absent",
+          "evidence": "ANALIZA :88"
+        }
+      ],
+      "oscillation": "partial → absent → absent → absent → absent"
+    },
+    {
+      "id": "on_device_models",
+      "feature": "Offline / on-device model inference",
+      "history": [
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "planned",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:364-366,738"
+        },
+        {
+          "version": "0.9.0",
+          "status": "abandoned",
+          "evidence": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:270 out of scope"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "planned",
+          "evidence": "MEGA MASTER :290-293"
+        }
+      ],
+      "oscillation": "planned → abandoned → planned"
+    },
+    {
+      "id": "reproducible_builds",
+      "feature": "Reproducible builds / remote attestation",
+      "history": [
+        {
+          "version": "v0.4.6-0.4.8(report)",
+          "status": "planned",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:327-337,739 discussion only"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "absent",
+          "evidence": "ANALIZA :88"
+        }
+      ],
+      "oscillation": "planned → absent"
+    },
+    {
+      "id": "universal_importer",
+      "feature": "Universal conversation importer",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "planned",
+          "evidence": "git 30b3da6 README.md:23"
+        },
+        {
+          "version": "0.06.00-0.06.03",
+          "status": "implemented",
+          "evidence": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:611-618 7 formats (git 1f28c4c)"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "implemented",
+          "evidence": "+ Claude/ChatGPT exports, streaming >5 MB (e994503)"
+        },
+        {
+          "version": "0.8.3",
+          "status": "implemented",
+          "evidence": "+ URL import, email-parser MHT"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "= 0.7.10"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "implemented",
+          "evidence": "loom/include/loom/importer.h (naive MHT from 0.7.10 per ANALIZA :71)"
+        }
+      ],
+      "oscillation": "planned → implemented → implemented → implemented → implemented → implemented"
+    },
+    {
+      "id": "message_branching_versions",
+      "feature": "Edit creates a branch/version; old version kept",
+      "history": [
+        {
+          "version": "v2/0.2.0",
+          "status": "implemented",
+          "evidence": "git 30b3da6 README.md:13 (parent_id tree)"
+        },
+        {
+          "version": "0.5.x",
+          "status": "implemented",
+          "evidence": "git f0c5834 version_group"
+        },
+        {
+          "version": "0.7.0-0.7.9",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.8.3",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "0.9.0",
+          "status": "implemented",
+          "evidence": "-"
+        },
+        {
+          "version": "loom_2026-09-26",
+          "status": "implemented",
+          "evidence": "loom CLI msg edit/versions/restore"
+        }
+      ],
+      "oscillation": "implemented → implemented → implemented → implemented → implemented → implemented"
+    }
+  ]
+}
