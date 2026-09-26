@@ -1,5 +1,9 @@
 // loom.h knowledge-layer entry points: pack manifest and policies, store
-// queries, judgements, pipeline runs; the area stubs answer not_implemented.
+// queries, judgements, pipeline runs; the still-stubbed areas (catalog,
+// extract+resolve, generalize) answer not_implemented. context+materialize
+// is implemented (see tests/test_context*.cpp, tests/test_materialize*.cpp
+// for its own coverage); here it just needs a run to work from, so a bare
+// "{}" request answers not_found / invalid_argument instead.
 #include <doctest/doctest.h>
 
 #include "loom/knowledge.h"
@@ -55,8 +59,8 @@ TEST_SUITE("capi_knowledge") {
     CHECK(code_of(take(loom_extract_preview(ctx, "x", nullptr))) == "not_implemented");
     CHECK(code_of(take(loom_resolve_lineage(ctx, "{}"))) == "not_implemented");
     CHECK(code_of(take(loom_generalize_predict(ctx, "{}"))) == "not_implemented");
-    CHECK(code_of(take(loom_context_build(ctx, "{}"))) == "not_implemented");
-    CHECK(code_of(take(loom_materialize(ctx, "{}"))) == "not_implemented");
+    CHECK(code_of(take(loom_context_build(ctx, "{}"))) == "not_found");   // no finished knowledge run yet
+    CHECK(code_of(take(loom_materialize(ctx, "{}"))) == "invalid_argument");  // "kind" missing/unknown
     CHECK(code_of(take(loom_kb_pack(nullptr))) == "invalid_argument");
     loom_shutdown(ctx);
   }
