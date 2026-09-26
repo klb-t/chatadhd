@@ -8,3 +8,8 @@
 
 #define LOOM_NOT_IMPLEMENTED(what) \
   ::loom::Error(::loom::Errc::NotImplemented, std::string(what) + " is not implemented yet (wave 2)")
+
+// Knowledge-layer contract stubs: every stubbed body is marked
+// "// STUB: knowledge-wave" (grep lists what is left) and returns this.
+#define LOOM_KNOWLEDGE_STUB(what) \
+  ::loom::Error(::loom::Errc::NotImplemented, std::string(what) + " is not implemented yet (knowledge wave)")
