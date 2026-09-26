@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Chat, model list, semantic LLM analysis, GitHub sync: all HTTP goes
+         through LoomHttp.kt (see loom/android/README.md). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- The data directory (/storage/emulated/0/Documents/ChatADHD, shared
+         with the desktop app; engine/paths.py / loom/include/loom/config.h)
+         is outside app-specific storage by design (KOD != DANE: it must
+         survive an uninstall/reinstall and be reachable by other apps that
+         sync it, e.g. a file manager or a sync client). That needs the
+         legacy permissions below API 30 and All Files Access from API 30
+         on; MainActivity requests it at first run. -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <!-- Voice input attachments (media_providers.h ASR) read local audio
+         files the user picked; no microphone capture is wired into this
+         shell yet (see loom/android/README.md "Gaps"). -->
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/Theme.ChatADHD"
+        android:usesCleartextTraffic="false"
+        tools:targetApi="34">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.ChatADHD">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
