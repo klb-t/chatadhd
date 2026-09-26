@@ -583,15 +583,21 @@ std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* 
         Item& B = items[b];
         if (A.doc == B.doc) continue;
         double wa = 0, wb = 0, shared = 0;
+        int shared_distinct = 0;
         std::vector<std::string> conflict;
         for (const auto& t : A.subject) wa += idf(t);
         for (const auto& t : B.subject) wb += idf(t);
         for (const auto& t : A.subject) {
           if (!std::binary_search(B.subject.begin(), B.subject.end(), t)) continue;
           shared += idf(t);
+          if (distinctive(t)) ++shared_distinct;
           if (distinctive(t) && A.term_polarity[t] != B.term_polarity[t]) conflict.push_back(t);
         }
         double sim = shared / std::max(1e-9, std::min(wa, wb));
+        // one shared word is coincidence, not the same subject
+        if (shared_distinct < 2) continue;
+        // and it must be a real share of the longer item too
+        if (shared / std::max(1e-9, std::max(wa, wb)) < 0.2) continue;
         std::string da = date_only(A.date), db = date_only(B.date);
         bool later = !da.empty() && !db.empty() && da < db;
         bool same_unit = !A.unit.empty() && A.unit == B.unit;
