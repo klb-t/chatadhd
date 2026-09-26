@@ -40,6 +40,14 @@ secrets.json
 loom/build*/
 loom/out/
 
+# Loom synthetic eval corpus: generator OUTPUT that must never be committed
+# (loom/tools/gen_synthetic_fake_repo.py, loom/tools/scale_archive.py) --
+# the corpus DATA itself (loom/tests/fixtures/eval/synthetic_dev/*.zip and
+# ground_truth.json) is committed and NOT covered by this rule.
+loom/tests/fixtures/eval/synthetic_dev/fake_repo/
+loom/tests/fixtures/eval/synthetic_dev/*.scaled.json
+loom/tests/fixtures/eval/synthetic_dev/scaled/
+
 # Loom Android/web build outputs (never source)
 loom/android/.gradle/
 loom/android/local.properties
