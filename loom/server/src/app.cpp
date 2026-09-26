@@ -698,7 +698,118 @@ void App::route_logs_misc() {
 // else - this is the one place archive endpoints belong.
 
 void App::route_archive_placeholder() {
-  // Intentionally empty until loom_archive_* lands in include/loom/loom.h.
+  // POST /api/archive/run — body: the archive config (see loom_archive_run).
+  // Streams SSE: {"type":"progress","current","total","status"} ... then one
+  // {"type":"done", run...} or {"type":"error", code, message}. Source paths
+  // are read on the server machine (read-only). "out_dir" may only be a plain
+  // name; files are written to <data_dir>/exports/archive/<name>. A client
+  // disconnect pauses the run (resumable).
+  svr_.Post("/api/archive/run", [this](const httplib::Request& req, httplib::Response& res) {
+    json body = parse_body(req);
+    if (!body.is_object()) {
+      send_error(res, "invalid_argument", "body must be a JSON object", 400);
+      return;
+    }
+    if (body.contains("out_dir") && body["out_dir"].is_string()) {
+      std::string name = body["out_dir"].get<std::string>();
+      if (name.empty() || name.find('/') != std::string::npos || name.find('\\') != std::string::npos ||
+          name.find("..") != std::string::npos) {
+        send_error(res, "invalid_argument", "out_dir must be a plain name (written under exports/archive/)", 400);
+        return;
+      }
+      json info = parse_or_empty(own_and_free(loom_info(ctx_)));
+      std::string data_dir = info.value("data_dir", std::string());
+      body["out_dir"] = (fs::path(data_dir) / "exports" / "archive" / name).string();
+    }
+    auto queue = std::make_shared<SseQueue>();
+    LoomContext* ctx = ctx_;
+    std::string cfg = body.dump();
+    struct Ud {
+      LoomContext* ctx;
+      SseQueue* q;
+      bool cancel_sent = false;
+    };
+    auto thread_ptr = std::make_shared<std::thread>([ctx, cfg, queue]() {
+      Ud ud{ctx, queue.get()};
+      const char* result = loom_archive_run(
+          ctx, cfg.c_str(),
+          [](int current, int total, const char* status, void* p) {
+            auto* u = static_cast<Ud*>(p);
+            if (u->q->cancelled() && !u->cancel_sent) {
+              loom_archive_cancel(u->ctx);
+              u->cancel_sent = true;
+            }
+            json ev = {{"type", "progress"}, {"current", current}, {"total", total}, {"status", status ? status : ""}};
+            u->q->push_data(ev.dump());
+          },
+          &ud);
+      json parsed = parse_or_empty(own_and_free(result));
+      json out_chunk;
+      if (parsed.is_object() && parsed.contains("error")) {
+        out_chunk = {{"type", "error"}};
+        for (auto& [k, v] : parsed["error"].items()) out_chunk[k] = v;
+      } else {
+        out_chunk = parsed;
+        out_chunk["type"] = "done";
+      }
+      queue->push_data(out_chunk.dump());
+      queue->close();
+    });
+    res.set_chunked_content_provider(
+        "text/event-stream",
+        [queue](size_t offset, httplib::DataSink& sink) { return queue->provide(offset, sink); },
+        [thread_ptr, queue, ctx](bool success) {
+          if (!success) {
+            queue->cancel();
+            loom_archive_cancel(ctx);
+          }
+          if (thread_ptr->joinable()) thread_ptr->join();
+        });
+    res.set_header("Cache-Control", "no-cache");
+  });
+
+  svr_.Post("/api/archive/cancel", [this](const httplib::Request&, httplib::Response& res) {
+    int rc = loom_archive_cancel(ctx_);
+    if (rc == LOOM_E_NOT_FOUND) {
+      send_error(res, "not_found", "no archive run in progress", 404);
+      return;
+    }
+    res.set_content(json{{"ok", rc == LOOM_OK}}.dump(), "application/json");
+  });
+
+  svr_.Get("/api/archive/status", [this](const httplib::Request& req, httplib::Response& res) {
+    std::string run = req.has_param("run_id") ? req.get_param_value("run_id") : std::string();
+    send_loom(res, loom_archive_status(ctx_, run.empty() ? nullptr : run.c_str()));
+  });
+
+  svr_.Get("/api/artifacts", [this](const httplib::Request& req, httplib::Response& res) {
+    json f = json::object();
+    if (req.has_param("kind")) f["kind"] = req.get_param_value("kind");
+    if (req.has_param("run_id")) f["run_id"] = req.get_param_value("run_id");
+    if (req.has_param("limit")) f["limit"] = std::atoi(req.get_param_value("limit").c_str());
+    std::string fs_ = f.dump();
+    send_loom(res, loom_list_artifacts(ctx_, fs_.c_str()));
+  });
+
+  svr_.Get(R"(/api/artifacts/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
+    std::string id = req.matches[1];
+    bool content = req.has_param("content") && req.get_param_value("content") != "0";
+    send_loom(res, loom_get_artifact(ctx_, id.c_str(), content ? 1 : 0));
+  });
+
+  // Raw artifact bytes with the artifact's MIME type (for download links).
+  svr_.Get(R"(/api/artifacts/([^/]+)/raw)", [this](const httplib::Request& req, httplib::Response& res) {
+    std::string id = req.matches[1];
+    json j = parse_or_empty(own_and_free(loom_get_artifact(ctx_, id.c_str(), 1)));
+    if (j.is_object() && j.contains("error")) {
+      std::string code = j["error"].value("code", std::string("internal"));
+      send_error(res, code, j["error"].value("message", std::string()), code == "not_found" ? 404 : 400);
+      return;
+    }
+    std::string mime = j["artifact"].value("mime", std::string("application/octet-stream"));
+    if (mime.rfind("text/", 0) == 0) mime += "; charset=utf-8";
+    res.set_content(j.value("content", std::string()), mime);
+  });
 }
 
 }  // namespace loom_server

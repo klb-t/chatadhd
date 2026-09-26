@@ -24,6 +24,7 @@ struct LoomContext {
   std::unique_ptr<loom::Runtime> rt;
   std::mutex mu;
   std::map<std::string, loom::CancelToken, std::less<>> chat_requests;  // request_id -> token
+  std::optional<loom::CancelToken> archive_run;  // set while loom_archive_run is in progress
 };
 
 namespace loom::capi {

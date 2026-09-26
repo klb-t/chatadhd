@@ -62,7 +62,8 @@ const std::unordered_set<std::string>& stopwords() {
         "muszą", "powinien", "powinno", "powinna", "trzeba", "należy", "zawsze", "nigdy", "wolno", "można",
         "jednak", "bardziej", "raz", "dwa", "gdyż", "oraz", "obecnie", "teraz", "dopiero", "zamiast", "czym",
         "tym", "cały", "cała", "całe", "sam", "sama", "samo", "nasz", "nasza", "nasze", "wasz", "jeden", "jedna",
-        "jedno", "ich", "moje", "mój", "moja", "które", "wtedy", "gdyby", "jeżeli",
+        "jedno", "ich", "moje", "mój", "moja", "które", "wtedy", "gdyby", "jeżeli", "każdej", "każda", "każde",
+        "każdego", "każdym", "swoje", "swój", "swoją", "tego", "tym", "ale",
         // code keywords / boilerplate
         "std", "const", "return", "returns", "include", "auto", "int", "void", "bool", "string", "str",
         "nullptr", "self", "def", "class", "struct", "public", "private", "protected", "namespace", "template",

@@ -270,6 +270,12 @@ LOOM_API const char* loom_detect_format(LoomContext* ctx, const char* path);
  * "blob_hash","messages","cancelled","warnings"} */
 LOOM_API const char* loom_import_file(LoomContext* ctx, const char* path, const char* title, LoomProgressCallback cb,
                                       void* ud);
+/* Like loom_import_file with options_json (nullable):
+ * {"title"?, "force"?: false, "record_provenance"?: true}. force re-imports a
+ * file whose bytes were already imported (otherwise the prior conversations
+ * are returned with "already_imported": true). */
+LOOM_API const char* loom_import_file_ex(LoomContext* ctx, const char* path, const char* options_json,
+                                         LoomProgressCallback cb, void* ud);
 /* fmt: json | markdown | text | html -> {"format","content"} */
 LOOM_API const char* loom_export_conversation(LoomContext* ctx, const char* conv_id, const char* fmt);
 
@@ -287,6 +293,30 @@ LOOM_API const char* loom_get_task(LoomContext* ctx, const char* task_id);
 /* Recovers interrupted tasks and wakes the workers -> {"recovered": n} */
 LOOM_API const char* loom_resume_tasks(LoomContext* ctx);
 LOOM_API int loom_cancel_task(LoomContext* ctx, const char* task_id);
+
+/* ── Archive Intelligence / Project Compiler ───────────────────────── */
+
+/* Runs (or resumes) the archive pipeline and blocks until it finishes or is
+ * cancelled. config_json: {"sources":[paths], "repo"?, "code"?:true,
+ * "git"?:true, "seed_terms"?:[...], "out_dir"?, "project"?, "max_passes"?,
+ * "max_new_terms"?, "max_hits_per_term"?, "max_synthesis_rounds"?,
+ * "llm"?:"off"|"auto", "include_db"?, "exclude"?:[...], "max_file_bytes"?,
+ * "force"?}. cb (nullable) receives (current, total, "<stage>: <message>");
+ * total is -1 when unknown, and it may be called from a Loom worker thread.
+ * -> {"run_id","status":"done|paused|cancelled","stages":[{"stage","task_id",
+ *    "input_hash","output_hash","cache_hit","resumed","stats"}],"summary":{...}}
+ * Unchanged inputs are cache hits; a paused run resumes on the next call with
+ * the same inputs. */
+LOOM_API const char* loom_archive_run(LoomContext* ctx, const char* config_json, LoomProgressCallback cb, void* ud);
+/* Asks the running loom_archive_run to pause at its next checkpoint.
+ * LOOM_E_NOT_FOUND when no run is in progress. */
+LOOM_API int loom_archive_cancel(LoomContext* ctx);
+/* run_id NULL -> latest run. -> {"run":{...}|null,"stages":[...],"artifacts":[...]} */
+LOOM_API const char* loom_archive_status(LoomContext* ctx, const char* run_id);
+/* filter_json (nullable): {"kind"?, "run_id"?, "limit"?:100} -> [artifact...] newest first */
+LOOM_API const char* loom_list_artifacts(LoomContext* ctx, const char* filter_json);
+/* -> {"artifact":{...},"content":"..."}; content omitted when include_content == 0 */
+LOOM_API const char* loom_get_artifact(LoomContext* ctx, const char* artifact_id, int include_content);
 
 /* ── Platform HTTP injection ───────────────────────────────────────── */
 

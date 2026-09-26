@@ -58,9 +58,9 @@ class App {
   void route_import_export();
   void route_provenance_events_tasks();
   void route_logs_misc();
-  // Intentionally isolated: archive endpoints land here once
-  // loom_archive_run() etc. exist on loom.h (added on main by another
-  // agent). Do not add other routes below this call.
+  // Archive Intelligence + artifacts: POST /api/archive/run (SSE progress),
+  // POST /api/archive/cancel, GET /api/archive/status, GET /api/artifacts,
+  // GET /api/artifacts/{id}[?content=1], GET /api/artifacts/{id}/raw.
   void route_archive_placeholder();
 
   ServerOptions opts_;
