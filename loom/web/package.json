@@ -10,6 +10,7 @@
     "e2e": "PLAYWRIGHT_GLOBAL_MODULE=/opt/node22/lib/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node e2e/run.mjs"
   },
   "dependencies": {
+    "dompurify": "^3.2.4",
     "marked": "^12.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

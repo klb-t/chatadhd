@@ -1,16 +1,36 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 import { api } from "../api";
 import type { ChatChunk, Message, ModelInfo } from "../api/types";
 
 marked.setOptions({ breaks: true });
 
-function renderMarkdown(text: string): { __html: string } {
-  try {
-    return { __html: marked.parse(text, { async: false }) as string };
-  } catch {
-    return { __html: text.replace(/</g, "&lt;") };
+// Model output and imported files are untrusted: marked only turns Markdown
+// into HTML, it does not sanitize it (raw HTML in the source passes right
+// through). DOMPurify strips anything dangerous — script tags, event
+// handlers like onerror=, javascript: URLs — before it ever reaches
+// dangerouslySetInnerHTML. The afterSanitizeAttributes hook then makes every
+// surviving link open safely in a new tab.
+DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+  if (node.tagName === "A" && node.hasAttribute("href")) {
+    node.setAttribute("target", "_blank");
+    node.setAttribute("rel", "noopener noreferrer");
   }
+});
+
+function renderMarkdown(text: string): { __html: string } {
+  let html: string;
+  try {
+    html = marked.parse(text, { async: false }) as string;
+  } catch {
+    html = text.replace(/</g, "&lt;");
+  }
+  const clean = DOMPurify.sanitize(html, {
+    ADD_ATTR: ["target", "rel"],
+    FORBID_TAGS: ["style"],
+  });
+  return { __html: clean };
 }
 
 interface Props {

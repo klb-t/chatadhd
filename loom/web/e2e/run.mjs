@@ -233,6 +233,48 @@ async function main() {
     });
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-03-version-switch.png") });
 
+    await step("markdown XSS payloads are sanitized, not executed", async () => {
+      let dialogFired = false;
+      page.once("dialog", async (dialog) => {
+        dialogFired = true;
+        await dialog.dismiss();
+      });
+      const payload = '<img src=x onerror="window.__xss=1">[click](javascript:window.__xss=2)';
+      await page.fill('[data-testid="chat-input"]', payload);
+      await page.click('[data-testid="send-chat"]');
+      await page.waitForSelector('[data-testid="streaming-message"]', { state: "detached", timeout: 15000 });
+
+      const userMsg = page.locator('[data-testid="message"][data-role="user"]').last();
+      await userMsg.waitFor({ state: "visible" });
+      const bodyHandle = userMsg.locator(".body");
+
+      // Neither injected script executed (no alert(), no global set by onerror/href).
+      await page.waitForTimeout(200);
+      const xssRan = await page.evaluate(() => window.__xss);
+      assert(!xssRan, `onerror/javascript: payload must not execute, got window.__xss=${xssRan}`);
+      assert(!dialogFired, "payload must not trigger a dialog");
+
+      // The sanitized DOM must contain no onerror attribute and no
+      // javascript: URL anywhere in the rendered message.
+      const innerHtml = await bodyHandle.innerHTML();
+      assert(!/onerror\s*=/i.test(innerHtml), `no onerror attribute survives sanitization, got: ${innerHtml}`);
+      assert(!/javascript:/i.test(innerHtml), `no javascript: URL survives sanitization, got: ${innerHtml}`);
+
+      // A safe link elsewhere in the app must still open in a new tab with
+      // rel="noopener noreferrer" (theme/UX requirement, checked here since
+      // this step already has a rendered link-bearing message at hand).
+      await page.fill('[data-testid="chat-input"]', "see [example](https://example.com) for details");
+      await page.click('[data-testid="send-chat"]');
+      await page.waitForSelector('[data-testid="streaming-message"]', { state: "detached", timeout: 15000 });
+      const linkMsg = page.locator('[data-testid="message"][data-role="user"]').last();
+      const link = linkMsg.locator(".body a");
+      await link.waitFor({ state: "visible" });
+      assert((await link.getAttribute("target")) === "_blank", "safe links open in a new tab");
+      const rel = (await link.getAttribute("rel")) ?? "";
+      assert(rel.includes("noopener") && rel.includes("noreferrer"), `safe links carry rel=noopener noreferrer, got: ${rel}`);
+    });
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-xss.png") });
+
     await step("import a fixture and see it complete", async () => {
       await page.click('[data-testid="nav-import"]');
       await page.waitForSelector('[data-testid="import-panel"]');
