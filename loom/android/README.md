@@ -185,6 +185,20 @@ the response back into the native side through
 model refresh, semantic-LLM analysis, batch polling, ASR/OCR providers,
 GitHub sync — goes through this path, on whichever thread made the call.
 
+**Side effect worth knowing:** `LOOM_WITH_OPENSSL=OFF` doesn't only skip
+cpp-httplib's TLS — `src/crypto/crypto.cpp` (the AES-256-GCM `core/crypto.py`
+port) is entirely `#if defined(LOOM_HAVE_OPENSSL)`, same as Python's own
+"gracefully degrades to no-op if `cryptography` is missing" behaviour. So on
+this build `loom_crypto_status` reports `available: false` and the optional
+zero-knowledge encryption feature is off, same as chat/DB/graph — not a bug,
+just the one real tradeoff of injecting HTTP from Kotlin instead of linking
+OpenSSL in. If encryption on Android turns out to matter more than this
+tradeoff, the fix is `LOOM_WITH_OPENSSL=ON` in `app/src/main/cpp/CMakeLists.txt`
+(OpenSSL still doesn't need to *carry* HTTP — a platform HTTP transport and a
+linked OpenSSL for crypto aren't mutually exclusive) plus bundling
+`libcrypto.so`/`libssl.so` for both ABIs, which nobody has sized or tested
+here.
+
 ## Data directory & permissions
 
 The shared data directory
@@ -307,6 +321,10 @@ which this test is what proved it.
 
 ## Gaps
 
+- **Zero-knowledge encryption (AES-256-GCM) is unavailable on this build** —
+  see "HTTP: injected from Kotlin" above; it's a direct consequence of
+  `LOOM_WITH_OPENSSL=OFF`, not an oversight, but worth listing here too since
+  it's a headline ChatADHD feature.
 - **Never run on a device or emulator** — no Android SDK/NDK in this
   environment. Everything above is host-side verification of the same
   code, not an on-device run.
