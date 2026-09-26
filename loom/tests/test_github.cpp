@@ -272,9 +272,12 @@ TEST_SUITE("github_sync") {
     http2.expect("GET", "https://raw/a.md", net::ScriptedTransport::Reply::text(200, "# hello"));
     GitHubSync sync(cfg, http2);
     LOOM_REQUIRE_OK(sync.pull_file(f));
-    std::ifstream in(td.path() / "a.md");
-    std::string content((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
-    CHECK(content == "# hello");
+    // fsutil::read_file(), not std::ifstream + istreambuf_iterator: the
+    // latter trips a GCC -O3 -Wnull-dereference false positive inside
+    // libstdc++'s istreambuf_iterator (-Werror in the `release` preset).
+    auto content = fsutil::read_file(td.path() / "a.md");
+    REQUIRE(content);
+    CHECK(*content == "# hello");
   }
 
   TEST_CASE("push_file: refused in pull_only mode; PUTs base64 content with sha when updating") {
