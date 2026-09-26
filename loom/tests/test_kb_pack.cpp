@@ -152,9 +152,7 @@ TEST_SUITE("kb_pack") {
     CHECK(!kb::Pack::load_with_overlay(td.path()));
   }
 
-  // WIP: the PL/EN stemmer and glossary folding are unfinished (4 checks fail);
-  // remove may_fail() once the normalizer lands.
-  TEST_CASE("normalizer: PL/EN match keys, stop words, glossary, language guess" * doctest::may_fail()) {
+  TEST_CASE("normalizer: PL/EN match keys, stop words, glossary, language guess") {
     auto pack = unwrap(kb::Pack::load_builtin());
     kb::Normalizer n(*pack);
     CHECK(n.fold("Zażółć GĘŚLĄ") == "zazolc gesla");
@@ -177,6 +175,52 @@ TEST_SUITE("kb_pack") {
     CHECK(std::find(toks.begin(), toks.end(), "c#") != toks.end());
     CHECK(n.guess_lang("To jest aplikacja, która działa na Androidzie i desktopie.") == kb::Lang::Pl);
     CHECK(n.guess_lang("This is an application that runs on Android and desktop.") == kb::Lang::En);
+  }
+
+  TEST_CASE("normalizer golden cases: Polish -cji/-cja, English plurals and verb forms, glossary both ways") {
+    auto pack = unwrap(kb::Pack::load_builtin());
+    kb::Normalizer n(*pack);
+    // Polish: -cji/-cja and case endings meet in one key; diacritics fold.
+    for (const char* w : {"serializacja", "serializacji", "serializację", "serializacją", "serializacjach"}) {
+      INFO(w);
+      CHECK(n.match_key(w) == "serializacj");
+    }
+    CHECK(n.match_key("specyfikacji") == n.match_key("specyfikacja"));
+    CHECK(n.match_key("wersji") == n.match_key("wersjach"));
+    CHECK(n.match_key("modułów") == "modul");
+    CHECK(n.match_key("pamięci") == n.match_key("pamięć"));
+    CHECK(n.token_lang("serializacji") == kb::Lang::Pl);  // marker suffix, no diacritic
+    CHECK(n.token_lang("pipeline") == kb::Lang::En);
+    // English: plural -s/-es/-ies, keep endings, verbal forms.
+    CHECK(n.match_key("modules") == "module");
+    CHECK(n.match_key("boxes") == "box");
+    CHECK(n.match_key("matches") == "match");
+    CHECK(n.match_key("classes") == "class");
+    CHECK(n.match_key("policies") == "policy");
+    CHECK(n.match_key("status") == "status");
+    CHECK(n.match_key("analysis") == "analysis");
+    CHECK(n.match_key("stored") == "store");
+    CHECK(n.match_key("storing") == "store");
+    CHECK(n.match_key("created") == "create");
+    CHECK(n.match_key("running") == "run");
+    CHECK(n.match_key("string") == "string");
+    CHECK(n.match_key("serializing") == n.match_key("serialization"));
+    // Glossary: one English key for both languages, inflected Polish included.
+    CHECK(n.phrase_key("czat ADHD") == "chat adhd");
+    CHECK(n.phrase_key("Czatu ADHD") == "chat adhd");
+    CHECK(n.phrase_key("chat ADHD") == "chat adhd");
+    CHECK(n.phrase_key("grafu wiedzy") == "knowledge graph");
+    CHECK(n.phrase_key("knowledge graphs") == "knowledge graph");
+    CHECK(n.phrase_key("potoku") == n.phrase_key("pipelines"));
+    CHECK(n.phrase_key("modułów") == n.phrase_key("modules"));
+    CHECK(n.phrase_key("zasady") == "principle");
+    CHECK(n.phrase_key("specyfikacji") == "specification");
+    // Without the glossary the keys stay in their own language.
+    CHECK(n.phrase_key("czat ADHD", false) == "czat adhd");
+    CHECK(n.phrase_key("grafu wiedzy", false) == n.phrase_key("graf wiedzy", false));
+    // An explicit language hint wins for undiacritised Polish words.
+    CHECK(n.phrase_key("zasady projektu", false, kb::Lang::Pl) == n.phrase_key("zasadach", false, kb::Lang::Pl));
+    CHECK(n.phrase_key("ADHD, czat!") == n.phrase_key("adhd chat"));
   }
 
   TEST_CASE("versions and stable ids") {

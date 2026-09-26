@@ -303,6 +303,16 @@ void v_stemming(V& v, const Json& d) {
     v.integer(*s, p, "min_token", 1, 32);
     v.integer(*s, p, "min_stem", 1, 32);
     v.strings(*s, p, "suffixes", true, true);
+    for (const char* key : {"markers", "keep_endings", "verbal", "restore_e"}) v.strings(*s, p, key, false);
+    if (const Json* vb = json::find(*s, "verbal"); vb && vb->is_array()) {
+      std::set<std::string> sufs;
+      if (const Json* sf = json::find(*s, "suffixes"); sf && sf->is_array()) {
+        for (const auto& x : *sf) sufs.insert(x.is_string() ? x.get<std::string>() : "");
+      }
+      for (const auto& x : *vb) {
+        if (x.is_string() && !sufs.count(x.get<std::string>())) v.err(p + "/verbal", "verbal suffix is not in suffixes: " + x.get<std::string>());
+      }
+    }
     if (const Json* r = v.array(*s, p, "rewrite", false)) {
       for (std::size_t i = 0; i < r->size(); ++i) {
         v.str((*r)[i], idx(p + "/rewrite", i), "suffix");

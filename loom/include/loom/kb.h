@@ -188,6 +188,29 @@ void validate_cross_references(const std::map<std::string, Json, std::less<>>& d
 enum class Lang { En, Pl, Mixed, Unknown };
 std::string_view to_string(Lang l) noexcept;
 
+// Match keys for PL + EN text. The tables (fold map, suffix lists, markers,
+// exceptions, stop words, glossary) are pack data (lexicons/stemming.json,
+// stopwords*.json, glossary.json); the algorithm is code:
+//
+//   token language   Pl when the token carries a Polish signal: a diacritic,
+//                    a Polish stop word, a Polish exception form or a Polish
+//                    marker suffix ("-cji", "-ów", "-ych", ...); else En.
+//   stem             exception form -> fixed key; tokens shorter than
+//                    min_token are kept; the longest matching rewrite
+//                    ("-acji" -> "-acja", "-ies" -> "-y", "-xes" -> "-x")
+//                    is applied, then the longest suffix whose removal keeps
+//                    min_stem code points is stripped once ("-s" not after
+//                    keep_endings "ss"/"us"/"is"; verbal "-ing"/"-ed" only
+//                    when the stem keeps a vowel, then undoubling
+//                    "runn" -> "run" and e-restoration "stor" -> "store",
+//                    "creat" -> "create").
+//   key              fold(stem) (lowercase, diacritics folded).
+//   phrase key       keys of the non-stop-word tokens joined by spaces; a
+//                    phrase with any Polish signal is keyed as Polish.
+//   glossary         left to right, the longest run of tokens whose English
+//                    keys or Polish keys form a glossary phrase is replaced
+//                    by the English phrase key: "czat ADHD" == "chat adhd"
+//                    == "chat adhd", "grafu wiedzy" == "knowledge graph".
 class Normalizer {
  public:
   // Reads lexicons/stemming.json, stopwords_base.json, stopwords.json and
@@ -200,15 +223,19 @@ class Normalizer {
   // "c#"), lowercased, not folded; pure numbers dropped.
   std::vector<std::string> tokens(std::string_view text) const;
   bool is_stopword(std::string_view token) const;  // surface or folded form
-  // Light stem of a lowercase token (exceptions, rewrite, longest suffix).
+  // Pl or En for one lowercase token (see above); never Mixed/Unknown.
+  Lang token_lang(std::string_view lower_token) const;
+  // Light stem of a lowercase token with the given language's tables
+  // (Unknown/Mixed -> token_lang). Not folded.
   std::string stem(std::string_view token, Lang lang) const;
-  // Folded + stemmed key of one token; the language is guessed per token
-  // (Polish diacritics -> Pl) unless given.
+  // Folded + stemmed key of one token; the language is token_lang() unless
+  // given (Pl/En).
   std::string match_key(std::string_view token, Lang lang = Lang::Unknown) const;
-  // Space-joined match keys of the non-stop-word tokens of a phrase
-  // ("grafu wiedzy" and "graf wiedzy" -> "graf wiedzy"); glossary pairs map
-  // to the English phrase key when map_glossary is true.
-  std::string phrase_key(std::string_view phrase, bool map_glossary = true) const;
+  // Space-joined match keys of the non-stop-word tokens of a phrase; with
+  // map_glossary the glossary maps PL and EN phrases to one English key.
+  // `lang` Pl/En forces the language of every token without a contrary
+  // signal (use the observation's language when known).
+  std::string phrase_key(std::string_view phrase, bool map_glossary = true, Lang lang = Lang::Unknown) const;
   // Share of Polish stop words / diacritics decides Pl vs En; both above
   // 0.25 -> Mixed; too little text -> Unknown.
   Lang guess_lang(std::string_view text) const;
@@ -218,6 +245,10 @@ class Normalizer {
     std::size_t min_token = 0, min_stem = 0;
     std::vector<std::pair<std::string, std::string>> rewrite;  // suffix -> replacement, longest first
     std::vector<std::string> suffixes;                         // longest first
+    std::vector<std::string> keep_endings;                     // a suffix is not stripped from these endings
+    std::set<std::string, std::less<>> verbal;                 // suffixes followed by undouble / e-restoration
+    std::vector<std::string> restore_e;                        // "at" -> "ate" after a verbal suffix
+    std::vector<std::string> markers;                          // suffixes that mark a token as this language
     std::map<std::string, std::string, std::less<>> exceptions;
   };
   std::map<char32_t, std::string> fold_;
@@ -225,7 +256,10 @@ class Normalizer {
   std::set<std::string, std::less<>> stop_;
   std::set<std::string, std::less<>> pl_stop_;
   std::map<std::string, std::string, std::less<>> glossary_;  // phrase key (pl or en) -> en phrase key
+  std::size_t glossary_max_tokens_ = 1;
   std::string stem_with(const Stemmer& s, std::string_view token) const;
+  bool has_pl_signal(std::string_view lower_token) const;
+  std::string key_as(std::string_view lower_token, Lang lang) const;
 };
 
 // Versions: "v0.07.09" -> "0.7.9"; "" when `s` is not a version (1-3
