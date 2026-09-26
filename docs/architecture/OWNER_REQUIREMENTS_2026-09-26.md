@@ -95,6 +95,23 @@ those preferences (preference violations are test failures, not style notes).
 When the conversation changes, affected products are regenerated
 incrementally.
 
+## R12 — Graph structure exists to drive goal-directed context selection
+> "właśnie dlatego grafy muszą być tak przemyślane i ustrukturyzowane żeby ułatwiły między innymi dobór węzłów do kontekstów odpowiedni dla celów danego prompta, to też było jedno z głównych założeń projektowych że struktura danych będzie pozwalać na inteligentne zarządzanie kontekstem które pozwoli na olanie [cache'owania] bo samą inteligencją więcej zaoszczędzi"
+
+The graph's primary consumer is the context engine (MEGA MASTER §4.4
+`ContextSet`). For each prompt: determine its goal/task type (e.g. implement
+module X, write a pleading, extend a scene) → which project roles, paradigm
+slots, principles/preferences, decisions and evidence are relevant → select
+nodes under a token budget at the right resolution (each node available at
+several granularities: label / summary / full / raw evidence), closing over
+required dependencies, maximising relevance × authority × freshness ×
+confidence with diversity, and explaining why each node was included.
+Savings from intelligent selection are the primary cost lever; they must be
+measured (tokens and answer quality vs naive full-history / flat retrieval
+baselines). Caching is secondary and must never constrain selection; ordering
+context stable → volatile lets providers' prefix caches help for free where
+they exist.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
