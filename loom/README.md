@@ -23,6 +23,8 @@ the HTTP server and the Android shell.
 | `archive.h` — Archive Intelligence / Project Compiler | implemented (this README, [below](#archive-intelligence)) |
 | `loom.h` — C ABI (archive, artifacts, `loom_import_file_ex` added) | implemented |
 | `cli/` — `loom` command line | implemented |
+| Knowledge layer foundation — `model.h`, `kb.h`, `knowledge_store.h`, `knowledge.h`, `loom/data/` | implemented ([below](#knowledge-layer)) |
+| Knowledge layer areas — `catalog.h`, `extract.h`, `resolve.h`, `generalize.h`, `context_engine.h`, `materialize.h` | contract + stubs (next wave) |
 | `server/` (REST/SSE facade), `web/` (React UI), `android/` (JNI shell) | see their own READMEs |
 
 ## Build
@@ -230,6 +232,82 @@ time, but a zip member is extracted to a temporary file first. Stage outputs
 thousands of messages but not yet for millions. The classifier is cue-based, so
 recall on implicit decisions is limited. That is the reason for the optional
 LLM refinement.
+
+## Knowledge layer
+
+The self-discovery / paradigm engine, built on one binding conceptual model:
+[`docs/architecture/LOOM_CONCEPTUAL_MODEL.md`](../docs/architecture/LOOM_CONCEPTUAL_MODEL.md).
+Every term there has exactly one meaning, and code, tables, JSON keys and C ABI
+names use it in that sense. Closed sets are code, open sets are data (I6).
+
+| Model (§) | Code | Data |
+|---|---|---|
+| Closed sets: evidence class, origin, principle level/form, validation status, the 14 universal roles, resolution, context band, status (incl. `lost`/`restored`), check state, ... (§2–§5) | `include/loom/model.h` enums, `to_string`/`parse` | — |
+| Operation vocabularies: bindings, anchors, conditions, value ops, Expected-Property predicates, detect ops, segmenters, extractors | `include/loom/kb.h` `k*` arrays | combined by pack files |
+| Source/Unit/Observation, Entity, Claim + Assessment (the seven questions), Model (§1–§2) | `model.h` structs, JSON round trip, content-derived ids (prefix table in the header) | — |
+| Principle, Operator, Morphism (§3.1–§3.6) | `model.h` | `philosophy/principles.json`, `philosophy/operators.json` (dated priors), `rules/inference_rules.json` (operators that produce claims), `morphisms/` |
+| Project kind, facet, artifact type, domain kind -> role (§3.5) | `model.h` views (`project_kind()`, ...) | `project_kinds/`, `facets/`, `artifact_types/`, `morphisms/anchoring.json` |
+| Area, Instance, SlotValue (§3.5, §3.7) | `model.h` | — |
+| Goal type, Goal, ContextSet (§4) | `model.h`; `context_engine.h` | `goals/goal_types.json` |
+| Decision, Fork, StatusRecord, Prediction, Product, Judgement (§5, §6.7) | `model.h`; `order_status_history()` | — |
+| Storage (I10) | `knowledge_store.h`: `loom_kb_*` tables, created lazily; runs, indexed queries, judgement replay (I4) | — |
+| Pipeline (§6) | `knowledge.h`: stages `catalog -> extract -> resolve -> assess -> generalize -> materialize` as resumable TaskEngine tasks, pack hash in every input hash | `policy/` thresholds, calibration, relevance, selection rules, evidence encoding |
+| Temporal holdout (§7.1) | `model::PriorFilter` / `priors(pack, filter)`; `KnowledgeConfig.prior_cut` | every prior source carries a date |
+
+Invariants enforced in code: every claim validates its assessment (observed
+needs support, inferred needs an Expected Property and a check state, a
+check state needs a property); the store refuses extrapolated/absent premises
+and chained transfers (I3); judgements are append-only and replayed last;
+`_meta.loom_schema_version` stays `"1"` (the layer records
+`_meta.loom_kb_schema_version`); the pack validator rejects any name outside a
+closed set, dangling references, relations that do not anchor on the
+meta-model, transfers between kinds of different roles and undated priors.
+
+### Ownership map (next wave: four agents, parallel worktrees)
+
+Sources and tests are picked up by glob, so nobody edits `CMakeLists.txt`.
+Foundation files are read-only for the areas; a needed change is additive and
+goes through the lead (a new closed-set name is a model change).
+
+| Area | Owns (create/replace freely) | C ABI file | Tests |
+|---|---|---|---|
+| **catalog** (R1) | `include/loom/catalog.h`, `src/catalog/**`, `loom_cat_*` tables, CLI `loom catalog ...` / `loom archive run --knowledge` in `cli/` | `src/capi/capi_catalog.cpp` | `tests/test_catalog*.cpp` |
+| **extract+resolve** | `include/loom/extract.h`, `include/loom/resolve.h`, `src/extract/**`, `src/resolve/**` | `src/capi/capi_extract.cpp` | `tests/test_extract*.cpp`, `tests/test_resolve*.cpp` |
+| **generalize** | `include/loom/generalize.h`, `src/generalize/**` | `src/capi/capi_generalize.cpp` | `tests/test_generalize*.cpp` |
+| **context+materialize** | `include/loom/context_engine.h`, `include/loom/materialize.h`, `src/context/**`, `src/materialize/**` | `src/capi/capi_context.cpp` | `tests/test_context*.cpp`, `tests/test_materialize*.cpp` |
+| foundation (lead) | `include/loom/{model,kb,knowledge_store,knowledge}.h`, `src/model/**`, `src/kb/**`, `src/knowledge/**`, `src/capi/capi_knowledge.cpp`, `loom/data/**`, `tools/gen_kb_*.py`, `loom.h` | `src/capi/capi_knowledge.cpp` | `tests/test_{model,kb_pack,pack_model,knowledge_store,knowledge,capi_knowledge}.cpp` |
+
+Stubs are marked `// STUB: knowledge-wave` (`grep -rn "STUB: knowledge-wave"
+loom/src` lists what is left) and return `Errc::NotImplemented`; the stage
+function of each area (`run_stage` / `run_resolve_stage` / `run_assess_stage`)
+plugs into `KnowledgeEngine` unchanged. A stage returns `{"output": <hash of
+what it wrote>, "stats": {...}}`, clears the rows it owns before writing
+(rebuild) and checkpoints through `StageContext`. Data-pack additions an area
+needs (a lexicon entry, a threshold) are pack edits reviewed by the lead.
+
+### Extending with data only
+
+Run `python3 tools/gen_kb_pack.py` after any edit under `loom/data/`
+(`test_kb_pack` checks the embedded copy), then `ctest`: the validator reports
+every problem with its file and JSON pointer.
+
+- **Project kind**: `project_kinds/<id>.json` (schema `loom.kb.project_kind/1`)
+  with domain kinds, each with exactly one `role` of the 14; relations between
+  kinds must use a relation of `morphisms/anchoring.json` `relation_map` whose
+  role relation links the two roles; list it in `pack.json`. Its anchoring
+  morphisms are derived automatically; add transfer morphisms to analogous
+  kinds in `morphisms/transfer.json`.
+- **Facet**: `facets/<id>.json` with `applies_to`; list it in the host
+  kinds' `facets`.
+- **Artifact type**: `artifact_types/<id>.json`: `medium`, `detect` ops,
+  `parse.segment` segmenters, `extract` extractors (closed sets in `kb.h`), and
+  the `structure` of its instances.
+- **Morphism**: an entry in `morphisms/transfer.json` between two kinds of the
+  same role, with the Expected Property a transferred inference vouches for.
+- **Principle / operator**: an entry in `philosophy/principles.json` /
+  `operators.json` with level + form (principles), bilingual text, verbatim
+  phrasings, and dated `sources` (the date is when the owner's text existed:
+  temporal holdout). Seeds are always `candidate`; the engine promotes.
 
 ## Code ownership
 
