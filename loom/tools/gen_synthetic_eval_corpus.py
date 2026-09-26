@@ -1222,3 +1222,118 @@ add(id="mu-06-ep-status", provider="chatgpt", project=P_MU, kind="signal", model
          {"open_question": "oq.mu.vocals_or_instrumental"}),
     ))
 
+# ─────────────────── Cross-project / philosophy (6) ──────────────────
+add(id="cx-01-manifesto", provider="claude", project=None, kind="signal", model="claude-3-5-sonnet",
+    title="notatki", date="2025-01-08T08:00:00Z",
+    messages=linear(
+        ("user", "zanim zacznę cokolwiek kodować w tym roku, zapisuję sobie parę rzeczy, żeby nie "
+                 "musieć ich za każdym razem wymyślać od nowa."),
+        ("assistant", "Śmiało, słucham."),
+        ("user", "po pierwsze: opcjonalność jest ważniejsza niż tymczasowa szybkość - wolę zostawić "
+                 "sobie drogę odwrotu niż zaoszczędzić dzień teraz.",
+         {"principle": "pr.optionality_over_speed"}),
+        ("user", "po drugie: mówię wprost czego nie wiem albo czego nie zrobiłam, zamiast to ładnie "
+                 "opakowywać - i to dotyczy też rozmów z modelem, nie tylko z ludźmi.",
+         {"principle": "pr.honesty_over_comfort"}),
+        ("user", "i po trzecie, na razie tylko dla presetów/configów: to dane, nie nowa gałąź kodu.",
+         {"principle": "pr.data_over_branches"}),
+        ("assistant", "Zapisane. To brzmi jak coś, do czego będziesz wracać."),
+    ))
+
+_cx02_msgs, _cx02_cur = fork_edit(
+    prefix_turns=[
+        ("user", "czemu ja ciagle zmieniam zdanie w sprawie tego rdzenia w c++ czy zostac w pythonie"),
+    ],
+    branch_a_turns=[
+        ("user", "poprawka pytania: czy to w ogole zle, ze zmieniam zdanie tak czesto?", {}),
+        ("assistant", "Niekoniecznie - zalezy czy zmieniasz zdanie na podstawie nowych danych, czy z "
+                      "niepokoju."),
+    ],
+    branch_b_turns=[
+        ("user", "poprawka pytania: no dobra, prawda jest taka ze ja po prostu decyduje szybko na tym "
+                 "co wiem, a potem koryguje jak sie cos zmieni - nie czekam na pewnosc, bo pewnosci "
+                 "nigdy nie ma",
+         {"principle": "pr.decide_fast_correct_later"}),
+        ("assistant", "To brzmi jak swiadomy default, nie chaos."),
+        ("user", "no i przy okazji: python-quick zostawiam jako branch, nie kasuje, dopisuje tylko "
+                 "czemu przegral - a regule zapisuje sobie dopiero jak zobacze ten sam wzorzec w co "
+                 "najmniej dwoch roznych projektach, nie po jednym razie",
+         {"principle": "pr.meta_two_examples_rule"}),
+    ],
+    current="b",
+)
+add(id="cx-02-changing-mind", provider="chatgpt", project=None, kind="signal", model="gpt-4o",
+    title="czemu ciagle zmieniam zdanie", date="2025-07-20T22:30:00Z",
+    messages=_cx02_msgs, current=_cx02_cur)
+
+add(id="cx-03-drifting-thread", provider="claude", project=None, kind="signal", model="claude-3-5-sonnet",
+    title="hmm", date="2025-11-15T21:00:00Z",
+    messages=linear(
+        ("user", "stroz mi dzis znowu cos dziwnego zrobil, restartowal 3 razy pod rzad"),
+        ("assistant", "Masz log z tych trzech restartow?"),
+        ("user", "nie mam, nie zapisalam, a szkoda, bo teraz nie wiem czy to ten sam powod"),
+        ("assistant", "A jak tam poza tym?"),
+        ("user", "zmeczona, sprawa z Kwiatowej mnie meczy psychicznie bardziej niz caly kod razem "
+                 "wziety, ciagle mysle czy dobrze licze te terminy"),
+        ("assistant", "To rozumiem, to duzo naraz."),
+        ("user", "no i wlasnie widze teraz ze to jest ten sam problem co ze stroziem - nie zapisuje "
+                 "na czym utknelam zanim przeskocze do czegos innego, robie to caly czas i sie potem "
+                 "gubie", {"principle": "pr.write_down_the_blocker",
+                            "phrasing": "kiedy utknę na ponad 20 minut, zapisuję dokładnie na czym "
+                                        "utknęłam, zanim przełączę zadanie"}),
+        ("assistant", "Czyli od teraz zapisujesz blocker zanim zmienisz kontekst?"),
+        ("user", "tak, probuje, zobaczymy czy sie utrzyma"),
+    ))
+
+add(id="cx-04-venting", provider="chatgpt", project=None, kind="signal", model="gpt-4.1",
+    title="co mnie wkurza w tym jak pracuje", date="2026-02-25T20:00:00Z",
+    messages=linear(
+        ("user", "wkurza mnie jak sama sobie wmawiam ze cos jest 'prawie gotowe' zamiast powiedziec "
+                 "wprost ze utknelam - zawsze konczy sie gorzej", {"principle": "pr.honesty_over_comfort"}),
+        ("assistant", "To brzmi jak swiadomy wzorzec, nie jednorazowy grzech."),
+        ("user", "i zanim cos nazwe 'zasada u mnie' to naprawde szukam kontrprzykladu z ostatnich "
+                 "dwoch tygodni, zeby sie nie oszukiwac", {"principle": "pr.counterexample_hunting"}),
+        ("assistant", "A propos zasad - co z tym rachunkiem za chmure w notatniku?"),
+        ("user", "no wlasnie to mi uswiadomilo cos ogolniejszego: jak koszt (pieniadze, czas, "
+                 "nieodwracalnosc) rosnie, to zawsze musze pytac / zapisywac zgode zanim cokolwiek "
+                 "dzieje sie dalej - to nie jest tylko regula dla notatnika",
+         {"principle": "pr.owner_confirmation_for_money", "mentions_projects": [P_NF]}),
+    ))
+
+add(id="cx-05-midyear-review", provider="claude", project=None, kind="signal", model="claude-3-5-sonnet",
+    title="przeglad zasad w polowie roku", date="2026-05-05T19:00:00Z",
+    messages=linear(
+        ("user", "polroczny przeglad tego jak pracuje, zanim zapomne dlaczego cos robie tak a nie "
+                 "inaczej"),
+        ("assistant", "Zaczynajmy."),
+        ("user", "opcjonalnosc dalej na pierwszym miejscu - wole zaplacic troche czasu teraz zeby nie "
+                 "zamykac sobie drzwi pozniej", {"principle": "pr.optionality_over_speed"}),
+        ("user", "presety/config jako dane - to zostaje, ale podobno niektorzy robia WSZYSTKO jako "
+                 "dane, az do logiki wlacznie. ja bym sie az tak daleko nie posunela, algorytmy i UI "
+                 "zostaja u mnie w kodzie", {"principle": "pr.data_over_branches"}),
+        ("assistant", "A te dwie sytuacje z gate'ami kosztowymi i z tasma w muzyce?"),
+        ("user", "to w sumie ta sama regula w szerszej wersji: kiedy dwie wartosci sie kloca, wygrywa "
+                 "ta opcja, ktora latwiej cofnac - pieniadze to tylko jeden szczegolny przypadek "
+                 "nieodwracalnosci", {"principle": "pr.two_masters_conflict"}),
+        ("assistant", "I to zauwazylas po ilu projektach?"),
+        ("user", "po dwoch, jak zawsze - u mnie regula staje sie regula dopiero za drugim razem, nie "
+                 "za pierwszym", {"principle": "pr.meta_two_examples_rule"}),
+    ))
+
+add(id="cx-06-whats-next", provider="chatgpt", project=None, kind="signal", model="gpt-5",
+    title="co dalej ze wszystkimi tymi projektami", date="2026-08-10T21:00:00Z",
+    messages=linear(
+        ("user", "szybki przeglad: appka od notatek (NoteFlow) - 1.2 wyszlo, ale checklisty znowu "
+                 "padly. generator reelsow stoi od lipca. Stroz dziala bez zmian od czerwca. sprawa z "
+                 "Kwiatowej czeka na rozprawe w sierpniu. plyta - dwa utwory gotowe.",
+         {"mentions_projects": [P_NF, P_RT, P_WD, P_LK, P_MU]}),
+        ("assistant", "Sporo naraz. Co dalej?"),
+        ("user", "nic wielkiego na raz - male odwracalne kroki jak zawsze, zero wielkich przepisywan "
+                 "bez potrzeby", {"principle": "pr.small_reversible_steps"}),
+        ("user", "generator reelsow chyba faktycznie stoi, ale formalnie tego nie zamykam, zobaczymy "
+                 "czy wroce"),
+        ("assistant", "A nowe pytania?"),
+        ("user", "glownie czy iso apelacyjna droge w sprawie Kwiatowej jesli przegram, ale to za "
+                 "wczesnie zeby o tym myslec", {"open_question": "oq.lk.appeal_path"}),
+    ))
+
