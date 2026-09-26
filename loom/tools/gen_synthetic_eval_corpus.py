@@ -810,7 +810,7 @@ _nf07_msgs = _nf07_prefix + [
 ]
 add(id="nf-07-fork-python-or-cpp", provider="claude", project=P_NF, kind="signal", model="claude-3-5-sonnet",
     title="rozjazd: python czy c++", date="2025-06-20T21:00:00Z",
-    messages=_nf07_msgs, current="a2b")
+    messages=_nf07_msgs, current="a2b", claude_fork=True)
 
 add(id="nf-08-cpp-wins", provider="claude", project=P_NF, kind="signal", model="claude-3-5-sonnet",
     title="wygrywa c++", date="2025-08-10T10:00:00Z",
@@ -1180,7 +1180,7 @@ _mu02_msgs, _mu02_cur = fork_edit(
 )
 add(id="mu-02-key-open", provider="claude", project=P_MU, kind="signal", model="claude-3-5-sonnet",
     title="molowy czy inny - jeszcze nie wiem", date="2026-02-20T21:00:00Z",
-    messages=_mu02_msgs, current=_mu02_cur)
+    messages=_mu02_msgs, current=_mu02_cur, claude_fork=True)
 
 add(id="mu-03-recording-medium", provider="chatgpt", project=P_MU, kind="signal", model="gpt-4.1",
     title="tasma czy cyfrowo", date="2026-03-01T20:00:00Z",
@@ -1522,4 +1522,106 @@ add(id="n20-wordpress-znajomego", provider="chatgpt", project=None, kind="noise"
 print(f"[gen] {len(CONVERSATIONS)} conversations authored "
       f"({sum(1 for c in CONVERSATIONS if c['kind'] == 'signal')} signal, "
       f"{sum(1 for c in CONVERSATIONS if c['kind'] == 'noise')} noise)")
+
+# ══════════════════════ Claude Projects + Memories ═══════════════════
+# Exercises the `claude_projects` / `claude_memories` sniff paths
+# (loom/src/archive/ingest_parse.cpp: sniff_export_element). A handful of
+# notable phrasings/claims embedded here are hand-listed in ground truth
+# under "claude_project_and_memory_evidence" rather than tag-scanned (this
+# side of the corpus is small enough that hand-listing is clearer).
+CLAUDE_PROJECTS = [
+    {"uuid": "claude-project-noteflow", "name": "NoteFlow dev",
+     "created_at": "2025-01-10T09:00:00Z",
+     "description": "Praca nad NoteFlow: notatnik + czat, docelowo Python -> C++.",
+     "prompt_template": "Zawsze pytaj o alternatywy zanim zaproponujesz jedno rozwiazanie. "
+                        "Preferuj maly odwracalny krok nad duza nieodwracalna zmiane.",
+     "docs": [{"filename": "principles.md",
+               "content": "# Zasady dla tego projektu\n\nDomyslnie: maly odwracalny krok zamiast "
+                          "duzej nieodwracalnej zmiany. Presety i config to dane; algorytmy i UI "
+                          "zostaja w kodzie."}]},
+    {"uuid": "claude-project-lokatorka", "name": "Sprawa Kwiatowa",
+     "created_at": "2026-01-05T21:00:00Z",
+     "description": "Fikcyjna sprawa najmu - kaucja i szkody po zalaniu/plesni.",
+     "prompt_template": "Kazdy termin musi miec zapisana podstawe prawna i przypomnienie kilka dni "
+                        "wczesniej. Nie wysylaj niczego bez sprawdzenia podstawy.",
+     "docs": [{"filename": "deadlines.md",
+               "content": "# Terminy\n\nWszystko co dotyczy terminow: liczone od dostarczenia pisma, "
+                          "plus dwa dni zapasu, zawsze zapisana podstawa prawna."}]},
+]
+CLAUDE_MEMORIES = {
+    "conversations_memory": "Ola pracuje rownolegle nad kilkoma projektami (NoteFlow/appka od "
+                            "notatek, generator reelsow, Stroz, sprawa z Kwiatowej, plyta). Wraca do "
+                            "tego samego wzorca: opcjonalnosc jest wazniejsza niz tymczasowa "
+                            "szybkosc, wiec czesto zostawia sobie odwrot zamiast oszczedzac dzien.",
+    "project_memories": {
+        "claude-project-noteflow": "NoteFlow: rdzen w C++, sync REST-based (nie git-based), "
+                                   "transkrypcja glosowa przez wymienny TranscriptionProvider.",
+    },
+}
+CLAUDE_PROJECT_AND_MEMORY_EVIDENCE = [
+    {"locator": {"provider": "claude", "kind": "project", "id": "claude-project-noteflow", "field": "prompt_template"},
+     "principle": "pr.small_reversible_steps",
+     "quote": "Preferuj maly odwracalny krok nad duza nieodwracalna zmiane."},
+    {"locator": {"provider": "claude", "kind": "project", "id": "claude-project-noteflow", "field": "docs[0]"},
+     "principle": "pr.data_over_branches",
+     "quote": "Presety i config to dane; algorytmy i UI zostaja w kodzie."},
+    {"locator": {"provider": "claude", "kind": "project", "id": "claude-project-lokatorka", "field": "docs[0]"},
+     "area": "area.lokatorka.deadlines",
+     "quote": "Wszystko co dotyczy terminow: liczone od dostarczenia pisma, plus dwa dni zapasu, "
+              "zawsze zapisana podstawa prawna."},
+    {"locator": {"provider": "claude", "kind": "memories", "id": "claude-memories", "field": "conversations_memory"},
+     "principle": "pr.optionality_over_speed",
+     "quote": "opcjonalnosc jest wazniejsza niz tymczasowa szybkosc"},
+]
+
+# ══════════════════════════════ Renderers ═════════════════════════════
+
+
+def assign_times(messages, date_start):
+    d0 = dt(date_start)
+    return {m["nid"]: d0 + datetime.timedelta(minutes=4 * i) for i, m in enumerate(messages)}
+
+
+def to_chatgpt_export(conv):
+    messages = conv["messages"]
+    times = assign_times(messages, conv["date"])
+    child_map = {}
+    for m in messages:
+        child_map.setdefault(m["parent"] or "root", []).append(m["nid"])
+    mapping = {"root": {"id": "root", "parent": None, "children": child_map.get("root", []), "message": None}}
+    for m in messages:
+        mapping[m["nid"]] = {
+            "id": m["nid"], "parent": m["parent"] or "root", "children": child_map.get(m["nid"], []),
+            "message": {
+                "id": m["nid"], "author": {"role": m["role"]},
+                "content": {"content_type": "text", "parts": [m["text"]]},
+                "create_time": epoch(times[m["nid"]]),
+                "metadata": {"model_slug": conv.get("model", "")} if m["role"] == "assistant" else {},
+            },
+        }
+    current = conv.get("current") or (messages[-1]["nid"] if messages else "root")
+    return {"id": conv["id"], "title": conv["title"], "create_time": epoch(dt(conv["date"])),
+            "current_node": current, "mapping": mapping}
+
+
+def to_claude_export(conv):
+    messages = conv["messages"]
+    times = assign_times(messages, conv["date"])
+    use_parent = bool(conv.get("claude_fork"))
+    out_msgs = []
+    for m in messages:
+        entry = {"uuid": m["nid"], "sender": "human" if m["role"] == "user" else "assistant",
+                 "text": m["text"], "created_at": iso(times[m["nid"]])}
+        if use_parent:
+            entry["parent_message_uuid"] = m["parent"] or ""
+        out_msgs.append(entry)
+    current_leaf = conv.get("current") or (messages[-1]["nid"] if messages else "")
+    return {"uuid": conv["id"], "name": conv["title"], "created_at": iso(dt(conv["date"])),
+            "current_leaf_message_uuid": current_leaf, "chat_messages": out_msgs}
+
+
+def render_claude_projects():
+    return [{"uuid": p["uuid"], "name": p["name"], "created_at": p["created_at"],
+             "description": p["description"], "prompt_template": p["prompt_template"],
+             "docs": p["docs"]} for p in CLAUDE_PROJECTS]
 
