@@ -318,6 +318,60 @@ LOOM_API const char* loom_list_artifacts(LoomContext* ctx, const char* filter_js
 /* -> {"artifact":{...},"content":"..."}; content omitted when include_content == 0 */
 LOOM_API const char* loom_get_artifact(LoomContext* ctx, const char* artifact_id, int include_content);
 
+/* ── Knowledge layer: data pack, store, judgements, pipeline ──────── */
+/* (LOOM_CONCEPTUAL_MODEL; include/loom/knowledge.h, knowledge_store.h) */
+
+/* Data pack manifest: {"id","version","hash","files":[{"path","schema","sha256"}]} */
+LOOM_API const char* loom_kb_pack(LoomContext* ctx);
+/* One pack file by name: "evidence_encoding" (policy/), "goal_types",
+ * "anchoring", or any pack path ("project_kinds/film.json") -> the document. */
+LOOM_API const char* loom_kb_policy(LoomContext* ctx, const char* name);
+/* Knowledge runs, newest first: [{"id","archive_run_id","pack_hash","status","inputs","summary","created"}] */
+LOOM_API const char* loom_kb_runs(LoomContext* ctx, int limit);
+/* query_json: {"run"?(default latest done run),"what":"claims|entities|instances|slots|principles|
+ * operators|morphisms|decisions|forks|areas|predictions|models|products|status_history|stats",
+ * filters: "subject","predicate","object","evidence","origin","status","observation","branch" (claims),
+ * "kind","canonical_key","alias_key","parent" (entities), "paradigm","subject" (instances),
+ * "instance","role","slot","claim" (slots), "entity" (status_history), "limit"}
+ * -> {"run","items":[model objects]} (stats: {"run","items":{table: rows}}) */
+LOOM_API const char* loom_kb_query(LoomContext* ctx, const char* query_json);
+/* Appends an owner judgement (append-only, replayed last on every rebuild):
+ * {"target_kind","target","verdict":"confirm|reject|edit|merge|split","payload"?,"reason"?}
+ * -> the stored judgement {"id","seq",...}. Add {"replay_run":"kr_..."} to apply it now. */
+LOOM_API const char* loom_kb_judge(LoomContext* ctx, const char* judgement_json);
+/* Runs (or resumes) the knowledge pipeline; blocks. config_json: {"sources","repo"?,"stages"?,
+ * "prior_cut"?,"priors"?,"llm"?,"out_dir"?,"project"?,"force"?,"stage_params"?}. cb receives
+ * (current, total, "<stage>: <message>"), possibly from a worker thread.
+ * -> {"task_id","run","pack_hash","status":"done|paused|failed|cancelled","error","stages":[...],"summary"} */
+LOOM_API const char* loom_knowledge_run(LoomContext* ctx, const char* config_json, LoomProgressCallback cb, void* ud);
+/* Pauses the running loom_knowledge_run at its next checkpoint (LOOM_E_NOT_FOUND when none). */
+LOOM_API int loom_knowledge_cancel(LoomContext* ctx);
+/* task_id NULL -> latest. -> {"run":{"task_id","knowledge_run","config"}|null,"stages":[...]} */
+LOOM_API const char* loom_knowledge_status(LoomContext* ctx, const char* task_id);
+
+/* ── Knowledge areas (next wave; currently return not_implemented) ─── */
+/* Catalog (include/loom/catalog.h). JSON shapes are documented there. */
+LOOM_API const char* loom_catalog_scan(LoomContext* ctx, const char* config_json, LoomProgressCallback cb, void* ud);
+LOOM_API const char* loom_catalog_score(LoomContext* ctx, const char* config_json, LoomProgressCallback cb, void* ud);
+/* UnitQuery JSON -> [CatalogUnit] */
+LOOM_API const char* loom_catalog_query(LoomContext* ctx, const char* query_json);
+LOOM_API const char* loom_catalog_preview(LoomContext* ctx, const char* unit_id);
+/* {"unit_id","action":"include|exclude|pin","reason"?} -> {"decisions":[...]} */
+LOOM_API const char* loom_catalog_override(LoomContext* ctx, const char* override_json);
+LOOM_API const char* loom_catalog_import(LoomContext* ctx, const char* options_json, LoomProgressCallback cb, void* ud);
+/* Extract + resolve (extract.h, resolve.h). */
+/* Detect, segment and extract one file without storing: -> Extraction JSON */
+LOOM_API const char* loom_extract_preview(LoomContext* ctx, const char* path, const char* options_json);
+/* {"snapshot":dir,"repo":dir} -> LineageResult JSON */
+LOOM_API const char* loom_resolve_lineage(LoomContext* ctx, const char* request_json);
+/* Generalize (generalize.h): {"run"?,"cut"} -> {"predictions":[...]} */
+LOOM_API const char* loom_generalize_predict(LoomContext* ctx, const char* request_json);
+/* Context + materialize (context_engine.h, materialize.h). */
+/* ContextRequest JSON -> {"context_set":{...},"text":"..."} */
+LOOM_API const char* loom_context_build(LoomContext* ctx, const char* request_json);
+/* {"kind":"self_description|dossier|backlog|extrapolated_spec","run"?,"instance"?} -> Rendered JSON */
+LOOM_API const char* loom_materialize(LoomContext* ctx, const char* request_json);
+
 /* ── Platform HTTP injection ───────────────────────────────────────── */
 
 /* Opaque response sink handed to the platform send function. */
