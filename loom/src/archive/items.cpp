@@ -352,6 +352,7 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
     score["open_question"] += 1.0;
     cues["open_question"].push_back("czy");
   }
+  bool list_heading = false;  // an explicit list heading ("10. Otwarte decyzje")
   double sentence_best = 0;
   for (const auto& [t, v] : score) sentence_best = std::max(sentence_best, v);
   if (!h.empty()) {
@@ -372,6 +373,7 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
                       ph == "nie wolno zgubić" || ph == "must not lose" || ph == "otwarte pytania";
       bool hit = anywhere ? lead.find(ph) != std::string_view::npos : lead.substr(0, ph.size()) == ph;
       if (hit) {
+        list_heading = list_heading || anywhere;
         score[hh.type] += hh.weight;
         cues[hh.type].push_back(std::string("§") + hh.phrase);
       }
@@ -398,7 +400,7 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
   }
   if (best.empty() || best_score < 1.5) return c;
   // A heading alone classifies only full statements, not noun-phrase bullets.
-  if (sentence_best < 1.0 && tokenize(s).size() < 5) return c;
+  if (sentence_best < 1.0 && tokenize(s).size() < (list_heading ? 3u : 5u)) return c;
   c.type = best;
   double conf = 0.35 + 0.15 * best_score;
   if (best_score - second < 0.5) conf -= 0.1;

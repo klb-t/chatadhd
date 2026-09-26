@@ -1,5 +1,6 @@
 // Text utilities for the archive pipeline: tokenisation, stop words (PL+EN),
 // sentence splitting, dates, identifiers. Pure functions.
+#include <cctype>
 #include <algorithm>
 #include <cmath>
 #include <ctime>
@@ -63,7 +64,7 @@ const std::unordered_set<std::string>& stopwords() {
         "jednak", "bardziej", "raz", "dwa", "gdyż", "oraz", "obecnie", "teraz", "dopiero", "zamiast", "czym",
         "tym", "cały", "cała", "całe", "sam", "sama", "samo", "nasz", "nasza", "nasze", "wasz", "jeden", "jedna",
         "jedno", "ich", "moje", "mój", "moja", "które", "wtedy", "gdyby", "jeżeli", "każdej", "każda", "każde",
-        "każdego", "każdym", "swoje", "swój", "swoją", "tego", "tym", "ale",
+        "każdego", "każdym", "swoje", "swój", "swoją", "tego", "tym", "ale", "dopóki", "dopiero", "jedynie",
         // code keywords / boilerplate
         "std", "const", "return", "returns", "include", "auto", "int", "void", "bool", "string", "str",
         "nullptr", "self", "def", "class", "struct", "public", "private", "protected", "namespace", "template",
@@ -306,8 +307,11 @@ std::string first_date(std::string_view t) {
           t[i + 7] == '-' && dig(i + 8) && dig(i + 9))) {
       continue;
     }
-    if (i > 0 && dig(i - 1)) continue;
+    if (i > 0 && (dig(i - 1) || t[i - 1] == '_' || t[i - 1] == '-')) continue;  // part of a file name / id
     if (dig(i + 10)) continue;
+    if (i + 10 < t.size() && t[i + 10] == '.' && i + 11 < t.size() && std::isalpha(static_cast<unsigned char>(t[i + 11]))) {
+      continue;  // "..._2026-09-16.md"
+    }
     int y = std::stoi(std::string(t.substr(i, 4)));
     int m = std::stoi(std::string(t.substr(i + 5, 2)));
     int d = std::stoi(std::string(t.substr(i + 8, 2)));
@@ -458,6 +462,13 @@ std::string gloss(std::string_view t) {
       {"artefakty", "artifact"},  {"artefaktów", "artifact"},   {"widok", "view"},
       {"widoki", "view"},         {"agent", "agent"},           {"agenta", "agent"},
       {"przeglądarka", "browser"}, {"terminal", "terminal"},    {"punkt", "checkpoint"},
+      {"surowych", "raw"},         {"surowe", "raw"},             {"surowego", "raw"},
+      {"eksportów", "export"},     {"eksportu", "export"},        {"oryginału", "source"},
+      {"oryginał", "source"},      {"chronologię", "timeline"},   {"forków", "fork"},
+      {"forki", "fork"},           {"słownika", "vocabulary"},    {"słownik", "vocabulary"},
+      {"wyszukiwania", "search"},  {"terminów", "term"},          {"sprzeczności", "contradiction"},
+      {"tematów", "theme"},        {"idei", "idea"},              {"decyzji", "decision"},
+      {"scalenie", "merge"},       {"materializacja", "materialize"}, {"grafie", "graph"},
       {"wznowienie", "resume"},   {"ponowienie", "retry"},      {"wycofanie", "rollback"},
   };
   auto it = kGloss.find(std::string(t));

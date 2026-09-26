@@ -466,7 +466,19 @@ Status Ingestor::ingest_text(const PlannedFile& f, std::string_view content, con
   }
   PrevBindings prev;
   LOOM_TRY_ASSIGN(std::string sid, source_for(blob, "loom.archive." + kind, f.uri, "file", kind, f.size, prev));
-  std::string date = first_date(utf8::prefix(content, 600));
+  // a date in the document header ("Stan roboczy: 2026-09-16"), else git
+  std::string head;
+  {
+    std::size_t p = 0;
+    for (int line = 0; line < 3 && p < content.size(); ++line) {
+      std::size_t e = content.find('\n', p);
+      if (e == std::string_view::npos) e = content.size();
+      head.append(content.substr(p, e - p));
+      head.push_back('\n');
+      p = e + 1;
+    }
+  }
+  std::string date = first_date(head);
   if (date.empty()) {
     if (auto it = path_date_.find(f.uri); it != path_date_.end()) date = it->second;
   }

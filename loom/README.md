@@ -196,7 +196,7 @@ loom --data-dir /tmp/loom-archive archive run \
 | `cluster` | Deterministic Louvain on the term co-occurrence graph, which gives the themes. |
 | `timeline` | Chronological path per theme, ChatGPT/Claude forks (kept or abandoned branch), version groups, commits. |
 | `items` | Typed items: `idea`, `decision`, `rejected_option`, `open_question`, `implementation`, `bug`, `requirement`, `invariant`, `rationale`. A bilingual PL+EN cue-phrase classifier with section-heading hints gives each a confidence. Optional LLM refinement of low-confidence items with `--llm auto`. |
-| `relate` | `supersedes` (a later decision reverses an earlier one on the same subject), `contradicts` and `resolves` (a later decision answers an open question). Nothing is deleted; items get a status. |
+| `relate` | `supersedes` (a later decision reverses an earlier one on the same subject), `contradicts` and `resolves` (a later decision answers an earlier question). Nothing is deleted; items get a status. |
 | `synthesize` | Renders `MASTER.md` (themes, timeline, decisions, rejected options, open questions, requirements, invariants, every claim as `[title › location @ date]`), `source_map.csv`, `timeline.json`, `items.jsonl`, `graph.json`, `project_manifest.json` and `gap_report.md`. The gap report checks named components and interfaces against declared symbols, spec bullets against code, referenced files, themes without code and TODO/FIXME. CamelCase names that come up again in synthesis feed one more retrieval round (`max_synthesis_rounds`). |
 | `materialize` | Stores artifacts in the BlobStore and `loom_artifacts`, writes them plus `task_log.jsonl` to `--out`, and adds theme and item nodes with `supersedes`/`contradicts`/`resolves` edges to the graph. |
 

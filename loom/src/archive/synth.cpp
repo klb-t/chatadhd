@@ -142,12 +142,19 @@ Evidence phrase_evidence(const CodeIndex& ix, std::string_view phrase) {
   for (const auto& f : ix.files) {
     std::size_t s = 0, w = 0;
     std::vector<std::string> m;
+    auto has_prefix = [](const std::set<std::string>& set, const std::string& word) {
+      // same 6-letter stem ("retrieval" ~ "retrieve", "normalizacja" ~ "normalize")
+      if (word.size() < 6) return false;
+      std::string pre = word.substr(0, 6);
+      auto it = set.lower_bound(pre);
+      return it != set.end() && it->compare(0, pre.size(), pre) == 0;
+    };
     for (const auto& x : words) {
-      if (f.strong.count(x)) {
+      if (f.strong.count(x) || has_prefix(f.strong, x)) {
         ++s;
         m.push_back(x);
       }
-      if (f.weak.count(x)) ++w;
+      if (f.weak.count(x) || has_prefix(f.weak, x)) ++w;
     }
     if (s == words.size()) full_strong.emplace_back(f.strong.size(), f.uri);
     else if (w == words.size()) full_weak.emplace_back(f.weak.size(), f.uri);
@@ -182,7 +189,7 @@ bool is_spec_doc(const Doc& d) { return d.kind == "doc" || d.kind == "project" |
 // Words that are products/formats rather than components of this project.
 bool is_brand(const std::string& id) {
   static const std::set<std::string> k = {"ChatGPT", "GitHub", "PolyForm", "ThreadSanitizer", "UBSan",
-                                          "AddressSanitizer", "CMakeLists", "OpenSSL", "CPython", "MiniLM", "OpenRouter", "SQLite", "JavaScript", "TypeScript",
+                                          "AddressSanitizer", "CMakeLists", "OpenSSL", "CPython", "MiniLM", "CamelCase", "OpenRouter", "SQLite", "JavaScript", "TypeScript",
                                           "PyPI",    "OpenAI", "DeepSeek",   "MacOS",  "iOS",        "YouTube",
                                           "LinkedIn", "PowerPoint", "JSONL", "WebSocket", "OkHttp", "CMake",
                                           "LLMs", "APIs", "IDs", "URLs", "UUIDs", "JSONs", "PDFs", "GPUs", "VMs",
@@ -417,7 +424,21 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
         }
         run.clear();
       };
-      const std::string& t = d.text;
+      // body text without heading lines (Title Case headings are not names)
+      std::string t;
+      {
+        std::size_t p = 0;
+        while (p < d.text.size()) {
+          std::size_t e = d.text.find('\n', p);
+          if (e == std::string::npos) e = d.text.size();
+          std::string_view line = utf8::lstrip(std::string_view(d.text).substr(p, e - p));
+          if (line.empty() || line.front() != '#') {
+            t.append(line);
+          }
+          t.push_back('\n');
+          p = e + 1;
+        }
+      }
       std::size_t i = 0;
       bool single_space = false;  // separator since the previous word was exactly " "
       while (i < t.size()) {
@@ -494,6 +515,17 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
                                  feat.back() == ':')) {
           feat.pop_back();
         }
+        // "Term — description" / "Term: description": the term is the feature
+        for (std::string_view sep : {" — ", " – ", " - ", ": "}) {
+          std::size_t k = feat.find(sep);
+          if (k == std::string::npos || k == 0) continue;
+          std::string head = feat.substr(0, k);
+          std::size_t n = tokenize(head).size();
+          if (n >= 1 && n <= 5) {
+            feat = head;
+            break;
+          }
+        }
         if (utf8::length(feat) > 70 || content_tokens(feat).empty()) continue;
         Evidence ev = phrase_evidence(ix, feat);
         if (ev.status.empty()) continue;
@@ -501,6 +533,19 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       }
       if (row.feats.size() >= 2) secs.push_back(std::move(row));
     }
+    // worst coverage first
+    auto covered = [](const SecRow& r) {
+      std::size_t ok = 0;
+      for (const auto& [f, e] : r.feats) ok += e.status == "implemented" || e.status == "mentioned";
+      return ok;
+    };
+    std::stable_sort(secs.begin(), secs.end(), [&](const SecRow& a, const SecRow& b) {
+      double ra = static_cast<double>(covered(a)) / static_cast<double>(a.feats.size());
+      double rb = static_cast<double>(covered(b)) / static_cast<double>(b.feats.size());
+      if (ra != rb) return ra < rb;
+      if (a.feats.size() != b.feats.size()) return a.feats.size() > b.feats.size();
+      return a.heading < b.heading;
+    });
     Json sections = Json::array();
     std::ostringstream secmd;
     for (const auto& s : secs) {
@@ -642,7 +687,8 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       g << ".\n";
     }
     g << "\n## 2. Spec sections — feature coverage\n\n";
-    g << "Each bullet of a spec section is treated as a feature (Polish terms glossed to English).\n\n";
+    g << "Each bullet of a spec section is treated as a feature (for \"term — description\" bullets, the term; "
+         "Polish terms glossed to English). Sections with the least evidence come first.\n\n";
     g << secmd.str();
     g << "## 3. Files referenced but not present\n\n";
     if (missing_files.empty()) g << "None.\n\n";
@@ -887,6 +933,26 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     m << " " << ref(json::get_string(comp, "source")) << "\n";
   }
   if (!missing_phrases.empty()) m << "- Named technologies without code evidence: " << missing_phrases << ".\n";
+  {
+    int shown_secs = 0;
+    for (const auto& sec : gap["sections"]) {
+      std::size_t total = sec["features"].size();
+      std::int64_t cov = json::get_int(sec, "covered");
+      if (total < 3 || cov * 2 >= static_cast<std::int64_t>(total)) continue;
+      if (shown_secs++ == 0) m << "- Spec sections with the least code evidence:\n";
+      if (shown_secs > 10) break;
+      std::string missing;
+      int k = 0;
+      for (const auto& f : sec["features"]) {
+        if (json::get_string(f, "status") != "missing") continue;
+        if (k++ >= 4) break;
+        missing += (missing.empty() ? "" : "; ") + json::get_string(f, "feature");
+      }
+      m << "  - " << cov << "/" << total << " " << ref(json::get_string(sec, "source"));
+      if (!missing.empty()) m << " — missing: " << md_text(missing, 160);
+      m << "\n";
+    }
+  }
   m << "\nFull details: `gap_report.md`.\n";
 
   // ── source_map.csv ───────────────────────────────────────────────
