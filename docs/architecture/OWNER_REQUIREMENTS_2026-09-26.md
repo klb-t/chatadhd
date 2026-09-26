@@ -81,6 +81,20 @@ provenance, merge/deduplicate across brainstorms and versions, and use
 generalizations to infer unstated members (marked as inferred, with the
 expected property derived from the generalization) and to flag gaps.
 
+## R11 — Conversation → finished products that honour all user preferences
+> "idealna dopracowana wersja Chata GPT to na podstawie samej rozmowy powinna wytworzyć gotowe zgodne ze wszystkimi preferencjami użytkownika produkty"
+
+The conversation itself is the source: it is continuously compiled into
+project state (paradigm instances fed by brainstorms, decisions, corrections)
+and materialized into finished products of the project's kind (code + tests +
+docs, film/music artifacts, legal letters, …). A user preference model —
+explicit statements plus preferences inferred from history, each with
+provenance, scope, confidence and conflict resolution — acts as enforced
+constraints on every generated product, and each product is validated against
+those preferences (preference violations are test failures, not style notes).
+When the conversation changes, affected products are regenerated
+incrementally.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
