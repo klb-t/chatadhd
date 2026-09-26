@@ -65,6 +65,22 @@ cross-checks). Confidentiality is critical: local-first, encryption, explicit
 control over what is sent to external model providers. The system assists; the
 owner decides.
 
+## R10 — Brainstorm is an artifact type (unstructured capture), processed automatically
+> "burza mózgów to jest że tak powiem rodzaj artefaktu, albo typ opisu danych. zawiera różne informacje na temat na przykład dla aplikacji – funkcjonalności, implementację, zasady fundamentalne, źródła danych. Jednym słowem wszystko nie ustrukturyzowane tylko wymienione i również zakreślone obszary uogólnieniami i to wszystko ma być wiesz automatycznie przetwarzane"
+
+A brainstorm is not a role parallel to specification/modules; it is an artifact
+type — an unstructured capture that lists items of any kind (for an app:
+features, implementation details, fundamental principles, data sources, …;
+for a film: characters, scenes, plot ideas, style; for a legal case:
+arguments, evidence, legal bases, strategies) and also outlines areas with
+generalizations (umbrella statements that delimit a region, e.g. "everything
+is data"). Brainstorms must be processed automatically: segment into items,
+detect generalizations and the areas they delimit, classify each item against
+the project kind's roles/meta-model, map items into paradigm slots with
+provenance, merge/deduplicate across brainstorms and versions, and use
+generalizations to infer unstated members (marked as inferred, with the
+expected property derived from the generalization) and to flag gaps.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
