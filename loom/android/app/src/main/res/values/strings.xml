@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChatADHD</string>
+    <string name="storage_permission_rationale">ChatADHD stores its conversations in Documents/ChatADHD so they survive
+        reinstalls and stay readable by the desktop app. Grant \"All files access\" to continue.</string>
+    <string name="storage_permission_open_settings">Open settings</string>
+</resources>
