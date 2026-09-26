@@ -39,3 +39,12 @@ secrets.json
 # Loom (C++ kernel) build trees
 loom/build*/
 loom/out/
+
+# Loom Android shell (Gradle/CMake/NDK build outputs, never source)
+loom/android/.gradle/
+loom/android/local.properties
+loom/android/**/build/
+loom/android/**/.cxx/
+loom/android/app/src/main/assets/web/**
+!loom/android/app/src/main/assets/web/index.html
+loom/android/verify/build*/
