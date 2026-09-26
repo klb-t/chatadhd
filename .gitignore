@@ -39,3 +39,9 @@ secrets.json
 # Loom (C++ kernel) build trees
 loom/build*/
 loom/out/
+
+# Loom Android/web build outputs
+loom/android/.gradle/
+loom/android/**/build/
+loom/android/local.properties
+loom/web/node_modules/
