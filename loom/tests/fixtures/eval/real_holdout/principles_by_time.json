@@ -1,0 +1,2967 @@
+{
+  "schema": "loom.eval.real_holdout.principles/1",
+  "description": "The owner's principles and transformation operators as they become evidenced over time. For a cut T, an engine can only be credited with a principle/operator whose first_evidence.date <= T; evidence items with date > T must be ignored. 'author' says whose words the evidence is (owner verbatim, owner repository action, assistant report of an owner session, assistant-written artefact accepted into the project, or an external LLM text forwarded by the owner). kind=violated marks later code that contradicts an owner-stated invariant.",
+  "vocabulary": {
+    "level": [
+      "value",
+      "epistemic",
+      "strategy"
+    ],
+    "form": [
+      "invariant",
+      "heuristic",
+      "default",
+      "meta",
+      "conflict_resolution"
+    ],
+    "evidence.kind": [
+      "stated",
+      "applied",
+      "restated",
+      "refined",
+      "violated",
+      "superseded"
+    ],
+    "evidence.author": [
+      "owner",
+      "owner_repo",
+      "report",
+      "agent",
+      "external_llm"
+    ],
+    "source": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md §3.1, §3.3"
+  },
+  "owner_invariants_later_violated": [
+    {
+      "principle": "P.no_emoji_pydroid",
+      "stated": "2026-01-30 / 2026-02-06",
+      "violated_in": [
+        "0.4.5",
+        "0.06.00-0.06.03",
+        "0.7.9-0.7.10",
+        "0.8.3",
+        "0.9.0"
+      ]
+    },
+    {
+      "principle": "P.honesty_no_placeholders",
+      "stated": "2026-02-06..08",
+      "violated_in": [
+        "0.06.03 (TODO send)",
+        "0.7.0-0.7.10",
+        "0.8.3",
+        "0.9.0"
+      ]
+    },
+    {
+      "principle": "P.sortable_versions",
+      "stated": "2026-02-06..08",
+      "violated_in": [
+        "git labels 2026-02-11",
+        "CLAUDE.md 2026-02-19",
+        "0.8.3 ('0.8.0')",
+        "0.9.0 ('0.9.0')"
+      ],
+      "ambiguous": [
+        "Loom 0.1.0",
+        "0.9.0 DDMMYYYY log names"
+      ]
+    },
+    {
+      "principle": "P.flat_zip",
+      "stated": "2026-01-30",
+      "violated_in": [
+        "0.9.0 (inferred from README 'cd chatadhd_v0.9.0')"
+      ]
+    },
+    {
+      "principle": "P.kod_ne_dane / P.no_hardcoded_paths",
+      "stated": "2026-01-23 / 2026-02-02",
+      "violated_in": [
+        "0.4.0-0.4.1 log in code dir",
+        "0.5.0-0.06.03 version-named data dirs"
+      ],
+      "restored_in": "0.7.0"
+    },
+    {
+      "principle": "P.observability (file log)",
+      "stated": "2026-01-23",
+      "violated_in": [
+        "0.5.0-0.7.10 (no file log)",
+        "0.8.3"
+      ],
+      "restored_in": "0.9.0"
+    },
+    {
+      "principle": "P.user_sees_and_controls_context (API editor)",
+      "stated": "2026-02-06..08",
+      "violated_in": [
+        "0.7.0-0.7.10 (TODO stub)",
+        "0.9.0 (TODO stub)"
+      ],
+      "restored_in": "0.8.3 (raw JSON)"
+    },
+    {
+      "principle": "P.single_file_pydroid",
+      "stated": "2026-01-23",
+      "superseded_by_owner": "2026-01-29 (P.modularization)",
+      "note": "superseded, not violated"
+    }
+  ],
+  "principles": [
+    {
+      "id": "P.preserve_information",
+      "statement": "Nothing is lost: an edit creates a branch, old versions stay; abandoned is not unimportant; raw sources are immutable.",
+      "level": "value",
+      "form": "invariant",
+      "protects": [
+        "preservation_of_information"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s01",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:28-30"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s01",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:28-30",
+          "text": "Drzewo rozmów – wariantowanie, edycja nie kasuje tylko tworzy gałąź",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "README.md:13",
+          "text": "Branching: edycja tworzy gałąź, nie kasuje",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s16",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:504",
+          "text": "Message Versioning - edycja tworzy nową wersję, można przywrócić dowolną",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/async_jobs.py:18-19",
+          "text": "Nic nie ginie: jobs persistowane w SQLite przez cały cykl życia.",
+          "kind": "restated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:171-181,590,613",
+          "text": "Raw source is immutable; edit → branch, stara wersja nie ginie; porzucone ≠ nieważne",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.conceptual_model",
+          "locator": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md:366-368,384",
+          "text": "I1 Raw sources are immutable; I7 nothing is silently overwritten",
+          "kind": "restated",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "P.user_sees_and_controls_context",
+      "statement": "The user can see and edit everything that is sent to a model (system prompt, memory extract, message list, parameters); memory is inspectable, not an opaque prompt.",
+      "level": "value",
+      "form": "invariant",
+      "protects": [
+        "transparency",
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "README.md:14,20-21"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "README.md:14,20-21",
+          "text": "Exclude/Include: odznaczanie wiadomości z kontekstu; Context bundles (zapisane zestawy kontekstu)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-05",
+          "unit": "rep.s13",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:434",
+          "text": "API Preview (przytrzymaj Send 0.5s)",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "git.f0c5834",
+          "locator": "main.py:2",
+          "text": "ChatADHD v0.5.0 - Non-Linear Context Editor",
+          "kind": "applied",
+          "author": "owner_repo"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s21",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:638-639",
+          "text": "Edytor zapytania API musi mieć przede wszystkim możliwość edycji promptu sys, wyciągu z pamięci, listy wiadomości - ogólnie wszystkiego",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/engine/chat_engine.py:260-312",
+          "text": "build_request_spec / execute_request_spec: the edited request is what is sent",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "git.fd76b37",
+          "locator": "README.md (Core ideas)",
+          "text": "Memory is inspectable ... rather than hidden behind an opaque prompt.",
+          "kind": "restated",
+          "author": "owner_repo"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:64-66,108",
+          "text": "explicit control over what is sent to external model providers; explaining why each node was included",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ],
+      "violations_summary": "0.7.0-0.7.10 and 0.9.0 replace the editor with toast 'API Editor: TODO' (f7fd0f4 gui/chat_panel.py:459; 1e3fa2b :525; 0.9.0 gui/chat_panel.py:525); v0.06.03 editor did not send edited system prompt/memory (86c7508 gui/panels.py:1298)."
+    },
+    {
+      "id": "P.privacy_zero_knowledge",
+      "statement": "User data is isolated from any server: server sees only ciphertext it cannot decrypt; model calls go from the user's device; local copy fully editable.",
+      "level": "value",
+      "form": "invariant",
+      "protects": [
+        "privacy",
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-02-02",
+        "unit": "rep.s08",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:294-298"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-02",
+          "unit": "rep.s08",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:294-298",
+          "text": "Dane szyfrowane na serwerze bez możliwości odtworzenia przez operatora. Ale również lokalne, edytowalne, z pełną kontrolą",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-04",
+          "unit": "rep.s10",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:345-348",
+          "text": "W architekturze cały czas musi istnieć izolacja jawnych danych użytkownika i serwera. Po stronie serwera tylko zaszyfrowane informacje bez możliwości odszyfrowania, wywołania API z urządzenia użytkownika",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "core/crypto.py:1-15",
+          "text": "Zero-Knowledge Encryption Engine ... server never sees plaintext",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:411-427,601",
+          "text": "zero-knowledge storage/sync option",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:63-65",
+          "text": "Confidentiality is critical: local-first, encryption, explicit control over what is sent",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ],
+      "violations_summary": "Never integrated into the app: crypto is a library only (ANALIZA :87; report :729). Not a violation of a statement but a stated-but-unrealised value."
+    },
+    {
+      "id": "P.local_first_offline",
+      "statement": "Local-first: works offline, user owns the data; future-proof towards on-device models.",
+      "level": "value",
+      "form": "default",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-02-02",
+        "unit": "rep.s08",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:297"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-02",
+          "unit": "rep.s08",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:297",
+          "text": "Ale również lokalne, edytowalne, z pełną kontrolą",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-04",
+          "unit": "rep.s10",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:364-366",
+          "text": "Żeby była opcja offline + Future proof, np. dla telefonów z multi GPU - download i self-host dowolnego dostępnego modelu na telefon",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:290-293,603",
+          "text": "on-device models, Ollama/LM Studio; local-first / graceful degradation",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "git.fd76b37",
+          "locator": "README.md:3",
+          "text": "Local-first, mobile-oriented AI chat client ... user-owned persistent data",
+          "kind": "restated",
+          "author": "owner_repo"
+        }
+      ],
+      "violations_summary": "On-device inference never implemented; 0.9.0 ARCH explicitly out of scope ('Własne modele on-device', docs/ARCHITECTURE_v0.9.0.md:270)."
+    },
+    {
+      "id": "P.no_telemetry",
+      "statement": "No telemetry, analytics or remote tracking by default.",
+      "level": "value",
+      "form": "default",
+      "protects": [
+        "privacy"
+      ],
+      "first_evidence": {
+        "date": "2026-02-11",
+        "unit": "git.f7fd0f4",
+        "locator": "README.md (Security)"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "README.md (Security)",
+          "text": "No telemetry, no analytics, no ads",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:602",
+          "text": "brak telemetrii jako default",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "git.fd76b37",
+          "locator": "README.md (Security notes)",
+          "text": "The project does not add telemetry, analytics or advertising.",
+          "kind": "restated",
+          "author": "owner_repo"
+        }
+      ],
+      "ambiguity": "First evidence is an assistant-written README accepted into the project; no verbatim owner statement before 2026-09-16."
+    },
+    {
+      "id": "P.honesty_no_placeholders",
+      "statement": "No placeholders or fake functionality; claims about status, capability or quality must be true (no fabricated metrics; honest degradation).",
+      "level": "value",
+      "form": "invariant",
+      "protects": [
+        "honesty",
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-02-08",
+        "unit": "rep.s20",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:604-607"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s20",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:604-607",
+          "text": "Żadnych placeholderów.",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "git.86c7508",
+          "locator": "gui/panels.py:1298,1607",
+          "text": "TODO: implement sending with custom system prompt/memory; 'Screenshot (placeholder)'",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "gui/voice_panel.py:44-46; gui/chat_panel.py:179,459",
+          "text": "Placeholder — ... 'Recording... (not yet implemented)'; 'API Editor: TODO'",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/gui/voice_panel.py:45-46",
+          "text": "voice recording placeholder kept",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:29",
+          "text": "Placeholdery usunąłem.",
+          "kind": "restated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/models_video.py:455-494; engine/embeddings.py:11-17",
+          "text": "PLACEHOLDER/t2v, PLACEHOLDER/i2v, PLACEHOLDER/image seed models despite 'Placeholdery usunąłem'; HashEmbedding makes the coherence metric meaningless",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "git.970ca28",
+          "locator": "commit subject",
+          "text": "ci: add honest Python syntax sanity gate",
+          "kind": "restated",
+          "author": "owner_repo"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "git.fd76b37",
+          "locator": "README.md:5",
+          "text": "Status: functional Python/Kivy prototype ... not yet presented as a packaged consumer release.",
+          "kind": "restated",
+          "author": "owner_repo"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.analiza",
+          "locator": "docs/history/ANALIZA_v0.8.3_v0.9.0.md:109-110",
+          "text": "Uczciwa degradacja: brak możliwości ⇒ niższy poziom dowodu, nigdy fałszywa metryka",
+          "kind": "restated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.conceptual_model",
+          "locator": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md:388-389",
+          "text": "I9 Capability honesty ... never a fabricated metric",
+          "kind": "restated",
+          "author": "agent"
+        }
+      ],
+      "violations_summary": "Violated in v0.06.03, 0.7.0-0.7.10, 0.8.3 and 0.9.0 (see evidence with kind=violated).",
+      "ambiguity": "Report :606 continues 'Implementuję pełną abstrakcję providerów z OCR i ASR' in first person - probably the assistant's reply, so only 'Żadnych placeholderów.' is attributed to the owner. The report itself over-claims (Full API Editor listed as implemented, :720)."
+    },
+    {
+      "id": "P.fact_vs_inference",
+      "statement": "Separate facts from interpretations/inferences; never guess facts; say 'I know' vs 'I believe' vs 'I don't know'; model proposals stay unverified until the user verifies.",
+      "level": "epistemic",
+      "form": "invariant",
+      "protects": [
+        "truth",
+        "honesty"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json:13 (epistemic)"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:13 (epistemic)",
+          "text": "Never guess facts ... Distinguish clearly: \"I know\" vs \"I believe\" vs \"I don't know\"",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:31 (research)",
+          "text": "Separate facts from interpretations",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:25 (legal)",
+          "text": "Distinguish certain legal conclusions from interpretations",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "config.json:9",
+          "text": "\"system_preset\": \"epistemic\" (the Epistemic Extremist preset is the default)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/film_structure.py:124; engine/prompt_compiler.py:223-225",
+          "text": "verified: bool = False  # LLM can propose; only user can set True; only verified quotes flow to the prompt",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:29-30",
+          "text": "dane inferowalne z określoną oczekiwaną własnością",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:430-451",
+          "text": "inferencja ≠ fakt",
+          "kind": "restated",
+          "author": "external_llm"
+        }
+      ],
+      "ambiguity": "Preset texts were generated in session 2 at the owner's request ('System prompt edytowalny z kilkoma presetami', report :45); the owner chose/kept them (default preset 'epistemic') but the wording may be the assistant's."
+    },
+    {
+      "id": "P.explicit_calibrated_uncertainty",
+      "statement": "State confidence explicitly (high/medium/low/unknown), say what would change it and which gaps remain; mark inferred values visibly.",
+      "level": "epistemic",
+      "form": "invariant",
+      "protects": [
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json:31 (research)"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:31 (research)",
+          "text": "Explicitly state confidence: high/medium/low/unknown; Explain what would change your confidence; Identify gaps in available information",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s20",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:622,629",
+          "text": "GoogleSpeechASR maxAlternatives=5, confidence scores; VoiceAlternativesPopup",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/engine/attachments.py:55-63",
+          "text": "ResourceRepresentation(... warnings, confidence: float)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:29-30",
+          "text": "opacity ... może sygnalizować dane inferowalne z określoną oczekiwaną własnością",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.conceptual_model",
+          "locator": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md:73-100",
+          "text": "evidence class, origin, calibrated confidence; 'absent' slots",
+          "kind": "restated",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "P.provenance_cite_sources",
+      "statement": "Every claim keeps its source: cite articles/sources, distinguish primary/secondary sources, keep hashes and transformation chains.",
+      "level": "epistemic",
+      "form": "invariant",
+      "protects": [
+        "truth",
+        "transparency"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json:13,25,31"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:13,25,31",
+          "text": "Cite sources when possible; Cite specific articles, regulations, and case law; Distinguish primary vs secondary vs tertiary sources; Provide citations/references",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/engine/attachments.py:66-83,129-138",
+          "text": "ResourceNode(source_path, sha256, parent_id ...), manifests persisted",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/film_structure.py:104-124",
+          "text": "QuoteSource / Quote with source",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:171-181,247-253",
+          "text": "source bytes/hash, source ID, parser/version, transformation chain, confidence",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:20-24,58-62",
+          "text": "with provenance; chain-of-custody (content hashes, immutable originals); citations to authoritative sources",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.contradictions_and_alternatives",
+      "statement": "Catch contradictions, note when sources conflict, keep alternative interpretations instead of choosing arbitrarily.",
+      "level": "epistemic",
+      "form": "heuristic",
+      "protects": [
+        "truth",
+        "minimal_arbitrariness"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json:13,25,31"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:13,25,31",
+          "text": "Catch contradictions ...; Alternatives: Other interpretations?; Note when sources conflict",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "README.md:127",
+          "text": "Now give me a different perspective on the same issue (second model on the same legal question)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:165-172",
+          "text": "Otwarte decyzje (możesz się sprzeciwić) ... alternatywa: ...",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:264,365,553-568",
+          "text": "contradiction/supersession/alternative relations; open decisions deliberately not closed",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:266-268,304-308",
+          "text": "niepewność → nie wybieraj arbitralnie, zachowaj alternatywy; kilka konkurencyjnych modeli",
+          "kind": "restated",
+          "author": "external_llm"
+        }
+      ]
+    },
+    {
+      "id": "P.learn_from_corrections",
+      "statement": "Learn from corrections: understand why, apply to similar future cases; keep guidelines and error memories.",
+      "level": "epistemic",
+      "form": "heuristic",
+      "protects": [
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json:13; main.py:88"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:13; main.py:88",
+          "text": "LEARN FROM CORRECTIONS ... Apply correction to similar future cases; MemoryType FACT/GUIDELINE/ERROR",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:194-198,375-390",
+          "text": "events/logs → outcomes → mined pattern → candidate → evaluation → promotion; Experience records",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:90-93",
+          "text": "preferences inferred from history ... corrections",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.freshness_from_source",
+      "statement": "Knowledge about the external world (model lists, availability, prices, capabilities) is refreshed automatically from the source; check recency.",
+      "level": "epistemic",
+      "form": "default",
+      "protects": [
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s02",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s02",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60",
+          "text": "dane o aktualnej dostępności aktualizowane automatycznie na bieżąco",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "models.json:2-6; config.json:10-11",
+          "text": "update_url .../models; auto_update_models true; models_update_interval_hours 24",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:31",
+          "text": "Check for recency - note when information may be outdated",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:17,29,142",
+          "text": "Capabilities dynamiczne ... Hardkodowanie modeli było błędem — sync z API; sync_from_openrouter() cache 24h",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:298-307",
+          "text": "manifest ... freshness timestamp, provenance metryk",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.ask_when_unclear",
+      "statement": "Any ambiguity becomes a question to the user before proceeding; open decisions are presented for objection.",
+      "level": "epistemic",
+      "form": "default",
+      "protects": [
+        "truth",
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json:13"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:13",
+          "text": "Any ambiguity = question to user before proceeding",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:165",
+          "text": "Otwarte decyzje (możesz się sprzeciwić)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.conceptual_model",
+          "locator": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md:9-12",
+          "text": "If a component needs a meaning that is not here, it stops and asks",
+          "kind": "restated",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "P.user_judgement_wins",
+      "statement": "The owner decides: the model proposes, the user verifies; explicit user overrides survive automatic refreshes and win conflicts.",
+      "level": "value",
+      "form": "conflict_resolution",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "main.py:52-53"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "main.py:52-53",
+          "text": "models.json keeps user 'favorites' and 'hidden' separately from API-updated model data",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:29; engine/models_video.py:413; engine/film_structure.py:124",
+          "text": "Zachowuje user overrides przy refreshu — tylko rzeczywistość idzie z API; only user can set verified=True",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:316",
+          "text": "explicit override usera zawsze wygrywa, o ile nie łamie twardego safety/invariant contract",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:66",
+          "text": "The system assists; the owner decides.",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.titles_weak_signal",
+      "statement": "Conversation titles are a weak signal; search by content with multiple passes.",
+      "level": "epistemic",
+      "form": "heuristic",
+      "protects": [
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-09-16",
+        "unit": "doc.mega_master",
+        "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:348,609,631-634"
+      },
+      "evidence": [
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:348,609,631-634",
+          "text": "ingest wszystkiego bez ufania tytułom; tytuły rozmów są słabym sygnałem",
+          "kind": "stated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.tested_before_trusted",
+      "statement": "Untested code is not trusted; rebuild with tests rather than salvage.",
+      "level": "epistemic",
+      "form": "heuristic",
+      "protects": [
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-04-17",
+        "unit": "snap.0.9.0",
+        "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:292; README.md:68"
+      },
+      "evidence": [
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:292; README.md:68",
+          "text": "Każda iteracja jest testowalnym deliverable; Sanity-tests przechodzą",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "git.970ca28",
+          "locator": ".github/workflows/python.yml",
+          "text": "CI compile gate",
+          "kind": "applied",
+          "author": "owner_repo"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:146",
+          "text": "bo co było to nawet nieprzetestowane",
+          "kind": "stated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.kod_ne_dane",
+      "statement": "Code ≠ data: code lives anywhere and is versioned/replaceable; configuration, model lists and user data live outside the code in a fixed place, are created on first run and never overwritten by upgrades.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "preservation_of_information",
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s02",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s02",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60",
+          "text": "Chodziło mi o jeden plik z kodem, ale konfiguracja i wszystkie dane jak listy modeli – w zewnętrznych plikach",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-24",
+          "unit": "rep.s04",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:137-143",
+          "text": "W paczce ZIP nie było w ogóle: config.json ... data/client.db ... Aplikacja ma tworzyć te pliki przy pierwszym uruchomieniu",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-29",
+          "unit": "git.1afb834",
+          "locator": "main.py:15-21",
+          "text": "LOG_FILE = APP_DIR / 'chatadhd.log' (log written into the code directory)",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-02",
+          "unit": "rep.s08",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:271-284",
+          "text": "Nowa zasada KOD ≠ DANE",
+          "kind": "stated",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "git.928d566",
+          "locator": "main.py (_get_data_dir)",
+          "text": "data dir probed among code-version-named folders /Download/chatadhd_pydroid_v0.4.6 (same in 86c7508 main.py:99-110)",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "engine/paths.py:1-8,46-55",
+          "text": "CODE lives wherever you unzip it ... DATA lives in a fixed, persistent location; sentinel .chatadhd_data",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:37",
+          "text": "Presety layoutu w data_dir/presets/layouts/ ... User edytuje — zmiany nie giną przy upgrade'ach",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:110-140",
+          "text": "„Kod ≠ dane” — ale nie „wszystko YAML”",
+          "kind": "refined",
+          "author": "owner"
+        }
+      ],
+      "violations_summary": "Data directory tied to version-named code folders in v0.5.x-v0.06.03 (86c7508 main.py:99-110); fixed in 0.7.0 (engine/paths.py)."
+    },
+    {
+      "id": "P.no_hardcoded_paths",
+      "statement": "Nothing environment-specific is hardcoded: the app works in any directory as long as the structure is there.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-02-02",
+        "unit": "rep.s08",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:266-268"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-02",
+          "unit": "rep.s08",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:266-268",
+          "text": "Ale to co ty tam ścieżki hardcodujesz? Dlaczego nie działa w dowolnym katalogu byleby struktura była?",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "git.928d566",
+          "locator": "main.py (_get_data_dir)",
+          "text": "hardcoded /storage/emulated/0/Download/chatadhd_pydroid_v0.4.6 candidates (until 86c7508 main.py:99-110)",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "engine/paths.py:7",
+          "text": "Military-grade: deterministic, auditable, no hardcoded user paths.",
+          "kind": "restated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-03-06",
+          "unit": "git.287bdc1",
+          "locator": "gui/dialogs.py",
+          "text": "relative attachment paths broke when the working directory changed; fixed with abspath",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "P.variety_is_data",
+      "statement": "Variety of the world is data; code holds universal operations. Presets, model lists, layouts, providers, relations, workflows are data; a new case first tries to be a new data value.",
+      "level": "strategy",
+      "form": "heuristic",
+      "protects": [
+        "minimal_arbitrariness",
+        "optionality"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s02",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s02",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60",
+          "text": "konfiguracja i wszystkie dane jak listy modeli – w zewnętrznych plikach",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:2",
+          "text": "System prompt presets. Add your own! 'custom' is special - always editable.",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-24",
+          "unit": "rep.s04",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:150",
+          "text": "_presets.json  # Template (z _, nie nadpisuje)",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:253-255; engine/models_video.py:16-18; gui/layout_manager.py:18",
+          "text": "Te różnice to konfiguracja, nie osobny kod. Algorytm pipeline'u jest jeden; Modele są DANYMI. Registry jest LOGIKĄ; presety = DANE",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:123-140,527-534",
+          "text": "Danymi są: providerzy, modele, capabilities, presety ...; Czy to nowa wartość danych?",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:47-51",
+          "text": "A new kind = a new data file.",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:74-84",
+          "text": "Szukaj takiej reprezentacji problemu, żeby różnorodność świata była danymi, a kod opisywał tylko uniwersalne operacje",
+          "kind": "restated",
+          "author": "external_llm"
+        }
+      ]
+    },
+    {
+      "id": "P.presets_are_data",
+      "statement": "A preset is information, not code; shipped presets seed user-editable data.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "optionality"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json",
+          "text": "8 presets in an external JSON file",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s19",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:589",
+          "text": "QuickAPIPanel - 6 favorite models, 5 presets",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "gui/dialogs.py (QuickAPIPanel.PRESETS)",
+          "text": "presets moved into a class-level dict in code (not a data file)",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/gui/layout_manager.py:94-117",
+          "text": "shipped layouts seeded into data_dir with .layouts_seeded sentinel",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:580",
+          "text": "preset = informacja, nie kod",
+          "kind": "stated",
+          "author": "owner"
+        }
+      ],
+      "ambiguity": "0.7.x QuickAPIPanel presets are a Python dict (code), i.e. the 0.2.0 data-file form was not kept; the system-prompt preset set (Default/Epistemic/Coding/Legal/Research) is lost everywhere (ANALIZA :80)."
+    },
+    {
+      "id": "P.reality_vs_decision",
+      "statement": "Separate reality (provider state, capabilities, costs, existing code) from decisions (selection logic, user overrides, adapters).",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "minimal_arbitrariness",
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "main.py:52-53"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "main.py:52-53",
+          "text": "API-updated model data vs user favorites/hidden lists",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/async_jobs.py:9-11; engine/models_video.py:7-10; gui/legacy_adapter.py:15-16; docs/ARCHITECTURE_v0.9.0.md:312",
+          "text": "Separacja: rzeczywistość ... od decyzji; Rzeczywistość (capabilities, koszty) = DANE ... Decyzja = LOGIKA",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:298-316",
+          "text": "manifests (reality with provenance) vs policy/routing (decision)",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ],
+      "ambiguity": "Stated as part of a pre-existing 'kodeks' (ref.kodeks) whose own text is not in the repo."
+    },
+    {
+      "id": "P.provider_capability_abstraction",
+      "statement": "Every external model/service sits behind one provider/capability abstraction (direct keys, any contract); code asks for capabilities, not provider names.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "autonomy",
+        "optionality"
+      ],
+      "first_evidence": {
+        "date": "2026-01-21",
+        "unit": "rep.s01",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:22-24,34"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-21",
+          "unit": "rep.s01",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:22-24,34",
+          "text": "router do wielu API; OpenRouter jako główny provider (jeden klucz API → wiele modeli)",
+          "kind": "stated",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-04",
+          "unit": "rep.s10",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:357-360",
+          "text": "Jak dodamy providerów, np. bezpośrednie klucze korporacyjne czy na dowolnej umowie od dostawców modeli ... multikompatybilny chatbot",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s20",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:606,620-624",
+          "text": "pełną abstrakcję providerów z OCR i ASR; ProviderManager - unified interface, fallback chain",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:15-17,23,103",
+          "text": "IGenerator / IAsyncJobProvider; każda przyszła długa operacja → nowy IAsyncJobProvider",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:153-159,284-297",
+          "text": "Capability-based, nie enum-based: can(resource, capability, constraints)",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.graceful_degradation",
+      "statement": "Every capability has a fallback chain down to an always-working tier; optional dependencies stay optional; failures degrade, never crash.",
+      "level": "strategy",
+      "form": "heuristic",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-29",
+        "unit": "git.ba0e3d4",
+        "locator": "README.md:21-23"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-29",
+          "unit": "git.ba0e3d4",
+          "locator": "README.md:21-23",
+          "text": "Heavy deps optional. The selector falls back to lightweight TF-IDF ... otherwise to keyword overlap.",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-29",
+          "unit": "rep.s06",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:197",
+          "text": "SelectorEngine - semantic search z fallbackami (sentence-transformers → TF-IDF → keywords)",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-01-30",
+          "unit": "rep.s07",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:237",
+          "text": "File picker - próbuje plyer (natywny Android), fallback do Kivy",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s20",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:624",
+          "text": "ProviderManager - unified interface, fallback chain",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.66f926f",
+          "locator": "engine/semantic_llm.py:90-91",
+          "text": "disable LLM analysis after 5 consecutive failures (regex fallback)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:154-161",
+          "text": "Fallback chains wszędzie zabezpieczają",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:603",
+          "text": "local-first / graceful degradation",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.modularization",
+      "statement": "Split into modules when the platform allows; keep one entry point.",
+      "level": "strategy",
+      "form": "heuristic",
+      "protects": [
+        "optionality"
+      ],
+      "first_evidence": {
+        "date": "2026-01-29",
+        "unit": "rep.s06",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:185-187"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-29",
+          "unit": "rep.s06",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:185-187",
+          "text": "Dowiaduję się, że można jednak w pydroid dzielić projekt na pliki ... Jeśli tak, to jedziemy modułowo!",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "gui/",
+          "text": "2751-line gui/panels.py split into 9 modules",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:13-19",
+          "text": "panel rejestrowalny z zewnątrz (plug-in pattern)",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ],
+      "supersedes": "P.single_file_pydroid"
+    },
+    {
+      "id": "P.single_file_pydroid",
+      "statement": "Pydroid: the whole app in one code file.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s02",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:47"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s02",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:47",
+          "text": "Najważniejsze: pydroid tylko 1 plik.",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-29",
+          "unit": "rep.s06",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:185-187",
+          "text": "superseded once the platform constraint turned out false ('jedziemy modułowo!')",
+          "kind": "superseded",
+          "author": "owner"
+        }
+      ],
+      "ambiguity": "Platform-driven invariant, explicitly dropped by the owner (superseded, not violated)."
+    },
+    {
+      "id": "P.no_emoji_pydroid",
+      "statement": "No emoji/unicode pictographs in the UI: they render as boxes in Pydroid/Kivy; use ASCII labels.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "honesty"
+      ],
+      "first_evidence": {
+        "date": "2026-01-30",
+        "unit": "rep.s07",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:230,235"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-30",
+          "unit": "rep.s07",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:230,235",
+          "text": "Ikony emoji (↻, ⚙) nie renderują się (pokazują □) → Bez emoji - zamiast ↻ ⚙ □ teraz: R, Cfg, X",
+          "kind": "stated",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-04",
+          "unit": "git.6aa700d",
+          "locator": "gui/panels.py:118-120",
+          "text": "📁 📥 📄 in file-picker bookmarks",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s14",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:447,451",
+          "text": "ikonki zamiast których są krzaczki → ASCII ikony ([+], |- , ON/OFF) zamiast emoji",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "git.86c7508",
+          "locator": "gui/panels.py:726; main.py:66",
+          "text": "📎 attachment label, ☰ menu button",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.1e3fa2b",
+          "locator": "gui/dialogs.py:517; gui/graph_viz.py:477",
+          "text": "🔹 provider tabs, ⏸ freeze button",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/gui/dialogs.py:363,485",
+          "text": "↻ (the very glyph reported broken) and 📁 📄 in the new file picker",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/gui/dialogs.py:517; gui/dock_renderer.py:417",
+          "text": "🔹, ▸/▾",
+          "kind": "violated",
+          "author": "agent"
+        }
+      ],
+      "violations_summary": "Regression in repo 0.7.x, 0.8.3, 0.9.0 (ANALIZA :86). Whether geometric shapes (▶ ● ▲ ▼ ☰ ▸) render in Kivy's default font is not verified; pictographs (📎 📁 📄 🔹 ↻ ⏸) are the clear cases."
+    },
+    {
+      "id": "P.flat_zip",
+      "statement": "A release is one flat zip: unpacking gives main.py directly, no extra versioned top folder.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-30",
+        "unit": "rep.s07",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:239-250"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-30",
+          "unit": "rep.s07",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:239-250",
+          "text": "NIE będzie dodatkowego chatadhd_v0.4.2/ w środku",
+          "kind": "stated",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:48,112",
+          "text": "structure 'chatadhd_v0.9.0/' and run instructions 'cd chatadhd_v0.9.0'",
+          "kind": "violated",
+          "author": "agent"
+        }
+      ],
+      "ambiguity": "The original archives are not preserved; the 0.9.0 violation is inferred from its README instructions only (likely, not verified). The snapshot folder names in history/ were chosen at upload."
+    },
+    {
+      "id": "P.sortable_versions",
+      "statement": "Version strings are x.yy.zz so that alphabetical order equals numeric order.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "minimal_arbitrariness"
+      ],
+      "first_evidence": {
+        "date": "2026-02-06",
+        "unit": "rep.s19",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:576-584"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s19",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:576-584",
+          "text": "x.yy.zz - teraz sortowanie działa ... Alfabetycznie = numerycznie ✓",
+          "kind": "stated",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "git.a89f73f",
+          "locator": "main.py:9",
+          "text": "__version__ = \"0.06.00\"",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.46d0ba7",
+          "locator": "main.py:15",
+          "text": "__version__ = \"0.07.09\"",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.30b3da6",
+          "locator": "commit subjects 'Version 0.6.0' .. 'Version 0.7.9'",
+          "text": "owner's own import labels use x.y.z",
+          "kind": "violated",
+          "author": "owner_repo"
+        },
+        {
+          "date": "2026-02-19",
+          "unit": "git.64cd6ed",
+          "locator": "CLAUDE.md (Version History)",
+          "text": "0.7.9, 0.7.8 ... (x.y.z)",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/main.py:15",
+          "text": "__version__ = \"0.8.0\"",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/main.py:19",
+          "text": "__version__ = \"0.9.0\"",
+          "kind": "violated",
+          "author": "agent"
+        }
+      ],
+      "ambiguity": "Scope unclear for: Loom 0.1.0 (CMake requires numeric components; loom/CMakeLists.txt:3) and 0.9.0 per-run log names DDMMYYYYHHMMSS (engine/logging_setup.py:14,25) which do not sort chronologically - same principle, different object; count as 'ambiguous' when scoring."
+    },
+    {
+      "id": "P.observability",
+      "statement": "Every failure leaves a trace; every significant runtime event is logged (file + viewer + trace); logs are research material.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "transparency"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s03",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:104-112"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s03",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:104-112",
+          "text": "Wywala się po sekundzie od uruchomienia bez komunikatu → Pełny logging do pliku chatadhd.log, timestamps wszystkich operacji",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "git.f0c5834",
+          "locator": "main.py",
+          "text": "no file log handler from 0.5.0 through 0.7.10 (repo line); log only in LOGBUF",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s22",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:682",
+          "text": "added Log button back",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/logging_setup.py:7-10; engine/events.py:31-36; engine/live_debug.py",
+          "text": "każde wysokopoziomowe zdarzenie ... musi być logowane. Bez dodawania printów ad-hoc; każde zdarzenie runtime ma być śledzalne",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:183-192,375-378,583",
+          "text": "log/event stream; pełne logi z debugowania są materiałem badawczym; pełne logowanie z różnymi widokami",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ],
+      "violations_summary": "Log file lost from 0.5.0 until 0.9.0 (ANALIZA :82)."
+    },
+    {
+      "id": "P.determinism_auditability",
+      "statement": "What runs must be provable: deterministic, auditable, reproducible outputs; same input → same output.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "transparency",
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-02-04",
+        "unit": "rep.s09",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:328-331"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-04",
+          "unit": "rep.s09",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:328-331",
+          "text": "czy w kodzie jest dowód że te skrypty pytona są wywoływane? ... co byłoby deterministyczne i wystarczające do zapewnienia transparentności",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "engine/paths.py:7",
+          "text": "deterministic, auditable",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/prompt_compiler.py:5-24",
+          "text": "ten sam JSON → ten sam prompt; pure-function",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:183-192",
+          "text": "Wszystko istotne jest resumable i auditable: ID, status, input hash, output hash",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.conceptual_model",
+          "locator": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md:377-378",
+          "text": "I5 Determinism",
+          "kind": "restated",
+          "author": "agent"
+        }
+      ],
+      "ambiguity": "Reproducible builds/remote attestation themselves were never implemented (report :739)."
+    },
+    {
+      "id": "P.full_automation",
+      "statement": "Full auto: use everything the provider offers and automate what can be automated (memories, sync, analysis, brainstorm processing).",
+      "level": "strategy",
+      "form": "default",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s01",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:28-30"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s01",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:28-30",
+          "text": "pamięć – wspomnienia na życzenie i automatyczne",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s17",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:523-526",
+          "text": "Poproszę wszystko full auto ... wszystko co się da z dokumentacji OpenRouter",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s21",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:640",
+          "text": "Wprowadź automatyczną synchronizację z GitHub",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:194-198",
+          "text": "System uczy się, ale nie 'magicznie sam się przepisuje' (promotion only through evaluation)",
+          "kind": "refined",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:69",
+          "text": "to wszystko ma być wiesz automatycznie przetwarzane",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ],
+      "violations_summary": "Automatic memories (session 1) only as 0.2.0 regex fact extraction (30b3da6 main.py:236-244), lost from 0.3.0; GitHub auto_sync only a flag (c5a3120 engine/github_sync.py:38)."
+    },
+    {
+      "id": "P.cost_awareness",
+      "statement": "Minimal spend: prefer the cheapest adequate model/route, show prices, estimate cost before expensive steps.",
+      "level": "strategy",
+      "form": "heuristic",
+      "protects": [
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-21",
+        "unit": "rep.s01",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:23"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-21",
+          "unit": "rep.s01",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:23",
+          "text": "Analiza kosztów dostępu do 6+ modeli przy minimalnym nakładzie (~30 zł)",
+          "kind": "stated",
+          "author": "report"
+        },
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "README.md (Cost Estimation)",
+          "text": "With $10 OpenRouter credits: ...",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s14",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:454",
+          "text": "Ceny/rozmiary modeli",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.e994503",
+          "locator": "engine/batch_api.py:1-16; engine/semantic_worker.py:139",
+          "text": "Anthropic Batches (50% cheaper) when >500 pending",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.1e3fa2b",
+          "locator": "engine/models.py:155",
+          "text": "estimate_cost()",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/video_pipeline.py:171,810; docs/ARCHITECTURE_v0.9.0.md:302",
+          "text": "get_cost_estimate per phase; do budżetowania per-graph przed fazą 3",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "P.one_store_everything_memory",
+      "statement": "All data is one memory (conversation trees, attachments, everything) with an organising overlay; one system rather than many projects.",
+      "level": "strategy",
+      "form": "heuristic",
+      "protects": [
+        "preservation_of_information"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s03",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:79-82"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s03",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:79-82",
+          "text": "1000 rozmów porozrzucanych, 7 spraw naraz, Branching myśli w każdą stronę",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-30",
+          "unit": "rep.s07",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:253-257",
+          "text": "wszystkie dane = memory. W skład wchodzą: wszystkie drzewa rozmów, wszystkie załączniki, wszystko. Do tego jest nakładka porządkująca.",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s16",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:497-499",
+          "text": "'Prywatny System Operacyjny Wiedzy' (Gemini conversation pasted by the owner)",
+          "kind": "restated",
+          "author": "external_llm"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:19; gui/panel_system.py:103",
+          "text": "Video pipeline ... Nie jako osobna apka, tylko jako zestaw paneli + engine; kodeks Loom SDK",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:8-15,222",
+          "text": "Budujemy jeden system; Project — nie katalog, tylko subgraf",
+          "kind": "restated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "P.universal_structure",
+      "statement": "Look for one universal structure (recursive tree, graph, one pipeline) that covers all item kinds; generalise when a second instance appears.",
+      "level": "strategy",
+      "form": "meta",
+      "protects": [
+        "minimal_arbitrariness"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s03",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:87-95"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s03",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:87-95",
+          "text": "Hierarchiczna pamięć – nie płaska lista, tylko struktura",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-01-24",
+          "unit": "rep.s04",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:121-126",
+          "text": "Uniwersalna struktura pamięci: Memory Item ... children: [Memory Item, ...] → rekurencyjne zagnieżdżenie",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:21-23; docs/ARCHITECTURE_v0.9.0.md:257-259",
+          "text": "Uogólnienie: nie tylko video jest async ... uogólniona abstrakcja IAsyncJob; bardzo silna unifikacja ... invariant architektury",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:45",
+          "text": "zgodnie z filozofią kodowania mogłeś się na przykład domyślić że oprócz filmów również muzykę będziemy mogli tworzyć i w ogóle wszystko",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:55",
+          "text": "reprezentacja, która pozwala skompresować wiele przypadków za pomocą niewielkiej liczby zasad generujących",
+          "kind": "restated",
+          "author": "external_llm"
+        }
+      ]
+    },
+    {
+      "id": "P.data_continuity_across_versions",
+      "statement": "A new version must read the old data and settings; migrate forward defensively, wrap legacy parts instead of rewriting them.",
+      "level": "strategy",
+      "form": "invariant",
+      "protects": [
+        "preservation_of_information"
+      ],
+      "first_evidence": {
+        "date": "2026-02-06",
+        "unit": "rep.s16",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:509-515"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s16",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:509-515",
+          "text": "Nie czyta ustawień ani historii z poprzednich wersji → Auto-migracja danych z poprzednich wersji",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.46d0ba7",
+          "locator": "engine/db.py:120-123",
+          "text": "Goal: accept *any* reasonable legacy DB state without crashing.",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "engine/paths.py",
+          "text": "automatic migration from old data folders dropped (lost)",
+          "kind": "violated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:39,169; docs/ARCHITECTURE_v0.9.0.md:88,95-97",
+          "text": "ID prefixes compatible with 0.07.x; classic_0.07 layout; separate async_jobs.db to not collide with _SCHEMA_VERSION; adapter, not rewrite",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-25",
+          "unit": "doc.loom_readme",
+          "locator": "loom/README.md:71-96,124",
+          "text": "Shared on-disk format with the Python app (invariant)",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "P.problem_meta_solution_first",
+      "statement": "Solve the problem at the meta level first and refine in stages cheap → expensive, verifying at each gate before the costlier step.",
+      "level": "strategy",
+      "form": "heuristic",
+      "protects": [
+        "minimal_arbitrariness"
+      ],
+      "first_evidence": {
+        "date": "2026-04-17",
+        "unit": "snap.0.9.0",
+        "locator": "history/chatadhd_v0.9.0/engine/video_pipeline.py:14-17"
+      },
+      "evidence": [
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/video_pipeline.py:14-17",
+          "text": "Problem → meta-rozwiązanie first: najpierw struktura, potem klucze, potem ruch. Każdy etap weryfikuje spójność przed uruchomieniem droższego następnego.",
+          "kind": "stated",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.analiza",
+          "locator": "docs/history/ANALIZA_v0.8.3_v0.9.0.md:20-22,105-108",
+          "text": "czterofazowa rafinacja 'tanio → drogo' z bramką i kosztorysem ... paradygmat międzydomenowy",
+          "kind": "restated",
+          "author": "agent"
+        }
+      ],
+      "ambiguity": "Cited as part of the pre-existing 'kodeks'; no verbatim owner phrasing in the repo."
+    },
+    {
+      "id": "P.everything_possible_nothing_required",
+      "statement": "'Wszystko można, nic nie trzeba': everything configurable, nothing mandatory; minimal default with opt-in extensions.",
+      "level": "strategy",
+      "form": "default",
+      "protects": [
+        "optionality",
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-02-08",
+        "unit": "rep.s22",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:676"
+      },
+      "evidence": [
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s22",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:676",
+          "text": "Edytor wywołania API po długim wciśnięciu przycisku ... Przenieś go tam z górnego paska",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:5,87,319",
+          "text": "Motto: wszystko można, nic nie trzeba; minimal — Twoja prośba 'domyślnie wszystko wyłączone, zostaje główny czat'",
+          "kind": "stated",
+          "author": "agent"
+        }
+      ],
+      "ambiguity": "ARCH :87 quotes an owner request ('domyślnie wszystko wyłączone, zostaje główny czat') whose original is not in the repo."
+    },
+    {
+      "id": "P.defer_decisions",
+      "statement": "Do not take decisions that are not forced; classify each as invariant / policy-data / platform-adapter; keep options open; no speculative generality.",
+      "level": "strategy",
+      "form": "meta",
+      "protects": [
+        "optionality",
+        "minimal_arbitrariness"
+      ],
+      "first_evidence": {
+        "date": "2026-04-17",
+        "unit": "snap.0.9.0",
+        "locator": "history/chatadhd_v0.9.0/README.md:165-172"
+      },
+      "evidence": [
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:165-172",
+          "text": "Otwarte decyzje (możesz się sprzeciwić)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:4,100-108,553-568,675-688",
+          "text": "Każda arbitralna decyzja pozostaje otwarta, dopóki nie wymusza jej kontrakt, test, koszt lub ograniczenie platformy; decyzji nie podejmujemy, jeśli nie musimy",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-25",
+          "unit": "doc.loom_readme",
+          "locator": "loom/README.md:116-140",
+          "text": "Decisions table classed invariant / policy-default / platform detail",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "P.selection_over_dumping_context",
+      "statement": "Context is selected for the goal of each prompt from structured data (graph), under a budget, with reasons; selection is the main saving; stable → volatile ordering lets caching help too.",
+      "level": "strategy",
+      "form": "heuristic",
+      "protects": [
+        "transparency",
+        "autonomy"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "README.md:14,20-21,171"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "README.md:14,20-21,171",
+          "text": "Exclude/Include; Dołączanie wiadomości z innych rozmów; Context bundles; Context building (with exclusions)",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-01-24",
+          "unit": "rep.s04",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:132",
+          "text": "Active flag - czy dołączać do kontekstu",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-06",
+          "unit": "git.f0c5834",
+          "locator": "main.py:2",
+          "text": "Non-Linear Context Editor",
+          "kind": "applied",
+          "author": "owner_repo"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.48ad58d",
+          "locator": "engine/graph_memory.py:1-19",
+          "text": "we use the knowledge graph itself as the index",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/engine/attachments.py:1-10,425-496",
+          "text": "query-aware selection for LLM context",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:266-282",
+          "text": "Nie 'wstrzykujemy pamięci do promptu', tylko budujemy ContextSet pod konkretne zadanie",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:99",
+          "text": "to też było jedno z głównych założeń projektowych ... pozwoli na olanie cache'owania bo samą inteligencją więcej zaoszczędzi",
+          "kind": "restated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:14-33",
+          "text": "Intelligent context selection and prompt caching are complementary ... stabilny prefix → project context → goal-specific tail",
+          "kind": "refined",
+          "author": "external_llm"
+        }
+      ],
+      "ambiguity": "R12 ('olanie cache'owania') was corrected the same day by the note (complementary); both are recorded."
+    },
+    {
+      "id": "P.rebuild_dont_recover",
+      "statement": "Recovered old code is a source of requirements, ideas and data, not code to merge; rebuild with tests.",
+      "level": "strategy",
+      "form": "default",
+      "protects": [
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-01-29",
+        "unit": "rep.s06",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:217"
+      },
+      "evidence": [
+        {
+          "date": "2026-01-29",
+          "unit": "rep.s06",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:217",
+          "text": "GUI (zaimplementowane od podstaw, nie GPT stub)",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:1",
+          "text": "drugie podejście",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:145-151",
+          "text": "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane",
+          "kind": "stated",
+          "author": "owner"
+        }
+      ],
+      "ambiguity": "Conflicts with the earlier practice of restoring lost features (report §5; 1e3fa2b 'Restore lost features'). The 09-26 resolution: restore ideas/contracts/data, not code (ANALIZA :9-11)."
+    },
+    {
+      "id": "P.learn_generator",
+      "statement": "Self-discovery must recover the generator of decisions (principles, operators) and be tested by predicting later decisions.",
+      "level": "epistemic",
+      "form": "meta",
+      "protects": [
+        "truth"
+      ],
+      "first_evidence": {
+        "date": "2026-09-26",
+        "unit": "doc.owner_requirements",
+        "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:14,33"
+      },
+      "evidence": [
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:14,33",
+          "text": "znalazł wszystko na swój temat ... wyekstrapolował w duchu naszej filozofii kodowania",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:277-340",
+          "text": "Self-discovery powinno odkrywać generator ...; Temporal holdout",
+          "kind": "restated",
+          "author": "external_llm"
+        }
+      ]
+    }
+  ],
+  "operators": [
+    {
+      "id": "O.lost_feature_restore",
+      "situation": "a feature that existed earlier is missing in the current line",
+      "solution_class": "inventory lost features, restore them (often into a shared core), record the restoration; since 2026-09-26: restore the idea/contract and re-implement with tests",
+      "principles": [
+        "P.preserve_information"
+      ],
+      "first_evidence": {
+        "date": "2026-02-08",
+        "unit": "rep.doc",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:796-930"
+      },
+      "examples": [
+        {
+          "date": "2026-02-08",
+          "unit": "rep.doc",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:796-930",
+          "text": "POTENCJALNIE ZGUBIONE FUNKCJE + 'Do sprawdzenia'",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "git.c21de36",
+          "locator": "main.py (softinput_mode)",
+          "text": "keyboard fix lost in 0.5.0, restored in 0.5.2",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "core/",
+          "text": "semantic/crypto/selector restored",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.1e3fa2b",
+          "locator": "commit message",
+          "text": "Restore lost features + enhanced model selection",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.analiza",
+          "locator": "docs/history/ANALIZA_v0.8.3_v0.9.0.md:75-90",
+          "text": "status table with 'utracone', 'regresja'",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ],
+      "counterexamples": [
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:145-151",
+          "text": "rebuild, don't recover (code)",
+          "kind": "refined",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "O.new_source_to_provider",
+      "situation": "a new data source, medium or model service appears",
+      "solution_class": "put it behind the provider/capability abstraction with a fallback chain; do not build a separate subsystem",
+      "principles": [
+        "P.provider_capability_abstraction",
+        "P.graceful_degradation"
+      ],
+      "first_evidence": {
+        "date": "2026-02-08",
+        "unit": "rep.s20",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:620-624"
+      },
+      "examples": [
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s20",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:620-624",
+          "text": "GroqASR, GoogleSpeechASR, OCRSpaceProvider behind ProviderManager",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.48ad58d",
+          "locator": "engine/semantic_llm.py:1-15",
+          "text": "cheap LLM analyser with regex fallback",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/openrouter_video.py; gui/video_player.py; engine/compositor.py",
+          "text": "OpenRouterVideoProvider, IVideoPlayer, ICompositor chains",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:284-297",
+          "text": "Ten sam mechanizm registry dla LLM, embeddings, ASR, OCR, image/video/audio ...",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:254-256",
+          "text": "nowe źródło danych → rozszerz provider/capability abstraction",
+          "kind": "stated",
+          "author": "external_llm"
+        }
+      ]
+    },
+    {
+      "id": "O.second_instance_generalize",
+      "situation": "a second instance of a pattern appears (second async API, second film, second project kind)",
+      "solution_class": "extract one generalised abstraction for all instances; keep the specifics as parameters/data",
+      "principles": [
+        "P.universal_structure",
+        "P.variety_is_data"
+      ],
+      "first_evidence": {
+        "date": "2026-01-24",
+        "unit": "rep.s04",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:121-126"
+      },
+      "examples": [
+        {
+          "date": "2026-01-24",
+          "unit": "rep.s04",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:121-126",
+          "text": "memory types generalised into one recursive Memory Item",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:21-23",
+          "text": "video + Anthropic batches → IAsyncJob",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:253-259",
+          "text": "AoD / Cisza Beta / metaksiążka = one pipeline, configuration not code",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:8-15,451-465",
+          "text": "former projects → capability packs/workflows/adapters/views",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:44-51",
+          "text": "project kinds as data-defined paradigms with morphisms",
+          "kind": "applied",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "O.examples_to_class",
+      "situation": "the owner lists examples ending with 'itd.' / names a few members",
+      "solution_class": "build a universal mechanism with auto-detection for the whole class, not the listed cases",
+      "principles": [
+        "P.universal_structure"
+      ],
+      "first_evidence": {
+        "date": "2026-02-08",
+        "unit": "rep.s20",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:599-602,611-618"
+      },
+      "examples": [
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s20",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:599-602,611-618",
+          "text": "import 'db, json, html, mht, scrolled screenshot, itd.' → universal importer with format detection",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.owner_requirements",
+          "locator": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:74-82",
+          "text": "generalizations infer unstated members",
+          "kind": "stated",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "O.hardcoded_to_discovered",
+      "situation": "a value about the outside world is hardcoded (paths, model IDs, capabilities, prices)",
+      "solution_class": "discover it from the source (API, filesystem sentinel) with periodic refresh; keep user overrides separate",
+      "principles": [
+        "P.freshness_from_source",
+        "P.no_hardcoded_paths",
+        "P.reality_vs_decision"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s02",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60"
+      },
+      "examples": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s02",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:58-60",
+          "text": "model lists auto-updated",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-02",
+          "unit": "rep.s08",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:266-289",
+          "text": "hardcoded paths → paths.py",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.278f10b",
+          "locator": "engine/config.py:18; gui/dialogs.py:129",
+          "text": "bad hardcoded semantic model ID → empty default + picker from registry",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:17,29",
+          "text": "Hardkodowanie modeli było błędem — sync z API",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "O.platform_failure_to_portable",
+      "situation": "a platform-specific capability fails on the target (plyer, emoji glyphs, JVM speech)",
+      "solution_class": "fall back to a portable implementation (Kivy widget, ASCII), keep the native path optional",
+      "principles": [
+        "P.graceful_degradation",
+        "P.no_emoji_pydroid"
+      ],
+      "first_evidence": {
+        "date": "2026-01-30",
+        "unit": "rep.s07",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:230-237"
+      },
+      "examples": [
+        {
+          "date": "2026-01-30",
+          "unit": "rep.s07",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:230-237",
+          "text": "emoji → ASCII; plyer → Kivy fallback",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-04",
+          "unit": "rep.s11",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:392-394",
+          "text": "Revert do Kivy FileChooser (plyer nie działa w Pydroid)",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:31-35",
+          "text": "FloatLayout not WindowBase; VideoPlayer → Video → External",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "O.failure_to_observability",
+      "situation": "a failure without a message / hard-to-debug behaviour",
+      "solution_class": "add persistent structured logging and traces (file log, viewer, event trace, debug endpoint), not ad-hoc prints",
+      "principles": [
+        "P.observability"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "rep.s03",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:104-112"
+      },
+      "examples": [
+        {
+          "date": "2026-01-23",
+          "unit": "rep.s03",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:104-112",
+          "text": "crash → full logging to file",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/engine/logging_setup.py:7-10",
+          "text": "Bez dodawania printów ad-hoc przy debugowaniu",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "O.monolith_to_modules",
+      "situation": "a file/class grows too large or the platform allows splitting",
+      "solution_class": "split into modules along component boundaries with a shared base; later plug-in registries",
+      "principles": [
+        "P.modularization"
+      ],
+      "first_evidence": {
+        "date": "2026-01-29",
+        "unit": "rep.s06",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:185-215"
+      },
+      "examples": [
+        {
+          "date": "2026-01-29",
+          "unit": "rep.s06",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:185-215",
+          "text": "v0.4.0-dev modular",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.f7fd0f4",
+          "locator": "gui/",
+          "text": "panels.py → 9 modules",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/gui/panel_system.py",
+          "text": "IPanel plug-ins",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "O.upgrade_keeps_data",
+      "situation": "a new version changes storage or structure",
+      "solution_class": "keep old data readable: guarded forward-only migrations, adapters, compatible IDs, separate stores instead of schema breaks",
+      "principles": [
+        "P.data_continuity_across_versions",
+        "P.kod_ne_dane"
+      ],
+      "first_evidence": {
+        "date": "2026-02-06",
+        "unit": "rep.s16",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:509-515"
+      },
+      "examples": [
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s16",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:509-515",
+          "text": "auto-migration from previous versions",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.46d0ba7",
+          "locator": "engine/db.py:120-123",
+          "text": "guarded migrations",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:39,169",
+          "text": "compatible ID prefixes; separate async_jobs.db",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-25",
+          "unit": "doc.loom_readme",
+          "locator": "loom/README.md:71-96",
+          "text": "byte-identical shared format with the Python app",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "O.expensive_step_gate",
+      "situation": "an expensive or bulk operation",
+      "solution_class": "route bulk work to the cheapest channel; stage cheap → expensive with a verification gate and a cost estimate before the costly step",
+      "principles": [
+        "P.cost_awareness",
+        "P.problem_meta_solution_first"
+      ],
+      "first_evidence": {
+        "date": "2026-02-11",
+        "unit": "git.e994503",
+        "locator": "engine/semantic_worker.py:139"
+      },
+      "examples": [
+        {
+          "date": "2026-02-11",
+          "unit": "git.e994503",
+          "locator": "engine/semantic_worker.py:139",
+          "text": "batch API when >500 pending",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:113-121",
+          "text": "4 phases: tanie → drogie, only on approved keyframes",
+          "kind": "applied",
+          "author": "agent"
+        }
+      ]
+    },
+    {
+      "id": "O.uncertainty_keep_alternatives",
+      "situation": "uncertain or contested information / an open design choice",
+      "solution_class": "do not choose arbitrarily: keep alternatives with evidence and confidence, let the user choose",
+      "principles": [
+        "P.contradictions_and_alternatives",
+        "P.ask_when_unclear",
+        "P.user_judgement_wins"
+      ],
+      "first_evidence": {
+        "date": "2026-01-23",
+        "unit": "git.30b3da6",
+        "locator": "presets.json:25"
+      },
+      "examples": [
+        {
+          "date": "2026-01-23",
+          "unit": "git.30b3da6",
+          "locator": "presets.json:25",
+          "text": "Alternatives: Other interpretations?",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s20",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:622,629",
+          "text": "ASR alternatives with confidence → VoiceAlternativesPopup",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/README.md:165-172",
+          "text": "open decisions with alternatives",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:553-568",
+          "text": "Otwarte decyzje — celowo NIE zamknięte",
+          "kind": "applied",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "O.request_as_data",
+      "situation": "the user needs to see/change what is sent to a model",
+      "solution_class": "materialise the request/context as an inspectable, editable data object and execute exactly that object",
+      "principles": [
+        "P.user_sees_and_controls_context"
+      ],
+      "first_evidence": {
+        "date": "2026-02-05",
+        "unit": "rep.s13",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:434"
+      },
+      "examples": [
+        {
+          "date": "2026-02-05",
+          "unit": "rep.s13",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:434",
+          "text": "API Preview",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-02-08",
+          "unit": "rep.s21",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:655-660",
+          "text": "4-tab APIRequestEditor",
+          "kind": "applied",
+          "author": "report"
+        },
+        {
+          "date": "2026-03-21",
+          "unit": "snap.0.8.3",
+          "locator": "history/chatadhd_v0.8.3/engine/chat_engine.py:260-312",
+          "text": "request spec built, edited, executed",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:221,266-282",
+          "text": "ContextSet — dobrany zestaw źródeł dla konkretnego tasku/model call",
+          "kind": "applied",
+          "author": "owner"
+        }
+      ]
+    },
+    {
+      "id": "O.repeated_action_to_automation",
+      "situation": "a repeated manual action",
+      "solution_class": "automate it (background worker, auto-sync, automatic processing), making it observable with provenance first",
+      "principles": [
+        "P.full_automation",
+        "P.observability"
+      ],
+      "first_evidence": {
+        "date": "2026-02-06",
+        "unit": "rep.s17",
+        "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:523-526"
+      },
+      "examples": [
+        {
+          "date": "2026-02-06",
+          "unit": "rep.s17",
+          "locator": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md:523-526",
+          "text": "full auto",
+          "kind": "applied",
+          "author": "owner"
+        },
+        {
+          "date": "2026-02-11",
+          "unit": "git.e994503",
+          "locator": "engine/semantic_worker.py:1-12",
+          "text": "background worker drains pending analysis",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:262-264",
+          "text": "powtarzalna ręczna czynność → zapewnij obserwowalność/provenance → dopiero potem automatyzuj",
+          "kind": "stated",
+          "author": "external_llm"
+        }
+      ]
+    },
+    {
+      "id": "O.impl_detail_to_adapter",
+      "situation": "a difference that is only implementation/platform specific",
+      "solution_class": "hide it behind an adapter; do not propagate it into higher layers",
+      "principles": [
+        "P.defer_decisions",
+        "P.reality_vs_decision"
+      ],
+      "first_evidence": {
+        "date": "2026-04-17",
+        "unit": "snap.0.9.0",
+        "locator": "history/chatadhd_v0.9.0/gui/legacy_adapter.py:15-16; docs/ARCHITECTURE_v0.9.0.md:95-97"
+      },
+      "examples": [
+        {
+          "date": "2026-04-17",
+          "unit": "snap.0.9.0",
+          "locator": "history/chatadhd_v0.9.0/gui/legacy_adapter.py:15-16; docs/ARCHITECTURE_v0.9.0.md:95-97",
+          "text": "legacy panels wrapped, not rewritten",
+          "kind": "applied",
+          "author": "agent"
+        },
+        {
+          "date": "2026-09-16",
+          "unit": "doc.mega_master",
+          "locator": "docs/architecture/MEGA_MASTER_2026-09-16.md:102-108,409",
+          "text": "accident/platform detail — adapter; Renderer jest adapterem",
+          "kind": "stated",
+          "author": "owner"
+        },
+        {
+          "date": "2026-09-26",
+          "unit": "doc.notatka_gpt",
+          "locator": "docs/architecture/NOTATKA_GPT_2026-09-26.md:270-271",
+          "text": "różnica wyłącznie implementacyjna → nie propaguj jej do wyższych warstw",
+          "kind": "stated",
+          "author": "external_llm"
+        }
+      ]
+    }
+  ]
+}
