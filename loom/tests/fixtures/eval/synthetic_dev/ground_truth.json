@@ -1,0 +1,3696 @@
+{
+  "schema": "loom.eval.ground_truth/1",
+  "corpus_id": "synthetic_dev",
+  "generated_by": "loom/tools/gen_synthetic_eval_corpus.py",
+  "persona": {
+    "name": "Ola Testowa",
+    "fictional": true,
+    "note": "Wholly invented for this corpus. Any resemblance to the repo owner's real projects, principles or history is intentional ONLY at the level of structure (multi-project, PL/EN, forks, reversed decisions, a philosophy of principles+operators) and never at the level of content, names or wording.",
+    "git_author": "Ola Testowa <ola.testowa@example.invalid>"
+  },
+  "temporal_cut": {
+    "date": "2026-05-01",
+    "rationale": "Induce principles/operators/the project model from everything dated <= T; the decisions in `predictions` and each project's decisions after T are the temporal-holdout answer key (LOOM_CONCEPTUAL_MODEL.md §7.1)."
+  },
+  "units": {
+    "relevant": [
+      {
+        "conv_id": "nf-01-kickoff",
+        "provider": "claude",
+        "title": "notatki",
+        "date": "2025-01-10",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 7
+      },
+      {
+        "conv_id": "nf-02-storage",
+        "provider": "chatgpt",
+        "title": "gdzie to trzymac",
+        "date": "2025-01-18",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 4
+      },
+      {
+        "conv_id": "nf-03-encryption-planning",
+        "provider": "chatgpt",
+        "title": "notatki 0.2 i co z szyfrowaniem",
+        "date": "2025-02-05",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 4
+      },
+      {
+        "conv_id": "nf-04-sync-v1",
+        "provider": "claude",
+        "title": "synchronizacja pierwsza wersja",
+        "date": "2025-03-01",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 4
+      },
+      {
+        "conv_id": "nf-05-transcription",
+        "provider": "chatgpt",
+        "title": "notatki glosowe dzialaja",
+        "date": "2025-04-02",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 5
+      },
+      {
+        "conv_id": "nf-06-checklist-and-defer-crypto",
+        "provider": "chatgpt",
+        "title": "rozne",
+        "date": "2025-05-10",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 6
+      },
+      {
+        "conv_id": "nf-07-fork-python-or-cpp",
+        "provider": "claude",
+        "title": "rozjazd: python czy c++",
+        "date": "2025-06-20",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 5
+      },
+      {
+        "conv_id": "nf-08-cpp-wins",
+        "provider": "claude",
+        "title": "wygrywa c++",
+        "date": "2025-08-10",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 6
+      },
+      {
+        "conv_id": "nf-09-lost-and-billed",
+        "provider": "chatgpt",
+        "title": "pytanie",
+        "date": "2025-10-10",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 9
+      },
+      {
+        "conv_id": "nf-10-sync-v2-and-graph-v2",
+        "provider": "claude",
+        "title": "nowa synchronizacja i graf wiedzy v2",
+        "date": "2025-12-01",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 7
+      },
+      {
+        "conv_id": "nf-11-transcription-restored",
+        "provider": "chatgpt",
+        "title": "transkrypcja wrocila + offline fallback",
+        "date": "2026-05-20",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 4
+      },
+      {
+        "conv_id": "nf-12-encryption-and-lost-again",
+        "provider": "claude",
+        "title": "szyfrowanie w koncu + zgubione checklisty (znowu)",
+        "date": "2026-07-01",
+        "project": "proj.noteflow",
+        "mentions_projects": [],
+        "message_count": 5
+      },
+      {
+        "conv_id": "rt-01-kickoff",
+        "provider": "claude",
+        "title": "pomysl na generator reelsow",
+        "date": "2025-09-05",
+        "project": "proj.reeltime",
+        "mentions_projects": [],
+        "message_count": 6
+      },
+      {
+        "conv_id": "rt-02-storyboard",
+        "provider": "chatgpt",
+        "title": "storyboard z tekstu dziala",
+        "date": "2025-09-20",
+        "project": "proj.reeltime",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "rt-03-keyframes",
+        "provider": "chatgpt",
+        "title": "keyframe'y - tylko jeden provider",
+        "date": "2025-10-05",
+        "project": "proj.reeltime",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "rt-04-clips-cost-worry",
+        "provider": "claude",
+        "title": "klipy beda drogie, trzeba to ogarnac",
+        "date": "2025-10-12",
+        "project": "proj.reeltime",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "rt-05-clips-gate",
+        "provider": "chatgpt",
+        "title": "brama kosztowa przed klipami",
+        "date": "2026-06-10",
+        "project": "proj.reeltime",
+        "mentions_projects": [],
+        "message_count": 4
+      },
+      {
+        "conv_id": "rt-06-shared-artifact-model",
+        "provider": "claude",
+        "title": "compose dalej czeka",
+        "date": "2026-06-25",
+        "project": "proj.reeltime",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "rt-07-stalled",
+        "provider": "chatgpt",
+        "title": "dawno tego nie ruszalam",
+        "date": "2026-09-02",
+        "project": "proj.reeltime",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "wd-01-manual-pain",
+        "provider": "claude",
+        "title": "ile razy w tym tygodniu recznie zabijalam zawieszony proces",
+        "date": "2025-11-02",
+        "project": "proj.watchdog",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "wd-02-build-decision",
+        "provider": "claude",
+        "title": "buduje stroza",
+        "date": "2025-11-08",
+        "project": "proj.watchdog",
+        "mentions_projects": [],
+        "message_count": 5
+      },
+      {
+        "conv_id": "wd-03-v01",
+        "provider": "chatgpt",
+        "title": "watcher + restart dziala",
+        "date": "2025-11-10",
+        "project": "proj.watchdog",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "wd-04-summarizer",
+        "provider": "chatgpt",
+        "title": "podsumowania po restarcie",
+        "date": "2025-12-05",
+        "project": "proj.watchdog",
+        "mentions_projects": [],
+        "message_count": 2
+      },
+      {
+        "conv_id": "wd-05-desktop-notify",
+        "provider": "claude",
+        "title": "powiadomienia na pulpit",
+        "date": "2026-01-20",
+        "project": "proj.watchdog",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "wd-06-restart-budget-question",
+        "provider": "chatgpt",
+        "title": "pytanie",
+        "date": "2026-02-01",
+        "project": "proj.watchdog",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "wd-07-io-swap",
+        "provider": "chatgpt",
+        "title": "zmieniam polling na inotify",
+        "date": "2026-06-01",
+        "project": "proj.watchdog",
+        "mentions_projects": [],
+        "message_count": 2
+      },
+      {
+        "conv_id": "lk-01-evidence",
+        "provider": "claude",
+        "title": "zbieram dowody - Kwiatowa",
+        "date": "2026-01-05",
+        "project": "proj.lokatorka",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "lk-02-strategy",
+        "provider": "chatgpt",
+        "title": "strategia: pismo czy od razu sad",
+        "date": "2026-01-10",
+        "project": "proj.lokatorka",
+        "mentions_projects": [],
+        "message_count": 5
+      },
+      {
+        "conv_id": "lk-03-deadline-computed",
+        "provider": "chatgpt",
+        "title": "termin na kaucje policzony",
+        "date": "2026-01-12",
+        "project": "proj.lokatorka",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "lk-04-contradiction",
+        "provider": "claude",
+        "title": "Zenon sie wypiera, ale mam maila ze stycznia",
+        "date": "2026-02-01",
+        "project": "proj.lokatorka",
+        "mentions_projects": [],
+        "message_count": 4
+      },
+      {
+        "conv_id": "lk-05-manual-checking",
+        "provider": "chatgpt",
+        "title": "rozne",
+        "date": "2026-02-14",
+        "project": "proj.lokatorka",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "lk-06-court-filing",
+        "provider": "claude",
+        "title": "olal pismo, idziemy do sadu",
+        "date": "2026-03-10",
+        "project": "proj.lokatorka",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "lk-07-auto-deadlines",
+        "provider": "claude",
+        "title": "terminy licza sie same",
+        "date": "2026-06-15",
+        "project": "proj.lokatorka",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "mu-01-kickoff",
+        "provider": "claude",
+        "title": "riffy i pomysly na EP",
+        "date": "2026-02-08",
+        "project": "proj.analogghosts",
+        "mentions_projects": [],
+        "message_count": 5
+      },
+      {
+        "conv_id": "mu-02-key-open",
+        "provider": "claude",
+        "title": "molowy czy inny - jeszcze nie wiem",
+        "date": "2026-02-20",
+        "project": "proj.analogghosts",
+        "mentions_projects": [],
+        "message_count": 5
+      },
+      {
+        "conv_id": "mu-03-recording-medium",
+        "provider": "chatgpt",
+        "title": "tasma czy cyfrowo",
+        "date": "2026-03-01",
+        "project": "proj.analogghosts",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "mu-04-abandon-slow-fracture",
+        "provider": "chatgpt",
+        "title": "porzucam Slow Fracture (na razie)",
+        "date": "2026-04-10",
+        "project": "proj.analogghosts",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "mu-05-key-final",
+        "provider": "claude",
+        "title": "d-moll wygrywa",
+        "date": "2026-06-01",
+        "project": "proj.analogghosts",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "mu-06-ep-status",
+        "provider": "chatgpt",
+        "title": "rozne",
+        "date": "2026-07-10",
+        "project": "proj.analogghosts",
+        "mentions_projects": [],
+        "message_count": 3
+      },
+      {
+        "conv_id": "cx-01-manifesto",
+        "provider": "claude",
+        "title": "notatki",
+        "date": "2025-01-08",
+        "project": null,
+        "mentions_projects": [],
+        "message_count": 6
+      },
+      {
+        "conv_id": "cx-02-changing-mind",
+        "provider": "chatgpt",
+        "title": "czemu ciagle zmieniam zdanie",
+        "date": "2025-07-20",
+        "project": null,
+        "mentions_projects": [],
+        "message_count": 6
+      },
+      {
+        "conv_id": "cx-03-drifting-thread",
+        "provider": "claude",
+        "title": "hmm",
+        "date": "2025-11-15",
+        "project": null,
+        "mentions_projects": [],
+        "message_count": 9
+      },
+      {
+        "conv_id": "cx-04-venting",
+        "provider": "chatgpt",
+        "title": "co mnie wkurza w tym jak pracuje",
+        "date": "2026-02-25",
+        "project": null,
+        "mentions_projects": [
+          "proj.noteflow"
+        ],
+        "message_count": 5
+      },
+      {
+        "conv_id": "cx-05-midyear-review",
+        "provider": "claude",
+        "title": "przeglad zasad w polowie roku",
+        "date": "2026-05-05",
+        "project": null,
+        "mentions_projects": [],
+        "message_count": 8
+      },
+      {
+        "conv_id": "cx-06-whats-next",
+        "provider": "chatgpt",
+        "title": "co dalej ze wszystkimi tymi projektami",
+        "date": "2026-08-10",
+        "project": null,
+        "mentions_projects": [
+          "proj.analogghosts",
+          "proj.lokatorka",
+          "proj.noteflow",
+          "proj.reeltime",
+          "proj.watchdog"
+        ],
+        "message_count": 6
+      }
+    ],
+    "noise_traps": [
+      {
+        "conv_id": "nt-01-krosno",
+        "provider": "claude",
+        "title": "krosno do majsterkowania",
+        "date": "2025-03-15",
+        "term": "loom",
+        "real_sense": "weaving loom, a fibre-arts device, unrelated to software",
+        "why_not_relevant": "uses a project-vocabulary word in an unrelated real-world sense"
+      },
+      {
+        "conv_id": "nt-02-rurociag",
+        "provider": "chatgpt",
+        "title": "ten artykul o rurociagu",
+        "date": "2025-06-05",
+        "term": "pipeline",
+        "real_sense": "oil pipeline, a physical infrastructure project",
+        "why_not_relevant": "uses a project-vocabulary word in an unrelated real-world sense"
+      },
+      {
+        "conv_id": "nt-03-agent-nieruchomosci",
+        "provider": "chatgpt",
+        "title": "dzwonil agent, mieszkanie na Gornej",
+        "date": "2025-09-10",
+        "term": "agent",
+        "real_sense": "a real-estate agent, unrelated to any coding agent",
+        "why_not_relevant": "uses a project-vocabulary word in an unrelated real-world sense"
+      },
+      {
+        "conv_id": "nt-04-watchdog-timer",
+        "provider": "claude",
+        "title": "resetuje sie losowo",
+        "date": "2025-12-15",
+        "term": "watchdog",
+        "real_sense": "a hardware watchdog timer on a microcontroller",
+        "why_not_relevant": "uses a project-vocabulary word in an unrelated real-world sense"
+      },
+      {
+        "conv_id": "nt-05-adhd-kolezanka",
+        "provider": "chatgpt",
+        "title": "kolezanka i diagnoza u syna",
+        "date": "2026-01-25",
+        "term": "ADHD",
+        "real_sense": "a medical/psychiatric diagnosis in a child, not software",
+        "why_not_relevant": "uses a project-vocabulary word in an unrelated real-world sense"
+      }
+    ],
+    "noise_generic": [
+      {
+        "conv_id": "n06-pit",
+        "provider": "chatgpt",
+        "title": "PIT / podatki",
+        "date": "2025-02-01",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n07-dentysta",
+        "provider": "claude",
+        "title": "przeglad u dentysty",
+        "date": "2025-02-18",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n08-zurek",
+        "provider": "chatgpt",
+        "title": "przepis na zurek",
+        "date": "2025-04-20",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n09-review-kuby-backend",
+        "provider": "claude",
+        "title": "review kodu Kuby",
+        "date": "2025-05-25",
+        "categories": [
+          "other_peoples_code"
+        ]
+      },
+      {
+        "conv_id": "n10-opony",
+        "provider": "chatgpt",
+        "title": "wymiana opon",
+        "date": "2025-07-05",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n11-prezent-mama",
+        "provider": "claude",
+        "title": "urodziny mamy prezent",
+        "date": "2025-08-15",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n12-focia",
+        "provider": "chatgpt",
+        "title": "focia z wakacji",
+        "date": "2025-10-01",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n13-przeziebienie",
+        "provider": "claude",
+        "title": "przeziebienie",
+        "date": "2025-11-20",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n14-sernik",
+        "provider": "chatgpt",
+        "title": "przepis na sernik",
+        "date": "2026-01-05",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n15-review-kuby-frontend",
+        "provider": "claude",
+        "title": "kolejny review dla Kuby, tym razem frontend",
+        "date": "2026-02-10",
+        "categories": [
+          "other_peoples_code"
+        ]
+      },
+      {
+        "conv_id": "n16-ubezpieczenie",
+        "provider": "chatgpt",
+        "title": "ubezpieczenie mieszkania",
+        "date": "2026-03-05",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n17-zab",
+        "provider": "claude",
+        "title": "zab madrosci",
+        "date": "2026-04-18",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n18-grill",
+        "provider": "chatgpt",
+        "title": "co ugotowac na grilla",
+        "date": "2026-06-25",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n19-silownia",
+        "provider": "claude",
+        "title": "silownia plan na wakacje",
+        "date": "2026-07-15",
+        "categories": [
+          "life_admin_or_small_talk"
+        ]
+      },
+      {
+        "conv_id": "n20-wordpress-znajomego",
+        "provider": "chatgpt",
+        "title": "kod znajomego do przejrzenia - stary WordPress",
+        "date": "2026-08-28",
+        "categories": [
+          "other_peoples_code"
+        ]
+      }
+    ]
+  },
+  "cross_project_alias_mentions": [
+    {
+      "provider": "chatgpt",
+      "conv_id": "cx-04-venting",
+      "node_id": "u3",
+      "date": "2026-02-25T20:16:00Z",
+      "projects": [
+        "proj.noteflow"
+      ],
+      "quote": "no wlasnie to mi uswiadomilo cos ogolniejszego: jak koszt (pieniadze, czas, nieodwracalnosc) rosnie, to zawsze musze pytac / zapisywac zgode zanim cokolwiek dzieje sie dalej - to nie jest tylko regula dla notatnika"
+    },
+    {
+      "provider": "chatgpt",
+      "conv_id": "cx-06-whats-next",
+      "node_id": "u1",
+      "date": "2026-08-10T21:00:00Z",
+      "projects": [
+        "proj.noteflow",
+        "proj.reeltime",
+        "proj.watchdog",
+        "proj.lokatorka",
+        "proj.analogghosts"
+      ],
+      "quote": "szybki przeglad: appka od notatek (NoteFlow) - 1.2 wyszlo, ale checklisty znowu padly. generator reelsow stoi od lipca. Stroz dziala bez zmian od czerwca. sprawa z Kwiatowej czeka na rozprawe w sierpniu. plyta - dwa utwory gotowe."
+    }
+  ],
+  "fork_chat_units": {
+    "fork.nf.core_rewrite": [
+      {
+        "provider": "claude",
+        "conv_id": "nf-07-fork-python-or-cpp",
+        "node_id": "u2a",
+        "date": "2025-06-20T21:04:00Z",
+        "quote": "galaz A: zostajemy w Pythonie, tylko szybkie patche zeby dowiezc 0.6.x."
+      },
+      {
+        "provider": "claude",
+        "conv_id": "nf-07-fork-python-or-cpp",
+        "node_id": "u2b",
+        "date": "2025-06-20T21:12:00Z",
+        "quote": "galaz B: przepisujemy rdzen na C++, jeden silnik pod kazda platforme, wolniej na start ale bez podwojnej roboty pozniej."
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": "proj.noteflow",
+      "name": "NoteFlow",
+      "kind": "multiplatform_app",
+      "aliases": [
+        "NoteFlow",
+        "appka od notatek",
+        "note-app",
+        "ta apka z notatkami i czatem",
+        "notatnik"
+      ],
+      "one_line": "Mobile note-taking + AI chat app; Python core rewritten to C++ (0.1 -> 1.2).",
+      "universal_roles": {
+        "intent": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-01-kickoff",
+              "node_id": "u1",
+              "date": "2025-01-10T09:14:00Z",
+              "quote": "Zaczynam nowy projekt: notatnik + czat z modelem w jednym, ale offline-first, zeby nie zalezec od chmury."
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "constraint": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-01-kickoff",
+              "node_id": "u2",
+              "date": "2025-01-10T09:22:00Z",
+              "quote": "Docelowo telefon i desktop, jeden core. Zero telemetrii domyslnie, dziala offline, a jak juz musi cos wyjsc na zewnatrz to tylko po mojej wyraznej zgodzie."
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "question": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-07-fork-python-or-cpp",
+              "node_id": "u1",
+              "date": "2025-06-20T21:00:00Z",
+              "quote": "0.6.0 gotowe. Dwie galezie z tego samego punktu w glowie: zostac w Pythonie i szybko patchowac, albo przepisac rdzen na C++. Nie wiem jeszcze ktora."
+            },
+            {
+              "provider": "claude",
+              "conv_id": "nf-10-sync-v2-and-graph-v2",
+              "node_id": "u1",
+              "date": "2025-12-01T14:20:00Z",
+              "quote": "sync po gicie sie nie skaluje, dua zalaczniki (nagrania glosowe!) sa bolesnie wolne po pol roku uzywania to widac"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "resource": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-10-sync-v2-and-graph-v2",
+              "node_id": "u4",
+              "date": "2025-12-01T14:44:00Z",
+              "quote": "stary graph_memory (0.8.0, partial) zastepuje nowy 'knowledge graph v2', lepszy model encji, dziala tez offline z lokalnym modelem embeddingow."
+            }
+          ],
+          "inferable": [
+            {
+              "value": "a bundled local embedding model file",
+              "expected_property": "available_on(offline)",
+              "inference_basis": "same nf-10 sentence: an offline-capable local model implies a bundled model artifact even though no filename or format is ever given"
+            }
+          ],
+          "absent": []
+        },
+        "part": {
+          "observed": [],
+          "inferable": [
+            {
+              "value": "an embeddings module behind knowledge graph v2",
+              "expected_property": "consistent_with(feat.nf.knowledge_graph_v2) & exists_symbol_like('embed')",
+              "inference_basis": "nf-10 says knowledge graph v2 'dziala tez offline z lokalnym modelem embeddingow' -- that requires an embeddings module, never named as such"
+            }
+          ],
+          "absent": []
+        },
+        "check": {
+          "observed": [],
+          "inferable": [],
+          "absent": [
+            {
+              "question": "any CI / automated test suite",
+              "note": "only ad hoc 'testy migracji' mentioned once (nf-08); no CI pipeline is mentioned across any of the 12 NoteFlow conversations or the fake repo"
+            }
+          ]
+        }
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "date": "2025-01-10",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.1.2",
+          "date": "2025-01-18",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.2.0",
+          "date": "2025-02-05",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.3.0",
+          "date": "2025-03-01",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.4.0",
+          "date": "2025-04-02",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.5.0",
+          "date": "2025-05-10",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.6.0",
+          "date": "2025-06-20",
+          "branch": "main",
+          "source": "chat+repo",
+          "note": "fork point"
+        },
+        {
+          "version": "0.6.1",
+          "date": "2025-07-01",
+          "branch": "python-quick",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.6.2",
+          "date": "2025-07-15",
+          "branch": "python-quick",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.6.3",
+          "date": "2025-08-01",
+          "branch": "python-quick",
+          "source": "repo",
+          "note": "branch stops here, never merged; last mention in chat is 0.6.2"
+        },
+        {
+          "version": "0.7.0",
+          "date": "2025-08-10",
+          "branch": "cpp-core",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.7.1",
+          "date": "2025-08-25",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.8.0",
+          "date": "2025-09-15",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "0.9.0",
+          "date": "2025-10-10",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "1.0.0",
+          "date": "2025-12-01",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "1.0.1",
+          "date": "2026-01-12",
+          "branch": "main",
+          "source": "repo",
+          "note": "bugfix only; EXISTS ONLY in git history, not mentioned in any conversation -- a deliberate test of code-lineage-only evidence"
+        },
+        {
+          "version": "1.0.2",
+          "date": "2026-02-20",
+          "branch": "main",
+          "source": "repo",
+          "note": "bugfix only, repo-only"
+        },
+        {
+          "version": "1.1.0",
+          "date": "2026-05-20",
+          "branch": "main",
+          "source": "chat+repo"
+        },
+        {
+          "version": "1.2.0",
+          "date": "2026-07-01",
+          "branch": "main",
+          "source": "chat+repo"
+        }
+      ],
+      "forks": [
+        {
+          "id": "fork.nf.core_rewrite",
+          "base_version": "0.6.0",
+          "base_date": "2025-06-20",
+          "branches": [
+            {
+              "name": "python-quick",
+              "from_version": "0.6.0",
+              "outcome": "abandoned",
+              "versions": [
+                "0.6.1",
+                "0.6.2",
+                "0.6.3"
+              ]
+            },
+            {
+              "name": "cpp-core",
+              "from_version": "0.6.0",
+              "outcome": "became main",
+              "versions": [
+                "0.7.0",
+                "0.7.1",
+                "0.8.0",
+                "0.9.0",
+                "1.0.0",
+                "1.0.1",
+                "1.0.2",
+                "1.1.0",
+                "1.2.0"
+              ]
+            }
+          ],
+          "resolved_by_decision": "dec.nf.core_language"
+        }
+      ],
+      "decisions": [
+        {
+          "project": "proj.noteflow",
+          "date": "2025-01-18",
+          "alternatives": [
+            "SQLite",
+            "Realm",
+            "flat JSON files"
+          ],
+          "chosen": "SQLite",
+          "affected_values": [
+            {
+              "value": "preservation_of_information",
+              "sign": "+",
+              "rationale": "structured, queryable, crash-safe"
+            },
+            {
+              "value": "autonomy",
+              "sign": "+",
+              "rationale": "no vendor lock-in"
+            },
+            {
+              "value": "minimal_arbitrariness",
+              "sign": "0",
+              "rationale": ""
+            }
+          ],
+          "principle_evidence": [
+            "pr.optionality_over_speed"
+          ],
+          "supersedes": null,
+          "operator": null,
+          "id": "dec.nf.storage",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "nf-02-storage",
+            "node_id": "u2",
+            "date": "2025-01-18T18:10:00Z",
+            "quote": "SQLite dla structured data + osobny folder na blob/zalaczniki, zero vendor lock-in."
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-03-01",
+          "alternatives": [
+            "custom binary protocol",
+            "CRDT over WebRTC",
+            "git-based sync"
+          ],
+          "chosen": "git-based sync",
+          "affected_values": [
+            {
+              "value": "momentum",
+              "sign": "+",
+              "rationale": "reuse git instead of writing a protocol"
+            }
+          ],
+          "principle_evidence": [
+            "pr.momentum_over_perfection"
+          ],
+          "supersedes": null,
+          "operator": null,
+          "id": "dec.nf.sync_v1",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "nf-04-sync-v1",
+            "node_id": "u2",
+            "date": "2025-03-01T11:08:00Z",
+            "quote": "utrzymanie tempa jest wazniejsze niz idealne rozwiazanie na starcie"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-04-02",
+          "alternatives": [
+            "on-device model",
+            "cloud Whisper-style API",
+            "Google Speech"
+          ],
+          "chosen": "cloud Whisper-style API",
+          "affected_values": [
+            {
+              "value": "momentum",
+              "sign": "+",
+              "rationale": "fastest to ship"
+            }
+          ],
+          "principle_evidence": [
+            "pr.provider_not_special_case"
+          ],
+          "supersedes": null,
+          "operator": "op.new_source_new_adapter",
+          "id": "dec.nf.transcription",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "nf-05-transcription",
+            "node_id": "u2b",
+            "date": "2025-04-02T08:42:00Z",
+            "quote": "nowe API to nowy adapter za tym samym interfejsem, nie nowy if"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-05-10",
+          "alternatives": [
+            "new 'checklist' entity/class",
+            "checklist as a data-shaped variant of the note entity"
+          ],
+          "chosen": "checklist as a data-shaped variant of the note entity",
+          "affected_values": [
+            {
+              "value": "minimal_arbitrariness",
+              "sign": "+",
+              "rationale": "one entity, one code path"
+            }
+          ],
+          "principle_evidence": [
+            "pr.data_over_branches"
+          ],
+          "supersedes": null,
+          "operator": "op.new_artifact_shared_structure",
+          "id": "dec.nf.checklist_as_data",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "nf-06-checklist-and-defer-crypto",
+            "node_id": "u2",
+            "date": "2025-05-10T19:53:00Z",
+            "quote": "tak, checklist to zwykla notatka z dodatkowym polem items w danych, nie nowy typ/klasa"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-05-10",
+          "alternatives": [
+            "roll-your-own AES now",
+            "libsodium-style AEAD now",
+            "defer, add later as a layer over storage"
+          ],
+          "chosen": "defer, add later as a layer over storage",
+          "affected_values": [
+            {
+              "value": "momentum",
+              "sign": "+",
+              "rationale": "not core for MVP"
+            }
+          ],
+          "principle_evidence": [
+            "pr.small_reversible_steps"
+          ],
+          "supersedes": null,
+          "operator": null,
+          "id": "dec.nf.encryption_defer",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "nf-06-checklist-and-defer-crypto",
+            "node_id": "u3",
+            "date": "2025-05-10T20:01:00Z",
+            "quote": "i olewam szyfrowanie na razie, dolozylabym to jako osobna warstwe nad storage pozniej, bez przepisywania calosci - MVP tego nie potrzebuje"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-08-10",
+          "alternatives": [
+            "Kotlin Multiplatform",
+            "C++ core",
+            "Rust core",
+            "(status quo) keep patching Python"
+          ],
+          "chosen": "C++ core",
+          "affected_values": [
+            {
+              "value": "autonomy",
+              "sign": "+",
+              "rationale": "one core, every platform"
+            },
+            {
+              "value": "minimal_arbitrariness",
+              "sign": "-",
+              "rationale": "C++ ABI story wasn't proven yet when she committed"
+            }
+          ],
+          "principle_evidence": [
+            "pr.decide_fast_correct_later"
+          ],
+          "supersedes": null,
+          "supersedes_branch": "python-quick",
+          "operator": null,
+          "id": "dec.nf.core_language",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "nf-08-cpp-wins",
+            "node_id": "u1",
+            "date": "2025-08-10T10:00:00Z",
+            "quote": "decyduje szybko na tym co wiem teraz, koryguje pozniej jak beda nowe dane"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-08-25",
+          "alternatives": [
+            "keep hand-rolled diff",
+            "library-based diff (Myers-style)"
+          ],
+          "chosen": "library-based diff",
+          "affected_values": [
+            {
+              "value": "momentum",
+              "sign": "+",
+              "rationale": "less code to maintain"
+            }
+          ],
+          "principle_evidence": [],
+          "supersedes": null,
+          "operator": "op.impl_detail_not_propagated",
+          "implementation_detail_not_propagated": true,
+          "id": "dec.nf.diff_algo_swap",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "nf-08-cpp-wins",
+            "node_id": "u3",
+            "date": "2025-08-10T10:16:00Z",
+            "quote": "przy okazji zamienilam recznie pisany diff na biblioteczny (Myers-style) do historii wersji notatek - to czysto wewnetrzne, nie zmienia kontraktu na zewnatrz, nie zapisuje tego jako architecture decision."
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-10-10",
+          "alternatives": [
+            "keep auto-uploading everything",
+            "gate large uploads behind an estimate + confirmation"
+          ],
+          "chosen": "gate large uploads behind an estimate + confirmation",
+          "affected_values": [
+            {
+              "value": "autonomy",
+              "sign": "+",
+              "rationale": "no surprise bills"
+            }
+          ],
+          "principle_evidence": [
+            "pr.owner_confirmation_for_money"
+          ],
+          "supersedes": null,
+          "operator": "op.cost_gate_on_irreversibility",
+          "id": "dec.nf.upload_gate",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "nf-09-lost-and-billed",
+            "node_id": "u4",
+            "date": "2025-10-10T22:39:00Z",
+            "quote": "gdy koszt rosnie, zawsze pytam / zapisuje zgode, zanim system dziala dalej"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2025-12-01",
+          "alternatives": [
+            "keep optimising git-based sync",
+            "REST-based custom sync",
+            "third-party sync SDK"
+          ],
+          "chosen": "REST-based custom sync",
+          "affected_values": [
+            {
+              "value": "momentum",
+              "sign": "+",
+              "rationale": "large attachments were unusably slow over git-based sync"
+            }
+          ],
+          "principle_evidence": [],
+          "supersedes": "dec.nf.sync_v1",
+          "operator": null,
+          "id": "dec.nf.sync_v2",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "nf-10-sync-v2-and-graph-v2",
+            "node_id": "u2",
+            "date": "2025-12-01T14:28:00Z",
+            "quote": "tak, REST-based custom sync zastepuje sync po gicie - jawnie odwracam tamta decyzje, git-based bylo dobre na start ale juz nie wystarcza"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2026-05-20",
+          "alternatives": [
+            "cloud-only, accept offline gaps",
+            "on-device fallback behind the same provider interface",
+            "drop the feature"
+          ],
+          "chosen": "on-device fallback behind the same provider interface",
+          "affected_values": [
+            {
+              "value": "optionality",
+              "sign": "+",
+              "rationale": "works with no signal"
+            }
+          ],
+          "principle_evidence": [
+            "pr.provider_not_special_case"
+          ],
+          "supersedes": null,
+          "operator": "op.new_source_new_adapter",
+          "id": "dec.nf.transcription_fallback",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "nf-11-transcription-restored",
+            "node_id": "u2",
+            "date": "2026-05-20T09:08:00Z",
+            "quote": "tak dokladnie, przywracam cloud Whisper-style + dodaje on-device fallback za tym samym interfejsem providera, dokladnie tak jak mialo byc od poczatku"
+          }
+        },
+        {
+          "project": "proj.noteflow",
+          "date": "2026-07-01",
+          "alternatives": [
+            "AES-256-GCM",
+            "ChaCha20-Poly1305",
+            "OS-keychain-only, no app-level crypto"
+          ],
+          "chosen": "ChaCha20-Poly1305",
+          "affected_values": [
+            {
+              "value": "autonomy",
+              "sign": "+",
+              "rationale": "faster on older phones without AES-NI"
+            }
+          ],
+          "principle_evidence": [
+            "pr.provider_not_special_case"
+          ],
+          "supersedes": null,
+          "operator": null,
+          "note_for_gt": "Deliberately NOT the same cipher the real ChatADHD/Loom chose (AES-256-GCM) -- see UNPREDICTABLE_POST_T_DECISIONS.",
+          "id": "dec.nf.encryption",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "nf-12-encryption-and-lost-again",
+            "node_id": "u2",
+            "date": "2026-07-01T17:38:00Z",
+            "quote": "biore ChaCha20-Poly1305, tez za wymiennym cipher-providerem, zeby zmiana byla znowu tylko adapterem a nie przepisywaniem storage"
+          }
+        }
+      ],
+      "features_status": [
+        {
+          "project": "proj.noteflow",
+          "label": "checklist note type",
+          "events": [
+            {
+              "version": "0.5.0",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-05-10",
+              "note": "data-shaped variant of the note entity"
+            },
+            {
+              "version": "0.9.0",
+              "branch": "main",
+              "status": "lost",
+              "date": "2025-10-10",
+              "note": "dropped during the C++ port, same sweep as transcription"
+            },
+            {
+              "version": "1.0.0",
+              "branch": "main",
+              "status": "restored",
+              "date": "2025-12-01",
+              "note": ""
+            },
+            {
+              "version": "1.2.0",
+              "branch": "main",
+              "status": "lost",
+              "date": "2026-07-01",
+              "note": "an unrelated UI refactor dropped it again; still lost at the end of this corpus"
+            }
+          ],
+          "id": "feat.nf.checklist_notes",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-06-checklist-and-defer-crypto",
+              "node_id": "u2",
+              "date": "2025-05-10T19:53:00Z",
+              "quote": "tak, checklist to zwykla notatka z dodatkowym polem items w danych, nie nowy typ/klasa"
+            },
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-09-lost-and-billed",
+              "node_id": "u2",
+              "date": "2025-10-10T22:23:00Z",
+              "quote": "no nie ma go, zgubilo sie to gdzies przy porcie na c++, checklisty tez zreszta nie dzialaja"
+            },
+            {
+              "provider": "claude",
+              "conv_id": "nf-10-sync-v2-and-graph-v2",
+              "node_id": "u3",
+              "date": "2025-12-01T14:36:00Z",
+              "quote": "przywrocone w tej samej wersji, przy okazji ogarniania encji po porcie"
+            },
+            {
+              "provider": "claude",
+              "conv_id": "nf-12-encryption-and-lost-again",
+              "node_id": "u3",
+              "date": "2026-07-01T17:46:00Z",
+              "quote": "a przy okazji refaktoru UI kolejny raz zgubily sie checklisty, trzeci raz z rzedu cos im sie dzieje przy duzych zmianach - zostawiam jak jest, zaznaczam lost, nie kasuje kodu ktory je robil"
+            }
+          ]
+        },
+        {
+          "project": "proj.noteflow",
+          "label": "at-rest encryption",
+          "events": [
+            {
+              "version": "0.2.0",
+              "branch": "main",
+              "status": "planned",
+              "date": "2025-02-05",
+              "note": ""
+            },
+            {
+              "version": "0.5.0",
+              "branch": "main",
+              "status": "abandoned",
+              "date": "2025-05-10",
+              "note": "deferred for MVP, see dec.nf.encryption_defer"
+            },
+            {
+              "version": "1.2.0",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2026-07-01",
+              "note": "ChaCha20-Poly1305, see dec.nf.encryption"
+            }
+          ],
+          "id": "feat.nf.encryption",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-06-checklist-and-defer-crypto",
+              "node_id": "u3",
+              "date": "2025-05-10T20:01:00Z",
+              "quote": "i olewam szyfrowanie na razie, dolozylabym to jako osobna warstwe nad storage pozniej, bez przepisywania calosci - MVP tego nie potrzebuje"
+            },
+            {
+              "provider": "claude",
+              "conv_id": "nf-12-encryption-and-lost-again",
+              "node_id": "u2",
+              "date": "2026-07-01T17:38:00Z",
+              "quote": "biore ChaCha20-Poly1305, tez za wymiennym cipher-providerem, zeby zmiana byla znowu tylko adapterem a nie przepisywaniem storage"
+            }
+          ]
+        },
+        {
+          "project": "proj.noteflow",
+          "label": "graph memory (v1)",
+          "events": [
+            {
+              "version": "0.8.0",
+              "branch": "main",
+              "status": "partial",
+              "date": "2025-09-15",
+              "note": ""
+            },
+            {
+              "version": "1.0.0",
+              "branch": "main",
+              "status": "superseded",
+              "date": "2025-12-01",
+              "note": "replaced by feat.nf.knowledge_graph_v2"
+            }
+          ],
+          "id": "feat.nf.graph_memory",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-10-sync-v2-and-graph-v2",
+              "node_id": "u4",
+              "date": "2025-12-01T14:44:00Z",
+              "quote": "stary graph_memory (0.8.0, partial) zastepuje nowy 'knowledge graph v2', lepszy model encji, dziala tez offline z lokalnym modelem embeddingow."
+            }
+          ]
+        },
+        {
+          "project": "proj.noteflow",
+          "label": "knowledge graph v2",
+          "events": [
+            {
+              "version": "1.0.0",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-12-01",
+              "note": "supersedes feat.nf.graph_memory"
+            }
+          ],
+          "id": "feat.nf.knowledge_graph_v2",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-10-sync-v2-and-graph-v2",
+              "node_id": "u4",
+              "date": "2025-12-01T14:44:00Z",
+              "quote": "stary graph_memory (0.8.0, partial) zastepuje nowy 'knowledge graph v2', lepszy model encji, dziala tez offline z lokalnym modelem embeddingow."
+            }
+          ]
+        },
+        {
+          "project": "proj.noteflow",
+          "label": "sync (git-based transport)",
+          "events": [
+            {
+              "version": "0.2.0",
+              "branch": "main",
+              "status": "planned",
+              "date": "2025-02-05",
+              "note": ""
+            },
+            {
+              "version": "0.3.0",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-03-01",
+              "note": ""
+            },
+            {
+              "version": "1.0.0",
+              "branch": "main",
+              "status": "superseded",
+              "date": "2025-12-01",
+              "note": "replaced by feat.nf.sync_rest"
+            }
+          ],
+          "id": "feat.nf.sync_git",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-10-sync-v2-and-graph-v2",
+              "node_id": "u2",
+              "date": "2025-12-01T14:28:00Z",
+              "quote": "tak, REST-based custom sync zastepuje sync po gicie - jawnie odwracam tamta decyzje, git-based bylo dobre na start ale juz nie wystarcza"
+            }
+          ]
+        },
+        {
+          "project": "proj.noteflow",
+          "label": "sync (REST transport)",
+          "events": [
+            {
+              "version": "1.0.0",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-12-01",
+              "note": "supersedes feat.nf.sync_git"
+            }
+          ],
+          "id": "feat.nf.sync_rest",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "nf-10-sync-v2-and-graph-v2",
+              "node_id": "u2",
+              "date": "2025-12-01T14:28:00Z",
+              "quote": "tak, REST-based custom sync zastepuje sync po gicie - jawnie odwracam tamta decyzje, git-based bylo dobre na start ale juz nie wystarcza"
+            }
+          ]
+        },
+        {
+          "project": "proj.noteflow",
+          "label": "confirm-before-large-upload gate",
+          "events": [
+            {
+              "version": "0.9.0",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-10-10",
+              "note": "see dec.nf.upload_gate"
+            }
+          ],
+          "id": "feat.nf.upload_gate",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-09-lost-and-billed",
+              "node_id": "u4",
+              "date": "2025-10-10T22:39:00Z",
+              "quote": "tak, dodaje bramke: przed duzym uploadem zawsze pytam / pokazuje estymowany koszt i czekam na potwierdzenie, zanim system dziala dalej"
+            }
+          ]
+        },
+        {
+          "project": "proj.noteflow",
+          "label": "voice memo transcription",
+          "events": [
+            {
+              "version": "0.4.0",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-04-02",
+              "note": "cloud Whisper-style API"
+            },
+            {
+              "version": "0.9.0",
+              "branch": "main",
+              "status": "lost",
+              "date": "2025-10-10",
+              "note": "dropped silently during the C++ port"
+            },
+            {
+              "version": "1.1.0",
+              "branch": "main",
+              "status": "restored",
+              "date": "2026-05-20",
+              "note": "restored + on-device fallback added"
+            }
+          ],
+          "id": "feat.nf.voice_transcription",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-05-transcription",
+              "node_id": "u2b",
+              "date": "2025-04-02T08:42:00Z",
+              "quote": "pytanie edytowane: bierzemy API w stylu Whisper w chmurze, ale schowane za interfejsem transcription-provider, zeby pozniej dolozyc on-device bez przepisywania."
+            },
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-09-lost-and-billed",
+              "node_id": "u2",
+              "date": "2025-10-10T22:23:00Z",
+              "quote": "no nie ma go, zgubilo sie to gdzies przy porcie na c++, checklisty tez zreszta nie dzialaja"
+            },
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-11-transcription-restored",
+              "node_id": "u2",
+              "date": "2026-05-20T09:08:00Z",
+              "quote": "tak dokladnie, przywracam cloud Whisper-style + dodaje on-device fallback za tym samym interfejsem providera, dokladnie tak jak mialo byc od poczatku"
+            }
+          ]
+        }
+      ],
+      "areas": [
+        {
+          "id": "area.noteflow.storage",
+          "project": "proj.noteflow",
+          "generalization_pl": "wszystko o storage: SQLite dla danych strukturalnych, pliki blob dla załączników, nic w chmurze bez zgody użytkownika",
+          "generalization_en": "everything about storage: SQLite for structured data, blob files for attachments, nothing in the cloud without user consent",
+          "listed_members": [
+            "SQLite for structured data",
+            "blob files for attachments"
+          ],
+          "inferable_members": [
+            {
+              "value": "backup/export follows the same local-first-by-default rule",
+              "expected_property": "consistent_with(pr.optionality_over_speed) & requires_explicit_opt_in(remote_destination)",
+              "inference_basis": "the generalization's 'nic w chmurze bez zgody' clause applies to any future storage-adjacent feature, not only the two listed members"
+            }
+          ],
+          "unit": {
+            "provider": "claude",
+            "conv_id": "nf-01-kickoff",
+            "node_id": "u3",
+            "date": "2025-01-10T09:30:00Z",
+            "quote": "Tak, burza zanim cokolwiek zakoduje. Wszystko o storage: SQLite dla danych strukturalnych, pliki blob dla zalacznikow, nic w chmurze bez zgody uzytkownika."
+          }
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "oq.nf.encryption_worth_it",
+          "project": "proj.noteflow",
+          "text": "czy w ogóle warto szyfrować, skoro to tylko moje notatki?",
+          "resolved_by": "dec.nf.encryption",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "nf-03-encryption-planning",
+              "node_id": "u2",
+              "date": "2025-02-05T20:19:00Z",
+              "quote": "no wlasnie nie wiem, czy w ogole warto szyfrowac, skoro to tylko moje notatki"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proj.reeltime",
+      "name": "Reeltime",
+      "kind": "pipeline",
+      "aliases": [
+        "Reeltime",
+        "generator reelsow",
+        "ten pipeline do wideo",
+        "reels-gen",
+        "generator klipow"
+      ],
+      "one_line": "Staged text -> storyboard -> keyframes -> clips -> compose reel generator; never finished.",
+      "universal_roles": {
+        "intent": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "rt-01-kickoff",
+              "node_id": "u1",
+              "date": "2025-09-05T19:00:00Z",
+              "quote": "nowy projekt z boku: chce szybko robic krotkie wideo/reele z samego tekstu, bez kamery."
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "resource": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "rt-01-kickoff",
+              "node_id": "u3",
+              "date": "2025-09-05T19:16:00Z",
+              "quote": "na razie jeden, PixelForge API (fikcyjne nazwy roboczo), zobaczymy."
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "interface": {
+          "observed": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "rt-02-storyboard",
+              "node_id": "u2",
+              "date": "2025-09-20T10:08:00Z",
+              "quote": "eksport na razie do .mp4 planuje na koniec calego pipeline'u, nie teraz"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "check": {
+          "observed": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "rt-03-keyframes",
+              "node_id": "u2",
+              "date": "2025-10-05T15:38:00Z",
+              "quote": "i nie mam zadnego checku spojnosci miedzy keyframe'ami tej samej postaci, wiem ze to dziura"
+            }
+          ],
+          "inferable": [],
+          "absent": [
+            {
+              "question": "a consistency check between keyframes of the same character",
+              "note": "named as a known gap directly in rt-03, never closed"
+            }
+          ]
+        },
+        "part": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "rt-06-shared-artifact-model",
+              "node_id": "u2",
+              "date": "2026-06-25T18:08:00Z",
+              "quote": "tak, tak to widze, nawet jesli compose nigdy nie powstanie to schemat juz jest gotowy"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "output": {
+          "observed": [],
+          "inferable": [],
+          "absent": [
+            {
+              "question": "any finished/published reel",
+              "note": "the pipeline never reaches compose; only test renders of earlier stages exist"
+            }
+          ]
+        }
+      },
+      "versions": [
+        {
+          "version": "0.1",
+          "date": "2025-09-20",
+          "branch": "main",
+          "source": "chat"
+        },
+        {
+          "version": "0.2",
+          "date": "2025-10-05",
+          "branch": "main",
+          "source": "chat"
+        },
+        {
+          "version": "0.3",
+          "date": "2026-06-10",
+          "branch": "main",
+          "source": "chat"
+        }
+      ],
+      "forks": [],
+      "decisions": [
+        {
+          "project": "proj.reeltime",
+          "date": "2026-06-10",
+          "alternatives": [
+            "render clips freely, watch the bill",
+            "gate clips behind a cost estimate + explicit go-ahead"
+          ],
+          "chosen": "gate clips behind a cost estimate + explicit go-ahead",
+          "affected_values": [
+            {
+              "value": "optionality",
+              "sign": "+",
+              "rationale": "no runaway GPU bill"
+            }
+          ],
+          "principle_evidence": [
+            "pr.owner_confirmation_for_money"
+          ],
+          "supersedes": null,
+          "operator": "op.cost_gate_on_irreversibility",
+          "resolves_open_question": "oq.rt.clips_cost",
+          "id": "dec.rt.clips_gate",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "rt-05-clips-gate",
+            "node_id": "u2",
+            "date": "2026-06-10T13:08:00Z",
+            "quote": "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+          }
+        },
+        {
+          "project": "proj.reeltime",
+          "date": "2026-06-25",
+          "alternatives": [
+            "separate keyframe/clip/compose classes",
+            "one 'stage artifact' record, fields as data"
+          ],
+          "chosen": "one 'stage artifact' record, fields as data",
+          "affected_values": [
+            {
+              "value": "minimal_arbitrariness",
+              "sign": "+",
+              "rationale": ""
+            }
+          ],
+          "principle_evidence": [
+            "pr.data_over_branches"
+          ],
+          "supersedes": null,
+          "operator": "op.new_artifact_shared_structure",
+          "id": "dec.rt.shared_artifact_model",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "rt-06-shared-artifact-model",
+            "node_id": "u1",
+            "date": "2026-06-25T18:00:00Z",
+            "quote": "compose/montaz dalej nie ruszony, ale przy okazji klipow pomyslalam: keyframe, klip i (kiedys) sekcja compose to w sumie ten sam ksztalt rekordu - etap, wejscie, wyjscie, koszt, status - roznia sie tylko polami danych"
+          }
+        }
+      ],
+      "features_status": [
+        {
+          "project": "proj.reeltime",
+          "label": "clips stage",
+          "events": [
+            {
+              "version": "0.2",
+              "branch": "main",
+              "status": "planned",
+              "date": "2025-10-12",
+              "note": "cost worry raised, see oq.rt.clips_cost"
+            },
+            {
+              "version": "0.3",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2026-06-10",
+              "note": "implemented WITH the cost gate, see dec.rt.clips_gate"
+            }
+          ],
+          "id": "feat.rt.clips",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "rt-04-clips-cost-worry",
+              "node_id": "u1",
+              "date": "2025-10-12T20:00:00Z",
+              "quote": "licze ile by kosztowalo wygenerowanie klipow do jednego reela z 8 scen - wychodzi spora kwota jak zle zestawie parametry"
+            },
+            {
+              "provider": "chatgpt",
+              "conv_id": "rt-05-clips-gate",
+              "node_id": "u2",
+              "date": "2026-06-10T13:08:00Z",
+              "quote": "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+            }
+          ]
+        },
+        {
+          "project": "proj.reeltime",
+          "label": "compose/edit stage",
+          "events": [
+            {
+              "version": "0.1",
+              "branch": "main",
+              "status": "planned",
+              "date": "2025-09-05",
+              "note": "never reached"
+            }
+          ],
+          "id": "feat.rt.compose",
+          "units": []
+        },
+        {
+          "project": "proj.reeltime",
+          "label": "keyframes stage",
+          "events": [
+            {
+              "version": "0.2",
+              "branch": "main",
+              "status": "partial",
+              "date": "2025-10-05",
+              "note": "only one image-gen provider wired"
+            }
+          ],
+          "id": "feat.rt.keyframes",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "rt-03-keyframes",
+              "node_id": "u1",
+              "date": "2025-10-05T15:30:00Z",
+              "quote": "keyframe'y z opisow scen dzialaja, ale tylko z jednym providerem obrazow, jak padnie to nie mam planu B"
+            }
+          ]
+        },
+        {
+          "project": "proj.reeltime",
+          "label": "storyboard stage",
+          "events": [
+            {
+              "version": "0.1",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-09-20",
+              "note": "text -> storyboard"
+            }
+          ],
+          "id": "feat.rt.storyboard",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "rt-02-storyboard",
+              "node_id": "a1",
+              "date": "2025-09-20T10:04:00Z",
+              "quote": "0.1: storyboard stage implemented."
+            }
+          ]
+        }
+      ],
+      "areas": [
+        {
+          "id": "area.reeltime.stages",
+          "project": "proj.reeltime",
+          "generalization_pl": "wszystko o etapach pipeline'u: storyboard z tekstu, potem keyframe'y, potem klipy, na końcu compose — każdy etap droższy niż poprzedni, więc tanie najpierw, drogie na końcu, i pytamy zanim odpalimy drogi etap",
+          "generalization_en": "everything about the pipeline stages: storyboard from text, then keyframes, then clips, then compose -- each stage pricier than the last, so cheap first, expensive last, and we ask before firing the expensive one",
+          "listed_members": [
+            "storyboard",
+            "keyframes",
+            "clips",
+            "compose"
+          ],
+          "inferable_members": [
+            {
+              "value": "cache/skip already-rendered keyframes to avoid recomputation",
+              "expected_property": "consistent_with(pr.owner_confirmation_for_money) & in_class(operation, idempotent)",
+              "inference_basis": "a direct corollary of 'cheap first' plus pr.optionality_over_speed: paying twice for the same keyframe has no upside"
+            }
+          ],
+          "unit": {
+            "provider": "claude",
+            "conv_id": "rt-01-kickoff",
+            "node_id": "u2",
+            "date": "2025-09-05T19:08:00Z",
+            "quote": "burza mozgow: wszystko o etapach pipeline'u: storyboard z tekstu, potem keyframe'y, potem generowanie klipow, na koncu compose/montaz - kazdy etap drozszy niz poprzedni, wiec tanie najpierw, drogie na koncu, i pytam zanim odpale drogi etap."
+          }
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "oq.rt.clips_cost",
+          "project": "proj.reeltime",
+          "text": "generowanie klipów będzie drogie, trzeba to jakoś ograniczyć",
+          "resolved_by": "dec.rt.clips_gate",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "rt-04-clips-cost-worry",
+              "node_id": "u1",
+              "date": "2025-10-12T20:00:00Z",
+              "quote": "licze ile by kosztowalo wygenerowanie klipow do jednego reela z 8 scen - wychodzi spora kwota jak zle zestawie parametry"
+            },
+            {
+              "provider": "claude",
+              "conv_id": "rt-04-clips-cost-worry",
+              "node_id": "u2",
+              "date": "2025-10-12T20:08:00Z",
+              "quote": "no wlasnie, generowanie klipow bedzie drogie, trzeba to jakos ograniczyc, ale nie mam teraz czasu tego zaprojektowac"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proj.watchdog",
+      "name": "Stroz (Watchdog)",
+      "kind": "agent_system",
+      "aliases": [
+        "Stroz",
+        "Watchdog-skrypt",
+        "ten pilnujacy skrypt",
+        "CodeWatchdog",
+        "stroz.py"
+      ],
+      "one_line": "Watches a long-running coding-agent session; restarts on hang, summarises, alerts.",
+      "universal_roles": {
+        "intent": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "wd-01-manual-pain",
+              "node_id": "u1",
+              "date": "2025-11-02T23:40:00Z",
+              "quote": "trzeci raz w tym tygodniu wstaje w nocy bo agent kodujacy sie zawiesil i nic nie robi az do rana"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "part": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "wd-02-build-decision",
+              "node_id": "u2",
+              "date": "2025-11-08T20:08:00Z",
+              "quote": "watcher, restarter, summarizer jako osobne, wymienne kawalki - to ma byc pakiet polityk a nie jedna wielka klasa"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "resource": {
+          "observed": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "wd-03-v01",
+              "node_id": "u2",
+              "date": "2025-11-10T22:08:00Z",
+              "quote": "na razie tylko log, heartbeat plik pozniej moze"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "output": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "wd-05-desktop-notify",
+              "node_id": "u2",
+              "date": "2026-01-20T19:08:00Z",
+              "quote": "tak, mail opcjonalnie, ale domyslnie tylko lokalne powiadomienie"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "transformation": {
+          "observed": [],
+          "inferable": [],
+          "absent": [
+            {
+              "question": "any build/release process",
+              "note": "Stroz stays a small script across all 7 conversations; no build step is ever mentioned"
+            }
+          ]
+        }
+      },
+      "versions": [
+        {
+          "version": "0.1",
+          "date": "2025-11-10",
+          "branch": "main",
+          "source": "chat"
+        },
+        {
+          "version": "0.2",
+          "date": "2025-12-05",
+          "branch": "main",
+          "source": "chat"
+        },
+        {
+          "version": "0.3",
+          "date": "2026-01-20",
+          "branch": "main",
+          "source": "chat"
+        }
+      ],
+      "forks": [],
+      "decisions": [
+        {
+          "project": "proj.watchdog",
+          "date": "2025-11-08",
+          "alternatives": [
+            "keep restarting by hand",
+            "build a watcher/restarter/summariser script"
+          ],
+          "chosen": "build a watcher/restarter/summariser script",
+          "affected_values": [
+            {
+              "value": "momentum",
+              "sign": "+",
+              "rationale": "stop losing sleep over it"
+            }
+          ],
+          "principle_evidence": [
+            "pr.write_down_the_blocker"
+          ],
+          "supersedes": null,
+          "operator": "op.observe_before_automate",
+          "id": "dec.wd.build",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "wd-02-build-decision",
+            "node_id": "u1",
+            "date": "2025-11-08T20:00:00Z",
+            "quote": "mam juz dwa tygodnie notatek o recznych restartach, wystarczy, buduje maly skrypt ktory to robi za mnie"
+          }
+        },
+        {
+          "project": "proj.watchdog",
+          "date": "2026-06-01",
+          "alternatives": [
+            "keep polling the log file",
+            "switch to inotify"
+          ],
+          "chosen": "switch to inotify",
+          "affected_values": [
+            {
+              "value": "momentum",
+              "sign": "+",
+              "rationale": "lower latency, less CPU"
+            }
+          ],
+          "principle_evidence": [],
+          "supersedes": null,
+          "operator": "op.impl_detail_not_propagated",
+          "implementation_detail_not_propagated": true,
+          "id": "dec.wd.io_swap",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "wd-07-io-swap",
+            "node_id": "u1",
+            "date": "2026-06-01T16:00:00Z",
+            "quote": "polling logu co sekunde marnuje CPU, zamieniam na inotify, zero zmian na zewnatrz, zachowanie identyczne"
+          }
+        }
+      ],
+      "features_status": [
+        {
+          "project": "proj.watchdog",
+          "label": "desktop notification channel",
+          "events": [
+            {
+              "version": "0.3",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2026-01-20",
+              "note": "see area.watchdog.alerts"
+            }
+          ],
+          "id": "feat.wd.desktop_notify",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "wd-05-desktop-notify",
+              "node_id": "u1",
+              "date": "2026-01-20T19:00:00Z",
+              "quote": "dodaje powiadomienie na pulpit przy kazdym restarcie, zeby nie musiec zagladac do logu recznie"
+            }
+          ]
+        },
+        {
+          "project": "proj.watchdog",
+          "label": "session summariser on restart",
+          "events": [
+            {
+              "version": "0.2",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-12-05",
+              "note": ""
+            }
+          ],
+          "id": "feat.wd.summarizer",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "wd-04-summarizer",
+              "node_id": "u1",
+              "date": "2025-12-05T21:00:00Z",
+              "quote": "dodaje summarizer - po restarcie ma streszczac co sie stalo w sesji zanim padla"
+            }
+          ]
+        },
+        {
+          "project": "proj.watchdog",
+          "label": "watcher + restarter",
+          "events": [
+            {
+              "version": "0.1",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2025-11-10",
+              "note": ""
+            }
+          ],
+          "id": "feat.wd.watcher_restart",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "wd-03-v01",
+              "node_id": "u1",
+              "date": "2025-11-10T22:00:00Z",
+              "quote": "0.1 gotowe: czyta log, wykrywa brak postepu przez >90s, zabija i odpala od nowa\n\n```python\nif time.time() - last_log_line_ts > 90:\n    kill(pid)\n    restart()\n```"
+            }
+          ]
+        }
+      ],
+      "areas": [
+        {
+          "id": "area.watchdog.alerts",
+          "project": "proj.watchdog",
+          "generalization_pl": "wszystko co dotyczy alertów: powiadomienie na pulpit, wpis do logu, opcjonalnie mail — zawsze najpierw lokalnie",
+          "generalization_en": "everything about alerts: desktop notification, a log entry, optionally e-mail -- always local-first",
+          "listed_members": [
+            "desktop notification",
+            "log entry",
+            "e-mail (optional)"
+          ],
+          "inferable_members": [
+            {
+              "value": "a push notification to her phone as a further optional channel",
+              "expected_property": "optional & local_first_fallback_required",
+              "inference_basis": "'opcjonalnie mail' establishes a pattern of optional secondary channels behind the local-first default; a phone push is the same shape"
+            }
+          ],
+          "unit": {
+            "provider": "claude",
+            "conv_id": "wd-02-build-decision",
+            "node_id": "u3",
+            "date": "2025-11-08T20:16:00Z",
+            "quote": "burza mozgow: wszystko co dotyczy alertow: powiadomienie na pulpit, wpis do logu, opcjonalnie mail - zawsze najpierw lokalnie."
+          }
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "oq.wd.restart_budget",
+          "project": "proj.watchdog",
+          "text": "czy dodać dzienny budżet restartów, żeby nie restartował w kółko w pętli",
+          "resolved_by": null,
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "wd-06-restart-budget-question",
+              "node_id": "u1",
+              "date": "2026-02-01T10:00:00Z",
+              "quote": "czy dodac dzienny budzet restartow, zeby stroz nie restartowal w kolko w petli jak cos jest systemowo zepsute?"
+            },
+            {
+              "provider": "chatgpt",
+              "conv_id": "wd-06-restart-budget-question",
+              "node_id": "u2",
+              "date": "2026-02-01T10:08:00Z",
+              "quote": "nie, zostawiam otwarte na razie"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proj.lokatorka",
+      "name": "Sprawa Kwiatowa (Lokatorka)",
+      "kind": "legal_case",
+      "aliases": [
+        "sprawa z Kwiatowej",
+        "sprawa najmu",
+        "sprawa z Zenonem",
+        "sprawa o kaucje",
+        "Lokatorka-sprawa"
+      ],
+      "one_line": "Fictional tenancy dispute over a deposit + mould damage; deadlines, evidence, one court filing.",
+      "universal_roles": {
+        "resource": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "lk-01-evidence",
+              "node_id": "u1",
+              "date": "2026-01-05T21:00:00Z",
+              "quote": "sprawa z Kwiatowej: zbieram wszystko - maile od Zenona (3 watki), zdjecia pleśni z ledenia (styczen), sms-y"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "constraint": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "lk-01-evidence",
+              "node_id": "u2",
+              "date": "2026-01-05T21:08:00Z",
+              "quote": "tak: kazdy termin musi byc powiazany z konkretna podstawa prawna, inaczej to sie nie liczy. i burza mozgow: wszystko co dotyczy terminow: liczone od dostarczenia pisma, zawsze plus dwa dni zapasu, zawsze zapisana podstawa prawna."
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "event": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "lk-07-auto-deadlines",
+              "node_id": "u2",
+              "date": "2026-06-15T10:08:00Z",
+              "quote": "rozprawa zreszta wyznaczona na 20 sierpnia, wpisuje to tez do tego samego systemu terminow"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "actor": {
+          "observed": [],
+          "inferable": [
+            {
+              "value": "a court registry/clerk contact at Sad Rejonowy w Fikcyjnowie",
+              "expected_property": "exists_role(institution_contact)",
+              "inference_basis": "any filed court proceeding implies a registry contact for procedural correspondence, even though lk-06/lk-07 never name one"
+            }
+          ],
+          "absent": []
+        }
+      },
+      "versions": [],
+      "forks": [],
+      "decisions": [
+        {
+          "project": "proj.lokatorka",
+          "date": "2026-01-10",
+          "alternatives": [
+            "wait and negotiate informally",
+            "send a formal written demand citing KL art. 12",
+            "go straight to court"
+          ],
+          "chosen": "send a formal written demand citing KL art. 12, escalate only if ignored 14+ days",
+          "affected_values": [
+            {
+              "value": "transparency",
+              "sign": "+",
+              "rationale": ""
+            },
+            {
+              "value": "autonomy",
+              "sign": "+",
+              "rationale": "cheaper than a lawyer up front"
+            }
+          ],
+          "principle_evidence": [],
+          "supersedes": null,
+          "operator": null,
+          "id": "dec.lk.strategy",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "lk-02-strategy",
+            "node_id": "u2b",
+            "date": "2026-01-10T18:12:00Z",
+            "quote": "poprawka: najpierw formalne pisemne wezwanie cytujace KL art. 12, eskalacja do sadu tylko jesli zignorowane przez 14+ dni"
+          }
+        },
+        {
+          "project": "proj.lokatorka",
+          "date": "2026-03-10",
+          "alternatives": [
+            "send a second written reminder",
+            "file in court"
+          ],
+          "chosen": "file in court",
+          "affected_values": [
+            {
+              "value": "autonomy",
+              "sign": "+",
+              "rationale": "the 14-day window was ignored"
+            }
+          ],
+          "principle_evidence": [],
+          "supersedes": "dec.lk.strategy",
+          "operator": null,
+          "id": "dec.lk.court_filing",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "lk-06-court-filing",
+            "node_id": "u2",
+            "date": "2026-03-10T19:08:00Z",
+            "quote": "tak, skladamy w sadzie. jawnie odwracam wczesniejsza strategie 'pismo najpierw' - ta faza sie skonczyla, nie dziala"
+          }
+        },
+        {
+          "project": "proj.lokatorka",
+          "date": "2026-06-15",
+          "alternatives": [
+            "keep checking the spreadsheet every morning",
+            "compute deadlines from dated events + auto-remind"
+          ],
+          "chosen": "compute deadlines from dated events + auto-remind",
+          "affected_values": [
+            {
+              "value": "preservation_of_information",
+              "sign": "+",
+              "rationale": "no more relying on memory"
+            }
+          ],
+          "principle_evidence": [
+            "pr.write_down_the_blocker"
+          ],
+          "supersedes": null,
+          "operator": "op.observe_before_automate",
+          "id": "dec.lk.auto_deadlines",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "lk-07-auto-deadlines",
+            "node_id": "u1",
+            "date": "2026-06-15T10:00:00Z",
+            "quote": "mam juz dosc recznego sprawdzania excela codziennie rano, licze to teraz automatycznie z dat zdarzen plus przypomnienie, zamiast pamietac samej"
+          }
+        }
+      ],
+      "features_status": [
+        {
+          "project": "proj.lokatorka",
+          "label": "deposit-return claim (proceeding)",
+          "events": [
+            {
+              "version": "n/a",
+              "branch": "main",
+              "status": "planned",
+              "date": "2026-01-10",
+              "note": "see dec.lk.strategy"
+            },
+            {
+              "version": "n/a",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2026-03-10",
+              "note": "filed in court, see dec.lk.court_filing"
+            }
+          ],
+          "id": "feat.lk.deposit_claim",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "lk-03-deadline-computed",
+              "node_id": "u1",
+              "date": "2026-01-12T09:00:00Z",
+              "quote": "wezwanie dorecozone 10 stycznia. termin na odpowiedz w sprawie kaucji: 30 dni od doreczenia + 2 dni zapasu, podstawa: KL art. 12 ust. 3 (fikcyjny w tym zbiorze)"
+            },
+            {
+              "provider": "claude",
+              "conv_id": "lk-06-court-filing",
+              "node_id": "u1",
+              "date": "2026-03-10T19:00:00Z",
+              "quote": "minelo 14+ dni, Zenon olal pismo calkowicie, zadnej odpowiedzi"
+            }
+          ]
+        }
+      ],
+      "areas": [
+        {
+          "id": "area.lokatorka.deadlines",
+          "project": "proj.lokatorka",
+          "generalization_pl": "wszystko co dotyczy terminów: liczone od dostarczenia pisma, zawsze plus dwa dni zapasu, zawsze zapisana podstawa prawna",
+          "generalization_en": "everything about deadlines: counted from delivery of the letter, always with a 2-day buffer, always with the statute basis recorded",
+          "listed_members": [
+            "counted from delivery date",
+            "2-day buffer",
+            "statute basis recorded"
+          ],
+          "inferable_members": [
+            {
+              "value": "every deadline gets a reminder a few days before it is due",
+              "expected_property": "has_derived_property(reminder_offset) & consistent_with(area.watchdog.alerts)",
+              "inference_basis": "cross-project analogy (morphism transfer, depth 1): Watchdog's alerts area already establishes 'always alert ahead of a bad outcome'; the deadline-handling generalization implies the same for legal deadlines even though no brainstorm item says 'reminder' explicitly here"
+            }
+          ],
+          "unit": {
+            "provider": "claude",
+            "conv_id": "lk-01-evidence",
+            "node_id": "u2",
+            "date": "2026-01-05T21:08:00Z",
+            "quote": "tak: kazdy termin musi byc powiazany z konkretna podstawa prawna, inaczej to sie nie liczy. i burza mozgow: wszystko co dotyczy terminow: liczone od dostarczenia pisma, zawsze plus dwa dni zapasu, zawsze zapisana podstawa prawna."
+          }
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "oq.lk.appeal_path",
+          "project": "proj.lokatorka",
+          "text": "co dalej, jeśli decyzja sądu będzie niekorzystna",
+          "resolved_by": null,
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "cx-06-whats-next",
+              "node_id": "u4",
+              "date": "2026-08-10T21:20:00Z",
+              "quote": "glownie czy iso apelacyjna droge w sprawie Kwiatowej jesli przegram, ale to za wczesnie zeby o tym myslec"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proj.analogghosts",
+      "name": "Analog Ghosts",
+      "kind": "music",
+      "aliases": [
+        "Analog Ghosts",
+        "plyta",
+        "EP",
+        "projekt muzyczny",
+        "te nagrania"
+      ],
+      "one_line": "Solo lo-fi/synth side project; a handful of tracks, an unfinished EP.",
+      "universal_roles": {
+        "intent": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "mu-01-kickoff",
+              "node_id": "u1",
+              "date": "2026-02-08T22:00:00Z",
+              "quote": "projekt z boku zeby miec cos skonczonego poza kodem: krotkie EP, robie sama, wieczorami, budzet zero"
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "resource": {
+          "observed": [
+            {
+              "provider": "claude",
+              "conv_id": "mu-01-kickoff",
+              "node_id": "u2",
+              "date": "2026-02-08T22:08:00Z",
+              "quote": "syntek analogowy-klon, automat perkusyjny, gitara. burza mozgow o brzmieniu: wszystko o brzmieniu: cieple analogowe, duzo tape saturation, bez zbyt cyfrowego poglosu."
+            }
+          ],
+          "inferable": [],
+          "absent": []
+        },
+        "output": {
+          "observed": [],
+          "inferable": [],
+          "absent": [
+            {
+              "question": "a fully mixed/mastered EP file",
+              "note": "only two finished tracks exist by the end of the corpus (mu-06); no EP-level master is ever mentioned"
+            }
+          ]
+        }
+      },
+      "versions": [],
+      "forks": [],
+      "decisions": [
+        {
+          "project": "proj.analogghosts",
+          "date": "2026-02-20",
+          "alternatives": [
+            "C minor",
+            "D minor"
+          ],
+          "chosen": null,
+          "affected_values": [
+            {
+              "value": "optionality",
+              "sign": "+",
+              "rationale": "record both as demos, decide later"
+            }
+          ],
+          "principle_evidence": [
+            "pr.small_reversible_steps"
+          ],
+          "supersedes": null,
+          "operator": "op.uncertainty_keep_alternatives",
+          "kept_open": true,
+          "id": "dec.mu.arrangement_key_open",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "mu-02-key-open",
+            "node_id": "u1",
+            "date": "2026-02-20T21:00:00Z",
+            "quote": "'Paper Weather' - nie moge sie zdecydowac na tonacje"
+          }
+        },
+        {
+          "project": "proj.analogghosts",
+          "date": "2026-03-01",
+          "alternatives": [
+            "straight to tape (hard to undo, warmer)",
+            "digital multitrack (easy to undo, cleaner)"
+          ],
+          "chosen": "digital multitrack",
+          "affected_values": [
+            {
+              "value": "optionality",
+              "sign": "+",
+              "rationale": "mistakes stay fixable"
+            }
+          ],
+          "principle_evidence": [
+            "pr.two_masters_conflict"
+          ],
+          "supersedes": null,
+          "operator": null,
+          "id": "dec.mu.recording_medium",
+          "unit": {
+            "provider": "chatgpt",
+            "conv_id": "mu-03-recording-medium",
+            "node_id": "u2",
+            "date": "2026-03-01T20:08:00Z",
+            "quote": "kiedy dwie wartosci sie kloca, wygrywa ta opcja, ktora latwiej cofnac"
+          }
+        },
+        {
+          "project": "proj.analogghosts",
+          "date": "2026-06-01",
+          "alternatives": [
+            "C minor",
+            "D minor"
+          ],
+          "chosen": "D minor",
+          "affected_values": [
+            {
+              "value": "optionality",
+              "sign": "0",
+              "rationale": "resolved once both demos existed"
+            }
+          ],
+          "principle_evidence": [],
+          "supersedes": null,
+          "operator": "op.uncertainty_keep_alternatives",
+          "id": "dec.mu.arrangement_key_final",
+          "unit": {
+            "provider": "claude",
+            "conv_id": "mu-05-key-final",
+            "node_id": "u1",
+            "date": "2026-06-01T21:00:00Z",
+            "quote": "wrocilam do obu demo 'Paper Weather' po miesiacach - d-moll broni sie lepiej na swiezo"
+          }
+        }
+      ],
+      "features_status": [
+        {
+          "project": "proj.analogghosts",
+          "label": "track: 'Paper Weather'",
+          "events": [
+            {
+              "version": "n/a",
+              "branch": "main",
+              "status": "implemented",
+              "date": "2026-07-10",
+              "note": "one of two finished tracks"
+            }
+          ],
+          "id": "feat.mu.paper_weather",
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "mu-06-ep-status",
+              "node_id": "u1",
+              "date": "2026-07-10T20:00:00Z",
+              "quote": "status EP: 'Paper Weather' skonczone, to drugi gotowy utwor, reszta dalej tylko szkice"
+            }
+          ]
+        },
+        {
+          "project": "proj.analogghosts",
+          "label": "track: 'Slow Fracture'",
+          "events": [
+            {
+              "version": "n/a",
+              "branch": "main",
+              "status": "planned",
+              "date": "2026-02-08",
+              "note": "sketch only"
+            },
+            {
+              "version": "n/a",
+              "branch": "main",
+              "status": "abandoned",
+              "date": "2026-04-10",
+              "note": "idea doesn't hold up; demo kept, not deleted"
+            }
+          ],
+          "id": "feat.mu.slow_fracture",
+          "units": [
+            {
+              "provider": "claude",
+              "conv_id": "mu-01-kickoff",
+              "node_id": "u3",
+              "date": "2026-02-08T22:16:00Z",
+              "quote": "'Paper Weather' i 'Slow Fracture' na razie jako szkice"
+            },
+            {
+              "provider": "chatgpt",
+              "conv_id": "mu-04-abandon-slow-fracture",
+              "node_id": "u2",
+              "date": "2026-04-10T19:08:00Z",
+              "quote": "nie, zostawiam demo jak jest, opisuje czemu odpadlo, moze kiedys do tego wroce"
+            }
+          ]
+        }
+      ],
+      "areas": [
+        {
+          "id": "area.music.sound_palette",
+          "project": "proj.analogghosts",
+          "generalization_pl": "wszystko o brzmieniu: ciepłe analogowe, dużo tape saturation, bez zbyt cyfrowego pogłosu",
+          "generalization_en": "everything about the sound: warm analog, lots of tape saturation, not too digital reverb",
+          "listed_members": [
+            "warm analog",
+            "tape saturation"
+          ],
+          "inferable_members": [
+            {
+              "value": "a tape-delay style effect rather than a clean digital delay",
+              "expected_property": "consistent_with(area.music.sound_palette statement)",
+              "inference_basis": "a delay effect is unlisted but must satisfy 'ciepłe analogowe, bez cyfrowego pogłosu' the same way reverb does"
+            }
+          ],
+          "unit": {
+            "provider": "claude",
+            "conv_id": "mu-01-kickoff",
+            "node_id": "u2",
+            "date": "2026-02-08T22:08:00Z",
+            "quote": "syntek analogowy-klon, automat perkusyjny, gitara. burza mozgow o brzmieniu: wszystko o brzmieniu: cieple analogowe, duzo tape saturation, bez zbyt cyfrowego poglosu."
+          }
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "oq.mu.vocals_or_instrumental",
+          "project": "proj.analogghosts",
+          "text": "czy dogrywać wokal, czy zostać instrumentalnie",
+          "resolved_by": null,
+          "units": [
+            {
+              "provider": "chatgpt",
+              "conv_id": "mu-06-ep-status",
+              "node_id": "u2",
+              "date": "2026-07-10T20:08:00Z",
+              "quote": "wciaz nie wiem czy dogrywac wokal czy zostac instrumentalnie"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "principles": [
+    {
+      "id": "pr.optionality_over_speed",
+      "level": "value",
+      "form": "invariant",
+      "statement": {
+        "pl": "Zachowanie opcjonalności jest ważniejsze niż tymczasowa szybkość",
+        "en": "Preserving future options matters more than short-term speed"
+      },
+      "protects": [
+        "optionality"
+      ],
+      "scope": "wszystkie projekty",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "supported",
+      "note": "Independently convergent with the seed pack's general 'preservation of optionality' value (NOTATKA §4); Ola's own phrasing and evidence base.",
+      "phrasings": [
+        {
+          "provider": "claude",
+          "conv_id": "cx-01-manifesto",
+          "node_id": "u2",
+          "date": "2025-01-08T08:08:00Z",
+          "text": "po pierwsze: opcjonalność jest ważniejsza niż tymczasowa szybkość - wolę zostawić sobie drogę odwrotu niż zaoszczędzić dzień teraz."
+        },
+        {
+          "provider": "claude",
+          "conv_id": "cx-05-midyear-review",
+          "node_id": "u2",
+          "date": "2026-05-05T19:08:00Z",
+          "text": "opcjonalnosc dalej na pierwszym miejscu - wole zaplacic troche czasu teraz zeby nie zamykac sobie drzwi pozniej"
+        }
+      ]
+    },
+    {
+      "id": "pr.honesty_over_comfort",
+      "level": "value",
+      "form": "invariant",
+      "statement": {
+        "pl": "Mów wprost, czego nie wiem albo czego nie zrobiłam, zamiast ładnie to opakować",
+        "en": "Say plainly what is unknown or undone, instead of dressing it up"
+      },
+      "protects": [
+        "honesty",
+        "transparency"
+      ],
+      "scope": "wszystkie projekty",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "supported",
+      "note": "",
+      "phrasings": [
+        {
+          "provider": "claude",
+          "conv_id": "cx-01-manifesto",
+          "node_id": "u3",
+          "date": "2025-01-08T08:12:00Z",
+          "text": "po drugie: mówię wprost czego nie wiem albo czego nie zrobiłam, zamiast to ładnie opakowywać - i to dotyczy też rozmów z modelem, nie tylko z ludźmi."
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "cx-04-venting",
+          "node_id": "u1",
+          "date": "2026-02-25T20:00:00Z",
+          "text": "wkurza mnie jak sama sobie wmawiam ze cos jest 'prawie gotowe' zamiast powiedziec wprost ze utknelam - zawsze konczy sie gorzej"
+        }
+      ]
+    },
+    {
+      "id": "pr.keep_both_branches",
+      "level": "epistemic",
+      "form": "invariant",
+      "statement": {
+        "pl": "Nie kasuję porzuconej gałęzi ani opcji — zostawiam ją z opisem, czemu odpadła",
+        "en": "Never delete an abandoned branch or option; keep it labelled with why it lost"
+      },
+      "protects": [
+        "preservation_of_information",
+        "optionality"
+      ],
+      "scope": "wszystkie projekty",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "confirmed",
+      "note": "Overlaps in spirit with seed p.abandoned_not_unimportant, independently phrased/evidenced.",
+      "phrasings": [
+        {
+          "provider": "claude",
+          "conv_id": "nf-08-cpp-wins",
+          "node_id": "u2",
+          "date": "2025-08-10T10:08:00Z",
+          "text": "nie kasuje porzuconej galezi, zostawiam ja z opisem czemu odpadla"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "nf-12-encryption-and-lost-again",
+          "node_id": "u3",
+          "date": "2026-07-01T17:46:00Z",
+          "text": "a przy okazji refaktoru UI kolejny raz zgubily sie checklisty, trzeci raz z rzedu cos im sie dzieje przy duzych zmianach - zostawiam jak jest, zaznaczam lost, nie kasuje kodu ktory je robil"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "mu-04-abandon-slow-fracture",
+          "node_id": "u2",
+          "date": "2026-04-10T19:08:00Z",
+          "text": "nie, zostawiam demo jak jest, opisuje czemu odpadlo, moze kiedys do tego wroce"
+        }
+      ]
+    },
+    {
+      "id": "pr.data_over_branches",
+      "level": "strategy",
+      "form": "invariant",
+      "statement": {
+        "pl": "Presety i konfiguracje to dane, nie nowe gałęzie kodu — ale algorytmy i UI zostają w kodzie",
+        "en": "Presets and configuration are data, not new code branches — but algorithms and UI stay in code"
+      },
+      "protects": [
+        "minimal_arbitrariness"
+      ],
+      "scope": "presety, config, listy providerów",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "supported",
+      "note": "Same core idea as seed p.kod_ne_dane, but Ola scopes it much narrower (explicitly NOT 'wszystko dane' — see cross-project conv cx-05) and reached it independently.",
+      "phrasings": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "nf-06-checklist-and-defer-crypto",
+          "node_id": "u2",
+          "date": "2025-05-10T19:53:00Z",
+          "text": "tak, checklist to zwykla notatka z dodatkowym polem items w danych, nie nowy typ/klasa"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "rt-06-shared-artifact-model",
+          "node_id": "u1",
+          "date": "2026-06-25T18:00:00Z",
+          "text": "compose/montaz dalej nie ruszony, ale przy okazji klipow pomyslalam: keyframe, klip i (kiedys) sekcja compose to w sumie ten sam ksztalt rekordu - etap, wejscie, wyjscie, koszt, status - roznia sie tylko polami danych"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "cx-01-manifesto",
+          "node_id": "u4",
+          "date": "2025-01-08T08:16:00Z",
+          "text": "i po trzecie, na razie tylko dla presetów/configów: to dane, nie nowa gałąź kodu."
+        },
+        {
+          "provider": "claude",
+          "conv_id": "cx-05-midyear-review",
+          "node_id": "u3",
+          "date": "2026-05-05T19:12:00Z",
+          "text": "presety/config jako dane - to zostaje, ale podobno niektorzy robia WSZYSTKO jako dane, az do logiki wlacznie. ja bym sie az tak daleko nie posunela, algorytmy i UI zostaja u mnie w kodzie"
+        }
+      ]
+    },
+    {
+      "id": "pr.write_down_the_blocker",
+      "level": "epistemic",
+      "form": "heuristic",
+      "statement": {
+        "pl": "Kiedy utknę na ponad 20 minut, zapisuję dokładnie na czym utknęłam, zanim przełączę zadanie",
+        "en": "When stuck for more than 20 minutes, write down the exact blocker before switching tasks"
+      },
+      "protects": [
+        "preservation_of_information"
+      ],
+      "scope": "praca własna",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "candidate",
+      "note": "No seed analog.",
+      "phrasings": [
+        {
+          "provider": "claude",
+          "conv_id": "wd-01-manual-pain",
+          "node_id": "u2",
+          "date": "2025-11-02T23:48:00Z",
+          "text": "kiedy utknelam, zapisuje dokladnie co sie stalo, zanim cokolwiek zautomatyzuje"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "wd-02-build-decision",
+          "node_id": "u1",
+          "date": "2025-11-08T20:00:00Z",
+          "text": "mam juz dwa tygodnie notatek o recznych restartach, wystarczy, buduje maly skrypt ktory to robi za mnie"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "lk-05-manual-checking",
+          "node_id": "u1",
+          "date": "2026-02-14T08:00:00Z",
+          "text": "znowu rano sprawdzalam recznie excel z terminami, zamiast cos innego zrobic"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "lk-07-auto-deadlines",
+          "node_id": "u1",
+          "date": "2026-06-15T10:00:00Z",
+          "text": "mam juz dosc recznego sprawdzania excela codziennie rano, licze to teraz automatycznie z dat zdarzen plus przypomnienie, zamiast pamietac samej"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "cx-03-drifting-thread",
+          "node_id": "u4",
+          "date": "2025-11-15T21:24:00Z",
+          "text": "kiedy utknę na ponad 20 minut, zapisuję dokładnie na czym utknęłam, zanim przełączę zadanie"
+        }
+      ]
+    },
+    {
+      "id": "pr.counterexample_hunting",
+      "level": "epistemic",
+      "form": "heuristic",
+      "statement": {
+        "pl": "Zanim uznam coś za zasadę, szukam kontrprzykładu z ostatnich dwóch tygodni",
+        "en": "Before promoting something to a rule, hunt for a counterexample from the last two weeks"
+      },
+      "protects": [
+        "truth"
+      ],
+      "scope": "tworzenie zasad",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "candidate",
+      "note": "",
+      "phrasings": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "cx-04-venting",
+          "node_id": "u2",
+          "date": "2026-02-25T20:08:00Z",
+          "text": "i zanim cos nazwe 'zasada u mnie' to naprawde szukam kontrprzykladu z ostatnich dwoch tygodni, zeby sie nie oszukiwac"
+        }
+      ]
+    },
+    {
+      "id": "pr.provider_not_special_case",
+      "level": "strategy",
+      "form": "heuristic",
+      "statement": {
+        "pl": "Nowe API to nowy adapter za tym samym interfejsem, nie nowy if",
+        "en": "A new API is a new adapter behind the same interface, not a new if-branch"
+      },
+      "protects": [
+        "minimal_arbitrariness",
+        "optionality"
+      ],
+      "scope": "integracje zewnętrzne",
+      "conflicts_with": [],
+      "derived_from": [
+        "pr.data_over_branches"
+      ],
+      "validation_status": "confirmed",
+      "note": "Narrower, independently-evidenced version of seed p.capability_not_enum.",
+      "phrasings": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "nf-05-transcription",
+          "node_id": "u2b",
+          "date": "2025-04-02T08:42:00Z",
+          "text": "nowe API to nowy adapter za tym samym interfejsem, nie nowy if"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "nf-11-transcription-restored",
+          "node_id": "u2",
+          "date": "2026-05-20T09:08:00Z",
+          "text": "tak dokladnie, przywracam cloud Whisper-style + dodaje on-device fallback za tym samym interfejsem providera, dokladnie tak jak mialo byc od poczatku"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "nf-12-encryption-and-lost-again",
+          "node_id": "u2",
+          "date": "2026-07-01T17:38:00Z",
+          "text": "biore ChaCha20-Poly1305, tez za wymiennym cipher-providerem, zeby zmiana byla znowu tylko adapterem a nie przepisywaniem storage"
+        }
+      ]
+    },
+    {
+      "id": "pr.momentum_over_perfection",
+      "level": "value",
+      "form": "default",
+      "statement": {
+        "pl": "Utrzymanie tempa jest domyślnie ważniejsze niż idealna architektura na starcie",
+        "en": "Keeping momentum defaults to mattering more than a perfect architecture up front"
+      },
+      "protects": [
+        "momentum"
+      ],
+      "scope": "wczesne fazy projektu",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "supported",
+      "note": "No seed analog.",
+      "phrasings": [
+        {
+          "provider": "claude",
+          "conv_id": "nf-04-sync-v1",
+          "node_id": "u2",
+          "date": "2025-03-01T11:08:00Z",
+          "text": "utrzymanie tempa jest wazniejsze niz idealne rozwiazanie na starcie"
+        }
+      ]
+    },
+    {
+      "id": "pr.decide_fast_correct_later",
+      "level": "strategy",
+      "form": "default",
+      "statement": {
+        "pl": "Decyduj szybko na podstawie tego, co wiem teraz; koryguj, gdy pojawią się nowe dane — nie czekaj na pewność",
+        "en": "Decide fast on what you know now; correct later when new data arrives — do not wait for certainty"
+      },
+      "protects": [
+        "momentum"
+      ],
+      "scope": "decyzje techniczne o niskim koszcie cofnięcia",
+      "conflicts_with": [
+        "p.defer_decisions"
+      ],
+      "derived_from": [],
+      "validation_status": "supported",
+      "note": "Deliberately in TENSION with the seed pack's p.defer_decisions ('nie podejmujemy decyzji, jeśli nie musimy'): Ola's own default is closer to the opposite bias. See pr.owner_confirmation_for_money for how she resolves this against optionality when the cost of being wrong rises.",
+      "phrasings": [
+        {
+          "provider": "claude",
+          "conv_id": "nf-08-cpp-wins",
+          "node_id": "u1",
+          "date": "2025-08-10T10:00:00Z",
+          "text": "decyduje szybko na tym co wiem teraz, koryguje pozniej jak beda nowe dane"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "cx-02-changing-mind",
+          "node_id": "u2b",
+          "date": "2025-07-20T22:42:00Z",
+          "text": "poprawka pytania: no dobra, prawda jest taka ze ja po prostu decyduje szybko na tym co wiem, a potem koryguje jak sie cos zmieni - nie czekam na pewnosc, bo pewnosci nigdy nie ma"
+        }
+      ]
+    },
+    {
+      "id": "pr.small_reversible_steps",
+      "level": "strategy",
+      "form": "default",
+      "statement": {
+        "pl": "Domyślnie rób mały odwracalny krok zamiast dużej nieodwracalnej zmiany",
+        "en": "Default to a small reversible step over a big irreversible change"
+      },
+      "protects": [
+        "optionality"
+      ],
+      "scope": "wszystkie projekty",
+      "conflicts_with": [],
+      "derived_from": [
+        "pr.optionality_over_speed"
+      ],
+      "validation_status": "supported",
+      "note": "",
+      "phrasings": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "nf-06-checklist-and-defer-crypto",
+          "node_id": "u3",
+          "date": "2025-05-10T20:01:00Z",
+          "text": "i olewam szyfrowanie na razie, dolozylabym to jako osobna warstwe nad storage pozniej, bez przepisywania calosci - MVP tego nie potrzebuje"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "cx-06-whats-next",
+          "node_id": "u2",
+          "date": "2026-08-10T21:08:00Z",
+          "text": "nic wielkiego na raz - male odwracalne kroki jak zawsze, zero wielkich przepisywan bez potrzeby"
+        }
+      ]
+    },
+    {
+      "id": "pr.owner_confirmation_for_money",
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "statement": {
+        "pl": "Gdy koszt (pieniądze, czas, nieodwracalność) rośnie, zawsze pytam / zapisuję zgodę, zanim system działa dalej",
+        "en": "When cost (money, time, irreversibility) rises, always ask / record explicit confirmation before proceeding"
+      },
+      "protects": [
+        "optionality",
+        "autonomy"
+      ],
+      "scope": "operacje kosztowne lub nieodwracalne",
+      "conflicts_with": [],
+      "derived_from": [
+        "pr.optionality_over_speed"
+      ],
+      "validation_status": "confirmed",
+      "note": "Resolves the tension between pr.decide_fast_correct_later and pr.optionality_over_speed: decide fast UNTIL the cost of being wrong crosses a threshold, then gate.",
+      "phrasings": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "nf-09-lost-and-billed",
+          "node_id": "u4",
+          "date": "2025-10-10T22:39:00Z",
+          "text": "gdy koszt rosnie, zawsze pytam / zapisuje zgode, zanim system dziala dalej"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "rt-05-clips-gate",
+          "node_id": "u2",
+          "date": "2026-06-10T13:08:00Z",
+          "text": "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "cx-04-venting",
+          "node_id": "u3",
+          "date": "2026-02-25T20:16:00Z",
+          "text": "no wlasnie to mi uswiadomilo cos ogolniejszego: jak koszt (pieniadze, czas, nieodwracalnosc) rosnie, to zawsze musze pytac / zapisywac zgode zanim cokolwiek dzieje sie dalej - to nie jest tylko regula dla notatnika"
+        }
+      ]
+    },
+    {
+      "id": "pr.two_masters_conflict",
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "statement": {
+        "pl": "Kiedy dwie wartości się kłócą, wygrywa ta opcja, którą łatwiej cofnąć",
+        "en": "When two values conflict, the option that is easier to reverse wins"
+      },
+      "protects": [
+        "optionality"
+      ],
+      "scope": "wszystkie projekty",
+      "conflicts_with": [],
+      "derived_from": [
+        "pr.owner_confirmation_for_money",
+        "pr.optionality_over_speed"
+      ],
+      "validation_status": "supported",
+      "note": "Generalises pr.owner_confirmation_for_money beyond money.",
+      "phrasings": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "mu-03-recording-medium",
+          "node_id": "u2",
+          "date": "2026-03-01T20:08:00Z",
+          "text": "kiedy dwie wartosci sie kloca, wygrywa ta opcja, ktora latwiej cofnac"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "cx-05-midyear-review",
+          "node_id": "u4",
+          "date": "2026-05-05T19:20:00Z",
+          "text": "to w sumie ta sama regula w szerszej wersji: kiedy dwie wartosci sie kloca, wygrywa ta opcja, ktora latwiej cofnac - pieniadze to tylko jeden szczegolny przypadek nieodwracalnosci"
+        }
+      ]
+    },
+    {
+      "id": "pr.meta_two_examples_rule",
+      "level": "strategy",
+      "form": "meta",
+      "statement": {
+        "pl": "Zapisuję coś jako 'zasadę' dopiero, gdy widzę ten sam wzorzec w co najmniej dwóch różnych projektach",
+        "en": "Something only becomes a written 'principle' once the same pattern shows up in at least two different projects"
+      },
+      "protects": [
+        "minimal_arbitrariness"
+      ],
+      "scope": "tworzenie zasad",
+      "conflicts_with": [],
+      "derived_from": [],
+      "validation_status": "confirmed",
+      "note": "Ola's own meta-principle for how principles form; by construction most entries here are evidenced across >=2 projects, which is itself a predicted consequence of this rule.",
+      "phrasings": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "cx-02-changing-mind",
+          "node_id": "u3b",
+          "date": "2025-07-20T22:50:00Z",
+          "text": "no i przy okazji: python-quick zostawiam jako branch, nie kasuje, dopisuje tylko czemu przegral - a regule zapisuje sobie dopiero jak zobacze ten sam wzorzec w co najmniej dwoch roznych projektach, nie po jednym razie"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "cx-05-midyear-review",
+          "node_id": "u5",
+          "date": "2026-05-05T19:28:00Z",
+          "text": "po dwoch, jak zawsze - u mnie regula staje sie regula dopiero za drugim razem, nie za pierwszym"
+        }
+      ]
+    }
+  ],
+  "operators": [
+    {
+      "id": "op.new_source_new_adapter",
+      "situation": "A new external data/API source appears that isn't behind an existing adapter.",
+      "solution": "Extend the provider/capability abstraction; add an adapter behind the same interface, never a hard-coded special case.",
+      "principles": [
+        "pr.provider_not_special_case",
+        "pr.data_over_branches"
+      ],
+      "examples": [
+        {
+          "decision_id": "dec.nf.transcription",
+          "date": "2025-04-02",
+          "side": "pre_T",
+          "project": "proj.noteflow"
+        },
+        {
+          "decision_id": "dec.nf.transcription_fallback",
+          "date": "2026-05-20",
+          "side": "post_T",
+          "project": "proj.noteflow"
+        }
+      ]
+    },
+    {
+      "id": "op.new_artifact_shared_structure",
+      "situation": "A new artifact/content type appears that doesn't fit the current model.",
+      "solution": "Find the common structure across existing types; keep the type-specific bits as data fields on the shared shape, not a new class or code path.",
+      "principles": [
+        "pr.data_over_branches"
+      ],
+      "examples": [
+        {
+          "decision_id": "dec.nf.checklist_as_data",
+          "date": "2025-05-10",
+          "side": "pre_T",
+          "project": "proj.noteflow"
+        },
+        {
+          "decision_id": "dec.rt.shared_artifact_model",
+          "date": "2026-06-25",
+          "side": "post_T",
+          "project": "proj.reeltime"
+        }
+      ]
+    },
+    {
+      "id": "op.observe_before_automate",
+      "situation": "Ola notices she is repeating a manual chore.",
+      "solution": "First make it observable (log it, timestamp it, keep the manual record), only then automate it.",
+      "principles": [
+        "pr.write_down_the_blocker"
+      ],
+      "examples": [
+        {
+          "decision_id": "dec.wd.build",
+          "date": "2025-11-08",
+          "side": "pre_T",
+          "project": "proj.watchdog"
+        },
+        {
+          "decision_id": "dec.lk.auto_deadlines",
+          "date": "2026-06-15",
+          "side": "post_T",
+          "project": "proj.lokatorka"
+        }
+      ]
+    },
+    {
+      "id": "op.uncertainty_keep_alternatives",
+      "situation": "Facing genuine uncertainty between >=2 options with no forcing evidence yet.",
+      "solution": "Do not choose arbitrarily; keep both options recorded with their evidence, and run a small, cheap, reversible probe instead of committing.",
+      "principles": [
+        "pr.small_reversible_steps",
+        "pr.two_masters_conflict"
+      ],
+      "examples": [
+        {
+          "decision_id": "dec.mu.arrangement_key_open",
+          "date": "2026-02-20",
+          "side": "pre_T",
+          "project": "proj.analogghosts"
+        },
+        {
+          "decision_id": "dec.mu.arrangement_key_final",
+          "date": "2026-06-01",
+          "side": "post_T",
+          "project": "proj.analogghosts"
+        }
+      ]
+    },
+    {
+      "id": "op.impl_detail_not_propagated",
+      "situation": "An implementation detail changes but the externally visible contract/behaviour does not.",
+      "solution": "Do not propagate the change to architecture docs or decisions; it is invisible at that layer.",
+      "principles": [
+        "pr.data_over_branches"
+      ],
+      "examples": [
+        {
+          "decision_id": "dec.nf.diff_algo_swap",
+          "date": "2025-08-25",
+          "side": "pre_T",
+          "project": "proj.noteflow"
+        },
+        {
+          "decision_id": "dec.wd.io_swap",
+          "date": "2026-06-01",
+          "side": "post_T",
+          "project": "proj.watchdog"
+        }
+      ]
+    },
+    {
+      "id": "op.cost_gate_on_irreversibility",
+      "situation": "The cost (money/time) or irreversibility of the next step increases sharply.",
+      "solution": "Gate the step behind an explicit estimate and an explicit confirmation before proceeding.",
+      "principles": [
+        "pr.owner_confirmation_for_money"
+      ],
+      "examples": [
+        {
+          "decision_id": "dec.nf.upload_gate",
+          "date": "2025-10-10",
+          "side": "pre_T",
+          "project": "proj.noteflow"
+        },
+        {
+          "decision_id": "dec.rt.clips_gate",
+          "date": "2026-06-10",
+          "side": "post_T",
+          "project": "proj.reeltime"
+        }
+      ]
+    }
+  ],
+  "areas": [
+    {
+      "id": "area.noteflow.storage",
+      "project": "proj.noteflow",
+      "generalization_pl": "wszystko o storage: SQLite dla danych strukturalnych, pliki blob dla załączników, nic w chmurze bez zgody użytkownika",
+      "generalization_en": "everything about storage: SQLite for structured data, blob files for attachments, nothing in the cloud without user consent",
+      "listed_members": [
+        "SQLite for structured data",
+        "blob files for attachments"
+      ],
+      "inferable_members": [
+        {
+          "value": "backup/export follows the same local-first-by-default rule",
+          "expected_property": "consistent_with(pr.optionality_over_speed) & requires_explicit_opt_in(remote_destination)",
+          "inference_basis": "the generalization's 'nic w chmurze bez zgody' clause applies to any future storage-adjacent feature, not only the two listed members"
+        }
+      ],
+      "unit": {
+        "provider": "claude",
+        "conv_id": "nf-01-kickoff",
+        "node_id": "u3",
+        "date": "2025-01-10T09:30:00Z",
+        "quote": "Tak, burza zanim cokolwiek zakoduje. Wszystko o storage: SQLite dla danych strukturalnych, pliki blob dla zalacznikow, nic w chmurze bez zgody uzytkownika."
+      }
+    },
+    {
+      "id": "area.reeltime.stages",
+      "project": "proj.reeltime",
+      "generalization_pl": "wszystko o etapach pipeline'u: storyboard z tekstu, potem keyframe'y, potem klipy, na końcu compose — każdy etap droższy niż poprzedni, więc tanie najpierw, drogie na końcu, i pytamy zanim odpalimy drogi etap",
+      "generalization_en": "everything about the pipeline stages: storyboard from text, then keyframes, then clips, then compose -- each stage pricier than the last, so cheap first, expensive last, and we ask before firing the expensive one",
+      "listed_members": [
+        "storyboard",
+        "keyframes",
+        "clips",
+        "compose"
+      ],
+      "inferable_members": [
+        {
+          "value": "cache/skip already-rendered keyframes to avoid recomputation",
+          "expected_property": "consistent_with(pr.owner_confirmation_for_money) & in_class(operation, idempotent)",
+          "inference_basis": "a direct corollary of 'cheap first' plus pr.optionality_over_speed: paying twice for the same keyframe has no upside"
+        }
+      ],
+      "unit": {
+        "provider": "claude",
+        "conv_id": "rt-01-kickoff",
+        "node_id": "u2",
+        "date": "2025-09-05T19:08:00Z",
+        "quote": "burza mozgow: wszystko o etapach pipeline'u: storyboard z tekstu, potem keyframe'y, potem generowanie klipow, na koncu compose/montaz - kazdy etap drozszy niz poprzedni, wiec tanie najpierw, drogie na koncu, i pytam zanim odpale drogi etap."
+      }
+    },
+    {
+      "id": "area.watchdog.alerts",
+      "project": "proj.watchdog",
+      "generalization_pl": "wszystko co dotyczy alertów: powiadomienie na pulpit, wpis do logu, opcjonalnie mail — zawsze najpierw lokalnie",
+      "generalization_en": "everything about alerts: desktop notification, a log entry, optionally e-mail -- always local-first",
+      "listed_members": [
+        "desktop notification",
+        "log entry",
+        "e-mail (optional)"
+      ],
+      "inferable_members": [
+        {
+          "value": "a push notification to her phone as a further optional channel",
+          "expected_property": "optional & local_first_fallback_required",
+          "inference_basis": "'opcjonalnie mail' establishes a pattern of optional secondary channels behind the local-first default; a phone push is the same shape"
+        }
+      ],
+      "unit": {
+        "provider": "claude",
+        "conv_id": "wd-02-build-decision",
+        "node_id": "u3",
+        "date": "2025-11-08T20:16:00Z",
+        "quote": "burza mozgow: wszystko co dotyczy alertow: powiadomienie na pulpit, wpis do logu, opcjonalnie mail - zawsze najpierw lokalnie."
+      }
+    },
+    {
+      "id": "area.lokatorka.deadlines",
+      "project": "proj.lokatorka",
+      "generalization_pl": "wszystko co dotyczy terminów: liczone od dostarczenia pisma, zawsze plus dwa dni zapasu, zawsze zapisana podstawa prawna",
+      "generalization_en": "everything about deadlines: counted from delivery of the letter, always with a 2-day buffer, always with the statute basis recorded",
+      "listed_members": [
+        "counted from delivery date",
+        "2-day buffer",
+        "statute basis recorded"
+      ],
+      "inferable_members": [
+        {
+          "value": "every deadline gets a reminder a few days before it is due",
+          "expected_property": "has_derived_property(reminder_offset) & consistent_with(area.watchdog.alerts)",
+          "inference_basis": "cross-project analogy (morphism transfer, depth 1): Watchdog's alerts area already establishes 'always alert ahead of a bad outcome'; the deadline-handling generalization implies the same for legal deadlines even though no brainstorm item says 'reminder' explicitly here"
+        }
+      ],
+      "unit": {
+        "provider": "claude",
+        "conv_id": "lk-01-evidence",
+        "node_id": "u2",
+        "date": "2026-01-05T21:08:00Z",
+        "quote": "tak: kazdy termin musi byc powiazany z konkretna podstawa prawna, inaczej to sie nie liczy. i burza mozgow: wszystko co dotyczy terminow: liczone od dostarczenia pisma, zawsze plus dwa dni zapasu, zawsze zapisana podstawa prawna."
+      }
+    },
+    {
+      "id": "area.music.sound_palette",
+      "project": "proj.analogghosts",
+      "generalization_pl": "wszystko o brzmieniu: ciepłe analogowe, dużo tape saturation, bez zbyt cyfrowego pogłosu",
+      "generalization_en": "everything about the sound: warm analog, lots of tape saturation, not too digital reverb",
+      "listed_members": [
+        "warm analog",
+        "tape saturation"
+      ],
+      "inferable_members": [
+        {
+          "value": "a tape-delay style effect rather than a clean digital delay",
+          "expected_property": "consistent_with(area.music.sound_palette statement)",
+          "inference_basis": "a delay effect is unlisted but must satisfy 'ciepłe analogowe, bez cyfrowego pogłosu' the same way reverb does"
+        }
+      ],
+      "unit": {
+        "provider": "claude",
+        "conv_id": "mu-01-kickoff",
+        "node_id": "u2",
+        "date": "2026-02-08T22:08:00Z",
+        "quote": "syntek analogowy-klon, automat perkusyjny, gitara. burza mozgow o brzmieniu: wszystko o brzmieniu: cieple analogowe, duzo tape saturation, bez zbyt cyfrowego poglosu."
+      }
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "oq.rt.clips_cost",
+      "project": "proj.reeltime",
+      "text": "generowanie klipów będzie drogie, trzeba to jakoś ograniczyć",
+      "resolved_by": "dec.rt.clips_gate",
+      "units": [
+        {
+          "provider": "claude",
+          "conv_id": "rt-04-clips-cost-worry",
+          "node_id": "u1",
+          "date": "2025-10-12T20:00:00Z",
+          "quote": "licze ile by kosztowalo wygenerowanie klipow do jednego reela z 8 scen - wychodzi spora kwota jak zle zestawie parametry"
+        },
+        {
+          "provider": "claude",
+          "conv_id": "rt-04-clips-cost-worry",
+          "node_id": "u2",
+          "date": "2025-10-12T20:08:00Z",
+          "quote": "no wlasnie, generowanie klipow bedzie drogie, trzeba to jakos ograniczyc, ale nie mam teraz czasu tego zaprojektowac"
+        }
+      ]
+    },
+    {
+      "id": "oq.nf.encryption_worth_it",
+      "project": "proj.noteflow",
+      "text": "czy w ogóle warto szyfrować, skoro to tylko moje notatki?",
+      "resolved_by": "dec.nf.encryption",
+      "units": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "nf-03-encryption-planning",
+          "node_id": "u2",
+          "date": "2025-02-05T20:19:00Z",
+          "quote": "no wlasnie nie wiem, czy w ogole warto szyfrowac, skoro to tylko moje notatki"
+        }
+      ]
+    },
+    {
+      "id": "oq.wd.restart_budget",
+      "project": "proj.watchdog",
+      "text": "czy dodać dzienny budżet restartów, żeby nie restartował w kółko w pętli",
+      "resolved_by": null,
+      "units": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "wd-06-restart-budget-question",
+          "node_id": "u1",
+          "date": "2026-02-01T10:00:00Z",
+          "quote": "czy dodac dzienny budzet restartow, zeby stroz nie restartowal w kolko w petli jak cos jest systemowo zepsute?"
+        },
+        {
+          "provider": "chatgpt",
+          "conv_id": "wd-06-restart-budget-question",
+          "node_id": "u2",
+          "date": "2026-02-01T10:08:00Z",
+          "quote": "nie, zostawiam otwarte na razie"
+        }
+      ]
+    },
+    {
+      "id": "oq.lk.appeal_path",
+      "project": "proj.lokatorka",
+      "text": "co dalej, jeśli decyzja sądu będzie niekorzystna",
+      "resolved_by": null,
+      "units": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "cx-06-whats-next",
+          "node_id": "u4",
+          "date": "2026-08-10T21:20:00Z",
+          "quote": "glownie czy iso apelacyjna droge w sprawie Kwiatowej jesli przegram, ale to za wczesnie zeby o tym myslec"
+        }
+      ]
+    },
+    {
+      "id": "oq.mu.vocals_or_instrumental",
+      "project": "proj.analogghosts",
+      "text": "czy dogrywać wokal, czy zostać instrumentalnie",
+      "resolved_by": null,
+      "units": [
+        {
+          "provider": "chatgpt",
+          "conv_id": "mu-06-ep-status",
+          "node_id": "u2",
+          "date": "2026-07-10T20:08:00Z",
+          "quote": "wciaz nie wiem czy dogrywac wokal czy zostac instrumentalnie"
+        }
+      ]
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "contra.lokatorka.mold_notice",
+      "status": "contested_then_resolved",
+      "claim_a": "Landlord (Zenon Kowalczyk) states in Feb 2026: no mould was ever reported before March.",
+      "claim_b": "Ola's own January e-mail (dated, in her evidence set) already reports the mould.",
+      "resolution": "Cross-evidence contradiction detected from the dated e-mail; the landlord's claim is flagged contested and the January e-mail date is used in the court filing.",
+      "resolved_by_decision": "dec.lk.court_filing",
+      "evidence": {
+        "claim_a": {
+          "provider": "claude",
+          "conv_id": "lk-04-contradiction",
+          "node_id": "u1",
+          "date": "2026-02-01T20:00:00Z",
+          "quote": "Zenon pisze, ze nigdy przed marcem nie zglaszalam zadnej plesni"
+        },
+        "claim_b": {
+          "provider": "claude",
+          "conv_id": "lk-04-contradiction",
+          "node_id": "u2",
+          "date": "2026-02-01T20:08:00Z",
+          "quote": "wlasnie, mam datowanego maila ze stycznia gdzie zglaszam plesn - to sie wprost przeczy z tym co teraz pisze"
+        }
+      }
+    },
+    {
+      "id": "contra.noteflow.sync_vs_local",
+      "status": "resolved_not_a_real_conflict",
+      "claim_a": "area.noteflow.storage generalization: 'nic w chmurze bez zgody użytkownika' (nothing in the cloud without user consent).",
+      "claim_b": "feat.nf.sync_git / feat.nf.sync_rest send note data off-device automatically once configured.",
+      "resolution": "Not a real conflict once scoped correctly: the area's actual invariant is opt-in cloud (consent given once, at setup), not zero-cloud ever. A naive reading would over-flag this as a contradiction; the correct reading narrows the generalization's scope instead.",
+      "resolved_by_decision": null,
+      "evidence": {}
+    }
+  ],
+  "predictions": [
+    {
+      "id": "pred.op.new_source_new_adapter",
+      "operator": "op.new_source_new_adapter",
+      "before_T_decision": "dec.nf.transcription",
+      "predicted_solution_class": "Extend the provider/capability abstraction; add an adapter behind the same interface, never a hard-coded special case.",
+      "actual_decision": "dec.nf.transcription_fallback",
+      "matched": true
+    },
+    {
+      "id": "pred.op.new_artifact_shared_structure",
+      "operator": "op.new_artifact_shared_structure",
+      "before_T_decision": "dec.nf.checklist_as_data",
+      "predicted_solution_class": "Find the common structure across existing types; keep the type-specific bits as data fields on the shared shape, not a new class or code path.",
+      "actual_decision": "dec.rt.shared_artifact_model",
+      "matched": true
+    },
+    {
+      "id": "pred.op.observe_before_automate",
+      "operator": "op.observe_before_automate",
+      "before_T_decision": "dec.wd.build",
+      "predicted_solution_class": "First make it observable (log it, timestamp it, keep the manual record), only then automate it.",
+      "actual_decision": "dec.lk.auto_deadlines",
+      "matched": true
+    },
+    {
+      "id": "pred.op.uncertainty_keep_alternatives",
+      "operator": "op.uncertainty_keep_alternatives",
+      "before_T_decision": "dec.mu.arrangement_key_open",
+      "predicted_solution_class": "Do not choose arbitrarily; keep both options recorded with their evidence, and run a small, cheap, reversible probe instead of committing.",
+      "actual_decision": "dec.mu.arrangement_key_final",
+      "matched": true
+    },
+    {
+      "id": "pred.op.impl_detail_not_propagated",
+      "operator": "op.impl_detail_not_propagated",
+      "before_T_decision": "dec.nf.diff_algo_swap",
+      "predicted_solution_class": "Do not propagate the change to architecture docs or decisions; it is invisible at that layer.",
+      "actual_decision": "dec.wd.io_swap",
+      "matched": true
+    },
+    {
+      "id": "pred.op.cost_gate_on_irreversibility",
+      "operator": "op.cost_gate_on_irreversibility",
+      "before_T_decision": "dec.nf.upload_gate",
+      "predicted_solution_class": "Gate the step behind an explicit estimate and an explicit confirmation before proceeding.",
+      "actual_decision": "dec.rt.clips_gate",
+      "matched": true
+    }
+  ],
+  "unpredictable_post_T_decisions": [
+    {
+      "decision_id": "dec.nf.encryption",
+      "why_not_predictable": "The specific cipher choice (ChaCha20-Poly1305 over AES-256-GCM) turns on a contingent fact (old-phone AES-NI performance she read about once), not on any of Ola's recorded operators or principles. Only the FACT that encryption would eventually get an adapter-shaped implementation was predictable (op.new_source_new_adapter); the specific algorithm was not."
+    }
+  ],
+  "claude_project_and_memory_evidence": [
+    {
+      "locator": {
+        "provider": "claude",
+        "kind": "project",
+        "id": "claude-project-noteflow",
+        "field": "prompt_template"
+      },
+      "principle": "pr.small_reversible_steps",
+      "quote": "Preferuj maly odwracalny krok nad duza nieodwracalna zmiane."
+    },
+    {
+      "locator": {
+        "provider": "claude",
+        "kind": "project",
+        "id": "claude-project-noteflow",
+        "field": "docs[0]"
+      },
+      "principle": "pr.data_over_branches",
+      "quote": "Presety i config to dane; algorytmy i UI zostaja w kodzie."
+    },
+    {
+      "locator": {
+        "provider": "claude",
+        "kind": "project",
+        "id": "claude-project-lokatorka",
+        "field": "docs[0]"
+      },
+      "area": "area.lokatorka.deadlines",
+      "quote": "Wszystko co dotyczy terminow: liczone od dostarczenia pisma, plus dwa dni zapasu, zawsze zapisana podstawa prawna."
+    },
+    {
+      "locator": {
+        "provider": "claude",
+        "kind": "memories",
+        "id": "claude-memories",
+        "field": "conversations_memory"
+      },
+      "principle": "pr.optionality_over_speed",
+      "quote": "opcjonalnosc jest wazniejsza niz tymczasowa szybkosc"
+    }
+  ],
+  "counts": {
+    "conversations_total": 65,
+    "conversations_signal": 45,
+    "conversations_noise_generic": 15,
+    "conversations_noise_traps": 5,
+    "conversations_chatgpt": 34,
+    "conversations_claude": 31,
+    "messages_total": 258,
+    "projects": 5,
+    "principles": 13,
+    "principle_phrasings_total": 32,
+    "operators": 6,
+    "decisions": 21,
+    "features_tracked": 18,
+    "areas": 5,
+    "open_questions": 5,
+    "open_questions_resolved": 2,
+    "contradictions": 2,
+    "predictions": 6,
+    "claude_projects": 2,
+    "forks_code_lineage": 1,
+    "forks_chat_structural": 4
+  }
+}
