@@ -28,7 +28,6 @@ identical ground_truth.json every run.
 from __future__ import annotations
 
 import calendar
-import copy
 import datetime
 import json
 import pathlib
