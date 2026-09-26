@@ -112,6 +112,36 @@ baselines). Caching is secondary and must never constrain selection; ordering
 context stable → volatile lets providers' prefix caches help for free where
 they exist.
 
+## R13 — Learn the generator, not the history (GPT note, 2026-09-26)
+Full text: `NOTATKA_GPT_2026-09-26.md`. Binding points:
+- Context assembly order: stable prefix (constitution, invariants, core
+  preferences) → slower project context → dynamic goal-specific tail;
+  selection and prompt caching are complementary.
+- One process behind every project: observations → epistemic state →
+  generalizations → decisions/actions/products. Self-discovery must find the
+  *generator of decisions*, not only features/decisions/components.
+- One higher-order model across domains: Values → Epistemic principles →
+  Action/design strategies; software, research, legal, film are instances.
+  Common epistemic core per claim: what is it → how is it known → how certain →
+  what does it depend on → what contradicts it → what follows → what is missing.
+- Extract invariants, heuristics, defaults, meta-principles, conflict-resolution
+  rules and transformation operators; principles are hypothesis-like objects
+  (statement, scope, provenance, evidence_for, counterexamples, confidence,
+  exceptions, derived_from, predicts, conflicts_with, supersedes,
+  validation_status); competing models may coexist.
+- Compression: store state + generators + exceptions + provenance, reconstruct
+  consequences.
+- Values as a model layer: claim → interpretation → affected values → actions →
+  trade-offs (no scalar utility); explanations of the form "decision follows
+  from principle X protecting value Y under constraint Z".
+- Inference ≠ fact: every inferred element carries provenance, method,
+  confidence, expected property, supporting principles, competing alternatives.
+- Benchmark: temporal holdout / predictive reconstruction.
+- Process: build one coherent conceptual model first; all agents share its
+  semantics.
+- Roles: LEM = epistemic representation; Loom = runtime/transformation;
+  ChatADHD = interaction and model synchronisation.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
