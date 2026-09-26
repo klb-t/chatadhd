@@ -1,9 +1,12 @@
 #include "app.h"
 
+#include <algorithm>
 #include <atomic>
+#include <cctype>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <thread>
 
@@ -72,7 +75,7 @@ void send_error(httplib::Response& res, const std::string& code, const std::stri
                  int status = -1) {
   json err = {{"error", {{"code", code}, {"message", message}}}};
   res.status = status >= 0 ? status : status_for_error_code(code);
-  res.set_content(err.dump(), "application/json");
+  res.set_content(err.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
 }
 
 // Sends the raw JSON string returned by a loom_* call, frees it, and picks
@@ -93,10 +96,28 @@ void send_loom(httplib::Response& res, const char* raw, int ok_status = 200) {
 void send_rc(httplib::Response& res, int rc, const json& ok_body) {
   if (rc == LOOM_OK) {
     res.status = 200;
-    res.set_content(ok_body.dump(), "application/json");
+    res.set_content(ok_body.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
     return;
   }
   send_error(res, errc_name_for_rc(rc), "operation failed (code " + std::to_string(rc) + ")");
+}
+
+// Constant-time comparison: guards the bearer-token check against a timing
+// side-channel that would otherwise let a remote attacker recover the token
+// byte-by-byte from response-time differences (std::string::operator!=
+// short-circuits on the first mismatching byte and on a length mismatch).
+// Every byte of `b` (the expected value, fixed length) is compared
+// regardless of where `a` first diverges; a length mismatch still takes the
+// same number of comparisons as a full match would.
+bool constant_time_equal(std::string_view a, std::string_view b) {
+  unsigned char diff = static_cast<unsigned char>(a.size() != b.size());
+  std::size_t n = std::max(a.size(), b.size());
+  for (std::size_t i = 0; i < n; ++i) {
+    unsigned char ca = i < a.size() ? static_cast<unsigned char>(a[i]) : 0;
+    unsigned char cb = i < b.size() ? static_cast<unsigned char>(b[i]) : 0;
+    diff |= static_cast<unsigned char>(ca ^ cb);
+  }
+  return diff == 0;
 }
 
 std::string next_request_id() {
@@ -110,6 +131,19 @@ std::string mime_for_export_format(const std::string& fmt) {
   if (fmt == "text") return "text/plain; charset=utf-8";
   if (fmt == "html") return "text/html; charset=utf-8";
   return "application/json";
+}
+
+// Safe for a quoted Content-Disposition filename: conv_id is normally
+// `c_<12 hex chars>`, but it is taken verbatim from the URL, so defend
+// against a value crafted to break out of the quotes (e.g. embedding `"`)
+// by keeping only the characters a real id ever has.
+std::string sanitize_filename_component(const std::string& s) {
+  std::string out;
+  out.reserve(s.size());
+  for (char c : s) {
+    if (std::isalnum(static_cast<unsigned char>(c)) || c == '_' || c == '-') out += c;
+  }
+  return out.empty() ? "export" : out;
 }
 
 std::string ext_for_export_format(const std::string& fmt) {
@@ -182,7 +216,7 @@ void App::register_middleware() {
   svr_.set_pre_routing_handler([this](const httplib::Request& req, httplib::Response& res) {
     if (!opts_.bearer_token.empty() && req.path.rfind("/api/", 0) == 0) {
       std::string want = "Bearer " + opts_.bearer_token;
-      if (req.get_header_value("Authorization") != want) {
+      if (!constant_time_equal(req.get_header_value("Authorization"), want)) {
         send_error(res, "auth", "missing or invalid bearer token", 401);
         return httplib::Server::HandlerResponse::Handled;
       }
@@ -193,6 +227,29 @@ void App::register_middleware() {
   // CORS is off by default: no Access-Control-* headers are ever added, so
   // browsers enforce same-origin. The web app is always served by this
   // same process, so this never needs to be relaxed for normal use.
+
+  // Defense in depth: cpp-httplib's default reaction to a handler throwing
+  // is to set status 500 and echo e.what() back in an EXCEPTION_WHAT
+  // response header (see routing() in httplib.h), which can leak internal
+  // detail (library messages, occasionally fragments of the offending
+  // input) to the client. Every route here is already wrapped by loom's
+  // own exception firewall (guard_json/guard_int in src/capi/context.h) so
+  // this should never fire in practice, but it is the last line of defence
+  // against anything that doesn't go through loom_* (e.g. a future bug in
+  // this file). Log server-side, tell the client nothing but a generic
+  // error.
+  svr_.set_exception_handler([](const httplib::Request& req, httplib::Response& res, const std::exception_ptr& ep) {
+    std::string what = "unknown exception";
+    try {
+      if (ep) std::rethrow_exception(ep);
+    } catch (const std::exception& e) {
+      what = e.what();
+    } catch (...) {
+    }
+    std::cerr << "loom-server: unhandled exception on " << req.method << " " << req.path << ": " << what
+              << std::endl;
+    send_error(res, "internal", "internal server error", 500);
+  });
 }
 
 void App::register_routes() {
@@ -231,7 +288,7 @@ void App::route_conversations() {
 
   svr_.Patch(R"(/api/conversations/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_update_conversation(ctx_, req.matches[1].str().c_str(), body.dump().c_str()));
+    send_loom(res, loom_update_conversation(ctx_, req.matches[1].str().c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Delete(R"(/api/conversations/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
@@ -278,7 +335,7 @@ void App::route_messages() {
   svr_.Patch(R"(/api/messages/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string id = req.matches[1].str();
-    int rc = loom_update_message(ctx_, id.c_str(), body.dump().c_str());
+    int rc = loom_update_message(ctx_, id.c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
     if (rc != LOOM_OK) {
       send_rc(res, rc, json::object());
       return;
@@ -299,7 +356,7 @@ void App::route_search() {
       opts["include_inactive"] = req.get_param_value("include_inactive") == "1" ||
                                   req.get_param_value("include_inactive") == "true";
     if (req.has_param("mode")) opts["mode"] = req.get_param_value("mode");
-    send_loom(res, loom_search(ctx_, q.c_str(), opts.dump().c_str()));
+    send_loom(res, loom_search(ctx_, q.c_str(), opts.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 }
 
@@ -315,7 +372,7 @@ void App::route_chat() {
     if (!body.contains("request_id") || !body["request_id"].is_string() || body["request_id"].get<std::string>().empty()) {
       body["request_id"] = next_request_id();
     }
-    std::string request_json = body.dump();
+    std::string request_json = body.dump(-1, ' ', false, json::error_handler_t::replace);
 
     auto queue = std::make_shared<SseQueue>();
     LoomContext* ctx = ctx_;
@@ -379,7 +436,7 @@ void App::route_config_secrets() {
   // Merge-patch: {"key": value, ...} -> loom_set_config_json.
   svr_.Patch("/api/config", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    int rc = loom_set_config_json(ctx_, body.dump().c_str());
+    int rc = loom_set_config_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
     if (rc != LOOM_OK) {
       send_rc(res, rc, json::object());
       return;
@@ -393,7 +450,7 @@ void App::route_config_secrets() {
     std::string key = req.matches[1].str();
     std::string value;
     if (body.contains("value")) {
-      value = body["value"].is_string() ? body["value"].get<std::string>() : body["value"].dump();
+      value = body["value"].is_string() ? body["value"].get<std::string>() : body["value"].dump(-1, ' ', false, json::error_handler_t::replace);
     }
     loom_set_config(ctx_, key.c_str(), value.c_str());
     send_loom(res, loom_get_config(ctx_));
@@ -415,7 +472,7 @@ void App::route_config_secrets() {
       send_rc(res, rc, json::object());
       return;
     }
-    res.set_content(json{{"has", rc == 1}}.dump(), "application/json");
+    res.set_content(json{{"has", rc == 1}}.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
   });
   svr_.Delete(R"(/api/secrets/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     int rc = loom_delete_secret(ctx_, req.matches[1].str().c_str());
@@ -431,7 +488,7 @@ void App::route_graph_context() {
     if (req.has_param("kind")) filter["kind"] = req.get_param_value("kind");
     if (req.has_param("label")) filter["label"] = req.get_param_value("label");
     if (req.has_param("limit")) filter["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_get_nodes(ctx_, filter.dump().c_str()));
+    send_loom(res, loom_get_nodes(ctx_, filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Get("/api/graph/edges", [this](const httplib::Request& req, httplib::Response& res) {
@@ -439,14 +496,14 @@ void App::route_graph_context() {
     if (req.has_param("node_id")) filter["node_id"] = req.get_param_value("node_id");
     if (req.has_param("link_type")) filter["link_type"] = req.get_param_value("link_type");
     if (req.has_param("limit")) filter["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_get_edges(ctx_, filter.dump().c_str()));
+    send_loom(res, loom_get_edges(ctx_, filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Post("/api/graph/expand", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     json seeds = body.value("seed_ids", json::array());
     int depth = body.value("depth", 1);
-    send_loom(res, loom_expand_graph(ctx_, seeds.dump().c_str(), depth));
+    send_loom(res, loom_expand_graph(ctx_, seeds.dump(-1, ' ', false, json::error_handler_t::replace).c_str(), depth));
   });
 
   svr_.Get("/api/graph/data", [this](const httplib::Request& req, httplib::Response& res) {
@@ -462,7 +519,7 @@ void App::route_graph_context() {
 
   svr_.Post("/api/context/select", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_select_context_ex(ctx_, body.dump().c_str()));
+    send_loom(res, loom_select_context_ex(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 }
 
@@ -494,11 +551,11 @@ void App::route_memory() {
   });
   svr_.Post("/api/memory", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_create_memory(ctx_, body.dump().c_str()), 201);
+    send_loom(res, loom_create_memory(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()), 201);
   });
   svr_.Patch(R"(/api/memory/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_update_memory(ctx_, req.matches[1].str().c_str(), body.dump().c_str()));
+    send_loom(res, loom_update_memory(ctx_, req.matches[1].str().c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
   svr_.Delete(R"(/api/memory/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     int rc = loom_delete_memory(ctx_, req.matches[1].str().c_str());
@@ -543,7 +600,7 @@ void App::route_import_export() {
           [](int current, int total, const char* status, void* ud) {
             auto* q = static_cast<SseQueue*>(ud);
             json p = {{"type", "progress"}, {"current", current}, {"total", total}, {"status", status ? status : ""}};
-            q->push_data(p.dump());
+            q->push_data(p.dump(-1, ' ', false, json::error_handler_t::replace));
           },
           queue.get());
       std::string body = own_and_free(result);
@@ -556,7 +613,7 @@ void App::route_import_export() {
         out_chunk = parsed;
         out_chunk["type"] = "done";
       }
-      queue->push_data(out_chunk.dump());
+      queue->push_data(out_chunk.dump(-1, ' ', false, json::error_handler_t::replace));
       queue->close();
       std::error_code rm_ec;
       fs::remove(path_str, rm_ec);
@@ -584,7 +641,8 @@ void App::route_import_export() {
     }
     std::string content = parsed.value("content", std::string());
     std::string out_fmt = parsed.value("format", fmt);
-    res.set_header("Content-Disposition", "attachment; filename=\"" + conv_id + ext_for_export_format(out_fmt) + "\"");
+    res.set_header("Content-Disposition", "attachment; filename=\"" + sanitize_filename_component(conv_id) +
+                                              ext_for_export_format(out_fmt) + "\"");
     res.set_content(content, mime_for_export_format(out_fmt));
   });
 }
@@ -608,7 +666,7 @@ void App::route_provenance_events_tasks() {
     if (req.has_param("type")) q["type"] = req.get_param_value("type");
     if (req.has_param("subject_id")) q["subject_id"] = req.get_param_value("subject_id");
     if (req.has_param("limit")) q["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_query_events(ctx_, q.dump().c_str()));
+    send_loom(res, loom_query_events(ctx_, q.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   // Live SSE feed via loom_subscribe.
@@ -629,7 +687,7 @@ void App::route_provenance_events_tasks() {
           auto* s = static_cast<Sub*>(ud);
           json chunk = {{"event", event_name ? event_name : ""},
                         {"payload", parse_or_empty(payload_json ? payload_json : "null")}};
-          s->queue->push_data(chunk.dump());
+          s->queue->push_data(chunk.dump(-1, ' ', false, json::error_handler_t::replace));
         },
         sub);
 
@@ -655,7 +713,7 @@ void App::route_provenance_events_tasks() {
     if (req.has_param("status")) filter["status"] = req.get_param_value("status");
     if (req.has_param("parent_id")) filter["parent_id"] = req.get_param_value("parent_id");
     if (req.has_param("limit")) filter["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_list_tasks(ctx_, filter.dump().c_str()));
+    send_loom(res, loom_list_tasks(ctx_, filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Get(R"(/api/tasks/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
@@ -686,7 +744,7 @@ void App::route_logs_misc() {
     send_loom(res, loom_info(ctx_));
   });
   svr_.Get("/api/healthz", [](const httplib::Request&, httplib::Response& res) {
-    res.set_content(json{{"ok", true}}.dump(), "application/json");
+    res.set_content(json{{"ok", true}}.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
   });
 }
 
@@ -723,7 +781,7 @@ void App::route_archive_placeholder() {
     }
     auto queue = std::make_shared<SseQueue>();
     LoomContext* ctx = ctx_;
-    std::string cfg = body.dump();
+    std::string cfg = body.dump(-1, ' ', false, json::error_handler_t::replace);
     struct Ud {
       LoomContext* ctx;
       SseQueue* q;
@@ -740,7 +798,7 @@ void App::route_archive_placeholder() {
               u->cancel_sent = true;
             }
             json ev = {{"type", "progress"}, {"current", current}, {"total", total}, {"status", status ? status : ""}};
-            u->q->push_data(ev.dump());
+            u->q->push_data(ev.dump(-1, ' ', false, json::error_handler_t::replace));
           },
           &ud);
       json parsed = parse_or_empty(own_and_free(result));
@@ -752,7 +810,7 @@ void App::route_archive_placeholder() {
         out_chunk = parsed;
         out_chunk["type"] = "done";
       }
-      queue->push_data(out_chunk.dump());
+      queue->push_data(out_chunk.dump(-1, ' ', false, json::error_handler_t::replace));
       queue->close();
     });
     res.set_chunked_content_provider(
@@ -774,7 +832,7 @@ void App::route_archive_placeholder() {
       send_error(res, "not_found", "no archive run in progress", 404);
       return;
     }
-    res.set_content(json{{"ok", rc == LOOM_OK}}.dump(), "application/json");
+    res.set_content(json{{"ok", rc == LOOM_OK}}.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
   });
 
   svr_.Get("/api/archive/status", [this](const httplib::Request& req, httplib::Response& res) {
@@ -787,7 +845,7 @@ void App::route_archive_placeholder() {
     if (req.has_param("kind")) f["kind"] = req.get_param_value("kind");
     if (req.has_param("run_id")) f["run_id"] = req.get_param_value("run_id");
     if (req.has_param("limit")) f["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    std::string fs_ = f.dump();
+    std::string fs_ = f.dump(-1, ' ', false, json::error_handler_t::replace);
     send_loom(res, loom_list_artifacts(ctx_, fs_.c_str()));
   });
 

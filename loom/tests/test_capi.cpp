@@ -295,6 +295,81 @@ TEST_SUITE("capi") {
     CHECK(take(loom_info(c.ctx))["http_transport"] != "platform-callback");
   }
 
+  TEST_CASE("C ABI boundary hardening: NULL args, invalid UTF-8, huge inputs") {
+    Ctx c;
+
+    // NULL args on a broad sample of functions across every capi_*.cpp file
+    // must return a well-formed error / negative code, never crash. (Every
+    // guard_json/guard_int prologue already asserts ctx aliveness; this
+    // exercises the "other required arg is NULL" branch specifically.)
+    CHECK(is_error(take(loom_get_conversation(c.ctx, nullptr)), "invalid_argument"));
+    CHECK(is_error(take(loom_update_conversation(c.ctx, nullptr, "{}")), "invalid_argument"));
+    CHECK(loom_delete_conversation(c.ctx, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(is_error(take(loom_get_message(c.ctx, nullptr)), "invalid_argument"));
+    CHECK(is_error(take(loom_edit_message(c.ctx, nullptr, "x")), "invalid_argument"));
+    CHECK(is_error(take(loom_edit_message(c.ctx, "m_x", nullptr)), "invalid_argument"));
+    CHECK(loom_restore_version(c.ctx, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_set_message_status(c.ctx, nullptr, "active") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_set_message_status(c.ctx, "m_x", nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(is_error(take(loom_search(c.ctx, nullptr, nullptr)), "invalid_argument"));
+    CHECK(loom_set_secret(c.ctx, nullptr, "v") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_set_secret(c.ctx, "k", nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_has_secret(c.ctx, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(is_error(take(loom_get_provenance(c.ctx, nullptr)), "invalid_argument"));
+    CHECK(is_error(take(loom_get_task(c.ctx, nullptr)), "invalid_argument"));
+    CHECK(loom_cancel_task(c.ctx, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_delete_memory(c.ctx, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(is_error(take(loom_update_memory(c.ctx, nullptr, "{}")), "invalid_argument"));
+    CHECK(is_error(take(loom_select_context(c.ctx, nullptr, 1, 100)), "invalid_argument"));
+    // Every subscribe/emit/unsubscribe NULL combination.
+    CHECK(loom_subscribe(nullptr, "x", [](const char*, const char*, void*) {}, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_subscribe(c.ctx, nullptr, [](const char*, const char*, void*) {}, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_subscribe(c.ctx, "x", nullptr, nullptr) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_unsubscribe(c.ctx, -1) == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_emit(c.ctx, nullptr, "{}") == LOOM_E_INVALID_ARGUMENT);
+
+    // Invalid UTF-8 bytes embedded in otherwise-plain C strings (never
+    // parsed as JSON on the way in, e.g. a conversation title or message
+    // text) must round-trip through the JSON encoder without throwing or
+    // crashing: loom::json::dump() replaces bad sequences rather than
+    // raising (see include/loom/util/json.h), and no capi_*.cpp caller is
+    // allowed to use the throwing nlohmann dump() directly on such data.
+    const char bad_utf8[] = {'h', 'i', ' ', '\xff', '\xfe', ' ', 'o', 'k', '\0'};
+    Json conv = take(loom_create_conversation(c.ctx, bad_utf8));
+    REQUIRE(!conv.contains("error"));
+    std::string cid = conv["id"];
+    CHECK(take(loom_get_conversation(c.ctx, cid.c_str()))["id"] == cid);
+
+    Json msg = take(loom_edit_message(c.ctx, "m_nope", bad_utf8));
+    CHECK(is_error(msg, "not_found"));  // reaches the DB layer without crashing
+
+    // A JSON *document* containing invalid UTF-8 is rejected at parse time
+    // (JSON strings must be valid UTF-8; nlohmann validates this) rather
+    // than accepted and mishandled later.
+    std::string bad_json_body = std::string("{\"title\": \"") + bad_utf8 + "\"}";
+    Json upd = take(loom_update_conversation(c.ctx, cid.c_str(), bad_json_body.c_str()));
+    CHECK(is_error(upd, "parse"));
+
+    // Huge inputs: a multi-megabyte title/message text must be handled (or
+    // cleanly rejected) without crashing, hanging or truncating silently in
+    // a way that corrupts the JSON envelope.
+    std::string huge(8 * 1024 * 1024, 'x');  // 8 MiB, well past any sane title
+    Json hugeConv = take(loom_create_conversation(c.ctx, huge.c_str()));
+    REQUIRE(!hugeConv.contains("error"));
+    CHECK(hugeConv["title"].get<std::string>().size() == huge.size());
+    CHECK(loom_delete_conversation(c.ctx, hugeConv["id"].get<std::string>().c_str()) == LOOM_OK);
+
+    std::string huge_json = std::string(R"({"content":")") + std::string(4 * 1024 * 1024, 'y') + "\"}";
+    Json hugeMem = take(loom_create_memory(c.ctx, huge_json.c_str()));
+    REQUIRE(!hugeMem.contains("error"));
+    CHECK(loom_delete_memory(c.ctx, hugeMem["id"].get<std::string>().c_str()) == LOOM_OK);
+
+    // Empty-but-non-NULL strings are the other common boundary and must be
+    // treated as "missing", same as NULL, not as a valid empty value.
+    CHECK(is_error(take(loom_get_conversation(c.ctx, "")), "invalid_argument"));
+    CHECK(loom_delete_conversation(c.ctx, cid.c_str()) == LOOM_OK);
+  }
+
   TEST_CASE("concurrent C API use from several threads") {
     Ctx c;
     std::atomic<int> errors{0};

@@ -29,13 +29,15 @@ def free_port() -> int:
     return port
 
 
-def wait_up(base: str, timeout: float = 15.0) -> None:
+def wait_up(base: str, timeout: float = 15.0, headers: dict | None = None) -> None:
     deadline = time.time() + timeout
     last_err = None
     while time.time() < deadline:
         try:
-            r = requests.get(f"{base}/api/healthz", timeout=1)
-            if r.status_code == 200:
+            r = requests.get(f"{base}/api/healthz", timeout=1, headers=headers)
+            # 401 still proves the process is up and answering (relevant
+            # when a bearer token is configured and healthz is gated too).
+            if r.status_code in (200, 401):
                 return
         except requests.RequestException as e:
             last_err = e
@@ -130,6 +132,17 @@ def main() -> int:
                     break
             assert saw_start and saw_terminal
 
+        # A path with invalid-UTF-8 percent-encoded bytes (the SPA-fallback
+        # 404 handler builds a JSON error message from the raw request
+        # path) must still come back as a clean, well-formed JSON error -
+        # never a crash, and never cpp-httplib's default EXCEPTION_WHAT
+        # header (which would leak an internal exception message).
+        r = requests.get(f"{base}/api/%FF%FE/bogus")
+        assert r.status_code == 404, r.text
+        assert "EXCEPTION_WHAT" not in r.headers, dict(r.headers)
+        body = r.json()
+        assert body["error"]["code"] == "not_found", body
+
         print("OK: all loom-server smoke checks passed")
         return 0
     finally:
@@ -142,5 +155,75 @@ def main() -> int:
         shutil.rmtree(data_dir, ignore_errors=True)
 
 
+def test_auth(server_bin: str) -> None:
+    """A second server instance with --token set: every /api/ route (plain,
+    SSE-streamed and archive alike) must require it, and the configured
+    token itself must never appear in a response body."""
+    data_dir = tempfile.mkdtemp(prefix="loom_server_smoke_auth_")
+    port = free_port()
+    base = f"http://127.0.0.1:{port}"
+    token = "s3cr3t-e2e-token"
+    proc = subprocess.Popen(
+        [server_bin, "--host", "127.0.0.1", "--port", str(port), "--data-dir", data_dir, "--token", token],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    try:
+        wait_up(base)
+
+        # healthz is intentionally exempt (it isn't under /api/... it is,
+        # actually, so it must also be gated - confirm that explicitly).
+        r = requests.get(f"{base}/api/healthz")
+        assert r.status_code == 401, r.text
+        assert token not in r.text
+
+        r = requests.get(f"{base}/api/healthz", headers={"Authorization": "Bearer wrong-token"})
+        assert r.status_code == 401, r.text
+        assert token not in r.text
+
+        # A same-length-but-wrong token must be rejected identically (this
+        # doesn't measure timing, just that the comparison is genuinely a
+        # full compare and not e.g. a prefix check).
+        wrong_same_len = "x" * len(token)
+        r = requests.get(f"{base}/api/healthz", headers={"Authorization": f"Bearer {wrong_same_len}"})
+        assert r.status_code == 401, r.text
+
+        r = requests.get(f"{base}/api/healthz", headers={"Authorization": f"Bearer {token}"})
+        assert r.status_code == 200 and r.json()["ok"] is True, r.text
+
+        # The archive endpoints (explicitly called out as easy to forget)
+        # are gated the same way as every other /api/ route.
+        r = requests.get(f"{base}/api/archive/status")
+        assert r.status_code == 401, r.text
+        r = requests.get(f"{base}/api/archive/status", headers={"Authorization": f"Bearer {token}"})
+        assert r.status_code in (200, 404), r.text
+
+        # SSE routes go through the same pre-routing handler, but a chunked
+        # response behaves differently from a plain one - confirm the 401
+        # arrives instead of the stream hanging open.
+        r = requests.post(f"{base}/api/chat", json={"message": "hi"}, stream=True, timeout=5)
+        assert r.status_code == 401, r.text
+        r.close()
+
+        r = requests.get(f"{base}/api/events/stream", stream=True, timeout=5)
+        assert r.status_code == 401, r.text
+        r.close()
+
+        print("OK: loom-server auth checks passed")
+    finally:
+        proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait(timeout=5)
+        shutil.rmtree(data_dir, ignore_errors=True)
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    rc = main()
+    if rc == 0:
+        server_bin = os.environ.get("LOOM_SERVER_BIN")
+        if server_bin and os.path.exists(server_bin):
+            test_auth(server_bin)
+    sys.exit(rc)
