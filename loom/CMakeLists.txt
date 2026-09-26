@@ -34,7 +34,7 @@ option(LOOM_USE_SYSTEM_SQLITE "Link the system libsqlite3 instead of the vendore
 set(LOOM_WITH_OPENSSL "AUTO" CACHE STRING "Use OpenSSL (AES-GCM, HTTPS): ON, OFF or AUTO")
 set_property(CACHE LOOM_WITH_OPENSSL PROPERTY STRINGS ON OFF AUTO)
 option(LOOM_BUILD_TESTS "Build unit + compat tests" ON)
-option(LOOM_BUILD_CLI "Build the loom CLI (wave 3)" OFF)
+option(LOOM_BUILD_CLI "Build the loom CLI" OFF)
 option(LOOM_BUILD_SERVER "Build the loom HTTP server (wave 3)" OFF)
 option(LOOM_SHARED "Build libloom shared library exporting only the C API" OFF)
 option(LOOM_WERROR "Treat warnings in Loom sources as errors" OFF)

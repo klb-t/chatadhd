@@ -47,7 +47,8 @@ const std::unordered_set<std::string>& stopwords() {
         "take", "takes", "give", "gives", "keep", "keeps", "find", "found", "know", "look", "looks", "think",
         "try", "tries", "call", "calls", "called", "work", "works", "working", "good", "better", "best", "long",
         "short", "small", "large", "big", "high", "low", "full", "empty", "true", "false", "null", "none",
-        "note", "notes", "example", "examples", "e.g", "i.e",
+        "note", "notes", "example", "examples", "e.g", "i.e", "symbols", "time", "times", "file", "files",
+        "line", "lines", "function", "functions", "method", "methods", "test", "tests", "unit",
         // Polish
         "aby", "albo", "ale", "ani", "bardzo", "bez", "bo", "by", "być", "był", "była", "było", "były", "będzie",
         "będą", "chce", "chcę", "co", "czy", "czyli", "dla", "do", "dzięki", "gdy", "gdzie", "go", "i", "ich",
@@ -117,18 +118,37 @@ std::vector<std::string> content_tokens(std::string_view text) {
 }
 
 std::vector<std::string> candidate_terms(std::string_view text) {
+  // Unigrams plus bigrams of adjacent content tokens separated only by
+  // spaces or a hyphen ("knowledge graph", "append-only"); paths, "::",
+  // punctuation and line breaks end a phrase.
   std::vector<std::string> out;
-  std::string prev;  // previous token if it was a content token
-  for (auto& t : tokenize(text)) {
-    bool content = utf8::length(t) >= 3 && !is_stopword(t);
+  std::string prev;
+  bool joinable = false;  // only spaces/hyphen since the previous token
+  std::u32string cur;
+  auto flush = [&] {
+    if (cur.empty()) return;
+    std::string t = utf8::encode(cur);
+    cur.clear();
+    bool content = !all_digits(utf8::decode(t)) && utf8::length(t) >= 3 && !is_stopword(t);
     if (!content) {
       prev.clear();
-      continue;
+      joinable = false;
+      return;
     }
-    if (!prev.empty() && prev != t) out.push_back(prev + " " + t);
+    if (!prev.empty() && joinable && prev != t) out.push_back(prev + " " + t);
     out.push_back(t);
     prev = t;
+    joinable = true;
+  };
+  for (char32_t c : utf8::decode(text)) {
+    if (unicode::is_alnum(c)) {
+      cur.push_back(unicode::simple_lower(c));
+      continue;
+    }
+    flush();
+    if (!(c == ' ' || c == '-')) joinable = false;
   }
+  flush();
   return out;
 }
 
@@ -245,6 +265,25 @@ std::vector<std::string> split_sentences(std::string_view text) {
       std::string body = strip_line_marker(line, &bullet, &heading);
       if (heading) {
         flush();
+      } else if (!body.empty() && body.front() == '|') {
+        flush();
+        // table row: skip header rows (followed by a |---| separator), join cells
+        std::size_t nl2 = text.find('\n', pos);
+        std::string_view next = pos <= text.size() ? utf8::strip(text.substr(pos, nl2 == std::string_view::npos ? std::string_view::npos : nl2 - pos)) : std::string_view();
+        bool header = !next.empty() && next.front() == '|' && next.find_first_not_of("-|: ") == std::string_view::npos;
+        if (!header) {
+          std::string row;
+          std::size_t b = 1;
+          while (b < body.size()) {
+            std::size_t e = body.find('|', b);
+            if (e == std::string::npos) e = body.size();
+            std::string cell(utf8::strip(std::string_view(body).substr(b, e - b)));
+            if (!cell.empty()) row += (row.empty() ? "" : " — ") + cell;
+            b = e + 1;
+          }
+          para = row;
+          flush();
+        }
       } else if (bullet) {
         flush();
         para = body;

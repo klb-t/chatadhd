@@ -352,12 +352,26 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
     score["open_question"] += 1.0;
     cues["open_question"].push_back("czy");
   }
+  double sentence_best = 0;
+  for (const auto& [t, v] : score) sentence_best = std::max(sentence_best, v);
   if (!h.empty()) {
+    // Only the innermost heading counts, and a hint must lead it ("Decisions",
+    // "10. Otwarte decyzje", "Invariants") - a heading that merely mentions a
+    // word ("Next invariant implementation target") is not a list of that type.
+    std::string last = h.substr(h.rfind("›") == std::string::npos ? 0 : h.rfind("›") + 3);
+    std::size_t k = 0;
+    while (k < last.size() && (std::isdigit(static_cast<unsigned char>(last[k])) || last[k] == '.' || last[k] == ' ' ||
+                               last[k] == '#' || last[k] == ')')) {
+      ++k;
+    }
+    std::string_view lead(last);
+    lead.remove_prefix(k);
     for (const HeadingHint& hh : kHeadingHints) {
       std::string_view ph(hh.phrase);
-      if (ph == "decision" && (h.find("open decision") != std::string::npos)) continue;
-      if (ph == "decyzj" && (h.find("otwarte decyzje") != std::string::npos)) continue;
-      if (h.find(ph) != std::string::npos) {
+      bool anywhere = ph == "otwarte decyzje" || ph == "open question" || ph == "open decision" ||
+                      ph == "nie wolno zgubić" || ph == "must not lose" || ph == "otwarte pytania";
+      bool hit = anywhere ? lead.find(ph) != std::string_view::npos : lead.substr(0, ph.size()) == ph;
+      if (hit) {
         score[hh.type] += hh.weight;
         cues[hh.type].push_back(std::string("§") + hh.phrase);
       }
@@ -383,6 +397,8 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
     }
   }
   if (best.empty() || best_score < 1.5) return c;
+  // A heading alone classifies only full statements, not noun-phrase bullets.
+  if (sentence_best < 1.0 && tokenize(s).size() < 5) return c;
   c.type = best;
   double conf = 0.35 + 0.15 * best_score;
   if (best_score - second < 0.5) conf -= 0.1;
@@ -396,7 +412,7 @@ Json Item::to_json() const {
   for (const auto& [t, p] : term_polarity) {
     if (p < 0) pol[t] = p;
   }
-  return Json{{"id", id},         {"type", type},         {"text", text},     {"doc", doc},
+  return Json{{"id", id},         {"type", type},         {"text", text},     {"doc", doc}, {"unit", unit},
               {"theme", theme},   {"date", date},         {"confidence", confidence},
               {"cues", cues},     {"subject", subject},   {"negated", pol},   {"status", status}};
 }
@@ -407,6 +423,7 @@ Item Item::from_json(const Json& j) {
   it.type = json::get_string(j, "type");
   it.text = json::get_string(j, "text");
   it.doc = json::get_string(j, "doc");
+  it.unit = json::get_string(j, "unit");
   it.theme = json::get_string(j, "theme");
   it.date = json::get_string(j, "date");
   it.confidence = json::get_number(j, "confidence");
@@ -464,6 +481,7 @@ std::vector<Item> extract_items(const Doc& doc, std::string_view theme) {
     it.type = std::move(type);
     it.text = clip(text, 320);
     it.doc = doc.key;
+    it.unit = doc.unit;
     it.theme = std::string(theme);
     it.date = doc.date;
     it.confidence = conf;
@@ -570,10 +588,13 @@ std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* 
         double sim = shared / std::max(1e-9, std::min(wa, wb));
         std::string da = date_only(A.date), db = date_only(B.date);
         bool later = !da.empty() && !db.empty() && da < db;
-        if (in_s(A.type) && in_s(B.type) && !conflict.empty() && sim >= 0.3) {
+        bool same_unit = !A.unit.empty() && A.unit == B.unit;
+        bool supersede = later && (B.type == "decision" || B.type == "rejected_option") && sim >= 0.3;
+        bool contradict = !later && !same_unit && sim >= 0.5;
+        if (in_s(A.type) && in_s(B.type) && !conflict.empty() && (supersede || contradict)) {
           std::string terms;
           for (const auto& t : conflict) terms += (terms.empty() ? "'" : ", '") + t + "'";
-          if (later && (B.type == "decision" || B.type == "rejected_option")) {
+          if (supersede) {
             edges.push_back({B.id, A.id, "supersedes",
                              "later " + B.type + " (" + db + ") reverses " + A.type + " (" + da + ") on " + terms});
             A.status = "superseded";

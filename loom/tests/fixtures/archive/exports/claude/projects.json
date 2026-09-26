@@ -1,0 +1,15 @@
+[
+ {
+  "uuid": "p1",
+  "name": "ChatADHD project",
+  "description": "Knowledge graph chat client with a local-first store.",
+  "prompt_template": "Always answer questions about the ChatADHD graph with sources.",
+  "created_at": "2025-01-05T09:00:00Z",
+  "docs": [
+   {
+    "filename": "notes.md",
+    "content": "# Notes\n\nThe importer must never modify raw sources.\n"
+   }
+  ]
+ }
+]

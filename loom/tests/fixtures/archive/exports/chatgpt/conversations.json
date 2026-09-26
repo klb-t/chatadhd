@@ -1,0 +1,187 @@
+[
+ {
+  "title": "Random thoughts",
+  "create_time": 1736503200,
+  "current_node": "a2b",
+  "mapping": {
+   "root": {
+    "id": "root",
+    "parent": null,
+    "children": [
+     "u1"
+    ],
+    "message": null
+   },
+   "u1": {
+    "id": "u1",
+    "parent": "root",
+    "children": [
+     "a1"
+    ],
+    "message": {
+     "id": "u1",
+     "author": {
+      "role": "user"
+     },
+     "create_time": 1736503200,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "Should we store the ChatADHD knowledge graph in SQLite or in a separate graph database?"
+      ]
+     }
+    }
+   },
+   "a1": {
+    "id": "a1",
+    "parent": "u1",
+    "children": [
+     "u2a",
+     "u2b"
+    ],
+    "message": {
+     "id": "a1",
+     "author": {
+      "role": "assistant"
+     },
+     "create_time": 1736503260,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "For a local-first app SQLite is simpler: one file, WAL mode, and the graph fits in two tables."
+      ]
+     }
+    }
+   },
+   "u2a": {
+    "id": "u2a",
+    "parent": "a1",
+    "children": [
+     "a2a"
+    ],
+    "message": {
+     "id": "u2a",
+     "author": {
+      "role": "user"
+     },
+     "create_time": 1736503500,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "What if we use Neo4j for the knowledge graph instead?"
+      ]
+     }
+    }
+   },
+   "a2a": {
+    "id": "a2a",
+    "parent": "u2a",
+    "children": [],
+    "message": {
+     "id": "a2a",
+     "author": {
+      "role": "assistant"
+     },
+     "create_time": 1736503560,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "Neo4j needs a server, which breaks the local-first requirement of ChatADHD."
+      ]
+     }
+    }
+   },
+   "u2b": {
+    "id": "u2b",
+    "parent": "a1",
+    "children": [
+     "a2b"
+    ],
+    "message": {
+     "id": "u2b",
+     "author": {
+      "role": "user"
+     },
+     "create_time": 1736586000,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "We decided to use SQLite for the knowledge graph storage because it keeps everything local-first."
+      ]
+     }
+    }
+   },
+   "a2b": {
+    "id": "a2b",
+    "parent": "u2b",
+    "children": [],
+    "message": {
+     "id": "a2b",
+     "author": {
+      "role": "assistant"
+     },
+     "create_time": 1736586300,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "Agreed. The graph lives in the nodes and links tables of the ChatADHD database."
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "title": "misc",
+  "create_time": 1748779200,
+  "current_node": "b2",
+  "mapping": {
+   "r": {
+    "id": "r",
+    "parent": null,
+    "children": [
+     "b1"
+    ],
+    "message": null
+   },
+   "b1": {
+    "id": "b1",
+    "parent": "r",
+    "children": [
+     "b2"
+    ],
+    "message": {
+     "id": "b1",
+     "author": {
+      "role": "user"
+     },
+     "create_time": 1748779200,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "Decision: we drop Kivy and use Compose Multiplatform for the mobile UI instead."
+      ]
+     }
+    }
+   },
+   "b2": {
+    "id": "b2",
+    "parent": "b1",
+    "children": [],
+    "message": {
+     "id": "b2",
+     "author": {
+      "role": "assistant"
+     },
+     "create_time": 1748779260,
+     "content": {
+      "content_type": "text",
+      "parts": [
+       "Then the Kivy panels become reference only; the Compose renderer consumes the ChatADHD view tree."
+      ]
+     }
+    }
+   }
+  }
+ }
+]

@@ -87,6 +87,9 @@ std::string clip(std::string_view s, std::size_t max_cp);
 // Word splitting for identifiers: "GraphEngine" -> {"graph","engine"},
 // "ingest_analysis" -> {"ingest","analysis"}.
 std::vector<std::string> split_identifier(std::string_view ident);
+// CamelCase / mixedCase identifiers ("GraphEngine", "IExecutionEnvironment",
+// "ChatADHD") in original case, in order of appearance (duplicates kept).
+std::vector<std::string> camel_identifiers(std::string_view text);
 // Crude singular form used for matching ("stores" -> "store").
 std::string stem(std::string_view lower_token);
 // PL -> EN glossary for the gap report (policy data); identity when unknown.
@@ -198,6 +201,7 @@ struct Item {
   std::string type;
   std::string text;
   std::string doc;           // doc key
+  std::string unit;          // doc unit (conversation / file)
   std::string theme;         // theme id
   std::string date;
   double confidence = 0.0;

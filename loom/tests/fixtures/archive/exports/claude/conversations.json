@@ -1,0 +1,51 @@
+[
+ {
+  "uuid": "c1",
+  "name": "Untitled",
+  "created_at": "2025-02-01T08:00:00Z",
+  "chat_messages": [
+   {
+    "uuid": "m1",
+    "sender": "human",
+    "text": "We decided to use Kivy for the mobile UI because it runs on Android.",
+    "created_at": "2025-02-01T08:00:00Z"
+   },
+   {
+    "uuid": "m2",
+    "sender": "assistant",
+    "text": "Kivy works on Android through python-for-android, so the mobile UI can share the desktop code.",
+    "created_at": "2025-02-01T08:01:00Z"
+   },
+   {
+    "uuid": "m3",
+    "sender": "human",
+    "text": "Zdecydowaliśmy, że importer musi zachować surowe źródło każdej rozmowy.",
+    "created_at": "2025-02-01T08:05:00Z"
+   },
+   {
+    "uuid": "m4",
+    "sender": "assistant",
+    "text": "Importer zapisze surowe bajty w magazynie blobów i doda provenance dla każdej wiadomości.",
+    "created_at": "2025-02-01T08:06:00Z"
+   },
+   {
+    "uuid": "m5",
+    "sender": "human",
+    "text": "Czy synchronizacja grafu ma być szyfrowana end-to-end?",
+    "created_at": "2025-02-01T08:10:00Z"
+   },
+   {
+    "uuid": "m6",
+    "sender": "assistant",
+    "text": "Open question: which embedding model should be the default for semantic search in ChatADHD?",
+    "created_at": "2025-02-01T08:11:00Z"
+   },
+   {
+    "uuid": "m7",
+    "sender": "human",
+    "text": "Odrzucamy pomysł osobnego serwera grafu, bo aplikacja ChatADHD ma działać offline.",
+    "created_at": "2025-02-01T08:15:00Z"
+   }
+  ]
+ }
+]

@@ -77,9 +77,9 @@ struct ArchiveConfig {
   std::vector<std::string> seed_terms;  // empty -> derived (project manifest, repo name)
   std::string out_dir;                  // "" -> artifacts are only stored in the BlobStore
   std::string project;                  // display name; "" -> derived
-  int max_passes = 4;                   // retrieve/expand iterations (>= 1)
-  int max_new_terms = 10;               // terms added per expansion pass
-  int max_hits_per_term = 150;          // BM25 top-k per vocabulary term
+  int max_passes = 3;                   // retrieve/expand iterations (>= 1)
+  int max_new_terms = 8;                // terms added per expansion pass
+  int max_hits_per_term = 0;            // BM25 top-k per term; 0 = auto (corpus/10, 25..200)
   int max_synthesis_rounds = 1;         // extra rounds fed by synthesis terms (k)
   std::string llm = "off";              // "off" | "auto" (refine items when a key exists)
   bool include_db = false;              // existing conversations join the corpus

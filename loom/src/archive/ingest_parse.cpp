@@ -312,8 +312,9 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
   auto scan_todo = [&](std::string_view comment_text) {
     static const char* kMarks[] = {"TODO", "FIXME", "XXX", "HACK"};
     for (const char* m : kMarks) {
-      std::size_t p = comment_text.find(m);
-      if (p == std::string_view::npos) continue;
+      std::string_view body = utf8::lstrip(comment_text);
+      if (body.substr(0, std::string_view(m).size()) != m) continue;
+      std::size_t p = comment_text.size() - body.size();
       std::size_t ml = std::string_view(m).size();
       if (p > 0 && is_ident_char(comment_text[p - 1])) continue;
       if (p + ml < comment_text.size() && is_ident_char(comment_text[p + ml])) continue;
@@ -556,7 +557,28 @@ std::vector<GitCommit> parse_git_log(std::string_view raw) {
     c.date = normalize_date(f[1]);
     c.author = std::string(utf8::strip(f[2]));
     c.subject = std::string(utf8::strip(f[3]));
-    c.body = std::string(utf8::strip(f[4]));
+    {
+      // drop trailers (Co-Authored-By, Signed-off-by, session links)
+      std::string body;
+      std::size_t bp = 0;
+      std::string_view b = f[4];
+      while (bp <= b.size()) {
+        std::size_t e = b.find('\n', bp);
+        if (e == std::string_view::npos) e = b.size();
+        std::string_view line = b.substr(bp, e - bp);
+        bp = e + 1;
+        std::size_t colon = line.find(':');
+        bool trailer = colon != std::string_view::npos && colon > 0 && colon < 30 &&
+                       line.substr(0, colon).find(' ') == std::string_view::npos &&
+                       line.substr(0, colon).find('-') != std::string_view::npos;
+        if (!trailer) {
+          body.append(line);
+          body.push_back('\n');
+        }
+        if (e == b.size()) break;
+      }
+      c.body = std::string(utf8::strip(body));
+    }
     std::string_view files = rec.substr(fp);
     std::size_t lp = 0;
     while (lp < files.size()) {

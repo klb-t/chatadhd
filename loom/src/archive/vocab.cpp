@@ -24,8 +24,8 @@ std::string fmt(double v, int prec) {
   return os.str();
 }
 
-// CamelCase / mixedCase / ALLCAPS+lower identifiers ("GraphEngine",
-// "IExecutionEnvironment", "ChatADHD") in original case.
+}  // namespace
+
 std::vector<std::string> camel_identifiers(std::string_view text) {
   std::vector<std::string> out;
   std::u32string s = utf8::decode(text);
@@ -56,7 +56,6 @@ std::vector<std::string> camel_identifiers(std::string_view text) {
   flush();
   return out;
 }
-}  // namespace
 
 CorpusStats compute_stats(const Corpus& corpus) {
   CorpusStats st;

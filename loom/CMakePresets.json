@@ -9,6 +9,7 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "LOOM_BUILD_TESTS": "ON",
+        "LOOM_BUILD_CLI": "ON",
         "LOOM_WERROR": "ON"
       }
     },

@@ -58,6 +58,9 @@ class GitHubSyncManager;
 namespace net {
 class HttpTransport;
 }
+namespace archive {
+class ArchiveIntelligence;
+}
 
 struct RuntimeOptions {
   std::optional<std::string> data_dir;   // default: resolve_data_dir()
@@ -109,6 +112,7 @@ class Runtime {
   ConversationExporter& exporter();
   CryptoVault& crypto();
   GitHubSyncManager& github();
+  archive::ArchiveIntelligence& archive();  // Project Compiler (archive.h)
 
   // Swap the HTTP stack at runtime (platform injection). nullptr restores
   // the default transport. In-flight requests finish on the old transport.
