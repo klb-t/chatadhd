@@ -273,8 +273,9 @@ Result<Text> text_from_json(const Json& j, std::string_view field);
 // provenance ({"doc":"MEGA_MASTER_2026-09-16.md","section":"§2.B"}), an
 // operator example (claim/observation ids), a note.
 struct Reference {
-  std::string doc;          // document name (a source the owner wrote)
+  std::string doc;          // document path or id (a source the owner wrote)
   std::string section;      // "§2.B", "R10", "Sesja 2"
+  std::string date;         // "YYYY-MM-DD": when the cited text existed (temporal holdout); "" unknown
   std::string claim;        // claim id ("" none)
   std::string observation;  // observation id ("" none)
   std::string note;
@@ -1099,6 +1100,29 @@ Result<GoalType> goal_type(const kb::Pack& pack, std::string_view id);
 Result<AnchoringModel> anchoring(const kb::Pack& pack);
 Result<std::vector<Principle>> principles(const kb::Pack& pack);
 Result<std::vector<Operator>> pack_operators(const kb::Pack& pack);
+
+// ── Priors and the temporal holdout (§7.1) ──────────────────────────
+// Seed principles and seed operators (philosophy/*.json) are PRIORS. For a
+// temporal-holdout cut at T the engine must not see priors whose text did
+// not exist yet: a prior is visible when its EARLIEST dated source is on or
+// before `as_of` (ISO date compare on the first 10 chars). Undated priors are
+// invisible under a cut (the pack validator requires dates, so this only
+// affects overlay/mined data). enabled = false drops every prior.
+struct PriorFilter {
+  bool enabled = true;
+  std::string as_of;  // "" = no cut
+  static PriorFilter none() { return PriorFilter{false, {}}; }
+  static PriorFilter as_of_date(std::string date) { return PriorFilter{true, std::move(date)}; }
+};
+// Smallest non-empty source date ("" when none is dated).
+std::string earliest_source_date(const std::vector<Reference>& sources);
+bool prior_visible(const std::vector<Reference>& sources, const PriorFilter& filter);
+// Pack priors after the filter (sorted by id). pack_operators(pack, f)
+// filters the design operators of philosophy/operators.json only; inference
+// rules are pack mechanics, returned unfiltered — the generalize area skips
+// a rule whose basis principles were filtered out.
+Result<std::vector<Principle>> principles(const kb::Pack& pack, const PriorFilter& filter);
+Result<std::vector<Operator>> pack_operators(const kb::Pack& pack, const PriorFilter& filter);
 Result<std::vector<Morphism>> morphisms(const kb::Pack& pack);  // explicit transfer morphisms
 // One anchoring morphism per domain kind of every project kind and facet
 // ({"use":"anchoring","from":{"paradigm","kind"},"to":{"role"}}, id

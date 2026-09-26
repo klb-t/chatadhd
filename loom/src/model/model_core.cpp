@@ -85,13 +85,21 @@ bool Reference::empty() const noexcept {
   return doc.empty() && section.empty() && claim.empty() && observation.empty() && note.empty();
 }
 Json Reference::to_json() const {
-  return Json{{"doc", doc}, {"section", section}, {"claim", claim}, {"observation", observation}, {"note", note}};
+  return Json{{"doc", doc},     {"section", section},         {"date", date},
+              {"claim", claim}, {"observation", observation}, {"note", note}};
 }
 Result<Reference> Reference::from_json(const Json& j) {
   Rd r(j, "reference");
   Reference x;
   x.doc = r.str("doc");
   x.section = r.str("section");
+  x.date = r.str("date");
+  if (r.ok() && !x.date.empty()) {
+    const std::string& d = x.date;
+    bool iso = d.size() >= 10 && d[4] == '-' && d[7] == '-';
+    for (std::size_t i = 0; iso && i < 10; ++i) iso = (i == 4 || i == 7) || (d[i] >= '0' && d[i] <= '9');
+    if (!iso) r.fail("date", "expected YYYY-MM-DD");
+  }
   x.claim = r.str("claim");
   x.observation = r.str("observation");
   x.note = r.str("note");

@@ -1,123 +1,636 @@
 {
-  "schema": "loom.kb.evidence_encoding/1",
-  "description": "The visual evidence language shared by every UI (web, Android, CLI, Markdown). Each meaning is carried by an independent, redundant channel (shape, outline, fill pattern, glyph AND hue) so it survives colour blindness, greyscale and small screens. Hues are Okabe-Ito. Clients never hard-code semantics: the API returns a style_key per element (see 'style_key') and clients render it from this file (GET /api/kb/policy/evidence_encoding, loom_kb_policy).",
-  "version": 1,
-  "channels": {
-    "evidence": "outline + fill pattern + glyph",
-    "confidence": "fill opacity (quantized)",
-    "status": "hue + glyph badge",
-    "kind": "shape",
-    "conflict": "split ring + badge",
-    "check_state": "badge on inferred values",
-    "relation_category": "edge dash",
-    "support": "edge width"
+ "schema": "loom.kb.evidence_encoding/1",
+ "description": "The visual evidence language shared by every UI (web, Android, CLI, Markdown). Each meaning is carried by an independent, redundant channel (shape, outline, fill pattern, glyph AND hue) so it survives colour blindness, greyscale and small screens. Hues are Okabe-Ito. Clients never hard-code semantics: the API returns a style_key per element (see 'style_key') and clients render it from this file (GET /api/kb/policy/evidence_encoding, loom_kb_policy).",
+ "version": 2,
+ "channels": {
+  "evidence": "outline + fill pattern + glyph",
+  "origin": "corner badge + halo (model_knowledge: dotted halo and a 'general knowledge' badge, visibly distinct from the owner's sources)",
+  "confidence": "fill opacity (quantized)",
+  "status": "hue + glyph badge (+ oscillation badge)",
+  "role": "shape (one per universal role)",
+  "kind": "optional shape override",
+  "conflict": "split ring + badge",
+  "check_state": "badge on inferred values",
+  "relation_category": "edge dash",
+  "support": "edge width"
+ },
+ "evidence": {
+  "observed": {
+   "gt": "observed",
+   "outline": {
+    "style": "solid",
+    "width": 2
+   },
+   "fill": "solid",
+   "glyph": "■",
+   "cli": "■",
+   "badge": null,
+   "markdown": "**{value}**",
+   "label": {
+    "en": "observed in a source",
+    "pl": "zaobserwowane w źródle"
+   }
+  },
+  "derived": {
+   "gt": "observed",
+   "outline": {
+    "style": "solid",
+    "width": 1
+   },
+   "fill": "solid",
+   "glyph": "□",
+   "cli": "□",
+   "badge": "ƒ",
+   "markdown": "**{value}** ƒ",
+   "label": {
+    "en": "derived deterministically from observed values",
+    "pl": "wyprowadzone deterministycznie z obserwacji"
+   }
+  },
+  "inferred": {
+   "gt": "inferable",
+   "outline": {
+    "style": "dashed",
+    "width": 1.5,
+    "dash": [
+     6,
+     3
+    ]
+   },
+   "fill": "solid",
+   "glyph": "◌",
+   "cli": "◌",
+   "badge": "≈",
+   "markdown": "_{value}_ (inferred ~{confidence}; expected: {expected_property})",
+   "subtitle": "expected: {expected_property}",
+   "label": {
+    "en": "inferred: a checkable prediction with an expected property",
+    "pl": "wywnioskowane: sprawdzalna predykcja z oczekiwaną własnością"
+   }
+  },
+  "extrapolated": {
+   "gt": null,
+   "outline": {
+    "style": "dotted",
+    "width": 1.5,
+    "dash": [
+     2,
+     3
+    ]
+   },
+   "fill": "hatch",
+   "hatch": {
+    "angle": 45,
+    "spacing": 6
+   },
+   "glyph": "░",
+   "cli": "░",
+   "badge": "proposal",
+   "markdown": "⟨{value}?⟩ (proposal, basis: {basis})",
+   "max_opacity": 0.5,
+   "label": {
+    "en": "proposal extrapolated from the coding philosophy — not a fact",
+    "pl": "propozycja ekstrapolowana z filozofii kodowania — nie fakt"
+   }
+  },
+  "absent": {
+   "gt": "absent",
+   "outline": {
+    "style": "dashdot",
+    "width": 1,
+    "dash": [
+     6,
+     2,
+     1,
+     2
+    ]
+   },
+   "fill": "none",
+   "glyph": "·",
+   "cli": "·",
+   "badge": "?",
+   "markdown": "∅ (what would fill it: {query})",
+   "label": {
+    "en": "no evidence; shows what would fill it",
+    "pl": "brak dowodów; pokazuje, co by to uzupełniło"
+   }
+  },
+  "user": {
+   "gt": "observed",
+   "outline": {
+    "style": "double",
+    "width": 3
+   },
+   "fill": "solid",
+   "glyph": "▣",
+   "cli": "▣",
+   "badge": "user",
+   "markdown": "**{value}** (confirmed by you)",
+   "label": {
+    "en": "asserted or confirmed by the user (always wins)",
+    "pl": "potwierdzone lub ustawione przez użytkownika (zawsze wygrywa)"
+   }
+  }
+ },
+ "confidence": {
+  "bins": [
+   {
+    "lt": 0.5,
+    "opacity": 0.35,
+    "cli": "▁",
+    "label": "low"
+   },
+   {
+    "lt": 0.7,
+    "opacity": 0.55,
+    "cli": "▃",
+    "label": "medium"
+   },
+   {
+    "lt": 0.9,
+    "opacity": 0.75,
+    "cli": "▅",
+    "label": "high"
+   },
+   {
+    "lt": 1.01,
+    "opacity": 1.0,
+    "cli": "▇",
+    "label": "very high"
+   }
+  ],
+  "min_opacity": 0.35,
+  "exact_on_hover": true,
+  "note": "Opacity encodes CALIBRATED confidence (policy/calibration.json); it is only meaningful while the evaluation's ECE gate holds."
+ },
+ "conflict": {
+  "ring": "split",
+  "badge": "⚡{n}",
+  "edge": "zigzag",
+  "cli": "⚡",
+  "markdown": "⚠ {a} | {b}",
+  "label": {
+   "en": "conflicting evidence: both values shown",
+   "pl": "sprzeczne dowody: pokazane obie wartości"
+  }
+ },
+ "check_state": {
+  "pending": {
+   "badge": "…",
+   "cli": "…",
+   "label": {
+    "en": "expected property not yet checked",
+    "pl": "własność jeszcze niesprawdzona"
+   }
+  },
+  "holds": {
+   "badge": "✓",
+   "cli": "✓",
+   "label": {
+    "en": "expected property holds on later evidence",
+    "pl": "oczekiwana własność potwierdzona"
+   }
+  },
+  "violated": {
+   "badge": "✗",
+   "cli": "✗",
+   "label": {
+    "en": "expected property violated: value contested",
+    "pl": "oczekiwana własność naruszona: wartość sporna"
+   }
+  },
+  "n/a": {
+   "badge": null,
+   "cli": " ",
+   "label": {
+    "en": "no expected property",
+    "pl": "brak oczekiwanej własności"
+   }
+  }
+ },
+ "status": {
+  "implemented": {
+   "hue": "#009E73",
+   "glyph": "✓",
+   "label": {
+    "en": "implemented",
+    "pl": "zaimplementowane"
+   }
+  },
+  "partial": {
+   "hue": "#E69F00",
+   "glyph": "◐",
+   "label": {
+    "en": "partial",
+    "pl": "częściowe"
+   }
+  },
+  "planned": {
+   "hue": "#56B4E9",
+   "glyph": "○",
+   "label": {
+    "en": "planned",
+    "pl": "planowane"
+   }
+  },
+  "superseded": {
+   "hue": "#CC79A7",
+   "glyph": "↻",
+   "label": {
+    "en": "superseded",
+    "pl": "zastąpione"
+   }
+  },
+  "abandoned": {
+   "hue": "#999999",
+   "glyph": "✕",
+   "strike": true,
+   "label": {
+    "en": "abandoned",
+    "pl": "porzucone"
+   }
+  },
+  "active": {
+   "hue": "#0072B2",
+   "glyph": "●",
+   "label": {
+    "en": "active",
+    "pl": "aktywny"
+   }
+  },
+  "paused": {
+   "hue": "#F0E442",
+   "glyph": "‖",
+   "label": {
+    "en": "paused",
+    "pl": "wstrzymany"
+   }
+  },
+  "merged": {
+   "hue": "#D55E00",
+   "glyph": "⤳",
+   "label": {
+    "en": "merged into another project",
+    "pl": "scalony z innym projektem"
+   }
+  },
+  "unknown": {
+   "hue": "#7F7F7F",
+   "glyph": "?",
+   "label": {
+    "en": "unknown",
+    "pl": "nieznany"
+   }
+  },
+  "lost": {
+   "hue": "#D55E00",
+   "glyph": "⌀",
+   "label": {
+    "en": "lost (existed, then disappeared)",
+    "pl": "utracone (było, zniknęło)"
+   }
+  },
+  "restored": {
+   "hue": "#009E73",
+   "glyph": "↺",
+   "label": {
+    "en": "restored after being lost",
+    "pl": "przywrócone po utracie"
+   }
+  }
+ },
+ "relation_category": {
+  "structural": {
+   "dash": "solid"
+  },
+  "semantic": {
+   "dash": "longdash",
+   "dash_pattern": [
+    8,
+    4
+   ]
+  },
+  "temporal": {
+   "dash": "solid",
+   "arrow": true
+  },
+  "provenance": {
+   "dash": "thin",
+   "width": 0.5,
+   "hue": "#AAAAAA"
+  },
+  "custom": {
+   "dash": "dotted",
+   "dash_pattern": [
+    2,
+    3
+   ]
+  }
+ },
+ "edge_width": {
+  "formula": "log2(1 + support)",
+  "min": 1,
+  "max": 6
+ },
+ "badges": {
+  "archive_only": {
+   "shape": "corner_notch",
+   "text": "archive",
+   "label": {
+    "en": "version exists only in the archives, not in git",
+    "pl": "wersja tylko w archiwach, nie w git"
+   }
+  },
+  "fork_chosen": {
+   "glyph": "Y",
+   "opacity": 1.0
+  },
+  "fork_abandoned": {
+   "glyph": "Y✕",
+   "opacity": 0.35
+  },
+  "seed_only": {
+   "text": "seed",
+   "label": {
+    "en": "seed principle not (yet) found in the corpus",
+    "pl": "zasada startowa, jeszcze nie znaleziona w korpusie"
+   }
+  },
+  "candidate": {
+   "text": "new",
+   "label": {
+    "en": "discovered, unconfirmed",
+    "pl": "odkryte, niepotwierdzone"
+   }
+  },
+  "oscillation": {
+   "glyph": "↯",
+   "text": "oscillates",
+   "label": {
+    "en": "lost and restored more than once on this branch",
+    "pl": "tracone i przywracane więcej niż raz w tej gałęzi"
+   }
+  },
+  "lost_again": {
+   "glyph": "⌀↯",
+   "text": "lost again",
+   "label": {
+    "en": "lost again after a restoration",
+    "pl": "utracone ponownie po przywróceniu"
+   }
+  },
+  "transferred": {
+   "glyph": "⇄",
+   "text": "by analogy",
+   "label": {
+    "en": "inferred by a transfer morphism from an analogous project (depth 1)",
+    "pl": "wywnioskowane przez analogię z innego projektu (głębokość 1)"
+   }
+  }
+ },
+ "style_key": {
+  "format": "{role}|{kind}|{status}|{evidence}|{origin}|{conf_bin}|{flags}",
+  "flags": [
+   "conflict",
+   "archive_only",
+   "violated",
+   "seed_only",
+   "candidate",
+   "hidden_children",
+   "oscillation",
+   "lost_again",
+   "transferred"
+  ],
+  "note": "role is '' for temporal slots and non-role objects; conf_bin is the index into confidence.bins; flags are joined with '+', empty when none"
+ },
+ "legend_order": [
+  "observed",
+  "derived",
+  "inferred",
+  "extrapolated",
+  "absent",
+  "user"
+ ],
+ "origin": {
+  "archive": {
+   "badge": null,
+   "halo": "none",
+   "cli": "",
+   "markdown": "",
+   "label": {
+    "en": "the owner's archives",
+    "pl": "archiwa właściciela"
+   }
+  },
+  "repo": {
+   "badge": "</>",
+   "halo": "none",
+   "cli": "⌥",
+   "markdown": " (repo)",
+   "label": {
+    "en": "code and git history",
+    "pl": "kod i historia git"
+   }
+  },
+  "user": {
+   "badge": "you",
+   "halo": "solid",
+   "cli": "@",
+   "markdown": " (you)",
+   "label": {
+    "en": "stated by you now",
+    "pl": "podane przez ciebie teraz"
+   }
+  },
+  "external_authority": {
+   "badge": "§",
+   "halo": "double",
+   "cli": "§",
+   "markdown": " (§ authority)",
+   "label": {
+    "en": "statute / standard / official document",
+    "pl": "ustawa / norma / dokument urzędowy"
+   }
+  },
+  "model_knowledge": {
+   "badge": "general knowledge",
+   "halo": "dotted",
+   "hue": "#8E44AD",
+   "cli": "≋",
+   "markdown": " (general knowledge, not your sources)",
+   "label": {
+    "en": "general knowledge of a language model: ranked below your sources",
+    "pl": "wiedza ogólna modelu językowego: poniżej twoich źródeł"
+   }
+  },
+  "system": {
+   "badge": "ƒ",
+   "halo": "none",
+   "cli": "ƒ",
+   "markdown": " (computed)",
+   "label": {
+    "en": "computed by Loom",
+    "pl": "wyliczone przez Loom"
+   }
+  }
+ },
+ "role": {
+  "intent": {
+   "shape": "star",
+   "size": 2
+  },
+  "constraint": {
+   "shape": "hexagon",
+   "size": 1.5
+  },
+  "part": {
+   "shape": "rect",
+   "size": 2
+  },
+  "actor": {
+   "shape": "person",
+   "size": 1.5
+  },
+  "resource": {
+   "shape": "cylinder",
+   "size": 1.2
+  },
+  "interface": {
+   "shape": "diamond",
+   "size": 1.2
+  },
+  "flow": {
+   "shape": "arrow",
+   "size": 1.2
+  },
+  "event": {
+   "shape": "pill",
+   "size": 1.2
+  },
+  "artifact": {
+   "shape": "document",
+   "size": 1.5
+  },
+  "transformation": {
+   "shape": "gear",
+   "size": 1.5
+  },
+  "check": {
+   "shape": "shield",
+   "size": 1.2
+  },
+  "output": {
+   "shape": "roundrect",
+   "size": 2
+  },
+  "decision": {
+   "shape": "flag",
+   "size": 1.5
+  },
+  "question": {
+   "shape": "circle",
+   "glyph": "?",
+   "size": 1.2
+  }
+ },
+ "kind": {
+  "project": {
+   "shape": "roundrect",
+   "size": 3
+  },
+  "version": {
+   "shape": "pill",
+   "size": 1.5
+  },
+  "component": {
+   "shape": "rect",
+   "size": 2
+  },
+  "stage": {
+   "shape": "rect",
+   "size": 2
+  },
+  "role": {
+   "shape": "rect",
+   "size": 1.5
+  },
+  "repo": {
+   "shape": "rect",
+   "size": 2
+  },
+  "concept": {
+   "shape": "ellipse",
+   "size": 1.5
+  },
+  "topic": {
+   "shape": "ellipse",
+   "size": 2
+  },
+  "platform": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "language": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "ui_framework": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "storage": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "sync": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "protocol": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "format": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "tool": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "option": {
+   "shape": "ellipse",
+   "size": 1
+  },
+  "principle": {
+   "shape": "hexagon",
+   "size": 2
+  },
+  "invariant": {
+   "shape": "hexagon",
+   "size": 1.5
+  },
+  "decision": {
+   "shape": "flag",
+   "size": 1.5
+  },
+  "requirement": {
+   "shape": "flag",
+   "size": 1.2
+  },
+  "fork": {
+   "shape": "fork",
+   "glyph": "Y",
+   "size": 1.5
+  },
+  "open_question": {
+   "shape": "circle",
+   "glyph": "?",
+   "size": 1.2
   },
   "evidence": {
-    "observed": {
-      "gt": "observed", "outline": {"style": "solid", "width": 2}, "fill": "solid", "glyph": "■", "cli": "■", "badge": null,
-      "markdown": "**{value}**", "label": {"en": "observed in a source", "pl": "zaobserwowane w źródle"}
-    },
-    "derived": {
-      "gt": "observed", "outline": {"style": "solid", "width": 1}, "fill": "solid", "glyph": "□", "cli": "□", "badge": "ƒ",
-      "markdown": "**{value}** ƒ", "label": {"en": "derived deterministically from observed values", "pl": "wyprowadzone deterministycznie z obserwacji"}
-    },
-    "inferred": {
-      "gt": "inferable", "outline": {"style": "dashed", "width": 1.5, "dash": [6, 3]}, "fill": "solid", "glyph": "◌", "cli": "◌", "badge": "≈",
-      "markdown": "_{value}_ (inferred ~{confidence}; expected: {expected_property})",
-      "subtitle": "expected: {expected_property}",
-      "label": {"en": "inferred: a checkable prediction with an expected property", "pl": "wywnioskowane: sprawdzalna predykcja z oczekiwaną własnością"}
-    },
-    "extrapolated": {
-      "gt": null, "outline": {"style": "dotted", "width": 1.5, "dash": [2, 3]}, "fill": "hatch", "hatch": {"angle": 45, "spacing": 6}, "glyph": "░", "cli": "░", "badge": "proposal",
-      "markdown": "⟨{value}?⟩ (proposal, basis: {basis})",
-      "max_opacity": 0.5,
-      "label": {"en": "proposal extrapolated from the coding philosophy — not a fact", "pl": "propozycja ekstrapolowana z filozofii kodowania — nie fakt"}
-    },
-    "absent": {
-      "gt": "absent", "outline": {"style": "dashdot", "width": 1, "dash": [6, 2, 1, 2]}, "fill": "none", "glyph": "·", "cli": "·", "badge": "?",
-      "markdown": "∅ (what would fill it: {query})",
-      "label": {"en": "no evidence; shows what would fill it", "pl": "brak dowodów; pokazuje, co by to uzupełniło"}
-    },
-    "user": {
-      "gt": "observed", "outline": {"style": "double", "width": 3}, "fill": "solid", "glyph": "▣", "cli": "▣", "badge": "user",
-      "markdown": "**{value}** (confirmed by you)", "label": {"en": "asserted or confirmed by the user (always wins)", "pl": "potwierdzone lub ustawione przez użytkownika (zawsze wygrywa)"}
-    }
-  },
-  "confidence": {
-    "bins": [
-      {"lt": 0.5, "opacity": 0.35, "cli": "▁", "label": "low"},
-      {"lt": 0.7, "opacity": 0.55, "cli": "▃", "label": "medium"},
-      {"lt": 0.9, "opacity": 0.75, "cli": "▅", "label": "high"},
-      {"lt": 1.01, "opacity": 1.0, "cli": "▇", "label": "very high"}
-    ],
-    "min_opacity": 0.35,
-    "exact_on_hover": true,
-    "note": "Opacity encodes CALIBRATED confidence (policy/calibration.json); it is only meaningful while the evaluation's ECE gate holds."
-  },
-  "conflict": {"ring": "split", "badge": "⚡{n}", "edge": "zigzag", "cli": "⚡", "markdown": "⚠ {a} | {b}",
-               "label": {"en": "conflicting evidence: both values shown", "pl": "sprzeczne dowody: pokazane obie wartości"}},
-  "check_state": {
-    "pending": {"badge": "…", "cli": "…", "label": {"en": "expected property not yet checked", "pl": "własność jeszcze niesprawdzona"}},
-    "holds": {"badge": "✓", "cli": "✓", "label": {"en": "expected property holds on later evidence", "pl": "oczekiwana własność potwierdzona"}},
-    "violated": {"badge": "✗", "cli": "✗", "label": {"en": "expected property violated: value contested", "pl": "oczekiwana własność naruszona: wartość sporna"}},
-    "n/a": {"badge": null, "cli": " ", "label": {"en": "no expected property", "pl": "brak oczekiwanej własności"}}
-  },
-  "status": {
-    "implemented": {"hue": "#009E73", "glyph": "✓", "label": {"en": "implemented", "pl": "zaimplementowane"}},
-    "partial": {"hue": "#E69F00", "glyph": "◐", "label": {"en": "partial", "pl": "częściowe"}},
-    "planned": {"hue": "#56B4E9", "glyph": "○", "label": {"en": "planned", "pl": "planowane"}},
-    "superseded": {"hue": "#CC79A7", "glyph": "↻", "label": {"en": "superseded", "pl": "zastąpione"}},
-    "abandoned": {"hue": "#999999", "glyph": "✕", "strike": true, "label": {"en": "abandoned", "pl": "porzucone"}},
-    "active": {"hue": "#0072B2", "glyph": "●", "label": {"en": "active", "pl": "aktywny"}},
-    "paused": {"hue": "#F0E442", "glyph": "‖", "label": {"en": "paused", "pl": "wstrzymany"}},
-    "merged": {"hue": "#D55E00", "glyph": "⤳", "label": {"en": "merged into another project", "pl": "scalony z innym projektem"}},
-    "unknown": {"hue": "#7F7F7F", "glyph": "?", "label": {"en": "unknown", "pl": "nieznany"}}
-  },
-  "kind": {
-    "project": {"shape": "roundrect", "size": 3},
-    "version": {"shape": "pill", "size": 1.5},
-    "component": {"shape": "rect", "size": 2},
-    "stage": {"shape": "rect", "size": 2},
-    "role": {"shape": "rect", "size": 1.5},
-    "repo": {"shape": "rect", "size": 2},
-    "concept": {"shape": "ellipse", "size": 1.5},
-    "topic": {"shape": "ellipse", "size": 2},
-    "platform": {"shape": "ellipse", "size": 1.2},
-    "language": {"shape": "ellipse", "size": 1.2},
-    "ui_framework": {"shape": "ellipse", "size": 1.2},
-    "storage": {"shape": "ellipse", "size": 1.2},
-    "sync": {"shape": "ellipse", "size": 1.2},
-    "protocol": {"shape": "ellipse", "size": 1.2},
-    "format": {"shape": "ellipse", "size": 1.2},
-    "tool": {"shape": "ellipse", "size": 1.2},
-    "option": {"shape": "ellipse", "size": 1},
-    "principle": {"shape": "hexagon", "size": 2},
-    "invariant": {"shape": "hexagon", "size": 1.5},
-    "decision": {"shape": "flag", "size": 1.5},
-    "requirement": {"shape": "flag", "size": 1.2},
-    "fork": {"shape": "fork", "glyph": "Y", "size": 1.5},
-    "open_question": {"shape": "circle", "glyph": "?", "size": 1.2},
-    "evidence": {"shape": "dot", "size": 0.5}
-  },
-  "relation_category": {
-    "structural": {"dash": "solid"},
-    "semantic": {"dash": "longdash", "dash_pattern": [8, 4]},
-    "temporal": {"dash": "solid", "arrow": true},
-    "provenance": {"dash": "thin", "width": 0.5, "hue": "#AAAAAA"},
-    "custom": {"dash": "dotted", "dash_pattern": [2, 3]}
-  },
-  "edge_width": {"formula": "log2(1 + support)", "min": 1, "max": 6},
-  "badges": {
-    "archive_only": {"shape": "corner_notch", "text": "archive", "label": {"en": "version exists only in the archives, not in git", "pl": "wersja tylko w archiwach, nie w git"}},
-    "fork_chosen": {"glyph": "Y", "opacity": 1.0},
-    "fork_abandoned": {"glyph": "Y✕", "opacity": 0.35},
-    "seed_only": {"text": "seed", "label": {"en": "seed principle not (yet) found in the corpus", "pl": "zasada startowa, jeszcze nie znaleziona w korpusie"}},
-    "candidate": {"text": "new", "label": {"en": "discovered, unconfirmed", "pl": "odkryte, niepotwierdzone"}}
-  },
-  "style_key": {
-    "format": "{kind}|{status}|{evidence}|{conf_bin}|{flags}",
-    "flags": ["conflict", "archive_only", "violated", "seed_only", "candidate", "hidden_children"],
-    "note": "conf_bin is the index into confidence.bins; flags are joined with '+', empty when none"
-  },
-  "legend_order": ["observed", "derived", "inferred", "extrapolated", "absent", "user"]
+   "shape": "dot",
+   "size": 0.5
+  }
+ }
 }

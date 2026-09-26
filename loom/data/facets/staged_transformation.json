@@ -1,0 +1,274 @@
+{
+ "schema": "loom.kb.facet/1",
+ "id": "staged_transformation",
+ "version": 1,
+ "title": {
+  "en": "Staged transformation",
+  "pl": "Transformacja etapowa"
+ },
+ "description": "An ordered chain of stages from inputs to outputs. Canonical example: the 0.9.0 video refinement 'cheap -> expensive, gated, cost-estimated' (structure -> keyframes -> clips -> composition); the archive pipeline and data analysis are instances too. Reusable across kinds (model §3.5).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "TL;DR; §5 'Rafinacja etapowa'"
+  },
+  {
+   "doc": "history/chatadhd_v0.9.0/engine/video_pipeline.py",
+   "date": "2026-04-17",
+   "section": "4 phases"
+  },
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.9"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.5"
+  }
+ ],
+ "applies_to": [
+  "software_app",
+  "film",
+  "music",
+  "legal_case",
+  "research"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "claim_count",
+    "rel": "has_stage",
+    "min": 2
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.pipeline",
+    "min": 2
+   }
+  ],
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "stage",
+   "role": "transformation",
+   "labels": {
+    "en": "Stage",
+    "pl": "Etap"
+   },
+   "entity_kind": "stage",
+   "card": "list",
+   "required": true,
+   "weight": 3.0,
+   "relation": "has_stage",
+   "relations": [
+    {
+     "rel": "precedes",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "stage",
+      "phase",
+      "step"
+     ],
+     "pl": [
+      "etap",
+      "faza",
+      "krok"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_stage"
+    },
+    {
+     "kind": "enumeration",
+     "scope": "subject_sentences",
+     "shape": "chain"
+    }
+   ],
+   "rules": [
+    "r.pipeline_stage_order"
+   ]
+  },
+  {
+   "id": "gate",
+   "role": "check",
+   "labels": {
+    "en": "Gate",
+    "pl": "Bramka"
+   },
+   "entity_kind": "gate",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "gate",
+      "threshold"
+     ],
+     "pl": [
+      "bramka",
+      "próg"
+     ]
+    }
+   }
+  },
+  {
+   "id": "cost_estimate",
+   "role": "constraint",
+   "labels": {
+    "en": "Cost estimate / budget",
+    "pl": "Kosztorys / budżet"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "has_budget",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "cost",
+      "budget"
+     ],
+     "pl": [
+      "koszt",
+      "kosztorys"
+     ]
+    }
+   }
+  },
+  {
+   "id": "intermediate",
+   "role": "artifact",
+   "labels": {
+    "en": "Intermediate representation",
+    "pl": "Reprezentacja pośrednia"
+   },
+   "entity_kind": "ir",
+   "card": "many",
+   "relation": "has_ir",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "ir",
+      "intermediate"
+     ],
+     "pl": [
+      "reprezentacja pośrednia"
+     ]
+    }
+   }
+  },
+  {
+   "id": "checkpoint",
+   "role": "artifact",
+   "labels": {
+    "en": "Checkpoint / resumable state",
+    "pl": "Punkt kontrolny"
+   },
+   "entity_kind": "checkpoint",
+   "card": "many",
+   "relation": "has_checkpoint",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "concept.resumability"
+    ]
+   },
+   "rules": [
+    "x.pipeline_resumable_stages"
+   ]
+  },
+  {
+   "id": "stage_input",
+   "role": "resource",
+   "labels": {
+    "en": "Input",
+    "pl": "Wejście"
+   },
+   "entity_kind": "format",
+   "card": "many",
+   "relation": "has_input",
+   "anchors": {
+    "lexicon": [
+     "format"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_input"
+    },
+    {
+     "kind": "lexicon",
+     "class": "format",
+     "scope": "subject_sentences"
+    }
+   ]
+  },
+  {
+   "id": "stage_output",
+   "role": "output",
+   "labels": {
+    "en": "Output",
+    "pl": "Wyjście"
+   },
+   "entity_kind": "format",
+   "card": "many",
+   "relation": "has_output",
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_output"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "st.c1",
+   "expr": {
+    "op": "nonempty",
+    "args": [
+     "$slot:stage"
+    ]
+   },
+   "on_violation": "reject_instance",
+   "why": "a staged transformation without a stage is not one"
+  }
+ ],
+ "rules": []
+}

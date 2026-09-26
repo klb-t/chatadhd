@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "loom/kb.h"
+#include "loom/model.h"
 #include "loom/re/regex.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -146,6 +147,23 @@ std::set<std::string> names_of(const Json& arr, std::string_view key) {
   return out;
 }
 
+std::vector<std::string> json_strings_of(const Json& o, std::string_view key) {
+  std::vector<std::string> out;
+  const Json* a = json::find(o, key);
+  if (!a || !a->is_array()) return out;
+  for (const auto& x : *a) {
+    if (x.is_string()) out.push_back(x.get<std::string>());
+  }
+  return out;
+}
+
+// Member or null (never inserts, never asserts on const objects).
+const Json& at(const Json& o, std::string_view key) {
+  static const Json kNull;
+  const Json* p = json::find(o, key);
+  return p ? *p : kNull;
+}
+
 std::vector<std::string> split(std::string_view s, char sep) {
   std::vector<std::string> out;
   std::size_t start = 0;
@@ -164,6 +182,7 @@ struct TypesVocab {
   std::set<std::string> relations;
   std::set<std::string> categories;
   std::map<std::string, std::set<std::string>> enums;
+  std::map<std::string, std::set<std::string>> temporal;  // temporal slot -> record field names
   explicit TypesVocab(const Json& t) {
     kinds = names_of(json::find(t, "entity_kinds") ? t["entity_kinds"] : Json(), "kind");
     relations = names_of(json::find(t, "relations") ? t["relations"] : Json(), "name");
@@ -185,6 +204,15 @@ struct TypesVocab {
         enums[it.key()] = vals;
       }
     }
+    if (const Json* ts = json::find(t, "temporal_slots"); ts && ts->is_array()) {
+      for (const auto& s : *ts) {
+        std::set<std::string> fields;
+        if (const Json* f = json::find(s, "fields"); f && f->is_object()) {
+          for (auto it = f->begin(); it != f->end(); ++it) fields.insert(it.key());
+        }
+        temporal[json::get_string(s, "name")] = fields;
+      }
+    }
   }
   const std::set<std::string>& enum_values(const std::string& name) const {
     static const std::set<std::string> kEmpty;
@@ -192,7 +220,6 @@ struct TypesVocab {
     return it == enums.end() ? kEmpty : it->second;
   }
 };
-
 // ── expressions (conditions, value ops, predicates) ─────────────────
 template <std::size_t N>
 void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_view (&ops)[N], std::string_view what) {
@@ -237,18 +264,22 @@ void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_v
   }
 }
 
-void check_expected_property(V& v, const Json& o, const std::string& ptr) {
-  if (!o.is_object()) {
-    v.err(ptr, "expected an object");
-    return;
-  }
-  if (const Json* e = v.member(o, ptr, "expr")) check_expr(v, *e, ptr + "/expr", kPredicates, "predicate");
-  v.str(o, ptr, "rationale");
-  v.strings(o, ptr, "confirm_if", false);
-  v.strings(o, ptr, "refute_if", false);
-}
 
 // ── per-schema structural validation ────────────────────────────────
+bool valid_slot_type(const std::string& type, const TypesVocab& t);
+void v_binding(V& v, const Json& b, const std::string& p, const TypesVocab& t);
+
+// Parses `d` with a model type; a parse error becomes an issue.
+template <class T>
+std::optional<T> parse_model(V& v, const Json& d, const std::string& ptr) {
+  auto r = T::from_json(d);
+  if (!r) {
+    v.err(ptr, r.error().message);
+    return std::nullopt;
+  }
+  return std::move(*r);
+}
+
 void v_types(V& v, const Json& d) {
   static const std::set<std::string> kCats = {"structural", "semantic", "temporal", "provenance", "custom"};
   std::set<std::string> seen;
@@ -259,15 +290,23 @@ void v_types(V& v, const Json& d) {
         v.err(p + "/kind", "duplicate entity kind");
       }
       v.integer((*a)[i], p, "level", 0, 3);
-      v.str((*a)[i], p, "shape");
+      v.str((*a)[i], p, "shape", false);
     }
   }
   if (const Json* e = v.object(d, "", "enums")) {
-    for (const char* req : {"project_kind", "project_status", "component_status", "version_source", "item_type", "gt_evidence"}) {
+    for (const char* req : {"project_status", "component_status", "version_source", "item_type", "gt_evidence"}) {
       if (!e->contains(req)) v.err(std::string("/enums/") + req, "missing required enum");
     }
     for (auto it = e->begin(); it != e->end(); ++it) {
       if (!it.value().is_array() || it.value().empty()) v.err("/enums/" + it.key(), "expected a non-empty array");
+    }
+    // component_status is the model's closed set of part statuses (§5).
+    if (const Json* cs = json::find(*e, "component_status"); cs && cs->is_array()) {
+      std::set<std::string> have;
+      for (const auto& x : *cs) have.insert(x.is_string() ? x.get<std::string>() : "");
+      std::set<std::string> want;
+      for (auto s : model::all<model::StatusValue>()) want.insert(std::string(model::to_string(s)));
+      if (have != want) v.err("/enums/component_status", "must list exactly the model statuses: " + model::names_list<model::StatusValue>());
     }
   }
   seen.clear();
@@ -281,8 +320,23 @@ void v_types(V& v, const Json& d) {
       v.one_of((*a)[i], p, "category", kCats);
     }
   }
+  TypesVocab t(d);
+  seen.clear();
+  if (const Json* a = v.array(d, "", "temporal_slots", true, true)) {
+    for (std::size_t i = 0; i < a->size(); ++i) {
+      std::string p = idx("/temporal_slots", i);
+      auto s = parse_model<model::SlotSpec>(v, (*a)[i], p);
+      if (!s) continue;
+      if (!seen.insert(s->name).second) v.err(p + "/name", "duplicate temporal slot");
+      if (!valid_slot_type(s->type, t)) v.err(p + "/type", "unknown slot type '" + s->type + "'");
+      for (auto it = s->fields.begin(); it != s->fields.end(); ++it) {
+        std::string ft = json::get_string(it.value(), "type");
+        if (!valid_slot_type(ft, t)) v.err(p + "/fields/" + it.key(), "unknown field type '" + ft + "'");
+      }
+      for (std::size_t k = 0; k < s->bind.size(); ++k) v_binding(v, s->bind[k], idx(p + "/bind", k), t);
+    }
+  }
 }
-
 void v_stopwords(V& v, const Json& d) {
   v.strings(d, "", "en");
   v.strings(d, "", "pl");
@@ -475,7 +529,8 @@ void v_profile(V& v, const Json& d, const TypesVocab& t) {
     std::string p = idx("/projects", i);
     if (v.str(x, p, "id") && !seen.insert(x["id"].get<std::string>()).second) v.err(p + "/id", "duplicate project id");
     v.str(x, p, "name");
-    v.one_of(x, p, "kind", t.enum_values("project_kind"));
+    v.str(x, p, "project_kind");  // must name a project kind file (cross references)
+    v.strings(x, p, "facets", false);
     if (const Json* m = json::find(x, "merged_into"); m && !m->is_null()) {
       if (!m->is_string() || !ids.count(m->get<std::string>())) v.err(p + "/merged_into", "must be null or a project id");
     }
@@ -494,69 +549,8 @@ void v_profile(V& v, const Json& d, const TypesVocab& t) {
       v.strings(y, q, "negative_context", false);
     }
   }
+  (void)t;
 }
-
-void v_principles(V& v, const Json& d) {
-  const Json* a = v.array(d, "", "principles", true, true);
-  if (!a) return;
-  std::set<std::string> ids;
-  for (std::size_t i = 0; i < a->size(); ++i) {
-    const Json& x = (*a)[i];
-    std::string p = idx("/principles", i);
-    if (v.str(x, p, "id")) {
-      std::string id = x["id"].get<std::string>();
-      if (!ids.insert(id).second) v.err(p + "/id", "duplicate principle id");
-      if (id.rfind("p.", 0) != 0) v.err(p + "/id", "principle ids start with 'p.'");
-    }
-    v.num(x, p, "prior", 0.01, 1);
-    v.bilingual(x, p, "statement");
-    v.strings(x, p, "phrasings", true, true);
-    if (const Json* s = v.array(x, p, "sources", true, true)) {
-      for (std::size_t k = 0; k < s->size(); ++k) {
-        v.str((*s)[k], idx(p + "/sources", k), "doc");
-        v.str((*s)[k], idx(p + "/sources", k), "section");
-      }
-    }
-    if (const Json* ap = v.object(x, p, "applies_to")) v.strings(*ap, p + "/applies_to", "paradigms", true, true);
-    v.object(x, p, "value_constraints");
-  }
-}
-
-void v_rules(V& v, const Json& d, const TypesVocab& t) {
-  const Json* a = v.array(d, "", "rules", true, true);
-  if (!a) return;
-  std::set<std::string> ids;
-  for (std::size_t i = 0; i < a->size(); ++i) {
-    const Json& x = (*a)[i];
-    std::string p = idx("/rules", i);
-    if (v.str(x, p, "id") && !ids.insert(x["id"].get<std::string>()).second) v.err(p + "/id", "duplicate rule id");
-    v.integer(x, p, "version", 1, 1000);
-    v.integer(x, p, "stratum", 0, 2);
-    v.closed(x, p, "produces", kRuleProduces);
-    long stratum = json::get_int(x, "stratum", -1);
-    std::string produces = json::get_string(x, "produces");
-    static const char* kByStratum[] = {"derived", "inferred", "extrapolated"};
-    if (stratum >= 0 && stratum <= 2 && produces != kByStratum[stratum]) {
-      v.err(p + "/produces", "stratum " + std::to_string(stratum) + " must produce '" + kByStratum[stratum] + "'");
-    }
-    if (const Json* tg = v.object(x, p, "target")) {
-      bool slot_target = tg->contains("paradigm");
-      bool entity_target = tg->contains("entity_kind");
-      if (slot_target == entity_target) v.err(p + "/target", "exactly one of paradigm+slot or entity_kind+attr");
-      if (slot_target) v.str(*tg, p + "/target", "slot");
-      if (entity_target) {
-        v.one_of(*tg, p + "/target", "entity_kind", t.kinds);
-        v.str(*tg, p + "/target", "attr");
-      }
-    }
-    if (const Json* w = v.member(x, p, "when")) check_expr(v, *w, p + "/when", kConditionOps, "condition");
-    if (const Json* w = v.member(x, p, "value")) check_expr(v, *w, p + "/value", kValueOps, "value");
-    if (const Json* c = v.object(x, p, "confidence")) v.num(*c, p + "/confidence", "prior", 0.01, 1);
-    if (const Json* e = v.member(x, p, "expected_property")) check_expected_property(v, *e, p + "/expected_property");
-    v.object(x, p, "basis", false);
-  }
-}
-
 void v_checks(V& v, const Json& d) {
   const Json* a = v.array(d, "", "checks", true, true);
   if (!a) return;
@@ -674,10 +668,8 @@ void v_calibration(V& v, const Json& d) {
 }
 
 void v_evidence_encoding(V& v, const Json& d, const TypesVocab& t) {
-  static const Evidence kAll[] = {Evidence::Observed, Evidence::Derived, Evidence::Inferred,
-                                  Evidence::Extrapolated, Evidence::Absent, Evidence::User};
   if (const Json* ev = v.object(d, "", "evidence")) {
-    for (Evidence e : kAll) {
+    for (auto e : model::all<Evidence>()) {
       std::string name(to_string(e));
       std::string p = "/evidence/" + name;
       const Json* x = json::find(*ev, name);
@@ -698,6 +690,30 @@ void v_evidence_encoding(V& v, const Json& d, const TypesVocab& t) {
     }
     for (auto it = ev->begin(); it != ev->end(); ++it) {
       if (!evidence_from_string(it.key())) v.err("/evidence/" + it.key(), "unknown evidence class");
+    }
+  }
+  // The origin channel: model_knowledge must be visibly distinct (§2.3, R7).
+  if (const Json* og = v.object(d, "", "origin")) {
+    for (auto o : model::all<model::Origin>()) {
+      std::string name(model::to_string(o));
+      std::string p = "/origin/" + name;
+      const Json* x = json::find(*og, name);
+      if (!x) {
+        v.err(p, "missing origin");
+        continue;
+      }
+      v.str(*x, p, "halo");
+      v.str(*x, p, "cli", true, false);
+      v.bilingual(*x, p, "label");
+    }
+    for (auto it = og->begin(); it != og->end(); ++it) {
+      if (!model::from_string<model::Origin>(it.key())) v.err("/origin/" + it.key(), "unknown origin");
+    }
+    const Json& mk = at(*og, "model_knowledge");
+    const Json& ar = at(*og, "archive");
+    if (mk.is_object() && ar.is_object() && json::get_string(mk, "halo") == json::get_string(ar, "halo") &&
+        json::get_string(mk, "badge") == json::get_string(ar, "badge")) {
+      v.err("/origin/model_knowledge", "must be visibly distinct from archive (halo or badge)");
     }
   }
   if (const Json* c = v.object(d, "", "confidence")) {
@@ -726,9 +742,22 @@ void v_evidence_encoding(V& v, const Json& d, const TypesVocab& t) {
       v.str(it.value(), "/status/" + it.key(), "glyph");
     }
   }
-  if (const Json* k = v.object(d, "", "kind")) {
-    for (const auto& kind : t.kinds) {
-      if (!k->contains(kind)) v.err("/kind/" + kind, "missing shape for entity kind");
+  if (const Json* r = v.object(d, "", "role")) {
+    for (auto role : model::all<model::Role>()) {
+      std::string name(model::to_string(role));
+      if (!r->contains(name)) {
+        v.err("/role/" + name, "missing shape for universal role");
+      } else {
+        v.str(at(*r, name), "/role/" + name, "shape");
+      }
+    }
+    for (auto it = r->begin(); it != r->end(); ++it) {
+      if (!model::from_string<model::Role>(it.key())) v.err("/role/" + it.key(), "unknown universal role");
+    }
+  }
+  if (const Json* k = v.object(d, "", "kind", false)) {
+    for (auto it = k->begin(); it != k->end(); ++it) {
+      if (!t.kinds.count(it.key())) v.err("/kind/" + it.key(), "unknown entity kind");
     }
   }
   if (const Json* rc = v.object(d, "", "relation_category")) {
@@ -737,15 +766,20 @@ void v_evidence_encoding(V& v, const Json& d, const TypesVocab& t) {
     }
   }
   if (const Json* cs = v.object(d, "", "check_state")) {
-    for (const char* s : {"pending", "holds", "violated", "n/a"}) {
-      if (!cs->contains(s)) v.err(std::string("/check_state/") + s, "missing check state");
+    for (auto s : model::all<CheckState>()) {
+      if (!cs->contains(std::string(to_string(s)))) v.err("/check_state/" + std::string(to_string(s)), "missing check state");
+    }
+  }
+  if (const Json* b = v.object(d, "", "badges")) {
+    for (const char* req : {"oscillation", "lost_again", "transferred"}) {
+      if (!b->contains(req)) v.err(std::string("/badges/") + req, "missing badge");
     }
   }
   v.object(d, "", "conflict");
   if (v.strings(d, "", "legend_order", true, true)) {
     std::set<std::string> lo;
     for (const auto& x : d["legend_order"]) lo.insert(x.get<std::string>());
-    if (lo.size() != 6) v.err("/legend_order", "must list the six evidence classes once each");
+    if (lo.size() != model::count<Evidence>()) v.err("/legend_order", "must list the six evidence classes once each");
     for (const auto& x : lo) {
       if (!evidence_from_string(x)) v.err("/legend_order", "unknown evidence class " + x);
     }
@@ -756,7 +790,7 @@ void v_binding(V& v, const Json& b, const std::string& p, const TypesVocab& t) {
   v.closed(b, p, "kind", kBindingKinds);
   std::string kind = json::get_string(b, "kind");
   if (kind == "subject") v.closed(b, p, "field", kSubjectFields);
-  if (kind == "fact") {
+  if (kind == "claim") {
     v.one_of(b, p, "rel", t.relations);
     if (b.contains("via")) v.one_of(b, p, "via", t.relations);
     if (b.contains("dir")) v.one_of(b, p, "dir", {"in", "out"});
@@ -795,113 +829,295 @@ bool valid_slot_type(const std::string& type, const TypesVocab& t) {
   return false;
 }
 
-void v_paradigm(V& v, const Json& d, const TypesVocab& t, std::string_view relpath) {
-  std::string stem = fs::path(std::string(relpath)).stem().string();
-  if (v.str(d, "", "id") && d["id"].get<std::string>() != stem) v.err("/id", "must equal the file name ('" + stem + "')");
-  v.integer(d, "", "version", 1, 1000);
-  v.str(d, "", "gt_paradigm");
-  v.bilingual(d, "", "title");
-  v.str(d, "", "description");
-  if (v.str(d, "", "subject_kind")) {
-    for (const auto& k : split(d["subject_kind"].get<std::string>(), '|')) {
-      if (k != "owner" && !t.kinds.count(k)) v.err("/subject_kind", "unknown entity kind '" + k + "'");
+void v_slot_spec(V& v, const model::SlotSpec& s, const std::string& p, const TypesVocab& t) {
+  if (!valid_slot_type(s.type, t)) v.err(p + "/type", "unknown slot type '" + s.type + "'");
+  if (!s.relation.empty() && !t.relations.count(s.relation)) v.err(p + "/relation", "unknown relation '" + s.relation + "'");
+  for (auto it = s.fields.begin(); it != s.fields.end(); ++it) {
+    std::string ft = json::get_string(it.value(), "type");
+    if (!valid_slot_type(ft, t)) v.err(p + "/fields/" + it.key(), "unknown field type '" + ft + "'");
+    if (it.value().contains("card")) v.closed(it.value(), p + "/fields/" + it.key(), "card", kCardinalities);
+  }
+  for (std::size_t k = 0; k < s.bind.size(); ++k) v_binding(v, s.bind[k], idx(p + "/bind", k), t);
+}
+
+// Paradigm anchors: {"any"|"all": [anchor ops], "min_score"}.
+void v_anchors(V& v, const Json& an, const std::string& p0, const TypesVocab& t) {
+  if (!an.is_object() || an.empty()) return;
+  v.num(an, p0, "min_score", 0, 1);
+  bool any = false;
+  for (const char* key : {"any", "all"}) {
+    const Json* ops = json::find(an, key);
+    if (!ops) continue;
+    any = true;
+    if (!ops->is_array() || ops->empty()) {
+      v.err(p0 + "/" + key, "expected a non-empty array");
+      continue;
+    }
+    for (std::size_t i = 0; i < ops->size(); ++i) {
+      std::string p = idx(p0 + "/" + key, i);
+      const Json& o = (*ops)[i];
+      v.closed(o, p, "op", kAnchorOps);
+      std::string op = json::get_string(o, "op");
+      if (op == "claim_count") {
+        v.one_of(o, p, "rel", t.relations);
+        v.integer(o, p, "min", 1, 1000);
+      }
+      if (op == "kind_hint") v.str(o, p, "value");
+      if (op == "cue") {
+        v.str(o, p, "class");
+        v.integer(o, p, "min", 1, 1000);
+      }
+      if (op == "has_items") {
+        v.one_of(o, p, "type", t.enum_values("item_type"));
+        v.integer(o, p, "min", 1, 1000);
+      }
+      if (op == "option_set") v.integer(o, p, "min_options", 2, 100);
+      if (op == "principle_count") v.integer(o, p, "min", 1, 1000);
     }
   }
-  if (const Json* an = v.object(d, "", "anchors")) {
-    v.num(*an, "/anchors", "min_score", 0, 1);
+  if (!any) v.err(p0, "needs 'any' and/or 'all'");
+}
+
+void v_constraints(V& v, const Json& cs, const std::string& p0) {
+  if (!cs.is_array()) return;
+  for (std::size_t i = 0; i < cs.size(); ++i) {
+    std::string p = idx(p0, i);
+    v.str(cs[i], p, "id");
+    if (const Json* e = v.member(cs[i], p, "expr")) check_expr(v, *e, p + "/expr", kPredicates, "predicate");
+    v.closed(cs[i], p, "on_violation", kViolationActions);
+  }
+}
+
+void v_domain_kinds(V& v, const std::vector<model::DomainKind>& kinds, const std::string& p0, const TypesVocab& t) {
+  for (std::size_t i = 0; i < kinds.size(); ++i) {
+    const auto& k = kinds[i];
+    std::string p = idx(p0, i);
+    if (!k.entity_kind.empty() && !t.kinds.count(k.entity_kind)) v.err(p + "/entity_kind", "unknown entity kind '" + k.entity_kind + "'");
+    if (!valid_slot_type(k.value_type, t)) v.err(p + "/value_type", "unknown slot type '" + k.value_type + "'");
+    if (!k.relation.empty() && !t.relations.count(k.relation)) v.err(p + "/relation", "unknown relation '" + k.relation + "'");
+    for (std::size_t r = 0; r < k.relations.size(); ++r) {
+      if (!t.relations.count(k.relations[r].rel)) v.err(idx(p + "/relations", r) + "/rel", "unknown relation '" + k.relations[r].rel + "'");
+    }
+    for (std::size_t s = 0; s < k.slots.size(); ++s) v_slot_spec(v, k.slots[s], idx(p + "/slots", s), t);
+    for (std::size_t b = 0; b < k.bind.size(); ++b) v_binding(v, k.bind[b], idx(p + "/bind", b), t);
+    if (!k.anchors.empty()) {
+      if (const Json* terms = json::find(k.anchors, "terms")) {
+        if (!terms->is_object()) {
+          v.err(p + "/anchors/terms", "expected {\"en\":[...],\"pl\":[...]}");
+        } else {
+          v.strings(*terms, p + "/anchors/terms", "en", false);
+          v.strings(*terms, p + "/anchors/terms", "pl", false);
+        }
+      }
+      v.strings(k.anchors, p + "/anchors", "lexicon", false);
+      v.strings(k.anchors, p + "/anchors", "cues", false);
+    }
+  }
+}
+
+std::string file_stem(std::string_view relpath) { return fs::path(std::string(relpath)).stem().string(); }
+
+void v_project_kind(V& v, const Json& d, const TypesVocab& t, std::string_view relpath) {
+  auto pk = parse_model<model::ProjectKind>(v, d, "");
+  if (!pk) return;
+  if (pk->header.id != file_stem(relpath)) v.err("/id", "must equal the file name ('" + file_stem(relpath) + "')");
+  if (!t.kinds.count(pk->subject_kind)) v.err("/subject_kind", "unknown entity kind '" + pk->subject_kind + "'");
+  v_anchors(v, pk->anchors, "/anchors", t);
+  v_domain_kinds(v, pk->domain_kinds, "/domain_kinds", t);
+  v_constraints(v, pk->constraints, "/constraints");
+}
+
+void v_facet(V& v, const Json& d, const TypesVocab& t, std::string_view relpath) {
+  auto f = parse_model<model::Facet>(v, d, "");
+  if (!f) return;
+  if (f->header.id != file_stem(relpath)) v.err("/id", "must equal the file name ('" + file_stem(relpath) + "')");
+  v_anchors(v, f->anchors, "/anchors", t);
+  v_domain_kinds(v, f->domain_kinds, "/domain_kinds", t);
+  v_constraints(v, f->constraints, "/constraints");
+}
+
+void v_artifact_type(V& v, const Json& d, const TypesVocab& t, std::string_view relpath) {
+  auto a = parse_model<model::ArtifactType>(v, d, "");
+  if (!a) return;
+  if (a->header.id != file_stem(relpath)) v.err("/id", "must equal the file name ('" + file_stem(relpath) + "')");
+  if (!a->detect.empty()) {
+    v.num(a->detect, "/detect", "min_score", 0, 1);
     bool any = false;
     for (const char* key : {"any", "all"}) {
-      const Json* ops = json::find(*an, key);
+      const Json* ops = json::find(a->detect, key);
       if (!ops) continue;
       any = true;
       if (!ops->is_array() || ops->empty()) {
-        v.err(std::string("/anchors/") + key, "expected a non-empty array");
+        v.err(std::string("/detect/") + key, "expected a non-empty array");
         continue;
       }
       for (std::size_t i = 0; i < ops->size(); ++i) {
-        std::string p = idx(std::string("/anchors/") + key, i);
-        const Json& o = (*ops)[i];
-        v.closed(o, p, "op", kAnchorOps);
-        std::string op = json::get_string(o, "op");
-        if (op == "fact_count") {
-          v.one_of(o, p, "rel", t.relations);
-          v.integer(o, p, "min", 1, 1000);
-        }
-        if (op == "kind_hint") v.one_of(o, p, "value", t.enum_values("project_kind"));
-        if (op == "cue") {
-          v.str(o, p, "class");
-          v.integer(o, p, "min", 1, 1000);
-        }
-        if (op == "has_items") {
-          v.one_of(o, p, "type", t.enum_values("item_type"));
-          v.integer(o, p, "min", 1, 1000);
-        }
-        if (op == "option_set") v.integer(o, p, "min_options", 2, 100);
-        if (op == "principle_count") v.integer(o, p, "min", 1, 1000);
+        v.closed((*ops)[i], idx(std::string("/detect/") + key, i), "op", kDetectOps);
+        v.str((*ops)[i], idx(std::string("/detect/") + key, i), "value");
       }
     }
-    if (!any) v.err("/anchors", "needs 'any' and/or 'all'");
+    if (!any) v.err("/detect", "needs 'any' and/or 'all'");
   }
-  std::set<std::string> slot_names;
-  if (const Json* slots = v.array(d, "", "slots", true, true)) {
-    for (std::size_t i = 0; i < slots->size(); ++i) {
-      const Json& s = (*slots)[i];
-      std::string p = idx("/slots", i);
-      if (v.str(s, p, "name") && !slot_names.insert(s["name"].get<std::string>()).second) {
-        v.err(p + "/name", "duplicate slot");
-      }
-      if (v.str(s, p, "type") && !valid_slot_type(s["type"].get<std::string>(), t)) {
-        v.err(p + "/type", "unknown slot type '" + s["type"].get<std::string>() + "'");
-      }
-      v.closed(s, p, "card", kCardinalities);
-      if (const Json* r = json::find(s, "required"); r && !r->is_boolean()) v.err(p + "/required", "expected a boolean");
-      v.num(s, p, "weight", 0.01, 100, false);
-      if (json::get_string(s, "type") == "record[]") {
-        if (const Json* f = v.object(s, p, "fields")) {
-          for (auto it = f->begin(); it != f->end(); ++it) {
-            std::string q = p + "/fields/" + it.key();
-            if (v.str(it.value(), q, "type") && !valid_slot_type(it.value()["type"].get<std::string>(), t)) {
-              v.err(q + "/type", "unknown field type");
-            }
-            if (it.value().contains("card")) v.closed(it.value(), q, "card", kCardinalities);
-          }
+  if (const Json* seg = json::find(a->parse, "segment")) {
+    if (!seg->is_array() || seg->empty()) {
+      v.err("/parse/segment", "expected a non-empty array of segmenters");
+    } else {
+      for (std::size_t i = 0; i < seg->size(); ++i) {
+        const Json& s = (*seg)[i];
+        if (!s.is_string() || !in_closed_set(s.get<std::string>(), kSegmenters)) {
+          v.err(idx("/parse/segment", i), "'" + json::dump(s) + "' is not a segmenter implemented in code (kb::kSegmenters)");
         }
       }
-      bool has_source = false;
-      if (const Json* b = v.array(s, p, "bind", false)) {
-        has_source = !b->empty();
-        for (std::size_t k = 0; k < b->size(); ++k) v_binding(v, (*b)[k], idx(p + "/bind", k), t);
-      }
-      for (const char* key : {"infer", "extrapolate"}) {
-        if (json::find(s, key)) {
-          has_source = true;
-          v.strings(s, p, key, true, true);
-        }
-      }
-      if (!has_source) v.err(p, "slot has neither bindings nor rules");
+    }
+  } else {
+    v.err("/parse/segment", "missing required key");
+  }
+  if (const Json* ok = json::find(a->parse, "observation_kinds"); ok && ok->is_array()) {
+    for (std::size_t i = 0; i < ok->size(); ++i) {
+      std::string s = (*ok)[i].is_string() ? (*ok)[i].get<std::string>() : "";
+      auto r = model::parse<model::ObservationKind>(s, "observation_kinds");
+      if (!r) v.err(idx("/parse/observation_kinds", i), r.error().message);
     }
   }
-  if (const Json* cs = v.array(d, "", "constraints")) {
-    for (std::size_t i = 0; i < cs->size(); ++i) {
-      std::string p = idx("/constraints", i);
-      v.str((*cs)[i], p, "id");
-      if (const Json* e = v.member((*cs)[i], p, "expr")) check_expr(v, *e, p + "/expr", kPredicates, "predicate");
-      v.closed((*cs)[i], p, "on_violation", kViolationActions);
-    }
-  }
-  if (const Json* r = v.object(d, "", "render")) {
-    if (const Json* o = v.array(*r, "/render", "order")) {
-      for (const auto& x : *o) {
-        if (!x.is_string() || !slot_names.count(x.get<std::string>())) v.err("/render/order", "unknown slot " + json::dump(x));
-      }
-    }
-    if (const Json* ts = json::find(*r, "title_slot"); ts && !ts->is_null()) {
-      if (!ts->is_string() || !slot_names.count(ts->get<std::string>())) v.err("/render/title_slot", "unknown slot");
-    }
-  }
-  if (json::find(d, "extrapolate")) v.strings(d, "", "extrapolate", true, true);
+  for (std::size_t i = 0; i < a->extract.size(); ++i) v.closed(a->extract[i], idx("/extract", i), "op", kExtractors);
+  for (std::size_t i = 0; i < a->structure.size(); ++i) v_slot_spec(v, a->structure[i], idx("/structure", i), t);
 }
 
+void v_anchoring(V& v, const Json& d, const TypesVocab& t) {
+  auto am = parse_model<model::AnchoringModel>(v, d, "");
+  if (!am) return;
+  for (const auto& [rel, rr] : am->relation_map) {
+    if (!t.relations.count(rel)) v.err("/relation_map/" + rel, "relation is not declared in schema/types.json");
+  }
+}
+
+void v_morphisms(V& v, const Json& d) {
+  const Json* a = v.array(d, "", "morphisms", true, true);
+  if (!a) return;
+  std::set<std::string> ids;
+  for (std::size_t i = 0; i < a->size(); ++i) {
+    std::string p = idx("/morphisms", i);
+    auto m = parse_model<model::Morphism>(v, (*a)[i], p);
+    if (!m) continue;
+    if (!ids.insert(m->id).second) v.err(p + "/id", "duplicate morphism id");
+    if (m->id.rfind("m.", 0) != 0) v.err(p + "/id", "morphism ids start with 'm.'");
+    if (m->use != model::MorphismUse::Transfer) {
+      v.err(p + "/use", "anchoring morphisms are derived from the domain kinds' roles, not listed");
+    }
+    for (std::size_t k = 0; k < m->conditions.size(); ++k) check_expr(v, m->conditions[k], idx(p + "/conditions", k), kConditionOps, "condition");
+    if (m->expected) check_expr(v, m->expected->expr, p + "/expected_property/expr", kPredicates, "predicate");
+  }
+}
+
+void v_goal_types(V& v, const Json& d) {
+  const Json* a = v.array(d, "", "goal_types", true, true);
+  if (!a) return;
+  std::set<std::string> ids;
+  for (std::size_t i = 0; i < a->size(); ++i) {
+    std::string p = idx("/goal_types", i);
+    auto g = parse_model<model::GoalType>(v, (*a)[i], p);
+    if (!g) continue;
+    if (!ids.insert(g->id).second) v.err(p + "/id", "duplicate goal type");
+    if (g->budget.size() != model::count<model::ContextBand>()) v.err(p + "/budget", "a goal type splits the budget over the three bands");
+    if (!g->resolutions.count("*")) v.err(p + "/resolutions", "a goal type has a default resolution '*'");
+  }
+}
+
+// Seed priors: every source is dated (temporal holdout) and names a document.
+void v_prior_sources(V& v, const std::vector<model::Reference>& sources, const std::string& p) {
+  if (sources.empty()) v.err(p + "/sources", "a prior names its dated sources");
+  for (std::size_t k = 0; k < sources.size(); ++k) {
+    if (sources[k].doc.empty()) v.err(idx(p + "/sources", k) + "/doc", "missing document");
+    if (sources[k].date.size() != 10) v.err(idx(p + "/sources", k) + "/date", "priors need a YYYY-MM-DD source date (temporal holdout)");
+  }
+}
+
+void v_principles(V& v, const Json& d) {
+  const Json* a = v.array(d, "", "principles", true, true);
+  if (!a) return;
+  std::set<std::string> ids;
+  for (std::size_t i = 0; i < a->size(); ++i) {
+    std::string p = idx("/principles", i);
+    auto x = parse_model<model::Principle>(v, (*a)[i], p);
+    if (!x) continue;
+    if (!ids.insert(x->id).second) v.err(p + "/id", "duplicate principle id");
+    if (x->id.rfind("p.", 0) != 0) v.err(p + "/id", "principle ids start with 'p.'");
+    if (!x->statement.count("en") || !x->statement.count("pl")) v.err(p + "/statement", "statements are bilingual {en, pl}");
+    if (x->phrasings.empty()) v.err(p + "/phrasings", "a seed lists its verbatim phrasings");
+    if (x->validation != model::ValidationStatus::Candidate) {
+      v.err(p + "/validation_status", "seed principles are priors: validation_status must be 'candidate'");
+    }
+    if (!x->owner.empty() && x->owner != "user") v.err(p + "/owner", "owner is 'user' or empty");
+    v_prior_sources(v, x->sources, p);
+  }
+}
+
+void v_operators(V& v, const Json& d) {
+  const Json* a = v.array(d, "", "operators", true, true);
+  if (!a) return;
+  std::set<std::string> ids;
+  for (std::size_t i = 0; i < a->size(); ++i) {
+    std::string p = idx("/operators", i);
+    auto x = parse_model<model::Operator>(v, (*a)[i], p);
+    if (!x) continue;
+    if (!ids.insert(x->id).second) v.err(p + "/id", "duplicate operator id");
+    if (x->id.rfind("op.", 0) != 0) v.err(p + "/id", "design operator ids start with 'op.'");
+    if (x->is_rule()) v.err(p + "/produces", "design operators do not produce claims (rules live in rules/inference_rules.json)");
+    if (!x->situation.count("en") || !x->situation.count("pl") || !x->solution.count("en") || !x->solution.count("pl")) {
+      v.err(p, "situation and solution are bilingual {en, pl}");
+    }
+    if (x->principles.empty()) v.err(p + "/principles", "an operator names its justifying principles");
+    if (x->validation != model::ValidationStatus::Candidate) {
+      v.err(p + "/validation_status", "seed operators are priors: validation_status must be 'candidate'");
+    }
+    v_prior_sources(v, x->sources, p);
+  }
+}
+
+void v_rules(V& v, const Json& d, const TypesVocab& t) {
+  const Json* a = v.array(d, "", "rules", true, true);
+  if (!a) return;
+  std::set<std::string> ids;
+  for (std::size_t i = 0; i < a->size(); ++i) {
+    const Json& x = (*a)[i];
+    std::string p = idx("/rules", i);
+    if (v.str(x, p, "id") && !ids.insert(x["id"].get<std::string>()).second) v.err(p + "/id", "duplicate rule id");
+    v.integer(x, p, "stratum", 0, 2);
+    v.closed(x, p, "produces", kRuleProduces);
+    if (const Json* w = v.member(x, p, "when")) check_expr(v, *w, p + "/when", kConditionOps, "condition");
+    if (const Json* w = v.member(x, p, "value")) check_expr(v, *w, p + "/value", kValueOps, "value");
+    if (const Json* e = json::find(x, "expected_property"); e && e->is_object()) {
+      if (const Json* ex = v.member(*e, p + "/expected_property", "expr")) {
+        check_expr(v, *ex, p + "/expected_property/expr", kPredicates, "predicate");
+      }
+      v.str(*e, p + "/expected_property", "rationale");
+    }
+    auto op = parse_model<model::Operator>(v, x, p);
+    if (!op) continue;
+    if (!op->is_rule()) {
+      v.err(p + "/produces", "a rule produces derived, inferred or extrapolated claims");
+      continue;
+    }
+    bool extra = *op->produces == Evidence::Extrapolated;
+    if ((op->id.rfind("x.", 0) == 0) != extra) v.err(p + "/id", "extrapolation rules (and only they) are named 'x.*'");
+    if (!extra && op->id.rfind("r.", 0) != 0) v.err(p + "/id", "rule ids start with 'r.'");
+    const Json& tg = op->target;
+    int shapes = (tg.contains("paradigm") ? 1 : 0) + (tg.contains("temporal") ? 1 : 0) + (tg.contains("entity_kind") ? 1 : 0);
+    if (shapes != 1) v.err(p + "/target", "exactly one of {paradigm, slot[, field]}, {temporal[, field]}, {entity_kind, attr}");
+    if (tg.contains("paradigm")) v.str(tg, p + "/target", "slot");
+    if (tg.contains("temporal") && !t.temporal.count(json::get_string(tg, "temporal"))) {
+      v.err(p + "/target/temporal", "unknown temporal slot (schema/types.json temporal_slots)");
+    }
+    if (tg.contains("temporal") && tg.contains("field")) {
+      auto it = t.temporal.find(json::get_string(tg, "temporal"));
+      if (it != t.temporal.end() && !it->second.count(json::get_string(tg, "field"))) v.err(p + "/target/field", "unknown record field");
+    }
+    if (tg.contains("entity_kind")) {
+      v.one_of(tg, p + "/target", "entity_kind", t.kinds);
+      v.str(tg, p + "/target", "attr");
+    }
+  }
+}
 void v_pack(V& v, const Json& d) {
   v.str(d, "", "id");
   v.integer(d, "", "version", 1, 1000000);
@@ -952,18 +1168,78 @@ bool validate_document(std::string_view relpath, std::string_view schema, const 
   else if (schema == "loom.kb.version_patterns/1") v_version_patterns(v, d);
   else if (schema == "loom.kb.relation_patterns/1") v_relation_patterns(v, d, t);
   else if (schema == "loom.kb.profile/1") v_profile(v, d, t);
-  else if (schema == "loom.kb.principles/1") v_principles(v, d);
-  else if (schema == "loom.kb.rules/1") v_rules(v, d, t);
+  else if (schema == "loom.kb.principles/2") v_principles(v, d);
+  else if (schema == "loom.kb.operators/1") v_operators(v, d);
+  else if (schema == "loom.kb.rules/2") v_rules(v, d, t);
   else if (schema == "loom.kb.checks/1") v_checks(v, d);
   else if (schema == "loom.kb.thresholds/1") v_thresholds(v, d);
   else if (schema == "loom.kb.relevance/1") v_relevance(v, d);
   else if (schema == "loom.kb.selection_rules/1") v_selection_rules(v, d);
   else if (schema == "loom.kb.calibration/1") v_calibration(v, d);
   else if (schema == "loom.kb.evidence_encoding/1") v_evidence_encoding(v, d, t);
-  else if (schema == "loom.kb.paradigm/1") v_paradigm(v, d, t, relpath);
+  else if (schema == "loom.kb.goal_types/1") v_goal_types(v, d);
+  else if (schema == "loom.kb.anchoring/1") v_anchoring(v, d, t);
+  else if (schema == "loom.kb.morphisms/1") v_morphisms(v, d);
+  else if (schema == "loom.kb.project_kind/1") v_project_kind(v, d, t, relpath);
+  else if (schema == "loom.kb.facet/1") v_facet(v, d, t, relpath);
+  else if (schema == "loom.kb.artifact_type/1") v_artifact_type(v, d, t, relpath);
   else v.err("/schema", "unknown schema id '" + std::string(schema) + "'");
   return issues.size() == before;
 }
+
+namespace {
+
+// Everything a cross-reference check needs to know about one paradigm.
+struct ParadigmInfo {
+  std::string file;
+  model::ParadigmKind kind = model::ParadigmKind::ProjectKind;
+  std::vector<std::string> applies_to;  // facets: host project kinds
+  std::vector<std::string> facets;      // project kinds: facets listed
+  std::map<std::string, model::Role> roles;        // domain kind -> role (project kinds, facets)
+  std::map<std::string, std::set<std::string>> fields;  // slot -> attribute slots / record fields
+  std::map<std::string, std::vector<std::string>> slot_rules;
+  std::vector<std::string> rules;       // paradigm-level rules
+  std::vector<std::string> derived_from;
+  std::vector<std::tuple<std::string, std::string, std::string, std::string>> relations;  // (kind, rel, target, pointer)
+  std::vector<std::pair<std::string, std::string>> lexicon_refs;  // (class, pointer)
+  std::vector<std::pair<std::string, std::string>> cue_refs;
+  bool has_slot(const std::string& s) const { return fields.count(s) > 0; }
+};
+
+void collect_kinds(ParadigmInfo& pi, const std::vector<model::DomainKind>& kinds) {
+  for (std::size_t i = 0; i < kinds.size(); ++i) {
+    const auto& k = kinds[i];
+    std::string p = idx("/domain_kinds", i);
+    pi.roles[k.id] = k.role;
+    auto& f = pi.fields[k.id];
+    for (const auto& s : k.slots) f.insert(s.name);
+    pi.slot_rules[k.id] = k.rules;
+    for (std::size_t r = 0; r < k.relations.size(); ++r) {
+      pi.relations.emplace_back(k.id, k.relations[r].rel, k.relations[r].target, idx(p + "/relations", r));
+    }
+    for (const auto& c : json_strings_of(k.anchors, "lexicon")) pi.lexicon_refs.emplace_back(c, p + "/anchors/lexicon");
+    for (const auto& c : json_strings_of(k.anchors, "cues")) pi.cue_refs.emplace_back(c, p + "/anchors/cues");
+    for (std::size_t b = 0; b < k.bind.size(); ++b) {
+      if (json::get_string(k.bind[b], "kind") == "lexicon") {
+        pi.lexicon_refs.emplace_back(json::get_string(k.bind[b], "class"), idx(p + "/bind", b));
+      }
+    }
+  }
+}
+
+void collect_anchor_cues(ParadigmInfo& pi, const Json& anchors) {
+  for (const char* key : {"any", "all"}) {
+    const Json* ops = json::find(anchors, key);
+    if (!ops || !ops->is_array()) continue;
+    for (std::size_t i = 0; i < ops->size(); ++i) {
+      if (json::get_string((*ops)[i], "op") == "cue") {
+        pi.cue_refs.emplace_back(json::get_string((*ops)[i], "class"), idx(std::string("/anchors/") + key, i) + "/class");
+      }
+    }
+  }
+}
+
+}  // namespace
 
 void validate_cross_references(const Docs& docs, std::vector<PackIssue>& issues) {
   const Json& pack = doc(docs, "pack.json");
@@ -987,28 +1263,63 @@ void validate_cross_references(const Docs& docs, std::vector<PackIssue>& issues)
     if (p != "pack.json" && !listed.count(p)) issues.push_back({p, "", "file is not listed in pack.json"});
   }
 
-  // Collect ids.
-  std::map<std::string, const Json*> paradigms;  // id -> doc
-  for (const auto& [p, d] : docs) {
-    if (json::get_string(d, "schema") == "loom.kb.paradigm/1") paradigms[json::get_string(d, "id")] = &d;
-  }
-  auto paradigm_slot = [&](const std::string& pid, const std::string& slot) -> const Json* {
-    auto it = paradigms.find(pid);
-    if (it == paradigms.end()) return nullptr;
-    const Json* slots = json::find(*it->second, "slots");
-    if (!slots || !slots->is_array()) return nullptr;
-    for (const auto& s : *slots) {
-      if (json::get_string(s, "name") == slot) return &s;
+  TypesVocab t(doc(docs, "schema/types.json").is_object() ? doc(docs, "schema/types.json") : Json::object());
+
+  // ── collect ───────────────────────────────────────────────────────
+  std::map<std::string, ParadigmInfo> paradigms;  // id -> info
+  for (const auto& [path, d] : docs) {
+    std::string schema = json::get_string(d, "schema");
+    ParadigmInfo pi;
+    pi.file = path;
+    if (schema == "loom.kb.project_kind/1") {
+      auto pk = model::ProjectKind::from_json(d);
+      if (!pk) continue;
+      pi.kind = model::ParadigmKind::ProjectKind;
+      pi.facets = pk->facets;
+      pi.rules = pk->rules;
+      pi.derived_from = pk->header.derived_from;
+      collect_kinds(pi, pk->domain_kinds);
+      collect_anchor_cues(pi, pk->anchors);
+      paradigms[pk->header.id] = std::move(pi);
+    } else if (schema == "loom.kb.facet/1") {
+      auto fc = model::Facet::from_json(d);
+      if (!fc) continue;
+      pi.kind = model::ParadigmKind::Facet;
+      pi.applies_to = fc->applies_to;
+      pi.rules = fc->rules;
+      pi.derived_from = fc->header.derived_from;
+      collect_kinds(pi, fc->domain_kinds);
+      collect_anchor_cues(pi, fc->anchors);
+      paradigms[fc->header.id] = std::move(pi);
+    } else if (schema == "loom.kb.artifact_type/1") {
+      auto at = model::ArtifactType::from_json(d);
+      if (!at) continue;
+      pi.kind = model::ParadigmKind::ArtifactType;
+      pi.derived_from = at->header.derived_from;
+      for (const auto& s : at->structure) {
+        auto& f = pi.fields[s.name];
+        for (auto it = s.fields.begin(); it != s.fields.end(); ++it) f.insert(it.key());
+        pi.slot_rules[s.name] = s.rules;
+      }
+      if (const Json* ops = json::find(at->detect, "any"); ops && ops->is_array()) {
+        for (std::size_t i = 0; i < ops->size(); ++i) {
+          if (json::get_string((*ops)[i], "op") == "cue") pi.cue_refs.emplace_back(json::get_string((*ops)[i], "value"), idx("/detect/any", i));
+        }
+      }
+      paradigms[at->header.id] = std::move(pi);
     }
-    return nullptr;
-  };
+  }
   std::map<std::string, const Json*> rules;
   if (const Json* r = json::find(doc(docs, "rules/inference_rules.json"), "rules"); r && r->is_array()) {
     for (const auto& x : *r) rules[json::get_string(x, "id")] = &x;
   }
-  std::set<std::string> principles;
-  if (const Json* r = json::find(doc(docs, "philosophy/seed_principles.json"), "principles"); r && r->is_array()) {
-    principles = names_of(*r, "id");
+  std::map<std::string, const Json*> principles;
+  std::set<std::string> value_principles;
+  if (const Json* r = json::find(doc(docs, "philosophy/principles.json"), "principles"); r && r->is_array()) {
+    for (const auto& x : *r) {
+      principles[json::get_string(x, "id")] = &x;
+      if (json::get_string(x, "level") == "value") value_principles.insert(json::get_string(x, "id"));
+    }
   }
   std::set<std::string> checks;
   if (const Json* r = json::find(doc(docs, "rules/checks.json"), "checks"); r && r->is_array()) checks = names_of(*r, "id");
@@ -1020,141 +1331,167 @@ void validate_cross_references(const Docs& docs, std::vector<PackIssue>& issues)
   if (const Json* c = json::find(doc(docs, "lexicons/cues.json"), "classes"); c && c->is_object()) {
     for (auto it = c->begin(); it != c->end(); ++it) cue_classes.insert(it.key());
   }
-  TypesVocab t(doc(docs, "schema/types.json").is_object() ? doc(docs, "schema/types.json") : Json::object());
-
-  auto check_slot_ref = [&](const std::string& file, const std::string& ptr, const std::string& ref) {
-    // "$slot:<paradigm>.<slot>[...]" -> the paradigm/slot must exist.
-    if (ref.rfind("$slot:", 0) != 0) return;
-    std::string body = ref.substr(6);
-    std::size_t cut = body.find_first_of("[");
-    if (cut != std::string::npos) body = body.substr(0, cut);
-    std::size_t dot = body.find('.');
-    if (dot == std::string::npos) return;
-    std::string pid = body.substr(0, dot);
-    std::string slot = body.substr(dot + 1);
-    if (!paradigms.count(pid)) return;  // "$slot:x.y" with x not a paradigm is a same-instance path
-    if (!paradigm_slot(pid, slot)) issues.push_back({file, ptr, "unknown slot reference " + ref});
-  };
-  std::function<void(const std::string&, const std::string&, const Json&)> walk_refs =
-      [&](const std::string& file, const std::string& ptr, const Json& j) {
-        if (j.is_string()) {
-          check_slot_ref(file, ptr, j.get<std::string>());
-        } else if (j.is_array()) {
-          for (std::size_t i = 0; i < j.size(); ++i) walk_refs(file, idx(ptr, i), j[i]);
-        } else if (j.is_object()) {
-          for (auto it = j.begin(); it != j.end(); ++it) walk_refs(file, ptr + "/" + it.key(), it.value());
-        }
-      };
-
-  // Paradigms: bindings, rules, cue classes.
-  for (const auto& [pid, dp] : paradigms) {
-    std::string file = "paradigms/" + pid + ".json";
-    if (const Json* an = json::find(*dp, "anchors")) {
-      for (const char* key : {"any", "all"}) {
-        const Json* ops = json::find(*an, key);
-        if (!ops || !ops->is_array()) continue;
-        for (std::size_t i = 0; i < ops->size(); ++i) {
-          if (json::get_string((*ops)[i], "op") == "cue" && !cue_classes.count(json::get_string((*ops)[i], "class"))) {
-            issues.push_back({file, idx(std::string("/anchors/") + key, i) + "/class", "unknown cue class"});
-          }
-        }
+  std::optional<model::AnchoringModel> anchoring;
+  if (auto am = model::AnchoringModel::from_json(doc(docs, "morphisms/anchoring.json")); am) anchoring = std::move(*am);
+  std::map<std::string, model::Morphism> morphs;
+  for (const auto& [path, d] : docs) {
+    if (json::get_string(d, "schema") != "loom.kb.morphisms/1") continue;
+    if (const Json* a = json::find(d, "morphisms"); a && a->is_array()) {
+      for (const auto& x : *a) {
+        if (auto m = model::Morphism::from_json(x); m) morphs[m->id] = *m;
       }
     }
-    const Json* slots = json::find(*dp, "slots");
-    if (!slots || !slots->is_array()) continue;
-    for (std::size_t i = 0; i < slots->size(); ++i) {
-      const Json& s = (*slots)[i];
-      std::string p = idx("/slots", i);
-      std::string sname = json::get_string(s, "name");
-      if (const Json* b = json::find(s, "bind"); b && b->is_array()) {
-        for (std::size_t k = 0; k < b->size(); ++k) {
-          const Json& x = (*b)[k];
-          std::string kind = json::get_string(x, "kind");
-          if (kind == "lexicon") {
-            std::string cls = json::get_string(x, "class");
-            if (!lex_classes.count(cls) && !cue_classes.count(cls)) {
-              issues.push_back({file, idx(p + "/bind", k) + "/class", "unknown lexicon class '" + cls + "'"});
-            }
-          }
-          if (kind == "slot") {
-            std::string op = json::get_string(x, "paradigm");
-            if (!paradigm_slot(op, json::get_string(x, "slot"))) {
-              issues.push_back({file, idx(p + "/bind", k), "unknown paradigm slot " + op + "." + json::get_string(x, "slot")});
-            }
-          }
-        }
-      }
-      for (const char* key : {"infer", "extrapolate"}) {
-        const Json* ids = json::find(s, key);
-        if (!ids || !ids->is_array()) continue;
-        for (const auto& rid : *ids) {
-          std::string r = rid.is_string() ? rid.get<std::string>() : "";
-          auto it = rules.find(r);
-          if (it == rules.end()) {
-            issues.push_back({file, p + "/" + key, "unknown rule '" + r + "'"});
-            continue;
-          }
-          std::string produces = json::get_string(*it->second, "produces");
-          bool extra = std::string(key) == "extrapolate";
-          if (extra != (produces == "extrapolated")) {
-            issues.push_back({file, p + "/" + key, "rule '" + r + "' produces " + produces + " (infer: derived|inferred, extrapolate: extrapolated)"});
-          }
-          const Json& tg = (*it->second)["target"];
-          std::string tp = json::get_string(tg, "paradigm");
-          auto tps = split(tp, '|');
-          bool covers = tp == "*" || std::find(tps.begin(), tps.end(), pid) != tps.end();
-          if (!covers || json::get_string(tg, "slot") != sname) {
-            issues.push_back({file, p + "/" + key, "rule '" + r + "' targets " + tp + "." + json::get_string(tg, "slot")});
-          }
-        }
-      }
-    }
-    if (const Json* ids = json::find(*dp, "extrapolate"); ids && ids->is_array()) {
-      for (const auto& rid : *ids) {
-        if (!rid.is_string() || !rules.count(rid.get<std::string>())) {
-          issues.push_back({file, "/extrapolate", "unknown rule " + json::dump(rid)});
-        }
-      }
-    }
-    walk_refs(file, "", *dp);
   }
 
-  // Rules: targets, principles, slot references.
+  // A kind of a paradigm, or of a project kind a facet applies to.
+  auto role_of = [&](const std::string& par, const std::string& kind) -> std::optional<model::Role> {
+    auto it = paradigms.find(par);
+    if (it == paradigms.end()) return std::nullopt;
+    if (auto r = it->second.roles.find(kind); r != it->second.roles.end()) return r->second;
+    for (const auto& host : it->second.applies_to) {
+      auto h = paradigms.find(host);
+      if (h == paradigms.end()) continue;
+      if (auto r = h->second.roles.find(kind); r != h->second.roles.end()) return r->second;
+    }
+    return std::nullopt;
+  };
+  auto slot_exists = [&](const std::string& par, const std::string& slot) {
+    auto it = paradigms.find(par);
+    if (it == paradigms.end()) return false;
+    if (it->second.has_slot(slot)) return true;
+    for (const auto& host : it->second.applies_to) {
+      auto h = paradigms.find(host);
+      if (h != paradigms.end() && h->second.has_slot(slot)) return true;
+    }
+    return false;
+  };
+  // "$slot:<kind>" (same instance of `par`) / "$slot:<paradigm>.<kind>" / "$temporal:<slot>".
+  auto check_ref = [&](const std::string& file, const std::string& ptr, const std::string& ref, const std::string& par) {
+    std::string body;
+    if (ref.rfind("$temporal:", 0) == 0) {
+      body = ref.substr(10);
+      body = body.substr(0, body.find_first_of("[."));
+      if (!t.temporal.count(body)) issues.push_back({file, ptr, "unknown temporal slot in " + ref});
+      return;
+    }
+    if (ref.rfind("$slot:", 0) != 0 && ref.rfind("$analog:", 0) != 0) return;
+    body = ref.substr(ref.find(':') + 1);
+    body = body.substr(0, body.find('['));
+    std::size_t dot = body.find('.');
+    if (dot != std::string::npos) {
+      std::string p2 = body.substr(0, dot);
+      std::string s2 = body.substr(dot + 1);
+      if (!paradigms.count(p2)) {
+        issues.push_back({file, ptr, "unknown paradigm in " + ref});
+      } else if (!slot_exists(p2, s2)) {
+        issues.push_back({file, ptr, "paradigm " + p2 + " has no slot '" + s2 + "' (" + ref + ")"});
+      }
+    } else if (!par.empty() && !slot_exists(par, body)) {
+      issues.push_back({file, ptr, "paradigm " + par + " has no slot '" + body + "' (" + ref + ")"});
+    }
+  };
+  std::function<void(const std::string&, const std::string&, const Json&, const std::string&)> walk_refs =
+      [&](const std::string& file, const std::string& ptr, const Json& j, const std::string& par) {
+        if (j.is_string()) {
+          check_ref(file, ptr, j.get<std::string>(), par);
+        } else if (j.is_array()) {
+          for (std::size_t i = 0; i < j.size(); ++i) walk_refs(file, idx(ptr, i), j[i], par);
+        } else if (j.is_object()) {
+          for (auto it = j.begin(); it != j.end(); ++it) walk_refs(file, ptr + "/" + it.key(), it.value(), par);
+        }
+      };
+  auto check_principle = [&](const std::string& file, const std::string& ptr, const std::string& pid) {
+    if (!principles.count(pid)) issues.push_back({file, ptr, "unknown principle '" + pid + "'"});
+  };
+
+  // ── paradigms ─────────────────────────────────────────────────────
+  for (const auto& [pid, pi] : paradigms) {
+    const std::string& file = pi.file;
+    for (const auto& [kind, rel, target, ptr] : pi.relations) {
+      auto from = role_of(pid, kind);
+      auto to = role_of(pid, target);
+      if (!to) {
+        issues.push_back({file, ptr + "/target", "unknown domain kind '" + target + "' (in " + pid + " or the kinds it applies to)"});
+        continue;
+      }
+      if (!anchoring) {
+        issues.push_back({file, ptr, "no anchoring model (morphisms/anchoring.json)"});
+        continue;
+      }
+      if (auto why = anchoring->check(rel, *from, *to); !why.empty()) {
+        issues.push_back({file, ptr, "relation does not anchor on the meta-model: " + why});
+      }
+    }
+    for (const auto& [cls, ptr] : pi.lexicon_refs) {
+      if (!lex_classes.count(cls) && !cue_classes.count(cls)) issues.push_back({file, ptr, "unknown lexicon class '" + cls + "'"});
+    }
+    for (const auto& [cls, ptr] : pi.cue_refs) {
+      if (!cue_classes.count(cls)) issues.push_back({file, ptr, "unknown cue class '" + cls + "'"});
+    }
+    for (const auto& f : pi.facets) {
+      auto it = paradigms.find(f);
+      if (it == paradigms.end() || it->second.kind != model::ParadigmKind::Facet) {
+        issues.push_back({file, "/facets", "unknown facet '" + f + "'"});
+      } else if (std::find(it->second.applies_to.begin(), it->second.applies_to.end(), pid) == it->second.applies_to.end()) {
+        issues.push_back({file, "/facets", "facet '" + f + "' does not apply to " + pid});
+      }
+    }
+    for (const auto& host : pi.applies_to) {
+      auto it = paradigms.find(host);
+      if (it == paradigms.end() || it->second.kind != model::ParadigmKind::ProjectKind) {
+        issues.push_back({file, "/applies_to", "unknown project kind '" + host + "'"});
+      }
+    }
+    for (const auto& m : pi.derived_from) {
+      if (!morphs.count(m)) issues.push_back({file, "/derived_from", "unknown morphism '" + m + "'"});
+    }
+    auto rule_targets = [&](const std::string& rid, const std::string& ptr, const std::string& slot) {
+      auto it = rules.find(rid);
+      if (it == rules.end()) {
+        issues.push_back({file, ptr, "unknown rule '" + rid + "'"});
+        return;
+      }
+      if (slot.empty()) return;  // paradigm-level rules may target temporal slots or entities
+      const Json& tg = at(*it->second, "target");
+      if (json::get_string(tg, "paradigm") != pid || json::get_string(tg, "slot") != slot) {
+        issues.push_back({file, ptr, "rule '" + rid + "' targets " + json::get_string(tg, "paradigm") + "." + json::get_string(tg, "slot")});
+      }
+    };
+    for (const auto& [slot, rs] : pi.slot_rules) {
+      for (const auto& r : rs) rule_targets(r, "/slots[" + slot + "]/rules", slot);
+    }
+    for (const auto& r : pi.rules) rule_targets(r, "/rules", "");
+    walk_refs(file, "", doc(docs, file), pid);
+  }
+
+  // ── rules ─────────────────────────────────────────────────────────
+  double cap = json::get_number(at(doc(docs, "policy/thresholds.json"), "paradigm"), "extrapolation_cap", 0.5);
   for (const auto& [rid, rp] : rules) {
     const std::string file = "rules/inference_rules.json";
-    const Json& tg = (*rp)["target"];
+    const std::string ptr = "/rules[" + rid + "]";
+    const Json& tg = at(*rp, "target");
+    std::string par;
     if (tg.contains("paradigm")) {
-      std::string tp = json::get_string(tg, "paradigm");
+      par = json::get_string(tg, "paradigm");
       std::string slot = json::get_string(tg, "slot");
-      bool found = false;
-      for (const auto& pid : tp == "*" ? std::vector<std::string>{} : split(tp, '|')) {
-        if (!paradigms.count(pid)) {
-          issues.push_back({file, "/rules[" + rid + "]/target", "unknown paradigm '" + pid + "'"});
-        } else if (!paradigm_slot(pid, slot)) {
-          issues.push_back({file, "/rules[" + rid + "]/target", "paradigm " + pid + " has no slot '" + slot + "'"});
-        } else {
-          found = true;
-        }
-      }
-      if (tp == "*") {
-        for (const auto& [pid, _] : paradigms) found = found || paradigm_slot(pid, slot);
-      }
-      if (!found && tp == "*") issues.push_back({file, "/rules[" + rid + "]/target", "no paradigm has slot '" + slot + "'"});
-      if (tg.contains("field") && tp != "*") {
-        for (const auto& pid : split(tp, '|')) {
-          const Json* s = paradigm_slot(pid, slot);
-          if (s && !(json::find(*s, "fields") && (*s)["fields"].contains(json::get_string(tg, "field")))) {
-            issues.push_back({file, "/rules[" + rid + "]/target/field", "unknown record field"});
-          }
-        }
+      if (!paradigms.count(par)) {
+        issues.push_back({file, ptr + "/target", "unknown paradigm '" + par + "'"});
+        par.clear();
+      } else if (!slot_exists(par, slot)) {
+        issues.push_back({file, ptr + "/target", "paradigm " + par + " has no slot '" + slot + "'"});
+      } else if (tg.contains("field")) {
+        std::string field = json::get_string(tg, "field");
+        const auto& pi = paradigms[par];
+        auto f = pi.fields.find(slot);
+        if (f != pi.fields.end() && !f->second.count(field)) issues.push_back({file, ptr + "/target/field", "unknown field '" + field + "'"});
       }
     }
     std::function<void(const Json&)> find_principles = [&](const Json& e) {
       if (e.is_object()) {
-        if (json::get_string(e, "op") == "principle_active" || json::get_string(e, "op") == "consistent_with") {
+        std::string op = json::get_string(e, "op");
+        if (op == "principle_active" || op == "consistent_with") {
           if (const Json* a = json::find(e, "args"); a && a->is_array() && !a->empty() && (*a)[0].is_string()) {
-            std::string pid = (*a)[0].get<std::string>();
-            if (!principles.count(pid)) issues.push_back({file, "/rules[" + rid + "]", "unknown principle '" + pid + "'"});
+            check_principle(file, ptr, (*a)[0].get<std::string>());
           }
         }
         for (auto it = e.begin(); it != e.end(); ++it) find_principles(it.value());
@@ -1163,45 +1500,86 @@ void validate_cross_references(const Docs& docs, std::vector<PackIssue>& issues)
       }
     };
     find_principles(*rp);
-    if (const Json* b = json::find(*rp, "basis")) {
-      if (const Json* ps = json::find(*b, "principles"); ps && ps->is_array()) {
-        for (const auto& x : *ps) {
-          if (!x.is_string() || !principles.count(x.get<std::string>())) {
-            issues.push_back({file, "/rules[" + rid + "]/basis", "unknown principle " + json::dump(x)});
-          }
-        }
+    for (const char* key : {"principles"}) {
+      if (const Json* ps = json::find(*rp, key); ps && ps->is_array()) {
+        for (const auto& x : *ps) check_principle(file, ptr + "/" + key, x.is_string() ? x.get<std::string>() : "");
       }
     }
-    walk_refs(file, "/rules[" + rid + "]", *rp);
-    // Extrapolations stay below the cap.
-    if (json::get_string(*rp, "produces") == "extrapolated") {
-      double cap = json::get_number(doc(docs, "policy/thresholds.json")["paradigm"], "extrapolation_cap", 0.5);
-      if (json::get_number((*rp)["confidence"], "prior", 1.0) > cap) {
-        issues.push_back({file, "/rules[" + rid + "]/confidence", "extrapolation prior above thresholds.paradigm.extrapolation_cap"});
+    if (const Json* b = json::find(*rp, "basis")) {
+      if (const Json* ps = json::find(*b, "principles"); ps && ps->is_array()) {
+        for (const auto& x : *ps) check_principle(file, ptr + "/basis", x.is_string() ? x.get<std::string>() : "");
       }
+    }
+    Json checked = *rp;
+    checked.erase("basis");  // documentation only
+    walk_refs(file, ptr, checked, par);
+    if (json::get_string(*rp, "produces") == "extrapolated" && json::get_number(*rp, "confidence", 1.0) > cap) {
+      issues.push_back({file, ptr + "/confidence", "extrapolation confidence above thresholds.paradigm.extrapolation_cap"});
     }
   }
 
-  // Principles <-> checks <-> paradigms.
-  if (const Json* r = json::find(doc(docs, "philosophy/seed_principles.json"), "principles"); r && r->is_array()) {
-    for (const auto& x : *r) {
-      std::string pid = json::get_string(x, "id");
-      if (const Json* ap = json::find(x, "applies_to")) {
-        if (const Json* ps = json::find(*ap, "paradigms"); ps && ps->is_array()) {
-          for (const auto& y : *ps) {
-            if (!y.is_string() || !paradigms.count(y.get<std::string>())) {
-              issues.push_back({"philosophy/seed_principles.json", "/principles[" + pid + "]/applies_to", "unknown paradigm " + json::dump(y)});
-            }
+  // ── morphisms: ends exist, transfers link kinds of the same role ──
+  for (const auto& [mid, m] : morphs) {
+    const std::string file = "morphisms/transfer.json";
+    const std::string ptr = "/morphisms[" + mid + "]";
+    auto end_role = [&](const model::MorphismEnd& e, const char* which) -> std::optional<model::Role> {
+      auto r = role_of(e.paradigm, e.kind);
+      if (!r) issues.push_back({file, ptr + "/" + which, "unknown domain kind " + e.paradigm + "." + e.kind});
+      if (!e.slot.empty() && !slot_exists(e.paradigm, e.kind)) issues.push_back({file, ptr + "/" + which, "unknown slot"});
+      return r;
+    };
+    auto a = end_role(m.from, "from");
+    auto b = end_role(m.to, "to");
+    if (a && b && *a != *b) {
+      issues.push_back({file, ptr, "a transfer links kinds of the same universal role (" + std::string(model::to_string(*a)) +
+                                       " != " + std::string(model::to_string(*b)) + ")"});
+    }
+    if (m.expected) walk_refs(file, ptr + "/expected_property", m.expected->expr, m.to.paradigm);
+  }
+
+  // ── principles, operators, checks ─────────────────────────────────
+  for (const auto& [pid, pp] : principles) {
+    const std::string file = "philosophy/principles.json";
+    const std::string ptr = "/principles[" + pid + "]";
+    for (const char* key : {"derived_from", "conflicts_with", "supersedes", "protects"}) {
+      if (const Json* a = json::find(*pp, key); a && a->is_array()) {
+        for (const auto& x : *a) {
+          std::string id = x.is_string() ? x.get<std::string>() : "";
+          check_principle(file, ptr + "/" + key, id);
+          if (std::string(key) == "protects" && principles.count(id) && !value_principles.count(id)) {
+            issues.push_back({file, ptr + "/protects", "'" + id + "' is not a principle of level value"});
           }
         }
       }
-      if (const Json* vc = json::find(x, "value_constraints")) {
-        if (const Json* fc = json::find(*vc, "forbid_checks"); fc && fc->is_array()) {
-          for (const auto& y : *fc) {
-            if (!y.is_string() || !checks.count(y.get<std::string>())) {
-              issues.push_back({"philosophy/seed_principles.json", "/principles[" + pid + "]/value_constraints", "unknown check " + json::dump(y)});
-            }
+    }
+    if (const Json* a = json::find(*pp, "checks"); a && a->is_array()) {
+      for (const auto& x : *a) {
+        if (!x.is_string() || !checks.count(x.get<std::string>())) issues.push_back({file, ptr + "/checks", "unknown check " + json::dump(x)});
+      }
+    }
+    if (const Json* vc = json::find(*pp, "value_constraints")) {
+      if (const Json* fc = json::find(*vc, "forbid_checks"); fc && fc->is_array()) {
+        for (const auto& y : *fc) {
+          if (!y.is_string() || !checks.count(y.get<std::string>())) issues.push_back({file, ptr + "/value_constraints", "unknown check " + json::dump(y)});
+        }
+      }
+    }
+    if (const Json* sc = json::find(*pp, "scope")) {
+      for (const char* key : {"project_kinds", "facets", "artifact_types"}) {
+        if (const Json* a = json::find(*sc, key); a && a->is_array()) {
+          for (const auto& x : *a) {
+            if (!x.is_string() || !paradigms.count(x.get<std::string>())) issues.push_back({file, ptr + "/scope/" + key, "unknown paradigm " + json::dump(x)});
           }
+        }
+      }
+    }
+  }
+  if (const Json* r = json::find(doc(docs, "philosophy/operators.json"), "operators"); r && r->is_array()) {
+    for (const auto& x : *r) {
+      if (const Json* ps = json::find(x, "principles"); ps && ps->is_array()) {
+        for (const auto& y : *ps) {
+          check_principle("philosophy/operators.json", "/operators[" + json::get_string(x, "id") + "]/principles",
+                          y.is_string() ? y.get<std::string>() : "");
         }
       }
     }
@@ -1236,19 +1614,34 @@ void validate_cross_references(const Docs& docs, std::vector<PackIssue>& issues)
       }
     }
   }
-  // Profile projects referenced by selection rules exist ("owner" = philosophy probe).
+  // Profile projects: project kinds and facets exist; selection rules name projects.
   std::set<std::string> projects;
-  if (const Json* pr = json::find(doc(docs, "profiles/self.json"), "projects"); pr && pr->is_array()) projects = names_of(*pr, "id");
+  if (const Json* pr = json::find(doc(docs, "profiles/self.json"), "projects"); pr && pr->is_array()) {
+    projects = names_of(*pr, "id");
+    for (const auto& x : *pr) {
+      std::string ptr = "/projects[" + json::get_string(x, "id") + "]";
+      std::string pk = json::get_string(x, "project_kind");
+      auto it = paradigms.find(pk);
+      if (it == paradigms.end() || it->second.kind != model::ParadigmKind::ProjectKind) {
+        issues.push_back({"profiles/self.json", ptr + "/project_kind", "unknown project kind '" + pk + "'"});
+        continue;
+      }
+      for (const auto& f : json_strings_of(x, "facets")) {
+        if (std::find(it->second.facets.begin(), it->second.facets.end(), f) == it->second.facets.end()) {
+          issues.push_back({"profiles/self.json", ptr + "/facets", "facet '" + f + "' is not a facet of " + pk});
+        }
+      }
+    }
+  }
   if (const Json* rs = json::find(doc(docs, "policy/selection_rules.json"), "rules"); rs && rs->is_array()) {
     for (const auto& x : *rs) {
-      std::string pj = json::get_string(x["match"], "project");
+      std::string pj = json::get_string(at(x, "match"), "project");
       if (!pj.empty() && pj != "owner" && !projects.count(pj)) {
         issues.push_back({"policy/selection_rules.json", "/rules[" + json::get_string(x, "id") + "]/match/project", "unknown project"});
       }
     }
   }
 }
-
 // ── Pack ────────────────────────────────────────────────────────────
 Result<std::shared_ptr<const Pack>> Pack::from_documents(std::map<std::string, Json> in) {
   auto pack = std::make_shared<Pack>();
@@ -1380,15 +1773,20 @@ const Json& Pack::file(std::string_view relpath) const {
 
 const Json& Pack::types() const { return file("schema/types.json"); }
 
-Json Pack::paradigm_ids() const {
-  Json out = Json::array();
-  for (const auto& [p, d] : docs_) {
-    if (json::get_string(d, "schema") == "loom.kb.paradigm/1") out.push_back(json::get_string(d, "id"));
+std::vector<std::string> Pack::ids(std::string_view dir) const {
+  std::vector<std::string> out;
+  std::string prefix = std::string(dir) + "/";
+  for (const auto& [p, _] : docs_) {
+    if (p.rfind(prefix, 0) == 0 && p.find('/', prefix.size()) == std::string::npos && p.size() > prefix.size() + 5) {
+      out.push_back(p.substr(prefix.size(), p.size() - prefix.size() - 5));  // strip ".json"
+    }
   }
   return out;
 }
 
-const Json& Pack::paradigm(std::string_view id) const { return file("paradigms/" + std::string(id) + ".json"); }
+const Json& Pack::project_kind(std::string_view id) const { return file("project_kinds/" + std::string(id) + ".json"); }
+const Json& Pack::facet(std::string_view id) const { return file("facets/" + std::string(id) + ".json"); }
+const Json& Pack::artifact_type(std::string_view id) const { return file("artifact_types/" + std::string(id) + ".json"); }
 
 namespace {
 const Json& find_by_id(const Json& doc_, std::string_view list, std::string_view id, const Json& none) {
@@ -1405,12 +1803,14 @@ const Json& Pack::rule(std::string_view id) const {
   return find_by_id(file("rules/inference_rules.json"), "rules", id, empty_);
 }
 const Json& Pack::principle(std::string_view id) const {
-  return find_by_id(file("philosophy/seed_principles.json"), "principles", id, empty_);
+  return find_by_id(file("philosophy/principles.json"), "principles", id, empty_);
+}
+const Json& Pack::op(std::string_view id) const {
+  return find_by_id(file("philosophy/operators.json"), "operators", id, empty_);
 }
 const Json& Pack::policy(std::string_view name) const { return file("policy/" + std::string(name) + ".json"); }
 const Json& Pack::lexicon(std::string_view name) const { return file("lexicons/" + std::string(name) + ".json"); }
 const Json& Pack::profile(std::string_view id) const { return file("profiles/" + std::string(id) + ".json"); }
-
 Json Pack::manifest() const {
   Json files = Json::array();
   for (const auto& [p, d] : docs_) {

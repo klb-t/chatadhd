@@ -1,0 +1,458 @@
+{
+ "schema": "loom.kb.operators/1",
+ "description": "Seed design operators (LOOM_CONCEPTUAL_MODEL §3.3): situation type -> solution class, with justifying principles and dated sources. PRIORS (candidate): mining from decision sequences must confirm them. The first five are the note's seeds (§7 F), the rest are justified by the MEGA MASTER, the historical report and the requirements.",
+ "operators": [
+  {
+   "id": "op.new_source_extend_providers",
+   "version": 1,
+   "situation": {
+    "en": "A new data source (or model, medium, platform) appears that is not behind a provider",
+    "pl": "Pojawia się nowe źródło danych (model, medium, platforma) poza abstrakcją providera"
+   },
+   "solution": {
+    "en": "Extend the provider/capability registry with a manifest + adapter; do not add a separate subsystem",
+    "pl": "Rozszerz rejestr providerów/capabilities o manifest + adapter; nie twórz osobnego systemu"
+   },
+   "principles": [
+    "p.capability_not_enum",
+    "p.data_is_variety"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 'pełną abstrakcję providerów z OCR i ASR'",
+     "date": "2026-02-06"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.D, §4.5"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ],
+   "examples": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 ProviderManager",
+     "date": "2026-02-06",
+     "note": "OCR/ASR added as providers behind one ProviderManager"
+    }
+   ]
+  },
+  {
+   "id": "op.new_artifact_type_common_structure",
+   "version": 1,
+   "situation": {
+    "en": "A new artifact or document type appears",
+    "pl": "Pojawia się nowy typ artefaktu"
+   },
+   "solution": {
+    "en": "Find the common structure; keep the specific properties as data (an artifact type file)",
+    "pl": "Znajdź wspólną strukturę; zachowaj specyficzne własności jako dane (plik typu artefaktu)"
+   },
+   "principles": [
+    "p.data_is_variety",
+    "p.kod_ne_dane"
+   ],
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§1.6, §4.13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.repeated_manual_action_observe_then_automate",
+   "version": 1,
+   "situation": {
+    "en": "A manual action is repeated",
+    "pl": "Powtarzalna ręczna czynność"
+   },
+   "solution": {
+    "en": "First make it observable with provenance, then automate it",
+    "pl": "Najpierw zapewnij obserwowalność i provenance, dopiero potem automatyzuj"
+   },
+   "principles": [
+    "p.provenance",
+    "p.resumable_auditable",
+    "p.learning_track"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 9 'co można by logować'",
+     "date": "2026-02-04"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.H, §4.10"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.uncertainty_keep_alternatives",
+   "version": 1,
+   "situation": {
+    "en": "Uncertainty: several options fit the evidence",
+    "pl": "Niepewność: kilka opcji pasuje do dowodów"
+   },
+   "solution": {
+    "en": "Do not choose arbitrarily; keep the alternatives with their evidence until a contract, test, cost or constraint decides",
+    "pl": "Nie wybieraj arbitralnie; zachowaj alternatywy wraz z dowodami, dopóki nie rozstrzygnie kontrakt, test, koszt lub ograniczenie"
+   },
+   "principles": [
+    "p.keep_alternatives",
+    "p.defer_decisions"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A, §10"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.implementation_difference_stays_local",
+   "version": 1,
+   "situation": {
+    "en": "A difference is implementation-only (platform, backend, serialization)",
+    "pl": "Różnica jest wyłącznie implementacyjna (platforma, backend, serializacja)"
+   },
+   "solution": {
+    "en": "Do not propagate it upwards: keep it in an adapter below the contract",
+    "pl": "Nie propaguj jej do wyższych warstw: zostaw ją w adapterze pod kontraktem"
+   },
+   "principles": [
+    "p.decision_classes",
+    "p.serialization_not_architecture",
+    "p.renderer_is_adapter"
+   ],
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A, §2.C, §4.11"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.hardcoded_value_to_data",
+   "version": 1,
+   "situation": {
+    "en": "A path, list, preset or policy is hard-coded",
+    "pl": "Ścieżka, lista, preset lub polityka są zaszyte w kodzie"
+   },
+   "solution": {
+    "en": "Move it to a data file resolved at runtime; code keeps only the lookup",
+    "pl": "Przenieś do pliku danych rozwiązywanego w runtime; kod zostawia tylko odczyt"
+   },
+   "principles": [
+    "p.kod_ne_dane",
+    "p.presets_are_data"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'Zmiana architektury'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'hardcoded paths'",
+     "date": "2026-02-02"
+    }
+   ],
+   "examples": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 paths.py",
+     "date": "2026-02-02",
+     "note": "hard-coded paths -> paths.py + fixed data directory"
+    }
+   ]
+  },
+  {
+   "id": "op.edit_creates_branch",
+   "version": 1,
+   "situation": {
+    "en": "Something existing is edited (a message, a document, a decision)",
+    "pl": "Edytowane jest coś istniejącego"
+   },
+   "solution": {
+    "en": "Create a new version/branch; the old one stays reachable",
+    "pl": "Utwórz nową wersję/gałąź; stara pozostaje dostępna"
+   },
+   "principles": [
+    "p.edit_is_branch",
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 1",
+     "date": "2026-01-21"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ]
+  },
+  {
+   "id": "op.expensive_generation_staged",
+   "version": 1,
+   "situation": {
+    "en": "An expensive generation (video, music, long document) is needed",
+    "pl": "Potrzebna jest droga generacja"
+   },
+   "solution": {
+    "en": "Refine in stages cheap -> expensive with a gate and a cost estimate before each stage",
+    "pl": "Rafinuj etapami tanio → drogo, z bramką i kosztorysem przed każdym etapem"
+   },
+   "principles": [
+    "p.defer_decisions",
+    "p.resumable_auditable"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "history/chatadhd_v0.9.0",
+     "date": "2026-04-17",
+     "section": "engine/video_pipeline.py 4 phases"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "TL;DR, §5"
+    }
+   ]
+  },
+  {
+   "id": "op.missing_capability_degrade_honestly",
+   "version": 1,
+   "situation": {
+    "en": "A capability is missing (no model, no key, no library)",
+    "pl": "Brakuje możliwości (modelu, klucza, biblioteki)"
+   },
+   "solution": {
+    "en": "Degrade gracefully and mark results unverified at a lower evidence class; never fabricate a metric",
+    "pl": "Degraduj łagodnie i oznacz wyniki jako niezweryfikowane; nigdy nie fabrykuj metryki"
+   },
+   "principles": [
+    "p.capability_honesty",
+    "p.local_first"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Error Handling"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "§6"
+    }
+   ]
+  },
+  {
+   "id": "op.large_input_catalog_first",
+   "version": 1,
+   "situation": {
+    "en": "The input is too large to import whole (multi-GB archives)",
+    "pl": "Wejście jest za duże, by importować całość"
+   },
+   "solution": {
+    "en": "Catalog without importing, select by relevance and owner rules, import only the selected units by locator",
+    "pl": "Skataloguj bez importu, wybierz wg trafności i reguł właściciela, importuj tylko wybrane jednostki po lokatorze"
+   },
+   "principles": [
+    "p.raw_immutable",
+    "p.titles_weak_signal"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R1"
+    }
+   ]
+  },
+  {
+   "id": "op.new_domain_is_data",
+   "version": 1,
+   "situation": {
+    "en": "A new kind of project (film, music, a legal case) is needed",
+    "pl": "Potrzebny jest nowy rodzaj projektu"
+   },
+   "solution": {
+    "en": "Add a project kind data file mapped onto the universal roles, plus transfer morphisms to analogous kinds",
+    "pl": "Dodaj plik danych rodzaju projektu zmapowany na role uniwersalne i morfizmy transferu do rodzajów analogicznych"
+   },
+   "principles": [
+    "p.data_is_variety",
+    "p.honest_extensibility"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R8"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.5, §3.6"
+    }
+   ]
+  },
+  {
+   "id": "op.sensitive_data_local_control",
+   "version": 1,
+   "situation": {
+    "en": "Sensitive data (legal evidence, personal archives) must be processed",
+    "pl": "Trzeba przetwarzać wrażliwe dane"
+   },
+   "solution": {
+    "en": "Local-first, encrypted at rest, explicit control over what is sent to external providers",
+    "pl": "Local-first, szyfrowanie, jawna kontrola nad tym, co trafia do zewnętrznych dostawców"
+   },
+   "principles": [
+    "p.zero_knowledge",
+    "p.local_first",
+    "p.value.autonomy"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R9"
+    }
+   ]
+  },
+  {
+   "id": "op.feature_lost_record_status",
+   "version": 1,
+   "situation": {
+    "en": "A feature existed and disappeared in a later version or branch",
+    "pl": "Funkcja istniała i zniknęła w późniejszej wersji lub gałęzi"
+   },
+   "solution": {
+    "en": "Record its status per branch and version (lost / restored), restore it with a test that pins it",
+    "pl": "Zapisz status per gałąź i wersja (utracona / przywrócona), przywróć z testem, który ją utrwala"
+   },
+   "principles": [
+    "p.abandoned_not_unimportant",
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "TL;DR 'oscyluje', §2"
+    }
+   ]
+  },
+  {
+   "id": "op.context_select_by_goal",
+   "version": 1,
+   "situation": {
+    "en": "A model call needs context from a large project",
+    "pl": "Wywołanie modelu potrzebuje kontekstu z dużego projektu"
+   },
+   "solution": {
+    "en": "Type the goal, select by roles and relevance under a budget, order stable prefix -> project -> goal tail, explain each item",
+    "pl": "Określ cel, wybierz wg ról i trafności w budżecie, ułóż stabilny prefiks → projekt → cel, uzasadnij każdy element"
+   },
+   "principles": [
+    "p.context_by_goal"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.4"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R12, R13"
+    }
+   ]
+  }
+ ]
+}

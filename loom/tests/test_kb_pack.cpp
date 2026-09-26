@@ -1,9 +1,10 @@
-// kb.h: the paradigm-engine data pack loads and validates; the embedded copy
+// kb.h: the knowledge-layer data pack loads and validates; the embedded copy
 // equals loom/data; the validator rejects what the closed sets forbid; the
 // normalizer, version helpers and lazy schema behave as documented.
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <functional>
 
 #include "loom/db.h"
 #include "loom/kb.h"
@@ -46,35 +47,20 @@ TEST_SUITE("kb_pack") {
       on_disk += e.is_regular_file() && e.path().extension() == ".json";
     }
     CHECK(pack.files().size() == on_disk);
-    // The eight canonical paradigms with the ground-truth slot names.
-    const std::map<std::string, std::vector<std::string>> canonical = {
-        {"multiplatform_app", {"name", "purpose", "platforms", "core_language", "ui_framework", "storage", "sync",
-                               "architecture_principles", "modules", "current_version", "status"}},
-        {"pipeline", {"name", "purpose", "stages", "inputs", "outputs", "tools", "storage", "status"}},
-        {"brainstorm", {"topic", "options", "chosen", "rejected", "open_questions"}},
-        {"specification", {"subject", "requirements", "invariants", "interfaces", "open_questions"}},
-        {"coding_philosophy", {"principles"}},
-        {"codebase", {"repo", "languages", "modules", "entry_points", "tests"}},
-        {"version_history", {"versions"}},
-        {"agent_system", {"name", "purpose", "roles", "tools", "status"}}};
-    for (const auto& [id, slots] : canonical) {
-      INFO(id);
-      const Json& p = pack.paradigm(id);
-      REQUIRE(p.is_object());
-      std::set<std::string> have;
-      for (const auto& s : p["slots"]) have.insert(s["name"].get<std::string>());
-      for (const auto& s : slots) {
-        INFO(s);
-        CHECK(have.count(s) == 1);
-      }
-    }
-    CHECK(pack.paradigm_ids().size() == 8);
+    CHECK(pack.ids("project_kinds") == std::vector<std::string>{"film", "legal_case", "music", "research", "software_app"});
+    CHECK(pack.ids("facets") == std::vector<std::string>{"agent", "multiplatform", "staged_transformation"});
+    CHECK(pack.ids("artifact_types") ==
+          std::vector<std::string>{"brainstorm", "codebase", "commit", "conversation", "email", "pleading",
+                                   "recording_transcript", "screenplay", "specification"});
+    CHECK(pack.project_kind("film").is_object());
     CHECK(pack.rule("r.storage_local_first").is_object());
     CHECK(pack.principle("p.kod_ne_dane").is_object());
+    CHECK(pack.op("op.new_source_extend_providers").is_object());
     CHECK(pack.policy("evidence_encoding").is_object());
     CHECK(pack.lexicon("gazetteer").is_object());
     CHECK(pack.profile("self").is_object());
     CHECK(pack.manifest()["files"].size() == pack.files().size());
+    CHECK(!std::filesystem::exists(data_dir() / "paradigms"));  // the draft layout is gone (model §3.5)
   }
 
   TEST_CASE("the embedded pack is byte-for-byte the loom/data directory (run tools/gen_kb_pack.py)") {
@@ -94,46 +80,48 @@ TEST_SUITE("kb_pack") {
 
   TEST_CASE("validator rejects names outside the closed sets and dangling references") {
     auto base = dir_docs();
-    {
+    auto rejects = [&](const std::function<void(std::map<std::string, Json>&)>& edit, const std::string& needle) {
       auto d = base;
-      d["paradigms/pipeline.json"]["slots"][0]["bind"][0]["kind"] = "sql_query";
-      CHECK(error_of(d).find("not in the closed set") != std::string::npos);
-    }
-    {
-      auto d = base;
-      d["paradigms/multiplatform_app.json"]["slots"][2]["infer"] = Json::array({"r.does_not_exist"});
-      CHECK(error_of(d).find("unknown rule 'r.does_not_exist'") != std::string::npos);
-    }
-    {
-      auto d = base;
-      d["rules/inference_rules.json"]["rules"][0]["expected_property"]["expr"]["op"] = "looks_right";
-      CHECK(error_of(d).find("unknown predicate op 'looks_right'") != std::string::npos);
-    }
-    {
-      auto d = base;
-      d["rules/inference_rules.json"]["rules"][0]["stratum"] = 2;  // derived rule in the extrapolation stratum
-      CHECK(error_of(d).find("must produce 'extrapolated'") != std::string::npos);
-    }
-    {
-      auto d = base;
-      d["rules/checks.json"]["checks"][0]["principle"] = "p.nope";
-      CHECK(error_of(d).find("unknown principle") != std::string::npos);
-    }
-    {
-      auto d = base;
-      d["policy/evidence_encoding.json"]["evidence"].erase("inferred");
-      CHECK(error_of(d).find("missing evidence class") != std::string::npos);
-    }
-    {
-      auto d = base;
-      d["lexicons/extra.json"] = Json{{"schema", "loom.kb.cues/1"}, {"classes", Json::object()}};
-      CHECK(error_of(d).find("not listed in pack.json") != std::string::npos);
-    }
-    {
-      auto d = base;
-      d["paradigms/codebase.json"]["id"] = "code_base";
-      CHECK(error_of(d).find("must equal the file name") != std::string::npos);
-    }
+      edit(d);
+      std::string e = error_of(d);
+      INFO(needle << " / " << e);
+      CHECK(e.find(needle) != std::string::npos);
+    };
+    // closed sets
+    rejects([](auto& d) { d["project_kinds/film.json"]["domain_kinds"][5]["role"] = "scenery"; }, "unknown universal role 'scenery'");
+    rejects([](auto& d) { d["project_kinds/software_app.json"]["domain_kinds"][4]["bind"][0]["kind"] = "sql_query"; },
+            "not in the closed set");
+    rejects([](auto& d) { d["artifact_types/brainstorm.json"]["parse"]["segment"][0] = "vibes"; }, "not a segmenter");
+    rejects([](auto& d) { d["artifact_types/email.json"]["extract"][0]["op"] = "guess"; }, "not in the closed set");
+    rejects([](auto& d) { d["philosophy/principles.json"]["principles"][0]["level"] = "aesthetic"; }, "unknown principle level");
+    rejects([](auto& d) { d["philosophy/principles.json"]["principles"][0]["origin"] = "rumour"; }, "unknown origin 'rumour'");
+    rejects([](auto& d) { d["rules/inference_rules.json"]["rules"][0]["expected_property"]["expr"]["op"] = "looks_right"; },
+            "unknown predicate");
+    rejects([](auto& d) { d["rules/inference_rules.json"]["rules"][0]["stratum"] = 2; }, "must produce");
+    rejects([](auto& d) { d["goals/goal_types.json"]["goal_types"][0]["roles"][0] = "module"; }, "unknown universal role 'module'");
+    // priors: dated sources, candidate status
+    rejects([](auto& d) { d["philosophy/principles.json"]["principles"][0]["sources"][0].erase("date"); }, "source date");
+    rejects([](auto& d) { d["philosophy/operators.json"]["operators"][0]["validation_status"] = "confirmed"; },
+            "validation_status must be 'candidate'");
+    // references
+    rejects([](auto& d) { d["project_kinds/software_app.json"]["domain_kinds"][7]["rules"] = Json::array({"r.does_not_exist"}); },
+            "unknown rule 'r.does_not_exist'");
+    rejects([](auto& d) { d["rules/checks.json"]["checks"][0]["principle"] = "p.nope"; }, "unknown principle");
+    rejects([](auto& d) { d["philosophy/principles.json"]["principles"][1]["derived_from"] = Json::array({"p.ghost"}); },
+            "unknown principle 'p.ghost'");
+    rejects([](auto& d) { d["profiles/self.json"]["projects"][0]["project_kind"] = "spaceship"; }, "unknown project kind 'spaceship'");
+    rejects([](auto& d) { d["project_kinds/music.json"]["derived_from"][0] = "m.nope"; }, "unknown morphism 'm.nope'");
+    // anchoring: a relation must link roles the meta-model links
+    rejects([](auto& d) { d["project_kinds/film.json"]["domain_kinds"][5]["relations"][0]["rel"] = "verifies"; },
+            "does not anchor on the meta-model");
+    // a transfer links kinds of the same role
+    rejects([](auto& d) { d["morphisms/transfer.json"]["morphisms"][0]["to"]["kind"] = "scene"; },
+            "same universal role");
+    rejects([](auto& d) { d["policy/evidence_encoding.json"]["evidence"].erase("inferred"); }, "missing evidence class");
+    rejects([](auto& d) { d["policy/evidence_encoding.json"]["origin"].erase("model_knowledge"); }, "missing origin");
+    rejects([](auto& d) { d["lexicons/extra.json"] = Json{{"schema", "loom.kb.cues/1"}, {"classes", Json::object()}}; },
+            "not listed in pack.json");
+    rejects([](auto& d) { d["facets/agent.json"]["id"] = "agents"; }, "must equal the file name");
   }
 
   TEST_CASE("overlay files replace built-in ones and change the hash; an invalid overlay is rejected") {

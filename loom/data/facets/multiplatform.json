@@ -1,0 +1,154 @@
+{
+ "schema": "loom.kb.facet/1",
+ "id": "multiplatform",
+ "version": 1,
+ "title": {
+  "en": "Multi-platform",
+  "pl": "Wieloplatformowość"
+ },
+ "description": "One core that runs on two or more platforms (desktop, Android, web) behind per-platform adapters. The draft paradigm multiplatform_app = software_app + this facet (model §3.5).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+   "section": "Sesja 1 (Pydroid/Android + desktop)",
+   "date": "2026-01-21"
+  },
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§1.1, §12"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.5"
+  }
+ ],
+ "applies_to": [
+  "software_app"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "claim_count",
+    "rel": "targets_platform",
+    "min": 2
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.multiplatform_app",
+    "min": 1
+   }
+  ],
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "platform",
+   "role": "resource",
+   "labels": {
+    "en": "Platform",
+    "pl": "Platforma"
+   },
+   "entity_kind": "platform",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "targets_platform",
+   "anchors": {
+    "lexicon": [
+     "platform"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "targets_platform"
+    },
+    {
+     "kind": "claim",
+     "rel": "targets_platform",
+     "via": "has_component"
+    },
+    {
+     "kind": "lexicon",
+     "class": "platform",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "r.platforms_from_codebase"
+   ]
+  },
+  {
+   "id": "platform_adapter",
+   "role": "interface",
+   "labels": {
+    "en": "Platform adapter / shell",
+    "pl": "Adapter platformy"
+   },
+   "entity_kind": "interface",
+   "card": "many",
+   "relation": "has_interface",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "jni",
+      "shell",
+      "adapter"
+     ],
+     "pl": [
+      "adapter",
+      "powłoka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "sync_transport",
+   "role": "interface",
+   "labels": {
+    "en": "Sync transport",
+    "pl": "Transport synchronizacji"
+   },
+   "entity_kind": "sync",
+   "card": "many",
+   "relation": "syncs_via",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "sync"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "syncs_via"
+    },
+    {
+     "kind": "lexicon",
+     "class": "sync",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "x.sync_transport_adapters"
+   ]
+  }
+ ],
+ "constraints": [],
+ "rules": []
+}

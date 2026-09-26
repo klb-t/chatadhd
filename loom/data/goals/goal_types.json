@@ -1,0 +1,391 @@
+{
+ "schema": "loom.kb.goal_types/1",
+ "description": "Goal types (LOOM_CONCEPTUAL_MODEL §4): what a prompt or task wants. Each declares the relevant roles (most important first), principle levels and evidence classes, the default resolution per role ('*' = any other role), and the token-budget split over the three bands (stable prefix -> project context -> goal tail; shares sum to 1). The context engine types a prompt by its cues and targets (R12).",
+ "goal_types": [
+  {
+   "id": "implement_part",
+   "labels": {
+    "en": "Implement a part",
+    "pl": "Zaimplementuj część"
+   },
+   "description": "write or change a module / component / feature",
+   "cues": {
+    "en": [
+     "implement",
+     "add",
+     "fix",
+     "refactor"
+    ],
+    "pl": [
+     "zaimplementuj",
+     "dodaj",
+     "napraw",
+     "przepisz"
+    ]
+   },
+   "roles": [
+    "part",
+    "interface",
+    "constraint",
+    "check",
+    "resource",
+    "decision",
+    "artifact"
+   ],
+   "principle_levels": [
+    "strategy",
+    "epistemic"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "part": "full",
+    "interface": "full",
+    "constraint": "summary",
+    "check": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.15,
+    "project": 0.25,
+    "goal": 0.6
+   }
+  },
+  {
+   "id": "write_artifact",
+   "labels": {
+    "en": "Write an artifact",
+    "pl": "Napisz artefakt"
+   },
+   "description": "produce a document of the project's kind (spec, pleading, screenplay, letter)",
+   "cues": {
+    "en": [
+     "write",
+     "draft"
+    ],
+    "pl": [
+     "napisz",
+     "zredaguj",
+     "przygotuj pismo"
+    ]
+   },
+   "roles": [
+    "artifact",
+    "intent",
+    "constraint",
+    "part",
+    "resource",
+    "output"
+   ],
+   "principle_levels": [
+    "value",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "artifact": "full",
+    "constraint": "full",
+    "resource": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.2,
+    "project": 0.3,
+    "goal": 0.5
+   }
+  },
+  {
+   "id": "extend_scene",
+   "labels": {
+    "en": "Extend a scene / section",
+    "pl": "Rozwiń scenę / sekcję"
+   },
+   "description": "creative continuation of a part of a film or piece of music",
+   "cues": {
+    "en": [
+     "scene",
+     "continue",
+     "extend"
+    ],
+    "pl": [
+     "scena",
+     "rozwiń",
+     "dalej"
+    ]
+   },
+   "roles": [
+    "part",
+    "actor",
+    "flow",
+    "constraint",
+    "resource",
+    "event"
+   ],
+   "principle_levels": [
+    "value",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred",
+    "extrapolated"
+   ],
+   "resolutions": {
+    "part": "full",
+    "actor": "summary",
+    "flow": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.1,
+    "project": 0.3,
+    "goal": 0.6
+   }
+  },
+  {
+   "id": "verify_claim",
+   "labels": {
+    "en": "Verify a claim",
+    "pl": "Zweryfikuj twierdzenie"
+   },
+   "description": "check a claim against its evidence and counter-evidence",
+   "cues": {
+    "en": [
+     "is it true",
+     "verify",
+     "check"
+    ],
+    "pl": [
+     "czy to prawda",
+     "sprawdź",
+     "zweryfikuj"
+    ]
+   },
+   "roles": [
+    "check",
+    "resource",
+    "constraint",
+    "event",
+    "question"
+   ],
+   "principle_levels": [
+    "epistemic"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived"
+   ],
+   "resolutions": {
+    "resource": "raw",
+    "check": "full",
+    "constraint": "full",
+    "*": "summary"
+   },
+   "budget": {
+    "stable": 0.1,
+    "project": 0.2,
+    "goal": 0.7
+   }
+  },
+  {
+   "id": "compute_deadline",
+   "labels": {
+    "en": "Compute a deadline",
+    "pl": "Oblicz termin"
+   },
+   "description": "a procedural deadline from dated events and its legal basis (conservative)",
+   "cues": {
+    "en": [
+     "deadline",
+     "until when"
+    ],
+    "pl": [
+     "termin",
+     "do kiedy",
+     "ile dni"
+    ]
+   },
+   "roles": [
+    "event",
+    "constraint",
+    "part",
+    "resource"
+   ],
+   "principle_levels": [
+    "epistemic",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived"
+   ],
+   "resolutions": {
+    "event": "full",
+    "constraint": "raw",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.1,
+    "project": 0.2,
+    "goal": 0.7
+   }
+  },
+  {
+   "id": "brainstorm",
+   "labels": {
+    "en": "Brainstorm",
+    "pl": "Burza mózgów"
+   },
+   "description": "open exploration: options, areas, generalizations",
+   "cues": {
+    "en": [
+     "ideas",
+     "brainstorm",
+     "what if"
+    ],
+    "pl": [
+     "pomysły",
+     "burza mózgów",
+     "a gdyby"
+    ]
+   },
+   "roles": [
+    "intent",
+    "question",
+    "decision",
+    "part",
+    "constraint"
+   ],
+   "principle_levels": [
+    "value",
+    "epistemic",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred",
+    "extrapolated"
+   ],
+   "resolutions": {
+    "intent": "full",
+    "question": "full",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.2,
+    "project": 0.4,
+    "goal": 0.4
+   }
+  },
+  {
+   "id": "answer_question",
+   "labels": {
+    "en": "Answer a question",
+    "pl": "Odpowiedz na pytanie"
+   },
+   "description": "a question about the project or its history",
+   "cues": {
+    "en": [
+     "what",
+     "why",
+     "how",
+     "when"
+    ],
+    "pl": [
+     "co",
+     "dlaczego",
+     "jak",
+     "kiedy"
+    ]
+   },
+   "roles": [
+    "question",
+    "decision",
+    "part",
+    "event",
+    "intent"
+   ],
+   "principle_levels": [
+    "epistemic"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "question": "full",
+    "decision": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.15,
+    "project": 0.35,
+    "goal": 0.5
+   }
+  },
+  {
+   "id": "review_decision",
+   "labels": {
+    "en": "Review a decision",
+    "pl": "Przejrzyj decyzję"
+   },
+   "description": "re-examine a decision: alternatives, affected values, principles, constraints",
+   "cues": {
+    "en": [
+     "should we",
+     "decide",
+     "trade-off"
+    ],
+    "pl": [
+     "czy powinniśmy",
+     "decyzja",
+     "kompromis"
+    ]
+   },
+   "roles": [
+    "decision",
+    "constraint",
+    "intent",
+    "question",
+    "part"
+   ],
+   "principle_levels": [
+    "value",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "decision": "full",
+    "constraint": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.2,
+    "project": 0.3,
+    "goal": 0.5
+   }
+  }
+ ]
+}

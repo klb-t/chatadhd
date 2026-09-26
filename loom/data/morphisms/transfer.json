@@ -1,0 +1,576 @@
+{
+ "schema": "loom.kb.morphisms/1",
+ "description": "Transfer morphisms (LOOM_CONCEPTUAL_MODEL §3.6): structure-preserving maps between domain kinds of two paradigms that anchor on the same universal role. When one project fills a role that an analogous project leaves empty, the engine may infer (evidence inferred, depth 1, never chained) that the target should have it; the expected property says what is vouched for. Anchoring morphisms are not listed: they are one per domain kind, derived from its role.",
+ "morphisms": [
+  {
+   "id": "m.check.software_film",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "test"
+   },
+   "to": {
+    "paradigm": "film",
+    "kind": "continuity_check"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:continuity_check"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "both are checks over the parts (modules / scenes): a project that tests its parts should verify its scenes' continuity",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6 example"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R8"
+    }
+   ]
+  },
+  {
+   "id": "m.check.film_music",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "continuity_check"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "mix_check"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:mix_check"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "continuity of scenes <-> consistency of the mix and key across sections",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.check.software_legal",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "test"
+   },
+   "to": {
+    "paradigm": "legal_case",
+    "kind": "citation_check"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:citation_check"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "a pleading's citations are checked against the source text the way code is checked by tests (R9 'upewnianie się')",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R9"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.4 check row"
+    }
+   ]
+  },
+  {
+   "id": "m.check.software_research",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "test"
+   },
+   "to": {
+    "paradigm": "research",
+    "kind": "falsifier"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:falsifier"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "tests and falsifiers both try to refute a claim about the built thing",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.transformation.build_render",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "build_step"
+   },
+   "to": {
+    "paradigm": "film",
+    "kind": "render_pass"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:render_pass"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "build turns sources into deliverables; render turns storyboards into clips",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.intent.software_legal",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "purpose"
+   },
+   "to": {
+    "paradigm": "legal_case",
+    "kind": "desired_outcome"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:desired_outcome"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "every project states why it exists; a case without a stated desired outcome is a gap",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.artifact.spec_screenplay",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "document"
+   },
+   "to": {
+    "paradigm": "film",
+    "kind": "screenplay"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:screenplay"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "the specification of a program and the screenplay of a film are the textual representation of the parts",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.decision.architecture_strategy",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "architecture_decision"
+   },
+   "to": {
+    "paradigm": "legal_case",
+    "kind": "strategy_decision"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:strategy_decision"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "decisions with recorded alternatives and rationale exist in both domains",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.scene_section",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "scene"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "section"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:section"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "scenes and sections are the ordered constituent parts",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.character_performer",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "character"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "performer"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:performer"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "who acts in a part",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.motif",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "motif"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "motif"
+   },
+   "bidirectional": true,
+   "mode": "value",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:motif"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "a recurring theme through the parts",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.render_synthesis",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "render_pass"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "synthesis"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:synthesis"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "the expensive generation step",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.edit_mix",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "edit_pass"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "mix"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:mix"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "assembling the parts into the delivered output",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.cut_track",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "cut"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "track_output"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:track_output"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "the delivered output",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  }
+ ]
+}

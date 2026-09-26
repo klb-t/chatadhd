@@ -1,0 +1,403 @@
+{
+ "schema": "loom.kb.anchoring/1",
+ "description": "The universal meta-model (LOOM_CONCEPTUAL_MODEL §3.4) as the codomain of every anchoring morphism. Each domain kind anchors on its role (the 'role' of the kind, one anchoring morphism per kind, derived in code: model::anchoring_morphisms). Each relation between domain kinds anchors on a role relation: relation_map[rel] = R, and the roles of its two ends must be in R.from and R.to. A domain relation not listed here, or linking roles R does not link, is a pack error.",
+ "role_relations": [
+  {
+   "id": "composes",
+   "from": [
+    "part",
+    "artifact",
+    "output"
+   ],
+   "to": [
+    "part",
+    "artifact",
+    "output"
+   ],
+   "labels": {
+    "en": "is a constituent of",
+    "pl": "jest częścią"
+   }
+  },
+  {
+   "id": "uses",
+   "from": [
+    "part",
+    "actor",
+    "transformation",
+    "check",
+    "interface"
+   ],
+   "to": [
+    "resource",
+    "interface",
+    "artifact",
+    "actor"
+   ],
+   "labels": {
+    "en": "uses",
+    "pl": "używa"
+   }
+  },
+  {
+   "id": "connects",
+   "from": [
+    "interface"
+   ],
+   "to": [
+    "part",
+    "actor",
+    "resource"
+   ],
+   "labels": {
+    "en": "connects",
+    "pl": "łączy"
+   }
+  },
+  {
+   "id": "carries",
+   "from": [
+    "flow"
+   ],
+   "to": [
+    "part",
+    "actor",
+    "resource",
+    "event",
+    "output"
+   ],
+   "labels": {
+    "en": "moves through",
+    "pl": "przepływa przez"
+   }
+  },
+  {
+   "id": "verifies",
+   "from": [
+    "check"
+   ],
+   "to": [
+    "part",
+    "output",
+    "artifact",
+    "constraint",
+    "flow",
+    "event",
+    "resource",
+    "actor",
+    "transformation",
+    "question"
+   ],
+   "labels": {
+    "en": "verifies",
+    "pl": "weryfikuje"
+   }
+  },
+  {
+   "id": "constrains",
+   "from": [
+    "constraint"
+   ],
+   "to": [
+    "part",
+    "output",
+    "artifact",
+    "actor",
+    "flow",
+    "event",
+    "transformation",
+    "resource",
+    "interface"
+   ],
+   "labels": {
+    "en": "constrains",
+    "pl": "ogranicza"
+   }
+  },
+  {
+   "id": "serves",
+   "from": [
+    "part",
+    "output",
+    "decision"
+   ],
+   "to": [
+    "intent"
+   ],
+   "labels": {
+    "en": "serves",
+    "pl": "służy"
+   }
+  },
+  {
+   "id": "produces",
+   "from": [
+    "transformation"
+   ],
+   "to": [
+    "output",
+    "artifact"
+   ],
+   "labels": {
+    "en": "produces",
+    "pl": "wytwarza"
+   }
+  },
+  {
+   "id": "consumes",
+   "from": [
+    "transformation"
+   ],
+   "to": [
+    "artifact",
+    "resource"
+   ],
+   "labels": {
+    "en": "consumes",
+    "pl": "zużywa"
+   }
+  },
+  {
+   "id": "participates",
+   "from": [
+    "actor"
+   ],
+   "to": [
+    "part",
+    "event",
+    "flow",
+    "transformation"
+   ],
+   "labels": {
+    "en": "takes part in",
+    "pl": "uczestniczy w"
+   }
+  },
+  {
+   "id": "situated",
+   "from": [
+    "event"
+   ],
+   "to": [
+    "part",
+    "resource",
+    "flow"
+   ],
+   "labels": {
+    "en": "happens in",
+    "pl": "zachodzi w"
+   }
+  },
+  {
+   "id": "sequence",
+   "from": [
+    "event",
+    "part",
+    "flow",
+    "transformation"
+   ],
+   "to": [
+    "event",
+    "part",
+    "flow",
+    "transformation"
+   ],
+   "labels": {
+    "en": "comes before",
+    "pl": "poprzedza"
+   }
+  },
+  {
+   "id": "represents",
+   "from": [
+    "artifact"
+   ],
+   "to": [
+    "part",
+    "actor",
+    "event",
+    "intent",
+    "flow",
+    "resource",
+    "transformation"
+   ],
+   "labels": {
+    "en": "represents",
+    "pl": "przedstawia"
+   }
+  },
+  {
+   "id": "realizes",
+   "from": [
+    "artifact"
+   ],
+   "to": [
+    "part",
+    "interface",
+    "check",
+    "output",
+    "transformation"
+   ],
+   "labels": {
+    "en": "realizes",
+    "pl": "realizuje"
+   }
+  },
+  {
+   "id": "references",
+   "from": [
+    "artifact",
+    "check"
+   ],
+   "to": [
+    "constraint",
+    "resource",
+    "artifact"
+   ],
+   "labels": {
+    "en": "cites",
+    "pl": "powołuje się na"
+   }
+  },
+  {
+   "id": "evidences",
+   "from": [
+    "resource"
+   ],
+   "to": [
+    "part",
+    "question",
+    "decision",
+    "event",
+    "intent"
+   ],
+   "labels": {
+    "en": "is evidence for",
+    "pl": "jest dowodem na"
+   }
+  },
+  {
+   "id": "decides",
+   "from": [
+    "decision"
+   ],
+   "to": [
+    "intent",
+    "constraint",
+    "part",
+    "actor",
+    "resource",
+    "interface",
+    "flow",
+    "event",
+    "artifact",
+    "transformation",
+    "check",
+    "output",
+    "decision",
+    "question"
+   ],
+   "labels": {
+    "en": "decides about",
+    "pl": "rozstrzyga"
+   }
+  },
+  {
+   "id": "concerns",
+   "from": [
+    "question"
+   ],
+   "to": [
+    "intent",
+    "constraint",
+    "part",
+    "actor",
+    "resource",
+    "interface",
+    "flow",
+    "event",
+    "artifact",
+    "transformation",
+    "check",
+    "output",
+    "decision",
+    "question"
+   ],
+   "labels": {
+    "en": "concerns",
+    "pl": "dotyczy"
+   }
+  },
+  {
+   "id": "investigates",
+   "from": [
+    "part",
+    "check",
+    "transformation"
+   ],
+   "to": [
+    "question"
+   ],
+   "labels": {
+    "en": "investigates",
+    "pl": "bada"
+   }
+  },
+  {
+   "id": "answers",
+   "from": [
+    "output",
+    "decision",
+    "check"
+   ],
+   "to": [
+    "question"
+   ],
+   "labels": {
+    "en": "answers",
+    "pl": "odpowiada na"
+   }
+  },
+  {
+   "id": "responds",
+   "from": [
+    "artifact",
+    "event",
+    "output"
+   ],
+   "to": [
+    "event",
+    "artifact",
+    "output"
+   ],
+   "labels": {
+    "en": "responds to",
+    "pl": "odpowiada na"
+   }
+  }
+ ],
+ "relation_map": {
+  "part_of": "composes",
+  "uses": "uses",
+  "connects": "connects",
+  "flows_to": "carries",
+  "recurs_in": "carries",
+  "verifies": "verifies",
+  "constrains": "constrains",
+  "serves": "serves",
+  "produces": "produces",
+  "consumes": "consumes",
+  "participates_in": "participates",
+  "occurs_in": "situated",
+  "precedes": "sequence",
+  "depicts": "represents",
+  "implements": "realizes",
+  "cites": "references",
+  "evidences": "evidences",
+  "decides_about": "decides",
+  "concerns": "concerns",
+  "investigates": "investigates",
+  "answers": "answers",
+  "responds_to": "responds"
+ }
+}

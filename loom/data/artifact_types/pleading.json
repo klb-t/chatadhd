@@ -1,0 +1,89 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "pleading",
+ "version": 1,
+ "title": {
+  "en": "Pleading",
+  "pl": "Pismo procesowe"
+ },
+ "description": "A pleading or letter in a proceeding: requests, legal bases (citations checked against the source text), evidence referenced.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "cue",
+    "value": "paradigm.legal_case"
+   },
+   {
+    "op": "heading",
+    "value": "uzasadnienie"
+   }
+  ],
+  "min_score": 0.4
+ },
+ "parse": {
+  "segment": [
+   "numbered_paragraphs",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "list_item",
+   "sentence"
+  ]
+ },
+ "extract": [
+  {
+   "op": "citations"
+  },
+  {
+   "op": "dates"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "court",
+   "type": "string",
+   "card": "one"
+  },
+  {
+   "name": "case_no",
+   "type": "string",
+   "card": "one"
+  },
+  {
+   "name": "date",
+   "type": "date",
+   "card": "one"
+  },
+  {
+   "name": "claims",
+   "type": "text",
+   "card": "many"
+  },
+  {
+   "name": "legal_bases",
+   "type": "entity:legal_norm",
+   "card": "many"
+  },
+  {
+   "name": "evidence",
+   "type": "entity:evidence",
+   "card": "many"
+  }
+ ]
+}

@@ -201,7 +201,7 @@ TEST_SUITE("model") {
     p.scope.project_kinds = {"software_app"};
     p.protects = {"p.value.minimal_arbitrariness"};
     p.predicts.push_back(SituationSolution{"new data source", "extend the provider registry"});
-    p.sources.push_back(Reference{"MEGA_MASTER_2026-09-16.md", "§2.B", "", "", ""});
+    p.sources.push_back(Reference{"MEGA_MASTER_2026-09-16.md", "§2.B", "2026-09-16", "", "", ""});
     round_trip(p);
     CHECK(!p.is_preference());
     p.owner = "user";

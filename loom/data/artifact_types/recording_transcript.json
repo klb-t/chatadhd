@@ -1,0 +1,92 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "recording_transcript",
+ "version": 1,
+ "title": {
+  "en": "Recording transcript",
+  "pl": "Transkrypcja nagrania"
+ },
+ "description": "A recording turned into timestamped utterances with speakers (R9). Observations are located by time range in the immutable original.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
+  }
+ ],
+ "medium": "audio",
+ "detect": {
+  "any": [
+   {
+    "op": "file_ext",
+    "value": ".vtt"
+   },
+   {
+    "op": "file_ext",
+    "value": ".srt"
+   },
+   {
+    "op": "mime",
+    "value": "audio/*"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "timestamped_utterances"
+  ],
+  "observation_kinds": [
+   "utterance"
+  ]
+ },
+ "extract": [
+  {
+   "op": "speakers"
+  },
+  {
+   "op": "dates"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "recording",
+   "type": "string",
+   "card": "one",
+   "required": true,
+   "description": "content hash of the original recording"
+  },
+  {
+   "name": "utterances",
+   "type": "record[]",
+   "card": "list",
+   "fields": {
+    "speaker": {
+     "type": "string"
+    },
+    "start": {
+     "type": "string"
+    },
+    "end": {
+     "type": "string"
+    },
+    "text": {
+     "type": "text"
+    }
+   }
+  },
+  {
+   "name": "speakers",
+   "type": "string",
+   "card": "many"
+  }
+ ]
+}

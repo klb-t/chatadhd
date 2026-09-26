@@ -1,67 +1,1100 @@
 {
-  "schema": "loom.kb.cues/1",
-  "description": "Cue-phrase classes for the paradigm wave (item cues of archive v1 stay in item_cues.json). Phrases are lowercase; a trailing '*' is a word prefix; matching is on word boundaries over the lowercased sentence (same matcher as the item classifier). 'weight' feeds raw confidence; the scope says what the cue qualifies.",
-  "classes": {
-    "normative": {
-      "description": "Sentences stating a rule of conduct: candidate principles (philosophy discovery).",
-      "phrases": [
-        {"p": "always", "w": 1}, {"p": "never", "w": 1.5}, {"p": "must", "w": 1}, {"p": "must not", "w": 1.5}, {"p": "should not", "w": 1},
-        {"p": "principle", "w": 2}, {"p": "rule of thumb", "w": 2}, {"p": "philosophy", "w": 2}, {"p": "invariant", "w": 1.5}, {"p": "by default", "w": 1},
-        {"p": "zawsze", "w": 1}, {"p": "nigdy", "w": 1.5}, {"p": "musi", "w": 1}, {"p": "nie wolno", "w": 2}, {"p": "nie może", "w": 1},
-        {"p": "zasad*", "w": 2}, {"p": "reguł*", "w": 1.5}, {"p": "filozofi*", "w": 2}, {"p": "konstytucj*", "w": 2}, {"p": "domyślnie", "w": 1},
-        {"p": "≠", "w": 2}, {"p": "nie „", "w": 0.5}
-      ]
+ "schema": "loom.kb.cues/1",
+ "description": "Cue-phrase classes for the paradigm wave (item cues of archive v1 stay in item_cues.json). Phrases are lowercase; a trailing '*' is a word prefix; matching is on word boundaries over the lowercased sentence (same matcher as the item classifier). 'weight' feeds raw confidence; the scope says what the cue qualifies.",
+ "classes": {
+  "normative": {
+   "description": "Sentences stating a rule of conduct: candidate principles (philosophy discovery).",
+   "phrases": [
+    {
+     "p": "always",
+     "w": 1
     },
-    "status.implemented": {"description": "Component/feature works.", "phrases": [
-      {"p": "implemented", "w": 2}, {"p": "works", "w": 1}, {"p": "working", "w": 1}, {"p": "done", "w": 1}, {"p": "shipped", "w": 2}, {"p": "landed", "w": 1.5},
-      {"p": "zaimplementowa*", "w": 2}, {"p": "działa", "w": 1}, {"p": "gotowe", "w": 1.5}, {"p": "zrobione", "w": 1.5}, {"p": "dodałem", "w": 1}]},
-    "status.partial": {"description": "Component exists but is incomplete or broken.", "phrases": [
-      {"p": "partially", "w": 2}, {"p": "not yet", "w": 1.5}, {"p": "stub", "w": 2}, {"p": "placeholder", "w": 2}, {"p": "wip", "w": 2}, {"p": "work in progress", "w": 2}, {"p": "doesn't work", "w": 1.5},
-      {"p": "częściowo", "w": 2}, {"p": "jeszcze nie", "w": 1.5}, {"p": "zaślepk*", "w": 2}, {"p": "w trakcie", "w": 1.5}, {"p": "nie działa", "w": 1.5}, {"p": "wstępn*", "w": 1.5}]},
-    "status.planned": {"description": "Future-tense intentions only.", "phrases": [
-      {"p": "will add", "w": 1.5}, {"p": "we'll add", "w": 1.5}, {"p": "plan to", "w": 1.5}, {"p": "planned", "w": 2}, {"p": "todo", "w": 1}, {"p": "later", "w": 0.5}, {"p": "next step", "w": 1.5}, {"p": "roadmap", "w": 1.5},
-      {"p": "dodamy", "w": 1.5}, {"p": "planuj*", "w": 1.5}, {"p": "w planach", "w": 2}, {"p": "następny krok", "w": 1.5}, {"p": "później", "w": 0.5}, {"p": "kiedyś", "w": 0.5}]},
-    "status.abandoned": {"description": "Explicitly given up.", "phrases": [
-      {"p": "abandon*", "w": 2}, {"p": "gave up", "w": 2}, {"p": "dropped", "w": 1.5}, {"p": "no longer", "w": 1}, {"p": "dead end", "w": 2}, {"p": "scrapped", "w": 2},
-      {"p": "porzuc*", "w": 2}, {"p": "rezygnuj*", "w": 2}, {"p": "zarzuc*", "w": 2}, {"p": "odpuszczam*", "w": 1.5}, {"p": "ślepa uliczka", "w": 2}]},
-    "status.paused": {"description": "Explicitly on hold.", "phrases": [
-      {"p": "on hold", "w": 2}, {"p": "paused", "w": 2}, {"p": "postponed", "w": 2}, {"p": "parked", "w": 1.5},
-      {"p": "wstrzyman*", "w": 2}, {"p": "odłożon*", "w": 2}, {"p": "na później", "w": 1.5}, {"p": "zawieszon*", "w": 1.5}]},
-    "status.superseded": {"description": "Replaced by something else (object of the phrase = successor).", "phrases": [
-      {"p": "replaced by", "w": 2}, {"p": "superseded by", "w": 2.5}, {"p": "instead of", "w": 1}, {"p": "in favour of", "w": 1.5}, {"p": "in favor of", "w": 1.5}, {"p": "deprecated", "w": 1.5},
-      {"p": "zastąpion*", "w": 2}, {"p": "zamiast", "w": 1}, {"p": "na rzecz", "w": 1.5}, {"p": "przestarzał*", "w": 1.5}]},
-    "lineage.merged_into": {"description": "X becomes part of Y.", "phrases": [
-      {"p": "merged into", "w": 2}, {"p": "becomes part of", "w": 2}, {"p": "folded into", "w": 2}, {"p": "absorbed by", "w": 2}, {"p": "becomes a capability pack", "w": 2.5},
-      {"p": "staje się częścią", "w": 2}, {"p": "wchodzi do", "w": 1.5}, {"p": "scal*", "w": 1.5}, {"p": "wpada do", "w": 1.5}, {"p": "nie powinien być osobną aplikacją", "w": 2.5}, {"p": "to nie osobny", "w": 2}]},
-    "lineage.evolved_into": {"description": "X turns into Y (identity continues).", "phrases": [
-      {"p": "evolved into", "w": 2}, {"p": "becomes", "w": 1}, {"p": "migrat*", "w": 1.5}, {"p": "rewrite in", "w": 1.5}, {"p": "port to", "w": 1.5}, {"p": "ported to", "w": 1.5},
-      {"p": "staje się", "w": 1}, {"p": "migracja", "w": 1.5}, {"p": "przepisanie na", "w": 1.5}, {"p": "przeniesienie na", "w": 1.5}, {"p": "to jest", "w": 0.5}]},
-    "lineage.based_on": {"description": "Version/code derived from a base.", "phrases": [
-      {"p": "based on", "w": 2}, {"p": "forked from", "w": 2.5}, {"p": "on top of", "w": 1.5}, {"p": "starting from", "w": 1},
-      {"p": "na bazie", "w": 2}, {"p": "bazując na", "w": 2}, {"p": "od wersji", "w": 1.5}, {"p": "na podstawie", "w": 1}, {"p": "drugie podejście", "w": 1.5}]},
-    "enumeration.options": {"description": "Option lists (brainstorm roots).", "phrases": [
-      {"p": "option 1", "w": 2}, {"p": "option a", "w": 2}, {"p": "alternatives", "w": 1.5}, {"p": "either", "w": 1}, {"p": "vs", "w": 1}, {"p": "versus", "w": 1}, {"p": "or rather", "w": 1},
-      {"p": "opcja 1", "w": 2}, {"p": "opcja a", "w": 2}, {"p": "wariant*", "w": 1.5}, {"p": "albo", "w": 0.5}, {"p": "alternatyw*", "w": 1.5}, {"p": "do wyboru", "w": 2}, {"p": "możliwości", "w": 1}]},
-    "enumeration.chain": {"description": "Ordered stage chains.", "phrases": [
-      {"p": "→", "w": 2}, {"p": "->", "w": 1.5}, {"p": "then", "w": 0.5}, {"p": "step 1", "w": 2}, {"p": "stage", "w": 1}, {"p": "pipeline", "w": 1.5},
-      {"p": "krok 1", "w": 2}, {"p": "etap*", "w": 1.5}, {"p": "potok", "w": 1.5}, {"p": "następnie", "w": 0.5}]},
-    "paradigm.multiplatform_app": {"description": "Anchor cue for multiplatform_app.", "phrases": [
-      {"p": "cross-platform", "w": 2}, {"p": "multi-platform", "w": 2}, {"p": "multiplatform", "w": 2}, {"p": "android and desktop", "w": 2}, {"p": "android + desktop", "w": 2},
-      {"p": "wieloplatformow*", "w": 2}, {"p": "na androida i desktop", "w": 2}, {"p": "pracy wieloplatformowej", "w": 2}, {"p": "single codebase", "w": 1.5}, {"p": "jeden kod", "w": 1}]},
-    "paradigm.pipeline": {"description": "Anchor cue for pipeline.", "phrases": [
-      {"p": "pipeline", "w": 1.5}, {"p": "workflow", "w": 1}, {"p": "stage", "w": 0.5}, {"p": "ingest", "w": 1}, {"p": "render", "w": 0.5},
-      {"p": "potok", "w": 1.5}, {"p": "przepływ", "w": 1}, {"p": "etap*", "w": 0.5}]},
-    "paradigm.brainstorm": {"description": "Anchor cue for brainstorm.", "phrases": [
-      {"p": "brainstorm", "w": 2}, {"p": "ideas for", "w": 1.5}, {"p": "options for", "w": 1.5}, {"p": "which is better", "w": 1.5}, {"p": "pros and cons", "w": 2},
-      {"p": "burza mózgów", "w": 2}, {"p": "pomysły na", "w": 1.5}, {"p": "co lepsze", "w": 1.5}, {"p": "za i przeciw", "w": 2}, {"p": "zastanawiam się", "w": 1}]},
-    "paradigm.specification": {"description": "Anchor cue for specification.", "phrases": [
-      {"p": "specification", "w": 2}, {"p": "spec", "w": 1.5}, {"p": "requirements", "w": 2}, {"p": "contract", "w": 1}, {"p": "interface", "w": 1},
-      {"p": "specyfikacj*", "w": 2}, {"p": "wymagania", "w": 2}, {"p": "kontrakt*", "w": 1}, {"p": "master spec", "w": 2}]},
-    "paradigm.agent_system": {"description": "Anchor cue for agent_system.", "phrases": [
-      {"p": "agent", "w": 1}, {"p": "autonomous", "w": 1.5}, {"p": "computer use", "w": 2}, {"p": "tool use", "w": 1.5}, {"p": "multi-agent", "w": 2},
-      {"p": "autonomiczny agent", "w": 2}, {"p": "agent kodujący", "w": 2}, {"p": "role modeli", "w": 1.5}, {"p": "samoreplikacj*", "w": 2}]},
-    "purpose": {"description": "Sentences stating what a subject is for (has_purpose facts).", "phrases": [
-      {"p": "is a", "w": 0.5}, {"p": "is an", "w": 0.5}, {"p": "is meant to", "w": 1.5}, {"p": "the goal is", "w": 2}, {"p": "purpose", "w": 2}, {"p": "used for", "w": 1},
-      {"p": "to jest", "w": 0.5}, {"p": "służy do", "w": 2}, {"p": "celem jest", "w": 2}, {"p": "ma służyć", "w": 2}, {"p": "aplikacja do", "w": 1.5}, {"p": "narzędzie do", "w": 1.5}]}
+    {
+     "p": "never",
+     "w": 1.5
+    },
+    {
+     "p": "must",
+     "w": 1
+    },
+    {
+     "p": "must not",
+     "w": 1.5
+    },
+    {
+     "p": "should not",
+     "w": 1
+    },
+    {
+     "p": "principle",
+     "w": 2
+    },
+    {
+     "p": "rule of thumb",
+     "w": 2
+    },
+    {
+     "p": "philosophy",
+     "w": 2
+    },
+    {
+     "p": "invariant",
+     "w": 1.5
+    },
+    {
+     "p": "by default",
+     "w": 1
+    },
+    {
+     "p": "zawsze",
+     "w": 1
+    },
+    {
+     "p": "nigdy",
+     "w": 1.5
+    },
+    {
+     "p": "musi",
+     "w": 1
+    },
+    {
+     "p": "nie wolno",
+     "w": 2
+    },
+    {
+     "p": "nie może",
+     "w": 1
+    },
+    {
+     "p": "zasad*",
+     "w": 2
+    },
+    {
+     "p": "reguł*",
+     "w": 1.5
+    },
+    {
+     "p": "filozofi*",
+     "w": 2
+    },
+    {
+     "p": "konstytucj*",
+     "w": 2
+    },
+    {
+     "p": "domyślnie",
+     "w": 1
+    },
+    {
+     "p": "≠",
+     "w": 2
+    },
+    {
+     "p": "nie „",
+     "w": 0.5
+    }
+   ]
+  },
+  "status.implemented": {
+   "description": "Component/feature works.",
+   "phrases": [
+    {
+     "p": "implemented",
+     "w": 2
+    },
+    {
+     "p": "works",
+     "w": 1
+    },
+    {
+     "p": "working",
+     "w": 1
+    },
+    {
+     "p": "done",
+     "w": 1
+    },
+    {
+     "p": "shipped",
+     "w": 2
+    },
+    {
+     "p": "landed",
+     "w": 1.5
+    },
+    {
+     "p": "zaimplementowa*",
+     "w": 2
+    },
+    {
+     "p": "działa",
+     "w": 1
+    },
+    {
+     "p": "gotowe",
+     "w": 1.5
+    },
+    {
+     "p": "zrobione",
+     "w": 1.5
+    },
+    {
+     "p": "dodałem",
+     "w": 1
+    }
+   ]
+  },
+  "status.partial": {
+   "description": "Component exists but is incomplete or broken.",
+   "phrases": [
+    {
+     "p": "partially",
+     "w": 2
+    },
+    {
+     "p": "not yet",
+     "w": 1.5
+    },
+    {
+     "p": "stub",
+     "w": 2
+    },
+    {
+     "p": "placeholder",
+     "w": 2
+    },
+    {
+     "p": "wip",
+     "w": 2
+    },
+    {
+     "p": "work in progress",
+     "w": 2
+    },
+    {
+     "p": "doesn't work",
+     "w": 1.5
+    },
+    {
+     "p": "częściowo",
+     "w": 2
+    },
+    {
+     "p": "jeszcze nie",
+     "w": 1.5
+    },
+    {
+     "p": "zaślepk*",
+     "w": 2
+    },
+    {
+     "p": "w trakcie",
+     "w": 1.5
+    },
+    {
+     "p": "nie działa",
+     "w": 1.5
+    },
+    {
+     "p": "wstępn*",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.planned": {
+   "description": "Future-tense intentions only.",
+   "phrases": [
+    {
+     "p": "will add",
+     "w": 1.5
+    },
+    {
+     "p": "we'll add",
+     "w": 1.5
+    },
+    {
+     "p": "plan to",
+     "w": 1.5
+    },
+    {
+     "p": "planned",
+     "w": 2
+    },
+    {
+     "p": "todo",
+     "w": 1
+    },
+    {
+     "p": "later",
+     "w": 0.5
+    },
+    {
+     "p": "next step",
+     "w": 1.5
+    },
+    {
+     "p": "roadmap",
+     "w": 1.5
+    },
+    {
+     "p": "dodamy",
+     "w": 1.5
+    },
+    {
+     "p": "planuj*",
+     "w": 1.5
+    },
+    {
+     "p": "w planach",
+     "w": 2
+    },
+    {
+     "p": "następny krok",
+     "w": 1.5
+    },
+    {
+     "p": "później",
+     "w": 0.5
+    },
+    {
+     "p": "kiedyś",
+     "w": 0.5
+    }
+   ]
+  },
+  "status.abandoned": {
+   "description": "Explicitly given up.",
+   "phrases": [
+    {
+     "p": "abandon*",
+     "w": 2
+    },
+    {
+     "p": "gave up",
+     "w": 2
+    },
+    {
+     "p": "dropped",
+     "w": 1.5
+    },
+    {
+     "p": "no longer",
+     "w": 1
+    },
+    {
+     "p": "dead end",
+     "w": 2
+    },
+    {
+     "p": "scrapped",
+     "w": 2
+    },
+    {
+     "p": "porzuc*",
+     "w": 2
+    },
+    {
+     "p": "rezygnuj*",
+     "w": 2
+    },
+    {
+     "p": "zarzuc*",
+     "w": 2
+    },
+    {
+     "p": "odpuszczam*",
+     "w": 1.5
+    },
+    {
+     "p": "ślepa uliczka",
+     "w": 2
+    }
+   ]
+  },
+  "status.paused": {
+   "description": "Explicitly on hold.",
+   "phrases": [
+    {
+     "p": "on hold",
+     "w": 2
+    },
+    {
+     "p": "paused",
+     "w": 2
+    },
+    {
+     "p": "postponed",
+     "w": 2
+    },
+    {
+     "p": "parked",
+     "w": 1.5
+    },
+    {
+     "p": "wstrzyman*",
+     "w": 2
+    },
+    {
+     "p": "odłożon*",
+     "w": 2
+    },
+    {
+     "p": "na później",
+     "w": 1.5
+    },
+    {
+     "p": "zawieszon*",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.superseded": {
+   "description": "Replaced by something else (object of the phrase = successor).",
+   "phrases": [
+    {
+     "p": "replaced by",
+     "w": 2
+    },
+    {
+     "p": "superseded by",
+     "w": 2.5
+    },
+    {
+     "p": "instead of",
+     "w": 1
+    },
+    {
+     "p": "in favour of",
+     "w": 1.5
+    },
+    {
+     "p": "in favor of",
+     "w": 1.5
+    },
+    {
+     "p": "deprecated",
+     "w": 1.5
+    },
+    {
+     "p": "zastąpion*",
+     "w": 2
+    },
+    {
+     "p": "zamiast",
+     "w": 1
+    },
+    {
+     "p": "na rzecz",
+     "w": 1.5
+    },
+    {
+     "p": "przestarzał*",
+     "w": 1.5
+    }
+   ]
+  },
+  "lineage.merged_into": {
+   "description": "X becomes part of Y.",
+   "phrases": [
+    {
+     "p": "merged into",
+     "w": 2
+    },
+    {
+     "p": "becomes part of",
+     "w": 2
+    },
+    {
+     "p": "folded into",
+     "w": 2
+    },
+    {
+     "p": "absorbed by",
+     "w": 2
+    },
+    {
+     "p": "becomes a capability pack",
+     "w": 2.5
+    },
+    {
+     "p": "staje się częścią",
+     "w": 2
+    },
+    {
+     "p": "wchodzi do",
+     "w": 1.5
+    },
+    {
+     "p": "scal*",
+     "w": 1.5
+    },
+    {
+     "p": "wpada do",
+     "w": 1.5
+    },
+    {
+     "p": "nie powinien być osobną aplikacją",
+     "w": 2.5
+    },
+    {
+     "p": "to nie osobny",
+     "w": 2
+    }
+   ]
+  },
+  "lineage.evolved_into": {
+   "description": "X turns into Y (identity continues).",
+   "phrases": [
+    {
+     "p": "evolved into",
+     "w": 2
+    },
+    {
+     "p": "becomes",
+     "w": 1
+    },
+    {
+     "p": "migrat*",
+     "w": 1.5
+    },
+    {
+     "p": "rewrite in",
+     "w": 1.5
+    },
+    {
+     "p": "port to",
+     "w": 1.5
+    },
+    {
+     "p": "ported to",
+     "w": 1.5
+    },
+    {
+     "p": "staje się",
+     "w": 1
+    },
+    {
+     "p": "migracja",
+     "w": 1.5
+    },
+    {
+     "p": "przepisanie na",
+     "w": 1.5
+    },
+    {
+     "p": "przeniesienie na",
+     "w": 1.5
+    },
+    {
+     "p": "to jest",
+     "w": 0.5
+    }
+   ]
+  },
+  "lineage.based_on": {
+   "description": "Version/code derived from a base.",
+   "phrases": [
+    {
+     "p": "based on",
+     "w": 2
+    },
+    {
+     "p": "forked from",
+     "w": 2.5
+    },
+    {
+     "p": "on top of",
+     "w": 1.5
+    },
+    {
+     "p": "starting from",
+     "w": 1
+    },
+    {
+     "p": "na bazie",
+     "w": 2
+    },
+    {
+     "p": "bazując na",
+     "w": 2
+    },
+    {
+     "p": "od wersji",
+     "w": 1.5
+    },
+    {
+     "p": "na podstawie",
+     "w": 1
+    },
+    {
+     "p": "drugie podejście",
+     "w": 1.5
+    }
+   ]
+  },
+  "enumeration.options": {
+   "description": "Option lists (brainstorm roots).",
+   "phrases": [
+    {
+     "p": "option 1",
+     "w": 2
+    },
+    {
+     "p": "option a",
+     "w": 2
+    },
+    {
+     "p": "alternatives",
+     "w": 1.5
+    },
+    {
+     "p": "either",
+     "w": 1
+    },
+    {
+     "p": "vs",
+     "w": 1
+    },
+    {
+     "p": "versus",
+     "w": 1
+    },
+    {
+     "p": "or rather",
+     "w": 1
+    },
+    {
+     "p": "opcja 1",
+     "w": 2
+    },
+    {
+     "p": "opcja a",
+     "w": 2
+    },
+    {
+     "p": "wariant*",
+     "w": 1.5
+    },
+    {
+     "p": "albo",
+     "w": 0.5
+    },
+    {
+     "p": "alternatyw*",
+     "w": 1.5
+    },
+    {
+     "p": "do wyboru",
+     "w": 2
+    },
+    {
+     "p": "możliwości",
+     "w": 1
+    }
+   ]
+  },
+  "enumeration.chain": {
+   "description": "Ordered stage chains.",
+   "phrases": [
+    {
+     "p": "→",
+     "w": 2
+    },
+    {
+     "p": "->",
+     "w": 1.5
+    },
+    {
+     "p": "then",
+     "w": 0.5
+    },
+    {
+     "p": "step 1",
+     "w": 2
+    },
+    {
+     "p": "stage",
+     "w": 1
+    },
+    {
+     "p": "pipeline",
+     "w": 1.5
+    },
+    {
+     "p": "krok 1",
+     "w": 2
+    },
+    {
+     "p": "etap*",
+     "w": 1.5
+    },
+    {
+     "p": "potok",
+     "w": 1.5
+    },
+    {
+     "p": "następnie",
+     "w": 0.5
+    }
+   ]
+  },
+  "paradigm.multiplatform_app": {
+   "description": "Anchor cue for multiplatform_app.",
+   "phrases": [
+    {
+     "p": "cross-platform",
+     "w": 2
+    },
+    {
+     "p": "multi-platform",
+     "w": 2
+    },
+    {
+     "p": "multiplatform",
+     "w": 2
+    },
+    {
+     "p": "android and desktop",
+     "w": 2
+    },
+    {
+     "p": "android + desktop",
+     "w": 2
+    },
+    {
+     "p": "wieloplatformow*",
+     "w": 2
+    },
+    {
+     "p": "na androida i desktop",
+     "w": 2
+    },
+    {
+     "p": "pracy wieloplatformowej",
+     "w": 2
+    },
+    {
+     "p": "single codebase",
+     "w": 1.5
+    },
+    {
+     "p": "jeden kod",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.pipeline": {
+   "description": "Anchor cue for pipeline.",
+   "phrases": [
+    {
+     "p": "pipeline",
+     "w": 1.5
+    },
+    {
+     "p": "workflow",
+     "w": 1
+    },
+    {
+     "p": "stage",
+     "w": 0.5
+    },
+    {
+     "p": "ingest",
+     "w": 1
+    },
+    {
+     "p": "render",
+     "w": 0.5
+    },
+    {
+     "p": "potok",
+     "w": 1.5
+    },
+    {
+     "p": "przepływ",
+     "w": 1
+    },
+    {
+     "p": "etap*",
+     "w": 0.5
+    }
+   ]
+  },
+  "paradigm.brainstorm": {
+   "description": "Anchor cue for brainstorm.",
+   "phrases": [
+    {
+     "p": "brainstorm",
+     "w": 2
+    },
+    {
+     "p": "ideas for",
+     "w": 1.5
+    },
+    {
+     "p": "options for",
+     "w": 1.5
+    },
+    {
+     "p": "which is better",
+     "w": 1.5
+    },
+    {
+     "p": "pros and cons",
+     "w": 2
+    },
+    {
+     "p": "burza mózgów",
+     "w": 2
+    },
+    {
+     "p": "pomysły na",
+     "w": 1.5
+    },
+    {
+     "p": "co lepsze",
+     "w": 1.5
+    },
+    {
+     "p": "za i przeciw",
+     "w": 2
+    },
+    {
+     "p": "zastanawiam się",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.specification": {
+   "description": "Anchor cue for specification.",
+   "phrases": [
+    {
+     "p": "specification",
+     "w": 2
+    },
+    {
+     "p": "spec",
+     "w": 1.5
+    },
+    {
+     "p": "requirements",
+     "w": 2
+    },
+    {
+     "p": "contract",
+     "w": 1
+    },
+    {
+     "p": "interface",
+     "w": 1
+    },
+    {
+     "p": "specyfikacj*",
+     "w": 2
+    },
+    {
+     "p": "wymagania",
+     "w": 2
+    },
+    {
+     "p": "kontrakt*",
+     "w": 1
+    },
+    {
+     "p": "master spec",
+     "w": 2
+    }
+   ]
+  },
+  "paradigm.agent_system": {
+   "description": "Anchor cue for agent_system.",
+   "phrases": [
+    {
+     "p": "agent",
+     "w": 1
+    },
+    {
+     "p": "autonomous",
+     "w": 1.5
+    },
+    {
+     "p": "computer use",
+     "w": 2
+    },
+    {
+     "p": "tool use",
+     "w": 1.5
+    },
+    {
+     "p": "multi-agent",
+     "w": 2
+    },
+    {
+     "p": "autonomiczny agent",
+     "w": 2
+    },
+    {
+     "p": "agent kodujący",
+     "w": 2
+    },
+    {
+     "p": "role modeli",
+     "w": 1.5
+    },
+    {
+     "p": "samoreplikacj*",
+     "w": 2
+    }
+   ]
+  },
+  "purpose": {
+   "description": "Sentences stating what a subject is for (has_purpose facts).",
+   "phrases": [
+    {
+     "p": "is a",
+     "w": 0.5
+    },
+    {
+     "p": "is an",
+     "w": 0.5
+    },
+    {
+     "p": "is meant to",
+     "w": 1.5
+    },
+    {
+     "p": "the goal is",
+     "w": 2
+    },
+    {
+     "p": "purpose",
+     "w": 2
+    },
+    {
+     "p": "used for",
+     "w": 1
+    },
+    {
+     "p": "to jest",
+     "w": 0.5
+    },
+    {
+     "p": "służy do",
+     "w": 2
+    },
+    {
+     "p": "celem jest",
+     "w": 2
+    },
+    {
+     "p": "ma służyć",
+     "w": 2
+    },
+    {
+     "p": "aplikacja do",
+     "w": 1.5
+    },
+    {
+     "p": "narzędzie do",
+     "w": 1.5
+    }
+   ]
+  },
+  "paradigm.film": {
+   "description": "Anchor cue for the film project kind.",
+   "phrases": [
+    {
+     "p": "screenplay",
+     "w": 2
+    },
+    {
+     "p": "storyboard",
+     "w": 2
+    },
+    {
+     "p": "scene",
+     "w": 1
+    },
+    {
+     "p": "character",
+     "w": 1
+    },
+    {
+     "p": "shot",
+     "w": 1
+    },
+    {
+     "p": "scenariusz",
+     "w": 2
+    },
+    {
+     "p": "scenopis",
+     "w": 2
+    },
+    {
+     "p": "scena",
+     "w": 1
+    },
+    {
+     "p": "postać",
+     "w": 1
+    },
+    {
+     "p": "ujęci*",
+     "w": 1
+    },
+    {
+     "p": "film*",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.music": {
+   "description": "Anchor cue for the music project kind.",
+   "phrases": [
+    {
+     "p": "chorus",
+     "w": 2
+    },
+    {
+     "p": "verse",
+     "w": 1.5
+    },
+    {
+     "p": "bpm",
+     "w": 2
+    },
+    {
+     "p": "mixdown",
+     "w": 2
+    },
+    {
+     "p": "master*",
+     "w": 1
+    },
+    {
+     "p": "track",
+     "w": 0.5
+    },
+    {
+     "p": "refren",
+     "w": 2
+    },
+    {
+     "p": "zwrotk*",
+     "w": 1.5
+    },
+    {
+     "p": "tonacj*",
+     "w": 1.5
+    },
+    {
+     "p": "utwór",
+     "w": 1
+    },
+    {
+     "p": "miks*",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.legal_case": {
+   "description": "Anchor cue for the legal_case project kind.",
+   "phrases": [
+    {
+     "p": "court",
+     "w": 1.5
+    },
+    {
+     "p": "appeal",
+     "w": 1.5
+    },
+    {
+     "p": "article",
+     "w": 0.5
+    },
+    {
+     "p": "deadline",
+     "w": 1
+    },
+    {
+     "p": "disciplinary",
+     "w": 2
+    },
+    {
+     "p": "sąd",
+     "w": 1.5
+    },
+    {
+     "p": "odwołani*",
+     "w": 1.5
+    },
+    {
+     "p": "art.",
+     "w": 1
+    },
+    {
+     "p": "kodeks*",
+     "w": 1.5
+    },
+    {
+     "p": "postępowani*",
+     "w": 1.5
+    },
+    {
+     "p": "dyscyplinarn*",
+     "w": 2
+    },
+    {
+     "p": "zarzut*",
+     "w": 1
+    },
+    {
+     "p": "pismo procesowe",
+     "w": 2
+    }
+   ]
+  },
+  "paradigm.research": {
+   "description": "Anchor cue for the research project kind.",
+   "phrases": [
+    {
+     "p": "hypothesis",
+     "w": 2
+    },
+    {
+     "p": "experiment",
+     "w": 1.5
+    },
+    {
+     "p": "dataset",
+     "w": 1
+    },
+    {
+     "p": "replicat*",
+     "w": 1.5
+    },
+    {
+     "p": "falsif*",
+     "w": 2
+    },
+    {
+     "p": "hipotez*",
+     "w": 2
+    },
+    {
+     "p": "eksperyment*",
+     "w": 1.5
+    },
+    {
+     "p": "badani*",
+     "w": 1
+    },
+    {
+     "p": "falsyfik*",
+     "w": 2
+    }
+   ]
   }
+ }
 }

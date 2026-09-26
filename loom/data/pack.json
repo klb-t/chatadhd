@@ -1,35 +1,168 @@
 {
-  "schema": "loom.kb.pack/1",
-  "id": "builtin",
-  "version": 1,
-  "description": "Loom paradigm-engine data pack (policy, paradigms, lexicons, principles, rules as DATA; MEGA MASTER §2.B). Every file of the pack is listed here with its schema; the loader rejects unlisted JSON files, missing files and schema mismatches. The build embeds this directory (src/kb/pack_embedded.inc, regenerate with tools/gen_kb_pack.py); <data_dir>/kb/ may hold an overlay pack (same layout, files replace built-in ones) written by promotion.",
-  "files": [
-    {"path": "schema/types.json", "schema": "loom.kb.types/1"},
-    {"path": "lexicons/stopwords_base.json", "schema": "loom.kb.stopwords/1"},
-    {"path": "lexicons/stopwords.json", "schema": "loom.kb.stopwords/1"},
-    {"path": "lexicons/stemming.json", "schema": "loom.kb.stemming/1"},
-    {"path": "lexicons/glossary.json", "schema": "loom.kb.glossary/1"},
-    {"path": "lexicons/gazetteer.json", "schema": "loom.kb.gazetteer/1"},
-    {"path": "lexicons/item_cues.json", "schema": "loom.kb.item_cues/1"},
-    {"path": "lexicons/cues.json", "schema": "loom.kb.cues/1"},
-    {"path": "lexicons/version_patterns.json", "schema": "loom.kb.version_patterns/1"},
-    {"path": "lexicons/relation_patterns.json", "schema": "loom.kb.relation_patterns/1"},
-    {"path": "profiles/self.json", "schema": "loom.kb.profile/1"},
-    {"path": "philosophy/seed_principles.json", "schema": "loom.kb.principles/1"},
-    {"path": "rules/inference_rules.json", "schema": "loom.kb.rules/1"},
-    {"path": "rules/checks.json", "schema": "loom.kb.checks/1"},
-    {"path": "policy/thresholds.json", "schema": "loom.kb.thresholds/1"},
-    {"path": "policy/relevance.json", "schema": "loom.kb.relevance/1"},
-    {"path": "policy/selection_rules.json", "schema": "loom.kb.selection_rules/1"},
-    {"path": "policy/calibration.json", "schema": "loom.kb.calibration/1"},
-    {"path": "policy/evidence_encoding.json", "schema": "loom.kb.evidence_encoding/1"},
-    {"path": "paradigms/multiplatform_app.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/pipeline.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/brainstorm.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/specification.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/coding_philosophy.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/codebase.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/version_history.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/agent_system.json", "schema": "loom.kb.paradigm/1"}
-  ]
+ "schema": "loom.kb.pack/1",
+ "id": "builtin",
+ "version": 2,
+ "description": "Loom knowledge-layer data pack (LOOM_CONCEPTUAL_MODEL: open sets as DATA, I6; MEGA MASTER §2.B). Every file is listed here with its schema; the loader rejects unlisted JSON files, missing files and schema mismatches. The build embeds this directory (src/kb/pack_embedded.inc, regenerate with tools/gen_kb_pack.py); <data_dir>/kb/ may hold an overlay pack (same layout, files replace built-in ones) written by promotion. Layout: schema/ (open vocabularies), lexicons/, profiles/, philosophy/ (principles, operators: priors), rules/ (operators that produce claims, checks), policy/, goals/, morphisms/ (anchoring meta-model, transfer), project_kinds/, facets/, artifact_types/.",
+ "files": [
+  {
+   "path": "schema/types.json",
+   "schema": "loom.kb.types/1"
+  },
+  {
+   "path": "lexicons/stopwords_base.json",
+   "schema": "loom.kb.stopwords/1"
+  },
+  {
+   "path": "lexicons/stopwords.json",
+   "schema": "loom.kb.stopwords/1"
+  },
+  {
+   "path": "lexicons/stemming.json",
+   "schema": "loom.kb.stemming/1"
+  },
+  {
+   "path": "lexicons/glossary.json",
+   "schema": "loom.kb.glossary/1"
+  },
+  {
+   "path": "lexicons/gazetteer.json",
+   "schema": "loom.kb.gazetteer/1"
+  },
+  {
+   "path": "lexicons/item_cues.json",
+   "schema": "loom.kb.item_cues/1"
+  },
+  {
+   "path": "lexicons/cues.json",
+   "schema": "loom.kb.cues/1"
+  },
+  {
+   "path": "lexicons/version_patterns.json",
+   "schema": "loom.kb.version_patterns/1"
+  },
+  {
+   "path": "lexicons/relation_patterns.json",
+   "schema": "loom.kb.relation_patterns/1"
+  },
+  {
+   "path": "profiles/self.json",
+   "schema": "loom.kb.profile/1"
+  },
+  {
+   "path": "philosophy/principles.json",
+   "schema": "loom.kb.principles/2"
+  },
+  {
+   "path": "philosophy/operators.json",
+   "schema": "loom.kb.operators/1"
+  },
+  {
+   "path": "rules/inference_rules.json",
+   "schema": "loom.kb.rules/2"
+  },
+  {
+   "path": "rules/checks.json",
+   "schema": "loom.kb.checks/1"
+  },
+  {
+   "path": "policy/thresholds.json",
+   "schema": "loom.kb.thresholds/1"
+  },
+  {
+   "path": "policy/relevance.json",
+   "schema": "loom.kb.relevance/1"
+  },
+  {
+   "path": "policy/selection_rules.json",
+   "schema": "loom.kb.selection_rules/1"
+  },
+  {
+   "path": "policy/calibration.json",
+   "schema": "loom.kb.calibration/1"
+  },
+  {
+   "path": "policy/evidence_encoding.json",
+   "schema": "loom.kb.evidence_encoding/1"
+  },
+  {
+   "path": "goals/goal_types.json",
+   "schema": "loom.kb.goal_types/1"
+  },
+  {
+   "path": "morphisms/anchoring.json",
+   "schema": "loom.kb.anchoring/1"
+  },
+  {
+   "path": "morphisms/transfer.json",
+   "schema": "loom.kb.morphisms/1"
+  },
+  {
+   "path": "project_kinds/software_app.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/film.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/music.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/legal_case.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/research.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "facets/multiplatform.json",
+   "schema": "loom.kb.facet/1"
+  },
+  {
+   "path": "facets/agent.json",
+   "schema": "loom.kb.facet/1"
+  },
+  {
+   "path": "facets/staged_transformation.json",
+   "schema": "loom.kb.facet/1"
+  },
+  {
+   "path": "artifact_types/conversation.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/brainstorm.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/specification.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/codebase.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/commit.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/email.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/recording_transcript.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/screenplay.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/pleading.json",
+   "schema": "loom.kb.artifact_type/1"
+  }
+ ]
 }

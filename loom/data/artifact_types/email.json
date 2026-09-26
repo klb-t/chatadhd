@@ -1,0 +1,101 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "email",
+ "version": 1,
+ "title": {
+  "en": "E-mail",
+  "pl": "E-mail"
+ },
+ "description": "An e-mail (evidence in a legal case, R9): headers, body, attachments; the original bytes stay immutable.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
+  }
+ ],
+ "medium": "structured",
+ "detect": {
+  "any": [
+   {
+    "op": "file_ext",
+    "value": ".eml"
+   },
+   {
+    "op": "file_ext",
+    "value": ".mbox"
+   },
+   {
+    "op": "mime",
+    "value": "message/rfc822"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "email_headers",
+   "sentences",
+   "list_items"
+  ],
+  "observation_kinds": [
+   "field",
+   "sentence",
+   "list_item"
+  ]
+ },
+ "extract": [
+  {
+   "op": "headers"
+  },
+  {
+   "op": "dates"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "citations"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "from",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "to",
+   "type": "string",
+   "card": "many"
+  },
+  {
+   "name": "date",
+   "type": "date",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "subject",
+   "type": "text",
+   "card": "one"
+  },
+  {
+   "name": "attachments",
+   "type": "string",
+   "card": "many"
+  },
+  {
+   "name": "content_hash",
+   "type": "string",
+   "card": "one",
+   "description": "chain of custody"
+  }
+ ]
+}

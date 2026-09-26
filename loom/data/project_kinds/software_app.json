@@ -1,0 +1,776 @@
+{
+ "schema": "loom.kb.project_kind/1",
+ "id": "software_app",
+ "version": 1,
+ "title": {
+  "en": "Software application",
+  "pl": "Aplikacja"
+ },
+ "description": "A program being built: modules, interfaces, data, protocols, capabilities, invariants and deployment targets (note §6 'Software'); its versions, forks and lineage are the temporal dimension of the instance, not domain kinds. Multi-platform apps, agent systems and staged pipelines are this kind plus a facet (model §3.5).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§3, §4"
+  },
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Software"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4, §3.5"
+  },
+  {
+   "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+   "section": "Sesja 1-22",
+   "date": "2026-01-21"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "multiplatform",
+  "agent",
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "claim_count",
+    "rel": "has_component",
+    "min": 2
+   },
+   {
+    "op": "kind_hint",
+    "value": "software_app"
+   },
+   {
+    "op": "codebase"
+   }
+  ],
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "purpose",
+   "role": "intent",
+   "labels": {
+    "en": "Purpose",
+    "pl": "Cel"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_purpose",
+   "anchors": {
+    "terms": {
+     "en": [
+      "purpose",
+      "the goal is",
+      "meant to"
+     ],
+     "pl": [
+      "cel",
+      "służy do",
+      "ma służyć"
+     ]
+    },
+    "cues": [
+     "purpose"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_purpose",
+     "field": "value"
+    },
+    {
+     "kind": "items",
+     "type": "idea",
+     "scope": "subject",
+     "pick": "earliest"
+    }
+   ]
+  },
+  {
+   "id": "user_group",
+   "role": "actor",
+   "labels": {
+    "en": "User group",
+    "pl": "Użytkownicy"
+   },
+   "entity_kind": "actor",
+   "card": "many",
+   "relation": "has_user",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "users",
+      "user"
+     ],
+     "pl": [
+      "użytkownik",
+      "użytkownicy"
+     ]
+    }
+   }
+  },
+  {
+   "id": "requirement",
+   "role": "constraint",
+   "labels": {
+    "en": "Requirement",
+    "pl": "Wymaganie"
+   },
+   "entity_kind": "requirement",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_requirement",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "requirement",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "invariant",
+   "role": "constraint",
+   "labels": {
+    "en": "Invariant",
+    "pl": "Niezmiennik"
+   },
+   "entity_kind": "invariant",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_invariant",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "invariant",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "module",
+   "role": "part",
+   "labels": {
+    "en": "Module",
+    "pl": "Moduł"
+   },
+   "entity_kind": "component",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_component",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "module",
+      "component",
+      "engine",
+      "layer"
+     ],
+     "pl": [
+      "moduł",
+      "komponent",
+      "silnik",
+      "warstwa"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_component"
+    },
+    {
+     "kind": "codebase",
+     "field": "modules"
+    }
+   ]
+  },
+  {
+   "id": "external_service",
+   "role": "actor",
+   "labels": {
+    "en": "External service",
+    "pl": "Usługa zewnętrzna"
+   },
+   "entity_kind": "actor",
+   "card": "many",
+   "relation": "uses_service",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "data_flow"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "tool"
+    ]
+   }
+  },
+  {
+   "id": "data_source",
+   "role": "resource",
+   "labels": {
+    "en": "Data source",
+    "pl": "Źródło danych"
+   },
+   "entity_kind": "data_source",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "uses_data_source",
+   "anchors": {
+    "terms": {
+     "en": [
+      "data source",
+      "export",
+      "archive"
+     ],
+     "pl": [
+      "źródło danych",
+      "eksport",
+      "archiwum"
+     ]
+    }
+   }
+  },
+  {
+   "id": "store",
+   "role": "resource",
+   "labels": {
+    "en": "Store",
+    "pl": "Magazyn danych"
+   },
+   "entity_kind": "storage",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "stores_in",
+   "anchors": {
+    "lexicon": [
+     "storage"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "stores_in"
+    },
+    {
+     "kind": "lexicon",
+     "class": "storage",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "r.storage_local_first"
+   ]
+  },
+  {
+   "id": "model_provider",
+   "role": "resource",
+   "labels": {
+    "en": "Model / provider",
+    "pl": "Model / dostawca"
+   },
+   "entity_kind": "provider",
+   "card": "many",
+   "relation": "uses_provider",
+   "anchors": {
+    "terms": {
+     "en": [
+      "provider",
+      "model",
+      "llm"
+     ],
+     "pl": [
+      "dostawca",
+      "model"
+     ]
+    }
+   }
+  },
+  {
+   "id": "tool",
+   "role": "resource",
+   "labels": {
+    "en": "Tool",
+    "pl": "Narzędzie"
+   },
+   "entity_kind": "tool",
+   "card": "many",
+   "relation": "uses_tool",
+   "anchors": {
+    "lexicon": [
+     "tool"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "uses_tool"
+    },
+    {
+     "kind": "lexicon",
+     "class": "tool",
+     "scope": "subject_sentences"
+    }
+   ]
+  },
+  {
+   "id": "language",
+   "role": "resource",
+   "labels": {
+    "en": "Language",
+    "pl": "Język"
+   },
+   "entity_kind": "language",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "written_in",
+   "anchors": {
+    "lexicon": [
+     "language"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "written_in"
+    },
+    {
+     "kind": "codebase",
+     "field": "dominant_language"
+    }
+   ],
+   "rules": [
+    "r.core_language_from_codebase"
+   ]
+  },
+  {
+   "id": "ui_framework",
+   "role": "resource",
+   "labels": {
+    "en": "UI framework",
+    "pl": "Framework UI"
+   },
+   "entity_kind": "ui_framework",
+   "card": "many",
+   "relation": "uses_ui_framework",
+   "anchors": {
+    "lexicon": [
+     "ui_framework"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "uses_ui_framework"
+    },
+    {
+     "kind": "lexicon",
+     "class": "ui_framework",
+     "scope": "subject_sentences"
+    }
+   ]
+  },
+  {
+   "id": "interface",
+   "role": "interface",
+   "labels": {
+    "en": "Interface",
+    "pl": "Interfejs"
+   },
+   "entity_kind": "interface",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_interface",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "api",
+      "interface",
+      "abi",
+      "contract"
+     ],
+     "pl": [
+      "interfejs",
+      "kontrakt"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_interface"
+    },
+    {
+     "kind": "codebase",
+     "field": "interfaces"
+    }
+   ],
+   "rules": [
+    "r.spec_interfaces_from_code"
+   ]
+  },
+  {
+   "id": "protocol",
+   "role": "interface",
+   "labels": {
+    "en": "Protocol / format",
+    "pl": "Protokół / format"
+   },
+   "entity_kind": "protocol",
+   "card": "many",
+   "relation": "uses_protocol",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "protocol",
+     "format"
+    ]
+   }
+  },
+  {
+   "id": "data_flow",
+   "role": "flow",
+   "labels": {
+    "en": "Data / control flow",
+    "pl": "Przepływ danych"
+   },
+   "entity_kind": "flow",
+   "card": "many",
+   "relation": "has_flow",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "flow",
+      "pipeline",
+      "->"
+     ],
+     "pl": [
+      "przepływ",
+      "potok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "release",
+   "role": "event",
+   "labels": {
+    "en": "Release / session / incident",
+    "pl": "Wydanie / sesja / incydent"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "release",
+      "incident"
+     ],
+     "pl": [
+      "wydanie",
+      "incydent"
+     ]
+    }
+   }
+  },
+  {
+   "id": "source_file",
+   "role": "artifact",
+   "labels": {
+    "en": "Source file",
+    "pl": "Plik źródłowy"
+   },
+   "entity_kind": "file",
+   "card": "many",
+   "relation": "has_file",
+   "relations": [
+    {
+     "rel": "implements",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "codebase",
+     "field": "files"
+    }
+   ]
+  },
+  {
+   "id": "document",
+   "role": "artifact",
+   "labels": {
+    "en": "Document",
+    "pl": "Dokument"
+   },
+   "entity_kind": "document",
+   "card": "many",
+   "relation": "has_document",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "spec",
+      "readme",
+      "documentation"
+     ],
+     "pl": [
+      "dokumentacja",
+      "specyfikacja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "build_step",
+   "role": "transformation",
+   "labels": {
+    "en": "Build / deploy / migration",
+    "pl": "Budowanie / wdrożenie / migracja"
+   },
+   "entity_kind": "build_step",
+   "card": "many",
+   "relation": "has_build_step",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "deliverable"
+    },
+    {
+     "rel": "consumes",
+     "target": "source_file"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "build",
+      "deploy",
+      "migration"
+     ],
+     "pl": [
+      "budowanie",
+      "wdrożenie",
+      "migracja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "test",
+   "role": "check",
+   "labels": {
+    "en": "Test / lint / compat test",
+    "pl": "Test"
+   },
+   "entity_kind": "test",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_test",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "test",
+      "tests",
+      "lint"
+     ],
+     "pl": [
+      "test",
+      "testy"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_test"
+    },
+    {
+     "kind": "codebase",
+     "field": "tests"
+    }
+   ]
+  },
+  {
+   "id": "deliverable",
+   "role": "output",
+   "labels": {
+    "en": "Build / release artifact",
+    "pl": "Produkt (build, wydanie)"
+   },
+   "entity_kind": "deliverable",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "purpose"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "apk",
+      "binary",
+      "release build"
+     ],
+     "pl": [
+      "paczka",
+      "zip"
+     ]
+    }
+   }
+  },
+  {
+   "id": "architecture_decision",
+   "role": "decision",
+   "labels": {
+    "en": "Architecture decision",
+    "pl": "Decyzja architektoniczna"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "decision",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "open_question",
+   "role": "question",
+   "labels": {
+    "en": "Open question / TODO",
+    "pl": "Otwarte pytanie / TODO"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "open_question",
+     "scope": "subject"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "sw.c1",
+   "expr": {
+    "op": "not_in",
+    "args": [
+     "$slot:store",
+     "$rejected_values"
+    ]
+   },
+   "on_violation": "conflict",
+   "why": "a store that an active decision rejected cannot be the current store"
+  },
+  {
+   "id": "sw.c2",
+   "expr": {
+    "op": "version_gte",
+    "args": [
+     "$temporal:current_version",
+     "$git_max_version"
+    ]
+   },
+   "on_violation": "conflict",
+   "why": "the current version is never older than the newest committed version"
+  }
+ ],
+ "rules": [
+  "r.current_version",
+  "r.project_status"
+ ]
+}

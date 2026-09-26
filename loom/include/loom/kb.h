@@ -79,24 +79,42 @@ struct ExpectedProperty {
 
 // ── Closed sets implemented in code ─────────────────────────────────
 // The pack validator rejects any name outside these. Adding a name is a
-// code change (new semantics, constitution E), reviewed by the lead.
+// code change (new semantics, MEGA MASTER §2.E), reviewed by the lead. The
+// model's own closed sets (evidence class, origin, role, ...) are enums in
+// loom/model.h; these are the operation vocabularies the pack may combine.
+//
+// Slot/domain-kind bindings: how candidate values are found for a slot.
 inline constexpr std::string_view kBindingKinds[] = {
-    "subject", "fact",   "items",    "lexicon", "codebase", "slot",
+    "subject", "claim",  "items",    "lexicon", "codebase", "slot",
     "principles", "forks", "enumeration", "versions", "checks"};
+// Paradigm anchors (does a subject look like an instance of this paradigm?).
 inline constexpr std::string_view kAnchorOps[] = {
-    "fact_count", "kind_hint", "cue", "option_set", "has_items", "principle_count", "codebase"};
+    "claim_count", "kind_hint", "cue", "option_set", "has_items", "principle_count", "codebase"};
+// Rule conditions ("when").
 inline constexpr std::string_view kConditionOps[] = {
-    "const", "nonempty", "empty", "all", "any", "not", "has_fact", "has_items", "principle_active", "eq", "gt"};
+    "const", "nonempty", "empty", "all", "any", "not", "has_claim", "has_items", "principle_active", "eq", "gt"};
+// Rule values ("value").
 inline constexpr std::string_view kValueOps[] = {
     "const",           "slot",           "max_version",          "union",          "lexicon_pick",
     "codebase_field",  "derive_project_status", "derive_component_status", "order_chain",
     "option_from_decision", "complement", "versions_above",      "first_mention_date",
-    "comentioned_components", "base_version", "version_forks",   "principle_template"};
+    "comentioned_components", "base_version", "version_forks",   "principle_template", "date_add"};
+// Expected-Property predicates (§2.4): what an inference vouches for.
 inline constexpr std::string_view kPredicates[] = {
     "all",          "any",          "not",           "nonempty",        "in_enum",
     "in_class",     "not_in",       "subset_of",     "version_gt",      "version_gte",
     "version_between", "date_between", "co_mentioned_with", "consistent_with", "available_on",
     "exists_symbol", "matches",     "not_contradicted_by", "ordered_by_date"};
+// Artifact types: recognition ops (detect), segmenters (unit -> observations)
+// and extractors (observations -> observed claims). Implemented by the
+// extract area (include/loom/extract.h).
+inline constexpr std::string_view kDetectOps[] = {"file_ext", "path_glob", "mime", "json_key", "export_shape", "heading", "cue"};
+inline constexpr std::string_view kSegmenters[] = {
+    "messages", "markdown_sections", "sentences", "list_items", "code_blocks", "code_symbols", "email_headers",
+    "timestamped_utterances", "scene_headings", "numbered_paragraphs", "commit_fields"};
+inline constexpr std::string_view kExtractors[] = {
+    "items", "entities_lexicon", "relation_patterns", "versions", "normative", "areas", "generalizations",
+    "decisions", "forks", "status_cues", "code_symbols", "citations", "dates", "speakers", "headers"};
 // Per-binding-kind field vocabularies.
 inline constexpr std::string_view kSubjectFields[] = {"label", "aliases", "status", "first_seen", "last_seen"};
 inline constexpr std::string_view kCodebaseFields[] = {"repo",        "languages", "dominant_language", "modules",
@@ -109,9 +127,13 @@ inline constexpr std::string_view kCardinalities[] = {"one", "many", "list"};
 inline constexpr std::string_view kViolationActions[] = {"conflict", "reject_instance", "extend"};
 inline constexpr std::string_view kCheckDetectors[] = {"string_array_literal", "regex_line", "regex_block"};
 inline constexpr std::string_view kRuleProduces[] = {"derived", "inferred", "extrapolated"};
-// Reference prefixes allowed in rule/constraint args ("$slot:x", "$value", ...).
+// Reference prefixes allowed in rule/constraint/morphism args:
+//   $slot:<kind> (same instance), $slot:<paradigm>.<kind> (the subject's
+//   instance of another paradigm), $temporal:<slot>, $field:<field of the
+//   target record>, $analog:<kind> (an analogous instance's observed value),
+//   $value, $subject, plus the named corpus facts below.
 inline constexpr std::string_view kRefPrefixes[] = {
-    "$value", "$subject", "$slot:", "$field:", "$analog:", "$git_max_version", "$corpus_end_date",
+    "$value", "$subject", "$slot:", "$temporal:", "$field:", "$analog:", "$git_max_version", "$corpus_end_date",
     "$rejected_values", "$prev_version_date", "$next_version_date"};
 
 bool in_closed_set(std::string_view name, const std::string_view* begin, const std::string_view* end) noexcept;
@@ -154,12 +176,17 @@ class Pack {
   int version() const;
   std::vector<std::string> files() const;              // relative paths, sorted
   const Json& file(std::string_view relpath) const;    // parsed document; null Json when absent
-  // Typed views (null Json when absent).
+  // Raw documents by role (null Json when absent). Typed views: model.h.
   const Json& types() const;                            // schema/types.json
-  Json paradigm_ids() const;                            // ["agent_system", ...] sorted
-  const Json& paradigm(std::string_view id) const;      // paradigms/<id>.json
+  // Ids of the files in a pack directory ("project_kinds", "facets",
+  // "artifact_types"), sorted: the file stems.
+  std::vector<std::string> ids(std::string_view dir) const;
+  const Json& project_kind(std::string_view id) const;  // project_kinds/<id>.json
+  const Json& facet(std::string_view id) const;         // facets/<id>.json
+  const Json& artifact_type(std::string_view id) const; // artifact_types/<id>.json
   const Json& rule(std::string_view id) const;          // element of rules/inference_rules.json
-  const Json& principle(std::string_view id) const;     // element of philosophy/seed_principles.json
+  const Json& principle(std::string_view id) const;     // element of philosophy/principles.json
+  const Json& op(std::string_view id) const;            // element of philosophy/operators.json
   const Json& policy(std::string_view name) const;      // policy/<name>.json
   const Json& lexicon(std::string_view name) const;     // lexicons/<name>.json
   const Json& profile(std::string_view id) const;       // profiles/<id>.json
@@ -178,11 +205,13 @@ class Pack {
 // itself. Issues are appended; returns true when none were added.
 bool validate_document(std::string_view relpath, std::string_view schema, const Json& doc, const Json& types,
                        std::vector<PackIssue>& issues);
-// Cross-file checks over a whole pack: rule ids referenced by paradigms
-// exist, principle ids referenced by rules/checks exist, check ids referenced
-// by principles exist, lexicon classes referenced by paradigms exist,
-// relations used by paradigms/patterns are declared in types.json, enum
-// names resolve, pack.json lists exactly the files present.
+// Cross-file checks over a whole pack: pack.json lists exactly the files
+// present; rules, principles, operators, checks, morphisms, facets, lexicon
+// and cue classes referenced anywhere exist; rule targets and $slot/$temporal
+// references resolve; every relation between domain kinds anchors on a role
+// relation of morphisms/anchoring.json; transfer morphisms link kinds of the
+// same universal role; facets apply to the kinds that list them; profile
+// projects name existing project kinds and facets.
 void validate_cross_references(const std::map<std::string, Json, std::less<>>& docs, std::vector<PackIssue>& issues);
 
 // ── Text normalisation (match keys; never display) ──────────────────

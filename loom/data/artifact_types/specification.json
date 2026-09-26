@@ -1,0 +1,102 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "specification",
+ "version": 1,
+ "title": {
+  "en": "Specification",
+  "pl": "Specyfikacja"
+ },
+ "description": "Requirements, invariants and interfaces stated for one subject, usually under spec-like headings (MEGA MASTER, CLAUDE.md, READMEs).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.9 step 11"
+  },
+  {
+   "doc": "CLAUDE.md",
+   "date": "2026-02-19",
+   "section": "whole file"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "cue",
+    "value": "paradigm.specification"
+   },
+   {
+    "op": "heading",
+    "value": "requirements"
+   },
+   {
+    "op": "heading",
+    "value": "wymagania"
+   }
+  ],
+  "min_score": 0.4
+ },
+ "parse": {
+  "segment": [
+   "markdown_sections",
+   "list_items",
+   "sentences",
+   "code_blocks"
+  ],
+  "observation_kinds": [
+   "heading",
+   "list_item",
+   "sentence",
+   "code_block"
+  ]
+ },
+ "extract": [
+  {
+   "op": "items"
+  },
+  {
+   "op": "normative"
+  },
+  {
+   "op": "decisions"
+  },
+  {
+   "op": "entities_lexicon"
+  },
+  {
+   "op": "code_symbols"
+  }
+ ],
+ "structure": [
+  {
+   "name": "subject",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "requirements",
+   "type": "text",
+   "card": "many",
+   "required": true
+  },
+  {
+   "name": "invariants",
+   "type": "text",
+   "card": "many"
+  },
+  {
+   "name": "interfaces",
+   "type": "entity:interface",
+   "card": "many"
+  },
+  {
+   "name": "open_questions",
+   "type": "text",
+   "card": "many"
+  }
+ ]
+}

@@ -1,0 +1,94 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "screenplay",
+ "version": 1,
+ "title": {
+  "en": "Screenplay",
+  "pl": "Scenariusz"
+ },
+ "description": "A screenplay: scene headings, action lines, dialogue by character; parsed into the film kind's scenes and characters.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "history/chatadhd_v0.9.0/data/schemas/film_structure.json",
+   "date": "2026-04-17",
+   "section": "scenes, narration"
+  },
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R8"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "heading",
+    "value": "INT."
+   },
+   {
+    "op": "heading",
+    "value": "EXT."
+   },
+   {
+    "op": "cue",
+    "value": "paradigm.film"
+   }
+  ],
+  "min_score": 0.4
+ },
+ "parse": {
+  "segment": [
+   "scene_headings",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "heading",
+   "sentence",
+   "utterance"
+  ]
+ },
+ "extract": [
+  {
+   "op": "entities_lexicon"
+  },
+  {
+   "op": "speakers"
+  },
+  {
+   "op": "items"
+  }
+ ],
+ "structure": [
+  {
+   "name": "title",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "scenes",
+   "type": "record[]",
+   "card": "list",
+   "fields": {
+    "heading": {
+     "type": "text"
+    },
+    "location": {
+     "type": "string"
+    },
+    "characters": {
+     "type": "string",
+     "card": "many"
+    }
+   }
+  },
+  {
+   "name": "characters",
+   "type": "entity:character",
+   "card": "many"
+  }
+ ]
+}

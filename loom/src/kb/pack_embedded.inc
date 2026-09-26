@@ -3,120 +3,1398 @@
 // NOLINTBEGIN
 const char* const kPackChunks0[] = {
     R"LOOMKB({
-  "schema": "loom.kb.pack/1",
-  "id": "builtin",
-  "version": 1,
-  "description": "Loom paradigm-engine data pack (policy, paradigms, lexicons, principles, rules as DATA; MEGA MASTER §2.B). Every file of the pack is listed here with its schema; the loader rejects unlisted JSON files, missing files and schema mismatches. The build embeds this directory (src/kb/pack_embedded.inc, regenerate with tools/gen_kb_pack.py); <data_dir>/kb/ may hold an overlay pack (same layout, files replace built-in ones) written by promotion.",
-  "files": [
-    {"path": "schema/types.json", "schema": "loom.kb.types/1"},
-    {"path": "lexicons/stopwords_base.json", "schema": "loom.kb.stopwords/1"},
-    {"path": "lexicons/stopwords.json", "schema": "loom.kb.stopwords/1"},
-    {"path": "lexicons/stemming.json", "schema": "loom.kb.stemming/1"},
-    {"path": "lexicons/glossary.json", "schema": "loom.kb.glossary/1"},
-    {"path": "lexicons/gazetteer.json", "schema": "loom.kb.gazetteer/1"},
-    {"path": "lexicons/item_cues.json", "schema": "loom.kb.item_cues/1"},
-    {"path": "lexicons/cues.json", "schema": "loom.kb.cues/1"},
-    {"path": "lexicons/version_patterns.json", "schema": "loom.kb.version_patterns/1"},
-    {"path": "lexicons/relation_patterns.json", "schema": "loom.kb.relation_patterns/1"},
-    {"path": "profiles/self.json", "schema": "loom.kb.profile/1"},
-    {"path": "philosophy/seed_principles.json", "schema": "loom.kb.principles/1"},
-    {"path": "rules/inference_rules.json", "schema": "loom.kb.rules/1"},
-    {"path": "rules/checks.json", "schema": "loom.kb.checks/1"},
-    {"path": "policy/thresholds.json", "schema": "loom.kb.thresholds/1"},
-    {"path": "policy/relevance.json", "schema": "loom.kb.relevance/1"},
-    {"path": "policy/selection_rules.json", "schema": "loom.kb.selection_rules/1"},
-    {"path": "policy/calibration.json", "schema": "loom.kb.calibration/1"},
-    {"path": "policy/evidence_encoding.json", "schema": "loom.kb.evidence_encoding/1"},
-    {"path": "paradigms/multiplatform_app.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/pipeline.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/brainstorm.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/specification.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/coding_philosophy.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/codebase.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/version_history.json", "schema": "loom.kb.paradigm/1"},
-    {"path": "paradigms/agent_system.json", "schema": "loom.kb.paradigm/1"}
-  ]
+ "schema": "loom.kb.pack/1",
+ "id": "builtin",
+ "version": 2,
+ "description": "Loom knowledge-layer data pack (LOOM_CONCEPTUAL_MODEL: open sets as DATA, I6; MEGA MASTER §2.B). Every file is listed here with its schema; the loader rejects unlisted JSON files, missing files and schema mismatches. The build embeds this directory (src/kb/pack_embedded.inc, regenerate with tools/gen_kb_pack.py); <data_dir>/kb/ may hold an overlay pack (same layout, files replace built-in ones) written by promotion. Layout: schema/ (open vocabularies), lexicons/, profiles/, philosophy/ (principles, operators: priors), rules/ (operators that produce claims, checks), policy/, goals/, morphisms/ (anchoring meta-model, transfer), project_kinds/, facets/, artifact_types/.",
+ "files": [
+  {
+   "path": "schema/types.json",
+   "schema": "loom.kb.types/1"
+  },
+  {
+   "path": "lexicons/stopwords_base.json",
+   "schema": "loom.kb.stopwords/1"
+  },
+  {
+   "path": "lexicons/stopwords.json",
+   "schema": "loom.kb.stopwords/1"
+  },
+  {
+   "path": "lexicons/stemming.json",
+   "schema": "loom.kb.stemming/1"
+  },
+  {
+   "path": "lexicons/glossary.json",
+   "schema": "loom.kb.glossary/1"
+  },
+  {
+   "path": "lexicons/gazetteer.json",
+   "schema": "loom.kb.gazetteer/1"
+  },
+  {
+   "path": "lexicons/item_cues.json",
+   "schema": "loom.kb.item_cues/1"
+  },
+  {
+   "path": "lexicons/cues.json",
+   "schema": "loom.kb.cues/1"
+  },
+  {
+   "path": "lexicons/version_patterns.json",
+   "schema": "loom.kb.version_patterns/1"
+  },
+  {
+   "path": "lexicons/relation_patterns.json",
+   "schema": "loom.kb.relation_patterns/1"
+  },
+  {
+   "path": "profiles/self.json",
+   "schema": "loom.kb.profile/1"
+  },
+  {
+   "path": "philosophy/principles.json",
+   "schema": "loom.kb.principles/2"
+  },
+  {
+   "path": "philosophy/operators.json",
+   "schema": "loom.kb.operators/1"
+  },
+  {
+   "path": "rules/inference_rules.json",
+   "schema": "loom.kb.rules/2"
+  },
+  {
+   "path": "rules/checks.json",
+   "schema": "loom.kb.checks/1"
+  },
+  {
+   "path": "policy/thresholds.json",
+   "schema": "loom.kb.thresholds/1"
+  },
+  {
+   "path": "policy/relevance.json",
+   "schema": "loom.kb.relevance/1"
+  },
+  {
+   "path": "policy/selection_rules.json",
+   "schema": "loom.kb.selection_rules/1"
+  },
+  {
+   "path": "policy/calibration.json",
+   "schema": "loom.kb.calibration/1"
+  },
+  {
+   "path": "policy/evidence_encoding.json",
+   "schema": "loom.kb.evidence_encoding/1"
+  },
+  {
+   "path": "goals/goal_types.json",
+   "schema": "loom.kb.goal_types/1"
+  },
+  {
+   "path": "morphisms/anchoring.json",
+   "schema": "loom.kb.anchoring/1"
+  },
+  {
+   "path": "morphisms/transfer.json",
+   "schema": "loom.kb.morphisms/1"
+  },
+  {
+   "path": "project_kinds/software_app.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/film.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/music.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/legal_case.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "project_kinds/research.json",
+   "schema": "loom.kb.project_kind/1"
+  },
+  {
+   "path": "facets/multiplatform.json",
+   "schema": "loom.kb.facet/1"
+  },
+  {
+   "path": "facets/agent.json",
+   "schema": "loom.kb.facet/1"
+  },
+  {
+   "path": "facets/staged_transformation.json",
+   "schema": "loom.kb.facet/1"
+  },
+  {
+   "path": "artifact_types/conversation.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/brainstorm.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/specification.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/codebase.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/commit.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/email.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/recording_transcript.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/screenplay.json",
+   "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "artifact_types/pleading.json",
+   "schema": "loom.kb.artifact_type/1"
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks1[] = {
     R"LOOMKB({
-  "schema": "loom.kb.types/1",
-  "description": "Open vocabularies used by the pack: entity kinds, enums and relation types. The closed sets that code implements (binding kinds, expected-property predicates, rule value ops, evidence classes) live in include/loom/kb.h; the validator rejects any pack file that uses a name outside them.",
-  "entity_kinds": [
-    {"kind": "project", "level": 0, "shape": "project"},
-    {"kind": "component", "level": 2, "shape": "component"},
-    {"kind": "version", "level": 1, "shape": "version"},
-    {"kind": "platform", "level": 2, "shape": "concept"},
-    {"kind": "language", "level": 2, "shape": "concept"},
-    {"kind": "ui_framework", "level": 2, "shape": "concept"},
-    {"kind": "storage", "level": 2, "shape": "concept"},
-    {"kind": "sync", "level": 2, "shape": "concept"},
-    {"kind": "protocol", "level": 2, "shape": "concept"},
-    {"kind": "format", "level": 2, "shape": "concept"},
-    {"kind": "tool", "level": 2, "shape": "concept"},
-    {"kind": "stage", "level": 2, "shape": "component"},
-    {"kind": "role", "level": 2, "shape": "component"},
-    {"kind": "concept", "level": 2, "shape": "concept"},
-    {"kind": "principle", "level": 1, "shape": "principle"},
-    {"kind": "decision", "level": 2, "shape": "decision"},
-    {"kind": "fork", "level": 2, "shape": "fork"},
-    {"kind": "option", "level": 3, "shape": "concept"},
-    {"kind": "open_question", "level": 2, "shape": "question"},
-    {"kind": "requirement", "level": 2, "shape": "decision"},
-    {"kind": "invariant", "level": 2, "shape": "principle"},
-    {"kind": "topic", "level": 1, "shape": "concept"},
-    {"kind": "repo", "level": 1, "shape": "component"}
-  ],
-  "enums": {
-    "project_kind": ["multiplatform_app", "pipeline", "agent_system", "tool", "library", "workflow"],
-    "project_status": ["active", "paused", "abandoned", "merged"],
-    "component_status": ["implemented", "partial", "planned", "abandoned", "superseded"],
-    "version_source": ["git", "archive", "both"],
-    "item_type": ["decision", "rejected_option", "open_question", "requirement", "invariant", "idea", "rationale", "implementation", "bug"],
-    "gt_evidence": ["observed", "inferable", "absent"]
+ "schema": "loom.kb.types/1",
+ "description": "Open vocabularies of the pack (I6): entity kinds, enums, relation types (claim predicates) and the temporal slots every project instance has (versions, forks and lineage are a temporal dimension, not a role: model §3.4). Closed sets (evidence classes, origins, roles, principle levels/forms, statuses, binding kinds, predicates, ops) live in code: include/loom/model.h and include/loom/kb.h.",
+ "entity_kinds": [
+  {
+   "kind": "project",
+   "level": 0
   },
-  "relations": [
-    {"name": "part_of", "inverse": "has_part", "category": "structural", "transitive": true},
-    {"name": "has_component", "inverse": "component_of", "category": "structural"},
-    {"name": "has_version", "inverse": "version_of", "category": "temporal"},
-    {"name": "introduced_in", "inverse": "introduces", "category": "temporal"},
-    {"name": "removed_in", "inverse": "removes", "category": "temporal"},
-    {"name": "targets_platform", "inverse": "platform_of", "category": "semantic"},
-    {"name": "written_in", "inverse": "language_of", "category": "semantic"},
-    {"name": "uses_ui_framework", "inverse": "ui_framework_of", "category": "semantic"},
-    {"name": "stores_in", "inverse": "storage_of", "category": "semantic"},
-    {"name": "syncs_via", "inverse": "sync_of", "category": "semantic"},
-    {"name": "uses_tool", "inverse": "tool_of", "category": "semantic"},
-    {"name": "uses_protocol", "inverse": "protocol_of", "category": "semantic"},
-    {"name": "implements", "inverse": "implemented_by", "category": "structural"},
-    {"name": "has_purpose", "inverse": "purpose_of", "category": "semantic", "value": true},
-    {"name": "has_stage", "inverse": "stage_of", "category": "structural"},
-    {"name": "next_stage", "inverse": "previous_stage", "category": "temporal"},
-    {"name": "has_input", "inverse": "input_of", "category": "semantic"},
-    {"name": "has_output", "inverse": "output_of", "category": "semantic"},
-    {"name": "has_role", "inverse": "role_of", "category": "structural"},
-    {"name": "decides_about", "inverse": "decided_by", "category": "semantic"},
-    {"name": "alternative_of", "inverse": "alternative_of", "category": "semantic", "symmetric": true},
-    {"name": "chosen_over", "inverse": "rejected_for", "category": "semantic"},
-    {"name": "supersedes", "inverse": "superseded_by", "category": "temporal"},
-    {"name": "contradicts", "inverse": "contradicts", "category": "semantic", "symmetric": true},
-    {"name": "resolves", "inverse": "resolved_by", "category": "semantic"},
-    {"name": "states_principle", "inverse": "principle_stated_in", "category": "semantic"},
-    {"name": "applies_principle", "inverse": "principle_applied_by", "category": "semantic"},
-    {"name": "violates", "inverse": "violated_by", "category": "semantic"},
-    {"name": "evolved_into", "inverse": "evolved_from", "category": "temporal"},
-    {"name": "merged_into", "inverse": "absorbed", "category": "temporal"},
-    {"name": "forked_from", "inverse": "fork_parent_of", "category": "temporal"},
-    {"name": "based_on", "inverse": "basis_of", "category": "temporal"},
-    {"name": "same_as", "inverse": "same_as", "category": "provenance", "symmetric": true},
-    {"name": "instance_of", "inverse": "has_instance", "category": "structural"},
-    {"name": "fills_slot", "inverse": "slot_filled_by", "category": "structural"},
-    {"name": "inferred_from", "inverse": "supports_inference", "category": "provenance"},
-    {"name": "analogous_to", "inverse": "analogous_to", "category": "semantic", "symmetric": true},
-    {"name": "mentioned_in", "inverse": "mentions", "category": "provenance"},
-    {"name": "related_to", "inverse": "related_to", "category": "semantic", "symmetric": true}
+  {
+   "kind": "principle",
+   "level": 1
+  },
+  {
+   "kind": "repo",
+   "level": 1
+  },
+  {
+   "kind": "topic",
+   "level": 1
+  },
+  {
+   "kind": "version",
+   "level": 1
+  },
+  {
+   "kind": "act",
+   "level": 2
+  },
+  {
+   "kind": "actor",
+   "level": 2
+  },
+  {
+   "kind": "analysis",
+   "level": 2
+  },
+  {
+   "kind": "assumption",
+   "level": 2
+  },
+  {
+   "kind": "build_step",
+   "level": 2
+  },
+  {
+   "kind": "channel",
+   "level": 2
+  },
+  {
+   "kind": "character",
+   "level": 2
+  },
+  {
+   "kind": "checkpoint",
+   "level": 2
+  },
+  {
+   "kind": "citation",
+   "level": 2
+  },
+  {
+   "kind": "citation_check",
+   "level": 2
+  },
+  {
+   "kind": "clip",
+   "level": 2
+  },
+  {
+   "kind": "component",
+   "level": 2
+  },
+  {
+   "kind": "concept",
+   "level": 2
+  },
+  {
+   "kind": "confounder",
+   "level": 2
+  },
+  {
+   "kind": "consistency_check",
+   "level": 2
+  },
+  {
+   "kind": "continuity_check",
+   "level": 2
+  },
+  {
+   "kind": "contradiction_check",
+   "level": 2
+  },
+  {
+   "kind": "count",
+   "level": 2
+  },
+  {
+   "kind": "cut",
+   "level": 2
+  },
+  {
+   "kind": "data_source",
+   "level": 2
+  },
+  {
+   "kind": "dataset",
+   "level": 2
+  },
+  {
+   "kind": "deadline",
+   "level": 2
+  },
+  {
+   "kind": "deadline_check",
+   "level": 2
+  },
+  {
+   "kind": "decision",
+   "level": 2
+  },
+  {
+   "kind": "deliverable",
+   "level": 2
+  },
+  {
+   "kind": "document",
+   "level": 2
+  },
+  {
+   "kind": "drafting",
+   "level": 2
+  },
+  {
+   "kind": "edit_pass",
+   "level": 2
+  },
+  {
+   "kind": "event",
+   "level": 2
+  },
+  {
+   "kind": "evidence",
+   "level": 2
+  },
+  {
+   "kind": "experiment",
+   "level": 2
+  },
+  {
+   "kind": "falsifier",
+   "level": 2
+  },
+  {
+   "kind": "file",
+   "level": 2
+  },
+  {
+   "kind": "filed_document",
+   "level": 2
+  },
+  {
+   "kind": "flow",
+   "level": 2
+  },
+  {
+   "kind": "fork",
+   "level": 2
+  },
+  {
+   "kind": "format",
+   "level": 2
+  },
+  {
+   "kind": "gate",
+   "level": 2
+  },
+  {
+   "kind": "genre_rule",
+   "level": 2
+  },
+  {
+   "kind": "hypothesis",
+   "level": 2
+  },
+  {
+   "kind": "institution",
+   "level": 2
+  },
+  {
+   "kind": "instrument",
+   "level": 2
+  },
+  {
+   "kind": "interface",
+   "level": 2
+  },
+  {
+   "kind": "invariant",
+   "level": 2
+  },
+  {
+   "kind": "ir",
+   "level": 2
+  },
+  {
+   "kind": "language",
+   "level": 2
+  },
+  {
+   "kind": "legal_norm",
+   "level": 2
+  },
+  {
+   "kind": "location",
+   "level": 2
+  },
+  {
+   "kind": "mix_check",
+   "level": 2
+  },
+  {
+   "kind": "mix_pass",
+   "level": 2
+  },
+  {
+   "kind": "mood_ref",
+   "level": 2
+  },
+  {
+   "kind": "motif",
+   "level": 2
+  },
+  {
+   "kind": "musical_key",
+   "level": 2
+  },
+  {
+   "kind": "open_question",
+   "level": 2
+  },
+  {
+   "kind": "paper",
+   "level": 2
+  },
+  {
+   "kind": "party",
+   "level": 2
+  },
+  {
+   "kind": "performer",
+   "level": 2
+  },
+  {
+   "kind": "plan",
+   "level": 2
+  },
+  {
+   "kind": "platform",
+   "level": 2
+  },
+  {
+   "kind": "pleading",
+   "level": 2
+  },
+  {
+   "kind": "plot_link",
+   "level": 2
+  },
+  {
+   "kind": "procedural_rule",
+   "level": 2
+  },
+  {
+   "kind": "procedural_step",
+   "level": 2
+  },
+  {
+   "kind": "proceeding",
+   "level": 2
+  },
+  {
+   "kind": "progression",
+   "level": 2
+  },
+  {
+   "kind": "prop",
+   "level": 2
+  },
+  {
+   "kind": "protocol",
+   "level": 2
+  },
+  {
+   "kind": "provider",
+   "level": 2
+  },
+  {
+   "kind": "release_output",
+   "level": 2
+  },
+  {
+   "kind": "render_pass",
+   "level": 2
+  },
+  {
+   "kind": "requirement",
+   "level": 2
+  },
+  {
+   "kind": "researcher",
+   "level": 2
+  },
+  {
+   "kind": "result",
+   "level": 2
+  },
+  {
+   "kind": "role",
+   "level": 2
+  },
+  {
+   "kind": "sample",
+   "level": 2
+  },
+  {
+   "kind": "scene",
+   "level": 2
+  },
+  {
+   "kind": "score",
+   "level": 2
+  },
+  {
+   "kind": "screenplay",
+   "level": 2
+  },
+  {
+   "kind": "section",
+   "level": 2
+  },
+  {
+   "kind": "shot",
+   "level": 2
+  },
+  {
+   "kind": "stage",
+   "level": 2
+  },
+  {
+   "kind": "storage",
+   "level": 2
+  },
+  {
+   "kind": "storyboard",
+   "level": 2
+  },
+  {
+   "kind": "sync",
+   "level": 2
+  },
+  {
+   "kind": "synthesis_pass",
+   "level": 2
+  },
+  {
+   "kind": "test",
+   "level": 2
+  },
+  {
+   "kind": "tool",
+   "level": 2
+  },
+  {
+   "kind": "track",
+   "level": 2
+  },
+  {
+   "kind": "transcript",
+   "level": 2
+  },
+  {
+   "kind": "transition",
+   "level": 2
+  },
+  {
+   "kind": "ui_framework",
+   "level": 2
+  },
+  {
+   "kind": "option",
+   "level": 3
+  }
+ ],
+ "enums": {
+  "project_status": [
+   "active",
+   "paused",
+   "abandoned",
+   "merged"
+  ],
+  "component_status": [
+   "implemented",
+   "partial",
+   "planned",
+   "abandoned",
+   "superseded",
+   "lost",
+   "restored"
+  ],
+  "version_source": [
+   "git",
+   "archive",
+   "both"
+  ],
+  "item_type": [
+   "decision",
+   "rejected_option",
+   "open_question",
+   "requirement",
+   "invariant",
+   "idea",
+   "rationale",
+   "implementation",
+   "bug"
+  ],
+  "gt_evidence": [
+   "observed",
+   "inferable",
+   "absent"
+  ],
+  "scene_state": [
+   "pending",
+   "keyframe_ready",
+   "keyframe_failed",
+   "clip_ready",
+   "clip_failed",
+   "flagged"
   ]
+ },
+ "relations": [
+  {
+   "name": "part_of",
+   "inverse": "has_part",
+   "category": "structural",
+   "transitive": true
+  },
+  {
+   "name": "has_component",
+   "inverse": "component_of",
+   "category": "structural"
+  },
+  {
+   "name": "has_version",
+   "inverse": "version_of",
+   "category": "temporal"
+  },
+  {
+   "name": "introduced_in",
+   "inverse": "introduces",
+   "category": "temporal"
+  },
+  {
+   "name": "removed_in",
+   "inverse": "removes",
+   "category": "temporal"
+  },
+  {
+   "name": "targets_platform",
+   "inverse": "platform_of",
+   "category": "semantic"
+  },
+  {
+   "name": "written_in",
+   "inverse": "language_of",
+   "category": "semantic"
+  },
+  {
+   "name": "uses_ui_framework",
+   "inverse": "ui_framework_of",
+   "category": "semantic"
+  },
+  {
+   "name": "stores_in",
+   "inverse": "storage_of",
+   "category": "semantic"
+  },
+  {
+   "name": "syncs_via",
+   "inverse": "sync_of",
+   "category": "semantic"
+  },
+  {
+   "name": "uses_tool",
+   "inverse": "tool_of",
+   "category": "semantic"
+  },
+  {
+   "name": "uses_protocol",
+   "inverse": "protocol_of",
+   "category": "semantic"
+  },
+  {
+   "name": "implements",
+   "inverse": "implemented_by",
+   "category": "structural"
+  },
+  {
+   "name": "has_purpose",
+   "inverse": "purpose_of",
+   "category": "semantic",
+   "value": true
+  },
+  {
+   "name": "has_stage",
+   "inverse": "stage_of",
+   "category": "structural"
+  },
+  {
+   "name": "next_stage",
+   "inverse": "previous_stage",
+   "category": "temporal"
+  },
+  {
+   "name": "has_input",
+   "inverse": "input_of",
+   "category": "semantic"
+  },
+  {
+   "name": "has_output",
+   "inverse": "output_of",
+   "category": "semantic"
+  },
+  {
+   "name": "has_role",
+   "inverse": "role_of",
+   "category": "structural"
+  },
+  {
+   "name": "decides_about",
+   "inverse": "decided_by",
+   "category": "semantic"
+  },
+  {
+   "name": "alternative_of",
+   "inverse": "alternative_of",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "chosen_over",
+   "inverse": "rejected_for",
+   "category": "semantic"
+  },
+  {
+   "name": "supersedes",
+   "inverse": "superseded_by",
+   "category": "temporal"
+  },
+  {
+   "name": "contradicts",
+   "inverse": "contradicts",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "resolves",
+   "inverse": "resolved_by",
+   "category": "semantic"
+  },
+  {
+   "name": "states_principle",
+   "inverse":)LOOMKB",
+    R"LOOMKB( "principle_stated_in",
+   "category": "semantic"
+  },
+  {
+   "name": "applies_principle",
+   "inverse": "principle_applied_by",
+   "category": "semantic"
+  },
+  {
+   "name": "violates",
+   "inverse": "violated_by",
+   "category": "semantic"
+  },
+  {
+   "name": "evolved_into",
+   "inverse": "evolved_from",
+   "category": "temporal"
+  },
+  {
+   "name": "merged_into",
+   "inverse": "absorbed",
+   "category": "temporal"
+  },
+  {
+   "name": "forked_from",
+   "inverse": "fork_parent_of",
+   "category": "temporal"
+  },
+  {
+   "name": "based_on",
+   "inverse": "basis_of",
+   "category": "temporal"
+  },
+  {
+   "name": "same_as",
+   "inverse": "same_as",
+   "category": "provenance",
+   "symmetric": true
+  },
+  {
+   "name": "instance_of",
+   "inverse": "has_instance",
+   "category": "structural"
+  },
+  {
+   "name": "fills_slot",
+   "inverse": "slot_filled_by",
+   "category": "structural"
+  },
+  {
+   "name": "inferred_from",
+   "inverse": "supports_inference",
+   "category": "provenance"
+  },
+  {
+   "name": "analogous_to",
+   "inverse": "analogous_to",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "mentioned_in",
+   "inverse": "mentions",
+   "category": "provenance"
+  },
+  {
+   "name": "related_to",
+   "inverse": "related_to",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "uses",
+   "category": "semantic"
+  },
+  {
+   "name": "connects",
+   "category": "semantic"
+  },
+  {
+   "name": "flows_to",
+   "category": "semantic"
+  },
+  {
+   "name": "recurs_in",
+   "category": "semantic"
+  },
+  {
+   "name": "verifies",
+   "category": "semantic"
+  },
+  {
+   "name": "constrains",
+   "category": "semantic"
+  },
+  {
+   "name": "serves",
+   "category": "semantic"
+  },
+  {
+   "name": "produces",
+   "category": "semantic"
+  },
+  {
+   "name": "consumes",
+   "category": "semantic"
+  },
+  {
+   "name": "participates_in",
+   "category": "semantic"
+  },
+  {
+   "name": "occurs_in",
+   "category": "semantic"
+  },
+  {
+   "name": "precedes",
+   "category": "temporal"
+  },
+  {
+   "name": "depicts",
+   "category": "semantic"
+  },
+  {
+   "name": "cites",
+   "category": "semantic"
+  },
+  {
+   "name": "evidences",
+   "category": "semantic"
+  },
+  {
+   "name": "concerns",
+   "category": "semantic"
+  },
+  {
+   "name": "investigates",
+   "category": "semantic"
+  },
+  {
+   "name": "answers",
+   "category": "semantic"
+  },
+  {
+   "name": "responds_to",
+   "category": "semantic"
+  },
+  {
+   "name": "has_user",
+   "category": "structural",
+   "inverse": "user_of"
+  },
+  {
+   "name": "has_requirement",
+   "category": "structural",
+   "inverse": "requirement_of"
+  },
+  {
+   "name": "has_invariant",
+   "category": "structural",
+   "inverse": "invariant_of"
+  },
+  {
+   "name": "uses_service",
+   "category": "structural"
+  },
+  {
+   "name": "uses_data_source",
+   "category": "structural"
+  },
+  {
+   "name": "uses_provider",
+   "category": "structural"
+  },
+  {
+   "name": "has_interface",
+   "category": "structural",
+   "inverse": "interface_of"
+  },
+  {
+   "name": "has_flow",
+   "category": "structural",
+   "inverse": "flow_of"
+  },
+  {
+   "name": "has_event",
+   "category": "structural",
+   "inverse": "event_of"
+  },
+  {
+   "name": "has_file",
+   "category": "structural",
+   "inverse": "file_of"
+  },
+  {
+   "name": "has_document",
+   "category": "structural",
+   "inverse": "document_of"
+  },
+  {
+   "name": "has_build_step",
+   "category": "structural",
+   "inverse": "build_step_of"
+  },
+  {
+   "name": "has_test",
+   "category": "structural",
+   "inverse": "test_of"
+  },
+  {
+   "name": "delivers",
+   "category": "structural"
+  },
+  {
+   "name": "has_decision",
+   "category": "structural",
+   "inverse": "decision_of"
+  },
+  {
+   "name": "has_question",
+   "category": "structural",
+   "inverse": "question_of"
+  },
+  {
+   "name": "has_premise",
+   "category": "structural",
+   "inverse": "premise_of"
+  },
+  {
+   "name": "has_audience",
+   "category": "structural",
+   "inverse": "audience_of"
+  },
+  {
+   "name": "has_style",
+   "category": "structural",
+   "inverse": "style_of"
+  },
+  {
+   "name": "has_rule",
+   "category": "structural",
+   "inverse": "rule_of"
+  },
+  {
+   "name": "has_act",
+   "category": "structural",
+   "inverse": "act_of"
+  },
+  {
+   "name": "has_scene",
+   "category": "structural",
+   "inverse": "scene_of"
+  },
+  {
+   "name": "has_shot",
+   "category": "structural",
+   "inverse": "shot_of"
+  },
+  {
+   "name": "has_character",
+   "category": "structural",
+   "inverse": "character_of"
+  },
+  {
+   "name": "has_location",
+   "category": "structural",
+   "inverse": "location_of"
+  },
+  {
+   "name": "has_prop",
+   "category": "structural",
+   "inverse": "prop_of"
+  },
+  {
+   "name": "has_reference",
+   "category": "structural",
+   "inverse": "reference_of"
+  },
+  {
+   "name": "has_citation",
+   "category": "structural",
+   "inverse": "citation_of"
+  },
+  {
+   "name": "has_transition",
+   "category": "structural",
+   "inverse": "transition_of"
+  },
+  {
+   "name": "has_motif",
+   "category": "structural",
+   "inverse": "motif_of"
+  },
+  {
+   "name": "has_plot_link",
+   "category": "structural",
+   "inverse": "plot_link_of"
+  },
+  {
+   "name": "has_screenplay",
+   "category": "structural",
+   "inverse": "screenplay_of"
+  },
+  {
+   "name": "has_storyboard",
+   "category": "structural",
+   "inverse": "storyboard_of"
+  },
+  {
+   "name": "has_clip",
+   "category": "structural",
+   "inverse": "clip_of"
+  },
+  {
+   "name": "has_render_pass",
+   "category": "structural",
+   "inverse": "render_pass_of"
+  },
+  {
+   "name": "has_edit_pass",
+   "category": "structural",
+   "inverse": "edit_pass_of"
+  },
+  {
+   "name": "has_check",
+   "category": "structural",
+   "inverse": "check_of"
+  },
+  {
+   "name": "has_mood",
+   "category": "structural",
+   "inverse": "mood_of"
+  },
+  {
+   "name": "in_key",
+   "category": "structural"
+  },
+  {
+   "name": "has_tempo",
+   "category": "structural",
+   "inverse": "tempo_of"
+  },
+  {
+   "name": "has_form",
+   "category": "structural",
+   "inverse": "form_of"
+  },
+  {
+   "name": "has_track",
+   "category": "structural",
+   "inverse": "track_of"
+  },
+  {
+   "name": "has_section",
+   "category": "structural",
+   "inverse": "section_of"
+  },
+  {
+   "name": "has_performer",
+   "category": "structural",
+   "inverse": "performer_of"
+  },
+  {
+   "name": "has_instrument",
+   "category": "structural",
+   "inverse": "instrument_of"
+  },
+  {
+   "name": "uses_sample",
+   "category": "structural"
+  },
+  {
+   "name": "has_progression",
+   "category": "structural",
+   "inverse": "progression_of"
+  },
+  {
+   "name": "has_score",
+   "category": "structural",
+   "inverse": "score_of"
+  },
+  {
+   "name": "has_pass",
+   "category": "structural",
+   "inverse": "pass_of"
+  },
+  {
+   "name": "seeks",
+   "category": "structural"
+  },
+  {
+   "name": "relies_on",
+   "category": "structural"
+  },
+  {
+   "name": "has_proceeding",
+   "category": "structural",
+   "inverse": "proceeding_of"
+  },
+  {
+   "name": "has_count",
+   "category": "structural",
+   "inverse": "count_of"
+  },
+  {
+   "name": "has_party",
+   "category": "structural",
+   "inverse": "party_of"
+  },
+  {
+   "name": "involves",
+   "category": "structural"
+  },
+  {
+   "name": "has_evidence",
+   "category": "structural",
+   "inverse": "evidence_of"
+  },
+  {
+   "name": "files_via",
+   "category": "structural"
+  },
+  {
+   "name": "has_step",
+   "category": "structural",
+   "inverse": "step_of"
+  },
+  {
+   "name": "has_deadline",
+   "category": "structural",
+   "inverse": "deadline_of"
+  },
+  {
+   "name": "has_pleading",
+   "category": "structural",
+   "inverse": "pleading_of"
+  },
+  {
+   "name": "has_transcript",
+   "category": "structural",
+   "inverse": "transcript_of"
+  },
+  {
+   "name": "asks",
+   "category": "structural"
+  },
+  {
+   "name": "assumes",
+   "category": "structural"
+  },
+  {
+   "name": "has_experiment",
+   "category": "structural",
+   "inverse": "experiment_of"
+  },
+  {
+   "name": "uses_dataset",
+   "category": "structural"
+  },
+  {
+   "name": "has_paper",
+   "category": "structura)LOOMKB",
+    R"LOOMKB(l",
+   "inverse": "paper_of"
+  },
+  {
+   "name": "has_hypothesis",
+   "category": "structural",
+   "inverse": "hypothesis_of"
+  },
+  {
+   "name": "runs_in",
+   "category": "structural"
+  },
+  {
+   "name": "has_memory",
+   "category": "structural",
+   "inverse": "memory_of"
+  },
+  {
+   "name": "has_action",
+   "category": "structural",
+   "inverse": "action_of"
+  },
+  {
+   "name": "has_plan",
+   "category": "structural",
+   "inverse": "plan_of"
+  },
+  {
+   "name": "has_budget",
+   "category": "structural",
+   "inverse": "budget_of"
+  },
+  {
+   "name": "has_ir",
+   "category": "structural",
+   "inverse": "ir_of"
+  },
+  {
+   "name": "has_checkpoint",
+   "category": "structural",
+   "inverse": "checkpoint_of"
+  },
+  {
+   "name": "decides",
+   "category": "semantic"
+  },
+  {
+   "name": "has_status",
+   "category": "temporal"
+  },
+  {
+   "name": "member_of",
+   "category": "structural"
+  },
+  {
+   "name": "transferred_from",
+   "category": "provenance"
+  },
+  {
+   "name": "anchors_on",
+   "category": "structural"
+  }
+ ],
+ "temporal_slots": [
+  {
+   "name": "versions",
+   "type": "record[]",
+   "card": "list",
+   "required": true,
+   "weight": 3.0,
+   "fields": {
+    "version": {
+     "type": "version"
+    },
+    "date": {
+     "type": "date"
+    },
+    "features": {
+     "type": "text",
+     "card": "many"
+    },
+    "conv_ids": {
+     "type": "string",
+     "card": "many"
+    },
+    "source": {
+     "type": "enum:version_source"
+    },
+    "base": {
+     "type": "version"
+    },
+    "branch": {
+     "type": "string"
+    }
+   },
+   "bind": [
+    {
+     "kind": "versions",
+     "source": "any"
+    }
+   ],
+   "rules": [
+    "r.archive_only_version",
+    "r.version_base",
+    "r.version_date_first_mention",
+    "r.version_features_comention"
+   ],
+   "description": "dated versions of the project with features and lineage; versions above the newest git version are archive-only"
+  },
+  {
+   "name": "current_version",
+   "type": "version",
+   "card": "one",
+   "required": true,
+   "rules": [
+    "r.current_version"
+   ]
+  },
+  {
+   "name": "forks",
+   "type": "record[]",
+   "card": "many",
+   "fields": {
+    "base": {
+     "type": "version"
+    },
+    "branches": {
+     "type": "version",
+     "card": "many"
+    },
+    "merged": {
+     "type": "string"
+    }
+   },
+   "rules": [
+    "r.version_forks"
+   ]
+  },
+  {
+   "name": "lineage",
+   "type": "entity:project",
+   "card": "many",
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "evolved_into",
+     "dir": "in"
+    },
+    {
+     "kind": "claim",
+     "rel": "merged_into",
+     "dir": "in"
+    }
+   ]
+  },
+  {
+   "name": "status",
+   "type": "enum:project_status",
+   "card": "one",
+   "required": true,
+   "rules": [
+    "r.project_status"
+   ]
+  },
+  {
+   "name": "part_status",
+   "type": "record[]",
+   "card": "many",
+   "fields": {
+    "entity": {
+     "type": "string"
+    },
+    "branch": {
+     "type": "string"
+    },
+    "version": {
+     "type": "version"
+    },
+    "status": {
+     "type": "enum:component_status"
+    },
+    "date": {
+     "type": "date"
+    }
+   },
+   "description": "status of each part per branch and version, oscillation recorded (model §5, StatusRecord)"
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
@@ -1038,96 +2316,1136 @@ const char* const kPackChunks5[] = {
     nullptr};
 const char* const kPackChunks6[] = {
     R"LOOMKB({
-  "schema": "loom.kb.gazetteer/1",
-  "description": "Typed lexicon entries. 'forms' are surface forms (matched on match keys, so inflections and diacritics are covered by the normalizer; add irregular forms explicitly). 'class' may be dotted (storage.embedded is also storage). 'implies' are properties used by expected-property predicates (consistent_with, in_class) and by lexicon_pick; 'platforms' lists where the entry is available (available_on). 'ambiguous' forms count only with one of 'requires_context' within the context window (policy/thresholds.json).",
-  "classes": {
-    "platform": {"entity_kind": "platform"},
-    "environment": {"entity_kind": "platform"},
-    "language": {"entity_kind": "language"},
-    "ui_framework": {"entity_kind": "ui_framework"},
-    "storage": {"entity_kind": "storage"},
-    "storage.embedded": {"entity_kind": "storage", "parent": "storage"},
-    "storage.server": {"entity_kind": "storage", "parent": "storage"},
-    "storage.cloud": {"entity_kind": "storage", "parent": "storage"},
-    "sync": {"entity_kind": "sync"},
-    "protocol": {"entity_kind": "protocol"},
-    "format": {"entity_kind": "format"},
-    "tool": {"entity_kind": "tool"},
-    "role": {"entity_kind": "role"},
-    "concept.memory": {"entity_kind": "concept"},
-    "concept.resumability": {"entity_kind": "concept"},
-    "entry_point_file": {"entity_kind": "component"}
+ "schema": "loom.kb.gazetteer/1",
+ "description": "Typed lexicon entries. 'forms' are surface forms (matched on match keys, so inflections and diacritics are covered by the normalizer; add irregular forms explicitly). 'class' may be dotted (storage.embedded is also storage). 'implies' are properties used by expected-property predicates (consistent_with, in_class) and by lexicon_pick; 'platforms' lists where the entry is available (available_on). 'ambiguous' forms count only with one of 'requires_context' within the context window (policy/thresholds.json).",
+ "classes": {
+  "platform": {
+   "entity_kind": "platform"
   },
-  "entries": [
-    {"id": "android", "class": "platform", "labels": {"en": "Android", "pl": "Android"}, "forms": ["android", "androida", "androidzie", "android studio", "pydroid"]},
-    {"id": "desktop", "class": "platform", "labels": {"en": "Desktop", "pl": "Desktop"}, "forms": ["desktop", "desktopie", "pc", "komputer", "windows", "linux", "macos"]},
-    {"id": "web", "class": "platform", "labels": {"en": "Web", "pl": "Web"}, "forms": ["web", "przeglądarka", "browser", "web ui", "react"], "ambiguous": ["react"], "requires_context": ["ui", "frontend", "web"]},
-    {"id": "ios", "class": "platform", "labels": {"en": "iOS", "pl": "iOS"}, "forms": ["ios", "iphone"]},
-    {"id": "gcp_vm", "class": "environment", "labels": {"en": "GCP VM", "pl": "VM na GCP"}, "forms": ["gcp", "google cloud", "compute engine", "vm", "maszyna wirtualna"], "ambiguous": ["vm"], "requires_context": ["gcp", "google", "cloud", "chmur"]},
-    {"id": "local_sandbox", "class": "environment", "labels": {"en": "Local sandbox", "pl": "Lokalny sandbox"}, "forms": ["sandbox", "docker", "container", "kontener"]},
-
-    {"id": "python", "class": "language", "labels": {"en": "Python", "pl": "Python"}, "forms": ["python", "pythona", "pythonie", "py"], "ambiguous": ["py"], "requires_context": ["plik", "file", ".py"], "platforms": ["desktop", "android"]},
-    {"id": "cpp", "class": "language", "labels": {"en": "C++", "pl": "C++"}, "forms": ["c++", "cpp", "c++20", "c++17"], "platforms": ["desktop", "android", "ios", "web"]},
-    {"id": "kotlin", "class": "language", "labels": {"en": "Kotlin", "pl": "Kotlin"}, "forms": ["kotlin", "kotlina", "kotlinie"], "implies": ["platform:android"], "platforms": ["android", "desktop"]},
-    {"id": "java", "class": "language", "labels": {"en": "Java", "pl": "Java"}, "forms": ["java", "javy", "javie"], "platforms": ["android", "desktop"]},
-    {"id": "typescript", "class": "language", "labels": {"en": "TypeScript", "pl": "TypeScript"}, "forms": ["typescript", "ts", "tsx"], "ambiguous": ["ts"], "requires_context": ["react", "web", "frontend"], "implies": ["platform:web"], "platforms": ["web", "desktop"]},
-    {"id": "javascript", "class": "language", "labels": {"en": "JavaScript", "pl": "JavaScript"}, "forms": ["javascript", "js"], "implies": ["platform:web"], "platforms": ["web"]},
-    {"id": "rust", "class": "language", "labels": {"en": "Rust", "pl": "Rust"}, "forms": ["rust"], "ambiguous": ["rust"], "requires_context": ["cargo", "crate", "język", "language"], "platforms": ["desktop", "android", "ios", "web"]},
-
-    {"id": "kivy", "class": "ui_framework", "labels": {"en": "Kivy", "pl": "Kivy"}, "forms": ["kivy", "kivymd", "kv"], "ambiguous": ["kv"], "requires_context": ["kivy", "widget", "layout"], "implies": ["platform:desktop", "platform:android", "language:python"]},
-    {"id": "compose_mp", "class": "ui_framework", "labels": {"en": "Compose Multiplatform", "pl": "Compose Multiplatform"}, "forms": ["compose multiplatform", "jetpack compose", "compose mp", "compose"], "ambiguous": ["compose"], "requires_context": ["jetpack", "multiplatform", "kotlin", "ui"], "implies": ["platform:android", "platform:desktop", "language:kotlin"]},
-    {"id": "react", "class": "ui_framework", "labels": {"en": "React", "pl": "React"}, "forms": ["react", "vite", "tsx"], "implies": ["platform:web", "language:typescript"]},
-    {"id": "tkinter", "class": "ui_framework", "labels": {"en": "Tkinter", "pl": "Tkinter"}, "forms": ["tkinter"], "implies": ["platform:desktop", "language:python"]},
-    {"id": "qt", "class": "ui_framework", "labels": {"en": "Qt", "pl": "Qt"}, "forms": ["qt", "pyqt", "pyside", "qml"], "ambiguous": ["qt"], "requires_context": ["gui", "widget", "qml", "ui"], "implies": ["platform:desktop"]},
-
-    {"id": "sqlite", "class": "storage.embedded", "labels": {"en": "SQLite", "pl": "SQLite"}, "forms": ["sqlite", "sqlite3", "sqlite wal", "baza sqlite"], "implies": ["offline_capable", "file_based", "embedded"], "platforms": ["desktop", "android", "ios", "web"]},
-    {"id": "json_files", "class": "storage.embedded", "labels": {"en": "JSON files", "pl": "Pliki JSON"}, "forms": ["json files", "pliki json", "plikach json", "config.json", "memory.json"], "implies": ["offline_capable", "file_based"], "platforms": ["desktop", "android", "ios"]},
-    {"id": "leveldb", "class": "storage.embedded", "labels": {"en": "LevelDB", "pl": "LevelDB"}, "forms": ["leveldb", "rocksdb"], "implies": ["offline_capable", "file_based", "embedded"], "platforms": ["desktop", "android"]},
-    {"id": "blob_store", "class": "storage.embedded", "labels": {"en": "Content-addressed blob store", "pl": "Magazyn blobów adresowany treścią"}, "forms": ["blobstore", "blob store", "content-addressed", "content addressed", "adresowany treścią"], "implies": ["offline_capable", "file_based", "immutable"], "platforms": ["desktop", "android", "ios"]},
-    {"id": "postgres", "class": "storage.server", "labels": {"en": "PostgreSQL", "pl": "PostgreSQL"}, "forms": ["postgres", "postgresql"], "implies": ["server_only"]},
-    {"id": "neo4j", "class": "storage.server", "labels": {"en": "Neo4j", "pl": "Neo4j"}, "forms": ["neo4j", "cypher"], "implies": ["server_only"]},
-    {"id": "google_drive", "class": "storage.cloud", "labels": {"en": "Google Drive", "pl": "Google Drive"}, "forms": ["google drive", "gdrive", "dysk google"], "implies": ["remote"]},
-
-    {"id": "github_sync", "class": "sync", "labels": {"en": "GitHub sync", "pl": "Synchronizacja GitHub"}, "forms": ["github sync", "synchronizacja z github", "github_sync", "bidirectional github"], "implies": ["optional", "remote"]},
-    {"id": "zero_knowledge_sync", "class": "sync", "labels": {"en": "Zero-knowledge server sync", "pl": "Synchronizacja zero-knowledge"}, "forms": ["zero-knowledge", "zero knowledge", "zk sync", "szyfrowana synchronizacja"], "implies": ["optional", "encrypted"]},
-    {"id": "drive_sync", "class": "sync", "labels": {"en": "Google Drive sync", "pl": "Synchronizacja Google Drive"}, "forms": ["sync to drive", "synchronizacja z dyskiem", "drive sync"], "implies": ["optional", "remote"]},
-
-    {"id": "openrouter", "class": "protocol", "labels": {"en": "OpenRouter API", "pl": "OpenRouter API"}, "forms": ["openrouter", "open router"]},
-    {"id": "sse", "class": "protocol", "labels": {"en": "Server-sent events", "pl": "Server-sent events"}, "forms": ["sse", "server-sent events", "event stream"]},
-    {"id": "c_abi", "class": "protocol", "labels": {"en": "C ABI", "pl": "C ABI"}, "forms": ["c abi", "abi", "loom.h", "jni"], "ambiguous": ["abi"], "requires_context": ["loom", "c", "jni)LOOMKB",
-    R"LOOMKB(", "boundary", "granica"]},
-    {"id": "rest", "class": "protocol", "labels": {"en": "REST/HTTP", "pl": "REST/HTTP"}, "forms": ["rest api", "rest", "http api"], "ambiguous": ["rest"], "requires_context": ["api", "http", "endpoint", "server"]},
-
-    {"id": "chatgpt_export", "class": "format", "labels": {"en": "ChatGPT export", "pl": "Eksport ChatGPT"}, "forms": ["chatgpt export", "eksport chatgpt", "conversations.json", "mapping"], "ambiguous": ["mapping"], "requires_context": ["chatgpt", "export", "eksport"]},
-    {"id": "claude_export", "class": "format", "labels": {"en": "Claude export", "pl": "Eksport Claude"}, "forms": ["claude export", "eksport claude", "chat_messages", "projects.json", "memories.json"]},
-    {"id": "markdown", "class": "format", "labels": {"en": "Markdown", "pl": "Markdown"}, "forms": ["markdown", "md"], "ambiguous": ["md"], "requires_context": ["plik", "file", "format"]},
-    {"id": "video", "class": "format", "labels": {"en": "Video", "pl": "Wideo"}, "forms": ["video", "wideo", "film", "filmu", "mp4", "klip", "clip"]},
-    {"id": "storyboard", "class": "format", "labels": {"en": "Storyboard", "pl": "Storyboard"}, "forms": ["storyboard", "scenariusz", "scene graph", "graf scen"]},
-    {"id": "audio", "class": "format", "labels": {"en": "Audio", "pl": "Audio"}, "forms": ["audio", "dźwięk", "muzyka", "music", "wav", "mp3"]},
-    {"id": "zip_archive", "class": "format", "labels": {"en": "ZIP archive", "pl": "Archiwum ZIP"}, "forms": ["zip", "archiwum zip", ".zip"]},
-
-    {"id": "ffmpeg", "class": "tool", "labels": {"en": "FFmpeg", "pl": "FFmpeg"}, "forms": ["ffmpeg", "ffprobe"]},
-    {"id": "git", "class": "tool", "labels": {"en": "git", "pl": "git"}, "forms": ["git", "git log", "commit", "commity"], "ambiguous": ["commit"], "requires_context": ["git", "repo", "branch"]},
-    {"id": "claude_code", "class": "tool", "labels": {"en": "Claude Code", "pl": "Claude Code"}, "forms": ["claude code", "coding agent", "agent kodujący"]},
-    {"id": "browser_automation", "class": "tool", "labels": {"en": "Browser automation", "pl": "Automatyzacja przeglądarki"}, "forms": ["selenium", "playwright", "puppeteer", "browser use", "computer use"]},
-    {"id": "terminal", "class": "tool", "labels": {"en": "Terminal", "pl": "Terminal"}, "forms": ["terminal", "shell", "bash", "powłoka"]},
-    {"id": "whisper", "class": "tool", "labels": {"en": "Whisper ASR", "pl": "Whisper ASR"}, "forms": ["whisper", "groq whisper", "asr"]},
-    {"id": "ocr", "class": "tool", "labels": {"en": "OCR", "pl": "OCR"}, "forms": ["ocr", "tesseract"]},
-
-    {"id": "role_junior_dev", "class": "role", "labels": {"en": "junior_dev", "pl": "junior_dev"}, "forms": ["junior_dev", "junior dev", "junior developer"]},
-    {"id": "role_senior_dev", "class": "role", "labels": {"en": "senior_dev", "pl": "senior_dev"}, "forms": ["senior_dev", "senior dev", "senior developer"]},
-    {"id": "role_researcher", "class": "role", "labels": {"en": "researcher", "pl": "researcher"}, "forms": ["researcher", "badacz"]},
-    {"id": "role_planner", "class": "role", "labels": {"en": "planner", "pl": "planista"}, "forms": ["planner", "planista", "orchestrator", "orkiestrator"]},
-    {"id": "role_verifier", "class": "role", "labels": {"en": "verifier", "pl": "weryfikator"}, "forms": ["verifier", "weryfikator", "reviewer", "evaluator"]},
-
-    {"id": "central_memory", "class": "concept.memory", "labels": {"en": "Central memory", "pl": "Centralna pamięć"}, "forms": ["central memory", "centralna pamięć", "system knowledge", "long-term memory", "pamięć długoterminowa", "memory tree", "drzewo pamięci", "hierarchiczna pamięć"]},
-    {"id": "checkpoints", "class": "concept.resumability", "labels": {"en": "Checkpoints / resume", "pl": "Checkpointy / wznawianie"}, "forms": ["checkpoint", "checkpointy", "resume", "wznawianie", "rollback", "retry", "resumable"]},
-
-    {"id": "main_py", "class": "entry_point_file", "labels": {"en": "main.py", "pl": "main.py"}, "forms": ["main.py", "__main__.py"]},
-    {"id": "main_cpp", "class": "entry_point_file", "labels": {"en": "main.cpp", "pl": "main.cpp"}, "forms": ["main.cpp"]},
-    {"id": "main_activity", "class": "entry_point_file", "labels": {"en": "MainActivity.kt", "pl": "MainActivity.kt"}, "forms": ["mainactivity.kt", "mainactivity.java"]},
-    {"id": "main_tsx", "class": "entry_point_file", "labels": {"en": "main.tsx", "pl": "main.tsx"}, "forms": ["main.tsx", "main.ts", "index.tsx"]}
-  ]
+  "environment": {
+   "entity_kind": "platform"
+  },
+  "language": {
+   "entity_kind": "language"
+  },
+  "ui_framework": {
+   "entity_kind": "ui_framework"
+  },
+  "storage": {
+   "entity_kind": "storage"
+  },
+  "storage.embedded": {
+   "entity_kind": "storage",
+   "parent": "storage"
+  },
+  "storage.server": {
+   "entity_kind": "storage",
+   "parent": "storage"
+  },
+  "storage.cloud": {
+   "entity_kind": "storage",
+   "parent": "storage"
+  },
+  "sync": {
+   "entity_kind": "sync"
+  },
+  "protocol": {
+   "entity_kind": "protocol"
+  },
+  "format": {
+   "entity_kind": "format"
+  },
+  "tool": {
+   "entity_kind": "tool"
+  },
+  "role": {
+   "entity_kind": "role"
+  },
+  "concept.memory": {
+   "entity_kind": "concept"
+  },
+  "concept.resumability": {
+   "entity_kind": "concept"
+  },
+  "entry_point_file": {
+   "entity_kind": "component"
+  },
+  "legal_norm": {
+   "entity_kind": "legal_norm"
+  }
+ },
+ "entries": [
+  {
+   "id": "android",
+   "class": "platform",
+   "labels": {
+    "en": "Android",
+    "pl": "Android"
+   },
+   "forms": [
+    "android",
+    "androida",
+    "androidzie",
+    "android studio",
+    "pydroid"
+   ]
+  },
+  {
+   "id": "desktop",
+   "class": "platform",
+   "labels": {
+    "en": "Desktop",
+    "pl": "Desktop"
+   },
+   "forms": [
+    "desktop",
+    "desktopie",
+    "pc",
+    "komputer",
+    "windows",
+    "linux",
+    "macos"
+   ]
+  },
+  {
+   "id": "web",
+   "class": "platform",
+   "labels": {
+    "en": "Web",
+    "pl": "Web"
+   },
+   "forms": [
+    "web",
+    "przeglądarka",
+    "browser",
+    "web ui",
+    "react"
+   ],
+   "ambiguous": [
+    "react"
+   ],
+   "requires_context": [
+    "ui",
+    "frontend",
+    "web"
+   ]
+  },
+  {
+   "id": "ios",
+   "class": "platform",
+   "labels": {
+    "en": "iOS",
+    "pl": "iOS"
+   },
+   "forms": [
+    "ios",
+    "iphone"
+   ]
+  },
+  {
+   "id": "gcp_vm",
+   "class": "environment",
+   "labels": {
+    "en": "GCP VM",
+    "pl": "VM na GCP"
+   },
+   "forms": [
+    "gcp",
+    "google cloud",
+    "compute engine",
+    "vm",
+    "maszyna wirtualna"
+   ],
+   "ambiguous": [
+    "vm"
+   ],
+   "requires_context": [
+    "gcp",
+    "google",
+    "cloud",
+    "chmur"
+   ]
+  },
+  {
+   "id": "local_sandbox",
+   "class": "environment",
+   "labels": {
+    "en": "Local sandbox",
+    "pl": "Lokalny sandbox"
+   },
+   "forms": [
+    "sandbox",
+    "docker",
+    "container",
+    "kontener"
+   ]
+  },
+  {
+   "id": "python",
+   "class": "language",
+   "labels": {
+    "en": "Python",
+    "pl": "Python"
+   },
+   "forms": [
+    "python",
+    "pythona",
+    "pythonie",
+    "py"
+   ],
+   "ambiguous": [
+    "py"
+   ],
+   "requires_context": [
+    "plik",
+    "file",
+    ".py"
+   ],
+   "platforms": [
+    "desktop",
+    "android"
+   ]
+  },
+  {
+   "id": "cpp",
+   "class": "language",
+   "labels": {
+    "en": "C++",
+    "pl": "C++"
+   },
+   "forms": [
+    "c++",
+    "cpp",
+    "c++20",
+    "c++17"
+   ],
+   "platforms": [
+    "desktop",
+    "android",
+    "ios",
+    "web"
+   ]
+  },
+  {
+   "id": "kotlin",
+   "class": "language",
+   "labels": {
+    "en": "Kotlin",
+    "pl": "Kotlin"
+   },
+   "forms": [
+    "kotlin",
+    "kotlina",
+    "kotlinie"
+   ],
+   "implies": [
+    "platform:android"
+   ],
+   "platforms": [
+    "android",
+    "desktop"
+   ]
+  },
+  {
+   "id": "java",
+   "class": "language",
+   "labels": {
+    "en": "Java",
+    "pl": "Java"
+   },
+   "forms": [
+    "java",
+    "javy",
+    "javie"
+   ],
+   "platforms": [
+    "android",
+    "desktop"
+   ]
+  },
+  {
+   "id": "typescript",
+   "class": "language",
+   "labels": {
+    "en": "TypeScript",
+    "pl": "TypeScript"
+   },
+   "forms": [
+    "typescript",
+    "ts",
+    "tsx"
+   ],
+   "ambiguous": [
+    "ts"
+   ],
+   "requires_context": [
+    "react",
+    "web",
+    "frontend"
+   ],
+   "implies": [
+    "platform:web"
+   ],
+   "platforms": [
+    "web",
+    "desktop"
+   ]
+  },
+  {
+   "id": "javascript",
+   "class": "language",
+   "labels": {
+    "en": "JavaScript",
+    "pl": "JavaScript"
+   },
+   "forms": [
+    "javascript",
+    "js"
+   ],
+   "implies": [
+    "platform:web"
+   ],
+   "platforms": [
+    "web"
+   ]
+  },
+  {
+   "id": "rust",
+   "class": "language",
+   "labels": {
+    "en": "Rust",
+    "pl": "Rust"
+   },
+   "forms": [
+    "rust"
+   ],
+   "ambiguous": [
+    "rust"
+   ],
+   "requires_context": [
+    "cargo",
+    "crate",
+    "język",
+    "language"
+   ],
+   "platforms": [
+    "desktop",
+    "android",
+    "ios",
+    "web"
+   ]
+  },
+  {
+   "id": "kivy",
+   "class": "ui_framework",
+   "labels": {
+    "en": "Kivy",
+    "pl": "Kivy"
+   },
+   "forms": [
+    "kivy",
+    "kivymd",
+    "kv"
+   ],
+   "ambiguous": [
+    "kv"
+   ],
+   "requires_context": [
+    "kivy",
+    "widget",
+    "layout"
+   ],
+   "implies": [
+    "platform:desktop",
+    "platform:android",
+    "language:python"
+   ]
+  },
+  {
+   "id": "compose_mp",
+   "class": "ui_framework",
+   "labels": {
+    "en": "Compose Multiplatform",
+    "pl": "Compose Multiplatform"
+   },
+   "forms": [
+    "compose multiplatform",
+    "jetpack compose",
+    "compose mp",
+    "compose"
+   ],
+   "ambiguous": [
+    "compose"
+   ],
+   "requires_context": [
+    "jetpack",
+    "multiplatform",
+    "kotlin",
+    "ui"
+   ],
+   "implies": [
+    "platform:android",
+    "platform:desktop",
+    "language:kotlin"
+   ]
+  },
+  {
+   "id": "react",
+   "class": "ui_framework",
+   "labels": {
+    "en": "React",
+    "pl": "React"
+   },
+   "forms": [
+    "react",
+    "vite",
+    "tsx"
+   ],
+   "implies": [
+    "platform:web",
+    "language:typescript"
+   ]
+  },
+  {
+   "id": "tkinter",
+   "class": "ui_framework",
+   "labels": {
+    "en": "Tkinter",
+    "pl": "Tkinter"
+   },
+   "forms": [
+    "tkinter"
+   ],
+   "implies": [
+    "platform:desktop",
+    "language:python"
+   ]
+  },
+  {
+   "id": "qt",
+   "class": "ui_framework",
+   "labels": {
+    "en": "Qt",
+    "pl": "Qt"
+   },
+   "forms": [
+    "qt",
+    "pyqt",
+    "pyside",
+    "qml"
+   ],
+   "ambiguous": [
+    "qt"
+   ],
+   "requires_context": [
+    "gui",
+    "widget",
+    "qml",
+    "ui"
+   ],
+   "implies": [
+    "platform:desktop"
+   ]
+  },
+  {
+   "id": "sqlite",
+   "class": "storage.embedded",
+   "labels": {
+    "en": "SQLite",
+    "pl": "SQLite"
+   },
+   "forms": [
+    "sqlite",
+    "sqlite3",
+    "sqlite wal",
+    "baza sqlite"
+   ],
+   "implies": [
+    "offline_capable",
+    "file_based",
+    "embedded"
+   ],
+   "platforms": [
+    "desktop",
+    "android",
+    "ios",
+    "web"
+   ]
+  },
+  {
+   "id": "json_files",
+   "class": "storage.embedded",
+   "labels": {
+    "en": "JSON files",
+    "pl": "Pliki JSON"
+   },
+   "forms": [
+    "json files",
+    "pliki json",
+    "plikach json",
+    "config.json",
+    "memory.json"
+   ],
+   "implies": [
+    "offline_capable",
+    "file_based"
+   ],
+   "platforms": [
+    "desktop",
+    "android",
+    "ios"
+   ]
+  },
+  {
+   "id": "leveldb",
+   "class": "storage.embedded",
+   "labels": {
+    "en": "LevelDB",
+    "pl": "LevelDB"
+   },
+   "forms": [
+    "leveldb",
+    "rocksdb"
+   ],
+   "implies": [
+    "offline_capable",
+    "file_based",
+    "embedded"
+   ],
+   "platforms": [
+    "desktop",
+    "android"
+   ]
+  },
+  {
+   "id": "blob_store",
+   "class": "storage.embedded",
+   "labels": {
+    "en": "Content-addressed blob store",
+    "pl": "Magazyn blobów adresowany treścią"
+   },
+   "forms": [
+    "blobstore",
+    "blob store",
+    "content-addressed",
+    "content addressed",
+    "adresowany treścią"
+   ],
+   "implies": [
+    "offline_capable",
+    ")LOOMKB",
+    R"LOOMKB(file_based",
+    "immutable"
+   ],
+   "platforms": [
+    "desktop",
+    "android",
+    "ios"
+   ]
+  },
+  {
+   "id": "postgres",
+   "class": "storage.server",
+   "labels": {
+    "en": "PostgreSQL",
+    "pl": "PostgreSQL"
+   },
+   "forms": [
+    "postgres",
+    "postgresql"
+   ],
+   "implies": [
+    "server_only"
+   ]
+  },
+  {
+   "id": "neo4j",
+   "class": "storage.server",
+   "labels": {
+    "en": "Neo4j",
+    "pl": "Neo4j"
+   },
+   "forms": [
+    "neo4j",
+    "cypher"
+   ],
+   "implies": [
+    "server_only"
+   ]
+  },
+  {
+   "id": "google_drive",
+   "class": "storage.cloud",
+   "labels": {
+    "en": "Google Drive",
+    "pl": "Google Drive"
+   },
+   "forms": [
+    "google drive",
+    "gdrive",
+    "dysk google"
+   ],
+   "implies": [
+    "remote"
+   ]
+  },
+  {
+   "id": "github_sync",
+   "class": "sync",
+   "labels": {
+    "en": "GitHub sync",
+    "pl": "Synchronizacja GitHub"
+   },
+   "forms": [
+    "github sync",
+    "synchronizacja z github",
+    "github_sync",
+    "bidirectional github"
+   ],
+   "implies": [
+    "optional",
+    "remote"
+   ]
+  },
+  {
+   "id": "zero_knowledge_sync",
+   "class": "sync",
+   "labels": {
+    "en": "Zero-knowledge server sync",
+    "pl": "Synchronizacja zero-knowledge"
+   },
+   "forms": [
+    "zero-knowledge",
+    "zero knowledge",
+    "zk sync",
+    "szyfrowana synchronizacja"
+   ],
+   "implies": [
+    "optional",
+    "encrypted"
+   ]
+  },
+  {
+   "id": "drive_sync",
+   "class": "sync",
+   "labels": {
+    "en": "Google Drive sync",
+    "pl": "Synchronizacja Google Drive"
+   },
+   "forms": [
+    "sync to drive",
+    "synchronizacja z dyskiem",
+    "drive sync"
+   ],
+   "implies": [
+    "optional",
+    "remote"
+   ]
+  },
+  {
+   "id": "openrouter",
+   "class": "protocol",
+   "labels": {
+    "en": "OpenRouter API",
+    "pl": "OpenRouter API"
+   },
+   "forms": [
+    "openrouter",
+    "open router"
+   ]
+  },
+  {
+   "id": "sse",
+   "class": "protocol",
+   "labels": {
+    "en": "Server-sent events",
+    "pl": "Server-sent events"
+   },
+   "forms": [
+    "sse",
+    "server-sent events",
+    "event stream"
+   ]
+  },
+  {
+   "id": "c_abi",
+   "class": "protocol",
+   "labels": {
+    "en": "C ABI",
+    "pl": "C ABI"
+   },
+   "forms": [
+    "c abi",
+    "abi",
+    "loom.h",
+    "jni"
+   ],
+   "ambiguous": [
+    "abi"
+   ],
+   "requires_context": [
+    "loom",
+    "c",
+    "jni",
+    "boundary",
+    "granica"
+   ]
+  },
+  {
+   "id": "rest",
+   "class": "protocol",
+   "labels": {
+    "en": "REST/HTTP",
+    "pl": "REST/HTTP"
+   },
+   "forms": [
+    "rest api",
+    "rest",
+    "http api"
+   ],
+   "ambiguous": [
+    "rest"
+   ],
+   "requires_context": [
+    "api",
+    "http",
+    "endpoint",
+    "server"
+   ]
+  },
+  {
+   "id": "chatgpt_export",
+   "class": "format",
+   "labels": {
+    "en": "ChatGPT export",
+    "pl": "Eksport ChatGPT"
+   },
+   "forms": [
+    "chatgpt export",
+    "eksport chatgpt",
+    "conversations.json",
+    "mapping"
+   ],
+   "ambiguous": [
+    "mapping"
+   ],
+   "requires_context": [
+    "chatgpt",
+    "export",
+    "eksport"
+   ]
+  },
+  {
+   "id": "claude_export",
+   "class": "format",
+   "labels": {
+    "en": "Claude export",
+    "pl": "Eksport Claude"
+   },
+   "forms": [
+    "claude export",
+    "eksport claude",
+    "chat_messages",
+    "projects.json",
+    "memories.json"
+   ]
+  },
+  {
+   "id": "markdown",
+   "class": "format",
+   "labels": {
+    "en": "Markdown",
+    "pl": "Markdown"
+   },
+   "forms": [
+    "markdown",
+    "md"
+   ],
+   "ambiguous": [
+    "md"
+   ],
+   "requires_context": [
+    "plik",
+    "file",
+    "format"
+   ]
+  },
+  {
+   "id": "video",
+   "class": "format",
+   "labels": {
+    "en": "Video",
+    "pl": "Wideo"
+   },
+   "forms": [
+    "video",
+    "wideo",
+    "film",
+    "filmu",
+    "mp4",
+    "klip",
+    "clip"
+   ]
+  },
+  {
+   "id": "storyboard",
+   "class": "format",
+   "labels": {
+    "en": "Storyboard",
+    "pl": "Storyboard"
+   },
+   "forms": [
+    "storyboard",
+    "scenariusz",
+    "scene graph",
+    "graf scen"
+   ]
+  },
+  {
+   "id": "audio",
+   "class": "format",
+   "labels": {
+    "en": "Audio",
+    "pl": "Audio"
+   },
+   "forms": [
+    "audio",
+    "dźwięk",
+    "muzyka",
+    "music",
+    "wav",
+    "mp3"
+   ]
+  },
+  {
+   "id": "zip_archive",
+   "class": "format",
+   "labels": {
+    "en": "ZIP archive",
+    "pl": "Archiwum ZIP"
+   },
+   "forms": [
+    "zip",
+    "archiwum zip",
+    ".zip"
+   ]
+  },
+  {
+   "id": "ffmpeg",
+   "class": "tool",
+   "labels": {
+    "en": "FFmpeg",
+    "pl": "FFmpeg"
+   },
+   "forms": [
+    "ffmpeg",
+    "ffprobe"
+   ]
+  },
+  {
+   "id": "git",
+   "class": "tool",
+   "labels": {
+    "en": "git",
+    "pl": "git"
+   },
+   "forms": [
+    "git",
+    "git log",
+    "commit",
+    "commity"
+   ],
+   "ambiguous": [
+    "commit"
+   ],
+   "requires_context": [
+    "git",
+    "repo",
+    "branch"
+   ]
+  },
+  {
+   "id": "claude_code",
+   "class": "tool",
+   "labels": {
+    "en": "Claude Code",
+    "pl": "Claude Code"
+   },
+   "forms": [
+    "claude code",
+    "coding agent",
+    "agent kodujący"
+   ]
+  },
+  {
+   "id": "browser_automation",
+   "class": "tool",
+   "labels": {
+    "en": "Browser automation",
+    "pl": "Automatyzacja przeglądarki"
+   },
+   "forms": [
+    "selenium",
+    "playwright",
+    "puppeteer",
+    "browser use",
+    "computer use"
+   ]
+  },
+  {
+   "id": "terminal",
+   "class": "tool",
+   "labels": {
+    "en": "Terminal",
+    "pl": "Terminal"
+   },
+   "forms": [
+    "terminal",
+    "shell",
+    "bash",
+    "powłoka"
+   ]
+  },
+  {
+   "id": "whisper",
+   "class": "tool",
+   "labels": {
+    "en": "Whisper ASR",
+    "pl": "Whisper ASR"
+   },
+   "forms": [
+    "whisper",
+    "groq whisper",
+    "asr"
+   ]
+  },
+  {
+   "id": "ocr",
+   "class": "tool",
+   "labels": {
+    "en": "OCR",
+    "pl": "OCR"
+   },
+   "forms": [
+    "ocr",
+    "tesseract"
+   ]
+  },
+  {
+   "id": "role_junior_dev",
+   "class": "role",
+   "labels": {
+    "en": "junior_dev",
+    "pl": "junior_dev"
+   },
+   "forms": [
+    "junior_dev",
+    "junior dev",
+    "junior developer"
+   ]
+  },
+  {
+   "id": "role_senior_dev",
+   "class": "role",
+   "labels": {
+    "en": "senior_dev",
+    "pl": "senior_dev"
+   },
+   "forms": [
+    "senior_dev",
+    "senior dev",
+    "senior developer"
+   ]
+  },
+  {
+   "id": "role_researcher",
+   "class": "role",
+   "labels": {
+    "en": "researcher",
+    "pl": "researcher"
+   },
+   "forms": [
+    "researcher",
+    "badacz"
+   ]
+  },
+  {
+   "id": "role_planner",
+   "class": "role",
+   "labels": {
+    "en": "planner",
+    "pl": "planista"
+   },
+   "forms": [
+    "planner",
+    "planista",
+    "orchestrator",
+    "orkiestrator"
+   ]
+  },
+  {
+   "id": "role_verifier",
+   "class": "role",
+   "labels": {
+    "en": "verifier",
+    "pl": "weryfikator"
+   },
+   "forms": [
+    "verifier",
+    "weryfikator",
+    "reviewer",
+    "evaluator"
+   ]
+  },
+  {
+   "id": "central_memory",
+   "class": "concept.memory",
+   "labels": {
+    "en": "Central memory",
+    "pl": "Centralna pamięć"
+   },
+   "forms": [
+    "central memory",
+    "centralna pamięć",
+    "system knowledge",
+    "long-term memory",
+    "pamięć długoterminowa",
+    "memory tree",
+    "drzewo pamięci",
+    "hierarchiczna pamięć"
+   ]
+  },
+  {
+   "id": "checkpoints",
+   "class": "concept.resumability",
+   "labels": {
+    "en": "Checkpoints / resume",
+    "pl": "Checkpointy / wznawianie"
+   },
+   "forms": [
+    "checkpoint",
+    "checkpointy",
+    "resume",
+    "wznawianie",
+    "rollback",
+    "retry",
+    "resumable"
+   ]
+  },
+  {
+   "id": "main_py",
+   "class": "entry_point_file",
+   "labels": {
+    "en": "main.py",
+    "pl": "main.py"
+   },
+   "forms": [
+    "main.py",
+    "__main__.py"
+   ]
+  },
+  {
+   "id": "main_cpp",
+   "class": "entry_point_file",
+   "labels": {
+    "en": "main.cpp",
+    "pl": "main.cpp"
+   },
+   "forms": [
+    "main.cpp"
+   ]
+  },
+  {
+   "id": "main_activity",
+   "class": "entry_point_file",
+   "labels": {
+    "en": "MainActivity.kt",
+    "pl": "MainActivity.kt"
+   },
+   "forms": [
+    "mainactivity.kt",
+    "mainactivity.java"
+   ]
+  },
+  {
+   "id": "main_tsx",
+   "class": "e)LOOMKB",
+    R"LOOMKB(ntry_point_file",
+   "labels": {
+    "en": "main.tsx",
+    "pl": "main.tsx"
+   },
+   "forms": [
+    "main.tsx",
+    "main.ts",
+    "index.tsx"
+   ]
+  },
+  {
+   "id": "kodeks_pracy",
+   "class": "legal_norm",
+   "labels": {
+    "en": "Labour Code (PL)",
+    "pl": "Kodeks pracy"
+   },
+   "forms": [
+    "kodeks pracy",
+    "kp",
+    "k.p."
+   ]
+  },
+  {
+   "id": "kpa",
+   "class": "legal_norm",
+   "labels": {
+    "en": "Code of Administrative Procedure (PL)",
+    "pl": "Kodeks postępowania administracyjnego"
+   },
+   "forms": [
+    "kodeks postępowania administracyjnego",
+    "kpa",
+    "k.p.a."
+   ]
+  },
+  {
+   "id": "kpc",
+   "class": "legal_norm",
+   "labels": {
+    "en": "Code of Civil Procedure (PL)",
+    "pl": "Kodeks postępowania cywilnego"
+   },
+   "forms": [
+    "kodeks postępowania cywilnego",
+    "kpc",
+    "k.p.c."
+   ]
+  },
+  {
+   "id": "kpk",
+   "class": "legal_norm",
+   "labels": {
+    "en": "Code of Criminal Procedure (PL)",
+    "pl": "Kodeks postępowania karnego"
+   },
+   "forms": [
+    "kodeks postępowania karnego",
+    "kpk",
+    "k.p.k."
+   ]
+  },
+  {
+   "id": "rodo",
+   "class": "legal_norm",
+   "labels": {
+    "en": "GDPR",
+    "pl": "RODO"
+   },
+   "forms": [
+    "rodo",
+    "gdpr"
+   ]
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
@@ -2438,72 +4756,1105 @@ const char* const kPackChunks7[] = {
     nullptr};
 const char* const kPackChunks8[] = {
     R"LOOMKB({
-  "schema": "loom.kb.cues/1",
-  "description": "Cue-phrase classes for the paradigm wave (item cues of archive v1 stay in item_cues.json). Phrases are lowercase; a trailing '*' is a word prefix; matching is on word boundaries over the lowercased sentence (same matcher as the item classifier). 'weight' feeds raw confidence; the scope says what the cue qualifies.",
-  "classes": {
-    "normative": {
-      "description": "Sentences stating a rule of conduct: candidate principles (philosophy discovery).",
-      "phrases": [
-        {"p": "always", "w": 1}, {"p": "never", "w": 1.5}, {"p": "must", "w": 1}, {"p": "must not", "w": 1.5}, {"p": "should not", "w": 1},
-        {"p": "principle", "w": 2}, {"p": "rule of thumb", "w": 2}, {"p": "philosophy", "w": 2}, {"p": "invariant", "w": 1.5}, {"p": "by default", "w": 1},
-        {"p": "zawsze", "w": 1}, {"p": "nigdy", "w": 1.5}, {"p": "musi", "w": 1}, {"p": "nie wolno", "w": 2}, {"p": "nie może", "w": 1},
-        {"p": "zasad*", "w": 2}, {"p": "reguł*", "w": 1.5}, {"p": "filozofi*", "w": 2}, {"p": "konstytucj*", "w": 2}, {"p": "domyślnie", "w": 1},
-        {"p": "≠", "w": 2}, {"p": "nie „", "w": 0.5}
-      ]
+ "schema": "loom.kb.cues/1",
+ "description": "Cue-phrase classes for the paradigm wave (item cues of archive v1 stay in item_cues.json). Phrases are lowercase; a trailing '*' is a word prefix; matching is on word boundaries over the lowercased sentence (same matcher as the item classifier). 'weight' feeds raw confidence; the scope says what the cue qualifies.",
+ "classes": {
+  "normative": {
+   "description": "Sentences stating a rule of conduct: candidate principles (philosophy discovery).",
+   "phrases": [
+    {
+     "p": "always",
+     "w": 1
     },
-    "status.implemented": {"description": "Component/feature works.", "phrases": [
-      {"p": "implemented", "w": 2}, {"p": "works", "w": 1}, {"p": "working", "w": 1}, {"p": "done", "w": 1}, {"p": "shipped", "w": 2}, {"p": "landed", "w": 1.5},
-      {"p": "zaimplementowa*", "w": 2}, {"p": "działa", "w": 1}, {"p": "gotowe", "w": 1.5}, {"p": "zrobione", "w": 1.5}, {"p": "dodałem", "w": 1}]},
-    "status.partial": {"description": "Component exists but is incomplete or broken.", "phrases": [
-      {"p": "partially", "w": 2}, {"p": "not yet", "w": 1.5}, {"p": "stub", "w": 2}, {"p": "placeholder", "w": 2}, {"p": "wip", "w": 2}, {"p": "work in progress", "w": 2}, {"p": "doesn't work", "w": 1.5},
-      {"p": "częściowo", "w": 2}, {"p": "jeszcze nie", "w": 1.5}, {"p": "zaślepk*", "w": 2}, {"p": "w trakcie", "w": 1.5}, {"p": "nie działa", "w": 1.5}, {"p": "wstępn*", "w": 1.5}]},
-    "status.planned": {"description": "Future-tense intentions only.", "phrases": [
-      {"p": "will add", "w": 1.5}, {"p": "we'll add", "w": 1.5}, {"p": "plan to", "w": 1.5}, {"p": "planned", "w": 2}, {"p": "todo", "w": 1}, {"p": "later", "w": 0.5}, {"p": "next step", "w": 1.5}, {"p": "roadmap", "w": 1.5},
-      {"p": "dodamy", "w": 1.5}, {"p": "planuj*", "w": 1.5}, {"p": "w planach", "w": 2}, {"p": "następny krok", "w": 1.5}, {"p": "później", "w": 0.5}, {"p": "kiedyś", "w": 0.5}]},
-    "status.abandoned": {"description": "Explicitly given up.", "phrases": [
-      {"p": "abandon*", "w": 2}, {"p": "gave up", "w": 2}, {"p": "dropped", "w": 1.5}, {"p": "no longer", "w": 1}, {"p": "dead end", "w": 2}, {"p": "scrapped", "w": 2},
-      {"p": "porzuc*", "w": 2}, {"p": "rezygnuj*", "w": 2}, {"p": "zarzuc*", "w": 2}, {"p": "odpuszczam*", "w": 1.5}, {"p": "ślepa uliczka", "w": 2}]},
-    "status.paused": {"description": "Explicitly on hold.", "phrases": [
-      {"p": "on hold", "w": 2}, {"p": "paused", "w": 2}, {"p": "postponed", "w": 2}, {"p": "parked", "w": 1.5},
-      {"p": "wstrzyman*", "w": 2}, {"p": "odłożon*", "w": 2}, {"p": "na później", "w": 1.5}, {"p": "zawieszon*", "w": 1.5}]},
-    "status.superseded": {"description": "Replaced by something else (object of the phrase = successor).", "phrases": [
-      {"p": "replaced by", "w": 2}, {"p": "superseded by", "w": 2.5}, {"p": "instead of", "w": 1}, {"p": "in favour of", "w": 1.5}, {"p": "in favor of", "w": 1.5}, {"p": "deprecated", "w": 1.5},
-      {"p": "zastąpion*", "w": 2}, {"p": "zamiast", "w": 1}, {"p": "na rzecz", "w": 1.5}, {"p": "przestarzał*", "w": 1.5}]},
-    "lineage.merged_into": {"description": "X becomes part of Y.", "phrases": [
-      {"p": "merged into", "w": 2}, {"p": "becomes part of", "w": 2}, {"p": "folded into", "w": 2}, {"p": "absorbed by", "w": 2}, {"p": "becomes a capability pack", "w": 2.5},
-      {"p": "staje się częścią", "w": 2}, {"p": "wchodzi do", "w": 1.5}, {"p": "scal*", "w": 1.5}, {"p": "wpada do", "w": 1.5}, {"p": "nie powinien być osobną aplikacją", "w": 2.5}, {"p": "to nie osobny", "w": 2}]},
-    "lineage.evolved_into": {"description": "X turns into Y (identity continues).", "phrases": [
-      {"p": "evolved into", "w": 2}, {"p": "becomes", "w": 1}, {"p": "migrat*", "w": 1.5}, {"p": "rewrite in", "w": 1.5}, {"p": "port to", "w": 1.5}, {"p": "ported to", "w": 1.5},
-      {"p": "staje się", "w": 1}, {"p": "migracja", "w": 1.5}, {"p": "przepisanie na", "w": 1.5}, {"p": "przeniesienie na", "w": 1.5}, {"p": "to jest", "w": 0.5}]},
-    "lineage.based_on": {"description": "Version/code derived from a base.", "phrases": [
-      {"p": "based on", "w": 2}, {"p": "forked from", "w": 2.5}, {"p": "on top of", "w": 1.5}, {"p": "starting from", "w": 1},
-      {"p": "na bazie", "w": 2}, {"p": "bazując na", "w": 2}, {"p": "od wersji", "w": 1.5}, {"p": "na podstawie", "w": 1}, {"p": "drugie podejście", "w": 1.5}]},
-    "enumeration.options": {"description": "Option lists (brainstorm roots).", "phrases": [
-      {"p": "option 1", "w": 2}, {"p": "option a", "w": 2}, {"p": "alternatives", "w": 1.5}, {"p": "either", "w": 1}, {"p": "vs", "w": 1}, {"p": "versus", "w": 1}, {"p": "or rather", "w": 1},
-      {"p": "opcja 1", "w": 2}, {"p": "opcja a", "w": 2}, {"p": "wariant*", "w": 1.5}, {"p": "albo", "w": 0.5}, {"p": "alternatyw*", "w": 1.5}, {"p": "do wyboru", "w": 2}, {"p": "możliwości", "w": 1}]},
-    "enumeration.chain": {"description": "Ordered stage chains.", "phrases": [
-      {"p": "→", "w": 2}, {"p": "->", "w": 1.5}, {"p": "then", "w": 0.5}, {"p": "step 1", "w": 2}, {"p": "stage", "w": 1}, {"p": "pipeline", "w": 1.5},
-      {"p": "krok 1", "w": 2}, {"p": "etap*", "w": 1.5}, {"p": "potok", "w": 1.5}, {"p": "następnie", "w": 0.5}]},
-    "paradigm.multiplatform_app": {"description": "Anchor cue for multiplatform_app.", "phrases": [
-      {"p": "cross-platform", "w": 2}, {"p": "multi-platform", "w": 2}, {"p": "multiplatform", "w": 2}, {"p": "android and desktop", "w": 2}, {"p": "android + desktop", "w": 2},
-      {"p": "wieloplatformow*", "w": 2}, {"p": "na androida i desktop", "w": 2}, {"p": "pracy wieloplatformowej", "w": 2}, {"p": "single codebase", "w": 1.5}, {"p": "jeden kod", "w": 1}]},
-    "paradigm.pipeline": {"description": "Anchor cue for pipeline.", "phrases": [
-      {"p": "pipeline", "w": 1.5}, {"p": "workflow", "w": 1}, {"p": "stage", "w": 0.5}, {"p": "ingest", "w": 1}, {"p": "render", "w": 0.5},
-      {"p": "potok", "w": 1.5}, {"p": "przepływ", "w": 1}, {"p": "etap*", "w": 0.5}]},
-    "paradigm.brainstorm": {"description": "Anchor cue for brainstorm.", "phrases": [
-      {"p": "brainstorm", "w": 2}, {"p": "ideas for", "w": 1.5}, {"p": "options for", "w": 1.5}, {"p": "which is better", "w": 1.5}, {"p": "pros and cons", "w": 2},
-      {"p": "burza mózgów", "w": 2}, {"p": "pomysły na", "w": 1.5}, {"p": "co lepsze", "w": 1.5}, {"p": "za i przeciw", "w": 2}, {"p": "zastanawiam się", "w": 1}]},
-    "paradigm.specification": {"description": "Anchor cue for specification.", "phrases": [
-      {"p": "specification", "w": 2}, {"p": "spec", "w": 1.5}, {"p": "requirements", "w": 2}, {"p": "contract", "w": 1}, {"p": "interface", "w": 1},
-      {"p": "specyfikacj*", "w": 2}, {"p": "wymagania", "w": 2}, {"p": "kontrakt*", "w": 1}, {"p": "master spec", "w": 2}]},
-    "paradigm.agent_system": {"description": "Anchor cue for agent_system.", "phrases": [
-      {"p": "agent", "w": 1}, {"p": "autonomous", "w": 1.5}, {"p": "computer use", "w": 2}, {"p": "tool use", "w": 1.5}, {"p": "multi-agent", "w": 2},
-      {"p": "autonomiczny agent", "w": 2}, {"p": "agent kodujący", "w": 2}, {"p": "role modeli", "w": 1.5}, {"p": "samoreplikacj*", "w": 2}]},
-    "purpose": {"description": "Sentences stating what a subject is for (has_purpose facts).", "phrases": [
-      {"p": "is a", "w": 0.5}, {"p": "is an", "w": 0.5}, {"p": "is meant to", "w":)LOOMKB",
-    R"LOOMKB( 1.5}, {"p": "the goal is", "w": 2}, {"p": "purpose", "w": 2}, {"p": "used for", "w": 1},
-      {"p": "to jest", "w": 0.5}, {"p": "służy do", "w": 2}, {"p": "celem jest", "w": 2}, {"p": "ma służyć", "w": 2}, {"p": "aplikacja do", "w": 1.5}, {"p": "narzędzie do", "w": 1.5}]}
+    {
+     "p": "never",
+     "w": 1.5
+    },
+    {
+     "p": "must",
+     "w": 1
+    },
+    {
+     "p": "must not",
+     "w": 1.5
+    },
+    {
+     "p": "should not",
+     "w": 1
+    },
+    {
+     "p": "principle",
+     "w": 2
+    },
+    {
+     "p": "rule of thumb",
+     "w": 2
+    },
+    {
+     "p": "philosophy",
+     "w": 2
+    },
+    {
+     "p": "invariant",
+     "w": 1.5
+    },
+    {
+     "p": "by default",
+     "w": 1
+    },
+    {
+     "p": "zawsze",
+     "w": 1
+    },
+    {
+     "p": "nigdy",
+     "w": 1.5
+    },
+    {
+     "p": "musi",
+     "w": 1
+    },
+    {
+     "p": "nie wolno",
+     "w": 2
+    },
+    {
+     "p": "nie może",
+     "w": 1
+    },
+    {
+     "p": "zasad*",
+     "w": 2
+    },
+    {
+     "p": "reguł*",
+     "w": 1.5
+    },
+    {
+     "p": "filozofi*",
+     "w": 2
+    },
+    {
+     "p": "konstytucj*",
+     "w": 2
+    },
+    {
+     "p": "domyślnie",
+     "w": 1
+    },
+    {
+     "p": "≠",
+     "w": 2
+    },
+    {
+     "p": "nie „",
+     "w": 0.5
+    }
+   ]
+  },
+  "status.implemented": {
+   "description": "Component/feature works.",
+   "phrases": [
+    {
+     "p": "implemented",
+     "w": 2
+    },
+    {
+     "p": "works",
+     "w": 1
+    },
+    {
+     "p": "working",
+     "w": 1
+    },
+    {
+     "p": "done",
+     "w": 1
+    },
+    {
+     "p": "shipped",
+     "w": 2
+    },
+    {
+     "p": "landed",
+     "w": 1.5
+    },
+    {
+     "p": "zaimplementowa*",
+     "w": 2
+    },
+    {
+     "p": "działa",
+     "w": 1
+    },
+    {
+     "p": "gotowe",
+     "w": 1.5
+    },
+    {
+     "p": "zrobione",
+     "w": 1.5
+    },
+    {
+     "p": "dodałem",
+     "w": 1
+    }
+   ]
+  },
+  "status.partial": {
+   "description": "Component exists but is incomplete or broken.",
+   "phrases": [
+    {
+     "p": "partially",
+     "w": 2
+    },
+    {
+     "p": "not yet",
+     "w": 1.5
+    },
+    {
+     "p": "stub",
+     "w": 2
+    },
+    {
+     "p": "placeholder",
+     "w": 2
+    },
+    {
+     "p": "wip",
+     "w": 2
+    },
+    {
+     "p": "work in progress",
+     "w": 2
+    },
+    {
+     "p": "doesn't work",
+     "w": 1.5
+    },
+    {
+     "p": "częściowo",
+     "w": 2
+    },
+    {
+     "p": "jeszcze nie",
+     "w": 1.5
+    },
+    {
+     "p": "zaślepk*",
+     "w": 2
+    },
+    {
+     "p": "w trakcie",
+     "w": 1.5
+    },
+    {
+     "p": "nie działa",
+     "w": 1.5
+    },
+    {
+     "p": "wstępn*",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.planned": {
+   "description": "Future-tense intentions only.",
+   "phrases": [
+    {
+     "p": "will add",
+     "w": 1.5
+    },
+    {
+     "p": "we'll add",
+     "w": 1.5
+    },
+    {
+     "p": "plan to",
+     "w": 1.5
+    },
+    {
+     "p": "planned",
+     "w": 2
+    },
+    {
+     "p": "todo",
+     "w": 1
+    },
+    {
+     "p": "later",
+     "w": 0.5
+    },
+    {
+     "p": "next step",
+     "w": 1.5
+    },
+    {
+     "p": "roadmap",
+     "w": 1.5
+    },
+    {
+     "p": "dodamy",
+     "w": 1.5
+    },
+    {
+     "p": "planuj*",
+     "w": 1.5
+    },
+    {
+     "p": "w planach",
+     "w": 2
+    },
+    {
+     "p": "następny krok",
+     "w": 1.5
+    },
+    {
+     "p": "później",
+     "w": 0.5
+    },
+    {
+     "p": "kiedyś",
+     "w": 0.5
+    }
+   ]
+  },
+  "status.abandoned": {
+   "description": "Explicitly given up.",
+   "phrases": [
+    {
+     "p": "abandon*",
+     "w": 2
+    },
+    {
+     "p": "gave up",
+     "w": 2
+    },
+    {
+     "p": "dropped",
+     "w": 1.5
+    },
+    {
+     "p": "no longer",
+     "w": 1
+    },
+    {
+     "p": "dead end",
+     "w": 2
+    },
+    {
+     "p": "scrapped",
+     "w": 2
+    },
+    {
+     "p": "porzuc*",
+     "w": 2
+    },
+    {
+     "p": "rezygnuj*",
+     "w": 2
+    },
+    {
+     "p": "zarzuc*",
+     "w": 2
+    },
+    {
+     "p": "odpuszczam*",
+     "w": 1.5
+    },
+    {
+     "p": "ślepa uliczka",
+     "w": 2
+    }
+   ]
+  },
+  "status.paused": {
+   "description": "Explicitly on hold.",
+   "phrases": [
+    {
+     "p": "on hold",
+     "w": 2
+    },
+    {
+     "p": "paused",
+     "w": 2
+    },
+    {
+     "p": "postponed",
+     "w": 2
+    },
+    {
+     "p": "parked",
+     "w": 1.5
+    },
+    {
+     "p": "wstrzyman*",
+     "w": 2
+    },
+    {
+     "p": "odłożon*",
+     "w": 2
+    },
+    {
+     "p": "na później",
+     "w": 1.5
+    },
+    {
+     "p": "zawieszon*",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.superseded": {
+   "description": "Replaced by something else (object of the phrase = successor).",
+   "phrases": [
+    {
+     "p": "replaced by",
+     "w": 2
+    },
+    {
+     "p": "superseded by",
+     "w": 2.5
+    },
+    {
+     "p": "instead of",
+     "w": 1
+    },
+    {
+     "p": "in favour of",
+     "w": 1.5
+    },
+    {
+     "p": "in favor of",
+     "w": 1.5
+    },
+    {
+     "p": "deprecated",
+     "w": 1.5
+    },
+    {
+     "p": "zastąpion*",
+     "w": 2
+    },
+    {
+     "p": "zamiast",
+     "w": 1
+    },
+    {
+     "p": "na rzecz",
+     "w": 1.5
+    },
+    {
+     "p": "przestarzał*",
+     "w": 1.5
+    }
+   ]
+  },
+  "lineage.merged_into": {
+   "description": "X becomes part of Y.",
+   "phrases": [
+    {
+     "p": "merged into",
+     "w": 2
+    },
+    {
+     "p": "becomes part of",
+     "w": 2
+    },
+    {
+     "p": "folded into",
+     "w": 2
+    },
+    {
+     "p": "absorbed by",
+     "w": 2
+    },
+    {
+     "p": "becomes a capability pack",
+     "w": 2.5
+    },
+    {
+     "p": "staje się częścią",
+     "w": 2
+    },
+    {
+     "p": "wchodzi do",
+     "w": 1.5
+    },
+    {
+     "p": "scal*",
+     "w": 1.5
+    },
+    {
+     "p": "wpada do",
+     "w": 1.5
+    },
+    {
+     "p": "nie powinien być osobną aplikacją",
+     "w": 2.5
+    },
+    {
+     "p": "to nie osobny",
+     "w": 2
+    }
+   ]
+  },
+  "lineage.evolved_into": {
+   "description": "X turns into Y (identity continues).",
+   "phrases": [
+    {
+     "p": "evolved into",
+     "w": 2
+    },
+    {
+     "p": "becomes",
+     "w": 1
+    },
+    {
+     "p": "migrat*",
+     "w": 1.5
+    },
+    {
+     "p": "rewrite in",
+     "w": 1.5
+    },
+    {
+     "p": "port to",
+     "w": 1.5
+    },
+    {
+     "p": "ported to",
+     "w": 1.5
+    },
+    {
+     "p": "staje się",
+     "w": 1
+    },
+    {
+     "p": "migracja",
+     "w": 1.5
+    },
+    {
+     "p": "przepisanie na",
+     "w": 1.5
+    },
+    {
+     "p": "przeniesienie na",
+     "w": 1.5
+    },
+    {
+     "p": "to jest",
+     "w": 0.5
+    }
+   ]
+  },
+  "lineage.based_on": {
+   "description": "Version/code derived from a base.",
+   "phrases": [
+    {
+     "p": "based on",
+     "w": 2
+    },
+    {
+     "p": "forked from",
+     "w": 2.5
+    },
+    {
+     "p": "on top of",
+     "w": 1.5
+    },
+    {
+     "p": "starting from",
+     "w": 1
+    },
+    {
+     "p": "na bazie",
+     "w": 2
+    },
+    {
+     "p": "bazując na",
+     "w": 2
+    },
+    {
+     "p": "od wersji",
+     "w": 1.5
+    },
+    {
+     "p": "na podstawie",
+     "w": 1
+    },
+    {
+     "p": "drugie podejście",
+     "w": 1.5
+    }
+   ]
+  },
+  "enumeration.options": {
+   "description": "Option lists (brainstorm roots).",
+   "phrases": [
+    {
+     "p": "option 1",
+     "w": 2
+    },
+    {
+     "p": "option a",
+     "w": 2
+    },
+    {
+     "p": "alternatives",
+     "w": 1.5
+    },
+    {
+     "p": "either",
+     "w": 1
+    },
+    {
+     "p": "vs",
+     "w": 1
+    },
+    {
+     "p": "versus",
+     "w": 1
+    },
+    {
+     "p": "or rather",
+     "w": 1
+    },
+    {
+     "p": "opcja 1",
+     "w": 2
+    },
+    {
+     "p": "opcja a",
+     "w": 2
+    },
+    {
+     "p": "wariant*",
+     "w": 1.5
+    },
+    {
+     "p": "albo",
+     "w": 0.5
+    },
+    {
+     "p": "altern)LOOMKB",
+    R"LOOMKB(atyw*",
+     "w": 1.5
+    },
+    {
+     "p": "do wyboru",
+     "w": 2
+    },
+    {
+     "p": "możliwości",
+     "w": 1
+    }
+   ]
+  },
+  "enumeration.chain": {
+   "description": "Ordered stage chains.",
+   "phrases": [
+    {
+     "p": "→",
+     "w": 2
+    },
+    {
+     "p": "->",
+     "w": 1.5
+    },
+    {
+     "p": "then",
+     "w": 0.5
+    },
+    {
+     "p": "step 1",
+     "w": 2
+    },
+    {
+     "p": "stage",
+     "w": 1
+    },
+    {
+     "p": "pipeline",
+     "w": 1.5
+    },
+    {
+     "p": "krok 1",
+     "w": 2
+    },
+    {
+     "p": "etap*",
+     "w": 1.5
+    },
+    {
+     "p": "potok",
+     "w": 1.5
+    },
+    {
+     "p": "następnie",
+     "w": 0.5
+    }
+   ]
+  },
+  "paradigm.multiplatform_app": {
+   "description": "Anchor cue for multiplatform_app.",
+   "phrases": [
+    {
+     "p": "cross-platform",
+     "w": 2
+    },
+    {
+     "p": "multi-platform",
+     "w": 2
+    },
+    {
+     "p": "multiplatform",
+     "w": 2
+    },
+    {
+     "p": "android and desktop",
+     "w": 2
+    },
+    {
+     "p": "android + desktop",
+     "w": 2
+    },
+    {
+     "p": "wieloplatformow*",
+     "w": 2
+    },
+    {
+     "p": "na androida i desktop",
+     "w": 2
+    },
+    {
+     "p": "pracy wieloplatformowej",
+     "w": 2
+    },
+    {
+     "p": "single codebase",
+     "w": 1.5
+    },
+    {
+     "p": "jeden kod",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.pipeline": {
+   "description": "Anchor cue for pipeline.",
+   "phrases": [
+    {
+     "p": "pipeline",
+     "w": 1.5
+    },
+    {
+     "p": "workflow",
+     "w": 1
+    },
+    {
+     "p": "stage",
+     "w": 0.5
+    },
+    {
+     "p": "ingest",
+     "w": 1
+    },
+    {
+     "p": "render",
+     "w": 0.5
+    },
+    {
+     "p": "potok",
+     "w": 1.5
+    },
+    {
+     "p": "przepływ",
+     "w": 1
+    },
+    {
+     "p": "etap*",
+     "w": 0.5
+    }
+   ]
+  },
+  "paradigm.brainstorm": {
+   "description": "Anchor cue for brainstorm.",
+   "phrases": [
+    {
+     "p": "brainstorm",
+     "w": 2
+    },
+    {
+     "p": "ideas for",
+     "w": 1.5
+    },
+    {
+     "p": "options for",
+     "w": 1.5
+    },
+    {
+     "p": "which is better",
+     "w": 1.5
+    },
+    {
+     "p": "pros and cons",
+     "w": 2
+    },
+    {
+     "p": "burza mózgów",
+     "w": 2
+    },
+    {
+     "p": "pomysły na",
+     "w": 1.5
+    },
+    {
+     "p": "co lepsze",
+     "w": 1.5
+    },
+    {
+     "p": "za i przeciw",
+     "w": 2
+    },
+    {
+     "p": "zastanawiam się",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.specification": {
+   "description": "Anchor cue for specification.",
+   "phrases": [
+    {
+     "p": "specification",
+     "w": 2
+    },
+    {
+     "p": "spec",
+     "w": 1.5
+    },
+    {
+     "p": "requirements",
+     "w": 2
+    },
+    {
+     "p": "contract",
+     "w": 1
+    },
+    {
+     "p": "interface",
+     "w": 1
+    },
+    {
+     "p": "specyfikacj*",
+     "w": 2
+    },
+    {
+     "p": "wymagania",
+     "w": 2
+    },
+    {
+     "p": "kontrakt*",
+     "w": 1
+    },
+    {
+     "p": "master spec",
+     "w": 2
+    }
+   ]
+  },
+  "paradigm.agent_system": {
+   "description": "Anchor cue for agent_system.",
+   "phrases": [
+    {
+     "p": "agent",
+     "w": 1
+    },
+    {
+     "p": "autonomous",
+     "w": 1.5
+    },
+    {
+     "p": "computer use",
+     "w": 2
+    },
+    {
+     "p": "tool use",
+     "w": 1.5
+    },
+    {
+     "p": "multi-agent",
+     "w": 2
+    },
+    {
+     "p": "autonomiczny agent",
+     "w": 2
+    },
+    {
+     "p": "agent kodujący",
+     "w": 2
+    },
+    {
+     "p": "role modeli",
+     "w": 1.5
+    },
+    {
+     "p": "samoreplikacj*",
+     "w": 2
+    }
+   ]
+  },
+  "purpose": {
+   "description": "Sentences stating what a subject is for (has_purpose facts).",
+   "phrases": [
+    {
+     "p": "is a",
+     "w": 0.5
+    },
+    {
+     "p": "is an",
+     "w": 0.5
+    },
+    {
+     "p": "is meant to",
+     "w": 1.5
+    },
+    {
+     "p": "the goal is",
+     "w": 2
+    },
+    {
+     "p": "purpose",
+     "w": 2
+    },
+    {
+     "p": "used for",
+     "w": 1
+    },
+    {
+     "p": "to jest",
+     "w": 0.5
+    },
+    {
+     "p": "służy do",
+     "w": 2
+    },
+    {
+     "p": "celem jest",
+     "w": 2
+    },
+    {
+     "p": "ma służyć",
+     "w": 2
+    },
+    {
+     "p": "aplikacja do",
+     "w": 1.5
+    },
+    {
+     "p": "narzędzie do",
+     "w": 1.5
+    }
+   ]
+  },
+  "paradigm.film": {
+   "description": "Anchor cue for the film project kind.",
+   "phrases": [
+    {
+     "p": "screenplay",
+     "w": 2
+    },
+    {
+     "p": "storyboard",
+     "w": 2
+    },
+    {
+     "p": "scene",
+     "w": 1
+    },
+    {
+     "p": "character",
+     "w": 1
+    },
+    {
+     "p": "shot",
+     "w": 1
+    },
+    {
+     "p": "scenariusz",
+     "w": 2
+    },
+    {
+     "p": "scenopis",
+     "w": 2
+    },
+    {
+     "p": "scena",
+     "w": 1
+    },
+    {
+     "p": "postać",
+     "w": 1
+    },
+    {
+     "p": "ujęci*",
+     "w": 1
+    },
+    {
+     "p": "film*",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.music": {
+   "description": "Anchor cue for the music project kind.",
+   "phrases": [
+    {
+     "p": "chorus",
+     "w": 2
+    },
+    {
+     "p": "verse",
+     "w": 1.5
+    },
+    {
+     "p": "bpm",
+     "w": 2
+    },
+    {
+     "p": "mixdown",
+     "w": 2
+    },
+    {
+     "p": "master*",
+     "w": 1
+    },
+    {
+     "p": "track",
+     "w": 0.5
+    },
+    {
+     "p": "refren",
+     "w": 2
+    },
+    {
+     "p": "zwrotk*",
+     "w": 1.5
+    },
+    {
+     "p": "tonacj*",
+     "w": 1.5
+    },
+    {
+     "p": "utwór",
+     "w": 1
+    },
+    {
+     "p": "miks*",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.legal_case": {
+   "description": "Anchor cue for the legal_case project kind.",
+   "phrases": [
+    {
+     "p": "court",
+     "w": 1.5
+    },
+    {
+     "p": "appeal",
+     "w": 1.5
+    },
+    {
+     "p": "article",
+     "w": 0.5
+    },
+    {
+     "p": "deadline",
+     "w": 1
+    },
+    {
+     "p": "disciplinary",
+     "w": 2
+    },
+    {
+     "p": "sąd",
+     "w": 1.5
+    },
+    {
+     "p": "odwołani*",
+     "w": 1.5
+    },
+    {
+     "p": "art.",
+     "w": 1
+    },
+    {
+     "p": "kodeks*",
+     "w": 1.5
+    },
+    {
+     "p": "postępowani*",
+     "w": 1.5
+    },
+    {
+     "p": "dyscyplinarn*",
+     "w": 2
+    },
+    {
+     "p": "zarzut*",
+     "w": 1
+    },
+    {
+     "p": "pismo procesowe",
+     "w": 2
+    }
+   ]
+  },
+  "paradigm.research": {
+   "description": "Anchor cue for the research project kind.",
+   "phrases": [
+    {
+     "p": "hypothesis",
+     "w": 2
+    },
+    {
+     "p": "experiment",
+     "w": 1.5
+    },
+    {
+     "p": "dataset",
+     "w": 1
+    },
+    {
+     "p": "replicat*",
+     "w": 1.5
+    },
+    {
+     "p": "falsif*",
+     "w": 2
+    },
+    {
+     "p": "hipotez*",
+     "w": 2
+    },
+    {
+     "p": "eksperyment*",
+     "w": 1.5
+    },
+    {
+     "p": "badani*",
+     "w": 1
+    },
+    {
+     "p": "falsyfik*",
+     "w": 2
+    }
+   ]
   }
+ }
 }
 )LOOMKB",
     nullptr};
@@ -2573,584 +5924,3946 @@ const char* const kPackChunks10[] = {
     nullptr};
 const char* const kPackChunks11[] = {
     R"LOOMKB({
-  "schema": "loom.kb.profile/1",
-  "id": "self",
-  "description": "The self-profile probe: what 'the system itself' is. Seeded from MEGA MASTER §0, §1, §5 and §15; the catalog merges it with terms derived from the repository (paths, declared symbols, config keys, git versions) and with terms discovered in expansion passes. Aliases are matched on match keys. An 'ambiguous' alias counts only when requires_context.min of its context terms occur within policy/thresholds.json catalog.context_window_tokens, and not when negative_context dominates; such rejected hits are reported as noise-trap candidates with the reason.",
-  "owner_subject": "owner",
-  "projects": [
-    {"id": "chatadhd", "name": "ChatADHD", "kind": "multiplatform_app", "merged_into": null, "role": "reference workbench / UX (MEGA MASTER §5)",
-     "aliases": [
-       {"t": "ChatADHD"}, {"t": "chat adhd"}, {"t": "czat adhd"}, {"t": "adhd chat"}, {"t": "chatadhd app"}, {"t": "openrouter_gui"}, {"t": "openrouter client"},
-       {"t": "ADHD", "ambiguous": true, "requires_context": {"any": ["kivy", "openrouter", "graf", "graph", "czat", "chat", "app", "aplikacj", "loom", "pamięć", "memory"], "min": 2},
-        "negative_context": ["diagnoz", "leki", "leków", "medication", "psychiatr", "objaw", "symptom", "terapi", "therapy", "dziecko", "szkoła", "concerta", "medikinet"]}
-     ]},
-    {"id": "loom", "name": "Loom", "kind": "library", "merged_into": null, "role": "kernel / SDK / runtime (MEGA MASTER §0)",
-     "aliases": [
-       {"t": "Loom SDK"}, {"t": "loom kernel"}, {"t": "libloom"}, {"t": "loom.h"}, {"t": "rdzeń loom"},
-       {"t": "Loom", "ambiguous": true, "requires_context": {"any": ["kernel", "c++", "abi", "sdk", "chatadhd", "rdzeń", "runtime", "jni", "graph store", "sqlite"], "min": 1},
-        "negative_context": ["screen recording", "nagranie ekranu", "loom.com", "video message", "weaving", "krosno", "tkanin", "tkack", "loom band", "gumki"]}
-     ]},
-    {"id": "agent2024", "name": "Autonomous Agent (2024)", "kind": "agent_system", "merged_into": "loom", "role": "Task/Action/Execution + policy + tools (MEGA MASTER §1.3)",
-     "aliases": [
-       {"t": "agent base"}, {"t": "autonomiczny agent"}, {"t": "autonomous agent"}, {"t": "universal agent"}, {"t": "uniwersalny agent"},
-       {"t": "agent", "ambiguous": true, "requires_context": {"any": ["gcp", "vm", "computer use", "checkpoint", "samoreplikacj", "self-deploy", "central memory", "centralna pamięć", "dwa llm", "two llm"], "min": 1},
-        "negative_context": ["agent nieruchomości", "real estate agent", "travel agent", "agent ubezpieczeniowy", "insurance agent", "user agent"]}
-     ]},
-    {"id": "archive_analyzer", "name": "Archive Analyzer", "kind": "pipeline", "merged_into": "loom", "role": "Archive Intelligence workflow (MEGA MASTER §1.4)",
-     "aliases": [{"t": "archive analyzer"}, {"t": "analizator archiwów"}, {"t": "analiza archiwów"}, {"t": "archive intelligence"}, {"t": "project compiler"},
-                 {"t": "automating chatbot conversation analysis"}, {"t": "analiza rozmów z chatbotem"}]},
-    {"id": "projects_project", "name": "the projects project", "kind": "workflow", "merged_into": "loom", "role": "Project Compiler + provenance/fork timeline (MEGA MASTER §5)",
-     "aliases": [{"t": "the projects project"}, {"t": "projects project"}, {"t": "projekt projektów"}]},
-    {"id": "multillm_kg", "name": "Multi-LLM KG chatbot", "kind": "multiplatform_app", "merged_into": "chatadhd", "role": "Provider/Model + Graph/Context + UI composition (MEGA MASTER §1.5)",
-     "aliases": [{"t": "multi-llm"}, {"t": "multillm"}, {"t": "multi llm chatbot"}, {"t": "knowledge graph chatbot"}, {"t": "kg chatbot"}, {"t": "czatbot z grafem wiedzy"}]},
-    {"id": "gcp_vm_manager", "name": "GCP VM manager", "kind": "tool", "merged_into": "loom", "role": "ExecutionEnvironment / ComputeProvider adapters (MEGA MASTER §5)",
-     "aliases": [{"t": "gcp vm manager"}, {"t": "vm manager"}, {"t": "menedżer vm"}, {"t": "zarządzanie vm na gcp"}]},
-    {"id": "video_pipeline", "name": "Video pipeline", "kind": "pipeline", "merged_into": "chatadhd", "role": "Artifact + media pipeline pack (MEGA MASTER §1.6, §5)",
-     "aliases": [
-       {"t": "video combine"}, {"t": "scene tools"}, {"t": "video pipeline"}, {"t": "pipeline wideo"}, {"t": "potok wideo"}, {"t": "film structure"}, {"t": "struktura filmu"}, {"t": "compositor"},
-       {"t": "storyboard", "ambiguous": true, "requires_context": {"any": ["chatadhd", "pipeline", "ffmpeg", "timeline", "scene", "scena", "compositor"], "min": 1}}
-     ]},
-    {"id": "watchdog", "name": "WatchDog", "kind": "agent_system", "merged_into": "loom", "role": "domain application/plugin/preset on the common substrate (MEGA MASTER §5)",
-     "aliases": [
-       {"t": "WatchDog automated coding agents"}, {"t": "watchdog coding agent"},
-       {"t": "watchdog", "ambiguous": true, "requires_context": {"any": ["coding agent", "agent", "claude code", "minimal-human", "config as data", "ui as data"], "min": 1},
-        "negative_context": ["watchdog timer", "wdt", "mikrokontroler", "microcontroller", "esp32", "arduino", "reset timer"]}
-     ]},
-    {"id": "pitching_agent", "name": "Pitching agent / avatar", "kind": "agent_system", "merged_into": "loom", "role": "presentation/agent UI pack, later (MEGA MASTER §5)",
-     "aliases": [{"t": "agent piczujący"}, {"t": "pitching agent"}, {"t": "pitch agent"}, {"t": "avatar agent"}]},
-    {"id": "lem", "name": "LEM", "kind": "library", "merged_into": null, "role": "optional representation/metadata provider, not a core dependency (MEGA MASTER §5)",
-     "aliases": [{"t": "LEM", "ambiguous": true, "requires_context": {"any": ["reprezentacj", "representation", "metadata", "semantic", "context"], "min": 1},
-                  "negative_context": ["stanisław lem", "solaris", "cyberiada", "powieść", "novel"]}]}
-  ],
-  "philosophy_probe": {
-    "description": "Coding-philosophy probe: chats that never name the app but state the owner's principles are relevant too (R2). Terms are the seed principles' phrasings (philosophy/seed_principles.json) plus these topic anchors.",
-    "anchors": ["zasady kodowania", "fundamentalne zasady", "filozofia kodowania", "coding philosophy", "coding principles", "architektura", "architecture", "abstrakcj", "presets-as-data", "kod ≠ dane"]
+ "schema": "loom.kb.profile/1",
+ "id": "self",
+ "description": "The self-profile probe: what 'the system itself' is. Seeded from MEGA MASTER §0, §1, §5 and §15; each project names its project kind and facets; the catalog merges it with terms derived from the repository (paths, declared symbols, config keys, git versions) and with terms discovered in expansion passes. Aliases are matched on match keys. An 'ambiguous' alias counts only when requires_context.min of its context terms occur within policy/thresholds.json catalog.context_window_tokens, and not when negative_context dominates; such rejected hits are reported as noise-trap candidates with the reason.",
+ "owner_subject": "owner",
+ "projects": [
+  {
+   "id": "chatadhd",
+   "name": "ChatADHD",
+   "project_kind": "software_app",
+   "facets": [
+    "multiplatform"
+   ],
+   "merged_into": null,
+   "role": "reference workbench / UX (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "ChatADHD"
+    },
+    {
+     "t": "chat adhd"
+    },
+    {
+     "t": "czat adhd"
+    },
+    {
+     "t": "adhd chat"
+    },
+    {
+     "t": "chatadhd app"
+    },
+    {
+     "t": "openrouter_gui"
+    },
+    {
+     "t": "openrouter client"
+    },
+    {
+     "t": "ADHD",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "kivy",
+       "openrouter",
+       "graf",
+       "graph",
+       "czat",
+       "chat",
+       "app",
+       "aplikacj",
+       "loom",
+       "pamięć",
+       "memory"
+      ],
+      "min": 2
+     },
+     "negative_context": [
+      "diagnoz",
+      "leki",
+      "leków",
+      "medication",
+      "psychiatr",
+      "objaw",
+      "symptom",
+      "terapi",
+      "therapy",
+      "dziecko",
+      "szkoła",
+      "concerta",
+      "medikinet"
+     ]
+    }
+   ]
   },
-  "date_prior": {"from": "2024-06-01", "soft_penalty_before": -0.5}
+  {
+   "id": "loom",
+   "name": "Loom",
+   "project_kind": "software_app",
+   "facets": [
+    "multiplatform"
+   ],
+   "merged_into": null,
+   "role": "kernel / SDK / runtime (MEGA MASTER §0)",
+   "aliases": [
+    {
+     "t": "Loom SDK"
+    },
+    {
+     "t": "loom kernel"
+    },
+    {
+     "t": "libloom"
+    },
+    {
+     "t": "loom.h"
+    },
+    {
+     "t": "rdzeń loom"
+    },
+    {
+     "t": "Loom",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "kernel",
+       "c++",
+       "abi",
+       "sdk",
+       "chatadhd",
+       "rdzeń",
+       "runtime",
+       "jni",
+       "graph store",
+       "sqlite"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "screen recording",
+      "nagranie ekranu",
+      "loom.com",
+      "video message",
+      "weaving",
+      "krosno",
+      "tkanin",
+      "tkack",
+      "loom band",
+      "gumki"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "agent2024",
+   "name": "Autonomous Agent (2024)",
+   "project_kind": "software_app",
+   "facets": [
+    "agent"
+   ],
+   "merged_into": "loom",
+   "role": "Task/Action/Execution + policy + tools (MEGA MASTER §1.3)",
+   "aliases": [
+    {
+     "t": "agent base"
+    },
+    {
+     "t": "autonomiczny agent"
+    },
+    {
+     "t": "autonomous agent"
+    },
+    {
+     "t": "universal agent"
+    },
+    {
+     "t": "uniwersalny agent"
+    },
+    {
+     "t": "agent",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "gcp",
+       "vm",
+       "computer use",
+       "checkpoint",
+       "samoreplikacj",
+       "self-deploy",
+       "central memory",
+       "centralna pamięć",
+       "dwa llm",
+       "two llm"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "agent nieruchomości",
+      "real estate agent",
+      "travel agent",
+      "agent ubezpieczeniowy",
+      "insurance agent",
+      "user agent"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "archive_analyzer",
+   "name": "Archive Analyzer",
+   "project_kind": "software_app",
+   "facets": [
+    "staged_transformation"
+   ],
+   "merged_into": "loom",
+   "role": "Archive Intelligence workflow (MEGA MASTER §1.4)",
+   "aliases": [
+    {
+     "t": "archive analyzer"
+    },
+    {
+     "t": "analizator archiwów"
+    },
+    {
+     "t": "analiza archiwów"
+    },
+    {
+     "t": "archive intelligence"
+    },
+    {
+     "t": "project compiler"
+    },
+    {
+     "t": "automating chatbot conversation analysis"
+    },
+    {
+     "t": "analiza rozmów z chatbotem"
+    }
+   ]
+  },
+  {
+   "id": "projects_project",
+   "name": "the projects project",
+   "project_kind": "software_app",
+   "facets": [
+    "staged_transformation"
+   ],
+   "merged_into": "loom",
+   "role": "Project Compiler + provenance/fork timeline (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "the projects project"
+    },
+    {
+     "t": "projects project"
+    },
+    {
+     "t": "projekt projektów"
+    }
+   ]
+  },
+  {
+   "id": "multillm_kg",
+   "name": "Multi-LLM KG chatbot",
+   "project_kind": "software_app",
+   "facets": [],
+   "merged_into": "chatadhd",
+   "role": "Provider/Model + Graph/Context + UI composition (MEGA MASTER §1.5)",
+   "aliases": [
+    {
+     "t": "multi-llm"
+    },
+    {
+     "t": "multillm"
+    },
+    {
+     "t": "multi llm chatbot"
+    },
+    {
+     "t": "knowledge graph chatbot"
+    },
+    {
+     "t": "kg chatbot"
+    },
+    {
+     "t": "czatbot z grafem wiedzy"
+    }
+   ]
+  },
+  {
+   "id": "gcp_vm_manager",
+   "name": "GCP VM manager",
+   "project_kind": "software_app",
+   "facets": [],
+   "merged_into": "loom",
+   "role": "ExecutionEnvironment / ComputeProvider adapters (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "gcp vm manager"
+    },
+    {
+     "t": "vm manager"
+    },
+    {
+     "t": "menedżer vm"
+    },
+    {
+     "t": "zarządzanie vm na gcp"
+    }
+   ]
+  },
+  {
+   "id": "video_pipeline",
+   "name": "Video pipeline",
+   "project_kind": "software_app",
+   "facets": [
+    "staged_transformation"
+   ],
+   "merged_into": "chatadhd",
+   "role": "Artifact + media pipeline pack (MEGA MASTER §1.6, §5)",
+   "aliases": [
+    {
+     "t": "video combine"
+    },
+    {
+     "t": "scene tools"
+    },
+    {
+     "t": "video pipeline"
+    },
+    {
+     "t": "pipeline wideo"
+    },
+    {
+     "t": "potok wideo"
+    },
+    {
+     "t": "film structure"
+    },
+    {
+     "t": "struktura filmu"
+    },
+    {
+     "t": "compositor"
+    },
+    {
+     "t": "storyboard",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "chatadhd",
+       "pipeline",
+       "ffmpeg",
+       "timeline",
+       "scene",
+       "scena",
+       "compositor"
+      ],
+      "min": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "watchdog",
+   "name": "WatchDog",
+   "project_kind": "software_app",
+   "facets": [
+    "agent"
+   ],
+   "merged_into": "loom",
+   "role": "domain application/plugin/preset on the common substrate (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "WatchDog automated coding agents"
+    },
+    {
+     "t": "watchdog coding agent"
+    },
+    {
+     "t": "watchdog",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "coding agent",
+       "agent",
+       "claude code",
+       "minimal-human",
+       "config as data",
+       "ui as data"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "watchdog timer",
+      "wdt",
+      "mikrokontroler",
+      "microcontroller",
+      "esp32",
+      "arduino",
+      "reset timer"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pitching_agent",
+   "name": "Pitching agent / avatar",
+   "project_kind": "software_app",
+   "facets": [
+    "agent"
+   ],
+   "merged_into": "loom",
+   "role": "presentation/agent UI pack, later (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "agent piczujący"
+    },
+    {
+     "t": "pitching agent"
+    },
+    {
+     "t": "pitch agent"
+    },
+    {
+     "t": "avatar agent"
+    }
+   ]
+  },
+  {
+   "id": "lem",
+   "name": "LEM",
+   "project_kind": "research",
+   "facets": [],
+   "merged_into": null,
+   "role": "optional representation/metadata provider, not a core dependency (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "LEM",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "reprezentacj",
+       "representation",
+       "meta)LOOMKB",
+    R"LOOMKB(data",
+       "semantic",
+       "context"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "stanisław lem",
+      "solaris",
+      "cyberiada",
+      "powieść",
+      "novel"
+     ]
+    }
+   ]
+  }
+ ],
+ "philosophy_probe": {
+  "description": "Coding-philosophy probe: chats that never name the app but state the owner's principles are relevant too (R2). Terms are the seed principles' phrasings (philosophy/seed_principles.json) plus these topic anchors.",
+  "anchors": [
+   "zasady kodowania",
+   "fundamentalne zasady",
+   "filozofia kodowania",
+   "coding philosophy",
+   "coding principles",
+   "architektura",
+   "architecture",
+   "abstrakcj",
+   "presets-as-data",
+   "kod ≠ dane"
+  ]
+ },
+ "date_prior": {
+  "from": "2024-06-01",
+  "soft_penalty_before": -0.5
+ }
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks12[] = {
     R"LOOMKB({
-  "schema": "loom.kb.principles/1",
-  "description": "Seed principles (priors) taken from the owner's own documents. The engine must still DISCOVER principles in the archives: a seed only counts as observed for a corpus when archive sentences match its phrasings; unmatched seeds are reported as 'seed, not found in corpus' and never fill a slot as observed. Discovered clusters that match no seed become candidate principles. 'value_constraints' are what consistent_with(principle) checks.",
-  "principles": [
+ "schema": "loom.kb.principles/2",
+ "description": "Seed principles: PRIORS, not facts (validation_status candidate). The engine must still DISCOVER principles in the sources: a seed counts as observed for a corpus only when sources match its phrasings; unmatched seeds are reported as 'seed, not found in corpus'. Every source is dated so the temporal holdout can drop priors that did not exist yet (model::PriorFilter, priors_as_of). Levels/forms/fields: LOOM_CONCEPTUAL_MODEL §3.1. Preferences are principles owned by the user with a product scope.",
+ "principles": [
+  {
+   "id": "p.data_is_variety",
+   "statement": {
+    "en": "Find a representation of the problem in which the variety of the world is data and code describes only universal operations; if a new case seems to need a new code branch, first check whether it should be a new data value",
+    "pl": "Szukaj takiej reprezentacji problemu, żeby różnorodność świata była danymi, a kod opisywał tylko uniwersalne operacje; jeśli nowy przypadek wymaga nowej gałęzi kodu, najpierw sprawdź, czy nie powinien być nową wartością danych"
+   },
+   "phrasings": [
+    "Szukaj takiej reprezentacji problemu, żeby różnorodność świata była danymi",
+    "Maksymalizuj to, co można wyrazić jako niezmienną transformację",
+    "Jeśli nowy przypadek wymaga nowej gałęzi kodu, najpierw sprawdź, czy naprawdę nie powinien być nową wartością danych"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "protects": [
+    "p.value.minimal_arbitrariness",
+    "p.value.transparency"
+   ],
+   "exceptions": [
+    "a special case is allowed when the difference is genuinely semantic and cannot honestly be moved into data or a capability description (note §3)"
+   ],
+   "confidence": 0.5,
+   "predicts": [
     {
-      "id": "p.kod_ne_dane", "prior": 0.9,
-      "statement": {"pl": "Kod ≠ dane: polityki, presety, leksykony, konfiguracja i listy modeli są danymi, nie kodem", "en": "Code is not data: policies, presets, lexicons, configuration and model lists are data, not code"},
-      "phrasings": ["KOD ≠ DANE", "Kod ≠ dane", "kod ≠ dane", "konfiguracja i wszystkie dane jak listy modeli – w zewnętrznych plikach", "Danymi są", "presets-as-data", "code is not data"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.B"}, {"doc": "CLAUDE.md", "section": "Architecture: KOD ≠ DANE"}, {"doc": "CHATADHD_PELNY_RAPORT_HISTORYCZNY.md", "section": "Sesja 2"}],
-      "applies_to": {"paradigms": ["multiplatform_app", "pipeline", "agent_system", "codebase"]},
-      "value_constraints": {"forbid_checks": ["chk.literal_policy_table"]}
-    },
-    {
-      "id": "p.not_everything_yaml", "prior": 0.7,
-      "statement": {"pl": "Dane nie zastępują semantyki programu: kontrakty, invarianty, walidacja i algorytmy zostają w kodzie", "en": "Data never replaces program semantics: contracts, invariants, validation and algorithms stay in code"},
-      "phrasings": ["ale nie „wszystko YAML”", "Dane nie mogą zastępować semantyki programu", "W kodzie zostają"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.B"}],
-      "applies_to": {"paradigms": ["codebase", "specification"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.defer_decisions", "prior": 0.85,
-      "statement": {"pl": "Nie podejmujemy decyzji, jeśli nie musimy: decyzja zamyka się dopiero przez kontrakt, test, koszt lub ograniczenie platformy", "en": "Do not decide until forced: a decision is closed only by a contract, a test, a cost or a platform constraint"},
-      "phrasings": ["Nie podejmujemy decyzji, jeśli nie musimy", "decyzji nie podejmujemy, jeśli nie musimy", "Zamykamy je dopiero przez constraint albo benchmark", "Każda arbitralna decyzja pozostaje otwarta"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.A"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§10"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§17"}],
-      "applies_to": {"paradigms": ["brainstorm", "specification"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.decision_classes", "prior": 0.8,
-      "statement": {"pl": "Każda decyzja to invariant (kod/kontrakt), policy/default (dane) albo platform detail (adapter); nie awansujemy klas bez dowodu", "en": "Every decision is an invariant (code/contract), a policy/default (data) or a platform detail (adapter); never promote without evidence"},
-      "phrasings": ["invariant — musi być w kodzie/kontrakcie", "policy/default — dane, które można wymienić", "accident/platform detail — adapter", "Nie awansujemy 2 ani 3 do 1 bez dowodu"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.A"}, {"doc": "loom/README.md", "section": "Decisions"}],
-      "applies_to": {"paradigms": ["specification", "codebase"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.serialization_not_architecture", "prior": 0.7,
-      "statement": {"pl": "Serializacja to nie architektura: typed IR / schema registry, a nad nim wymienne kodeki", "en": "Serialization is not architecture: a typed IR / schema registry with swappable codecs on top"},
-      "phrasings": ["Serialization is not architecture", "Zmiana serializacji nie może zmieniać semantyki", "typed declarative IR / schema registry"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.C"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§6"}],
-      "applies_to": {"paradigms": ["specification", "codebase"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.capability_not_enum", "prior": 0.85,
-      "statement": {"pl": "Capability-based, nie enum-based: kod pyta can(resource, capability, constraints), a nie if provider == X", "en": "Capability-based, not enum-based: code asks can(resource, capability, constraints), never if provider == X"},
-      "phrasings": ["Capability-based, nie enum-based", "can(resource, capability, constraints)", "a nie: if provider == X", "Nowy provider/model/platforma ma wejść przez manifest + adapter"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.D"}],
-      "applies_to": {"paradigms": ["multiplatform_app", "agent_system", "codebase"]},
-      "value_constraints": {"forbid_checks": ["chk.enum_dispatch"]}
-    },
-    {
-      "id": "p.honest_extensibility", "prior": 0.6,
-      "statement": {"pl": "Nowa wartość w istniejącej semantyce to dane; nowy backend to adapter; nowa semantyka to ewolucja schematu — minimalizujemy trzecią kategorię, nie udajemy, że zniknie", "en": "New value in existing semantics is data; a new backend is an adapter; new semantics is schema evolution — minimise the third, never pretend it disappears"},
-      "phrasings": ["Unknown future ≠ „przewidzimy wszystko”", "nowa wartość w istniejącej semantyce → data-only", "Celem jest zminimalizowanie trzeciej kategorii"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.E"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§9"}],
-      "applies_to": {"paradigms": ["specification"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.raw_immutable", "prior": 0.9,
-      "statement": {"pl": "Surowe źródło jest niezmienne: import zachowuje bajty/hash, ID źródła, parser/wersję i łańcuch transformacji; stan pochodny można przebudować", "en": "Raw source is immutable: every import keeps bytes/hash, source id, parser/version and the transformation chain; derived state is rebuildable"},
-      "phrasings": ["Raw source is immutable", "raw source zostaje", "Derived state można przebudować; źródła nie", "zachowanie oryginału"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.F"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§13"}],
-      "applies_to": {"paradigms": ["pipeline", "codebase", "multiplatform_app"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.resumable_auditable", "prior": 0.9,
-      "statement": {"pl": "Wszystko istotne jest wznawialne i audytowalne: ID, status, input/output hash, provenance, checkpoint, retry, log zdarzeń", "en": "Everything significant is resumable and auditable: id, status, input/output hash, provenance, checkpoint, retries, event log"},
-      "phrasings": ["Wszystko istotne jest resumable i auditable", "checkpoint / retry / rollback / resume", "checkpointy z możliwością ponownego złożenia ścieżki", "resumable task log"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.G"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§11"}],
-      "applies_to": {"paradigms": ["pipeline", "agent_system"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.learning_track", "prior": 0.75,
-      "statement": {"pl": "System uczy się przez tor zdarzenia → wzorzec → kandydat → ewaluacja → promocja; nie przepisuje się magicznie", "en": "The system learns through events → pattern → candidate → evaluation → promotion; it never magically rewrites itself"},
-      "phrasings": ["System uczy się, ale nie „magicznie sam się przepisuje”", "events/logs → outcomes → mined pattern → candidate rule/template/policy/test → evaluation → promotion", "pełne logi z debugowania są materiał)LOOMKB",
-    R"LOOMKB(em badawczym", "wiedza destylowana z pełnych logów debugowania"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§2.H"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§4.10"}],
-      "applies_to": {"paradigms": ["agent_system", "pipeline"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.presets_are_data", "prior": 0.85,
-      "statement": {"pl": "Preset = informacja, nie kod; role agentów to pakiety polityk, nie klasy", "en": "A preset is information, not code; agent roles are policy bundles, not classes"},
-      "phrasings": ["preset = informacja, nie kod", "role/preset jako dane", "role/policy bundles, nie klasy zaszyte w kodzie", "UI/config as data"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§11"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§4.7"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§15"}],
-      "applies_to": {"paradigms": ["agent_system", "multiplatform_app"]},
-      "value_constraints": {"roles": {"defined_in": "data"}}
-    },
-    {
-      "id": "p.local_first", "prior": 0.85,
-      "statement": {"pl": "Local-first i łagodna degradacja: aplikacja działa offline, funkcje opcjonalne wyłączają się bez awarii", "en": "Local-first with graceful degradation: the app works offline and optional features switch off without failing"},
-      "phrasings": ["local-first / graceful degradation", "degrade gracefully", "gracefully degrades", "działa offline"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§12"}, {"doc": "CLAUDE.md", "section": "Error Handling"}],
-      "applies_to": {"paradigms": ["multiplatform_app", "pipeline"]},
-      "value_constraints": {"storage": {"require_implies": ["offline_capable"]}, "sync": {"require_optional": true}}
-    },
-    {
-      "id": "p.no_telemetry", "prior": 0.8,
-      "statement": {"pl": "Brak telemetrii jako domyślne ustawienie", "en": "No telemetry by default"},
-      "phrasings": ["brak telemetrii jako default", "No telemetry, no analytics, no remote tracking of any kind"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§12"}, {"doc": "CLAUDE.md", "section": "Security Notes"}],
-      "applies_to": {"paradigms": ["multiplatform_app"]},
-      "value_constraints": {"forbid_checks": ["chk.telemetry_call"]}
-    },
-    {
-      "id": "p.edit_is_branch", "prior": 0.85,
-      "statement": {"pl": "Edycja tworzy gałąź, stara wersja nie ginie", "en": "An edit creates a branch; the old version is never lost"},
-      "phrasings": ["edit → branch, stara wersja nie ginie", "edycja nie kasuje tylko tworzy gałąź", "edit a message → old version preserved, new branch created", "Branching conversations (edycja = nowa wersja)"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§12"}, {"doc": "CHATADHD_PELNY_RAPORT_HISTORYCZNY.md", "section": "Sesja 1"}],
-      "applies_to": {"paradigms": ["multiplatform_app", "version_history"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.errors_are_values", "prior": 0.75,
-      "statement": {"pl": "Żadnego cichego 'except: pass'; błędy to wartości, logujemy co najmniej na poziomie debug", "en": "No silent 'except: pass'; errors are values and are logged at least at debug level"},
-      "phrasings": ["No silent `except: pass`", "Errors are values", "log.debug(..., exc_info=True)"],
-      "sources": [{"doc": "CLAUDE.md", "section": "Error Handling"}, {"doc": "loom/README.md", "section": "Decisions"}],
-      "applies_to": {"paradigms": ["codebase"]},
-      "value_constraints": {"forbid_checks": ["chk.silent_except"]}
-    },
-    {
-      "id": "p.atomic_writes", "prior": 0.7,
-      "statement": {"pl": "Zapisy JSON są atomowe: .tmp, potem rename", "en": "JSON writes are atomic: write .tmp, then rename"},
-      "phrasings": ["All JSON writes are atomic", "atomic write (`.tmp` → rename)"],
-      "sources": [{"doc": "CLAUDE.md", "section": "File Persistence"}],
-      "applies_to": {"paradigms": ["codebase"]},
-      "value_constraints": {"forbid_checks": ["chk.nonatomic_json_write"]}
-    },
-    {
-      "id": "p.titles_weak_signal", "prior": 0.8,
-      "statement": {"pl": "Tytuły rozmów są słabym sygnałem; nie filtrujemy po tytułach", "en": "Conversation titles are a weak signal; never filter by title"},
-      "phrasings": ["tytuły rozmów są słabym sygnałem", "nie używano tytułów jako głównego filtra", "ingest wszystkiego bez ufania tytułom", "Titles are never used as a filter"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§13"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§4.9"}],
-      "applies_to": {"paradigms": ["pipeline"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.abandoned_not_unimportant", "prior": 0.8,
-      "statement": {"pl": "Porzucone ≠ nieważne: każda idea, fork i decyzja ma chronologię, a graf pokazuje drogę po stanach", "en": "Abandoned is not unimportant: every idea, fork and decision keeps its chronology; the graph shows the path through states"},
-      "phrasings": ["porzucone ≠ nieważne", "każda idea/fork/decyzja ma chronologię", "graf ma pokazywać nie tylko stan końcowy, ale drogę po stanach", "contradiction/supersession resolution bez kasowania historii"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§13"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§4.9"}],
-      "applies_to": {"paradigms": ["brainstorm", "version_history"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.no_speculative_generality", "prior": 0.8,
-      "statement": {"pl": "Żadnej spekulatywnej ogólności: abstrakcje powstają przez pionowe testy, nie na zapas", "en": "No speculative generality: abstractions come from vertical tests, not in advance"},
-      "phrasings": ["speculative generality", "nie produkujemy setek martwych abstrakcji bez testu użycia", "konkretne implementacje dochodzą przez pionowe testy", "Najpierw pionowy szkielet"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§8"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§17"}],
-      "applies_to": {"paradigms": ["specification", "codebase"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.user_override_wins", "prior": 0.8,
-      "statement": {"pl": "Jawny override użytkownika zawsze wygrywa, o ile nie łamie twardego invariantu bezpieczeństwa", "en": "An explicit user override always wins unless it breaks a hard safety invariant"},
-      "phrasings": ["explicit override usera zawsze wygrywa", "user override wins"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§4.6"}],
-      "applies_to": {"paradigms": ["agent_system", "multiplatform_app"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.one_system", "prior": 0.75,
-      "statement": {"pl": "Jeden system: Loom jako rdzeń/SDK, ChatADHD jako workbench; dawne projekty to capability packs, workflowy, adaptery albo widoki", "en": "One system: Loom as kernel/SDK, ChatADHD as workbench; former projects are capability packs, workflows, adapters or views"},
-      "phrasings": ["Budujemy jeden system", "capability packs, workflows, adapterami albo widokami", "Loom jako podstawa pełnego ChatADHD"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§0"}, {"doc": "MEGA_MASTER_2026-09-16.md", "section": "§5"}],
-      "applies_to": {"paradigms": ["multiplatform_app", "agent_system", "pipeline"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.renderer_is_adapter", "prior": 0.65,
-      "statement": {"pl": "UI ma własny IR; renderer jest adapterem, nie ontologią systemu", "en": "The UI has its own IR; a renderer is an adapter, not the system's ontology"},
-      "phrasings": ["Renderer jest adapterem", "Compose Multiplatform może być pierwszym, nie ontologią systemu", "ViewNode { type, props, bindings, children, actions, constraints }"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§4.11")LOOMKB",
-    R"LOOMKB(}],
-      "applies_to": {"paradigms": ["multiplatform_app"]},
-      "value_constraints": {}
-    },
-    {
-      "id": "p.code_is_knowledge", "prior": 0.7,
-      "statement": {"pl": "Kod też jest źródłem wiedzy; system wskazuje brakujące artefakty", "en": "Code is a source of knowledge too; the system points out missing artefacts"},
-      "phrasings": ["kod też jest źródłem wiedzy", "system ma wskazywać brakujące artefakty", "kolejne przebiegi wyszukiwania mają wynikać z terminów znalezionych w poprzednich"],
-      "sources": [{"doc": "MEGA_MASTER_2026-09-16.md", "section": "§13"}],
-      "applies_to": {"paradigms": ["codebase", "pipeline"]},
-      "value_constraints": {}
+     "situation": "a new kind of project, document or source appears",
+     "solution": "a new data file (kind, type, manifest) over existing universal operations"
     }
-  ]
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§3"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.1"
+    }
+   ]
+  },
+  {
+   "id": "p.value.truth",
+   "statement": {
+    "en": "Truth",
+    "pl": "Prawda"
+   },
+   "phrasings": [
+    "prawda"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.autonomy",
+   "statement": {
+    "en": "Autonomy (the owner keeps control)",
+    "pl": "Autonomia (kontrola po stronie właściciela)"
+   },
+   "phrasings": [
+    "autonomia",
+    "Pełna kontrola lokalna",
+    "lokalne, edytowalne, z pełną kontrolą"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.transparency",
+   "statement": {
+    "en": "Transparency",
+    "pl": "Przejrzystość"
+   },
+   "phrasings": [
+    "przejrzystość",
+    "co można by logować, co byłoby deterministyczne i wystarczające do zapewnienia transparentności"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 9 'reproducible builds'",
+     "date": "2026-02-04"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.honesty",
+   "statement": {
+    "en": "Honesty (never present a guess as a fact)",
+    "pl": "Uczciwość (nie podawać zgadywania jako faktu)"
+   },
+   "phrasings": [
+    "uczciwość",
+    "brak możliwości ⇒ niższy poziom dowodu, nigdy fałszywa metryka"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "§6 'Uczciwa degradacja'"
+    }
+   ]
+  },
+  {
+   "id": "p.value.information_preservation",
+   "statement": {
+    "en": "Preservation of information",
+    "pl": "Zachowanie informacji"
+   },
+   "phrasings": [
+    "zachowanie informacji",
+    "edycja = nowa wersja",
+    "stara wersja nie ginie",
+    "porzucone ≠ nieważne"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 1 'Branching conversations'",
+     "date": "2026-01-21"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12, §13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.minimal_arbitrariness",
+   "statement": {
+    "en": "Minimal arbitrariness",
+    "pl": "Minimalizacja arbitralności"
+   },
+   "phrasings": [
+    "minimalizacja arbitralności",
+    "Każda arbitralna decyzja pozostaje otwarta"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "preamble"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.optionality",
+   "statement": {
+    "en": "Preservation of optionality",
+    "pl": "Zachowanie opcjonalności"
+   },
+   "phrasings": [
+    "zachowanie opcjonalności",
+    "zachować opcjonalność"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "preamble, §8"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.provenance",
+   "statement": {
+    "en": "Everything carries its provenance: source, transformation chain, confidence",
+    "pl": "Wszystko ma pochodzenie: źródło, łańcuch transformacji, pewność"
+   },
+   "phrasings": [
+    "provenance",
+    "SourceRef / Provenance",
+    "transformation chain",
+    "synthesis z linkami do źródeł"
+   ],
+   "level": "epistemic",
+   "form": "invariant",
+   "protects": [
+    "p.value.truth",
+    "p.value.transparency"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.F, §3, §4.2"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Epistemic principles"
+    }
+   ]
+  },
+  {
+   "id": "p.fact_not_inference",
+   "statement": {
+    "en": "Keep fact and inference apart: inferred values are marked, with )LOOMKB",
+    R"LOOMKB(method, confidence and an expected property",
+    "pl": "Oddzielaj fakt od inferencji: wartości wywnioskowane są oznaczone, z metodą, pewnością i oczekiwaną własnością"
+   },
+   "phrasings": [
+    "oddzielanie faktu od inferencji",
+    "inferencja ≠ fakt",
+    "dane inferowalne z określoną oczekiwaną własnością"
+   ],
+   "level": "epistemic",
+   "form": "invariant",
+   "protects": [
+    "p.value.honesty",
+    "p.value.truth"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R5"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4, §13"
+    }
+   ]
+  },
+  {
+   "id": "p.explicit_uncertainty",
+   "statement": {
+    "en": "Uncertainty is explicit and calibrated",
+    "pl": "Niepewność jest jawna i skalibrowana"
+   },
+   "phrasings": [
+    "jawna niepewność",
+    "opacity jako jedna z wielu opcji może sygnalizować dane inferowalne"
+   ],
+   "level": "epistemic",
+   "form": "invariant",
+   "protects": [
+    "p.value.honesty"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R5"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.keep_alternatives",
+   "statement": {
+    "en": "Keep alternative hypotheses and competing models instead of choosing arbitrarily",
+    "pl": "Zachowuj alternatywne hipotezy i konkurencyjne modele zamiast wybierać arbitralnie"
+   },
+   "phrasings": [
+    "zachowanie alternatywnych hipotez",
+    "Dla tych samych danych może istnieć kilka konkurencyjnych modeli",
+    "Otwarte decyzje — celowo NIE zamknięte"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "protects": [
+    "p.value.optionality",
+    "p.value.minimal_arbitrariness"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§10"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4, §8"
+    }
+   ]
+  },
+  {
+   "id": "p.seek_counterexamples",
+   "statement": {
+    "en": "Seek counterexamples",
+    "pl": "Szukaj kontrprzykładów"
+   },
+   "phrasings": [
+    "szukanie kontrprzykładów"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "protects": [
+    "p.value.truth"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.avoid_overgeneralisation",
+   "statement": {
+    "en": "Avoid over-generalisation",
+    "pl": "Unikaj nadmiernej generalizacji"
+   },
+   "phrasings": [
+    "unikanie nadmiernej generalizacji",
+    "speculative generality"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§17"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.update_on_data",
+   "statement": {
+    "en": "Update the model on new data; later passes come from terms found earlier",
+    "pl": "Aktualizuj model po nowych danych; kolejne przebiegi wynikają z terminów znalezionych w poprzednich"
+   },
+   "phrasings": [
+    "aktualizowanie modelu po nowych danych",
+    "kolejne przebiegi wyszukiwania mają wynikać z terminów znalezionych w poprzednich"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.9 step 12, §13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.titles_weak_signal",
+   "statement": {
+    "en": "Conversation titles are a weak signal; never filter by title",
+    "pl": "Tytuły rozmów są słabym sygnałem; nie filtrujemy po tytułach"
+   },
+   "phrasings": [
+    "tytuły rozmów są słabym sygnałem",
+    "ingest wszystkiego bez ufania tytułom",
+    "Titles are never used as a filter"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "derived_from": [
+    "p.seek_counterexamples"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.9, §13, §15"
+    }
+   ]
+  },
+  {
+   "id": "p.decision_classes",
+   "statement": {
+    "en": "Every decision is an invariant (code/contract), a policy/default (data) or a platform detail (adapter); never promote without evidence",
+    "pl": "Każda decyzja to invariant (kod/kontrakt), policy/default (dane) albo platform detail (adapter); nie awansujemy klas bez dowodu"
+   },
+   "phrasings": [
+    "invariant — musi być w kodzie/kontrakcie",
+    "policy/default — dane, które można wymienić",
+    "Nie awansujemy 2 ani 3 do 1 bez dowodu"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A"
+    },
+    {
+     "doc": "loom/README.md",
+     "date": "2026-09-25",
+     "section": "Decisions"
+    }
+   ]
+  },
+  {
+   "id": "p.learning_track",
+   "statement": {
+    "en": "The system learns through events -> pattern -> candidate -> evaluation -> promotion; it never rewrites itself",
+    "pl": "System uczy się przez tor zdarzenia → wzorzec → kandydat → ewaluacja → promocja; nie przepisuje się magicznie"
+   },
+   "phrasings": [
+    "System uczy się, ale nie „magicznie sam się przepisuje”",
+    "events/logs → outcomes → mined pattern → candidate rule/template/policy/test → evaluation → promotion"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "protects": [
+    "p.value.transparency"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.H, §4.10"
+    }
+   ]
+  },
+  {
+   "id": "p.honest_extensibility",
+   "statement": {
+    "en": "A new value in existing semantics is data; a new backend is an adapter; new semantics is schema evolution — minimise the third, never pretend it disappears",
+    "pl": "Nowa wartość w istniejącej semantyce to dane; nowy backend to adapter; nowa semantyka to ewolucja schematu — minimalizujemy trzecią kategorię"
+   },
+   "phrasings": [
+    "nowa wartość w istniejącej semantyce → data-only",
+    "Celem jest zminimalizowanie trzeciej kategorii",
+    "Czy to nowa wartość danych?"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.65,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.E, §9"
+    }
+   ]
+  },
+  {
+   "id": "p.user_override_wins",
+   "statement": {
+    "en": "An explicit user override always wins u)LOOMKB",
+    R"LOOMKB(nless it breaks a hard safety invariant",
+    "pl": "Jawny override użytkownika zawsze wygrywa, o ile nie łamie twardego invariantu bezpieczeństwa"
+   },
+   "phrasings": [
+    "explicit override usera zawsze wygrywa",
+    "Możliwy explicit override usera zawsze wygrywa, o ile nie łamie twardego safety/invariant contract"
+   ],
+   "level": "strategy",
+   "form": "conflict_resolution",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.6"
+    }
+   ]
+  },
+  {
+   "id": "p.later_explicit_decision_wins",
+   "statement": {
+    "en": "Contradictions are resolved by the later explicit decision, without deleting history",
+    "pl": "Sprzeczności rozstrzyga późniejsza jawna decyzja, bez kasowania historii"
+   },
+   "phrasings": [
+    "contradiction/supersession resolution bez kasowania historii"
+   ],
+   "level": "strategy",
+   "form": "conflict_resolution",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.9 step 9"
+    }
+   ]
+  },
+  {
+   "id": "p.owner_sources_over_general_knowledge",
+   "statement": {
+    "en": "General model knowledge never outranks the owner's own sources",
+    "pl": "Wiedza ogólna modelu nigdy nie wygrywa z własnymi źródłami właściciela"
+   },
+   "phrasings": [
+    "general model knowledge marked as its own evidence source, below archive evidence"
+   ],
+   "level": "epistemic",
+   "form": "conflict_resolution",
+   "protects": [
+    "p.value.truth",
+    "p.value.autonomy"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R7"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§2.3"
+    }
+   ]
+  },
+  {
+   "id": "p.kod_ne_dane",
+   "statement": {
+    "en": "Code is not data: configuration, model lists, presets, lexicons and policies live in data files; data lives apart from code",
+    "pl": "Kod ≠ dane: konfiguracja, listy modeli, presety, leksykony i polityki są w plikach danych; dane żyją osobno od kodu"
+   },
+   "phrasings": [
+    "konfiguracja i wszystkie dane jak listy modeli – w zewnętrznych plikach",
+    "KOD ≠ DANE",
+    "Kod ≠ dane",
+    "Danymi są",
+    "presets-as-data"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "project_kinds": [
+     "software_app"
+    ]
+   },
+   "protects": [
+    "p.value.autonomy",
+    "p.value.minimal_arbitrariness"
+   ],
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.85,
+   "predicts": [
+    {
+     "situation": "a hard-coded path, list or policy is found in code",
+     "solution": "move it to a data file read at runtime"
+    }
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'Zmiana architektury'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'Nowa zasada KOD ≠ DANE'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Architecture: KOD ≠ DANE"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.B"
+    }
+   ],
+   "checks": [
+    "chk.literal_policy_table"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.literal_policy_table"
+    ]
+   }
+  },
+  {
+   "id": "p.not_everything_yaml",
+   "statement": {
+    "en": "Data never replaces program semantics: contracts, invariants, validation and algorithms stay in code",
+    "pl": "Dane nie zastępują semantyki programu: kontrakty, invarianty, walidacja i algorytmy zostają w kodzie"
+   },
+   "phrasings": [
+    "ale nie „wszystko YAML”",
+    "Dane nie mogą zastępować semantyki programu",
+    "W kodzie zostają"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "derived_from": [
+    "p.decision_classes"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.B"
+    }
+   ]
+  },
+  {
+   "id": "p.defer_decisions",
+   "statement": {
+    "en": "Do not decide until forced: a decision closes only through a contract, a test, a cost or a platform constraint",
+    "pl": "Nie podejmujemy decyzji, jeśli nie musimy: decyzja zamyka się dopiero przez kontrakt, test, koszt lub ograniczenie platformy"
+   },
+   "phrasings": [
+    "Nie podejmujemy decyzji, jeśli nie musimy",
+    "Zamykamy je dopiero przez constraint albo benchmark",
+    "odraczanie niepotrzebnych decyzji"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.optionality"
+   ],
+   "derived_from": [
+    "p.keep_alternatives"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A, §10, §17"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Action/design strategies"
+    }
+   ]
+  },
+  {
+   "id": "p.serialization_not_architecture",
+   "statement": {
+    "en": "Serialization is not architecture: a typed IR / schema registry with swappable codecs on top",
+    "pl": "Serializacja to nie architektura: typed IR / schema registry, a nad nim wymienne kodeki"
+   },
+   "phrasings": [
+    "Serialization is not architecture",
+    "Zmiana serializacji nie może zmieniać semantyki",
+    "typed declarative IR / schema registry"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "protects": [
+    "p.value.optionality"
+   ],
+   "confidence": 0.65,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.C, §6"
+    }
+   ]
+  },
+  {
+   "id": "p.capability_not_enum",
+   "statement": {
+    "en": "Capability-based, not enum-based: code asks can(resource, capability, constraints), never if provider == X",
+    "pl": "Capability-based, nie enum-based: kod pyta can(resource, capability, constraints), a nie if provider == X"
+   },
+   "phrasings": [
+    "Implementuję pełną abstrakcję providerów",
+    "Capability-based, nie enum-based",
+    "can(resource, capability, constraints)",
+    "a nie: if provider == X"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.8,
+   "predicts": [
+    {
+     "situation": "a new model, media type or platform must be supported",
+     "solution": "a manifest + adapter behind the capability registry"
+    }
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 'no placeholders ... abstrakcję providerów'",
+     "date": "2026-02-06"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.D"
+    }
+   ],
+   "checks": [
+    "chk.enum_dispatch"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.enum_dispatch"
+    ]
+   }
+  },
+  {
+   "id": "p.raw_immutable",
+   "statement": {
+    "en": "Raw source is immutable: every import keeps bytes/hash, source id, parser/version and the transformation chain; der)LOOMKB",
+    R"LOOMKB(ived state is rebuildable",
+    "pl": "Surowe źródło jest niezmienne: import zachowuje bajty/hash, ID źródła, parser/wersję i łańcuch transformacji; stan pochodny można przebudować"
+   },
+   "phrasings": [
+    "Raw source is immutable",
+    "raw source zostaje",
+    "Derived state można przebudować; źródła nie",
+    "zachowanie immutable originals"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.information_preservation",
+    "p.value.truth"
+   ],
+   "derived_from": [
+    "p.provenance"
+   ],
+   "confidence": 0.85,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.F, §13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Action/design strategies"
+    }
+   ]
+  },
+  {
+   "id": "p.resumable_auditable",
+   "statement": {
+    "en": "Everything significant is resumable and auditable: id, status, input/output hash, provenance, checkpoint, retries, event log",
+    "pl": "Wszystko istotne jest wznawialne i audytowalne: ID, status, input/output hash, provenance, checkpoint, retry, log zdarzeń"
+   },
+   "phrasings": [
+    "Wszystko istotne jest resumable i auditable",
+    "checkpoint / retry / rollback / resume",
+    "resumable task log"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.transparency"
+   ],
+   "derived_from": [
+    "p.provenance"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.G, §11"
+    }
+   ]
+  },
+  {
+   "id": "p.presets_are_data",
+   "statement": {
+    "en": "A preset is information, not code; agent roles are policy bundles, not classes",
+    "pl": "Preset = informacja, nie kod; role agentów to pakiety polityk, nie klasy"
+   },
+   "phrasings": [
+    "System prompt presets",
+    "preset = informacja, nie kod",
+    "role/preset jako dane",
+    "role/policy bundles, nie klasy zaszyte w kodzie"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "facets": [
+     "agent"
+    ]
+   },
+   "derived_from": [
+    "p.kod_ne_dane"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'System prompt edytowalny z kilkoma presetami'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.7, §11"
+    }
+   ],
+   "value_constraints": {
+    "roles": {
+     "defined_in": "data"
+    }
+   }
+  },
+  {
+   "id": "p.local_first",
+   "statement": {
+    "en": "Local-first with graceful degradation: the app works offline and optional features switch off without failing",
+    "pl": "Local-first i łagodna degradacja: aplikacja działa offline, funkcje opcjonalne wyłączają się bez awarii"
+   },
+   "phrasings": [
+    "lokalne, edytowalne, z pełną kontrolą",
+    "local-first / graceful degradation",
+    "degrade gracefully",
+    "gracefully degrades"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Error Handling"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ],
+   "value_constraints": {
+    "storage": {
+     "require_implies": [
+      "offline_capable"
+     ]
+    },
+    "sync": {
+     "require_optional": true
+    }
+   }
+  },
+  {
+   "id": "p.zero_knowledge",
+   "statement": {
+    "en": "Data encrypted so that the operator cannot read it; the owner keeps full local control",
+    "pl": "Dane szyfrowane bez możliwości odtworzenia przez operatora; pełna kontrola lokalna"
+   },
+   "phrasings": [
+    "Dane szyfrowane na serwerze bez możliwości odtworzenia przez operatora",
+    "zero-knowledge storage/sync option"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ]
+  },
+  {
+   "id": "p.capability_honesty",
+   "statement": {
+    "en": "When a capability is missing the result is marked unverified at a lower evidence class, never a fabricated metric",
+    "pl": "Brak możliwości ⇒ wynik niezweryfikowany na niższym poziomie dowodu, nigdy fałszywa metryka"
+   },
+   "phrasings": [
+    "brak możliwości ⇒ „niezweryfikowane”, nie fałszywa metryka",
+    "Uczciwa degradacja"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.honesty"
+   ],
+   "derived_from": [
+    "p.local_first",
+    "p.explicit_uncertainty"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "embeddings.py verdict; §6"
+    }
+   ]
+  },
+  {
+   "id": "p.no_telemetry",
+   "statement": {
+    "en": "No telemetry by default",
+    "pl": "Brak telemetrii jako domyślne ustawienie"
+   },
+   "phrasings": [
+    "No telemetry, no analytics, no remote tracking of any kind",
+    "brak telemetrii jako default"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Security Notes"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ],
+   "checks": [
+    "chk.telemetry_call"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.telemetry_call"
+    ]
+   }
+  },
+  {
+   "id": "p.edit_is_branch",
+   "statement": {
+    "en": "An edit creates a branch; the old version is never lost",
+    "pl": "Edycja tworzy gałąź, stara wersja nie ginie"
+   },
+   "phrasings": [
+    "Branching conversations (edycja = nowa wersja)",
+    "edit → branch, stara wersja nie ginie",
+    "edit a message → old version preserved, new branch created"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.85,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 1 'Kluczowe decyzje'",
+     "date": "2026-01-21"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Project Overview"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ]
+  },
+  {
+   "id": "p.errors_are_values",
+   "statement": {
+    "en": "No silent 'except: pass'; errors are values and are logged at least at debug level",
+    "pl": "Żadnego cichego 'except: pass'; błędy to wartości, logujemy co najmniej na poziomie debug"
+   },
+   "phrasings": [
+    "Problem - crash bez komunikatu",
+    "No silent `except: pass`",
+    "log.debug(..., exc_info=True)",
+    "Errors are values"
+   ],
+   "level": "s)LOOMKB",
+    R"LOOMKB(trategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.transparency"
+   ],
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 3 'crash bez komunikatu'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Error Handling"
+    },
+    {
+     "doc": "loom/README.md",
+     "date": "2026-09-25",
+     "section": "Decisions"
+    }
+   ],
+   "checks": [
+    "chk.silent_except"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.silent_except"
+    ]
+   }
+  },
+  {
+   "id": "p.atomic_writes",
+   "statement": {
+    "en": "JSON writes are atomic: write .tmp, then rename",
+    "pl": "Zapisy JSON są atomowe: .tmp, potem rename"
+   },
+   "phrasings": [
+    "All JSON writes are atomic",
+    "atomic write (`.tmp` → rename)"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "File Persistence"
+    }
+   ],
+   "checks": [
+    "chk.nonatomic_json_write"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.nonatomic_json_write"
+    ]
+   }
+  },
+  {
+   "id": "p.abandoned_not_unimportant",
+   "statement": {
+    "en": "Abandoned is not unimportant: every idea, fork and decision keeps its chronology; the graph shows the path through states",
+    "pl": "Porzucone ≠ nieważne: każda idea, fork i decyzja ma chronologię, a graf pokazuje drogę po stanach"
+   },
+   "phrasings": [
+    "porzucone ≠ nieważne",
+    "każda idea/fork/decyzja ma chronologię",
+    "graf ma pokazywać nie tylko stan końcowy, ale drogę po stanach"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "derived_from": [
+    "p.edit_is_branch"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§13, §4.9"
+    }
+   ]
+  },
+  {
+   "id": "p.no_speculative_generality",
+   "statement": {
+    "en": "No speculative generality: abstractions come from vertical tests, not in advance",
+    "pl": "Żadnej spekulatywnej ogólności: abstrakcje powstają przez pionowe testy, nie na zapas"
+   },
+   "phrasings": [
+    "speculative generality",
+    "nie produkujemy setek martwych abstrakcji bez testu użycia",
+    "Najpierw pionowy szkielet"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "derived_from": [
+    "p.avoid_overgeneralisation"
+   ],
+   "confidence": 0.8,
+   "conflicts_with": [
+    "p.data_is_variety"
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§8, §17"
+    }
+   ]
+  },
+  {
+   "id": "p.one_system",
+   "statement": {
+    "en": "One system: Loom as kernel/SDK, ChatADHD as workbench; former projects are capability packs, workflows, adapters or views",
+    "pl": "Jeden system: Loom jako rdzeń/SDK, ChatADHD jako workbench; dawne projekty to capability packs, workflowy, adaptery albo widoki"
+   },
+   "phrasings": [
+    "Budujemy jeden system",
+    "capability packs, workflows, adapterami albo widokami",
+    "Są manifestacjami jednego głębszego procesu"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§0, §5"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§2"
+    }
+   ]
+  },
+  {
+   "id": "p.renderer_is_adapter",
+   "statement": {
+    "en": "The UI has its own IR; a renderer is an adapter, not the system's ontology",
+    "pl": "UI ma własny IR; renderer jest adapterem, nie ontologią systemu"
+   },
+   "phrasings": [
+    "Renderer jest adapterem",
+    "Compose Multiplatform może być pierwszym, nie ontologią systemu"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "derived_from": [
+    "p.decision_classes"
+   ],
+   "confidence": 0.65,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.11"
+    },
+    {
+     "doc": "history/chatadhd_v0.9.0/gui/panel_system.py",
+     "date": "2026-04-17",
+     "section": "panels and layouts as data"
+    }
+   ]
+  },
+  {
+   "id": "p.code_is_knowledge",
+   "statement": {
+    "en": "Code is a source of knowledge too; the system points out missing artefacts",
+    "pl": "Kod też jest źródłem wiedzy; system wskazuje brakujące artefakty"
+   },
+   "phrasings": [
+    "kod też jest źródłem wiedzy",
+    "system ma wskazywać brakujące artefakty"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§13"
+    }
+   ]
+  },
+  {
+   "id": "p.memory_is_everything",
+   "statement": {
+    "en": "All data is memory: conversation trees, attachments, everything, with an organising layer on top",
+    "pl": "Wszystkie dane = pamięć: drzewa rozmów, załączniki, wszystko, z nakładką porządkującą"
+   },
+   "phrasings": [
+    "wszystkie dane = memory",
+    "Do tego jest nakładka porządkująca"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 7 'pamięć = wszystko'",
+     "date": "2026-01-30"
+    }
+   ]
+  },
+  {
+   "id": "p.context_by_goal",
+   "statement": {
+    "en": "Context is selected for the goal of each prompt; selection is the primary saving and caching only helps the stable prefix",
+    "pl": "Kontekst dobierany do celu prompta; selekcja jest główną oszczędnością, a cache pomaga tylko stabilnemu prefiksowi"
+   },
+   "phrasings": [
+    "Nie „wstrzykujemy pamięci do promptu”, tylko budujemy ContextSet",
+    "Intelligent context selection and prompt caching are complementary"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.4"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R12"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§1"
+    }
+   ]
+  },
+  {
+   "id": "p.generator_not_history",
+   "statement": {
+    "en": "Learn the generator of decisions, not only their history",
+    "pl": "Ucz się generatora decyzji, nie tylko historii"
+   },
+   "phrasings": [
+    "Znacznie cenniejszym wynikiem jest znalezienie generatora decyzji"
+   ],
+   "level": "epistemic",
+   "form": "meta",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§2, §8"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R13"
+    }
+   ]
+  },
+  {
+   "id)LOOMKB",
+    R"LOOMKB(": "p.modular_code",
+   "statement": {
+    "en": "Code is split into modules (engine, gui, core) rather than one file",
+    "pl": "Kod podzielony na moduły (engine, gui, core), a nie jeden plik"
+   },
+   "phrasings": [
+    "v0.4.0-dev Modular Refactor",
+    "Modular refactor"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "confidence": 0.6,
+   "supersedes": [
+    "p.pref.single_file"
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 6 'Modular Refactor'",
+     "date": "2026-01-29"
+    }
+   ]
+  },
+  {
+   "id": "p.pref.single_file",
+   "statement": {
+    "en": "Pydroid: one code file",
+    "pl": "Pydroid: jeden plik z kodem"
+   },
+   "phrasings": [
+    "pydroid tylko 1 plik",
+    "Chodziło mi o jeden plik z kodem"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "scope": {
+    "products": [
+     "codebase"
+    ],
+    "conditions": [
+     "runs in Pydroid"
+    ]
+   },
+   "confidence": 0.4,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'Request'",
+     "date": "2026-01-23"
+    }
+   ]
+  },
+  {
+   "id": "p.pref.ascii_icons",
+   "statement": {
+    "en": "No emoji in the UI; ASCII icons ([+], R, Cfg) render everywhere (Pydroid)",
+    "pl": "Bez emoji w UI; ikony ASCII ([+], R, Cfg) renderują się wszędzie (Pydroid)"
+   },
+   "phrasings": [
+    "Ikony emoji (↻, ⚙) nie renderują się (pokazują □)",
+    "Bez emoji",
+    "ASCII ikony zamiast emoji"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "products": [
+     "codebase"
+    ]
+   },
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 7 'Błędy'",
+     "date": "2026-01-30"
+    },
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 14",
+     "date": "2026-02-06"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "Status funkcji: regresja emoji"
+    }
+   ],
+   "checks": [
+    "chk.emoji_in_ui"
+   ]
+  },
+  {
+   "id": "p.pref.no_placeholders",
+   "statement": {
+    "en": "No placeholders or stubs in delivered code",
+    "pl": "Żadnych placeholderów w dostarczonym kodzie"
+   },
+   "phrasings": [
+    "Żadnych placeholderów",
+    "bez placeholderów"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "products": [
+     "codebase",
+     "deliverable"
+    ]
+   },
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 'Request - no placeholders'",
+     "date": "2026-02-06"
+    }
+   ],
+   "checks": [
+    "chk.placeholder"
+   ]
+  },
+  {
+   "id": "p.pref.flat_zip",
+   "statement": {
+    "en": "Deliver one flat zip",
+    "pl": "Dostarczaj jeden płaski zip"
+   },
+   "phrasings": [
+    "FLAT ZIP",
+    "jeden płaski zip"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "scope": {
+    "products": [
+     "deliverable"
+    ]
+   },
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 7 'v0.4.2-dev - FLAT ZIP'",
+     "date": "2026-01-30"
+    }
+   ]
+  },
+  {
+   "id": "p.pref.sortable_versions",
+   "statement": {
+    "en": "Versions are sortable x.yy.zz",
+    "pl": "Wersje sortowalne x.yy.zz"
+   },
+   "phrasings": [
+    "0.06.00",
+    "wersje sortowalne x.yy.zz"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "scope": {
+    "products": [
+     "deliverable"
+    ]
+   },
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 19 'v0.06.00'",
+     "date": "2026-02-06"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "§3"
+    }
+   ]
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks13[] = {
     R"LOOMKB({
-  "schema": "loom.kb.rules/1",
-  "description": "Stratified inference rules. Stratum 0 = derived (deterministic function of observed values), 1 = inferred (value + checkable expected property, confidence >= thresholds.tau_inferred), 2 = extrapolated (philosophy-driven proposals, confidence capped by thresholds.extrapolation_cap, never an input to any rule). Within a stratum rules are monotone and applied in id order, so the fixpoint is unique. Conditions, value ops and predicates are closed sets implemented in code (include/loom/kb.h); rules only combine them.",
-  "rules": [
+ "schema": "loom.kb.operators/1",
+ "description": "Seed design operators (LOOM_CONCEPTUAL_MODEL §3.3): situation type -> solution class, with justifying principles and dated sources. PRIORS (candidate): mining from decision sequences must confirm them. The first five are the note's seeds (§7 F), the rest are justified by the MEGA MASTER, the historical report and the requirements.",
+ "operators": [
+  {
+   "id": "op.new_source_extend_providers",
+   "version": 1,
+   "situation": {
+    "en": "A new data source (or model, medium, platform) appears that is not behind a provider",
+    "pl": "Pojawia się nowe źródło danych (model, medium, platforma) poza abstrakcją providera"
+   },
+   "solution": {
+    "en": "Extend the provider/capability registry with a manifest + adapter; do not add a separate subsystem",
+    "pl": "Rozszerz rejestr providerów/capabilities o manifest + adapter; nie twórz osobnego systemu"
+   },
+   "principles": [
+    "p.capability_not_enum",
+    "p.data_is_variety"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
     {
-      "id": "r.current_version", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "multiplatform_app", "slot": "current_version"},
-      "when": {"op": "nonempty", "args": ["$slot:version_history.versions"]},
-      "value": {"op": "max_version", "args": ["$slot:version_history.versions[].version"]},
-      "confidence": {"prior": 0.95},
-      "expected_property": {
-        "expr": {"op": "version_gte", "args": ["$value", "$git_max_version"]},
-        "rationale": "the current version is the highest version observed anywhere (git, snapshots or archives); it is never older than the newest git version",
-        "confirm_if": ["a later source names the same version as current"],
-        "refute_if": ["an observed version higher than $value exists for the same lineage"]
-      },
-      "basis": {"slots": ["version_history.versions"]}
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 'pełną abstrakcję providerów z OCR i ASR'",
+     "date": "2026-02-06"
     },
     {
-      "id": "r.project_status", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "*", "slot": "status"},
-      "when": {"op": "const", "args": [true]},
-      "value": {"op": "derive_project_status", "args": ["$subject"]},
-      "confidence": {"prior": 0.8},
-      "expected_property": {
-        "expr": {"op": "in_enum", "args": ["project_status"]},
-        "rationale": "merged if a merged_into/evolved_into fact exists (merged_into = target); abandoned if an explicit abandon cue or no activity for thresholds.abandoned_after_days before corpus end without code; paused if an explicit pause cue or inactivity for thresholds.paused_after_days; active otherwise",
-        "confirm_if": ["an explicit status statement by the owner"],
-        "refute_if": ["activity after the date the status was derived from"]
-      },
-      "basis": {"slots": [], "policy": ["thresholds.status"]}
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.D, §4.5"
     },
     {
-      "id": "r.component_status", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"entity_kind": "component", "attr": "status"},
-      "when": {"op": "const", "args": [true]},
-      "value": {"op": "derive_component_status", "args": ["$subject"]},
-      "confidence": {"prior": 0.8},
-      "expected_property": {
-        "expr": {"op": "in_enum", "args": ["component_status"]},
-        "rationale": "implemented = an implements fact to a declared symbol/path in some codebase; partial = code evidence covers part of the name or the code carries TODO/'nie działa' cues; superseded = target of an active supersedes fact (superseded_by = source); abandoned = on the abandoned side of a fork, or explicit abandon cue, or no mention for thresholds.abandoned_after_days and no code; planned = only future-tense cues",
-        "confirm_if": ["a declared symbol for the component appears in a later snapshot"],
-        "refute_if": ["the component is mentioned as working after being marked abandoned"]
-      },
-      "basis": {"policy": ["thresholds.status"]}
-    },
-    {
-      "id": "r.platforms_from_codebase", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "multiplatform_app", "slot": "platforms"},
-      "when": {"op": "empty", "args": ["$slot:platforms"]},
-      "value": {"op": "lexicon_pick", "args": ["platform", {"implied_by": "$slot:codebase.languages"}, {"implied_by": "$slot:ui_framework"}]},
-      "confidence": {"prior": 0.7},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "in_class", "args": ["platform"]}, {"op": "nonempty", "args": ["$value"]}]},
-        "rationale": "a UI framework or toolchain implies the platforms it targets (Kivy -> desktop + Android; Kotlin/JNI -> Android); the value is the union of implied platforms",
-        "confirm_if": ["a targets_platform fact for any listed platform"],
-        "refute_if": ["an explicit statement that the app does not run on a listed platform"]
-      },
-      "basis": {"slots": ["codebase.languages", "ui_framework"], "lexicons": ["gazetteer.implies"]}
-    },
-    {
-      "id": "r.core_language_from_codebase", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "multiplatform_app", "slot": "core_language"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:core_language"]}, {"op": "nonempty", "args": ["$slot:codebase.languages"]}]},
-      "value": {"op": "codebase_field", "args": ["dominant_language", {"among": "core_modules"}]},
-      "confidence": {"prior": 0.75},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "in_class", "args": ["language"]}, {"op": "available_on", "args": ["$slot:platforms"]}, {"op": "not_contradicted_by", "args": ["decides_about"]}]},
-        "rationale": "the core language is the dominant language (by code volume) of the core modules; it must have a toolchain for every observed platform and no active decision may name another core language",
-        "confirm_if": ["a written_in fact for the subject"],
-        "refute_if": ["an active decision choosing a different core language (e.g. a migration to C++)"]
-      },
-      "basis": {"slots": ["codebase.languages", "platforms"]}
-    },
-    {
-      "id": "r.storage_local_first", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "multiplatform_app|pipeline", "slot": "storage"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:storage"]}, {"op": "principle_active", "args": ["p.local_first"]}]},
-      "value": {"op": "lexicon_pick", "args": ["storage.embedded", {"implies": "offline_capable"}, {"available_on": "$slot:platforms"}, {"prefer": "$analog:storage"}]},
-      "confidence": {"prior": 0.65},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "in_class", "args": ["storage.embedded"]}, {"op": "consistent_with", "args": ["p.local_first"]}, {"op": "available_on", "args": ["$slot:platforms"]}, {"op": "not_in", "args": ["$value", "$rejected_values"]}]},
-        "rationale": "local-first + graceful degradation (MEGA MASTER §12) on every listed platform implies an embedded, file-based, offline-capable store; an analogous project's observed store is preferred",
-        "confirm_if": ["a stores_in fact with an embedded store"],
-        "refute_if": ["a stores_in fact with a server-only store and no local cache"]
-      },
-      "basis": {"principles": ["p.local_first", "p.kod_ne_dane"], "slots": ["platforms"]}
-    },
-    {
-      "id": "r.pipeline_stage_order", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "pipeline", "slot": "stages"},
-      "when": {"op": "has_fact", "args": ["next_stage"]},
-      "value": {"op": "order_chain", "args": ["$slot:stages", "next_stage"]},
-      "confidence": {"prior": 0.85},
-      "expected_property": {
-        "expr": {"op": "nonempty", "args": ["$value"]},
-        "rationale": "stages are ordered by next_stage facts (A -> B -> C, numbered lists); unordered stages keep first-mention order",
-        "confirm_if": ["a second source lists the stages in the same order"],
-        "refute_if": ["a next_stage fact that creates a cycle"]
-      },
-      "basis": {"slots": ["stages"]}
-    },
-    {
-      "id": "r.brainstorm_chosen_from_decision", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "brainstorm", "slot": "chosen"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:chosen"]}, {"op": "has_items", "args": ["decision", "topic"]}]},
-      "value": {"op": "option_fro)LOOMKB",
-    R"LOOMKB(m_decision", "args": ["$slot:options"]},
-      "confidence": {"prior": 0.7},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "subset_of", "args": ["$value", "$slot:options"]}, {"op": "not_in", "args": ["$value", "$slot:rejected"]}]},
-        "rationale": "the chosen option is the option named by the latest active decision on the topic; it must be one of the options and must not have been rejected later",
-        "confirm_if": ["later conversations build on the option"],
-        "refute_if": ["a later rejected_option item naming it"]
-      },
-      "basis": {"slots": ["options", "rejected"]}
-    },
-    {
-      "id": "r.brainstorm_rejected_complement", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "brainstorm", "slot": "rejected"},
-      "when": {"op": "all", "args": [{"op": "nonempty", "args": ["$slot:chosen"]}, {"op": "empty", "args": ["$slot:rejected"]}]},
-      "value": {"op": "complement", "args": ["$slot:options", "$slot:chosen"]},
-      "confidence": {"prior": 0.55},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "subset_of", "args": ["$value", "$slot:options"]}, {"op": "not_in", "args": ["$slot:chosen", "$value"]}]},
-        "rationale": "when one option was chosen and the others were never revisited, they are implicitly rejected (abandoned != unimportant: they stay visible)",
-        "confirm_if": ["an explicit rejection of the option"],
-        "refute_if": ["the option is revived later"]
-      },
-      "basis": {"slots": ["options", "chosen"], "principles": ["p.abandoned_not_unimportant"]}
-    },
-    {
-      "id": "r.spec_interfaces_from_code", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "specification", "slot": "interfaces"},
-      "when": {"op": "empty", "args": ["$slot:interfaces"]},
-      "value": {"op": "codebase_field", "args": ["interfaces", {"mentioned_with": "$subject"}]},
-      "confidence": {"prior": 0.6},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "matches", "args": ["^I?[A-Z][A-Za-z0-9]+$"]}, {"op": "exists_symbol", "args": ["$value"]}]},
-        "rationale": "interfaces of a specified subject are the declared abstract types whose names co-occur with the subject",
-        "confirm_if": ["the spec names the interface"],
-        "refute_if": ["the symbol is removed from the codebase"]
-      },
-      "basis": {"slots": ["codebase.modules"]}
-    },
-    {
-      "id": "r.entry_points_from_names", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "codebase", "slot": "entry_points"},
-      "when": {"op": "empty", "args": ["$slot:entry_points"]},
-      "value": {"op": "codebase_field", "args": ["files", {"name_in_class": "entry_point_file"}]},
-      "confidence": {"prior": 0.9},
-      "expected_property": {
-        "expr": {"op": "in_class", "args": ["entry_point_file"]},
-        "rationale": "files named like entry points (main.py, main.cpp, MainActivity.kt, server main) are entry points",
-        "confirm_if": ["the file defines main / an App subclass"],
-        "refute_if": []
-      },
-      "basis": {"lexicons": ["gazetteer.entry_point_file"]}
-    },
-    {
-      "id": "r.archive_only_version", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "source"},
-      "when": {"op": "nonempty", "args": ["$slot:versions"]},
-      "value": {"op": "versions_above", "args": ["$git_max_version"]},
-      "confidence": {"prior": 0.9},
-      "expected_property": {
-        "expr": {"op": "version_gt", "args": ["$value", "$git_max_version"]},
-        "rationale": "a version observed in archives or snapshots but above every git version exists only in the archives (source = archive)",
-        "confirm_if": ["a snapshot or attachment declaring the version"],
-        "refute_if": ["a git tag or commit subject with the version"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_date_first_mention", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "date"},
-      "when": {"op": "empty", "args": ["$field:date"]},
-      "value": {"op": "first_mention_date", "args": ["$field:version"]},
-      "confidence": {"prior": 0.6},
-      "expected_property": {
-        "expr": {"op": "date_between", "args": ["$prev_version_date", "$next_version_date"]},
-        "rationale": "an undated version is dated by its first anchored mention; the date must lie between the neighbouring versions of the same lineage",
-        "confirm_if": ["a snapshot file date or commit date for the version"],
-        "refute_if": ["a mention of the version as existing before the inferred date"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_features_comention", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "features"},
-      "when": {"op": "empty", "args": ["$field:features"]},
-      "value": {"op": "comentioned_components", "args": ["$field:version", {"window": "unit"}]},
-      "confidence": {"prior": 0.5},
-      "expected_property": {
-        "expr": {"op": "co_mentioned_with", "args": ["$field:version", "unit"]},
-        "rationale": "components introduced or discussed in the same conversation unit as an anchored version mention are its features",
-        "confirm_if": ["an introduced_in fact"],
-        "refute_if": ["the component exists in an older version's snapshot"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_base", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "base"},
-      "when": {"op": "empty", "args": ["$field:base"]},
-      "value": {"op": "base_version", "args": ["$field:version"]},
-      "confidence": {"prior": 0.6},
-      "expected_property": {
-        "expr": {"op": "version_gt", "args": ["$field:version", "$value"]},
-        "rationale": "the base of a version is (a) an explicit based_on/'na bazie' statement, (b) the version whose snapshot shares the most unchanged files, (c) the latest version mentioned earlier; a base is always lower",
-        "confirm_if": ["an explicit based_on statement"],
-        "refute_if": ["the snapshot contains changes only present in a different line"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_forks", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "version_history", "slot": "forks"},
-      "when": {"op": "nonempty", "args": ["$slot:versions"]},
-      "value": {"op": "version_forks", "args": ["$slot:versions"]},
-      "confidence": {"prior": 0.8},
-      "expected_property": {
-        "expr": {"op": "nonempty", "args": ["$value"]},
-        "rationale": "two or more versions with the same base form a fork in the version DAG (e.g. 0.8.x and 0.9.0 both based on 0.7.10)",
-        "confirm_if": ["an explicit statement that the lines diverged"],
-        "refute_if": ["one line contains the other's changes"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.presets_as_data", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "agent_system", "slot": "roles"},
-      "when": {"op": "all", "args": [{"op": "nonempty", "args": ["$slot:roles"]}, {"op": "principle_active", "args": ["p.presets_are_data"]}]},
-      "value": {"op": "slot", "args": ["$slot:roles"]},
-      "confidence": {"prior": 0.7},
-      "expected_property": {
-        "expr": {"op": "consistent_with", "args": ["p.presets_are_data"]},
-        "rationale": "roles such as junior_dev/senior_dev/researcher are policy bundles defined as data, never classes (MEGA MASTER §4.7, §11)",
-        "confirm_if": ["roles defined in a data file"],
-        "refute_if": ["a ro)LOOMKB",
-    R"LOOMKB(le hard-coded as a class or enum"]
-      },
-      "basis": {"principles": ["p.presets_are_data"]}
-    },
-    {
-      "id": "x.sync_transport_adapters", "version": 1, "stratum": 2, "produces": "extrapolated",
-      "target": {"paradigm": "multiplatform_app", "slot": "sync"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:sync"]}, {"op": "principle_active", "args": ["p.local_first"]}]},
-      "value": {"op": "principle_template", "args": ["ISyncTransport adapters: local files, zero-knowledge server, Google Drive (MEGA MASTER §4.12)"]},
-      "confidence": {"prior": 0.4},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "consistent_with", "args": ["p.local_first"]}, {"op": "consistent_with", "args": ["p.capability_not_enum"]}]},
-        "rationale": "sync is a contract with swappable adapters; local-first means the app works without any of them",
-        "confirm_if": ["an owner decision on sync"],
-        "refute_if": ["an owner decision against sync"]
-      },
-      "basis": {"principles": ["p.local_first", "p.capability_not_enum"]}
-    },
-    {
-      "id": "x.pipeline_resumable_stages", "version": 1, "stratum": 2, "produces": "extrapolated",
-      "target": {"paradigm": "pipeline", "slot": "checkpointing"},
-      "when": {"op": "empty", "args": ["$slot:checkpointing"]},
-      "value": {"op": "principle_template", "args": ["every stage is a TaskEngine task with input/output hashes and a checkpoint; intermediate representations are content-addressed artifacts"]},
-      "confidence": {"prior": 0.45},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "consistent_with", "args": ["p.resumable_auditable"]}, {"op": "consistent_with", "args": ["p.raw_immutable"]}]},
-        "rationale": "constitution G: everything significant is resumable and auditable",
-        "confirm_if": ["the pipeline is ported onto the TaskEngine"],
-        "refute_if": []
-      },
-      "basis": {"principles": ["p.resumable_auditable", "p.raw_immutable"]}
-    },
-    {
-      "id": "x.agent_on_task_engine", "version": 1, "stratum": 2, "produces": "extrapolated",
-      "target": {"paradigm": "agent_system", "slot": "checkpointing"},
-      "when": {"op": "empty", "args": ["$slot:checkpointing"]},
-      "value": {"op": "principle_template", "args": ["agent actions are Task/Action records with checkpoint/retry/rollback on the Loom TaskEngine; roles are data (MEGA MASTER §1.3, §4.7)"]},
-      "confidence": {"prior": 0.45},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "consistent_with", "args": ["p.resumable_auditable"]}, {"op": "consistent_with", "args": ["p.presets_are_data"]}]},
-        "rationale": "the historical agent becomes Loom's execution layer, not a separate application",
-        "confirm_if": ["an agent task kind registered on the TaskEngine"],
-        "refute_if": []
-      },
-      "basis": {"principles": ["p.resumable_auditable", "p.presets_are_data"]}
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
     }
-  ]
+   ],
+   "examples": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 ProviderManager",
+     "date": "2026-02-06",
+     "note": "OCR/ASR added as providers behind one ProviderManager"
+    }
+   ]
+  },
+  {
+   "id": "op.new_artifact_type_common_structure",
+   "version": 1,
+   "situation": {
+    "en": "A new artifact or document type appears",
+    "pl": "Pojawia się nowy typ artefaktu"
+   },
+   "solution": {
+    "en": "Find the common structure; keep the specific properties as data (an artifact type file)",
+    "pl": "Znajdź wspólną strukturę; zachowaj specyficzne własności jako dane (plik typu artefaktu)"
+   },
+   "principles": [
+    "p.data_is_variety",
+    "p.kod_ne_dane"
+   ],
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§1.6, §4.13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.repeated_manual_action_observe_then_automate",
+   "version": 1,
+   "situation": {
+    "en": "A manual action is repeated",
+    "pl": "Powtarzalna ręczna czynność"
+   },
+   "solution": {
+    "en": "First make it observable with provenance, then automate it",
+    "pl": "Najpierw zapewnij obserwowalność i provenance, dopiero potem automatyzuj"
+   },
+   "principles": [
+    "p.provenance",
+    "p.resumable_auditable",
+    "p.learning_track"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 9 'co można by logować'",
+     "date": "2026-02-04"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.H, §4.10"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.uncertainty_keep_alternatives",
+   "version": 1,
+   "situation": {
+    "en": "Uncertainty: several options fit the evidence",
+    "pl": "Niepewność: kilka opcji pasuje do dowodów"
+   },
+   "solution": {
+    "en": "Do not choose arbitrarily; keep the alternatives with their evidence until a contract, test, cost or constraint decides",
+    "pl": "Nie wybieraj arbitralnie; zachowaj alternatywy wraz z dowodami, dopóki nie rozstrzygnie kontrakt, test, koszt lub ograniczenie"
+   },
+   "principles": [
+    "p.keep_alternatives",
+    "p.defer_decisions"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A, §10"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.implementation_difference_stays_local",
+   "version": 1,
+   "situation": {
+    "en": "A difference is implementation-only (platform, backend, serialization)",
+    "pl": "Różnica jest wyłącznie implementacyjna (platforma, backend, serializacja)"
+   },
+   "solution": {
+    "en": "Do not propagate it upwards: keep it in an adapter below the contract",
+    "pl": "Nie propaguj jej do wyższych warstw: zostaw ją w adapterze pod kontraktem"
+   },
+   "principles": [
+    "p.decision_classes",
+    "p.serialization_not_architecture",
+    "p.renderer_is_adapter"
+   ],
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A, §2.C, §4.11"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§7 F"
+    }
+   ]
+  },
+  {
+   "id": "op.hardcoded_value_to_data",
+   "version": 1,
+   "situation": {
+    "en": "A path, list, preset or policy is hard-coded",
+    "pl": "Ścieżka, lista, preset lub polityka są zaszyte w kodzie"
+   },
+   "solution": {
+    "en": "Move it to a data file resolved at runtime; code keeps only the lookup",
+    "pl": "Przenieś do pliku danych rozwiązywanego w runtime; kod zostawia tylko odczyt"
+   },
+   "principles": [
+    "p.kod_ne_dane",
+    "p.presets_are_data"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'Zmiana architektury'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'hardcoded paths'",
+     "date": "2026-02-02"
+    }
+   ],
+   "examples": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 paths.py",
+     "date": "2026-02-02",
+     "note": "hard-coded paths -> paths.py + fixed data directory"
+    }
+   ]
+  },
+  {
+   "id": "op.edit_creates_branch",
+   "version": 1,
+   "situation": {
+    "en": "Something existing is edited (a message, a document, a decision)",
+    "pl": "Edytowane jest coś istniejącego"
+   },
+   "solution": {
+    "en": "Create a new version/branch; the old one stays reachable",
+    "pl": "Utwórz nową wersję/gałąź; stara pozostaje dostępna"
+   },
+   "principles": [
+    "p.edit_is_branch",
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 1",
+     "date": "2026-01-21"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ]
+  },
+  {
+   "id": "op.expensive_generation_staged",
+   "version": 1,
+   "situation": {
+    "en": "An expensive generation (video, music, long document) is needed",
+    "pl": "Potrzebna jest droga generacja"
+   },
+   "solution": {
+    "en": "Refine in stages cheap -> expensive with a gate and a cost estimate before each stage",
+    "pl": "Rafinuj etapami tanio → drogo, z bramką i kosztorysem przed każdym etapem"
+   },
+   "principles": [
+    "p.defer_decisions",
+    "p.resumable_auditable"
+   ],
+   "confidence": 0.5,
+   "validation_stat)LOOMKB",
+    R"LOOMKB(us": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "history/chatadhd_v0.9.0",
+     "date": "2026-04-17",
+     "section": "engine/video_pipeline.py 4 phases"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "TL;DR, §5"
+    }
+   ]
+  },
+  {
+   "id": "op.missing_capability_degrade_honestly",
+   "version": 1,
+   "situation": {
+    "en": "A capability is missing (no model, no key, no library)",
+    "pl": "Brakuje możliwości (modelu, klucza, biblioteki)"
+   },
+   "solution": {
+    "en": "Degrade gracefully and mark results unverified at a lower evidence class; never fabricate a metric",
+    "pl": "Degraduj łagodnie i oznacz wyniki jako niezweryfikowane; nigdy nie fabrykuj metryki"
+   },
+   "principles": [
+    "p.capability_honesty",
+    "p.local_first"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Error Handling"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "§6"
+    }
+   ]
+  },
+  {
+   "id": "op.large_input_catalog_first",
+   "version": 1,
+   "situation": {
+    "en": "The input is too large to import whole (multi-GB archives)",
+    "pl": "Wejście jest za duże, by importować całość"
+   },
+   "solution": {
+    "en": "Catalog without importing, select by relevance and owner rules, import only the selected units by locator",
+    "pl": "Skataloguj bez importu, wybierz wg trafności i reguł właściciela, importuj tylko wybrane jednostki po lokatorze"
+   },
+   "principles": [
+    "p.raw_immutable",
+    "p.titles_weak_signal"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R1"
+    }
+   ]
+  },
+  {
+   "id": "op.new_domain_is_data",
+   "version": 1,
+   "situation": {
+    "en": "A new kind of project (film, music, a legal case) is needed",
+    "pl": "Potrzebny jest nowy rodzaj projektu"
+   },
+   "solution": {
+    "en": "Add a project kind data file mapped onto the universal roles, plus transfer morphisms to analogous kinds",
+    "pl": "Dodaj plik danych rodzaju projektu zmapowany na role uniwersalne i morfizmy transferu do rodzajów analogicznych"
+   },
+   "principles": [
+    "p.data_is_variety",
+    "p.honest_extensibility"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R8"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.5, §3.6"
+    }
+   ]
+  },
+  {
+   "id": "op.sensitive_data_local_control",
+   "version": 1,
+   "situation": {
+    "en": "Sensitive data (legal evidence, personal archives) must be processed",
+    "pl": "Trzeba przetwarzać wrażliwe dane"
+   },
+   "solution": {
+    "en": "Local-first, encrypted at rest, explicit control over what is sent to external providers",
+    "pl": "Local-first, szyfrowanie, jawna kontrola nad tym, co trafia do zewnętrznych dostawców"
+   },
+   "principles": [
+    "p.zero_knowledge",
+    "p.local_first",
+    "p.value.autonomy"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R9"
+    }
+   ]
+  },
+  {
+   "id": "op.feature_lost_record_status",
+   "version": 1,
+   "situation": {
+    "en": "A feature existed and disappeared in a later version or branch",
+    "pl": "Funkcja istniała i zniknęła w późniejszej wersji lub gałęzi"
+   },
+   "solution": {
+    "en": "Record its status per branch and version (lost / restored), restore it with a test that pins it",
+    "pl": "Zapisz status per gałąź i wersja (utracona / przywrócona), przywróć z testem, który ją utrwala"
+   },
+   "principles": [
+    "p.abandoned_not_unimportant",
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "TL;DR 'oscyluje', §2"
+    }
+   ]
+  },
+  {
+   "id": "op.context_select_by_goal",
+   "version": 1,
+   "situation": {
+    "en": "A model call needs context from a large project",
+    "pl": "Wywołanie modelu potrzebuje kontekstu z dużego projektu"
+   },
+   "solution": {
+    "en": "Type the goal, select by roles and relevance under a budget, order stable prefix -> project -> goal tail, explain each item",
+    "pl": "Określ cel, wybierz wg ról i trafności w budżecie, ułóż stabilny prefiks → projekt → cel, uzasadnij każdy element"
+   },
+   "principles": [
+    "p.context_by_goal"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.4"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R12, R13"
+    }
+   ]
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks14[] = {
     R"LOOMKB({
-  "schema": "loom.kb.checks/1",
-  "description": "Principle checks run over code digests (and code blocks pasted into conversations). A hit becomes a 'violates' fact (principle -> file:line) and an improvement item in backlog.md. Detector kinds are a closed set implemented in code; patterns and thresholds are data.",
-  "checks": [
-    {
-      "id": "chk.literal_policy_table", "principle": "p.kod_ne_dane", "detector": "string_array_literal",
-      "params": {"languages": ["cpp", "c", "kotlin", "java", "typescript", "python"], "min_entries": 20},
-      "message": {"en": "A literal table of {n} string entries in code: lexicon/policy data belongs in a data file", "pl": "Tablica {n} literałów w kodzie: leksykon/polityka powinny być danymi"}
+ "schema": "loom.kb.rules/2",
+ "description": "Inference rules = operators that PRODUCE claims (LOOM_CONCEPTUAL_MODEL §3.3). Stratified: 0 derived (deterministic function of observed values), 1 inferred (value + checkable expected property), 2 extrapolated (philosophy-driven proposal, confidence capped by policy/thresholds.json paradigm.extrapolation_cap, never a premise). Targets: {paradigm (project kind | facet | artifact type), slot (domain kind / structure field)[, field]}, {temporal: versions|current_version|forks|lineage|status|part_status[, field]} or {entity_kind, attr}. References: $slot:<kind> (same instance), $slot:<paradigm>.<kind> (another paradigm's instance of the subject), $temporal:<slot>, $field:<field>, $analog:<kind>. Conditions, value ops and predicates are closed sets in code (include/loom/kb.h).",
+ "rules": [
+  {
+   "id": "r.archive_only_version",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "versions",
+    "field": "source"
+   },
+   "when": {
+    "op": "nonempty",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "value": {
+    "op": "versions_above",
+    "args": [
+     "$git_max_version"
+    ]
+   },
+   "confidence": 0.9,
+   "expected_property": {
+    "expr": {
+     "op": "version_gt",
+     "args": [
+      "$value",
+      "$git_max_version"
+     ]
     },
-    {
-      "id": "chk.enum_dispatch", "principle": "p.capability_not_enum", "detector": "regex_line",
-      "params": {"languages": ["cpp", "python", "kotlin", "typescript"], "pattern": "(provider|model|platform|backend)\\s*==\\s*[\"'][A-Za-z0-9_.-]+[\"']", "max_hits_per_file": 20},
-      "message": {"en": "Dispatch on a provider/platform name: ask can(resource, capability, constraints) instead", "pl": "Rozgałęzienie po nazwie providera/platformy: zamiast tego can(resource, capability, constraints)"}
+    "rationale": "a version observed in archives or snapshots but above every git version exists only in the archives (source = archive)",
+    "confirm_if": [
+     "a snapshot or attachment declaring the version"
+    ],
+    "refute_if": [
+     "a git tag or commit subject with the version"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.brainstorm_chosen_from_decision",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "brainstorm",
+    "slot": "chosen"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:chosen"
+      ]
+     },
+     {
+      "op": "has_items",
+      "args": [
+       "decision",
+       "topic"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "option_from_decision",
+    "args": [
+     "$slot:options"
+    ]
+   },
+   "confidence": 0.7,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "subset_of",
+       "args": [
+        "$value",
+        "$slot:options"
+       ]
+      },
+      {
+       "op": "not_in",
+       "args": [
+        "$value",
+        "$slot:rejected"
+       ]
+      }
+     ]
     },
-    {
-      "id": "chk.silent_except", "principle": "p.errors_are_values", "detector": "regex_block",
-      "params": {"languages": ["python"], "pattern": "except(\\s+[A-Za-z_.]+)?\\s*:\\s*\\n\\s*pass\\b"},
-      "message": {"en": "Silent 'except: pass': log at least at debug level with exc_info", "pl": "Ciche 'except: pass': co najmniej log.debug(..., exc_info=True)"}
+    "rationale": "the chosen option is the option named by the latest active decision on the topic; it must be one of the options and must not have been rejected later",
+    "confirm_if": [
+     "later conversations build on the option"
+    ],
+    "refute_if": [
+     "a later rejected_option item naming it"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "options",
+     "rejected"
+    ]
+   }
+  },
+  {
+   "id": "r.brainstorm_rejected_complement",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "brainstorm",
+    "slot": "rejected"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "nonempty",
+      "args": [
+       "$slot:chosen"
+      ]
+     },
+     {
+      "op": "empty",
+      "args": [
+       "$slot:rejected"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "complement",
+    "args": [
+     "$slot:options",
+     "$slot:chosen"
+    ]
+   },
+   "confidence": 0.55,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "subset_of",
+       "args": [
+        "$value",
+        "$slot:options"
+       ]
+      },
+      {
+       "op": "not_in",
+       "args": [
+        "$slot:chosen",
+        "$value"
+       ]
+      }
+     ]
     },
-    {
-      "id": "chk.nonatomic_json_write", "principle": "p.atomic_writes", "detector": "regex_line",
-      "params": {"languages": ["python"], "pattern": "json\\.dump\\(.*open\\(", "max_hits_per_file": 20},
-      "message": {"en": "JSON written in place: write to .tmp and rename", "pl": "Zapis JSON w miejscu: zapisz do .tmp i zrób rename"}
+    "rationale": "when one option was chosen and the others were never revisited, they are implicitly rejected (abandoned != unimportant: they stay visible)",
+    "confirm_if": [
+     "an explicit rejection of the option"
+    ],
+    "refute_if": [
+     "the option is revived later"
+    ]
+   },
+   "principles": [
+    "p.abandoned_not_unimportant"
+   ],
+   "basis": {
+    "slots": [
+     "options",
+     "chosen"
+    ],
+    "principles": [
+     "p.abandoned_not_unimportant"
+    ]
+   }
+  },
+  {
+   "id": "r.component_status",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "entity_kind": "component",
+    "attr": "status"
+   },
+   "when": {
+    "op": "const",
+    "args": [
+     true
+    ]
+   },
+   "value": {
+    "op": "derive_component_status",
+    "args": [
+     "$subject"
+    ]
+   },
+   "confidence": 0.8,
+   "expected_property": {
+    "expr": {
+     "op": "in_enum",
+     "args": [
+      "status"
+     ]
     },
+    "rationale": "implemented = an implements fact to a declared symbol/path in some codebase; partial = code evidence covers part of the name or the code carries TODO/'nie działa' cues; superseded = target of an active supersedes fact (superseded_by = source); abandoned = on the abandoned side of a fork, or explicit abandon cue, or no mention for thresholds.abandoned_after_days and no code; planned = only future-tense cues",
+    "confirm_if": [
+     "a declared symbol for the component appears in a later snapshot"
+    ],
+    "refute_if": [
+     "the component is mentioned as working after being marked abandoned"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "policy": [
+     "thresholds.status"
+    ]
+   }
+  },
+  {
+   "id": "r.core_language_from_codebase",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "software_app",
+    "slot": "language"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:language"
+      ]
+     },
+     {
+      "op": "nonempty",
+      "args": [
+       "$slot:codebase.languages"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "codebase_field",
+    "args": [
+     "dominant_language",
+     {
+      "among": "core_modules"
+     }
+    ]
+   },
+   "confidence": 0.75,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "in_class",
+       "args": [
+        "language"
+       ]
+      },
+      {
+       "op": "available_on",
+       "args": [
+        "$slot:multiplatform.platform"
+       ]
+      },
+      {
+       "op": "not_contradicted_by",
+       "args": [
+        "decides_about"
+       ]
+      }
+     ]
+    },
+    "rationale": "the core language is the dominant language (by code volume) of the core modules; it must have a toolchain for every observed platform and no active decision may name another core language",
+    "confirm_if": [
+     "a written_in fact for the subject"
+    ],
+    "refute_if": [
+     "an active decision choosing a different core language (e.g. a migration to C++)"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "codebase.languages",
+     "multiplatform.platform"
+    ]
+   }
+  },
+  {
+   "id": "r.current_version",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "current_version"
+   },
+   "when": {
+    "op": "nonempty",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "value": {
+    "op": "max_version",
+    "args": [
+     "$temporal:versions[].version"
+    ]
+   },
+   "confidence": 0.95,
+   "expected_property": {
+    "expr": {
+     "op": "version_gte",
+     "args": [
+      "$value",
+      "$git_max_version"
+     ]
+    },
+    "rationale": "the current version is the highest version observed anywhere (git, snapshots or archives); it is never older than the newest git version",
+    "confirm_if": [
+     "a later source names the same version as current"
+    ],
+    "refute_if": [
+     "an observed version higher than $value exists for the same lineage"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "temporal.versions"
+    ]
+   }
+  },
+  {
+   "id": "r.deadline_from_delivery",
+   "version": 1,
+   "stratum")LOOMKB",
+    R"LOOMKB(: 0,
+   "produces": "derived",
+   "target": {
+    "paradigm": "legal_case",
+    "slot": "deadline",
+    "field": "due"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "nonempty",
+      "args": [
+       "$field:trigger"
+      ]
+     },
+     {
+      "op": "nonempty",
+      "args": [
+       "$field:legal_basis"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "date_add",
+    "args": [
+     "$field:trigger",
+     "$field:legal_basis"
+    ]
+   },
+   "confidence": 0.9,
+   "expected_property": {
+    "expr": {
+     "op": "date_between",
+     "args": [
+      "$field:trigger",
+      "$value"
+     ]
+    },
+    "rationale": "a procedural deadline is computed from the dated triggering event (delivery, hearing) and the period its legal basis states (data on the legal_norm entity: days, calendar, holiday rule); computed conservatively (earliest possible due date) and never without its legal basis (R9)",
+    "confirm_if": [
+     "the institution states the same due date"
+    ],
+    "refute_if": [
+     "a later delivery date of the same document",
+     "a different period in the cited article"
+    ]
+   },
+   "principles": [
+    "p.explicit_uncertainty",
+    "p.provenance"
+   ],
+   "basis": {
+    "slots": [
+     "legal_case.deadline"
+    ],
+    "policy": [
+     "legal_norm.attrs.period"
+    ]
+   },
+   "sources": [
     {
-      "id": "chk.telemetry_call", "principle": "p.no_telemetry", "detector": "regex_line",
-      "params": {"languages": ["python", "cpp", "kotlin", "typescript"], "pattern": "(analytics|telemetry|tracking)\\.(send|track|log)\\(", "max_hits_per_file": 20},
-      "message": {"en": "Telemetry call: the default is no telemetry", "pl": "Wywołanie telemetrii: domyślnie brak telemetrii"}
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R9 'pilnowanie terminów'"
     }
-  ]
+   ]
+  },
+  {
+   "id": "r.entry_points_from_names",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "paradigm": "codebase",
+    "slot": "entry_points"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:entry_points"
+    ]
+   },
+   "value": {
+    "op": "codebase_field",
+    "args": [
+     "files",
+     {
+      "name_in_class": "entry_point_file"
+     }
+    ]
+   },
+   "confidence": 0.9,
+   "expected_property": {
+    "expr": {
+     "op": "in_class",
+     "args": [
+      "entry_point_file"
+     ]
+    },
+    "rationale": "files named like entry points (main.py, main.cpp, MainActivity.kt, server main) are entry points",
+    "confirm_if": [
+     "the file defines main / an App subclass"
+    ],
+    "refute_if": []
+   },
+   "principles": [],
+   "basis": {
+    "lexicons": [
+     "gazetteer.entry_point_file"
+    ]
+   }
+  },
+  {
+   "id": "r.pipeline_stage_order",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "paradigm": "staged_transformation",
+    "slot": "stage"
+   },
+   "when": {
+    "op": "has_claim",
+    "args": [
+     "next_stage"
+    ]
+   },
+   "value": {
+    "op": "order_chain",
+    "args": [
+     "$slot:stage",
+     "next_stage"
+    ]
+   },
+   "confidence": 0.85,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$value"
+     ]
+    },
+    "rationale": "stages are ordered by next_stage facts (A -> B -> C, numbered lists); unordered stages keep first-mention order",
+    "confirm_if": [
+     "a second source lists the stages in the same order"
+    ],
+    "refute_if": [
+     "a next_stage fact that creates a cycle"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "stages"
+    ]
+   }
+  },
+  {
+   "id": "r.platforms_from_codebase",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "multiplatform",
+    "slot": "platform"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:platform"
+    ]
+   },
+   "value": {
+    "op": "lexicon_pick",
+    "args": [
+     "platform",
+     {
+      "implied_by": "$slot:codebase.languages"
+     },
+     {
+      "implied_by": "$slot:software_app.ui_framework"
+     }
+    ]
+   },
+   "confidence": 0.7,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "in_class",
+       "args": [
+        "platform"
+       ]
+      },
+      {
+       "op": "nonempty",
+       "args": [
+        "$value"
+       ]
+      }
+     ]
+    },
+    "rationale": "a UI framework or toolchain implies the platforms it targets (Kivy -> desktop + Android; Kotlin/JNI -> Android); the value is the union of implied platforms",
+    "confirm_if": [
+     "a targets_platform fact for any listed platform"
+    ],
+    "refute_if": [
+     "an explicit statement that the app does not run on a listed platform"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "codebase.languages",
+     "software_app.ui_framework"
+    ],
+    "lexicons": [
+     "gazetteer.implies"
+    ]
+   }
+  },
+  {
+   "id": "r.presets_as_data",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "agent",
+    "slot": "agent_role"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "nonempty",
+      "args": [
+       "$slot:agent_role"
+      ]
+     },
+     {
+      "op": "principle_active",
+      "args": [
+       "p.presets_are_data"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "slot",
+    "args": [
+     "$slot:agent_role"
+    ]
+   },
+   "confidence": 0.7,
+   "expected_property": {
+    "expr": {
+     "op": "consistent_with",
+     "args": [
+      "p.presets_are_data"
+     ]
+    },
+    "rationale": "roles such as junior_dev/senior_dev/researcher are policy bundles defined as data, never classes (MEGA MASTER §4.7, §11)",
+    "confirm_if": [
+     "roles defined in a data file"
+    ],
+    "refute_if": [
+     "a role hard-coded as a class or enum"
+    ]
+   },
+   "principles": [
+    "p.presets_are_data"
+   ],
+   "basis": {
+    "principles": [
+     "p.presets_are_data"
+    ]
+   }
+  },
+  {
+   "id": "r.project_status",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "status"
+   },
+   "when": {
+    "op": "const",
+    "args": [
+     true
+    ]
+   },
+   "value": {
+    "op": "derive_project_status",
+    "args": [
+     "$subject"
+    ]
+   },
+   "confidence": 0.8,
+   "expected_property": {
+    "expr": {
+     "op": "in_enum",
+     "args": [
+      "project_status"
+     ]
+    },
+    "rationale": "merged if a merged_into/evolved_into fact exists (merged_into = target); abandoned if an explicit abandon cue or no activity for thresholds.abandoned_after_days before corpus end without code; paused if an explicit pause cue or inactivity for thresholds.paused_after_days; active otherwise",
+    "confirm_if": [
+     "an explicit status statement by the owner"
+    ],
+    "refute_if": [
+     "activity after the date the status was derived from"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [],
+    "policy": [
+     "thresholds.status"
+    ]
+   }
+  },
+  {
+   "id": "r.spec_interfaces_from_code",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "software_app",
+    "slot": "interface"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:interface"
+    ]
+   },
+   "value": {
+    "op": "codebase_field",
+    "args": [
+     "interfaces",
+     {
+      "mentioned_with": "$subject"
+     }
+    ]
+   },
+   "confidence": 0.6,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "matches",
+       "args": [
+        "^I?[A-Z][A-Za-z0-9]+$"
+       ]
+      },
+      {
+       "op": "exists_symbol",
+       "args": [
+        "$value"
+       ]
+      }
+     ]
+    },
+    "rationale": "interfaces of a specified subject are the declared abstract types whose names co-occur with the subject",
+    "confirm_if": [
+     "the spec names the interface"
+    ],
+    "refute_if": [
+     "the symbol is removed from the codebase"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "codebase.modules"
+    ]
+   }
+  },
+  {
+   "id": "r.storage_local_first",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "software_app",
+    "slot": "store"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:store"
+      ]
+     },
+     {
+      "op": "principle_active",
+      "args": [
+       "p.)LOOMKB",
+    R"LOOMKB(local_first"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "lexicon_pick",
+    "args": [
+     "storage.embedded",
+     {
+      "implies": "offline_capable"
+     },
+     {
+      "available_on": "$slot:multiplatform.platform"
+     },
+     {
+      "prefer": "$analog:store"
+     }
+    ]
+   },
+   "confidence": 0.65,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "in_class",
+       "args": [
+        "storage.embedded"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.local_first"
+       ]
+      },
+      {
+       "op": "available_on",
+       "args": [
+        "$slot:multiplatform.platform"
+       ]
+      },
+      {
+       "op": "not_in",
+       "args": [
+        "$value",
+        "$rejected_values"
+       ]
+      }
+     ]
+    },
+    "rationale": "local-first + graceful degradation (MEGA MASTER §12) on every listed platform implies an embedded, file-based, offline-capable store; an analogous project's observed store is preferred",
+    "confirm_if": [
+     "a stores_in fact with an embedded store"
+    ],
+    "refute_if": [
+     "a stores_in fact with a server-only store and no local cache"
+    ]
+   },
+   "principles": [
+    "p.local_first",
+    "p.kod_ne_dane"
+   ],
+   "basis": {
+    "principles": [
+     "p.local_first",
+     "p.kod_ne_dane"
+    ],
+    "slots": [
+     "multiplatform.platform"
+    ]
+   }
+  },
+  {
+   "id": "r.version_base",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "temporal": "versions",
+    "field": "base"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$field:base"
+    ]
+   },
+   "value": {
+    "op": "base_version",
+    "args": [
+     "$field:version"
+    ]
+   },
+   "confidence": 0.6,
+   "expected_property": {
+    "expr": {
+     "op": "version_gt",
+     "args": [
+      "$field:version",
+      "$value"
+     ]
+    },
+    "rationale": "the base of a version is (a) an explicit based_on/'na bazie' statement, (b) the version whose snapshot shares the most unchanged files, (c) the latest version mentioned earlier; a base is always lower",
+    "confirm_if": [
+     "an explicit based_on statement"
+    ],
+    "refute_if": [
+     "the snapshot contains changes only present in a different line"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.version_date_first_mention",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "temporal": "versions",
+    "field": "date"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$field:date"
+    ]
+   },
+   "value": {
+    "op": "first_mention_date",
+    "args": [
+     "$field:version"
+    ]
+   },
+   "confidence": 0.6,
+   "expected_property": {
+    "expr": {
+     "op": "date_between",
+     "args": [
+      "$prev_version_date",
+      "$next_version_date"
+     ]
+    },
+    "rationale": "an undated version is dated by its first anchored mention; the date must lie between the neighbouring versions of the same lineage",
+    "confirm_if": [
+     "a snapshot file date or commit date for the version"
+    ],
+    "refute_if": [
+     "a mention of the version as existing before the inferred date"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.version_features_comention",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "temporal": "versions",
+    "field": "features"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$field:features"
+    ]
+   },
+   "value": {
+    "op": "comentioned_components",
+    "args": [
+     "$field:version",
+     {
+      "window": "unit"
+     }
+    ]
+   },
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "co_mentioned_with",
+     "args": [
+      "$field:version",
+      "unit"
+     ]
+    },
+    "rationale": "components introduced or discussed in the same conversation unit as an anchored version mention are its features",
+    "confirm_if": [
+     "an introduced_in fact"
+    ],
+    "refute_if": [
+     "the component exists in an older version's snapshot"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.version_forks",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "forks"
+   },
+   "when": {
+    "op": "nonempty",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "value": {
+    "op": "version_forks",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "confidence": 0.8,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$value"
+     ]
+    },
+    "rationale": "two or more versions with the same base form a fork in the version DAG (e.g. 0.8.x and 0.9.0 both based on 0.7.10)",
+    "confirm_if": [
+     "an explicit statement that the lines diverged"
+    ],
+    "refute_if": [
+     "one line contains the other's changes"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "x.agent_on_task_engine",
+   "version": 1,
+   "stratum": 2,
+   "produces": "extrapolated",
+   "target": {
+    "paradigm": "agent",
+    "slot": "plan"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:plan"
+    ]
+   },
+   "value": {
+    "op": "principle_template",
+    "args": [
+     "agent actions are Task/Action records with checkpoint/retry/rollback on the Loom TaskEngine; roles are data (MEGA MASTER §1.3, §4.7)"
+    ]
+   },
+   "confidence": 0.45,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.resumable_auditable"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.presets_are_data"
+       ]
+      }
+     ]
+    },
+    "rationale": "the historical agent becomes Loom's execution layer, not a separate application",
+    "confirm_if": [
+     "an agent task kind registered on the TaskEngine"
+    ],
+    "refute_if": []
+   },
+   "principles": [
+    "p.resumable_auditable",
+    "p.presets_are_data"
+   ],
+   "basis": {
+    "principles": [
+     "p.resumable_auditable",
+     "p.presets_are_data"
+    ]
+   }
+  },
+  {
+   "id": "x.pipeline_resumable_stages",
+   "version": 1,
+   "stratum": 2,
+   "produces": "extrapolated",
+   "target": {
+    "paradigm": "staged_transformation",
+    "slot": "checkpoint"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:checkpoint"
+    ]
+   },
+   "value": {
+    "op": "principle_template",
+    "args": [
+     "every stage is a TaskEngine task with input/output hashes and a checkpoint; intermediate representations are content-addressed artifacts"
+    ]
+   },
+   "confidence": 0.45,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.resumable_auditable"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.raw_immutable"
+       ]
+      }
+     ]
+    },
+    "rationale": "constitution G: everything significant is resumable and auditable",
+    "confirm_if": [
+     "the pipeline is ported onto the TaskEngine"
+    ],
+    "refute_if": []
+   },
+   "principles": [
+    "p.resumable_auditable",
+    "p.raw_immutable"
+   ],
+   "basis": {
+    "principles": [
+     "p.resumable_auditable",
+     "p.raw_immutable"
+    ]
+   }
+  },
+  {
+   "id": "x.sync_transport_adapters",
+   "version": 1,
+   "stratum": 2,
+   "produces": "extrapolated",
+   "target": {
+    "paradigm": "multiplatform",
+    "slot": "sync_transport"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:sync_transport"
+      ]
+     },
+     {
+      "op": "principle_active",
+      "args": [
+       "p.local_first"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "principle_template",
+    "args": [
+     "ISyncTransport adapters: local files, zero-knowledge server, Google Drive (MEGA MASTER §4.12)"
+    ]
+   },
+   "confiden)LOOMKB",
+    R"LOOMKB(ce": 0.4,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.local_first"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.capability_not_enum"
+       ]
+      }
+     ]
+    },
+    "rationale": "sync is a contract with swappable adapters; local-first means the app works without any of them",
+    "confirm_if": [
+     "an owner decision on sync"
+    ],
+    "refute_if": [
+     "an owner decision against sync"
+    ]
+   },
+   "principles": [
+    "p.local_first",
+    "p.capability_not_enum"
+   ],
+   "basis": {
+    "principles": [
+     "p.local_first",
+     "p.capability_not_enum"
+    ]
+   }
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks15[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.checks/1",
+ "description": "Principle and preference checks run over code digests (and code pasted into conversations). A hit is a failing check (I8): a 'violates' claim (principle -> file:line) and a backlog item; for products a preference violation is a test failure, not a style note. Detector kinds are a closed set in code; patterns and thresholds are data.",
+ "checks": [
+  {
+   "id": "chk.literal_policy_table",
+   "principle": "p.kod_ne_dane",
+   "detector": "string_array_literal",
+   "params": {
+    "languages": [
+     "cpp",
+     "c",
+     "kotlin",
+     "java",
+     "typescript",
+     "python"
+    ],
+    "min_entries": 20
+   },
+   "message": {
+    "en": "A literal table of {n} string entries in code: lexicon/policy data belongs in a data file",
+    "pl": "Tablica {n} literałów w kodzie: leksykon/polityka powinny być danymi"
+   }
+  },
+  {
+   "id": "chk.enum_dispatch",
+   "principle": "p.capability_not_enum",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "cpp",
+     "python",
+     "kotlin",
+     "typescript"
+    ],
+    "pattern": "(provider|model|platform|backend)\\s*==\\s*[\"'][A-Za-z0-9_.-]+[\"']",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "Dispatch on a provider/platform name: ask can(resource, capability, constraints) instead",
+    "pl": "Rozgałęzienie po nazwie providera/platformy: zamiast tego can(resource, capability, constraints)"
+   }
+  },
+  {
+   "id": "chk.silent_except",
+   "principle": "p.errors_are_values",
+   "detector": "regex_block",
+   "params": {
+    "languages": [
+     "python"
+    ],
+    "pattern": "except(\\s+[A-Za-z_.]+)?\\s*:\\s*\\n\\s*pass\\b"
+   },
+   "message": {
+    "en": "Silent 'except: pass': log at least at debug level with exc_info",
+    "pl": "Ciche 'except: pass': co najmniej log.debug(..., exc_info=True)"
+   }
+  },
+  {
+   "id": "chk.nonatomic_json_write",
+   "principle": "p.atomic_writes",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python"
+    ],
+    "pattern": "json\\.dump\\(.*open\\(",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "JSON written in place: write to .tmp and rename",
+    "pl": "Zapis JSON w miejscu: zapisz do .tmp i zrób rename"
+   }
+  },
+  {
+   "id": "chk.telemetry_call",
+   "principle": "p.no_telemetry",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python",
+     "cpp",
+     "kotlin",
+     "typescript"
+    ],
+    "pattern": "(analytics|telemetry|tracking)\\.(send|track|log)\\(",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "Telemetry call: the default is no telemetry",
+    "pl": "Wywołanie telemetrii: domyślnie brak telemetrii"
+   }
+  },
+  {
+   "id": "chk.emoji_in_ui",
+   "principle": "p.pref.ascii_icons",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python",
+     "kotlin",
+     "typescript",
+     "cpp"
+    ],
+    "pattern": "[↻⚙✓✗✕☰★⬆⬇▶◀]",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "Emoji / pictograph in UI code: the owner's preference is ASCII icons (Pydroid renders them as boxes)",
+    "pl": "Emoji / piktogram w kodzie UI: preferencja właściciela to ikony ASCII (Pydroid pokazuje kwadraty)"
+   }
+  },
+  {
+   "id": "chk.placeholder",
+   "principle": "p.pref.no_placeholders",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python",
+     "cpp",
+     "kotlin",
+     "typescript"
+    ],
+    "pattern": "(placeholder|NotImplementedError|STUB:)",
+    "max_hits_per_file": 50
+   },
+   "message": {
+    "en": "Placeholder / stub in delivered code",
+    "pl": "Placeholder / zaślepka w dostarczonym kodzie"
+   }
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks16[] = {
     R"LOOMKB({
   "schema": "loom.kb.thresholds/1",
   "description": "Numeric policy for every area. Changing a value changes the pack hash, so every dependent stage recomputes deterministically. Values here are priors; the learning track fits candidates on the dev corpus and promotes them only without regression on holdout.",
@@ -3221,7 +9934,7 @@ const char* const kPackChunks15[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks16[] = {
+const char* const kPackChunks17[] = {
     R"LOOMKB({
   "schema": "loom.kb.relevance/1",
   "description": "Catalog relevance model: score = sigmoid(bias + sum(weight_i * feature_i)). Features are computed in code (catalog.h); weights are data. Fitted offline on the dev corpus by logistic regression over loom_cat_decisions feature vectors -> candidate file -> promoted only without regression on holdout.",
@@ -3257,7 +9970,7 @@ const char* const kPackChunks16[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks17[] = {
+const char* const kPackChunks18[] = {
     R"LOOMKB({
   "schema": "loom.kb.selection_rules/1",
   "description": "Default selection rules. Precedence (fixed, in code): 1. user pin/exclude (loom_cat_decisions with decided_by='user'); 2. these rules in order, first match wins; 3. label default (relevant -> include, candidate -> review, irrelevant -> exclude). Match keys: label, project, title_regex, date_from, date_to, file_glob, score_min, score_max, lang, min_chars, max_chars. Actions: include | exclude | review.",
@@ -3268,7 +9981,7 @@ const char* const kPackChunks17[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks18[] = {
+const char* const kPackChunks19[] = {
     R"LOOMKB({
   "schema": "loom.kb.calibration/1",
   "description": "Confidence calibration. raw = unit-deduplicated noisy-OR: 1 - prod_units(1 - r_source * q), where r_source is the Beta mean of the extractor/rule reliability below and q the match quality; evidence from one conversation counts once. Final confidence = isotonic map of raw for the evidence class (monotone piecewise-linear, points sorted by x). Priors are hand-set until the dev ground truth exists; `loom kb calibrate` fits candidates (isotonic only when n >= min_labels per class) and promotion requires ECE <= gates.ece on holdout.",
@@ -3297,456 +10010,7142 @@ const char* const kPackChunks18[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks19[] = {
-    R"LOOMKB({
-  "schema": "loom.kb.evidence_encoding/1",
-  "description": "The visual evidence language shared by every UI (web, Android, CLI, Markdown). Each meaning is carried by an independent, redundant channel (shape, outline, fill pattern, glyph AND hue) so it survives colour blindness, greyscale and small screens. Hues are Okabe-Ito. Clients never hard-code semantics: the API returns a style_key per element (see 'style_key') and clients render it from this file (GET /api/kb/policy/evidence_encoding, loom_kb_policy).",
-  "version": 1,
-  "channels": {
-    "evidence": "outline + fill pattern + glyph",
-    "confidence": "fill opacity (quantized)",
-    "status": "hue + glyph badge",
-    "kind": "shape",
-    "conflict": "split ring + badge",
-    "check_state": "badge on inferred values",
-    "relation_category": "edge dash",
-    "support": "edge width"
-  },
-  "evidence": {
-    "observed": {
-      "gt": "observed", "outline": {"style": "solid", "width": 2}, "fill": "solid", "glyph": "■", "cli": "■", "badge": null,
-      "markdown": "**{value}**", "label": {"en": "observed in a source", "pl": "zaobserwowane w źródle"}
-    },
-    "derived": {
-      "gt": "observed", "outline": {"style": "solid", "width": 1}, "fill": "solid", "glyph": "□", "cli": "□", "badge": "ƒ",
-      "markdown": "**{value}** ƒ", "label": {"en": "derived deterministically from observed values", "pl": "wyprowadzone deterministycznie z obserwacji"}
-    },
-    "inferred": {
-      "gt": "inferable", "outline": {"style": "dashed", "width": 1.5, "dash": [6, 3]}, "fill": "solid", "glyph": "◌", "cli": "◌", "badge": "≈",
-      "markdown": "_{value}_ (inferred ~{confidence}; expected: {expected_property})",
-      "subtitle": "expected: {expected_property}",
-      "label": {"en": "inferred: a checkable prediction with an expected property", "pl": "wywnioskowane: sprawdzalna predykcja z oczekiwaną własnością"}
-    },
-    "extrapolated": {
-      "gt": null, "outline": {"style": "dotted", "width": 1.5, "dash": [2, 3]}, "fill": "hatch", "hatch": {"angle": 45, "spacing": 6}, "glyph": "░", "cli": "░", "badge": "proposal",
-      "markdown": "⟨{value}?⟩ (proposal, basis: {basis})",
-      "max_opacity": 0.5,
-      "label": {"en": "proposal extrapolated from the coding philosophy — not a fact", "pl": "propozycja ekstrapolowana z filozofii kodowania — nie fakt"}
-    },
-    "absent": {
-      "gt": "absent", "outline": {"style": "dashdot", "width": 1, "dash": [6, 2, 1, 2]}, "fill": "none", "glyph": "·", "cli": "·", "badge": "?",
-      "markdown": "∅ (what would fill it: {query})",
-      "label": {"en": "no evidence; shows what would fill it", "pl": "brak dowodów; pokazuje, co by to uzupełniło"}
-    },
-    "user": {
-      "gt": "observed", "outline": {"style": "double", "width": 3}, "fill": "solid", "glyph": "▣", "cli": "▣", "badge": "user",
-      "markdown": "**{value}** (confirmed by you)", "label": {"en": "asserted or confirmed by the user (always wins)", "pl": "potwierdzone lub ustawione przez użytkownika (zawsze wygrywa)"}
-    }
-  },
-  "confidence": {
-    "bins": [
-      {"lt": 0.5, "opacity": 0.35, "cli": "▁", "label": "low"},
-      {"lt": 0.7, "opacity": 0.55, "cli": "▃", "label": "medium"},
-      {"lt": 0.9, "opacity": 0.75, "cli": "▅", "label": "high"},
-      {"lt": 1.01, "opacity": 1.0, "cli": "▇", "label": "very high"}
-    ],
-    "min_opacity": 0.35,
-    "exact_on_hover": true,
-    "note": "Opacity encodes CALIBRATED confidence (policy/calibration.json); it is only meaningful while the evaluation's ECE gate holds."
-  },
-  "conflict": {"ring": "split", "badge": "⚡{n}", "edge": "zigzag", "cli": "⚡", "markdown": "⚠ {a} | {b}",
-               "label": {"en": "conflicting evidence: both values shown", "pl": "sprzeczne dowody: pokazane obie wartości"}},
-  "check_state": {
-    "pending": {"badge": "…", "cli": "…", "label": {"en": "expected property not yet checked", "pl": "własność jeszcze niesprawdzona"}},
-    "holds": {"badge": "✓", "cli": "✓", "label": {"en": "expected property holds on later evidence", "pl": "oczekiwana własność potwierdzona"}},
-    "violated": {"badge": "✗", "cli": "✗", "label": {"en": "expected property violated: value contested", "pl": "oczekiwana własność naruszona: wartość sporna"}},
-    "n/a": {"badge": null, "cli": " ", "label": {"en": "no expected property", "pl": "brak oczekiwanej własności"}}
-  },
-  "status": {
-    "implemented": {"hue": "#009E73", "glyph": "✓", "label": {"en": "implemented", "pl": "zaimplementowane"}},
-    "partial": {"hue": "#E69F00", "glyph": "◐", "label": {"en": "partial", "pl": "częściowe"}},
-    "planned": {"hue": "#56B4E9", "glyph": "○", "label": {"en": "planned", "pl": "planowane"}},
-    "superseded": {"hue": "#CC79A7", "glyph": "↻", "label": {"en": "superseded", "pl": "zastąpione"}},
-    "abandoned": {"hue": "#999999", "glyph": "✕", "strike": true, "label": {"en": "abandoned", "pl": "porzucone"}},
-    "active": {"hue": "#0072B2", "glyph": "●", "label": {"en": "active", "pl": "aktywny"}},
-    "paused": {"hue": "#F0E442", "glyph": "‖", "label": {"en": "paused", "pl": "wstrzymany"}},
-    "merged": {"hue": "#D55E00", "glyph": "⤳", "label": {"en": "merged into another project", "pl": "scalony z innym projektem"}},
-    "unknown": {"hue": "#7F7F7F", "glyph": "?", "label": {"en": "unknown", "pl": "nieznany"}}
-  },
-  "kind": {
-    "project": {"shape": "roundrect", "size": 3},
-    "version": {"shape": "pill", "size": 1.5},
-    "component": {"shape": "rect", "size": 2},
-    "stage": {"shape": "rect", "size": 2},
-    "role": {"shape": "rect", "size": 1.5},
-    "repo": {"shape": "rect", "size": 2},
-    "concept": {"shape": "ellipse", "size": 1.5},
-    "topic": {"shape": "ellipse", "size": 2},
-    "platform": {"shape": "ellipse", "size": 1.2},
-    "language": {"shape": "ellipse", "size": 1.2},
-    "ui_framework": {"shape": "ellipse", "size": 1.2},
-    "storage": {"shape": "ellipse", "size": 1.2},
-    "sync": {"shape": "ellipse", "size": 1.2},
-    "protocol": {"shape": "ellipse", "size": 1.2},
-    "format": {"shape": "ellipse", "size": 1.2},
-    "tool": {"shape": "ellipse", "size": 1.2},
-    "option": {"shape": "ellipse", "size": 1},
-    "principle": {"shape": "hexagon", "size": 2},
-    "invariant": {"shape": "hexagon", "size": 1.5},
-    "decision": {"shape": "flag", "size": 1.5},
-    "requirement": {"shape": "flag", "size": 1.2},
-    "fork": {"shape": "fork", "glyph": "Y", "size": 1.5},
-    "open_question": {"shape": "circle", "glyph": "?", "size": 1.2},
-    "evidence": {"shape": "dot", "size": 0.5}
-  },
-  "relation_category": {
-    "structural": {"dash": "solid"},
-    "semantic": {"dash": "longdash", "dash_pattern": [8, 4]},
-    "temporal": {"dash": "solid", "arrow": true},
-    "provenance": {"dash": "thin", "width": 0.5, "hue": "#AAAAAA"},
-    "custom": {"dash": "dotted", "dash_pattern": [2, 3]}
-  },
-  "edge_width": {"formula": "log2(1 + support)", "min": 1, "max": 6},
-  "badges": {
-    "archive_only": {"shape": "corner_notch", "text": "archive", "label": {"en": "version exists only in the archives, not in git", "pl": "wersja tylko w archiwach, nie w git"}},
-    "fork_chosen": {"glyph": "Y", "opacity": 1.0},
-    "fork_abandoned": {"glyph": "Y✕", "opacity": 0.35},
-    "seed_only": {"text": "seed", "label": {"en": "seed principle not (yet) found in the corpus", "pl": "zasada startowa, jeszcze nie znaleziona w korpusie"}},
-    "candidate": {"text": "new", "label": {"en": "discovered, unconfirmed", "pl": "odkryte, niepotwierdzone"}}
-  },
-  "style_key": {
-    "format": "{kind}|{status}|{evidence}|{conf_bin}|{flags}",
-    "flags": ["conflict", "archive_only", "violated", "seed_only", "candidate", "hidden_children"],
-    "note": "conf_bin is the index into confidence.bins; flags are joined with '+', empty when none"
-  },
-  "legend_order": ["observed", "derived", "inferred", "extrapolated", "absent", "user"]
-}
-)LOOMKB",
-    nullptr};
 const char* const kPackChunks20[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "multiplatform_app",
-  "version": 1,
-  "gt_paradigm": "multiplatform_app",
-  "title": {"en": "Multi-platform application", "pl": "Aplikacja wieloplatformowa"},
-  "description": "A user-facing application with one core that runs on two or more platforms (desktop, Android, web, ...). The root is a project entity.",
-  "subject_kind": "project",
-  "anchors": {
-    "any": [
-      {"op": "fact_count", "rel": "targets_platform", "min": 2},
-      {"op": "kind_hint", "value": "multiplatform_app"},
-      {"op": "cue", "class": "paradigm.multiplatform_app", "min": 1}
-    ],
-    "min_score": 0.45
+ "schema": "loom.kb.evidence_encoding/1",
+ "description": "The visual evidence language shared by every UI (web, Android, CLI, Markdown). Each meaning is carried by an independent, redundant channel (shape, outline, fill pattern, glyph AND hue) so it survives colour blindness, greyscale and small screens. Hues are Okabe-Ito. Clients never hard-code semantics: the API returns a style_key per element (see 'style_key') and clients render it from this file (GET /api/kb/policy/evidence_encoding, loom_kb_policy).",
+ "version": 2,
+ "channels": {
+  "evidence": "outline + fill pattern + glyph",
+  "origin": "corner badge + halo (model_knowledge: dotted halo and a 'general knowledge' badge, visibly distinct from the owner's sources)",
+  "confidence": "fill opacity (quantized)",
+  "status": "hue + glyph badge (+ oscillation badge)",
+  "role": "shape (one per universal role)",
+  "kind": "optional shape override",
+  "conflict": "split ring + badge",
+  "check_state": "badge on inferred values",
+  "relation_category": "edge dash",
+  "support": "edge width"
+ },
+ "evidence": {
+  "observed": {
+   "gt": "observed",
+   "outline": {
+    "style": "solid",
+    "width": 2
+   },
+   "fill": "solid",
+   "glyph": "■",
+   "cli": "■",
+   "badge": null,
+   "markdown": "**{value}**",
+   "label": {
+    "en": "observed in a source",
+    "pl": "zaobserwowane w źródle"
+   }
   },
-  "slots": [
-    {"name": "name", "type": "string", "card": "one", "required": true, "weight": 1,
-     "bind": [{"kind": "subject", "field": "label"}]},
-    {"name": "purpose", "type": "text", "card": "one", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "has_purpose", "field": "value"}, {"kind": "items", "type": "idea", "scope": "subject", "pick": "earliest"}]},
-    {"name": "platforms", "type": "entity:platform", "card": "many", "required": true, "weight": 2,
-     "bind": [{"kind": "fact", "rel": "targets_platform"}, {"kind": "fact", "rel": "targets_platform", "via": "has_component"}, {"kind": "lexicon", "class": "platform", "scope": "subject_sentences"}],
-     "infer": ["r.platforms_from_codebase"]},
-    {"name": "core_language", "type": "entity:language", "card": "one", "required": true, "weight": 2,
-     "bind": [{"kind": "fact", "rel": "written_in"}, {"kind": "codebase", "field": "dominant_language"}],
-     "infer": ["r.core_language_from_codebase"]},
-    {"name": "ui_framework", "type": "entity:ui_framework", "card": "many", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "uses_ui_framework"}, {"kind": "lexicon", "class": "ui_framework", "scope": "subject_sentences"}]},
-    {"name": "storage", "type": "entity:storage", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "fact", "rel": "stores_in"}, {"kind": "lexicon", "class": "storage", "scope": "subject_sentences"}],
-     "infer": ["r.storage_local_first"]},
-    {"name": "sync", "type": "entity:sync", "card": "many", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "syncs_via"}, {"kind": "lexicon", "class": "sync", "scope": "subject_sentences"}],
-     "extrapolate": ["x.sync_transport_adapters"]},
-    {"name": "architecture_principles", "type": "principle[]", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "principles", "applies_to": "subject", "min_support": 1}]},
-    {"name": "modules", "type": "entity:component", "card": "many", "required": true, "weight": 2,
-     "bind": [{"kind": "fact", "rel": "has_component"}, {"kind": "codebase", "field": "modules"}]},
-    {"name": "current_version", "type": "version", "card": "one", "required": true, "weight": 1,
-     "bind": [{"kind": "slot", "paradigm": "version_history", "slot": "versions", "path": "max_version"}],
-     "infer": ["r.current_version"]},
-    {"name": "status", "type": "enum:project_status", "card": "one", "required": true, "weight": 1,
-     "infer": ["r.project_status"]},
-    {"name": "lineage", "type": "entity:project", "card": "many", "weight": 0.5,
-     "bind": [{"kind": "fact", "rel": "evolved_into", "dir": "in"}, {"kind": "fact", "rel": "merged_into", "dir": "in"}]}
+  "derived": {
+   "gt": "observed",
+   "outline": {
+    "style": "solid",
+    "width": 1
+   },
+   "fill": "solid",
+   "glyph": "□",
+   "cli": "□",
+   "badge": "ƒ",
+   "markdown": "**{value}** ƒ",
+   "label": {
+    "en": "derived deterministically from observed values",
+    "pl": "wyprowadzone deterministycznie z obserwacji"
+   }
+  },
+  "inferred": {
+   "gt": "inferable",
+   "outline": {
+    "style": "dashed",
+    "width": 1.5,
+    "dash": [
+     6,
+     3
+    ]
+   },
+   "fill": "solid",
+   "glyph": "◌",
+   "cli": "◌",
+   "badge": "≈",
+   "markdown": "_{value}_ (inferred ~{confidence}; expected: {expected_property})",
+   "subtitle": "expected: {expected_property}",
+   "label": {
+    "en": "inferred: a checkable prediction with an expected property",
+    "pl": "wywnioskowane: sprawdzalna predykcja z oczekiwaną własnością"
+   }
+  },
+  "extrapolated": {
+   "gt": null,
+   "outline": {
+    "style": "dotted",
+    "width": 1.5,
+    "dash": [
+     2,
+     3
+    ]
+   },
+   "fill": "hatch",
+   "hatch": {
+    "angle": 45,
+    "spacing": 6
+   },
+   "glyph": "░",
+   "cli": "░",
+   "badge": "proposal",
+   "markdown": "⟨{value}?⟩ (proposal, basis: {basis})",
+   "max_opacity": 0.5,
+   "label": {
+    "en": "proposal extrapolated from the coding philosophy — not a fact",
+    "pl": "propozycja ekstrapolowana z filozofii kodowania — nie fakt"
+   }
+  },
+  "absent": {
+   "gt": "absent",
+   "outline": {
+    "style": "dashdot",
+    "width": 1,
+    "dash": [
+     6,
+     2,
+     1,
+     2
+    ]
+   },
+   "fill": "none",
+   "glyph": "·",
+   "cli": "·",
+   "badge": "?",
+   "markdown": "∅ (what would fill it: {query})",
+   "label": {
+    "en": "no evidence; shows what would fill it",
+    "pl": "brak dowodów; pokazuje, co by to uzupełniło"
+   }
+  },
+  "user": {
+   "gt": "observed",
+   "outline": {
+    "style": "double",
+    "width": 3
+   },
+   "fill": "solid",
+   "glyph": "▣",
+   "cli": "▣",
+   "badge": "user",
+   "markdown": "**{value}** (confirmed by you)",
+   "label": {
+    "en": "asserted or confirmed by the user (always wins)",
+    "pl": "potwierdzone lub ustawione przez użytkownika (zawsze wygrywa)"
+   }
+  }
+ },
+ "confidence": {
+  "bins": [
+   {
+    "lt": 0.5,
+    "opacity": 0.35,
+    "cli": "▁",
+    "label": "low"
+   },
+   {
+    "lt": 0.7,
+    "opacity": 0.55,
+    "cli": "▃",
+    "label": "medium"
+   },
+   {
+    "lt": 0.9,
+    "opacity": 0.75,
+    "cli": "▅",
+    "label": "high"
+   },
+   {
+    "lt": 1.01,
+    "opacity": 1.0,
+    "cli": "▇",
+    "label": "very high"
+   }
   ],
-  "constraints": [
-    {"id": "mpa.c1", "expr": {"op": "not_in", "args": ["$slot:storage", "$rejected_values"]}, "on_violation": "conflict",
-     "why": "a storage option that an active decision rejected cannot be the current storage"},
-    {"id": "mpa.c2", "expr": {"op": "version_gte", "args": ["$slot:current_version", "$git_max_version"]}, "on_violation": "conflict",
-     "why": "the current version is never older than the newest tagged/committed version"}
+  "min_opacity": 0.35,
+  "exact_on_hover": true,
+  "note": "Opacity encodes CALIBRATED confidence (policy/calibration.json); it is only meaningful while the evaluation's ECE gate holds."
+ },
+ "conflict": {
+  "ring": "split",
+  "badge": "⚡{n}",
+  "edge": "zigzag",
+  "cli": "⚡",
+  "markdown": "⚠ {a} | {b}",
+  "label": {
+   "en": "conflicting evidence: both values shown",
+   "pl": "sprzeczne dowody: pokazane obie wartości"
+  }
+ },
+ "check_state": {
+  "pending": {
+   "badge": "…",
+   "cli": "…",
+   "label": {
+    "en": "expected property not yet checked",
+    "pl": "własność jeszcze niesprawdzona"
+   }
+  },
+  "holds": {
+   "badge": "✓",
+   "cli": "✓",
+   "label": {
+    "en": "expected property holds on later evidence",
+    "pl": "oczekiwana własność potwierdzona"
+   }
+  },
+  "violated": {
+   "badge": "✗",
+   "cli": "✗",
+   "label": {
+    "en": "expected property violated: value contested",
+    "pl": "oczekiwana własność naruszona: wartość sporna"
+   }
+  },
+  "n/a": {
+   "badge": null,
+   "cli": " ",
+   "label": {
+    "en": "no expected property",
+    "pl": "brak oczekiwanej własności"
+   }
+  }
+ },
+ "status": {
+  "implemented": {
+   "hue": "#009E73",
+   "glyph": "✓",
+   "label": {
+    "en": "implemented",
+    "pl": "zaimplementowane"
+   }
+  },
+  "partial": {
+   "hue": "#E69F00",
+   "glyph": "◐",
+   "label": {
+    "en": "partial",
+    "pl": "częściowe"
+   }
+  },
+  "planned": {
+   "hue": "#56B4E9",
+   "glyph": "○",
+   "label": {
+    "en": "planned",
+    "pl": "planowane"
+   }
+  },
+  "superseded": {
+   "hue": "#CC79A7",
+   "glyph": "↻",
+   "label": {
+    "en": "superseded",
+    "pl": "zastąpione"
+   }
+  },
+  "abandoned": {
+   "hue": "#999999",
+   "glyph": "✕",
+   "strike": true,
+   "label": {
+    "en": "abandoned",
+    "pl": "porzucone"
+   }
+  },
+  "active": {
+   "hue": "#0072B2",
+   "glyph": "●",
+   "label": {
+    "en": "active",
+    "pl": "aktywny"
+   }
+  },
+  "paused": {
+   "hue": "#F0E442",
+   "glyph": "‖",
+   "label": {
+    "en": "paused",
+    "pl": "wstrzymany"
+   }
+  },
+  "merged": {
+   "hue": "#D55E00",
+   "glyph": "⤳",
+   "label": {
+    "en": "merged into another project",
+    "pl": "scalony z innym projektem"
+   }
+  },
+  "unknown": {
+   "hue": "#7F7F7F",
+   "glyph": "?",
+   "label": {
+    "en": "unknown",
+    "pl": "nieznany"
+   }
+  },
+  "lost": {
+   "hue": "#D55E00",
+   "glyph": "⌀",
+   "label": {
+    "en": "lost (existed, then disappeared)",
+    "pl": "utracone (było, zniknęło)"
+   }
+  },
+  "restored": {
+   "hue": "#009E73",
+   "glyph": "↺",
+   "label": {
+    "en": "restored after being lost",
+    "pl": "przywrócone po utracie"
+   }
+  }
+ },
+ "relation_category": {
+  "structural": {
+   "dash": "solid"
+  },
+  "semantic": {
+   "dash": "longdash",
+   "dash_pattern": [
+    8,
+    4
+   ]
+  },
+  "temporal": {
+   "dash": "solid",
+   "arrow": true
+  },
+  "provenance": {
+   "dash": "thin",
+   "width": 0.5,
+   "hue": "#AAAAAA"
+  },
+  "custom": {
+   "dash": "dotted",
+   "dash_pattern": [
+    2,
+    3
+   ]
+  }
+ },
+ "edge_width": {
+  "formula": "log2(1 + support)",
+  "min": 1,
+  "max": 6
+ },
+ "badges": {
+  "archive_only": {
+   "shape": "corner_notch",
+   "text": "archive",
+   "label": {
+    "en": "version exists only in the archives, not in git",
+    "pl": "wersja tylko w archiwach, nie w git"
+   }
+  },
+  "fork_chosen": {
+   "glyph": "Y",
+   "opacity": 1.0
+  },
+  "fork_abandoned": {
+   "glyph": "Y✕",
+   "opacity": 0.35
+  },
+  "seed_only": {
+   "text": "seed",
+   "label": {
+    "en": "seed principle not (yet) found in the corpus",
+    "pl": "zasada startowa, jeszcze nie znaleziona w korpusie"
+   }
+  },
+  "candidate": {
+   "text": "new",
+   "label": {
+    "en": "discovered, unconfirmed",
+    "pl": "odkryte, niepotwierdzone"
+   }
+  },
+  "oscillation": {
+   "glyph": "↯",
+   "text": "oscillates",
+   "label": {
+    "en": "lost and restored more than once on this branch",
+    "pl": "tracone i przywracane więcej niż raz w tej gałęzi"
+   }
+  },
+  "lost_again": {
+   "glyph": "⌀↯",
+   "text": "lost again",
+   "label": {
+    "en": "lost again after a restorati)LOOMKB",
+    R"LOOMKB(on",
+    "pl": "utracone ponownie po przywróceniu"
+   }
+  },
+  "transferred": {
+   "glyph": "⇄",
+   "text": "by analogy",
+   "label": {
+    "en": "inferred by a transfer morphism from an analogous project (depth 1)",
+    "pl": "wywnioskowane przez analogię z innego projektu (głębokość 1)"
+   }
+  }
+ },
+ "style_key": {
+  "format": "{role}|{kind}|{status}|{evidence}|{origin}|{conf_bin}|{flags}",
+  "flags": [
+   "conflict",
+   "archive_only",
+   "violated",
+   "seed_only",
+   "candidate",
+   "hidden_children",
+   "oscillation",
+   "lost_again",
+   "transferred"
   ],
-  "render": {"title_slot": "name", "order": ["name", "purpose", "status", "current_version", "platforms", "core_language", "ui_framework", "storage", "sync", "modules", "architecture_principles", "lineage"]}
+  "note": "role is '' for temporal slots and non-role objects; conf_bin is the index into confidence.bins; flags are joined with '+', empty when none"
+ },
+ "legend_order": [
+  "observed",
+  "derived",
+  "inferred",
+  "extrapolated",
+  "absent",
+  "user"
+ ],
+ "origin": {
+  "archive": {
+   "badge": null,
+   "halo": "none",
+   "cli": "",
+   "markdown": "",
+   "label": {
+    "en": "the owner's archives",
+    "pl": "archiwa właściciela"
+   }
+  },
+  "repo": {
+   "badge": "</>",
+   "halo": "none",
+   "cli": "⌥",
+   "markdown": " (repo)",
+   "label": {
+    "en": "code and git history",
+    "pl": "kod i historia git"
+   }
+  },
+  "user": {
+   "badge": "you",
+   "halo": "solid",
+   "cli": "@",
+   "markdown": " (you)",
+   "label": {
+    "en": "stated by you now",
+    "pl": "podane przez ciebie teraz"
+   }
+  },
+  "external_authority": {
+   "badge": "§",
+   "halo": "double",
+   "cli": "§",
+   "markdown": " (§ authority)",
+   "label": {
+    "en": "statute / standard / official document",
+    "pl": "ustawa / norma / dokument urzędowy"
+   }
+  },
+  "model_knowledge": {
+   "badge": "general knowledge",
+   "halo": "dotted",
+   "hue": "#8E44AD",
+   "cli": "≋",
+   "markdown": " (general knowledge, not your sources)",
+   "label": {
+    "en": "general knowledge of a language model: ranked below your sources",
+    "pl": "wiedza ogólna modelu językowego: poniżej twoich źródeł"
+   }
+  },
+  "system": {
+   "badge": "ƒ",
+   "halo": "none",
+   "cli": "ƒ",
+   "markdown": " (computed)",
+   "label": {
+    "en": "computed by Loom",
+    "pl": "wyliczone przez Loom"
+   }
+  }
+ },
+ "role": {
+  "intent": {
+   "shape": "star",
+   "size": 2
+  },
+  "constraint": {
+   "shape": "hexagon",
+   "size": 1.5
+  },
+  "part": {
+   "shape": "rect",
+   "size": 2
+  },
+  "actor": {
+   "shape": "person",
+   "size": 1.5
+  },
+  "resource": {
+   "shape": "cylinder",
+   "size": 1.2
+  },
+  "interface": {
+   "shape": "diamond",
+   "size": 1.2
+  },
+  "flow": {
+   "shape": "arrow",
+   "size": 1.2
+  },
+  "event": {
+   "shape": "pill",
+   "size": 1.2
+  },
+  "artifact": {
+   "shape": "document",
+   "size": 1.5
+  },
+  "transformation": {
+   "shape": "gear",
+   "size": 1.5
+  },
+  "check": {
+   "shape": "shield",
+   "size": 1.2
+  },
+  "output": {
+   "shape": "roundrect",
+   "size": 2
+  },
+  "decision": {
+   "shape": "flag",
+   "size": 1.5
+  },
+  "question": {
+   "shape": "circle",
+   "glyph": "?",
+   "size": 1.2
+  }
+ },
+ "kind": {
+  "project": {
+   "shape": "roundrect",
+   "size": 3
+  },
+  "version": {
+   "shape": "pill",
+   "size": 1.5
+  },
+  "component": {
+   "shape": "rect",
+   "size": 2
+  },
+  "stage": {
+   "shape": "rect",
+   "size": 2
+  },
+  "role": {
+   "shape": "rect",
+   "size": 1.5
+  },
+  "repo": {
+   "shape": "rect",
+   "size": 2
+  },
+  "concept": {
+   "shape": "ellipse",
+   "size": 1.5
+  },
+  "topic": {
+   "shape": "ellipse",
+   "size": 2
+  },
+  "platform": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "language": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "ui_framework": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "storage": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "sync": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "protocol": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "format": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "tool": {
+   "shape": "ellipse",
+   "size": 1.2
+  },
+  "option": {
+   "shape": "ellipse",
+   "size": 1
+  },
+  "principle": {
+   "shape": "hexagon",
+   "size": 2
+  },
+  "invariant": {
+   "shape": "hexagon",
+   "size": 1.5
+  },
+  "decision": {
+   "shape": "flag",
+   "size": 1.5
+  },
+  "requirement": {
+   "shape": "flag",
+   "size": 1.2
+  },
+  "fork": {
+   "shape": "fork",
+   "glyph": "Y",
+   "size": 1.5
+  },
+  "open_question": {
+   "shape": "circle",
+   "glyph": "?",
+   "size": 1.2
+  },
+  "evidence": {
+   "shape": "dot",
+   "size": 0.5
+  }
+ }
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks21[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "pipeline",
-  "version": 1,
-  "gt_paradigm": "pipeline",
-  "title": {"en": "Processing pipeline", "pl": "Potok przetwarzania"},
-  "description": "An ordered chain of stages that turns inputs into outputs (archive analyzer, video pipeline, import pipeline). The root is a project or component entity.",
-  "subject_kind": "project|component",
-  "anchors": {
-    "any": [
-      {"op": "fact_count", "rel": "has_stage", "min": 2},
-      {"op": "kind_hint", "value": "pipeline"},
-      {"op": "cue", "class": "paradigm.pipeline", "min": 2}
+ "schema": "loom.kb.goal_types/1",
+ "description": "Goal types (LOOM_CONCEPTUAL_MODEL §4): what a prompt or task wants. Each declares the relevant roles (most important first), principle levels and evidence classes, the default resolution per role ('*' = any other role), and the token-budget split over the three bands (stable prefix -> project context -> goal tail; shares sum to 1). The context engine types a prompt by its cues and targets (R12).",
+ "goal_types": [
+  {
+   "id": "implement_part",
+   "labels": {
+    "en": "Implement a part",
+    "pl": "Zaimplementuj część"
+   },
+   "description": "write or change a module / component / feature",
+   "cues": {
+    "en": [
+     "implement",
+     "add",
+     "fix",
+     "refactor"
     ],
-    "min_score": 0.4
+    "pl": [
+     "zaimplementuj",
+     "dodaj",
+     "napraw",
+     "przepisz"
+    ]
+   },
+   "roles": [
+    "part",
+    "interface",
+    "constraint",
+    "check",
+    "resource",
+    "decision",
+    "artifact"
+   ],
+   "principle_levels": [
+    "strategy",
+    "epistemic"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "part": "full",
+    "interface": "full",
+    "constraint": "summary",
+    "check": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.15,
+    "project": 0.25,
+    "goal": 0.6
+   }
   },
-  "slots": [
-    {"name": "name", "type": "string", "card": "one", "required": true, "weight": 1,
-     "bind": [{"kind": "subject", "field": "label"}]},
-    {"name": "purpose", "type": "text", "card": "one", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "has_purpose", "field": "value"}, {"kind": "items", "type": "idea", "scope": "subject", "pick": "earliest"}]},
-    {"name": "stages", "type": "entity:stage", "card": "list", "required": true, "weight": 3,
-     "bind": [{"kind": "fact", "rel": "has_stage"}, {"kind": "enumeration", "scope": "subject_sentences", "shape": "chain"}],
-     "infer": ["r.pipeline_stage_order"]},
-    {"name": "inputs", "type": "entity:format", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "fact", "rel": "has_input"}, {"kind": "lexicon", "class": "format", "scope": "subject_sentences"}]},
-    {"name": "outputs", "type": "entity:format", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "fact", "rel": "has_output"}]},
-    {"name": "tools", "type": "entity:tool", "card": "many", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "uses_tool"}, {"kind": "lexicon", "class": "tool", "scope": "subject_sentences"}]},
-    {"name": "storage", "type": "entity:storage", "card": "many", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "stores_in"}, {"kind": "lexicon", "class": "storage", "scope": "subject_sentences"}],
-     "infer": ["r.storage_local_first"]},
-    {"name": "status", "type": "enum:project_status", "card": "one", "required": true, "weight": 1,
-     "infer": ["r.project_status"]},
-    {"name": "checkpointing", "type": "text", "card": "one", "weight": 0.5,
-     "bind": [{"kind": "lexicon", "class": "concept.resumability", "scope": "subject_sentences"}],
-     "extrapolate": ["x.pipeline_resumable_stages"]}
-  ],
-  "constraints": [
-    {"id": "pipe.c1", "expr": {"op": "nonempty", "args": ["$slot:stages"]}, "on_violation": "reject_instance",
-     "why": "a pipeline without at least one stage is not a pipeline"}
-  ],
-  "render": {"title_slot": "name", "order": ["name", "purpose", "status", "stages", "inputs", "outputs", "tools", "storage", "checkpointing"]}
+  {
+   "id": "write_artifact",
+   "labels": {
+    "en": "Write an artifact",
+    "pl": "Napisz artefakt"
+   },
+   "description": "produce a document of the project's kind (spec, pleading, screenplay, letter)",
+   "cues": {
+    "en": [
+     "write",
+     "draft"
+    ],
+    "pl": [
+     "napisz",
+     "zredaguj",
+     "przygotuj pismo"
+    ]
+   },
+   "roles": [
+    "artifact",
+    "intent",
+    "constraint",
+    "part",
+    "resource",
+    "output"
+   ],
+   "principle_levels": [
+    "value",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "artifact": "full",
+    "constraint": "full",
+    "resource": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.2,
+    "project": 0.3,
+    "goal": 0.5
+   }
+  },
+  {
+   "id": "extend_scene",
+   "labels": {
+    "en": "Extend a scene / section",
+    "pl": "Rozwiń scenę / sekcję"
+   },
+   "description": "creative continuation of a part of a film or piece of music",
+   "cues": {
+    "en": [
+     "scene",
+     "continue",
+     "extend"
+    ],
+    "pl": [
+     "scena",
+     "rozwiń",
+     "dalej"
+    ]
+   },
+   "roles": [
+    "part",
+    "actor",
+    "flow",
+    "constraint",
+    "resource",
+    "event"
+   ],
+   "principle_levels": [
+    "value",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred",
+    "extrapolated"
+   ],
+   "resolutions": {
+    "part": "full",
+    "actor": "summary",
+    "flow": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.1,
+    "project": 0.3,
+    "goal": 0.6
+   }
+  },
+  {
+   "id": "verify_claim",
+   "labels": {
+    "en": "Verify a claim",
+    "pl": "Zweryfikuj twierdzenie"
+   },
+   "description": "check a claim against its evidence and counter-evidence",
+   "cues": {
+    "en": [
+     "is it true",
+     "verify",
+     "check"
+    ],
+    "pl": [
+     "czy to prawda",
+     "sprawdź",
+     "zweryfikuj"
+    ]
+   },
+   "roles": [
+    "check",
+    "resource",
+    "constraint",
+    "event",
+    "question"
+   ],
+   "principle_levels": [
+    "epistemic"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived"
+   ],
+   "resolutions": {
+    "resource": "raw",
+    "check": "full",
+    "constraint": "full",
+    "*": "summary"
+   },
+   "budget": {
+    "stable": 0.1,
+    "project": 0.2,
+    "goal": 0.7
+   }
+  },
+  {
+   "id": "compute_deadline",
+   "labels": {
+    "en": "Compute a deadline",
+    "pl": "Oblicz termin"
+   },
+   "description": "a procedural deadline from dated events and its legal basis (conservative)",
+   "cues": {
+    "en": [
+     "deadline",
+     "until when"
+    ],
+    "pl": [
+     "termin",
+     "do kiedy",
+     "ile dni"
+    ]
+   },
+   "roles": [
+    "event",
+    "constraint",
+    "part",
+    "resource"
+   ],
+   "principle_levels": [
+    "epistemic",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived"
+   ],
+   "resolutions": {
+    "event": "full",
+    "constraint": "raw",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.1,
+    "project": 0.2,
+    "goal": 0.7
+   }
+  },
+  {
+   "id": "brainstorm",
+   "labels": {
+    "en": "Brainstorm",
+    "pl": "Burza mózgów"
+   },
+   "description": "open exploration: options, areas, generalizations",
+   "cues": {
+    "en": [
+     "ideas",
+     "brainstorm",
+     "what if"
+    ],
+    "pl": [
+     "pomysły",
+     "burza mózgów",
+     "a gdyby"
+    ]
+   },
+   "roles": [
+    "intent",
+    "question",
+    "decision",
+    "part",
+    "constraint"
+   ],
+   "principle_levels": [
+    "value",
+    "epistemic",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred",
+    "extrapolated"
+   ],
+   "resolutions": {
+    "intent": "full",
+    "question": "full",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.2,
+    "project": 0.4,
+    "goal": 0.4
+   }
+  },
+  {
+   "id": "answer_question",
+   "labels": {
+    "en": "Answer a question",
+    "pl": "Odpowiedz na pytanie"
+   },
+   "description": "a question about the project or its history",
+   "cues": {
+    "en": [
+     "what",
+     "why",
+     "how",
+     "when"
+    ],
+    "pl": [
+     "co",
+     "dlaczego",
+     "jak",
+     "kiedy"
+    ]
+   },
+   "roles": [
+    "question",
+    "decision",
+    "part",
+    "event",
+    "intent"
+   ],
+   "principle_levels": [
+    "epistemic"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "question": "full",
+    "decision": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.15,
+    "project": 0.35,
+    "goal": 0.5
+   }
+  },
+  {
+   "id": "review_decision",
+   "labels": {
+    "en": "Review a decision",
+    "pl": "Przejrzyj decyzję"
+   },
+   "description": "re-examine a decision: alternatives, affected values, principles, constraints",
+   "cues": {
+    "en": [
+     "should we",
+     "decide",
+     "trade-off"
+    ],
+    "pl": [
+     "czy powinniśmy",
+     "decyzja",
+     "kompromis"
+    ]
+   },
+   "roles": [
+    "decision",
+    "constraint",
+    "intent",
+    "question",
+    "part"
+   ],
+   "principle_levels": [
+    "value",
+    "strategy"
+   ],
+   "evidence": [
+    "user",
+    "observed",
+    "derived",
+    "inferred"
+   ],
+   "resolutions": {
+    "decision": "full",
+    "constraint": "summary",
+    "*": "label"
+   },
+   "budget": {
+    "stable": 0.2,
+    "project": 0.3,
+    "goal": 0.5
+   }
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks22[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "brainstorm",
-  "version": 1,
-  "gt_paradigm": "brainstorm",
-  "title": {"en": "Brainstorm / option set", "pl": "Burza mózgów / zestaw opcji"},
-  "description": "A topic on which several options were put on the table; some were chosen, some rejected, some left open. Roots are fork entities (conversation branch forks, enumerated option lists, 'X zamiast Y' pairs).",
-  "subject_kind": "fork|topic",
-  "anchors": {
-    "any": [
-      {"op": "option_set", "min_options": 2},
-      {"op": "cue", "class": "paradigm.brainstorm", "min": 1}
-    ],
-    "min_score": 0.35
+ "schema": "loom.kb.anchoring/1",
+ "description": "The universal meta-model (LOOM_CONCEPTUAL_MODEL §3.4) as the codomain of every anchoring morphism. Each domain kind anchors on its role (the 'role' of the kind, one anchoring morphism per kind, derived in code: model::anchoring_morphisms). Each relation between domain kinds anchors on a role relation: relation_map[rel] = R, and the roles of its two ends must be in R.from and R.to. A domain relation not listed here, or linking roles R does not link, is a pack error.",
+ "role_relations": [
+  {
+   "id": "composes",
+   "from": [
+    "part",
+    "artifact",
+    "output"
+   ],
+   "to": [
+    "part",
+    "artifact",
+    "output"
+   ],
+   "labels": {
+    "en": "is a constituent of",
+    "pl": "jest częścią"
+   }
   },
-  "slots": [
-    {"name": "topic", "type": "string", "card": "one", "required": true, "weight": 1,
-     "bind": [{"kind": "subject", "field": "label"}]},
-    {"name": "options", "type": "entity:option", "card": "many", "required": true, "weight": 2,
-     "bind": [{"kind": "forks", "field": "options"}, {"kind": "fact", "rel": "alternative_of"}, {"kind": "enumeration", "scope": "subject_units", "shape": "options"}]},
-    {"name": "chosen", "type": "entity:option", "card": "one", "weight": 2,
-     "bind": [{"kind": "forks", "field": "chosen"}, {"kind": "fact", "rel": "chosen_over"}],
-     "infer": ["r.brainstorm_chosen_from_decision"]},
-    {"name": "rejected", "type": "entity:option", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "forks", "field": "abandoned"}, {"kind": "items", "type": "rejected_option", "scope": "topic"}],
-     "infer": ["r.brainstorm_rejected_complement"]},
-    {"name": "open_questions", "type": "text", "card": "many", "weight": 1,
-     "bind": [{"kind": "items", "type": "open_question", "scope": "topic"}]}
-  ],
-  "constraints": [
-    {"id": "bs.c1", "expr": {"op": "not_in", "args": ["$slot:chosen", "$slot:rejected"]}, "on_violation": "conflict",
-     "why": "an option cannot be both chosen and rejected; the later decision wins, the other is kept as a contradiction"},
-    {"id": "bs.c2", "expr": {"op": "subset_of", "args": ["$slot:rejected", "$slot:options"]}, "on_violation": "extend",
-     "why": "every rejected option is an option; missing ones are added to options"}
-  ],
-  "render": {"title_slot": "topic", "order": ["topic", "options", "chosen", "rejected", "open_questions"]}
+  {
+   "id": "uses",
+   "from": [
+    "part",
+    "actor",
+    "transformation",
+    "check",
+    "interface"
+   ],
+   "to": [
+    "resource",
+    "interface",
+    "artifact",
+    "actor"
+   ],
+   "labels": {
+    "en": "uses",
+    "pl": "używa"
+   }
+  },
+  {
+   "id": "connects",
+   "from": [
+    "interface"
+   ],
+   "to": [
+    "part",
+    "actor",
+    "resource"
+   ],
+   "labels": {
+    "en": "connects",
+    "pl": "łączy"
+   }
+  },
+  {
+   "id": "carries",
+   "from": [
+    "flow"
+   ],
+   "to": [
+    "part",
+    "actor",
+    "resource",
+    "event",
+    "output"
+   ],
+   "labels": {
+    "en": "moves through",
+    "pl": "przepływa przez"
+   }
+  },
+  {
+   "id": "verifies",
+   "from": [
+    "check"
+   ],
+   "to": [
+    "part",
+    "output",
+    "artifact",
+    "constraint",
+    "flow",
+    "event",
+    "resource",
+    "actor",
+    "transformation",
+    "question"
+   ],
+   "labels": {
+    "en": "verifies",
+    "pl": "weryfikuje"
+   }
+  },
+  {
+   "id": "constrains",
+   "from": [
+    "constraint"
+   ],
+   "to": [
+    "part",
+    "output",
+    "artifact",
+    "actor",
+    "flow",
+    "event",
+    "transformation",
+    "resource",
+    "interface"
+   ],
+   "labels": {
+    "en": "constrains",
+    "pl": "ogranicza"
+   }
+  },
+  {
+   "id": "serves",
+   "from": [
+    "part",
+    "output",
+    "decision"
+   ],
+   "to": [
+    "intent"
+   ],
+   "labels": {
+    "en": "serves",
+    "pl": "służy"
+   }
+  },
+  {
+   "id": "produces",
+   "from": [
+    "transformation"
+   ],
+   "to": [
+    "output",
+    "artifact"
+   ],
+   "labels": {
+    "en": "produces",
+    "pl": "wytwarza"
+   }
+  },
+  {
+   "id": "consumes",
+   "from": [
+    "transformation"
+   ],
+   "to": [
+    "artifact",
+    "resource"
+   ],
+   "labels": {
+    "en": "consumes",
+    "pl": "zużywa"
+   }
+  },
+  {
+   "id": "participates",
+   "from": [
+    "actor"
+   ],
+   "to": [
+    "part",
+    "event",
+    "flow",
+    "transformation"
+   ],
+   "labels": {
+    "en": "takes part in",
+    "pl": "uczestniczy w"
+   }
+  },
+  {
+   "id": "situated",
+   "from": [
+    "event"
+   ],
+   "to": [
+    "part",
+    "resource",
+    "flow"
+   ],
+   "labels": {
+    "en": "happens in",
+    "pl": "zachodzi w"
+   }
+  },
+  {
+   "id": "sequence",
+   "from": [
+    "event",
+    "part",
+    "flow",
+    "transformation"
+   ],
+   "to": [
+    "event",
+    "part",
+    "flow",
+    "transformation"
+   ],
+   "labels": {
+    "en": "comes before",
+    "pl": "poprzedza"
+   }
+  },
+  {
+   "id": "represents",
+   "from": [
+    "artifact"
+   ],
+   "to": [
+    "part",
+    "actor",
+    "event",
+    "intent",
+    "flow",
+    "resource",
+    "transformation"
+   ],
+   "labels": {
+    "en": "represents",
+    "pl": "przedstawia"
+   }
+  },
+  {
+   "id": "realizes",
+   "from": [
+    "artifact"
+   ],
+   "to": [
+    "part",
+    "interface",
+    "check",
+    "output",
+    "transformation"
+   ],
+   "labels": {
+    "en": "realizes",
+    "pl": "realizuje"
+   }
+  },
+  {
+   "id": "references",
+   "from": [
+    "artifact",
+    "check"
+   ],
+   "to": [
+    "constraint",
+    "resource",
+    "artifact"
+   ],
+   "labels": {
+    "en": "cites",
+    "pl": "powołuje się na"
+   }
+  },
+  {
+   "id": "evidences",
+   "from": [
+    "resource"
+   ],
+   "to": [
+    "part",
+    "question",
+    "decision",
+    "event",
+    "intent"
+   ],
+   "labels": {
+    "en": "is evidence for",
+    "pl": "jest dowodem na"
+   }
+  },
+  {
+   "id": "decides",
+   "from": [
+    "decision"
+   ],
+   "to": [
+    "intent",
+    "constraint",
+    "part",
+    "actor",
+    "resource",
+    "interface",
+    "flow",
+    "event",
+    "artifact",
+    "transformation",
+    "check",
+    "output",
+    "decision",
+    "question"
+   ],
+   "labels": {
+    "en": "decides about",
+    "pl": "rozstrzyga"
+   }
+  },
+  {
+   "id": "concerns",
+   "from": [
+    "question"
+   ],
+   "to": [
+    "intent",
+    "constraint",
+    "part",
+    "actor",
+    "resource",
+    "interface",
+    "flow",
+    "event",
+    "artifact",
+    "transformation",
+    "check",
+    "output",
+    "decision",
+    "question"
+   ],
+   "labels": {
+    "en": "concerns",
+    "pl": "dotyczy"
+   }
+  },
+  {
+   "id": "investigates",
+   "from": [
+    "part",
+    "check",
+    "transformation"
+   ],
+   "to": [
+    "question"
+   ],
+   "labels": {
+    "en": "investigates",
+    "pl": "bada"
+   }
+  },
+  {
+   "id": "answers",
+   "from": [
+    "output",
+    "decision",
+    "check"
+   ],
+   "to": [
+    "question"
+   ],
+   "labels": {
+    "en": "answers",
+    "pl": "odpowiada na"
+   }
+  },
+  {
+   "id": "responds",
+   "from": [
+    "artifact",
+    "event",
+    "output"
+   ],
+   "to": [
+    "event",
+    "artifact",
+    "output"
+   ],
+   "labels": {
+    "en": "responds to",
+    "pl": "odpowiada na"
+   }
+  }
+ ],
+ "relation_map": {
+  "part_of": "composes",
+  "uses": "uses",
+  "connects": "connects",
+  "flows_to": "carries",
+  "recurs_in": "carries",
+  "verifies": "verifies",
+  "constrains": "constrains",
+  "serves": "serves",
+  "produces": "produces",
+  "consumes": "consumes",
+  "participates_in": "participates",
+  "occurs_in": "situated",
+  "precedes": "sequence",
+  "depicts": "represents",
+  "implements": "realizes",
+  "cites": "references",
+  "evidences": "evidences",
+  "decides_about": "decides",
+  "concerns": "concerns",
+  "investigates": "investigates",
+  "answers": "answers",
+  "responds_to": "responds"
+ }
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks23[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "specification",
-  "version": 1,
-  "gt_paradigm": "specification",
-  "title": {"en": "Specification", "pl": "Specyfikacja"},
-  "description": "Requirements, invariants and interfaces stated for one subject (a project, a component or a topic), usually under spec-like headings.",
-  "subject_kind": "project|component|topic",
-  "anchors": {
-    "any": [
-      {"op": "has_items", "type": "requirement", "min": 3},
-      {"op": "has_items", "type": "invariant", "min": 1},
-      {"op": "cue", "class": "paradigm.specification", "min": 1}
+ "schema": "loom.kb.morphisms/1",
+ "description": "Transfer morphisms (LOOM_CONCEPTUAL_MODEL §3.6): structure-preserving maps between domain kinds of two paradigms that anchor on the same universal role. When one project fills a role that an analogous project leaves empty, the engine may infer (evidence inferred, depth 1, never chained) that the target should have it; the expected property says what is vouched for. Anchoring morphisms are not listed: they are one per domain kind, derived from its role.",
+ "morphisms": [
+  {
+   "id": "m.check.software_film",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "test"
+   },
+   "to": {
+    "paradigm": "film",
+    "kind": "continuity_check"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:continuity_check"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
     ],
-    "min_score": 0.4
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "both are checks over the parts (modules / scenes): a project that tests its parts should verify its scenes' continuity",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6 example"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R8"
+    }
+   ]
   },
-  "slots": [
-    {"name": "subject", "type": "string", "card": "one", "required": true, "weight": 1,
-     "bind": [{"kind": "subject", "field": "label"}]},
-    {"name": "requirements", "type": "text", "card": "many", "required": true, "weight": 2,
-     "bind": [{"kind": "items", "type": "requirement", "scope": "subject"}]},
-    {"name": "invariants", "type": "text", "card": "many", "weight": 2,
-     "bind": [{"kind": "items", "type": "invariant", "scope": "subject"}]},
-    {"name": "interfaces", "type": "entity:component", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "fact", "rel": "has_component", "filter": {"label_matches": "^I[A-Z][A-Za-z0-9]+$"}}, {"kind": "codebase", "field": "interfaces"}],
-     "infer": ["r.spec_interfaces_from_code"]},
-    {"name": "open_questions", "type": "text", "card": "many", "weight": 1,
-     "bind": [{"kind": "items", "type": "open_question", "scope": "subject"}]}
-  ],
-  "constraints": [],
-  "render": {"title_slot": "subject", "order": ["subject", "requirements", "invariants", "interfaces", "open_questions"]}
+  {
+   "id": "m.check.film_music",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "continuity_check"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "mix_check"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:mix_check"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "continuity of scenes <-> consistency of the mix and key across sections",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.check.software_legal",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "test"
+   },
+   "to": {
+    "paradigm": "legal_case",
+    "kind": "citation_check"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:citation_check"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "a pleading's citations are checked against the source text the way code is checked by tests (R9 'upewnianie się')",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R9"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.4 check row"
+    }
+   ]
+  },
+  {
+   "id": "m.check.software_research",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "test"
+   },
+   "to": {
+    "paradigm": "research",
+    "kind": "falsifier"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:falsifier"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "tests and falsifiers both try to refute a claim about the built thing",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.transformation.build_render",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "build_step"
+   },
+   "to": {
+    "paradigm": "film",
+    "kind": "render_pass"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:render_pass"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "build turns sources into deliverables; render turns storyboards into clips",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.intent.software_legal",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "purpose"
+   },
+   "to": {
+    "paradigm": "legal_case",
+    "kind": "desired_outcome"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:desired_outcome"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "every project states why it exists; a case without a stated desired outcome is a gap",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.artifact.spec_screenplay",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "document"
+   },
+   "to": {
+    "paradigm": "film",
+    "kind": "screenplay"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:screenplay"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "the specification of a program and the screenplay of a film are the textual representation of the parts",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.decision.architecture_strategy",
+   "use": "transfer",
+   "from": {
+    "paradigm": "software_app",
+    "kind": "architecture_decision"
+   },
+   "to": {
+    "paradigm": "legal_case",
+    "kind": "strategy_decision"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:strategy_decision"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+ )LOOMKB",
+    R"LOOMKB(   "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "decisions with recorded alternatives and rationale exist in both domains",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.scene_section",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "scene"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "section"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:section"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "scenes and sections are the ordered constituent parts",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.character_performer",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "character"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "performer"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:performer"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "who acts in a part",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.motif",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "motif"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "motif"
+   },
+   "bidirectional": true,
+   "mode": "value",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:motif"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "a recurring theme through the parts",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.render_synthesis",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "render_pass"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "synthesis"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:synthesis"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "the expensive generation step",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.edit_mix",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "edit_pass"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "mix"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:mix"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "assembling the parts into the delivered output",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  },
+  {
+   "id": "m.film_music.cut_track",
+   "use": "transfer",
+   "from": {
+    "paradigm": "film",
+    "kind": "cut"
+   },
+   "to": {
+    "paradigm": "music",
+    "kind": "track_output"
+   },
+   "bidirectional": true,
+   "mode": "presence",
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$slot:track_output"
+     ]
+    },
+    "rationale": "the target project should have an entity of the analogous kind",
+    "confirm_if": [
+     "an observed claim fills the slot"
+    ],
+    "refute_if": [
+     "the owner states the target does not need it"
+    ]
+   },
+   "rationale": "the delivered output",
+   "origin": "model_knowledge",
+   "validation_status": "candidate",
+   "sources": [
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.6"
+    }
+   ]
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks24[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "coding_philosophy",
-  "version": 1,
-  "gt_paradigm": "coding_philosophy",
-  "title": {"en": "Coding philosophy", "pl": "Filozofia kodowania"},
-  "description": "The owner's stable, recurring normative statements about how software is built. One instance per corpus (subject 'owner'); principles are discovered from the archive and matched against seed priors (philosophy/seed_principles.json).",
-  "subject_kind": "owner",
-  "anchors": {
-    "any": [
-      {"op": "principle_count", "min": 1}
-    ],
-    "min_score": 0.2
+ "schema": "loom.kb.project_kind/1",
+ "id": "software_app",
+ "version": 1,
+ "title": {
+  "en": "Software application",
+  "pl": "Aplikacja"
+ },
+ "description": "A program being built: modules, interfaces, data, protocols, capabilities, invariants and deployment targets (note §6 'Software'); its versions, forks and lineage are the temporal dimension of the instance, not domain kinds. Multi-platform apps, agent systems and staged pipelines are this kind plus a facet (model §3.5).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§3, §4"
   },
-  "slots": [
-    {"name": "principles", "type": "principle[]", "card": "many", "required": true, "weight": 3,
-     "bind": [{"kind": "principles", "applies_to": "any", "min_support": 1}]},
-    {"name": "violations", "type": "text", "card": "many", "weight": 0.5,
-     "bind": [{"kind": "checks", "field": "violations"}]}
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Software"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4, §3.5"
+  },
+  {
+   "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+   "section": "Sesja 1-22",
+   "date": "2026-01-21"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "multiplatform",
+  "agent",
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "claim_count",
+    "rel": "has_component",
+    "min": 2
+   },
+   {
+    "op": "kind_hint",
+    "value": "software_app"
+   },
+   {
+    "op": "codebase"
+   }
   ],
-  "constraints": [],
-  "render": {"title_slot": null, "order": ["principles", "violations"]}
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "purpose",
+   "role": "intent",
+   "labels": {
+    "en": "Purpose",
+    "pl": "Cel"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_purpose",
+   "anchors": {
+    "terms": {
+     "en": [
+      "purpose",
+      "the goal is",
+      "meant to"
+     ],
+     "pl": [
+      "cel",
+      "służy do",
+      "ma służyć"
+     ]
+    },
+    "cues": [
+     "purpose"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_purpose",
+     "field": "value"
+    },
+    {
+     "kind": "items",
+     "type": "idea",
+     "scope": "subject",
+     "pick": "earliest"
+    }
+   ]
+  },
+  {
+   "id": "user_group",
+   "role": "actor",
+   "labels": {
+    "en": "User group",
+    "pl": "Użytkownicy"
+   },
+   "entity_kind": "actor",
+   "card": "many",
+   "relation": "has_user",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "users",
+      "user"
+     ],
+     "pl": [
+      "użytkownik",
+      "użytkownicy"
+     ]
+    }
+   }
+  },
+  {
+   "id": "requirement",
+   "role": "constraint",
+   "labels": {
+    "en": "Requirement",
+    "pl": "Wymaganie"
+   },
+   "entity_kind": "requirement",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_requirement",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "requirement",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "invariant",
+   "role": "constraint",
+   "labels": {
+    "en": "Invariant",
+    "pl": "Niezmiennik"
+   },
+   "entity_kind": "invariant",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_invariant",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "invariant",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "module",
+   "role": "part",
+   "labels": {
+    "en": "Module",
+    "pl": "Moduł"
+   },
+   "entity_kind": "component",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_component",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "module",
+      "component",
+      "engine",
+      "layer"
+     ],
+     "pl": [
+      "moduł",
+      "komponent",
+      "silnik",
+      "warstwa"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_component"
+    },
+    {
+     "kind": "codebase",
+     "field": "modules"
+    }
+   ]
+  },
+  {
+   "id": "external_service",
+   "role": "actor",
+   "labels": {
+    "en": "External service",
+    "pl": "Usługa zewnętrzna"
+   },
+   "entity_kind": "actor",
+   "card": "many",
+   "relation": "uses_service",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "data_flow"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "tool"
+    ]
+   }
+  },
+  {
+   "id": "data_source",
+   "role": "resource",
+   "labels": {
+    "en": "Data source",
+    "pl": "Źródło danych"
+   },
+   "entity_kind": "data_source",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "uses_data_source",
+   "anchors": {
+    "terms": {
+     "en": [
+      "data source",
+      "export",
+      "archive"
+     ],
+     "pl": [
+      "źródło danych",
+      "eksport",
+      "archiwum"
+     ]
+    }
+   }
+  },
+  {
+   "id": "store",
+   "role": "resource",
+   "labels": {
+    "en": "Store",
+    "pl": "Magazyn danych"
+   },
+   "entity_kind": "storage",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "stores_in",
+   "anchors": {
+    "lexicon": [
+     "storage"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "stores_in"
+    },
+    {
+     "kind": "lexicon",
+     "class": "storage",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "r.storage_local_first"
+   ]
+  },
+  {
+   "id": "model_provider",
+   "role": "resource",
+   "labels": {
+    "en": "Model / provider",
+    "pl": "Model / dostawca"
+   },
+   "entity_kind": "provider",
+   "card": "many",
+   "relation": "uses_provider",
+   "anchors": {
+    "terms": {
+     "en": [
+      "provider",
+      "model",
+      "llm"
+     ],
+     "pl": [
+      "dostawca",
+      "model"
+     ]
+    }
+   }
+  },
+  {
+   "id": "tool",
+   "role": "resource",
+   "labels": {
+    "en": "Tool",
+    "pl": "Narzędzie"
+   },
+   "entity_kind": "tool",
+   "card": "many",
+   "relation": "uses_tool",
+   "anchors": {
+    "lexicon": [
+     "tool"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "uses_tool"
+    },
+    {
+     "kind": "lexicon",
+     "class": "tool",
+     "scope": "subject_sentences"
+    }
+   ]
+  },
+  {
+   "id": "language",
+   "role": "resource",
+   "labels": {
+    "en": "Language",
+    "pl": "Język"
+   },
+   "entity_kind": "language",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "written_in",
+   "anchors": {
+    "lexicon": [
+     "language"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "written_in"
+    },
+    {
+     "kind": "codebase",
+     "field": "dominant_language"
+    }
+   ],
+   "rules": [
+    "r.core_language_from_codebase"
+   ]
+  },
+  {
+   "id": "ui_framework",
+   "role": "resource",
+   "labels": {
+    "en": "UI framework",
+    "pl": "Framework UI"
+   },
+   "entity_kind": "ui_framework",
+   "card": "many",
+   "relation": "uses_ui_framework",
+   "anchors": {
+    "lexicon": [
+     "ui_framework"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "uses_ui_framework"
+    },
+    {
+     "kind": "lexicon",
+     "class": "ui_framework",
+     "scope": "subject_sentences"
+    }
+   ]
+  },
+  {
+   "id": "interface",
+   "role": "interface",
+   "labels": {
+    "en": "Interface",
+    "pl": "Interfejs"
+   },
+   "entity_kind": "interface",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_interface",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "api",
+      "interface",
+      "abi",
+      "contract"
+     ],
+     "pl": [
+      "interfejs",
+      "kontrakt"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_interface"
+    },
+    {
+     "kind": "codebase",
+     "field": "interfaces"
+    }
+   ],
+   "rules": [
+    "r.spec_interfaces_from_code"
+   ]
+  },
+  {
+   "id": "protocol",
+   "role": "interface",
+   "labels": {
+    "en": "Protocol / format",
+    "pl": "Protokół / format"
+   },
+   "entity_kind": "protocol",
+   "card": "many",
+   "relation": "uses_protocol",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "protocol",
+)LOOMKB",
+    R"LOOMKB(     "format"
+    ]
+   }
+  },
+  {
+   "id": "data_flow",
+   "role": "flow",
+   "labels": {
+    "en": "Data / control flow",
+    "pl": "Przepływ danych"
+   },
+   "entity_kind": "flow",
+   "card": "many",
+   "relation": "has_flow",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "flow",
+      "pipeline",
+      "->"
+     ],
+     "pl": [
+      "przepływ",
+      "potok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "release",
+   "role": "event",
+   "labels": {
+    "en": "Release / session / incident",
+    "pl": "Wydanie / sesja / incydent"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "release",
+      "incident"
+     ],
+     "pl": [
+      "wydanie",
+      "incydent"
+     ]
+    }
+   }
+  },
+  {
+   "id": "source_file",
+   "role": "artifact",
+   "labels": {
+    "en": "Source file",
+    "pl": "Plik źródłowy"
+   },
+   "entity_kind": "file",
+   "card": "many",
+   "relation": "has_file",
+   "relations": [
+    {
+     "rel": "implements",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "codebase",
+     "field": "files"
+    }
+   ]
+  },
+  {
+   "id": "document",
+   "role": "artifact",
+   "labels": {
+    "en": "Document",
+    "pl": "Dokument"
+   },
+   "entity_kind": "document",
+   "card": "many",
+   "relation": "has_document",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "spec",
+      "readme",
+      "documentation"
+     ],
+     "pl": [
+      "dokumentacja",
+      "specyfikacja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "build_step",
+   "role": "transformation",
+   "labels": {
+    "en": "Build / deploy / migration",
+    "pl": "Budowanie / wdrożenie / migracja"
+   },
+   "entity_kind": "build_step",
+   "card": "many",
+   "relation": "has_build_step",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "deliverable"
+    },
+    {
+     "rel": "consumes",
+     "target": "source_file"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "build",
+      "deploy",
+      "migration"
+     ],
+     "pl": [
+      "budowanie",
+      "wdrożenie",
+      "migracja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "test",
+   "role": "check",
+   "labels": {
+    "en": "Test / lint / compat test",
+    "pl": "Test"
+   },
+   "entity_kind": "test",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_test",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "test",
+      "tests",
+      "lint"
+     ],
+     "pl": [
+      "test",
+      "testy"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_test"
+    },
+    {
+     "kind": "codebase",
+     "field": "tests"
+    }
+   ]
+  },
+  {
+   "id": "deliverable",
+   "role": "output",
+   "labels": {
+    "en": "Build / release artifact",
+    "pl": "Produkt (build, wydanie)"
+   },
+   "entity_kind": "deliverable",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "purpose"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "apk",
+      "binary",
+      "release build"
+     ],
+     "pl": [
+      "paczka",
+      "zip"
+     ]
+    }
+   }
+  },
+  {
+   "id": "architecture_decision",
+   "role": "decision",
+   "labels": {
+    "en": "Architecture decision",
+    "pl": "Decyzja architektoniczna"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "decision",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "open_question",
+   "role": "question",
+   "labels": {
+    "en": "Open question / TODO",
+    "pl": "Otwarte pytanie / TODO"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "module"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "open_question",
+     "scope": "subject"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "sw.c1",
+   "expr": {
+    "op": "not_in",
+    "args": [
+     "$slot:store",
+     "$rejected_values"
+    ]
+   },
+   "on_violation": "conflict",
+   "why": "a store that an active decision rejected cannot be the current store"
+  },
+  {
+   "id": "sw.c2",
+   "expr": {
+    "op": "version_gte",
+    "args": [
+     "$temporal:current_version",
+     "$git_max_version"
+    ]
+   },
+   "on_violation": "conflict",
+   "why": "the current version is never older than the newest committed version"
+  }
+ ],
+ "rules": [
+  "r.current_version",
+  "r.project_status"
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks25[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "codebase",
-  "version": 1,
-  "gt_paradigm": "codebase",
-  "title": {"en": "Codebase", "pl": "Baza kodu"},
-  "description": "A concrete source tree: a git repository, a recovered snapshot (history/chatadhd_v0.9.0) or code pasted into conversations. Filled almost entirely from code digests; conversation evidence fills gaps for archive-only code.",
-  "subject_kind": "repo",
-  "anchors": {
-    "any": [
-      {"op": "codebase"}
-    ],
-    "min_score": 0.3
+ "schema": "loom.kb.project_kind/1",
+ "id": "film",
+ "version": 1,
+ "title": {
+  "en": "Film",
+  "pl": "Film"
+ },
+ "description": "A film being made: premise and style, acts/scenes/shots, characters, locations, props, motifs, citations, timeline, screenplay/storyboard/clips, render and edit passes, continuity and consistency checks, cuts (note §6 'Film', R8). Seeded from the 0.9.0 FilmStructure IR (history/chatadhd_v0.9.0/data/schemas/film_structure.json): its characters, locations, props, motifs, citations, mood_board, scenes (subjects, camera, lighting, transitions, variations, state) are domain kinds and slots here.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "history/chatadhd_v0.9.0/data/schemas/film_structure.json",
+   "date": "2026-04-17",
+   "section": "FilmStructure"
   },
-  "slots": [
-    {"name": "repo", "type": "string", "card": "one", "required": true, "weight": 1,
-     "bind": [{"kind": "codebase", "field": "repo"}]},
-    {"name": "languages", "type": "entity:language", "card": "many", "required": true, "weight": 1.5,
-     "bind": [{"kind": "codebase", "field": "languages"}]},
-    {"name": "modules", "type": "entity:component", "card": "many", "required": true, "weight": 2,
-     "bind": [{"kind": "codebase", "field": "modules"}]},
-    {"name": "entry_points", "type": "string", "card": "many", "weight": 1,
-     "bind": [{"kind": "codebase", "field": "entry_points"}],
-     "infer": ["r.entry_points_from_names"]},
-    {"name": "tests", "type": "string", "card": "many", "weight": 1,
-     "bind": [{"kind": "codebase", "field": "tests"}]},
-    {"name": "version", "type": "version", "card": "one", "weight": 0.5,
-     "bind": [{"kind": "codebase", "field": "declared_version"}]}
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R8"
+  },
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Film"
+  },
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "Moduły: film_structure.json"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "film"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.film",
+    "min": 2
+   }
   ],
-  "constraints": [],
-  "render": {"title_slot": "repo", "order": ["repo", "version", "languages", "modules", "entry_points", "tests"]}
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "premise",
+   "role": "intent",
+   "labels": {
+    "en": "Logline / premise / synopsis",
+    "pl": "Logline / założenie / synopsis"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_premise",
+   "anchors": {
+    "terms": {
+     "en": [
+      "logline",
+      "premise",
+      "synopsis"
+     ],
+     "pl": [
+      "logline",
+      "założenie",
+      "streszczenie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "audience",
+   "role": "intent",
+   "labels": {
+    "en": "Audience",
+    "pl": "Widownia"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "has_audience",
+   "anchors": {
+    "terms": {
+     "en": [
+      "audience",
+      "viewers"
+     ],
+     "pl": [
+      "widz",
+      "widownia"
+     ]
+    }
+   }
+  },
+  {
+   "id": "style_manifesto",
+   "role": "constraint",
+   "labels": {
+    "en": "Style manifesto",
+    "pl": "Manifest stylu"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "has_style",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "style",
+      "look",
+      "aesthetic"
+     ],
+     "pl": [
+      "styl",
+      "estetyka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "genre_rule",
+   "role": "constraint",
+   "labels": {
+    "en": "Genre rule / rating / budget",
+    "pl": "Reguła gatunku / budżet"
+   },
+   "entity_kind": "genre_rule",
+   "card": "many",
+   "relation": "has_rule",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "genre",
+      "rating",
+      "budget",
+      "duration"
+     ],
+     "pl": [
+      "gatunek",
+      "budżet",
+      "czas trwania"
+     ]
+    }
+   }
+  },
+  {
+   "id": "act",
+   "role": "part",
+   "labels": {
+    "en": "Act",
+    "pl": "Akt"
+   },
+   "entity_kind": "act",
+   "card": "many",
+   "relation": "has_act",
+   "relations": [
+    {
+     "rel": "precedes",
+     "target": "act"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "act"
+     ],
+     "pl": [
+      "akt"
+     ]
+    }
+   }
+  },
+  {
+   "id": "scene",
+   "role": "part",
+   "labels": {
+    "en": "Scene",
+    "pl": "Scena"
+   },
+   "entity_kind": "scene",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_scene",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "act"
+    },
+    {
+     "rel": "precedes",
+     "target": "scene"
+    },
+    {
+     "rel": "uses",
+     "target": "location"
+    },
+    {
+     "rel": "uses",
+     "target": "prop"
+    },
+    {
+     "rel": "uses",
+     "target": "citation"
+    },
+    {
+     "rel": "uses",
+     "target": "mood_ref"
+    }
+   ],
+   "slots": [
+    {
+     "name": "narrative_order",
+     "type": "string",
+     "card": "one"
+    },
+    {
+     "name": "duration_seconds",
+     "type": "string",
+     "card": "one"
+    },
+    {
+     "name": "synopsis",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "camera",
+     "type": "text",
+     "card": "one",
+     "description": "camera path, lens, fov (FilmStructure camera)"
+    },
+    {
+     "name": "lighting",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "state",
+     "type": "enum:scene_state",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "scene"
+     ],
+     "pl": [
+      "scena",
+      "scen"
+     ]
+    }
+   }
+  },
+  {
+   "id": "shot",
+   "role": "part",
+   "labels": {
+    "en": "Shot",
+    "pl": "Ujęcie"
+   },
+   "entity_kind": "shot",
+   "card": "many",
+   "relation": "has_shot",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "shot"
+     ],
+     "pl": [
+      "ujęcie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "character",
+   "role": "actor",
+   "labels": {
+    "en": "Character",
+    "pl": "Postać"
+   },
+   "entity_kind": "character",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_character",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "scene"
+    }
+   ],
+   "slots": [
+    {
+     "name": "role",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "appearance",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "voice_profile",
+     "type": "text",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "character",
+      "protagonist"
+     ],
+     "pl": [
+      "postać",
+      "bohater"
+     ]
+    }
+   }
+  },
+  {
+   "id": "location",
+   "role": "resource",
+   "labels": {
+    "en": "Location",
+    "pl": "Lokacja"
+   },
+   "entity_kind": "location",
+   "card": "many",
+   "relation": "has_location",
+   "anchors": {
+    "terms": {
+     "en": [
+      "location",
+      "set"
+     ],
+     "pl": [
+      "lokacja",
+      "plener"
+     ]
+    }
+   }
+  },
+  {
+   "id": "prop",
+   "role": "resource",
+   "labels": {
+    "en": "Prop",
+    "pl": "Rekwizyt"
+   },
+   "entity_kind": "prop",
+   "card": "many",
+   "relation": "has_prop",
+   "anchors": {
+    "terms": {
+     "en": [
+      "prop"
+     ],
+     "pl": [
+      "rekwizyt"
+     ]
+    }
+   }
+  },
+  {
+   "id": "mood_ref",
+   "role": "resource",
+   "labels": {
+    "en": "Portfolio / mood reference",
+    "pl": "Referencja (portfolio, mood board)"
+   },
+   "entity_kind": "mood_ref",
+   "card": "many",
+   "relation": "has_reference",
+   "anchors": {
+    "terms": {
+     "en": [
+      "mood board",
+      "portfolio",
+      "reference"
+     ],
+     "pl": [
+      "moodboard",
+      "portfolio",
+      "referencja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "citation",
+   "role": "resource",
+   "labels": {
+    "en": "Citation",
+    "pl": "Cytat"
+   },
+   "entity_kind": "citation",
+   "card": "many",
+   "relation": "has_citation",
+   "anchors": {
+    "terms": {
+     "en": [
+      "quote",
+      "citation",
+      "homage"
+     ],
+     "pl": [
+      "cytat",
+      "hołd"
+     ]
+    }
+   }
+  },
+  {
+   "id": "transition",
+   "role": "interface",
+   "labels": {
+    "en": "Transition / cut",
+    "pl": "Przejście / cięcie"
+   },
+   "entity_kind": "transition",
+   "card": "many",
+   "relation": "has_transition",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "cut",
+      "dissolve",
+      "fade",
+      "match cut"
+     ],
+     "pl": [
+      "cięcie",
+      "przenikanie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "motif",
+   "role": "flow",
+   "labels": {
+    "en": "Motif",
+    "pl": "Motyw"
+   },
+   "entity_kind": "motif",
+   "ca)LOOMKB",
+    R"LOOMKB(rd": "many",
+   "relation": "has_motif",
+   "relations": [
+    {
+     "rel": "recurs_in",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "motif",
+      "leitmotif"
+     ],
+     "pl": [
+      "motyw"
+     ]
+    }
+   }
+  },
+  {
+   "id": "plot_link",
+   "role": "flow",
+   "labels": {
+    "en": "Plot causality",
+    "pl": "Związek fabularny"
+   },
+   "entity_kind": "plot_link",
+   "card": "many",
+   "relation": "has_plot_link",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "because",
+      "leads to",
+      "plot"
+     ],
+     "pl": [
+      "fabuła",
+      "prowadzi do"
+     ]
+    }
+   }
+  },
+  {
+   "id": "timeline_event",
+   "role": "event",
+   "labels": {
+    "en": "Timeline event",
+    "pl": "Zdarzenie na osi czasu"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "timeline"
+     ],
+     "pl": [
+      "oś czasu"
+     ]
+    }
+   }
+  },
+  {
+   "id": "screenplay",
+   "role": "artifact",
+   "labels": {
+    "en": "Screenplay",
+    "pl": "Scenariusz"
+   },
+   "entity_kind": "screenplay",
+   "card": "one",
+   "relation": "has_screenplay",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "screenplay",
+      "script"
+     ],
+     "pl": [
+      "scenariusz",
+      "scenopis"
+     ]
+    }
+   }
+  },
+  {
+   "id": "storyboard",
+   "role": "artifact",
+   "labels": {
+    "en": "Storyboard",
+    "pl": "Storyboard"
+   },
+   "entity_kind": "storyboard",
+   "card": "many",
+   "relation": "has_storyboard",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "storyboard"
+     ],
+     "pl": [
+      "storyboard"
+     ]
+    }
+   }
+  },
+  {
+   "id": "clip",
+   "role": "artifact",
+   "labels": {
+    "en": "Keyframe / clip",
+    "pl": "Klatka kluczowa / klip"
+   },
+   "entity_kind": "clip",
+   "card": "many",
+   "relation": "has_clip",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "shot"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "keyframe",
+      "clip"
+     ],
+     "pl": [
+      "klatka",
+      "klip"
+     ]
+    }
+   }
+  },
+  {
+   "id": "render_pass",
+   "role": "transformation",
+   "labels": {
+    "en": "Render / generation",
+    "pl": "Render / generowanie"
+   },
+   "entity_kind": "render_pass",
+   "card": "many",
+   "relation": "has_render_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "clip"
+    },
+    {
+     "rel": "consumes",
+     "target": "storyboard"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "render",
+      "generate"
+     ],
+     "pl": [
+      "render",
+      "generowanie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "edit_pass",
+   "role": "transformation",
+   "labels": {
+    "en": "Edit / compose",
+    "pl": "Montaż"
+   },
+   "entity_kind": "edit_pass",
+   "card": "many",
+   "relation": "has_edit_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "cut"
+    },
+    {
+     "rel": "consumes",
+     "target": "clip"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "edit",
+      "compose",
+      "compositor"
+     ],
+     "pl": [
+      "montaż"
+     ]
+    }
+   }
+  },
+  {
+   "id": "continuity_check",
+   "role": "check",
+   "labels": {
+    "en": "Continuity check",
+    "pl": "Kontrola ciągłości"
+   },
+   "entity_kind": "continuity_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "continuity"
+     ],
+     "pl": [
+      "ciągłość"
+     ]
+    }
+   }
+  },
+  {
+   "id": "consistency_check",
+   "role": "check",
+   "labels": {
+    "en": "Character / structure consistency",
+    "pl": "Spójność postaci i struktury"
+   },
+   "entity_kind": "consistency_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "character"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "consistency",
+      "critic"
+     ],
+     "pl": [
+      "spójność",
+      "krytyk"
+     ]
+    }
+   }
+  },
+  {
+   "id": "cut",
+   "role": "output",
+   "labels": {
+    "en": "Cut / export",
+    "pl": "Wersja montażowa / eksport"
+   },
+   "entity_kind": "cut",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "premise"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "final cut",
+      "rough cut",
+      "export"
+     ],
+     "pl": [
+      "wersja montażowa",
+      "eksport"
+     ]
+    }
+   }
+  },
+  {
+   "id": "creative_decision",
+   "role": "decision",
+   "labels": {
+    "en": "Creative decision",
+    "pl": "Decyzja twórcza"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "scene"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "decision",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "plot_question",
+   "role": "question",
+   "labels": {
+    "en": "Unresolved plot point",
+    "pl": "Nierozstrzygnięty wątek"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "scene"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "open_question",
+     "scope": "subject"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "film.c1",
+   "expr": {
+    "op": "nonempty",
+    "args": [
+     "$slot:scene"
+    ]
+   },
+   "on_violation": "extend",
+   "why": "a film instance without scenes is a premise only; the scene slot is flagged absent"
+  }
+ ],
+ "rules": [
+  "r.project_status"
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks26[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "version_history",
-  "version": 1,
-  "gt_paradigm": "version_history",
-  "title": {"en": "Version history", "pl": "Historia wersji"},
-  "description": "The dated versions of a project, their features and their lineage (base version, forks). Versions come from git tags/commit subjects, declared __version__ strings in snapshots and anchored version mentions in conversations; versions above the newest git version are 'archive-only'.",
-  "subject_kind": "project",
-  "anchors": {
-    "any": [
-      {"op": "fact_count", "rel": "has_version", "min": 1}
-    ],
-    "min_score": 0.3
+ "schema": "loom.kb.project_kind/1",
+ "id": "music",
+ "version": 1,
+ "title": {
+  "en": "Music",
+  "pl": "Muzyka"
+ },
+ "description": "A piece or album being made. DERIVED, not observed: mapped from the film kind by the transfer morphisms listed in derived_from (scene -> section, character -> performer, motif -> motif, render -> synthesis, edit -> mix, continuity check -> mix check, cut -> track) and completed with general music knowledge (key, tempo, form, mastering). Origin model_knowledge, validation candidate: the owner's archives have not confirmed it yet (R8: 'mogłeś się domyślić, że oprócz filmów również muzykę').",
+ "origin": "model_knowledge",
+ "validation_status": "candidate",
+ "derived_from": [
+  "m.film_music.scene_section",
+  "m.film_music.character_performer",
+  "m.film_music.motif",
+  "m.film_music.render_synthesis",
+  "m.film_music.edit_mix",
+  "m.check.film_music",
+  "m.film_music.cut_track"
+ ],
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R8"
   },
-  "slots": [
-    {"name": "versions", "type": "record[]", "card": "list", "required": true, "weight": 3,
-     "fields": {
-       "version": {"type": "version", "required": true},
-       "date": {"type": "date"},
-       "features": {"type": "text", "card": "many"},
-       "conv_ids": {"type": "string", "card": "many"},
-       "source": {"type": "enum:version_source"},
-       "base": {"type": "version"}
-     },
-     "bind": [{"kind": "versions", "source": "any"}],
-     "infer": ["r.archive_only_version", "r.version_date_first_mention", "r.version_features_comention", "r.version_base"]},
-    {"name": "forks", "type": "record[]", "card": "many", "weight": 1,
-     "fields": {
-       "base": {"type": "version", "required": true},
-       "branches": {"type": "version", "card": "many"},
-       "merged": {"type": "string"}
-     },
-     "infer": ["r.version_forks"]}
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4 Music column"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "music"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.music",
+    "min": 2
+   }
   ],
-  "constraints": [
-    {"id": "vh.c1", "expr": {"op": "ordered_by_date", "args": ["$slot:versions"]}, "on_violation": "conflict",
-     "why": "within one lineage, a higher version is never dated before a lower one; a violation is reported, never silently re-ordered"}
-  ],
-  "render": {"title_slot": null, "order": ["versions", "forks"]}
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "mood",
+   "role": "intent",
+   "labels": {
+    "en": "Mood / genre intent",
+    "pl": "Nastrój / zamiar gatunkowy"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_mood",
+   "anchors": {
+    "terms": {
+     "en": [
+      "mood",
+      "vibe",
+      "feel"
+     ],
+     "pl": [
+      "nastrój",
+      "klimat"
+     ]
+    }
+   }
+  },
+  {
+   "id": "key",
+   "role": "constraint",
+   "labels": {
+    "en": "Key",
+    "pl": "Tonacja"
+   },
+   "entity_kind": "musical_key",
+   "card": "one",
+   "relation": "in_key",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "key",
+      "major",
+      "minor"
+     ],
+     "pl": [
+      "tonacja",
+      "dur",
+      "moll"
+     ]
+    }
+   }
+  },
+  {
+   "id": "tempo",
+   "role": "constraint",
+   "labels": {
+    "en": "Tempo / meter",
+    "pl": "Tempo / metrum"
+   },
+   "value_type": "string",
+   "card": "one",
+   "relation": "has_tempo",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "bpm",
+      "tempo",
+      "meter"
+     ],
+     "pl": [
+      "tempo",
+      "metrum"
+     ]
+    }
+   }
+  },
+  {
+   "id": "form",
+   "role": "constraint",
+   "labels": {
+    "en": "Form",
+    "pl": "Forma"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_form",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "form",
+      "structure"
+     ],
+     "pl": [
+      "forma"
+     ]
+    }
+   }
+  },
+  {
+   "id": "track",
+   "role": "part",
+   "labels": {
+    "en": "Track",
+    "pl": "Utwór"
+   },
+   "entity_kind": "track",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_track",
+   "anchors": {
+    "terms": {
+     "en": [
+      "track",
+      "song"
+     ],
+     "pl": [
+      "utwór",
+      "piosenka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "section",
+   "role": "part",
+   "labels": {
+    "en": "Section (verse, chorus, bridge)",
+    "pl": "Sekcja (zwrotka, refren, most)"
+   },
+   "entity_kind": "section",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_section",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "track"
+    },
+    {
+     "rel": "precedes",
+     "target": "section"
+    },
+    {
+     "rel": "uses",
+     "target": "sample"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "verse",
+      "chorus",
+      "bridge",
+      "intro",
+      "outro"
+     ],
+     "pl": [
+      "zwrotka",
+      "refren",
+      "most"
+     ]
+    }
+   }
+  },
+  {
+   "id": "performer",
+   "role": "actor",
+   "labels": {
+    "en": "Performer",
+    "pl": "Wykonawca"
+   },
+   "entity_kind": "performer",
+   "card": "many",
+   "relation": "has_performer",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "vocalist",
+      "singer",
+      "performer"
+     ],
+     "pl": [
+      "wokalista",
+      "wykonawca"
+     ]
+    }
+   }
+  },
+  {
+   "id": "instrument",
+   "role": "actor",
+   "labels": {
+    "en": "Instrument",
+    "pl": "Instrument"
+   },
+   "entity_kind": "instrument",
+   "card": "many",
+   "relation": "has_instrument",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "guitar",
+      "synth",
+      "drums",
+      "instrument"
+     ],
+     "pl": [
+      "gitara",
+      "perkusja",
+      "instrument"
+     ]
+    }
+   }
+  },
+  {
+   "id": "sample",
+   "role": "resource",
+   "labels": {
+    "en": "Sample / patch",
+    "pl": "Sampel / brzmienie"
+   },
+   "entity_kind": "sample",
+   "card": "many",
+   "relation": "uses_sample",
+   "anchors": {
+    "terms": {
+     "en": [
+      "sample",
+      "patch",
+      "preset"
+     ],
+     "pl": [
+      "sampel",
+      "brzmienie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "modulation",
+   "role": "interface",
+   "labels": {
+    "en": "Modulation / transition",
+    "pl": "Modulacja / przejście"
+   },
+   "entity_kind": "transition",
+   "card": "many",
+   "relation": "has_transition",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "modulation",
+      "transition"
+     ],
+     "pl": [
+      "modulacja",
+      "przejście"
+     ]
+    }
+   }
+  },
+  {
+   "id": "progression",
+   "role": "flow",
+   "labels": {
+    "en": "Harmonic progression",
+    "pl": "Progresja harmoniczna"
+   },
+   "entity_kind": "progression",
+   "card": "many",
+   "relation": "has_progression",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "progression",
+      "chords"
+     ],
+     "pl": [
+      "progresja",
+      "akordy"
+     ]
+    }
+   }
+  },
+  {
+   "id": "motif",
+   "role": "flow",
+   "labels": {
+    "en": "Motif",
+    "pl": "Motyw"
+   },
+   "entity_kind": "motif",
+   "card": "many",
+   "relation": "has_motif",
+   "relations": [
+    {
+     "rel": "recurs_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "motif",
+      "hook",
+      "riff"
+     ],
+     "pl": [
+      "motyw",
+      "riff"
+     ]
+    }
+   }
+  },
+  {
+   "id": "cue",
+   "role": "event",
+   "labels": {
+    "en": "Cue / drop",
+    "pl": "Wejście / drop"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "drop",
+      "cue",
+      "break"
+     ],
+     "pl": [
+      "drop",
+      "wejście"
+     ]
+    }
+   }
+  },
+  {
+   "id": "score",
+   "role": "artifact",
+   "labels": {
+    "en": "Score / MIDI / arrangement / lyrics",
+    "pl": "Partytura / MIDI / aranżacja / tekst"
+   },
+   "entity_kind": "score",
+   "card": "many",
+   "relation": "has_score",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "score",
+      "midi",
+      "arrangement",
+      "lyrics"
+     ],
+     "pl": [
+      "partytura",
+      "aranżacja",
+      "tekst"
+     ]
+    }
+   }
+  },
+  {
+   "id": "synthesis",
+   "role": "transformation",
+   "labels": {
+    "en": "Synthesis / recording",
+    "pl": "Synteza / nagranie"
+   },
+   "entity_kind": "synthesis_pass",
+   "card": "many",
+   "relation": "ha)LOOMKB",
+    R"LOOMKB(s_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "score"
+    },
+    {
+     "rel": "consumes",
+     "target": "sample"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "record",
+      "synthesize"
+     ],
+     "pl": [
+      "nagranie",
+      "synteza"
+     ]
+    }
+   }
+  },
+  {
+   "id": "mix",
+   "role": "transformation",
+   "labels": {
+    "en": "Mix / master",
+    "pl": "Miks / mastering"
+   },
+   "entity_kind": "mix_pass",
+   "card": "many",
+   "relation": "has_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "track_output"
+    },
+    {
+     "rel": "consumes",
+     "target": "score"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "mix",
+      "master"
+     ],
+     "pl": [
+      "miks",
+      "mastering"
+     ]
+    }
+   }
+  },
+  {
+   "id": "mix_check",
+   "role": "check",
+   "labels": {
+    "en": "Mix / key consistency check",
+    "pl": "Kontrola miksu / spójności tonacji"
+   },
+   "entity_kind": "mix_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "track"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "mix check",
+      "loudness",
+      "in key"
+     ],
+     "pl": [
+      "kontrola miksu",
+      "głośność"
+     ]
+    }
+   }
+  },
+  {
+   "id": "track_output",
+   "role": "output",
+   "labels": {
+    "en": "Released track / album",
+    "pl": "Wydany utwór / album"
+   },
+   "entity_kind": "release_output",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "mood"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "album",
+      "single",
+      "release"
+     ],
+     "pl": [
+      "album",
+      "singiel"
+     ]
+    }
+   }
+  },
+  {
+   "id": "arrangement_choice",
+   "role": "decision",
+   "labels": {
+    "en": "Arrangement choice",
+    "pl": "Wybór aranżacyjny"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "section"
+    }
+   ]
+  },
+  {
+   "id": "open_idea",
+   "role": "question",
+   "labels": {
+    "en": "Open arrangement idea",
+    "pl": "Otwarty pomysł aranżacyjny"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "section"
+    }
+   ]
+  }
+ ],
+ "constraints": [],
+ "rules": [
+  "r.project_status"
+ ]
 }
 )LOOMKB",
     nullptr};
 const char* const kPackChunks27[] = {
     R"LOOMKB({
-  "schema": "loom.kb.paradigm/1",
-  "id": "agent_system",
-  "version": 1,
-  "gt_paradigm": "agent_system",
-  "title": {"en": "Agent system", "pl": "System agentowy"},
-  "description": "An autonomous or semi-autonomous executor: models in roles, tools, environments, memory, checkpoints (Agent 2024, WatchDog, pitching agent). MEGA MASTER §1.3 maps it onto Loom's Task/Action/Execution layer.",
-  "subject_kind": "project",
-  "anchors": {
-    "any": [
-      {"op": "kind_hint", "value": "agent_system"},
-      {"op": "fact_count", "rel": "has_role", "min": 1},
-      {"op": "cue", "class": "paradigm.agent_system", "min": 2}
-    ],
-    "min_score": 0.4
+ "schema": "loom.kb.project_kind/1",
+ "id": "legal_case",
+ "version": 1,
+ "title": {
+  "en": "Legal / disciplinary case",
+  "pl": "Sprawa prawna / dyscyplinarna"
+ },
+ "description": "Several parallel proceedings across legal codes and institutions (R9): events, evidence (recordings -> transcripts, e-mails, documents) with chain of custody, institutions, actors, legal norms, claims/counts, deadlines tied to their legal basis, procedures, pleadings; verification = citation, deadline and contradiction checks. The system assists; the owner decides. Confidential: local-first, explicit control over external providers.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
   },
-  "slots": [
-    {"name": "name", "type": "string", "card": "one", "required": true, "weight": 1,
-     "bind": [{"kind": "subject", "field": "label"}]},
-    {"name": "purpose", "type": "text", "card": "one", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "has_purpose", "field": "value"}, {"kind": "items", "type": "idea", "scope": "subject", "pick": "earliest"}]},
-    {"name": "roles", "type": "entity:role", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "fact", "rel": "has_role"}, {"kind": "lexicon", "class": "role", "scope": "subject_sentences"}],
-     "infer": ["r.presets_as_data"]},
-    {"name": "tools", "type": "entity:tool", "card": "many", "weight": 1.5,
-     "bind": [{"kind": "fact", "rel": "uses_tool"}, {"kind": "lexicon", "class": "tool", "scope": "subject_sentences"}]},
-    {"name": "environments", "type": "entity:platform", "card": "many", "weight": 1,
-     "bind": [{"kind": "fact", "rel": "targets_platform"}, {"kind": "lexicon", "class": "environment", "scope": "subject_sentences"}]},
-    {"name": "memory", "type": "text", "card": "many", "weight": 1,
-     "bind": [{"kind": "lexicon", "class": "concept.memory", "scope": "subject_sentences"}]},
-    {"name": "checkpointing", "type": "text", "card": "one", "weight": 1,
-     "bind": [{"kind": "lexicon", "class": "concept.resumability", "scope": "subject_sentences"}]},
-    {"name": "status", "type": "enum:project_status", "card": "one", "required": true, "weight": 1,
-     "infer": ["r.project_status"]}
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Legal / administrative case"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4 Legal case column"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "legal_case"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.legal_case",
+    "min": 2
+   }
   ],
-  "constraints": [],
-  "render": {"title_slot": "name", "order": ["name", "purpose", "status", "roles", "tools", "environments", "memory", "checkpointing"]},
-  "extrapolate": ["x.agent_on_task_engine"]
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "desired_outcome",
+   "role": "intent",
+   "labels": {
+    "en": "Desired outcome",
+    "pl": "Oczekiwany rezultat"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "seeks",
+   "anchors": {
+    "terms": {
+     "en": [
+      "we want",
+      "goal",
+      "outcome"
+     ],
+     "pl": [
+      "chcemy",
+      "celem",
+      "wniosek o"
+     ]
+    }
+   }
+  },
+  {
+   "id": "legal_norm",
+   "role": "constraint",
+   "labels": {
+    "en": "Legal norm (code, article)",
+    "pl": "Norma prawna (kodeks, artykuł)"
+   },
+   "entity_kind": "legal_norm",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "relies_on",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "proceeding"
+    },
+    {
+     "rel": "constrains",
+     "target": "deadline"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "article",
+      "section",
+      "code of"
+     ],
+     "pl": [
+      "art.",
+      "artykuł",
+      "kodeks",
+      "ustawa",
+      "§"
+     ]
+    },
+    "lexicon": [
+     "legal_norm"
+    ]
+   }
+  },
+  {
+   "id": "procedural_rule",
+   "role": "constraint",
+   "labels": {
+    "en": "Procedural rule",
+    "pl": "Reguła proceduralna"
+   },
+   "entity_kind": "procedural_rule",
+   "card": "many",
+   "relation": "relies_on",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "procedural_step"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "procedure",
+      "time limit"
+     ],
+     "pl": [
+      "procedura",
+      "termin"
+     ]
+    }
+   }
+  },
+  {
+   "id": "proceeding",
+   "role": "part",
+   "labels": {
+    "en": "Proceeding",
+    "pl": "Postępowanie"
+   },
+   "entity_kind": "proceeding",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_proceeding",
+   "anchors": {
+    "terms": {
+     "en": [
+      "proceeding",
+      "case no"
+     ],
+     "pl": [
+      "postępowanie",
+      "sygn."
+     ]
+    }
+   }
+  },
+  {
+   "id": "count",
+   "role": "part",
+   "labels": {
+    "en": "Claim / count / charge",
+    "pl": "Zarzut / roszczenie"
+   },
+   "entity_kind": "count",
+   "card": "many",
+   "relation": "has_count",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "claim",
+      "count",
+      "charge"
+     ],
+     "pl": [
+      "zarzut",
+      "roszczenie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "party",
+   "role": "actor",
+   "labels": {
+    "en": "Party",
+    "pl": "Strona"
+   },
+   "entity_kind": "party",
+   "card": "many",
+   "relation": "has_party",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "plaintiff",
+      "defendant",
+      "party"
+     ],
+     "pl": [
+      "strona",
+      "powód",
+      "pozwany",
+      "obwiniony"
+     ]
+    }
+   }
+  },
+  {
+   "id": "institution",
+   "role": "actor",
+   "labels": {
+    "en": "Institution / judge",
+    "pl": "Instytucja / sąd / sędzia"
+   },
+   "entity_kind": "institution",
+   "card": "many",
+   "relation": "involves",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "court",
+      "commission",
+      "judge"
+     ],
+     "pl": [
+      "sąd",
+      "komisja",
+      "rzecznik",
+      "sędzia"
+     ]
+    }
+   }
+  },
+  {
+   "id": "evidence_item",
+   "role": "resource",
+   "labels": {
+    "en": "Evidence item",
+    "pl": "Dowód"
+   },
+   "entity_kind": "evidence",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "has_evidence",
+   "relations": [
+    {
+     "rel": "evidences",
+     "target": "count"
+    }
+   ],
+   "slots": [
+    {
+     "name": "content_hash",
+     "type": "string",
+     "card": "one",
+     "description": "chain of custody: sha256 of the immutable original"
+    },
+    {
+     "name": "obtained",
+     "type": "date",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "evidence",
+      "recording",
+      "e-mail",
+      "exhibit"
+     ],
+     "pl": [
+      "dowód",
+      "nagranie",
+      "mail",
+      "załącznik"
+     ]
+    }
+   }
+  },
+  {
+   "id": "channel",
+   "role": "interface",
+   "labels": {
+    "en": "Filing channel",
+    "pl": "Kanał złożenia"
+   },
+   "entity_kind": "channel",
+   "card": "many",
+   "relation": "files_via",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "institution"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "e-filing",
+      "registered mail"
+     ],
+     "pl": [
+      "epuap",
+      "list polecony",
+      "biuro podawcze"
+     ]
+    }
+   }
+  },
+  {
+   "id": "procedural_step",
+   "role": "flow",
+   "labels": {
+    "en": "Procedural sequence",
+    "pl": "Tok postępowania"
+   },
+   "entity_kind": "procedural_step",
+   "card": "many",
+   "relation": "has_step",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "proceeding"
+    },
+    {
+     "rel": "precedes",
+     "target": "procedural_step"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "appeal",
+      "next stage"
+     ],
+     "pl": [
+      "odwołanie",
+      "zażalenie",
+      "etap"
+     ]
+    }
+   }
+  },
+  {
+   "id": "hearing",
+   "role": "event",
+   "labels": {
+    "en": "Hearing / delivery",
+    "pl": "Rozprawa / doręczenie"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "hearing",
+      "served",
+      "delivered"
+     ],
+     "pl": [
+      "rozprawa",
+      "posiedzenie",
+      "doręczenie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "deadline",
+   "role": "event",
+   "labels": {
+    "en": "Deadline",
+    "pl": "Termin"
+   },
+   "entity_kind": "deadline",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "has_deadline",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "proceeding"
+    }
+   ],
+   "slots": [
+    {
+     "name": "due",
+     "type": "date",
+     "card": "one"
+    },
+    {
+     "name": "legal_basis",
+     "type": "entity:legal_norm",
+     "card": "one"
+    },
+    {
+     "name": "trigger",
+     "type": "entity:event",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "deadline",
+      "within",
+      "days"
+     ],
+     "pl": [
+      "termin",
+      "w terminie",
+      "dni"
+     ]
+    }
+   },
+   "rules": [
+    "r.deadline_from_delivery"
+   ]
+  },
+  {
+   "id": "pleading",
+   "role": "artifact",
+   "labels": {
+    "en": "Pleading / letter",
+    "pl": "Pismo procesowe / pismo"
+   },
+   "en)LOOMKB",
+    R"LOOMKB(tity_kind": "pleading",
+   "card": "many",
+   "relation": "has_pleading",
+   "relations": [
+    {
+     "rel": "cites",
+     "target": "legal_norm"
+    },
+    {
+     "rel": "responds_to",
+     "target": "hearing"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "motion",
+      "appeal",
+      "letter"
+     ],
+     "pl": [
+      "pismo",
+      "wniosek",
+      "odwołanie",
+      "skarga"
+     ]
+    }
+   }
+  },
+  {
+   "id": "transcript",
+   "role": "artifact",
+   "labels": {
+    "en": "Transcript",
+    "pl": "Transkrypcja"
+   },
+   "entity_kind": "transcript",
+   "card": "many",
+   "relation": "has_transcript",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "hearing"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "transcript"
+     ],
+     "pl": [
+      "transkrypcja",
+      "protokół"
+     ]
+    }
+   }
+  },
+  {
+   "id": "drafting",
+   "role": "transformation",
+   "labels": {
+    "en": "Drafting / filing",
+    "pl": "Redagowanie / złożenie"
+   },
+   "entity_kind": "drafting",
+   "card": "many",
+   "relation": "has_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "filed_document"
+    },
+    {
+     "rel": "consumes",
+     "target": "evidence_item"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "draft",
+      "file"
+     ],
+     "pl": [
+      "zredagować",
+      "złożyć"
+     ]
+    }
+   }
+  },
+  {
+   "id": "citation_check",
+   "role": "check",
+   "labels": {
+    "en": "Citation check",
+    "pl": "Kontrola cytatów"
+   },
+   "entity_kind": "citation_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "pleading"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "check the citation"
+     ],
+     "pl": [
+      "sprawdzić podstawę"
+     ]
+    }
+   }
+  },
+  {
+   "id": "deadline_check",
+   "role": "check",
+   "labels": {
+    "en": "Deadline check",
+    "pl": "Kontrola terminów"
+   },
+   "entity_kind": "deadline_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "deadline"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "deadline check"
+     ],
+     "pl": [
+      "pilnowanie terminów"
+     ]
+    }
+   }
+  },
+  {
+   "id": "contradiction_check",
+   "role": "check",
+   "labels": {
+    "en": "Contradiction check",
+    "pl": "Kontrola sprzeczności"
+   },
+   "entity_kind": "contradiction_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "evidence_item"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "contradiction"
+     ],
+     "pl": [
+      "sprzeczność"
+     ]
+    }
+   }
+  },
+  {
+   "id": "filed_document",
+   "role": "output",
+   "labels": {
+    "en": "Filed document / decision obtained",
+    "pl": "Złożone pismo / uzyskane rozstrzygnięcie"
+   },
+   "entity_kind": "filed_document",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "desired_outcome"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "filed",
+      "ruling"
+     ],
+     "pl": [
+      "złożone",
+      "postanowienie",
+      "wyrok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "strategy_decision",
+   "role": "decision",
+   "labels": {
+    "en": "Strategy decision",
+    "pl": "Decyzja strategiczna"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "proceeding"
+    }
+   ]
+  },
+  {
+   "id": "legal_question",
+   "role": "question",
+   "labels": {
+    "en": "Open legal question",
+    "pl": "Otwarte pytanie prawne"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "count"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "legal.c1",
+   "expr": {
+    "op": "nonempty",
+    "args": [
+     "$field:legal_basis"
+    ]
+   },
+   "on_violation": "conflict",
+   "why": "every deadline is tied to its legal basis (R9); a deadline without one is contested, never silently trusted"
+  }
+ ],
+ "rules": [
+  "r.project_status"
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks28[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.project_kind/1",
+ "id": "research",
+ "version": 1,
+ "title": {
+  "en": "Research",
+  "pl": "Badania"
+ },
+ "description": "A research line: question, hypotheses, observations, experiments, confounders, falsifiers, competing explanations (note §6 'Research').",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Research"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4 Research column"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "research"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.research",
+    "min": 2
+   }
+  ],
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "research_question",
+   "role": "intent",
+   "labels": {
+    "en": "Research question",
+    "pl": "Pytanie badawcze"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "asks",
+   "anchors": {
+    "terms": {
+     "en": [
+      "research question"
+     ],
+     "pl": [
+      "pytanie badawcze"
+     ]
+    }
+   }
+  },
+  {
+   "id": "assumption",
+   "role": "constraint",
+   "labels": {
+    "en": "Assumption / ethics",
+    "pl": "Założenie / etyka"
+   },
+   "entity_kind": "assumption",
+   "card": "many",
+   "relation": "assumes",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "assume",
+      "ethics"
+     ],
+     "pl": [
+      "zakładamy",
+      "etyka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "experiment",
+   "role": "part",
+   "labels": {
+    "en": "Experiment / study",
+    "pl": "Eksperyment / badanie"
+   },
+   "entity_kind": "experiment",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_experiment",
+   "relations": [
+    {
+     "rel": "investigates",
+     "target": "hypothesis"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "experiment",
+      "study",
+      "trial"
+     ],
+     "pl": [
+      "eksperyment",
+      "badanie",
+      "próba"
+     ]
+    }
+   }
+  },
+  {
+   "id": "researcher",
+   "role": "actor",
+   "labels": {
+    "en": "Researcher / subject",
+    "pl": "Badacz / uczestnik"
+   },
+   "entity_kind": "researcher",
+   "card": "many",
+   "relation": "involves",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "participant",
+      "researcher"
+     ],
+     "pl": [
+      "uczestnik",
+      "badacz"
+     ]
+    }
+   }
+  },
+  {
+   "id": "dataset",
+   "role": "resource",
+   "labels": {
+    "en": "Dataset / instrument",
+    "pl": "Zbiór danych / instrument"
+   },
+   "entity_kind": "dataset",
+   "card": "many",
+   "relation": "uses_dataset",
+   "relations": [
+    {
+     "rel": "evidences",
+     "target": "hypothesis"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "dataset",
+      "corpus",
+      "instrument"
+     ],
+     "pl": [
+      "zbiór danych",
+      "korpus"
+     ]
+    }
+   }
+  },
+  {
+   "id": "measurement_protocol",
+   "role": "interface",
+   "labels": {
+    "en": "Measurement protocol",
+    "pl": "Protokół pomiaru"
+   },
+   "entity_kind": "protocol",
+   "card": "many",
+   "relation": "uses_protocol",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "protocol",
+      "measurement"
+     ],
+     "pl": [
+      "protokół",
+      "pomiar"
+     ]
+    }
+   }
+  },
+  {
+   "id": "analysis_pipeline",
+   "role": "flow",
+   "labels": {
+    "en": "Analytic pipeline / causal chain",
+    "pl": "Tok analizy / łańcuch przyczynowy"
+   },
+   "entity_kind": "flow",
+   "card": "many",
+   "relation": "has_flow",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "causes",
+      "pipeline"
+     ],
+     "pl": [
+      "powoduje",
+      "potok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "run",
+   "role": "event",
+   "labels": {
+    "en": "Run / observation",
+    "pl": "Przebieg / obserwacja"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "run",
+      "observed"
+     ],
+     "pl": [
+      "przebieg",
+      "zaobserwowano"
+     ]
+    }
+   }
+  },
+  {
+   "id": "paper",
+   "role": "artifact",
+   "labels": {
+    "en": "Paper / notebook",
+    "pl": "Artykuł / notatnik"
+   },
+   "entity_kind": "paper",
+   "card": "many",
+   "relation": "has_paper",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "paper",
+      "notebook",
+      "preprint"
+     ],
+     "pl": [
+      "artykuł",
+      "notatnik"
+     ]
+    }
+   }
+  },
+  {
+   "id": "analysis",
+   "role": "transformation",
+   "labels": {
+    "en": "Analysis / simulation",
+    "pl": "Analiza / symulacja"
+   },
+   "entity_kind": "analysis",
+   "card": "many",
+   "relation": "has_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "result"
+    },
+    {
+     "rel": "consumes",
+     "target": "dataset"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "analysis",
+      "simulation"
+     ],
+     "pl": [
+      "analiza",
+      "symulacja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "falsifier",
+   "role": "check",
+   "labels": {
+    "en": "Falsifier / replication",
+    "pl": "Falsyfikator / replikacja"
+   },
+   "entity_kind": "falsifier",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "result"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "falsify",
+      "replicate",
+      "counterexample"
+     ],
+     "pl": [
+      "falsyfikacja",
+      "replikacja",
+      "kontrprzykład"
+     ]
+    }
+   }
+  },
+  {
+   "id": "result",
+   "role": "output",
+   "labels": {
+    "en": "Result / publication",
+    "pl": "Wynik / publikacja"
+   },
+   "entity_kind": "result",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "answers",
+     "target": "hypothesis"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "result",
+      "finding",
+      "publication"
+     ],
+     "pl": [
+      "wynik",
+      "publikacja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "methodological_choice",
+   "role": "decision",
+   "labels": {
+    "en": "Methodological choice",
+    "pl": "Wybór metodologiczny"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "experiment"
+    }
+   ]
+  },
+  {
+   "id": "hypothesis",
+   "role": "question",
+   "labels": {
+    "en": "Hypothesis / competing explanation",
+    "pl": "Hipoteza / konkurencyjne wyjaśnienie"
+   },
+   "entity_kind": "hypothesis",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_hypothesis",
+   "anchors": {
+    "terms": {
+     "en": [
+      "hypothesis",
+      "explanation"
+     ],
+     "pl": [
+      "hipoteza",
+      "wyjaśnienie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "confounder",
+   "role": "question",
+   "labels": {
+    "en": "Confounder",
+    "pl": "Czynnik zakłócający"
+   },
+   "entity_kind": "confounder",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "confounder",
+      "bias"
+     ],
+     "pl": [
+      "czynnik zakłócający",
+      "błąd"
+     ]
+    }
+   }
+  }
+ ],
+ "constraints": [],
+ "rules": [
+  "r.project_status"
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks29[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.facet/1",
+ "id": "multiplatform",
+ "version": 1,
+ "title": {
+  "en": "Multi-platform",
+  "pl": "Wieloplatformowość"
+ },
+ "description": "One core that runs on two or more platforms (desktop, Android, web) behind per-platform adapters. The draft paradigm multiplatform_app = software_app + this facet (model §3.5).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+   "section": "Sesja 1 (Pydroid/Android + desktop)",
+   "date": "2026-01-21"
+  },
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§1.1, §12"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.5"
+  }
+ ],
+ "applies_to": [
+  "software_app"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "claim_count",
+    "rel": "targets_platform",
+    "min": 2
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.multiplatform_app",
+    "min": 1
+   }
+  ],
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "platform",
+   "role": "resource",
+   "labels": {
+    "en": "Platform",
+    "pl": "Platforma"
+   },
+   "entity_kind": "platform",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "targets_platform",
+   "anchors": {
+    "lexicon": [
+     "platform"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "targets_platform"
+    },
+    {
+     "kind": "claim",
+     "rel": "targets_platform",
+     "via": "has_component"
+    },
+    {
+     "kind": "lexicon",
+     "class": "platform",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "r.platforms_from_codebase"
+   ]
+  },
+  {
+   "id": "platform_adapter",
+   "role": "interface",
+   "labels": {
+    "en": "Platform adapter / shell",
+    "pl": "Adapter platformy"
+   },
+   "entity_kind": "interface",
+   "card": "many",
+   "relation": "has_interface",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "jni",
+      "shell",
+      "adapter"
+     ],
+     "pl": [
+      "adapter",
+      "powłoka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "sync_transport",
+   "role": "interface",
+   "labels": {
+    "en": "Sync transport",
+    "pl": "Transport synchronizacji"
+   },
+   "entity_kind": "sync",
+   "card": "many",
+   "relation": "syncs_via",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "sync"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "syncs_via"
+    },
+    {
+     "kind": "lexicon",
+     "class": "sync",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "x.sync_transport_adapters"
+   ]
+  }
+ ],
+ "constraints": [],
+ "rules": []
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks30[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.facet/1",
+ "id": "agent",
+ "version": 1,
+ "title": {
+  "en": "Agent system",
+  "pl": "System agentowy"
+ },
+ "description": "An autonomous or semi-autonomous executor: models in roles (roles are data), tools, environments, memory, actions with checkpoints, approval gates. MEGA MASTER §1.3 maps it onto Loom's Task/Action/Execution layer.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§1.3, §4.7, §11"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.5"
+  }
+ ],
+ "applies_to": [
+  "software_app"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "agent"
+   },
+   {
+    "op": "claim_count",
+    "rel": "has_role",
+    "min": 1
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.agent_system",
+    "min": 2
+   }
+  ],
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "agent_role",
+   "role": "actor",
+   "labels": {
+    "en": "Agent role / preset",
+    "pl": "Rola agenta / preset"
+   },
+   "entity_kind": "role",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_role",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "action"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "role"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_role"
+    },
+    {
+     "kind": "lexicon",
+     "class": "role",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "r.presets_as_data"
+   ]
+  },
+  {
+   "id": "agent_tool",
+   "role": "resource",
+   "labels": {
+    "en": "Tool (browser, terminal, GUI, API)",
+    "pl": "Narzędzie agenta"
+   },
+   "entity_kind": "tool",
+   "card": "many",
+   "relation": "uses_tool",
+   "anchors": {
+    "lexicon": [
+     "tool"
+    ]
+   }
+  },
+  {
+   "id": "environment",
+   "role": "resource",
+   "labels": {
+    "en": "Execution environment",
+    "pl": "Środowisko wykonania"
+   },
+   "entity_kind": "platform",
+   "card": "many",
+   "relation": "runs_in",
+   "anchors": {
+    "lexicon": [
+     "environment"
+    ]
+   }
+  },
+  {
+   "id": "agent_memory",
+   "role": "resource",
+   "labels": {
+    "en": "Central memory",
+    "pl": "Pamięć centralna"
+   },
+   "entity_kind": "concept",
+   "card": "many",
+   "relation": "has_memory",
+   "anchors": {
+    "lexicon": [
+     "concept.memory"
+    ]
+   }
+  },
+  {
+   "id": "action",
+   "role": "event",
+   "labels": {
+    "en": "Action",
+    "pl": "Akcja"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_action",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "action",
+      "step"
+     ],
+     "pl": [
+      "akcja",
+      "krok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "plan",
+   "role": "artifact",
+   "labels": {
+    "en": "Plan / checkpoint",
+    "pl": "Plan / punkt kontrolny"
+   },
+   "entity_kind": "plan",
+   "card": "many",
+   "relation": "has_plan",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "action"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "concept.resumability"
+    ]
+   },
+   "rules": [
+    "x.agent_on_task_engine"
+   ]
+  },
+  {
+   "id": "approval_gate",
+   "role": "check",
+   "labels": {
+    "en": "Approval gate / state verification",
+    "pl": "Bramka akceptacji / weryfikacja stanu"
+   },
+   "entity_kind": "gate",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "action"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "approval",
+      "verify"
+     ],
+     "pl": [
+      "akceptacja",
+      "weryfikacja"
+     ]
+    }
+   }
+  }
+ ],
+ "constraints": [],
+ "rules": []
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks31[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.facet/1",
+ "id": "staged_transformation",
+ "version": 1,
+ "title": {
+  "en": "Staged transformation",
+  "pl": "Transformacja etapowa"
+ },
+ "description": "An ordered chain of stages from inputs to outputs. Canonical example: the 0.9.0 video refinement 'cheap -> expensive, gated, cost-estimated' (structure -> keyframes -> clips -> composition); the archive pipeline and data analysis are instances too. Reusable across kinds (model §3.5).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "TL;DR; §5 'Rafinacja etapowa'"
+  },
+  {
+   "doc": "history/chatadhd_v0.9.0/engine/video_pipeline.py",
+   "date": "2026-04-17",
+   "section": "4 phases"
+  },
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.9"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.5"
+  }
+ ],
+ "applies_to": [
+  "software_app",
+  "film",
+  "music",
+  "legal_case",
+  "research"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "claim_count",
+    "rel": "has_stage",
+    "min": 2
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.pipeline",
+    "min": 2
+   }
+  ],
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "stage",
+   "role": "transformation",
+   "labels": {
+    "en": "Stage",
+    "pl": "Etap"
+   },
+   "entity_kind": "stage",
+   "card": "list",
+   "required": true,
+   "weight": 3.0,
+   "relation": "has_stage",
+   "relations": [
+    {
+     "rel": "precedes",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "stage",
+      "phase",
+      "step"
+     ],
+     "pl": [
+      "etap",
+      "faza",
+      "krok"
+     ]
+    }
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_stage"
+    },
+    {
+     "kind": "enumeration",
+     "scope": "subject_sentences",
+     "shape": "chain"
+    }
+   ],
+   "rules": [
+    "r.pipeline_stage_order"
+   ]
+  },
+  {
+   "id": "gate",
+   "role": "check",
+   "labels": {
+    "en": "Gate",
+    "pl": "Bramka"
+   },
+   "entity_kind": "gate",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "gate",
+      "threshold"
+     ],
+     "pl": [
+      "bramka",
+      "próg"
+     ]
+    }
+   }
+  },
+  {
+   "id": "cost_estimate",
+   "role": "constraint",
+   "labels": {
+    "en": "Cost estimate / budget",
+    "pl": "Kosztorys / budżet"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "has_budget",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "cost",
+      "budget"
+     ],
+     "pl": [
+      "koszt",
+      "kosztorys"
+     ]
+    }
+   }
+  },
+  {
+   "id": "intermediate",
+   "role": "artifact",
+   "labels": {
+    "en": "Intermediate representation",
+    "pl": "Reprezentacja pośrednia"
+   },
+   "entity_kind": "ir",
+   "card": "many",
+   "relation": "has_ir",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "ir",
+      "intermediate"
+     ],
+     "pl": [
+      "reprezentacja pośrednia"
+     ]
+    }
+   }
+  },
+  {
+   "id": "checkpoint",
+   "role": "artifact",
+   "labels": {
+    "en": "Checkpoint / resumable state",
+    "pl": "Punkt kontrolny"
+   },
+   "entity_kind": "checkpoint",
+   "card": "many",
+   "relation": "has_checkpoint",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "stage"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "concept.resumability"
+    ]
+   },
+   "rules": [
+    "x.pipeline_resumable_stages"
+   ]
+  },
+  {
+   "id": "stage_input",
+   "role": "resource",
+   "labels": {
+    "en": "Input",
+    "pl": "Wejście"
+   },
+   "entity_kind": "format",
+   "card": "many",
+   "relation": "has_input",
+   "anchors": {
+    "lexicon": [
+     "format"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_input"
+    },
+    {
+     "kind": "lexicon",
+     "class": "format",
+     "scope": "subject_sentences"
+    }
+   ]
+  },
+  {
+   "id": "stage_output",
+   "role": "output",
+   "labels": {
+    "en": "Output",
+    "pl": "Wyjście"
+   },
+   "entity_kind": "format",
+   "card": "many",
+   "relation": "has_output",
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_output"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "st.c1",
+   "expr": {
+    "op": "nonempty",
+    "args": [
+     "$slot:stage"
+    ]
+   },
+   "on_violation": "reject_instance",
+   "why": "a staged transformation without a stage is not one"
+  }
+ ],
+ "rules": []
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks32[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "conversation",
+ "version": 1,
+ "title": {
+  "en": "Conversation",
+  "pl": "Rozmowa"
+ },
+ "description": "A chat conversation (ChatGPT / Claude export, imported chat): messages with roles and dates, branch forks (edited messages keep both sides).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.1, §12"
+  },
+  {
+   "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+   "section": "Sesja 1 'Branching conversations'",
+   "date": "2026-01-21"
+  }
+ ],
+ "medium": "structured",
+ "detect": {
+  "any": [
+   {
+    "op": "export_shape",
+    "value": "chatgpt"
+   },
+   {
+    "op": "export_shape",
+    "value": "claude"
+   },
+   {
+    "op": "file_ext",
+    "value": ".jsonl"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "messages",
+   "sentences",
+   "list_items",
+   "code_blocks"
+  ],
+  "observation_kinds": [
+   "utterance",
+   "sentence",
+   "list_item",
+   "code_block"
+  ]
+ },
+ "extract": [
+  {
+   "op": "items"
+  },
+  {
+   "op": "decisions"
+  },
+  {
+   "op": "forks"
+  },
+  {
+   "op": "versions"
+  },
+  {
+   "op": "status_cues"
+  },
+  {
+   "op": "normative"
+  },
+  {
+   "op": "relation_patterns"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "title",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "messages",
+   "type": "record[]",
+   "card": "list",
+   "fields": {
+    "role": {
+     "type": "string"
+    },
+    "date": {
+     "type": "date"
+    }
+   }
+  },
+  {
+   "name": "forks",
+   "type": "record[]",
+   "card": "many"
+  },
+  {
+   "name": "decisions",
+   "type": "text",
+   "card": "many"
+  },
+  {
+   "name": "open_questions",
+   "type": "text",
+   "card": "many"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks33[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "brainstorm",
+ "version": 1,
+ "title": {
+  "en": "Brainstorm",
+  "pl": "Burza mózgów"
+ },
+ "description": "An unstructured capture (R10): items of any kind (features, implementation details, principles, data sources; characters, scenes; arguments, evidence, legal bases) plus generalizations that delimit areas. Processed automatically: segment into items, detect generalizations and their areas, classify items against the roles, map into slots with provenance, deduplicate across brainstorms, infer unlisted members, flag gaps.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R10"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.7"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "cue",
+    "value": "paradigm.brainstorm"
+   },
+   {
+    "op": "heading",
+    "value": "brainstorm"
+   },
+   {
+    "op": "heading",
+    "value": "burza mózgów"
+   }
+  ],
+  "min_score": 0.35
+ },
+ "parse": {
+  "segment": [
+   "markdown_sections",
+   "list_items",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "heading",
+   "list_item",
+   "sentence"
+  ]
+ },
+ "extract": [
+  {
+   "op": "items"
+  },
+  {
+   "op": "generalizations"
+  },
+  {
+   "op": "areas"
+  },
+  {
+   "op": "normative"
+  },
+  {
+   "op": "entities_lexicon"
+  },
+  {
+   "op": "decisions"
+  },
+  {
+   "op": "status_cues"
+  }
+ ],
+ "structure": [
+  {
+   "name": "topic",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "items",
+   "type": "record[]",
+   "card": "many",
+   "required": true,
+   "description": "listed items of any kind, each classified against the project kind's roles",
+   "fields": {
+    "text": {
+     "type": "text"
+    },
+    "role": {
+     "type": "string"
+    },
+    "kind": {
+     "type": "string"
+    },
+    "observation": {
+     "type": "string"
+    }
+   }
+  },
+  {
+   "name": "generalizations",
+   "type": "record[]",
+   "card": "many",
+   "description": "umbrella statements that delimit an area ('everything is data'); each becomes a candidate principle scoped to its area",
+   "fields": {
+    "statement": {
+     "type": "text"
+    },
+    "principle": {
+     "type": "string"
+    },
+    "observation": {
+     "type": "string"
+    }
+   }
+  },
+  {
+   "name": "areas",
+   "type": "record[]",
+   "card": "many",
+   "description": "regions delimited by a generalization: roles/kinds under the subject, listed members (observed) and inferred members; an empty area is a gap (model §3.7)",
+   "fields": {
+    "statement": {
+     "type": "text"
+    },
+    "roles": {
+     "type": "string",
+     "card": "many"
+    },
+    "kinds": {
+     "type": "string",
+     "card": "many"
+    },
+    "members": {
+     "type": "string",
+     "card": "many"
+    },
+    "inferred_members": {
+     "type": "string",
+     "card": "many"
+    },
+    "gap": {
+     "type": "string"
+    }
+   }
+  },
+  {
+   "name": "options",
+   "type": "entity:option",
+   "card": "many"
+  },
+  {
+   "name": "chosen",
+   "type": "entity:option",
+   "card": "one",
+   "rules": [
+    "r.brainstorm_chosen_from_decision"
+   ]
+  },
+  {
+   "name": "rejected",
+   "type": "entity:option",
+   "card": "many",
+   "rules": [
+    "r.brainstorm_rejected_complement"
+   ]
+  },
+  {
+   "name": "open_questions",
+   "type": "text",
+   "card": "many"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks34[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "specification",
+ "version": 1,
+ "title": {
+  "en": "Specification",
+  "pl": "Specyfikacja"
+ },
+ "description": "Requirements, invariants and interfaces stated for one subject, usually under spec-like headings (MEGA MASTER, CLAUDE.md, READMEs).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.9 step 11"
+  },
+  {
+   "doc": "CLAUDE.md",
+   "date": "2026-02-19",
+   "section": "whole file"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "cue",
+    "value": "paradigm.specification"
+   },
+   {
+    "op": "heading",
+    "value": "requirements"
+   },
+   {
+    "op": "heading",
+    "value": "wymagania"
+   }
+  ],
+  "min_score": 0.4
+ },
+ "parse": {
+  "segment": [
+   "markdown_sections",
+   "list_items",
+   "sentences",
+   "code_blocks"
+  ],
+  "observation_kinds": [
+   "heading",
+   "list_item",
+   "sentence",
+   "code_block"
+  ]
+ },
+ "extract": [
+  {
+   "op": "items"
+  },
+  {
+   "op": "normative"
+  },
+  {
+   "op": "decisions"
+  },
+  {
+   "op": "entities_lexicon"
+  },
+  {
+   "op": "code_symbols"
+  }
+ ],
+ "structure": [
+  {
+   "name": "subject",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "requirements",
+   "type": "text",
+   "card": "many",
+   "required": true
+  },
+  {
+   "name": "invariants",
+   "type": "text",
+   "card": "many"
+  },
+  {
+   "name": "interfaces",
+   "type": "entity:interface",
+   "card": "many"
+  },
+  {
+   "name": "open_questions",
+   "type": "text",
+   "card": "many"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks35[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "codebase",
+ "version": 1,
+ "title": {
+  "en": "Codebase",
+  "pl": "Baza kodu"
+ },
+ "description": "A concrete source tree: a repository, a recovered snapshot (history/chatadhd_v0.9.0) or code pasted into conversations. Code is a source of knowledge too (MEGA MASTER §13).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§13"
+  },
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "Linia wersji"
+  }
+ ],
+ "medium": "code",
+ "detect": {
+  "any": [
+   {
+    "op": "path_glob",
+    "value": "**/*.py"
+   },
+   {
+    "op": "path_glob",
+    "value": "**/*.cpp"
+   },
+   {
+    "op": "path_glob",
+    "value": "**/CMakeLists.txt"
+   }
+  ],
+  "min_score": 0.3
+ },
+ "parse": {
+  "segment": [
+   "code_symbols",
+   "code_blocks"
+  ],
+  "observation_kinds": [
+   "code_block",
+   "field"
+  ]
+ },
+ "extract": [
+  {
+   "op": "code_symbols"
+  },
+  {
+   "op": "versions"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "repo",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "languages",
+   "type": "entity:language",
+   "card": "many",
+   "required": true
+  },
+  {
+   "name": "modules",
+   "type": "entity:component",
+   "card": "many",
+   "required": true
+  },
+  {
+   "name": "entry_points",
+   "type": "string",
+   "card": "many",
+   "rules": [
+    "r.entry_points_from_names"
+   ]
+  },
+  {
+   "name": "tests",
+   "type": "string",
+   "card": "many"
+  },
+  {
+   "name": "version",
+   "type": "version",
+   "card": "one"
+  },
+  {
+   "name": "files",
+   "type": "string",
+   "card": "many"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks36[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "commit",
+ "version": 1,
+ "title": {
+  "en": "Commit",
+  "pl": "Commit"
+ },
+ "description": "One commit of a git history: dated, with changed files; the unit of code lineage (nearest revision by content per file, then a vote).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.9"
+  },
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "Linia wersji"
+  }
+ ],
+ "medium": "structured",
+ "detect": {
+  "any": [
+   {
+    "op": "export_shape",
+    "value": "git_log"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "commit_fields",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "field",
+   "sentence"
+  ]
+ },
+ "extract": [
+  {
+   "op": "versions"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "dates"
+  }
+ ],
+ "structure": [
+  {
+   "name": "hash",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "date",
+   "type": "date",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "author",
+   "type": "string",
+   "card": "one"
+  },
+  {
+   "name": "subject",
+   "type": "text",
+   "card": "one"
+  },
+  {
+   "name": "files",
+   "type": "string",
+   "card": "many"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks37[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "email",
+ "version": 1,
+ "title": {
+  "en": "E-mail",
+  "pl": "E-mail"
+ },
+ "description": "An e-mail (evidence in a legal case, R9): headers, body, attachments; the original bytes stay immutable.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
+  }
+ ],
+ "medium": "structured",
+ "detect": {
+  "any": [
+   {
+    "op": "file_ext",
+    "value": ".eml"
+   },
+   {
+    "op": "file_ext",
+    "value": ".mbox"
+   },
+   {
+    "op": "mime",
+    "value": "message/rfc822"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "email_headers",
+   "sentences",
+   "list_items"
+  ],
+  "observation_kinds": [
+   "field",
+   "sentence",
+   "list_item"
+  ]
+ },
+ "extract": [
+  {
+   "op": "headers"
+  },
+  {
+   "op": "dates"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "citations"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "from",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "to",
+   "type": "string",
+   "card": "many"
+  },
+  {
+   "name": "date",
+   "type": "date",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "subject",
+   "type": "text",
+   "card": "one"
+  },
+  {
+   "name": "attachments",
+   "type": "string",
+   "card": "many"
+  },
+  {
+   "name": "content_hash",
+   "type": "string",
+   "card": "one",
+   "description": "chain of custody"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks38[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "recording_transcript",
+ "version": 1,
+ "title": {
+  "en": "Recording transcript",
+  "pl": "Transkrypcja nagrania"
+ },
+ "description": "A recording turned into timestamped utterances with speakers (R9). Observations are located by time range in the immutable original.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
+  }
+ ],
+ "medium": "audio",
+ "detect": {
+  "any": [
+   {
+    "op": "file_ext",
+    "value": ".vtt"
+   },
+   {
+    "op": "file_ext",
+    "value": ".srt"
+   },
+   {
+    "op": "mime",
+    "value": "audio/*"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "timestamped_utterances"
+  ],
+  "observation_kinds": [
+   "utterance"
+  ]
+ },
+ "extract": [
+  {
+   "op": "speakers"
+  },
+  {
+   "op": "dates"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "recording",
+   "type": "string",
+   "card": "one",
+   "required": true,
+   "description": "content hash of the original recording"
+  },
+  {
+   "name": "utterances",
+   "type": "record[]",
+   "card": "list",
+   "fields": {
+    "speaker": {
+     "type": "string"
+    },
+    "start": {
+     "type": "string"
+    },
+    "end": {
+     "type": "string"
+    },
+    "text": {
+     "type": "text"
+    }
+   }
+  },
+  {
+   "name": "speakers",
+   "type": "string",
+   "card": "many"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks39[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "screenplay",
+ "version": 1,
+ "title": {
+  "en": "Screenplay",
+  "pl": "Scenariusz"
+ },
+ "description": "A screenplay: scene headings, action lines, dialogue by character; parsed into the film kind's scenes and characters.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "history/chatadhd_v0.9.0/data/schemas/film_structure.json",
+   "date": "2026-04-17",
+   "section": "scenes, narration"
+  },
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R8"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "heading",
+    "value": "INT."
+   },
+   {
+    "op": "heading",
+    "value": "EXT."
+   },
+   {
+    "op": "cue",
+    "value": "paradigm.film"
+   }
+  ],
+  "min_score": 0.4
+ },
+ "parse": {
+  "segment": [
+   "scene_headings",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "heading",
+   "sentence",
+   "utterance"
+  ]
+ },
+ "extract": [
+  {
+   "op": "entities_lexicon"
+  },
+  {
+   "op": "speakers"
+  },
+  {
+   "op": "items"
+  }
+ ],
+ "structure": [
+  {
+   "name": "title",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "scenes",
+   "type": "record[]",
+   "card": "list",
+   "fields": {
+    "heading": {
+     "type": "text"
+    },
+    "location": {
+     "type": "string"
+    },
+    "characters": {
+     "type": "string",
+     "card": "many"
+    }
+   }
+  },
+  {
+   "name": "characters",
+   "type": "entity:character",
+   "card": "many"
+  }
+ ]
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks40[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.artifact_type/1",
+ "id": "pleading",
+ "version": 1,
+ "title": {
+  "en": "Pleading",
+  "pl": "Pismo procesowe"
+ },
+ "description": "A pleading or letter in a proceeding: requests, legal bases (citations checked against the source text), evidence referenced.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "cue",
+    "value": "paradigm.legal_case"
+   },
+   {
+    "op": "heading",
+    "value": "uzasadnienie"
+   }
+  ],
+  "min_score": 0.4
+ },
+ "parse": {
+  "segment": [
+   "numbered_paragraphs",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "list_item",
+   "sentence"
+  ]
+ },
+ "extract": [
+  {
+   "op": "citations"
+  },
+  {
+   "op": "dates"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "court",
+   "type": "string",
+   "card": "one"
+  },
+  {
+   "name": "case_no",
+   "type": "string",
+   "card": "one"
+  },
+  {
+   "name": "date",
+   "type": "date",
+   "card": "one"
+  },
+  {
+   "name": "claims",
+   "type": "text",
+   "card": "many"
+  },
+  {
+   "name": "legal_bases",
+   "type": "entity:legal_norm",
+   "card": "many"
+  },
+  {
+   "name": "evidence",
+   "type": "entity:evidence",
+   "card": "many"
+  }
+ ]
 }
 )LOOMKB",
     nullptr};
@@ -3767,21 +17166,34 @@ const EmbeddedPackFile kEmbeddedPack[] = {
     {"lexicons/version_patterns.json", kPackChunks9},
     {"lexicons/relation_patterns.json", kPackChunks10},
     {"profiles/self.json", kPackChunks11},
-    {"philosophy/seed_principles.json", kPackChunks12},
-    {"rules/inference_rules.json", kPackChunks13},
-    {"rules/checks.json", kPackChunks14},
-    {"policy/thresholds.json", kPackChunks15},
-    {"policy/relevance.json", kPackChunks16},
-    {"policy/selection_rules.json", kPackChunks17},
-    {"policy/calibration.json", kPackChunks18},
-    {"policy/evidence_encoding.json", kPackChunks19},
-    {"paradigms/multiplatform_app.json", kPackChunks20},
-    {"paradigms/pipeline.json", kPackChunks21},
-    {"paradigms/brainstorm.json", kPackChunks22},
-    {"paradigms/specification.json", kPackChunks23},
-    {"paradigms/coding_philosophy.json", kPackChunks24},
-    {"paradigms/codebase.json", kPackChunks25},
-    {"paradigms/version_history.json", kPackChunks26},
-    {"paradigms/agent_system.json", kPackChunks27},
+    {"philosophy/principles.json", kPackChunks12},
+    {"philosophy/operators.json", kPackChunks13},
+    {"rules/inference_rules.json", kPackChunks14},
+    {"rules/checks.json", kPackChunks15},
+    {"policy/thresholds.json", kPackChunks16},
+    {"policy/relevance.json", kPackChunks17},
+    {"policy/selection_rules.json", kPackChunks18},
+    {"policy/calibration.json", kPackChunks19},
+    {"policy/evidence_encoding.json", kPackChunks20},
+    {"goals/goal_types.json", kPackChunks21},
+    {"morphisms/anchoring.json", kPackChunks22},
+    {"morphisms/transfer.json", kPackChunks23},
+    {"project_kinds/software_app.json", kPackChunks24},
+    {"project_kinds/film.json", kPackChunks25},
+    {"project_kinds/music.json", kPackChunks26},
+    {"project_kinds/legal_case.json", kPackChunks27},
+    {"project_kinds/research.json", kPackChunks28},
+    {"facets/multiplatform.json", kPackChunks29},
+    {"facets/agent.json", kPackChunks30},
+    {"facets/staged_transformation.json", kPackChunks31},
+    {"artifact_types/conversation.json", kPackChunks32},
+    {"artifact_types/brainstorm.json", kPackChunks33},
+    {"artifact_types/specification.json", kPackChunks34},
+    {"artifact_types/codebase.json", kPackChunks35},
+    {"artifact_types/commit.json", kPackChunks36},
+    {"artifact_types/email.json", kPackChunks37},
+    {"artifact_types/recording_transcript.json", kPackChunks38},
+    {"artifact_types/screenplay.json", kPackChunks39},
+    {"artifact_types/pleading.json", kPackChunks40},
 };
 // NOLINTEND

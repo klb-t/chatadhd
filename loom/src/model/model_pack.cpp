@@ -96,6 +96,44 @@ Result<std::vector<Operator>> pack_operators(const kb::Pack& pack) {
   std::sort(ops.begin(), ops.end(), [](const Operator& a, const Operator& b) { return a.id < b.id; });
   return ops;
 }
+std::string earliest_source_date(const std::vector<Reference>& sources) {
+  std::string best;
+  for (const auto& r : sources) {
+    if (r.date.empty()) continue;
+    std::string d = r.date.substr(0, 10);
+    if (best.empty() || d < best) best = d;
+  }
+  return best;
+}
+
+bool prior_visible(const std::vector<Reference>& sources, const PriorFilter& filter) {
+  if (!filter.enabled) return false;
+  if (filter.as_of.empty()) return true;
+  std::string d = earliest_source_date(sources);
+  return !d.empty() && d <= filter.as_of.substr(0, 10);
+}
+
+Result<std::vector<Principle>> principles(const kb::Pack& pack, const PriorFilter& filter) {
+  LOOM_TRY_ASSIGN(auto all, principles(pack));
+  std::vector<Principle> out;
+  for (auto& p : all) {
+    if (prior_visible(p.sources, filter)) out.push_back(std::move(p));
+  }
+  return out;
+}
+
+Result<std::vector<Operator>> pack_operators(const kb::Pack& pack, const PriorFilter& filter) {
+  LOOM_TRY_ASSIGN(auto ops, all_elements<Operator>(pack, "loom.kb.operators/1", "operators"));
+  LOOM_TRY_ASSIGN(auto rules, all_elements<Operator>(pack, "loom.kb.rules/2", "rules"));
+  std::vector<Operator> out;
+  for (auto& o : ops) {
+    if (prior_visible(o.sources, filter)) out.push_back(std::move(o));
+  }
+  for (auto& r : rules) out.push_back(std::move(r));
+  std::sort(out.begin(), out.end(), [](const Operator& a, const Operator& b) { return a.id < b.id; });
+  return out;
+}
+
 Result<std::vector<Morphism>> morphisms(const kb::Pack& pack) {
   return all_elements<Morphism>(pack, "loom.kb.morphisms/1", "morphisms");
 }

@@ -1,286 +1,1206 @@
 {
-  "schema": "loom.kb.rules/1",
-  "description": "Stratified inference rules. Stratum 0 = derived (deterministic function of observed values), 1 = inferred (value + checkable expected property, confidence >= thresholds.tau_inferred), 2 = extrapolated (philosophy-driven proposals, confidence capped by thresholds.extrapolation_cap, never an input to any rule). Within a stratum rules are monotone and applied in id order, so the fixpoint is unique. Conditions, value ops and predicates are closed sets implemented in code (include/loom/kb.h); rules only combine them.",
-  "rules": [
-    {
-      "id": "r.current_version", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "multiplatform_app", "slot": "current_version"},
-      "when": {"op": "nonempty", "args": ["$slot:version_history.versions"]},
-      "value": {"op": "max_version", "args": ["$slot:version_history.versions[].version"]},
-      "confidence": {"prior": 0.95},
-      "expected_property": {
-        "expr": {"op": "version_gte", "args": ["$value", "$git_max_version"]},
-        "rationale": "the current version is the highest version observed anywhere (git, snapshots or archives); it is never older than the newest git version",
-        "confirm_if": ["a later source names the same version as current"],
-        "refute_if": ["an observed version higher than $value exists for the same lineage"]
-      },
-      "basis": {"slots": ["version_history.versions"]}
+ "schema": "loom.kb.rules/2",
+ "description": "Inference rules = operators that PRODUCE claims (LOOM_CONCEPTUAL_MODEL §3.3). Stratified: 0 derived (deterministic function of observed values), 1 inferred (value + checkable expected property), 2 extrapolated (philosophy-driven proposal, confidence capped by policy/thresholds.json paradigm.extrapolation_cap, never a premise). Targets: {paradigm (project kind | facet | artifact type), slot (domain kind / structure field)[, field]}, {temporal: versions|current_version|forks|lineage|status|part_status[, field]} or {entity_kind, attr}. References: $slot:<kind> (same instance), $slot:<paradigm>.<kind> (another paradigm's instance of the subject), $temporal:<slot>, $field:<field>, $analog:<kind>. Conditions, value ops and predicates are closed sets in code (include/loom/kb.h).",
+ "rules": [
+  {
+   "id": "r.archive_only_version",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "versions",
+    "field": "source"
+   },
+   "when": {
+    "op": "nonempty",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "value": {
+    "op": "versions_above",
+    "args": [
+     "$git_max_version"
+    ]
+   },
+   "confidence": 0.9,
+   "expected_property": {
+    "expr": {
+     "op": "version_gt",
+     "args": [
+      "$value",
+      "$git_max_version"
+     ]
     },
-    {
-      "id": "r.project_status", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "*", "slot": "status"},
-      "when": {"op": "const", "args": [true]},
-      "value": {"op": "derive_project_status", "args": ["$subject"]},
-      "confidence": {"prior": 0.8},
-      "expected_property": {
-        "expr": {"op": "in_enum", "args": ["project_status"]},
-        "rationale": "merged if a merged_into/evolved_into fact exists (merged_into = target); abandoned if an explicit abandon cue or no activity for thresholds.abandoned_after_days before corpus end without code; paused if an explicit pause cue or inactivity for thresholds.paused_after_days; active otherwise",
-        "confirm_if": ["an explicit status statement by the owner"],
-        "refute_if": ["activity after the date the status was derived from"]
+    "rationale": "a version observed in archives or snapshots but above every git version exists only in the archives (source = archive)",
+    "confirm_if": [
+     "a snapshot or attachment declaring the version"
+    ],
+    "refute_if": [
+     "a git tag or commit subject with the version"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.brainstorm_chosen_from_decision",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "brainstorm",
+    "slot": "chosen"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:chosen"
+      ]
+     },
+     {
+      "op": "has_items",
+      "args": [
+       "decision",
+       "topic"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "option_from_decision",
+    "args": [
+     "$slot:options"
+    ]
+   },
+   "confidence": 0.7,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "subset_of",
+       "args": [
+        "$value",
+        "$slot:options"
+       ]
       },
-      "basis": {"slots": [], "policy": ["thresholds.status"]}
+      {
+       "op": "not_in",
+       "args": [
+        "$value",
+        "$slot:rejected"
+       ]
+      }
+     ]
     },
-    {
-      "id": "r.component_status", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"entity_kind": "component", "attr": "status"},
-      "when": {"op": "const", "args": [true]},
-      "value": {"op": "derive_component_status", "args": ["$subject"]},
-      "confidence": {"prior": 0.8},
-      "expected_property": {
-        "expr": {"op": "in_enum", "args": ["component_status"]},
-        "rationale": "implemented = an implements fact to a declared symbol/path in some codebase; partial = code evidence covers part of the name or the code carries TODO/'nie działa' cues; superseded = target of an active supersedes fact (superseded_by = source); abandoned = on the abandoned side of a fork, or explicit abandon cue, or no mention for thresholds.abandoned_after_days and no code; planned = only future-tense cues",
-        "confirm_if": ["a declared symbol for the component appears in a later snapshot"],
-        "refute_if": ["the component is mentioned as working after being marked abandoned"]
+    "rationale": "the chosen option is the option named by the latest active decision on the topic; it must be one of the options and must not have been rejected later",
+    "confirm_if": [
+     "later conversations build on the option"
+    ],
+    "refute_if": [
+     "a later rejected_option item naming it"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "options",
+     "rejected"
+    ]
+   }
+  },
+  {
+   "id": "r.brainstorm_rejected_complement",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "brainstorm",
+    "slot": "rejected"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "nonempty",
+      "args": [
+       "$slot:chosen"
+      ]
+     },
+     {
+      "op": "empty",
+      "args": [
+       "$slot:rejected"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "complement",
+    "args": [
+     "$slot:options",
+     "$slot:chosen"
+    ]
+   },
+   "confidence": 0.55,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "subset_of",
+       "args": [
+        "$value",
+        "$slot:options"
+       ]
       },
-      "basis": {"policy": ["thresholds.status"]}
+      {
+       "op": "not_in",
+       "args": [
+        "$slot:chosen",
+        "$value"
+       ]
+      }
+     ]
     },
-    {
-      "id": "r.platforms_from_codebase", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "multiplatform_app", "slot": "platforms"},
-      "when": {"op": "empty", "args": ["$slot:platforms"]},
-      "value": {"op": "lexicon_pick", "args": ["platform", {"implied_by": "$slot:codebase.languages"}, {"implied_by": "$slot:ui_framework"}]},
-      "confidence": {"prior": 0.7},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "in_class", "args": ["platform"]}, {"op": "nonempty", "args": ["$value"]}]},
-        "rationale": "a UI framework or toolchain implies the platforms it targets (Kivy -> desktop + Android; Kotlin/JNI -> Android); the value is the union of implied platforms",
-        "confirm_if": ["a targets_platform fact for any listed platform"],
-        "refute_if": ["an explicit statement that the app does not run on a listed platform"]
-      },
-      "basis": {"slots": ["codebase.languages", "ui_framework"], "lexicons": ["gazetteer.implies"]}
+    "rationale": "when one option was chosen and the others were never revisited, they are implicitly rejected (abandoned != unimportant: they stay visible)",
+    "confirm_if": [
+     "an explicit rejection of the option"
+    ],
+    "refute_if": [
+     "the option is revived later"
+    ]
+   },
+   "principles": [
+    "p.abandoned_not_unimportant"
+   ],
+   "basis": {
+    "slots": [
+     "options",
+     "chosen"
+    ],
+    "principles": [
+     "p.abandoned_not_unimportant"
+    ]
+   }
+  },
+  {
+   "id": "r.component_status",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "entity_kind": "component",
+    "attr": "status"
+   },
+   "when": {
+    "op": "const",
+    "args": [
+     true
+    ]
+   },
+   "value": {
+    "op": "derive_component_status",
+    "args": [
+     "$subject"
+    ]
+   },
+   "confidence": 0.8,
+   "expected_property": {
+    "expr": {
+     "op": "in_enum",
+     "args": [
+      "status"
+     ]
     },
-    {
-      "id": "r.core_language_from_codebase", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "multiplatform_app", "slot": "core_language"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:core_language"]}, {"op": "nonempty", "args": ["$slot:codebase.languages"]}]},
-      "value": {"op": "codebase_field", "args": ["dominant_language", {"among": "core_modules"}]},
-      "confidence": {"prior": 0.75},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "in_class", "args": ["language"]}, {"op": "available_on", "args": ["$slot:platforms"]}, {"op": "not_contradicted_by", "args": ["decides_about"]}]},
-        "rationale": "the core language is the dominant language (by code volume) of the core modules; it must have a toolchain for every observed platform and no active decision may name another core language",
-        "confirm_if": ["a written_in fact for the subject"],
-        "refute_if": ["an active decision choosing a different core language (e.g. a migration to C++)"]
+    "rationale": "implemented = an implements fact to a declared symbol/path in some codebase; partial = code evidence covers part of the name or the code carries TODO/'nie działa' cues; superseded = target of an active supersedes fact (superseded_by = source); abandoned = on the abandoned side of a fork, or explicit abandon cue, or no mention for thresholds.abandoned_after_days and no code; planned = only future-tense cues",
+    "confirm_if": [
+     "a declared symbol for the component appears in a later snapshot"
+    ],
+    "refute_if": [
+     "the component is mentioned as working after being marked abandoned"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "policy": [
+     "thresholds.status"
+    ]
+   }
+  },
+  {
+   "id": "r.core_language_from_codebase",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "software_app",
+    "slot": "language"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:language"
+      ]
+     },
+     {
+      "op": "nonempty",
+      "args": [
+       "$slot:codebase.languages"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "codebase_field",
+    "args": [
+     "dominant_language",
+     {
+      "among": "core_modules"
+     }
+    ]
+   },
+   "confidence": 0.75,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "in_class",
+       "args": [
+        "language"
+       ]
       },
-      "basis": {"slots": ["codebase.languages", "platforms"]}
+      {
+       "op": "available_on",
+       "args": [
+        "$slot:multiplatform.platform"
+       ]
+      },
+      {
+       "op": "not_contradicted_by",
+       "args": [
+        "decides_about"
+       ]
+      }
+     ]
     },
-    {
-      "id": "r.storage_local_first", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "multiplatform_app|pipeline", "slot": "storage"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:storage"]}, {"op": "principle_active", "args": ["p.local_first"]}]},
-      "value": {"op": "lexicon_pick", "args": ["storage.embedded", {"implies": "offline_capable"}, {"available_on": "$slot:platforms"}, {"prefer": "$analog:storage"}]},
-      "confidence": {"prior": 0.65},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "in_class", "args": ["storage.embedded"]}, {"op": "consistent_with", "args": ["p.local_first"]}, {"op": "available_on", "args": ["$slot:platforms"]}, {"op": "not_in", "args": ["$value", "$rejected_values"]}]},
-        "rationale": "local-first + graceful degradation (MEGA MASTER §12) on every listed platform implies an embedded, file-based, offline-capable store; an analogous project's observed store is preferred",
-        "confirm_if": ["a stores_in fact with an embedded store"],
-        "refute_if": ["a stores_in fact with a server-only store and no local cache"]
-      },
-      "basis": {"principles": ["p.local_first", "p.kod_ne_dane"], "slots": ["platforms"]}
+    "rationale": "the core language is the dominant language (by code volume) of the core modules; it must have a toolchain for every observed platform and no active decision may name another core language",
+    "confirm_if": [
+     "a written_in fact for the subject"
+    ],
+    "refute_if": [
+     "an active decision choosing a different core language (e.g. a migration to C++)"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "codebase.languages",
+     "multiplatform.platform"
+    ]
+   }
+  },
+  {
+   "id": "r.current_version",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "current_version"
+   },
+   "when": {
+    "op": "nonempty",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "value": {
+    "op": "max_version",
+    "args": [
+     "$temporal:versions[].version"
+    ]
+   },
+   "confidence": 0.95,
+   "expected_property": {
+    "expr": {
+     "op": "version_gte",
+     "args": [
+      "$value",
+      "$git_max_version"
+     ]
     },
-    {
-      "id": "r.pipeline_stage_order", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "pipeline", "slot": "stages"},
-      "when": {"op": "has_fact", "args": ["next_stage"]},
-      "value": {"op": "order_chain", "args": ["$slot:stages", "next_stage"]},
-      "confidence": {"prior": 0.85},
-      "expected_property": {
-        "expr": {"op": "nonempty", "args": ["$value"]},
-        "rationale": "stages are ordered by next_stage facts (A -> B -> C, numbered lists); unordered stages keep first-mention order",
-        "confirm_if": ["a second source lists the stages in the same order"],
-        "refute_if": ["a next_stage fact that creates a cycle"]
-      },
-      "basis": {"slots": ["stages"]}
+    "rationale": "the current version is the highest version observed anywhere (git, snapshots or archives); it is never older than the newest git version",
+    "confirm_if": [
+     "a later source names the same version as current"
+    ],
+    "refute_if": [
+     "an observed version higher than $value exists for the same lineage"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "temporal.versions"
+    ]
+   }
+  },
+  {
+   "id": "r.deadline_from_delivery",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "paradigm": "legal_case",
+    "slot": "deadline",
+    "field": "due"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "nonempty",
+      "args": [
+       "$field:trigger"
+      ]
+     },
+     {
+      "op": "nonempty",
+      "args": [
+       "$field:legal_basis"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "date_add",
+    "args": [
+     "$field:trigger",
+     "$field:legal_basis"
+    ]
+   },
+   "confidence": 0.9,
+   "expected_property": {
+    "expr": {
+     "op": "date_between",
+     "args": [
+      "$field:trigger",
+      "$value"
+     ]
     },
+    "rationale": "a procedural deadline is computed from the dated triggering event (delivery, hearing) and the period its legal basis states (data on the legal_norm entity: days, calendar, holiday rule); computed conservatively (earliest possible due date) and never without its legal basis (R9)",
+    "confirm_if": [
+     "the institution states the same due date"
+    ],
+    "refute_if": [
+     "a later delivery date of the same document",
+     "a different period in the cited article"
+    ]
+   },
+   "principles": [
+    "p.explicit_uncertainty",
+    "p.provenance"
+   ],
+   "basis": {
+    "slots": [
+     "legal_case.deadline"
+    ],
+    "policy": [
+     "legal_norm.attrs.period"
+    ]
+   },
+   "sources": [
     {
-      "id": "r.brainstorm_chosen_from_decision", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "brainstorm", "slot": "chosen"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:chosen"]}, {"op": "has_items", "args": ["decision", "topic"]}]},
-      "value": {"op": "option_from_decision", "args": ["$slot:options"]},
-      "confidence": {"prior": 0.7},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "subset_of", "args": ["$value", "$slot:options"]}, {"op": "not_in", "args": ["$value", "$slot:rejected"]}]},
-        "rationale": "the chosen option is the option named by the latest active decision on the topic; it must be one of the options and must not have been rejected later",
-        "confirm_if": ["later conversations build on the option"],
-        "refute_if": ["a later rejected_option item naming it"]
-      },
-      "basis": {"slots": ["options", "rejected"]}
-    },
-    {
-      "id": "r.brainstorm_rejected_complement", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "brainstorm", "slot": "rejected"},
-      "when": {"op": "all", "args": [{"op": "nonempty", "args": ["$slot:chosen"]}, {"op": "empty", "args": ["$slot:rejected"]}]},
-      "value": {"op": "complement", "args": ["$slot:options", "$slot:chosen"]},
-      "confidence": {"prior": 0.55},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "subset_of", "args": ["$value", "$slot:options"]}, {"op": "not_in", "args": ["$slot:chosen", "$value"]}]},
-        "rationale": "when one option was chosen and the others were never revisited, they are implicitly rejected (abandoned != unimportant: they stay visible)",
-        "confirm_if": ["an explicit rejection of the option"],
-        "refute_if": ["the option is revived later"]
-      },
-      "basis": {"slots": ["options", "chosen"], "principles": ["p.abandoned_not_unimportant"]}
-    },
-    {
-      "id": "r.spec_interfaces_from_code", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "specification", "slot": "interfaces"},
-      "when": {"op": "empty", "args": ["$slot:interfaces"]},
-      "value": {"op": "codebase_field", "args": ["interfaces", {"mentioned_with": "$subject"}]},
-      "confidence": {"prior": 0.6},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "matches", "args": ["^I?[A-Z][A-Za-z0-9]+$"]}, {"op": "exists_symbol", "args": ["$value"]}]},
-        "rationale": "interfaces of a specified subject are the declared abstract types whose names co-occur with the subject",
-        "confirm_if": ["the spec names the interface"],
-        "refute_if": ["the symbol is removed from the codebase"]
-      },
-      "basis": {"slots": ["codebase.modules"]}
-    },
-    {
-      "id": "r.entry_points_from_names", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "codebase", "slot": "entry_points"},
-      "when": {"op": "empty", "args": ["$slot:entry_points"]},
-      "value": {"op": "codebase_field", "args": ["files", {"name_in_class": "entry_point_file"}]},
-      "confidence": {"prior": 0.9},
-      "expected_property": {
-        "expr": {"op": "in_class", "args": ["entry_point_file"]},
-        "rationale": "files named like entry points (main.py, main.cpp, MainActivity.kt, server main) are entry points",
-        "confirm_if": ["the file defines main / an App subclass"],
-        "refute_if": []
-      },
-      "basis": {"lexicons": ["gazetteer.entry_point_file"]}
-    },
-    {
-      "id": "r.archive_only_version", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "source"},
-      "when": {"op": "nonempty", "args": ["$slot:versions"]},
-      "value": {"op": "versions_above", "args": ["$git_max_version"]},
-      "confidence": {"prior": 0.9},
-      "expected_property": {
-        "expr": {"op": "version_gt", "args": ["$value", "$git_max_version"]},
-        "rationale": "a version observed in archives or snapshots but above every git version exists only in the archives (source = archive)",
-        "confirm_if": ["a snapshot or attachment declaring the version"],
-        "refute_if": ["a git tag or commit subject with the version"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_date_first_mention", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "date"},
-      "when": {"op": "empty", "args": ["$field:date"]},
-      "value": {"op": "first_mention_date", "args": ["$field:version"]},
-      "confidence": {"prior": 0.6},
-      "expected_property": {
-        "expr": {"op": "date_between", "args": ["$prev_version_date", "$next_version_date"]},
-        "rationale": "an undated version is dated by its first anchored mention; the date must lie between the neighbouring versions of the same lineage",
-        "confirm_if": ["a snapshot file date or commit date for the version"],
-        "refute_if": ["a mention of the version as existing before the inferred date"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_features_comention", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "features"},
-      "when": {"op": "empty", "args": ["$field:features"]},
-      "value": {"op": "comentioned_components", "args": ["$field:version", {"window": "unit"}]},
-      "confidence": {"prior": 0.5},
-      "expected_property": {
-        "expr": {"op": "co_mentioned_with", "args": ["$field:version", "unit"]},
-        "rationale": "components introduced or discussed in the same conversation unit as an anchored version mention are its features",
-        "confirm_if": ["an introduced_in fact"],
-        "refute_if": ["the component exists in an older version's snapshot"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_base", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "version_history", "slot": "versions", "field": "base"},
-      "when": {"op": "empty", "args": ["$field:base"]},
-      "value": {"op": "base_version", "args": ["$field:version"]},
-      "confidence": {"prior": 0.6},
-      "expected_property": {
-        "expr": {"op": "version_gt", "args": ["$field:version", "$value"]},
-        "rationale": "the base of a version is (a) an explicit based_on/'na bazie' statement, (b) the version whose snapshot shares the most unchanged files, (c) the latest version mentioned earlier; a base is always lower",
-        "confirm_if": ["an explicit based_on statement"],
-        "refute_if": ["the snapshot contains changes only present in a different line"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.version_forks", "version": 1, "stratum": 0, "produces": "derived",
-      "target": {"paradigm": "version_history", "slot": "forks"},
-      "when": {"op": "nonempty", "args": ["$slot:versions"]},
-      "value": {"op": "version_forks", "args": ["$slot:versions"]},
-      "confidence": {"prior": 0.8},
-      "expected_property": {
-        "expr": {"op": "nonempty", "args": ["$value"]},
-        "rationale": "two or more versions with the same base form a fork in the version DAG (e.g. 0.8.x and 0.9.0 both based on 0.7.10)",
-        "confirm_if": ["an explicit statement that the lines diverged"],
-        "refute_if": ["one line contains the other's changes"]
-      },
-      "basis": {"slots": ["versions"]}
-    },
-    {
-      "id": "r.presets_as_data", "version": 1, "stratum": 1, "produces": "inferred",
-      "target": {"paradigm": "agent_system", "slot": "roles"},
-      "when": {"op": "all", "args": [{"op": "nonempty", "args": ["$slot:roles"]}, {"op": "principle_active", "args": ["p.presets_are_data"]}]},
-      "value": {"op": "slot", "args": ["$slot:roles"]},
-      "confidence": {"prior": 0.7},
-      "expected_property": {
-        "expr": {"op": "consistent_with", "args": ["p.presets_are_data"]},
-        "rationale": "roles such as junior_dev/senior_dev/researcher are policy bundles defined as data, never classes (MEGA MASTER §4.7, §11)",
-        "confirm_if": ["roles defined in a data file"],
-        "refute_if": ["a role hard-coded as a class or enum"]
-      },
-      "basis": {"principles": ["p.presets_are_data"]}
-    },
-    {
-      "id": "x.sync_transport_adapters", "version": 1, "stratum": 2, "produces": "extrapolated",
-      "target": {"paradigm": "multiplatform_app", "slot": "sync"},
-      "when": {"op": "all", "args": [{"op": "empty", "args": ["$slot:sync"]}, {"op": "principle_active", "args": ["p.local_first"]}]},
-      "value": {"op": "principle_template", "args": ["ISyncTransport adapters: local files, zero-knowledge server, Google Drive (MEGA MASTER §4.12)"]},
-      "confidence": {"prior": 0.4},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "consistent_with", "args": ["p.local_first"]}, {"op": "consistent_with", "args": ["p.capability_not_enum"]}]},
-        "rationale": "sync is a contract with swappable adapters; local-first means the app works without any of them",
-        "confirm_if": ["an owner decision on sync"],
-        "refute_if": ["an owner decision against sync"]
-      },
-      "basis": {"principles": ["p.local_first", "p.capability_not_enum"]}
-    },
-    {
-      "id": "x.pipeline_resumable_stages", "version": 1, "stratum": 2, "produces": "extrapolated",
-      "target": {"paradigm": "pipeline", "slot": "checkpointing"},
-      "when": {"op": "empty", "args": ["$slot:checkpointing"]},
-      "value": {"op": "principle_template", "args": ["every stage is a TaskEngine task with input/output hashes and a checkpoint; intermediate representations are content-addressed artifacts"]},
-      "confidence": {"prior": 0.45},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "consistent_with", "args": ["p.resumable_auditable"]}, {"op": "consistent_with", "args": ["p.raw_immutable"]}]},
-        "rationale": "constitution G: everything significant is resumable and auditable",
-        "confirm_if": ["the pipeline is ported onto the TaskEngine"],
-        "refute_if": []
-      },
-      "basis": {"principles": ["p.resumable_auditable", "p.raw_immutable"]}
-    },
-    {
-      "id": "x.agent_on_task_engine", "version": 1, "stratum": 2, "produces": "extrapolated",
-      "target": {"paradigm": "agent_system", "slot": "checkpointing"},
-      "when": {"op": "empty", "args": ["$slot:checkpointing"]},
-      "value": {"op": "principle_template", "args": ["agent actions are Task/Action records with checkpoint/retry/rollback on the Loom TaskEngine; roles are data (MEGA MASTER §1.3, §4.7)"]},
-      "confidence": {"prior": 0.45},
-      "expected_property": {
-        "expr": {"op": "all", "args": [{"op": "consistent_with", "args": ["p.resumable_auditable"]}, {"op": "consistent_with", "args": ["p.presets_are_data"]}]},
-        "rationale": "the historical agent becomes Loom's execution layer, not a separate application",
-        "confirm_if": ["an agent task kind registered on the TaskEngine"],
-        "refute_if": []
-      },
-      "basis": {"principles": ["p.resumable_auditable", "p.presets_are_data"]}
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R9 'pilnowanie terminów'"
     }
-  ]
+   ]
+  },
+  {
+   "id": "r.entry_points_from_names",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "paradigm": "codebase",
+    "slot": "entry_points"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:entry_points"
+    ]
+   },
+   "value": {
+    "op": "codebase_field",
+    "args": [
+     "files",
+     {
+      "name_in_class": "entry_point_file"
+     }
+    ]
+   },
+   "confidence": 0.9,
+   "expected_property": {
+    "expr": {
+     "op": "in_class",
+     "args": [
+      "entry_point_file"
+     ]
+    },
+    "rationale": "files named like entry points (main.py, main.cpp, MainActivity.kt, server main) are entry points",
+    "confirm_if": [
+     "the file defines main / an App subclass"
+    ],
+    "refute_if": []
+   },
+   "principles": [],
+   "basis": {
+    "lexicons": [
+     "gazetteer.entry_point_file"
+    ]
+   }
+  },
+  {
+   "id": "r.pipeline_stage_order",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "paradigm": "staged_transformation",
+    "slot": "stage"
+   },
+   "when": {
+    "op": "has_claim",
+    "args": [
+     "next_stage"
+    ]
+   },
+   "value": {
+    "op": "order_chain",
+    "args": [
+     "$slot:stage",
+     "next_stage"
+    ]
+   },
+   "confidence": 0.85,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$value"
+     ]
+    },
+    "rationale": "stages are ordered by next_stage facts (A -> B -> C, numbered lists); unordered stages keep first-mention order",
+    "confirm_if": [
+     "a second source lists the stages in the same order"
+    ],
+    "refute_if": [
+     "a next_stage fact that creates a cycle"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "stages"
+    ]
+   }
+  },
+  {
+   "id": "r.platforms_from_codebase",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "multiplatform",
+    "slot": "platform"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:platform"
+    ]
+   },
+   "value": {
+    "op": "lexicon_pick",
+    "args": [
+     "platform",
+     {
+      "implied_by": "$slot:codebase.languages"
+     },
+     {
+      "implied_by": "$slot:software_app.ui_framework"
+     }
+    ]
+   },
+   "confidence": 0.7,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "in_class",
+       "args": [
+        "platform"
+       ]
+      },
+      {
+       "op": "nonempty",
+       "args": [
+        "$value"
+       ]
+      }
+     ]
+    },
+    "rationale": "a UI framework or toolchain implies the platforms it targets (Kivy -> desktop + Android; Kotlin/JNI -> Android); the value is the union of implied platforms",
+    "confirm_if": [
+     "a targets_platform fact for any listed platform"
+    ],
+    "refute_if": [
+     "an explicit statement that the app does not run on a listed platform"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "codebase.languages",
+     "software_app.ui_framework"
+    ],
+    "lexicons": [
+     "gazetteer.implies"
+    ]
+   }
+  },
+  {
+   "id": "r.presets_as_data",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "agent",
+    "slot": "agent_role"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "nonempty",
+      "args": [
+       "$slot:agent_role"
+      ]
+     },
+     {
+      "op": "principle_active",
+      "args": [
+       "p.presets_are_data"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "slot",
+    "args": [
+     "$slot:agent_role"
+    ]
+   },
+   "confidence": 0.7,
+   "expected_property": {
+    "expr": {
+     "op": "consistent_with",
+     "args": [
+      "p.presets_are_data"
+     ]
+    },
+    "rationale": "roles such as junior_dev/senior_dev/researcher are policy bundles defined as data, never classes (MEGA MASTER §4.7, §11)",
+    "confirm_if": [
+     "roles defined in a data file"
+    ],
+    "refute_if": [
+     "a role hard-coded as a class or enum"
+    ]
+   },
+   "principles": [
+    "p.presets_are_data"
+   ],
+   "basis": {
+    "principles": [
+     "p.presets_are_data"
+    ]
+   }
+  },
+  {
+   "id": "r.project_status",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "status"
+   },
+   "when": {
+    "op": "const",
+    "args": [
+     true
+    ]
+   },
+   "value": {
+    "op": "derive_project_status",
+    "args": [
+     "$subject"
+    ]
+   },
+   "confidence": 0.8,
+   "expected_property": {
+    "expr": {
+     "op": "in_enum",
+     "args": [
+      "project_status"
+     ]
+    },
+    "rationale": "merged if a merged_into/evolved_into fact exists (merged_into = target); abandoned if an explicit abandon cue or no activity for thresholds.abandoned_after_days before corpus end without code; paused if an explicit pause cue or inactivity for thresholds.paused_after_days; active otherwise",
+    "confirm_if": [
+     "an explicit status statement by the owner"
+    ],
+    "refute_if": [
+     "activity after the date the status was derived from"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [],
+    "policy": [
+     "thresholds.status"
+    ]
+   }
+  },
+  {
+   "id": "r.spec_interfaces_from_code",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "software_app",
+    "slot": "interface"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:interface"
+    ]
+   },
+   "value": {
+    "op": "codebase_field",
+    "args": [
+     "interfaces",
+     {
+      "mentioned_with": "$subject"
+     }
+    ]
+   },
+   "confidence": 0.6,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "matches",
+       "args": [
+        "^I?[A-Z][A-Za-z0-9]+$"
+       ]
+      },
+      {
+       "op": "exists_symbol",
+       "args": [
+        "$value"
+       ]
+      }
+     ]
+    },
+    "rationale": "interfaces of a specified subject are the declared abstract types whose names co-occur with the subject",
+    "confirm_if": [
+     "the spec names the interface"
+    ],
+    "refute_if": [
+     "the symbol is removed from the codebase"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "codebase.modules"
+    ]
+   }
+  },
+  {
+   "id": "r.storage_local_first",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "paradigm": "software_app",
+    "slot": "store"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:store"
+      ]
+     },
+     {
+      "op": "principle_active",
+      "args": [
+       "p.local_first"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "lexicon_pick",
+    "args": [
+     "storage.embedded",
+     {
+      "implies": "offline_capable"
+     },
+     {
+      "available_on": "$slot:multiplatform.platform"
+     },
+     {
+      "prefer": "$analog:store"
+     }
+    ]
+   },
+   "confidence": 0.65,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "in_class",
+       "args": [
+        "storage.embedded"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.local_first"
+       ]
+      },
+      {
+       "op": "available_on",
+       "args": [
+        "$slot:multiplatform.platform"
+       ]
+      },
+      {
+       "op": "not_in",
+       "args": [
+        "$value",
+        "$rejected_values"
+       ]
+      }
+     ]
+    },
+    "rationale": "local-first + graceful degradation (MEGA MASTER §12) on every listed platform implies an embedded, file-based, offline-capable store; an analogous project's observed store is preferred",
+    "confirm_if": [
+     "a stores_in fact with an embedded store"
+    ],
+    "refute_if": [
+     "a stores_in fact with a server-only store and no local cache"
+    ]
+   },
+   "principles": [
+    "p.local_first",
+    "p.kod_ne_dane"
+   ],
+   "basis": {
+    "principles": [
+     "p.local_first",
+     "p.kod_ne_dane"
+    ],
+    "slots": [
+     "multiplatform.platform"
+    ]
+   }
+  },
+  {
+   "id": "r.version_base",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "temporal": "versions",
+    "field": "base"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$field:base"
+    ]
+   },
+   "value": {
+    "op": "base_version",
+    "args": [
+     "$field:version"
+    ]
+   },
+   "confidence": 0.6,
+   "expected_property": {
+    "expr": {
+     "op": "version_gt",
+     "args": [
+      "$field:version",
+      "$value"
+     ]
+    },
+    "rationale": "the base of a version is (a) an explicit based_on/'na bazie' statement, (b) the version whose snapshot shares the most unchanged files, (c) the latest version mentioned earlier; a base is always lower",
+    "confirm_if": [
+     "an explicit based_on statement"
+    ],
+    "refute_if": [
+     "the snapshot contains changes only present in a different line"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.version_date_first_mention",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "temporal": "versions",
+    "field": "date"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$field:date"
+    ]
+   },
+   "value": {
+    "op": "first_mention_date",
+    "args": [
+     "$field:version"
+    ]
+   },
+   "confidence": 0.6,
+   "expected_property": {
+    "expr": {
+     "op": "date_between",
+     "args": [
+      "$prev_version_date",
+      "$next_version_date"
+     ]
+    },
+    "rationale": "an undated version is dated by its first anchored mention; the date must lie between the neighbouring versions of the same lineage",
+    "confirm_if": [
+     "a snapshot file date or commit date for the version"
+    ],
+    "refute_if": [
+     "a mention of the version as existing before the inferred date"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.version_features_comention",
+   "version": 1,
+   "stratum": 1,
+   "produces": "inferred",
+   "target": {
+    "temporal": "versions",
+    "field": "features"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$field:features"
+    ]
+   },
+   "value": {
+    "op": "comentioned_components",
+    "args": [
+     "$field:version",
+     {
+      "window": "unit"
+     }
+    ]
+   },
+   "confidence": 0.5,
+   "expected_property": {
+    "expr": {
+     "op": "co_mentioned_with",
+     "args": [
+      "$field:version",
+      "unit"
+     ]
+    },
+    "rationale": "components introduced or discussed in the same conversation unit as an anchored version mention are its features",
+    "confirm_if": [
+     "an introduced_in fact"
+    ],
+    "refute_if": [
+     "the component exists in an older version's snapshot"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "r.version_forks",
+   "version": 1,
+   "stratum": 0,
+   "produces": "derived",
+   "target": {
+    "temporal": "forks"
+   },
+   "when": {
+    "op": "nonempty",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "value": {
+    "op": "version_forks",
+    "args": [
+     "$temporal:versions"
+    ]
+   },
+   "confidence": 0.8,
+   "expected_property": {
+    "expr": {
+     "op": "nonempty",
+     "args": [
+      "$value"
+     ]
+    },
+    "rationale": "two or more versions with the same base form a fork in the version DAG (e.g. 0.8.x and 0.9.0 both based on 0.7.10)",
+    "confirm_if": [
+     "an explicit statement that the lines diverged"
+    ],
+    "refute_if": [
+     "one line contains the other's changes"
+    ]
+   },
+   "principles": [],
+   "basis": {
+    "slots": [
+     "versions"
+    ]
+   }
+  },
+  {
+   "id": "x.agent_on_task_engine",
+   "version": 1,
+   "stratum": 2,
+   "produces": "extrapolated",
+   "target": {
+    "paradigm": "agent",
+    "slot": "plan"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:plan"
+    ]
+   },
+   "value": {
+    "op": "principle_template",
+    "args": [
+     "agent actions are Task/Action records with checkpoint/retry/rollback on the Loom TaskEngine; roles are data (MEGA MASTER §1.3, §4.7)"
+    ]
+   },
+   "confidence": 0.45,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.resumable_auditable"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.presets_are_data"
+       ]
+      }
+     ]
+    },
+    "rationale": "the historical agent becomes Loom's execution layer, not a separate application",
+    "confirm_if": [
+     "an agent task kind registered on the TaskEngine"
+    ],
+    "refute_if": []
+   },
+   "principles": [
+    "p.resumable_auditable",
+    "p.presets_are_data"
+   ],
+   "basis": {
+    "principles": [
+     "p.resumable_auditable",
+     "p.presets_are_data"
+    ]
+   }
+  },
+  {
+   "id": "x.pipeline_resumable_stages",
+   "version": 1,
+   "stratum": 2,
+   "produces": "extrapolated",
+   "target": {
+    "paradigm": "staged_transformation",
+    "slot": "checkpoint"
+   },
+   "when": {
+    "op": "empty",
+    "args": [
+     "$slot:checkpoint"
+    ]
+   },
+   "value": {
+    "op": "principle_template",
+    "args": [
+     "every stage is a TaskEngine task with input/output hashes and a checkpoint; intermediate representations are content-addressed artifacts"
+    ]
+   },
+   "confidence": 0.45,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.resumable_auditable"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.raw_immutable"
+       ]
+      }
+     ]
+    },
+    "rationale": "constitution G: everything significant is resumable and auditable",
+    "confirm_if": [
+     "the pipeline is ported onto the TaskEngine"
+    ],
+    "refute_if": []
+   },
+   "principles": [
+    "p.resumable_auditable",
+    "p.raw_immutable"
+   ],
+   "basis": {
+    "principles": [
+     "p.resumable_auditable",
+     "p.raw_immutable"
+    ]
+   }
+  },
+  {
+   "id": "x.sync_transport_adapters",
+   "version": 1,
+   "stratum": 2,
+   "produces": "extrapolated",
+   "target": {
+    "paradigm": "multiplatform",
+    "slot": "sync_transport"
+   },
+   "when": {
+    "op": "all",
+    "args": [
+     {
+      "op": "empty",
+      "args": [
+       "$slot:sync_transport"
+      ]
+     },
+     {
+      "op": "principle_active",
+      "args": [
+       "p.local_first"
+      ]
+     }
+    ]
+   },
+   "value": {
+    "op": "principle_template",
+    "args": [
+     "ISyncTransport adapters: local files, zero-knowledge server, Google Drive (MEGA MASTER §4.12)"
+    ]
+   },
+   "confidence": 0.4,
+   "expected_property": {
+    "expr": {
+     "op": "all",
+     "args": [
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.local_first"
+       ]
+      },
+      {
+       "op": "consistent_with",
+       "args": [
+        "p.capability_not_enum"
+       ]
+      }
+     ]
+    },
+    "rationale": "sync is a contract with swappable adapters; local-first means the app works without any of them",
+    "confirm_if": [
+     "an owner decision on sync"
+    ],
+    "refute_if": [
+     "an owner decision against sync"
+    ]
+   },
+   "principles": [
+    "p.local_first",
+    "p.capability_not_enum"
+   ],
+   "basis": {
+    "principles": [
+     "p.local_first",
+     "p.capability_not_enum"
+    ]
+   }
+  }
+ ]
 }

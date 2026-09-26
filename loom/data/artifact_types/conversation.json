@@ -1,0 +1,118 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "conversation",
+ "version": 1,
+ "title": {
+  "en": "Conversation",
+  "pl": "Rozmowa"
+ },
+ "description": "A chat conversation (ChatGPT / Claude export, imported chat): messages with roles and dates, branch forks (edited messages keep both sides).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.1, §12"
+  },
+  {
+   "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+   "section": "Sesja 1 'Branching conversations'",
+   "date": "2026-01-21"
+  }
+ ],
+ "medium": "structured",
+ "detect": {
+  "any": [
+   {
+    "op": "export_shape",
+    "value": "chatgpt"
+   },
+   {
+    "op": "export_shape",
+    "value": "claude"
+   },
+   {
+    "op": "file_ext",
+    "value": ".jsonl"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "messages",
+   "sentences",
+   "list_items",
+   "code_blocks"
+  ],
+  "observation_kinds": [
+   "utterance",
+   "sentence",
+   "list_item",
+   "code_block"
+  ]
+ },
+ "extract": [
+  {
+   "op": "items"
+  },
+  {
+   "op": "decisions"
+  },
+  {
+   "op": "forks"
+  },
+  {
+   "op": "versions"
+  },
+  {
+   "op": "status_cues"
+  },
+  {
+   "op": "normative"
+  },
+  {
+   "op": "relation_patterns"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "title",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "messages",
+   "type": "record[]",
+   "card": "list",
+   "fields": {
+    "role": {
+     "type": "string"
+    },
+    "date": {
+     "type": "date"
+    }
+   }
+  },
+  {
+   "name": "forks",
+   "type": "record[]",
+   "card": "many"
+  },
+  {
+   "name": "decisions",
+   "type": "text",
+   "card": "many"
+  },
+  {
+   "name": "open_questions",
+   "type": "text",
+   "card": "many"
+  }
+ ]
+}

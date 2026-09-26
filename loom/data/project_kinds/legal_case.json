@@ -1,0 +1,715 @@
+{
+ "schema": "loom.kb.project_kind/1",
+ "id": "legal_case",
+ "version": 1,
+ "title": {
+  "en": "Legal / disciplinary case",
+  "pl": "Sprawa prawna / dyscyplinarna"
+ },
+ "description": "Several parallel proceedings across legal codes and institutions (R9): events, evidence (recordings -> transcripts, e-mails, documents) with chain of custody, institutions, actors, legal norms, claims/counts, deadlines tied to their legal basis, procedures, pleadings; verification = citation, deadline and contradiction checks. The system assists; the owner decides. Confidential: local-first, explicit control over external providers.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R9"
+  },
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Legal / administrative case"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4 Legal case column"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "legal_case"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.legal_case",
+    "min": 2
+   }
+  ],
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "desired_outcome",
+   "role": "intent",
+   "labels": {
+    "en": "Desired outcome",
+    "pl": "Oczekiwany rezultat"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "seeks",
+   "anchors": {
+    "terms": {
+     "en": [
+      "we want",
+      "goal",
+      "outcome"
+     ],
+     "pl": [
+      "chcemy",
+      "celem",
+      "wniosek o"
+     ]
+    }
+   }
+  },
+  {
+   "id": "legal_norm",
+   "role": "constraint",
+   "labels": {
+    "en": "Legal norm (code, article)",
+    "pl": "Norma prawna (kodeks, artykuł)"
+   },
+   "entity_kind": "legal_norm",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "relies_on",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "proceeding"
+    },
+    {
+     "rel": "constrains",
+     "target": "deadline"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "article",
+      "section",
+      "code of"
+     ],
+     "pl": [
+      "art.",
+      "artykuł",
+      "kodeks",
+      "ustawa",
+      "§"
+     ]
+    },
+    "lexicon": [
+     "legal_norm"
+    ]
+   }
+  },
+  {
+   "id": "procedural_rule",
+   "role": "constraint",
+   "labels": {
+    "en": "Procedural rule",
+    "pl": "Reguła proceduralna"
+   },
+   "entity_kind": "procedural_rule",
+   "card": "many",
+   "relation": "relies_on",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "procedural_step"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "procedure",
+      "time limit"
+     ],
+     "pl": [
+      "procedura",
+      "termin"
+     ]
+    }
+   }
+  },
+  {
+   "id": "proceeding",
+   "role": "part",
+   "labels": {
+    "en": "Proceeding",
+    "pl": "Postępowanie"
+   },
+   "entity_kind": "proceeding",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_proceeding",
+   "anchors": {
+    "terms": {
+     "en": [
+      "proceeding",
+      "case no"
+     ],
+     "pl": [
+      "postępowanie",
+      "sygn."
+     ]
+    }
+   }
+  },
+  {
+   "id": "count",
+   "role": "part",
+   "labels": {
+    "en": "Claim / count / charge",
+    "pl": "Zarzut / roszczenie"
+   },
+   "entity_kind": "count",
+   "card": "many",
+   "relation": "has_count",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "claim",
+      "count",
+      "charge"
+     ],
+     "pl": [
+      "zarzut",
+      "roszczenie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "party",
+   "role": "actor",
+   "labels": {
+    "en": "Party",
+    "pl": "Strona"
+   },
+   "entity_kind": "party",
+   "card": "many",
+   "relation": "has_party",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "plaintiff",
+      "defendant",
+      "party"
+     ],
+     "pl": [
+      "strona",
+      "powód",
+      "pozwany",
+      "obwiniony"
+     ]
+    }
+   }
+  },
+  {
+   "id": "institution",
+   "role": "actor",
+   "labels": {
+    "en": "Institution / judge",
+    "pl": "Instytucja / sąd / sędzia"
+   },
+   "entity_kind": "institution",
+   "card": "many",
+   "relation": "involves",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "court",
+      "commission",
+      "judge"
+     ],
+     "pl": [
+      "sąd",
+      "komisja",
+      "rzecznik",
+      "sędzia"
+     ]
+    }
+   }
+  },
+  {
+   "id": "evidence_item",
+   "role": "resource",
+   "labels": {
+    "en": "Evidence item",
+    "pl": "Dowód"
+   },
+   "entity_kind": "evidence",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "has_evidence",
+   "relations": [
+    {
+     "rel": "evidences",
+     "target": "count"
+    }
+   ],
+   "slots": [
+    {
+     "name": "content_hash",
+     "type": "string",
+     "card": "one",
+     "description": "chain of custody: sha256 of the immutable original"
+    },
+    {
+     "name": "obtained",
+     "type": "date",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "evidence",
+      "recording",
+      "e-mail",
+      "exhibit"
+     ],
+     "pl": [
+      "dowód",
+      "nagranie",
+      "mail",
+      "załącznik"
+     ]
+    }
+   }
+  },
+  {
+   "id": "channel",
+   "role": "interface",
+   "labels": {
+    "en": "Filing channel",
+    "pl": "Kanał złożenia"
+   },
+   "entity_kind": "channel",
+   "card": "many",
+   "relation": "files_via",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "institution"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "e-filing",
+      "registered mail"
+     ],
+     "pl": [
+      "epuap",
+      "list polecony",
+      "biuro podawcze"
+     ]
+    }
+   }
+  },
+  {
+   "id": "procedural_step",
+   "role": "flow",
+   "labels": {
+    "en": "Procedural sequence",
+    "pl": "Tok postępowania"
+   },
+   "entity_kind": "procedural_step",
+   "card": "many",
+   "relation": "has_step",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "proceeding"
+    },
+    {
+     "rel": "precedes",
+     "target": "procedural_step"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "appeal",
+      "next stage"
+     ],
+     "pl": [
+      "odwołanie",
+      "zażalenie",
+      "etap"
+     ]
+    }
+   }
+  },
+  {
+   "id": "hearing",
+   "role": "event",
+   "labels": {
+    "en": "Hearing / delivery",
+    "pl": "Rozprawa / doręczenie"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "proceeding"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "hearing",
+      "served",
+      "delivered"
+     ],
+     "pl": [
+      "rozprawa",
+      "posiedzenie",
+      "doręczenie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "deadline",
+   "role": "event",
+   "labels": {
+    "en": "Deadline",
+    "pl": "Termin"
+   },
+   "entity_kind": "deadline",
+   "card": "many",
+   "weight": 2.0,
+   "relation": "has_deadline",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "proceeding"
+    }
+   ],
+   "slots": [
+    {
+     "name": "due",
+     "type": "date",
+     "card": "one"
+    },
+    {
+     "name": "legal_basis",
+     "type": "entity:legal_norm",
+     "card": "one"
+    },
+    {
+     "name": "trigger",
+     "type": "entity:event",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "deadline",
+      "within",
+      "days"
+     ],
+     "pl": [
+      "termin",
+      "w terminie",
+      "dni"
+     ]
+    }
+   },
+   "rules": [
+    "r.deadline_from_delivery"
+   ]
+  },
+  {
+   "id": "pleading",
+   "role": "artifact",
+   "labels": {
+    "en": "Pleading / letter",
+    "pl": "Pismo procesowe / pismo"
+   },
+   "entity_kind": "pleading",
+   "card": "many",
+   "relation": "has_pleading",
+   "relations": [
+    {
+     "rel": "cites",
+     "target": "legal_norm"
+    },
+    {
+     "rel": "responds_to",
+     "target": "hearing"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "motion",
+      "appeal",
+      "letter"
+     ],
+     "pl": [
+      "pismo",
+      "wniosek",
+      "odwołanie",
+      "skarga"
+     ]
+    }
+   }
+  },
+  {
+   "id": "transcript",
+   "role": "artifact",
+   "labels": {
+    "en": "Transcript",
+    "pl": "Transkrypcja"
+   },
+   "entity_kind": "transcript",
+   "card": "many",
+   "relation": "has_transcript",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "hearing"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "transcript"
+     ],
+     "pl": [
+      "transkrypcja",
+      "protokół"
+     ]
+    }
+   }
+  },
+  {
+   "id": "drafting",
+   "role": "transformation",
+   "labels": {
+    "en": "Drafting / filing",
+    "pl": "Redagowanie / złożenie"
+   },
+   "entity_kind": "drafting",
+   "card": "many",
+   "relation": "has_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "filed_document"
+    },
+    {
+     "rel": "consumes",
+     "target": "evidence_item"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "draft",
+      "file"
+     ],
+     "pl": [
+      "zredagować",
+      "złożyć"
+     ]
+    }
+   }
+  },
+  {
+   "id": "citation_check",
+   "role": "check",
+   "labels": {
+    "en": "Citation check",
+    "pl": "Kontrola cytatów"
+   },
+   "entity_kind": "citation_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "pleading"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "check the citation"
+     ],
+     "pl": [
+      "sprawdzić podstawę"
+     ]
+    }
+   }
+  },
+  {
+   "id": "deadline_check",
+   "role": "check",
+   "labels": {
+    "en": "Deadline check",
+    "pl": "Kontrola terminów"
+   },
+   "entity_kind": "deadline_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "deadline"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "deadline check"
+     ],
+     "pl": [
+      "pilnowanie terminów"
+     ]
+    }
+   }
+  },
+  {
+   "id": "contradiction_check",
+   "role": "check",
+   "labels": {
+    "en": "Contradiction check",
+    "pl": "Kontrola sprzeczności"
+   },
+   "entity_kind": "contradiction_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "evidence_item"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "contradiction"
+     ],
+     "pl": [
+      "sprzeczność"
+     ]
+    }
+   }
+  },
+  {
+   "id": "filed_document",
+   "role": "output",
+   "labels": {
+    "en": "Filed document / decision obtained",
+    "pl": "Złożone pismo / uzyskane rozstrzygnięcie"
+   },
+   "entity_kind": "filed_document",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "desired_outcome"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "filed",
+      "ruling"
+     ],
+     "pl": [
+      "złożone",
+      "postanowienie",
+      "wyrok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "strategy_decision",
+   "role": "decision",
+   "labels": {
+    "en": "Strategy decision",
+    "pl": "Decyzja strategiczna"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "proceeding"
+    }
+   ]
+  },
+  {
+   "id": "legal_question",
+   "role": "question",
+   "labels": {
+    "en": "Open legal question",
+    "pl": "Otwarte pytanie prawne"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "count"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "legal.c1",
+   "expr": {
+    "op": "nonempty",
+    "args": [
+     "$field:legal_basis"
+    ]
+   },
+   "on_violation": "conflict",
+   "why": "every deadline is tied to its legal basis (R9); a deadline without one is contested, never silently trusted"
+  }
+ ],
+ "rules": [
+  "r.project_status"
+ ]
+}
