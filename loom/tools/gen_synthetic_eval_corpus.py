@@ -1625,3 +1625,279 @@ def render_claude_projects():
              "description": p["description"], "prompt_template": p["prompt_template"],
              "docs": p["docs"]} for p in CLAUDE_PROJECTS]
 
+
+# ═══════════════════════ Ground-truth extraction ══════════════════════
+# Walks every conversation's messages once, reading the SAME tags used to
+# author them, and fills in the conceptual-model structures above. This is
+# the only place export <-> ground_truth correspondence is computed, so the
+# two cannot drift apart.
+
+def collect_ground_truth(conversations):
+    principle_phrasings = {p["id"]: [] for p in PRINCIPLES}
+    feature_units = {f: [] for f in FEATURE_IDS}
+    role_evidence = {pid: {} for pid in PROJECTS_META}
+    open_question_units = {q: [] for q in OPEN_QUESTIONS}
+    contradiction_evidence = {c["id"]: {} for c in CONTRADICTIONS}
+    area_units = {a["id"]: None for a in AREAS}
+    fork_units = {}
+    alias_mentions = []
+    traps = []
+    noise = []
+    units_relevant = []
+    decisions_seen = set()
+
+    for conv in conversations:
+        times = assign_times(conv["messages"], conv["date"])
+        conv_trap = None
+        conv_noise_cats = []
+        for m in conv["messages"]:
+            tags = m["tags"]
+            locator = {"provider": conv["provider"], "conv_id": conv["id"], "node_id": m["nid"],
+                       "date": iso(times[m["nid"]])}
+            if "principle" in tags:
+                pid = tags["principle"]
+                assert pid in PRINCIPLE_IDS, f"unknown principle id {pid} in {conv['id']}/{m['nid']}"
+                principle_phrasings[pid].append({**locator, "text": tags.get("phrasing", m["text"])})
+            if "decision" in tags:
+                did = tags["decision"]
+                assert did in DECISION_IDS, f"unknown decision id {did} in {conv['id']}/{m['nid']}"
+                DECISIONS[did]["unit"] = {**locator, "quote": tags.get("phrasing", m["text"])}
+                decisions_seen.add(did)
+            if "feature" in tags:
+                for fid in tags["feature"]:
+                    assert fid in FEATURE_IDS, f"unknown feature id {fid} in {conv['id']}/{m['nid']}"
+                    feature_units[fid].append({**locator, "quote": m["text"]})
+            if "area" in tags:
+                aid = tags["area"]
+                assert aid in AREA_IDS, f"unknown area id {aid} in {conv['id']}/{m['nid']}"
+                area_units[aid] = {**locator, "quote": m["text"]}
+            if "role" in tags:
+                for proj_id, role_name in tags["role"]:
+                    role_evidence[proj_id].setdefault(role_name, []).append({**locator, "quote": m["text"]})
+            if "contradiction" in tags:
+                cid, side = tags["contradiction"]
+                contradiction_evidence[cid][side] = {**locator, "quote": m["text"]}
+            if "open_question" in tags:
+                qid = tags["open_question"]
+                open_question_units[qid].append({**locator, "quote": m["text"]})
+            if "mentions_projects" in tags:
+                alias_mentions.append({**locator, "projects": tags["mentions_projects"], "quote": m["text"]})
+            if "fork" in tags:
+                fork_units.setdefault(tags["fork"], []).append({**locator, "quote": m["text"]})
+            if "trap" in tags:
+                conv_trap = tags["trap"]
+            if "noise_category" in tags:
+                conv_noise_cats.append(tags["noise_category"])
+
+        if conv["kind"] == "signal":
+            units_relevant.append({
+                "conv_id": conv["id"], "provider": conv["provider"], "title": conv["title"],
+                "date": conv["date"][:10], "project": conv.get("project"),
+                "mentions_projects": sorted({p for m in conv["messages"]
+                                             for p in m["tags"].get("mentions_projects", [])}),
+                "message_count": len(conv["messages"]),
+            })
+        elif conv_trap:
+            traps.append({"conv_id": conv["id"], "provider": conv["provider"], "title": conv["title"],
+                          "date": conv["date"][:10], "term": conv_trap["term"],
+                          "real_sense": conv_trap["real_sense"],
+                          "why_not_relevant": "uses a project-vocabulary word in an unrelated real-world sense"})
+        else:
+            noise.append({"conv_id": conv["id"], "provider": conv["provider"], "title": conv["title"],
+                          "date": conv["date"][:10], "categories": conv_noise_cats or ["life_admin_or_small_talk"]})
+
+    for p in PRINCIPLES:
+        p["phrasings"] = principle_phrasings[p["id"]]
+    for fid, units in feature_units.items():
+        FEATURES[fid]["units"] = units
+    for a in AREAS:
+        a["unit"] = area_units[a["id"]]
+    for qid, q in OPEN_QUESTIONS.items():
+        q["units"] = open_question_units[qid]
+    for c in CONTRADICTIONS:
+        c["evidence"] = contradiction_evidence[c["id"]]
+
+    missing_decisions = DECISION_IDS - decisions_seen
+    assert not missing_decisions, f"decisions with no locator tag: {missing_decisions}"
+
+    return {
+        "units_relevant": units_relevant, "noise_traps": traps, "noise_generic": noise,
+        "fork_units": fork_units, "alias_mentions": alias_mentions, "role_evidence": role_evidence,
+    }
+
+
+# Hand-authored inferable/absent universal-role slots (§3.4 of the
+# conceptual model): these are, BY DEFINITION, not stated anywhere in the
+# corpus, so they cannot come from a tag scan. Each one names the checkable
+# Expected Property (§2.4) a correct inference must vouch for.
+ROLES_INFERABLE_ABSENT = {
+    P_NF: {
+        "part": {"inferable": [
+            {"value": "an embeddings module behind knowledge graph v2",
+             "expected_property": "consistent_with(feat.nf.knowledge_graph_v2) & exists_symbol_like('embed')",
+             "inference_basis": "nf-10 says knowledge graph v2 'dziala tez offline z lokalnym modelem "
+                                 "embeddingow' -- that requires an embeddings module, never named as such"}]},
+        "resource": {"inferable": [
+            {"value": "a bundled local embedding model file",
+             "expected_property": "available_on(offline)",
+             "inference_basis": "same nf-10 sentence: an offline-capable local model implies a bundled "
+                                 "model artifact even though no filename or format is ever given"}]},
+        "check": {"absent": [
+            {"question": "any CI / automated test suite",
+             "note": "only ad hoc 'testy migracji' mentioned once (nf-08); no CI pipeline is mentioned "
+                     "across any of the 12 NoteFlow conversations or the fake repo"}]},
+    },
+    P_RT: {
+        "check": {"absent": [
+            {"question": "a consistency check between keyframes of the same character",
+             "note": "named as a known gap directly in rt-03, never closed"}]},
+        "output": {"absent": [
+            {"question": "any finished/published reel",
+             "note": "the pipeline never reaches compose; only test renders of earlier stages exist"}]},
+    },
+    P_WD: {
+        "transformation": {"absent": [
+            {"question": "any build/release process",
+             "note": "Stroz stays a small script across all 7 conversations; no build step is ever mentioned"}]},
+    },
+    P_LK: {
+        "actor": {"inferable": [
+            {"value": "a court registry/clerk contact at Sad Rejonowy w Fikcyjnowie",
+             "expected_property": "exists_role(institution_contact)",
+             "inference_basis": "any filed court proceeding implies a registry contact for procedural "
+                                 "correspondence, even though lk-06/lk-07 never name one"}]},
+    },
+    P_MU: {
+        "output": {"absent": [
+            {"question": "a fully mixed/mastered EP file",
+             "note": "only two finished tracks exist by the end of the corpus (mu-06); no EP-level "
+                     "master is ever mentioned"}]},
+    },
+}
+
+
+def build_ground_truth():
+    gt = collect_ground_truth(CONVERSATIONS)
+
+    projects_out = []
+    for pid, meta in PROJECTS_META.items():
+        roles = {}
+        for role_name, observed in gt["role_evidence"][pid].items():
+            roles[role_name] = {"observed": observed, "inferable": [], "absent": []}
+        for role_name, extra in ROLES_INFERABLE_ABSENT.get(pid, {}).items():
+            roles.setdefault(role_name, {"observed": [], "inferable": [], "absent": []})
+            roles[role_name]["inferable"] = extra.get("inferable", [])
+            roles[role_name]["absent"] = extra.get("absent", [])
+        decisions = sorted((d for d in DECISIONS.values() if d["project"] == pid), key=lambda d: d["date"])
+        features = sorted((f for f in FEATURES.values() if f["project"] == pid), key=lambda f: f["id"])
+        areas = [a for a in AREAS if a["project"] == pid]
+        oqs = [{"id": qid, **q} for qid, q in OPEN_QUESTIONS.items() if q["project"] == pid]
+        projects_out.append({
+            "id": pid, "name": meta["name"], "kind": meta["kind"], "aliases": meta["aliases"],
+            "one_line": meta["one_line"], "universal_roles": roles,
+            "versions": VERSIONS[pid]["versions"], "forks": VERSIONS[pid]["forks"],
+            "decisions": decisions, "features_status": features, "areas": areas, "open_questions": oqs,
+        })
+
+    operators_out = []
+    for o in OPERATORS:
+        pre = DECISIONS[o["pre_T_example"]]
+        post = DECISIONS[o["post_T_example"]]
+        operators_out.append({
+            **{k: v for k, v in o.items() if k not in ("pre_T_example", "post_T_example")},
+            "examples": [
+                {"decision_id": pre["id"], "date": pre["date"], "side": "pre_T", "project": pre["project"]},
+                {"decision_id": post["id"], "date": post["date"], "side": "post_T", "project": post["project"]},
+            ],
+        })
+
+    return {
+        "schema": "loom.eval.ground_truth/1",
+        "corpus_id": "synthetic_dev",
+        "generated_by": "loom/tools/gen_synthetic_eval_corpus.py",
+        "persona": PERSONA,
+        "temporal_cut": {
+            "date": T_CUT,
+            "rationale": "Induce principles/operators/the project model from everything dated <= T; "
+                        "the decisions in `predictions` and each project's decisions after T are the "
+                        "temporal-holdout answer key (LOOM_CONCEPTUAL_MODEL.md §7.1).",
+        },
+        "units": {
+            "relevant": gt["units_relevant"],
+            "noise_traps": gt["noise_traps"],
+            "noise_generic": gt["noise_generic"],
+        },
+        "cross_project_alias_mentions": gt["alias_mentions"],
+        "fork_chat_units": gt["fork_units"],
+        "projects": projects_out,
+        "principles": PRINCIPLES,
+        "operators": operators_out,
+        "areas": AREAS,
+        "open_questions": [{"id": qid, **q} for qid, q in OPEN_QUESTIONS.items()],
+        "contradictions": CONTRADICTIONS,
+        "predictions": PREDICTIONS,
+        "unpredictable_post_T_decisions": UNPREDICTABLE_POST_T_DECISIONS,
+        "claude_project_and_memory_evidence": CLAUDE_PROJECT_AND_MEMORY_EVIDENCE,
+        "counts": {
+            "conversations_total": len(CONVERSATIONS),
+            "conversations_signal": sum(1 for c in CONVERSATIONS if c["kind"] == "signal"),
+            "conversations_noise_generic": len(gt["noise_generic"]),
+            "conversations_noise_traps": len(gt["noise_traps"]),
+            "conversations_chatgpt": sum(1 for c in CONVERSATIONS if c["provider"] == "chatgpt"),
+            "conversations_claude": sum(1 for c in CONVERSATIONS if c["provider"] == "claude"),
+            "messages_total": sum(len(c["messages"]) for c in CONVERSATIONS),
+            "projects": len(PROJECTS_META),
+            "principles": len(PRINCIPLES),
+            "principle_phrasings_total": sum(len(p["phrasings"]) for p in PRINCIPLES),
+            "operators": len(OPERATORS),
+            "decisions": len(DECISIONS),
+            "features_tracked": len(FEATURES),
+            "areas": len(AREAS),
+            "open_questions": len(OPEN_QUESTIONS),
+            "open_questions_resolved": sum(1 for q in OPEN_QUESTIONS.values() if q["resolved_by"]),
+            "contradictions": len(CONTRADICTIONS),
+            "predictions": len(PREDICTIONS),
+            "claude_projects": len(CLAUDE_PROJECTS),
+            "forks_code_lineage": sum(len(VERSIONS[p]["forks"]) for p in VERSIONS),
+            "forks_chat_structural": len(gt["fork_units"]) + 3,  # + the 3 pure chat edit-forks (nf-05, lk-02, cx-02)
+        },
+    }
+
+
+# ══════════════════════════════════ main ═══════════════════════════════
+
+def _zip_write(zf: zipfile.ZipFile, arcname: str, data: str):
+    info = zipfile.ZipInfo(arcname, date_time=(2026, 9, 26, 0, 0, 0))
+    info.compress_type = zipfile.ZIP_DEFLATED
+    zf.writestr(info, data.encode("utf-8"))
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+
+    chatgpt_convs = [to_chatgpt_export(c) for c in CONVERSATIONS if c["provider"] == "chatgpt"]
+    claude_convs = [to_claude_export(c) for c in CONVERSATIONS if c["provider"] == "claude"]
+    claude_projects = render_claude_projects()
+
+    chatgpt_zip = OUT / "chatgpt_export.zip"
+    with zipfile.ZipFile(chatgpt_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        _zip_write(zf, "conversations.json", json.dumps(chatgpt_convs, ensure_ascii=False, indent=1))
+
+    claude_zip = OUT / "claude_export.zip"
+    with zipfile.ZipFile(claude_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        _zip_write(zf, "conversations.json", json.dumps(claude_convs, ensure_ascii=False, indent=1))
+        _zip_write(zf, "projects.json", json.dumps(claude_projects, ensure_ascii=False, indent=1))
+        _zip_write(zf, "memories.json", json.dumps(CLAUDE_MEMORIES, ensure_ascii=False, indent=1))
+
+    gt = build_ground_truth()
+    gt_path = OUT / "ground_truth.json"
+    gt_path.write_text(json.dumps(gt, ensure_ascii=False, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+
+    for p in (chatgpt_zip, claude_zip, gt_path):
+        print(f"[gen] wrote {p.relative_to(ROOT.parent)} ({p.stat().st_size:,} bytes)")
+    print(f"[gen] counts: {json.dumps(gt['counts'])}")
+
+
+if __name__ == "__main__":
+    main()
+
