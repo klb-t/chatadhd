@@ -258,20 +258,46 @@ TEST_SUITE("kb_pack") {
   TEST_CASE("kb tables are created lazily and idempotently, core schema untouched") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "kb.db");
+    CHECK(!kb::has_schema(*db));
     {
       auto lk = db->lock();
-      CHECK(!db->conn().has_column("loom_kb_facts", "rel"));
+      CHECK(!db->conn().has_table("loom_kb_claims"));
     }
     LOOM_REQUIRE_OK(kb::ensure_schema(*db));
+    LOOM_REQUIRE_OK(kb::ensure_schema(*db));
+    CHECK(kb::has_schema(*db));
+    auto lk = db->lock();
+    for (const char* t : {"loom_kb_entities", "loom_kb_claims", "loom_kb_instances", "loom_kb_slot_values",
+                          "loom_kb_judgements", "loom_kb_principles", "loom_kb_status_records"}) {
+      INFO(t);
+      CHECK(db->conn().has_column(t, "body"));
+    }
+    CHECK(!db->conn().has_table("loom_kb_facts"));
+    CHECK(unwrap(db->get_meta("loom_schema_version")).value_or("") == "1");  // wave-1 tables unchanged
+    CHECK(unwrap(db->get_meta("loom_kb_schema_version")).value_or("") == std::to_string(kb::kKbSchemaVersion));
+    CHECK(unwrap(db->schema_version()) == 4);
+  }
+
+  TEST_CASE("the v1 draft layout is upgraded in place (empty tables recreated, facts dropped)") {
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "kb.db");
+    {
+      auto lk = db->lock();
+      LOOM_REQUIRE_OK(db->conn().exec(
+          "CREATE TABLE loom_kb_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);"
+          "INSERT INTO loom_kb_meta VALUES ('schema_version', '1');"
+          "CREATE TABLE loom_kb_facts (run_id TEXT NOT NULL, id TEXT NOT NULL, PRIMARY KEY (run_id, id));"
+          "CREATE TABLE loom_kb_entities (run_id TEXT NOT NULL, id TEXT NOT NULL, kind TEXT NOT NULL, "
+          "canonical_key TEXT NOT NULL, label TEXT NOT NULL, PRIMARY KEY (run_id, id));"
+          "CREATE TABLE loom_kb_judgements (id TEXT PRIMARY KEY, semantic_key TEXT NOT NULL, target_kind TEXT NOT NULL,"
+          " verdict TEXT NOT NULL, created TEXT NOT NULL);"));
+    }
     LOOM_REQUIRE_OK(kb::ensure_schema(*db));
     auto lk = db->lock();
-    for (const char* t : {"loom_kb_entities", "loom_kb_facts", "loom_kb_instances", "loom_kb_slot_values",
-                          "loom_kb_judgements", "loom_cat_decisions"}) {
-      INFO(t);
-      const bool has_key_column = db->conn().has_column(t, "run_id") || db->conn().has_column(t, "id");
-      CHECK(has_key_column);
-    }
-    CHECK(unwrap(db->get_meta("loom_schema_version")).value_or("") == "1");
-    CHECK(unwrap(db->schema_version()) == 4);
+    CHECK(!db->conn().has_table("loom_kb_facts"));
+    CHECK(db->conn().has_column("loom_kb_entities", "body"));
+    CHECK(!db->conn().has_column("loom_kb_entities", "label"));  // recreated (it was empty)
+    CHECK(db->conn().has_column("loom_kb_judgements", "seq"));
+    CHECK(!db->conn().has_column("loom_kb_judgements", "semantic_key"));
   }
 }

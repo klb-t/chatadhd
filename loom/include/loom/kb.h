@@ -1,8 +1,9 @@
-// loom/kb.h — shared foundation of the paradigm engine
-// (docs/architecture/LOOM_PARADIGM_ENGINE.md). Lead-owned; implemented.
+// loom/kb.h — shared foundation of the knowledge layer
+// (docs/architecture/LOOM_CONCEPTUAL_MODEL.md; the model types are in
+// loom/model.h, storage in loom/knowledge_store.h). Foundation-owned.
 //
-// Three things every paradigm-wave area (catalog, concepts, paradigm, UI)
-// needs and must agree on:
+// What every knowledge-layer area (catalog, extract, resolve, generalize,
+// context, materialize, UI) needs and must agree on:
 //
 //   1. the evidence vocabulary (Evidence, CheckState, ExpectedProperty) and
 //      its mapping to the ground-truth format;
@@ -13,8 +14,8 @@
 //      expected-property predicates) — the pack may only combine them;
 //   3. text normalisation for match keys (PL + EN light stemming, diacritic
 //      folding, stop words, glossary, version normalisation) and stable ids;
-//   4. the Loom-only tables of the wave (loom_kb_*, loom_cat_*), created
-//      lazily so a data directory that never runs the wave is unchanged.
+//   4. the Loom-only tables of the knowledge layer (loom_kb_*), created
+//      lazily so a data directory that never runs it is unchanged.
 //
 // Everything here is deterministic and never throws.
 #pragma once
@@ -277,13 +278,16 @@ inline constexpr std::size_t kStableIdHex = 16;
 std::string stable_id(std::string_view prefix, std::string_view key, std::size_t hex_chars = kStableIdHex);
 
 // ── Tables (Loom-only, lazily created) ──────────────────────────────
-// Creates the loom_kb_* and loom_cat_* tables and indexes if missing
-// (idempotent, forward-only; guarded like the core migrations). Called by
-// the engines before their first write; a data directory that never runs
-// the wave keeps its schema unchanged (Python compat). The DDL is the
-// contract of docs/architecture/LOOM_PARADIGM_ENGINE.md §5.
-inline constexpr int kKbSchemaVersion = 1;  // loom_kb_meta.schema_version
+// Creates / upgrades the loom_kb_* tables (layout and semantics:
+// include/loom/knowledge_store.h), idempotent and forward-only, guarded like
+// the core migrations. Called before the first write; a data directory that
+// never runs the knowledge layer keeps its schema unchanged (I10, Python
+// compat). Records the version in loom_kb_meta.schema_version and in
+// _meta.loom_kb_schema_version (never touches _meta.loom_schema_version).
+// The catalog's loom_cat_* tables belong to the catalog area (catalog.h).
+inline constexpr int kKbSchemaVersion = 2;
 Status ensure_schema(Database& db);
+bool has_schema(Database& db);  // no side effects
 
 }  // namespace kb
 }  // namespace loom
