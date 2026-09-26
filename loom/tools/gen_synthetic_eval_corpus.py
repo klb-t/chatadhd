@@ -1337,3 +1337,189 @@ add(id="cx-06-whats-next", provider="chatgpt", project=None, kind="signal", mode
                  "wczesnie zeby o tym myslec", {"open_question": "oq.lk.appeal_path"}),
     ))
 
+# ══════════════════════════════ Noise ═══════════════════════════════
+# Five conversations deliberately collide, at the word level only, with a
+# signal project's own vocabulary ("loom", "pipeline", "agent", "watchdog",
+# "ADHD"), in a completely different real-world sense. Fifteen more are
+# generic life-admin/health/cooking/other-people's-code/small-talk filler.
+# All are tagged kind="noise" and none reference any project id.
+
+def trap(term, sense):
+    return {"trap": {"term": term, "real_sense": sense}}
+
+
+add(id="nt-01-krosno", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="krosno do majsterkowania", date="2025-03-15T17:00:00Z",
+    messages=linear(
+        ("user", "szukam prezentu dla mamy, myslalam o malym krosnie tkackim (loom), robi ostatnio "
+                 "makramy", trap("loom", "weaving loom, a fibre-arts device, unrelated to software")),
+        ("assistant", "Male stolowe krosno czy raczej podlogowe? Cena mocno zalezy od rozmiaru."),
+        ("user", "stolowe, na poczatek, zeby sprawdzila czy w ogole ja to wciaga"),
+    ))
+
+add(id="nt-02-rurociag", provider="chatgpt", project=None, kind="noise", model="gpt-4o",
+    title="ten artykul o rurociagu", date="2025-06-05T21:00:00Z",
+    messages=linear(
+        ("user", "czytalas ten artykul o protescie przeciwko nowemu rurociagowi naftowemu (pipeline)? "
+                 "ciekawe jak to sie skonczy", trap("pipeline", "oil pipeline, a physical infrastructure project")),
+        ("assistant", "Nie widzialem, o ktory region chodzi?"),
+        ("user", "chyba jakis lokalny spor, nic wielkiego, tak sobie wspominam"),
+    ))
+
+add(id="nt-03-agent-nieruchomosci", provider="chatgpt", project=None, kind="noise", model="gpt-4o",
+    title="dzwonil agent, mieszkanie na Gornej", date="2025-09-10T18:00:00Z",
+    messages=linear(
+        ("user", "dzwonil dzis agent nieruchomosci w sprawie tego mieszkania na Gornej, umowilam "
+                 "ogladanie na sobote", trap("agent", "a real-estate agent, unrelated to any coding agent")),
+        ("assistant", "Ile pokoi, jakie pietro?"),
+        ("user", "dwa pokoje, trzecie pietro, bez windy niestety"),
+    ))
+
+add(id="nt-04-watchdog-timer", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="resetuje sie losowo", date="2025-12-15T20:00:00Z",
+    messages=linear(
+        ("user", "pomagam znajomemu z ESP32, plytka resetuje sie losowo w petli, chyba trzeba "
+                 "skonfigurowac watchdog timer zeby nie wisiala w nieskonczonosc jak main loop sie "
+                 "zablokuje", trap("watchdog", "a hardware watchdog timer on a microcontroller")),
+        ("assistant", "WDT z timeoutem kilku sekund i regularny feed() w petli glownej powinno "
+                      "wystarczyc."),
+        ("user", "ok, sprobuje, to nie ma nic wspolnego z moim skryptem od pilnowania agenta btw"),
+    ))
+
+add(id="nt-05-adhd-kolezanka", provider="chatgpt", project=None, kind="noise", model="gpt-4.1",
+    title="kolezanka i diagnoza u syna", date="2026-01-25T19:00:00Z",
+    messages=linear(
+        ("user", "kolezanka dostala dzis diagnoze ADHD dla swojego syna, siedmiolatek, pyta mnie o "
+                 "jakies materialy dla rodzicow", trap("ADHD", "a medical/psychiatric diagnosis in a child, not software")),
+        ("assistant", "Moge podac kilka ogolnych zrodel, ale to warto skonsultowac z jej psychologiem."),
+        ("user", "jasne, przekaze jej, dzieki"),
+    ))
+
+add(id="n06-pit", provider="chatgpt", project=None, kind="noise", model="gpt-4o",
+    title="PIT / podatki", date="2025-02-01T10:00:00Z",
+    messages=linear(
+        ("user", "trzeba w koncu ogarnac PIT, odkladam to od tygodnia"),
+        ("assistant", "Masz juz wszystkie zaswiadczenia?"),
+        ("user", "prawie, brakuje jednego z bankowosci"),
+    ))
+
+add(id="n07-dentysta", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="przeglad u dentysty", date="2025-02-18T09:00:00Z",
+    messages=linear(
+        ("user", "przeglad u dentysty jutro, boje sie ze znowu cos znajdzie"),
+        ("assistant", "Kiedy byla ostatnia wizyta?"),
+        ("user", "pol roku temu, powinno byc ok"),
+    ))
+
+add(id="n08-zurek", provider="chatgpt", project=None, kind="noise", model="gpt-4o",
+    title="przepis na zurek", date="2025-04-20T17:00:00Z",
+    messages=linear(
+        ("user", "masz dobry przepis na zurek na zakwasie? robie go pierwszy raz"),
+        ("assistant", "Podstawa to zywy zakwas zytni, dobra kielbasa i sporo chrzanu na koniec."),
+        ("user", "zakwas juz mam, dzieki"),
+    ))
+
+add(id="n09-review-kuby-backend", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="review kodu Kuby", date="2025-05-25T20:00:00Z",
+    messages=linear(
+        ("user", "Kuba prosil o review swojej apki magazynowej w Springu, moglabys rzucic okiem na "
+                 "jeden kontroler?", {"noise_category": "other_peoples_code"}),
+        ("assistant", "Jasne, wklej fragment."),
+        ("user", "@RestController, jeden endpoint do zwrotow, sporo powtorzonej walidacji, nic "
+                 "zwiazanego z moimi projektami"),
+    ))
+
+add(id="n10-opony", provider="chatgpt", project=None, kind="noise", model="gpt-4o",
+    title="wymiana opon", date="2025-07-05T14:00:00Z",
+    messages=linear(
+        ("user", "trzeba przed wakacjami zmienic opony, umowic warsztat"),
+        ("assistant", "Letnie czy juz myslisz o zimowych na pozniej?"),
+        ("user", "letnie, zimowe maja jeszcze sezon"),
+    ))
+
+add(id="n11-prezent-mama", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="urodziny mamy prezent", date="2025-08-15T18:00:00Z",
+    messages=linear(
+        ("user", "poza krosnem myslalam jeszcze o ksiazce kucharskiej na urodziny mamy"),
+        ("assistant", "Jakas konkretna kuchnia ja interesuje ostatnio?"),
+        ("user", "wloska, ostatnio duzo gotuje wloskie"),
+    ))
+
+add(id="n12-focia", provider="chatgpt", project=None, kind="noise", model="gpt-4o",
+    title="focia z wakacji", date="2025-10-01T21:00:00Z",
+    messages=linear(
+        ("user", "musze w koncu poukladac focia z wakacji, mam z 2000 zdjec nieposortowanych"),
+        ("assistant", "Moze najpierw usunac oczywiste duplikaty?"),
+        ("user", "no wlasnie tak zrobie, jak znajde czas"),
+    ))
+
+add(id="n13-przeziebienie", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="przeziebienie", date="2025-11-20T09:00:00Z",
+    messages=linear(
+        ("user", "zlapalam jakies przeziebienie, katar i gardlo bola"),
+        ("assistant", "Odpoczywaj, duzo plynow."),
+        ("user", "probuje, ciezko sie powstrzymac od pracy"),
+    ))
+
+add(id="n14-sernik", provider="chatgpt", project=None, kind="noise", model="gpt-4.1",
+    title="przepis na sernik", date="2026-01-05T16:00:00Z",
+    messages=linear(
+        ("user", "przepis na sernik na zimno na swieta, bez pieczenia"),
+        ("assistant", "Podstawa: twarog, smietana kremowka, zelatyna, herbatniki na spod."),
+        ("user", "dzieki, sprobuje w weekend"),
+    ))
+
+add(id="n15-review-kuby-frontend", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="kolejny review dla Kuby, tym razem frontend", date="2026-02-10T19:00:00Z",
+    messages=linear(
+        ("user", "Kuba znowu prosi o review, tym razem jakis React frontend do tej samej apki "
+                 "magazynowej", {"noise_category": "other_peoples_code"}),
+        ("assistant", "Co konkretnie ma sprawdzic?"),
+        ("user", "glownie czy formularz zwrotow ma sensowna walidacje po stronie klienta"),
+    ))
+
+add(id="n16-ubezpieczenie", provider="chatgpt", project=None, kind="noise", model="gpt-4.1",
+    title="ubezpieczenie mieszkania", date="2026-03-05T10:00:00Z",
+    messages=linear(
+        ("user", "trzeba odnowic ubezpieczenie mieszkania, konczy sie w tym miesiacu"),
+        ("assistant", "Ten sam zakres czy chcesz porownac oferty?"),
+        ("user", "chyba warto porownac, dawno tego nie robilam"),
+    ))
+
+add(id="n17-zab", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="zab madrosci", date="2026-04-18T11:00:00Z",
+    messages=linear(
+        ("user", "zab madrosci znowu daje o sobie znac, chyba trzeba go w koncu usunac"),
+        ("assistant", "Bolesnie czy tylko doskwiera?"),
+        ("user", "na razie doskwiera, ale wiem ze to sie tylko pogorszy"),
+    ))
+
+add(id="n18-grill", provider="chatgpt", project=None, kind="noise", model="gpt-5",
+    title="co ugotowac na grilla", date="2026-06-25T17:00:00Z",
+    messages=linear(
+        ("user", "co ugotowac w ten weekend na grilla, cos poza standardowa kielbasa?"),
+        ("assistant", "Warzywa w folii, grillowany ser, marynowany kurczak z ziolami."),
+        ("user", "ser grillowany brzmi dobrze, sprobuje"),
+    ))
+
+add(id="n19-silownia", provider="claude", project=None, kind="noise", model="claude-3-5-sonnet",
+    title="silownia plan na wakacje", date="2026-07-15T08:00:00Z",
+    messages=linear(
+        ("user", "planuje jak utrzymac jakikolwiek ruch podczas wakacji, bez silowni pod reka"),
+        ("assistant", "Masowa pasmo do biegania w pobliżu?"),
+        ("user", "tak, powinno wystarczyc na trzy tygodnie"),
+    ))
+
+add(id="n20-wordpress-znajomego", provider="chatgpt", project=None, kind="noise", model="gpt-5",
+    title="kod znajomego do przejrzenia - stary WordPress", date="2026-08-28T20:00:00Z",
+    messages=linear(
+        ("user", "znajomy prosi o rzut oka na stara strone WordPress, PHP sprzed lat, nic wspolnego z "
+                 "moimi rzeczami", {"noise_category": "other_peoples_code"}),
+        ("assistant", "Jaki jest problem - wydajnosc, bezpieczenstwo?"),
+        ("user", "podejrzewa ze cos go zainfekowalo, chce zeby ktos zerknal zanim zadzwoni do hostingu"),
+    ))
+
+print(f"[gen] {len(CONVERSATIONS)} conversations authored "
+      f"({sum(1 for c in CONVERSATIONS if c['kind'] == 'signal')} signal, "
+      f"{sum(1 for c in CONVERSATIONS if c['kind'] == 'noise')} noise)")
+
