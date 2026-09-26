@@ -1,0 +1,19 @@
+{
+  "schema": "loom.kb.glossary/1",
+  "description": "PL <-> EN concept keys. Phrases on both sides are compared by phrase key (normalizer), so inflected Polish forms map too. The canonical key is the English phrase key. Used for concept merging, gap reports and bilingual labels; never for display text of quotes.",
+  "pairs": [
+    ["czat", "chat"], ["rozmowa", "conversation"], ["wiadomość", "message"], ["graf wiedzy", "knowledge graph"], ["graf", "graph"],
+    ["pamięć", "memory"], ["drzewo pamięci", "memory tree"], ["potok", "pipeline"], ["przepływ", "workflow"], ["etap", "stage"],
+    ["źródło", "source"], ["pochodzenie", "provenance"], ["wersja", "version"], ["gałąź", "branch"], ["rozgałęzienie", "fork"],
+    ["decyzja", "decision"], ["wymaganie", "requirement"], ["zasada", "principle"], ["filozofia kodowania", "coding philosophy"], ["niezmiennik", "invariant"],
+    ["szyfrowanie", "encryption"], ["synchronizacja", "sync"], ["wyszukiwanie", "search"], ["import uniwersalny", "universal import"], ["importer", "importer"],
+    ["analiza semantyczna", "semantic analysis"], ["analizator", "analyzer"], ["silnik", "engine"], ["moduł", "module"], ["warstwa", "layer"],
+    ["zadanie", "task"], ["akcja", "action"], ["plan", "plan"], ["punkt kontrolny", "checkpoint"], ["wznawianie", "resume"],
+    ["dostawca", "provider"], ["model językowy", "language model"], ["rejestr modeli", "model registry"], ["zdolność", "capability"], ["polityka", "policy"],
+    ["szablon", "template"], ["widok", "view"], ["panel", "panel"], ["interfejs", "interface"], ["specyfikacja", "specification"],
+    ["burza mózgów", "brainstorm"], ["opcja", "option"], ["porzucony", "abandoned"], ["zastąpiony", "superseded"], ["częściowy", "partial"],
+    ["planowany", "planned"], ["zaimplementowany", "implemented"], ["aplikacja wieloplatformowa", "multiplatform application"], ["rdzeń", "core"], ["jądro", "kernel"],
+    ["archiwum", "archive"], ["eksport", "export"], ["katalog", "catalog"], ["selektywny import", "selective import"], ["wideo", "video"],
+    ["montaż", "compositing"], ["scena", "scene"], ["oś czasu", "timeline"], ["załącznik", "attachment"], ["głos", "voice"]
+  ]
+}

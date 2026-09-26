@@ -1,0 +1,40 @@
+{
+  "schema": "loom.kb.paradigm/1",
+  "id": "version_history",
+  "version": 1,
+  "gt_paradigm": "version_history",
+  "title": {"en": "Version history", "pl": "Historia wersji"},
+  "description": "The dated versions of a project, their features and their lineage (base version, forks). Versions come from git tags/commit subjects, declared __version__ strings in snapshots and anchored version mentions in conversations; versions above the newest git version are 'archive-only'.",
+  "subject_kind": "project",
+  "anchors": {
+    "any": [
+      {"op": "fact_count", "rel": "has_version", "min": 1}
+    ],
+    "min_score": 0.3
+  },
+  "slots": [
+    {"name": "versions", "type": "record[]", "card": "list", "required": true, "weight": 3,
+     "fields": {
+       "version": {"type": "version", "required": true},
+       "date": {"type": "date"},
+       "features": {"type": "text", "card": "many"},
+       "conv_ids": {"type": "string", "card": "many"},
+       "source": {"type": "enum:version_source"},
+       "base": {"type": "version"}
+     },
+     "bind": [{"kind": "versions", "source": "any"}],
+     "infer": ["r.archive_only_version", "r.version_date_first_mention", "r.version_features_comention", "r.version_base"]},
+    {"name": "forks", "type": "record[]", "card": "many", "weight": 1,
+     "fields": {
+       "base": {"type": "version", "required": true},
+       "branches": {"type": "version", "card": "many"},
+       "merged": {"type": "string"}
+     },
+     "infer": ["r.version_forks"]}
+  ],
+  "constraints": [
+    {"id": "vh.c1", "expr": {"op": "ordered_by_date", "args": ["$slot:versions"]}, "on_violation": "conflict",
+     "why": "within one lineage, a higher version is never dated before a lower one; a violation is reported, never silently re-ordered"}
+  ],
+  "render": {"title_slot": null, "order": ["versions", "forks"]}
+}

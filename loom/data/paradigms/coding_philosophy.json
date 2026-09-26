@@ -1,0 +1,23 @@
+{
+  "schema": "loom.kb.paradigm/1",
+  "id": "coding_philosophy",
+  "version": 1,
+  "gt_paradigm": "coding_philosophy",
+  "title": {"en": "Coding philosophy", "pl": "Filozofia kodowania"},
+  "description": "The owner's stable, recurring normative statements about how software is built. One instance per corpus (subject 'owner'); principles are discovered from the archive and matched against seed priors (philosophy/seed_principles.json).",
+  "subject_kind": "owner",
+  "anchors": {
+    "any": [
+      {"op": "principle_count", "min": 1}
+    ],
+    "min_score": 0.2
+  },
+  "slots": [
+    {"name": "principles", "type": "principle[]", "card": "many", "required": true, "weight": 3,
+     "bind": [{"kind": "principles", "applies_to": "any", "min_support": 1}]},
+    {"name": "violations", "type": "text", "card": "many", "weight": 0.5,
+     "bind": [{"kind": "checks", "field": "violations"}]}
+  ],
+  "constraints": [],
+  "render": {"title_slot": null, "order": ["principles", "violations"]}
+}

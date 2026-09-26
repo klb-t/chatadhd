@@ -1,0 +1,37 @@
+{
+  "schema": "loom.kb.paradigm/1",
+  "id": "brainstorm",
+  "version": 1,
+  "gt_paradigm": "brainstorm",
+  "title": {"en": "Brainstorm / option set", "pl": "Burza mózgów / zestaw opcji"},
+  "description": "A topic on which several options were put on the table; some were chosen, some rejected, some left open. Roots are fork entities (conversation branch forks, enumerated option lists, 'X zamiast Y' pairs).",
+  "subject_kind": "fork|topic",
+  "anchors": {
+    "any": [
+      {"op": "option_set", "min_options": 2},
+      {"op": "cue", "class": "paradigm.brainstorm", "min": 1}
+    ],
+    "min_score": 0.35
+  },
+  "slots": [
+    {"name": "topic", "type": "string", "card": "one", "required": true, "weight": 1,
+     "bind": [{"kind": "subject", "field": "label"}]},
+    {"name": "options", "type": "entity:option", "card": "many", "required": true, "weight": 2,
+     "bind": [{"kind": "forks", "field": "options"}, {"kind": "fact", "rel": "alternative_of"}, {"kind": "enumeration", "scope": "subject_units", "shape": "options"}]},
+    {"name": "chosen", "type": "entity:option", "card": "one", "weight": 2,
+     "bind": [{"kind": "forks", "field": "chosen"}, {"kind": "fact", "rel": "chosen_over"}],
+     "infer": ["r.brainstorm_chosen_from_decision"]},
+    {"name": "rejected", "type": "entity:option", "card": "many", "weight": 1.5,
+     "bind": [{"kind": "forks", "field": "abandoned"}, {"kind": "items", "type": "rejected_option", "scope": "topic"}],
+     "infer": ["r.brainstorm_rejected_complement"]},
+    {"name": "open_questions", "type": "text", "card": "many", "weight": 1,
+     "bind": [{"kind": "items", "type": "open_question", "scope": "topic"}]}
+  ],
+  "constraints": [
+    {"id": "bs.c1", "expr": {"op": "not_in", "args": ["$slot:chosen", "$slot:rejected"]}, "on_violation": "conflict",
+     "why": "an option cannot be both chosen and rejected; the later decision wins, the other is kept as a contradiction"},
+    {"id": "bs.c2", "expr": {"op": "subset_of", "args": ["$slot:rejected", "$slot:options"]}, "on_violation": "extend",
+     "why": "every rejected option is an option; missing ones are added to options"}
+  ],
+  "render": {"title_slot": "topic", "order": ["topic", "options", "chosen", "rejected", "open_questions"]}
+}

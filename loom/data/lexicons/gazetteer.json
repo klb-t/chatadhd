@@ -1,0 +1,91 @@
+{
+  "schema": "loom.kb.gazetteer/1",
+  "description": "Typed lexicon entries. 'forms' are surface forms (matched on match keys, so inflections and diacritics are covered by the normalizer; add irregular forms explicitly). 'class' may be dotted (storage.embedded is also storage). 'implies' are properties used by expected-property predicates (consistent_with, in_class) and by lexicon_pick; 'platforms' lists where the entry is available (available_on). 'ambiguous' forms count only with one of 'requires_context' within the context window (policy/thresholds.json).",
+  "classes": {
+    "platform": {"entity_kind": "platform"},
+    "environment": {"entity_kind": "platform"},
+    "language": {"entity_kind": "language"},
+    "ui_framework": {"entity_kind": "ui_framework"},
+    "storage": {"entity_kind": "storage"},
+    "storage.embedded": {"entity_kind": "storage", "parent": "storage"},
+    "storage.server": {"entity_kind": "storage", "parent": "storage"},
+    "storage.cloud": {"entity_kind": "storage", "parent": "storage"},
+    "sync": {"entity_kind": "sync"},
+    "protocol": {"entity_kind": "protocol"},
+    "format": {"entity_kind": "format"},
+    "tool": {"entity_kind": "tool"},
+    "role": {"entity_kind": "role"},
+    "concept.memory": {"entity_kind": "concept"},
+    "concept.resumability": {"entity_kind": "concept"},
+    "entry_point_file": {"entity_kind": "component"}
+  },
+  "entries": [
+    {"id": "android", "class": "platform", "labels": {"en": "Android", "pl": "Android"}, "forms": ["android", "androida", "androidzie", "android studio", "pydroid"]},
+    {"id": "desktop", "class": "platform", "labels": {"en": "Desktop", "pl": "Desktop"}, "forms": ["desktop", "desktopie", "pc", "komputer", "windows", "linux", "macos"]},
+    {"id": "web", "class": "platform", "labels": {"en": "Web", "pl": "Web"}, "forms": ["web", "przeglądarka", "browser", "web ui", "react"], "ambiguous": ["react"], "requires_context": ["ui", "frontend", "web"]},
+    {"id": "ios", "class": "platform", "labels": {"en": "iOS", "pl": "iOS"}, "forms": ["ios", "iphone"]},
+    {"id": "gcp_vm", "class": "environment", "labels": {"en": "GCP VM", "pl": "VM na GCP"}, "forms": ["gcp", "google cloud", "compute engine", "vm", "maszyna wirtualna"], "ambiguous": ["vm"], "requires_context": ["gcp", "google", "cloud", "chmur"]},
+    {"id": "local_sandbox", "class": "environment", "labels": {"en": "Local sandbox", "pl": "Lokalny sandbox"}, "forms": ["sandbox", "docker", "container", "kontener"]},
+
+    {"id": "python", "class": "language", "labels": {"en": "Python", "pl": "Python"}, "forms": ["python", "pythona", "pythonie", "py"], "ambiguous": ["py"], "requires_context": ["plik", "file", ".py"], "platforms": ["desktop", "android"]},
+    {"id": "cpp", "class": "language", "labels": {"en": "C++", "pl": "C++"}, "forms": ["c++", "cpp", "c++20", "c++17"], "platforms": ["desktop", "android", "ios", "web"]},
+    {"id": "kotlin", "class": "language", "labels": {"en": "Kotlin", "pl": "Kotlin"}, "forms": ["kotlin", "kotlina", "kotlinie"], "implies": ["platform:android"], "platforms": ["android", "desktop"]},
+    {"id": "java", "class": "language", "labels": {"en": "Java", "pl": "Java"}, "forms": ["java", "javy", "javie"], "platforms": ["android", "desktop"]},
+    {"id": "typescript", "class": "language", "labels": {"en": "TypeScript", "pl": "TypeScript"}, "forms": ["typescript", "ts", "tsx"], "ambiguous": ["ts"], "requires_context": ["react", "web", "frontend"], "implies": ["platform:web"], "platforms": ["web", "desktop"]},
+    {"id": "javascript", "class": "language", "labels": {"en": "JavaScript", "pl": "JavaScript"}, "forms": ["javascript", "js"], "implies": ["platform:web"], "platforms": ["web"]},
+    {"id": "rust", "class": "language", "labels": {"en": "Rust", "pl": "Rust"}, "forms": ["rust"], "ambiguous": ["rust"], "requires_context": ["cargo", "crate", "język", "language"], "platforms": ["desktop", "android", "ios", "web"]},
+
+    {"id": "kivy", "class": "ui_framework", "labels": {"en": "Kivy", "pl": "Kivy"}, "forms": ["kivy", "kivymd", "kv"], "ambiguous": ["kv"], "requires_context": ["kivy", "widget", "layout"], "implies": ["platform:desktop", "platform:android", "language:python"]},
+    {"id": "compose_mp", "class": "ui_framework", "labels": {"en": "Compose Multiplatform", "pl": "Compose Multiplatform"}, "forms": ["compose multiplatform", "jetpack compose", "compose mp", "compose"], "ambiguous": ["compose"], "requires_context": ["jetpack", "multiplatform", "kotlin", "ui"], "implies": ["platform:android", "platform:desktop", "language:kotlin"]},
+    {"id": "react", "class": "ui_framework", "labels": {"en": "React", "pl": "React"}, "forms": ["react", "vite", "tsx"], "implies": ["platform:web", "language:typescript"]},
+    {"id": "tkinter", "class": "ui_framework", "labels": {"en": "Tkinter", "pl": "Tkinter"}, "forms": ["tkinter"], "implies": ["platform:desktop", "language:python"]},
+    {"id": "qt", "class": "ui_framework", "labels": {"en": "Qt", "pl": "Qt"}, "forms": ["qt", "pyqt", "pyside", "qml"], "ambiguous": ["qt"], "requires_context": ["gui", "widget", "qml", "ui"], "implies": ["platform:desktop"]},
+
+    {"id": "sqlite", "class": "storage.embedded", "labels": {"en": "SQLite", "pl": "SQLite"}, "forms": ["sqlite", "sqlite3", "sqlite wal", "baza sqlite"], "implies": ["offline_capable", "file_based", "embedded"], "platforms": ["desktop", "android", "ios", "web"]},
+    {"id": "json_files", "class": "storage.embedded", "labels": {"en": "JSON files", "pl": "Pliki JSON"}, "forms": ["json files", "pliki json", "plikach json", "config.json", "memory.json"], "implies": ["offline_capable", "file_based"], "platforms": ["desktop", "android", "ios"]},
+    {"id": "leveldb", "class": "storage.embedded", "labels": {"en": "LevelDB", "pl": "LevelDB"}, "forms": ["leveldb", "rocksdb"], "implies": ["offline_capable", "file_based", "embedded"], "platforms": ["desktop", "android"]},
+    {"id": "blob_store", "class": "storage.embedded", "labels": {"en": "Content-addressed blob store", "pl": "Magazyn blobów adresowany treścią"}, "forms": ["blobstore", "blob store", "content-addressed", "content addressed", "adresowany treścią"], "implies": ["offline_capable", "file_based", "immutable"], "platforms": ["desktop", "android", "ios"]},
+    {"id": "postgres", "class": "storage.server", "labels": {"en": "PostgreSQL", "pl": "PostgreSQL"}, "forms": ["postgres", "postgresql"], "implies": ["server_only"]},
+    {"id": "neo4j", "class": "storage.server", "labels": {"en": "Neo4j", "pl": "Neo4j"}, "forms": ["neo4j", "cypher"], "implies": ["server_only"]},
+    {"id": "google_drive", "class": "storage.cloud", "labels": {"en": "Google Drive", "pl": "Google Drive"}, "forms": ["google drive", "gdrive", "dysk google"], "implies": ["remote"]},
+
+    {"id": "github_sync", "class": "sync", "labels": {"en": "GitHub sync", "pl": "Synchronizacja GitHub"}, "forms": ["github sync", "synchronizacja z github", "github_sync", "bidirectional github"], "implies": ["optional", "remote"]},
+    {"id": "zero_knowledge_sync", "class": "sync", "labels": {"en": "Zero-knowledge server sync", "pl": "Synchronizacja zero-knowledge"}, "forms": ["zero-knowledge", "zero knowledge", "zk sync", "szyfrowana synchronizacja"], "implies": ["optional", "encrypted"]},
+    {"id": "drive_sync", "class": "sync", "labels": {"en": "Google Drive sync", "pl": "Synchronizacja Google Drive"}, "forms": ["sync to drive", "synchronizacja z dyskiem", "drive sync"], "implies": ["optional", "remote"]},
+
+    {"id": "openrouter", "class": "protocol", "labels": {"en": "OpenRouter API", "pl": "OpenRouter API"}, "forms": ["openrouter", "open router"]},
+    {"id": "sse", "class": "protocol", "labels": {"en": "Server-sent events", "pl": "Server-sent events"}, "forms": ["sse", "server-sent events", "event stream"]},
+    {"id": "c_abi", "class": "protocol", "labels": {"en": "C ABI", "pl": "C ABI"}, "forms": ["c abi", "abi", "loom.h", "jni"], "ambiguous": ["abi"], "requires_context": ["loom", "c", "jni", "boundary", "granica"]},
+    {"id": "rest", "class": "protocol", "labels": {"en": "REST/HTTP", "pl": "REST/HTTP"}, "forms": ["rest api", "rest", "http api"], "ambiguous": ["rest"], "requires_context": ["api", "http", "endpoint", "server"]},
+
+    {"id": "chatgpt_export", "class": "format", "labels": {"en": "ChatGPT export", "pl": "Eksport ChatGPT"}, "forms": ["chatgpt export", "eksport chatgpt", "conversations.json", "mapping"], "ambiguous": ["mapping"], "requires_context": ["chatgpt", "export", "eksport"]},
+    {"id": "claude_export", "class": "format", "labels": {"en": "Claude export", "pl": "Eksport Claude"}, "forms": ["claude export", "eksport claude", "chat_messages", "projects.json", "memories.json"]},
+    {"id": "markdown", "class": "format", "labels": {"en": "Markdown", "pl": "Markdown"}, "forms": ["markdown", "md"], "ambiguous": ["md"], "requires_context": ["plik", "file", "format"]},
+    {"id": "video", "class": "format", "labels": {"en": "Video", "pl": "Wideo"}, "forms": ["video", "wideo", "film", "filmu", "mp4", "klip", "clip"]},
+    {"id": "storyboard", "class": "format", "labels": {"en": "Storyboard", "pl": "Storyboard"}, "forms": ["storyboard", "scenariusz", "scene graph", "graf scen"]},
+    {"id": "audio", "class": "format", "labels": {"en": "Audio", "pl": "Audio"}, "forms": ["audio", "dźwięk", "muzyka", "music", "wav", "mp3"]},
+    {"id": "zip_archive", "class": "format", "labels": {"en": "ZIP archive", "pl": "Archiwum ZIP"}, "forms": ["zip", "archiwum zip", ".zip"]},
+
+    {"id": "ffmpeg", "class": "tool", "labels": {"en": "FFmpeg", "pl": "FFmpeg"}, "forms": ["ffmpeg", "ffprobe"]},
+    {"id": "git", "class": "tool", "labels": {"en": "git", "pl": "git"}, "forms": ["git", "git log", "commit", "commity"], "ambiguous": ["commit"], "requires_context": ["git", "repo", "branch"]},
+    {"id": "claude_code", "class": "tool", "labels": {"en": "Claude Code", "pl": "Claude Code"}, "forms": ["claude code", "coding agent", "agent kodujący"]},
+    {"id": "browser_automation", "class": "tool", "labels": {"en": "Browser automation", "pl": "Automatyzacja przeglądarki"}, "forms": ["selenium", "playwright", "puppeteer", "browser use", "computer use"]},
+    {"id": "terminal", "class": "tool", "labels": {"en": "Terminal", "pl": "Terminal"}, "forms": ["terminal", "shell", "bash", "powłoka"]},
+    {"id": "whisper", "class": "tool", "labels": {"en": "Whisper ASR", "pl": "Whisper ASR"}, "forms": ["whisper", "groq whisper", "asr"]},
+    {"id": "ocr", "class": "tool", "labels": {"en": "OCR", "pl": "OCR"}, "forms": ["ocr", "tesseract"]},
+
+    {"id": "role_junior_dev", "class": "role", "labels": {"en": "junior_dev", "pl": "junior_dev"}, "forms": ["junior_dev", "junior dev", "junior developer"]},
+    {"id": "role_senior_dev", "class": "role", "labels": {"en": "senior_dev", "pl": "senior_dev"}, "forms": ["senior_dev", "senior dev", "senior developer"]},
+    {"id": "role_researcher", "class": "role", "labels": {"en": "researcher", "pl": "researcher"}, "forms": ["researcher", "badacz"]},
+    {"id": "role_planner", "class": "role", "labels": {"en": "planner", "pl": "planista"}, "forms": ["planner", "planista", "orchestrator", "orkiestrator"]},
+    {"id": "role_verifier", "class": "role", "labels": {"en": "verifier", "pl": "weryfikator"}, "forms": ["verifier", "weryfikator", "reviewer", "evaluator"]},
+
+    {"id": "central_memory", "class": "concept.memory", "labels": {"en": "Central memory", "pl": "Centralna pamięć"}, "forms": ["central memory", "centralna pamięć", "system knowledge", "long-term memory", "pamięć długoterminowa", "memory tree", "drzewo pamięci", "hierarchiczna pamięć"]},
+    {"id": "checkpoints", "class": "concept.resumability", "labels": {"en": "Checkpoints / resume", "pl": "Checkpointy / wznawianie"}, "forms": ["checkpoint", "checkpointy", "resume", "wznawianie", "rollback", "retry", "resumable"]},
+
+    {"id": "main_py", "class": "entry_point_file", "labels": {"en": "main.py", "pl": "main.py"}, "forms": ["main.py", "__main__.py"]},
+    {"id": "main_cpp", "class": "entry_point_file", "labels": {"en": "main.cpp", "pl": "main.cpp"}, "forms": ["main.cpp"]},
+    {"id": "main_activity", "class": "entry_point_file", "labels": {"en": "MainActivity.kt", "pl": "MainActivity.kt"}, "forms": ["mainactivity.kt", "mainactivity.java"]},
+    {"id": "main_tsx", "class": "entry_point_file", "labels": {"en": "main.tsx", "pl": "main.tsx"}, "forms": ["main.tsx", "main.ts", "index.tsx"]}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "loom.kb.stemming/1",
+  "description": "Light stemmers for match keys (never for display). Algorithm in code (kb::Normalizer): lowercase, NFC, fold diacritics for the key only, then apply the language's rewrite rules, then strip the longest matching suffix while the remaining stem keeps at least min_stem code points. Tokens shorter than min_token are left alone; exceptions map a surface form to a fixed key. Language: 'pl' when the token contains Polish diacritics or the sentence was guessed Polish, else 'en'; both stemmers are tried for mixed text and the shorter key wins only if both agree on the first min_stem letters.",
+  "fold": {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z", "á": "a", "à": "a", "â": "a", "ä": "a", "é": "e", "è": "e", "ê": "e", "ë": "e", "í": "i", "ï": "i", "ö": "o", "ô": "o", "ü": "u", "ú": "u", "ç": "c", "ñ": "n", "š": "s", "č": "c", "ř": "r", "ž": "z"},
+  "pl": {
+    "min_token": 5,
+    "min_stem": 4,
+    "rewrite": [
+      {"suffix": "acji", "to": "acja"},
+      {"suffix": "cji", "to": "cja"},
+      {"suffix": "zji", "to": "zja"},
+      {"suffix": "sji", "to": "sja"},
+      {"suffix": "ń", "to": "ni"}
+    ],
+    "suffixes": ["owanie", "owania", "owaniu", "owaniem", "ościami", "ościach", "ością", "ości", "ość", "ami", "ach", "owi", "ów", "om", "ego", "emu", "ymi", "ich", "ych", "iej", "ej", "ym", "im", "ą", "ę", "y", "i", "a", "u", "e", "o", "ie"],
+    "exceptions": {"danych": "dane", "dane": "dane", "grafu": "graf", "grafie": "graf", "grafem": "graf", "czatu": "czat", "czacie": "czat", "czatem": "czat", "loomem": "loom", "loomie": "loom", "looma": "loom", "androida": "android", "androidzie": "android", "pamięci": "pamiec", "pamięć": "pamiec", "wersji": "wersja", "wersję": "wersja", "wersją": "wersja", "potoku": "potok", "potoki": "potok", "modułów": "modul", "moduły": "modul", "modułu": "modul", "grafik": "grafik", "grafika": "grafik"}
+  },
+  "en": {
+    "min_token": 4,
+    "min_stem": 3,
+    "rewrite": [
+      {"suffix": "ies", "to": "y"},
+      {"suffix": "ational", "to": "ate"},
+      {"suffix": "ization", "to": "ize"}
+    ],
+    "suffixes": ["ing", "edly", "ed", "ers", "er", "es", "s"],
+    "exceptions": {"data": "data", "status": "status", "process": "process", "analysis": "analysis", "series": "series", "news": "news", "loss": "loss", "class": "class", "access": "access", "address": "address", "canvas": "canvas", "alias": "alias", "aliases": "alias", "indices": "index", "matrices": "matrix"}
+  }
+}
