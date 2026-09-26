@@ -268,10 +268,13 @@ class Normalizer {
 std::string normalize_version(std::string_view s);
 int compare_versions(std::string_view a, std::string_view b);
 
-// Stable ids: prefix + first 12 hex chars of sha256(key). Same format as the
-// Python ids (12 hex) but content-derived, so every run of the same inputs
-// yields the same ids in any data directory.
-std::string stable_id(std::string_view prefix, std::string_view key);
+// Stable ids: prefix + the first `hex_chars` hex chars of sha256(key).
+// Content-derived, so every run of the same inputs yields the same ids in any
+// data directory (I5). Knowledge-layer ids use 16 hex (64 bits: a collision
+// needs ~4e9 ids); pass 12 for the Python id format when projecting into the
+// core nodes/links tables ("n_" + 12 hex). Prefix table: include/loom/model.h.
+inline constexpr std::size_t kStableIdHex = 16;
+std::string stable_id(std::string_view prefix, std::string_view key, std::size_t hex_chars = kStableIdHex);
 
 // ── Tables (Loom-only, lazily created) ──────────────────────────────
 // Creates the loom_kb_* and loom_cat_* tables and indexes if missing

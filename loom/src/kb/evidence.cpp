@@ -198,8 +198,8 @@ int compare_versions(std::string_view a, std::string_view b) {
   return 0;
 }
 
-std::string stable_id(std::string_view prefix, std::string_view key) {
-  return std::string(prefix) + Sha256::hex(key).substr(0, 12);
+std::string stable_id(std::string_view prefix, std::string_view key, std::size_t hex_chars) {
+  return std::string(prefix) + Sha256::hex(key).substr(0, std::min<std::size_t>(std::max<std::size_t>(hex_chars, 1), 64));
 }
 
 }  // namespace loom::kb
