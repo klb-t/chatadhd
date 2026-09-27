@@ -1,7 +1,6 @@
 // loom/resolve.h — entity resolution, lineage (incl. code lineage) and
 // assessment (LOOM_CONCEPTUAL_MODEL §2.1, §2.3, §6.3–§6.4). Area:
-// extract+resolve. STATUS: contract + stubs ("// STUB: knowledge-wave",
-// Errc::NotImplemented).
+// extract+resolve. STATUS: implemented (src/resolve/).
 //
 // ── Entity resolution ───────────────────────────────────────────────
 // Candidates are blocked by normalizer phrase key (PL + EN, glossary: "czat
@@ -39,6 +38,7 @@
 // model_knowledge). Conflict is a state, not an evidence class.
 #pragma once
 
+#include <filesystem>
 #include <map>
 #include <memory>
 #include <optional>
@@ -123,6 +123,25 @@ Result<LineageResult> code_lineage(const Revision& snapshot, const std::vector<R
 // The lineage as claims (forked_from/based_on, evidence derived, origin repo)
 // + a code_lineage Fork.
 Result<std::vector<model::Claim>> lineage_claims(const LineageResult& lineage, std::string_view project_entity);
+// The code_lineage Fork of a lineage: base = the winning revision, sides =
+// the snapshot (the fork) and the main line (the next history revision after
+// the base, when there is one).
+model::Fork lineage_fork(const LineageResult& lineage, const std::vector<Revision>& history,
+                         std::string_view project_entity);
+// Entity id of a snapshot / revision as a version entity (kind "version").
+std::string revision_entity(std::string_view label);
+
+// Revisions of a git repository: every non-merge commit (full history) that
+// touched one of `paths`, each with the contents of those paths at that
+// commit (each blob read once). id = full hash, label = the version of a
+// "Version x.y.z" subject or the short hash, date = author date (UTC).
+// Desktop only (runs `git`); Errc::Unsupported elsewhere.
+Result<std::vector<Revision>> git_revisions(const std::filesystem::path& repo, const std::vector<std::string>& paths);
+// A recovered source tree as a revision: text files relative to `dir`
+// (skips .git, __pycache__, binaries). id = "snapshot:" + label.
+Result<Revision> snapshot_revision(const std::filesystem::path& dir, std::string_view label = "");
+// Changed lines between two texts (Myers: deleted + inserted lines).
+std::size_t changed_lines(std::string_view a, std::string_view b);
 
 // {"subject","predicate","claims":[ids],"resolution":"later_decision|reversal|authority|user|open","winner"}
 struct Conflict {

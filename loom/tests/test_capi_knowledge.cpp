@@ -56,8 +56,8 @@ TEST_SUITE("capi_knowledge") {
 
     CHECK(code_of(take(loom_catalog_query(ctx, "{}"))) == "not_implemented");
     CHECK(code_of(take(loom_catalog_scan(ctx, "{}", nullptr, nullptr))) == "not_implemented");
-    CHECK(code_of(take(loom_extract_preview(ctx, "x", nullptr))) == "not_implemented");
-    CHECK(code_of(take(loom_resolve_lineage(ctx, "{}"))) == "not_implemented");
+    CHECK(code_of(take(loom_extract_preview(ctx, "x", nullptr))) == "not_found");  // implemented: a missing file
+    CHECK(code_of(take(loom_resolve_lineage(ctx, "{}"))) == "invalid_argument");  // implemented: snapshot required
     CHECK(code_of(take(loom_generalize_predict(ctx, "{}"))) == "invalid_argument");  // generalize implemented: "cut" is required
     CHECK(code_of(take(loom_context_build(ctx, "{}"))) == "not_found");   // no finished knowledge run yet
     CHECK(code_of(take(loom_materialize(ctx, "{}"))) == "invalid_argument");  // "kind" missing/unknown
