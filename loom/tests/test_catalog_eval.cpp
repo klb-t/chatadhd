@@ -109,9 +109,8 @@ TEST_SUITE("catalog_eval") {
     std::map<std::string, bool> selected_by_ext;
     {
       auto lk = rt->db().lock();
-      LOOM_TRY_ASSIGN_OR_FAIL(sql::Stmt st, rt->db().conn().prepare(
-                                              "SELECT u.ext_id, d.selected FROM loom_cat_units u "
-                                              "JOIN loom_cat_decisions d ON d.unit_id = u.id AND d.run_id = ?"));
+      sql::Stmt st = unwrap(rt->db().conn().prepare("SELECT u.ext_id, d.selected FROM loom_cat_units u "
+                                                    "JOIN loom_cat_decisions d ON d.unit_id = u.id AND d.run_id = ?"));
       st.bind(1, run_id);
       while (true) {
         auto has = st.step();
@@ -154,6 +153,6 @@ TEST_SUITE("catalog_eval") {
     // all and relies on vocabulary/continuation evidence, often does not
     // clear the identity-pass-only score).
     CHECK(m.recall() >= 0.55);         // achieved: ~0.62
-    CHECK(m.generic_selected) <= (m.generic_total / 3);  // achieved: 3/15
+    CHECK(m.generic_selected <= m.generic_total / 3);  // achieved: 3/15
   }
 }
