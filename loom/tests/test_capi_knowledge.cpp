@@ -62,7 +62,9 @@ TEST_SUITE("capi_knowledge") {
     CHECK(code_of(take(loom_extract_preview(ctx, "x", nullptr))) == "not_found");  // implemented: a missing file
     CHECK(code_of(take(loom_resolve_lineage(ctx, "{}"))) == "invalid_argument");  // implemented: snapshot required
     CHECK(code_of(take(loom_generalize_predict(ctx, "{}"))) == "invalid_argument");  // generalize implemented: "cut" is required
-    CHECK(code_of(take(loom_context_build(ctx, "{}"))) == "not_found");   // no finished knowledge run yet
+    // catalog is now a finished (if empty) knowledge run, so "{}" (run
+    // defaults to latest) succeeds instead of not_found.
+    CHECK(json::find(take(loom_context_build(ctx, "{}")), "context_set") != nullptr);
     CHECK(code_of(take(loom_materialize(ctx, "{}"))) == "invalid_argument");  // "kind" missing/unknown
     CHECK(code_of(take(loom_kb_pack(nullptr))) == "invalid_argument");
     loom_shutdown(ctx);
