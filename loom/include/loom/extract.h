@@ -1,7 +1,6 @@
 // loom/extract.h — parse units per artifact type into observations and
 // observed claims (LOOM_CONCEPTUAL_MODEL §1, §3.7, §6.2). Area:
-// extract+resolve. STATUS: contract + stubs ("// STUB: knowledge-wave",
-// Errc::NotImplemented).
+// extract+resolve. STATUS: implemented (src/extract/).
 //
 // ── Semantics ───────────────────────────────────────────────────────
 // * detect(): which artifact types a unit is (artifact_types/*.json
@@ -35,6 +34,8 @@
 //   match keys come from the Normalizer (PL + EN, glossary).
 #pragma once
 
+#include <filesystem>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -55,6 +56,10 @@ namespace extract {
 
 inline constexpr std::string_view kExtractorVersion = "1";
 
+namespace detail {
+class Lexicons;
+}
+
 // What a unit is. {"artifact_type","score","reasons":[{"op","value","weight"}]}
 struct Detection {
   std::string artifact_type;
@@ -69,6 +74,9 @@ struct UnitContent {
   std::string text;               // decoded text (UTF-8); "" for purely structured units
   Json structured;                // parsed JSON element (chat export element, e-mail headers), or null
   model::Origin origin = model::Origin::Archive;
+  // Entity the unit is about when known upstream (catalog project, repo):
+  // {"kind","label"}; null = derived from the unit's own mentions.
+  Json subject;
 };
 
 // A brainstorm item classified against a project kind (R10).
@@ -103,6 +111,13 @@ struct Extraction {
 class Extractor {
  public:
   explicit Extractor(std::shared_ptr<const kb::Pack> pack);
+  // `discovered`: names found by a first pass over the other units of the
+  // same run, [{"kind","label","aliases":[...]}] (Extraction.stats["names"]);
+  // they are matched like lexicon entries (inflected forms included).
+  Extractor(std::shared_ptr<const kb::Pack> pack, const Json& discovered);
+  ~Extractor();
+  Extractor(const Extractor&) = delete;
+  Extractor& operator=(const Extractor&) = delete;
 
   // Artifact types of the unit, best first (empty = unknown).
   Result<std::vector<Detection>> detect(const UnitContent& content) const;
@@ -120,7 +135,30 @@ class Extractor {
 
  private:
   std::shared_ptr<const kb::Pack> pack_;
+  std::unique_ptr<detail::Lexicons> lex_;
 };
+
+// ── Reading sources into units (preview, and the stage when the catalog
+// hands over no units) ───────────────────────────────────────────────
+// A file or a directory: chat exports (.json / .jsonl / .zip with
+// conversations.json, projects.json, memories.json) -> one unit per
+// conversation / Claude project / memory object; markdown and text -> one
+// unit; code files -> one unit each (codebase); .eml -> email; .vtt/.srt ->
+// recording_transcript. Source = "sha256:<hex of the file bytes>" (I1);
+// unit ids Unit::make_id(source, locator). Deterministic order.
+Result<std::vector<UnitContent>> read_units(const std::filesystem::path& path);
+// One in-memory text unit (tests, previews): `member` names it (its
+// extension helps detection); source "sha256:<hex of text>" unless given.
+UnitContent text_unit(std::string_view member, std::string_view text, std::string_view date = "",
+                      std::string_view source = "");
+
+// The two-pass extraction of many units, merged into one Extraction (what
+// the stage stores): pass 1 collects the names units introduce, pass 2
+// extracts every unit with them (Extractor(pack, names)). Entities/claims
+// of the same id are merged (aliases, support); status histories ordered
+// across units. stats: {"units","failed","names":[...],"per_unit":[...]}.
+Extraction extract_units(std::shared_ptr<const kb::Pack> pack, const std::vector<UnitContent>& units,
+                         const std::function<bool()>& should_stop = {});
 
 // knowledge.extract stage: every unit selected by the catalog -> Extraction
 // -> KnowledgeStore (observations, entities, observed claims, areas,

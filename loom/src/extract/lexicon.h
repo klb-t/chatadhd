@@ -125,6 +125,7 @@ class Lexicons {
   std::unordered_map<std::string, std::vector<LexForm>> forms;  // phrase key -> forms
   std::vector<std::pair<std::string, LexForm>> inflecting;      // single-token discovered forms: key -> form
   std::size_t max_form_tokens = 1;
+  std::set<std::string, std::less<>> first_keys;                // first word of every form key
   std::map<std::string, std::string, std::less<>> class_kind;   // gazetteer class -> entity kind
 
   // ── versions (version_patterns.json) ────────────────────────────

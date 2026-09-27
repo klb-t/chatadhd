@@ -359,6 +359,7 @@ void Lexicons::add_form(std::size_t entry, std::string_view surface, LexForm f) 
     std::size_t n = static_cast<std::size_t>(std::count(k.begin(), k.end(), ' ')) + 1;
     f.tokens = n;
     max_form_tokens = std::max(max_form_tokens, n);
+    first_keys.insert(k.substr(0, k.find(' ')));
     auto& v = forms[k];
     bool dup = false;
     for (const auto& x : v) dup = dup || (x.entry == entry && x.surface == f.surface);
