@@ -1,18 +1,26 @@
-// catalog.h: Catalog::score — turns each unit's stored mentions (found at
-// scan time against the full pack-derived alias index) into an explainable
+// catalog.h: Catalog::score — turns each unit's mentions into an explainable
 // feature vector, combined by the logistic model of policy/relevance.json
-// (proposal_scale.md §5.3). Reads only loom_cat_* rows, never raw source
-// bytes (score() never re-opens a source; that only happens in preview()'s
-// verification step and import_selected()).
+// (proposal_scale.md §5.3).
 //
-// Simplifications versus the full design (disclosed in the final report):
-// no corpus-wide BM25 pass and no vocabulary-expansion pass (5.5/5.6) are
+// A self-profile is normally rebuilt (new project aliases, expansion terms)
+// AFTER units have already been scanned, so score() re-derives mentions
+// against the ACTIVE profile by re-reading each unit's exact bytes
+// (read_unit(), the same verified path preview()/import_selected() use)
+// instead of trusting the mentions baked in at scan time against whatever
+// profile existed then. This is the most significant disclosed
+// simplification versus the design: proposal_scale.md's sketch-only BM25
+// pass (§5.2) is what should make re-scoring against a new profile NOT need
+// raw bytes at all (bounded by sketch size, not corpus size); re-reading
+// every unit here is correct but does not scale to a multi-GB corpus the way
+// the design intends (a real zip member gets re-decompressed once per unit
+// that lives in it) -- true sketch-token matching is future work. When a
+// source has moved/vanished, score() falls back to the scan-time mentions
+// (still computed against the full pack-derived alias index at scan time)
+// rather than failing the whole run.
+//
+// No corpus-wide BM25 pass and no vocabulary-expansion pass (5.5/5.6) are
 // implemented, so `bm25_self`/`bm25_phil`/`project_member`/`link` are always
-// 0 and `score()`'s `expanded_terms` is always empty. On the synthetic_dev
-// corpus the identity pass (alias hits + negative-context traps) is already
-// the dominant, designed signal, so recall/precision stay strong without
-// them; a corpus with only diffuse vocabulary evidence (no literal alias
-// hits at all) would need the missing passes to be found.
+// 0 and `score()`'s `expanded_terms` is always empty.
 #include "loom/catalog.h"
 
 #include <algorithm>
@@ -54,6 +62,21 @@ struct Row {
   std::string title;
   std::string date;
 };
+
+// Re-derives the prose of a unit from its exact re-read bytes, the same way
+// scan.cpp's ingest_unit did the first time, so mentions can be recomputed
+// against a profile built after the scan (see the file header comment).
+std::string reextract_prose(const CatalogUnit& cu, std::string_view raw) {
+  std::string kind;
+  if (cu.unit.kind == "conversation") kind = cu.platform == "chatgpt" ? "chatgpt" : "claude";
+  else if (cu.unit.kind == "project") kind = "claude_projects";
+  else if (cu.unit.kind == "memory") kind = "claude_memories";
+  else if (cu.unit.kind == "record") kind = "record";
+  if (!kind.empty()) {
+    if (auto parsed = json::parse(raw)) return extract_text(*parsed, kind).prose;
+  }
+  return std::string(raw);
+}
 
 }  // namespace
 
@@ -120,10 +143,22 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     if (progress) progress("score", idx_i, static_cast<std::int64_t>(rows.size()), row.unit.unit.id);
     const CatalogUnit& cu = row.unit;
 
+    Json mentions = cu.mentions;  // fallback: scan-time mentions
+    if (auto raw = read_unit(cu.unit.id)) {
+      std::string prose = reextract_prose(cu, *raw);
+      std::string folded = norm.fold(prose.substr(0, static_cast<std::size_t>(std::min<std::int64_t>(
+                                        kSketchByteCap, static_cast<std::int64_t>(prose.size())))));
+      auto fresh = alias_idx.find(folded, 50);
+      auto vers = find_version_mentions(folded, fresh, 80);
+      for (auto& v : vers) fresh.push_back(std::move(v));
+      mentions = Json::array();
+      for (auto& m : fresh) mentions.push_back(m.to_json());
+    }
+
     std::set<std::string> alias_projects;
     int alias_hits = 0, trap_hits = 0, version_hits = 0, code_hits = 0;
     std::string trap_reason;
-    for (const auto& mj : cu.mentions) {
+    for (const auto& mj : mentions) {
       std::string kind = json::get_string(mj, "kind");
       bool trap = json::get_bool(mj, "trap");
       if (trap) {
@@ -145,7 +180,13 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     bool title_hit = !alias_idx.find(folded_title, 5).empty();
 
     Json features{
-        {"id_hits", std::log(1.0 + alias_hits)},
+        // A single confirmed hit already establishes identity (the whole
+        // point of the identity pass, proposal_scale.md §5.1): the feature
+        // starts at 1.0 for one hit and grows slowly (log) after that,
+        // rather than log(1+n) which under-weights exactly-one-mention
+        // units (common for a chat that names the project once up top and
+        // refers to it by pronoun afterwards).
+        {"id_hits", alias_hits > 0 ? 1.0 + std::log(static_cast<double>(alias_hits)) : 0.0},
         {"class_diversity", std::min<std::size_t>(alias_projects.size(), 5)},
         {"version_mention", version_hits > 0 ? 1.0 : 0.0},
         {"code_evidence", code_hits ? 1.0 : 0.0},

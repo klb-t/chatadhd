@@ -889,6 +889,7 @@ int cmd_catalog(Runtime& rt, const Args& a) {
   } else if (sub == "profile") {
     catalog::ProfileConfig cfg;
     if (a.has("repo")) cfg.repo = a.get("repo");
+    for (const auto& t : a.all("extra-term")) cfg.extra_terms.push_back(t);
     print_json(must(cat.build_profile(cfg)).to_json());
   } else if (sub == "score") {
     catalog::ScoreConfig cfg;
