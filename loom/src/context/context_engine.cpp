@@ -290,7 +290,8 @@ Result<model::Goal> ContextEngine::type_goal(const ContextRequest& req) {
                               : "";
       std::string api_key = rt_.secrets().get_string("api_key");
       if (!model.empty() && !api_key.empty() && !chosen_type.empty()) {
-        std::string base_url = rt_.config().get("base_url", "https://openrouter.ai/api/v1").get<std::string>();
+        Json base_url_j = rt_.config().get("base_url", "https://openrouter.ai/api/v1");
+        std::string base_url = base_url_j.is_string() ? base_url_j.get<std::string>() : "https://openrouter.ai/api/v1";
         std::string prompt =
             "Classify the following prompt into exactly one goal type id. Reply with strict JSON only: "
             "{\"goal_type\": \"<id>\", \"confidence\": <0..1>}.\nGoal types:\n";
