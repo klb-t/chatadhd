@@ -375,7 +375,7 @@ Result<ResolveResult> Resolver::resolve(const std::vector<Entity>& candidates,
       if (!e.first_seen.empty() && (canon.first_seen.empty() || e.first_seen < canon.first_seen)) canon.first_seen = e.first_seen;
       if (e.last_seen > canon.last_seen) canon.last_seen = e.last_seen;
       std::set<std::string> os;
-      for (const Entity* src : {&canon, &e}) {
+      for (const Entity* src : {static_cast<const Entity*>(&canon), &e}) {
         if (const Json* o = json::find(src->attrs, "observations"); o && o->is_array()) {
           for (const auto& x : *o) {
             if (x.is_string()) os.insert(x.get<std::string>());

@@ -60,7 +60,7 @@ struct Eval {
     res = unwrap(r.resolve(ex.entities, ex.observations));
     claims = r.apply_remap(ex.claims, res);
     gt = unwrap(json::parse(unwrap(fsutil::read_file(kCorpus / "ground_truth.json"))));
-    for (const auto& u : gt["units"]["relevant"]) conv_project[u["conv_id"]] = u["project"];
+    for (const auto& u : gt["units"]["relevant"]) conv_project[u["conv_id"]] = json::get_string(u, "project");
   }
   std::set<std::string> convs_of(const model::Claim& c) const {
     std::set<std::string> s;
