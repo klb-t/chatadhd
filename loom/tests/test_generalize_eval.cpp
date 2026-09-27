@@ -70,9 +70,6 @@ TEST_SUITE("generalize_eval") {
     auto fx = test::gfix::load(*pk);
     REQUIRE(fx.ev.observations.size() > 150);
     REQUIRE(fx.ev.decisions.size() == 20);  // + 1 kept-open `decides` claim
-    if (std::getenv("LOOM_GEN_DEBUG")) {
-      for (const auto& [cl, dec] : fx.gt_decision) std::fprintf(stderr, "MAP %s %s\n", cl.c_str(), dec.c_str());
-    }
     const std::string cut = json::get_string(fx.gt["temporal_cut"], "date");
     REQUIRE(cut == "2026-05-01");
     auto priors = model::PriorFilter::as_of_date(cut);
@@ -269,6 +266,16 @@ TEST_SUITE("generalize_eval") {
 
     // Gates (dev levels; the hard gate is false certainty = 0).
     CHECK(fc_rate == 0.0);
+    CHECK(p_recall >= 0.8);
+    CHECK(p_level >= 0.85);
+    CHECK(p_form >= 0.7);
+    CHECK(pre_found == n_ops);
+    CHECK(recurrent >= 3);
+    CHECK(impure == 0);
+    CHECK(pred_ok >= 3);
+    CHECK(neg_attr == 0);
+    CHECK(soundness == 1.0);
+    CHECK(kind_ok >= 4);
     CHECK(with_ep == inferred_n);
     CHECK(specific == 0);
   }

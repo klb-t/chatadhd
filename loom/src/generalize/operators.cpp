@@ -12,8 +12,6 @@
 // prediction holds only when the solution signature alone matches.
 #include <algorithm>
 #include <functional>
-#include <cstdio>
-#include <cstdlib>
 #include <deque>
 #include <map>
 #include <set>
@@ -222,17 +220,6 @@ Result<std::vector<model::Operator>> mine_operators(const kb::Pack& pack, const 
   std::vector<int> group(sigs.size());
   for (std::size_t i = 0; i < sigs.size(); ++i) group[i] = static_cast<int>(i);
   std::function<int(int)> find = [&](int i) { return group[i] == i ? i : group[i] = find(group[i]); };
-  if (std::getenv("LOOM_GEN_DEBUG")) {
-    for (std::size_t i = 0; i < sigs.size(); ++i) {
-      std::fprintf(stderr, "SIG %s %s sit=[", sigs[i].d->id.c_str(), sigs[i].date.c_str());
-      for (auto& t : sigs[i].sit) std::fprintf(stderr, "%s ", t.c_str());
-      std::fprintf(stderr, "] sol=[");
-      for (auto& t : sigs[i].sol) std::fprintf(stderr, "%s ", t.c_str());
-      std::fprintf(stderr, "]\n");
-      for (std::size_t j = i + 1; j < sigs.size(); ++j)
-        std::fprintf(stderr, "PAIR %s %s sit=%.3f sol=%.3f\n", sigs[i].d->id.c_str(), sigs[j].d->id.c_str(), sim(sigs[i].sit, sigs[j].sit, w), sim(sigs[i].sol, sigs[j].sol, w));
-    }
-  }
   for (std::size_t i = 0; i < sigs.size(); ++i) {
     for (std::size_t j = i + 1; j < sigs.size(); ++j) {
       // A reversal of an earlier decision is not a recurrence of it.
@@ -297,9 +284,6 @@ Result<std::vector<model::Operator>> mine_operators(const kb::Pack& pack, const 
     for (auto* m : members) decisions.push_back(m->d->id);
     basis["decisions"] = decisions;
     bool linked = best >= 0 && best_s >= 0.3;
-    if (std::getenv("LOOM_GEN_DEBUG")) {
-      std::fprintf(stderr, "LINK %s %s %.3f\n", first.d->id.c_str(), best >= 0 ? seeds[best].id.c_str() : "-", best_s);
-    }
     if (linked) {
       const auto& seed = seeds[best];
       // The prior's own vocabulary generalises the solution class beyond
