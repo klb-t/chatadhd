@@ -142,6 +142,70 @@ Full text: `NOTATKA_GPT_2026-09-26.md`. Binding points:
 - Roles: LEM = epistemic representation; Loom = runtime/transformation;
   ChatADHD = interaction and model synchronisation.
 
+## R14 — Conversation abstraction; lossless full import; one pipeline for live and archived (2026-09-27)
+> "abstrakcje rozmowy też trzeba jakoś reprezentować bo będę chciał zaimportować docelowo cały archiwum i mieć co najmniej te dane które są w archiwach, bezstratnie wszystko. a analiza brainstormów to ten sam pipeline [...] dla archiwów jak dla rozmowy na żywo, bo ta rozmowa właśnie opisuje konstrukcje struktury która powinna być odzwierciedlona w grafie, sekwencyjnie. co nie znaczy, że na inny sposób ekstrakcja danych też nie powinna bardziej strukturalnie zachodzić. są różne podejścia i z żadnego nie rezygnujemy."
+
+- The conversation itself is a first-class abstraction in the model (turns,
+  branches, edits, attachments, tool calls, citations, provider metadata).
+- Full import is **lossless**: every field of every export survives (at least
+  what the source archive holds); unknown fields are kept verbatim.
+- Live and archived conversations go through the **same** extraction pipeline;
+  the sequence in which a conversation builds a structure is preserved in the
+  graph (ordered construction steps), alongside other, more structural
+  extraction approaches — none is dropped.
+
+## R15 — Everything the application uses is in the graph (2026-09-27)
+> "graf ma obejmować wszystkie informacje: profil użytkownika, abstrakcje projektów też powinny być w grafie, wspomnienia, konektory - to wszystko z czego aplikacja korzysta musi być w grafie opisane, krawędzie grafu też dosyć bogatą strukturę będą musiały mieć"
+
+User profile, project abstractions (paradigms, roles, morphisms), memories,
+connectors/providers, settings — all described as graph entities; edges carry a
+rich structure (typed, qualified, time-scoped, with provenance and assessment).
+
+## R16 — Visualisation beyond 2D/3D (2026-09-27)
+> "wizualizacje grafu trzeba pomyśleć, jak wykorzystać perspektywę, kanały alfa i tak dalej żeby wybraną podstrukturę najbardziej uwidocznić. [...] dwa a nawet trzy wymiary to za mało [...] dużo suwaków będzie potrzebnych wskazujących szczegóły kontekstu [...] intuicyjne przełączanie widoków graf / lista."
+
+Focus+context with perspective, alpha, depth, and many sliders (filters /
+weights over the claim space) to bring a chosen substructure forward; seamless
+graph ⇄ list switching.
+
+## R17 — Memory isomorphism across providers; provider-inspired interface profiles as data (2026-09-27)
+> "powinien być zachowany homo[mor]fizm czy izomorfizm ze wspomnieniami z innych eksportów. [...] można by jeszcze zrobić żeby importy wyglądały identycznie jak w źródłowej apce, całe profile interfejsów inspirowane oryginalnymi dostawcami jako możliwe widoki [...] w kodzie tak uogólnione żeby te interfejsy to były tylko dane [...] docelowo [...] opcja przeszukiwania wszystkich apek i nie tyle klonowania ale odwzorowywania interfejsów na tyle na ile prawa autorskie pozwalają."
+
+Memories from different providers (ChatGPT memories, Claude memories/projects,
+…) map onto one memory abstraction via morphisms. UI "profiles" inspired by the
+source apps are data (layout + interaction logic, own graphics), selectable as
+views; later, discovery of other apps' interface logic — mapping, not cloning,
+within copyright limits.
+
+## R18 — Import scope defaults and options (2026-09-27)
+> "pełen import to definitywnie musi wszystkie dane z paczki wchłonąć, a selektywny [...] domyślnie powinien uwzględniać wszystkie rozmowy pełne zawierające informacje na temat, wszystko o projekcie jeśli to jest w projekcie, wszystkie załączniki i zalinkowane rozmowy, uwzględnione w rozumowaniu, wszystkie powiązane dane. [...] możliwe do zmiany przez użytkownika. na przykład [...] możliwe do odznaczenia pełne treści rozmów łącznie z niezwiązanymi tematami jeśli rozmowa wielowątkowa, wiadomości z innych rozmów z podobnego okna czasowego opcjonalnie dołączane, streszczenie kontekstu z podobnych okolic czasowych, i tak dalej."
+
+Full import = everything. Selective import defaults: whole on-topic
+conversations, everything inside a matching project, all attachments and
+linked/referenced conversations, all related data used in reasoning. Every rule
+is an owner-toggleable option (strip off-topic threads, add same-time-window
+messages, add temporal-neighbourhood summaries, …).
+
+## R19 — Privacy and threat model in the provider abstraction; "paranoid" mode (2026-09-27)
+> "czy abstrakcja dostawców obejmuje szczegółowe ustawienia prywatności [...] z oceną jakich wysiłków wymagałoby zdobycie danych przez atakującego? [...] lokalny model na telefonie może być skompromitowany pegasusem. Jak to ma wojskowe standardy spełniać [...] dokładna informacja użytkownika na co nie mamy wpływu oraz czego nawet nie wiemy że może być, jak ktoś wybierze tryb paranoid to musi mieć pełną mapę ryzyk [...] model musi być tego świadom."
+
+Every provider/connector/storage/device path carries a privacy profile: data
+exposure (who can read what, where, retention, jurisdiction), attacker models
+and the effort each needs (remote API compromise, legal compulsion, device
+malware such as Pegasus-class spyware, physical/acoustic/optical side channels
+— voice through open windows, shoulder-surfing optics), what Loom can control
+vs cannot vs does not know. A "paranoid" mode shows the full risk map for the
+current configuration and routes accordingly. The model is comprehensive even
+where the UI keeps details in the background.
+
+## R20 — Copy vs link is the owner's choice; watch and auto-export (2026-09-27)
+> "czy w grafie będziemy powielać importy, czy tylko linkować do danych w plikach? [...] nie podejmujemy decyzji zostawiamy użytkownikowi [...] kod ma obsłużyć co sobie użytkownik zażyczy, łącznie z odwzorowaniem w grafie wszystkich danych i meta danych i pilnowaniem cyklicznym czy pliki nowe nie doszły, zautomatyzowanym eksportem ze źródeł, jak zawsze - wszystkie możliwe opcje"
+
+Retention policy per source is an owner option (copy into blob store / link to
+the original file by hash / both), with complete graph mapping of data and
+metadata either way; periodic watching of sources for new files; automated
+export from source services where they allow it.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
