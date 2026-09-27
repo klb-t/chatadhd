@@ -141,8 +141,9 @@ TEST_SUITE("extract_eval") {
     MESSAGE("project entity P/R/F1 = " << ep << " / " << er << " / " << f1(ep, er) << "  (" << matched << " of "
                                        << E.gt["projects"].size() << ", predicted " << projects.size() << ")");
     MESSAGE("alias P/R/F1 = " << ap << " / " << ar << " / " << f1(ap, ar));
-    CHECK(matched >= 3);
-    CHECK(f1(ap, ar) >= 0.25);
+    CHECK(matched == 5);
+    CHECK(f1(ap, ar) >= 0.3);
+    CHECK(ep >= 0.8);
   }
 
   TEST_CASE("synthetic_dev: versions") {
@@ -188,8 +189,8 @@ TEST_SUITE("extract_eval") {
     double prec = pred ? static_cast<double>(tp) / pred : 0;
     double rec = total ? static_cast<double>(hit) / total : 0;
     MESSAGE("version precision/recall = " << prec << " / " << rec << "  (" << hit << "/" << total << ")");
-    CHECK(rec >= 0.5);
-    CHECK(prec >= 0.7);
+    CHECK(rec >= 0.75);
+    CHECK(prec >= 0.9);
   }
 
   TEST_CASE("synthetic_dev: status per branch and version") {
@@ -235,7 +236,8 @@ TEST_SUITE("extract_eval") {
     }
     CHECK(lost);
     CHECK(restored);
-    CHECK(acc >= 0.4);
+    CHECK(acc >= 0.75);
+    CHECK(vacc >= 0.7);
   }
 
   TEST_CASE("synthetic_dev: decisions and forks") {
@@ -303,7 +305,7 @@ TEST_SUITE("extract_eval") {
     for (const auto& f : E.ex.forks) design = design || f.kind == model::ForkKind::Design;
     MESSAGE("fork recall = " << static_cast<double>(fh) / gt_forks.size() << "  (" << gt_forks.size()
                              << " forked conversations), design fork found = " << design);
-    CHECK(static_cast<double>(conv_hit) / total >= 0.4);
+    CHECK(static_cast<double>(conv_hit) / total >= 0.55);
     CHECK(fh == static_cast<int>(gt_forks.size()));
     CHECK(design);
   }
@@ -347,7 +349,8 @@ TEST_SUITE("extract_eval") {
     }
     MESSAGE("area recall = " << static_cast<double>(hit) / total << ", listed-member recall = "
                              << static_cast<double>(members_hit) / members_gt << " (token overlap, PL vs EN), member count exact = " << count_ok << "/" << total);
-    CHECK(hit >= 4);
+    CHECK(hit == total);
+    CHECK(count_ok >= 4);
     for (const auto& ar : E.ex.areas) {
       CHECK(!ar.principle.empty());
       CHECK(ar.gap == ar.members.empty());
