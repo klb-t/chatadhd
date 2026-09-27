@@ -1216,7 +1216,7 @@ void Run::do_decisions() {
       const std::string& t = info_[k].o->text;
       bool question = utf8::rstrip(t).size() > 0 && utf8::rstrip(t).back() == '?';
       bool enumer = lex_.score("enumeration.options", info_[k].folded) > 0;
-      if (!question && !enumer && back > 0) continue;
+      if (!question && !enumer) continue;  // the options come from a question or an enumeration
       auto opts = parse_options(t);
       if (opts.size() >= 2) {
         options = std::move(opts);
@@ -1278,6 +1278,9 @@ std::optional<std::pair<std::size_t, std::size_t>> Run::topic_run(
     const Token& t = in.toks[k];
     if (is_stop(t.lower) || lex_.negators.count(t.lower) || lex_.generic_words.count(t.lower)) return false;
     if (!has_alpha(t.lower) || utf8::length(t.lower) < 3) return false;
+    for (const auto& a : lex_.version_anchors) {
+      if (t.lower.rfind(a, 0) == 0) return false;  // "wersji", "version": the version, not the feature
+    }
     for (auto [a, b] : cues) {
       if (t.start < b && a < t.end) return false;
     }
@@ -1587,7 +1590,7 @@ void Run::do_normative() {
     if (!in.text) continue;
     double s = 0;
     for (const auto& h : lex_.match("normative", in.folded)) s += h.w;
-    if (s < 1.5) continue;
+    if (s < 1.0) continue;
     std::string_view t = utf8::rstrip(in.o->text);
     if (!t.empty() && t.back() == '?') continue;
     model::Principle p;

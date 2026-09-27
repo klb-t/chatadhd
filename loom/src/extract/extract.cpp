@@ -565,7 +565,12 @@ void segment_block(SegCtx& s, const detail::Block& b) {
       }
     } else if (st.empty()) {
       scene_speaker.clear();
-    } else if (timed && parse_cue_times(st, &(cue_time.emplace().first), &cue_time->second)) {
+    } else if (timed && [&] {
+                 double ta = 0, tb = 0;
+                 if (!parse_cue_times(st, &ta, &tb)) return false;
+                 cue_time = std::make_pair(ta, tb);
+                 return true;
+               }()) {
       // the following lines are the cue text
     } else if (timed && cue_time && !st.empty() &&
                !std::all_of(st.begin(), st.end(), [](char c) { return std::isdigit(static_cast<unsigned char>(c)); }) &&
@@ -674,6 +679,22 @@ Result<std::vector<Observation>> Extractor::segment(const model::ArtifactType& t
       if (le == std::string::npos) le = content.text.size();
       int line = 1 + static_cast<int>(std::count(content.text.begin(), content.text.begin() + static_cast<std::ptrdiff_t>(ls), '\n'));
       emit(s, whole, ObservationKind::Field, ls, le - ls, line, Json{{"symbol", sym}, {"language", dg.language}});
+    }
+    // version declarations (__version__ = "x", project(... VERSION x)) as fields
+    std::u32string u = utf8::decode(content.text);
+    std::set<std::size_t> lines_done;
+    for (const auto& d : lex_->version_decls) {
+      if (d.id == "changelog_line" || d.id == "commit_subject") continue;
+      for (const auto& m : d.re.finditer(u)) {
+        std::size_t p = utf8::byte_offset(content.text, static_cast<std::size_t>(m.start(0)));
+        std::size_t ls = content.text.rfind('\n', p);
+        ls = ls == std::string::npos ? 0 : ls + 1;
+        if (!lines_done.insert(ls).second) continue;
+        std::size_t le = content.text.find('\n', p);
+        if (le == std::string::npos) le = content.text.size();
+        int line = 1 + static_cast<int>(std::count(content.text.begin(), content.text.begin() + static_cast<std::ptrdiff_t>(ls), '\n'));
+        emit(s, whole, ObservationKind::Field, ls, le - ls, line, Json{{"declaration", d.id}});
+      }
     }
   }
   return std::move(s.out);
