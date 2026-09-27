@@ -752,8 +752,28 @@ int cmd_archive(Runtime& rt, const Args& a) {
   std::signal(SIGINT, sigint_handler);
   auto r = must(rt.archive().run(cfg, progress_line, &g_cancel));
   if (!g_quiet) std::cerr << "\r\x1b[K";
+
+  // --knowledge: also run the knowledge.catalog stage over the same sources
+  // (knowledge.h: "wiring `loom archive run --knowledge` to start a
+  // knowledge run after `relate` belongs to the catalog area"). Only
+  // "catalog" is requested: the other stages are still stubs, so asking for
+  // the whole pipeline here would just fail at "extract" today.
+  Json kr_json = Json(nullptr);
+  if (a.has("knowledge") && r.status == "done") {
+    knowledge::KnowledgeConfig kcfg;
+    kcfg.sources = cfg.sources;
+    kcfg.repo = cfg.repo;
+    kcfg.stages = {"catalog"};
+    kcfg.force = cfg.force;
+    auto kr = rt.knowledge().run(kcfg, progress_line, &g_cancel);
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    kr_json = kr ? kr->to_json() : Json{{"error", Json{{"code", std::string(errc_name(kr.error().code))}, {"message", kr.error().message}}}};
+  }
+
   if (g_json) {
-    print_json(r.to_json());
+    Json out = r.to_json();
+    if (!kr_json.is_null()) out["knowledge"] = kr_json;
+    print_json(out);
     return r.status == "done" ? 0 : 4;
   }
   std::cout << "archive run " << r.run_id << ": " << r.status << "\n";
@@ -776,6 +796,10 @@ int cmd_archive(Runtime& rt, const Args& a) {
   if (!od.empty()) std::cout << "artifacts written to " << od << "\n";
   for (const auto& art : sm["artifacts"]) std::cout << "  " << json::get_string(art, "id") << "  " << json::get_string(art, "name") << "\n";
   for (const auto& w : sm["warnings"]) std::cerr << "warning: " << w.get<std::string>() << "\n";
+  if (!kr_json.is_null()) {
+    std::cout << "knowledge.catalog: " << json::get_string(kr_json, "status", "") << "\n";
+    if (json::find(kr_json, "error")) std::cerr << "warning: " << json::dump(kr_json["error"]) << "\n";
+  }
   return 0;
 }
 
@@ -1028,6 +1052,7 @@ int main(int argc, char** argv) {
     if (cmd == "sources") return cmd_sources(rt, args);
     if (cmd == "artifacts") return cmd_artifacts(rt, args);
     if (cmd == "archive") return cmd_archive(rt, args);
+    if (cmd == "catalog") return cmd_catalog(rt, args);
     if (cmd == "crypto") return cmd_crypto(rt, args);
     std::cerr << "unknown command: " << cmd << "\n(see loom --help)\n";
     return 2;
