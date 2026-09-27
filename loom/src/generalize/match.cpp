@@ -75,7 +75,8 @@ double anchor_op(const kb::Pack& pack, const kb::Normalizer& norm, const Index& 
         }
       }
     }
-    s = std::min(1.0, n / min);
+    // Fewer hits than the anchor asks for is weak evidence, not a match.
+    s = n >= min ? 1.0 : 0.5 * n / min;
   } else if (name == "codebase") {
     auto it = ix.by_subject.find(e.id);
     if (it != ix.by_subject.end()) {
@@ -579,8 +580,9 @@ Result<std::vector<Claim>> ParadigmMatcher::analogies(const std::vector<Match>& 
       const auto& [b, sb] = sigs[j];
       double role_sim = jac(sa.roles, sb.roles);
       double value_sim = a->instance.paradigm == b->instance.paradigm ? jac(sa.values, sb.values) : 0.0;
-      double sim = 0.5 * role_sim + 0.5 * value_sim;
-      if (a->instance.paradigm == b->instance.paradigm) sim = std::max(sim, 0.8 * role_sim);
+      // Same paradigm: shared values count; across paradigms only the role
+      // structure can be compared (that is what morphisms transfer over).
+      double sim = std::max(0.5 * role_sim + 0.5 * value_sim, 0.8 * role_sim);
       if (sim < tau) continue;
       Claim c;
       c.subject = a->instance.subject;

@@ -80,6 +80,8 @@ Status type_principle(const kb::Pack& pack, model::Principle& p, const Evidence&
   } else {
     p.form = PrincipleForm::Heuristic;
   }
+  // How conflicts are settled is a strategy, whatever values it names.
+  if (p.form == PrincipleForm::ConflictResolution && p.level == PrincipleLevel::Value) p.level = PrincipleLevel::Strategy;
 
   // Scope: the subjects and areas its evidence comes from.
   Index ix(ev);

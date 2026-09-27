@@ -12,6 +12,9 @@
 // prediction holds only when the solution signature alone matches.
 #include <algorithm>
 #include <functional>
+#include <cstdio>
+#include <cstdlib>
+#include <deque>
 #include <map>
 #include <set>
 
@@ -38,6 +41,22 @@ struct Sig {
 
 bool owner(std::string_view s) { return s != "assistant" && s != "system" && s != "model" && s != "tool"; }
 
+// Signature terms: normalizer keys cut to a 6-byte prefix, which folds the
+// inflections the light stemmer leaves apart ("zamienilam" / "zamieniam",
+// "restarter" / "restarting").
+std::vector<std::string> sig_terms(const kb::Normalizer& norm, std::string_view text) {
+  std::set<std::string> out;
+  for (auto t : detail::terms(norm, text)) {
+    if (t.size() > 6) {
+      std::size_t n = 6;
+      while (n > 0 && (static_cast<unsigned char>(t[n]) & 0xC0) == 0x80) --n;
+      t.resize(n);
+    }
+    if (t.size() >= 3) out.insert(std::move(t));
+  }
+  return {out.begin(), out.end()};
+}
+
 std::string label_of(const model::DecisionAlternative& a) {
   if (!a.label.empty()) return a.label;
   return a.value.is_string() ? a.value.get<std::string>() : std::string();
@@ -55,7 +74,7 @@ Sig signature(const kb::Normalizer& norm, const Index& ix, const model::Decision
   std::vector<std::string> rejected_terms;
   for (const auto& a : d.alternatives) {
     alts += label_of(a) + " ; ";
-    if (!a.chosen) rejected_terms = detail::set_union(rejected_terms, detail::terms(norm, label_of(a)));
+    if (!a.chosen) rejected_terms = detail::set_union(rejected_terms, sig_terms(norm, label_of(a)));
   }
   std::string context;
   if (!obs.empty()) {
@@ -80,21 +99,40 @@ Sig signature(const kb::Normalizer& norm, const Index& ix, const model::Decision
   if (chosen) s.solution_text += " " + label_of(*chosen);
   s.situation_text = context + " " + alts;
   if (s.kept_open) s.situation_text += " " + s.solution_text;
-  s.sit = detail::terms(norm, s.situation_text);
-  auto sol = detail::terms(norm, s.solution_text);
+  s.sit = sig_terms(norm, s.situation_text);
+  auto sol = sig_terms(norm, s.solution_text);
   // What the owner rejected describes the situation, not the solution.
-  std::vector<std::string> chosen_terms = chosen ? detail::terms(norm, label_of(*chosen)) : std::vector<std::string>{};
+  std::vector<std::string> chosen_terms = chosen ? sig_terms(norm, label_of(*chosen)) : std::vector<std::string>{};
   s.sol = detail::set_union(detail::set_minus(sol, rejected_terms), chosen_terms);
   return s;
 }
 
-std::vector<Sig> signatures(const kb::Normalizer& norm, const Index& ix) {
+// A decision deliberately kept open has no Decision record (a Decision has
+// exactly one chosen alternative): it arrives as a `decides` claim whose
+// value is {"kept_open": [alternatives]}. It is read as a decision whose
+// solution is "keep the alternatives".
+std::vector<Sig> signatures(const kb::Normalizer& norm, const Index& ix, std::deque<model::Decision>& kept_open) {
   std::vector<Sig> out;
   for (const auto& d : ix.ev.decisions) {
     if (d.status == model::DecisionStatus::Reverted) continue;
     auto s = signature(norm, ix, d);
     if (s.sol.empty() && s.sit.empty()) continue;
     out.push_back(std::move(s));
+  }
+  for (const auto& c : ix.ev.claims) {
+    if (c.predicate != "decides" || ix.decision.count(c.id) || !detail::usable(c)) continue;
+    const Json* alts = json::find(c.value, "kept_open");
+    if (!alts || !alts->is_array()) continue;
+    model::Decision d;
+    d.id = c.id;
+    d.subject = c.subject;
+    d.date = ix.claim_date(c);
+    for (const auto& a : *alts) {
+      if (a.is_string()) d.alternatives.push_back(model::DecisionAlternative{a.get<std::string>(), "", Json(), {}, false});
+    }
+    kept_open.push_back(std::move(d));
+    auto s = signature(norm, ix, kept_open.back());
+    if (!s.sol.empty() || !s.sit.empty()) out.push_back(std::move(s));
   }
   std::sort(out.begin(), out.end(), [](const Sig& a, const Sig& b) {
     if (a.date != b.date) return a.date < b.date;
@@ -107,14 +145,20 @@ struct Tau {
   double merge, apply, sol, sit;
 };
 Tau taus(const kb::Pack& pack) {
-  return Tau{detail::threshold(pack, "operators", "merge_similarity", 0.35), detail::threshold(pack, "operators", "apply_similarity", 0.12),
+  return Tau{detail::threshold(pack, "operators", "merge_similarity", 0.14), detail::threshold(pack, "operators", "apply_similarity", 0.12),
              detail::threshold(pack, "operators", "solution_similarity", 0.1),
              detail::threshold(pack, "operators", "situation_similarity", 0.12)};
 }
 
+// Weighted overlap tempered by Jaccard: short signatures are not drowned by
+// long ones, and one shared word does not make two long texts alike.
+double sim(const std::vector<std::string>& a, const std::vector<std::string>& b, const detail::TermWeights& w) {
+  return 0.5 * detail::woverlap(a, b, w) + 0.5 * detail::wjaccard(a, b, w);
+}
+
 double combined(const std::vector<std::string>& sit_a, const std::vector<std::string>& sol_a, const std::vector<std::string>& sit_b,
                 const std::vector<std::string>& sol_b, const detail::TermWeights& w) {
-  return 0.5 * detail::wjaccard(sit_a, sit_b, w) + 0.5 * detail::wjaccard(sol_a, sol_b, w);
+  return 0.5 * sim(sit_a, sit_b, w) + 0.5 * sim(sol_a, sol_b, w);
 }
 
 std::vector<std::string> json_terms(const Json& basis, const char* key) {
@@ -151,7 +195,8 @@ Result<std::vector<model::Operator>> mine_operators(const kb::Pack& pack, const 
   kb::Normalizer norm(pack);
   Index ix(ev);
   Tau tau = taus(pack);
-  auto sigs = signatures(norm, ix);
+  std::deque<model::Decision> kept_open;
+  auto sigs = signatures(norm, ix, kept_open);
   detail::TermWeights w;
   for (const auto& s : sigs) w.add(detail::set_union(s.sit, s.sol));
 
@@ -163,21 +208,36 @@ Result<std::vector<model::Operator>> mine_operators(const kb::Pack& pack, const 
       if (!o.is_rule()) seeds.push_back(std::move(o));
     }
   }
-  std::vector<std::vector<std::string>> seed_terms;
+  std::vector<std::vector<std::string>> seed_terms, seed_sit, seed_sol;
   for (const auto& o : seeds) {
-    std::vector<std::string> t;
-    for (const auto& [l, x] : o.situation) t = detail::set_union(t, detail::terms(norm, x));
-    for (const auto& [l, x] : o.solution) t = detail::set_union(t, detail::terms(norm, x));
-    seed_terms.push_back(t);
+    std::vector<std::string> a, b;
+    for (const auto& [l, x] : o.situation) a = detail::set_union(a, sig_terms(norm, x));
+    for (const auto& [l, x] : o.solution) b = detail::set_union(b, sig_terms(norm, x));
+    seed_sit.push_back(a);
+    seed_sol.push_back(b);
+    seed_terms.push_back(detail::set_union(a, b));
   }
 
   // Merge recurring decisions (single link, in time order).
   std::vector<int> group(sigs.size());
   for (std::size_t i = 0; i < sigs.size(); ++i) group[i] = static_cast<int>(i);
   std::function<int(int)> find = [&](int i) { return group[i] == i ? i : group[i] = find(group[i]); };
+  if (std::getenv("LOOM_GEN_DEBUG")) {
+    for (std::size_t i = 0; i < sigs.size(); ++i) {
+      std::fprintf(stderr, "SIG %s %s sit=[", sigs[i].d->id.c_str(), sigs[i].date.c_str());
+      for (auto& t : sigs[i].sit) std::fprintf(stderr, "%s ", t.c_str());
+      std::fprintf(stderr, "] sol=[");
+      for (auto& t : sigs[i].sol) std::fprintf(stderr, "%s ", t.c_str());
+      std::fprintf(stderr, "]\n");
+      for (std::size_t j = i + 1; j < sigs.size(); ++j)
+        std::fprintf(stderr, "PAIR %s %s sit=%.3f sol=%.3f\n", sigs[i].d->id.c_str(), sigs[j].d->id.c_str(), sim(sigs[i].sit, sigs[j].sit, w), sim(sigs[i].sol, sigs[j].sol, w));
+    }
+  }
   for (std::size_t i = 0; i < sigs.size(); ++i) {
     for (std::size_t j = i + 1; j < sigs.size(); ++j) {
-      bool same_shape = sigs[i].kept_open == sigs[j].kept_open;
+      // A reversal of an earlier decision is not a recurrence of it.
+      bool reversal = sigs[i].d->superseded_by == sigs[j].d->id || sigs[j].d->superseded_by == sigs[i].d->id;
+      bool same_shape = !reversal;
       if (same_shape && combined(sigs[i].sit, sigs[i].sol, sigs[j].sit, sigs[j].sol, w) >= tau.merge) {
         int a = find(static_cast<int>(i)), b = find(static_cast<int>(j));
         if (a != b) group[std::max(a, b)] = std::min(a, b);
@@ -237,8 +297,15 @@ Result<std::vector<model::Operator>> mine_operators(const kb::Pack& pack, const 
     for (auto* m : members) decisions.push_back(m->d->id);
     basis["decisions"] = decisions;
     bool linked = best >= 0 && best_s >= 0.3;
+    if (std::getenv("LOOM_GEN_DEBUG")) {
+      std::fprintf(stderr, "LINK %s %s %.3f\n", first.d->id.c_str(), best >= 0 ? seeds[best].id.c_str() : "-", best_s);
+    }
     if (linked) {
       const auto& seed = seeds[best];
+      // The prior's own vocabulary generalises the solution class beyond
+      // the words of this one decision.
+      basis["situation_terms"] = to_json_terms(detail::set_union(sit, seed_sit[best]));
+      basis["solution_terms"] = to_json_terms(detail::set_union(sol, seed_sol[best]));
       basis["prior"] = seed.id;
       basis["prior_overlap"] = best_s;
       op.sources.push_back(model::Reference{"loom/data/philosophy/operators.json", seed.id, model::earliest_source_date(seed.sources), "", "", "seed operator (prior)"});
@@ -251,7 +318,7 @@ Result<std::vector<model::Operator>> mine_operators(const kb::Pack& pack, const 
     for (const auto& s : sigs) {
       bool member = std::find(members.begin(), members.end(), &s) != members.end();
       if (member) continue;
-      if (detail::wjaccard(sit, s.sit, w) >= std::max(tau.sit, 0.3) && detail::wjaccard(sol, s.sol, w) < tau.sol) ++op.failure;
+      if (sim(sit, s.sit, w) >= std::max(tau.sit, 0.3) && sim(sol, s.sol, w) < tau.sol) ++op.failure;
     }
     double beta = (op.success + 1.0) / (op.success + op.failure + 2.0);
     op.confidence = detail::clamp01(beta * (linked ? 1.0 : 0.8));
@@ -307,8 +374,8 @@ Result<std::vector<model::Prediction>> predict(const std::vector<model::Operator
       if (qt.empty()) {
         for (const auto& s : q->assessment.support) qt += s.quote + " ";
       }
-      auto qterms = detail::terms(norm, qt);
-      double s = detail::wjaccard(sit, qterms, w);
+      auto qterms = sig_terms(norm, qt);
+      double s = sim(sit, qterms, w);
       if (s < tau.sit) continue;
       model::Prediction ps = p;
       ps.situation = qt;
@@ -330,7 +397,8 @@ Result<std::vector<model::Prediction>> evaluate_predictions(std::vector<model::P
   kb::Normalizer norm(*pack);
   Index ix(after_cut);
   Tau tau = taus(*pack);
-  auto sigs = signatures(norm, ix);
+  std::deque<model::Decision> kept_open;
+  auto sigs = signatures(norm, ix, kept_open);
   detail::TermWeights w;
   for (const auto& s : sigs) w.add(detail::set_union(s.sit, s.sol));
   for (const auto& p : predictions) {
@@ -355,7 +423,7 @@ Result<std::vector<model::Prediction>> evaluate_predictions(std::vector<model::P
     }
     if (best < 0 || best_score < tau.apply) continue;
     auto& p = predictions[best];
-    double sol = detail::wjaccard(json_terms(p.features, "solution_terms"), s.sol, w);
+    double sol = sim(json_terms(p.features, "solution_terms"), s.sol, w);
     p.evaluated_against.push_back(s.d->id);
     auto& r = result[p.id];
     (sol >= tau.sol ? r.first : r.second) = true;

@@ -263,7 +263,7 @@ Json default_class(std::string_view name) {
   if (name == "principle.level.value") {
     return phrases({{"ważniejsz* niż", 2}, {"more important than", 2}, {"matters more", 2}, {"na pierwszym miejscu", 2},
                     {"wartoś*", 1.5}, {"value*", 1}, {"opcjonalnoś*", 1.5}, {"optionality", 1.5}, {"prawd*", 1},
-                    {"truth", 1}, {"wprost", 1.5}, {"honest*", 1.5}, {"autonomi*", 1.5}, {"tempa", 1.5},
+                    {"truth", 1}, {"wprost", 2.5}, {"honest*", 1.5}, {"autonomi*", 1.5}, {"tempa", 1.5},
                     {"tempo", 1.5}, {"momentum", 1.5}, {"przejrzyst*", 1.5}, {"transparen*", 1.5}});
   }
   if (name == "principle.level.epistemic") {
