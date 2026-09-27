@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "loom/archive.h"
+#include "loom/catalog.h"
 #include "loom/chat_engine.h"
 #include "loom/config.h"
 #include "loom/crypto.h"
@@ -29,6 +30,7 @@
 #include "loom/graph_engine.h"
 #include "loom/graph_memory.h"
 #include "loom/importer.h"
+#include "loom/knowledge.h"
 #include "loom/log.h"
 #include "loom/media_providers.h"
 #include "loom/memory_engine.h"
@@ -92,7 +94,20 @@ Commands:
               [--project NAME] [--max-passes N] [--max-new-terms N] [--max-hits N]
               [--rounds N] [--exclude FRAGMENT]... [--no-git] [--no-code]
               [--include-db] [--llm auto|off] [--force] [--config FILE.json]
+              [--knowledge]                  also run the knowledge.catalog stage over the same sources
   archive status [RUN_ID]
+  catalog scan [--source PATH]... [--threads N] [--mobile] [--force]
+               stream files/dirs/zips into loom_cat_units + sketches (R1: no import)
+  catalog profile [--repo DIR]              build the self-profile from the pack + repo
+  catalog score [--profile ID] [--max-passes N]
+  catalog list [--label relevant|candidate|irrelevant] [--project ID] [--text Q]
+               [--sort score|date|id] [--limit N] [--offset N] [--run ID]
+  catalog show UNIT_ID                      metadata, score reasons, verified snippets
+  catalog include UNIT_ID [--reason R] | exclude UNIT_ID [--reason R] | pin UNIT_ID [--reason R]
+  catalog import [--run ID] [--dry-run]     targeted import of the selected units
+  catalog status
+  catalog eval --truth ground_truth.json [--run ID]
+               recall/precision/noise-trap FP against a synthetic_dev-shaped ground truth
   crypto status | setup | unlock | lock        passwords are read from stdin
 
 Archive example (the self-hosting run):
@@ -102,8 +117,9 @@ Archive example (the self-hosting run):
 
 // ── argument parsing ────────────────────────────────────────────────
 const std::set<std::string>& flag_names() {
-  static const std::set<std::string> k = {"json", "quiet", "force", "all", "refresh", "no-git", "no-code",
-                                          "include-db", "web", "help", "deep"};
+  static const std::set<std::string> k = {"json",   "quiet",  "force",   "all",     "refresh", "no-git",
+                                          "no-code", "include-db", "web", "help",    "deep",    "mobile",
+                                          "dry-run", "knowledge"};
   return k;
 }
 
@@ -760,6 +776,144 @@ int cmd_archive(Runtime& rt, const Args& a) {
   if (!od.empty()) std::cout << "artifacts written to " << od << "\n";
   for (const auto& art : sm["artifacts"]) std::cout << "  " << json::get_string(art, "id") << "  " << json::get_string(art, "name") << "\n";
   for (const auto& w : sm["warnings"]) std::cerr << "warning: " << w.get<std::string>() << "\n";
+  return 0;
+}
+
+void print_catalog_unit_line(const catalog::CatalogUnit& u) {
+  std::cout << u.unit.id << "  " << u.platform << "  " << u.unit.date.substr(0, 10) << "  " << u.n_msgs << "msg  "
+            << one_line(u.unit.title, 60) << "\n";
+}
+
+catalog::Catalog make_catalog(Runtime& rt) { return catalog::Catalog(rt, must(rt.knowledge().pack())); }
+
+// `loom catalog eval --truth ground_truth.json`: recall/precision/noise-trap
+// FP against a synthetic_dev-shaped ground truth (units.relevant/noise_traps/
+// noise_generic, each with a "conv_id" that matches a catalogued unit's
+// ext_id). Not a Catalog method (catalog.h has no evaluate()); implemented
+// directly over query()/loom_cat_decisions so it needs no extra C ABI.
+int cmd_catalog_eval(Runtime& rt, const Args& a) {
+  std::string truth_path = a.get("truth");
+  if (truth_path.empty()) throw UsageError{"catalog eval needs --truth ground_truth.json"};
+  Json truth = must(json::parse(must(fsutil::read_file(truth_path))));
+  const Json& units = truth["units"];
+
+  catalog::UnitQuery q;
+  q.run_id = a.get("run");
+  q.limit = 1000000;
+  auto cat = make_catalog(rt);
+  auto all = must(cat.query(q));
+
+  std::map<std::string, bool> selected_by_ext;
+  {
+    auto lk = rt.db().lock();
+    std::string run_id = q.run_id;
+    if (run_id.empty()) {
+      auto r = rt.db().conn().query_text("SELECT run_id FROM loom_cat_decisions ORDER BY rowid DESC LIMIT 1");
+      if (r && *r) run_id = **r;
+    }
+    for (const auto& u : all) {
+      auto d = rt.db().conn().query_int("SELECT selected FROM loom_cat_decisions WHERE run_id = ? AND unit_id = ?",
+                                        run_id, u.unit.id);
+      selected_by_ext[u.ext_id] = d && d->has_value() && **d != 0;
+    }
+  }
+
+  auto count_selected = [&](const Json& arr) {
+    int n = 0;
+    for (const auto& r : arr) {
+      auto it = selected_by_ext.find(json::get_string(r, "conv_id"));
+      if (it != selected_by_ext.end() && it->second) ++n;
+    }
+    return n;
+  };
+  int relevant_total = static_cast<int>(units["relevant"].size());
+  int relevant_selected = count_selected(units["relevant"]);
+  int traps_total = static_cast<int>(units["noise_traps"].size());
+  int traps_selected = count_selected(units["noise_traps"]);
+  int generic_selected = count_selected(units["noise_generic"]);
+  int selected_total = 0;
+  for (auto& [k, v] : selected_by_ext) selected_total += v ? 1 : 0;
+  int false_positives = traps_selected + generic_selected + std::max(0, selected_total - relevant_selected - traps_selected - generic_selected);
+  double recall = relevant_total ? static_cast<double>(relevant_selected) / relevant_total : 0.0;
+  double precision = selected_total ? static_cast<double>(relevant_selected) / selected_total : 0.0;
+  double trap_fpr = traps_total ? static_cast<double>(traps_selected) / traps_total : 0.0;
+
+  Json out{{"relevant_total", relevant_total},   {"relevant_selected", relevant_selected},
+          {"traps_total", traps_total},          {"traps_selected", traps_selected},
+          {"noise_generic_selected", generic_selected}, {"selected_total", selected_total},
+          {"false_positives", false_positives},  {"recall", recall},
+          {"precision", precision},              {"trap_fpr", trap_fpr}};
+  print_json(out);
+  return 0;
+}
+
+int cmd_catalog(Runtime& rt, const Args& a) {
+  std::string sub = need(a, 0, "catalog subcommand");
+  auto cat = make_catalog(rt);
+  std::signal(SIGINT, sigint_handler);
+
+  if (sub == "scan") {
+    catalog::ScanConfig cfg;
+    cfg.sources = a.all("source");
+    if (a.has("mobile")) cfg.sketch = catalog::SketchParams::mobile();
+    cfg.threads = a.get_int("threads", 0);
+    cfg.force = a.has("force");
+    if (cfg.sources.empty()) throw UsageError{"catalog scan needs at least one --source"};
+    auto r = must(cat.scan(cfg, progress_line, &g_cancel));
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    print_json(r);
+  } else if (sub == "profile") {
+    catalog::ProfileConfig cfg;
+    if (a.has("repo")) cfg.repo = a.get("repo");
+    print_json(must(cat.build_profile(cfg)).to_json());
+  } else if (sub == "score") {
+    catalog::ScoreConfig cfg;
+    cfg.profile_id = a.get("profile");
+    cfg.max_passes = a.get_int("max-passes", cfg.max_passes);
+    auto r = must(cat.score(cfg, progress_line, &g_cancel));
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    print_json(r);
+    must(cat.select(json::get_string(r, "run_id")));
+  } else if (sub == "list") {
+    catalog::UnitQuery q;
+    if (a.has("label")) q.label = a.get("label");
+    if (a.has("project")) q.project = a.get("project");
+    if (a.has("text")) q.text = a.get("text");
+    q.run_id = a.get("run");
+    q.sort = a.get("sort", "score");
+    q.limit = a.get_int("limit", 100);
+    q.offset = a.get_int("offset", 0);
+    auto v = must(cat.query(q));
+    if (g_json) {
+      Json j = Json::array();
+      for (auto& u : v) j.push_back(u.to_json());
+      print_json(j);
+    } else {
+      for (auto& u : v) print_catalog_unit_line(u);
+    }
+  } else if (sub == "show") {
+    print_json(must(cat.preview(need(a, 1, "unit id"))));
+  } else if (sub == "include" || sub == "exclude" || sub == "pin") {
+    catalog::Override o;
+    o.unit_id = need(a, 1, "unit id");
+    o.action = sub;
+    o.reason = a.get("reason");
+    must(cat.set_override(o));
+    if (!g_quiet) std::cout << "ok\n";
+  } else if (sub == "import") {
+    catalog::ImportOptions opts;
+    opts.run_id = a.get("run");
+    opts.dry_run = a.has("dry-run");
+    auto r = must(cat.import_selected(opts, progress_line, &g_cancel));
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    print_json(r);
+  } else if (sub == "status") {
+    print_json(must(cat.status()));
+  } else if (sub == "eval") {
+    return cmd_catalog_eval(rt, a);
+  } else {
+    throw UsageError{"unknown catalog subcommand: " + sub};
+  }
   return 0;
 }
 
