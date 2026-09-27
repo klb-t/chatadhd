@@ -1,9 +1,9 @@
 // loom.h knowledge-layer entry points: pack manifest and policies, store
-// queries, judgements, pipeline runs; the still-stubbed areas (catalog,
-// extract+resolve, generalize) answer not_implemented. context+materialize
-// is implemented (see tests/test_context*.cpp, tests/test_materialize*.cpp
-// for its own coverage); here it just needs a run to work from, so a bare
-// "{}" request answers not_found / invalid_argument instead.
+// queries, judgements, pipeline runs. Every knowledge-wave area (catalog,
+// extract+resolve, generalize, context+materialize) is implemented now (each
+// has its own test_<area>*.cpp for real coverage); here a bare "{}" request
+// mostly answers not_found / invalid_argument for missing required fields
+// rather than not_implemented.
 #include <doctest/doctest.h>
 
 #include "loom/knowledge.h"
@@ -45,21 +45,26 @@ TEST_SUITE("capi_knowledge") {
     CHECK(code_of(take(loom_kb_judge(ctx, R"({"target_kind":"observation","target":"ob_1","verdict":"edit","payload":{"text":"x"}})"))) ==
           "invalid_argument");
 
+    // catalog is implemented (test_catalog*.cpp): with no configured sources
+    // it runs to completion over an empty corpus instead of stubbing out.
     Json r = take(loom_knowledge_run(ctx, R"({"stages":["catalog"]})", nullptr, nullptr));
-    CHECK(r["status"] == "failed");
-    CHECK(json::get_string(r, "error").find("not implemented") != std::string::npos);
+    CHECK(r["status"] == "done");
     CHECK(take(loom_kb_runs(ctx, 10)).size() == 1);
     CHECK(take(loom_kb_query(ctx, R"({"what":"stats"})"))["items"]["claims"] == 0);
     CHECK(code_of(take(loom_kb_query(ctx, R"({"what":"claims","origin":"rumour"})"))) == "invalid_argument");
     CHECK(take(loom_knowledge_status(ctx, nullptr))["run"]["task_id"] == r["task_id"]);
     CHECK(loom_knowledge_cancel(ctx) == LOOM_E_NOT_FOUND);
 
-    CHECK(code_of(take(loom_catalog_query(ctx, "{}"))) == "not_implemented");
-    CHECK(code_of(take(loom_catalog_scan(ctx, "{}", nullptr, nullptr))) == "not_implemented");
+    // catalog is implemented: an empty query / a scan with no sources both
+    // succeed trivially (empty results) instead of stubbing out.
+    CHECK(take(loom_catalog_query(ctx, "{}")).empty());
+    CHECK(take(loom_catalog_scan(ctx, "{}", nullptr, nullptr))["units"] == 0);
     CHECK(code_of(take(loom_extract_preview(ctx, "x", nullptr))) == "not_found");  // implemented: a missing file
     CHECK(code_of(take(loom_resolve_lineage(ctx, "{}"))) == "invalid_argument");  // implemented: snapshot required
     CHECK(code_of(take(loom_generalize_predict(ctx, "{}"))) == "invalid_argument");  // generalize implemented: "cut" is required
-    CHECK(code_of(take(loom_context_build(ctx, "{}"))) == "not_found");   // no finished knowledge run yet
+    // catalog is now a finished (if empty) knowledge run, so "{}" (run
+    // defaults to latest) succeeds instead of not_found.
+    CHECK(json::find(take(loom_context_build(ctx, "{}")), "context_set") != nullptr);
     CHECK(code_of(take(loom_materialize(ctx, "{}"))) == "invalid_argument");  // "kind" missing/unknown
     CHECK(code_of(take(loom_kb_pack(nullptr))) == "invalid_argument");
     loom_shutdown(ctx);

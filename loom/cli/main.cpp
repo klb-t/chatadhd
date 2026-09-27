@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "loom/archive.h"
+#include "loom/catalog.h"
 #include "loom/chat_engine.h"
 #include "loom/config.h"
 #include "loom/crypto.h"
@@ -29,6 +30,7 @@
 #include "loom/graph_engine.h"
 #include "loom/graph_memory.h"
 #include "loom/importer.h"
+#include "loom/knowledge.h"
 #include "loom/log.h"
 #include "loom/media_providers.h"
 #include "loom/memory_engine.h"
@@ -92,7 +94,24 @@ Commands:
               [--project NAME] [--max-passes N] [--max-new-terms N] [--max-hits N]
               [--rounds N] [--exclude FRAGMENT]... [--no-git] [--no-code]
               [--include-db] [--llm auto|off] [--force] [--config FILE.json]
+              [--knowledge]                  also run the knowledge.catalog stage over the same sources
   archive status [RUN_ID]
+  catalog scan [--source PATH]... [--threads N] [--mobile] [--force]
+               stream files/dirs/zips into loom_cat_units + sketches (R1: no import)
+  catalog profile [--repo DIR]              build the self-profile from the pack + repo
+  catalog score [--profile ID] [--max-passes N]
+  catalog list [--label relevant|candidate|irrelevant] [--project ID] [--text Q]
+               [--sort score|date|id] [--limit N] [--offset N] [--run ID]
+  catalog show UNIT_ID                      metadata, score reasons, verified snippets
+  catalog include UNIT_ID [--reason R] | exclude UNIT_ID [--reason R] | pin UNIT_ID [--reason R]
+  catalog import [--run ID] [--dry-run] [--mode selective|full]
+                 [--include-project-siblings] [--time-window-hours N] [--store-mode copy|link]
+                 targeted import of the selected units (mode=full: every catalogued unit, lossless)
+  catalog watch --source PATH... [--interval SECONDS]
+                 rescans on an interval until Ctrl-C (new/changed files only; already incremental)
+  catalog status
+  catalog eval --truth ground_truth.json [--run ID]
+               recall/precision/noise-trap FP against a synthetic_dev-shaped ground truth
   crypto status | setup | unlock | lock        passwords are read from stdin
 
 Archive example (the self-hosting run):
@@ -102,8 +121,9 @@ Archive example (the self-hosting run):
 
 // ── argument parsing ────────────────────────────────────────────────
 const std::set<std::string>& flag_names() {
-  static const std::set<std::string> k = {"json", "quiet", "force", "all", "refresh", "no-git", "no-code",
-                                          "include-db", "web", "help", "deep"};
+  static const std::set<std::string> k = {"json",   "quiet",  "force",   "all",     "refresh", "no-git",
+                                          "no-code", "include-db", "web", "help",    "deep",    "mobile",
+                                          "dry-run", "knowledge", "include-project-siblings"};
   return k;
 }
 
@@ -736,8 +756,28 @@ int cmd_archive(Runtime& rt, const Args& a) {
   std::signal(SIGINT, sigint_handler);
   auto r = must(rt.archive().run(cfg, progress_line, &g_cancel));
   if (!g_quiet) std::cerr << "\r\x1b[K";
+
+  // --knowledge: also run the knowledge.catalog stage over the same sources
+  // (knowledge.h: "wiring `loom archive run --knowledge` to start a
+  // knowledge run after `relate` belongs to the catalog area"). Only
+  // "catalog" is requested: the other stages are still stubs, so asking for
+  // the whole pipeline here would just fail at "extract" today.
+  Json kr_json = Json(nullptr);
+  if (a.has("knowledge") && r.status == "done") {
+    knowledge::KnowledgeConfig kcfg;
+    kcfg.sources = cfg.sources;
+    kcfg.repo = cfg.repo;
+    kcfg.stages = {"catalog"};
+    kcfg.force = cfg.force;
+    auto kr = rt.knowledge().run(kcfg, progress_line, &g_cancel);
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    kr_json = kr ? kr->to_json() : Json{{"error", Json{{"code", std::string(errc_name(kr.error().code))}, {"message", kr.error().message}}}};
+  }
+
   if (g_json) {
-    print_json(r.to_json());
+    Json out = r.to_json();
+    if (!kr_json.is_null()) out["knowledge"] = kr_json;
+    print_json(out);
     return r.status == "done" ? 0 : 4;
   }
   std::cout << "archive run " << r.run_id << ": " << r.status << "\n";
@@ -760,6 +800,180 @@ int cmd_archive(Runtime& rt, const Args& a) {
   if (!od.empty()) std::cout << "artifacts written to " << od << "\n";
   for (const auto& art : sm["artifacts"]) std::cout << "  " << json::get_string(art, "id") << "  " << json::get_string(art, "name") << "\n";
   for (const auto& w : sm["warnings"]) std::cerr << "warning: " << w.get<std::string>() << "\n";
+  if (!kr_json.is_null()) {
+    std::cout << "knowledge.catalog: " << json::get_string(kr_json, "status", "") << "\n";
+    if (json::find(kr_json, "error")) std::cerr << "warning: " << json::dump(kr_json["error"]) << "\n";
+  }
+  return 0;
+}
+
+void print_catalog_unit_line(const catalog::CatalogUnit& u) {
+  std::cout << u.unit.id << "  " << u.platform << "  " << u.unit.date.substr(0, 10) << "  " << u.n_msgs << "msg  "
+            << one_line(u.unit.title, 60) << "\n";
+}
+
+catalog::Catalog make_catalog(Runtime& rt) { return catalog::Catalog(rt, must(rt.knowledge().pack())); }
+
+// `loom catalog eval --truth ground_truth.json`: recall/precision/noise-trap
+// FP against a synthetic_dev-shaped ground truth (units.relevant/noise_traps/
+// noise_generic, each with a "conv_id" that matches a catalogued unit's
+// ext_id). Not a Catalog method (catalog.h has no evaluate()); implemented
+// directly over query()/loom_cat_decisions so it needs no extra C ABI.
+int cmd_catalog_eval(Runtime& rt, const Args& a) {
+  std::string truth_path = a.get("truth");
+  if (truth_path.empty()) throw UsageError{"catalog eval needs --truth ground_truth.json"};
+  Json truth = must(json::parse(must(fsutil::read_file(truth_path))));
+  const Json& units = truth["units"];
+
+  catalog::UnitQuery q;
+  q.run_id = a.get("run");
+  q.limit = 1000000;
+  auto cat = make_catalog(rt);
+  auto all = must(cat.query(q));
+
+  std::map<std::string, bool> selected_by_ext;
+  {
+    auto lk = rt.db().lock();
+    std::string run_id = q.run_id;
+    if (run_id.empty()) {
+      auto r = rt.db().conn().query_text("SELECT run_id FROM loom_cat_decisions ORDER BY rowid DESC LIMIT 1");
+      if (r && *r) run_id = **r;
+    }
+    for (const auto& u : all) {
+      auto d = rt.db().conn().query_int("SELECT selected FROM loom_cat_decisions WHERE run_id = ? AND unit_id = ?",
+                                        run_id, u.unit.id);
+      selected_by_ext[u.ext_id] = d && d->has_value() && **d != 0;
+    }
+  }
+
+  auto count_selected = [&](const Json& arr) {
+    int n = 0;
+    for (const auto& r : arr) {
+      auto it = selected_by_ext.find(json::get_string(r, "conv_id"));
+      if (it != selected_by_ext.end() && it->second) ++n;
+    }
+    return n;
+  };
+  int relevant_total = static_cast<int>(units["relevant"].size());
+  int relevant_selected = count_selected(units["relevant"]);
+  int traps_total = static_cast<int>(units["noise_traps"].size());
+  int traps_selected = count_selected(units["noise_traps"]);
+  int generic_selected = count_selected(units["noise_generic"]);
+  int selected_total = 0;
+  for (auto& [k, v] : selected_by_ext) selected_total += v ? 1 : 0;
+  int false_positives = traps_selected + generic_selected + std::max(0, selected_total - relevant_selected - traps_selected - generic_selected);
+  double recall = relevant_total ? static_cast<double>(relevant_selected) / relevant_total : 0.0;
+  double precision = selected_total ? static_cast<double>(relevant_selected) / selected_total : 0.0;
+  double trap_fpr = traps_total ? static_cast<double>(traps_selected) / traps_total : 0.0;
+
+  Json out{{"relevant_total", relevant_total},   {"relevant_selected", relevant_selected},
+          {"traps_total", traps_total},          {"traps_selected", traps_selected},
+          {"noise_generic_selected", generic_selected}, {"selected_total", selected_total},
+          {"false_positives", false_positives},  {"recall", recall},
+          {"precision", precision},              {"trap_fpr", trap_fpr}};
+  print_json(out);
+  return 0;
+}
+
+int cmd_catalog(Runtime& rt, const Args& a) {
+  std::string sub = need(a, 0, "catalog subcommand");
+  auto cat = make_catalog(rt);
+  std::signal(SIGINT, sigint_handler);
+
+  if (sub == "scan") {
+    catalog::ScanConfig cfg;
+    cfg.sources = a.all("source");
+    if (a.has("mobile")) cfg.sketch = catalog::SketchParams::mobile();
+    cfg.threads = a.get_int("threads", 0);
+    cfg.force = a.has("force");
+    if (cfg.sources.empty()) throw UsageError{"catalog scan needs at least one --source"};
+    auto r = must(cat.scan(cfg, progress_line, &g_cancel));
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    print_json(r);
+  } else if (sub == "profile") {
+    catalog::ProfileConfig cfg;
+    if (a.has("repo")) cfg.repo = a.get("repo");
+    for (const auto& t : a.all("extra-term")) cfg.extra_terms.push_back(t);
+    print_json(must(cat.build_profile(cfg)).to_json());
+  } else if (sub == "score") {
+    catalog::ScoreConfig cfg;
+    cfg.profile_id = a.get("profile");
+    cfg.max_passes = a.get_int("max-passes", cfg.max_passes);
+    auto r = must(cat.score(cfg, progress_line, &g_cancel));
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    print_json(r);
+    must(cat.select(json::get_string(r, "run_id")));
+  } else if (sub == "list") {
+    catalog::UnitQuery q;
+    if (a.has("label")) q.label = a.get("label");
+    if (a.has("project")) q.project = a.get("project");
+    if (a.has("text")) q.text = a.get("text");
+    q.run_id = a.get("run");
+    q.sort = a.get("sort", "score");
+    q.limit = a.get_int("limit", 100);
+    q.offset = a.get_int("offset", 0);
+    auto v = must(cat.query(q));
+    if (g_json) {
+      Json j = Json::array();
+      for (auto& u : v) j.push_back(u.to_json());
+      print_json(j);
+    } else {
+      for (auto& u : v) print_catalog_unit_line(u);
+    }
+  } else if (sub == "show") {
+    print_json(must(cat.preview(need(a, 1, "unit id"))));
+  } else if (sub == "include" || sub == "exclude" || sub == "pin") {
+    catalog::Override o;
+    o.unit_id = need(a, 1, "unit id");
+    o.action = sub;
+    o.reason = a.get("reason");
+    must(cat.set_override(o));
+    if (!g_quiet) std::cout << "ok\n";
+  } else if (sub == "import") {
+    catalog::ImportOptions opts;
+    opts.run_id = a.get("run");
+    opts.dry_run = a.has("dry-run");
+    opts.mode = a.get("mode", "selective");
+    opts.include_project_siblings = a.has("include-project-siblings");
+    opts.related_time_window_hours = a.get_int("time-window-hours", 0);
+    opts.store_mode = a.get("store-mode", "copy");
+    auto r = must(cat.import_selected(opts, progress_line, &g_cancel));
+    if (!g_quiet) std::cerr << "\r\x1b[K";
+    print_json(r);
+  } else if (sub == "status") {
+    print_json(must(cat.status()));
+  } else if (sub == "eval") {
+    return cmd_catalog_eval(rt, a);
+  } else if (sub == "watch") {
+    // A minimal "periodic watch of source folders for new exports": loops
+    // scan() (already incremental/idempotent -- unchanged sources are a
+    // per-source checkpoint skip, a new or changed file gets a new content
+    // hash and is picked up automatically) on an interval until Ctrl-C.
+    // Deliberately just a loop over the existing, already-resumable scan(),
+    // not a new background subsystem: a real filesystem-event watch (inotify
+    // et al) is future work, noted in the final report.
+    std::vector<std::string> sources = a.all("source");
+    if (sources.empty()) throw UsageError{"catalog watch needs at least one --source"};
+    int interval = a.get_int("interval", 300);
+    if (interval < 1) throw UsageError{"catalog watch --interval must be >= 1 second"};
+    catalog::ScanConfig cfg;
+    cfg.sources = sources;
+    while (!g_cancel.cancelled()) {
+      auto r = cat.scan(cfg, g_quiet ? catalog::ProgressFn{} : progress_line, &g_cancel);
+      if (!g_quiet) std::cerr << "\r\x1b[K";
+      if (r) {
+        if (g_json) print_json(*r);
+        else std::cout << "watch: scanned " << json::get_int(*r, "new") << " new unit(s) of "
+                       << json::get_int(*r, "units") << " total\n";
+      } else if (!g_quiet) {
+        std::cerr << "watch: scan error: " << r.error().message << "\n";
+      }
+      for (int i = 0; i < interval && !g_cancel.cancelled(); ++i) ::sleep(1);
+    }
+    if (!g_quiet) std::cout << "watch: stopped\n";
+  } else {
+    throw UsageError{"unknown catalog subcommand: " + sub};
+  }
   return 0;
 }
 
@@ -874,6 +1088,7 @@ int main(int argc, char** argv) {
     if (cmd == "sources") return cmd_sources(rt, args);
     if (cmd == "artifacts") return cmd_artifacts(rt, args);
     if (cmd == "archive") return cmd_archive(rt, args);
+    if (cmd == "catalog") return cmd_catalog(rt, args);
     if (cmd == "crypto") return cmd_crypto(rt, args);
     std::cerr << "unknown command: " << cmd << "\n(see loom --help)\n";
     return 2;

@@ -53,13 +53,18 @@ TEST_SUITE("knowledge") {
     CHECK(!none.prior_filter().enabled);
   }
 
-  TEST_CASE("with the area stubs a run stops at the first stage: not implemented") {
+  TEST_CASE("every area is implemented: a run with no configured sources completes end to end") {
+    // Every knowledge-wave area (catalog, extract+resolve, generalize,
+    // context+materialize) is implemented (each has its own test_<area>*.cpp
+    // for real per-stage coverage); with no sources at all every stage still
+    // runs to completion over an empty corpus instead of stubbing out.
     fsutil::TempDir td;
     auto rt = open_rt(td.path());
     auto r = unwrap(rt->knowledge().run(KnowledgeConfig{}));
-    CHECK(r.status == "failed");
-    CHECK(r.error.find("catalog") == 0);
-    CHECK(r.error.find("not implemented") != std::string::npos);
+    CHECK(r.status == "done");
+    CHECK(r.error.empty());
+    REQUIRE(r.stages.size() == kStages.size());
+    for (const auto& s : r.stages) CHECK(!s.cache_hit);
     CHECK(r.run.rfind("kr_", 0) == 0);
     auto st = unwrap(rt->knowledge().status());
     CHECK(st["run"]["task_id"] == r.task_id);

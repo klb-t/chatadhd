@@ -193,10 +193,40 @@ struct UnitQuery {
   Json to_json() const;
 };
 
+// R1 asks for two import modes, both owner-toggleable (never a hidden
+// default): a **full** import that losslessly ingests every catalogued unit
+// of a source (no scoring/selection in the loop at all — the point of
+// catalog+score+select is to make *selective* import possible, not to make
+// full import impossible), and a **selective** import (the default) driven
+// by select()'s decisions, expanded by a small set of independent inclusion
+// rules that each default to what a careful reviewer would tick by hand:
+//   - the selected unit itself;
+//   - `include_project_siblings`: every other unit that shares its
+//     project_ext_id (a Claude project / ChatGPT gizmo) — "everything inside
+//     a matching project" (project_ext_id is not populated by scan() yet,
+//     a disclosed gap; the option is wired so it activates for free once it
+//     is);
+//   - `related_time_window_hours`: same-platform units whose date falls
+//     within this many hours of a selected unit's date (a lightweight
+//     "same session" / temporally-nearby heuristic for related data);
+//   - off-topic-thread stripping and referenced/linked-conversation
+//     inclusion are DESIGNED but not implemented (they need the
+//     per-message-span extraction and the cross-unit linking pass this area
+//     does not yet have; see catalog.h's ownership map for extract/generalize).
+// `store_mode` answers "copy vs. link to the source file": "copy" (default)
+// writes the full message text into the core tables, exactly like the
+// universal importer; "link" writes one placeholder message carrying the
+// unit's locator/content_hash in its metadata plus a provenance row, so nothing
+// is duplicated into the database and the source file stays the copy of
+// record (re-read on demand via read_unit(), verified against content_hash).
 struct ImportOptions {
-  std::string run_id;                  // decisions of this score run ("" = latest)
+  std::string run_id;                  // decisions of this score run ("" = latest); ignored when mode == "full"
   bool dry_run = false;                // report units/bytes only
   bool import_messages = true;         // conversations -> core tables (with provenance)
+  std::string mode = "selective";      // "selective" (select()'s decisions) | "full" (every catalogued unit, lossless)
+  bool include_project_siblings = false;  // pull in every unit sharing a selected unit's project_ext_id
+  int related_time_window_hours = 0;      // > 0: also pull in same-platform units within this many hours
+  std::string store_mode = "copy";        // "copy" (full text into core tables) | "link" (placeholder + provenance only)
   static Result<ImportOptions> from_json(const Json& j);
   Json to_json() const;
 };
