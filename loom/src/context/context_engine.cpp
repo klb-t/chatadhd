@@ -390,6 +390,27 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     seeds.push_back(anchor_project);
   }
 
+  // Lexical overlap with the prompt text: the only place the literal wording
+  // of `req.text` enters scoring. Applied to every band except stable (which
+  // is goal-independent by definition): a project's decisions/slots/status
+  // history are still ranked by relevance to THIS prompt when a budget can't
+  // hold all of them, not only by their static role/position.
+  kb::Normalizer norm(*pack_);
+  std::string q_folded = norm.fold(req.text);
+  auto lexical_overlap = [&](const RenderedContent& rc) -> double {
+    if (q_folded.empty()) return 0.0;
+    std::string t = norm.fold(rc.summary);
+    if (t.empty()) return 0.0;
+    auto qt = norm.tokens(q_folded);
+    if (qt.empty()) return 0.0;
+    std::size_t hits = 0;
+    for (auto& tok : qt) {
+      if (tok.size() < 3) continue;
+      if (t.find(tok) != std::string::npos) ++hits;
+    }
+    return qt.empty() ? 0.0 : static_cast<double>(hits) / static_cast<double>(qt.size());
+  };
+
   std::vector<Candidate> stable, project_b, goal_b;
   std::string anchor_date;
   auto note_date = [&](const std::string& d) {
@@ -472,8 +493,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
           c.premise_claims = claim.assessment.premises.claims;
           c.premise_principles = claim.assessment.premises.principles;
           int rr = role_rank(row.value.role);
+          double lex = lexical_overlap(c.content);
           c.why = "project slot '" + row.value.slot + "'" + (rr >= 0 ? " (role priority " + std::to_string(rr) + ")" : "");
-          c.base_relevance = rr >= 0 ? std::clamp(0.6 + 0.4 * (1.0 - static_cast<double>(rr) / std::max<std::size_t>(1, gt.roles.size())), 0.0, 1.0) : 0.55;
+          double static_rel = rr >= 0 ? 0.6 + 0.4 * (1.0 - static_cast<double>(rr) / std::max<std::size_t>(1, gt.roles.size())) : 0.55;
+          c.base_relevance = std::clamp(0.6 * static_rel + 0.5 * lex, 0.0, 1.0);
           project_b.push_back(std::move(c));
         }
       }
@@ -512,7 +535,8 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         c.content.raw = json::dump(d.to_json());
         c.premise_principles = d.principles;
         c.why = "decision recorded for " + subj_label;
-        c.base_relevance = contains_role(gt.roles, model::Role::Decision) ? 0.75 : 0.5;
+        double static_rel = contains_role(gt.roles, model::Role::Decision) ? 0.75 : 0.5;
+        c.base_relevance = std::clamp(0.6 * static_rel + 0.5 * lexical_overlap(c.content), 0.0, 1.0);
         project_b.push_back(std::move(c));
       }
     }
@@ -538,7 +562,8 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         c.content.full = c.content.summary + (sr.oscillation ? " [oscillates]" : "");
         c.content.raw = json::dump(sr.to_json());
         c.why = "status history of " + entity_label;
-        c.base_relevance = contains_role(gt.roles, model::Role::Part) ? 0.65 : 0.45;
+        double static_rel = contains_role(gt.roles, model::Role::Part) ? 0.65 : 0.45;
+        c.base_relevance = std::clamp(0.6 * static_rel + 0.5 * lexical_overlap(c.content), 0.0, 1.0);
         project_b.push_back(std::move(c));
       }
     }
@@ -546,22 +571,6 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
 
   // ── goal band: claims one hop from every seed, either direction ─────
   std::set<std::string> seen_claims;
-  kb::Normalizer norm(*pack_);
-  std::string q_folded = norm.fold(req.text);
-  auto lexical_overlap = [&](const RenderedContent& rc) -> double {
-    if (q_folded.empty()) return 0.0;
-    std::string t = norm.fold(rc.summary);
-    if (t.empty()) return 0.0;
-    auto qt = norm.tokens(q_folded);
-    if (qt.empty()) return 0.0;
-    std::size_t hits = 0;
-    for (auto& tok : qt) {
-      if (tok.size() < 3) continue;
-      if (t.find(tok) != std::string::npos) ++hits;
-    }
-    return qt.empty() ? 0.0 : static_cast<double>(hits) / static_cast<double>(qt.size());
-  };
-
   auto add_goal_claim = [&](const model::Claim& claim, const std::string& via_entity) {
     if (!seen_claims.insert(claim.id).second) return;
     if (!contains_evidence(gt.evidence, claim.assessment.evidence)) return;
