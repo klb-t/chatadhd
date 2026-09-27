@@ -3,7 +3,19 @@
 // mining, competing models, inference with Expected Properties,
 // extrapolation, predictions and cross-domain transfer
 // (LOOM_CONCEPTUAL_MODEL §2.4–§2.5, §3, §5, §6.5). Area: generalize.
-// STATUS: contract + stubs ("// STUB: knowledge-wave", Errc::NotImplemented).
+// STATUS: implemented (src/generalize/). Data this area reads beyond the
+// model: lexicons/cues.json classes "normative", "paradigm.*" and — when
+// present — "generalize.generalization", "principle.level.{value,epistemic}",
+// "principle.form.{invariant,default,meta,conflict_resolution}" (built-in
+// defaults, tuned on synthetic_dev, are used while the pack lacks them);
+// thresholds.json "paradigm", "principles" (+ optional "min_cue_score"),
+// "status" and optional "operators" {merge_similarity 0.14,
+// apply_similarity 0.12, solution_similarity 0.1, situation_similarity
+// 0.12}. A decision deliberately kept open (no chosen alternative, so no
+// Decision record) is read from its `decides` claim with value
+// {"kept_open": [alternatives]}. Value ops / predicates that need the
+// codebase digest or version records (codebase_field, order_chain,
+// available_on, ...) are skipped or stay pending, never guessed (I9).
 //
 // ── Semantics every function must keep (I2, I3, I6, I7) ────────────
 // * Matching = partial homomorphism of a paradigm's pattern into the
