@@ -133,3 +133,28 @@ the GPT note, ANALIZA and the conceptual model. Code facts were checked in
 the code (e.g. the v0.06.03 API editor did not send the edited request,
 voice recording is a placeholder from 0.7.0, 0.9.0 still ships
 `PLACEHOLDER/*` models while its README says placeholders were removed).
+
+## Addendum 2026-09-27 — cut T7 = 2026-09-26 (owner-flagged as philosophy-derived)
+
+The owner stated that R14–R20 (docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md,
+recorded 2026-09-27) "are not really new requirements but follow almost
+directly from my coding philosophy" and that all projects follow from the
+principles — "ChatADHD should figure that out". They form cut T7: given
+sources ≤ 2026-09-26, the engine should predict, at solution-class level:
+- conversation as a first-class, losslessly imported abstraction; one
+  extraction pipeline for live and archived conversations (R14)
+  ← raw-immutable, information preservation, one process behind all projects;
+- everything the application uses is itself in the graph, rich edges (R15)
+  ← "all data = memory" (2026-01-30 report, session 7), KOD≠DANE;
+- visualisation with many focus dimensions, graph ⇄ list (R16)
+  ← goal-directed context selection (R12), explicit uncertainty encoding (R5);
+- cross-provider memory isomorphism; provider-inspired UI profiles as data (R17)
+  ← morphisms (R8), presets/layouts as data (0.9.0), capability abstraction;
+- selective-import defaults = completeness with owner-toggleable options (R18)
+  ← preserve optionality, user override wins, defer decisions;
+- privacy/threat model in the provider abstraction, paranoid mode (R19)
+  ← zero-knowledge (sessions 8–10), transparency, explicit "unknowns";
+- copy vs link left to the owner, watch + auto-export (R20)
+  ← defer decisions until forced, KOD≠DANE, automation after observability.
+Scoring: predicted if the engine proposes the solution class with a
+justification traceable to principles evidenced ≤ 2026-09-26.
