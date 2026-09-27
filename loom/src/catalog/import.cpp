@@ -6,6 +6,9 @@
 // (transform "catalog.import@1"). Idempotent by unit id (loom_cat_imports).
 #include "loom/catalog.h"
 
+#include <chrono>
+#include <set>
+
 #include "archive/archive_internal.h"
 #include "catalog_internal.h"
 #include "loom/db.h"
@@ -24,6 +27,100 @@ Result<std::string> latest_decisions_run(sql::Connection& c) {
   if (!r) return r.error();
   return r->value_or(std::string());
 }
+
+// mode == "full": every catalogued unit, in id order (deterministic,
+// independent of selection -- R1's lossless import path).
+Result<std::vector<std::string>> all_unit_ids(sql::Connection& c) {
+  std::vector<std::string> out;
+  LOOM_TRY_ASSIGN(sql::Stmt st, c.prepare("SELECT id FROM loom_cat_units ORDER BY id"));
+  while (true) {
+    LOOM_TRY_ASSIGN(bool has, st.step());
+    if (!has) break;
+    out.push_back(st.get_text(0));
+  }
+  return out;
+}
+
+// mode == "selective": select()'s decisions for `run_id`, in unit id order.
+Result<std::vector<std::string>> selected_unit_ids(sql::Connection& c, std::string_view run_id) {
+  std::vector<std::string> out;
+  LOOM_TRY_ASSIGN(sql::Stmt st,
+                  c.prepare("SELECT unit_id FROM loom_cat_decisions WHERE run_id = ? AND selected = 1 ORDER BY unit_id"));
+  st.bind(1, std::string(run_id));
+  while (true) {
+    LOOM_TRY_ASSIGN(bool has, st.step());
+    if (!has) break;
+    out.push_back(st.get_text(0));
+  }
+  return out;
+}
+
+// Every other unit sharing a base unit's non-empty project_ext_id ("everything
+// inside a matching Claude project"): project_ext_id is not populated by
+// scan() yet (disclosed gap), so this is a no-op today and activates for
+// free once it is (the query itself needs no change).
+Status add_project_siblings(sql::Connection& c, std::set<std::string>& ids) {
+  std::vector<std::string> base(ids.begin(), ids.end());
+  for (const auto& uid : base) {
+    auto body = c.query_text("SELECT body FROM loom_cat_units WHERE id = ?", uid);
+    if (!body || !*body) continue;
+    auto j = json::parse(**body);
+    if (!j) continue;
+    std::string project_ext_id = json::get_string(*j, "project_ext_id");
+    if (project_ext_id.empty()) continue;
+    // Sibling lookup by project_ext_id needs a body scan (not indexed);
+    // acceptable for the bounded "expand a small selection" use case this
+    // serves, not a corpus-wide query.
+    LOOM_TRY_ASSIGN(sql::Stmt all, c.prepare("SELECT id, body FROM loom_cat_units"));
+    while (true) {
+      LOOM_TRY_ASSIGN(bool has, all.step());
+      if (!has) break;
+      std::string other_id = all.get_text(0);
+      if (ids.count(other_id)) continue;
+      auto oj = json::parse(all.get_text(1));
+      if (!oj) continue;
+      if (json::get_string(*oj, "project_ext_id") == project_ext_id) ids.insert(other_id);
+    }
+  }
+  return {};
+}
+
+// Same-platform units whose date is within `hours` of a base unit's date
+// ("related data": a lightweight same-session heuristic).
+Status add_time_window(sql::Connection& c, std::set<std::string>& ids, int hours) {
+  if (hours <= 0) return {};
+  std::vector<std::pair<std::string, std::string>> base_platform_date;  // (platform, date)
+  {
+    std::vector<std::string> base(ids.begin(), ids.end());
+    for (const auto& uid : base) {
+      LOOM_TRY_ASSIGN(sql::Stmt st, c.prepare("SELECT platform, date FROM loom_cat_units WHERE id = ?"));
+      st.bind(1, uid);
+      LOOM_TRY_ASSIGN(bool has, st.step());
+      if (has && !st.get_text(1).empty()) base_platform_date.emplace_back(st.get_text(0), st.get_text(1));
+    }
+  }
+  if (base_platform_date.empty()) return {};
+  LOOM_TRY_ASSIGN(sql::Stmt all, c.prepare("SELECT id, platform, date FROM loom_cat_units WHERE date != ''"));
+  while (true) {
+    LOOM_TRY_ASSIGN(bool has, all.step());
+    if (!has) break;
+    std::string id = all.get_text(0), platform = all.get_text(1), date = all.get_text(2);
+    if (ids.count(id)) continue;
+    auto tp = timeutil::parse_iso_utc(date);
+    if (!tp) continue;
+    for (auto& [bp, bd] : base_platform_date) {
+      if (bp != platform) continue;
+      auto btp = timeutil::parse_iso_utc(bd);
+      if (!btp) continue;
+      double diff_hours = std::abs(std::chrono::duration<double>(*tp - *btp).count()) / 3600.0;
+      if (diff_hours <= hours) {
+        ids.insert(id);
+        break;
+      }
+    }
+  }
+  return {};
+}
 }  // namespace
 
 Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressFn& progress,
@@ -33,21 +130,21 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
   sql::Connection& c = rt_.db().conn();
 
   std::string run_id(opts.run_id);
-  if (run_id.empty()) {
-    LOOM_TRY_ASSIGN(run_id, latest_decisions_run(c));
-    if (run_id.empty()) return Error(Errc::NotFound, "no selection run yet; call select() first");
-  }
-
-  std::vector<std::string> unit_ids;
-  {
-    LOOM_TRY_ASSIGN(sql::Stmt st, c.prepare("SELECT unit_id FROM loom_cat_decisions WHERE run_id = ? AND selected = 1"));
-    st.bind(1, run_id);
-    while (true) {
-      LOOM_TRY_ASSIGN(bool has, st.step());
-      if (!has) break;
-      unit_ids.push_back(st.get_text(0));
+  std::set<std::string> id_set;
+  if (opts.mode == "full") {
+    LOOM_TRY_ASSIGN(auto all, all_unit_ids(c));
+    id_set.insert(all.begin(), all.end());
+  } else {
+    if (run_id.empty()) {
+      LOOM_TRY_ASSIGN(run_id, latest_decisions_run(c));
+      if (run_id.empty()) return Error(Errc::NotFound, "no selection run yet; call select() first");
     }
+    LOOM_TRY_ASSIGN(auto sel, selected_unit_ids(c, run_id));
+    id_set.insert(sel.begin(), sel.end());
+    if (opts.include_project_siblings) LOOM_TRY(add_project_siblings(c, id_set));
+    if (opts.related_time_window_hours > 0) LOOM_TRY(add_time_window(c, id_set, opts.related_time_window_hours));
   }
+  std::vector<std::string> unit_ids(id_set.begin(), id_set.end());
   lk.unlock();
 
   std::int64_t imported = 0, skipped = 0, bytes = 0;
@@ -112,7 +209,44 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     }
 
     std::string conv_id;
-    if (opts.import_messages && (cu.unit.kind == "conversation" || cu.unit.kind == "project" || cu.unit.kind == "memory")) {
+    std::string title = cu.unit.title.empty() ? "[Import] " + cu.ext_id : cu.unit.title;
+    if (opts.import_messages && opts.store_mode == "link") {
+      // "link": one placeholder message carrying the locator + content_hash
+      // in its metadata, no raw bytes re-read, nothing duplicated into the
+      // database. The source file stays the copy of record.
+      auto conv = rt_.db().create_conv(title);
+      if (!conv) {
+        ++skipped;
+        continue;
+      }
+      conv_id = conv->id;
+      NewMessage nm;
+      nm.conv_id = conv_id;
+      nm.role = "document";
+      nm.text = "[linked to catalog unit " + uid + ", " + std::to_string(cu.n_msgs) + " message(s)] " + cu.head;
+      nm.metadata = Json{{"catalog_unit", uid},
+                         {"locator", cu.unit.locator.to_json()},
+                         {"content_hash", cu.content_hash},
+                         {"store_mode", "link"}};
+      auto mid = rt_.db().create_msg(nm);
+      if (mid) {
+        ProvenanceRecord pr;
+        pr.subject_id = *mid;
+        pr.subject_kind = "message";
+        pr.source_id = *source_id;
+        pr.locator = cu.unit.locator.to_json();
+        pr.transform = "catalog.import.link@1";
+        (void)rt_.provenance().add(pr);
+      }
+      ProvenanceRecord conv_pr;
+      conv_pr.subject_id = conv_id;
+      conv_pr.subject_kind = "conversation";
+      conv_pr.source_id = *source_id;
+      conv_pr.locator = cu.unit.locator.to_json();
+      conv_pr.transform = "catalog.import.link@1";
+      (void)rt_.provenance().add(conv_pr);
+      conversations.push_back(conv_id);
+    } else if (opts.import_messages && (cu.unit.kind == "conversation" || cu.unit.kind == "project" || cu.unit.kind == "memory")) {
       auto raw = read_unit(uid);
       if (!raw) {
         ++skipped;
@@ -120,7 +254,6 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       }
       auto parsed = json::parse(*raw);
       Json messages_j = Json::array();
-      std::string title = cu.unit.title.empty() ? "[Import] " + cu.ext_id : cu.unit.title;
       if (parsed && cu.unit.kind == "conversation") {
         std::string kind = cu.platform == "chatgpt" ? "chatgpt" : "claude";
         archive::ChatWalk w = kind == "chatgpt" ? archive::walk_chatgpt(*parsed) : archive::walk_claude(*parsed);

@@ -278,4 +278,41 @@ TEST_SUITE("catalog_pipeline") {
     CHECK(json::get_int(imp, "imported") == 1);
     CHECK(unwrap(rt->db().list_convs(10)).empty());
   }
+
+  TEST_CASE("import mode=full ignores selection; store_mode=link writes a placeholder, not the full text") {
+    fsutil::TempDir data_dir;
+    fsutil::TempDir src_dir;
+    write_file(src_dir.path() / "conversations.json", chatgpt_fixture());
+    auto rt = open_rt(data_dir.path());
+    Catalog cat(*rt, unwrap(rt->knowledge().pack()));
+    ScanConfig scfg;
+    scfg.sources = {src_dir.path().string()};
+    unwrap(cat.scan(scfg));
+    // No profile/score/select at all: mode=full must still import everything.
+
+    ImportOptions full_opts;
+    full_opts.mode = "full";
+    auto imp = unwrap(cat.import_selected(full_opts));
+    CHECK(json::get_int(imp, "imported") == 2);  // both conversations, lossless
+    REQUIRE(imp["conversations"].size() == 2);
+    auto msgs_a = unwrap(rt->db().get_msgs(imp["conversations"][0].get<std::string>(), true));
+    CHECK(!msgs_a.empty());
+
+    // A fresh data dir for the link-mode variant.
+    fsutil::TempDir data_dir2;
+    auto rt2 = open_rt(data_dir2.path());
+    Catalog cat2(*rt2, unwrap(rt2->knowledge().pack()));
+    unwrap(cat2.scan(scfg));
+    ImportOptions link_opts;
+    link_opts.mode = "full";
+    link_opts.store_mode = "link";
+    auto imp2 = unwrap(cat2.import_selected(link_opts));
+    CHECK(json::get_int(imp2, "imported") == 2);
+    for (const auto& c : imp2["conversations"]) {
+      auto msgs = unwrap(rt2->db().get_msgs(c.get<std::string>(), true));
+      REQUIRE(msgs.size() == 1);  // one placeholder, not the real per-message content
+      CHECK(json::get_string(msgs[0].metadata, "store_mode") == "link");
+      CHECK(json::find(msgs[0].metadata, "content_hash") != nullptr);
+    }
+  }
 }

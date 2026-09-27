@@ -195,6 +195,18 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
                         const std::string& source_id, const std::string& member,
                         const std::function<Status(const std::function<void(std::string_view)>&)>& reader,
                         Stats& stats) {
+  // One transaction per member/file: ingest_unit()'s per-unit INSERTs would
+  // otherwise each autocommit (a WAL fsync per unit), which is fine for a
+  // handful of units but turns a multi-GB member with tens of thousands of
+  // conversations into a multi-minute scan. Holding the write lock for one
+  // member is safe here (single-threaded, offline scan; WAL readers are not
+  // blocked) and keeps output identical -- this only changes durability
+  // granularity (a crash mid-member loses that whole member's progress,
+  // which the per-member checkpoint already treats as "not done" and
+  // reprocesses from scratch), not what gets written.
+  auto lk = db.lock();
+  sql::Txn txn(db.conn());
+  LOOM_TRY(txn.begin_status());
   OffsetArrayScanner scanner;
   std::string tail;  // captured only if the stream turns out not to be an array
   bool capturing_tail = true;
@@ -236,7 +248,7 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
     auto parsed = json::parse(tail);
     if (!parsed) {
       stats.warnings.push_back(member + ": not JSON, skipped");
-      return {};
+      return txn.commit();  // nothing was written on this path; commits the (empty) transaction
     }
     std::vector<const Json*> elements;
     if (parsed->is_object()) {
@@ -274,6 +286,7 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
       if (!st) stats.warnings.push_back(member + ": " + st.error().message);
     }
   }
+  LOOM_TRY(txn.commit());
   return {};
 }
 

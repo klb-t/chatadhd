@@ -252,10 +252,23 @@ Result<ImportOptions> ImportOptions::from_json(const Json& j) {
   o.run_id = json::get_string(j, "run_id");
   o.dry_run = json::get_bool(j, "dry_run");
   o.import_messages = json::get_bool(j, "import_messages", true);
+  o.mode = json::get_string(j, "mode", "selective");
+  o.include_project_siblings = json::get_bool(j, "include_project_siblings");
+  o.related_time_window_hours = static_cast<int>(json::get_int(j, "related_time_window_hours"));
+  o.store_mode = json::get_string(j, "store_mode", "copy");
+  if (o.mode != "selective" && o.mode != "full") return Error(Errc::InvalidArgument, "import options: mode must be selective|full");
+  if (o.store_mode != "copy" && o.store_mode != "link") return Error(Errc::InvalidArgument, "import options: store_mode must be copy|link");
+  if (o.related_time_window_hours < 0) return Error(Errc::InvalidArgument, "import options: related_time_window_hours must be >= 0");
   return o;
 }
 Json ImportOptions::to_json() const {
-  return Json{{"run_id", run_id}, {"dry_run", dry_run}, {"import_messages", import_messages}};
+  return Json{{"run_id", run_id},
+              {"dry_run", dry_run},
+              {"import_messages", import_messages},
+              {"mode", mode},
+              {"include_project_siblings", include_project_siblings},
+              {"related_time_window_hours", related_time_window_hours},
+              {"store_mode", store_mode}};
 }
 
 // ── Catalog ─────────────────────────────────────────────────────────
