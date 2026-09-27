@@ -104,7 +104,11 @@ Commands:
                [--sort score|date|id] [--limit N] [--offset N] [--run ID]
   catalog show UNIT_ID                      metadata, score reasons, verified snippets
   catalog include UNIT_ID [--reason R] | exclude UNIT_ID [--reason R] | pin UNIT_ID [--reason R]
-  catalog import [--run ID] [--dry-run]     targeted import of the selected units
+  catalog import [--run ID] [--dry-run] [--mode selective|full]
+                 [--include-project-siblings] [--time-window-hours N] [--store-mode copy|link]
+                 targeted import of the selected units (mode=full: every catalogued unit, lossless)
+  catalog watch --source PATH... [--interval SECONDS]
+                 rescans on an interval until Ctrl-C (new/changed files only; already incremental)
   catalog status
   catalog eval --truth ground_truth.json [--run ID]
                recall/precision/noise-trap FP against a synthetic_dev-shaped ground truth
@@ -119,7 +123,7 @@ Archive example (the self-hosting run):
 const std::set<std::string>& flag_names() {
   static const std::set<std::string> k = {"json",   "quiet",  "force",   "all",     "refresh", "no-git",
                                           "no-code", "include-db", "web", "help",    "deep",    "mobile",
-                                          "dry-run", "knowledge"};
+                                          "dry-run", "knowledge", "include-project-siblings"};
   return k;
 }
 
@@ -929,6 +933,10 @@ int cmd_catalog(Runtime& rt, const Args& a) {
     catalog::ImportOptions opts;
     opts.run_id = a.get("run");
     opts.dry_run = a.has("dry-run");
+    opts.mode = a.get("mode", "selective");
+    opts.include_project_siblings = a.has("include-project-siblings");
+    opts.related_time_window_hours = a.get_int("time-window-hours", 0);
+    opts.store_mode = a.get("store-mode", "copy");
     auto r = must(cat.import_selected(opts, progress_line, &g_cancel));
     if (!g_quiet) std::cerr << "\r\x1b[K";
     print_json(r);
@@ -936,6 +944,33 @@ int cmd_catalog(Runtime& rt, const Args& a) {
     print_json(must(cat.status()));
   } else if (sub == "eval") {
     return cmd_catalog_eval(rt, a);
+  } else if (sub == "watch") {
+    // A minimal "periodic watch of source folders for new exports": loops
+    // scan() (already incremental/idempotent -- unchanged sources are a
+    // per-source checkpoint skip, a new or changed file gets a new content
+    // hash and is picked up automatically) on an interval until Ctrl-C.
+    // Deliberately just a loop over the existing, already-resumable scan(),
+    // not a new background subsystem: a real filesystem-event watch (inotify
+    // et al) is future work, noted in the final report.
+    std::vector<std::string> sources = a.all("source");
+    if (sources.empty()) throw UsageError{"catalog watch needs at least one --source"};
+    int interval = a.get_int("interval", 300);
+    if (interval < 1) throw UsageError{"catalog watch --interval must be >= 1 second"};
+    catalog::ScanConfig cfg;
+    cfg.sources = sources;
+    while (!g_cancel.cancelled()) {
+      auto r = cat.scan(cfg, g_quiet ? catalog::ProgressFn{} : progress_line, &g_cancel);
+      if (!g_quiet) std::cerr << "\r\x1b[K";
+      if (r) {
+        if (g_json) print_json(*r);
+        else std::cout << "watch: scanned " << json::get_int(*r, "new") << " new unit(s) of "
+                       << json::get_int(*r, "units") << " total\n";
+      } else if (!g_quiet) {
+        std::cerr << "watch: scan error: " << r.error().message << "\n";
+      }
+      for (int i = 0; i < interval && !g_cancel.cancelled(); ++i) ::sleep(1);
+    }
+    if (!g_quiet) std::cout << "watch: stopped\n";
   } else {
     throw UsageError{"unknown catalog subcommand: " + sub};
   }
