@@ -355,8 +355,12 @@ void Lexicons::add_form(std::size_t entry, std::string_view surface, LexForm f) 
     std::string k = norm.phrase_key(surface, false, l);
     if (!k.empty()) keys.insert(k);
   }
+  const std::size_t words = norm.tokens(surface).size();
   for (const auto& k : keys) {
     std::size_t n = static_cast<std::size_t>(std::count(k.begin(), k.end(), ' ')) + 1;
+    // a multi-word form whose key collapses to one word ("projekt
+    // projektów" -> "projekt") would match every mention of that word
+    if (words >= 2 && n < 2) continue;
     f.tokens = n;
     max_form_tokens = std::max(max_form_tokens, n);
     first_keys.insert(k.substr(0, k.find(' ')));

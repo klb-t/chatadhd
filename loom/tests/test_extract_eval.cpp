@@ -165,9 +165,13 @@ TEST_SUITE("extract_eval") {
         if (it == E.conv_project.end()) continue;
         ++pred;
         std::string v = c.value.get<std::string>();
-        if (gtv[it->second].count(v)) {
+        std::string gv;
+        for (const auto& x : gtv[it->second]) {
+          if (kb::compare_versions(x, v) == 0) gv = x;
+        }
+        if (!gv.empty()) {
           ++tp;
-          found[it->second].insert(v);
+          found[it->second].insert(gv);
         } else if (verbose()) {
           MESSAGE("extra version " << v << " in " << conv);
         }
@@ -211,7 +215,7 @@ TEST_SUITE("extract_eval") {
             if (c.value == ev["status"]) {
               s_ok = true;
               std::string gv = ev["version"];
-              if (gv == "n/a" || kb::normalize_version(gv) == c.qualifiers.version) v_ok = true;
+              if (gv == "n/a" || (!c.qualifiers.version.empty() && kb::compare_versions(gv, c.qualifiers.version) == 0)) v_ok = true;
             }
           }
           status_ok += s_ok;
@@ -307,7 +311,7 @@ TEST_SUITE("extract_eval") {
   TEST_CASE("synthetic_dev: areas (R10)") {
     auto& E = eval();
     kb::Normalizer norm(*E.pack);
-    int total = 0, hit = 0, members_gt = 0, members_hit = 0;
+    int total = 0, hit = 0, members_gt = 0, members_hit = 0, count_ok = 0;
     for (const auto& a : E.gt["areas"]) {
       ++total;
       std::string conv = a["unit"]["conv_id"], node = a["unit"]["node_id"];
@@ -317,6 +321,9 @@ TEST_SUITE("extract_eval") {
         if (it != E.obs_loc.end() && it->second.conv == conv && it->second.node == node) found = &ar;
       }
       hit += found != nullptr;
+      // members are listed in Polish, the ground truth names them in English:
+      // the count of observed members is the language-independent check
+      if (found && found->members.size() == a["listed_members"].size()) ++count_ok;
       for (const auto& m : a["listed_members"]) {
         ++members_gt;
         if (!found) continue;
@@ -339,7 +346,7 @@ TEST_SUITE("extract_eval") {
       if (verbose() && !found) MESSAGE("missed area " << a["id"].get<std::string>());
     }
     MESSAGE("area recall = " << static_cast<double>(hit) / total << ", listed-member recall = "
-                             << static_cast<double>(members_hit) / members_gt);
+                             << static_cast<double>(members_hit) / members_gt << " (token overlap, PL vs EN), member count exact = " << count_ok << "/" << total);
     CHECK(hit >= 4);
     for (const auto& ar : E.ex.areas) {
       CHECK(!ar.principle.empty());

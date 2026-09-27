@@ -86,6 +86,7 @@ struct Node {
   std::set<std::string> lex_keys;   // keys of lexicon aliases
   std::set<std::string> split_keys; // camel / acronym split keys
   std::map<std::string, double> ctx;
+  std::map<std::string, std::set<std::string>> tri;  // trigrams of the long keys
 };
 
 struct DSU {
@@ -173,6 +174,9 @@ Result<ResolveResult> Resolver::resolve(const std::vector<Entity>& candidates,
       for (const auto& t : toks) glued += t;
       if (toks.size() >= 2) n.split_keys.insert(norm.phrase_key(glued));
     }
+    for (const auto& k : n.keys) {
+      if (utf8::length(k) >= fuzzy_min) n.tri[k] = trigrams(k);
+    }
     // context: content keys of the entity's observations, minus its own names
     std::set<std::string> own;
     for (const auto& k : n.keys) {
@@ -209,7 +213,7 @@ Result<ResolveResult> Resolver::resolve(const std::vector<Entity>& candidates,
   for (auto& [bk, v] : block) {
     std::sort(v.begin(), v.end());
     v.erase(std::unique(v.begin(), v.end()), v.end());
-    if (v.size() > 200) continue;  // a key shared by everything is no evidence
+    if (v.size() > (bk.rfind("f:", 0) == 0 ? 120u : 200u)) continue;  // a key shared by everything is no evidence
     for (std::size_t a = 0; a < v.size(); ++a) {
       for (std::size_t b = a + 1; b < v.size(); ++b) pairs.emplace(v[a], v[b]);
     }
@@ -249,7 +253,7 @@ Result<ResolveResult> Resolver::resolve(const std::vector<Entity>& candidates,
       for (const auto& k1 : x.keys) {
         for (const auto& k2 : y.keys) {
           if (utf8::length(k1) < fuzzy_min || utf8::length(k2) < fuzzy_min || k1[0] != k2[0]) continue;
-          fuzzy = std::max(fuzzy, jaccard(trigrams(k1), trigrams(k2)));
+          fuzzy = std::max(fuzzy, jaccard(x.tri.at(k1), y.tri.at(k2)));
         }
       }
       if (fuzzy < fuzzy_tau) fuzzy = 0.0;

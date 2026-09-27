@@ -5048,6 +5048,30 @@ const char* const kPackChunks8[] = {
     {
      "p": "kiedyś",
      "w": 0.5
+    },
+    {
+     "p": "szkic",
+     "w": 1.5
+    },
+    {
+     "p": "szkice",
+     "w": 1.5
+    },
+    {
+     "p": "szkicu",
+     "w": 1.5
+    },
+    {
+     "p": "sketch",
+     "w": 1.5
+    },
+    {
+     "p": "sketches",
+     "w": 1.5
+    },
+    {
+     "p": "draft",
+     "w": 1
     }
    ]
   },
@@ -5096,6 +5120,30 @@ const char* const kPackChunks8[] = {
     },
     {
      "p": "ślepa uliczka",
+     "w": 2
+    },
+    {
+     "p": "odpadł",
+     "w": 2
+    },
+    {
+     "p": "odpadło",
+     "w": 2
+    },
+    {
+     "p": "odpadła",
+     "w": 2
+    },
+    {
+     "p": "porzucam",
+     "w": 2
+    },
+    {
+     "p": "porzucona",
+     "w": 2
+    },
+    {
+     "p": "porzucony",
      "w": 2
     }
    ]
@@ -5296,7 +5344,8 @@ const char* const kPackChunks8[] = {
      "w": 1.5
     },
     {
-     "p": "starting from",
+)LOOMKB",
+    R"LOOMKB(     "p": "starting from",
      "w": 1
     },
     {
@@ -5337,8 +5386,7 @@ const char* const kPackChunks8[] = {
      "w": 1.5
     },
     {
-  )LOOMKB",
-    R"LOOMKB(   "p": "either",
+     "p": "either",
      "w": 1
     },
     {
@@ -5898,7 +5946,8 @@ const char* const kPackChunks8[] = {
      "w": 2.5
     },
     {
-     "p": "went missing",
+     "p": "went missing)LOOMKB",
+    R"LOOMKB(",
      "w": 2.5
     },
     {
@@ -5944,8 +5993,7 @@ const char* const kPackChunks8[] = {
     {
      "p": "padły",
      "w": 1.5
-)LOOMKB",
-    R"LOOMKB(    },
+    },
     {
      "p": "padło",
      "w": 1.5
@@ -6096,6 +6144,18 @@ const char* const kPackChunks8[] = {
     {
      "p": "i decided",
      "w": 2
+    },
+    {
+     "p": "buduję",
+     "w": 1.5
+    },
+    {
+     "p": "składamy",
+     "w": 1.5
+    },
+    {
+     "p": "robimy",
+     "w": 1
     }
    ]
   },
@@ -6381,6 +6441,63 @@ const char* const kPackChunks8[] = {
     },
     {
      "p": "not",
+     "w": 1
+    }
+   ]
+  },
+  "affirmation": {
+   "description": "Openers of a reply that accept what the other side asked or proposed (a user reply to a question: an accepted decision).",
+   "phrases": [
+    {
+     "p": "tak",
+     "w": 1
+    },
+    {
+     "p": "no to",
+     "w": 1
+    },
+    {
+     "p": "dokładnie",
+     "w": 1
+    },
+    {
+     "p": "dobra",
+     "w": 1
+    },
+    {
+     "p": "okej",
+     "w": 1
+    },
+    {
+     "p": "ok",
+     "w": 1
+    },
+    {
+     "p": "zgoda",
+     "w": 1
+    },
+    {
+     "p": "yes",
+     "w": 1
+    },
+    {
+     "p": "yep",
+     "w": 1
+    },
+    {
+     "p": "exactly",
+     "w": 1
+    },
+    {
+     "p": "sure",
+     "w": 1
+    },
+    {
+     "p": "agreed",
+     "w": 1
+    },
+    {
+     "p": "sounds good",
      "w": 1
     }
    ]

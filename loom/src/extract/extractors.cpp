@@ -5,7 +5,10 @@
 // algorithms. Deterministic.
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include <map>
 #include <set>
 
@@ -342,6 +345,28 @@ class Run {
     return out;
   }
   std::vector<std::string> parse_options(std::string text) const;
+  std::set<std::size_t> affirmed_;
+  // First sentence of a user message that starts with an affirmation, right
+  // after a message of the other side that asked something.
+  bool affirms_question(std::size_t oi) const {
+    const Observation& o = *info_[oi].o;
+    if (o.speaker != "user" && o.speaker != "human") return false;
+    std::string node = json::get_string(o.attrs, "node");
+    if (node.empty()) return false;
+    for (std::size_t k = oi; k-- > 0;) {
+      if (json::get_string(info_[k].o->attrs, "node") == node && info_[k].o->kind != ObservationKind::Utterance) return false;
+      if (info_[k].o->kind == ObservationKind::Utterance && json::get_string(info_[k].o->attrs, "node") != node) {
+        const Observation& prev = *info_[k].o;
+        if (prev.speaker == o.speaker || prev.text.find('?') == std::string::npos) return false;
+        if (json::get_string(o.attrs, "parent") != json::get_string(prev.attrs, "node")) return false;
+        for (const auto& h : lex_.match("affirmation", info_[oi].folded)) {
+          if (h.pos == 0) return true;
+        }
+        return false;
+      }
+    }
+    return false;
+  }
   // content-token run nearest to a cue (feature label), tokens [tb, te)
   std::optional<std::pair<std::size_t, std::size_t>> topic_run(std::size_t obs, std::size_t from, std::size_t to,
                                                                const std::vector<std::pair<std::size_t, std::size_t>>& cues,
@@ -368,7 +393,7 @@ void Run::prepare() {
         break;
       case ObservationKind::Utterance:
       case ObservationKind::Field:
-        in.text = !has_leaf;
+        in.text = !has_leaf || json::get_bool(o.attrs, "leaf");
         break;
       default:
         break;
@@ -394,6 +419,12 @@ void Run::find_lexicon_mentions() {
         std::size_t maxl = std::min(in.toks.size() - i, lex_.max_form_tokens + 2);
         for (std::size_t L = maxl; L >= 1 && maybe && !hit; --L) {
           std::size_t fs = in.toks[i].start, fe = in.toks[i + L - 1].end;
+          // a span ends on a content word and does not cross a clause delimiter
+          if (L > 1 && is_stop(in.toks[i + L - 1].lower)) continue;
+          if (L > 1 && std::string_view(in.folded.data() + fs, fe - fs).find_first_of(",.;:!?()") != std::string_view::npos) {
+            continue;
+          }
+          if (L > 1 && std::string_view(in.folded.data() + fs, fe - fs).find(" - ") != std::string_view::npos) continue;
           std::string span = parallel ? in.o->text.substr(in.otoks[i].start, in.otoks[i + L - 1].end - in.otoks[i].start)
                                       : in.folded.substr(fs, fe - fs);
           std::set<std::string> keys;
@@ -664,11 +695,20 @@ void Run::find_named_mentions() {
         if (!lowerish(s1) || !lowerish(s2) || !has_alpha(s1) || !has_alpha(s2)) continue;
         std::string label = lex_.fold(s1) + "-" + lex_.fold(s2);
         std::size_t fs = in.toks[k].start, fe = in.toks[k + 1].end;
-        if (overlaps(oi, fs, fe)) continue;
+        bool known_branch = false;
+        for (const auto& m : mentions_) known_branch = known_branch || (m.obs == oi && m.kind == "branch" && m.fstart == fs);
+        if (known_branch) continue;
         // only when the name is used as a name: seen twice in the unit or next to a fork cue
         int seen = 0;
         for (const auto& other : info_) seen += other.folded.find(label) != std::string::npos ? 1 : 0;
-        if (seen < 2 && lex_.score("fork", in.folded) <= 0) continue;
+        // "python-quick: ..." — a name that heads its sentence
+        std::string_view after(f.data() + fe, f.size() - fe);
+        bool leads = k == 0 && !after.empty() && after[0] == ':';
+        if (seen < 2 && !leads && lex_.score("fork", in.folded) <= 0) continue;
+        // a compound name beats its parts ("python-quick" is not "Python")
+        mentions_.erase(std::remove_if(mentions_.begin(), mentions_.end(),
+                                       [&](const Mention& m) { return m.obs == oi && fs < m.fend && m.fstart < fe; }),
+                        mentions_.end());
         mention_label(oi, "branch", label, fs, fe, "branch_name", 0.7);
         note_name("branch", label, {});
       }
@@ -729,7 +769,7 @@ void Run::find_version_mentions() {
       if (q < 0.8) {
         for (std::size_t k = lo; k < hi; ++k) {
           for (const auto& a : lex_.version_anchors) {
-            if (in.toks[k].lower == a) {
+            if (in.toks[k].lower.rfind(a, 0) == 0) {
               q = 0.8;
               how = "anchor_word";
             }
@@ -1087,7 +1127,15 @@ void Run::do_items() {
         second = std::max(second, v);
       }
     }
-    if (best.empty() || bs < 1.5) continue;
+    if (best.empty() || bs < 1.5) {
+      // an owner's reply that opens with an affirmation to a question of the
+      // other side accepts what was asked ("tak, ...", "no to SQLite")
+      if (affirms_question(oi)) {
+        item_type_[oi] = "decision";
+        affirmed_.insert(oi);
+      }
+      continue;
+    }
     item_type_[oi] = best;
     if (!op("items")) continue;
     if (op("decisions") && best == "decision") continue;  // the decisions extractor owns them
@@ -1194,7 +1242,7 @@ void Run::do_decisions() {
     q.valid_from = date10(in.o->date);
     q.branch = branch_of(oi);
     q.extra = Json{{"reversal", reversal >= 2.5}};
-    double conf = 0.6 + (chosen >= 0 ? 0.2 : 0.0);
+    double conf = (affirmed_.count(oi) ? 0.45 : 0.6) + (chosen >= 0 ? 0.2 : 0.0);
     std::string cid = claim(subject_, "decides", "", Json(chosen_label), q, support(oi, "", ex_name("extract.decisions"), conf));
     if (cid.empty()) continue;
     if (opt_obs != SIZE_MAX && opt_obs != oi) {
@@ -1273,7 +1321,12 @@ std::optional<std::pair<std::size_t, std::size_t>> Run::topic_run(
 }
 
 void Run::do_status() {
-  std::optional<std::pair<std::size_t, std::string>> last_topic;  // (obs, feature entity)
+  struct Topic {
+    std::size_t obs = 0;
+    std::string entity;  // known entity, or "" (created on first use from label)
+    std::string label;
+  };
+  std::optional<Topic> last_topic;
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
     if (!in.text) continue;
@@ -1330,8 +1383,13 @@ void Run::do_status() {
         if (run) {
           std::string label = surface_of(oi, run->first, run->second);
           ent = entity("feature", lex_.norm.phrase_key(label), label, label, oi, "mined", 0.6);
-        } else if (last_topic && oi - last_topic->first <= 2) {
-          ent = last_topic->second;  // anaphora: the topic of the preceding observation
+        } else if (last_topic && oi - last_topic->obs <= 2) {
+          // anaphora: the topic of the preceding observation
+          if (last_topic->entity.empty()) {
+            last_topic->entity = entity("feature", lex_.norm.phrase_key(last_topic->label), last_topic->label,
+                                        last_topic->label, last_topic->obs, "mined", 0.5);
+          }
+          ent = last_topic->entity;
         }
       }
       if (ent.empty()) continue;
@@ -1354,7 +1412,45 @@ void Run::do_status() {
       statuses_[r.id] = r;
       emitted = true;
     }
-    (void)emitted;
+    // A changelog line "0.3: desktop notification channel." states what the
+    // version contains: implemented in that version.
+    if (!emitted) {
+      std::size_t colon = in.folded.find(':');
+      const Mention* vm = nullptr;
+      for (const auto& m : mentions_) {
+        if (m.obs == oi && m.kind == "version" && m.fstart <= 1 && colon != std::string::npos && m.fend <= colon &&
+            utf8::strip(std::string_view(in.folded).substr(m.fend, colon - m.fend)).empty()) {
+          vm = &m;
+        }
+      }
+      if (vm) {
+        std::size_t end = in.folded.find_first_of(",.;(", colon);
+        if (end == std::string::npos) end = in.folded.size();
+        std::size_t tb = tok_at(oi, colon), te = tok_at(oi, end);
+        auto run = topic_run(oi, tb, te, {}, tb);
+        if (run && run->first == tb) {
+          std::size_t re = std::min(te, run->first + 3);
+          std::string label = surface_of(oi, run->first, re);
+          std::string ent = entity("feature", lex_.norm.phrase_key(label), label, label, oi, "mined", 0.6);
+          model::Qualifiers q;
+          q.version = vm->label;
+          q.branch = branch_of(oi);
+          q.valid_from = date10(in.o->date);
+          q.lang = in.o->lang;
+          std::string cid = claim(ent, "has_status", "", Json("implemented"), q,
+                                  support(oi, surface_bytes(oi, 0, end), ex_name("extract.status_cues"), 0.6));
+          model::StatusRecord r;
+          r.entity = ent;
+          r.branch = q.branch;
+          r.version = q.version;
+          r.status = model::StatusValue::Implemented;
+          r.date = in.o->date;
+          r.claim = cid;
+          r.id = model::StatusRecord::make_id(r.entity, r.branch, r.version, r.status, r.date);
+          statuses_[r.id] = r;
+        }
+      }
+    }
     // the observation's topic for anaphora in the next ones
     std::string topic;
     for (const auto& m : mentions_) {
@@ -1366,14 +1462,14 @@ void Run::do_status() {
         std::string label = surface_of(oi, run->first, run->second);
         std::string key = lex_.norm.phrase_key(label);
         std::string id = Entity::make_id("feature", key);
-        if (ents_.count(id)) topic = id;  // only a known feature (never invent one for anaphora)
+        if (ents_.count(id)) topic = id;
         else if (!key.empty()) {
-          last_topic = std::make_pair(oi, entity("feature", key, label, label, oi, "mined", 0.5));
+          last_topic = Topic{oi, "", label};
           continue;
         }
       }
     }
-    if (!topic.empty()) last_topic = std::make_pair(oi, topic);
+    if (!topic.empty()) last_topic = Topic{oi, topic, ""};
   }
 }
 
@@ -1788,26 +1884,45 @@ void Run::do_code_symbols() {
   }
 }
 
+std::map<std::string, double>& timing() {
+  static std::map<std::string, double> t;
+  return t;
+}
+struct Tm {
+  const char* n;
+  std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
+  ~Tm() { timing()[n] += std::chrono::duration<double>(std::chrono::steady_clock::now() - a).count(); }
+};
+#define TIMED(name, expr) \
+  do {                    \
+    Tm tm_{name};         \
+    expr;                 \
+  } while (0)
+
 Extraction Run::run() {
-  prepare();
-  find_lexicon_mentions();
-  find_named_mentions();
-  find_version_mentions();
+  TIMED("prepare", prepare());
+  TIMED("lexicon", find_lexicon_mentions());
+  TIMED("named", find_named_mentions());
+  TIMED("versions_m", find_version_mentions());
   choose_subject();
-  if (op("entities_lexicon")) do_entities_lexicon();
+  if (op("entities_lexicon")) TIMED("ent", do_entities_lexicon());
   if (op("versions")) do_versions();
-  if (op("relation_patterns")) do_relation_patterns();
-  do_items();  // classification feeds decisions and forks even without "items"
-  if (op("decisions")) do_decisions();
-  if (op("status_cues")) do_status();
+  if (op("relation_patterns")) TIMED("rel", do_relation_patterns());
+  TIMED("items", do_items());  // classification feeds decisions and forks even without "items"
+  if (op("decisions")) TIMED("dec", do_decisions());
+  if (op("status_cues")) TIMED("status", do_status());
   if (op("forks")) do_forks();
   if (op("normative")) do_normative();
-  if (op("generalizations") || op("areas")) do_areas();
-  if (op("citations")) do_citations();
-  if (op("dates")) do_dates();
+  if (op("generalizations") || op("areas")) TIMED("areas", do_areas());
+  if (op("citations")) TIMED("cit", do_citations());
+  if (op("dates")) TIMED("dates", do_dates());
   if (op("speakers")) do_speakers();
   if (op("headers")) do_headers();
   if (op("code_symbols")) do_code_symbols();
+  if (std::getenv("LOOM_EXTRACT_TIMING")) {
+    for (const auto& [k, v] : timing()) std::fprintf(stderr, "%s=%.3f ", k.c_str(), v);
+    std::fprintf(stderr, "\n");
+  }
 
   Extraction ex;
   ex.observations = obs_;

@@ -637,14 +637,25 @@ Result<std::vector<Observation>> Extractor::segment(const model::ArtifactType& t
   const bool fields = s.seg.count("commit_fields") > 0 || s.seg.count("email_headers") > 0;
   for (const auto& b : ub.blocks) {
     s.heading_path.clear();
+    std::size_t utt = SIZE_MAX;
     if (b.utterance && messages) {
+      std::size_t before = s.out.size();
       emit(s, b, ObservationKind::Utterance, 0, b.text.size(), 0);
+      if (s.out.size() > before) utt = before;
     } else if (b.field && fields) {
       emit(s, b, ObservationKind::Field, 0, b.text.size(), 0);
       continue;
     }
     if (b.field) continue;
+    std::size_t first = s.out.size();
     segment_block(s, b);
+    if (utt != SIZE_MAX) {
+      // A one-sentence message is its own leaf: the sentence would repeat the
+      // utterance (same locator and text, hence the same observation id).
+      bool same = s.out.size() == first + 1 && s.out.back().id == s.out[utt].id;
+      if (same) s.out.pop_back();
+      if (same || s.out.size() == first) s.out[utt].attrs["leaf"] = true;
+    }
   }
   if (s.seg.count("code_symbols") && content.structured.is_null() && !content.text.empty()) {
     // One Field per declared symbol, located at its first declaring line.
