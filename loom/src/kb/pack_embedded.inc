@@ -2013,9 +2013,175 @@ const char* const kPackChunks3[] = {
   "schema": "loom.kb.stopwords/1",
   "description": "Stop words for the paradigm wave (concept extraction, catalog sketches, match keys), added on top of stopwords_base.json. Surface forms, lowercase; matching is done on folded (diacritic-free) keys too. Polish function words, auxiliary verbs and discourse fillers that dominated the v1 themes ('nowa', 'pomiar', 'jest', 'się'), plus generic English nouns that carried no topical signal ('system', 'model', 'task', 'directory').",
   "extends": "lexicons/stopwords_base.json",
-  "en": ["system", "systems", "model", "models", "task", "tasks", "directory", "directories", "thing", "stuff", "kind", "kinds", "sort", "level", "levels", "step", "steps", "option", "options", "approach", "approaches", "version", "versions", "feature", "features", "support", "project", "projects", "code", "user", "users", "app", "application", "yeah", "hmm", "actually", "basically", "probably", "maybe", "perhaps", "anyway", "etc", "via", "per", "whole", "different", "various", "specific", "general", "current", "currently", "possible", "important", "simple", "quick", "fast", "slow", "real", "certain"],
-  "pl": ["nowa", "nowy", "nowe", "nowych", "nowego", "nowej", "pomiar", "jest", "się", "który", "można", "trzeba", "będzie", "więc", "czyli", "tutaj", "teraz", "potem", "jakiś", "jakaś", "jakieś", "coś", "ktoś", "wszystkich", "wszystkim", "wiele", "dużo", "mało", "bardzo", "tylko", "jeszcze", "również", "zatem", "natomiast", "właśnie", "chyba", "pewnie", "raczej", "generalnie", "ogólnie", "wiesz", "znaczy", "że", "żeby", "aby", "ponieważ", "dlatego", "rzecz", "rzeczy", "sprawa", "sprawy", "sposób", "rodzaj", "poziom", "krok", "kroki", "opcja", "opcje", "wersja", "wersji", "funkcja", "funkcje", "projekt", "projektu", "kod", "kodu", "system", "systemu", "model", "modelu", "zadanie", "zadania", "aplikacja", "aplikacji", "użytkownik", "użytkownika", "dobrze", "fajnie", "okej", "ok", "tak", "nie", "no", "hej", "dzięki", "proszę"],
-  "code": ["cmake", "ninja", "stdout", "stderr", "argv", "argc", "utf", "ascii", "todo"]
+  "en": [
+    "system",
+    "systems",
+    "model",
+    "models",
+    "task",
+    "tasks",
+    "directory",
+    "directories",
+    "thing",
+    "stuff",
+    "kind",
+    "kinds",
+    "sort",
+    "level",
+    "levels",
+    "step",
+    "steps",
+    "option",
+    "options",
+    "approach",
+    "approaches",
+    "version",
+    "versions",
+    "feature",
+    "features",
+    "support",
+    "project",
+    "projects",
+    "code",
+    "user",
+    "users",
+    "app",
+    "application",
+    "yeah",
+    "hmm",
+    "actually",
+    "basically",
+    "probably",
+    "maybe",
+    "perhaps",
+    "anyway",
+    "etc",
+    "via",
+    "per",
+    "whole",
+    "different",
+    "various",
+    "specific",
+    "general",
+    "current",
+    "currently",
+    "possible",
+    "important",
+    "simple",
+    "quick",
+    "fast",
+    "slow",
+    "real",
+    "certain"
+  ],
+  "pl": [
+    "nowa",
+    "nowy",
+    "nowe",
+    "nowych",
+    "nowego",
+    "nowej",
+    "pomiar",
+    "jest",
+    "się",
+    "który",
+    "można",
+    "trzeba",
+    "będzie",
+    "więc",
+    "czyli",
+    "tutaj",
+    "teraz",
+    "potem",
+    "jakiś",
+    "jakaś",
+    "jakieś",
+    "coś",
+    "ktoś",
+    "wszystkich",
+    "wszystkim",
+    "wiele",
+    "dużo",
+    "mało",
+    "bardzo",
+    "tylko",
+    "jeszcze",
+    "również",
+    "zatem",
+    "natomiast",
+    "właśnie",
+    "chyba",
+    "pewnie",
+    "raczej",
+    "generalnie",
+    "ogólnie",
+    "wiesz",
+    "znaczy",
+    "że",
+    "żeby",
+    "aby",
+    "ponieważ",
+    "dlatego",
+    "rzecz",
+    "rzeczy",
+    "sprawa",
+    "sprawy",
+    "sposób",
+    "rodzaj",
+    "poziom",
+    "krok",
+    "kroki",
+    "opcja",
+    "opcje",
+    "wersja",
+    "wersji",
+    "funkcja",
+    "funkcje",
+    "projekt",
+    "projektu",
+    "kod",
+    "kodu",
+    "system",
+    "systemu",
+    "model",
+    "modelu",
+    "zadanie",
+    "zadania",
+    "aplikacja",
+    "aplikacji",
+    "użytkownik",
+    "użytkownika",
+    "dobrze",
+    "fajnie",
+    "okej",
+    "ok",
+    "tak",
+    "nie",
+    "no",
+    "hej",
+    "dzięki",
+    "proszę",
+    "samej",
+    "samego",
+    "samym",
+    "gdzieś",
+    "zreszta",
+    "zresztą",
+    "wciąż",
+    "dalej",
+    "razie"
+  ],
+  "code": [
+    "cmake",
+    "ninja",
+    "stdout",
+    "stderr",
+    "argv",
+    "argc",
+    "utf",
+    "ascii",
+    "todo"
+  ]
 }
 )LOOMKB",
     nullptr};
@@ -4898,6 +5064,34 @@ const char* const kPackChunks8[] = {
     {
      "p": "dodałem",
      "w": 1
+    },
+    {
+     "p": "ready",
+     "w": 1
+    },
+    {
+     "p": "released",
+     "w": 1.5
+    },
+    {
+     "p": "wyszło",
+     "w": 1.5
+    },
+    {
+     "p": "wyszła",
+     "w": 1.5
+    },
+    {
+     "p": "skończone",
+     "w": 1.5
+    },
+    {
+     "p": "gotowy",
+     "w": 1.5
+    },
+    {
+     "p": "gotowa",
+     "w": 1.5
     }
    ]
   },
@@ -4955,6 +5149,10 @@ const char* const kPackChunks8[] = {
     {
      "p": "wstępn*",
      "w": 1.5
+    },
+    {
+     "p": "partial",
+     "w": 2
     }
    ]
   },
@@ -5016,6 +5214,30 @@ const char* const kPackChunks8[] = {
     {
      "p": "kiedyś",
      "w": 0.5
+    },
+    {
+     "p": "szkic",
+     "w": 1.5
+    },
+    {
+     "p": "szkice",
+     "w": 1.5
+    },
+    {
+     "p": "szkicu",
+     "w": 1.5
+    },
+    {
+     "p": "sketch",
+     "w": 1.5
+    },
+    {
+     "p": "sketches",
+     "w": 1.5
+    },
+    {
+     "p": "draft",
+     "w": 1
     }
    ]
   },
@@ -5064,6 +5286,30 @@ const char* const kPackChunks8[] = {
     },
     {
      "p": "ślepa uliczka",
+     "w": 2
+    },
+    {
+     "p": "odpadł",
+     "w": 2
+    },
+    {
+     "p": "odpadło",
+     "w": 2
+    },
+    {
+     "p": "odpadła",
+     "w": 2
+    },
+    {
+     "p": "porzucam",
+     "w": 2
+    },
+    {
+     "p": "porzucona",
+     "w": 2
+    },
+    {
+     "p": "porzucony",
      "w": 2
     }
    ]
@@ -5264,7 +5510,8 @@ const char* const kPackChunks8[] = {
      "w": 1.5
     },
     {
-     "p": "starting from",
+)LOOMKB",
+    R"LOOMKB(     "p": "starting from",
      "w": 1
     },
     {
@@ -5337,8 +5584,7 @@ const char* const kPackChunks8[] = {
      "w": 0.5
     },
     {
-     "p": "altern)LOOMKB",
-    R"LOOMKB(atyw*",
+     "p": "alternatyw*",
      "w": 1.5
     },
     {
@@ -5853,6 +6099,574 @@ const char* const kPackChunks8[] = {
      "w": 2
     }
    ]
+  },
+  "status.lost": {
+   "description": "Something that existed disappeared (model §5 status \"lost\"): a regression, not a decision.",
+   "phrases": [
+    {
+     "p": "lost",
+     "w": 2
+    },
+    {
+     "p": "got lost",
+     "w": 2.5
+    },
+    {
+     "p": "went missing)LOOMKB",
+    R"LOOMKB(",
+     "w": 2.5
+    },
+    {
+     "p": "disappeared",
+     "w": 2.5
+    },
+    {
+     "p": "is gone",
+     "w": 2
+    },
+    {
+     "p": "zgubił*",
+     "w": 2.5
+    },
+    {
+     "p": "zgubiło*",
+     "w": 2.5
+    },
+    {
+     "p": "zgubiły*",
+     "w": 2.5
+    },
+    {
+     "p": "zniknął",
+     "w": 2.5
+    },
+    {
+     "p": "zniknęła",
+     "w": 2.5
+    },
+    {
+     "p": "zniknęło",
+     "w": 2.5
+    },
+    {
+     "p": "zniknęły",
+     "w": 2.5
+    },
+    {
+     "p": "przepadł*",
+     "w": 2
+    },
+    {
+     "p": "padły",
+     "w": 1.5
+    },
+    {
+     "p": "padło",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.restored": {
+   "description": "Something lost came back (model §5 status \"restored\").",
+   "phrases": [
+    {
+     "p": "restored",
+     "w": 2.5
+    },
+    {
+     "p": "brought back",
+     "w": 2.5
+    },
+    {
+     "p": "re-added",
+     "w": 2
+    },
+    {
+     "p": "przywrócon*",
+     "w": 2.5
+    },
+    {
+     "p": "przywracam",
+     "w": 2.5
+    },
+    {
+     "p": "przywróciłam",
+     "w": 2.5
+    },
+    {
+     "p": "przywróciłem",
+     "w": 2.5
+    },
+    {
+     "p": "przywróciliśmy",
+     "w": 2.5
+    }
+   ]
+  },
+  "generalization": {
+   "description": "Umbrella statements that delimit an area (model §3.7, R10): \"everything about X: a, b, c\". The clause after the cue names the area; the list after the colon gives its members.",
+   "phrases": [
+    {
+     "p": "everything about",
+     "w": 2.5
+    },
+    {
+     "p": "all about",
+     "w": 2
+    },
+    {
+     "p": "everything that concerns",
+     "w": 2.5
+    },
+    {
+     "p": "everything related to",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko o",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko co dotyczy",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko, co dotyczy",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko dotyczące",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko związane z",
+     "w": 2.5
+    }
+   ]
+  },
+  "decision": {
+   "description": "First-person PL/EN decision verbs that complement the archive item table (item_cues.json is generated from items.cpp and stays verbatim).",
+   "phrases": [
+    {
+     "p": "biorę",
+     "w": 2
+    },
+    {
+     "p": "bierzemy",
+     "w": 2
+    },
+    {
+     "p": "wybieram",
+     "w": 2
+    },
+    {
+     "p": "decyduję",
+     "w": 2
+    },
+    {
+     "p": "decydujemy",
+     "w": 2
+    },
+    {
+     "p": "zostaję przy",
+     "w": 2
+    },
+    {
+     "p": "stawiam na",
+     "w": 1.5
+    },
+    {
+     "p": "idę w",
+     "w": 1.5
+    },
+    {
+     "p": "przechodzę na",
+     "w": 2
+    },
+    {
+     "p": "zamieniam na",
+     "w": 1.5
+    },
+    {
+     "p": "zamieniłam",
+     "w": 1.5
+    },
+    {
+     "p": "zamieniłem",
+     "w": 1.5
+    },
+    {
+     "p": "i'll go with",
+     "w": 2
+    },
+    {
+     "p": "i choose",
+     "w": 2
+    },
+    {
+     "p": "i picked",
+     "w": 2
+    },
+    {
+     "p": "i decided",
+     "w": 2
+    },
+    {
+     "p": "buduję",
+     "w": 1.5
+    },
+    {
+     "p": "składamy",
+     "w": 1.5
+    },
+    {
+     "p": "robimy",
+     "w": 1
+    }
+   ]
+  },
+  "decision.reversal": {
+   "description": "An explicit reversal of an earlier decision (conflict resolution \"reversal\", model §2.3).",
+   "phrases": [
+    {
+     "p": "odwracam",
+     "w": 2.5
+    },
+    {
+     "p": "odwracamy",
+     "w": 2.5
+    },
+    {
+     "p": "cofam decyzję",
+     "w": 2.5
+    },
+    {
+     "p": "zmieniam decyzję",
+     "w": 2
+    },
+    {
+     "p": "reverse the decision",
+     "w": 2.5
+    },
+    {
+     "p": "reversing the decision",
+     "w": 2.5
+    },
+    {
+     "p": "we revert",
+     "w": 2
+    },
+    {
+     "p": "explicit reversal",
+     "w": 2.5
+    },
+    {
+     "p": "jawnie odwracam",
+     "w": 3
+    }
+   ]
+  },
+  "fork": {
+   "description": "A branch point in a design or a code line (model §5 Fork); hyphenated names near it are branch names.",
+   "phrases": [
+    {
+     "p": "gałąź*",
+     "w": 2
+    },
+    {
+     "p": "galąź*",
+     "w": 2
+    },
+    {
+     "p": "branch",
+     "w": 1.5
+    },
+    {
+     "p": "branches",
+     "w": 1.5
+    },
+    {
+     "p": "fork*",
+     "w": 1.5
+    },
+    {
+     "p": "rozgałęzi*",
+     "w": 2
+    },
+    {
+     "p": "rozjazd",
+     "w": 1.5
+    },
+    {
+     "p": "two branches",
+     "w": 2
+    },
+    {
+     "p": "dwie gałęzie",
+     "w": 2.5
+    }
+   ]
+  },
+  "contradiction": {
+   "description": "A statement that two supported values are incompatible (a conflict is a state, not an evidence class, model §2.3).",
+   "phrases": [
+    {
+     "p": "contradicts",
+     "w": 2.5
+    },
+    {
+     "p": "contradiction",
+     "w": 2
+    },
+    {
+     "p": "inconsistent with",
+     "w": 2
+    },
+    {
+     "p": "przeczy",
+     "w": 2.5
+    },
+    {
+     "p": "sprzeczn*",
+     "w": 2
+    },
+    {
+     "p": "wypiera",
+     "w": 1.5
+    },
+    {
+     "p": "niezgodne z",
+     "w": 1.5
+    }
+   ]
+  },
+  "project.head": {
+   "description": "Head nouns that make an adjacent name a project mention (\"projekt X\", \"X app\", \"appka od notatek (NoteFlow)\", \"projects: A, B\").",
+   "phrases": [
+    {
+     "p": "projekt",
+     "w": 2
+    },
+    {
+     "p": "projektu",
+     "w": 2
+    },
+    {
+     "p": "projekty",
+     "w": 2
+    },
+    {
+     "p": "projektami",
+     "w": 2
+    },
+    {
+     "p": "project",
+     "w": 2
+    },
+    {
+     "p": "projects",
+     "w": 2
+    },
+    {
+     "p": "app",
+     "w": 1.5
+    },
+    {
+     "p": "appka",
+     "w": 1.5
+    },
+    {
+     "p": "apka",
+     "w": 1.5
+    },
+    {
+     "p": "aplikacja",
+     "w": 1.5
+    },
+    {
+     "p": "aplikacji",
+     "w": 1.5
+    },
+    {
+     "p": "sprawa",
+     "w": 1
+    },
+    {
+     "p": "sprawie",
+     "w": 1
+    }
+   ]
+  },
+  "component.head": {
+   "description": "Heads (suffixes of identifiers or nouns) that type a mined name as a component.",
+   "phrases": [
+    {
+     "p": "provider",
+     "w": 2
+    },
+    {
+     "p": "engine",
+     "w": 2
+    },
+    {
+     "p": "panel",
+     "w": 1.5
+    },
+    {
+     "p": "store",
+     "w": 1.5
+    },
+    {
+     "p": "manager",
+     "w": 1.5
+    },
+    {
+     "p": "worker",
+     "w": 1.5
+    },
+    {
+     "p": "service",
+     "w": 1.5
+    },
+    {
+     "p": "adapter",
+     "w": 2
+    },
+    {
+     "p": "module",
+     "w": 2
+    },
+    {
+     "p": "parser",
+     "w": 1.5
+    },
+    {
+     "p": "importer",
+     "w": 1.5
+    },
+    {
+     "p": "selector",
+     "w": 1.5
+    },
+    {
+     "p": "moduł",
+     "w": 2
+    },
+    {
+     "p": "silnik",
+     "w": 2
+    },
+    {
+     "p": "warstwa",
+     "w": 1.5
+    },
+    {
+     "p": "stage",
+     "w": 1.5
+    },
+    {
+     "p": "etap",
+     "w": 1.5
+    }
+   ]
+  },
+  "negated_item": {
+   "description": "A listed item that starts with one of these delimits an area (a constraint of its generating statement) instead of enumerating a member.",
+   "phrases": [
+    {
+     "p": "bez",
+     "w": 1
+    },
+    {
+     "p": "nic",
+     "w": 1
+    },
+    {
+     "p": "nie",
+     "w": 1
+    },
+    {
+     "p": "no",
+     "w": 1
+    },
+    {
+     "p": "without",
+     "w": 1
+    },
+    {
+     "p": "nothing",
+     "w": 1
+    },
+    {
+     "p": "never",
+     "w": 1
+    },
+    {
+     "p": "nigdy",
+     "w": 1
+    },
+    {
+     "p": "not",
+     "w": 1
+    }
+   ]
+  },
+  "affirmation": {
+   "description": "Openers of a reply that accept what the other side asked or proposed (a user reply to a question: an accepted decision).",
+   "phrases": [
+    {
+     "p": "tak",
+     "w": 1
+    },
+    {
+     "p": "no to",
+     "w": 1
+    },
+    {
+     "p": "dokładnie",
+     "w": 1
+    },
+    {
+     "p": "dobra",
+     "w": 1
+    },
+    {
+     "p": "okej",
+     "w": 1
+    },
+    {
+     "p": "ok",
+     "w": 1
+    },
+    {
+     "p": "zgoda",
+     "w": 1
+    },
+    {
+     "p": "yes",
+     "w": 1
+    },
+    {
+     "p": "yep",
+     "w": 1
+    },
+    {
+     "p": "exactly",
+     "w": 1
+    },
+    {
+     "p": "sure",
+     "w": 1
+    },
+    {
+     "p": "agreed",
+     "w": 1
+    },
+    {
+     "p": "sounds good",
+     "w": 1
+    }
+   ]
   }
  }
 }
@@ -5873,7 +6687,8 @@ const char* const kPackChunks9[] = {
     {"id": "cmake_project", "regex": "project\\([^)]*VERSION\\s+([0-9][0-9.]*)", "confidence": 0.9},
     {"id": "header_version", "regex": "\\(v([0-9][0-9.]*)\\)", "confidence": 0.8},
     {"id": "commit_subject", "regex": "^(?:[Vv]ersion|[Rr]elease|[Ww]ersja)\\s+v?([0-9][0-9.]*)", "confidence": 0.9},
-    {"id": "file_name", "regex": "(?:^|[_-])v?([0-9]{1,2}\\.[0-9]{1,2}(?:\\.[0-9]{1,3})?)(?:[_.-]|$)", "confidence": 0.85}
+    {"id": "file_name", "regex": "(?:^|[_-])v?([0-9]{1,2}\\.[0-9]{1,2}(?:\\.[0-9]{1,3})?)(?:[_.-]|$)", "confidence": 0.85},
+    {"id": "changelog_line", "regex": "^\\s*v?([0-9]{1,2}\\.[0-9]{1,2}(?:\\.[0-9]{1,3})?)\\s*:", "confidence": 0.85}
   ],
   "exclude_contexts": ["python 3.", "api v1", "api/v1", "http/1.", "http/2", "c++20", "c++17", "sqlite 3.", "iso 8601", "utf-8", "temperature", "temp", "%", "gb", "mb", "zł", "$"],
   "status_phrases": {
@@ -16316,6 +17131,10 @@ const char* const kPackChunks33[] = {
    {
     "op": "heading",
     "value": "burza mózgów"
+   },
+   {
+    "op": "cue",
+    "value": "generalization"
    }
   ],
   "min_score": 0.35
