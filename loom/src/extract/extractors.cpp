@@ -1903,45 +1903,26 @@ void Run::do_code_symbols() {
   }
 }
 
-std::map<std::string, double>& timing() {
-  static std::map<std::string, double> t;
-  return t;
-}
-struct Tm {
-  const char* n;
-  std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
-  ~Tm() { timing()[n] += std::chrono::duration<double>(std::chrono::steady_clock::now() - a).count(); }
-};
-#define TIMED(name, expr) \
-  do {                    \
-    Tm tm_{name};         \
-    expr;                 \
-  } while (0)
-
 Extraction Run::run() {
-  TIMED("prepare", prepare());
-  TIMED("lexicon", find_lexicon_mentions());
-  TIMED("named", find_named_mentions());
-  TIMED("versions_m", find_version_mentions());
+  prepare();
+  find_lexicon_mentions();
+  find_named_mentions();
+  find_version_mentions();
   choose_subject();
-  if (op("entities_lexicon")) TIMED("ent", do_entities_lexicon());
+  if (op("entities_lexicon")) do_entities_lexicon();
   if (op("versions")) do_versions();
-  if (op("relation_patterns")) TIMED("rel", do_relation_patterns());
-  TIMED("items", do_items());  // classification feeds decisions and forks even without "items"
-  if (op("decisions")) TIMED("dec", do_decisions());
-  if (op("status_cues")) TIMED("status", do_status());
+  if (op("relation_patterns")) do_relation_patterns();
+  do_items();  // classification feeds decisions and forks even without "items"
+  if (op("decisions")) do_decisions();
+  if (op("status_cues")) do_status();
   if (op("forks")) do_forks();
   if (op("normative")) do_normative();
-  if (op("generalizations") || op("areas")) TIMED("areas", do_areas());
-  if (op("citations")) TIMED("cit", do_citations());
-  if (op("dates")) TIMED("dates", do_dates());
+  if (op("generalizations") || op("areas")) do_areas();
+  if (op("citations")) do_citations();
+  if (op("dates")) do_dates();
   if (op("speakers")) do_speakers();
   if (op("headers")) do_headers();
   if (op("code_symbols")) do_code_symbols();
-  if (std::getenv("LOOM_EXTRACT_TIMING")) {
-    for (const auto& [k, v] : timing()) std::fprintf(stderr, "%s=%.3f ", k.c_str(), v);
-    std::fprintf(stderr, "\n");
-  }
 
   Extraction ex;
   ex.observations = obs_;
