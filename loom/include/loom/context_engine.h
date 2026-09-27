@@ -67,6 +67,20 @@ class ContextEngine {
   Result<model::ContextSet> select(const ContextRequest& req);
   // Prompt text in band order with evidence/origin markers.
   Result<std::string> render(const model::ContextSet& set);
+  // Sections-as-data (LOOM_CONCEPTUAL_MODEL idea, prompt_compiler.py):
+  // {"goal":{...},"budget_tokens","used_tokens","sections":[{"band","items":
+  // [{"ref","ref_kind","resolution","score","factors","why","required_by",
+  // "tokens","text"}]}],"dropped":[...]}. Same data render() turns into text;
+  // useful for a UI / CLI / test to show why each item is there without
+  // re-parsing the rendered prompt.
+  Json trace(const model::ContextSet& set) const;
+  // Integration hook: type_goal + select + render in one call, for a caller
+  // (ChatEngine, the CLI, the server) that wants a ready prompt without
+  // touching ContextSet directly. ADDITIVE: chat_engine.h's own context
+  // path (memory + GraphMemorySelector) is untouched; a caller opts into
+  // this by calling ContextEngine::build() itself.
+  // -> {"goal":{...},"context_set":{...},"prompt":"..."}
+  Result<Json> build(const ContextRequest& req);
   // Token estimate of a text (code points / 4, at least 1 for non-empty).
   static int estimate_tokens(std::string_view text) noexcept;
 

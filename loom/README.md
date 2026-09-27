@@ -24,7 +24,8 @@ the HTTP server and the Android shell.
 | `loom.h` — C ABI (archive, artifacts, `loom_import_file_ex` added) | implemented |
 | `cli/` — `loom` command line | implemented |
 | Knowledge layer foundation — `model.h`, `kb.h`, `knowledge_store.h`, `knowledge.h`, `loom/data/` | implemented ([below](#knowledge-layer)) |
-| Knowledge layer areas — `catalog.h`, `extract.h`, `resolve.h`, `generalize.h`, `context_engine.h`, `materialize.h` | contract + stubs (next wave) |
+| Knowledge layer areas — `catalog.h`, `extract.h`, `resolve.h`, `generalize.h` | contract + stubs (next wave) |
+| Knowledge layer area — `context_engine.h`, `materialize.h` (context+materialize) | implemented ([below](#knowledge-layer)) |
 | `server/` (REST/SSE facade), `web/` (React UI), `android/` (JNI shell) | see their own READMEs |
 
 ## Build
@@ -262,6 +263,70 @@ and chained transfers (I3); judgements are append-only and replayed last;
 `_meta.loom_kb_schema_version`); the pack validator rejects any name outside a
 closed set, dangling references, relations that do not anchor on the
 meta-model, transfers between kinds of different roles and undated priors.
+
+### Context + materialize
+
+`include/loom/context_engine.h`, `include/loom/materialize.h`,
+`src/context/`, `src/materialize/`. Implemented (R12, R13 §1; R11; I8).
+
+- **Goal typing** (`ContextEngine::type_goal`): a deterministic PL/EN
+  cue-phrase classifier over `goals/goal_types.json` (longer, more specific
+  cues score higher; ties broken by id), with an *optional* LLM fallback
+  used only when the cue confidence is low AND `semantic_model` +
+  `secrets.api_key` are configured (mirrors `SemanticLLM::enabled()`; never
+  called in the default/offline configuration, so it never affects
+  determinism by default). The owner may force a goal type; an unknown
+  forced type is `Errc::NotFound`.
+- **ContextSet builder** (`ContextEngine::select`): gathers candidates —
+  invariant principles and preferences (stable band, goal-independent by
+  construction so repeated calls share an identical prefix); the project's
+  instance slots (role-filtered), decisions and status history (project
+  band); claims one hop from the goal's targets in either direction (goal
+  band) — scores each as relevance × authority (`model::authority_rank`) ×
+  freshness (half-life decay against the corpus's own latest date, never
+  wall-clock, so runs stay deterministic) × confidence, applies an
+  MMR-style diversity pass per band, resolves each item's resolution
+  (label/summary/full/raw) from the goal type's role map, then fills the
+  three-band token budget in order with unused budget cascading forward
+  into later bands, and finally closes the dependency graph (a claim's
+  `premises.claims`/`premises.principles`) over what was accepted, marking
+  `required_by`. Every included and dropped item carries a `why`.
+- **Renderer** (`ContextEngine::render`): joins the already-rendered,
+  evidence-marked (`policy/evidence_encoding.json`) item texts band by band
+  under a heading; `trace()` returns the same items as sections-as-data
+  (band → items, plus `dropped`) for a UI, CLI or test to inspect without
+  re-parsing the prompt text; `build()` is a `type_goal` + `select` +
+  `render` combinator — an additive integration point a caller (ChatEngine,
+  the CLI, the server) can opt into. The legacy `ContextSelector` /
+  `GraphMemorySelector` (Python parity, `graph_memory.h`) are untouched.
+- **Materializer**: `self_description` renders `SELF.md` (projects, their
+  component entities' status history including lost/restored oscillation,
+  decisions, forks, areas, principles marked seed-vs-discovered, operators,
+  open questions); `dossier` is a per-instance slot table with evidence
+  markers, conflicts and transferred (by-analogy) slots; `backlog` collects
+  contested claims, violated Expected Properties, `violates` claims, absent
+  required slots and lost features; `extrapolated_spec` lists only
+  `Extrapolated`-evidence slot values under "Proposals", never as fact (I3);
+  `check_preferences` runs the `rules/checks.json` detectors
+  (`string_array_literal`, `regex_line`, `regex_block`, via `re/regex.h`)
+  over real files, returning `ProductCheck`s with provenance — a preference
+  violation is a failing check, not a style note (I8). Every rendered
+  artifact carries a content-derived `data.input_hash` (pack hash + run +
+  sorted dependency ids) for incremental regeneration. `run_stage()` wires
+  all of this into the `knowledge.materialize` pipeline stage: artifacts to
+  `BlobStore` + `loom_artifacts` (+ `config.out_dir`), `Product` rows to the
+  `KnowledgeStore`.
+- C ABI: `loom_context_build` (`ContextRequest` JSON →
+  `{"context_set","text"}`) and `loom_materialize`
+  (`{"kind","run"?,"instance"?}` → `Rendered` JSON), `src/capi/capi_context.cpp`.
+- Known gaps: goal-band candidate gathering is a 1-hop BFS from the goal's
+  targets (no multi-hop expansion); target entities are taken as given
+  (no free-text entity-mention resolution when `targets` is empty); the
+  optional LLM goal classifier has no dedicated test against a real
+  provider (only a `ScriptedTransport` one); `self_description`'s "open
+  questions" section is a flat scan of every claim's `assessment.open.questions`
+  (no dedicated store table yet, and no automatic matching to the decision
+  that resolved one).
 
 ### Ownership map (next wave: four agents, parallel worktrees)
 
