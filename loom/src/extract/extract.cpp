@@ -135,6 +135,7 @@ UnitBlocks unit_blocks(const UnitContent& c) {
         }
       }
     }
+    int seq = 0;
     for (const auto& m : w.messages) {
       Block b;
       b.text = json::get_string(m, "text");
@@ -151,7 +152,8 @@ UnitBlocks unit_blocks(const UnitContent& c) {
       b.attrs = Json{{"node", node},
                      {"parent", json::get_string(m, "parent")},
                      {"branch", json::get_string(m, "branch")},
-                     {"current", json::get_bool(m, "current", true)}};
+                     {"current", json::get_bool(m, "current", true)},
+                     {"seq", seq++}};
       ub.blocks.push_back(std::move(b));
     }
     ub.forks = w.forks;

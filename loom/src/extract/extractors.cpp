@@ -118,6 +118,7 @@ class Run {
   int mention_cap_ = 32;
 
   std::vector<ObsInfo> info_;
+  std::map<std::string, std::size_t> obs_index_;  // observation id -> index
   std::vector<Mention> mentions_;
   std::map<std::string, Entity> ents_;
   std::map<std::string, std::set<std::string>> ent_obs_;
@@ -209,6 +210,20 @@ class Run {
                     model::Qualifiers q, model::Support sup) {
     if (subject.empty() || (object.empty() && value.is_null())) return "";
     if (!object.empty() && object == subject) return "";
+    // Sequence is first-class: in a conversation (archived or live) a claim
+    // records the position of the message that stated it, so the order in
+    // which a structure was built stays in the graph (restating it later is
+    // a later claim, not a silent merge). Mention provenance is order-free.
+    if (pred != "mentioned_in") {
+      auto it = obs_index_.find(sup.observation);
+      if (it != obs_index_.end()) {
+        const Json& a = info_[it->second].o->attrs;
+        if (const Json* sq = json::find(a, "seq"); sq && sq->is_number_integer()) {
+          if (!q.extra.is_object()) q.extra = Json::object();
+          if (!q.extra.contains("seq")) q.extra["seq"] = *sq;
+        }
+      }
+    }
     std::string id = Claim::make_id(subject, pred, object, value, q);
     auto [it, fresh] = claims_.try_emplace(id);
     Claim& c = it->second;
@@ -398,6 +413,7 @@ void Run::prepare() {
       default:
         break;
     }
+    obs_index_.emplace(o.id, info_.size());
     info_.push_back(std::move(in));
   }
   item_type_.assign(info_.size(), "");

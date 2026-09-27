@@ -321,6 +321,46 @@ TEST_SUITE("extract") {
     CHECK(!out[2].role);
   }
 
+  TEST_CASE("one pipeline for archived and live conversations; message sequence recorded in claims") {
+    std::vector<std::pair<std::string, std::string>> msgs = {
+        {"human", "Burza mózgów: wszystko o alertach: powiadomienie na pulpit, wpis do logu."},
+        {"assistant", "Jaki storage - SQLite czy pliki JSON?"},
+        {"human", "Decyzja: bierzemy SQLite."},
+        {"assistant", "0.1: watcher implemented."}};
+    auto archived = run(claude_conv("conv-1", msgs));
+    Json rows = Json::array();
+    int i = 0;
+    for (const auto& [who, text] : msgs) {
+      rows.push_back(Json{{"id", "m_" + std::to_string(i)}, {"role", who == "human" ? "user" : "assistant"}, {"text", text},
+                          {"created", "2025-03-01T10:00:00Z"}, {"status", "active"}});
+      ++i;
+    }
+    auto live = run(extract::conversation_unit("c_live", "conv-1", rows));
+    auto shape = [](const extract::Extraction& ex) {
+      std::multiset<std::string> s;
+      for (const auto& c : ex.claims) {
+        if (c.predicate == "mentioned_in") continue;
+        s.insert(c.predicate + "|" + c.value.dump() + "|" + c.qualifiers.extra.dump());
+      }
+      return s;
+    };
+    CHECK(shape(archived) == shape(live));
+    CHECK(archived.areas.size() == 1);
+    CHECK(live.areas.size() == 1);
+    // the structure is built in message order: area (0) < decision (2) < status (3)
+    int area_seq = -1, dec_seq = -1, st_seq = -1;
+    for (const auto& c : live.claims) {
+      int seq = static_cast<int>(json::get_int(c.qualifiers.extra, "seq", -1));
+      if (c.predicate == "member_of") area_seq = seq;
+      if (c.predicate == "decides") dec_seq = seq;
+      if (c.predicate == "has_status") st_seq = seq;
+      if (c.predicate != "mentioned_in") CHECK(seq >= 0);
+    }
+    CHECK(area_seq == 0);
+    CHECK(dec_seq == 2);
+    CHECK(st_seq == 3);
+  }
+
   TEST_CASE("determinism: same input -> byte-identical extraction") {
     std::string text = "# Plan\n\nWe decided to use SQLite instead of Realm. Wersja 0.2 gotowe.\n";
     auto a = run(extract::text_unit("p.md", text, "2025-02-01"));

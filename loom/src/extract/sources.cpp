@@ -121,6 +121,38 @@ void from_bytes(const std::string& source, const std::string& member, const std:
 
 }  // namespace
 
+UnitContent conversation_unit(std::string_view conv_id, std::string_view title, const Json& messages, std::string_view source) {
+  Json cm = Json::array();
+  std::string leaf;
+  std::string first_date;
+  if (messages.is_array()) {
+    for (const auto& m : messages) {
+      if (!m.is_object()) continue;
+      std::string status = json::get_string(m, "status", "active");
+      if (status == "deleted") continue;
+      std::string role = json::get_string(m, "role", "user");
+      Json row{{"uuid", json::get_string(m, "id")},
+               {"sender", role == "user" ? "human" : role},
+               {"text", json::get_string(m, "text", json::get_string(m, "content"))},
+               {"created_at", json::get_string(m, "created")}};
+      std::string parent = json::get_string(m, "parent_id");
+      if (!parent.empty()) row["parent_message_uuid"] = parent;
+      if (first_date.empty()) first_date = json::get_string(m, "created");
+      if (status == "active") leaf = json::get_string(m, "id");
+      cm.push_back(std::move(row));
+    }
+  }
+  // a linear table without parents is chained in order (like walk_claude)
+  Json conv{{"uuid", std::string(conv_id)}, {"name", std::string(title)}, {"created_at", first_date}, {"chat_messages", cm}};
+  if (!leaf.empty()) conv["current_leaf_message_uuid"] = leaf;
+  std::string src = source.empty() ? "loom:conversation:" + std::string(conv_id) : std::string(source);
+  UnitContent u = make_unit(src, "", "", "conversation", std::string(title), archive::normalize_date(first_date),
+                            static_cast<std::int64_t>(json::dump(conv).size()));
+  u.structured = std::move(conv);
+  u.unit.attrs = Json{{"platform", "loom"}, {"ext_id", std::string(conv_id)}};
+  return u;
+}
+
 UnitContent text_unit(std::string_view member, std::string_view text, std::string_view date, std::string_view source) {
   std::string src = source.empty() ? "sha256:" + Sha256::hex(text) : std::string(source);
   UnitContent u = make_unit(src, std::string(member), "", "file", std::string(member), std::string(date),

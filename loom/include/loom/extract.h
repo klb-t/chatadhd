@@ -147,6 +147,17 @@ class Extractor {
 // recording_transcript. Source = "sha256:<hex of the file bytes>" (I1);
 // unit ids Unit::make_id(source, locator). Deterministic order.
 Result<std::vector<UnitContent>> read_units(const std::filesystem::path& path);
+// A live conversation (rows of the core messages table, oldest first:
+// [{"id","parent_id"?,"role","text","created"?,"status"?}]) as the SAME unit
+// shape as an archived conversation, so archived and live conversations go
+// through one pipeline: the message tree (edits = forks), and the message
+// sequence, which every claim of a conversation records
+// (qualifiers.extra.seq: the position of the message that stated it) so the
+// order in which a structure was built stays in the graph. Deleted rows are
+// skipped; the newest active message is the current leaf. Source defaults
+// to "loom:conversation:<id>".
+UnitContent conversation_unit(std::string_view conv_id, std::string_view title, const Json& messages,
+                              std::string_view source = "");
 // One in-memory text unit (tests, previews): `member` names it (its
 // extension helps detection); source "sha256:<hex of text>" unless given.
 UnitContent text_unit(std::string_view member, std::string_view text, std::string_view date = "",
