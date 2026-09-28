@@ -1,5 +1,14 @@
 # ChatADHD / Loom continuation
 
+Latest owner steering: **Jev real-model classification is the primary reason for
+the OpenRouter key**. Finish the started native check, then test Jev and derive
+usage rules. Structural representations must resist synonym/paraphrase changes;
+words/regex are secondary omission diagnostics. Current Jev access works through
+the same key on OpenRouter Decisions/SystemOne API, no separate signup.
+Latest native evidence: `docs/research/OPENROUTER_NATIVE_DEV_2026-09-28.md`:
+6 attempted, 5 non-BYOK replies, 1 timeout, 26 untouched; zero admissible graphs.
+Do not repeat the uncertain request. Its original ZIP and ledger remain intact.
+
 Current execution: `docs/research/OPENROUTER_BYOK_CORRECTION_2026-09-28.md`.
 Owner disabled reset and explicitly authorized resolving our overbroad BYOK
 requirement in code. The replacement accepts an excluded-BYOK credit cap only

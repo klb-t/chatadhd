@@ -11,17 +11,21 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from decimal import Decimal
 import hashlib
+import io
 import json
 import math
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
+import stat
 import urllib.request
+import zipfile
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 FIXTURES = REPO / "loom/tests/fixtures/eval/live_structure_pilot_v1"
 METHODS = {"native_v1", "native_anchors_v1"}
 MAX_FILE = 8 * 1024 * 1024
+MAX_ARCHIVE = 32 * 1024 * 1024
 CODE_FILES = ("live_pilot.py", "live_pilot_score.py", "candidate_graph.py",
               "candidate_graph_vocabulary.json", "openrouter_runner.py")
 
@@ -109,7 +113,7 @@ def messages_for(case, method):
 def validate_request(request):
     fields = {"schema", "enabled", "experiment_id", "split", "methods", "models",
               "budget_usd", "max_tokens", "max_requests"}
-    if not isinstance(request, dict) or set(request) != fields:
+    if not isinstance(request, dict) or not fields <= set(request) or set(request) - fields - {"continuation"}:
         raise ValueError("unexpected pilot request fields")
     if request["schema"] != "loom.live_pilot_request/1" or type(request["enabled"]) is not bool:
         raise ValueError("invalid pilot request schema/enabled flag")
@@ -138,7 +142,117 @@ def validate_request(request):
             raise ValueError("invalid " + field)
     if type(request["budget_usd"]) not in (int, float) or not math.isfinite(request["budget_usd"]) or not Decimal("0") < Decimal(str(request["budget_usd"])) <= Decimal("2"):
         raise ValueError("pilot budget must be positive and at most USD 2")
+    if "continuation" in request:
+        continuation = request["continuation"]
+        if not isinstance(continuation, dict) or set(continuation) != {"artifact", "sha256"}:
+            raise ValueError("continuation requires artifact and sha256")
+        name = continuation["artifact"]
+        if (not isinstance(name, str) or not name.startswith("docs/research/inputs/") or
+                not name.endswith(".zip") or "\\" in name or ":" in name or
+                any(part in {"", ".", ".."} for part in name.split("/")) or
+                any(ord(char) < 32 for char in name)):
+            raise ValueError("invalid continuation artifact path")
+        if not isinstance(continuation["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", continuation["sha256"]):
+            raise ValueError("invalid continuation artifact sha256")
     return request
+
+
+def continuation_records(request, records, fixture_hash, prompt_hash):
+    """Validate the complete prior run; never retry even an uncertain attempt.
+
+    The archive stays in memory. The runner's own ledger validator checks the
+    original prefix and every referenced response through a read-only adapter.
+    """
+    try:
+        from .openrouter_runner import plan_manifest, _validate_ledger
+    except ImportError:
+        from openrouter_runner import plan_manifest, _validate_ledger
+    spec = request["continuation"]
+    artifact = REPO / spec["artifact"]
+    if not artifact.resolve().is_relative_to((REPO / "docs/research/inputs").resolve()):
+        raise ValueError("continuation artifact escapes input directory")
+    current = REPO
+    for part in PurePosixPath(spec["artifact"]).parts:
+        current = current / part
+        if current.is_symlink():
+            raise ValueError("continuation artifact symlink forbidden")
+    with artifact.open("rb") as stream:
+        raw = stream.read(MAX_ARCHIVE + 1)
+    if len(raw) > MAX_ARCHIVE or hashlib.sha256(raw).hexdigest() != spec["sha256"]:
+        raise ValueError("continuation artifact size/hash mismatch")
+    files = {}
+    required = {"manifest.json", "plan.json", "run/manifest.json", "run/plan.json", "run/ledger.json"}
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        entries = archive.infolist()
+        if len(entries) > 512 or sum(x.file_size for x in entries) > MAX_ARCHIVE:
+            raise ValueError("continuation archive exceeds expanded limits")
+        names = set()
+        for entry in entries:
+            name = entry.filename
+            parts = (name[:-1] if name.endswith("/") else name).split("/")
+            kind = stat.S_IFMT(entry.external_attr >> 16)
+            if (name in names or any(p in {"", ".", ".."} for p in parts) or
+                    "\\" in name or ":" in name or any(ord(c) < 32 for c in name) or
+                    kind not in {0, stat.S_IFREG, stat.S_IFDIR} or entry.flag_bits & 1 or
+                    entry.compress_type not in {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED} or
+                    entry.file_size > MAX_FILE):
+                raise ValueError("unsafe continuation archive entry")
+            names.add(name)
+            # Scores and any other unrelated payload are not preparation inputs.
+            if not entry.is_dir() and (name in required or name.endswith(".response.bin")):
+                files[name] = archive.read(entry)
+    if not required <= files.keys():
+        raise ValueError("continuation archive missing run evidence")
+    source = parse(files["manifest.json"])
+    old_plan = plan_manifest(source)
+    if (parse(files["run/manifest.json"]) != source or
+            parse(files["plan.json"]) != old_plan or parse(files["run/plan.json"]) != old_plan):
+        raise ValueError("continuation manifest/plan copies disagree")
+    ledger = parse(files["run/ledger.json"])
+
+    class ArchiveResponses:
+        def __truediv__(self, name):
+            self.name = "run/" + name
+            return self
+
+        def open(self, mode):
+            if mode != "rb" or self.name not in files:
+                raise OSError("missing archived response")
+            return io.BytesIO(files[self.name])
+
+    attempts = _validate_ledger(ledger, old_plan, ArchiveResponses())
+    if ledger.get("experiment_id") != source["experiment_id"] or source["experiment_id"] == request["experiment_id"]:
+        raise ValueError("continuation requires matching old and distinct new experiment identities")
+    expected_responses = {"run/" + row["response_file"] for row in attempts if "response_file" in row}
+    if ({name for name in files if name.endswith(".response.bin")} != expected_responses or
+            any(row["state"] == "completed" and "response_file" not in row for row in attempts)):
+        raise ValueError("continuation response inventory mismatch")
+    metadata = source["metadata"]
+    old_request = validate_request(metadata["pilot_request"])
+    if "continuation" in old_request:
+        raise ValueError("chained continuation requires separate reconciliation")
+    if (any(old_request[k] != request[k] for k in ("split", "methods", "models", "max_tokens")) or
+            metadata["fixture_manifest_sha256"] != fixture_hash or
+            metadata["native_prompt_sha256"] != prompt_hash):
+        raise ValueError("continuation experiment definition changed")
+    if [r["id"] for r in source["requests"]] != [r["id"] for r in records]:
+        raise ValueError("continuation must reconstruct the complete original request inventory")
+    if any(digest(old["body"]) != digest(new["body"]) for old, new in zip(source["requests"], records)):
+        raise ValueError("continuation request body changed, including price caps")
+    attempted = {row["id"] for row in attempts}
+    remaining = [row for row in records if row["id"] not in attempted]
+    if not attempts or not remaining:
+        raise ValueError("continuation requires attempted and untouched requests")
+    excluded = [{k: row[k] for k in ("id", "state", "reservation_usd", "request_hash")} for row in attempts]
+    reserved = sum((Decimal(row["reservation_usd"]) for row in attempts), Decimal(0))
+    new_reserved = sum((Decimal(row["reservation_usd"]) for row in remaining), Decimal(0))
+    if reserved + new_reserved > Decimal(str(request["budget_usd"])):
+        raise ValueError("continuation cumulative reservations exceed budget")
+    return remaining, {"source_artifact": spec["artifact"], "source_artifact_sha256": spec["sha256"],
+                       "source_manifest_sha256": digest(source), "source_experiment_id": source["experiment_id"],
+                       "original_request_count": len(records), "excluded_attempts": excluded,
+                       "excluded_reservation_usd": str(reserved), "untouched_request_count": len(remaining),
+                       "automatic_retry_permitted": False}
 
 
 def load_inputs(split):
@@ -216,14 +330,21 @@ def prepare(request, output_dir, *, endpoint_loader=fetch_endpoints):
                                              "response_identity": response_identity}})
     # Interleave models: an interrupted run should not contain just one model's cases.
     records.sort(key=lambda x: (x["metadata"]["case_id"], x["metadata"]["method"], x["body"]["model"]))
+    fixture_hash = digest(fixture_manifest)
+    prompt_hash = hashlib.sha256(native_prompt().encode()).hexdigest()
+    continuation = None
+    if "continuation" in request:
+        records, continuation = continuation_records(request, records, fixture_hash, prompt_hash)
     manifest = {"schema": "loom.openrouter_manifest/1", "experiment_id": request["experiment_id"],
                 "budget_usd": request["budget_usd"], "max_requests": request["max_requests"],
                 "requests": records, "pricing_evidence": evidence,
-                "metadata": {"pilot_request": request, "fixture_manifest_sha256": digest(fixture_manifest),
+                "metadata": {"pilot_request": request, "fixture_manifest_sha256": fixture_hash,
                              "code_sha256": code_hashes(),
-                             "native_prompt_sha256": hashlib.sha256(native_prompt().encode()).hexdigest(),
+                             "native_prompt_sha256": prompt_hash,
                              "live_calls_made_by_prepare": 0, "representation": "occurrence_graph_v1",
                              "transport_difference": "research runner, output cap may exceed native cap; JSON object mode"}}
+    if continuation is not None:
+        manifest["metadata"]["continuation"] = continuation
     plan = plan_manifest(manifest)
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=False)

@@ -1,5 +1,16 @@
 # Current work checkpoint
 
+**Latest result and direction:** `research/OPENROUTER_NATIVE_DEV_2026-09-28.md`.
+The BYOK setup blocker is resolved: five real responses report no BYOK; their
+credit charges sum to USD 0.00636045. A sixth timed out, retains its USD 0.00301020
+reservation and must not be retried; 26 planned calls are still untouched.
+All five complete replies failed graph admission. Finish untouched native cases
+with an audited continuation, then prioritize the owner's requested **Jev**
+experiments. Same OpenRouter key supports Jev; no separate credential is needed.
+Synonyms/paraphrases/domain changes should preserve structure; lexical/regex
+signals are secondary omission checks. Do not substitute source-token matching
+for that goal. Older status sections below are historical.
+
 Current authorized continuation: `research/OPENROUTER_BYOK_CORRECTION_2026-09-28.md`.
 The owner has disabled reset and asked us to remove our unnecessary setup
 blocker. The earlier requirement for BYOK inclusion is superseded by the

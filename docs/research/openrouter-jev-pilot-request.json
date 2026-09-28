@@ -1,0 +1,9 @@
+{
+  "schema": "loom.jev_pilot_request/1",
+  "enabled": true,
+  "experiment_id": "jev-structure-v1",
+  "model": "typesafe/jev-1.13",
+  "budget_usd": 2,
+  "batch_cap_usd": "0.10",
+  "max_requests": 64
+}

@@ -1,0 +1,594 @@
+{
+  "cases": [
+    {
+      "case_id": "j_0074ea85f858782c",
+      "family_id": "analogy_identity",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_194f650f135b0a41",
+      "family_id": "negation_scope",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_1c4826c2c36084fb",
+      "family_id": "universal_existential",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_1e05d5a21b478b20",
+      "family_id": "conditional_direction",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_24b2b364d4deae33",
+      "family_id": "causation_correlation",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_2b384a0ea05e69f7",
+      "family_id": "negation_scope",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_302eeae9eef81b38",
+      "family_id": "inductive_generalization",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_30f01b833a989277",
+      "family_id": "universal_existential",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_312813a058cf5737",
+      "family_id": "support_counterexample",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_36fe1587b6895968",
+      "family_id": "conjunction_disjunction",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_3a37878820fb926a",
+      "family_id": "inductive_generalization",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_3bbd4e3df121bf9f",
+      "family_id": "negation_scope",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_3d96af81320530aa",
+      "family_id": "analogy_identity",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_3d9a7b10b229cfc9",
+      "family_id": "analogy_identity",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_41457b1e4e7db09a",
+      "family_id": "conjunction_disjunction",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_432f20facc679edf",
+      "family_id": "causation_correlation",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_4c75d83ac44847c7",
+      "family_id": "universal_existential",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_4f40eadcc35e7311",
+      "family_id": "universal_existential",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_4ff2dacaa180a456",
+      "family_id": "support_counterexample",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_5e3548de205c11ff",
+      "family_id": "support_counterexample",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_5f96b265e92764cd",
+      "family_id": "conjunction_disjunction",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_60c9d1133de0e517",
+      "family_id": "conjunction_disjunction",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_687f9c86bac18809",
+      "family_id": "support_counterexample",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_6b4bd24922fa206b",
+      "family_id": "inductive_generalization",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_6c02589c31d5af40",
+      "family_id": "conditional_direction",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_6f8a0dd030b35e34",
+      "family_id": "analogy_identity",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_71514b9b77c2ee99",
+      "family_id": "universal_existential",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_77e122ef48e324a7",
+      "family_id": "support_counterexample",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_784c3d9aaf3b0fd7",
+      "family_id": "causation_correlation",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_7c9d7d557a448e02",
+      "family_id": "causation_correlation",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_7feae2c2b0cf33dc",
+      "family_id": "conditional_direction",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_85895bee1e89ff3a",
+      "family_id": "causation_correlation",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_8ab905dba36d706b",
+      "family_id": "negation_scope",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_94d6703d22ed30ce",
+      "family_id": "universal_existential",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_956552c90f3168d2",
+      "family_id": "negation_scope",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_9fd47d90d5fb498f",
+      "family_id": "conditional_direction",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_a0acf23b951adc0f",
+      "family_id": "analogy_identity",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_a71d5696ec7c3b8d",
+      "family_id": "inductive_generalization",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_ab0260b941f772a4",
+      "family_id": "conjunction_disjunction",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_b16f9acf4e697f8f",
+      "family_id": "conjunction_disjunction",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_ba2a4230f2061363",
+      "family_id": "support_counterexample",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_bbd3e1ac4e1206f0",
+      "family_id": "causation_correlation",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_c3c763162b7c699b",
+      "family_id": "universal_existential",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_c613cf0f2b04ef0f",
+      "family_id": "conjunction_disjunction",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_c703f324b59fad49",
+      "family_id": "universal_existential",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_c7cfde2f9c274863",
+      "family_id": "conditional_direction",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_cad008413a5f18e2",
+      "family_id": "conjunction_disjunction",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_d42e627f4ad3b037",
+      "family_id": "inductive_generalization",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_d4e73933f7c50eac",
+      "family_id": "analogy_identity",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_da7ec9b190afc513",
+      "family_id": "inductive_generalization",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_dd2bd70bf51a91cc",
+      "family_id": "inductive_generalization",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_e1d483f9b107c0d2",
+      "family_id": "causation_correlation",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_e44d0c4b50516cf1",
+      "family_id": "causation_correlation",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_eb4d5ba773a288de",
+      "family_id": "inductive_generalization",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_f0b67d3ed4f6a1a6",
+      "family_id": "support_counterexample",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_f2b971bd0d1ce7cc",
+      "family_id": "conditional_direction",
+      "language": "en",
+      "split": "development"
+    },
+    {
+      "case_id": "j_f82b964ec50cb0b1",
+      "family_id": "negation_scope",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_f836d741e6689c20",
+      "family_id": "conditional_direction",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_f8d4aebeb145b7f6",
+      "family_id": "conditional_direction",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_fac510a226c2d567",
+      "family_id": "negation_scope",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_fc17fe2f85922d80",
+      "family_id": "negation_scope",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_fd405b71f46bc182",
+      "family_id": "support_counterexample",
+      "language": "pl",
+      "split": "development"
+    },
+    {
+      "case_id": "j_fd42d3cce90a4cfd",
+      "family_id": "analogy_identity",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "j_fde48b1801bfa33e",
+      "family_id": "analogy_identity",
+      "language": "pl",
+      "split": "validation"
+    }
+  ],
+  "families": 8,
+  "files_sha256": {
+    "README.md": "8d37988a7c73af9b0b7c4940b7a0e5c0e3ca5d51e4e2a751f6b9a6f704d6fff8",
+    "gold.json": "556a28a5b0ac9320be3ef03ea65fb443c853af5d306f42cd933b971c7187c3ac",
+    "inputs.json": "ab569c1f74be4c3f80fbbe23bd8b380f30217a7514d52081ccc3f4283122af3c"
+  },
+  "hash_note": "Manifest self-hash intentionally excluded; record external manifest SHA at inference freeze.",
+  "input_prompt_allowlist": [
+    "state",
+    "questions"
+  ],
+  "invariance_groups": [
+    {
+      "equivalent_case_ids": [
+        "j_6c02589c31d5af40",
+        "j_c7cfde2f9c274863",
+        "j_f836d741e6689c20",
+        "j_9fd47d90d5fb498f",
+        "j_7feae2c2b0cf33dc",
+        "j_f2b971bd0d1ce7cc"
+      ],
+      "expected_foil_changed_questions": [
+        "q01",
+        "q02"
+      ],
+      "family_id": "conditional_direction",
+      "foil_case_ids": [
+        "j_f8d4aebeb145b7f6",
+        "j_1e05d5a21b478b20"
+      ],
+      "split": "development"
+    },
+    {
+      "equivalent_case_ids": [
+        "j_302eeae9eef81b38",
+        "j_a71d5696ec7c3b8d",
+        "j_6b4bd24922fa206b",
+        "j_dd2bd70bf51a91cc",
+        "j_da7ec9b190afc513",
+        "j_3a37878820fb926a"
+      ],
+      "expected_foil_changed_questions": [
+        "q03",
+        "q05"
+      ],
+      "family_id": "inductive_generalization",
+      "foil_case_ids": [
+        "j_d42e627f4ad3b037",
+        "j_eb4d5ba773a288de"
+      ],
+      "split": "development"
+    },
+    {
+      "equivalent_case_ids": [
+        "j_1c4826c2c36084fb",
+        "j_30f01b833a989277",
+        "j_c703f324b59fad49",
+        "j_94d6703d22ed30ce",
+        "j_c3c763162b7c699b",
+        "j_71514b9b77c2ee99"
+      ],
+      "expected_foil_changed_questions": [
+        "q03",
+        "q04"
+      ],
+      "family_id": "universal_existential",
+      "foil_case_ids": [
+        "j_4f40eadcc35e7311",
+        "j_4c75d83ac44847c7"
+      ],
+      "split": "validation"
+    },
+    {
+      "equivalent_case_ids": [
+        "j_956552c90f3168d2",
+        "j_f82b964ec50cb0b1",
+        "j_8ab905dba36d706b",
+        "j_3bbd4e3df121bf9f",
+        "j_2b384a0ea05e69f7",
+        "j_fc17fe2f85922d80"
+      ],
+      "expected_foil_changed_questions": [
+        "q06"
+      ],
+      "family_id": "negation_scope",
+      "foil_case_ids": [
+        "j_fac510a226c2d567",
+        "j_194f650f135b0a41"
+      ],
+      "split": "validation"
+    },
+    {
+      "equivalent_case_ids": [
+        "j_4ff2dacaa180a456",
+        "j_ba2a4230f2061363",
+        "j_fd405b71f46bc182",
+        "j_687f9c86bac18809",
+        "j_312813a058cf5737",
+        "j_f0b67d3ed4f6a1a6"
+      ],
+      "expected_foil_changed_questions": [
+        "q07",
+        "q08"
+      ],
+      "family_id": "support_counterexample",
+      "foil_case_ids": [
+        "j_77e122ef48e324a7",
+        "j_5e3548de205c11ff"
+      ],
+      "split": "development"
+    },
+    {
+      "equivalent_case_ids": [
+        "j_d4e73933f7c50eac",
+        "j_fd42d3cce90a4cfd",
+        "j_3d9a7b10b229cfc9",
+        "j_0074ea85f858782c",
+        "j_a0acf23b951adc0f",
+        "j_6f8a0dd030b35e34"
+      ],
+      "expected_foil_changed_questions": [
+        "q09",
+        "q10"
+      ],
+      "family_id": "analogy_identity",
+      "foil_case_ids": [
+        "j_fde48b1801bfa33e",
+        "j_3d96af81320530aa"
+      ],
+      "split": "validation"
+    },
+    {
+      "equivalent_case_ids": [
+        "j_7c9d7d557a448e02",
+        "j_24b2b364d4deae33",
+        "j_784c3d9aaf3b0fd7",
+        "j_e44d0c4b50516cf1",
+        "j_85895bee1e89ff3a",
+        "j_e1d483f9b107c0d2"
+      ],
+      "expected_foil_changed_questions": [
+        "q11"
+      ],
+      "family_id": "causation_correlation",
+      "foil_case_ids": [
+        "j_bbd3e1ac4e1206f0",
+        "j_432f20facc679edf"
+      ],
+      "split": "development"
+    },
+    {
+      "equivalent_case_ids": [
+        "j_ab0260b941f772a4",
+        "j_b16f9acf4e697f8f",
+        "j_c613cf0f2b04ef0f",
+        "j_36fe1587b6895968",
+        "j_cad008413a5f18e2",
+        "j_5f96b265e92764cd"
+      ],
+      "expected_foil_changed_questions": [
+        "q12"
+      ],
+      "family_id": "conjunction_disjunction",
+      "foil_case_ids": [
+        "j_41457b1e4e7db09a",
+        "j_60c9d1133de0e517"
+      ],
+      "split": "validation"
+    }
+  ],
+  "languages": [
+    "pl",
+    "en"
+  ],
+  "live_model_calls": 0,
+  "never_prompt": [
+    "gold.json",
+    "manifest.json",
+    "family_id",
+    "split",
+    "variant",
+    "labels",
+    "base_case_id",
+    "invariance_group",
+    "expected_changed_questions"
+  ],
+  "questions": 12,
+  "schema": "loom.eval.jev_structure_manifest/1",
+  "semantic_accuracy_measured": false,
+  "split_policy": "Whole family; all languages and variants together; 4 development and 4 validation families.",
+  "states": 64,
+  "validation": {
+    "binary_complete_labels": true,
+    "family_split_integrity": true,
+    "foils_change_exact_declared_subset": true,
+    "invariant_groups_equal": true,
+    "model_accuracy_claim": false,
+    "unique_ids": true
+  },
+  "variants": [
+    "base",
+    "paraphrase",
+    "domain_transfer",
+    "foil"
+  ],
+  "version": 1
+}

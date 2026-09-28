@@ -1,5 +1,13 @@
 # Gemini report audit: Jev and the two ADHD repositories
 
+**Updated access finding:** current official OpenRouter documentation exposes
+Jev through `POST /api/alpha/decisions` and `POST /api/v1/systemone` using the
+same ordinary OpenRouter API key, billed to that account. No separate TypeSafe
+account is needed. The direct TypeSafe endpoint discussed below remains a
+different access path, not a requirement for this project. Verified source:
+https://openrouter.ai/docs/guides/community/jev . The owner explicitly prioritizes
+live Jev experiments and structural invariance over lexical classification.
+
 Checked 2026-09-28 against primary sources. Input: the complete attached report
 “Wykorzystanie modelu klasyfikacyjnego jev i repozy....docx”, locally extracted as
 `gemini_reports/report_2.txt`. This is a source audit and experiment proposal,
