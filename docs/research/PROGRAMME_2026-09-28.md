@@ -86,8 +86,23 @@ the shared model and validate the real graph/transport paths.
   writes, no external model calls, no new application behavior implied.
 - `STRUCTURE_METHODS_2026-09-28.md`: primary-source rationale and contrasting
   methods, with invariances and known failure cases.
-- Independent multi-axis fixtures/evaluator and topic/source adapters are in
-  progress. Author tests and independent results must be distinguished.
+- `loom/tools/structure/PIPELINE.md`: runnable source/topic/structure/context
+  composition with separate-formula and whole-segment binding alternatives.
+- `ATOMIC_OPERATIONS_2026-09-28.md`: 42 proposed operation contracts; the executable
+  registry currently lists 21 operations in 11 families, with only four proof
+  rules. Representation is not execution or evidence of exhaustive coverage.
+- `loom/tests/fixtures/eval/independent_structure_v1/`: independently authored
+  100-case corpus, frozen before scoring. Reports preserve the large gap between
+  successful comparisons on supplied graphs and failed comparisons after text
+  extraction, along with topic-focus and native selector results. Further work
+  against disclosed cases is diagnostic, not untouched validation.
+- `REPOSITORY_STRUCTURE_2026-09-28.md` and `repository_structure_report.json`:
+  reproducible source-only integration run over three real repository documents;
+  current grammar coverage is zero both before and after segmentation.
+- `NATIVE_CONTEXT_2026-09-28.md`: bounded alias context, source-aware diagnostics,
+  cache migration and offline test repair. Final native build:62/63 CTest passing;
+  sole failure remains13/45 recall vs unchanged0.55 minimum. No gain was observed
+  on the independent100-case selector comparison either.
 - Native C++ checkout is rebuilt from the verified remote snapshot `33fb083`.
   Its local git history is synthetic; remote Git-data commits retain the real
   parent/tree. Original historical files omitted locally remain on GitHub.

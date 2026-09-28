@@ -1,0 +1,561 @@
+{
+  "calibration": null,
+  "components": {
+    "extractor": "bounded-text-structure/2",
+    "pipeline": "source-structure-pipeline/2",
+    "topics": "topic-context-experiment/1"
+  },
+  "dependency_sha256": {
+    "loom/tools/structure/extract.py": "b88152833363f48808a8e4ab72050f6953343c0a8a3cdd91eb0883c43982fd59",
+    "loom/tools/structure/operations.json": "0bdd4dbe0a915577999c595c5f215be8cc0fa2c0c10405e9b101a2eb1a7c0ba1",
+    "loom/tools/structure/pipeline.py": "0ebcf399cd1f11f456f3442394d7c32f217ab9c2745cf4da3662d201ff1290ed",
+    "loom/tools/structure/repo_experiment.py": "b63d64ea01cfb6b29014e2663ffaa7ebfef92ae476a567000d6408d78bf226bb",
+    "loom/tools/structure/scoped_projection.py": "c9e31b89f681977b3889c147d285cafef60b412743a8f123d24a07e8a485d915",
+    "loom/tools/structure/structure_methods.py": "89596297f279ad50b1599d2cb125fc7e140c065c91827d21f2c11ec4021e0fb3",
+    "loom/tools/structure/topics.py": "1175c60d5cdf80758603231e8e8746c517fcad9d69c26cb77d301786f994de28",
+    "loom/tools/structure/topics_policy.json": "2b042de18e46b0316b2eb673f2a3e851ea79b0cd530be63d748555788e07f5e6"
+  },
+  "diagnostic_only": true,
+  "limitations": [
+    "architecture_sources_not_independent_validation_or_owner_exports",
+    "no_gold_labels_no_semantic_accuracy_no_calibration",
+    "literal_profile_cues_differ_from_native_match_keys",
+    "profile_graph_is_configuration_projection_not_assessed_core_claims",
+    "grammar_coverage_is_not_extracted_meaning_recall",
+    "source_order_pair_sample_not_ranked_retrieval_or_population_frequency",
+    "paragraph_turns_are_exact_source_slices_not_historical_conversation_turns",
+    "topic_semicolon_splitting_can_break_goal_constraint_envelopes",
+    "markdown_and_wrapped_lines_remain_unmodified_and_may_block_grammar"
+  ],
+  "parameters": {
+    "modes": [
+      "whole_document",
+      "paragraph_turns"
+    ],
+    "pair_budget_per_document_mode": 16
+  },
+  "production_claims_created": 0,
+  "production_graph_mutations": 0,
+  "profile_projection": {
+    "alias_conversion": "t -> text; requires_context.any/min -> requires_any/min_context; negative_context -> excludes",
+    "alias_entries": 57,
+    "ambiguous_alias_entries": 6,
+    "core_claim_ids_used": 0,
+    "difference_from_native": "native match-key normalization and stem-like pack cues are not reproduced; any literal negative cue vetoes rather than native negative-dominance scoring",
+    "matching_semantics": "case-insensitive literal Unicode boundaries, including context cues; no stemming, lemmatization or prefix matching",
+    "meaning": "configured context candidates; no project identity, corpus relevance or lineage truth established",
+    "merged_into_edges": 8,
+    "path": "loom/data/profiles/self.json",
+    "project_nodes": 11,
+    "sha256": "338299e23bc6b8974601d72afb543d5bd19d5a7ca9fec4b6e1c4e3ea0cc3b155"
+  },
+  "semantic_accuracy": null,
+  "source_bytes_rewritten": 0,
+  "sources": [
+    {
+      "pipeline_views": {
+        "paragraph_turns": {
+          "accepted_alias_matches": 6,
+          "accepted_alias_matches_by_project": {
+            "chatadhd": 1,
+            "lem": 1,
+            "loom": 3,
+            "video_pipeline": 1
+          },
+          "alias_rejection_reasons": {
+            "insufficient_local_context": 4
+          },
+          "blocked_unchecked_interpretations": 0,
+          "boundary_mechanics": {
+            "after_newline": 148,
+            "after_semicolon": 45
+          },
+          "claims_created": 0,
+          "comparison_alignment_states": {},
+          "comparison_budget": {
+            "eligible_pairs": 0,
+            "evaluated_pairs": 0,
+            "maximum_pairs": 16,
+            "omitted_pairs": 0,
+            "selection": "source_order_cross_segment_not_ranked"
+          },
+          "eligible_characters": 19054,
+          "envelope_character_coverage": 0.0,
+          "focus_basis_counts": {
+            "local_alias": 5,
+            "unanchored": 267
+          },
+          "graph_context_candidate_count": 20,
+          "graph_context_omitted_by_budget": 0,
+          "graph_mutations_applied": 0,
+          "input_hash": "65f67fd1516ed945742c85790c6a462069c1e629bd64efeb570c36a58fbd24eb",
+          "interpretation_context_proposals": 0,
+          "local_alias_matches": 10,
+          "logical_candidates": 0,
+          "observations_with_focus": 5,
+          "physical_units": 272,
+          "profile_context_graph_hash": "21f66392a86f0427fc5f29c4222a2dd8c9e35704cf589146de05c04f8349f741",
+          "recognized_envelope_characters": 0,
+          "recognized_envelopes": 0,
+          "recognized_methods": {},
+          "recognized_source_refs": [],
+          "rejected_alias_matches": 4,
+          "scoped_projection_count": 0,
+          "scoped_projection_limit_count": 0,
+          "segment_boundary_counts": {
+            "anchor_change": 5,
+            "focus_expired": 1,
+            "lexical_novelty_candidate": 172,
+            "start": 1
+          },
+          "segments_without_recognized_operations": 179,
+          "semantic_accuracy": null,
+          "source_spans_verified": true,
+          "source_turns": 43,
+          "topic_observations": 272,
+          "topic_policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+          "topic_segments": 179,
+          "unknown_characters": 19054,
+          "unknown_reasons": {
+            "no_supported_envelope": 243,
+            "sentence_boundary_or_punctuation_outside_grammar": 29
+          },
+          "unknown_units": 272
+        },
+        "whole_document": {
+          "accepted_alias_matches": 6,
+          "accepted_alias_matches_by_project": {
+            "chatadhd": 1,
+            "lem": 1,
+            "loom": 3,
+            "video_pipeline": 1
+          },
+          "alias_rejection_reasons": {
+            "insufficient_local_context": 4
+          },
+          "blocked_unchecked_interpretations": 0,
+          "boundary_mechanics": {
+            "after_newline": 190,
+            "after_semicolon": 45
+          },
+          "claims_created": 0,
+          "comparison_alignment_states": {},
+          "comparison_budget": {
+            "eligible_pairs": 0,
+            "evaluated_pairs": 0,
+            "maximum_pairs": 16,
+            "omitted_pairs": 0,
+            "selection": "source_order_cross_segment_not_ranked"
+          },
+          "eligible_characters": 19054,
+          "envelope_character_coverage": 0.0,
+          "focus_basis_counts": {
+            "local_alias": 5,
+            "unanchored": 267
+          },
+          "graph_context_candidate_count": 20,
+          "graph_context_omitted_by_budget": 0,
+          "graph_mutations_applied": 0,
+          "input_hash": "5e510c3c85338327a28ae9d869001f15e61ea1554501265f1d1c7fc52f8c050d",
+          "interpretation_context_proposals": 0,
+          "local_alias_matches": 10,
+          "logical_candidates": 0,
+          "observations_with_focus": 5,
+          "physical_units": 272,
+          "profile_context_graph_hash": "21f66392a86f0427fc5f29c4222a2dd8c9e35704cf589146de05c04f8349f741",
+          "recognized_envelope_characters": 0,
+          "recognized_envelopes": 0,
+          "recognized_methods": {},
+          "recognized_source_refs": [],
+          "rejected_alias_matches": 4,
+          "scoped_projection_count": 0,
+          "scoped_projection_limit_count": 0,
+          "segment_boundary_counts": {
+            "anchor_change": 5,
+            "focus_expired": 1,
+            "lexical_novelty_candidate": 172,
+            "start": 1
+          },
+          "segments_without_recognized_operations": 179,
+          "semantic_accuracy": null,
+          "source_spans_verified": true,
+          "source_turns": 1,
+          "topic_observations": 272,
+          "topic_policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+          "topic_segments": 179,
+          "unknown_characters": 19054,
+          "unknown_reasons": {
+            "no_supported_envelope": 243,
+            "sentence_boundary_or_punctuation_outside_grammar": 29
+          },
+          "unknown_units": 272
+        }
+      },
+      "raw_physical_lines": {
+        "eligible_characters": 19128,
+        "envelope_character_coverage": 0.0,
+        "logical_candidates": 0,
+        "physical_units": 198,
+        "recognized_envelope_characters": 0,
+        "recognized_envelopes": 0,
+        "recognized_methods": {},
+        "semantic_accuracy": null,
+        "unknown_characters": 19128,
+        "unknown_reasons": {
+          "no_supported_envelope": 161,
+          "sentence_boundary_or_punctuation_outside_grammar": 37
+        },
+        "unknown_units": 198
+      },
+      "source": {
+        "bytes": 19967,
+        "characters": 19428,
+        "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "sha256": "e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66",
+        "source_locator": {
+          "basis": "repository_file_snapshot",
+          "json_pointer": "",
+          "member": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+          "source": "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        }
+      }
+    },
+    {
+      "pipeline_views": {
+        "paragraph_turns": {
+          "accepted_alias_matches": 11,
+          "accepted_alias_matches_by_project": {
+            "archive_analyzer": 1,
+            "chatadhd": 6,
+            "loom": 4
+          },
+          "alias_rejection_reasons": {
+            "insufficient_local_context": 9
+          },
+          "blocked_unchecked_interpretations": 0,
+          "boundary_mechanics": {
+            "after_newline": 143,
+            "after_semicolon": 1
+          },
+          "claims_created": 0,
+          "comparison_alignment_states": {},
+          "comparison_budget": {
+            "eligible_pairs": 0,
+            "evaluated_pairs": 0,
+            "maximum_pairs": 16,
+            "omitted_pairs": 0,
+            "selection": "source_order_cross_segment_not_ranked"
+          },
+          "eligible_characters": 11995,
+          "envelope_character_coverage": 0.0,
+          "focus_basis_counts": {
+            "local_alias": 8,
+            "unanchored": 346
+          },
+          "graph_context_candidate_count": 48,
+          "graph_context_omitted_by_budget": 0,
+          "graph_mutations_applied": 0,
+          "input_hash": "45c06496f23cd88496235d384c1f13ac4124a151a4b355f6f5929bdb0b15f5eb",
+          "interpretation_context_proposals": 0,
+          "local_alias_matches": 20,
+          "logical_candidates": 0,
+          "observations_with_focus": 8,
+          "physical_units": 354,
+          "profile_context_graph_hash": "21f66392a86f0427fc5f29c4222a2dd8c9e35704cf589146de05c04f8349f741",
+          "recognized_envelope_characters": 0,
+          "recognized_envelopes": 0,
+          "recognized_methods": {},
+          "recognized_source_refs": [],
+          "rejected_alias_matches": 9,
+          "scoped_projection_count": 0,
+          "scoped_projection_limit_count": 0,
+          "segment_boundary_counts": {
+            "anchor_change": 6,
+            "focus_expired": 3,
+            "lexical_novelty_candidate": 67,
+            "start": 1
+          },
+          "segments_without_recognized_operations": 77,
+          "semantic_accuracy": null,
+          "source_spans_verified": true,
+          "source_turns": 178,
+          "topic_observations": 354,
+          "topic_policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+          "topic_segments": 77,
+          "unknown_characters": 11995,
+          "unknown_reasons": {
+            "no_supported_envelope": 352,
+            "sentence_boundary_or_punctuation_outside_grammar": 2
+          },
+          "unknown_units": 354
+        },
+        "whole_document": {
+          "accepted_alias_matches": 11,
+          "accepted_alias_matches_by_project": {
+            "archive_analyzer": 1,
+            "chatadhd": 6,
+            "loom": 4
+          },
+          "alias_rejection_reasons": {
+            "insufficient_local_context": 9
+          },
+          "blocked_unchecked_interpretations": 0,
+          "boundary_mechanics": {
+            "after_newline": 320,
+            "after_semicolon": 1
+          },
+          "claims_created": 0,
+          "comparison_alignment_states": {},
+          "comparison_budget": {
+            "eligible_pairs": 0,
+            "evaluated_pairs": 0,
+            "maximum_pairs": 16,
+            "omitted_pairs": 0,
+            "selection": "source_order_cross_segment_not_ranked"
+          },
+          "eligible_characters": 11995,
+          "envelope_character_coverage": 0.0,
+          "focus_basis_counts": {
+            "local_alias": 8,
+            "unanchored": 346
+          },
+          "graph_context_candidate_count": 48,
+          "graph_context_omitted_by_budget": 0,
+          "graph_mutations_applied": 0,
+          "input_hash": "1eb682fd6b1d3cd7fe3d784ca6d4b738b4104fbe1c0f9f0c3f842bae247a21d2",
+          "interpretation_context_proposals": 0,
+          "local_alias_matches": 20,
+          "logical_candidates": 0,
+          "observations_with_focus": 8,
+          "physical_units": 354,
+          "profile_context_graph_hash": "21f66392a86f0427fc5f29c4222a2dd8c9e35704cf589146de05c04f8349f741",
+          "recognized_envelope_characters": 0,
+          "recognized_envelopes": 0,
+          "recognized_methods": {},
+          "recognized_source_refs": [],
+          "rejected_alias_matches": 9,
+          "scoped_projection_count": 0,
+          "scoped_projection_limit_count": 0,
+          "segment_boundary_counts": {
+            "anchor_change": 6,
+            "focus_expired": 3,
+            "lexical_novelty_candidate": 67,
+            "start": 1
+          },
+          "segments_without_recognized_operations": 77,
+          "semantic_accuracy": null,
+          "source_spans_verified": true,
+          "source_turns": 1,
+          "topic_observations": 354,
+          "topic_policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+          "topic_segments": 77,
+          "unknown_characters": 11995,
+          "unknown_reasons": {
+            "no_supported_envelope": 352,
+            "sentence_boundary_or_punctuation_outside_grammar": 2
+          },
+          "unknown_units": 354
+        }
+      },
+      "raw_physical_lines": {
+        "eligible_characters": 12028,
+        "envelope_character_coverage": 0.0,
+        "logical_candidates": 0,
+        "physical_units": 321,
+        "recognized_envelope_characters": 0,
+        "recognized_envelopes": 0,
+        "recognized_methods": {},
+        "semantic_accuracy": null,
+        "unknown_characters": 12028,
+        "unknown_reasons": {
+          "no_supported_envelope": 289,
+          "sentence_boundary_or_punctuation_outside_grammar": 32
+        },
+        "unknown_units": 321
+      },
+      "source": {
+        "bytes": 13069,
+        "characters": 12538,
+        "path": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+        "sha256": "726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b",
+        "source_locator": {
+          "basis": "repository_file_snapshot",
+          "json_pointer": "",
+          "member": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+          "source": "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        }
+      }
+    },
+    {
+      "pipeline_views": {
+        "paragraph_turns": {
+          "accepted_alias_matches": 5,
+          "accepted_alias_matches_by_project": {
+            "archive_analyzer": 1,
+            "chatadhd": 1,
+            "lem": 2,
+            "loom": 1
+          },
+          "alias_rejection_reasons": {
+            "insufficient_local_context": 11
+          },
+          "blocked_unchecked_interpretations": 0,
+          "boundary_mechanics": {
+            "after_newline": 277,
+            "after_semicolon": 55
+          },
+          "claims_created": 0,
+          "comparison_alignment_states": {},
+          "comparison_budget": {
+            "eligible_pairs": 0,
+            "evaluated_pairs": 0,
+            "maximum_pairs": 16,
+            "omitted_pairs": 0,
+            "selection": "source_order_cross_segment_not_ranked"
+          },
+          "eligible_characters": 27366,
+          "envelope_character_coverage": 0.0,
+          "focus_basis_counts": {
+            "local_alias": 5,
+            "unanchored": 525
+          },
+          "graph_context_candidate_count": 14,
+          "graph_context_omitted_by_budget": 0,
+          "graph_mutations_applied": 0,
+          "input_hash": "c723c410136f75b6bb51b83672603fe8b04cb9a55e386d6a3efb792b50ddf111",
+          "interpretation_context_proposals": 0,
+          "local_alias_matches": 16,
+          "logical_candidates": 0,
+          "observations_with_focus": 5,
+          "physical_units": 530,
+          "profile_context_graph_hash": "21f66392a86f0427fc5f29c4222a2dd8c9e35704cf589146de05c04f8349f741",
+          "recognized_envelope_characters": 0,
+          "recognized_envelopes": 0,
+          "recognized_methods": {},
+          "recognized_source_refs": [],
+          "rejected_alias_matches": 11,
+          "scoped_projection_count": 0,
+          "scoped_projection_limit_count": 0,
+          "segment_boundary_counts": {
+            "anchor_change": 5,
+            "lexical_novelty_candidate": 250,
+            "rejected_active_alias": 1,
+            "start": 1
+          },
+          "segments_without_recognized_operations": 257,
+          "semantic_accuracy": null,
+          "source_spans_verified": true,
+          "source_turns": 78,
+          "topic_observations": 530,
+          "topic_policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+          "topic_segments": 257,
+          "unknown_characters": 27366,
+          "unknown_reasons": {
+            "negation_modality_quantification_or_reference_outside_grammar": 1,
+            "no_supported_envelope": 481,
+            "sentence_boundary_or_punctuation_outside_grammar": 48
+          },
+          "unknown_units": 530
+        },
+        "whole_document": {
+          "accepted_alias_matches": 5,
+          "accepted_alias_matches_by_project": {
+            "archive_analyzer": 1,
+            "chatadhd": 1,
+            "lem": 2,
+            "loom": 1
+          },
+          "alias_rejection_reasons": {
+            "insufficient_local_context": 11
+          },
+          "blocked_unchecked_interpretations": 0,
+          "boundary_mechanics": {
+            "after_newline": 354,
+            "after_semicolon": 55
+          },
+          "claims_created": 0,
+          "comparison_alignment_states": {},
+          "comparison_budget": {
+            "eligible_pairs": 0,
+            "evaluated_pairs": 0,
+            "maximum_pairs": 16,
+            "omitted_pairs": 0,
+            "selection": "source_order_cross_segment_not_ranked"
+          },
+          "eligible_characters": 27366,
+          "envelope_character_coverage": 0.0,
+          "focus_basis_counts": {
+            "local_alias": 5,
+            "unanchored": 525
+          },
+          "graph_context_candidate_count": 14,
+          "graph_context_omitted_by_budget": 0,
+          "graph_mutations_applied": 0,
+          "input_hash": "e63a1ca5fdf28591fb6460b6d4617b655e4ff8c7ae01c249e12e1839ce2492bb",
+          "interpretation_context_proposals": 0,
+          "local_alias_matches": 16,
+          "logical_candidates": 0,
+          "observations_with_focus": 5,
+          "physical_units": 530,
+          "profile_context_graph_hash": "21f66392a86f0427fc5f29c4222a2dd8c9e35704cf589146de05c04f8349f741",
+          "recognized_envelope_characters": 0,
+          "recognized_envelopes": 0,
+          "recognized_methods": {},
+          "recognized_source_refs": [],
+          "rejected_alias_matches": 11,
+          "scoped_projection_count": 0,
+          "scoped_projection_limit_count": 0,
+          "segment_boundary_counts": {
+            "anchor_change": 5,
+            "lexical_novelty_candidate": 250,
+            "rejected_active_alias": 1,
+            "start": 1
+          },
+          "segments_without_recognized_operations": 257,
+          "semantic_accuracy": null,
+          "source_spans_verified": true,
+          "source_turns": 1,
+          "topic_observations": 530,
+          "topic_policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+          "topic_segments": 257,
+          "unknown_characters": 27366,
+          "unknown_reasons": {
+            "negation_modality_quantification_or_reference_outside_grammar": 1,
+            "no_supported_envelope": 481,
+            "sentence_boundary_or_punctuation_outside_grammar": 48
+          },
+          "unknown_units": 530
+        }
+      },
+      "raw_physical_lines": {
+        "eligible_characters": 27538,
+        "envelope_character_coverage": 0.0,
+        "logical_candidates": 0,
+        "physical_units": 358,
+        "recognized_envelope_characters": 0,
+        "recognized_envelopes": 0,
+        "recognized_methods": {},
+        "semantic_accuracy": null,
+        "unknown_characters": 27538,
+        "unknown_reasons": {
+          "no_supported_envelope": 240,
+          "sentence_boundary_or_punctuation_outside_grammar": 118
+        },
+        "unknown_units": 358
+      },
+      "source": {
+        "bytes": 28541,
+        "characters": 28255,
+        "path": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+        "sha256": "b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6",
+        "source_locator": {
+          "basis": "repository_file_snapshot",
+          "json_pointer": "",
+          "member": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+          "source": "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        }
+      }
+    }
+  ],
+  "version": "repository-source-diagnostic/1"
+}
