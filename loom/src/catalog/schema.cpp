@@ -127,6 +127,20 @@ const std::vector<Table>& tables() {
                 "    PRIMARY KEY (source_id, member)\n"
                 ")",
                 {}});
+    // Linking pass (proposal_scale.md §5.5): same_project | continuation |
+    // shared_rare | same_session edges found during score(), read back by
+    // score()'s link-propagation feature and by import_selected()'s
+    // include_referenced option. Rebuilt each score() run (cleared by run_id).
+    t.push_back({"loom_cat_links",
+                "CREATE TABLE IF NOT EXISTS loom_cat_links (\n"
+                "    run_id TEXT NOT NULL,\n"
+                "    src TEXT NOT NULL,\n"
+                "    dst TEXT NOT NULL,\n"
+                "    link_type TEXT NOT NULL DEFAULT '',\n"
+                "    strength REAL NOT NULL DEFAULT 0,\n"
+                "    PRIMARY KEY (run_id, src, dst, link_type)\n"
+                ")",
+                {"CREATE INDEX IF NOT EXISTS idx_loom_cat_links_dst ON loom_cat_links(run_id, dst)"}});
     return t;
   }();
   return kTables;
@@ -136,7 +150,7 @@ const std::vector<Table>& tables() {
 Status Catalog::ensure_schema(Database& db) {
   auto lk = db.lock();
   sql::Connection& c = db.conn();
-  if (c.has_table("loom_cat_units") && c.has_table("loom_cat_checkpoint")) return {};
+  if (c.has_table("loom_cat_units") && c.has_table("loom_cat_checkpoint") && c.has_table("loom_cat_links")) return {};
   sql::Txn txn(c);
   LOOM_TRY(txn.begin_status());
   for (const auto& t : tables()) {
