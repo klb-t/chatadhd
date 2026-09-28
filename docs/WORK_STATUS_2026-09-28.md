@@ -1,5 +1,16 @@
 # Current work checkpoint
 
+Latest actual result: `research/OPENROUTER_FIRST_RUN_2026-09-28.md`.
+Owner-authorized activation `7ebd545` reached the key guard, with **zero model
+POSTs**. The exact first artifact is retained. Read-only preflight `36445312994`
+shows a valid ordinary key with USD 2 remaining, but weekly reset and BYOK usage
+excluded. The experimental guard requires no reset and BYOK inclusion; the owner
+must edit those settings, then a read-only recheck can precede a reconciled new
+execution. Do not rerun the original reserved experiment or weaken its guard.
+Meanwhile the independently authored conversation-context corpus is complete:
+16 PL/EN conversations, 96 validated causal-prefix packets; scorer/live adapter
+remain next work. See `research/CONVERSATION_CONTEXT_CASES_2026-09-28.md`.
+
 Owner confirmed the dedicated credential/capped pilot is ready. The activation
 commit enables live-structure-dev-v1 (32 planned development requests, USD 2
 ceiling). Observe the first Actions run, retain first responses and actual usage;

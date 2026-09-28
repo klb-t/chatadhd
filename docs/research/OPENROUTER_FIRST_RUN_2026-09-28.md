@@ -26,3 +26,28 @@ account metadata, credentials or raw API replies. It performs GET /key only.
 The original reservation/history remains intact. Any subsequent execution must
 explicitly record the verified zero-POST outcome; do not rerun the old Actions
 job or pretend the first attempt completed extraction.
+
+## Read-only diagnosis
+
+Credential preflight run:
+https://github.com/klb-t/chatadhd/actions/runs/36445312994
+
+The authenticated GET succeeded and returned an ordinary, nonprivileged key.
+Its limit and remaining balance are both USD 2. Two settings differ from the
+prepared pilot guard: `limit_reset: weekly` and `include_byok_in_limit: false`.
+The specific refusal is `key_reset_enabled`; the BYOK-inclusive limit check would
+also refuse after that is corrected. The sanitized result is retained in
+`inputs/openrouter-key-diagnostic-2026-09-28.json`; no key value or label is stored.
+This is our experimental spending guard refusing those settings, not OpenRouter
+rejecting a valid inference key. Ordinary inference credentials cannot edit their
+own management settings, so the owner must change them in OpenRouter.
+
+Required continuation: set reset to none and include BYOK usage in the limit for
+the same dedicated key. The GitHub secret need not be replaced if its value stays
+the same. After confirmation, perform the read-only check again. First execution
+had zero POSTs and no uncertain attempt; a documented new experiment ID can then
+run the same frozen development cases without concealing or overwriting that run.
+
+No paid inference took place in either workflow. A newly authored, separately
+frozen conversation-context corpus was prepared during this diagnosis; see
+`CONVERSATION_CONTEXT_CASES_2026-09-28.md`. It still needs a scorer/live adapter.

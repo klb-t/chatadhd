@@ -1,0 +1,19 @@
+{
+  "status": "valid",
+  "cases": 16,
+  "families": 8,
+  "languages": [
+    "pl",
+    "en"
+  ],
+  "causal_prefix_packets": 96,
+  "live_model_calls": 0,
+  "semantic_accuracy_measured": false,
+  "files_sha256": {
+    "gold.jsonl": "2682a8e23346ae32ba34d69a74b7c350b89aceb743226c42e76186ecc4cdabf5",
+    "inputs.jsonl": "b0b5f65214aae612fb160c41e0591039703383584ab029c38babc90c3a4d1bc2",
+    "materialize.py": "b318f535f8fd0f4a0017789afceff2a40004f10aa3501c7a78d9e46aa236e7d0",
+    "protocol.json": "6b7cc4afdb2c5c56ccf55cf6dd447acb379cafc67bcddd086e6aab18ea4f011f",
+    "split.json": "f2a7bfd935ad23152545238731b106595351fd8050ba078dec661d1ea4fcd466"
+  }
+}

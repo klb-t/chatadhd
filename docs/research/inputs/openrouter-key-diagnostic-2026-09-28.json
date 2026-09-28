@@ -1,0 +1,17 @@
+{
+  "budget_usd": "2",
+  "checked_at": "2026-09-28T15:40:09.277849Z",
+  "gate_valid": false,
+  "inference_requests": 0,
+  "manifest_hash": "93f97d72ea470e57327f0b4aa111e265f69be486eb9ff8cf34115084fc0eed5b",
+  "metadata": {
+    "include_byok_in_limit": false,
+    "is_management_key": false,
+    "is_provisioning_key": false,
+    "limit": "2",
+    "limit_remaining": "2",
+    "limit_reset": "weekly"
+  },
+  "needed_usd": "0.2978870",
+  "reason": "key_reset_enabled"
+}

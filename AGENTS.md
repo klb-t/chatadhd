@@ -1,5 +1,13 @@
 # ChatADHD / Loom continuation
 
+Latest live attempt: `docs/research/OPENROUTER_FIRST_RUN_2026-09-28.md`.
+Owner confirmed setup; authenticated key is valid but has weekly reset and
+excludes BYOK usage from its USD 2 cap. Both differ from the agreed pilot guard.
+Zero model POSTs; original artifact and sanitized diagnosis are saved. Await
+owner setting correction, then recheck without inference. Do not silently
+relax the guard or rerun the reserved ID. Research suite now 314 tests; a new
+16-conversation/96-prefix corpus is ready for its separate scorer/adapter.
+
 Latest direction: `docs/research/OPENROUTER_LIVE_PILOT_2026-09-28.md`.
 Real-model source-to-graph pilot is prepared (309 research tests pass), but no
 paid call has run. Activation is disabled; use the documented capped GitHub
