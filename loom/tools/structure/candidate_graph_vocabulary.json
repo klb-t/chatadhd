@@ -1,0 +1,28 @@
+{
+  "schema": "loom.candidate_graph_vocabulary/1",
+  "status": "research_candidate_contract_not_core_pack",
+  "entity_kinds": ["expression_occurrence", "term_occurrence", "binder", "scope"],
+  "term_types": ["constant", "variable", "predicate"],
+  "scope_types": ["assertion", "quantifier", "quotation", "hypothesis"],
+  "assertion_contexts": ["asserted", "hypothetical", "quoted", "unknown"],
+  "polarities": ["positive", "negative", "unknown"],
+  "predicates": ["operation_type", "quantifier_kind", "operand", "in_scope", "scope_parent", "introduces_scope", "bound_to", "denotes"],
+  "operations": {
+    "predicate_application": {"ports": {"predicate": {"min": 1, "max": 1, "target": "predicate"}, "argument": {"min": 0, "max": 64, "target": "term"}}},
+    "conditional": {"ports": {"antecedent": {"min": 1, "max": 1, "target": "expression_occurrence"}, "consequent": {"min": 1, "max": 1, "target": "expression_occurrence"}}},
+    "negation": {"ports": {"body": {"min": 1, "max": 1, "target": "expression_occurrence"}}},
+    "conjunction": {"ports": {"member": {"min": 2, "max": 64, "target": "expression_occurrence"}}},
+    "quantifier": {"ports": {"binder": {"min": 1, "max": 1, "target": "binder"}, "body": {"min": 1, "max": 1, "target": "expression_occurrence"}, "restriction": {"min": 0, "max": 1, "target": "expression_occurrence"}}}
+  },
+  "quantifier_kinds": ["forall", "exists"],
+  "coverage_statuses": ["represented", "partial", "unsupported", "ambiguous", "omitted"],
+  "limits": {"max_packet_bytes": 1048576, "max_bundle_bytes": 262144, "max_observations": 128, "max_source_bytes": 262144, "max_entities": 256, "max_claims": 1024, "max_support": 16, "max_depth": 32},
+  "policy": {
+    "source_offsets": "UTF-8 bytes within exact Observation.text",
+    "ordinal": "zero-based contiguous within each port; fixed ports require ordinal zero",
+    "unknown": "located coverage and unknown records only; never a wildcard operand",
+    "conjunction_order": "source representation order retained; no claim of truth inequivalence when reordered",
+    "promotion": "none; partial drafts have no evidence class, calibrated confidence or canonical candidate status",
+    "inference": "none; structural validation is not source-interpretation or truth validation"
+  }
+}

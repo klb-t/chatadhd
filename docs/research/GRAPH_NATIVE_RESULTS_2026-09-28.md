@@ -145,7 +145,49 @@ The existing source-retention/branch/import work and its limitations remain in
 `../CODEX_HANDOFF_2026-09-28.md`. This document adds the current round rather than
 rewriting historical results.
 
-## What remains before the intended thought workflow is complete
+## Compositional candidate and context mechanisms
+
+The next research carrier is now executable: local occurrence Entities and
+source-supported Claim drafts encode predicate application, conditional,
+negation, conjunction and quantifier operations. Typed operand ports, ordinal
+positions, scope membership, binder visibility and explicit reference relations
+are checked. Canonical identity is not guessed from repeated spelling. Missing
+structure remains located unknown/partial coverage, including valid empty
+abstentions. The carrier does not invent complete Assessments for these drafts.
+
+Two input routes converge on that same graph. A supplies the Entity/Claim drafts
+directly; B grounds source anchors first and composes only those anchors into
+separate readings. B binds both stages to exact packet and anchor hashes. A's
+research bundle refers to a snapshot label; a future live adapter must also bind
+its response envelope to the original request's full packet hash. Successful
+compilation is not source interpretation accuracy or inference eligibility.
+
+Experiment C prepares source/context packets and validates reversible thread,
+continuation, return, correction, contradiction and analogy overlays. It supports
+overlapping topics and unresolved identity alternatives. Deltas bind both base
+and selected packet hashes; application replays selection against the immutable
+base. Full undo bytes stay outside the model-facing packet. Explicitly future
+source bodies are excluded, and unknown times remain unknown. Complete selected
+Observation bodies can still contain later clauses, so this is not a guarantee
+against a model implicitly reading ahead within an Observation.
+
+`loom/tools/structure/candidate_flow.py` joins A/B/C into an offline replay and
+bounded graph-search command. Every reading remains separate; invalid and empty
+graphs are not searched. Its optional occurrence-shape view declares lexical
+losses while retaining operation literals, ports, scope and bindings. Results
+report source overlap separately from caller-declared groups and never infer
+independence from different IDs. This is executable composition of mechanisms,
+not a live provider integration or a quality score for natural-language analysis.
+
+Mechanism checks after this increment: **213/213**, including 12 direct compiler,
+17 grounded-frame, 19 context-delta and eight replay integration checks. An
+independent fresh bilingual supplied-structure pilot is recorded separately;
+its agreement and source/graph preservation must not be conflated with model
+extraction quality. The CMake research gate also includes its independent protocol
+checks. Contracts and usage are in `CANDIDATE_GRAPH.md`, `GROUNDED_FRAMES.md`,
+`CONTEXT_DELTA.md` and `CANDIDATE_FLOW.md` under `loom/tools/structure/`.
+
+## Remaining production integration
 
 The new model adapter is a deliberately explicit first production connection.
 Its current output is a flat, source-grounded relation or generalization among
