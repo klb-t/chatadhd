@@ -141,7 +141,7 @@ std::vector<QueryTerm> terms_of_class(const SelfProfile& profile, const std::map
     for (auto& tok : norm.tokens(surface.empty() ? key : surface)) {
       if (norm.is_stopword(tok)) continue;
       std::string mk = norm.match_key(tok);
-      if (mk.size() < 3 || !seen.insert(mk).second) continue;
+      if (mk.empty() || !seen.insert(mk).second) continue;
       out.push_back(QueryTerm{mk, w});
       if (++added >= kPhraseCap) break;
     }

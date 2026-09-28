@@ -24,6 +24,10 @@ project aliases from its answer key are explicit input hints. It is not a blind
 test. Optional `--floors FILE.json` applies numerical/boolean gates (exit 1 for
 failed gates; unavailable metrics fail gates).
 
+Catalog precision and recall use the labeled conversations. Selected provider
+project/memory documents have no relevance labels and are reported separately
+as `unlabeled_selected`; they are not assumed relevant or irrelevant.
+
 Runs A and A' measure extraction and repeatability. Run B sees the **entire**
 corpus with `prior_cut=T`: that setting cuts seed priors, not source records.
 Its output is therefore named `retrospective_consistency`, with

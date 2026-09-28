@@ -88,12 +88,17 @@ def score_catalog(kb: KB, gt: dict[str, Any]) -> dict[str, Any]:
 
     rel = n_sel(units["relevant"])
     selected = sum(1 for v in sel.values() if v)
+    labeled = {u["conv_id"] for group in units.values() for u in group}
+    selected_labeled = sum(1 for uid, value in sel.items() if value and uid in labeled)
     return {
         "recall": ratio(rel, len(units["relevant"])),
-        "precision": ratio(rel, selected),
+        "precision": ratio(rel, selected_labeled),
+        "precision_population": "labeled_conversations",
         "trap_fpr": ratio(n_sel(units["noise_traps"]), len(units["noise_traps"])),
         "generic_selected": n_sel(units["noise_generic"]),
         "selected": selected,
+        "labeled_selected": selected_labeled,
+        "unlabeled_selected": selected - selected_labeled,
     }
 
 
@@ -495,4 +500,3 @@ def render_markdown(card: dict[str, Any]) -> str:
         lines.append("")
     lines.append(f"- calibration_ece: {card['calibration_ece']} (not measured: no per-claim correctness labels yet)")
     return "\n".join(lines) + "\n"
-

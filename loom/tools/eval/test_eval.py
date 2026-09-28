@@ -182,6 +182,21 @@ class RepositoryTests(unittest.TestCase):
 
 
 class HarnessTests(unittest.TestCase):
+    def test_catalog_precision_uses_labeled_conversations_and_reports_auxiliary_selection(self):
+        kb = SimpleNamespace(selection=lambda: {"relevant": True, "trap": False,
+                                                "generic": True, "provider-project": True})
+        gt = {"units": {"relevant": [{"conv_id": "relevant"}],
+                        "noise_traps": [{"conv_id": "trap"}],
+                        "noise_generic": [{"conv_id": "generic"}]}}
+        score = synthetic.score_catalog(kb, gt)
+        self.assertEqual(score["precision"], 0.5)
+        self.assertEqual(score["precision_population"], "labeled_conversations")
+        self.assertEqual(score["selected"], 3)
+        self.assertEqual(score["labeled_selected"], 2)
+        self.assertEqual(score["unlabeled_selected"], 1)
+        self.assertEqual(score["recall"], 1.0)
+        self.assertEqual(score["trap_fpr"], 0.0)
+
     def test_synthetic_does_not_delete_the_work_argument(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

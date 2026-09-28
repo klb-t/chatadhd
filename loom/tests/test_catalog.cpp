@@ -239,6 +239,7 @@ TEST_SUITE("catalog_pipeline") {
     for (const auto& [id, text] : std::vector<std::pair<std::string, std::string>>{
              {"stem", "An orchid flourishes."},
              {"separator", "A copper pipe feeds the valve."},
+             {"short", "VR headset."},
              {"philosophy", "Prisms carved from granite."},
              {"seed", "Nebulite."},
              {"unrelated", "Cloudy breezes arrive."}}) {
@@ -261,10 +262,11 @@ TEST_SUITE("catalog_pipeline") {
     auto profile = unwrap(cat.build_profile(ProfileConfig{}));
     profile.terms = Json::array();
     profile.projects = Json::array();
-    for (const auto& surface : {"orchids", "copper_valve", "Nebulite"}) {
+    for (const auto& surface : {"orchids", "copper_valve", "nebulite"}) {
       profile.terms.push_back(Json{{"term", surface}, {"key", surface}, {"class", "alias"}});
     }
     profile.terms.push_back(Json{{"term", "granite prism"}, {"key", "granite prism"}, {"class", "principle"}});
+    profile.terms.push_back(Json{{"term", "VR"}, {"key", "vr"}, {"class", "identifier"}});
     {
       auto lk = rt->db().lock();
       unwrap(rt->db().conn().run("UPDATE loom_cat_profiles SET body = ? WHERE id = ?",
@@ -275,12 +277,12 @@ TEST_SUITE("catalog_pipeline") {
     score.max_passes = 1;
     unwrap(cat.score(score));
     auto units = unwrap(cat.query(UnitQuery{}));
-    REQUIRE(units.size() == 5);
+    REQUIRE(units.size() == 6);
     for (const auto& unit : units) {
       auto preview = unwrap(cat.preview(unit.unit.id));
       const auto& features = preview["score"]["features"];
       INFO("ext_id=" << unit.ext_id << " features=" << features.dump());
-      if (unit.ext_id == "stem" || unit.ext_id == "separator") {
+      if (unit.ext_id == "stem" || unit.ext_id == "separator" || unit.ext_id == "short") {
         CHECK(json::get_number(features, "id_hits") == 0.0);
         CHECK(json::get_number(features, "bm25_self") > 0.0);
       } else if (unit.ext_id == "philosophy") {
