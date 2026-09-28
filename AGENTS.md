@@ -2,6 +2,10 @@
 
 Current graph-native round: `docs/research/GRAPH_NATIVE_PROGRAMME_2026-09-28.md`.
 Measured checkpoints: `docs/research/GRAPH_NATIVE_RESULTS_2026-09-28.md`.
+Latest continuation after the owner's Gemini reports:
+`docs/research/GEMINI_RESEARCH_INTEGRATION_2026-09-28.md` and
+`docs/WORK_STATUS_2026-09-28.md`. The optional offline logic checker and context
+score replay pass a 260-test research suite; these are not live-model scores.
 The owner also recalled the inexpensive separately configured semantic model.
 Read `docs/research/SEMANTIC_MODEL_FLOW_2026-09-28.md` for the actual native
 integration, request budgets, candidate boundary and remaining semantic gaps.

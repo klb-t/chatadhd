@@ -1,0 +1,18 @@
+{
+  "schema": "loom.independent_gemini_experiments_rerun/1",
+  "first_report_sha256": "85c6276e8e73dc28b05bdfa9f661f6c9f1413161bd884322c93d853c181a26a0",
+  "fixture_sha256": "b8fd68f0befe8e24eecdb1645f6410e72ab7b59374c28091864771d06f3159a3",
+  "implementation_sha256": {
+    "logic_check.py": "28c0225cea9afa9b765cdebe41c8bb4f3d3054860ada42d04b2e74fb597e2c1d",
+    "context_scores.py": "04548caf29084e3ef53404140f204e548b6781464b84607d074584fff7edf61d",
+    "candidate_graph.py": "ade0944646c3cfc5356787612beb14657335db2067b4a705d5221b0f3810125d",
+    "context_delta.py": "8fd14a79edbb280eb0a16c08eabecece50dbb59d75b25bb78d31d08d5feba470"
+  },
+  "records": 41,
+  "changed_output_records": [],
+  "records_sha256": "c4bf43e226972b08aedf31fa11a6c51ce3dbc529c30e23ee092a5fba15a93dd9",
+  "reason": "Author changed context packet root validation before preflight after first independent run; no semantic fixture or expectation changed.",
+  "tests_run": 13,
+  "failures": 0,
+  "errors": 0
+}
