@@ -256,6 +256,13 @@ single/mixed-topic turns, unknown operations and genuinely ambiguous references.
 An independent annotator specifies allowable alternatives and exact support;
 small graph results use a separate exhaustive witness oracle where feasible.
 
+The immediate executable pilot is smaller: 32 manually grounded cases, 16
+development and 16 fresh validation, covering the first five operation contracts
+and explicit unknown/invalid controls in English and Polish. Both direct and
+frame encodings are supplied as gold inputs. This pilot measures contract
+representability and compiler behavior before model quality; the larger corpus
+above remains a possible later expansion rather than a current commitment.
+
 Required contrast families include shared versus independent bindings; all/some
 and quantifier order; relation versus epistemic negation; conditional direction;
 guarded/nonexhaustive branches; default plus exception versus strict rule;

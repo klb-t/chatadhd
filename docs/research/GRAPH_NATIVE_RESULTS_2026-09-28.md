@@ -90,12 +90,30 @@ patterns. Shared entity provenance expanded observation context in 13 of 24
 views, by up to 23 times direct support. The sample was mostly mention claims;
 this bias is reported rather than interpreted as the entire corpus's structure.
 
-This result motivates a separate assertion view and predicate-balanced sampling.
-Evidence and provenance must remain recoverable, while the structural comparison
-can expose which assertion/dependency relation it actually compares. Removing
-those attributes must be an explicit projection with a reversible sidecar and
-separate assessment checks. The original diagnostic stays frozen; follow-up
-experiments use separate files and results.
+The follow-up assertion view retains assertion direction, scope, logical
+qualifiers, identity bindings and dependency ports, moving evidence context and
+assessment labels to reversible sidecars. Predicate-balanced sampling of 24
+active observed seeds, with bounded context, found 20 recurring multi-Claim
+motifs but none with explicit Claim dependencies. Its two exact pair matches
+reuse the same selected Claim set. All 72 projected graphs reconstruct exactly.
+The eligible active class has no explicit premise/counter/consequence Claim
+references; that does not establish an absence of arguments in the source text.
+
+A separate deliberately relation-biased diagnostic includes observed contested
+Claims. All 14 relation-bearing seeds carry native counter references, totaling
+92 direct links within the same 14-Claim cluster. The assertion view exposes
+50 recurring multi-Claim motifs with counter links. All 24 exact pair matches
+still overlap in selected Claims, even the six crossing declared seed-unit
+groups. Thus declared groups alone do not demonstrate independent recurrence.
+Recorded counter links do not by themselves establish logical contradictions.
+Source statuses remain unchanged; contested Claims are not promoted.
+
+The initial diagnostic remains frozen. Sampling and context grouping changed in
+the follow-ups, so the before/after motif counts are not a controlled estimate
+of the projection's causal effect. Evidence remains recoverable and assessment
+compatibility is reported separately from shape. See
+`NATIVE_ASSERTION_EXPERIMENT_2026-09-28.md` and
+`NATIVE_COUNTER_EXPERIMENT_2026-09-28.md` for policies, bounds and result files.
 
 Reproduction and data: `NATIVE_GRAPH_EXPERIMENT_2026-09-28.md` and
 `results/native-graph-2026-09-28.json`. The read-only SQLite exporter uses one
@@ -106,6 +124,9 @@ fails on a row limit rather than returning a silently truncated graph.
 
 - New and existing research mechanism checks at the graph-flow checkpoint:
   **144/144**. Independent graph-oracle/metric guard checks: **12/12**.
+- After assertion-view and source-selection diagnostics: **157/157** research
+  mechanism checks, including 13 new author checks. No live extraction accuracy
+  or independent thought-pattern recurrence is inferred from these checks.
 - Targeted native configuration, knowledge, candidate query, model adapter,
   actual pipeline transport and C API checks: **50/50 cases, 570 assertions**.
   The model transport is local and synthetic; no provider quality score is claimed.
