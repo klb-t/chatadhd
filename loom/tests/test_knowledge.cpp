@@ -310,6 +310,27 @@ TEST_SUITE("knowledge") {
     CHECK(json::get_int(unwrap(rt->knowledge().store().stats(run.run)), "observations") == 0);
   }
 
+  TEST_CASE("standalone JSON locator survives multiple leading whitespace chunks") {
+    fsutil::TempDir source, data;
+    auto rt = open_rt(data.path());
+    catalog::Catalog cat(*rt, unwrap(rt->knowledge().pack()));
+    const std::string object = R"({"uuid":"padded","name":"Garden","unknown":{"keep":true},"chat_messages":[{"uuid":"m1","sender":"human","text":"Sunflowers follow daylight."}]})";
+    const std::string bytes = std::string(600 * 1024, ' ') + object + "\n";
+    unwrap(fsutil::write_file(source.path() / "padded.json", bytes));
+    catalog::ScanConfig scan;
+    scan.sources = {source.path().string()};
+    unwrap(cat.scan(scan));
+    const auto units = unwrap(cat.query(catalog::UnitQuery{}));
+    REQUIRE(units.size() == 1);
+    const auto& locator = units.front().unit.locator;
+    REQUIRE(locator.byte_start.has_value());
+    REQUIRE(locator.byte_len.has_value());
+    const auto raw = unwrap(cat.read_unit(units.front().unit.id));
+    CHECK(raw == bytes.substr(static_cast<std::size_t>(*locator.byte_start),
+                              static_cast<std::size_t>(*locator.byte_len)));
+    CHECK(unwrap(json::parse(raw)) == unwrap(json::parse(object)));
+  }
+
   TEST_CASE("standalone and object-wrapped JSON units verify their actual source locators") {
     fsutil::TempDir source, data;
     auto rt = open_rt(data.path());

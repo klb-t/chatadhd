@@ -232,6 +232,71 @@ TEST_SUITE("catalog_offset_scanner") {
 }
 
 TEST_SUITE("catalog_pipeline") {
+  TEST_CASE("BM25 normalizes all profile terms and philosophy evidence permits bounded link support") {
+    fsutil::TempDir data_dir;
+    fsutil::TempDir src_dir;
+    Json conversations = Json::array();
+    for (const auto& [id, text] : std::vector<std::pair<std::string, std::string>>{
+             {"stem", "An orchid flourishes."},
+             {"separator", "A copper pipe feeds the valve."},
+             {"philosophy", "Prisms carved from granite."},
+             {"seed", "Nebulite."},
+             {"unrelated", "Cloudy breezes arrive."}}) {
+      conversations.push_back(Json{{"id", id}, {"title", "note"}, {"create_time", 1700000000},
+          {"current_node", "n"}, {"mapping", Json{{"n", Json{{"id", "n"}, {"parent", nullptr},
+              {"children", Json::array()}, {"message", Json{{"id", "n"},
+                  {"author", Json{{"role", "user"}}},
+                  {"content", Json{{"content_type", "text"}, {"parts", Json::array({text})}}},
+                  {"create_time", 1700000001}}}}}}}});
+    }
+    write_file(src_dir.path() / "conversations.json", json::dump(conversations));
+    auto rt = open_rt(data_dir.path());
+    Catalog cat(*rt, unwrap(rt->knowledge().pack()));
+    ScanConfig scan;
+    scan.sources = {src_dir.path().string()};
+    unwrap(cat.scan(scan));
+
+    // Isolate the profile from bundled owner vocabulary so this regression
+    // exercises normalization and evidence channels, not pack-specific terms.
+    auto profile = unwrap(cat.build_profile(ProfileConfig{}));
+    profile.terms = Json::array();
+    profile.projects = Json::array();
+    for (const auto& surface : {"orchids", "copper_valve", "Nebulite"}) {
+      profile.terms.push_back(Json{{"term", surface}, {"key", surface}, {"class", "alias"}});
+    }
+    profile.terms.push_back(Json{{"term", "granite prism"}, {"key", "granite prism"}, {"class", "principle"}});
+    {
+      auto lk = rt->db().lock();
+      unwrap(rt->db().conn().run("UPDATE loom_cat_profiles SET body = ? WHERE id = ?",
+                                json::dump(profile.to_json()), profile.id));
+    }
+    ScoreConfig score;
+    score.profile_id = profile.id;
+    score.max_passes = 1;
+    unwrap(cat.score(score));
+    auto units = unwrap(cat.query(UnitQuery{}));
+    REQUIRE(units.size() == 5);
+    for (const auto& unit : units) {
+      auto preview = unwrap(cat.preview(unit.unit.id));
+      const auto& features = preview["score"]["features"];
+      INFO("ext_id=" << unit.ext_id << " features=" << features.dump());
+      if (unit.ext_id == "stem" || unit.ext_id == "separator") {
+        CHECK(json::get_number(features, "id_hits") == 0.0);
+        CHECK(json::get_number(features, "bm25_self") > 0.0);
+      } else if (unit.ext_id == "philosophy") {
+        CHECK(json::get_number(features, "id_hits") == 0.0);
+        CHECK(json::get_number(features, "bm25_self") == 0.0);
+        CHECK(json::get_number(features, "bm25_phil") > 0.05);
+        CHECK(json::get_number(features, "link") > 0.0);
+      } else if (unit.ext_id == "unrelated") {
+        CHECK(json::get_number(features, "id_hits") == 0.0);
+        CHECK(json::get_number(features, "bm25_self") == 0.0);
+        CHECK(json::get_number(features, "bm25_phil") == 0.0);
+        CHECK(json::get_number(features, "link") == 0.0);
+      }
+    }
+  }
+
   TEST_CASE("scan -> profile -> score -> select -> import: recall on the alias hit, dedup on rescan, provenance") {
     fsutil::TempDir data_dir;
     fsutil::TempDir src_dir;

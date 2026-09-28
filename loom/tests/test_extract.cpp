@@ -368,15 +368,12 @@ TEST_SUITE("extract") {
     CHECK(json::canonical(a.to_json()) == json::canonical(b.to_json()));
   }
 
-  TEST_CASE("knowledge stages extract -> resolve -> assess over sources (catalog handing over nothing)") {
+  TEST_CASE("knowledge stages extract -> resolve -> assess over real catalog handoff") {
     fsutil::TempDir td;
     RuntimeOptions o;
     o.data_dir = td.path().string();
     o.start_workers = false;
     auto rt = unwrap(Runtime::open(o));
-    rt->knowledge().set_stage("catalog", [](knowledge::StageContext&) -> Result<Json> {
-      return Json{{"output", "no-catalog"}, {"stats", Json::object()}, {"units", Json::array()}};
-    });
     rt->knowledge().set_stage("generalize", [](knowledge::StageContext&) -> Result<Json> { return Json{{"output", "g"}, {"stats", Json::object()}}; });
     rt->knowledge().set_stage("materialize", [](knowledge::StageContext&) -> Result<Json> { return Json{{"output", "m"}, {"stats", Json::object()}}; });
     fs::path src = td.path() / "notes.md";
@@ -384,9 +381,13 @@ TEST_SUITE("extract") {
                                     "Decyzja: bierzemy SQLite.\n"));
     knowledge::KnowledgeConfig cfg;
     cfg.sources = {src.string()};
+    cfg.stage_params["catalog"]["import"]["mode"] = "full";
     auto r = unwrap(rt->knowledge().run(cfg));
     INFO(r.to_json().dump());
     REQUIRE(r.status == "done");
+    REQUIRE(r.stages.size() == 6);
+    CHECK(r.stages[1].stats["from"] == "catalog");
+    CHECK(r.stages[1].stats["units"] == 1);
     auto& st = rt->knowledge().store();
     auto stats = unwrap(st.stats(r.run));
     CHECK(stats["observations"].get<int>() > 0);

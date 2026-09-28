@@ -217,6 +217,8 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
   LOOM_TRY(txn.begin_status());
   OffsetArrayScanner scanner;
   std::string tail;  // captured only if the stream turns out not to be an array
+  std::int64_t stream_offset = 0;
+  std::int64_t tail_start = 0;
   bool capturing_tail = true;
   auto on_chunk = [&](std::string_view chunk) {
     if (!scanner.finished()) {
@@ -248,8 +250,10 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
       });
     }
     if (capturing_tail && scanner.not_array() && static_cast<std::int64_t>(tail.size()) < kElementByteCap) {
+      if (tail.empty()) tail_start = stream_offset;
       tail.append(chunk);
     }
+    stream_offset += static_cast<std::int64_t>(chunk.size());
   };
   LOOM_TRY(reader(on_chunk));
   if (scanner.not_array()) {
@@ -290,9 +294,10 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
       pu.locator.member = member;
       std::string dumped;
       if (whole_value) {
-        // A standalone JSON object is the original source bytes, including
-        // whitespace and unknown fields, not a fictitious array element /0.
-        pu.locator.byte_start = 0;
+        // A standalone object uses the original captured source bytes,
+        // including unknown fields, not a fictitious array element /0.
+        // Whitespace-only chunks before the first token are not captured.
+        pu.locator.byte_start = tail_start;
         pu.locator.byte_len = static_cast<std::int64_t>(tail.size());
         dumped = tail;
       } else {

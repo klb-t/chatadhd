@@ -152,21 +152,22 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
   // depend on what today's scanner knows how to normalise.
   Json retained_sources = Json::array();
   if (opts.mode == "full" && opts.store_mode == "copy" && !opts.dry_run) {
-    std::vector<std::pair<std::string, std::string>> sources;
+    struct SourceFile { std::string id, path; std::int64_t size; };
+    std::vector<SourceFile> sources;
     {
       auto guard = rt_.db().lock();
-      LOOM_TRY_ASSIGN(auto st, c.prepare("SELECT id, path FROM loom_cat_sources ORDER BY id"));
+      LOOM_TRY_ASSIGN(auto st, c.prepare("SELECT id, path, bytes FROM loom_cat_sources ORDER BY id"));
       while (true) {
         LOOM_TRY_ASSIGN(bool row, st.step());
         if (!row) break;
-        sources.emplace_back(st.get_text(0), st.get_text(1));
+        sources.push_back({st.get_text(0), st.get_text(1), st.get_int(2)});
       }
     }
-    for (const auto& [sid, path] : sources) {
+    for (const auto& [sid, path, original_size] : sources) {
       if (cancel && cancel->cancelled()) return Error(Errc::Cancelled, "catalog import cancelled");
       const std::string hash = sid.starts_with("sha256:") ? sid.substr(7) : std::string();
       if (hash.size() != 64) return Error(Errc::Conflict, "invalid catalog source hash: " + sid);
-      std::int64_t size = 0;
+      std::int64_t size = original_size;
       if (rt_.blobs().has(hash)) {
         LOOM_TRY(rt_.blobs().verify(hash));
       } else {
@@ -232,6 +233,11 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     if (!body_r) return body_r.error();
     LOOM_TRY_ASSIGN(auto uj, json::parse(*body_r));
     LOOM_TRY_ASSIGN(CatalogUnit cu, CatalogUnit::from_json(uj));
+    if (previously_imported && !previous_raw.empty() && cu.unit.kind != "conversation" &&
+        cu.unit.kind != "project" && cu.unit.kind != "memory") {
+      ++skipped;
+      continue;
+    }
 
     if (opts.dry_run) {
       ++imported;
@@ -240,7 +246,9 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     }
 
     Json src_meta{{"unit_id", uid}, {"platform", cu.platform}, {"ext_id", cu.ext_id}};
-    std::string raw, raw_blob;
+    // Choosing link for a later message projection must not discard bytes
+    // already retained by an earlier copy-only import.
+    std::string raw, raw_blob = previous_raw;
     if (opts.store_mode == "copy") {
       LOOM_TRY_ASSIGN(raw, read_unit(uid));
       LOOM_TRY_ASSIGN(auto blob, rt_.blobs().put(raw));
@@ -260,7 +268,7 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     std::string source_id = previous_source;
     if (source_id.empty()) {
       LOOM_TRY_ASSIGN(source_id, rt_.provenance().add_source(src));
-    } else if (!raw_blob.empty()) {
+    } else if (opts.store_mode == "copy" && !raw_blob.empty()) {
       auto guard = rt_.db().lock();
       LOOM_TRY(c.run("UPDATE loom_sources SET blob_hash = ?, size = ? WHERE id = ?", raw_blob, src.size, source_id));
     }

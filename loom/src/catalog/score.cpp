@@ -115,8 +115,9 @@ std::unordered_map<std::string, int> doc_frequencies(const std::vector<QueryTerm
 }
 
 // Sketches store single WORD match-keys (Sketch::build tokenises then keys
-// each token), never phrases -- so a multi-word alias key ("appka od
-// notatek") must be split into its own content-word keys the same way
+// each token), never folded surfaces -- so every profile term, including
+// a single inflected word or punctuation-separated identifier, must be
+// split into its own content-word keys the same way
 // (norm.tokens + norm.match_key, stopwords dropped) for BM25 to find
 // anything at all in the sketch's top-K/bloom. Each fragment keeps the
 // term's class weight; a phrase contributes at most `phrase_cap` fragments
@@ -136,10 +137,6 @@ std::vector<QueryTerm> terms_of_class(const SelfProfile& profile, const std::map
     double w = 1.0;
     auto it = class_weights.find(cls);
     if (it != class_weights.end()) w = it->second;
-    if (key.find(' ') == std::string::npos) {
-      if (seen.insert(key).second) out.push_back(QueryTerm{key, w});
-      continue;
-    }
     int added = 0;
     for (auto& tok : norm.tokens(surface.empty() ? key : surface)) {
       if (norm.is_stopword(tok)) continue;
@@ -506,8 +503,12 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   for (auto& l : links) {
     Row& a = rows[static_cast<std::size_t>(l.i)];
     Row& b = rows[static_cast<std::size_t>(l.j)];
-    bool a_has_own = a.alias_hits > 0 || json::get_number(a.features, "bm25_self", 0.0) > 0.05;
-    bool b_has_own = b.alias_hits > 0 || json::get_number(b.features, "bm25_self", 0.0) > 0.05;
+    auto has_own_evidence = [](const Row& row) {
+      return row.alias_hits > 0 || json::get_number(row.features, "bm25_self", 0.0) > 0.05 ||
+             json::get_number(row.features, "bm25_phil", 0.0) > 0.05;
+    };
+    bool a_has_own = has_own_evidence(a);
+    bool b_has_own = has_own_evidence(b);
     if (a_has_own) {
       double v = link_damping * pre_link_score[static_cast<std::size_t>(l.j)] * l.strength;
       if (v > json::get_number(a.features, "link", 0.0)) a.features["link"] = v;
