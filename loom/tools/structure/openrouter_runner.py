@@ -391,6 +391,37 @@ def _transport_once(method, path, body, key):
         raise RunnerError("response_read_uncertain") from None
 
 
+def _safe_key_metadata(raw):
+    """Allowlisted diagnostic values only; never retain remote identity/text."""
+    try:
+        envelope = parse_json(raw)
+    except RunnerError:
+        return {"metadata_status": "invalid_json"}
+    data = envelope.get("data") if isinstance(envelope, dict) else None
+    if not isinstance(data, dict):
+        return {"metadata_status": "invalid_envelope"}
+    safe = {}
+    for name in ("limit", "limit_remaining"):
+        if name not in data:
+            safe[name] = "missing"
+        elif data[name] is None:
+            safe[name] = None
+        else:
+            try:
+                safe[name] = _amount(_money(data[name]))
+            except RunnerError:
+                safe[name] = "invalid"
+    reset = data.get("limit_reset")
+    safe["limit_reset"] = ("missing" if "limit_reset" not in data else
+                           reset if reset is None or (type(reset) is str and
+                               reset in ("daily", "weekly", "monthly")) else "invalid")
+    for name in ("is_management_key", "is_provisioning_key", "include_byok_in_limit"):
+        value = data.get(name)
+        safe[name] = ("missing" if name not in data else
+                      value if value is None or type(value) is bool else "invalid")
+    return safe
+
+
 def _key_gate(raw, budget, needed):
     envelope = parse_json(raw)
     data = envelope.get("data") if isinstance(envelope, dict) else None
@@ -399,12 +430,54 @@ def _key_gate(raw, budget, needed):
     limit, remaining = _money(data.get("limit")), _money(data.get("limit_remaining"))
     if not 0 < limit <= budget or remaining > limit or remaining < needed:
         raise RunnerError("dedicated_key_cap_or_remaining_budget_invalid")
-    if data.get("limit_reset") is not None or data.get("is_management_key") is not False or data.get("is_provisioning_key", False) is not False:
-        raise RunnerError("dedicated_nonresetting_inference_key_required")
+    if data.get("limit_reset") is not None:
+        if type(data["limit_reset"]) is str and data["limit_reset"] in ("daily", "weekly", "monthly"):
+            raise RunnerError("key_reset_enabled")
+        raise RunnerError("key_reset_value_invalid")
+    if "is_management_key" not in data:
+        raise RunnerError("key_management_flag_missing")
+    if type(data["is_management_key"]) is not bool:
+        raise RunnerError("key_management_flag_invalid")
+    if data["is_management_key"] is True:
+        raise RunnerError("management_key_forbidden")
+    if "is_provisioning_key" in data:
+        if type(data["is_provisioning_key"]) is not bool:
+            raise RunnerError("key_provisioning_flag_invalid")
+        if data["is_provisioning_key"] is True:
+            raise RunnerError("provisioning_key_forbidden")
     if data.get("include_byok_in_limit") is not True:
         raise RunnerError("key_must_include_byok_usage_in_limit")
     return {"checked_at": _utc(), "limit_usd": _amount(limit), "remaining_usd": _amount(remaining),
             "nonresetting": True, "includes_byok": True}
+
+
+def inspect_key(manifest, *, transport_fn=None, key_loader=None):
+    """Inspect the full manifest reservation using GET only, without artifacts."""
+    plan = plan_manifest(manifest)
+    send, get_key = transport_fn or transport, key_loader or load_key
+    key = get_key()
+    if not isinstance(key, str) or not key or key.encode() in canonical(manifest):
+        raise RunnerError("credential_invalid_or_present_in_manifest")
+    result = {"checked_at": _utc(), "manifest_hash": plan["manifest_hash"],
+              "budget_usd": plan["budget_usd"], "needed_usd": plan["total_reservation_usd"],
+              "gate_valid": False, "inference_requests": 0}
+    try:
+        status, raw = send("GET", "/key", None, key)
+    except Exception:
+        result["reason"] = "key_metadata_unavailable"
+        return result
+    try:
+        if status != 200:
+            raise RunnerError("key_metadata_http_error")
+        if not isinstance(raw, bytes) or len(raw) > MAX_RESPONSE_BYTES:
+            raise RunnerError("key_metadata_size_or_type_invalid")
+        result["metadata"] = _safe_key_metadata(raw)
+        _key_gate(raw, _money(plan["budget_usd"]), _money(plan["total_reservation_usd"]))
+        result["gate_valid"] = True
+        result["reason"] = "key_guard_satisfied"
+    except RunnerError as exc:
+        result["reason"] = str(exc)
+    return result
 
 
 def _response_result(raw):
@@ -503,15 +576,26 @@ def run_manifest(manifest, run_dir, *, transport_fn=None, key_loader=None):
         if key.encode() in canonical(manifest):
             raise RunnerError("credential_present_in_manifest")
         needed = sum((_money(row["reservation_usd"]) for row in plan["requests"][len(attempts):]), Decimal(0))
+        raw = None
         try:
             status, raw = send("GET", "/key", None, key)
+        except Exception:
+            ledger["key_check_failure"] = {"checked_at": _utc(), "reason": "key_metadata_unavailable"}
+            _atomic(ledger_path, canonical(ledger))
+            raise RunnerError("key_metadata_unavailable") from None
+        try:
             if status != 200:
                 raise RunnerError("key_metadata_http_error")
+            if not isinstance(raw, bytes) or len(raw) > MAX_RESPONSE_BYTES:
+                raise RunnerError("key_metadata_size_or_type_invalid")
             ledger["key_check"] = _key_gate(raw, _money(plan["budget_usd"]), needed)
-        except RunnerError:
+        except RunnerError as exc:
+            failure = {"checked_at": _utc(), "reason": str(exc)}
+            if status == 200 and isinstance(raw, bytes) and len(raw) <= MAX_RESPONSE_BYTES:
+                failure["metadata"] = _safe_key_metadata(raw)
+            ledger["key_check_failure"] = failure
+            _atomic(ledger_path, canonical(ledger))
             raise
-        except Exception:
-            raise RunnerError("key_metadata_unavailable") from None
         _atomic(ledger_path, canonical(ledger))
         for index in range(len(attempts), len(plan["requests"])):
             planned, request = plan["requests"][index], manifest["requests"][index]
@@ -552,7 +636,7 @@ def run_manifest(manifest, run_dir, *, transport_fn=None, key_loader=None):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("plan", "run"))
+    parser.add_argument("command", choices=("plan", "run", "inspect-key"))
     parser.add_argument("manifest", type=Path)
     parser.add_argument("--run-dir", type=Path)
     args = parser.parse_args(argv)
@@ -564,11 +648,15 @@ def main(argv=None):
         manifest = parse_json(raw)
         if args.command == "plan":
             result = plan_manifest(manifest)
+        elif args.command == "inspect-key":
+            result = inspect_key(manifest)
         else:
             if args.run_dir is None:
                 raise RunnerError("run_directory_required")
             result = run_manifest(manifest, args.run_dir)
         print(canonical(result).decode())
+        if args.command == "inspect-key" and not result["gate_valid"]:
+            return 2
         return 0
     except RunnerError as exc:
         print(json.dumps({"error": str(exc)}), file=sys.stderr)

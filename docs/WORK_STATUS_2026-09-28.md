@@ -4,7 +4,9 @@ Owner confirmed the dedicated credential/capped pilot is ready. The activation
 commit enables live-structure-dev-v1 (32 planned development requests, USD 2
 ceiling). Observe the first Actions run, retain first responses and actual usage;
 do not rerun an uncertain attempt or change its frozen code/input manifest.
-Results are pending at activation time.
+First run 36444725653 stopped at key metadata validation before any model POST.
+Its verified artifact has an empty attempt ledger; raw first artifact is retained.
+Read-only key diagnostics are being added without relaxing the spending guard.
 
 Latest continuation: `research/OPENROUTER_LIVE_PILOT_2026-09-28.md`.
 The owner explicitly asked to continue and offered OpenRouter access. Prepared

@@ -244,6 +244,85 @@ class RunnerTests(unittest.TestCase):
                     runner.run_manifest(manifest(), folder, transport_fn=http, key_loader=lambda: "fixture-token")
                 self.assertEqual(len(http.calls), 1)
 
+    def test_key_gate_diagnostics_distinguish_missing_invalid_and_privileged_flags(self):
+        cases = [({"limit_reset": "daily"}, "key_reset_enabled"),
+                 ({"limit_reset": "untrusted-remote-text"}, "key_reset_value_invalid"),
+                 ({"is_management_key": None}, "key_management_flag_invalid"),
+                 ({"is_management_key": "false"}, "key_management_flag_invalid"),
+                 ({"is_management_key": True}, "management_key_forbidden"),
+                 ({"is_provisioning_key": None}, "key_provisioning_flag_invalid"),
+                 ({"is_provisioning_key": True}, "provisioning_key_forbidden")]
+        for change, expected in cases:
+            with self.subTest(change=change):
+                result = runner.inspect_key(manifest(), transport_fn=MockHTTP(key=key_info(**change)),
+                                            key_loader=lambda: "fixture-token")
+                self.assertFalse(result["gate_valid"])
+                self.assertEqual(result["reason"], expected)
+        data = runner.parse_json(key_info())
+        del data["data"]["is_management_key"]
+        with self.assertRaisesRegex(runner.RunnerError, "key_management_flag_missing"):
+            runner._key_gate(runner.canonical(data), runner.Decimal(1), runner.Decimal("0.01"))
+
+    def test_failed_key_gate_persists_only_whitelisted_sanitized_metadata_no_post(self):
+        raw = key_info(limit_reset="fixture-token", is_management_key="private-owner",
+                       is_provisioning_key={"secret": "fixture-token"},
+                       include_byok_in_limit=["private-label"], label="private-label",
+                       hash="private-key-hash", creator="private-owner", headers="fixture-token")
+        http = MockHTTP(key=raw)
+        with self.assertRaisesRegex(runner.RunnerError, "key_reset_value_invalid"):
+            self.run_mock(http=http)
+        ledger = runner.parse_json((self.directory / "ledger.json").read_bytes())
+        self.assertEqual(ledger["attempts"], [])
+        self.assertNotIn("stopped_reason", ledger)
+        self.assertEqual([call[:2] for call in http.calls], [("GET", "/key")])
+        metadata = ledger["key_check_failure"]["metadata"]
+        self.assertEqual(metadata, {"limit": "1", "limit_remaining": "1", "limit_reset": "invalid",
+                         "is_management_key": "invalid", "is_provisioning_key": "invalid",
+                         "include_byok_in_limit": "invalid"})
+        for path in self.directory.iterdir():
+            for prohibited in (b"fixture-token", b"private-label", b"private-owner", b"private-key-hash"):
+                self.assertNotIn(prohibited, path.read_bytes())
+
+    def test_inspect_key_get_only_sanitizes_missing_and_null_without_artifacts(self):
+        data = runner.parse_json(key_info())
+        del data["data"]["is_management_key"]
+        del data["data"]["limit_reset"]
+        data["data"]["include_byok_in_limit"] = None
+        http = MockHTTP(key=runner.canonical(data))
+        result = runner.inspect_key(manifest(), transport_fn=http, key_loader=lambda: "fixture-token")
+        self.assertEqual(result["reason"], "key_management_flag_missing")
+        self.assertEqual(result["metadata"]["is_management_key"], "missing")
+        self.assertEqual(result["metadata"]["is_provisioning_key"], "missing")
+        self.assertEqual(result["metadata"]["limit_reset"], "missing")
+        self.assertIsNone(result["metadata"]["include_byok_in_limit"])
+        self.assertEqual(result["inference_requests"], 0)
+        self.assertEqual([call[:2] for call in http.calls], [("GET", "/key")])
+        self.assertFalse(self.directory.exists())
+        valid = runner.inspect_key(manifest(), transport_fn=MockHTTP(), key_loader=lambda: "fixture-token")
+        self.assertTrue(valid["gate_valid"])
+
+    def test_key_diagnostics_do_not_copy_http_or_transport_error_text(self):
+        for send, expected in ((lambda *args: (403, b"private-header fixture-token"), "key_metadata_http_error"),
+                               (lambda *args: (_ for _ in ()).throw(RuntimeError("fixture-token")),
+                                "key_metadata_unavailable")):
+            with self.subTest(expected=expected):
+                result = runner.inspect_key(manifest(), transport_fn=send, key_loader=lambda: "fixture-token")
+                self.assertEqual(result["reason"], expected)
+                self.assertNotIn("metadata", result)
+                self.assertNotIn(b"fixture-token", runner.canonical(result))
+
+    def test_inspect_key_cli_exit_code_and_json_for_refused_guard(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        source = Path(self.tmp.name) / "manifest.json"
+        source.write_bytes(runner.canonical(manifest()))
+        for valid, expected in ((True, 0), (False, 2)):
+            output = StringIO()
+            with patch.object(runner, "inspect_key", return_value={"gate_valid": valid}), redirect_stdout(output):
+                code = runner.main(["inspect-key", str(source)])
+            self.assertEqual(code, expected)
+            self.assertEqual(json.loads(output.getvalue()), {"gate_valid": valid})
+
     def test_stale_evidence_fails_before_network(self):
         m = manifest()
         m["pricing_evidence"][0]["retrieved_at"] = (datetime.now(timezone.utc) - timedelta(days=2)).isoformat()

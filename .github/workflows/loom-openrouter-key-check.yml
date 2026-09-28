@@ -1,0 +1,30 @@
+name: Loom OpenRouter credential preflight
+
+# Read-only API metadata. This workflow cannot perform inference or reserve a run.
+on:
+  push:
+    branches:
+      - codex/loom-handoff-2026-09-28
+    paths:
+      - .github/workflows/loom-openrouter-key-check.yml
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    if: github.repository == 'klb-t/chatadhd'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Inspect only nonsecret spending and privilege flags
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.LOOM_OPENROUTER_PILOT_KEY }}
+        shell: bash
+        run: |
+          python3 loom/tools/structure/openrouter_runner.py inspect-key \
+            docs/research/inputs/openrouter-preflight-v1/manifest.json

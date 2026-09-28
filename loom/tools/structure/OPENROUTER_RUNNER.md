@@ -14,10 +14,12 @@ model calls and measure no model quality.
 plan_manifest(manifest)  # no network, no credential reads
 estimate_reservation(body)  # returns input_token_allowance, minimum_reservation_usd
 run_manifest(manifest, run_dir)  # real requests; resume exact manifest only
+inspect_key(manifest)  # GET /key only; sanitized diagnostics, no inference or files
 ```
 
 ```sh
 python loom/tools/structure/openrouter_runner.py plan pilot-manifest.json
+python loom/tools/structure/openrouter_runner.py inspect-key pilot-manifest.json
 python loom/tools/structure/openrouter_runner.py run pilot-manifest.json --run-dir /private/pilot-run
 python -m unittest discover -s loom/tools/structure -p 'test_openrouter_runner.py' -v
 ```
@@ -41,6 +43,29 @@ remaining limit for every untouched reservation, no periodic limit reset,
 provisioning key is refused. Use a dedicated inference key for the pilot, without
 concurrent unrelated requests. This is a deliberately stricter experiment guard,
 not a general OpenRouter requirement. The runner never changes key settings.
+
+`inspect-key` checks the full manifest reservation with one authenticated GET and
+no POST. It creates no run directory or artifacts. Its JSON includes `gate_valid`,
+a fixed `reason`, and sanitized key metadata; exit status is 0 when the guard
+passes and 2 when it refuses the key or cannot inspect it. This command does not
+check live endpoint availability or replace the pricing-freshness check in `run`.
+
+Diagnostics distinguish `key_reset_enabled`, `key_reset_value_invalid`,
+`key_management_flag_missing`, `key_management_flag_invalid`,
+`management_key_forbidden`, `key_provisioning_flag_invalid`, and
+`provisioning_key_forbidden`. Missing management metadata is never interpreted as
+`false`. A missing optional provisioning flag preserves the existing accepted
+behavior; if present, it must be explicitly `false`.
+
+On preflight failure, `run` saves `ledger.key_check_failure` before raising the
+fixed error. The metadata whitelist contains only normalized `limit` and
+`limit_remaining`, `limit_reset` (`daily`, `weekly`, `monthly`, or null), and
+boolean/null management, provisioning, and BYOK flags. Absent values become
+`"missing"`; invalid values become `"invalid"`. Unknown strings, labels, key hashes,
+creator identities, error bodies, headers, and credentials are never copied.
+Transport failures retain only a fixed reason. Preflight failures create no paid
+attempt record and do not change the existing resume policy; any later retry must
+still follow the experiment's authorization and first-attempt accounting rules.
 
 ## Manifest contract
 
