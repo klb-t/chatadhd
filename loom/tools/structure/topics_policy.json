@@ -1,0 +1,12 @@
+{
+  "schema": "loom.experiment.topic_policy/1",
+  "context_window_tokens": 12,
+  "minimum_shared_terms": 2,
+  "novelty_minimum_terms": 5,
+  "focus_max_unanchored_spans": 2,
+  "context_node_budget": 16,
+  "reset_cues": ["new topic", "unrelated", "switching topics", "switching gears", "separately", "on another subject", "zmiana tematu", "inny temat", "osobno", "a teraz o czymś innym"],
+  "return_cues": ["back to", "returning to", "return to", "wracając do", "wracajac do", "wracam do", "powrót do", "powrot do"],
+  "continuation_cues": ["also", "next", "then", "that", "this", "it", "these", "those", "yes", "no", "agreed", "same", "dalej", "potem", "tak", "nie", "to", "ten", "ta", "te", "czyli"],
+  "stopwords": ["a", "an", "the", "and", "or", "but", "of", "to", "in", "on", "at", "for", "from", "with", "by", "as", "is", "are", "was", "were", "be", "been", "being", "i", "you", "we", "they", "he", "she", "me", "my", "our", "your", "their", "it", "its", "this", "that", "these", "those", "have", "has", "had", "will", "would", "should", "can", "could", "do", "does", "did", "not", "no", "yes", "now", "also", "then", "next", "new", "topic", "back", "returning", "unrelated", "separately", "z", "ze", "w", "na", "do", "od", "o", "po", "pod", "nad", "przy", "za", "dla", "a", "ale", "lub", "czy", "i", "oraz", "jest", "sa", "są", "byl", "była", "to", "ten", "ta", "te", "tego", "tym", "moja", "moje", "nasze", "sie", "się", "tak", "nie", "teraz", "dalej", "potem", "czyli", "osobno", "temat", "tematu", "wracam", "wracajac", "wracając"]
+}
