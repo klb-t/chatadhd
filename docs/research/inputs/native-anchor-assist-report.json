@@ -1,0 +1,6474 @@
+{
+  "schema": "loom.anchor_assist_report/1",
+  "method": "unique_exact_quote_utf8_v1",
+  "rules": {
+    "method": "unique_exact_quote_utf8_v1",
+    "post_hoc_dev_only": true,
+    "quote_matching": "literal_case_sensitive_no_normalization_unique_including_overlaps",
+    "modifiable_fields": [
+      "byte_start",
+      "byte_len"
+    ],
+    "required_span_fields": [
+      "observation",
+      "quote",
+      "byte_start",
+      "byte_len"
+    ],
+    "coordinate_types": "existing_integers_not_bool",
+    "support_locations": [
+      "entity_drafts[].support",
+      "claim_drafts[].assessment.basis.support",
+      "coverage[].support",
+      "unknowns[].support"
+    ],
+    "multiple_matches": "unchanged_even_if_old_offset_was_valid",
+    "missing_or_malformed": "unchanged",
+    "duplicate_json_keys": "reject",
+    "alternative_selection": "first_only",
+    "semantic_or_identifier_repair": false,
+    "graph_promotion": false
+  },
+  "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+  "implementation_sha256": "c8b1f5ae8dd11bf232e68d3bbea20f3bffc6c26667d23b30656e36046276857a",
+  "scoring_code_sha256": {
+    "candidate_graph.py": "ade0944646c3cfc5356787612beb14657335db2067b4a705d5221b0f3810125d",
+    "candidate_graph_vocabulary.json": "0d02838638e6f82c4e5f1cc90e3842f152f4db0ac44d593721cddc8e6af8650d",
+    "live_pilot_score.py": "03bc712f285885bd6d49e57a45a114542e7033f5c80424531a4407e6fef68fee"
+  },
+  "sources": [
+    {
+      "experiment_id": "live-structure-dev-v2",
+      "manifest_sha256": "e7c047d815e92172c183e4da5c0cc598e3babeb32bdeec6f4970a389a71c2a06",
+      "ledger_file_sha256": "450d67c1621cd6fe1d603016faf439df14bfce703b0a37581a58b833b4f624c0"
+    },
+    {
+      "experiment_id": "live-structure-dev-remainder-v1",
+      "manifest_sha256": "ff5f0e59859b0853336543277bc9f708e10c2799e85ed3e52bb1f9e80fd84756",
+      "ledger_file_sha256": "cc10939e2167a8f3b94be1534cd245315a30231c8d6b2493d885081bfaa22fe4"
+    }
+  ],
+  "summary": {
+    "planned": 32,
+    "attempted": 22,
+    "status_counts": {
+      "invalid_json_unchanged": 6,
+      "assisted": 14,
+      "uncertain": 2,
+      "not_attempted": 10
+    },
+    "before": {
+      "contract_valid": 0,
+      "source_support_valid": 0,
+      "structural_exact": 0,
+      "anchored_semantic_exact": 0,
+      "semantic_exact": 0
+    },
+    "after": {
+      "contract_valid": 0,
+      "source_support_valid": 12,
+      "structural_exact": 0,
+      "anchored_semantic_exact": 0,
+      "semantic_exact": 0
+    },
+    "span_decisions": {
+      "already_exact": 26,
+      "coordinates_updated": 92,
+      "malformed_span_unchanged": 5
+    },
+    "after_first_errors": {
+      "predicate": 4,
+      "subject": 1,
+      "scope_membership": 1,
+      "handle": 2,
+      "shape": 4,
+      "literal": 2
+    }
+  },
+  "rows": [
+    {
+      "request_id": "r10555a1566bce86b80f80ded",
+      "case_id": "case_001_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "invalid_json_unchanged",
+      "response_sha256": "98f0d937342febdd1801535116e702e9eeb5922e4a9212f34f482cdeff5e9e35",
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r88abefddeed6be17389bee8c",
+      "case_id": "case_001_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "assisted",
+      "response_sha256": "ac528c99e337618dc8435effb26ad2e1bec0fcbae05841690473a24df0cbc626",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_001_en",
+        "language": "en",
+        "source_packet_sha256": "47b55fb3d0a42995e963ae6940c5107ed8e0c849171bb96c54b86ca3337790c4",
+        "bundle_sha256": "40deae1e5bb0be6f48aed7965dd2b88b36c06040dea09b17cabca1e198b227ed",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@e2.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_001_en",
+        "language": "en",
+        "source_packet_sha256": "47b55fb3d0a42995e963ae6940c5107ed8e0c849171bb96c54b86ca3337790c4",
+        "bundle_sha256": "b2e42a16824943dcc87d54fc8c0c053bb493f90a3d3fe1b3d79063dba612c519",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "predicate",
+            "path": "@c1",
+            "message": "unsupported structural predicate"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "47b55fb3d0a42995e963ae6940c5107ed8e0c849171bb96c54b86ca3337790c4",
+        "original_bundle_sha256": "40deae1e5bb0be6f48aed7965dd2b88b36c06040dea09b17cabca1e198b227ed",
+        "assisted_bundle_sha256": "b2e42a16824943dcc87d54fc8c0c053bb493f90a3d3fe1b3d79063dba612c519",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 11,
+              "byte_len": 5,
+              "quote": "Oskar"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 12,
+              "byte_len": 5,
+              "quote": "Oskar"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 6,
+              "quote": "greets"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 6,
+              "quote": "greets"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Mira greets Oskar."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 18,
+              "quote": "Mira greets Oskar."
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Mira greets Oskar."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 18,
+              "quote": "Mira greets Oskar."
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 11,
+              "byte_len": 5,
+              "quote": "Oskar"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 12,
+              "byte_len": 5,
+              "quote": "Oskar"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Mira greets Oskar."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 18,
+              "quote": "Mira greets Oskar."
+            }
+          }
+        ],
+        "decision_counts": {
+          "already_exact": 3,
+          "coordinates_updated": 5
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_001_en",
+        "entity_drafts": [
+          {
+            "handle": "@e1",
+            "kind": "term_occurrence",
+            "label": "Mira",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Mira"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 4,
+                "quote": "Mira"
+              }
+            ]
+          },
+          {
+            "handle": "@e2",
+            "kind": "term_occurrence",
+            "label": "Oskar",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Oskar"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 12,
+                "byte_len": 5,
+                "quote": "Oskar"
+              }
+            ]
+          },
+          {
+            "handle": "@e3",
+            "kind": "term_occurrence",
+            "label": "greets",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "greets"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 5,
+                "byte_len": 6,
+                "quote": "greets"
+              }
+            ]
+          },
+          {
+            "handle": "@e4",
+            "kind": "expression_occurrence",
+            "label": "Mira greets Oskar",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 18,
+                "quote": "Mira greets Oskar."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@e4",
+            "predicate": "predicate_application",
+            "object": "@e3",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 18,
+                    "quote": "Mira greets Oskar."
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@e1",
+            "predicate": "denotes",
+            "object": "",
+            "value": "Mira",
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 4,
+                    "quote": "Mira"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@e2",
+            "predicate": "denotes",
+            "object": "",
+            "value": "Oskar",
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 12,
+                    "byte_len": 5,
+                    "quote": "Oskar"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          }
+        ],
+        "roots": [
+          "@e4"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 18,
+                "quote": "Mira greets Oskar."
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@e1",
+              "@e2",
+              "@e3",
+              "@e4",
+              "@c1",
+              "@c2",
+              "@c3"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r1fc9eb1f4226c691abcc2a9a",
+      "case_id": "case_001_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "181cd117de4cbc60a78316137d537c70cc97945016da2e864ae71d90711e1bb9",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_001_pl",
+        "language": "pl",
+        "source_packet_sha256": "10f3fa05efcb75b5aece4cb1049a0f05bd2b9019ea3d235632879b3c61f9080f",
+        "bundle_sha256": "cfd9854a558b2fe0a14c17ac19768e9cb9c0b25b838815bf599987cff5cf35bb",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "subject",
+            "path": "@c1",
+            "message": "structural claim subject must be a local occurrence"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_001_pl",
+        "language": "pl",
+        "source_packet_sha256": "10f3fa05efcb75b5aece4cb1049a0f05bd2b9019ea3d235632879b3c61f9080f",
+        "bundle_sha256": "5767660fa7ab69969b6d1584a9ddb5245713cd27701f8a950bb29f40734c4b76",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "subject",
+            "path": "@c1",
+            "message": "structural claim subject must be a local occurrence"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "10f3fa05efcb75b5aece4cb1049a0f05bd2b9019ea3d235632879b3c61f9080f",
+        "original_bundle_sha256": "cfd9854a558b2fe0a14c17ac19768e9cb9c0b25b838815bf599987cff5cf35bb",
+        "assisted_bundle_sha256": "5767660fa7ab69969b6d1584a9ddb5245713cd27701f8a950bb29f40734c4b76",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 4,
+              "quote": "wita"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 4,
+              "quote": "wita"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "Oskara"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "Oskara"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Mira wita Oskara."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 17,
+              "quote": "Mira wita Oskara."
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 4,
+              "quote": "wita"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 4,
+              "quote": "wita"
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            }
+          },
+          {
+            "path": "/claim_drafts/3/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "Oskara"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "Oskara"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Mira wita Oskara."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 17,
+              "quote": "Mira wita Oskara."
+            }
+          }
+        ],
+        "decision_counts": {
+          "already_exact": 6,
+          "coordinates_updated": 2
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_001_pl",
+        "entity_drafts": [
+          {
+            "handle": "@Mira",
+            "kind": "term_occurrence",
+            "label": "Mira",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Mira"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 4,
+                "quote": "Mira"
+              }
+            ]
+          },
+          {
+            "handle": "@wita",
+            "kind": "term_occurrence",
+            "label": "wita",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "wita"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 5,
+                "byte_len": 4,
+                "quote": "wita"
+              }
+            ]
+          },
+          {
+            "handle": "@Oskara",
+            "kind": "term_occurrence",
+            "label": "Oskara",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Oskara"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 10,
+                "byte_len": 6,
+                "quote": "Oskara"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@c1",
+            "predicate": "operation_type",
+            "object": "predicate_application",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 17,
+                    "quote": "Mira wita Oskara."
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@c1",
+            "predicate": "operand",
+            "object": "@wita",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 5,
+                    "byte_len": 4,
+                    "quote": "wita"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@c1",
+            "predicate": "operand",
+            "object": "@Mira",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 4,
+                    "quote": "Mira"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@c1",
+            "predicate": "operand",
+            "object": "@Oskara",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 1
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 10,
+                    "byte_len": 6,
+                    "quote": "Oskara"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@c1"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 17,
+                "quote": "Mira wita Oskara."
+              }
+            ],
+            "status": "represented",
+            "reason": "All tokens represented as predicate application with predicate and two arguments",
+            "drafts": [
+              "@Mira",
+              "@wita",
+              "@Oskara",
+              "@c1",
+              "@c2",
+              "@c3",
+              "@c4"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r6b4b1a46dd834a5cbfe67055",
+      "case_id": "case_001_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "5104a4e79d10892e906ec14bca096f0e022aa71871fc81f19bf4188d900423a9",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_001_pl",
+        "language": "pl",
+        "source_packet_sha256": "10f3fa05efcb75b5aece4cb1049a0f05bd2b9019ea3d235632879b3c61f9080f",
+        "bundle_sha256": "3bc26d0cc707c7fb7e60bacc1db931cda18c44064906f4f5dbddedb659d4d165",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "scope_membership",
+            "path": "in_scope",
+            "message": "every non-scope occurrence needs exactly one local scope"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_001_pl",
+        "language": "pl",
+        "source_packet_sha256": "10f3fa05efcb75b5aece4cb1049a0f05bd2b9019ea3d235632879b3c61f9080f",
+        "bundle_sha256": "29abac8657b3a75d93f5dea38cf7c6c74b4cc4f27b4ded44d671395c8e5d962a",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "scope_membership",
+            "path": "in_scope",
+            "message": "every non-scope occurrence needs exactly one local scope"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "10f3fa05efcb75b5aece4cb1049a0f05bd2b9019ea3d235632879b3c61f9080f",
+        "original_bundle_sha256": "3bc26d0cc707c7fb7e60bacc1db931cda18c44064906f4f5dbddedb659d4d165",
+        "assisted_bundle_sha256": "29abac8657b3a75d93f5dea38cf7c6c74b4cc4f27b4ded44d671395c8e5d962a",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 4,
+              "quote": "Mira"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 4,
+              "quote": "wita"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 4,
+              "quote": "wita"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "Oskara"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "Oskara"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Mira wita Oskara."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 17,
+              "quote": "Mira wita Oskara."
+            }
+          }
+        ],
+        "decision_counts": {
+          "already_exact": 3,
+          "coordinates_updated": 1
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_001_pl",
+        "entity_drafts": [
+          {
+            "handle": "@e1",
+            "kind": "term_occurrence",
+            "label": "Mira",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Mira"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 4,
+                "quote": "Mira"
+              }
+            ]
+          },
+          {
+            "handle": "@e2",
+            "kind": "term_occurrence",
+            "label": "wita",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "wita"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 5,
+                "byte_len": 4,
+                "quote": "wita"
+              }
+            ]
+          },
+          {
+            "handle": "@e3",
+            "kind": "term_occurrence",
+            "label": "Oskara",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Oskara"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 10,
+                "byte_len": 6,
+                "quote": "Oskara"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [],
+        "roots": [],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 17,
+                "quote": "Mira wita Oskara."
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@e1",
+              "@e2",
+              "@e3"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r4a82faa2b6af4e57d770dd71",
+      "case_id": "case_002_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "invalid_json_unchanged",
+      "response_sha256": "f7684bdeee2a70fa70a19d3f7cf2e3bd2865e4b9b1070c195e6d242eed2f6cd0",
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r1c6d4cb41e50c3405bbbfbd2",
+      "case_id": "case_002_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "uncertain",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "ref87161b91e21575c314a1a9",
+      "case_id": "case_002_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "02fea39d2ff3b80c3692cb9695740dc3eda8b50b00e9bb93184c1509922040fd",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_002_pl",
+        "language": "pl",
+        "source_packet_sha256": "c8abe6315711e7295f19334c5677f4a9f722e45f6063ae4f487ed741cb066466",
+        "bundle_sha256": "5844bc5bd4cbb075e99ba084ff1b7fd48ab10b8193acdecd94269c22245cdbe5",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "handle",
+            "path": "bundle.entity_drafts[2]",
+            "message": "invalid local handle"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_002_pl",
+        "language": "pl",
+        "source_packet_sha256": "c8abe6315711e7295f19334c5677f4a9f722e45f6063ae4f487ed741cb066466",
+        "bundle_sha256": "c049b1cd94658d50e621a953696ba7436ebe7c706aa138eb560b08343d11d2c1",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "handle",
+            "path": "bundle.entity_drafts[2]",
+            "message": "invalid local handle"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "c8abe6315711e7295f19334c5677f4a9f722e45f6063ae4f487ed741cb066466",
+        "original_bundle_sha256": "5844bc5bd4cbb075e99ba084ff1b7fd48ab10b8193acdecd94269c22245cdbe5",
+        "assisted_bundle_sha256": "c049b1cd94658d50e621a953696ba7436ebe7c706aa138eb560b08343d11d2c1",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            }
+          },
+          {
+            "path": "/claim_drafts/3/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            }
+          },
+          {
+            "path": "/claim_drafts/3/assessment/basis/support/1",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/4/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            }
+          },
+          {
+            "path": "/claim_drafts/4/assessment/basis/support/1",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            }
+          },
+          {
+            "path": "/claim_drafts/4/assessment/basis/support/2",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/5/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 15,
+              "quote": "Lampa nie świeci."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 18,
+              "quote": "Lampa nie świeci."
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 15,
+              "quote": "Lampa nie świeci."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 18,
+              "quote": "Lampa nie świeci."
+            }
+          }
+        ],
+        "decision_counts": {
+          "already_exact": 7,
+          "coordinates_updated": 6
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_002_pl",
+        "entity_drafts": [
+          {
+            "handle": "@Lampa",
+            "kind": "term_occurrence",
+            "label": "Lampa",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Lampa"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 5,
+                "quote": "Lampa"
+              }
+            ]
+          },
+          {
+            "handle": "@nie",
+            "kind": "term_occurrence",
+            "label": "nie",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "nie"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 6,
+                "byte_len": 3,
+                "quote": "nie"
+              }
+            ]
+          },
+          {
+            "handle": "@świeci",
+            "kind": "term_occurrence",
+            "label": "świeci",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "świeci"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 10,
+                "byte_len": 7,
+                "quote": "świeci"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@świeci",
+            "predicate": "operation_type",
+            "object": "predicate",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 10,
+                    "byte_len": 7,
+                    "quote": "świeci"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@Lampa",
+            "predicate": "operation_type",
+            "object": "constant",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 5,
+                    "quote": "Lampa"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@nie",
+            "predicate": "operation_type",
+            "object": "constant",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 6,
+                    "byte_len": 3,
+                    "quote": "nie"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@e1",
+            "subject": "@świeci",
+            "predicate": "operand",
+            "object": "@Lampa",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 5,
+                    "quote": "Lampa"
+                  },
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 10,
+                    "byte_len": 7,
+                    "quote": "świeci"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@e2",
+            "subject": "@nie",
+            "predicate": "operand",
+            "object": "@e1",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 6,
+                    "byte_len": 3,
+                    "quote": "nie"
+                  },
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 5,
+                    "quote": "Lampa"
+                  },
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 10,
+                    "byte_len": 7,
+                    "quote": "świeci"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@e2",
+            "predicate": "operation_type",
+            "object": "negation",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "body",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 18,
+                    "quote": "Lampa nie świeci."
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@c4"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 18,
+                "quote": "Lampa nie świeci."
+              }
+            ],
+            "status": "represented",
+            "reason": "Complete representation of the sentence",
+            "drafts": [
+              "@Lampa",
+              "@nie",
+              "@świeci",
+              "@c1",
+              "@c2",
+              "@c3",
+              "@e1",
+              "@e2",
+              "@c4"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r629fde2d2fabcff905a26332",
+      "case_id": "case_002_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "168f6249881af647d40aa096dddc952d8b3a2d2ceead523e42582dc7caf83f91",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_002_pl",
+        "language": "pl",
+        "source_packet_sha256": "c8abe6315711e7295f19334c5677f4a9f722e45f6063ae4f487ed741cb066466",
+        "bundle_sha256": "e19f1c75d2f875e85008f95998cfafdffff382d39aed63415c765ec3d25c68ba",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@e3.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_002_pl",
+        "language": "pl",
+        "source_packet_sha256": "c8abe6315711e7295f19334c5677f4a9f722e45f6063ae4f487ed741cb066466",
+        "bundle_sha256": "1e8c3cf28665ec6548b2bb4a9e279e9eff88fb39a2d4e23aeb9211c5d614409a",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "predicate",
+            "path": "@c1",
+            "message": "unsupported structural predicate"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "c8abe6315711e7295f19334c5677f4a9f722e45f6063ae4f487ed741cb066466",
+        "original_bundle_sha256": "e19f1c75d2f875e85008f95998cfafdffff382d39aed63415c765ec3d25c68ba",
+        "assisted_bundle_sha256": "1e8c3cf28665ec6548b2bb4a9e279e9eff88fb39a2d4e23aeb9211c5d614409a",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "Lampa"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Lampa nie świeci."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 18,
+              "quote": "Lampa nie świeci."
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 3,
+              "quote": "nie"
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 16,
+              "quote": "Lampa nie świeci."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 18,
+              "quote": "Lampa nie świeci."
+            }
+          }
+        ],
+        "decision_counts": {
+          "already_exact": 3,
+          "coordinates_updated": 4
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_002_pl",
+        "entity_drafts": [
+          {
+            "handle": "@e1",
+            "kind": "term_occurrence",
+            "label": "Lampa",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Lampa"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 5,
+                "quote": "Lampa"
+              }
+            ]
+          },
+          {
+            "handle": "@e2",
+            "kind": "term_occurrence",
+            "label": "nie",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "nie"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 6,
+                "byte_len": 3,
+                "quote": "nie"
+              }
+            ]
+          },
+          {
+            "handle": "@e3",
+            "kind": "term_occurrence",
+            "label": "świeci",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "świeci"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 10,
+                "byte_len": 7,
+                "quote": "świeci"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@e1",
+            "predicate": "predicate_application",
+            "object": "",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "negative",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 18,
+                    "quote": "Lampa nie świeci."
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@e2",
+            "predicate": "negation",
+            "object": "",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "body1",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 6,
+                    "byte_len": 3,
+                    "quote": "nie"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@e3",
+            "predicate": "predicate_application",
+            "object": "",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 10,
+                    "byte_len": 7,
+                    "quote": "świeci"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          }
+        ],
+        "roots": [
+          "@e1",
+          "@e2",
+          "@e3"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 18,
+                "quote": "Lampa nie świeci."
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@e1",
+              "@e2",
+              "@e3",
+              "@c1",
+              "@c2",
+              "@c3"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "rf5d883a74346c16aa75fa483",
+      "case_id": "case_003_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "invalid_json_unchanged",
+      "response_sha256": "0647a5bbac0ca92a92270fa46978cd77d83158465abebf32a0f3a7beca155833",
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "rb22e8b388f15b9cb2f54d3a3",
+      "case_id": "case_003_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "assisted",
+      "response_sha256": "d3f87ef9a07ac456d7ab58057ea457c99b9ce404b7dec093d089d1288d0307bc",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_003_en",
+        "language": "en",
+        "source_packet_sha256": "ea73488a06cd895ad93111fac69b15a072e9546f49ff2b599607f74474a27e44",
+        "bundle_sha256": "6e9ec544ecfad8fc8f7e64b51943249d0732b1ba42d91628f75cb93f41ed842c",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@valve_opens.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_003_en",
+        "language": "en",
+        "source_packet_sha256": "ea73488a06cd895ad93111fac69b15a072e9546f49ff2b599607f74474a27e44",
+        "bundle_sha256": "dd555999441d8b9a97f2de42a73da462eed014cee5b2768c4b623c4e7ad2e8bc",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "shape",
+            "path": "@scope_if.attrs",
+            "message": "required fields: assertion_context, scope_type"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "ea73488a06cd895ad93111fac69b15a072e9546f49ff2b599607f74474a27e44",
+        "original_bundle_sha256": "6e9ec544ecfad8fc8f7e64b51943249d0732b1ba42d91628f75cb93f41ed842c",
+        "assisted_bundle_sha256": "dd555999441d8b9a97f2de42a73da462eed014cee5b2768c4b623c4e7ad2e8bc",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 4,
+              "byte_len": 11,
+              "quote": "valve opens"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 11,
+              "quote": "valve opens"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 9,
+              "quote": "bell rings"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 10,
+              "quote": "bell rings"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 32,
+              "quote": "If the valve opens, the bell rings."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 35,
+              "quote": "If the valve opens, the bell rings."
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 3,
+              "byte_len": 11,
+              "quote": "valve opens"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 11,
+              "quote": "valve opens"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 32,
+              "quote": "If the valve opens, the bell rings."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 35,
+              "quote": "If the valve opens, the bell rings."
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 4,
+              "byte_len": 11,
+              "quote": "valve opens"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 11,
+              "quote": "valve opens"
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 9,
+              "quote": "bell rings"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 10,
+              "quote": "bell rings"
+            }
+          },
+          {
+            "path": "/claim_drafts/3/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 4,
+              "byte_len": 11,
+              "quote": "valve opens"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 11,
+              "quote": "valve opens"
+            }
+          },
+          {
+            "path": "/claim_drafts/4/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 9,
+              "quote": "bell rings"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 10,
+              "quote": "bell rings"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 32,
+              "quote": "If the valve opens, the bell rings."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 35,
+              "quote": "If the valve opens, the bell rings."
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 10
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_003_en",
+        "entity_drafts": [
+          {
+            "handle": "@valve_opens",
+            "kind": "term_occurrence",
+            "label": "valve opens",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "valve opens"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 7,
+                "byte_len": 11,
+                "quote": "valve opens"
+              }
+            ]
+          },
+          {
+            "handle": "@bell_rings",
+            "kind": "term_occurrence",
+            "label": "bell rings",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "bell rings"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 24,
+                "byte_len": 10,
+                "quote": "bell rings"
+              }
+            ]
+          },
+          {
+            "handle": "@conditional",
+            "kind": "expression_occurrence",
+            "label": "If the valve opens, the bell rings",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 35,
+                "quote": "If the valve opens, the bell rings."
+              }
+            ]
+          },
+          {
+            "handle": "@scope_if",
+            "kind": "scope",
+            "label": "if clause",
+            "attrs": {
+              "scope_type": "hypothesis"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 7,
+                "byte_len": 11,
+                "quote": "valve opens"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@claim_if_valve_opens_then_bell_rings",
+            "subject": "@conditional",
+            "predicate": "operation_type",
+            "object": "conditional",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope_if",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 35,
+                    "quote": "If the valve opens, the bell rings."
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@claim_antecedent",
+            "subject": "@conditional",
+            "predicate": "operand",
+            "object": "@valve_opens",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope_if",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "antecedent",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 7,
+                    "byte_len": 11,
+                    "quote": "valve opens"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@claim_consequent",
+            "subject": "@conditional",
+            "predicate": "operand",
+            "object": "@bell_rings",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope_if",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "consequent",
+                "ordinal": 1
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 24,
+                    "byte_len": 10,
+                    "quote": "bell rings"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@claim_in_scope_if",
+            "subject": "@valve_opens",
+            "predicate": "in_scope",
+            "object": "@scope_if",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope_if",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 7,
+                    "byte_len": 11,
+                    "quote": "valve opens"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@claim_in_scope_if_2",
+            "subject": "@bell_rings",
+            "predicate": "in_scope",
+            "object": "@scope_if",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope_if",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 24,
+                    "byte_len": 10,
+                    "quote": "bell rings"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          }
+        ],
+        "roots": [
+          "@conditional"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 35,
+                "quote": "If the valve opens, the bell rings."
+              }
+            ],
+            "status": "represented",
+            "reason": "entire sentence processed",
+            "drafts": [
+              "@valve_opens",
+              "@bell_rings",
+              "@conditional",
+              "@scope_if",
+              "@claim_if_valve_opens_then_bell_rings",
+              "@claim_antecedent",
+              "@claim_consequent",
+              "@claim_in_scope_if",
+              "@claim_in_scope_if_2"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r02cde3745e704968bb2ff4dd",
+      "case_id": "case_003_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "bdc3ecffe7755c39b6532f7699a83cf7cd1b28ed2adc65d7e0144075b9ec694a",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_003_pl",
+        "language": "pl",
+        "source_packet_sha256": "0185c1d732b3e8d5e3bd078ab2837138fb45890af9818594adebe42931cbca4d",
+        "bundle_sha256": "f1282f33a81e8e3a7c76975a0e2a7117b00d0b451f25582d8214f26775c63e8e",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@zawor.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_003_pl",
+        "language": "pl",
+        "source_packet_sha256": "0185c1d732b3e8d5e3bd078ab2837138fb45890af9818594adebe42931cbca4d",
+        "bundle_sha256": "0d8eb70dd724bb0aba434362a37c92b995351bd1489bf3e81069134c139dae5b",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "literal",
+            "path": "@claim_if",
+            "message": "type claims require literal strings"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "0185c1d732b3e8d5e3bd078ab2837138fb45890af9818594adebe42931cbca4d",
+        "original_bundle_sha256": "f1282f33a81e8e3a7c76975a0e2a7117b00d0b451f25582d8214f26775c63e8e",
+        "assisted_bundle_sha256": "0d8eb70dd724bb0aba434362a37c92b995351bd1489bf3e81069134c139dae5b",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 5,
+              "quote": "zawór"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 6,
+              "quote": "zawór"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 11,
+              "byte_len": 7,
+              "quote": "otwiera"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 19,
+              "byte_len": 7,
+              "quote": "otwiera"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 7,
+              "quote": "dzwonek"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 28,
+              "byte_len": 7,
+              "quote": "dzwonek"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 28,
+              "byte_len": 6,
+              "quote": "dzwoni"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 36,
+              "byte_len": 6,
+              "quote": "dzwoni"
+            }
+          },
+          {
+            "path": "/entity_drafts/4/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 34,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 43,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            }
+          },
+          {
+            "path": "/entity_drafts/5/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 34,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 43,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 34,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 43,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 34,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 43,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 13,
+              "quote": "zawór się otwiera"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 19,
+              "quote": "zawór się otwiera"
+            }
+          },
+          {
+            "path": "/claim_drafts/3/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 5,
+              "byte_len": 13,
+              "quote": "zawór się otwiera"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 19,
+              "quote": "zawór się otwiera"
+            }
+          },
+          {
+            "path": "/claim_drafts/4/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 14,
+              "quote": "dzwonek dzwoni"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 28,
+              "byte_len": 14,
+              "quote": "dzwonek dzwoni"
+            }
+          },
+          {
+            "path": "/claim_drafts/5/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 14,
+              "quote": "dzwonek dzwoni"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 28,
+              "byte_len": 14,
+              "quote": "dzwonek dzwoni"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 34,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 43,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 13
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_003_pl",
+        "entity_drafts": [
+          {
+            "handle": "@zawor",
+            "kind": "term_occurrence",
+            "label": "zawór",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "zawór"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 7,
+                "byte_len": 6,
+                "quote": "zawór"
+              }
+            ]
+          },
+          {
+            "handle": "@otwiera",
+            "kind": "term_occurrence",
+            "label": "otwiera",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "otwiera"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 19,
+                "byte_len": 7,
+                "quote": "otwiera"
+              }
+            ]
+          },
+          {
+            "handle": "@dzwonek",
+            "kind": "term_occurrence",
+            "label": "dzwonek",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "dzwonek"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 28,
+                "byte_len": 7,
+                "quote": "dzwonek"
+              }
+            ]
+          },
+          {
+            "handle": "@dzwoni",
+            "kind": "term_occurrence",
+            "label": "dzwoni",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "dzwoni"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 36,
+                "byte_len": 6,
+                "quote": "dzwoni"
+              }
+            ]
+          },
+          {
+            "handle": "@if_scope",
+            "kind": "scope",
+            "label": "conditional scope",
+            "attrs": {
+              "scope_type": "assertion",
+              "assertion_context": "asserted"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 43,
+                "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+              }
+            ]
+          },
+          {
+            "handle": "@expr_if",
+            "kind": "expression_occurrence",
+            "label": "if expression",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 43,
+                "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@claim_if",
+            "subject": "@expr_if",
+            "predicate": "operation_type",
+            "object": "conditional",
+            "value": null,
+            "qualifiers": {
+              "scope": "@if_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 43,
+                    "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@claim_if_scope_parent",
+            "subject": "@if_scope",
+            "predicate": "scope_parent",
+            "object": "",
+            "value": null,
+            "qualifiers": {
+              "scope": "@if_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 43,
+                    "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@claim_if_predicate",
+            "subject": "@expr_if",
+            "predicate": "operand",
+            "object": "@otwiera",
+            "value": null,
+            "qualifiers": {
+              "scope": "@if_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 7,
+                    "byte_len": 19,
+                    "quote": "zawór się otwiera"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@claim_if_arg0",
+            "subject": "@expr_if",
+            "predicate": "operand",
+            "object": "@zawor",
+            "value": null,
+            "qualifiers": {
+              "scope": "@if_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 7,
+                    "byte_len": 19,
+                    "quote": "zawór się otwiera"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@claim_if_consequent_predicate",
+            "subject": "@expr_if",
+            "predicate": "operand",
+            "object": "@dzwoni",
+            "value": null,
+            "qualifiers": {
+              "scope": "@if_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "consequent_predicate",
+                "ordinal": 1
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 28,
+                    "byte_len": 14,
+                    "quote": "dzwonek dzwoni"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@claim_if_consequent_arg0",
+            "subject": "@expr_if",
+            "predicate": "operand",
+            "object": "@dzwonek",
+            "value": null,
+            "qualifiers": {
+              "scope": "@if_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "consequent_argument",
+                "ordinal": 2
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 28,
+                    "byte_len": 14,
+                    "quote": "dzwonek dzwoni"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@expr_if"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 43,
+                "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+              }
+            ],
+            "status": "represented",
+            "reason": "full sentence represented",
+            "drafts": [
+              "@zawor",
+              "@otwiera",
+              "@dzwonek",
+              "@dzwoni",
+              "@if_scope",
+              "@expr_if",
+              "@claim_if",
+              "@claim_if_scope_parent",
+              "@claim_if_predicate",
+              "@claim_if_arg0",
+              "@claim_if_consequent_predicate",
+              "@claim_if_consequent_arg0"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r0c0c032b9eecd33fa9861c3d",
+      "case_id": "case_003_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "bce5271ea025e9fddf9a22d07cc26c7a9bba5408b1dff4b8b1e049ef0a38852c",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_003_pl",
+        "language": "pl",
+        "source_packet_sha256": "0185c1d732b3e8d5e3bd078ab2837138fb45890af9818594adebe42931cbca4d",
+        "bundle_sha256": "75fea72621db2796eb1a9e8935549e0a3c07d683da3d4282d444869491851d1c",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@e1.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_003_pl",
+        "language": "pl",
+        "source_packet_sha256": "0185c1d732b3e8d5e3bd078ab2837138fb45890af9818594adebe42931cbca4d",
+        "bundle_sha256": "eb93b547d081ff0a979c558ab1f9c9bbb381217b0c4858bef378c20b22792644",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "shape",
+            "path": "@s1.attrs",
+            "message": "required fields: assertion_context, scope_type"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "0185c1d732b3e8d5e3bd078ab2837138fb45890af9818594adebe42931cbca4d",
+        "original_bundle_sha256": "75fea72621db2796eb1a9e8935549e0a3c07d683da3d4282d444869491851d1c",
+        "assisted_bundle_sha256": "eb93b547d081ff0a979c558ab1f9c9bbb381217b0c4858bef378c20b22792644",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 5,
+              "quote": "zawór"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 6,
+              "quote": "zawór"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 6,
+              "byte_len": 9,
+              "quote": "się otwiera"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 14,
+              "byte_len": 12,
+              "quote": "się otwiera"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 17,
+              "byte_len": 6,
+              "quote": "dzwonek"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 28,
+              "byte_len": 7,
+              "quote": "dzwonek"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 25,
+              "byte_len": 5,
+              "quote": "dzwoni"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 36,
+              "byte_len": 6,
+              "quote": "dzwoni"
+            }
+          },
+          {
+            "path": "/entity_drafts/4/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 30,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 43,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 30,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 43,
+              "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 6
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_003_pl",
+        "entity_drafts": [
+          {
+            "handle": "@e1",
+            "kind": "term_occurrence",
+            "label": "zawór",
+            "attrs": {
+              "term_type": "variable",
+              "symbol": "zawór"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 7,
+                "byte_len": 6,
+                "quote": "zawór"
+              }
+            ]
+          },
+          {
+            "handle": "@e2",
+            "kind": "term_occurrence",
+            "label": "się otwiera",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "się otwiera"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 14,
+                "byte_len": 12,
+                "quote": "się otwiera"
+              }
+            ]
+          },
+          {
+            "handle": "@e3",
+            "kind": "term_occurrence",
+            "label": "dzwonek",
+            "attrs": {
+              "term_type": "variable",
+              "symbol": "dzwonek"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 28,
+                "byte_len": 7,
+                "quote": "dzwonek"
+              }
+            ]
+          },
+          {
+            "handle": "@e4",
+            "kind": "term_occurrence",
+            "label": "dzwoni",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "dzwoni"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 36,
+                "byte_len": 6,
+                "quote": "dzwoni"
+              }
+            ]
+          },
+          {
+            "handle": "@s1",
+            "kind": "scope",
+            "label": "conditional",
+            "attrs": {
+              "scope_type": "hypothesis"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 43,
+                "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@e1",
+            "predicate": "bound_to",
+            "object": "@b1",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "unknown",
+                "assertion_context": "hypothetical",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@e2",
+            "predicate": "denotes",
+            "object": "",
+            "value": "się otwiera",
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@e3",
+            "predicate": "bound_to",
+            "object": "@b2",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "unknown",
+                "assertion_context": "hypothetical",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@e4",
+            "predicate": "denotes",
+            "object": "",
+            "value": "dzwoni",
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          },
+          {
+            "handle": "@c5",
+            "subject": "@e2",
+            "predicate": "predicate_application",
+            "object": "@e1",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          },
+          {
+            "handle": "@c6",
+            "subject": "@e4",
+            "predicate": "predicate_application",
+            "object": "@e3",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          },
+          {
+            "handle": "@c7",
+            "subject": "@e2",
+            "predicate": "conditional",
+            "object": "@e4",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "antecedent1",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          },
+          {
+            "handle": "@c8",
+            "subject": "@e4",
+            "predicate": "conditional",
+            "object": "@e2",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "hypothetical",
+                "port": "consequent1",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": []
+              },
+              "premises": {}
+            }
+          }
+        ],
+        "roots": [
+          "@e2",
+          "@e4"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 43,
+                "quote": "Jeśli zawór się otwiera, dzwonek dzwoni."
+              }
+            ],
+            "status": "represented",
+            "reason": "full text covered",
+            "drafts": [
+              "@e1",
+              "@e2",
+              "@e3",
+              "@e4",
+              "@s1",
+              "@c1",
+              "@c2",
+              "@c3",
+              "@c4",
+              "@c5",
+              "@c6",
+              "@c7",
+              "@c8"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r82c8b2d8fb6b95f73b212e16",
+      "case_id": "case_004_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "invalid_json_unchanged",
+      "response_sha256": "bb66fd8b98c128691fb2335f05530f734ea375508eeea9fde31a069a3039402e",
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "rf1e2df95d9bc5c728d527841",
+      "case_id": "case_004_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "assisted",
+      "response_sha256": "3664db3fbea9ab533e6cbda7f86002fa6742b478b8389b7855fb74cc66d4324b",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_004_en",
+        "language": "en",
+        "source_packet_sha256": "762354bc14524e6a6c3853a535ddaadc5a0911a346dc62fcff226ebdfd288d47",
+        "bundle_sha256": "5506c0cd807e226abb00ba03326b0e3e0d7d9a257e0767dd822974bf5cb04576",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@kettle_whistles.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_004_en",
+        "language": "en",
+        "source_packet_sha256": "762354bc14524e6a6c3853a535ddaadc5a0911a346dc62fcff226ebdfd288d47",
+        "bundle_sha256": "98a08cc139bb078132cb6d7fd5dbf9b87802529e84cd655e6a2825ffb56c5d9b",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "predicate",
+            "path": "@claim_1",
+            "message": "unsupported structural predicate"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "762354bc14524e6a6c3853a535ddaadc5a0911a346dc62fcff226ebdfd288d47",
+        "original_bundle_sha256": "5506c0cd807e226abb00ba03326b0e3e0d7d9a257e0767dd822974bf5cb04576",
+        "assisted_bundle_sha256": "98a08cc139bb078132cb6d7fd5dbf9b87802529e84cd655e6a2825ffb56c5d9b",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 15,
+              "quote": "The kettle whistles"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 19,
+              "quote": "The kettle whistles"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 17,
+              "byte_len": 14,
+              "quote": "the lamp glows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 14,
+              "quote": "the lamp glows"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 4,
+              "byte_len": 6,
+              "quote": "kettle"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 4,
+              "byte_len": 6,
+              "quote": "kettle"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 22,
+              "byte_len": 4,
+              "quote": "lamp"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 28,
+              "byte_len": 4,
+              "quote": "lamp"
+            }
+          },
+          {
+            "path": "/entity_drafts/4/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 11,
+              "byte_len": 8,
+              "quote": "whistles"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 11,
+              "byte_len": 8,
+              "quote": "whistles"
+            }
+          },
+          {
+            "path": "/entity_drafts/5/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 27,
+              "byte_len": 5,
+              "quote": "glows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 33,
+              "byte_len": 5,
+              "quote": "glows"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 15,
+              "quote": "The kettle whistles"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 19,
+              "quote": "The kettle whistles"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 17,
+              "byte_len": 14,
+              "quote": "the lamp glows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 14,
+              "quote": "the lamp glows"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 15,
+              "quote": "The kettle whistles"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 19,
+              "quote": "The kettle whistles"
+            }
+          },
+          {
+            "path": "/coverage/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 17,
+              "byte_len": 14,
+              "quote": "the lamp glows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 14,
+              "quote": "the lamp glows"
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 8,
+          "already_exact": 2
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_004_en",
+        "entity_drafts": [
+          {
+            "handle": "@kettle_whistles",
+            "kind": "expression_occurrence",
+            "label": "kettle whistles",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 19,
+                "quote": "The kettle whistles"
+              }
+            ]
+          },
+          {
+            "handle": "@lamp_glow",
+            "kind": "expression_occurrence",
+            "label": "lamp glows",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 24,
+                "byte_len": 14,
+                "quote": "the lamp glows"
+              }
+            ]
+          },
+          {
+            "handle": "@kettle",
+            "kind": "term_occurrence",
+            "label": "kettle",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "kettle"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 4,
+                "byte_len": 6,
+                "quote": "kettle"
+              }
+            ]
+          },
+          {
+            "handle": "@lamp",
+            "kind": "term_occurrence",
+            "label": "lamp",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "lamp"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 28,
+                "byte_len": 4,
+                "quote": "lamp"
+              }
+            ]
+          },
+          {
+            "handle": "@whistles",
+            "kind": "term_occurrence",
+            "label": "whistles",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "whistles"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 11,
+                "byte_len": 8,
+                "quote": "whistles"
+              }
+            ]
+          },
+          {
+            "handle": "@glows",
+            "kind": "term_occurrence",
+            "label": "glows",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "glows"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 33,
+                "byte_len": 5,
+                "quote": "glows"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@claim_1",
+            "subject": "@kettle_whistles",
+            "predicate": "predicate_application",
+            "object": "",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope_1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 19,
+                    "quote": "The kettle whistles"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@claim_2",
+            "subject": "@lamp_glow",
+            "predicate": "predicate_application",
+            "object": "",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope_2",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 24,
+                    "byte_len": 14,
+                    "quote": "the lamp glows"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          }
+        ],
+        "roots": [
+          "@kettle_whistles",
+          "@lamp_glow"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 19,
+                "quote": "The kettle whistles"
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@kettle_whistles"
+            ]
+          },
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 24,
+                "byte_len": 14,
+                "quote": "the lamp glows"
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@lamp_glow"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r7e5d4863dbd63230e3271808",
+      "case_id": "case_004_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "24256fe3dd499b6300d36eb9673e09997aab6ab06a69170f52160b7b3155371e",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_004_pl",
+        "language": "pl",
+        "source_packet_sha256": "45d712cb5e7ab0c6b418422aae61537ce98f3eec1c27fbbce7d0ad14087a15d3",
+        "bundle_sha256": "d781ec3adee73816fa7ae71aee970c7a2b753e063fa55cab4c3d73f18db033c2",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "handle",
+            "path": "bundle.entity_drafts[1]",
+            "message": "invalid local handle"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_004_pl",
+        "language": "pl",
+        "source_packet_sha256": "45d712cb5e7ab0c6b418422aae61537ce98f3eec1c27fbbce7d0ad14087a15d3",
+        "bundle_sha256": "3865bdca8d324bcf3e0a848996d3f18de35c11bd66a985a778ab75b710b71452",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "handle",
+            "path": "bundle.entity_drafts[1]",
+            "message": "invalid local handle"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "45d712cb5e7ab0c6b418422aae61537ce98f3eec1c27fbbce7d0ad14087a15d3",
+        "original_bundle_sha256": "d781ec3adee73816fa7ae71aee970c7a2b753e063fa55cab4c3d73f18db033c2",
+        "assisted_bundle_sha256": "3865bdca8d324bcf3e0a848996d3f18de35c11bd66a985a778ab75b710b71452",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 7,
+              "quote": "Czajnik"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 7,
+              "quote": "Czajnik"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 8,
+              "byte_len": 8,
+              "quote": "gwiżdże"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 8,
+              "byte_len": 9,
+              "quote": "gwiżdże"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 17,
+              "byte_len": 5,
+              "quote": "lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 5,
+              "quote": "lampa"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 26,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 8,
+              "byte_len": 8,
+              "quote": "gwiżdże"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 8,
+              "byte_len": 9,
+              "quote": "gwiżdże"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "already_exact",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 7,
+              "quote": "Czajnik"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 7,
+              "quote": "Czajnik"
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 26,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/3/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 17,
+              "byte_len": 5,
+              "quote": "lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 5,
+              "quote": "lampa"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 31,
+              "quote": "Czajnik gwiżdże i lampa świeci."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 34,
+              "quote": "Czajnik gwiżdże i lampa świeci."
+            }
+          }
+        ],
+        "decision_counts": {
+          "already_exact": 2,
+          "coordinates_updated": 7
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_004_pl",
+        "entity_drafts": [
+          {
+            "handle": "@e_Czajnik",
+            "kind": "term_occurrence",
+            "label": "Czajnik",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Czajnik"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 7,
+                "quote": "Czajnik"
+              }
+            ]
+          },
+          {
+            "handle": "@e_gwiżdże",
+            "kind": "term_occurrence",
+            "label": "gwiżdże",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "gwiżdże"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 8,
+                "byte_len": 9,
+                "quote": "gwiżdże"
+              }
+            ]
+          },
+          {
+            "handle": "@e_lampa",
+            "kind": "term_occurrence",
+            "label": "lampa",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "lampa"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 20,
+                "byte_len": 5,
+                "quote": "lampa"
+              }
+            ]
+          },
+          {
+            "handle": "@e_świeci",
+            "kind": "term_occurrence",
+            "label": "świeci",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "świeci"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 26,
+                "byte_len": 7,
+                "quote": "świeci"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@e_gwiżdże",
+            "predicate": "operation_type",
+            "object": "predicate_application",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 8,
+                    "byte_len": 9,
+                    "quote": "gwiżdże"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@c1",
+            "predicate": "operand",
+            "object": "@e_Czajnik",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 7,
+                    "quote": "Czajnik"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@e_świeci",
+            "predicate": "operation_type",
+            "object": "predicate_application",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 26,
+                    "byte_len": 7,
+                    "quote": "świeci"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@c3",
+            "predicate": "operand",
+            "object": "@e_lampa",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 20,
+                    "byte_len": 5,
+                    "quote": "lampa"
+                  }
+                ],
+                "premises": {
+                  "claims": []
+                }
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@c1",
+          "@c3"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 34,
+                "quote": "Czajnik gwiżdże i lampa świeci."
+              }
+            ],
+            "status": "represented",
+            "reason": "All terms and predicate applications represented",
+            "drafts": [
+              "@e_Czajnik",
+              "@e_gwiżdże",
+              "@e_lampa",
+              "@e_świeci",
+              "@c1",
+              "@c2",
+              "@c3",
+              "@c4"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "ra1d30926e84b10322223617c",
+      "case_id": "case_004_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "ced3b265bc66892adb68e131006dbbba0e2a045ba704a8b332310b3c22d1d7fc",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_004_pl",
+        "language": "pl",
+        "source_packet_sha256": "45d712cb5e7ab0c6b418422aae61537ce98f3eec1c27fbbce7d0ad14087a15d3",
+        "bundle_sha256": "75835d1e310c599ce8181689e6124d8add0d7027e4e1712450e3301dcdac18eb",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@e1.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_004_pl",
+        "language": "pl",
+        "source_packet_sha256": "45d712cb5e7ab0c6b418422aae61537ce98f3eec1c27fbbce7d0ad14087a15d3",
+        "bundle_sha256": "32b4acb3d0d9fe9798602e85c70585e79fc91c34d4a6d7f30a43d489d4714dd2",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "predicate",
+            "path": "@c1",
+            "message": "unsupported structural predicate"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "45d712cb5e7ab0c6b418422aae61537ce98f3eec1c27fbbce7d0ad14087a15d3",
+        "original_bundle_sha256": "75835d1e310c599ce8181689e6124d8add0d7027e4e1712450e3301dcdac18eb",
+        "assisted_bundle_sha256": "32b4acb3d0d9fe9798602e85c70585e79fc91c34d4a6d7f30a43d489d4714dd2",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 6,
+              "quote": "Czajnik"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 7,
+              "quote": "Czajnik"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 7,
+              "byte_len": 7,
+              "quote": "gwiżdże"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 8,
+              "byte_len": 9,
+              "quote": "gwiżdże"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 15,
+              "byte_len": 5,
+              "quote": "lampa"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 5,
+              "quote": "lampa"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 21,
+              "byte_len": 6,
+              "quote": "świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 26,
+              "byte_len": 7,
+              "quote": "świeci"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 14,
+              "quote": "Czajnik gwiżdże"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 17,
+              "quote": "Czajnik gwiżdże"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 15,
+              "byte_len": 12,
+              "quote": "lampa świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 13,
+              "quote": "lampa świeci"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 14,
+              "quote": "Czajnik gwiżdże"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 17,
+              "quote": "Czajnik gwiżdże"
+            }
+          },
+          {
+            "path": "/coverage/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 15,
+              "byte_len": 12,
+              "quote": "lampa świeci"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 13,
+              "quote": "lampa świeci"
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 8
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_004_pl",
+        "entity_drafts": [
+          {
+            "handle": "@e1",
+            "kind": "term_occurrence",
+            "label": "Czajnik",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Czajnik"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 7,
+                "quote": "Czajnik"
+              }
+            ]
+          },
+          {
+            "handle": "@e2",
+            "kind": "term_occurrence",
+            "label": "gwiżdże",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "gwiżdże"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 8,
+                "byte_len": 9,
+                "quote": "gwiżdże"
+              }
+            ]
+          },
+          {
+            "handle": "@e3",
+            "kind": "term_occurrence",
+            "label": "lampa",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "lampa"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 20,
+                "byte_len": 5,
+                "quote": "lampa"
+              }
+            ]
+          },
+          {
+            "handle": "@e4",
+            "kind": "term_occurrence",
+            "label": "świeci",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "świeci"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 26,
+                "byte_len": 7,
+                "quote": "świeci"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@e1",
+            "predicate": "predicate_application",
+            "object": "@e2",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 0,
+                    "byte_len": 17,
+                    "quote": "Czajnik gwiżdże"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@e3",
+            "predicate": "predicate_application",
+            "object": "@e4",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 20,
+                    "byte_len": 13,
+                    "quote": "lampa świeci"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          }
+        ],
+        "roots": [
+          "@e1",
+          "@e3"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 17,
+                "quote": "Czajnik gwiżdże"
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@e1",
+              "@e2",
+              "@c1"
+            ]
+          },
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 20,
+                "byte_len": 13,
+                "quote": "lampa świeci"
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@e3",
+              "@e4",
+              "@c2"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "rfc0732d91c1feb0fae929ebd",
+      "case_id": "case_005_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "assisted",
+      "response_sha256": "407ffb5a8cdb152818e458c00e9614f777a0d813069701d1d796a86e96ad5c8b",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_005_en",
+        "language": "en",
+        "source_packet_sha256": "7502730947df66f36aa763589f57faefcf4a3b875d2e5b24721b242e2c2970ef",
+        "bundle_sha256": "a18707e30584c5a7c003539d2bba7c618b1fd06a8cd3fa10c2dbaff308b48444",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@Lena.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_005_en",
+        "language": "en",
+        "source_packet_sha256": "7502730947df66f36aa763589f57faefcf4a3b875d2e5b24721b242e2c2970ef",
+        "bundle_sha256": "686dfc0fadac4ab78ce7a8dee2c937d976471e0380097cb1d9874930a8ef713f",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "literal",
+            "path": "@c1",
+            "message": "type claims require literal strings"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "7502730947df66f36aa763589f57faefcf4a3b875d2e5b24721b242e2c2970ef",
+        "original_bundle_sha256": "a18707e30584c5a7c003539d2bba7c618b1fd06a8cd3fa10c2dbaff308b48444",
+        "assisted_bundle_sha256": "686dfc0fadac4ab78ce7a8dee2c937d976471e0380097cb1d9874930a8ef713f",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 4,
+              "quote": "Lena"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 19,
+              "byte_len": 4,
+              "quote": "Lena"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 20,
+              "byte_len": 4,
+              "quote": "Igor"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 32,
+              "byte_len": 4,
+              "quote": "Igor"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 15,
+              "byte_len": 7,
+              "quote": "follows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 7,
+              "quote": "follows"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15,
+              "quote": "Lena follows Igor"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 19,
+              "byte_len": 17,
+              "quote": "Lena follows Igor"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "malformed_span_unchanged",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "malformed_span_unchanged",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            }
+          },
+          {
+            "path": "/claim_drafts/2/assessment/basis/support/0",
+            "decision": "malformed_span_unchanged",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            }
+          },
+          {
+            "path": "/claim_drafts/3/assessment/basis/support/0",
+            "decision": "malformed_span_unchanged",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 9,
+              "byte_len": 15
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "malformed_span_unchanged",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 24
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 24
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 4,
+          "malformed_span_unchanged": 5
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_005_en",
+        "entity_drafts": [
+          {
+            "handle": "@Lena",
+            "kind": "term_occurrence",
+            "label": "Lena",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Lena"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 19,
+                "byte_len": 4,
+                "quote": "Lena"
+              }
+            ]
+          },
+          {
+            "handle": "@Igor",
+            "kind": "term_occurrence",
+            "label": "Igor",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Igor"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 32,
+                "byte_len": 4,
+                "quote": "Igor"
+              }
+            ]
+          },
+          {
+            "handle": "@follows",
+            "kind": "term_occurrence",
+            "label": "follows",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "follows"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 24,
+                "byte_len": 7,
+                "quote": "follows"
+              }
+            ]
+          },
+          {
+            "handle": "@expr1",
+            "kind": "expression_occurrence",
+            "label": "Lena follows Igor",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 19,
+                "byte_len": 17,
+                "quote": "Lena follows Igor"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@expr1",
+            "predicate": "operation_type",
+            "object": "predicate_application",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "quoted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 9,
+                    "byte_len": 15
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@expr1",
+            "predicate": "operand",
+            "object": "@follows",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "quoted",
+                "port": "0"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 9,
+                    "byte_len": 15
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@expr1",
+            "predicate": "operand",
+            "object": "@Lena",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "quoted",
+                "port": "1"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 9,
+                    "byte_len": 15
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@expr1",
+            "predicate": "operand",
+            "object": "@Igor",
+            "value": null,
+            "qualifiers": {
+              "scope": "@scope0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "quoted",
+                "port": "2"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 9,
+                    "byte_len": 15
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@expr1"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 24
+              }
+            ],
+            "status": "represented",
+            "reason": "All terms and predicate application represented",
+            "drafts": [
+              "@Lena",
+              "@Igor",
+              "@follows",
+              "@expr1",
+              "@c1",
+              "@c2",
+              "@c3",
+              "@c4"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "r7cfa36e54191eed004cb0c0c",
+      "case_id": "case_005_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "assisted",
+      "response_sha256": "4e7bd1852933549122e4c4e25c76ec10ce6d1b8f8f9f7d3cd3aa955d8640a8bc",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_005_en",
+        "language": "en",
+        "source_packet_sha256": "7502730947df66f36aa763589f57faefcf4a3b875d2e5b24721b242e2c2970ef",
+        "bundle_sha256": "7c2d3a001da8a60eecbd7c5d855e8a4cf45a8cfcec076606568f94043a69e338",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "utf8_boundary",
+            "path": "@e0.support[0]",
+            "message": "span splits a UTF-8 code point"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_005_en",
+        "language": "en",
+        "source_packet_sha256": "7502730947df66f36aa763589f57faefcf4a3b875d2e5b24721b242e2c2970ef",
+        "bundle_sha256": "2bfb2e2fde77ebc4fcf46b33fa430b25437b51e7ef26a3894a4adac51a8ef84b",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "shape",
+            "path": "@s0.attrs",
+            "message": "required fields: assertion_context, scope_type"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "7502730947df66f36aa763589f57faefcf4a3b875d2e5b24721b242e2c2970ef",
+        "original_bundle_sha256": "7c2d3a001da8a60eecbd7c5d855e8a4cf45a8cfcec076606568f94043a69e338",
+        "assisted_bundle_sha256": "2bfb2e2fde77ebc4fcf46b33fa430b25437b51e7ef26a3894a4adac51a8ef84b",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 18,
+              "byte_len": 4,
+              "quote": "Lena"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 19,
+              "byte_len": 4,
+              "quote": "Lena"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 27,
+              "byte_len": 4,
+              "quote": "Igor"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 32,
+              "byte_len": 4,
+              "quote": "Igor"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 7,
+              "quote": "follows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 7,
+              "quote": "follows"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 13,
+              "byte_len": 18,
+              "quote": "“Lena follows Igor.”"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 16,
+              "byte_len": 24,
+              "quote": "“Lena follows Igor.”"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 18,
+              "byte_len": 4,
+              "quote": "Lena"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 19,
+              "byte_len": 4,
+              "quote": "Lena"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/1",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 7,
+              "quote": "follows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 7,
+              "quote": "follows"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 23,
+              "byte_len": 7,
+              "quote": "follows"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 24,
+              "byte_len": 7,
+              "quote": "follows"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/1",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 27,
+              "byte_len": 4,
+              "quote": "Igor"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 32,
+              "byte_len": 4,
+              "quote": "Igor"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 13,
+              "byte_len": 18,
+              "quote": "“Lena follows Igor.”"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 16,
+              "byte_len": 24,
+              "quote": "“Lena follows Igor.”"
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 9
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_005_en",
+        "entity_drafts": [
+          {
+            "handle": "@e0",
+            "kind": "term_occurrence",
+            "label": "Lena",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Lena"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 19,
+                "byte_len": 4,
+                "quote": "Lena"
+              }
+            ]
+          },
+          {
+            "handle": "@e1",
+            "kind": "term_occurrence",
+            "label": "Igor",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Igor"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 32,
+                "byte_len": 4,
+                "quote": "Igor"
+              }
+            ]
+          },
+          {
+            "handle": "@e2",
+            "kind": "term_occurrence",
+            "label": "follows",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "follows"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 24,
+                "byte_len": 7,
+                "quote": "follows"
+              }
+            ]
+          },
+          {
+            "handle": "@s0",
+            "kind": "scope",
+            "label": "quotation",
+            "attrs": {
+              "scope_type": "quotation"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 16,
+                "byte_len": 24,
+                "quote": "“Lena follows Igor.”"
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c0",
+            "subject": "@e0",
+            "predicate": "predicate_application",
+            "object": "@e2",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "quoted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 19,
+                    "byte_len": 4,
+                    "quote": "Lena"
+                  },
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 24,
+                    "byte_len": 7,
+                    "quote": "follows"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@c1",
+            "subject": "@e2",
+            "predicate": "predicate_application",
+            "object": "@e1",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s0",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "quoted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 24,
+                    "byte_len": 7,
+                    "quote": "follows"
+                  },
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 32,
+                    "byte_len": 4,
+                    "quote": "Igor"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          }
+        ],
+        "roots": [
+          "@c0",
+          "@c1"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 16,
+                "byte_len": 24,
+                "quote": "“Lena follows Igor.”"
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@e0",
+              "@e1",
+              "@e2",
+              "@s0",
+              "@c0",
+              "@c1"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "ra17790436df48fee78b0f17d",
+      "case_id": "case_005_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "invalid_json_unchanged",
+      "response_sha256": "b0aa6d1306dbfdd741e442eceae844f068b42cfc2bbe40e6aa5bf83c69e475ce",
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r4a10123d9359cd62240aff78",
+      "case_id": "case_005_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "assisted",
+      "response_sha256": "2edbecc3683f6d920c015b58cd27b5fc0f80fa91ece7bfe54824c6e2c3c81b7a",
+      "before": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_005_pl",
+        "language": "pl",
+        "source_packet_sha256": "678e7965b702fd32cd6976a4f15d3fd9614b51266fb7decdea1ff0ba2bef2ebd",
+        "bundle_sha256": "182702ab131f777374e2e197648602ef68f3890fb03f88f50594496dfa31ef21",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": false,
+        "errors": [
+          {
+            "code": "quote_mismatch",
+            "path": "@e1.support[0]",
+            "message": "quote differs from exact observation bytes"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "after": {
+        "schema": "loom.live_pilot_score/1",
+        "case_id": "case_005_pl",
+        "language": "pl",
+        "source_packet_sha256": "678e7965b702fd32cd6976a4f15d3fd9614b51266fb7decdea1ff0ba2bef2ebd",
+        "bundle_sha256": "22d0e0b7358ef0af25bf91f8c2a03180f77512c143f54257a4c71cb51a361195",
+        "expected": "represented",
+        "envelope_valid": true,
+        "contract_valid": false,
+        "source_support_valid": true,
+        "errors": [
+          {
+            "code": "shape",
+            "path": "@s1.attrs",
+            "message": "required fields: assertion_context, scope_type"
+          }
+        ],
+        "coverage": {
+          "representation_status": "unknown",
+          "semantic_accuracy": null
+        },
+        "represented": false,
+        "abstained": false,
+        "structural_exact": false,
+        "anchored_semantic_exact": false,
+        "semantic_exact": false,
+        "projection": [],
+        "unresolved_anchors": [],
+        "nonpositive_claim_count": 0,
+        "no_model_judge": true,
+        "no_inference": true,
+        "no_persistence": true
+      },
+      "audit": {
+        "method": "unique_exact_quote_utf8_v1",
+        "rules_sha256": "bfbfce8fd95a455d84511594a71eeecf6580c25c42dab256623d19fe1841a877",
+        "source_packet_sha256": "678e7965b702fd32cd6976a4f15d3fd9614b51266fb7decdea1ff0ba2bef2ebd",
+        "original_bundle_sha256": "182702ab131f777374e2e197648602ef68f3890fb03f88f50594496dfa31ef21",
+        "assisted_bundle_sha256": "22d0e0b7358ef0af25bf91f8c2a03180f77512c143f54257a4c71cb51a361195",
+        "spans": [
+          {
+            "path": "/entity_drafts/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 15,
+              "byte_len": 4,
+              "quote": "Lena"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 22,
+              "byte_len": 4,
+              "quote": "Lena"
+            }
+          },
+          {
+            "path": "/entity_drafts/1/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 21,
+              "byte_len": 5,
+              "quote": "Igora"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 35,
+              "byte_len": 5,
+              "quote": "Igora"
+            }
+          },
+          {
+            "path": "/entity_drafts/2/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 5,
+              "quote": "śledzi"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 27,
+              "byte_len": 7,
+              "quote": "śledzi"
+            }
+          },
+          {
+            "path": "/entity_drafts/3/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 26,
+              "quote": "Cytowany fragment: „Lena śledzi Igora”."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 44,
+              "quote": "Cytowany fragment: „Lena śledzi Igora”."
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 15,
+              "byte_len": 4,
+              "quote": "Lena"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 22,
+              "byte_len": 4,
+              "quote": "Lena"
+            }
+          },
+          {
+            "path": "/claim_drafts/0/assessment/basis/support/1",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 5,
+              "quote": "śledzi"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 27,
+              "byte_len": 7,
+              "quote": "śledzi"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 10,
+              "byte_len": 5,
+              "quote": "śledzi"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 27,
+              "byte_len": 7,
+              "quote": "śledzi"
+            }
+          },
+          {
+            "path": "/claim_drafts/1/assessment/basis/support/1",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 21,
+              "byte_len": 5,
+              "quote": "Igora"
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 35,
+              "byte_len": 5,
+              "quote": "Igora"
+            }
+          },
+          {
+            "path": "/coverage/0/support/0",
+            "decision": "coordinates_updated",
+            "old": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 26,
+              "quote": "Cytowany fragment: „Lena śledzi Igora”."
+            },
+            "new": {
+              "observation": "ob_source",
+              "byte_start": 0,
+              "byte_len": 44,
+              "quote": "Cytowany fragment: „Lena śledzi Igora”."
+            }
+          }
+        ],
+        "decision_counts": {
+          "coordinates_updated": 9
+        }
+      },
+      "assisted_bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "live-structure-v1:case_005_pl",
+        "entity_drafts": [
+          {
+            "handle": "@e1",
+            "kind": "term_occurrence",
+            "label": "Lena",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Lena"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 22,
+                "byte_len": 4,
+                "quote": "Lena"
+              }
+            ]
+          },
+          {
+            "handle": "@e2",
+            "kind": "term_occurrence",
+            "label": "Igora",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "Igora"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 35,
+                "byte_len": 5,
+                "quote": "Igora"
+              }
+            ]
+          },
+          {
+            "handle": "@e3",
+            "kind": "term_occurrence",
+            "label": "śledzi",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "śledzi"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 27,
+                "byte_len": 7,
+                "quote": "śledzi"
+              }
+            ]
+          },
+          {
+            "handle": "@s1",
+            "kind": "scope",
+            "label": "assertion",
+            "attrs": {
+              "scope_type": "assertion"
+            },
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Cytowany fragment: „Lena śledzi Igora”."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@e1",
+            "predicate": "predicate_application",
+            "object": "@e3",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 22,
+                    "byte_len": 4,
+                    "quote": "Lena"
+                  },
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 27,
+                    "byte_len": 7,
+                    "quote": "śledzi"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@e3",
+            "predicate": "predicate_application",
+            "object": "@e2",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s1",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "only operand",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 27,
+                    "byte_len": 7,
+                    "quote": "śledzi"
+                  },
+                  {
+                    "observation": "ob_source",
+                    "byte_start": 35,
+                    "byte_len": 5,
+                    "quote": "Igora"
+                  }
+                ]
+              },
+              "premises": []
+            }
+          }
+        ],
+        "roots": [
+          "@e1",
+          "@e2",
+          "@e3"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_source",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Cytowany fragment: „Lena śledzi Igora”."
+              }
+            ],
+            "status": "represented",
+            "reason": "",
+            "drafts": [
+              "@e1",
+              "@e2",
+              "@e3",
+              "@s1",
+              "@c1",
+              "@c2"
+            ]
+          }
+        ],
+        "unknowns": []
+      }
+    },
+    {
+      "request_id": "re7f85a359a981966a4644169",
+      "case_id": "case_006_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "invalid_json_unchanged",
+      "response_sha256": "2825bbd6e05903ee5fec0f8af8831e0d6557817b630c8f769d9efc785ab9ccbb",
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r53d37c7680bb73cd6c0708c2",
+      "case_id": "case_006_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "uncertain",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r032f9112e22b366a4cbe203b",
+      "case_id": "case_006_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "re20dfa671983458f2c23e421",
+      "case_id": "case_006_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r2350b69068b263d506ca5df1",
+      "case_id": "case_007_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "rab6516b32928517b3b03d4d7",
+      "case_id": "case_007_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "rba24a788e14936412682c116",
+      "case_id": "case_007_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r9e0de0f23b8c93567c29c5a2",
+      "case_id": "case_007_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r9b47e1a036d891988e14d3fa",
+      "case_id": "case_008_en",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "en",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "r134d97ce82cf1372079ba672",
+      "case_id": "case_008_en",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "en",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "re0d55ac146132144a8163374",
+      "case_id": "case_008_pl",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "language": "pl",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    },
+    {
+      "request_id": "rcac3f8958e61f59e9b5f6041",
+      "case_id": "case_008_pl",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "siliconflow/fp8",
+      "language": "pl",
+      "status": "not_attempted",
+      "response_sha256": null,
+      "before": null,
+      "after": null,
+      "audit": null
+    }
+  ],
+  "post_hoc_dev_only": true,
+  "model_calls": 0,
+  "original_responses_modified": false,
+  "no_graph_promotion": true
+}

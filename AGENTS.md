@@ -1,5 +1,13 @@
 # ChatADHD / Loom continuation
 
+**Local access recovered (2026-09-28):** encrypted credential received and consumed
+without exposing it; OpenRouter endpoint and USD 2 nonresetting key preflight
+passed. User action is no longer needed. The frozen 48-pair Jev experiment is
+running locally; repository request switches remain disabled and Actions remain
+unused. Native Debug build completed all 189 targets. Initial CTest: 70/72;
+one known catalog recall failure, one missing evaluation harness being restored.
+No model-quality result is claimed until saved first responses are scored.
+
 **Local build recovery:** source/dependency restoration and portable CMake/Ninja
 setup are complete; CMake configuration passed and a real native build is running.
 See `docs/research/LOCAL_BUILD_RECOVERY_2026-09-28.md` (repo-root path). A reviewed
