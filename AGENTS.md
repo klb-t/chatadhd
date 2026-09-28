@@ -1,6 +1,9 @@
 # ChatADHD / Loom continuation
 
-Read `docs/CODEX_HANDOFF_2026-09-28.md` first for the current work, tests and
+The resumed research round starts at `docs/research/PROGRAMME_2026-09-28.md`:
+composable thought structures, independent experiments, topic segmentation and
+existing-graph context. Its measured status is separate from the native baseline.
+Read `docs/CODEX_HANDOFF_2026-09-28.md` for the preceding work, tests and
 remaining limits. Claude's original handoff is `docs/HANDOFF_2026-09-28.md`.
 The complete Loom development line is `codex/loom-handoff-2026-09-28`; verify
 the current remote refs before starting from the older Python-only `main`.
