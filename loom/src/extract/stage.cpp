@@ -156,19 +156,20 @@ Json merge_names(const kb::Normalizer& norm, const std::vector<Json>& stats) {
 
 Result<std::vector<UnitContent>> units_from_catalog(knowledge::StageContext& ctx) {
   const Json* ids = json::find(ctx.input, "units");
-  if (!ids || !ids->is_array() || ids->empty()) return Error(Errc::NotFound, "no catalog units");
+  if (!ids || !ids->is_array()) return Error(Errc::InvalidArgument, "catalog input requires a units array");
   catalog::Catalog cat(ctx.rt, ctx.pack);
   catalog::UnitQuery q;
-  q.selected = true;
+  // The upstream scope already includes full import and optional related
+  // units. Reapplying selective filtering here discards valid input IDs.
   q.limit = 1000000;
   LOOM_TRY_ASSIGN(auto cus, cat.query(q));
   std::map<std::string, catalog::CatalogUnit> by_id;
   for (auto& cu : cus) by_id.emplace(cu.unit.id, std::move(cu));
   std::vector<UnitContent> out;
   for (const auto& idj : *ids) {
-    if (!idj.is_string()) continue;
+    if (!idj.is_string()) return Error(Errc::InvalidArgument, "catalog unit id must be a string");
     auto it = by_id.find(idj.get<std::string>());
-    if (it == by_id.end()) continue;
+    if (it == by_id.end()) return Error(Errc::NotFound, "catalog unit missing: " + idj.get<std::string>());
     LOOM_TRY_ASSIGN(std::string bytes, cat.read_unit(it->first));
     UnitContent u;
     u.unit = it->second.unit;
@@ -226,15 +227,15 @@ Extraction extract_units(std::shared_ptr<const kb::Pack> pack, const std::vector
 Result<Json> run_stage(knowledge::StageContext& ctx) {
   std::vector<UnitContent> units;
   std::string from = "catalog";
-  if (auto r = units_from_catalog(ctx)) {
-    units = std::move(*r);
-  }
-  if (units.empty()) {
+  if (json::find(ctx.input, "units")) {
+    // An empty selection is deliberate. A read/verification failure is an
+    // error. Neither authorizes silently analyzing the entire raw corpus.
+    LOOM_TRY_ASSIGN(units, units_from_catalog(ctx));
+  } else {
     from = "sources";
     for (const auto& s : ctx.config.sources) {
-      auto r = read_units(s);
-      if (!r) continue;
-      for (auto& u : *r) units.push_back(std::move(u));
+      LOOM_TRY_ASSIGN(auto source_units, read_units(s));
+      for (auto& u : source_units) units.push_back(std::move(u));
     }
   }
   std::set<std::string> only;

@@ -93,7 +93,6 @@ TEST_SUITE("providers.models") {
               R"([{"id":"b/1"},{"id":"a/1"},{"id":"b/2"},{"id":"noSlash"}])");
     ModelRegistry reg(env.models_path(), env.cfg, env.secrets, env.transport);
     Json g = reg.grouped();
-    auto keys = g.items();
     std::vector<std::string> order;
     for (auto& [k, v] : g.items()) order.push_back(k);
     REQUIRE(order.size() == 3);

@@ -7,10 +7,12 @@ UI. In the terms of the architecture document
 ([`docs/architecture/MEGA_MASTER_2026-09-16.md`](../docs/architecture/MEGA_MASTER_2026-09-16.md)),
 Loom is the reusable kernel and ChatADHD is its first reference workbench.
 
-Every module is implemented and tested (waves 1–2), and wave 3 adds the
-first vertical slice of the architecture: the **Archive-to-Project
-self-hosting pipeline** (MEGA MASTER §4.9, §7, §16), the `loom` command line,
-the HTTP server and the Android shell.
+The Python-parity core is covered by differential tests. The archive and
+knowledge pipelines, CLI, HTTP server, web workbench and Android bridge are
+implemented. Extraction quality is still experimental: passing the software
+tests does not establish complete understanding of real provider exports or
+historical predictive accuracy. Current work and measured limits are recorded
+in [`docs/CODEX_HANDOFF_2026-09-28.md`](../docs/CODEX_HANDOFF_2026-09-28.md).
 
 | Area | Status |
 |---|---|
@@ -24,9 +26,9 @@ the HTTP server and the Android shell.
 | `loom.h` — C ABI (archive, artifacts, `loom_import_file_ex` added) | implemented |
 | `cli/` — `loom` command line | implemented |
 | Knowledge layer foundation — `model.h`, `kb.h`, `knowledge_store.h`, `knowledge.h`, `loom/data/` | implemented ([below](#knowledge-layer)) |
-| Knowledge layer areas — `catalog.h`, `extract.h`, `resolve.h`, `generalize.h` | contract + stubs (next wave) |
+| Knowledge layer areas — `catalog.h`, `extract.h`, `resolve.h`, `generalize.h` | implemented; extraction/retrieval quality remains under evaluation |
 | Knowledge layer area — `context_engine.h`, `materialize.h` (context+materialize) | implemented ([below](#knowledge-layer)) |
-| `server/` (REST/SSE facade), `web/` (React UI), `android/` (JNI shell) | see their own READMEs |
+| `server/` (REST/SSE facade), `web/` (React UI), `android/` (JNI shell) | knowledge/catalog/context integrated; browser and host-JNI tests; device testing outstanding |
 
 ## Build
 
@@ -38,6 +40,13 @@ All other dependencies are vendored in [`third_party/`](third_party/README.md).
 cd loom
 cmake --preset dev && cmake --build --preset dev && ctest --preset dev
 ```
+
+To include the HTTP server and its integration test, configure with
+`cmake --preset dev -DLOOM_BUILD_SERVER=ON`. The web workbench uses the same
+knowledge JSON as the CLI; see [`server/KNOWLEDGE_API.md`](server/KNOWLEDGE_API.md)
+and [`web/README.md`](web/README.md). Run `npm ci && npm run build && npm run
+test:transport && npm run e2e` in `loom/web` (install Chromium with
+`npx playwright install chromium` first).
 
 | Preset | What it is |
 |---|---|
@@ -328,7 +337,7 @@ meta-model, transfers between kinds of different roles and undated priors.
   (no dedicated store table yet, and no automatic matching to the decision
   that resolved one).
 
-### Ownership map (next wave: four agents, parallel worktrees)
+### Ownership map
 
 Sources and tests are picked up by glob, so nobody edits `CMakeLists.txt`.
 Foundation files are read-only for the areas; a needed change is additive and
@@ -342,10 +351,8 @@ goes through the lead (a new closed-set name is a model change).
 | **context+materialize** | `include/loom/context_engine.h`, `include/loom/materialize.h`, `src/context/**`, `src/materialize/**` | `src/capi/capi_context.cpp` | `tests/test_context*.cpp`, `tests/test_materialize*.cpp` |
 | foundation (lead) | `include/loom/{model,kb,knowledge_store,knowledge}.h`, `src/model/**`, `src/kb/**`, `src/knowledge/**`, `src/capi/capi_knowledge.cpp`, `loom/data/**`, `tools/gen_kb_*.py`, `loom.h` | `src/capi/capi_knowledge.cpp` | `tests/test_{model,kb_pack,pack_model,knowledge_store,knowledge,capi_knowledge}.cpp` |
 
-Stubs are marked `// STUB: knowledge-wave` (`grep -rn "STUB: knowledge-wave"
-loom/src` lists what is left) and return `Errc::NotImplemented`; the stage
-function of each area (`run_stage` / `run_resolve_stage` / `run_assess_stage`)
-plugs into `KnowledgeEngine` unchanged. A stage returns `{"output": <hash of
+The stage function of each area (`run_stage` / `run_resolve_stage` /
+`run_assess_stage`) plugs into `KnowledgeEngine`. A stage returns `{"output": <hash of
 what it wrote>, "stats": {...}}`, clears the rows it owns before writing
 (rebuild) and checkpoints through `StageContext`. Data-pack additions an area
 needs (a lexicon entry, a threshold) are pack edits reviewed by the lead.

@@ -110,6 +110,7 @@ struct AliasTerm {
   std::string folded;     // Normalizer::fold(surface), the substring probed
   std::string term_class = "alias";  // alias | principle | concept | path | identifier | config_key | table
   bool ambiguous = false;
+  bool prefix = false;  // intentional word-prefix match; identity aliases default to whole words
   std::vector<std::string> requires_any;  // folded context cues
   int requires_min = 1;
   std::vector<std::string> negative;      // folded negative-context cues

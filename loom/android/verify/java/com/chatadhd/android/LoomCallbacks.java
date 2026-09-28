@@ -3,6 +3,7 @@ package com.chatadhd.android;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
 /**
  * Host stand-in for LoomCallbacks.kt. The real Kotlin class hops to the
@@ -24,6 +25,7 @@ public final class LoomCallbacks {
     }
 
     private static final ConcurrentHashMap<String, BlockingQueue<Chunk>> QUEUES = new ConcurrentHashMap<>();
+    private static volatile Consumer<String> deliveryHook;
 
     private LoomCallbacks() {}
 
@@ -33,8 +35,15 @@ public final class LoomCallbacks {
         return q;
     }
 
+    /** Deterministically pause one in-flight event for lifetime regression tests. */
+    public static void setDeliveryHook(Consumer<String> hook) {
+        deliveryHook = hook;
+    }
+
     /** Called from native code (loom_jni.cpp: deliver_chunk). */
     public static void onChunk(String callbackId, String chunkJson, boolean done) {
+        Consumer<String> hook = deliveryHook;
+        if (hook != null) hook.accept(callbackId);
         BlockingQueue<Chunk> q = QUEUES.get(callbackId);
         if (q == null) {
             System.err.println("[LoomCallbacks] chunk for unregistered id " + callbackId + ": " + chunkJson);

@@ -91,10 +91,9 @@ class MainActivity : AppCompatActivity() {
      * The shared data directory (/storage/emulated/0/Documents/ChatADHD,
      * see loom/include/loom/config.h and engine/paths.py) lives outside
      * app-specific storage on purpose, so it needs All Files Access from
-     * API 30 on (and the legacy read/write permissions below that, already
-     * granted at install time as normal permissions up to API 29). The web
-     * app itself decides when to call LoomBridge.init(); this only makes
-     * sure the permission is in place first so that call can succeed.
+     * API 30 on. The older-device runtime read/write permission request is
+     * still a documented gap. Once this flow completes, loadApp initialises
+     * the native context before mounting the web app.
      */
     private fun ensureStoragePermissionThenLoad() {
         val needsAllFiles = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()

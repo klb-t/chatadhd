@@ -23,7 +23,7 @@ namespace {
 
 void add_term(Json& terms, std::string_view surface, const kb::Normalizer& norm, std::string_view cls,
               double weight, std::string_view project, std::string_view provenance, bool ambiguous,
-              const Json& requires_context, const Json& negative_context) {
+              const Json& requires_context, const Json& negative_context, bool prefix = false) {
   if (surface.empty()) return;
   Json t{{"term", std::string(surface)},
         {"key", norm.fold(surface)},
@@ -31,7 +31,8 @@ void add_term(Json& terms, std::string_view surface, const kb::Normalizer& norm,
         {"weight", weight},
         {"project", std::string(project)},
         {"provenance", std::string(provenance)},
-        {"ambiguous", ambiguous}};
+        {"ambiguous", ambiguous},
+        {"prefix", prefix || cls == "principle"}};
   if (requires_context.is_object()) {
     Json rc{{"min", json::get_int(requires_context, "min", 1)}};
     Json any = Json::array();
@@ -93,7 +94,7 @@ Json flatten_self_profile(const kb::Pack& pack, const kb::Normalizer& norm, cons
             const Json* rc = json::find(a, "requires_context");
             const Json* neg = json::find(a, "negative_context");
             add_term(terms, surface, norm, "alias", 3.0, pid, "profiles/self.json", json::get_bool(a, "ambiguous"),
-                     rc ? *rc : Json(), neg ? *neg : Json());
+                     rc ? *rc : Json(), neg ? *neg : Json(), json::get_bool(a, "prefix"));
           }
         }
       }

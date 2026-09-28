@@ -66,7 +66,7 @@ struct StageContext;
 
 namespace catalog {
 
-inline constexpr std::string_view kScannerVersion = "1";
+inline constexpr std::string_view kScannerVersion = "2";
 
 struct SketchParams {
   int top_k = 128;             // top-K normalised terms per unit
@@ -214,8 +214,11 @@ struct UnitQuery {
 //     per-message-span extraction and the cross-unit linking pass this area
 //     does not yet have; see catalog.h's ownership map for extract/generalize).
 // `store_mode` answers "copy vs. link to the source file": "copy" (default)
-// writes the full message text into the core tables, exactly like the
-// universal importer; "link" writes one placeholder message carrying the
+// retains each unit's original bytes in the BlobStore and optionally writes
+// message text into core tables. mode="full" additionally retains complete
+// source files/ZIPs, including unknown metadata and binary members. Selective
+// copy retains only chosen units. Normalised messages are a derived view;
+// retained raw sources remain authoritative. "link" writes a placeholder carrying the
 // unit's locator/content_hash in its metadata plus a provenance row, so nothing
 // is duplicated into the database and the source file stays the copy of
 // record (re-read on demand via read_unit(), verified against content_hash).
@@ -226,7 +229,7 @@ struct ImportOptions {
   std::string mode = "selective";      // "selective" (select()'s decisions) | "full" (every catalogued unit, lossless)
   bool include_project_siblings = false;  // pull in every unit sharing a selected unit's project_ext_id
   int related_time_window_hours = 0;      // > 0: also pull in same-platform units within this many hours
-  std::string store_mode = "copy";        // "copy" (full text into core tables) | "link" (placeholder + provenance only)
+  std::string store_mode = "copy";        // "copy" (durable raw bytes + optional messages) | "link" (locator only)
   static Result<ImportOptions> from_json(const Json& j);
   Json to_json() const;
 };

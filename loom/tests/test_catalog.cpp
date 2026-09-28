@@ -6,6 +6,8 @@
 // evaluated separately in test_catalog_eval.cpp.
 #include <doctest/doctest.h>
 
+#include <tuple>
+
 #include <fstream>
 
 #include "catalog/catalog_internal.h"
@@ -135,6 +137,45 @@ TEST_SUITE("catalog_alias") {
 
     auto neither = idx.find(norm.fold("I saw a loom at the museum yesterday."), 10);
     CHECK(neither.empty());
+  }
+
+  TEST_CASE("identity aliases have Unicode word boundaries; intentional stems stay configurable") {
+    SelfProfile p;
+    p.terms = Json::array({Json{{"term", "AR"}, {"key", "ar"}, {"class", "alias"}, {"project", "display"}}});
+    auto idx = AliasIndex::from_profile(p);
+    CHECK(idx.find("garden hardware carbon arbitrary", 20).empty());
+    CHECK(idx.find("żar aré _ar ar_", 20).empty());
+    auto hits = idx.find("(ar), ar-based and ar", 20);
+    REQUIRE(hits.size() == 3);
+    CHECK(hits.front().key == "display");
+    CHECK(hits.front().offset == 1);
+
+    p.terms = Json::array({Json{{"term", "C++"}, {"key", "c++"}, {"class", "alias"}},
+                           Json{{"term", "IO"}, {"key", "io"}, {"class", "alias"}}});
+    auto symbols = AliasIndex::from_profile(p);
+    CHECK(symbols.find("c++/io; (c++) xio nodec++", 20).size() == 3);
+
+    p.terms = Json::array({Json{{"term", "abstrakcj"}, {"key", "abstrakcj"}, {"class", "principle"}}});
+    auto stem = AliasIndex::from_profile(p);
+    CHECK(stem.find("abstrakcja abstrakcje", 20).size() == 2);
+    CHECK(stem.find("nieabstrakcja", 20).empty());
+
+    p.terms = Json::array({Json{{"term", "Widget"}, {"key", "widget"}, {"class", "alias"},
+                               {"project", "widget"}, {"prefix", true}}});
+    auto configured = AliasIndex::from_profile(p);
+    CHECK(configured.find("widgetapp widget", 20).size() == 2);
+    CHECK(configured.find("otherwidget", 20).empty());
+  }
+
+  TEST_CASE("rejected alias boundaries do not hide overlapping valid phrases") {
+    for (const auto& [alias, text, offset] : std::vector<std::tuple<std::string, std::string, int>>{
+             {"a a", "xa a a", 3}, {"abc-ab", "xabc-abc-ab", 5}}) {
+      SelfProfile p;
+      p.terms = Json::array({Json{{"term", alias}, {"key", alias}, {"class", "alias"}}});
+      auto hits = AliasIndex::from_profile(p).find(text, 20);
+      REQUIRE(hits.size() == 1);
+      CHECK(hits[0].offset == offset);
+    }
   }
 
   TEST_CASE("principle-class mentions are tagged key \"owner\" (R2: philosophy chats need no project alias)") {

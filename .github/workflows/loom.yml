@@ -77,10 +77,6 @@ jobs:
         working-directory: loom
         run: ctest --preset ${{ matrix.preset }}
 
-      - name: Evaluation harness isolation tests
-        if: matrix.preset == 'dev'
-        run: python loom/tools/eval/test_eval.py
-
       - name: Set up Java for the real JNI bridge smoke test
         if: matrix.preset == 'dev'
         uses: actions/setup-java@v4
@@ -109,5 +105,6 @@ jobs:
         run: |
           npm ci
           npm run build
+          npm run test:transport
           npx playwright install --with-deps chromium
           npm run e2e

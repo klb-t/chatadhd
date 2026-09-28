@@ -147,18 +147,76 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
   std::vector<std::string> unit_ids(id_set.begin(), id_set.end());
   lk.unlock();
 
+  // A full copy retains the original containers as well as their indexed
+  // units. Unknown fields, binary members and unrecognised formats must not
+  // depend on what today's scanner knows how to normalise.
+  Json retained_sources = Json::array();
+  if (opts.mode == "full" && opts.store_mode == "copy" && !opts.dry_run) {
+    std::vector<std::pair<std::string, std::string>> sources;
+    {
+      auto guard = rt_.db().lock();
+      LOOM_TRY_ASSIGN(auto st, c.prepare("SELECT id, path FROM loom_cat_sources ORDER BY id"));
+      while (true) {
+        LOOM_TRY_ASSIGN(bool row, st.step());
+        if (!row) break;
+        sources.emplace_back(st.get_text(0), st.get_text(1));
+      }
+    }
+    for (const auto& [sid, path] : sources) {
+      if (cancel && cancel->cancelled()) return Error(Errc::Cancelled, "catalog import cancelled");
+      const std::string hash = sid.starts_with("sha256:") ? sid.substr(7) : std::string();
+      if (hash.size() != 64) return Error(Errc::Conflict, "invalid catalog source hash: " + sid);
+      std::int64_t size = 0;
+      if (rt_.blobs().has(hash)) {
+        LOOM_TRY(rt_.blobs().verify(hash));
+      } else {
+        LOOM_TRY_ASSIGN(auto blob, rt_.blobs().put_file(path));
+        if (blob.hash != hash) return Error(Errc::Conflict, "source changed since scan: " + path);
+        size = blob.size;
+      }
+      const std::string record_id = "catalog_raw_" + hash;
+      LOOM_TRY_ASSIGN(auto existing, rt_.provenance().get_source(record_id));
+      if (!existing) {
+        SourceRecord source;
+        source.id = record_id;
+        source.kind = "catalog_source";
+        source.uri = path;
+        source.blob_hash = hash;
+        source.size = size;
+        source.parser = "loom.catalog.import";
+        source.parser_version = std::string(kScannerVersion);
+        source.metadata = Json{{"catalog_source", sid}, {"store_mode", "copy"}, {"scope", "full"}};
+        LOOM_TRY(rt_.provenance().add_source(std::move(source)));
+      }
+      retained_sources.push_back(Json{{"source_id", sid}, {"blob_hash", hash}});
+    }
+  }
+
   std::int64_t imported = 0, skipped = 0, bytes = 0;
   Json conversations = Json::array();
   std::int64_t idx_i = 0;
   for (const auto& uid : unit_ids) {
     ++idx_i;
-    if (cancel && cancel->cancelled()) break;
+    if (cancel && cancel->cancelled()) return Error(Errc::Cancelled, "catalog import cancelled");
     if (progress) progress("import", idx_i, static_cast<std::int64_t>(unit_ids.size()), uid);
 
+    std::string previous_conv, previous_raw, previous_source;
+    bool previously_imported = false;
     {
       auto lk2 = rt_.db().lock();
-      auto already = rt_.db().conn().query_text("SELECT conv_id FROM loom_cat_imports WHERE unit_id = ?", uid);
-      if (already && *already && !(**already).empty()) {
+      LOOM_TRY_ASSIGN(auto st, c.prepare("SELECT conv_id, raw_blob, source_id FROM loom_cat_imports WHERE unit_id = ?"));
+      st.bind(1, uid);
+      LOOM_TRY_ASSIGN(bool row, st.step());
+      previously_imported = row;
+      if (row) {
+        previous_conv = st.get_text(0);
+        previous_raw = st.get_text(1);
+        previous_source = st.get_text(2);
+      }
+    }
+    if (previously_imported && (opts.store_mode == "link" || !previous_raw.empty())) {
+      if (opts.store_mode == "copy") LOOM_TRY(rt_.blobs().verify(previous_raw));
+      if (!opts.import_messages || !previous_conv.empty()) {
         ++skipped;
         continue;
       }
@@ -171,21 +229,9 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       if (!*b) return Error(Errc::NotFound, "unit vanished: " + uid);
       return **b;
     }();
-    if (!body_r) {
-      ++skipped;
-      continue;
-    }
-    auto uj = json::parse(*body_r);
-    if (!uj) {
-      ++skipped;
-      continue;
-    }
-    auto cu_r = CatalogUnit::from_json(*uj);
-    if (!cu_r) {
-      ++skipped;
-      continue;
-    }
-    CatalogUnit cu = std::move(*cu_r);
+    if (!body_r) return body_r.error();
+    LOOM_TRY_ASSIGN(auto uj, json::parse(*body_r));
+    LOOM_TRY_ASSIGN(CatalogUnit cu, CatalogUnit::from_json(uj));
 
     if (opts.dry_run) {
       ++imported;
@@ -194,6 +240,13 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     }
 
     Json src_meta{{"unit_id", uid}, {"platform", cu.platform}, {"ext_id", cu.ext_id}};
+    std::string raw, raw_blob;
+    if (opts.store_mode == "copy") {
+      LOOM_TRY_ASSIGN(raw, read_unit(uid));
+      LOOM_TRY_ASSIGN(auto blob, rt_.blobs().put(raw));
+      LOOM_TRY(rt_.blobs().verify(blob.hash));
+      raw_blob = blob.hash;
+    }
     SourceRecord src;
     src.kind = "catalog_unit";
     src.uri = cu.unit.source + (cu.unit.locator.member.empty() ? "" : ("!" + cu.unit.locator.member));
@@ -201,24 +254,25 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     src.title = cu.unit.title;
     src.parser = "loom.catalog.import";
     src.parser_version = std::string(kScannerVersion);
+    src.blob_hash = raw_blob;
+    src.size = static_cast<std::int64_t>(raw.size());
     src.metadata = src_meta;
-    auto source_id = rt_.provenance().add_source(src);
-    if (!source_id) {
-      ++skipped;
-      continue;
+    std::string source_id = previous_source;
+    if (source_id.empty()) {
+      LOOM_TRY_ASSIGN(source_id, rt_.provenance().add_source(src));
+    } else if (!raw_blob.empty()) {
+      auto guard = rt_.db().lock();
+      LOOM_TRY(c.run("UPDATE loom_sources SET blob_hash = ?, size = ? WHERE id = ?", raw_blob, src.size, source_id));
     }
 
-    std::string conv_id;
+    std::string conv_id = previous_conv;
     std::string title = cu.unit.title.empty() ? "[Import] " + cu.ext_id : cu.unit.title;
-    if (opts.import_messages && opts.store_mode == "link") {
+    if (opts.import_messages && conv_id.empty() && opts.store_mode == "link") {
       // "link": one placeholder message carrying the locator + content_hash
       // in its metadata, no raw bytes re-read, nothing duplicated into the
       // database. The source file stays the copy of record.
       auto conv = rt_.db().create_conv(title);
-      if (!conv) {
-        ++skipped;
-        continue;
-      }
+      if (!conv) return conv.error();
       conv_id = conv->id;
       NewMessage nm;
       nm.conv_id = conv_id;
@@ -233,26 +287,22 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
         ProvenanceRecord pr;
         pr.subject_id = *mid;
         pr.subject_kind = "message";
-        pr.source_id = *source_id;
+        pr.source_id = source_id;
         pr.locator = cu.unit.locator.to_json();
         pr.transform = "catalog.import.link@1";
-        (void)rt_.provenance().add(pr);
+        LOOM_TRY(rt_.provenance().add(pr));
       }
       ProvenanceRecord conv_pr;
       conv_pr.subject_id = conv_id;
       conv_pr.subject_kind = "conversation";
-      conv_pr.source_id = *source_id;
+      if (!mid) return mid.error();
+      conv_pr.source_id = source_id;
       conv_pr.locator = cu.unit.locator.to_json();
       conv_pr.transform = "catalog.import.link@1";
-      (void)rt_.provenance().add(conv_pr);
+      LOOM_TRY(rt_.provenance().add(conv_pr));
       conversations.push_back(conv_id);
-    } else if (opts.import_messages && (cu.unit.kind == "conversation" || cu.unit.kind == "project" || cu.unit.kind == "memory")) {
-      auto raw = read_unit(uid);
-      if (!raw) {
-        ++skipped;
-        continue;
-      }
-      auto parsed = json::parse(*raw);
+    } else if (opts.import_messages && conv_id.empty() && (cu.unit.kind == "conversation" || cu.unit.kind == "project" || cu.unit.kind == "memory")) {
+      auto parsed = json::parse(raw);
       Json messages_j = Json::array();
       if (parsed && cu.unit.kind == "conversation") {
         std::string kind = cu.platform == "chatgpt" ? "chatgpt" : "claude";
@@ -264,10 +314,7 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       }
       if (!messages_j.empty()) {
         auto conv = rt_.db().create_conv(title);
-        if (!conv) {
-          ++skipped;
-          continue;
-        }
+        if (!conv) return conv.error();
         conv_id = conv->id;
         int mi = 0;
         for (const auto& m : messages_j) {
@@ -286,20 +333,21 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
             ProvenanceRecord pr;
             pr.subject_id = *mid;
             pr.subject_kind = "message";
-            pr.source_id = *source_id;
+            pr.source_id = source_id;
             pr.locator = Json{{"unit_id", uid}, {"message_index", mi}};
             pr.transform = "catalog.import@1";
-            (void)rt_.provenance().add(pr);
+            LOOM_TRY(rt_.provenance().add(pr));
           }
+          if (!mid) return mid.error();
           ++mi;
         }
         ProvenanceRecord conv_pr;
         conv_pr.subject_id = conv_id;
         conv_pr.subject_kind = "conversation";
-        conv_pr.source_id = *source_id;
+        conv_pr.source_id = source_id;
         conv_pr.locator = cu.unit.locator.to_json();
         conv_pr.transform = "catalog.import@1";
-        (void)rt_.provenance().add(conv_pr);
+        LOOM_TRY(rt_.provenance().add(conv_pr));
         conversations.push_back(conv_id);
       }
     }
@@ -309,14 +357,14 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       LOOM_TRY(rt_.db().conn().run(
           "INSERT OR REPLACE INTO loom_cat_imports (unit_id, conv_id, raw_blob, source_id, task_id, created) "
           "VALUES (?,?,?,?,?,?)",
-          uid, conv_id, std::string(), *source_id, std::string(), timeutil::utc_now_iso()));
+          uid, conv_id, raw_blob, source_id, std::string(), timeutil::utc_now_iso()));
     }
     ++imported;
     bytes += cu.unit.bytes;
   }
 
   return Json{{"imported", imported}, {"skipped", skipped}, {"bytes", bytes}, {"conversations", conversations},
-              {"units", unit_ids}};
+              {"units", unit_ids}, {"retained_sources", retained_sources}};
 }
 
 }  // namespace loom::catalog

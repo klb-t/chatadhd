@@ -1,16 +1,32 @@
 // catalog_internal.h: AliasIndex — identity-pass matching (pass 0 of
 // proposal_scale.md §5.1) with context gates and negative contexts (noise
-// traps). Plain substring search over folded text: the pack's context cues
-// ("aplikacj", "kernel", "wdt") are bare stems, not tokens, so token-based
-// matching would miss them.
+// traps). Identities match at Unicode word boundaries; intentional word
+// prefixes are data. Context cues remain substring probes because the pack
+// writes them as bare stems ("aplikacj", "kernel", "wdt").
 #include "catalog_internal.h"
 
 #include <algorithm>
 #include <cctype>
 
+#include "loom/util/unicode.h"
+#include "loom/util/utf8.h"
+
 namespace loom::catalog::internal {
 
 namespace {
+
+bool word_at(std::string_view text, std::size_t pos) {
+  if (pos >= text.size()) return false;
+  auto cp = utf8::decode(utf8::prefix(text.substr(pos), 1));
+  return !cp.empty() && unicode::is_word(cp.front());
+}
+
+bool word_before(std::string_view text, std::size_t pos) {
+  if (pos == 0) return false;
+  std::size_t start = pos - 1;
+  while (start > 0 && (static_cast<unsigned char>(text[start]) & 0xc0) == 0x80) --start;
+  return word_at(text, start);
+}
 
 bool contains_folded(std::string_view haystack, std::string_view needle) {
   if (needle.empty()) return false;
@@ -61,6 +77,7 @@ AliasIndex AliasIndex::from_profile(const SelfProfile& profile) {
     if (at.folded.empty()) at.folded = at.surface;
     at.term_class = cls;
     at.ambiguous = json::get_bool(t, "ambiguous");
+    at.prefix = json::get_bool(t, "prefix", cls == "principle");
     at.weight = json::get_number(t, "weight", cls == "principle" ? 1.5 : 3.0);
     if (const Json* rc = json::find(t, "requires_context"); rc && rc->is_object()) {
       if (const Json* any = json::find(*rc, "any"); any && any->is_array()) {
@@ -80,11 +97,21 @@ std::vector<Mention> AliasIndex::find(std::string_view folded_text, int max_ment
   std::vector<Mention> out;
   for (const auto& at : terms_) {
     if (at.folded.empty()) continue;
+    auto chars = utf8::decode(at.folded);
+    bool begins_word = !chars.empty() && unicode::is_word(chars.front());
+    bool ends_word = !chars.empty() && unicode::is_word(chars.back());
     std::size_t pos = 0;
     while (true) {
       std::size_t found = folded_text.find(at.folded, pos);
       if (found == std::string_view::npos) break;
       pos = found + std::max<std::size_t>(1, at.folded.size());
+      if ((begins_word && word_before(folded_text, found)) ||
+          (!at.prefix && ends_word && word_at(folded_text, pos))) {
+        // A rejected occurrence may overlap a valid one ("abc-ab" in
+        // "xabc-abc-ab"). Do not skip the rest of its full phrase.
+        pos = found + std::max<std::size_t>(1, utf8::prefix(folded_text.substr(found), 1).size());
+        continue;
+      }
       bool trap = false;
       std::string trap_reason;
       if (at.ambiguous) {

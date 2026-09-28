@@ -85,8 +85,18 @@ class LoomBridge(webView: WebView) {
                         finally { cancellations.remove(callbackId) }
                     }
                 }
-                "import_file" -> executor.execute {
-                    LoomNative.nativeImportFile(args.getString("path"), args.optString("title").ifEmpty { null }, callbackId)
+                "import_file" -> {
+                    // Parse required arguments before queuing: exceptions
+                    // thrown inside execute are outside this method's catch.
+                    val path = args.getString("path")
+                    val title = args.optString("title").ifEmpty { null }
+                    executor.execute {
+                        try { LoomNative.nativeImportFile(path, title, callbackId) }
+                        catch (e: Exception) {
+                            LoomCallbacks.onChunk(callbackId, JSONObject().put("error", JSONObject()
+                                .put("code", "internal").put("message", e.message ?: "Import failed")).toString(), true)
+                        }
+                    }
                 }
                 else -> {
                     if (method == "knowledge_run")

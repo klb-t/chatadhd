@@ -52,6 +52,7 @@
 // linkage of its own), so using it here creates no such dependency.
 #include <jni.h>
 
+#include <atomic>
 #include <cstdlib>
 #include <cstring>
 #include <functional>
@@ -737,9 +738,14 @@ void deliver_chunk(const std::string& callback_id, const std::string& chunk_json
   env->DeleteLocalRef(jchunk);
 }
 
+struct ChatStreamCtx {
+  std::string callback_id;
+  std::atomic<bool> terminal_sent{false};
+};
 void chat_stream_trampoline(const char* chunk, int done, void* user_data) {
-  auto* id = static_cast<std::string*>(user_data);
-  deliver_chunk(*id, chunk ? chunk : "{}", done != 0);
+  auto* stream = static_cast<ChatStreamCtx*>(user_data);
+  if (done) stream->terminal_sent = true;
+  deliver_chunk(stream->callback_id, chunk ? chunk : "{}", done != 0);
 }
 
 struct ImportProgressCtx {
@@ -753,6 +759,10 @@ void import_progress_trampoline(int current, int total, const char* status, void
 
 std::mutex g_sub_mu;
 std::unordered_map<int64_t, std::unique_ptr<std::string>> g_subscriptions;  // token -> callback id
+// EventBus::off removes future deliveries, but an emitter may already have
+// copied its callback. Keep that callback's raw user_data alive until the
+// context has drained workers and all active JNI calls during shutdown.
+std::vector<std::unique_ptr<std::string>> g_retired_subscriptions;
 
 void event_trampoline(const char* event, const char* payload_json, void* user_data) {
   auto* id = static_cast<std::string*>(user_data);
@@ -803,28 +813,39 @@ extern "C" {
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInit(JNIEnv* env, jclass, jstring dataDir,
                                                                           jstring optionsJson) {
   std::unique_lock<std::shared_mutex> lock(g_ctx_mu);
-  if (g_ctx) {
-    return s2j(env, dump(Json{{"ok", true}, {"info", parse_or(take(loom_info(g_ctx)), Json::object())}}));
+  try {
+    Json opts = optionsJson ? Json::parse(j2s(env, optionsJson)) : Json::object();
+    if (!opts.is_object()) throw std::invalid_argument("init options must be a JSON object");
+    if (g_ctx) {
+      return s2j(env, dump(Json{{"ok", true}, {"info", parse_or(take(loom_info(g_ctx)), Json::object())}}));
+    }
+    loom_set_log_sink(log_sink_trampoline, LOOM_LOG_DEBUG, nullptr);
+    loom_set_log_stderr(false);
+
+    std::string dd = j2s(env, dataDir);
+    if (!dd.empty()) opts["data_dir"] = dd;
+    std::string opts_str = dump(opts);
+
+    const char* err_json_out = nullptr;
+    LoomContext* ctx = loom_init_ex(opts_str.c_str(), &err_json_out);
+    if (!ctx) {
+      std::string err = err_json_out ? take(err_json_out) : err_json(LOOM_E_INTERNAL);
+      return s2j(env, dump(Json{{"ok", false}, {"error", parse_or(err, Json::object())["error"]}}));
+    }
+    g_ctx = ctx;
+    loom_set_http_transport(g_ctx, http_send_trampoline, nullptr);
+
+    Json info = parse_or(take(loom_info(g_ctx)), Json::object());
+    return s2j(env, dump(Json{{"ok", true}, {"info", info}}));
+  } catch (const Json::exception& e) {
+    return s2j(env, dump(Json{{"ok", false}, {"error", {{"code", "invalid_argument"}, {"message", e.what()}}}}));
+  } catch (const std::invalid_argument& e) {
+    return s2j(env, dump(Json{{"ok", false}, {"error", {{"code", "invalid_argument"}, {"message", e.what()}}}}));
+  } catch (const std::exception& e) {
+    return s2j(env, dump(Json{{"ok", false}, {"error", {{"code", "internal"}, {"message", e.what()}}}}));
+  } catch (...) {
+    return s2j(env, dump(Json{{"ok", false}, {"error", {{"code", "internal"}, {"message", "unknown exception"}}}}));
   }
-  loom_set_log_sink(log_sink_trampoline, LOOM_LOG_DEBUG, nullptr);
-  loom_set_log_stderr(false);
-
-  Json opts = optionsJson ? parse_or(j2s(env, optionsJson), Json::object()) : Json::object();
-  std::string dd = j2s(env, dataDir);
-  if (!dd.empty()) opts["data_dir"] = dd;
-  std::string opts_str = dump(opts);
-
-  const char* err_json_out = nullptr;
-  LoomContext* ctx = loom_init_ex(opts_str.c_str(), &err_json_out);
-  if (!ctx) {
-    std::string err = err_json_out ? take(err_json_out) : err_json(LOOM_E_INTERNAL);
-    return s2j(env, dump(Json{{"ok", false}, {"error", parse_or(err, Json::object())["error"]}}));
-  }
-  g_ctx = ctx;
-  loom_set_http_transport(g_ctx, http_send_trampoline, nullptr);
-
-  Json info = parse_or(take(loom_info(g_ctx)), Json::object());
-  return s2j(env, dump(Json{{"ok", true}, {"info", info}}));
 }
 
 JNIEXPORT void JNICALL Java_com_chatadhd_android_LoomNative_nativeShutdown(JNIEnv*, jclass) {
@@ -832,6 +853,9 @@ JNIEXPORT void JNICALL Java_com_chatadhd_android_LoomNative_nativeShutdown(JNIEn
   if (!g_ctx) return;
   loom_shutdown(g_ctx);
   g_ctx = nullptr;
+  std::lock_guard<std::mutex> sub_lock(g_sub_mu);
+  g_subscriptions.clear();
+  g_retired_subscriptions.clear();
 }
 
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeVersion(JNIEnv* env, jclass) {
@@ -869,22 +893,39 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInvoke(JNIE
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeChat(JNIEnv* env, jclass, jstring requestJson,
                                                                           jstring callbackId) {
   std::shared_lock<std::shared_mutex> lock(g_ctx_mu);
-  if (!g_ctx) return s2j(env, err_json(LOOM_E_INVALID_ARGUMENT));
-  std::string req = j2s(env, requestJson);
-  std::string id = j2s(env, callbackId);
-  const char* r = loom_chat_ex(g_ctx, req.c_str(), chat_stream_trampoline, &id);
-  return s2j(env, take(r));
+  ChatStreamCtx stream{j2s(env, callbackId)};
+  std::string result;
+  try {
+    if (!g_ctx) result = err_json(LOOM_E_INVALID_ARGUMENT);
+    else {
+      const std::string req = j2s(env, requestJson);
+      result = take(loom_chat_ex(g_ctx, req.c_str(), chat_stream_trampoline, &stream));
+    }
+  } catch (...) {
+    result = err_json(LOOM_E_INTERNAL);
+  }
+  // Native validation and exception firewalls can return before the normal
+  // streaming path. The JS caller ignores our return value: it still needs
+  // exactly one terminal callback to settle its promise.
+  if (!stream.terminal_sent) deliver_chunk(stream.callback_id, result, true);
+  return s2j(env, result);
 }
 
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeImportFile(JNIEnv* env, jclass, jstring path,
                                                                                 jstring title, jstring callbackId) {
   std::shared_lock<std::shared_mutex> lock(g_ctx_mu);
-  if (!g_ctx) return s2j(env, err_json(LOOM_E_INVALID_ARGUMENT));
-  std::string p = j2s(env, path);
-  std::string t = j2s(env, title);
   ImportProgressCtx ctx{j2s(env, callbackId)};
-  const char* r = loom_import_file(g_ctx, p.c_str(), title ? t.c_str() : nullptr, import_progress_trampoline, &ctx);
-  std::string result = take(r);
+  std::string result;
+  try {
+    if (!g_ctx) result = err_json(LOOM_E_INVALID_ARGUMENT);
+    else {
+      const std::string p = j2s(env, path);
+      const std::string t = j2s(env, title);
+      result = take(loom_import_file(g_ctx, p.c_str(), title ? t.c_str() : nullptr, import_progress_trampoline, &ctx));
+    }
+  } catch (...) {
+    result = err_json(LOOM_E_INTERNAL);
+  }
   deliver_chunk(ctx.callback_id, result, true);
   return s2j(env, result);
 }
@@ -908,7 +949,11 @@ JNIEXPORT jint JNICALL Java_com_chatadhd_android_LoomNative_nativeUnsubscribe(JN
   if (!g_ctx) return LOOM_E_INVALID_ARGUMENT;
   int rc = loom_unsubscribe(g_ctx, token);
   std::lock_guard<std::mutex> lock(g_sub_mu);
-  g_subscriptions.erase(token);
+  auto it = g_subscriptions.find(token);
+  if (it != g_subscriptions.end()) {
+    g_retired_subscriptions.push_back(std::move(it->second));
+    g_subscriptions.erase(it);
+  }
   return rc;
 }
 

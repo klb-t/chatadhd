@@ -7,8 +7,10 @@
 #include <atomic>
 
 #include "loom/catalog.h"
+#include "loom/extract.h"
 #include "loom/knowledge.h"
 #include "loom/runtime.h"
+#include "loom/sqlite.h"
 #include "loom/tasks.h"
 #include "loom/util/sha256.h"
 #include "test_helpers.h"
@@ -266,6 +268,9 @@ TEST_SUITE("knowledge") {
     auto a = open_rt(data_a.path());
     auto first = unwrap(a->knowledge().run(cfg));
     REQUIRE(first.status == "done");
+    REQUIRE(first.stages.size() == 2);
+    CHECK(first.stages[1].stats["from"] == "catalog");
+    CHECK(first.stages[1].stats["units"] == 1);
     auto task = unwrap(a->tasks().get(first.stages.front().task_id));
     REQUIRE(task);
     REQUIRE(task->result);
@@ -277,5 +282,100 @@ TEST_SUITE("knowledge") {
     auto second = unwrap(b->knowledge().run(cfg));
     REQUIRE(second.status == "done");
     CHECK(first.stages.front().output_hash == second.stages.front().output_hash);
+
+    fsutil::TempDir data_selective;
+    auto selective = open_rt(data_selective.path());
+    cfg.stage_params = Json::object();
+    auto empty = unwrap(selective->knowledge().run(cfg));
+    REQUIRE(empty.status == "done");
+    CHECK(empty.stages[1].stats["from"] == "catalog");
+    CHECK(empty.stages[1].stats["units"] == 0);
+    CHECK(json::get_int(unwrap(selective->knowledge().store().stats(empty.run)), "observations") == 0);
+  }
+
+  TEST_CASE("invalid upstream catalogue IDs fail extraction without raw-source fallback") {
+    fsutil::TempDir source, data;
+    unwrap(fsutil::write_file(source.path() / "must_not_read.md", "ChatADHD always preserves alternatives."));
+    auto rt = open_rt(data.path());
+    rt->knowledge().set_stage("catalog", [](StageContext& ctx) -> Result<Json> {
+      LOOM_TRY(catalog::Catalog::ensure_schema(ctx.rt.db()));
+      return Json{{"output", "bad-input"}, {"units", Json::array({"missing-catalog-unit"})}};
+    });
+    KnowledgeConfig cfg;
+    cfg.sources = {source.path().string()};
+    cfg.stages = {"catalog", "extract"};
+    auto run = unwrap(rt->knowledge().run(cfg));
+    CHECK(run.status == "failed");
+    CHECK(run.error.find("catalog unit missing") != std::string::npos);
+    CHECK(json::get_int(unwrap(rt->knowledge().store().stats(run.run)), "observations") == 0);
+  }
+
+  TEST_CASE("standalone and object-wrapped JSON units verify their actual source locators") {
+    fsutil::TempDir source, data;
+    auto rt = open_rt(data.path());
+    catalog::Catalog cat(*rt, unwrap(rt->knowledge().pack()));
+    const std::string single = R"({ "uuid": "standalone", "name": "Garden", "unknown": {"keep": true},
+      "chat_messages": [{"uuid":"m0","sender":"human","text":"Sunflowers follow daylight."}] })";
+    const std::string wrapped = R"({"conversations":[
+      {"uuid":"wrapped-a","name":"Blue garden","chat_messages":[{"uuid":"m1","sender":"human","text":"Blue petals."}]},
+      {"uuid":"wrapped-b","name":"Red garden","chat_messages":[{"uuid":"m2","sender":"human","text":"Red petals."}]}],"unknown_export_metadata":42})";
+    unwrap(fsutil::write_file(source.path() / "single.json", single));
+    unwrap(fsutil::write_file(source.path() / "wrapped.json", wrapped));
+    catalog::ScanConfig scan;
+    scan.sources = {source.path().string()};
+    unwrap(cat.scan(scan));
+    auto units = unwrap(cat.query(catalog::UnitQuery{}));
+    REQUIRE(units.size() == 3);
+    for (auto unit : units) {
+      const auto raw = unwrap(cat.read_unit(unit.unit.id));
+      const auto parsed = unwrap(json::parse(raw));
+      if (parsed["uuid"] == "standalone") {
+        CHECK(raw == single);
+        // Existing v1 catalogues used a normalized /0 for root objects.
+        unit.unit.locator.byte_start.reset();
+        unit.unit.locator.byte_len.reset();
+        unit.unit.locator.json_pointer = "/0";
+        unit.content_hash = Sha256::hex(json::dump(parsed));
+      } else {
+        CHECK(unit.unit.locator.json_pointer.rfind("/conversations/", 0) == 0);
+        // Existing v1 wrapper pointers omitted the wrapper key.
+        unit.unit.locator.json_pointer = parsed["uuid"] == "wrapped-a" ? "/0" : "/1";
+      }
+      {
+        auto lock = rt->db().lock();
+        unwrap(rt->db().conn().run("UPDATE loom_cat_units SET body = ? WHERE id = ?", json::dump(unit.to_json()), unit.unit.id));
+      }
+      CHECK(unwrap(json::parse(unwrap(cat.read_unit(unit.unit.id)))) == parsed);
+    }
+    KnowledgeConfig cfg;
+    cfg.sources = scan.sources;
+    cfg.stages = {"catalog", "extract"};
+    cfg.stage_params = Json{{"catalog", Json{{"import", Json{{"mode", "full"}}}}}};
+    auto run = unwrap(rt->knowledge().run(cfg));
+    REQUIRE(run.status == "done");
+    CHECK(run.stages[1].stats["from"] == "catalog");
+    CHECK(run.stages[1].stats["units"] == 3);
+  }
+
+  TEST_CASE("catalog filesystem paths preserve code artifact detection") {
+    fsutil::TempDir source, data;
+    auto rt = open_rt(data.path());
+    auto pack = unwrap(rt->knowledge().pack());
+    catalog::Catalog cat(*rt, pack);
+    unwrap(fsutil::ensure_dir(source.path() / "src"));
+    unwrap(fsutil::write_file(source.path() / "src/widget.cpp", "class GardenWidget {};\n"));
+    catalog::ScanConfig scan;
+    scan.sources = {source.path().string()};
+    unwrap(cat.scan(scan));
+    auto units = unwrap(cat.query(catalog::UnitQuery{}));
+    REQUIRE(units.size() == 1);
+    CHECK(units.front().unit.title == "src/widget.cpp");
+    extract::UnitContent content;
+    content.unit = units.front().unit;
+    content.text = unwrap(cat.read_unit(content.unit.id));
+    extract::Extractor extractor(pack);
+    auto detections = unwrap(extractor.detect(content));
+    REQUIRE(!detections.empty());
+    CHECK(detections.front().artifact_type == "codebase");
   }
 }

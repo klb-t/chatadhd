@@ -133,6 +133,7 @@ Result<Json> Catalog::preview(std::string_view unit_id) {
   LOOM_TRY_ASSIGN(Json uj, json::parse(**body));
   LOOM_TRY_ASSIGN(CatalogUnit cu, CatalogUnit::from_json(uj));
 
+
   Json score = Json(nullptr);
   {
     LOOM_TRY_ASSIGN(std::string run_id, latest_run(c));
@@ -183,10 +184,26 @@ Result<std::string> Catalog::read_unit(std::string_view unit_id) {
   LOOM_TRY_ASSIGN(Json uj, json::parse(**body));
   LOOM_TRY_ASSIGN(CatalogUnit cu, CatalogUnit::from_json(uj));
 
+  LOOM_TRY_ASSIGN(auto raw_blob, c.query_text("SELECT raw_blob FROM loom_cat_imports WHERE unit_id = ?", std::string(unit_id)));
+  if (raw_blob && !raw_blob->empty()) {
+    lk.unlock();
+    LOOM_TRY_ASSIGN(auto retained, rt_.blobs().read(*raw_blob));
+    if (Sha256::hex(retained) != cu.content_hash || *raw_blob != cu.content_hash)
+      return Error(Errc::Conflict, "retained unit hash mismatch: " + std::string(unit_id));
+    return retained;
+  }
+
+
   auto path_r = c.query_text("SELECT path FROM loom_cat_sources WHERE id = ?", cu.unit.source);
   if (!path_r) return path_r.error();
   if (!*path_r) return Error(Errc::NotFound, "source not registered: " + cu.unit.source);
   std::filesystem::path path(**path_r);
+  lk.unlock();
+  const std::string source_hash = cu.unit.source.starts_with("sha256:") ? cu.unit.source.substr(7) : std::string();
+  if (rt_.blobs().has(source_hash)) {
+    LOOM_TRY(rt_.blobs().verify(source_hash));
+    path = rt_.blobs().path_for(source_hash);
+  }
 
   std::string bytes;
   if (cu.unit.locator.member.empty()) {
@@ -210,6 +227,33 @@ Result<std::string> Catalog::read_unit(std::string_view unit_id) {
     } else {
       bytes = std::move(whole);
     }
+  }
+  if (!cu.unit.locator.json_pointer.empty() && !cu.unit.locator.byte_start && !cu.unit.locator.byte_len) {
+    LOOM_TRY_ASSIGN(auto document, json::parse(bytes));
+    const auto& pointer = cu.unit.locator.json_pointer;
+    std::vector<std::string> candidates;
+    try {
+      candidates.push_back(json::dump(document.at(Json::json_pointer(pointer))));
+    } catch (const Json::exception&) {
+      // Scanner v1 wrote /N for object-wrapped exports (and /0 for a
+      // standalone object). Recover those existing rows only when the
+      // stored hash verifies the candidate; never silently guess a value.
+    }
+    if (document.is_object() && pointer.size() > 1 && pointer[0] == '/' &&
+        std::all_of(pointer.begin() + 1, pointer.end(), [](unsigned char ch) { return ch >= '0' && ch <= '9'; })) {
+      if (pointer == "/0") candidates.push_back(json::dump(document));
+      for (const auto* wrapper : {"conversations", "projects", "memories"}) {
+        const auto* inner = json::find(document, wrapper);
+        if (!inner || !inner->is_array()) continue;
+        try { candidates.push_back(json::dump(inner->at(Json::json_pointer(pointer)))); }
+        catch (const Json::exception&) {}
+      }
+    }
+    auto match = std::find_if(candidates.begin(), candidates.end(), [&](const auto& candidate) {
+      return Sha256::hex(candidate) == cu.content_hash;
+    });
+    if (match == candidates.end()) return Error(Errc::Conflict, "JSON locator/hash mismatch for " + std::string(unit_id));
+    bytes = std::move(*match);
   }
   if (Sha256::hex(bytes) != cu.content_hash) {
     return Error(Errc::Conflict, "content hash mismatch for " + std::string(unit_id) + ": source bytes changed");

@@ -110,6 +110,15 @@ calls off the render thread.
 `version()` bypass the dispatcher (there is no Loom context yet, or none is
 needed) and call `LoomNative.nativeInit` / `nativeVersion` directly.
 
+The React adapter uses `call(method, argsJson)` with named JSON objects (for
+example `{"conv_id":"c_…","patch":{"title":"Updated"}}`). JNI normalises
+these into the same positional dispatcher used by the older Kotlin wrappers.
+Memory creation accepts the whole object; memory updates take an `id` plus
+the patch fields. Invalid JSON is an error, never an implicit empty request.
+Long-running React calls use `startStream(method,argsJson,callbackId)` and
+`cancelStream(callbackId)`. A finite stream delivers a terminal callback even
+when it fails before native context initialisation or after shutdown.
+
 ### Long-running / networked calls
 
 These return `{"accepted":true}` **immediately** and run on a 4-thread
@@ -159,7 +168,7 @@ the calling background-executor thread).
 * The page is **never** loaded from a `file://` URL. `androidx.webkit`'s
   `WebViewAssetLoader` serves `app/src/main/assets/web/` (the
   `copyWebAssets` Gradle task's target — see below) over a virtual
-  `https://appassets.androidx.startup/web/` origin instead, so
+  `https://appassets.androidx.startup/assets/web/` origin instead, so
   `allowFileAccess`, `allowFileAccessFromFileURLs` and
   `allowUniversalAccessFromFileURLs` all stay off: the WebView has no
   filesystem access beyond what the asset loader explicitly hands it.
@@ -209,11 +218,12 @@ app. From API 30 that needs the "All files access" special permission
 (`MANAGE_EXTERNAL_STORAGE`); `MainActivity.ensureStoragePermissionThenLoad()`
 checks `Environment.isExternalStorageManager()` and, if needed, shows a
 `Snackbar` that opens the system settings screen for it before loading the
-web UI. Below API 30 the legacy `READ/WRITE_EXTERNAL_STORAGE` permissions
-(`android:maxSdkVersion` capped) plus `requestLegacyExternalStorage="true"`
-cover it. **`LoomBridge.init(dataDir, optionsJson)` is the web app's call to
-make**, typically once on load with `dataDir = null` (default resolution) —
-the Kotlin side only makes sure the permission is in place first.
+web UI. Below API 30 the manifest declares legacy `READ/WRITE_EXTERNAL_STORAGE`
+permissions (`android:maxSdkVersion` capped) and `requestLegacyExternalStorage="true"`;
+the runtime permission request remains a gap listed below. `MainActivity.loadApp()`
+calls `LoomBridge.init(null,null)` before loading the React page, so its initial
+backend queries have a context. The public `init(dataDir, optionsJson)` remains
+available for explicit native clients.
 
 ## Building the app
 
@@ -288,8 +298,18 @@ at the top of `verify/CMakeLists.txt`.
 **This was run in this environment and passed**, exercising:
 - `nativeInit` against a throwaway data directory (real SQLite, real config/
   secrets stores).
+- Rejection of malformed/non-object init options inside the JNI error
+  boundary, and exactly one terminal callback for early chat/import failures
+  before init and after shutdown.
 - `set_config`/`set_secret` through `nativeInvoke`.
 - `create_conversation`.
+- Named object arguments from the React adapter: conversation lookup, nested
+  conversation patches, whole-object memory creation and flat memory patches.
+- In-flight unsubscribe lifetime: pause one event callback, unsubscribe a
+  second already-dispatched handler, then resume and verify its callback ID
+  remains valid. This exercises the native shared-lock concurrency directly.
+- An offline knowledge run, catalog queries and goal-directed context through
+  the same native dispatcher used by the workbench.
 - `chat` (streaming): a real `loom_chat_ex` call against a local
   `com.sun.net.httpserver.HttpServer` mock that serves an SSE stream,
   reached through the **real** `LoomHttp`-equivalent Java HTTP transport
@@ -321,6 +341,29 @@ which this test is what proved it.
 
 ## Gaps
 
+- **Activity lifecycle still performs blocking native work on the UI thread.**
+  `loadApp()` initialises the native context before mounting the web UI, and
+  `onDestroy()` calls shutdown synchronously. The JNI shared context lock
+  prevents shutdown from freeing a context while a call is active, so shutdown
+  can wait for a long chat/import/knowledge operation. Device testing and a
+  lifecycle owner for the process-wide context are needed before moving this
+  work off-thread; merely launching shutdown in another thread would allow an
+  old Activity to close a newly attached Activity's context.
+- **Queued stream cancellation is not a lifecycle manager.** Chat cancellation
+  uses the request ID and knowledge cancellation uses the currently running
+  native run. A cancellation arriving before an executor task registers its
+  native request may miss it. The browser callback is removed, but work can
+  still start. This needs executor-task ownership and device-side tests.
+- **Legacy storage permissions need a device pass.** The API 26–29 path currently
+  proceeds to `loadApp()` without a runtime READ/WRITE permission request; the
+  all-files-access settings flow only covers API 30+. No host test validates
+  Android storage permission behavior.
+- **Unsubscribed callback userdata is retained until native shutdown.** The
+  event bus permits an already-dispatched event to finish after unsubscribe.
+  JNI keeps its callback ID alive until active calls and workers have drained,
+  avoiding a use-after-free. Retired IDs are cleared on shutdown; many
+  subscribe/unsubscribe cycles in one long-lived context retain these small
+  strings until then.
 - **Zero-knowledge encryption (AES-256-GCM) is unavailable on this build** —
   see "HTTP: injected from Kotlin" above; it's a direct consequence of
   `LOOM_WITH_OPENSSL=OFF`, not an oversight, but worth listing here too since

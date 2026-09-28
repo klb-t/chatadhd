@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,9 +58,25 @@ public final class HostSmokeTest {
         Path dataDir = Files.createTempDirectory("loom_host_smoke");
         int failures = 0;
         try {
+            failures += check("early stream errors settle callbacks before init", () -> {
+                terminalError("chat-before-init", () -> LoomNative.nativeChat("{}", "chat-before-init"), "invalid_argument");
+                terminalError("import-before-init", () -> LoomNative.nativeImportFile("missing", null, "import-before-init"),
+                    "invalid_argument");
+            });
+            failures += check("invalid init options stay inside JNI error boundary", () -> {
+                for (String options : new String[]{"not-json", "[]", "null"}) {
+                    String r = LoomNative.nativeInit(dataDir.toString(), options);
+                    require(r.contains("\"ok\":false") && r.contains("invalid_argument"), "invalid options accepted: " + r);
+                }
+            });
             failures += check("nativeInit", () -> {
                 String r = LoomNative.nativeInit(dataDir.toString(), null);
                 require(r.contains("\"ok\":true"), "init failed: " + r);
+            });
+
+            failures += check("chat validation emits exactly one terminal error", () -> {
+                terminalError("chat-empty", () -> LoomNative.nativeChat("{}", "chat-empty"), "invalid_argument");
+                terminalError("chat-malformed", () -> LoomNative.nativeChat("not-json", "chat-malformed"), "parse");
             });
 
             failures += check("configure mock endpoint", () -> {
@@ -122,6 +139,48 @@ public final class HostSmokeTest {
                 require(r.contains("invalid_argument"), "malformed JSON silently created conversation: " + r);
                 r = LoomNative.nativeInvoke("create_memory", "{\"content\":\"bridge memory\"}");
                 require(!r.contains("\"error\""), "whole-object memory argument lost: " + r);
+                String memoryId = extractField(r, "id");
+                r = LoomNative.nativeInvoke("update_memory", "{\"id\":" + jsonString(memoryId)
+                    + ",\"content\":\"updated via named fields\"}");
+                require(r.contains("updated via named fields") && !r.contains("\"error\""), "flattened memory patch lost: " + r);
+                r = LoomNative.nativeInvoke("update_conversation", "{\"conv_id\":" + jsonString(convId[0])
+                    + ",\"patch\":{\"title\":\"named patch title\"}}");
+                require(r.contains("named patch title") && !r.contains("\"error\""), "nested conversation patch lost: " + r);
+            });
+
+            failures += check("unsubscribe retains userdata for an in-flight event", () -> {
+                CountDownLatch entered = new CountDownLatch(1);
+                CountDownLatch release = new CountDownLatch(1);
+                LoomCallbacks.register("event-blocker");
+                BlockingQueue<LoomCallbacks.Chunk> pending = LoomCallbacks.register("event-unsubscribed");
+                LoomCallbacks.setDeliveryHook(id -> {
+                    if (!id.equals("event-blocker")) return;
+                    entered.countDown();
+                    try { release.await(5, TimeUnit.SECONDS); }
+                    catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                });
+                long first = LoomNative.nativeSubscribe("conv:created", "event-blocker");
+                long second = LoomNative.nativeSubscribe("conv:created", "event-unsubscribed");
+                Thread emitter = new Thread(() -> LoomNative.nativeInvoke("create_conversation", "{\"title\":\"event test\"}"));
+                try {
+                    require(first > 0 && second > 0, "subscriptions failed");
+                    emitter.start();
+                    require(entered.await(5, TimeUnit.SECONDS), "emitter never reached blocker");
+                    require(LoomNative.nativeUnsubscribe(second) == 0, "unsubscribe failed");
+                    release.countDown();
+                    emitter.join(5000);
+                    require(!emitter.isAlive(), "emitter deadlocked");
+                    // EventBus explicitly permits delivery of the already-copied
+                    // handler; its user_data must still contain the correct ID.
+                    LoomCallbacks.Chunk event = pending.poll(2, TimeUnit.SECONDS);
+                    require(event != null && event.json.contains("conv:created"), "in-flight callback lost its userdata");
+                } finally {
+                    release.countDown();
+                    LoomCallbacks.setDeliveryHook(null);
+                    LoomNative.nativeUnsubscribe(first);
+                    LoomNative.nativeUnsubscribe(second);
+                    emitter.join(5000);
+                }
             });
 
             failures += check("knowledge workbench through native dispatcher", () -> {
@@ -142,6 +201,11 @@ public final class HostSmokeTest {
             });
 
             failures += check("nativeShutdown", () -> LoomNative.nativeShutdown());
+            failures += check("stream errors settle after shutdown too", () -> {
+                terminalError("chat-after-shutdown", () -> LoomNative.nativeChat("{}", "chat-after-shutdown"), "invalid_argument");
+                terminalError("import-after-shutdown", () -> LoomNative.nativeImportFile("missing", null, "import-after-shutdown"),
+                    "invalid_argument");
+            });
         } finally {
             server.stop(0);
             deleteRecursive(dataDir);
@@ -219,6 +283,14 @@ public final class HostSmokeTest {
 
     private interface Check {
         void run() throws Exception;
+    }
+
+    private static void terminalError(String callbackId, Check action, String code) throws Exception {
+        BlockingQueue<LoomCallbacks.Chunk> chunks = LoomCallbacks.register(callbackId);
+        action.run();
+        LoomCallbacks.Chunk terminal = chunks.poll(2, TimeUnit.SECONDS);
+        require(terminal != null && terminal.done && terminal.json.contains(code), "missing terminal error for " + callbackId);
+        require(chunks.isEmpty(), "duplicate terminal callback for " + callbackId);
     }
 
     private static int check(String name, Check c) {

@@ -259,12 +259,15 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
       return txn.commit();  // nothing was written on this path; commits the (empty) transaction
     }
     std::vector<const Json*> elements;
+    std::string pointer_prefix;
+    bool whole_value = false;
     if (parsed->is_object()) {
       const char* wrappers[] = {"conversations", "projects", "memories"};
       const Json* inner = nullptr;
       for (auto* w : wrappers) {
         if (const Json* v = json::find(*parsed, w); v && v->is_array()) {
           inner = v;
+          pointer_prefix = "/" + std::string(w);
           break;
         }
       }
@@ -272,6 +275,7 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
         for (const auto& e : *inner) elements.push_back(&e);
       } else {
         elements.push_back(&*parsed);
+        whole_value = true;
       }
     } else if (parsed->is_array()) {
       for (const auto& e : *parsed) elements.push_back(&e);
@@ -284,8 +288,17 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
       pu.kind = kind.empty() ? "record" : kind;
       pu.locator.source = source_id;
       pu.locator.member = member;
-      pu.locator.json_pointer = "/" + std::to_string(ord++);
-      std::string dumped = json::dump(*ep);
+      std::string dumped;
+      if (whole_value) {
+        // A standalone JSON object is the original source bytes, including
+        // whitespace and unknown fields, not a fictitious array element /0.
+        pu.locator.byte_start = 0;
+        pu.locator.byte_len = static_cast<std::int64_t>(tail.size());
+        dumped = tail;
+      } else {
+        pu.locator.json_pointer = pointer_prefix + "/" + std::to_string(ord++);
+        dumped = json::dump(*ep);
+      }
       pu.content_hash = Sha256::hex(dumped);
       pu.bytes = static_cast<std::int64_t>(dumped.size());
       pu.ext_id = ext_id_of(*ep, kind);
@@ -303,7 +316,8 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
 // DOM-parsed.
 Status scan_whole(Database& db, const AliasIndex& idx, const kb::Normalizer& norm, const SketchParams& params,
                   const std::string& source_id, const std::string& member,
-                  const std::function<Status(const std::function<void(std::string_view)>&)>& reader, Stats& stats) {
+                  const std::function<Status(const std::function<void(std::string_view)>&)>& reader, Stats& stats,
+                  const std::string& file_title = "") {
   Sha256 hasher;
   std::string sample;
   std::int64_t total = 0;
@@ -327,7 +341,7 @@ Status scan_whole(Database& db, const AliasIndex& idx, const kb::Normalizer& nor
   pu.ext_id = member;
   pu.text.prose = sample;
   fs::path mp(member);
-  pu.title_hint = mp.filename().string();
+  pu.title_hint = member.empty() ? file_title : mp.filename().string();
   return ingest_unit(db, idx, norm, params, source_id, std::move(pu), stats);
 }
 
@@ -436,7 +450,8 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
       auto reader = [&](const std::function<void(std::string_view)>& on_chunk) { return stream_file_chunks(file, on_chunk); };
       Status st = (ext == ".json" || ext == ".jsonl")
                       ? scan_json_stream(rt_.db(), idx, norm, cfg.sketch, source_id, "", reader, stats)
-                      : scan_whole(rt_.db(), idx, norm, cfg.sketch, source_id, "", reader, stats);
+                      : scan_whole(rt_.db(), idx, norm, cfg.sketch, source_id, "", reader, stats,
+                                   fs::is_directory(p) ? file.lexically_relative(p).generic_string() : file.filename().string());
       if (!st) {
         stats.warnings.push_back(file.string() + ": " + st.error().message);
         continue;
