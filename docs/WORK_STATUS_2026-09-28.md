@@ -1,5 +1,11 @@
 # Current work checkpoint
 
+Owner confirmed the dedicated credential/capped pilot is ready. The activation
+commit enables live-structure-dev-v1 (32 planned development requests, USD 2
+ceiling). Observe the first Actions run, retain first responses and actual usage;
+do not rerun an uncertain attempt or change its frozen code/input manifest.
+Results are pending at activation time.
+
 Latest continuation: `research/OPENROUTER_LIVE_PILOT_2026-09-28.md`.
 The owner explicitly asked to continue and offered OpenRouter access. Prepared
 32 fresh PL/EN diagnostic texts, independent source-to-graph scoring, the exact
