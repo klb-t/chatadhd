@@ -121,6 +121,60 @@ AliasEval alias_eval(const std::vector<model::Entity>& ents, const Json& gt) {
 
 double f1(double p, double r) { return p + r > 0 ? 2 * p * r / (p + r) : 0.0; }
 
+// Small independent corpora exercise evidence gates without relying on the
+// synthetic development set's words, names or answer key.
+struct AttributionFixture {
+  std::vector<model::Entity> entities;
+  std::vector<model::Observation> observations;
+  std::vector<model::Claim> claims;
+
+  std::string project(const std::string& label) {
+    model::Entity e;
+    e.kind = "project";
+    e.label = label;
+    e.canonical_key = kb::Normalizer(*pack()).phrase_key(label);
+    e.id = model::Entity::make_id(e.kind, e.canonical_key);
+    entities.push_back(e);
+    return e.id;
+  }
+
+  void unit(const std::string& id, const std::string& text, const std::string& project = "",
+            const std::string& group = "") {
+    model::Observation o;
+    o.id = "ob_" + id;
+    o.unit = id;
+    o.text = text;
+    o.date = "2025-01-01";
+    o.attrs = Json{{"leaf", true}, {"gizmo_id", group}};
+    observations.push_back(o);
+    if (project.empty()) {
+      model::Entity e;
+      e.kind = "document";
+      e.canonical_key = "unit " + id;
+      e.id = model::Entity::make_id(e.kind, e.canonical_key);
+      entities.push_back(e);
+    } else {
+      model::Claim c;
+      c.subject = project;
+      c.predicate = "mentioned_in";
+      c.value = id;
+      model::Support support;
+      support.observation = o.id;
+      support.extractor = "test.named@1";
+      c.assessment.support.push_back(support);
+      c.id = model::Claim::make_id(c.subject, c.predicate, c.object, c.value, c.qualifiers);
+      claims.push_back(c);
+    }
+  }
+
+  resolve::AttributionResult run(resolve::AttributionConfig cfg) {
+    auto space = resolve::make_tfidf_space(pack());
+    cfg.alias_tau = 2.0;  // attribution is isolated from alias inference
+    cfg.foundations = false;
+    return unwrap(resolve::attribute_units(*pack(), entities, claims, observations, *space, cfg));
+  }
+};
+
 // A deterministic fake embedder: bag of lowercase letters (26 dims).
 class LetterEmbedder : public resolve::MultimodalEmbedder {
  public:
@@ -185,9 +239,92 @@ TEST_SUITE("resolve_attribution") {
     CHECK(ts->modalities() == std::vector<std::string>{"text"});
   }
 
-  // KNOWN ISSUE (handoff 2026-09-28): noise units are over-attributed (gate noise <= 1/3 fails);
-  // see docs/HANDOFF_2026-09-28.md. Remove may_fail once fixed.
-  TEST_CASE("synthetic_dev: attribution of units that never name their project, before vs after" * doctest::may_fail()) {
+  TEST_CASE("final attribution requires the configured content evidence floor") {
+    AttributionFixture f;
+    auto alpha = f.project("Alpha");
+    f.unit("seed", "Alpha orchid green garden", alpha);
+    f.unit("candidate", "orchid green lunar");
+    resolve::AttributionConfig cfg;
+    cfg.max_passes = 0;
+    cfg.min_cosine = 0.8;
+    cfg.tau = 0.01;
+    auto result = f.run(cfg);
+    REQUIRE(result.units.size() == 1);
+    REQUIRE(result.units[0].candidates.size() == 1);
+    const auto& candidate = result.units[0].candidates[0];
+    REQUIRE(candidate.cosine >= 0.5 * cfg.min_cosine);
+    REQUIRE(candidate.cosine < cfg.min_cosine);
+    CHECK(result.units[0].chosen.empty());
+  }
+
+  TEST_CASE("every multi-label target needs independent content evidence") {
+    AttributionFixture f;
+    auto alpha = f.project("Alpha"), beta = f.project("Beta");
+    f.unit("a", "Alpha orchid green garden", alpha, "shared-workspace");
+    f.unit("b", "Beta ocean navy vessel", beta, "shared-workspace");
+    f.unit("candidate", "orchid green", "", "shared-workspace");
+    resolve::AttributionConfig cfg;
+    cfg.max_passes = 0;
+    cfg.w_cosine = 0.05;
+    cfg.w_context = 0.95;
+    auto result = f.run(cfg);
+    REQUIRE(result.units.size() == 1);
+    CHECK(result.units[0].chosen == std::vector<std::string>{alpha});
+    // The rejected target still appears in diagnostics and as an alternative.
+    REQUIRE(result.units[0].candidates.size() == 2);
+    CHECK(result.units[0].candidates[1].target == beta);
+    CHECK(result.units[0].candidates[1].score >= cfg.ambiguity * result.units[0].candidates[0].score);
+    CHECK(result.units[0].candidates[1].cosine == doctest::Approx(0.0));
+    CHECK(result.subject_of_unit.at("candidate") == alpha);
+  }
+
+  TEST_CASE("unsupported context candidates cannot hide a supported lower-ranked target") {
+    AttributionFixture f;
+    auto alpha = f.project("Alpha");
+    f.unit("a", "Alpha orchid green garden", alpha);
+    for (int i = 0; i < 7; ++i) {
+      std::string label = "Decoy" + std::to_string(i);
+      auto decoy = f.project(label);
+      f.unit(label, label + " ocean navy vessel", decoy, "shared-workspace");
+    }
+    f.unit("candidate", "orchid green", "", "shared-workspace");
+    resolve::AttributionConfig cfg;
+    cfg.max_passes = 1;
+    cfg.w_cosine = 0.05;
+    cfg.w_context = 0.95;
+    auto result = f.run(cfg);
+    REQUIRE(result.units.size() == 1);
+    CHECK(result.units[0].pass == 1);
+    REQUIRE(result.units[0].candidates.size() == 8);
+    CHECK(result.units[0].candidates[0].target != alpha);
+    CHECK(result.units[0].chosen == std::vector<std::string>{alpha});
+    CHECK(result.subject_of_unit.at("candidate") == alpha);
+  }
+
+  TEST_CASE("fixpoint membership does not become content evidence for itself") {
+    AttributionFixture f;
+    auto alpha = f.project("Alpha");
+    const std::string seed = "Alpha orchid green garden", candidate = "orchid lunar basalt";
+    f.unit("seed", seed, alpha);
+    f.unit("candidate", candidate);
+    resolve::AttributionConfig cfg;
+    cfg.max_passes = 1;
+    cfg.tau = 0.01;
+    cfg.tau_confident = 0.01;
+    auto result = f.run(cfg);
+    REQUIRE(result.units.size() == 1);
+    REQUIRE(result.units[0].candidates.size() == 1);
+    REQUIRE(result.units[0].pass == 1);
+    auto space = resolve::make_tfidf_space(pack());
+    std::vector<resolve::EmbedInput> corpus{{"seed", "text", seed, "", ""},
+                                          {"candidate", "text", candidate, "", ""}};
+    LOOM_REQUIRE_OK(space->fit(corpus));
+    auto vectors = unwrap(space->vectors(corpus));
+    CHECK(result.units[0].candidates[0].cosine == doctest::Approx(resolve::cosine(vectors[0], vectors[1])));
+    CHECK(result.units[0].chosen == std::vector<std::string>{alpha});
+  }
+
+  TEST_CASE("synthetic_dev: attribution of units that never name their project, before vs after") {
     auto& C = corpus();
     // before: every unnamed unit keeps its document subject
     std::map<std::string, std::string> doc_unit;  // document entity -> unit
@@ -270,7 +407,7 @@ TEST_SUITE("resolve_attribution") {
       ++noise_total;
       if (!ua.chosen.empty()) {
         ++noise_attributed;
-        if (verbose()) MESSAGE("noise attributed " << C.unit_conv[ua.unit]);
+        if (verbose()) MESSAGE("noise attributed " << C.unit_conv[ua.unit] << " -> " << ua.to_json().dump());
       }
     }
     MESSAGE("noise conversations attributed to a project: " << noise_attributed << "/" << noise_total);
@@ -370,13 +507,21 @@ TEST_SUITE("resolve_attribution") {
     auto space = resolve::make_tfidf_space(pack());
     resolve::AttributionConfig cfg;
     auto r = unwrap(resolve::attribute_units(*pack(), ents, claims, obs, *space, cfg));
+    INFO(r.to_json().dump());
     REQUIRE(r.foundations.size() == 1);
     CHECK(r.foundations[0].label == "ProviderRegistry");
     int uses = 0;
     for (const auto& c : r.claims) uses += c.predicate == "uses_foundation";
     CHECK(uses == 2);  // Alpha and Beta both use it
     std::map<std::string, std::vector<std::string>> chosen;
-    for (const auto& ua : r.units) chosen[ua.unit] = ua.chosen;
+    for (const auto& ua : r.units) {
+      chosen[ua.unit] = ua.chosen;
+      if (ua.unit == "u4") {
+        for (const auto& c : ua.candidates) {
+          if (c.kind == "foundation") CHECK(c.context == doctest::Approx(1.0));
+        }
+      }
+    }
     // u4 is about the shared foundation (so about both projects), not forced onto one
     REQUIRE(!chosen["u4"].empty());
     CHECK(std::find(chosen["u4"].begin(), chosen["u4"].end(), r.foundations[0].id) != chosen["u4"].end());
@@ -392,3 +537,4 @@ TEST_SUITE("resolve_attribution") {
     CHECK(json::canonical(r.to_json()) == json::canonical(r2.to_json()));
   }
 }
+

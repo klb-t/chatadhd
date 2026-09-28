@@ -15,18 +15,13 @@
 // "loom"/"watchdog"/"agent"/"ADHD" entries) -- which is exactly what the
 // fixture's noise traps are built to test, per its own README.
 //
-// Metrics and the honest gap versus the design target (proposal_scale.md
-// §8: R >= 0.95, P >= 0.85, trap FPR <= 0.05): this implementation has no
-// corpus-wide BM25 pass and no vocabulary-expansion pass (score.cpp's
-// header comment), so recall on conversations that mention a project only
-// obliquely (pronouns, no literal alias) is well short of that target.
-// Precision and trap rejection -- the properties that matter most for "never
-// auto-import irrelevant content" -- are strong. The thresholds asserted
-// here are calibrated to what the current implementation actually achieves
-// (with a small margin), not to the original design target; the real
-// numbers are printed via INFO() and quoted in the final report.
+// This development-set gate measures the complete configured selector,
+// including corpus retrieval, expansion and linked-unit completion. Evaluate
+// precision on the same labeled conversation population as recall; provider
+// project and memory documents are reported separately, not mislabeled noise.
 #include <doctest/doctest.h>
 
+#include <cstdlib>
 #include <set>
 
 #include "loom/catalog.h"
@@ -107,16 +102,22 @@ TEST_SUITE("catalog_eval") {
     const Json& units = truth["units"];
 
     std::map<std::string, bool> selected_by_ext;
+    std::map<std::string, Json> diagnostics_by_ext;
     {
       auto lk = rt->db().lock();
-      sql::Stmt st = unwrap(rt->db().conn().prepare("SELECT u.ext_id, d.selected FROM loom_cat_units u "
-                                                    "JOIN loom_cat_decisions d ON d.unit_id = u.id AND d.run_id = ?"));
+      sql::Stmt st = unwrap(rt->db().conn().prepare(
+          "SELECT u.ext_id, d.selected, s.score, s.label, s.features, d.decided_by FROM loom_cat_units u "
+          "JOIN loom_cat_decisions d ON d.unit_id = u.id AND d.run_id = ? "
+          "JOIN loom_cat_scores s ON s.unit_id = u.id AND s.run_id = d.run_id"));
       st.bind(1, run_id);
       while (true) {
         auto has = st.step();
         REQUIRE(has.has_value());
         if (!*has) break;
         selected_by_ext[st.get_text(0)] = st.get_int(1) != 0;
+        diagnostics_by_ext[st.get_text(0)] = Json{{"score", st.get_double(2)}, {"label", st.get_text(3)},
+                                                {"features", json::parse_or(st.get_text(4), Json::object())},
+                                                {"decided_by", st.get_text(5)}};
       }
     }
 
@@ -136,23 +137,42 @@ TEST_SUITE("catalog_eval") {
     m.trap_selected = count_selected(units["noise_traps"]);
     m.generic_total = static_cast<int>(units["noise_generic"].size());
     m.generic_selected = count_selected(units["noise_generic"]);
-    for (auto& [ext_id, sel] : selected_by_ext) m.selected_total += sel ? 1 : 0;
+    m.selected_total = m.relevant_selected + m.trap_selected + m.generic_selected;
+    std::set<std::string> labeled;
+    for (const char* category : {"relevant", "noise_traps", "noise_generic"}) {
+      for (const auto& unit : units[category]) labeled.insert(json::get_string(unit, "conv_id"));
+    }
+    int auxiliary_selected = 0;
+    for (const auto& [ext_id, selected] : selected_by_ext) {
+      if (selected && !labeled.count(ext_id)) ++auxiliary_selected;
+    }
+    if (const char* v = std::getenv("LOOM_CATALOG_EVAL_VERBOSE"); v && *v && std::string(v) != "0") {
+      for (const char* category : {"relevant", "noise_traps", "noise_generic"}) {
+        for (const auto& unit : units[category]) {
+          std::string id = json::get_string(unit, "conv_id");
+          bool selected = selected_by_ext.count(id) && selected_by_ext.at(id);
+          if (selected != (std::string(category) == "relevant"))
+            MESSAGE(std::string(category) << " " << id << " selected=" << selected << " " << diagnostics_by_ext[id].dump());
+        }
+      }
+    }
 
-    INFO("relevant: ", m.relevant_selected, "/", m.relevant_total, " recall=", m.recall());
-    INFO("traps: ", m.trap_selected, "/", m.trap_total, " trap_fpr=", m.trap_fpr());
-    INFO("noise_generic selected: ", m.generic_selected, "/", m.generic_total);
-    INFO("selected total: ", m.selected_total, " precision=", m.precision());
+    MESSAGE("relevant: " << m.relevant_selected << "/" << m.relevant_total << " recall=" << m.recall());
+    MESSAGE("traps: " << m.trap_selected << "/" << m.trap_total << " trap_fpr=" << m.trap_fpr());
+    MESSAGE("noise_generic selected: " << m.generic_selected << "/" << m.generic_total);
+    MESSAGE("selected conversations: " << m.selected_total << " precision=" << m.precision());
+
+    MESSAGE("selected auxiliary documents (outside conversation labels): " << auxiliary_selected);
+    MESSAGE("selector stats: " << score_stats.dump());
 
     // Trap rejection and precision are the safety-critical properties (R1:
     // never auto-import irrelevant content from a multi-GB archive) and are
-    // strong even with no BM25/expansion pass.
-    CHECK(m.trap_fpr() <= 0.05);       // achieved: 0/5 = 0.0
-    CHECK(m.precision() >= 0.75);      // achieved: ~0.85
-    // Recall is the honestly-disclosed gap (missing BM25 + expansion + link
-    // passes: a conversation that names its project only once, or not at
-    // all and relies on vocabulary/continuation evidence, often does not
-    // clear the identity-pass-only score).
-    CHECK(m.recall() >= 0.55);         // achieved: ~0.62
-    CHECK(m.generic_selected <= m.generic_total / 3);  // achieved: 3/15
+    // evaluated alongside recall so a permissive selector cannot hide noise.
+    CHECK(m.trap_fpr() <= 0.05);
+    CHECK(m.precision() >= 0.75);
+    // Keep the original recall gate until current measurements are recorded.
+    CHECK(m.recall() >= 0.55);
+    CHECK(m.generic_selected <= m.generic_total / 3);
   }
 }
+

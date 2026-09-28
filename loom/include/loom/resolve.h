@@ -238,6 +238,9 @@ std::unique_ptr<VectorSpace> make_embedding_space(std::shared_ptr<MultimodalEmbe
 // tau_confident and unambiguous join their project's profile; repeat
 // (bounded, deterministic). Final pass: every candidate >= tau and >=
 // ambiguity * best is chosen — ambiguous units keep several (multi-label).
+// Every chosen label independently needs min_cosine or min_shared_terms rare
+// identifiers. A scored centroid excludes the unit itself (including after
+// fixpoint admission), so inferred membership cannot confirm itself.
 // Output: an `about` claim per chosen target (evidence inferred, origin
 // system, calibrated confidence, Expected Property "the unit mentions >= k
 // terms of P", competing alternatives with scores, method recorded), and
@@ -250,6 +253,8 @@ std::unique_ptr<VectorSpace> make_embedding_space(std::shared_ptr<MultimodalEmbe
 // "foundation"); the entity is `instance_of` it and every project
 // `uses_foundation` it (derived, origin system). Units whose best match is a
 // foundation are `about` the foundation, and so reach every project using it.
+// A located mention of its source entity provides direct affiliation context;
+// the scored unit remains excluded from the foundation profile itself.
 // Small project entities whose profile matches another project's profile
 // (>= alias_tau, unambiguous) are inferred to be the same project: an
 // inferred `same_as` claim and their aliases carried over (method "inferred").
@@ -261,7 +266,7 @@ struct AttributionConfig {
   double tau_confident = 0.08;  // lowest score a fixpoint pass accepts ...
   double margin = 1.5;          // ... when best >= margin * runner-up
   double ambiguity = 0.8;       // final pass: every candidate >= ambiguity * best is kept
-  double min_cosine = 0.1;      // content evidence needed (or shared rare identifiers in the final pass)
+  double min_cosine = 0.1;      // evidence floor per label (or min_shared_terms rare identifiers)
   double w_cosine = 0.65;
   double w_context = 0.35;
   double time_scale_days = 45.0;
@@ -318,3 +323,4 @@ Result<Json> run_assess_stage(knowledge::StageContext& ctx);
 
 }  // namespace resolve
 }  // namespace loom
+

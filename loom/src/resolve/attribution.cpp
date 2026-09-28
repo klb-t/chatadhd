@@ -244,8 +244,12 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
   // Sentence-level seeds: an observation that names exactly one project (in
   // a status overview, a memory, a project description) describes that
   // project even when its unit names several.
-  std::map<std::string, std::vector<std::string>> seeds;  // project -> texts
-  std::map<std::string, std::vector<SparseVec>> seed_vecs;
+  struct Seed {
+    std::string unit;
+    std::string text;
+    SparseVec vector;
+  };
+  std::map<std::string, std::vector<Seed>> seeds;  // project -> located seed observations
   {
     std::map<std::string, const model::Observation*> ob;
     for (const auto& o : observations) ob[o.id] = &o;
@@ -255,22 +259,22 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
       if (it == ob.end()) continue;
       const std::string& p = *ps.begin();
       if (members[p].count(it->second->unit)) continue;  // already in the profile
-      seeds[p].push_back(it->second->text);
+      seeds[p].push_back(Seed{it->second->unit, it->second->text, {}});
     }
     std::vector<EmbedInput> in;
-    std::vector<std::string> owner;
-    for (const auto& [p, ts] : seeds) {
-      for (const auto& t : ts) {
-        in.push_back(EmbedInput{p, "text", t, "", ""});
-        owner.push_back(p);
+    std::vector<Seed*> owner;
+    for (auto& [p, ts] : seeds) {
+      for (auto& seed : ts) {
+        in.push_back(EmbedInput{p, "text", seed.text, "", ""});
+        owner.push_back(&seed);
       }
     }
     LOOM_TRY_ASSIGN(auto vs, space.vectors(in));
-    for (std::size_t i = 0; i < vs.size(); ++i) seed_vecs[owner[i]].push_back(std::move(vs[i]));
+    for (std::size_t i = 0; i < vs.size(); ++i) owner[i]->vector = std::move(vs[i]);
     for (const auto& [p, ts] : seeds) members[p];  // a seeded project has a profile
   }
   auto profile_weight = [&](const std::string& p) { return members[p].size() + (seeds.count(p) ? seeds[p].size() : 0); };
-  auto profile_text = [&](const std::string& p) {
+  auto profile_text = [&](const std::string& p, const std::string& excluded = "") {
     std::string t;
     const Entity* e = ent.count(p) ? ent[p] : nullptr;
     for (int k = 0; k < 3 && e; ++k) {
@@ -278,9 +282,12 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
       for (const auto& a : e->aliases) t += a.surface + "\n";
     }
     if (seeds.count(p)) {
-      for (const auto& s : seeds[p]) t += s + "\n";
+      for (const auto& seed : seeds[p]) {
+        if (seed.unit != excluded) t += seed.text + "\n";
+      }
     }
     for (const auto& u : members[p]) {
+      if (u == excluded) continue;
       t += units[u].text;
       for (const auto& m : units[u].mentions) {
         auto it = ent.find(m);
@@ -308,7 +315,7 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
   auto infer_aliases = [&]() -> Status {
     std::vector<std::string> ps;
     for (const auto& [p, m] : members) ps.push_back(p);
-    LOOM_TRY_ASSIGN(auto prof, build_profiles(ps, profile_text));
+    LOOM_TRY_ASSIGN(auto prof, build_profiles(ps, [&](const std::string& p) { return profile_text(p); }));
     std::map<std::string, std::string> fresh;
     for (const auto& s : ps) {
       if (named_units[s] > cfg.alias_max_units || alias_of.count(s)) continue;
@@ -370,9 +377,7 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
     for (const auto& [s, b] : fresh) {
       for (const auto& u : members[s]) members[b].insert(u);
       for (auto& t : seeds[s]) seeds[b].push_back(t);
-      for (auto& v : seed_vecs[s]) seed_vecs[b].push_back(v);
       seeds.erase(s);
-      seed_vecs.erase(s);
       members.erase(s);
       if (ent.count(b) && ent.count(s)) {
         Entity canon = *ent[b];
@@ -404,8 +409,23 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
     return {};
   };
   LOOM_TRY(infer_aliases());
+  // A centroid must never contain the unit being scored. In particular,
+  // fixpoint membership is an inference, not fresh evidence for itself.
+  auto foundation_text = [&](const std::string& e, const std::string& excluded = "") {
+    std::string t;
+    for (const auto& u : ent_units[e]) {
+      if (u != excluded) t += units[u].text;
+    }
+    for (int k = 0; k < 3; ++k) t += ent[e]->label + "\n";
+    return t;
+  };
+  auto has_content_evidence = [&](const AttributionCandidate& c) {
+    return c.cosine >= cfg.min_cosine ||
+           static_cast<int>(c.shared.size()) >= std::max(1, cfg.min_shared_terms);
+  };
   // ── scoring ──────────────────────────────────────────────────────
-  auto score_unit = [&](const UnitData& u, const std::map<std::string, SparseVec>& prof, const std::string& kind) {
+  auto score_unit = [&](const UnitData& u, const std::map<std::string, SparseVec>& prof, const std::string& kind)
+      -> Result<std::vector<AttributionCandidate>> {
     std::vector<AttributionCandidate> cs;
     for (const auto& [p, pv] : prof) {
       AttributionCandidate c;
@@ -414,14 +434,25 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
       c.cosine = cosine(unit_vec[u.id], pv);
       double time = 0.0;
       bool gizmo = false;
-      std::set<std::string> punits = kind == "project" ? members[p] : ent_units[p];
+      const auto& punits = kind == "project" ? members[p] : ent_units[p];
+      bool contains_unit = punits.count(u.id) > 0;
+      if (kind == "project" && seeds.count(p)) {
+        for (const auto& seed : seeds[p]) contains_unit = contains_unit || seed.unit == u.id;
+      }
+      if (contains_unit) {
+        std::string text = kind == "project" ? profile_text(p, u.id) : foundation_text(p, u.id);
+        LOOM_TRY_ASSIGN(auto independent, space.vectors({EmbedInput{p, "text", text, "", ""}}));
+        c.cosine = cosine(unit_vec[u.id], independent.front());
+      }
       // nearest member (kNN, k = 1) next to the profile centroid: a project
       // known from few units is still found through its closest one
       for (const auto& m : punits) {
         if (m != u.id) c.cosine = std::max(c.cosine, cosine(unit_vec[u.id], unit_vec[m]));
       }
-      if (kind == "project" && seed_vecs.count(p)) {
-        for (const auto& sv : seed_vecs[p]) c.cosine = std::max(c.cosine, cosine(unit_vec[u.id], sv));
+      if (kind == "project" && seeds.count(p)) {
+        for (const auto& seed : seeds[p]) {
+          if (seed.unit != u.id) c.cosine = std::max(c.cosine, cosine(unit_vec[u.id], seed.vector));
+        }
       }
       for (const auto& m : punits) {
         if (m == u.id) continue;
@@ -442,8 +473,12 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
       }
       std::sort(c.shared.begin(), c.shared.end());
       double shared = std::min(1.0, static_cast<double>(c.shared.size()) / std::max(1, cfg.min_shared_terms));
-      // parallel projects make time alone weak evidence: it only sharpens shared identifiers
-      c.context = gizmo ? 1.0 : (shared > 0 ? 0.25 * time + 0.75 * shared : 0.1 * time);
+      // A located mention of the entity underlying a foundation is direct
+      // structural affiliation, just like a provider project id. It does
+      // not rely on including this unit in the foundation's text profile.
+      bool direct_foundation = kind == "foundation" && u.mentions.count(p) > 0;
+      // Parallel projects make time alone weak evidence: it only sharpens shared identifiers.
+      c.context = (gizmo || direct_foundation) ? 1.0 : (shared > 0 ? 0.25 * time + 0.75 * shared : 0.1 * time);
       c.score = cfg.w_cosine * c.cosine + cfg.w_context * c.context;
       cs.push_back(std::move(c));
     }
@@ -463,16 +498,17 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
     std::vector<std::string> ps;
     for (const auto& [p, m] : members) ps.push_back(p);
     if (ps.empty()) break;
-    LOOM_TRY_ASSIGN(auto prof, build_profiles(ps, profile_text));
+    LOOM_TRY_ASSIGN(auto prof, build_profiles(ps, [&](const std::string& p) { return profile_text(p); }));
     // the most confident unit per project joins it (gradual, so one early
     // mistake cannot drag a whole cluster along)
     std::map<std::string, std::pair<double, std::string>> best_for;  // project -> (score, unit)
     for (const auto& uid : pending) {
       if (settled_pass.count(uid)) continue;
-      auto cs = score_unit(units[uid], prof, "project");
+      LOOM_TRY_ASSIGN(auto cs, score_unit(units[uid], prof, "project"));
+      cs.erase(std::remove_if(cs.begin(), cs.end(), [&](const auto& c) { return !has_content_evidence(c); }), cs.end());
       if (cs.empty()) continue;
       bool unambiguous = cs.size() < 2 || cs[1].score * cfg.margin <= cs[0].score;
-      if (cs[0].score < cfg.tau_confident || cs[0].cosine < cfg.min_cosine || !unambiguous) continue;
+      if (cs[0].score < cfg.tau_confident || !unambiguous) continue;
       auto& b = best_for[cs[0].target];
       if (cs[0].score > b.first || (cs[0].score == b.first && uid < b.second)) b = {cs[0].score, uid};
     }
@@ -539,15 +575,10 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
   // ── final pass: every pending unit, projects + foundations ──────
   std::vector<std::string> ps;
   for (const auto& [p, m] : members) ps.push_back(p);
-  LOOM_TRY_ASSIGN(auto prof, build_profiles(ps, profile_text));
+  LOOM_TRY_ASSIGN(auto prof, build_profiles(ps, [&](const std::string& p) { return profile_text(p); }));
   std::vector<std::string> fs;
   for (const auto& [e, f] : foundation_of) fs.push_back(e);
-  LOOM_TRY_ASSIGN(auto fprof, build_profiles(fs, [&](const std::string& e) {
-                    std::string t;
-                    for (const auto& u : ent_units[e]) t += units[u].text;
-                    for (int k = 0; k < 3; ++k) t += ent[e]->label + "\n";
-                    return t;
-                  }));
+  LOOM_TRY_ASSIGN(auto fprof, build_profiles(fs, [&](const std::string& e) { return foundation_text(e); }));
   int attributed = 0, ambiguous = 0;
   for (const auto& uid : pending) {
     const UnitData& u = units[uid];
@@ -555,8 +586,9 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
     ua.unit = uid;
     ua.subject = u.document;
     ua.pass = settled_pass.count(uid) ? settled_pass[uid] : 0;
-    ua.candidates = score_unit(u, prof, "project");
-    for (auto& c : score_unit(u, fprof, "foundation")) {
+    LOOM_TRY_ASSIGN(ua.candidates, score_unit(u, prof, "project"));
+    LOOM_TRY_ASSIGN(auto foundation_candidates, score_unit(u, fprof, "foundation"));
+    for (auto& c : foundation_candidates) {
       c.target = foundation_of[c.target];
       ua.candidates.push_back(std::move(c));
     }
@@ -564,19 +596,26 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
       if (a.score != b.score) return a.score > b.score;
       return a.target < b.target;
     });
-    if (ua.candidates.size() > 6) ua.candidates.resize(6);
-    if (!ua.candidates.empty() && ua.candidates[0].score >= cfg.tau &&
-        (ua.candidates[0].cosine >= 0.5 * cfg.min_cosine || !ua.candidates[0].shared.empty())) {
-      double best = ua.candidates[0].score;
-      for (const auto& c : ua.candidates) {
-        if (c.score >= cfg.tau && c.score >= cfg.ambiguity * best) ua.chosen.push_back(c.target);
-      }
+    // Context may rank supported candidates, but proximity (including a
+    // shared provider project) cannot supply their missing content evidence.
+    // Apply the same gate to EVERY label, before comparing ambiguity scores.
+    double best = 0.0;
+    for (const auto& c : ua.candidates) {
+      if (has_content_evidence(c)) best = std::max(best, c.score);
+    }
+    for (const auto& c : ua.candidates) {
+      if (has_content_evidence(c) && c.score >= cfg.tau && c.score >= cfg.ambiguity * best)
+        ua.chosen.push_back(c.target);
     }
     if (!ua.chosen.empty()) ++attributed;
     if (ua.chosen.size() > 1) ++ambiguous;
     // about claims, one per chosen target, the others as alternatives
     std::string single_project;
-    if (ua.chosen.size() == 1 && ua.candidates[0].kind == "project") single_project = ua.chosen[0];
+    if (ua.chosen.size() == 1) {
+      for (const auto& c : ua.candidates) {
+        if (c.target == ua.chosen.front() && c.kind == "project") single_project = c.target;
+      }
+    }
     std::string about_id;
     for (const auto& c : ua.candidates) {
       if (std::find(ua.chosen.begin(), ua.chosen.end(), c.target) == ua.chosen.end()) continue;
@@ -588,7 +627,7 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
       auto& as = a.assessment;
       as.evidence = model::EvidenceClass::Inferred;
       as.origin = model::Origin::System;
-      as.derivation = model::Derivation{"resolve.attribution", 1, "", 0};
+      as.derivation = model::Derivation{"resolve.attribution", 2, "", 0};
       as.confidence = std::round(isotonic_inferred(pack, std::clamp(c.score, 0.0, 1.0)) * 1e4) / 1e4;
       kb::ExpectedProperty ep;
       ep.expr = Json{{"op", "co_mentioned_with"}, {"args", Json::array({u.document, c.target, cfg.min_shared_terms})}};
@@ -627,7 +666,7 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
         auto& as = n.assessment;
         as.evidence = model::EvidenceClass::Inferred;
         as.origin = model::Origin::System;
-        as.derivation = model::Derivation{"resolve.attribution", 1, "", 1};
+        as.derivation = model::Derivation{"resolve.attribution", 2, "", 1};
         as.premises.claims = {c.id, about_id};
         as.confidence = std::round(std::min(c.assessment.confidence, aconf) * 1e4) / 1e4;
         kb::ExpectedProperty ep;
@@ -672,3 +711,4 @@ Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vecto
 }
 
 }  // namespace loom::resolve
+
