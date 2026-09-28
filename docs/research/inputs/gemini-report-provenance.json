@@ -1,0 +1,18 @@
+[
+  {
+    "original_filename": "Ekstrakcja struktur logicznych z tekstu.docx",
+    "original_docx_sha256": "193de55bf0d4bbd1b2508a110994c5d3d898509a731c6c4bc2bbd3dc479fdda1",
+    "extracted_file": "gemini-logical-extraction.txt",
+    "extracted_sha256": "4a16e295992a39e210ab0589731fb0e596b9175493b867eb6b58c2ea2c98c0da",
+    "extraction": "word/document.xml paragraphs and w:t nodes, including table paragraphs; layout and non-text OOXML not retained",
+    "source": "User-supplied Gemini research report, received 2026-09-28; claims require primary-source verification"
+  },
+  {
+    "original_filename": "Wykorzystanie modelu klasyfikacyjnego jev i repozy....docx",
+    "original_docx_sha256": "6aef6a8b514f1818f3f4bd0f61792829fff5ccbbf3c41e89633926ce417d6dea",
+    "extracted_file": "gemini-jev-routing.txt",
+    "extracted_sha256": "fc4b627427a729f28af7c9e6f9688474742c1596c5f097ff47b458a02182aef9",
+    "extraction": "word/document.xml paragraphs and w:t nodes, including table paragraphs; layout and non-text OOXML not retained",
+    "source": "User-supplied Gemini research report, received 2026-09-28; claims require primary-source verification"
+  }
+]

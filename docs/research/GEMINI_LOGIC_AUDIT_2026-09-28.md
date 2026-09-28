@@ -1,0 +1,58 @@
+# Audit of the Gemini report on extracting logical structure
+
+Reviewed 2026-09-28. Input: the complete user-supplied **Ekstrakcja struktur logicznych z tekstu.docx**, extracted as `gemini_reports/report_1.txt`. This is a selective primary-source audit of consequential claims, not verification of every one of its 84 references. No implementation was changed and no private holdout was accessed. The native occurrence-graph contract and repository instructions were read after restoration.
+
+The report identifies useful research directions, particularly document-level semantic relations, explicit verification and reusable structured context. Its confidence is substantially stronger than its sources justify. One cited result is described with effectively the opposite conclusion. The practical response is to test these components against Loom's source-grounded, reversible candidate boundary, not replace that boundary with an allegedly infallible extractor.
+
+## Evidence and corrections
+
+| Report claim | Primary-source finding | Consequence for Loom |
+| --- | --- | --- |
+| UMR supplies a multilingual sentence/document representation; UMR v2.0 exceeds 210,000 sentences. | The formalism does add document coreference, temporal and modal relations [1]. SETUP reports **210,237** sentence graphs, including **175,268 Czech** and **29,912 English** graphs; its parser work focuses on English sentence-level parsing, with substantial Minecraft-related material [2]. | Useful vocabulary and evaluation inspiration. Corpus size and high English graph scores do not establish accurate extraction of Polish multi-thread conversations, general thought structures or document reasoning. Preserve a mapping and explicit losses instead of declaring the five-operation carrier equivalent to UMR. |
+| Rewriting incomplete last utterances before a frozen SDRT parser supplies a reliable logical foundation; GRPO resolves the problem. | The cited SIGDIAL paper reports that parser-agnostic rewriting often creates **more regressions than repairs**. Parser-aware GRPO reduces regressions through conservative abstention but still fails to consistently improve parsing [3]. | Keep original utterances immutable. Any clarification is a separate interpretation with evidence, alternatives and abstention. Evaluate topic returns, corrections and ambiguous references directly; do not silently normalize away the cues needed to identify them. |
+| UNSAT means undecidability; an UNSAT core certifies a correct natural-language conclusion and identifies exactly the relevant facts. | **UNSAT means unsatisfiable**, distinct from the solver's `unknown` result [4]. An unsatisfiable core is a sufficient subset of assumptions, not necessarily minimal or unique [5]. | Distinguish source fidelity, representation validity and logical consequence. Record the actual premises, interpretation and verification result; never label an extraction true merely because its translated formula passes a solver. |
+| FoVer provides essentially error-free verification through translation to Z3. | FoVer checks premise consistency before querying entailment. It separates explicit claims, definitions and optional model-supplied common knowledge. The paper also reports translation/executability errors and weaker results on some real-world inputs [6]. | Adopt the consistency gate and explicit assumptions. Do not silently delete conflicting definitions or elevate model-added background knowledge to observations. Our candidate API should accept a bounded data language, not execute model-generated Python. |
+| Constrained decoding guarantees mathematical correctness and a universal large speed improvement; closed APIs require repair wrappers. | JSONSchemaBench tests approximately 10,000 schemas, finds substantial coverage differences, and evaluates closed-provider systems alongside local engines. Its particular GSM8K comparison is 80.1% without constraints versus 83.7% with XGrammar, not universal semantic correctness [7]. XGrammar's reported acceleration concerns structured-generation machinery and particular serving measurements [8]. | Negotiate supported schema constraints by provider. Keep native quote, reference, scope and resource validation after decoding. Measure format success, semantic accuracy, total calls, tokens and latency separately; do not import headline speedups as product guarantees. |
+| AutoSchemaKG yields 90–95% correct links with complete resilience to hallucinations. | The cited ACL publication reports **92% semantic alignment of induced schemas with human-crafted schemas**, a different quantity from edge truth or extraction precision [9]. | Schema induction can propose vocabulary additions. Each addition still needs definition, provenance, versioning, examples and separate evaluation. No automatic rewrite of the existing ontology follows from this number. |
+| IE-as-Cache avoids raw text and produces near-perfect reasoning across strong and tiny models. | The paper maintains structured working context while retaining **on-demand access to the original text** and a finite step budget. TACT with GPT-4o rises from ReAct's 57.26 to 71.77 EM; Calendar with Llama 8B is 15.70 versus CoT's 18.00. QMSUM uses ROUGE-1, not correctness [10]. | Good hypothesis for query-specific graph views plus source fallback. It does not support discarding source bytes, universal dominance, or treating a compressed cache as complete evidence. The cache and its update cost must be measured. |
+
+Other numerical claims, including universal Vector-RAG precision around 8%, GraphRAG around 33%, 1.5–1.9% hallucinated edges and blanket 50% generation acceleration, were **not established in this bounded audit**. They should not be requirements or success baselines. An existing source citation is not itself verification of the metric, task, denominator or comparison.
+
+## Fit to the implemented candidate boundary
+
+`occurrence_graph_v1` already separates packet-bound observations from proposed local occurrences and Claim drafts. It preserves quotes, scopes, operand roles, alternatives, coverage and unknowns, while leaving review pending and canonical promotion disabled. That is an appropriate host for these experiments. The validator currently establishes structural and provenance conditions; it does not prove that the model chose the right interpretation or that a conclusion follows.
+
+UMR-style discourse information should be introduced as typed, separately evidenced relations: coreference, temporal ordering and attributed modality have different semantics. Existing offline `context_delta` work can carry reversible interpretations of topic continuation, return and correction. A global chronology or a universal right-frontier attachment rule should not be assumed for arbitrary imported threads, branches or interleaved conversations.
+
+Query-focused caches should be derived views of the same graph and sources. A cache key needs the source/graph snapshot, query, projection policy and method version. Distinct occurrences must not collapse merely because labels match, and pruned context must remain recoverable. These are engineering inferences from the audited methods and Loom's preservation requirements, not claims that the cited systems implement Loom's contract.
+
+## Two bounded experiments
+
+### 1. Separate graph validity from logical consequence
+
+Build a read-only verifier for the **propositional subset** of the existing occurrence graph. Compile validated predicate occurrences to explicitly identified atoms, preserve shared references, and interpret supported negation/conjunction/conditional ports. Unknown operators, quantification, unresolved identity, modality and unsupported scopes must produce `unsupported`, not erased constraints.
+
+For an initial dependency-free experiment, cap at 12 independent atoms and enumerate at most 4,096 assignments. Check satisfiability of the premises first. Then distinguish `entailed`, `contradicted`, `undetermined`, `inconsistent_premises`, and explicit unsupported/resource outcomes. An ordinary inconclusive logical result is different from an unfinished search. Keep source packet hashes and Claim references in the report and never promote candidates.
+
+Use manually specified graphs for modus ponens, modus tollens, affirming the consequent, reversed implication, conjunction, explicit negation, inconsistent premises and shared-versus-distinct atomic references. Add quantified and attributed-modal controls that must abstain. A deliberately mis-translated but structurally valid graph must demonstrate the boundary: verification can succeed for the formula while extraction fidelity remains unvalidated. Freeze expected decisions before implementation; this tests the checker, not model extraction quality. A later Z3 adapter can expand the supported fragment under the same result contract.
+
+### 2. Test a reversible graph cache against equal-budget baselines
+
+Use 24 newly authored English/Polish dialogue cases, split by structural family before tuning. Include late project introduction, a return after distractors, correction, contradictory speakers, ambiguous pronouns and missing decisive evidence. Compare raw context, static extracted graph context, and graph context with at most one source-refresh request. Use the same configured cheap model, output budget and total-call accounting; add an oracle-graph arm to isolate extraction from cache-use failures.
+
+Measure answer correctness, evidence recall, unsupported conclusions, appropriate abstention, context bytes/tokens, total charged calls and source reads. Record the first run before changing prompts. Static-cache omission cases should require source recovery or abstention, not invented edges. An offline replay can test invalidation and recovery mechanics now, but it cannot establish model quality or cost improvement without real model runs.
+
+## Primary sources consulted
+
+1. UMR project overview: https://umr4nlp.github.io/web/ ; annotation specification: https://github.com/umr4nlp/umr-guidelines/blob/master/guidelines.md
+2. SETUP, sentence-level English-to-UMR parser, version 2: https://arxiv.org/html/2512.07068v2 (especially data composition and evaluation sections).
+3. Liu et al., *Beyond Supervised Clarification: Input Rewriting with LLMs for Dialogue Discourse Parsing*, SIGDIAL 2026: https://aclanthology.org/2026.sigdial-1.30/ ; authors' code: https://github.com/ounlp/Clarification-for-DDP
+4. Z3 official guide, basic commands and `sat` / `unsat` / `unknown`: https://microsoft.github.io/z3guide/docs/logic/basiccommands/
+5. Z3 authors, *Programming Z3*, sections on assumptions, cores and models: https://z3prover.github.io/papers/programmingz3.html
+6. Pei et al., *FoVer*, TACL 2025: https://aclanthology.org/2025.tacl-1.61.pdf (Algorithm 1, results and error analysis); authors' repository: https://github.com/peiyu-cn/FoVer
+7. *JSONSchemaBench*, version 3: https://arxiv.org/html/2501.10868v3 ; authors' repository: https://github.com/guidance-ai/jsonschemabench
+8. XGrammar original paper: https://arxiv.org/abs/2411.15100 ; official repository: https://github.com/mlc-ai/xgrammar . Its newer architecture should be checked separately before selecting an implementation.
+9. Bai et al., *AutoSchemaKG*, ACL 2026: https://aclanthology.org/2026.acl-long.942/ ; authoritative PDF: https://aclanthology.org/2026.acl-long.942.pdf
+10. Lv et al., *IE as Cache*, version 1: https://arxiv.org/html/2604.14930v1 (algorithm and Table I).
+
+Repository URLs are provided for implementation follow-up; the findings above rely on the opened primary publications and documentation, not an execution or security audit of those external repositories.

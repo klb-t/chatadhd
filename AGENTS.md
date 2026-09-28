@@ -34,6 +34,14 @@ handoff because conversation sessions can become inaccessible. Save meaningful
 increments; keep untested checkpoints clearly labelled and record exact test
 results. Do not rely on the conversation as the only record of progress.
 
+After a reported session stall, follow `docs/WORK_RECOVERY_2026-09-28.md`.
+Use finite child tasks with explicit file ownership and early partial handoffs;
+reconcile all child statuses before ending a turn. Do not wait indefinitely on
+an unchanged running indicator. Keep `docs/WORK_STATUS_2026-09-28.md` current and
+verify remote checkpoints. These workflow safeguards do not repair platform
+failures. The restored local checkout may be partial/synthetic: verify the remote
+parent and preserve omitted files; never push synthetic local history.
+
 Do not read or tune against `eval/real-holdout-key` during development. Current
 source-date filtering is not a clean historical benchmark when the data pack
 contains later knowledge. Keep integrated metrics separate from per-module
