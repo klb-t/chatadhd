@@ -21,6 +21,7 @@ import type {
   Task,
 } from "./types";
 import { isLoomError } from "./types";
+import type { KnowledgeApi } from "./knowledge";
 
 const TOKEN_KEY = "loom.auth_token";
 
@@ -34,6 +35,18 @@ class HttpError extends Error {
 
 export class LoomHttpApi implements LoomApi {
   private token: string | null = null;
+  readonly knowledge: KnowledgeApi = {
+    listRuns: () => this.req("GET", "/api/knowledge/runs"),
+    query: (what, filters = {}) => this.req("POST", "/api/knowledge/query", { ...filters, what }),
+    run: (config) => this.req("POST", "/api/knowledge/run", config),
+    cancel: async () => { await this.req("POST", "/api/knowledge/cancel"); },
+    buildContext: (request) => this.req("POST", "/api/context/build", request),
+    catalogUnits: (query = {}) => this.req("POST", "/api/catalog/query", query),
+    catalogScan: (config) => this.req("POST", "/api/catalog/scan", config),
+    catalogPreview: (id) => this.req("GET", `/api/catalog/units/${encodeURIComponent(id)}`),
+    catalogOverride: (override) => this.req("POST", "/api/catalog/override", override),
+    catalogImport: (options) => this.req("POST", "/api/catalog/import", options),
+  };
 
   constructor() {
     try {

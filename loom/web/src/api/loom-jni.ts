@@ -33,10 +33,10 @@ import type {
   Task,
 } from "./types";
 import { isLoomError } from "./types";
+import type { KnowledgeApi } from "./knowledge";
 
 interface NativeBridge {
   call(method: string, argsJson: string): string;
-  callInt(method: string, argsJson: string): number;
   startStream(method: string, argsJson: string, callbackId: string): void;
   cancelStream(callbackId: string): void;
 }
@@ -59,6 +59,18 @@ function nextCallbackId(): string {
 }
 
 export class LoomJniApi implements LoomApi {
+  readonly knowledge: KnowledgeApi = {
+    listRuns: () => this.callAsync("kb_runs", { limit: 50 }),
+    query: (what, filters = {}) => this.callAsync("kb_query", { query: { ...filters, what } }),
+    run: (config) => this.background("knowledge_run", { config }),
+    cancel: async () => { this.call("knowledge_cancel"); },
+    buildContext: (request) => this.background("context_build", { request }),
+    catalogUnits: (query = {}) => this.callAsync("catalog_query", { query }),
+    catalogScan: (config) => this.background("catalog_scan", { config }),
+    catalogPreview: (unit_id) => this.callAsync("catalog_preview", { unit_id }),
+    catalogOverride: (override) => this.callAsync("catalog_override", { override }),
+    catalogImport: (options) => this.background("catalog_import", { options }),
+  };
   private bridge(): NativeBridge {
     if (!window.LoomBridge) throw new Error("LoomBridge is not installed (not running inside the Android shell)");
     return window.LoomBridge;
@@ -76,22 +88,41 @@ export class LoomJniApi implements LoomApi {
   }
 
   private callInt(method: string, args: Record<string, unknown> = {}): number {
-    return this.bridge().callInt(method, JSON.stringify(args));
+    // Native dispatch returns JSON for every method. Parse errors through
+    // the same firewall; negative native errors must never look successful.
+    const result = this.call<{ ok?: boolean; value?: boolean }>(method, args);
+    return result.value === undefined ? 0 : Number(result.value);
+  }
+
+  private background<T>(method: string, args: Record<string, unknown>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      let result: T | undefined;
+      this.stream<T>(method, args, {
+        onChunk: (chunk) => { result = chunk; },
+        onDone: () => result === undefined ? reject(new Error(`${method} returned no result`)) : resolve(result),
+        onError: (message) => reject(new Error(message)),
+      });
+    });
   }
 
   private stream<TChunk>(method: string, args: Record<string, unknown>, handlers: StreamHandlers<TChunk>): Unsubscribe {
     const id = nextCallbackId();
     if (!window.__loomCallbacks) window.__loomCallbacks = {};
     window.__loomCallbacks[id] = (chunkJson: string, done: number) => {
+      let failed = false;
       try {
         const chunk = JSON.parse(chunkJson) as TChunk;
-        handlers.onChunk?.(chunk);
-      } catch {
-        // ignore malformed chunk from native side
+        if (isLoomError(chunk)) {
+          failed = true;
+          handlers.onError?.(chunk.error.message);
+        } else handlers.onChunk?.(chunk);
+      } catch (error) {
+        failed = true;
+        handlers.onError?.(error instanceof Error ? error.message : String(error));
       }
-      if (done) {
+      if (done || failed) {
         delete window.__loomCallbacks?.[id];
-        handlers.onDone?.();
+        if (!failed) handlers.onDone?.();
       }
     };
     try {

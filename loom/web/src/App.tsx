@@ -8,6 +8,7 @@ import SemanticStatus from "./components/SemanticStatus";
 import ImportPanel from "./components/ImportPanel";
 import MemoryPanel from "./components/MemoryPanel";
 import LogPanel from "./components/LogPanel";
+import KnowledgeWorkbench from "./components/KnowledgeWorkbench";
 
 type Theme = "dark" | "amoled";
 type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs";
@@ -45,6 +46,8 @@ export default function App() {
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
   const [convRefreshKey, setConvRefreshKey] = useState(0);
+  const [knowledgeOpen, setKnowledgeOpen] = useState(false);
+  const [chatVisible, setChatVisible] = useState(true);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -83,6 +86,8 @@ export default function App() {
         <h1>Loom</h1>
         <SemanticStatus />
         <div className="spacer" />
+        <button data-testid="nav-knowledge" aria-pressed={knowledgeOpen} onClick={() => setKnowledgeOpen((value) => !value)}>Knowledge</button>
+        {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => setChatVisible((value) => !value)}>{chatVisible ? "Hide chat" : "Show chat"}</button>}
         {(Object.keys(PANEL_LABELS) as PanelId[]).map((p) => (
           <button
             key={p}
@@ -109,8 +114,11 @@ export default function App() {
           />
         </aside>
 
-        <div className="main-panel">
-          <ChatView convId={activeConvId} onConversationCreated={onConversationCreated} />
+        <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`}>
+          <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
+            <ChatView convId={activeConvId} onConversationCreated={onConversationCreated} />
+          </div>
+          {knowledgeOpen && <KnowledgeWorkbench onClose={() => setKnowledgeOpen(false)} />}
         </div>
 
         {activePanel && (

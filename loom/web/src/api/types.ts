@@ -9,7 +9,11 @@ export interface LoomError {
 }
 
 export function isLoomError(v: unknown): v is LoomError {
-  return !!v && typeof v === "object" && "error" in (v as object);
+  if (!v || typeof v !== "object" || !("error" in v)) return false;
+  const error = (v as { error: unknown }).error;
+  // Pipeline results also carry an `error` string (empty on success).
+  // Only the C ABI error envelope means the request itself failed.
+  return !!error && typeof error === "object" && "message" in error && typeof error.message === "string";
 }
 
 export interface Conversation {

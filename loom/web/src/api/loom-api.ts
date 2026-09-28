@@ -20,6 +20,7 @@ import type {
   SemanticStatusInfo,
   Task,
 } from "./types";
+import type { KnowledgeApi } from "./knowledge";
 
 export interface SearchOptions {
   limit?: number;
@@ -56,6 +57,8 @@ export interface StreamHandlers<TChunk> {
 export type Unsubscribe = () => void;
 
 export interface LoomApi {
+  // Additive capability; older embedded hosts can leave it unavailable.
+  readonly knowledge?: KnowledgeApi;
   // Conversations
   listConversations(limit?: number): Promise<Conversation[]>;
   createConversation(title?: string): Promise<Conversation>;

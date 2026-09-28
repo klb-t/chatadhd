@@ -103,6 +103,9 @@ textarea { resize: vertical; }
 .sidebar.collapsed { margin-left: -280px; }
 
 .main-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.chat-host { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.chat-host[hidden] { display: none; }
+.chat-host.beside-workbench { flex: 0 0 32%; min-height: 180px; max-height: 65%; resize: vertical; overflow: auto; border-bottom: 1px solid var(--border); }
 
 .drawer-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20;
