@@ -62,6 +62,9 @@ class App {
   // POST /api/archive/cancel, GET /api/archive/status, GET /api/artifacts,
   // GET /api/artifacts/{id}[?content=1], GET /api/artifacts/{id}/raw.
   void route_archive_placeholder();
+  // Knowledge, catalog and goal-directed context: the same C ABI models
+  // used by the CLI, with no HTTP-specific evidence or inference semantics.
+  void route_knowledge();
 
   ServerOptions opts_;
   LoomContext* ctx_ = nullptr;

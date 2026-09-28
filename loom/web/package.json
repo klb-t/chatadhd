@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "e2e": "PLAYWRIGHT_GLOBAL_MODULE=/opt/node22/lib/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node e2e/run.mjs"
+    "e2e": "node e2e/run.mjs",
+    "test:transport": "node e2e/native-contract.mjs"
   },
   "dependencies": {
     "dompurify": "^3.2.4",
@@ -20,6 +21,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "playwright": "1.56.1",
     "typescript": "^5.5.4",
     "vite": "^5.4.2"
   }

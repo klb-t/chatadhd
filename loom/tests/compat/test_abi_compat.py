@@ -98,6 +98,8 @@ class AbiTest(CompatTestCase):
         lib.loom_list_conversations.argtypes = [ctypes.c_void_p, ctypes.c_int]
         lib.loom_get_conversation.restype = ctypes.c_void_p
         lib.loom_get_conversation.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        lib.loom_catalog_select.restype = ctypes.c_void_p
+        lib.loom_catalog_select.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         lib.loom_set_log_stderr.argtypes = [ctypes.c_int]
 
         def take(ptr):
@@ -116,6 +118,11 @@ class AbiTest(CompatTestCase):
             self.assertEqual(conv["title"], "FFI ✓")
             self.assertEqual([c["id"] for c in take(lib.loom_list_conversations(ctx, 10))], [conv["id"]])
             self.assertEqual(take(lib.loom_get_conversation(ctx, b"c_missing"))["error"]["code"], "not_found")
+            # Additive catalog selection API: a valid context with no score
+            # run reports not_found, while a null context stays inside the
+            # exception firewall and returns the normal ABI error envelope.
+            self.assertEqual(take(lib.loom_catalog_select(ctx, None))["error"]["code"], "not_found")
+            self.assertEqual(take(lib.loom_catalog_select(None, None))["error"]["code"], "invalid_argument")
         finally:
             lib.loom_shutdown(ctx)
         # The file is a normal ChatADHD database for the Python engine.

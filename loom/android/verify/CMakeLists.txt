@@ -16,13 +16,15 @@
 # Silently configures with no test added (BUILD_SUCCESSFUL, zero tests) when
 # no JDK or no libloom.so is found, so it never breaks a machine that has
 # neither — see the two `return()`s below.
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.24)
 project(loom_jni_host_verify LANGUAGES CXX)
 
 get_filename_component(LOOM_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../.." ABSOLUTE)
 set(LOOM_JNI_CPP "${CMAKE_CURRENT_SOURCE_DIR}/../app/src/main/cpp/loom_jni.cpp")
 
-find_package(JNI QUIET)
+# The bridge needs JNI, not AWT. Requiring the default AWT component made
+# headless JDKs silently skip every test even though javac/JVM were usable.
+find_package(JNI QUIET COMPONENTS JVM)
 find_program(LOOM_JAVAC_EXE javac)
 find_program(LOOM_JAVA_EXE java)
 

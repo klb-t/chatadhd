@@ -43,6 +43,8 @@ export interface KnowledgeApi {
   buildContext(request: KnowledgeContextRequest): Promise<KnowledgeContextResult>;
   catalogUnits(filters?: KnowledgeRecord): Promise<KnowledgeRecord[]>;
   catalogScan(config: KnowledgeRecord): Promise<KnowledgeRecord>;
+  catalogScore(config: KnowledgeRecord): Promise<KnowledgeRecord>;
+  catalogSelect(runId?: string): Promise<KnowledgeRecord>;
   catalogPreview(id: string): Promise<KnowledgeRecord>;
   catalogOverride(override: KnowledgeRecord): Promise<KnowledgeRecord>;
   catalogImport(options: KnowledgeRecord): Promise<KnowledgeRecord>;

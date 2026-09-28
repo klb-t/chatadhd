@@ -19,6 +19,11 @@
 
 namespace loom::catalog::internal {
 
+// Shared by source scanning and the knowledge input fingerprint. Active
+// runtime storage and generated products must never become their own input.
+// No name-based build/vendor exclusions: explicit full imports keep scope.
+bool skip_source_directory(const std::filesystem::path& path, const std::filesystem::path& active_data);
+
 // ── Bloom filter ──────────────────────────────────────────────────────
 // Fixed-size bit array + k independent hashes (double hashing: h_i = h1 +
 // i*h2, Kirsch-Mitzenmacher). Sized from an estimate of the number of

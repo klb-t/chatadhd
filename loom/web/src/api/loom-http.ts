@@ -43,6 +43,8 @@ export class LoomHttpApi implements LoomApi {
     buildContext: (request) => this.req("POST", "/api/context/build", request),
     catalogUnits: (query = {}) => this.req("POST", "/api/catalog/query", query),
     catalogScan: (config) => this.req("POST", "/api/catalog/scan", config),
+    catalogScore: (config) => this.req("POST", "/api/catalog/score", config),
+    catalogSelect: (run_id = "") => this.req("POST", "/api/catalog/select", { run_id }),
     catalogPreview: (id) => this.req("GET", `/api/catalog/units/${encodeURIComponent(id)}`),
     catalogOverride: (override) => this.req("POST", "/api/catalog/override", override),
     catalogImport: (options) => this.req("POST", "/api/catalog/import", options),

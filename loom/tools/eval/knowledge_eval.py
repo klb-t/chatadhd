@@ -3,11 +3,11 @@
 
   synthetic   end-to-end scorecard on tests/fixtures/eval/synthetic_dev
               (fictional persona, exact ground truth), optional floors gate
-  holdout     temporal holdout on the REAL sources of this repository: stage
-              everything dated <= T, run the pipeline with prior_cut = T and
-              write predictions JSON (format: tools/eval/README.md). It never
-              reads an answer key; the lead scores the file separately.
-  selfhost    the full real self-discovery run (no cut) -> products directory
+  holdout     stage a verifiable historical Git snapshot and emit its manifest.
+              Strict prediction is currently unavailable because the runner
+              loads a present-day embedded policy pack. Exits 2, never scores
+              or reads a real answer key (see tools/eval/README.md).
+  selfhost    discovery over sanitized tracked HEAD sources -> products directory
 
 Examples:
   python3 tools/eval/knowledge_eval.py synthetic --loom build/dev/cli/loom --out /tmp/card.json \
@@ -31,6 +31,19 @@ from kbeval import realrun, synthetic  # noqa: E402
 LOOM_ROOT = HERE.parent.parent
 
 
+def parse_cut(value: str) -> str:
+    try:
+        realrun.cutoff_timestamp(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+    return value
+
+
+def write_json(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -42,10 +55,10 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--markdown", help="scorecard markdown path")
     s.add_argument("--floors", help="floors JSON: fail (exit 1) when a metric is below its floor")
 
-    h = sub.add_parser("holdout", help="temporal holdout predictions on the real repository")
+    h = sub.add_parser("holdout", help="audit historical sources; report unavailable strict prediction")
     h.add_argument("--loom", required=True)
     h.add_argument("--repo", required=True, help="the chatadhd repository root")
-    h.add_argument("--cut", required=True, action="append", help="YYYY-MM-DD (repeatable)")
+    h.add_argument("--cut", required=True, action="append", type=parse_cut, help="YYYY-MM-DD, inclusive UTC (repeatable)")
     h.add_argument("--work", help="work directory (default: a temp dir)")
     h.add_argument("--out", required=True, help="predictions JSON (one cut) or a directory (several cuts)")
     h.add_argument("--products", help="also keep the materialized products of each cut here")
@@ -61,10 +74,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if a.cmd == "synthetic":
         card = synthetic.evaluate(a.loom, LOOM_ROOT, work)
-        text = json.dumps(card, ensure_ascii=False, indent=1)
         if a.out:
-            Path(a.out).write_text(text + "\n", encoding="utf-8")
+            write_json(Path(a.out), card)
         if a.markdown:
+            Path(a.markdown).parent.mkdir(parents=True, exist_ok=True)
             Path(a.markdown).write_text(synthetic.render_markdown(card), encoding="utf-8")
         print(synthetic.render_markdown(card))
         if a.floors:
@@ -77,14 +90,23 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "holdout":
         out = Path(a.out)
         many = len(a.cut) > 1 or out.suffix != ".json"
+        unavailable = False
         for cut in a.cut:
             dest = out / f"cut_{cut}.json" if many else out
             dest.parent.mkdir(parents=True, exist_ok=True)
             prod = Path(a.products) / f"cut_{cut}" if a.products else None
-            preds = realrun.holdout(a.loom, Path(a.repo).resolve(), cut, work / f"cut_{cut}", prod)
-            dest.write_text(json.dumps(preds, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-            print(f"cut {cut}: {len(preds['predictions'])} predictions -> {dest}")
-        return 0
+            try:
+                preds = realrun.holdout(a.loom, Path(a.repo).resolve(), cut, work / f"cut_{cut}", prod)
+            except realrun.EvaluationUnavailable as exc:
+                preds = {"status": "unavailable", "protocol": "strict_temporal_holdout", "cut": cut,
+                         "benchmark_valid": False, "predictions": [], "predictive_accuracy": None,
+                         "reason": str(exc), "pipeline_executed": False}
+            write_json(dest, preds)
+            unavailable |= preds.get("status") != "done"
+            print(f"cut {cut}: {preds.get('status')} -> {dest}")
+            if preds.get("reason"):
+                print(preds["reason"], file=sys.stderr)
+        return 2 if unavailable else 0
 
     if a.cmd == "selfhost":
         res = realrun.selfhost(a.loom, Path(a.repo).resolve(), work, Path(a.out))
@@ -96,4 +118,9 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except (RuntimeError, OSError, ValueError) as exc:
+        print(f"evaluation failed: {exc}", file=sys.stderr)
+        sys.exit(2)
+

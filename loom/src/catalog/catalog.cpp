@@ -293,6 +293,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
       if (ctx.config.repo) scan_cfg.sources.push_back(*ctx.config.repo);
     }
   }
+  scan_cfg.force = scan_cfg.force || ctx.config.force;
   auto progress = [&](std::string_view step, std::int64_t cur, std::int64_t total, std::string_view msg) {
     if (ctx.progress) ctx.progress(cur, total, std::string(step) + ": " + std::string(msg));
   };
@@ -304,6 +305,13 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   profile_cfg.priors = ctx.priors;
   if (const Json* pp = json::find(ctx.params, "profile")) {
     LOOM_TRY_ASSIGN(profile_cfg, ProfileConfig::from_json(*pp));
+    if (!profile_cfg.repo && ctx.config.repo) profile_cfg.repo = *ctx.config.repo;
+    // Local profile options may restrict the global prior filter, never
+    // loosen it (e.g. adding extra_terms must not re-enable future priors).
+    profile_cfg.priors.enabled = profile_cfg.priors.enabled && ctx.priors.enabled;
+    if (!ctx.priors.as_of.empty() && (profile_cfg.priors.as_of.empty() || ctx.priors.as_of < profile_cfg.priors.as_of)) {
+      profile_cfg.priors.as_of = ctx.priors.as_of;
+    }
   }
   if (ctx.should_stop && ctx.should_stop()) return Error(Errc::Paused, "catalog: paused before profile");
   LOOM_TRY_ASSIGN(SelfProfile profile, cat.build_profile(profile_cfg));
@@ -335,9 +343,11 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
 
   Json stats{{"scan", scan_stats}, {"score", score_stats}, {"selected", static_cast<std::int64_t>(selected_units.size())},
             {"import", import_stats}};
-  std::string output = Sha256::hex(json::canonical(stats));
-  Json units_j = Json::array();
-  for (auto& u : selected_units) units_j.push_back(u);
+  // Extraction follows the actual import scope, including full mode and
+  // optional project/temporal expansion. Runtime counts and random legacy
+  // conversation IDs are diagnostics, not deterministic stage identity.
+  Json units_j = import_stats.value("units", Json::array());
+  std::string output = Sha256::hex(json::canonical(Json{{"units", units_j}, {"profile", profile.input_hash}}));
   return Json{{"output", output}, {"stats", stats}, {"units", units_j}, {"profile_id", profile.id}, {"score_run", run_id}};
 }
 

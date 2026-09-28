@@ -21,3 +21,4 @@ Read `docs/HANDOFF_2026-09-28.md`, `CLAUDE.md`, and the owner requirements/conce
 - Attribution can reinforce earlier assignments and admits weak runner-up matches.
 
 Implementation and testing are in progress. No green build or complete feature claim is made by this checkpoint. The real temporal-holdout answer-key branch remains unread during development.
+

@@ -19,7 +19,6 @@ namespace fs = std::filesystem;
 namespace idt = importer_detail;
 
 namespace {
-constexpr std::string_view kLog = "loom.import";
 
 bool is_ws(char c) { return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f' || c == '\v'; }
 

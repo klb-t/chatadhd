@@ -30,7 +30,7 @@ const DIST_DIR = path.join(WEB_ROOT, "dist");
 const FIXTURE_MD = path.join(LOOM_ROOT, "tests/fixtures/import/chat.md");
 const SCREENSHOT_DIR = path.join(__dirname, "screenshots");
 
-const CHROMIUM_FALLBACK = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
+const CHROMIUM_FALLBACK = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 
 let failures = 0;
 let steps = 0;
@@ -96,8 +96,8 @@ async function loadChromium() {
     const mod = await import("playwright");
     return mod.chromium;
   } catch {
-    const globalPath =
-      process.env.PLAYWRIGHT_GLOBAL_MODULE || "/opt/node22/lib/node_modules/playwright/index.mjs";
+    const globalPath = process.env.PLAYWRIGHT_GLOBAL_MODULE ||
+      (process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES ? path.join(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES, "playwright/index.mjs") : "/opt/node22/lib/node_modules/playwright/index.mjs");
     const mod = await import(globalPath);
     return mod.chromium;
   }
@@ -355,6 +355,71 @@ async function main() {
     });
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-07-after-reload.png") });
 
+    await step("knowledge analysis runs from UI and exposes actual claims with provenance", async () => {
+      await page.click('[data-testid="nav-knowledge"]');
+      const workbench = page.locator('[data-testid="knowledge-workbench"]');
+      await workbench.waitFor({ state: "visible" });
+      await page.getByRole("button", { name: "Hide chat", exact: true }).click();
+      await workbench.locator(".kb-run-controls > summary").click();
+      await page.getByLabel("Analysis source paths").fill(path.join(LOOM_ROOT, "tests/fixtures/eval/synthetic_dev/chatgpt_export.zip"));
+      await page.getByLabel("Import all catalogued source content (full mode)").check();
+      await workbench.getByRole("button", { name: "Analyze sources", exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid="kb-pane-claims"] .kb-record'), null, { timeout: 120000 });
+      const claim = workbench.locator('[data-testid="kb-pane-claims"] .kb-record').first();
+      await claim.click();
+      const inspector = workbench.locator('[data-testid="kb-inspector"]');
+      assert((await inspector.locator(".kb-badges").innerText()).includes("confidence"), "claim displays its engine confidence");
+      assert((await inspector.innerText()).includes("How is it known?"), "all seven assessment questions are accessible");
+      assert(await inspector.locator("blockquote").count() > 0, "observed claim exposes actual supporting quotes");
+      const query = await fetch(`${serverBase}/api/knowledge/query`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ what: "claims" }) }).then((response) => response.json());
+      assert(query.items.length > 0, "claims are persisted in the real knowledge store");
+    });
+
+    await step("coordinated graph views remain open together with independent filters", async () => {
+      const workbench = page.locator('[data-testid="knowledge-workbench"]');
+      await workbench.getByLabel("View type", { exact: true }).selectOption("graph");
+      await workbench.getByTestId("kb-add-view").click();
+      const graphs = workbench.getByTestId("kb-pane-graph");
+      assert(await graphs.count() === 2, "adding a graph retains the previous graph");
+      await graphs.first().getByLabel("Graph focus depth").fill("3");
+      assert(await graphs.last().getByLabel("Graph focus depth").inputValue() === "1", "each graph retains independent depth settings");
+      assert(await workbench.getByTestId("kb-pane-claims").count() === 1, "claim list stays open beside both graphs");
+      await workbench.evaluate((element) => { element.scrollTop = 0; });
+      await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-08-knowledge.png") });
+    });
+
+    await step("knowledge context preview explains inclusion and flags stale inputs", async () => {
+      const workbench = page.locator('[data-testid="knowledge-workbench"]');
+      await workbench.getByLabel("View type", { exact: true }).selectOption("context");
+      await workbench.getByTestId("kb-add-view").click();
+      const context = workbench.getByTestId("kb-pane-context");
+      await context.getByLabel("Context goal", { exact: true }).fill("Implement this component while preserving the user's principles");
+      await context.getByLabel("Knowledge context token budget").fill("1000");
+      await context.getByRole("button", { name: "Build context preview" }).click();
+      await context.locator(".kb-context-band").first().waitFor();
+      const counts = await context.locator(".kb-count").innerText();
+      const parsed = counts.match(/([\d,]+) \/ ([\d,]+) estimated tokens/);
+      assert(parsed && Number(parsed[1].replaceAll(",", "")) <= 1000, `context respects selected budget: ${counts}`);
+      assert(await context.locator(".kb-context-band").count() === 3, "stable, project and goal bands shown separately");
+      await context.getByLabel("Context goal", { exact: true }).fill("A changed goal");
+      assert((await context.locator(".kb-warning").innerText()).includes("Rebuild"), "changed inputs do not masquerade as current preview");
+    });
+
+    await step("catalog displays real source units and requires a reviewed import", async () => {
+      const workbench = page.locator('[data-testid="knowledge-workbench"]');
+      await workbench.getByLabel("View type", { exact: true }).selectOption("catalog");
+      await workbench.getByTestId("kb-add-view").click();
+      const catalog = workbench.getByTestId("kb-pane-catalog");
+      await catalog.locator(".kb-catalog-unit").first().waitFor();
+      await catalog.getByText("Review and import catalog content", { exact: true }).click();
+      assert(await catalog.getByRole("button", { name: "Import reviewed selection" }).isDisabled(), "import requires previewing the selected scope");
+      await catalog.getByLabel("Catalog import scope").selectOption("full");
+      await catalog.getByRole("button", { name: "Preview import" }).click();
+      await page.waitForFunction(() => [...document.querySelectorAll("button")].some((button) => button.textContent === "Import reviewed selection" && !button.disabled));
+      await catalog.getByLabel("Catalog retention").selectOption("link");
+      assert(await catalog.getByRole("button", { name: "Import reviewed selection" }).isDisabled(), "changing retention invalidates import review");
+    });
+
     await desktop.close();
 
     // ── Phone viewport screenshots ──────────────────────────────────────
@@ -373,6 +438,12 @@ async function main() {
       await phonePage.click('[data-testid="nav-graph"]');
       await phonePage.waitForSelector('[data-testid="graph-canvas"]');
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-03-graph.png") });
+      await phonePage.click('[data-testid="close-panel"]');
+      await phonePage.click('[data-testid="nav-knowledge"]');
+      await phonePage.getByRole("button", { name: "Hide chat", exact: true }).click();
+      await phonePage.waitForSelector('[data-testid="kb-pane-entities"] .kb-record');
+      assert(await phonePage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "knowledge layout does not overflow the phone viewport");
+      await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-04-knowledge.png") });
     });
     await phone.close();
   } finally {

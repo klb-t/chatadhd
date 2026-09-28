@@ -6,16 +6,20 @@
 #include <algorithm>
 #include <chrono>
 #include <filesystem>
+#include <sstream>
 #include <thread>
 
+#include "catalog/catalog_internal.h"
 #include "loom/catalog.h"
 #include "loom/extract.h"
 #include "loom/generalize.h"
 #include "loom/log.h"
 #include "loom/materialize.h"
+#include "loom/provenance.h"
 #include "loom/resolve.h"
 #include "loom/runtime.h"
 #include "loom/tasks.h"
+#include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 
 namespace loom::knowledge {
@@ -27,6 +31,136 @@ Json str_array(const std::vector<std::string>& v) {
   Json a = Json::array();
   for (const auto& s : v) a.push_back(s);
   return a;
+}
+
+// Paths are configuration; bytes are inputs. Hash the source tree as the
+// catalogue sees it so edits/additions/deletions invalidate derived state.
+// Hashing is streaming even for multi-GB exports. Generated output folders
+// carry the same marker understood by the catalogue walker.
+Result<Json> source_snapshot(const KnowledgeConfig& cfg, const std::filesystem::path& active_data) {
+  namespace fs = std::filesystem;
+  std::vector<std::string> roots = cfg.sources;
+  if (cfg.repo) roots.push_back(*cfg.repo);
+  const Json& cp = cfg.stage_params;
+  if (cp.contains("catalog")) {
+    const auto& c = cp["catalog"];
+    if (c.contains("scan") && c["scan"].contains("sources") && c["scan"]["sources"].is_array()) {
+      for (const auto& p : c["scan"]["sources"]) if (p.is_string()) roots.push_back(p.get<std::string>());
+    }
+    if (c.contains("profile") && c["profile"].contains("repo") && c["profile"]["repo"].is_string()) {
+      roots.push_back(c["profile"]["repo"].get<std::string>());
+    }
+    if (c.contains("profile") && c["profile"].contains("documents") && c["profile"]["documents"].is_array()) {
+      for (const auto& p : c["profile"]["documents"]) if (p.is_string()) roots.push_back(p.get<std::string>());
+    }
+  }
+  if (cp.contains("resolve") && cp["resolve"].contains("snapshots") && cp["resolve"]["snapshots"].is_array()) {
+    for (const auto& p : cp["resolve"]["snapshots"]) {
+      if (p.is_string()) roots.push_back(p.get<std::string>());
+      else if (p.is_object() && p.contains("dir") && p["dir"].is_string()) roots.push_back(p["dir"].get<std::string>());
+    }
+  }
+  std::map<std::string, std::string> files;
+  auto hidden = [](const fs::path& p) {
+    const auto name = p.filename().string();
+    return name.empty() || name[0] == '.' || name == "__MACOSX";
+  };
+  for (const auto& root : roots) {
+    const auto path = fsutil::resolve_path(root);
+    if (path == active_data) return Error(Errc::InvalidArgument, "source cannot be the active data directory");
+    std::error_code ec;
+    if (!fs::exists(path, ec)) {
+      files[path.string()] = "missing";
+      continue;
+    }
+    std::vector<fs::path> paths;
+    if (fs::is_directory(path, ec)) {
+      if (fs::exists(path / ".loom-archive", ec)) {
+        files[path.string()] = "generated";
+        continue;
+      }
+      for (auto it = fs::recursive_directory_iterator(path, fs::directory_options::skip_permission_denied, ec);
+           !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
+        std::error_code entry_error;
+        if (it->is_directory(entry_error)) {
+          if (catalog::internal::skip_source_directory(it->path(), active_data)) it.disable_recursion_pending();
+        } else if (!entry_error && !hidden(it->path()) && it->is_regular_file(entry_error)) {
+          paths.push_back(it->path());
+        }
+      }
+      if (ec) return Error(Errc::Io, "cannot fingerprint source " + path.string() + ": " + ec.message());
+      // Keep empty directory identity, and notice when its first file appears.
+      files[path.string()] = "directory";
+    } else {
+      paths.push_back(path);
+    }
+    for (const auto& file : paths) {
+      LOOM_TRY_ASSIGN(auto hash, sha256_file_hex(file));
+      files[file.string()] = std::move(hash);
+    }
+    // Repository analysis also consumes commit/lineage metadata. A new
+    // commit can leave the working tree bytes unchanged, so record HEAD's
+    // revision without walking other refs, object databases or branches.
+    auto git_dir = path / ".git";
+    if (fs::is_regular_file(git_dir, ec)) {
+      LOOM_TRY_ASSIGN(auto link, fsutil::read_file(git_dir));
+      if (link.rfind("gitdir: ", 0) == 0) {
+        auto target = link.substr(8);
+        while (!target.empty() && (target.back() == '\n' || target.back() == '\r')) target.pop_back();
+        git_dir = (path / target).lexically_normal();
+      }
+    }
+    if (fs::is_regular_file(git_dir / "HEAD", ec)) {
+      LOOM_TRY_ASSIGN(auto head, fsutil::read_file(git_dir / "HEAD"));
+      auto common = git_dir;
+      if (fs::is_regular_file(git_dir / "commondir", ec)) {
+        LOOM_TRY_ASSIGN(auto dir, fsutil::read_file(git_dir / "commondir"));
+        while (!dir.empty() && (dir.back() == '\n' || dir.back() == '\r')) dir.pop_back();
+        common = (git_dir / dir).lexically_normal();
+      }
+      std::string revision = head;
+      if (head.rfind("ref: ", 0) == 0) {
+        auto ref = head.substr(5);
+        while (!ref.empty() && (ref.back() == '\n' || ref.back() == '\r')) ref.pop_back();
+        if (fs::is_regular_file(common / ref, ec)) {
+          LOOM_TRY_ASSIGN(revision, fsutil::read_file(common / ref));
+        } else if (fs::is_regular_file(common / "packed-refs", ec)) {
+          LOOM_TRY_ASSIGN(auto packed, fsutil::read_file(common / "packed-refs"));
+          std::istringstream lines(packed);
+          std::string line;
+          while (std::getline(lines, line)) {
+            const auto space = line.find(' ');
+            if (space != std::string::npos && line.substr(space + 1) == ref) {
+              revision = line.substr(0, space);
+              break;
+            }
+          }
+        }
+      }
+      files[(path / ".git/HEAD").string()] = Sha256::hex(revision);
+    }
+  }
+  Json out = Json::object();
+  for (const auto& [path, hash] : files) out[path] = hash;
+  return out;
+}
+
+// A cached materialization still needs to fulfil this invocation's export
+// request (possibly a new directory, or files deleted since the last run).
+Status export_cached_products(Runtime& rt, const KnowledgeConfig& cfg, const Json& result) {
+  if (cfg.out_dir.empty()) return {};
+  const auto* artifacts = json::find(result, "artifacts");
+  if (!artifacts || !artifacts->is_array()) return {};
+  for (const auto& artifact : *artifacts) {
+    const auto name = json::get_string(artifact, "name");
+    const std::filesystem::path relative(name);
+    if (name.empty() || relative.has_parent_path() || relative.is_absolute()) {
+      return Error(Errc::InvalidArgument, "invalid materialized product name: " + name);
+    }
+    LOOM_TRY_ASSIGN(auto bytes, rt.blobs().read(json::get_string(artifact, "hash")));
+    LOOM_TRY(fsutil::atomic_write(fsutil::expand_user(cfg.out_dir) / relative, bytes));
+  }
+  return {};
 }
 }  // namespace
 
@@ -92,6 +226,7 @@ Result<KnowledgeConfig> KnowledgeConfig::from_json(const Json& j) {
       if (!v.is_object()) return Error(Errc::InvalidArgument, "stage_params must be an object");
       for (auto s = v.begin(); s != v.end(); ++s) {
         if (!is_stage(s.key())) return Error(Errc::InvalidArgument, "stage_params: unknown stage '" + s.key() + "'");
+        if (!s.value().is_object()) return Error(Errc::InvalidArgument, "stage_params." + s.key() + " must be an object");
       }
       c.stage_params = v;
     } else {
@@ -238,6 +373,10 @@ KnowledgeEngine::KnowledgeEngine(Runtime& rt) : rt_(rt), st_(std::make_unique<St
       (void)ctx.save_checkpoint(res);
       return Error(ctx.cancelled() ? Errc::Cancelled : Errc::Paused, "paused");
     }
+    if (r->status == "failed" || r->status == "cancelled") {
+      LOOM_TRY(ctx.save_checkpoint(res));
+      return Error(r->status == "cancelled" ? Errc::Cancelled : Errc::Internal, r->error);
+    }
     ctx.set_result(std::move(res));
     return {};
   });
@@ -306,7 +445,7 @@ Result<RunResult> KnowledgeEngine::orchestrate(const KnowledgeConfig& cfg, const
     StageRun sr;
     sr.stage = stage;
     Json params = cfg.stage_params.contains(stage) ? cfg.stage_params[stage] : Json::object();
-    Json hp{{"pack", pk->hash()}, {"config", fp}, {"params", params}, {"input", prev_output}};
+    Json hp{{"pack", pk->hash()}, {"run", krun}, {"config", fp}, {"params", params}, {"input", prev_output}};
     sr.input_hash = Sha256::hex("knowledge." + stage + "|" + std::string(kPipelineVersion) + "|" + json::canonical(hp));
     SubmitOptions so;
     so.dedupe = !cfg.force;
@@ -323,6 +462,7 @@ Result<RunResult> KnowledgeEngine::orchestrate(const KnowledgeConfig& cfg, const
       if (s == task_status::kDone) {
         sr.cache_hit = first;
         Json res = rec->result ? *rec->result : Json::object();
+        if (sr.cache_hit && stage == "materialize") LOOM_TRY(export_cached_products(rt_, cfg, res));
         sr.output_hash = json::get_string(res, "output");
         sr.stats = res.contains("stats") ? res["stats"] : Json::object();
         if (sr.cache_hit) st_->notify(stage, 1, 1, "cache hit");
@@ -366,9 +506,11 @@ Result<RunResult> KnowledgeEngine::orchestrate(const KnowledgeConfig& cfg, const
   return out;
 }
 
-Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& cfg, const ProgressFn& progress, const CancelToken* cancel) {
+Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& requested, const ProgressFn& progress, const CancelToken* cancel) {
   std::unique_lock run_lock(st_->run_mu, std::try_to_lock);
   if (!run_lock.owns_lock()) return Error(Errc::Busy, "a knowledge run is already in progress");
+  // Native callers construct KnowledgeConfig directly; validate them too.
+  LOOM_TRY_ASSIGN(auto cfg, KnowledgeConfig::from_json(requested.to_json()));
   LOOM_TRY_ASSIGN(auto pk, pack());
   {
     std::lock_guard lk(st_->mu);
@@ -385,7 +527,20 @@ Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& cfg, const Progres
   } reset{*st_};
 
   (void)rt_.tasks().recover_interrupted();
-  LOOM_TRY_ASSIGN(auto krun, st_->store->begin_run(pk->hash(), cfg.fingerprint()));
+  if (!cfg.out_dir.empty()) {
+    const auto output = fsutil::resolve_path(cfg.out_dir);
+    for (const auto& source : cfg.sources) {
+      if (fsutil::resolve_path(source) == output) return Error(Errc::InvalidArgument, "output directory cannot replace a source");
+    }
+    if (cfg.repo && fsutil::resolve_path(*cfg.repo) == output) {
+      return Error(Errc::InvalidArgument, "output directory cannot replace the repository source");
+    }
+    LOOM_TRY(fsutil::atomic_write(fsutil::expand_user(cfg.out_dir) / ".loom-archive", "knowledge\n"));
+  }
+  LOOM_TRY_ASSIGN(auto inputs, source_snapshot(cfg, rt_.paths().root));
+  Json fingerprint = cfg.fingerprint();
+  fingerprint["source_contents"] = std::move(inputs);
+  LOOM_TRY_ASSIGN(auto krun, st_->store->begin_run(pk->hash(), fingerprint));
   SubmitOptions ro;
   ro.max_attempts = 1;
   LOOM_TRY_ASSIGN(std::string id, rt_.tasks().submit("knowledge.run", Json{{"config", cfg.to_json()}, {"run", krun.id}}, ro));
@@ -441,6 +596,18 @@ Result<Json> KnowledgeEngine::status(std::string_view task_id) {
   f.parent_id = run->id;
   f.limit = 100;
   LOOM_TRY_ASSIGN(auto children, rt_.tasks().list(f));
+  // Cache hits retain the original task's parent. Reconstruct a completed
+  // invocation from its recorded stage IDs instead of showing an empty run.
+  const Json* result = run->result ? &*run->result : run->checkpoint ? &*run->checkpoint : nullptr;
+  if (result && result->contains("stages") && (*result)["stages"].is_array()) {
+    children.clear();
+    for (const auto& stage : (*result)["stages"]) {
+      const auto id = json::get_string(stage, "task_id");
+      if (id.empty()) continue;
+      LOOM_TRY_ASSIGN(auto record, rt_.tasks().get(id));
+      if (record) children.push_back(*record);
+    }
+  }
   Json stages = Json::array();
   for (const auto& c : children) {
     stages.push_back(Json{{"task_id", c.id}, {"kind", c.kind}, {"status", c.status}, {"input_hash", c.input_hash},

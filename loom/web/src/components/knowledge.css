@@ -10,8 +10,9 @@
 .knowledge-workbench input[type="checkbox"] { accent-color: var(--accent); }
 .kb-status { padding: 6px 20px 12px; color: var(--dim); font-size: 12px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .kb-focus { padding: 4px 8px; font-size: 12px; color: var(--accent); }
+.kb-inspect-link { color: var(--accent); text-underline-offset: 3px; }
 .kb-workspace { display: flex; align-items: flex-start; gap: 14px; padding: 0 16px 16px; min-height: 200px; }
-.kb-panels { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); align-items: start; gap: 14px; }
+.kb-panels { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); align-items: start; gap: 14px; }
 .kb-pane, .kb-inspector { min-width: 0; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); overflow: hidden; }
 .kb-pane-header { padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
 .kb-pane-header h3, .kb-inspector h3 { margin: 0; font-size: 14px; }
@@ -29,7 +30,7 @@
 .evidence-observed, .evidence-user { color: #89cda2; border-color: #365646; }
 .evidence-inferred, .evidence-extrapolated { color: #e8bd71; border-style: dashed; border-color: #796038; }
 .evidence-absent { color: #db9b9b; border-style: dotted; }
-.kb-inspector { flex: 0 0 290px; padding: 14px; position: sticky; top: 10px; max-height: 80vh; overflow: auto; }
+.kb-inspector { flex: 0 0 260px; padding: 14px; position: sticky; top: 10px; max-height: 80vh; overflow: auto; }
 .kb-inspector h4 { font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; margin: 14px 0 8px; }
 .kb-id { display: block; font-size: 10px; overflow-wrap: anywhere; color: var(--dim); margin: 8px 0; }
 .kb-detail { margin: 10px 0; font-size: 12px; }
@@ -55,6 +56,8 @@
 .kb-graph-scroll { overflow: auto; max-height: 480px; }
 .kb-graph { min-width: 500px; width: 100%; display: block; }
 .kb-edge { stroke: var(--dim); stroke-width: 1; }
+.kb-edge-target { cursor: pointer; }
+.kb-edge-target:focus-visible .kb-edge { stroke: var(--accent); stroke-width: 3; }
 .kb-node { cursor: pointer; }
 .kb-node circle { fill: var(--ai); stroke: var(--accent); stroke-width: 2; }
 .kb-node.focused circle { fill: var(--accent); stroke: var(--text); }

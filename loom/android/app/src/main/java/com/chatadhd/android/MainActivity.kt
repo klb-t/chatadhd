@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         val assetLoader = WebViewAssetLoader.Builder()
             .setDomain(APP_HOST)
-            .addPathHandler("/web/", WebViewAssetLoader.AssetsPathHandler(this))
+            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
             .build()
 
         webView.webViewClient = object : WebViewClient() {
@@ -74,7 +74,8 @@ class MainActivity : AppCompatActivity() {
                 assetLoader.shouldInterceptRequest(request.url)
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                if (request.url.host == APP_HOST) return false
+                if (request.url.scheme == "https" && request.url.host == APP_HOST &&
+                    request.url.path?.startsWith("/assets/web/") == true) return false
                 startActivity(Intent(Intent.ACTION_VIEW, request.url))
                 return true
             }
@@ -110,7 +111,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadApp() {
-        webView.loadUrl("https://$APP_HOST/web/index.html")
+        // The web client queries its backend as soon as it mounts. Initialise
+        // it first; the asset handler maps /assets/web/... to assets/web/....
+        val result = org.json.JSONObject(bridge.init(null, null))
+        if (!result.optBoolean("ok")) {
+            Snackbar.make(webView, result.optJSONObject("error")?.optString("message")
+                ?: "Could not open ChatADHD data", Snackbar.LENGTH_INDEFINITE).show()
+            return
+        }
+        webView.loadUrl("https://$APP_HOST/assets/web/index.html")
     }
 
     override fun onDestroy() {

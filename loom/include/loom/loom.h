@@ -353,6 +353,9 @@ LOOM_API const char* loom_knowledge_status(LoomContext* ctx, const char* task_id
 /* Catalog (include/loom/catalog.h). JSON shapes are documented there. */
 LOOM_API const char* loom_catalog_scan(LoomContext* ctx, const char* config_json, LoomProgressCallback cb, void* ud);
 LOOM_API const char* loom_catalog_score(LoomContext* ctx, const char* config_json, LoomProgressCallback cb, void* ud);
+/* Applies existing selection policy and owner overrides without importing.
+ * run_id NULL/empty -> latest score run; -> {"decisions":[Decision]}. */
+LOOM_API const char* loom_catalog_select(LoomContext* ctx, const char* run_id);
 /* UnitQuery JSON -> [CatalogUnit] */
 LOOM_API const char* loom_catalog_query(LoomContext* ctx, const char* query_json);
 LOOM_API const char* loom_catalog_preview(LoomContext* ctx, const char* unit_id);

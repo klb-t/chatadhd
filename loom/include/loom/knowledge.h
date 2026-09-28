@@ -21,7 +21,7 @@
 // cancelled stage saves its checkpoint and resumes on the next run with the
 // same inputs (the same contract as archive.h). The whole run is a
 // "knowledge.run" task. The knowledge run id (kr_, KnowledgeStore) is
-// KnowledgeRun::make_id(pack hash, config fingerprint): the same inputs write
+// KnowledgeRun::make_id(pack hash, config fingerprint + source content hashes): the same inputs write
 // into the same run; derived rows are cleared by the stage that owns them
 // before it writes (rebuild), and "assess" replays the owner's judgements
 // last (I4).
@@ -59,7 +59,7 @@ class Runtime;
 
 namespace knowledge {
 
-inline constexpr std::string_view kPipelineVersion = "1";
+inline constexpr std::string_view kPipelineVersion = "2";
 
 // The stages in execution order (closed set: wiring, not policy).
 inline constexpr std::array<std::string_view, 6> kStages = {"catalog", "extract", "resolve", "assess", "generalize", "materialize"};

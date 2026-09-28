@@ -15,8 +15,8 @@ pipeline stored through those locators:
 Runs:
   A   full corpus, no cut                 -> every area's metrics
   A'  the same inputs in another data dir -> determinism (stage output hashes, product bytes)
-  B   full corpus, prior_cut = T          -> temporal holdout: predictions made from <= T,
-                                              evaluated by the pipeline against > T, scored here
+  B   full corpus, prior_cut = T          -> retrospective consistency only: later examples
+                                              are visible to the pipeline; NOT predictive accuracy
 The only owner input is the persona's own project names (the equivalent of
 the real owner's profiles/self.json): stage_params.catalog.profile.extra_terms.
 """
@@ -24,12 +24,11 @@ from __future__ import annotations
 
 import filecmp
 import json
-import shutil
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from .common import KB, claim_obs, claim_quotes, evidence_class, fold, overlap, ratio, run_knowledge
+from .common import KB, claim_obs, claim_quotes, evidence_class, fold, overlap, ratio, run_knowledge, new_workspace
 
 GT_REL = Path("tests/fixtures/eval/synthetic_dev")
 
@@ -399,7 +398,11 @@ def score_predictions(kb: KB, j: Join, gt: dict[str, Any], dmatch: dict[str, Any
     for p in preds:
         outcomes[p.get("outcome", "")] += 1
     return {
-        "prediction_accuracy_solution_class": ratio(hits, len(gt["predictions"])),
+        "solution_class_match_rate": ratio(hits, len(gt["predictions"])),
+        "protocol": "retrospective_full_corpus_with_cut_priors",
+        "benchmark_valid_for_prediction": False,
+        "predictive_accuracy": None,
+        "limitation": "Post-cutoff examples are visible during operator construction; matches measure retrospective consistency.",
         "predictions_made": len(preds),
         "outcomes": dict(sorted(outcomes.items())),
         "negative_control_false_positives": neg_fp,
@@ -422,8 +425,7 @@ def determinism(res_a: dict[str, Any], res_b: dict[str, Any], out_a: Path, out_b
 def evaluate(loom: str, loom_root: Path, work: Path) -> dict[str, Any]:
     gt = json.loads((gt_dir(loom_root) / "ground_truth.json").read_text(encoding="utf-8"))
     cut = gt["temporal_cut"]["date"]
-    if work.exists():
-        shutil.rmtree(work)
+    work = new_workspace(work, "synthetic-")
     cfg = base_config(loom_root, gt)
     res_a = run_knowledge(loom, work / "a", {**cfg, "out_dir": str(work / "a_out")})
     res_a2 = run_knowledge(loom, work / "a2", {**cfg, "out_dir": str(work / "a2_out")})
@@ -450,12 +452,15 @@ def evaluate(loom: str, loom_root: Path, work: Path) -> dict[str, Any]:
         },
         "assess": score_contradictions(j, gt),
         "generalize": {**score_principles(kb, j, gt), **score_operators(kb, j, gt, dmatch)},
-        "holdout": score_predictions(kb_b, j_b, gt, dmatch_b),
+        "retrospective_consistency": score_predictions(kb_b, j_b, gt, dmatch_b),
+        "work_dir": str(work),
         "epistemic": score_false_certainty(kb, j),
         "calibration_ece": None,  # I9: no labelled correctness per claim yet -> not measured, never fabricated
         "determinism": determinism(res_a, res_a2, work / "a_out", work / "a2_out"),
         "stages": {s["stage"]: s["stats"] for s in res_a["stages"]},
     }
+    kb.con.close()
+    kb_b.con.close()
     return card
 
 
@@ -481,7 +486,7 @@ def check_floors(card: dict[str, Any], floors: dict[str, Any]) -> list[str]:
 
 def render_markdown(card: dict[str, Any]) -> str:
     lines = [f"# Knowledge-layer scorecard — {card['corpus']} (cut {card['temporal_cut']})", ""]
-    for area in ("catalog", "resolve", "extract", "assess", "generalize", "holdout", "epistemic", "determinism"):
+    for area in ("catalog", "resolve", "extract", "assess", "generalize", "retrospective_consistency", "epistemic", "determinism"):
         lines.append(f"## {area}")
         for k, v in card[area].items():
             if isinstance(v, (dict, list)):
@@ -490,3 +495,4 @@ def render_markdown(card: dict[str, Any]) -> str:
         lines.append("")
     lines.append(f"- calibration_ece: {card['calibration_ece']} (not measured: no per-claim correctness labels yet)")
     return "\n".join(lines) + "\n"
+

@@ -62,6 +62,20 @@ LOOM_API const char* loom_catalog_score(LoomContext* ctx, const char* config_jso
   });
 }
 
+LOOM_API const char* loom_catalog_select(LoomContext* ctx, const char* run_id) {
+  return guard_json("loom_catalog_select", [&] {
+    LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
+    auto pack = pack_of(ctx);
+    if (!pack) return out_error(pack.error());
+    catalog::Catalog cat(*ctx->rt, *pack);
+    auto decisions = cat.select(run_id ? run_id : "");
+    if (!decisions) return out_error(decisions.error());
+    Json arr = Json::array();
+    for (const auto& d : *decisions) arr.push_back(d.to_json());
+    return out(Json{{"decisions", arr}});
+  });
+}
+
 LOOM_API const char* loom_catalog_query(LoomContext* ctx, const char* query_json) {
   return guard_json("loom_catalog_query", [&] {
     LOOM_CAPI_REQUIRE_CTX_JSON(ctx);

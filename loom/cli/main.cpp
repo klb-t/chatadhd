@@ -94,12 +94,13 @@ Commands:
               [--project NAME] [--max-passes N] [--max-new-terms N] [--max-hits N]
               [--rounds N] [--exclude FRAGMENT]... [--no-git] [--no-code]
               [--include-db] [--llm auto|off] [--force] [--config FILE.json]
-              [--knowledge]                  also run the knowledge pipeline over the same sources
+              [--knowledge]                  also run knowledge; failure of either pipeline fails the command
   archive status [RUN_ID]
   knowledge run [--source PATH]... [--repo DIR] [--out DIR] [--project NAME] [--cut YYYY-MM-DD]
                 [--no-priors] [--snapshot DIR[=LABEL]]... [--stage S]... [--llm auto|off]
                 [--force] [--config FILE.json]
                 catalog -> extract -> resolve -> assess -> generalize -> materialize (resumable)
+                --cut filters seed priors only; supply an independently date-filtered source corpus for holdout
   knowledge status [TASK_ID]
   catalog scan [--source PATH]... [--threads N] [--mobile] [--force]
                stream files/dirs/zips into loom_cat_units + sketches (R1: no import)
@@ -766,6 +767,7 @@ int cmd_archive(Runtime& rt, const Args& a) {
   // resolve -> assess -> generalize -> materialize) over the same sources;
   // its products go to <out>/knowledge when --out is given.
   Json kr_json = Json(nullptr);
+  bool knowledge_done = true;
   if (a.has("knowledge") && r.status == "done") {
     knowledge::KnowledgeConfig kcfg;
     kcfg.sources = cfg.sources;
@@ -777,13 +779,14 @@ int cmd_archive(Runtime& rt, const Args& a) {
     auto kr = rt.knowledge().run(kcfg, progress_line, &g_cancel);
     if (!g_quiet) std::cerr << "\r\x1b[K";
     kr_json = kr ? kr->to_json() : Json{{"error", Json{{"code", std::string(errc_name(kr.error().code))}, {"message", kr.error().message}}}};
+    knowledge_done = kr && kr->status == "done";
   }
 
   if (g_json) {
     Json out = r.to_json();
     if (!kr_json.is_null()) out["knowledge"] = kr_json;
     print_json(out);
-    return r.status == "done" ? 0 : 4;
+    return r.status == "done" && knowledge_done ? 0 : 4;
   }
   std::cout << "archive run " << r.run_id << ": " << r.status << "\n";
   for (const auto& s : r.stages) {
@@ -807,9 +810,9 @@ int cmd_archive(Runtime& rt, const Args& a) {
   for (const auto& w : sm["warnings"]) std::cerr << "warning: " << w.get<std::string>() << "\n";
   if (!kr_json.is_null()) {
     std::cout << "knowledge run " << json::get_string(kr_json, "run", "") << ": " << json::get_string(kr_json, "status", "") << "\n";
-    if (json::find(kr_json, "error")) std::cerr << "warning: " << json::dump(kr_json["error"]) << "\n";
+    if (!knowledge_done) std::cerr << "knowledge pipeline did not complete: " << json::dump(kr_json["error"]) << "\n";
   }
-  return 0;
+  return knowledge_done ? 0 : 4;
 }
 
 // `loom knowledge run|status`: the knowledge pipeline on its own

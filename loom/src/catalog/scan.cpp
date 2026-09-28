@@ -27,6 +27,14 @@ namespace loom::catalog {
 namespace fs = std::filesystem;
 using namespace loom::catalog::internal;
 
+bool internal::skip_source_directory(const fs::path& path, const fs::path& active_data) {
+  const auto name = path.filename().string();
+  if (name.empty() || name[0] == '.' || name == "__MACOSX") return true;
+  if (fsutil::resolve_path(path.string()) == active_data) return true;
+  std::error_code ec;
+  return fs::exists(path / ".loom-archive", ec);
+}
+
 namespace {
 
 struct Stats {
@@ -380,6 +388,7 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
     ++src_i;
     if (cancel && cancel->cancelled()) break;
     fs::path p = fsutil::resolve_path(src);
+    if (p == rt_.paths().root) return Error(Errc::InvalidArgument, "source cannot be the active data directory");
     std::error_code ec;
     if (!fs::exists(p, ec)) {
       stats.warnings.push_back("source not found: " + src);
@@ -389,12 +398,13 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
 
     std::vector<fs::path> files;
     if (fs::is_directory(p, ec)) {
+      if (fs::exists(p / ".loom-archive", ec)) continue;
       for (auto it = fs::recursive_directory_iterator(p, fs::directory_options::skip_permission_denied, ec);
            !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
         const auto& entry = *it;
         std::error_code fec;
         if (entry.is_directory(fec)) {
-          if (fs::exists(entry.path() / ".loom-archive", fec) || skip_name(entry.path().filename().string())) {
+          if (internal::skip_source_directory(entry.path(), rt_.paths().root)) {
             it.disable_recursion_pending();
           }
           continue;

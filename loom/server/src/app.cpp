@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cctype>
 #include <chrono>
+#include <charconv>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -76,6 +77,33 @@ void send_error(httplib::Response& res, const std::string& code, const std::stri
   json err = {{"error", {{"code", code}, {"message", message}}}};
   res.status = status >= 0 ? status : status_for_error_code(code);
   res.set_content(err.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
+}
+
+// Unlike parse_body (retained for the legacy routes), a malformed request
+// must not silently become {} and start a default scan/import/run.
+bool object_body(const httplib::Request& req, httplib::Response& res, json& body) {
+  body = req.body.empty() ? json::object() : json::parse(req.body, nullptr, false);
+  if (body.is_discarded()) {
+    send_error(res, "parse", "body must contain valid JSON");
+    return false;
+  }
+  if (!body.is_object()) {
+    send_error(res, "invalid_argument", "body must be a JSON object");
+    return false;
+  }
+  return true;
+}
+
+bool integer_param(const httplib::Request& req, httplib::Response& res, const char* name,
+                   int& value, int minimum) {
+  if (!req.has_param(name)) return true;
+  const auto text = req.get_param_value(name);
+  const auto parsed = std::from_chars(text.data(), text.data() + text.size(), value);
+  if (parsed.ec != std::errc{} || parsed.ptr != text.data() + text.size() || value < minimum) {
+    send_error(res, "invalid_argument", std::string(name) + " must be an integer >= " + std::to_string(minimum));
+    return false;
+  }
+  return true;
 }
 
 // Sends the raw JSON string returned by a loom_* call, frees it, and picks
@@ -266,6 +294,7 @@ void App::register_routes() {
   route_provenance_events_tasks();
   route_logs_misc();
   route_archive_placeholder();
+  route_knowledge();
 }
 
 // ── Conversations ──────────────────────────────────────────────────────
@@ -867,6 +896,136 @@ void App::route_archive_placeholder() {
     std::string mime = j["artifact"].value("mime", std::string("application/octet-stream"));
     if (mime.rfind("text/", 0) == 0) mime += "; charset=utf-8";
     res.set_content(j.value("content", std::string()), mime);
+  });
+}
+
+// ── Knowledge, catalog and goal-directed context ───────────────────────
+
+void App::route_knowledge() {
+  // Common transport plumbing only: validation and meaning of the options
+  // belong to the C ABI. Results keep their native shape, including the
+  // assessment/provenance on claims and per-stage pipeline failure status.
+  auto post_json = [this](const char* path, const char* (*call)(LoomContext*, const char*)) {
+    svr_.Post(path, [this, call](const httplib::Request& req, httplib::Response& res) {
+      json body;
+      if (!object_body(req, res, body)) return;
+      const std::string payload = body.dump();
+      send_loom(res, call(ctx_, payload.c_str()));
+    });
+  };
+  auto post_progress = [this](const char* path,
+                             const char* (*call)(LoomContext*, const char*, LoomProgressCallback, void*)) {
+    svr_.Post(path, [this, call](const httplib::Request& req, httplib::Response& res) {
+      json body;
+      if (!object_body(req, res, body)) return;
+      const std::string payload = body.dump();
+      send_loom(res, call(ctx_, payload.c_str(), nullptr, nullptr));
+    });
+  };
+
+  svr_.Get("/api/knowledge/pack", [this](const httplib::Request&, httplib::Response& res) {
+    send_loom(res, loom_kb_pack(ctx_));
+  });
+  svr_.Get("/api/knowledge/policy", [this](const httplib::Request& req, httplib::Response& res) {
+    const auto name = req.get_param_value("name");
+    send_loom(res, loom_kb_policy(ctx_, name.c_str()));
+  });
+  svr_.Get("/api/knowledge/runs", [this](const httplib::Request& req, httplib::Response& res) {
+    int limit = 50;
+    if (!integer_param(req, res, "limit", limit, 1)) return;
+    send_loom(res, loom_kb_runs(ctx_, limit));
+  });
+  post_json("/api/knowledge/query", loom_kb_query);
+  post_json("/api/knowledge/judge", loom_kb_judge);
+  post_json("/api/knowledge/materialize", loom_materialize);
+  post_json("/api/knowledge/predict", loom_generalize_predict);
+  post_json("/api/context/build", loom_context_build);
+
+  svr_.Post("/api/knowledge/run", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+    // Match the existing archive endpoint's output boundary. The client
+    // supplies a name, not an arbitrary path on the server's filesystem.
+    // Empty/absent out_dir keeps the native artifacts-only behavior.
+    if (body.contains("out_dir")) {
+      if (!body["out_dir"].is_string()) {
+        send_error(res, "invalid_argument", "out_dir must be a string");
+        return;
+      }
+      const auto name = body["out_dir"].get<std::string>();
+      if (!name.empty()) {
+        if (name == "." || name.find('/') != std::string::npos || name.find('\\') != std::string::npos ||
+            name.find("..") != std::string::npos || name.find('\0') != std::string::npos) {
+          send_error(res, "invalid_argument", "out_dir must be a plain name (written under exports/knowledge/)");
+          return;
+        }
+        const auto info = parse_or_empty(own_and_free(loom_info(ctx_)));
+        const auto data_dir = info.value("data_dir", std::string());
+        if (data_dir.empty()) {
+          send_error(res, "internal", "data directory unavailable");
+          return;
+        }
+        body["out_dir"] = (fs::path(data_dir) / "exports" / "knowledge" / name).string();
+      }
+    }
+    const std::string payload = body.dump();
+    // Synchronous JSON, as in the C ABI; status/cancel remain available on
+    // other HTTP threads while this request runs. A RunResult with status
+    // failed/paused is preserved rather than mislabeled as a successful run.
+    send_loom(res, loom_knowledge_run(ctx_, payload.c_str(), nullptr, nullptr));
+  });
+  svr_.Get("/api/knowledge/status", [this](const httplib::Request& req, httplib::Response& res) {
+    const auto task = req.get_param_value("task_id");
+    send_loom(res, loom_knowledge_status(ctx_, task.empty() ? nullptr : task.c_str()));
+  });
+  svr_.Post("/api/knowledge/cancel", [this](const httplib::Request&, httplib::Response& res) {
+    const int rc = loom_knowledge_cancel(ctx_);
+    if (rc == LOOM_E_NOT_FOUND) {
+      send_error(res, "not_found", "no knowledge run in progress");
+      return;
+    }
+    send_rc(res, rc, {{"ok", true}});
+  });
+
+  post_progress("/api/catalog/scan", loom_catalog_scan);
+  post_progress("/api/catalog/score", loom_catalog_score);
+  svr_.Post("/api/catalog/select", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+    if (body.contains("run_id") && !body["run_id"].is_string()) {
+      send_error(res, "invalid_argument", "run_id must be a string");
+      return;
+    }
+    const auto run = body.value("run_id", std::string());
+    send_loom(res, loom_catalog_select(ctx_, run.empty() ? nullptr : run.c_str()));
+  });
+  post_progress("/api/catalog/import", loom_catalog_import);
+  post_json("/api/catalog/query", loom_catalog_query);
+  post_json("/api/catalog/override", loom_catalog_override);
+  svr_.Get("/api/catalog/units", [this](const httplib::Request& req, httplib::Response& res) {
+    json query = json::object();
+    for (const char* key : {"label", "project", "text", "run_id", "sort"}) {
+      if (req.has_param(key)) query[key] = req.get_param_value(key);
+    }
+    for (const char* key : {"limit", "offset"}) {
+      if (!req.has_param(key)) continue;
+      int value = 0;
+      if (!integer_param(req, res, key, value, std::string(key) == "limit" ? 1 : 0)) return;
+      query[key] = value;
+    }
+    if (req.has_param("selected")) {
+      const auto value = req.get_param_value("selected");
+      if (value != "true" && value != "false" && value != "1" && value != "0") {
+        send_error(res, "invalid_argument", "selected must be true, false, 1 or 0");
+        return;
+      }
+      query["selected"] = value == "true" || value == "1";
+    }
+    const std::string payload = query.dump();
+    send_loom(res, loom_catalog_query(ctx_, payload.c_str()));
+  });
+  svr_.Get(R"(/api/catalog/units/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_catalog_preview(ctx_, req.matches[1].str().c_str()));
   });
 }
 

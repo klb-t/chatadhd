@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from pathlib import Path
 
 try:
     import requests
@@ -43,6 +44,142 @@ def wait_up(base: str, timeout: float = 15.0, headers: dict | None = None) -> No
             last_err = e
         time.sleep(0.1)
     raise RuntimeError(f"loom-server never came up: {last_err}")
+
+
+def test_knowledge(base: str, data_dir: str) -> None:
+    """Exercise the real offline catalog -> knowledge -> context HTTP path.
+
+    The fixture is deliberately tiny and synthetic; no remote provider,
+    private export or temporal-holdout answer key is involved.
+    """
+    def get(path: str, status: int = 200):
+        r = requests.get(base + path, timeout=15)
+        assert r.status_code == status, (path, r.status_code, r.text)
+        return r.json()
+
+    def post(path: str, body: dict, status: int = 200):
+        r = requests.post(base + path, json=body, timeout=30)
+        assert r.status_code == status, (path, r.status_code, r.text)
+        return r.json()
+
+    assert get("/api/knowledge/runs") == []
+    assert get("/api/catalog/units") == []
+    assert get("/api/knowledge/pack")["hash"]
+    assert isinstance(get("/api/knowledge/policy?name=goal_types"), dict)
+    assert get("/api/knowledge/policy?name=does-not-exist", 404)["error"]["code"] == "not_found"
+    assert post("/api/knowledge/cancel", {}, 404)["error"]["code"] == "not_found"
+    assert post("/api/knowledge/query", {"what": "claims"}, 404)["error"]["code"] == "not_found"
+    assert post("/api/catalog/select", {}, 404)["error"]["code"] == "not_found"
+
+    # Invalid input must never silently become a default run/import request.
+    for path in ("/api/knowledge/run", "/api/knowledge/query", "/api/knowledge/judge",
+                 "/api/knowledge/materialize", "/api/knowledge/predict", "/api/context/build",
+                 "/api/catalog/scan", "/api/catalog/score", "/api/catalog/select", "/api/catalog/query",
+                 "/api/catalog/import", "/api/catalog/override"):
+        for raw, code in (("{broken", "parse"), ("[]", "invalid_argument")):
+            r = requests.post(base + path, data=raw, timeout=5)
+            assert r.status_code == 400, (path, raw, r.status_code, r.text)
+            assert r.json()["error"]["code"] == code, r.text
+    for path in ("/api/knowledge/runs?limit=oops", "/api/knowledge/runs?limit=1tail",
+                 "/api/knowledge/runs?limit=99999999999999999", "/api/catalog/units?limit=0",
+                 "/api/catalog/units?offset=-1", "/api/catalog/units?selected=maybe"):
+        assert get(path, 400)["error"]["code"] == "invalid_argument"
+    for out_dir in ("../escape", "/tmp/escape", ".", "bad\\name", 17):
+        assert post("/api/knowledge/run", {"out_dir": out_dir}, 400)["error"]["code"] == "invalid_argument"
+
+    source = Path(data_dir) / "conversations.json"
+    message = (
+        "# ChatADHD provider architecture\n\n"
+        "ChatADHD is a software application built on the Loom kernel.\n"
+        "Requirement: ChatADHD must preserve all original conversations.\n"
+        "Decision: use a provider registry for every new data source.\n"
+        "The provider registry is implemented in Loom.\n"
+        "Principle: keep differences in data and use universal transformations.\n"
+    )
+    source.write_text(json.dumps([{
+        "id": "http-smoke-conversation", "title": "ChatADHD provider architecture",
+        "create_time": 1780272000, "update_time": 1780272000, "current_node": "turn",
+        "mapping": {"turn": {"id": "turn", "parent": None, "children": [], "message": {
+            "id": "http-smoke-message", "author": {"role": "user"}, "create_time": 1780272000,
+            "content": {"content_type": "text", "parts": [message]}, "metadata": {},
+        }}},
+    }]), encoding="utf-8")
+    conversations_before = len(get("/api/conversations"))
+    scan = post("/api/catalog/scan", {"sources": [str(source)]})
+    assert scan["units"] == 1, scan
+    units = post("/api/catalog/query", {"sort": "id", "limit": 10})
+    assert len(units) == 1, units
+    unit_id = units[0]["unit"]["id"]
+    assert get("/api/catalog/units?sort=id&limit=10") == units
+    preview = get(f"/api/catalog/units/{unit_id}")
+    assert preview["unit"]["unit"]["id"] == unit_id and preview["verified"] is True, preview
+    assert get("/api/catalog/units/missing", 404)["error"]["code"] == "not_found"
+    assert len(get("/api/conversations")) == conversations_before, "scan must not import messages"
+    dry = post("/api/catalog/import", {"mode": "full", "dry_run": True})
+    assert dry["imported"] == 1 and dry["conversations"] == [], dry
+    assert len(get("/api/conversations")) == conversations_before, "dry run must not import messages"
+
+    score = post("/api/catalog/score", {})
+    assert score["run_id"], score
+    defaults = post("/api/catalog/select", {"run_id": score["run_id"]})
+    assert len(defaults["decisions"]) == 1, defaults
+    assert len(get("/api/conversations")) == conversations_before, "selection must not import messages"
+    choice = post("/api/catalog/override", {"unit_id": unit_id, "action": "include", "reason": "smoke fixture"})
+    assert any(d["unit_id"] == unit_id and d["selected"] and d["decided_by"] == "user"
+               for d in choice["decisions"]), choice
+    assert len(get("/api/catalog/units?selected=true")) == 1
+    assert post("/api/catalog/select", {}) == choice, "owner override must win on repeated selection"
+    imported = post("/api/catalog/import", {"mode": "selective"})
+    assert imported["imported"] == 1 and len(imported["conversations"]) == 1, imported
+    assert len(get("/api/conversations")) == conversations_before + 1
+    messages = get(f"/api/conversations/{imported['conversations'][0]}/messages")
+    assert len(messages) == 1 and messages[0]["text"] == message, messages
+
+    config = {"sources": [str(source)], "llm": "off", "out_dir": "http-smoke",
+              "stage_params": {"catalog": {"import": {"mode": "full"}}}}
+    run = post("/api/knowledge/run", config)
+    assert run["status"] == "done", run
+    assert len(run["stages"]) == 6, run
+    run_id = run["run"]
+    runs = get("/api/knowledge/runs?limit=1")
+    assert runs[0]["id"] == run_id and runs[0]["status"] == "done", runs
+    status = get(f"/api/knowledge/status?task_id={run['task_id']}")
+    assert status["run"] is not None and isinstance(status["stages"], list), status
+    entities = post("/api/knowledge/query", {"run": run_id, "what": "entities"})
+    claims = post("/api/knowledge/query", {"run": run_id, "what": "claims"})
+    assert entities["run"] == run_id and entities["items"], entities
+    assert claims["items"], claims
+    for claim in claims["items"]:
+        assessment = claim["assessment"]
+        assert assessment["evidence_class"] and assessment["origin"]
+        assert 0 <= assessment["confidence"] <= 1
+        if assessment["evidence_class"] in ("inferred", "extrapolated"):
+            assert assessment["expected_property"] is not None, assessment
+    for what in ("principles", "operators", "instances", "products", "stats"):
+        assert "items" in post("/api/knowledge/query", {"run": run_id, "what": what})
+    assert post("/api/knowledge/query", {"run": run_id, "what": "invalid"}, 400)["error"]["code"] == "invalid_argument"
+
+    context = post("/api/context/build", {"run": run_id, "text": "Implement the ChatADHD provider registry",
+                                           "budget_tokens": 600})
+    selected = context["context_set"]
+    assert 0 < selected["used_tokens"] <= selected["budget_tokens"] == 600, selected
+    assert context["text"] and all(item["why"] for item in selected["items"]), context
+    bands = {"stable": 0, "project": 1, "goal": 2}
+    order = [bands[item["band"]] for item in selected["items"]]
+    assert order == sorted(order), selected
+    rendered = post("/api/knowledge/materialize", {"run": run_id, "kind": "self_description"})
+    assert rendered["markdown"] and rendered["product"], rendered
+
+    judgement = post("/api/knowledge/judge", {"target_kind": "claim", "target": claims["items"][0]["id"],
+                                               "verdict": "confirm", "reason": "smoke verification", "replay_run": run_id})
+    assert judgement["seq"] > 0 and judgement["replay"]["applied"] == 1, judgement
+
+    # An orchestration failure is a native RunResult with status/error, not
+    # a fabricated successful result or a transport exception.
+    failed = post("/api/knowledge/run", {"sources": [str(source)], "llm": "off",
+                                         "stage_params": {"catalog": {"import": {"mode": "invalid"}}}})
+    assert failed["status"] == "failed" and failed["error"], failed
+    print("OK: loom-server knowledge/catalog/context checks passed")
 
 
 def main() -> int:
@@ -116,8 +253,15 @@ def main() -> int:
         r = requests.get(f"{base}/api/logs?max_lines=5")
         assert r.status_code == 200 and isinstance(r.json(), list), r.text
 
+        test_knowledge(base, data_dir)
+
         # SSE chat: no upstream configured, so this must fail cleanly with a
         # well-formed "error" chunk rather than hang or crash the server.
+        # Remove the fake credential set by the secrets test above; leaving
+        # it installed would attempt a real upstream request and make this
+        # supposedly offline test depend on network timeouts.
+        r = requests.delete(f"{base}/api/secrets/api_key", timeout=5)
+        assert r.status_code == 200 and r.json()["deleted"] is True, r.text
         with requests.post(f"{base}/api/chat", json={"message": "hi"}, stream=True, timeout=10) as r:
             assert r.status_code == 200
             saw_start = saw_terminal = False
@@ -208,6 +352,18 @@ def test_auth(server_bin: str) -> None:
         r = requests.get(f"{base}/api/events/stream", stream=True, timeout=5)
         assert r.status_code == 401, r.text
         r.close()
+
+        # Newly exposed knowledge reads and writes use the same auth wall.
+        for method, path in (("GET", "/api/knowledge/runs"), ("GET", "/api/knowledge/pack"),
+                             ("GET", "/api/catalog/units"), ("POST", "/api/knowledge/run"),
+                             ("POST", "/api/knowledge/judge"), ("POST", "/api/catalog/import"),
+                             ("POST", "/api/catalog/scan"), ("POST", "/api/catalog/select"),
+                             ("POST", "/api/context/build")):
+            r = requests.request(method, base + path, json={}, timeout=5)
+            assert r.status_code == 401 and r.json()["error"]["code"] == "auth", (path, r.text)
+            assert token not in r.text
+        r = requests.get(f"{base}/api/knowledge/runs", headers={"Authorization": f"Bearer {token}"}, timeout=5)
+        assert r.status_code == 200 and r.json() == [], r.text
 
         print("OK: loom-server auth checks passed")
     finally:

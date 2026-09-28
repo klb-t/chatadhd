@@ -67,6 +67,8 @@ export class LoomJniApi implements LoomApi {
     buildContext: (request) => this.background("context_build", { request }),
     catalogUnits: (query = {}) => this.callAsync("catalog_query", { query }),
     catalogScan: (config) => this.background("catalog_scan", { config }),
+    catalogScore: (config) => this.background("catalog_score", { config }),
+    catalogSelect: (run_id = "") => this.callAsync("catalog_select", { run_id }),
     catalogPreview: (unit_id) => this.callAsync("catalog_preview", { unit_id }),
     catalogOverride: (override) => this.callAsync("catalog_override", { override }),
     catalogImport: (options) => this.background("catalog_import", { options }),

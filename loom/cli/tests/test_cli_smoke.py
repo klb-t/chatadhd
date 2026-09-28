@@ -129,6 +129,25 @@ try:
         hits = [s for s in r2["stages"] if s["stage"] != "materialize"]
         assert all(s["cache_hit"] for s in hits), r2["stages"]
 
+    # Knowledge is a required part of --knowledge, including shell status.
+    # Archive materialization succeeds, then the knowledge export cannot
+    # create a directory because the caller placed a regular file there.
+    blocked = os.path.join(tmp, "blocked_knowledge")
+    os.makedirs(blocked)
+    with open(os.path.join(blocked, "knowledge"), "w") as f:
+        f.write("preserve this file")
+    bad = js("archive", "run", "--source", md, "--out", blocked,
+             "--knowledge", code=4)
+    assert bad["status"] == "done" and "error" in bad["knowledge"], bad
+    run("archive", "run", "--source", md, "--out", blocked,
+        "--knowledge", code=4)
+
+    knowledge_out = os.path.join(tmp, "knowledge_out")
+    knowledge = js("knowledge", "run", "--source", md, "--out", knowledge_out)
+    assert knowledge["status"] == "done", knowledge
+    assert len(knowledge["stages"]) == 6, knowledge
+    assert os.path.isfile(os.path.join(knowledge_out, "SELF.md"))
+
     # crypto (password from stdin)
     run("crypto", "setup", stdin="pw-123\n")
     assert js("crypto", "status")["configured"] is True

@@ -118,7 +118,7 @@ export default function App() {
           <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
             <ChatView convId={activeConvId} onConversationCreated={onConversationCreated} />
           </div>
-          {knowledgeOpen && <KnowledgeWorkbench onClose={() => setKnowledgeOpen(false)} />}
+          {knowledgeOpen && <KnowledgeWorkbench onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />}
         </div>
 
         {activePanel && (

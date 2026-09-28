@@ -12,5 +12,9 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(cli.smoke PROPERTIES
       ENVIRONMENT "LOOM_CLI=$<TARGET_FILE:loom_cli>;LOOM_FIXTURES=${LOOM_ROOT}/tests/fixtures;PYTHONDONTWRITEBYTECODE=1"
       TIMEOUT 300)
+    add_test(NAME eval.harness COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/tools/eval/test_eval.py)
+    set_tests_properties(eval.harness PROPERTIES
+      ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 60)
   endif()
 endif()

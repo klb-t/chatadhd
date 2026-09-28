@@ -315,7 +315,8 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     bytes += cu.unit.bytes;
   }
 
-  return Json{{"imported", imported}, {"skipped", skipped}, {"bytes", bytes}, {"conversations", conversations}};
+  return Json{{"imported", imported}, {"skipped", skipped}, {"bytes", bytes}, {"conversations", conversations},
+              {"units", unit_ids}};
 }
 
 }  // namespace loom::catalog

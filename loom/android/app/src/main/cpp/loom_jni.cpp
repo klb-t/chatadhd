@@ -56,9 +56,11 @@
 #include <cstring>
 #include <functional>
 #include <mutex>
+#include <shared_mutex>
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <vector>
 
 #include <nlohmann/json.hpp>
 
@@ -224,7 +226,7 @@ namespace {
 
 JavaVM* g_vm = nullptr;
 LoomContext* g_ctx = nullptr;
-std::mutex g_ctx_mu;
+std::shared_mutex g_ctx_mu;
 
 jclass g_callbacks_class = nullptr;      // com/chatadhd/android/LoomCallbacks
 jmethodID g_on_chunk = nullptr;          // static void onChunk(String id, String json, boolean done)
@@ -352,6 +354,58 @@ int a_int(const Json& args, size_t i, int def = 0) {
 }
 
 // ── generic dispatch table (see file header) ─────────────────────────────
+// WebView uses named JSON objects; older Kotlin wrappers use positional
+// arrays. Keep both encodings on one dispatcher, with argument order as data.
+Json positional_args(const std::string& method, const Json& args) {
+  if (args.is_array()) return args;
+  if (!args.is_object()) throw std::invalid_argument("bridge arguments must be an object or array");
+  if (method == "create_memory") return Json::array({args});
+  if (method == "update_memory") {
+    Json patch = args;
+    patch.erase("id");
+    return Json::array({args.value("id", Json(nullptr)), patch});
+  }
+  static const std::unordered_map<std::string, std::vector<std::string>> names = {
+      {"set_config", {"key", "value"}}, {"set_config_json", {"patch"}},
+      {"set_secret", {"key", "value"}}, {"has_secret", {"key"}}, {"delete_secret", {"key"}},
+      {"list_conversations", {"limit"}}, {"create_conversation", {"title"}},
+      {"get_conversation", {"conv_id"}}, {"update_conversation", {"conv_id", "patch"}},
+      {"delete_conversation", {"conv_id"}}, {"get_messages", {"conv_id"}},
+      {"get_messages_ex", {"conv_id", "include_all"}}, {"get_message", {"msg_id"}},
+      {"edit_message", {"msg_id", "new_text"}}, {"restore_version", {"msg_id"}},
+      {"get_versions", {"msg_or_group_id"}}, {"set_message_status", {"msg_id", "status"}},
+      {"update_message", {"msg_id", "patch"}}, {"search", {"query", "options"}},
+      {"chat_cancel", {"request_id"}}, {"can", {"resource", "capability", "constraints"}},
+      {"get_nodes", {"filter"}}, {"get_edges", {"filter"}}, {"expand_graph", {"seed_ids", "depth"}},
+      {"get_graph_data", {"conv_id"}}, {"graph_reindex", {"conv_id"}},
+      {"select_context", {"text", "depth", "max_tokens"}}, {"select_context_ex", {"request"}},
+      {"delete_memory", {"id"}}, {"get_memory_context", {"max_chars"}},
+      {"detect_format", {"path"}}, {"import_file", {"path", "title"}},
+      {"export_conversation", {"conv_id", "format"}}, {"list_sources", {"limit"}},
+      {"get_provenance", {"subject_id"}}, {"query_events", {"query"}},
+      {"list_tasks", {"filter"}}, {"get_task", {"task_id"}}, {"cancel_task", {"task_id"}},
+      {"crypto_setup", {"password"}}, {"crypto_unlock", {"password"}},
+      {"crypto_encrypt", {"plaintext"}}, {"crypto_decrypt", {"blob"}},
+      {"transcribe", {"path", "options"}}, {"ocr", {"path", "options"}},
+      {"github_sync", {"request"}}, {"get_logs", {"max_lines"}},
+      {"kb_policy", {"name"}}, {"kb_runs", {"limit"}}, {"kb_query", {"query"}},
+      {"kb_judge", {"judgement"}}, {"knowledge_run", {"config"}},
+      {"knowledge_status", {"task_id"}}, {"catalog_scan", {"config"}},
+      {"catalog_score", {"config"}}, {"catalog_query", {"query"}},
+      {"catalog_select", {"run_id"}},
+      {"catalog_preview", {"unit_id"}}, {"catalog_override", {"override"}},
+      {"catalog_import", {"options"}}, {"context_build", {"request"}},
+      {"materialize", {"request"}}};
+  Json result = Json::array();
+  auto it = names.find(method);
+  if (it != names.end()) {
+    for (const auto& name : it->second) result.push_back(args.value(name, Json(nullptr)));
+  } else if (!args.empty()) {
+    throw std::invalid_argument("unexpected named arguments for bridge method: " + method);
+  }
+  return result;
+}
+
 using Fn = std::function<std::string(const Json&)>;
 
 #define S1(NAME, EXPR) \
@@ -364,6 +418,7 @@ const std::unordered_map<std::string, Fn>& dispatch_table() {
     std::unordered_map<std::string, Fn> table;
     // -- lifecycle / info --
     S1("info", loom_info(g_ctx));
+    table["get_logs"] = [](const Json& a) { return take(loom_get_logs(a_int(a, 0, 200))); };
     // -- config / secrets --
     S1("get_config", loom_get_config(g_ctx));
     table["set_config"] = [](const Json& a) {
@@ -495,6 +550,38 @@ const std::unordered_map<std::string, Fn>& dispatch_table() {
       std::string r;
       return take(loom_select_context_ex(g_ctx, a_cstr(a, 0, r)));
     };
+    // -- knowledge workbench: the same C ABI used by HTTP and CLI --
+    S1("kb_pack", loom_kb_pack(g_ctx));
+    table["kb_runs"] = [](const Json& a) { return take(loom_kb_runs(g_ctx, a_int(a, 0, 50))); };
+    I1("knowledge_cancel", loom_knowledge_cancel(g_ctx));
+    table["knowledge_run"] = [](const Json& a) {
+      std::string config;
+      return take(loom_knowledge_run(g_ctx, a_cstr(a, 0, config), nullptr, nullptr));
+    };
+    table["catalog_scan"] = [](const Json& a) {
+      std::string config;
+      return take(loom_catalog_scan(g_ctx, a_cstr(a, 0, config), nullptr, nullptr));
+    };
+    table["catalog_score"] = [](const Json& a) {
+      std::string config;
+      return take(loom_catalog_score(g_ctx, a_cstr(a, 0, config), nullptr, nullptr));
+    };
+    table["catalog_import"] = [](const Json& a) {
+      std::string options;
+      return take(loom_catalog_import(g_ctx, a_cstr(a, 0, options), nullptr, nullptr));
+    };
+#define JSON_ARG(NAME) table[#NAME] = [](const Json& a) { std::string value; return take(loom_##NAME(g_ctx, a_cstr(a, 0, value))); }
+    JSON_ARG(kb_policy);
+    JSON_ARG(kb_query);
+    JSON_ARG(kb_judge);
+    JSON_ARG(knowledge_status);
+    JSON_ARG(catalog_query);
+    JSON_ARG(catalog_select);
+    JSON_ARG(catalog_preview);
+    JSON_ARG(catalog_override);
+    JSON_ARG(context_build);
+    JSON_ARG(materialize);
+#undef JSON_ARG
     // -- semantic worker --
     S1("semantic_status", loom_semantic_status(g_ctx));
     table["semantic_pause"] = [](const Json&) {
@@ -715,7 +802,7 @@ extern "C" {
 
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInit(JNIEnv* env, jclass, jstring dataDir,
                                                                           jstring optionsJson) {
-  std::lock_guard<std::mutex> lock(g_ctx_mu);
+  std::unique_lock<std::shared_mutex> lock(g_ctx_mu);
   if (g_ctx) {
     return s2j(env, dump(Json{{"ok", true}, {"info", parse_or(take(loom_info(g_ctx)), Json::object())}}));
   }
@@ -741,7 +828,7 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInit(JNIEnv
 }
 
 JNIEXPORT void JNICALL Java_com_chatadhd_android_LoomNative_nativeShutdown(JNIEnv*, jclass) {
-  std::lock_guard<std::mutex> lock(g_ctx_mu);
+  std::unique_lock<std::shared_mutex> lock(g_ctx_mu);
   if (!g_ctx) return;
   loom_shutdown(g_ctx);
   g_ctx = nullptr;
@@ -754,6 +841,7 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeVersion(JNI
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInvoke(JNIEnv* env, jclass, jstring method,
                                                                             jstring argsJson) {
   std::string m = j2s(env, method);
+  std::shared_lock<std::shared_mutex> lock(g_ctx_mu);
   if (!g_ctx) return s2j(env, err_json(LOOM_E_INVALID_ARGUMENT));
   const auto& table = dispatch_table();
   auto it = table.find(m);
@@ -761,11 +849,15 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInvoke(JNIE
     Json e{{"error", Json{{"code", "not_implemented"}, {"message", "no such bridge method: " + m}}}};
     return s2j(env, dump(e));
   }
-  Json args = parse_or(j2s(env, argsJson), Json::array());
-  if (!args.is_array()) args = Json::array();
   std::string result;
   try {
+    Json args = Json::parse(j2s(env, argsJson));
+    args = positional_args(m, args);
     result = it->second(args);
+  } catch (const Json::exception& e) {
+    result = dump(Json{{"error", Json{{"code", "invalid_argument"}, {"message", e.what()}}}});
+  } catch (const std::invalid_argument& e) {
+    result = dump(Json{{"error", Json{{"code", "invalid_argument"}, {"message", e.what()}}}});
   } catch (const std::exception& e) {
     result = dump(Json{{"error", Json{{"code", "internal"}, {"message", e.what()}}}});
   } catch (...) {
@@ -776,6 +868,7 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeInvoke(JNIE
 
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeChat(JNIEnv* env, jclass, jstring requestJson,
                                                                           jstring callbackId) {
+  std::shared_lock<std::shared_mutex> lock(g_ctx_mu);
   if (!g_ctx) return s2j(env, err_json(LOOM_E_INVALID_ARGUMENT));
   std::string req = j2s(env, requestJson);
   std::string id = j2s(env, callbackId);
@@ -785,6 +878,7 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeChat(JNIEnv
 
 JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeImportFile(JNIEnv* env, jclass, jstring path,
                                                                                 jstring title, jstring callbackId) {
+  std::shared_lock<std::shared_mutex> lock(g_ctx_mu);
   if (!g_ctx) return s2j(env, err_json(LOOM_E_INVALID_ARGUMENT));
   std::string p = j2s(env, path);
   std::string t = j2s(env, title);
@@ -797,6 +891,7 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeImportFile(
 
 JNIEXPORT jlong JNICALL Java_com_chatadhd_android_LoomNative_nativeSubscribe(JNIEnv* env, jclass, jstring event,
                                                                              jstring callbackId) {
+  std::shared_lock<std::shared_mutex> ctx_lock(g_ctx_mu);
   if (!g_ctx) return static_cast<jlong>(LOOM_E_INVALID_ARGUMENT);
   std::string ev = j2s(env, event);
   auto id = std::make_unique<std::string>(j2s(env, callbackId));
@@ -809,6 +904,7 @@ JNIEXPORT jlong JNICALL Java_com_chatadhd_android_LoomNative_nativeSubscribe(JNI
 }
 
 JNIEXPORT jint JNICALL Java_com_chatadhd_android_LoomNative_nativeUnsubscribe(JNIEnv*, jclass, jlong token) {
+  std::shared_lock<std::shared_mutex> ctx_lock(g_ctx_mu);
   if (!g_ctx) return LOOM_E_INVALID_ARGUMENT;
   int rc = loom_unsubscribe(g_ctx, token);
   std::lock_guard<std::mutex> lock(g_sub_mu);

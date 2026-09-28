@@ -11,10 +11,18 @@ import os
 import re
 import sqlite3
 import subprocess
+import tempfile
 import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
+
+
+def new_workspace(parent: Path, prefix: str = "run-") -> Path:
+    """Create a private run directory without clearing any caller-owned data."""
+    parent = parent.expanduser().resolve()
+    parent.mkdir(parents=True, exist_ok=True)
+    return Path(tempfile.mkdtemp(prefix=prefix, dir=parent))
 
 
 def run_knowledge(loom: str, data_dir: Path, config: dict[str, Any], *, timeout: int = 3600) -> dict[str, Any]:
@@ -28,7 +36,11 @@ def run_knowledge(loom: str, data_dir: Path, config: dict[str, Any], *, timeout:
         out = json.loads(p.stdout)
     except json.JSONDecodeError as e:
         raise RuntimeError(f"loom knowledge run: no JSON (exit {p.returncode})\nstdout: {p.stdout[-2000:]}\nstderr: {p.stderr[-4000:]}") from e
-    if "error" in out and not isinstance(out.get("error"), str):
+    if not isinstance(out, dict):
+        raise RuntimeError("loom knowledge run: expected a JSON object")
+    if p.returncode:
+        raise RuntimeError(f"loom knowledge run exited {p.returncode}: {out.get('error')}\nstderr: {p.stderr[-4000:]}")
+    if "error" in out and out.get("error") is not None and not isinstance(out.get("error"), str):
         raise RuntimeError(f"loom knowledge run failed: {out['error']}")
     if out.get("status") != "done":
         raise RuntimeError(f"loom knowledge run: status {out.get('status')}: {out.get('error')}\nstderr: {p.stderr[-4000:]}")
@@ -118,3 +130,4 @@ def claim_quotes(c: dict[str, Any]) -> list[str]:
 
 def evidence_class(c: dict[str, Any]) -> str:
     return (c.get("assessment") or {}).get("evidence_class", "")
+

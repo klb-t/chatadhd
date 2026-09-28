@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { api } from "../api";
 import {
   asArray, asRecord, displayText,
@@ -57,7 +57,7 @@ function JsonDetail({ label, value, open = false }: { label: string; value: unkn
   return <details className="kb-detail" open={open || undefined}><summary>{label}</summary><pre>{JSON.stringify(value ?? null, null, 2)}</pre></details>;
 }
 
-export default function KnowledgeWorkbench({ onClose }: { onClose: () => void }) {
+export default function KnowledgeWorkbench({ onClose, onDataChanged }: { onClose: () => void; onDataChanged?: () => void }) {
   const knowledge = api.knowledge;
   const [panes, setPanes] = useState<Pane[]>(initialPanes);
   const [addKind, setAddKind] = useState<ViewKind>("graph");
@@ -88,7 +88,7 @@ export default function KnowledgeWorkbench({ onClose }: { onClose: () => void })
   }, [knowledge, refresh]);
 
   useEffect(() => {
-    if (!knowledge || !runId) { setData({}); return; }
+    if (!knowledge || !runId) { setData({}); setBusy(false); return; }
     let active = true;
     setBusy(true);
     setSelection(null);
@@ -129,20 +129,21 @@ export default function KnowledgeWorkbench({ onClose }: { onClose: () => void })
         <label>Add coordinated view<select aria-label="View type" value={addKind} onChange={(event) => setAddKind(event.target.value as ViewKind)}>{Object.entries(VIEWS).map(([kind, label]) => <option key={kind} value={kind}>{label}</option>)}</select></label>
         <button onClick={() => setPanes((current) => [...current, newPane(addKind)])} data-testid="kb-add-view">Add view</button>
       </div>
-      <RunControls knowledge={knowledge} onDone={() => setRefresh((key) => key + 1)} />
+      <RunControls knowledge={knowledge} onDone={(nextRun) => { if (nextRun) setRunId(nextRun); setRefresh((key) => key + 1); onDataChanged?.(); }} />
       <div className="kb-status" role="status">{busy ? "Loading knowledge…" : runs.length ? `${(data.entities ?? []).length} entities · ${(data.claims ?? []).length} claims · ${(data.principles ?? []).length} principles` : "No knowledge run yet. Analyze a source below or catalog it first."}
         {focus && <button className="kb-focus" onClick={() => setFocus("")}>Focus: {displayText(entityMap.get(focus)?.label || focus)} ×</button>}
+        {selection && <a className="kb-inspect-link" href="#knowledge-inspector">Inspect selection ↓</a>}
       </div>
       {errors.map((error) => <p className="kb-error" role="alert" key={error}>{error}</p>)}
       <div className="kb-workspace">
         <div className="kb-panels">
           {panes.map((pane, index) => <section className="kb-pane" key={pane.id} data-testid={`kb-pane-${pane.kind}`} aria-label={`${VIEWS[pane.kind]} view ${index + 1}`}>
             <header className="kb-pane-header"><h3>{VIEWS[pane.kind]}</h3><div>
-              <button title="Duplicate this view" aria-label={`Duplicate ${VIEWS[pane.kind]} view`} onClick={() => setPanes((current) => [...current, newPane(pane.kind)])}>＋</button>
+              <button title="Duplicate this view" aria-label={`Duplicate ${VIEWS[pane.kind]} view`} onClick={() => setPanes((current) => [...current, newPane(pane.kind)])}>+</button>
               <button aria-label={`Close ${VIEWS[pane.kind]} view`} onClick={() => setPanes((current) => current.filter((item) => item.id !== pane.id))}>×</button>
             </div></header>
             {pane.kind === "context" ? <ContextPane knowledge={knowledge} run={runId} focus={focus} entities={entityMap} onSelect={select} data={data} /> :
-              pane.kind === "catalog" ? <CatalogPane knowledge={knowledge} onSelect={select} refresh={refresh} /> :
+              pane.kind === "catalog" ? <CatalogPane knowledge={knowledge} onSelect={select} refresh={refresh} onImported={onDataChanged} /> :
               pane.kind === "graph" ? <KnowledgeGraph data={data} focus={focus} onSelect={select} /> :
               <CollectionPane kind={pane.kind} rows={data[pane.kind] ?? []} entities={entityMap} focus={focus} selection={selection} onSelect={select} limit={limit} />}
           </section>)}
@@ -154,7 +155,7 @@ export default function KnowledgeWorkbench({ onClose }: { onClose: () => void })
   </section>;
 }
 
-function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: () => void }) {
+function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (run: string) => void }) {
   const [sources, setSources] = useState("");
   const [full, setFull] = useState(false);
   const [priors, setPriors] = useState(true);
@@ -167,7 +168,7 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
       const outcome = await knowledge.run({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), priors, llm: "off", stage_params: { catalog: { import: { mode: full ? "full" : "selective" } } } });
       setResult(outcome);
       if (outcome.status !== "done") setError(`Analysis ${displayText(outcome.status) || "did not complete"}: ${displayText(outcome.error) || "inspect the stage results"}`);
-      onDone();
+      onDone(displayText(outcome.run));
     } catch (failure) { setError(errorText(failure)); }
     finally { setRunning(false); }
   };
@@ -224,6 +225,7 @@ function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limi
 }
 
 function KnowledgeGraph({ data, focus, onSelect }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void }) {
+  const marker = useId().replace(/:/g, "");
   const [filter, setFilter] = useState("");
   const [depth, setDepth] = useState(1);
   const [fade, setFade] = useState(20);
@@ -259,9 +261,12 @@ function KnowledgeGraph({ data, focus, onSelect }: { data: Dataset; focus: strin
     <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus all linked views</div>
     <div className="kb-graph-scroll">
       {!nodes.length ? <p className="empty-state">Analyze sources to build a knowledge graph.</p> : <svg className="kb-graph" viewBox={`0 0 680 ${height}`} role="group" aria-label="Knowledge entities and claim relations">
-        {edges.map((claim) => { const a = positions.get(displayText(claim.subject))!; const b = positions.get(displayText(claim.object))!;
-          return <g key={idOf(claim)} opacity={!focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100}>
-            <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} className="kb-edge"><title>{displayText(claim.predicate)} · {displayText(asRecord(claim.assessment).evidence_class)}</title></line>
+        <defs><marker id={marker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--dim)" /></marker></defs>
+        {edges.map((claim) => { const a = positions.get(displayText(claim.subject))!; const b = positions.get(displayText(claim.object))!; const length = Math.hypot(b.x - a.x, b.y - a.y) || 1; const end = { x: b.x - (b.x - a.x) / length * 15, y: b.y - (b.y - a.y) / length * 15 };
+          return <g key={idOf(claim)} opacity={!focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100} className="kb-edge-target" role="button" tabIndex={0} aria-label={`Inspect relation ${displayText(claim.predicate)}`} onClick={() => onSelect("claims", claim)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("claims", claim); } }}>
+            <title>{displayText(claim.predicate)} · {displayText(asRecord(claim.assessment).evidence_class)}</title>
+            <line x1={a.x} y1={a.y} x2={end.x} y2={end.y} stroke="transparent" strokeWidth="10" />
+            <line x1={a.x} y1={a.y} x2={end.x} y2={end.y} className="kb-edge" markerEnd={`url(#${marker})`} />
           </g>;
         })}
         {nodes.map((row) => { const id = idOf(row); const position = positions.get(id)!; const label = displayText(row.label || id); const evidence = displayText(row.evidence_class);
@@ -281,7 +286,7 @@ function Inspector({ selection, entities }: { selection: Selection | null; entit
   const row = selection?.record;
   const assessment = row ? evidenceOf(row) : {};
   const basis = asRecord(assessment.basis);
-  return <aside className="kb-inspector" aria-label="Knowledge inspector" data-testid="kb-inspector"><h3>Selection & provenance</h3>
+  return <aside id="knowledge-inspector" className="kb-inspector" aria-label="Knowledge inspector" data-testid="kb-inspector"><h3>Selection & provenance</h3>
     {!row ? <p className="kb-muted">Select an entity, claim, principle or catalog unit in any view. The inspector retains all fields, including uncertainty and missing evidence.</p> : <>
       <h4>{labelOf(row, entities)}</h4><code className="kb-id">{idOf(row)}</code><Evidence row={row} />
       {!!row.assessment && <>
@@ -354,7 +359,7 @@ function ContextPane({ knowledge, run, focus, entities, onSelect, data }: {
   </div>;
 }
 
-function CatalogPane({ knowledge, onSelect, refresh }: { knowledge: KnowledgeApi; onSelect: (kind: string, row: KnowledgeRecord) => void; refresh: number }) {
+function CatalogPane({ knowledge, onSelect, refresh, onImported }: { knowledge: KnowledgeApi; onSelect: (kind: string, row: KnowledgeRecord) => void; refresh: number; onImported?: () => void }) {
   const [sources, setSources] = useState("");
   const [filter, setFilter] = useState("");
   const [rows, setRows] = useState<KnowledgeRecord[]>([]);
@@ -389,6 +394,7 @@ function CatalogPane({ knowledge, onSelect, refresh }: { knowledge: KnowledgeApi
       <label>Paths on the Loom server<textarea aria-label="Catalog source paths" rows={2} value={sources} onChange={(event) => setSources(event.target.value)} placeholder="/data/exports/archive.zip" /></label>
       <button disabled={busy || !sources.trim()} onClick={() => action(() => knowledge.catalogScan({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), retain_raw: "selected" }), true)}>Scan sources</button>
     </details>
+    <button disabled={busy} onClick={() => action(async () => { const scores = await knowledge.catalogScore({ llm: "off" }); const selection = await knowledge.catalogSelect(); return { scores, selection }; }, true)}>Score and select with catalog profile</button>
     <input type="search" aria-label="Filter catalog" value={filter} onChange={(event) => { setFilter(event.target.value); setOffset(0); }} placeholder="Search titles and sketches…" />
     <label className="kb-check"><input type="checkbox" checked={selectedOnly} onChange={(event) => { setSelectedOnly(event.target.checked); setOffset(0); }} />Selected units only</label>
     {error && <p className="kb-error" role="alert">{error}</p>}
@@ -407,7 +413,7 @@ function CatalogPane({ knowledge, onSelect, refresh }: { knowledge: KnowledgeApi
       <label>Import scope<select aria-label="Catalog import scope" value={mode} onChange={(event) => setMode(event.target.value)}><option value="selective">Selected units</option><option value="full">All catalogued units (full)</option></select></label>
       <label>Source retention<select aria-label="Catalog retention" value={storeMode} onChange={(event) => setStoreMode(event.target.value)}><option value="copy">Copy content</option><option value="link">Link to original source</option></select></label>
       <p className="kb-muted">Import scope applies to the catalog, independently of this view's search filter. Linked originals must remain available at their original location.</p>
-      <div className="kb-actions"><button disabled={busy} onClick={previewImport}>Preview import</button><button className="primary" disabled={busy || reviewed !== importKey} onClick={() => action(() => knowledge.catalogImport({ mode, store_mode: storeMode, dry_run: false }), true)}>Import reviewed selection</button></div>
+      <div className="kb-actions"><button disabled={busy} onClick={previewImport}>Preview import</button><button className="primary" disabled={busy || reviewed !== importKey} onClick={() => action(() => knowledge.catalogImport({ mode, store_mode: storeMode, dry_run: false }), true).then((outcome) => { if (outcome) onImported?.(); })}>Import reviewed selection</button></div>
     </details>
     {result && <JsonDetail label="Latest catalog result" value={result} open />}
   </div>;

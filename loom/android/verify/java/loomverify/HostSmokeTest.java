@@ -111,6 +111,36 @@ public final class HostSmokeTest {
                 require(r.contains(USER_TEXT), "stored user message did not round-trip verbatim through SQLite: " + r);
             });
 
+            failures += check("WebView named-argument protocol", () -> {
+                String r = LoomNative.nativeInvoke("get_messages", "{\"conv_id\":" + jsonString(convId[0]) + "}");
+                require(r.contains(USER_TEXT), "named conv_id was discarded: " + r);
+                r = LoomNative.nativeInvoke("get_config", "{}");
+                require(!r.contains("\"error\""), "empty named arguments failed: " + r);
+                r = LoomNative.nativeInvoke("get_logs", "{\"max_lines\":5}");
+                require(!r.contains("not_implemented"), "web log endpoint absent: " + r);
+                r = LoomNative.nativeInvoke("create_conversation", "not-json");
+                require(r.contains("invalid_argument"), "malformed JSON silently created conversation: " + r);
+                r = LoomNative.nativeInvoke("create_memory", "{\"content\":\"bridge memory\"}");
+                require(!r.contains("\"error\""), "whole-object memory argument lost: " + r);
+            });
+
+            failures += check("knowledge workbench through native dispatcher", () -> {
+                Path source = dataDir.resolve("knowledge-source.md");
+                Files.writeString(source, "# ChatADHD\nWe decided to store raw sources unchanged. "
+                    + "ChatADHD uses Loom and SQLite for its knowledge graph.\n");
+                String config = "{\"sources\":[" + jsonString(source.toString()) + "],\"stage_params\":{\"catalog\":{\"import\":{\"mode\":\"full\"}}},\"priors\":false}";
+                String r = LoomNative.nativeInvoke("knowledge_run", "{\"config\":" + config + "}");
+                require(r.contains("\"status\":\"done\""), "knowledge run failed: " + r);
+                r = LoomNative.nativeInvoke("kb_runs", "{\"limit\":5}");
+                require(r.contains("\"status\":\"done\""), "knowledge run not queryable: " + r);
+                r = LoomNative.nativeInvoke("kb_query", "{\"query\":{\"what\":\"entities\"}}");
+                require(r.contains("\"items\"") && !r.contains("\"error\""), "knowledge entities query failed: " + r);
+                r = LoomNative.nativeInvoke("catalog_query", "{\"query\":{}}");
+                require(r.contains("chatadhd") && r.contains("content_hash"), "catalog lost source content: " + r);
+                r = LoomNative.nativeInvoke("context_build", "{\"request\":{\"text\":\"Explain ChatADHD\",\"budget_tokens\":200}}");
+                require(r.contains("\"context_set\""), "goal context failed: " + r);
+            });
+
             failures += check("nativeShutdown", () -> LoomNative.nativeShutdown());
         } finally {
             server.stop(0);
