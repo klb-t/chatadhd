@@ -4,6 +4,25 @@ Status: proposed integration policy grounded in the measured diagnostic in
 `JEV_RESULTS_2026-09-28.md`. The live adapter and scorer exist; the full native
 pipeline below is not yet integrated or validated on real conversation archives.
 
+## Local follow-up evidence (2026-09-28)
+
+The separately frozen direct-pair task completed: 47/48 first judgments matched
+its labels, including all 16 paraphrases and all 16 structural foils. Positive
+precision was 31/31 and recall31/32. The sole mismatch was an analogy whose coarse
+operation-level pattern agrees while finer relation topology differs. The
+predeclared 0.2/0.8 review interval retained46/48 with no observed retained error;
+this small reused corpus does not establish calibration or production accuracy.
+See `JEV_PAIRS_RESULTS_2026-09-28.md` for cost, language breakdown, first artifacts
+and the original final-key-check failure plus separate successful reconciliation.
+
+Consequently, comparison proposals should name their abstraction/projection and
+retain more than one comparison dimension where useful. A coarse analogy score
+must not silently stand for fine role/topology equivalence. Keep the original
+rubric and threshold with each assessment so a different projection can be
+re-evaluated without relabelling the earlier evidence. A same-task chat-model
+comparison and a supplied-topic/context selection pilot are separate experiments;
+the pair result alone does not choose an exclusive production classifier.
+
 ## Preserve the owner's actual target
 
 Represent thought and argument structure in the existing authoritative graph.

@@ -1,5 +1,14 @@
 # Current work checkpoint
 
+**Local Jev pair result:** all48 first replies retained;47/48 match the frozen
+exploratory labels (16/16 paraphrases,15/16 domain transfers,16/16 structural
+foils), USD0.001540350. See `docs/research/JEV_PAIRS_RESULTS_2026-09-28.md`.
+Final account lookup failed; a separate successful read-only check reconciled
+that exact charge. GPT-4.1-mini is now answering the same48 questions locally.
+A48-prefix Jev topic/memory pilot is prepared, not yet run. Catalog diagnosis:
+`docs/research/CATALOG_SEMANTIC_GAP_2026-09-28.md`; the current catalog score
+ignores its llm setting, and candidate-band-only triage would miss all32 failures.
+
 **Local access recovered (2026-09-28):** encrypted credential received and consumed
 without exposing it; OpenRouter endpoint and USD 2 nonresetting key preflight
 passed. User action is no longer needed. The frozen 48-pair Jev experiment is

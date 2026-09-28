@@ -1,0 +1,12 @@
+{
+  "read_only_recheck": "passed",
+  "check": {
+    "checked_at": "2026-09-28T17:24:06.228027Z",
+    "limit_usd": "2",
+    "remaining_usd": "1.965896428",
+    "nonresetting": true,
+    "includes_byok": false,
+    "billing_mode": "credit_cap_with_usage_accounting_optional_audit",
+    "byok_usage_usd": "0"
+  }
+}
