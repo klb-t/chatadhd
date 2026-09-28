@@ -206,6 +206,24 @@ the original file by hash / both), with complete graph mapping of data and
 metadata either way; periodic watching of sources for new files; automated
 export from source services where they allow it.
 
+## R21 — Complete export interpretation; coordinated multi-views; analysis-methods programme (2026-09-28)
+> "system musi umieć wszystko z nich zinterpretować, powiązać załączniki, sprawdzać sam na internecie strukturę a w razie jakby nie znalazł to się domyślać po nazwach i powiązaniach [...] widoki interfejsu inspirowane oryginalnymi apkami dostawców, również archiwalnymi wersjami [...] ograniczanie użytkownika do alternatywy rozłącznej [nie] wchodzi w grę. użytkownik Jak będzie chciał to sobie będzie mógł odpalić pięć różnych widoków grafów, współzależnych od siebie [...] interfejs ma co do zasady dawać dostęp i wizualizować na wszystkie możliwe sposoby wszystkie istotne dane, połączenia, sterowanie"
+> "fajnie by było mieć opracowaną w miarę uniwersalną i pojemną reprezentację struktury argumentu, myśli [...] znaczenia słów [...] z kilku różnych perspektyw [...] geometrycznie, topologicznie, porównać matematycznie, określając na przykład uniwersalność wzorca, szczegółowość która nie jest odwrotnością uniwersalności [...] dla każdego konkretnego analizowanego tematu przyda się określić jego uogólnienie, kategorię, przykładem czego on jest, jakiej relacji [...] kiedy ostatnio była podobna omawiana w szczególności w innym temacie żeby zwrócić uwagę na [...] wnioski które nie zostały wypowiedziane"
+
+- OpenAI/Anthropic exports interpreted completely and losslessly (all files and
+  fields, current and archival formats); unknown structure looked up online,
+  else inferred from names and relations (marked inferred); attachments linked.
+- Provider-inspired interface profiles (incl. archival app versions) as data;
+  functionality replicated as far as possible.
+- Views are never mutually exclusive: any number of coordinated views
+  (graphs, lists, timelines…) linked for navigating a multi-dimensional space.
+- A research programme on analysis methods (argument/thought/meaning
+  representation from several perspectives; generalisation levels;
+  universality and specificity as separate measures; cross-topic recurrence;
+  unstated conclusions) — see `docs/HANDOFF_2026-09-28.md` §5.1.
+- Scan the whole codebase for generalisations and for choices that should be
+  owner options.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
