@@ -27,8 +27,6 @@ namespace loom::archive {
 namespace fs = std::filesystem;
 
 namespace {
-constexpr std::string_view kLog = "loom.archive";
-
 const std::set<std::string>& skip_dirs() {
   static const std::set<std::string> k = {
       ".git",     "build",        "node_modules", "third_party", "vendor",        "__pycache__", ".venv",
