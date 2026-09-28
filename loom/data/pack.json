@@ -85,6 +85,10 @@
    "schema": "loom.kb.evidence_encoding/1"
   },
   {
+   "path": "policy/candidate_graph.json",
+   "schema": "loom.candidate_graph_vocabulary/1"
+  },
+  {
    "path": "goals/goal_types.json",
    "schema": "loom.kb.goal_types/1"
   },

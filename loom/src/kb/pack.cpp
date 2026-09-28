@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "loom/kb.h"
+#include "loom/knowledge_candidate_graph.h"
 #include "loom/model.h"
 #include "loom/re/regex.h"
 #include "loom/util/fs.h"
@@ -1177,6 +1178,20 @@ bool validate_document(std::string_view relpath, std::string_view schema, const 
   else if (schema == "loom.kb.selection_rules/1") v_selection_rules(v, d);
   else if (schema == "loom.kb.calibration/1") v_calibration(v, d);
   else if (schema == "loom.kb.evidence_encoding/1") v_evidence_encoding(v, d, t);
+  else if (schema == "loom.candidate_graph_vocabulary/1") {
+    // The pure candidate validator owns this contract. Pack loading only
+    // translates its located errors, so runtime and draft validation agree.
+    const Json report = extract::validate_candidate_graph_vocabulary(d);
+    if (const Json* errors = json::find(report, "errors"); errors && errors->is_array()) {
+      for (const auto& issue : *errors) {
+        v.err(json::get_string(issue, "path"),
+              json::get_string(issue, "code") + ": " + json::get_string(issue, "message"));
+      }
+    }
+    if (!json::get_bool(report, "valid") && issues.size() == before) {
+      v.err("", "candidate graph vocabulary validator rejected the policy");
+    }
+  }
   else if (schema == "loom.kb.goal_types/1") v_goal_types(v, d);
   else if (schema == "loom.kb.anchoring/1") v_anchoring(v, d, t);
   else if (schema == "loom.kb.morphisms/1") v_morphisms(v, d);

@@ -39,6 +39,9 @@ across retries of the same draft, retaining the first response provenance.
 These are verified transport/data-flow mechanisms, not evidence of live model
 accuracy. See `SEMANTIC_MODEL_FLOW_2026-09-28.md` and
 `SEMANTIC_UI_AUDIT_2026-09-28.md` for the contracts and actual limits.
+The later optional occurrence-graph increment described below adds compositional
+drafts alongside this default relation mode; its complete contract is in
+`SEMANTIC_OCCURRENCE_GRAPH_2026-09-28.md`.
 
 ## Independent supplied-graph measurements
 
@@ -120,7 +123,7 @@ Reproduction and data: `NATIVE_GRAPH_EXPERIMENT_2026-09-28.md` and
 transaction including committed WAL pages, requires an explicit run, and
 fails on a row limit rather than returning a silently truncated graph.
 
-## Validation of this increment
+## Historical validation at the first semantic checkpoint
 
 - New and existing research mechanism checks at the graph-flow checkpoint:
   **144/144**. Independent graph-oracle/metric guard checks: **12/12**.
@@ -158,8 +161,8 @@ abstentions. The carrier does not invent complete Assessments for these drafts.
 Two input routes converge on that same graph. A supplies the Entity/Claim drafts
 directly; B grounds source anchors first and composes only those anchors into
 separate readings. B binds both stages to exact packet and anchor hashes. A's
-research bundle refers to a snapshot label; a future live adapter must also bind
-its response envelope to the original request's full packet hash. Successful
+research bundle refers to a snapshot label; the native occurrence adapter now
+also binds its response envelope to the original request's full packet hash. Successful
 compilation is not source interpretation accuracy or inference eligibility.
 
 Experiment C prepares source/context packets and validates reversible thread,
@@ -200,19 +203,66 @@ The CMake research gate also includes the independent protocol checks.
 Contracts and usage are in `CANDIDATE_GRAPH.md`, `GROUNDED_FRAMES.md`,
 `CONTEXT_DELTA.md` and `CANDIDATE_FLOW.md` under `loom/tools/structure/`.
 
-## Remaining production integration
+## Optional native occurrence-graph integration
 
-The new model adapter is a deliberately explicit first production connection.
-Its current output is a flat, source-grounded relation or generalization among
-already extracted entities. It cannot create expression entities or encode
-arbitrary quantifier/operand/binder structure. A topic label and a chunk scope
-are not conversation-level topic tracking or resolved cross-turn identity.
-Candidate drafts are not yet an automatic canonical graph update.
+The native helper now supports `occurrence_graph_v1` beside the default
+`relation_v1`. It uses the configured semantic model with unchanged opt-in and
+request limits. Source packets retain full selected native records, including
+Claim Assessments, and responses bind the complete packet hash. Graph mode can
+propose new local occurrences even when regex extraction found no Entities.
+The runtime pack carries the five-operation policy and invokes the same pure
+validator as the helper. Preflight occurs before spending a request; UTF-8
+grounding, typed ports, scope/binding, shared DAGs, roots and coverage are checked.
 
-Next experiments need typed occurrence graphs carried by existing
-Entity/Claim/Assessment objects, independently scored extraction, explicit
-scope/identity alternatives, and reversible graph updates. The live/background
-legacy path still requires consolidation with the native knowledge adapter.
+Validated bundles enter the existing candidate queue with their packet, partial
+drafts, provenance and pending interpretation status. They do not change canonical
+Entities or Claims. Representation, validator/policy and prompt identity separate
+cache entries; attempted spending and per-candidate counts survive resume. The
+workbench exposes the choice, source-linked graph inspection and separate draft/
+abstention counts while preserving simultaneous panes.
+
+Verification at this checkpoint:
+
+- Native build passed. Targeted validator/pack: **24 cases, 298 assertions**;
+  targeted configuration/knowledge/semantic/C API: **62 cases, 701 assertions**.
+  Their combined **86 cases, 999 assertions** include actual catalog/extraction
+  through scripted HTTP transport and candidate readback, unchanged canonical
+  Claims, repeated-cache behavior and separation between representation modes.
+- Fresh independent native parity gate: **9/9 test methods**. All **32/32**
+  frozen manual decisions and Python decisions agree; 26 nonempty draft sets,
+  four empty abstentions and two rejected references retain their expected
+  source/partial-draft/coverage contracts. Four separately frozen mechanical
+  rejection probes and wrapper bounds pass. This does not measure native graph
+  projection or spontaneous model interpretation.
+- Full application CTest: **71/72**, **60.18 seconds**. The sole failure remains
+  catalog recall **13/45 = 0.288889**, below the unchanged **0.55** gate. Precision
+  is 13/13, selected traps 0/5 and generic noise 0/15. ABI, Python/C++ compatibility,
+  server/CLI, research protocols and native parity gates pass. The unresolved
+  recall issue is explained in `CATALOG_RECALL_DIAGNOSIS_2026-09-28.md`.
+- Research mechanisms **213/213** and independent candidate evaluator guards
+  **15/15** pass. Web TypeScript/Vite build and extended mocked Chromium controls
+  pass. No real model/provider request was made.
+
+Contracts, budgets and usage: `SEMANTIC_OCCURRENCE_GRAPH_2026-09-28.md`.
+Peer findings/frozen hashes: `NATIVE_CANDIDATE_BOUNDARY_REVIEW_2026-09-28.md`.
+Independent first report and protocol:
+`loom/tests/fixtures/eval/independent_candidate_graph_native_v1/INITIAL_RESULTS.md`.
+
+## Remaining work and next experimental questions
+
+A topic label and bounded source selection are not conversation-level topic
+tracking or resolved cross-turn identity. Candidate drafts are not automatic
+canonical graph updates. The five-operation grammar deliberately leaves more
+expressive structures unknown; validation alone cannot establish their meaning.
+
+Next useful measurements are source-to-structure accuracy and abstention on
+independently labelled multilingual conversations; direct versus grounded-frame
+quality under equal input/output/retry budgets; and reversible context selection
+for late project starts, returns and competing interpretations. Catalog recall
+needs verified identity/continuation evidence rather than a weakened threshold.
+These are directions, not claims that an optimal flow has already been found.
+The live/background legacy path still requires consolidation with the native
+knowledge adapter. The frame and context-delta routes remain offline experiments.
 Research graph search and motif code are executable Python tools, not yet a
 production web graph-search service. Lossy matching must never become proof,
 source repetitions must not become independent evidence, and any performance

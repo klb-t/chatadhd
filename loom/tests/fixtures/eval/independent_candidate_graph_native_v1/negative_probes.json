@@ -1,0 +1,2274 @@
+{
+  "schema": "loom.independent_candidate_native_probes/1",
+  "base_development_payload_hash": "cb14ad33834be118def4a2305f503c58e5dac3a91cb20dcbf5223bac3b99501b",
+  "probes": [
+    {
+      "id": "quote_mismatch",
+      "base_case_id": "dev_order_forward",
+      "packet": {
+        "schema": "loom.source_packet/1",
+        "snapshot_id": "snap:dev_order_forward",
+        "observations": [
+          {
+            "id": "ob_ddd73904fe89e759",
+            "unit": "un_ec77216963d2fe9d",
+            "kind": "sentence",
+            "text": "The archivist indexes the ledger.",
+            "locator": {
+              "source": "sha256:874f14fbc087e9d220c15f7c755c362a0e75a92a78e0b7a66f756868c7bbb624",
+              "member": "",
+              "json_pointer": "",
+              "byte_start": 21,
+              "byte_len": 33,
+              "time_start": null,
+              "time_end": null,
+              "line": 2
+            },
+            "lang": "en",
+            "date": "2026-09-28",
+            "ordinal": 0,
+            "artifact_type": "",
+            "speaker": "author",
+            "attrs": {}
+          }
+        ],
+        "entities": [],
+        "claims": []
+      },
+      "bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "snap:dev_order_forward",
+        "entity_drafts": [
+          {
+            "handle": "@s",
+            "kind": "scope",
+            "label": "s",
+            "attrs": {
+              "scope_type": "assertion",
+              "assertion_context": "asserted"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@archivist",
+            "kind": "term_occurrence",
+            "label": "archivist",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "archivist"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@ledger",
+            "kind": "term_occurrence",
+            "label": "ledger",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "ledger"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@application",
+            "kind": "expression_occurrence",
+            "label": "application",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@application_pred",
+            "kind": "term_occurrence",
+            "label": "application_pred",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "index"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@archivist",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger.!"
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@ledger",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@application",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@application",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "predicate_application",
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c5",
+            "subject": "@application_pred",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c6",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@application_pred",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c7",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@archivist",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c8",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@ledger",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 1
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@application"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ],
+            "status": "represented",
+            "reason": "Manual source-structure gold under the declared operation contract.",
+            "drafts": [
+              "@application"
+            ]
+          }
+        ],
+        "unknowns": []
+      },
+      "expected_valid": false
+    },
+    {
+      "id": "boolean_byte_offset",
+      "base_case_id": "dev_order_forward",
+      "packet": {
+        "schema": "loom.source_packet/1",
+        "snapshot_id": "snap:dev_order_forward",
+        "observations": [
+          {
+            "id": "ob_ddd73904fe89e759",
+            "unit": "un_ec77216963d2fe9d",
+            "kind": "sentence",
+            "text": "The archivist indexes the ledger.",
+            "locator": {
+              "source": "sha256:874f14fbc087e9d220c15f7c755c362a0e75a92a78e0b7a66f756868c7bbb624",
+              "member": "",
+              "json_pointer": "",
+              "byte_start": 21,
+              "byte_len": 33,
+              "time_start": null,
+              "time_end": null,
+              "line": 2
+            },
+            "lang": "en",
+            "date": "2026-09-28",
+            "ordinal": 0,
+            "artifact_type": "",
+            "speaker": "author",
+            "attrs": {}
+          }
+        ],
+        "entities": [],
+        "claims": []
+      },
+      "bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "snap:dev_order_forward",
+        "entity_drafts": [
+          {
+            "handle": "@s",
+            "kind": "scope",
+            "label": "s",
+            "attrs": {
+              "scope_type": "assertion",
+              "assertion_context": "asserted"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@archivist",
+            "kind": "term_occurrence",
+            "label": "archivist",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "archivist"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@ledger",
+            "kind": "term_occurrence",
+            "label": "ledger",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "ledger"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@application",
+            "kind": "expression_occurrence",
+            "label": "application",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@application_pred",
+            "kind": "term_occurrence",
+            "label": "application_pred",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "index"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@archivist",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": false,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@ledger",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@application",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@application",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "predicate_application",
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c5",
+            "subject": "@application_pred",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c6",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@application_pred",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c7",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@archivist",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c8",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@ledger",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 1
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@application"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ],
+            "status": "represented",
+            "reason": "Manual source-structure gold under the declared operation contract.",
+            "drafts": [
+              "@application"
+            ]
+          }
+        ],
+        "unknowns": []
+      },
+      "expected_valid": false
+    },
+    {
+      "id": "duplicate_argument_ordinal",
+      "base_case_id": "dev_order_forward",
+      "packet": {
+        "schema": "loom.source_packet/1",
+        "snapshot_id": "snap:dev_order_forward",
+        "observations": [
+          {
+            "id": "ob_ddd73904fe89e759",
+            "unit": "un_ec77216963d2fe9d",
+            "kind": "sentence",
+            "text": "The archivist indexes the ledger.",
+            "locator": {
+              "source": "sha256:874f14fbc087e9d220c15f7c755c362a0e75a92a78e0b7a66f756868c7bbb624",
+              "member": "",
+              "json_pointer": "",
+              "byte_start": 21,
+              "byte_len": 33,
+              "time_start": null,
+              "time_end": null,
+              "line": 2
+            },
+            "lang": "en",
+            "date": "2026-09-28",
+            "ordinal": 0,
+            "artifact_type": "",
+            "speaker": "author",
+            "attrs": {}
+          }
+        ],
+        "entities": [],
+        "claims": []
+      },
+      "bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "snap:dev_order_forward",
+        "entity_drafts": [
+          {
+            "handle": "@s",
+            "kind": "scope",
+            "label": "s",
+            "attrs": {
+              "scope_type": "assertion",
+              "assertion_context": "asserted"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@archivist",
+            "kind": "term_occurrence",
+            "label": "archivist",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "archivist"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@ledger",
+            "kind": "term_occurrence",
+            "label": "ledger",
+            "attrs": {
+              "term_type": "constant",
+              "symbol": "ledger"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@application",
+            "kind": "expression_occurrence",
+            "label": "application",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          },
+          {
+            "handle": "@application_pred",
+            "kind": "term_occurrence",
+            "label": "application_pred",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "index"
+            },
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@archivist",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@ledger",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@application",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@application",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "predicate_application",
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c5",
+            "subject": "@application_pred",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c6",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@application_pred",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c7",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@archivist",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c8",
+            "subject": "@application",
+            "predicate": "operand",
+            "object": "@ledger",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_ddd73904fe89e759",
+                    "byte_start": 0,
+                    "byte_len": 33,
+                    "quote": "The archivist indexes the ledger."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@application"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_ddd73904fe89e759",
+                "byte_start": 0,
+                "byte_len": 33,
+                "quote": "The archivist indexes the ledger."
+              }
+            ],
+            "status": "represented",
+            "reason": "Manual source-structure gold under the declared operation contract.",
+            "drafts": [
+              "@application"
+            ]
+          }
+        ],
+        "unknowns": []
+      },
+      "expected_valid": false
+    },
+    {
+      "id": "unbound_variable",
+      "base_case_id": "dev_forall_shared",
+      "packet": {
+        "schema": "loom.source_packet/1",
+        "snapshot_id": "snap:dev_forall_shared",
+        "observations": [
+          {
+            "id": "ob_6dc113f965cea26e",
+            "unit": "un_8681e11a7a7ecf9c",
+            "kind": "sentence",
+            "text": "Każda przesyłka jest oznaczona i zważona.",
+            "locator": {
+              "source": "sha256:d51dc1e50da3acf1730843d2761fd813045544c335db0d0fb82388aa36219db1",
+              "member": "",
+              "json_pointer": "",
+              "byte_start": 21,
+              "byte_len": 44,
+              "time_start": null,
+              "time_end": null,
+              "line": 2
+            },
+            "lang": "pl",
+            "date": "2026-09-28",
+            "ordinal": 0,
+            "artifact_type": "",
+            "speaker": "author",
+            "attrs": {}
+          }
+        ],
+        "entities": [],
+        "claims": []
+      },
+      "bundle": {
+        "schema": "loom.candidate_graph/1",
+        "packet_id": "snap:dev_forall_shared",
+        "entity_drafts": [
+          {
+            "handle": "@s",
+            "kind": "scope",
+            "label": "s",
+            "attrs": {
+              "scope_type": "assertion",
+              "assertion_context": "asserted"
+            },
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@quantifier",
+            "kind": "expression_occurrence",
+            "label": "quantifier",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@quantifier_scope",
+            "kind": "scope",
+            "label": "quantifier_scope",
+            "attrs": {
+              "scope_type": "quantifier",
+              "assertion_context": "asserted"
+            },
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@quantifier_binder",
+            "kind": "binder",
+            "label": "quantifier_binder",
+            "attrs": {
+              "symbol": "x"
+            },
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@quantifier_variable",
+            "kind": "term_occurrence",
+            "label": "quantifier_variable",
+            "attrs": {
+              "term_type": "variable",
+              "symbol": "x"
+            },
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@marked",
+            "kind": "expression_occurrence",
+            "label": "marked",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@marked_pred",
+            "kind": "term_occurrence",
+            "label": "marked_pred",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "marked"
+            },
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@parcel",
+            "kind": "expression_occurrence",
+            "label": "parcel",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@parcel_pred",
+            "kind": "term_occurrence",
+            "label": "parcel_pred",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "parcel"
+            },
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@weighed",
+            "kind": "expression_occurrence",
+            "label": "weighed",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@weighed_pred",
+            "kind": "term_occurrence",
+            "label": "weighed_pred",
+            "attrs": {
+              "term_type": "predicate",
+              "symbol": "weighed"
+            },
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          },
+          {
+            "handle": "@inner_and",
+            "kind": "expression_occurrence",
+            "label": "inner_and",
+            "attrs": {},
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ]
+          }
+        ],
+        "claim_drafts": [
+          {
+            "handle": "@c1",
+            "subject": "@quantifier",
+            "predicate": "in_scope",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c2",
+            "subject": "@quantifier",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "quantifier",
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c3",
+            "subject": "@quantifier",
+            "predicate": "quantifier_kind",
+            "object": "",
+            "value": "forall",
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c4",
+            "subject": "@quantifier_scope",
+            "predicate": "scope_parent",
+            "object": "@s",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c5",
+            "subject": "@quantifier_binder",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c6",
+            "subject": "@quantifier",
+            "predicate": "introduces_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c7",
+            "subject": "@quantifier",
+            "predicate": "operand",
+            "object": "@quantifier_binder",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "binder",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c8",
+            "subject": "@quantifier_variable",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c10",
+            "subject": "@marked",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c11",
+            "subject": "@marked",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "predicate_application",
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c12",
+            "subject": "@marked_pred",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c13",
+            "subject": "@marked",
+            "predicate": "operand",
+            "object": "@marked_pred",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c14",
+            "subject": "@marked",
+            "predicate": "operand",
+            "object": "@quantifier_variable",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c15",
+            "subject": "@parcel",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c16",
+            "subject": "@parcel",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "predicate_application",
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c17",
+            "subject": "@parcel_pred",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c18",
+            "subject": "@parcel",
+            "predicate": "operand",
+            "object": "@parcel_pred",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c19",
+            "subject": "@parcel",
+            "predicate": "operand",
+            "object": "@quantifier_variable",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c20",
+            "subject": "@quantifier",
+            "predicate": "operand",
+            "object": "@parcel",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "restriction",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c21",
+            "subject": "@weighed",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c22",
+            "subject": "@weighed",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "predicate_application",
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c23",
+            "subject": "@weighed_pred",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c24",
+            "subject": "@weighed",
+            "predicate": "operand",
+            "object": "@weighed_pred",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "predicate",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c25",
+            "subject": "@weighed",
+            "predicate": "operand",
+            "object": "@quantifier_variable",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "argument",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c26",
+            "subject": "@inner_and",
+            "predicate": "in_scope",
+            "object": "@quantifier_scope",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c27",
+            "subject": "@inner_and",
+            "predicate": "operation_type",
+            "object": "",
+            "value": "conjunction",
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted"
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c28",
+            "subject": "@inner_and",
+            "predicate": "operand",
+            "object": "@marked",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "member",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c29",
+            "subject": "@inner_and",
+            "predicate": "operand",
+            "object": "@weighed",
+            "value": null,
+            "qualifiers": {
+              "scope": "@quantifier_scope",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "member",
+                "ordinal": 1
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          },
+          {
+            "handle": "@c30",
+            "subject": "@quantifier",
+            "predicate": "operand",
+            "object": "@inner_and",
+            "value": null,
+            "qualifiers": {
+              "scope": "@s",
+              "extra": {
+                "polarity": "positive",
+                "assertion_context": "asserted",
+                "port": "body",
+                "ordinal": 0
+              }
+            },
+            "assessment": {
+              "basis": {
+                "support": [
+                  {
+                    "observation": "ob_6dc113f965cea26e",
+                    "byte_start": 0,
+                    "byte_len": 44,
+                    "quote": "Każda przesyłka jest oznaczona i zważona."
+                  }
+                ]
+              },
+              "premises": {
+                "claims": []
+              }
+            }
+          }
+        ],
+        "roots": [
+          "@quantifier"
+        ],
+        "coverage": [
+          {
+            "support": [
+              {
+                "observation": "ob_6dc113f965cea26e",
+                "byte_start": 0,
+                "byte_len": 44,
+                "quote": "Każda przesyłka jest oznaczona i zważona."
+              }
+            ],
+            "status": "represented",
+            "reason": "Manual source-structure gold under the declared operation contract.",
+            "drafts": [
+              "@quantifier"
+            ]
+          }
+        ],
+        "unknowns": []
+      },
+      "expected_valid": false
+    }
+  ],
+  "frozen_sha256": "6389d020ca10911ede4ed31b36e0a416407808147fcfc794d5b7f4a8187537e7"
+}

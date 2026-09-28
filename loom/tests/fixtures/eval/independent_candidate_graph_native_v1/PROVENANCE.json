@@ -1,0 +1,14 @@
+{
+  "schema": "loom.independent_candidate_native_provenance/1",
+  "first_recorded_tests": 9,
+  "source_cases": 32,
+  "mechanical_rejection_probes": 4,
+  "files": {
+    "loom/tests/compat/candidate_graph_native_tool.cpp": "1e245ec3c4a9eaa8fff32b3e23e917c44fd12f5d69a53d6a8f760447366f5601",
+    "loom/tests/compat/test_candidate_graph_native.py": "adaeb46edadd0b18fc6a3667f8814407420c11654330b14f30ef9b295b584e43",
+    "loom/tests/fixtures/eval/independent_candidate_graph_native_v1/INITIAL_RESULTS.md": "6e101db47d5c5466cbc3838e0d0d3324c122cd82e57455d80d038f8372c5476d",
+    "loom/tests/fixtures/eval/independent_candidate_graph_native_v1/PROTOCOL.md": "22acb67a44fefb31f2552297e040448cbdc14e5a3a56758e8b032886986a6d46",
+    "loom/tests/fixtures/eval/independent_candidate_graph_native_v1/initial_report.json": "4adc4621e537fdf32b1566998c0d8966e7ad7ca3b2dcf50b0c7c55902627664f",
+    "loom/tests/fixtures/eval/independent_candidate_graph_native_v1/negative_probes.json": "880a30c0211e7df21d29b01999999863103b55c1e4647b2e839898a2145bef89"
+  }
+}

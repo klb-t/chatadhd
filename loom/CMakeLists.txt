@@ -185,14 +185,19 @@ if(LOOM_BUILD_TESTS)
   endforeach()
 
   file(GLOB LOOM_COMPAT_SOURCES CONFIGURE_DEPENDS ${LOOM_ROOT}/tests/compat/*.cpp)
+  list(FILTER LOOM_COMPAT_SOURCES EXCLUDE REGEX "/candidate_graph_native_tool\\.cpp$")
   add_executable(loom_compat_tool ${LOOM_COMPAT_SOURCES})
   target_include_directories(loom_compat_tool PRIVATE ${LOOM_ROOT}/src ${LOOM_ROOT}/tests/compat)
   target_link_libraries(loom_compat_tool PRIVATE loom_core loom_sqlite loom_warnings)
+
+  add_executable(loom_candidate_graph_native_tool ${LOOM_ROOT}/tests/compat/candidate_graph_native_tool.cpp)
+  target_link_libraries(loom_candidate_graph_native_tool PRIVATE loom_core loom_sqlite loom_warnings)
 
   find_package(Python3 COMPONENTS Interpreter)
   if(Python3_Interpreter_FOUND)
     set(_loom_compat_env
       "LOOM_COMPAT_TOOL=$<TARGET_FILE:loom_compat_tool>"
+      "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=$<TARGET_FILE:loom_candidate_graph_native_tool>"
       "PYTHONPATH=${LOOM_REPO_ROOT}"
       "PYTHONDONTWRITEBYTECODE=1")
     if(LOOM_SHARED)

@@ -13,12 +13,15 @@ class Runtime;
 namespace knowledge { struct StageContext; }
 namespace extract {
 
-inline constexpr std::string_view kKnowledgeSemanticVersion = "1";
+inline constexpr std::string_view kKnowledgeSemanticVersion = "2";
 
 // Non-secret runtime identity for knowledge run/task fingerprints. Does not
 // include API key bytes or a hash of them; availability is only a boolean.
 // extract_params is the extract stage's params, including optional semantic.
-Json semantic_fingerprint(Runtime& rt, const Json& extract_params, std::string_view llm_mode);
+// occurrence_graph_v1 additionally fingerprints the supplied pack vocabulary.
+// relation_v1 remains the default and does not require that experimental policy.
+Json semantic_fingerprint(Runtime& rt, const Json& extract_params, std::string_view llm_mode,
+                          const Json& candidate_graph_vocabulary = Json::object());
 
 // ctx.params._semantic_identity, when present, must equal the current identity.
 // Snapshot configuration once; group by unit/source/member/branch and preserve

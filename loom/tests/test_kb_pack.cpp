@@ -9,6 +9,7 @@
 #include "loom/db.h"
 #include "loom/kb.h"
 #include "loom/util/fs.h"
+#include "loom/util/sha256.h"
 #include "test_helpers.h"
 
 using namespace loom;
@@ -68,6 +69,66 @@ TEST_SUITE("kb_pack") {
     auto dir = unwrap(kb::Pack::load_dir(data_dir()));
     CHECK(builtin->files() == dir->files());
     CHECK(builtin->hash() == dir->hash());
+  }
+
+  TEST_CASE("candidate graph vocabulary is an experimental runtime policy included in the manifest hash") {
+    auto pack = unwrap(kb::Pack::load_builtin());
+    const Json& policy = pack->policy("candidate_graph");
+    REQUIRE(policy.is_object());
+    CHECK(policy["schema"] == "loom.candidate_graph_vocabulary/1");
+    CHECK(policy["status"] == "experimental_unpromoted");
+    CHECK(policy["operations"].size() == 5);
+    for (const char* operation : {"predicate_application", "conditional", "negation", "conjunction", "quantifier"}) {
+      INFO(operation);
+      CHECK(policy["operations"].contains(operation));
+    }
+    CHECK(json::get_string(policy["policy"], "promotion").rfind("none;", 0) == 0);
+    CHECK(json::get_string(policy["policy"], "inference").rfind("none;", 0) == 0);
+    bool found = false;
+    const Json manifest = pack->manifest();
+    for (const auto& entry : manifest["files"]) {
+      if (json::get_string(entry, "path") != "policy/candidate_graph.json") continue;
+      found = true;
+      CHECK(entry["schema"] == policy["schema"]);
+      CHECK(entry["sha256"] == Sha256::hex(json::canonical(policy)));
+    }
+    CHECK(found);
+    auto directory = unwrap(kb::Pack::load_dir(data_dir()));
+    CHECK(directory->policy("candidate_graph") == policy);
+  }
+
+  TEST_CASE("candidate graph pack validation rejects changed semantics and invalid resource limits") {
+    auto base = dir_docs();
+    auto rejects = [&](const std::function<void(Json&)>& edit) {
+      auto changed = base;
+      edit(changed["policy/candidate_graph.json"]);
+      const std::string message = error_of(std::move(changed));
+      INFO(message);
+      CHECK(message.find("policy/candidate_graph.json") != std::string::npos);
+    };
+    rejects([](Json& p) { p["status"] = "active"; });
+    rejects([](Json& p) { p["operations"]["negation"]["ports"]["body"]["min"] = 0; });
+    rejects([](Json& p) { p["operations"]["analogy"] = p["operations"]["conditional"]; });
+    rejects([](Json& p) { p["limits"]["max_depth"] = true; });
+    rejects([](Json& p) { p["limits"]["max_depth"] = 64; });
+    rejects([](Json& p) { p["limits"].erase("max_support"); });
+  }
+
+  TEST_CASE("candidate graph limit overlay changes pack hash without changing operation semantics") {
+    fsutil::TempDir td;
+    auto base = unwrap(kb::Pack::load_builtin());
+    Json policy = base->policy("candidate_graph");
+    policy["limits"]["max_depth"] = 16;
+    LOOM_REQUIRE_OK(fsutil::ensure_dir(td.path() / "policy"));
+    LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "policy/candidate_graph.json", json::dump(policy)));
+    auto changed = unwrap(kb::Pack::load_with_overlay(td.path()));
+    CHECK(changed->hash() != base->hash());
+    CHECK(changed->policy("candidate_graph")["limits"]["max_depth"] == 16);
+    CHECK(changed->policy("candidate_graph")["operations"] == base->policy("candidate_graph")["operations"]);
+    CHECK(changed->manifest() != base->manifest());
+    policy["operations"]["conditional"]["ports"].erase("antecedent");
+    LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "policy/candidate_graph.json", json::dump(policy)));
+    CHECK(!kb::Pack::load_with_overlay(td.path()));
   }
 
   TEST_CASE("item cue lexicon mirrors the archive classifier (run tools/gen_kb_lexicons.py)") {

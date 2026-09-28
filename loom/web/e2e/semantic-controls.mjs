@@ -28,6 +28,28 @@ try {
       provenance: { model: "mock/cheap", prompt_hash: "prompt_hash", response_hash: "response_hash" } },
     support, eval: { grounding: "exact_observation_bytes", review: "pending", logical_semantics: "unvalidated", promoted: false },
   }));
+  const graphEntities = [
+    { handle: "@scope", kind: "scope", label: "assertion", attrs: { scope_type: "assertion", assertion_context: "asserted" }, support },
+    { handle: "@app", kind: "expression_occurrence", label: "Keep scope", attrs: {}, support },
+    { handle: "@predicate", kind: "term_occurrence", label: "keeps", attrs: { term_type: "predicate", symbol: "keeps" }, support },
+    { handle: "@argument", kind: "term_occurrence", label: "scope", attrs: { term_type: "constant", symbol: "scope" }, support },
+  ];
+  const graphClaims = [
+    { subject: "@app", predicate: "operation_type", object: "", value: "predicate_application" },
+    { subject: "@app", predicate: "operand", object: "@predicate", value: null, port: "predicate" },
+    { subject: "@app", predicate: "operand", object: "@argument", value: null, port: "argument" },
+    ...["@app", "@predicate", "@argument"].map((subject) => ({ subject, predicate: "in_scope", object: "@scope", value: null })),
+  ].map(({ port, ...claim }, i) => ({ ...claim, handle: `@c${i}`, qualifiers: { scope: "@scope", extra: { polarity: "positive", assertion_context: "asserted", ...(port ? { port, ordinal: 0 } : {}) } },
+    assessment: { basis: { support }, premises: { claims: [] } } }));
+  const graphCandidate = { id: "ca_graph", kind: "semantic_structure", status: "candidate", support,
+    payload: { representation: "occurrence_graph_v1", run_id: "kr_graph", packet_hash: "graph_packet_hash",
+      source_packet: { schema: "loom.source_packet/1", snapshot_id: "packet_graph", observations: [{ id: "obs_a", unit: "unit_a", text: support[0].quote, locator: support[0].locator }], entities: [], claims: [] },
+      proposal: { bundle: { schema: "loom.candidate_graph/1", packet_id: "packet_graph", entity_drafts: graphEntities, claim_drafts: graphClaims,
+        roots: ["@app"], coverage: [{ support, status: "represented", drafts: ["@app"], reason: "proposed occurrence structure" }],
+        unknowns: [{ support, reason: "scope boundary needs review" }] },
+      validation: { valid: true, status: "valid", errors: [], drafts: { entities: graphEntities, claims: graphClaims }, coverage: { represented_bytes: 22 }, packet_hash: "graph_packet_hash" } },
+      provenance: { model: "mock/cheap", prompt_hash: "graph_prompt_hash", response_hash: "graph_response_hash" } },
+    eval: { grounding: "exact_observation_bytes", review: "pending", logical_semantics: "unvalidated", promoted: false } };
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.route("**/*", async (route) => {
     const request = route.request(), url = new URL(request.url());
@@ -42,15 +64,18 @@ try {
     else if (url.pathname === "/api/knowledge/runs") result = runs;
     else if (url.pathname === "/api/knowledge/query") {
       if (body.what === "candidates") {
-        const items = candidates.slice(body.offset, body.offset + body.limit);
-        result = { run: body.run, items, total: candidates.length, limit: body.limit, offset: body.offset,
-          has_more: body.offset + items.length < candidates.length, interpretation: "unpromoted_candidates_not_canonical_claims" };
+        const source = body.run === "kr_graph" ? [graphCandidate] : candidates;
+        const items = source.slice(body.offset, body.offset + body.limit);
+        result = { run: body.run, items, total: source.length, limit: body.limit, offset: body.offset,
+          has_more: body.offset + items.length < source.length, interpretation: "unpromoted_candidates_not_canonical_claims" };
       } else result = { run: body.run, items: [] };
     } else if (url.pathname === "/api/knowledge/run") {
-      const on = body.llm === "auto", run = on ? "kr_auto" : "kr_off";
-      const semantic = on ? { status: "partial", accepted: 2, rejected: 1, failed: 0, requests: 2, cache_hits: 0, input_bytes: 800,
+      const on = body.llm === "auto", graph = on && body.stage_params.extract.semantic.representation === "occurrence_graph_v1";
+      const run = graph ? "kr_graph" : on ? "kr_auto" : "kr_off";
+      const semantic = graph ? { representation: "occurrence_graph_v1", status: "completed", accepted_bundles: 1, entity_drafts: 4, claim_drafts: 6, abstentions: 1,
+        rejected: 0, failed: 0, requests: 1, cache_hits: 0, input_bytes: 1200, omitted_observations: 0, candidate_ids: ["ca_graph"], rejections: [], skipped: [] } : on ? { representation: "relation_v1", status: "partial", accepted: 2, rejected: 1, failed: 0, requests: 2, cache_hits: 0, input_bytes: 800,
         candidate_ids: ["ca_0", "ca_1"], rejections: [{ chunk: "chunk_a", reason: "quote_mismatch" }],
-        omitted_observations: 1, skipped: [{ observation: "obs_omitted", reason: "input_budget" }] } : { status: "off", accepted: 0, rejected: 0, requests: 0, failed: 0, cache_hits: 0, input_bytes: 0, candidate_ids: [], rejections: [], skipped: [] };
+        omitted_observations: 1, skipped: [{ observation: "obs_omitted", reason: "input_budget" }] } : { representation: "relation_v1", status: "off", accepted: 0, rejected: 0, requests: 0, failed: 0, cache_hits: 0, input_bytes: 0, candidate_ids: [], rejections: [], skipped: [] };
       result = { status: "done", error: "", run, stages: [{ stage: "extract", cache_hit: on, stats: { semantic } }] };
       runs.unshift({ id: run, status: "done" });
     } else { unexpected.push(`${request.method()} ${url.pathname}`); result = { error: { code: "unexpected_mock_request", message: url.pathname } }; }
@@ -72,6 +97,8 @@ try {
   assert.equal(off.stage_params.extract, undefined);
 
   await toggle.check();
+  const representation = workbench.getByLabel("Semantic candidate representation", { exact: true });
+  assert.equal(await representation.inputValue(), "relation_v1");
   await workbench.getByText("No semantic model configured.", { exact: false }).waitFor();
   config = { semantic_model: "mock/cheap", semantic_analysis: true };
   await workbench.getByRole("button", { name: "Refresh model settings" }).click();
@@ -92,7 +119,7 @@ try {
   const auto = calls.filter((call) => call.path === "/api/knowledge/run").at(-1).body;
   assert.equal(auto.llm, "auto");
   assert.deepEqual(auto.stage_params.extract.semantic, { max_requests: 2, max_observations: 6, max_chunk_bytes: 4096,
-    max_input_bytes: 8192, max_output_tokens: 512, max_proposals: 8, max_response_bytes: 32768, timeout_ms: 5000 });
+    max_input_bytes: 8192, max_output_tokens: 512, max_proposals: 8, max_response_bytes: 32768, timeout_ms: 5000, representation: "relation_v1" });
   assert.match(await summary.innerText(), /Accepted proposals: 2.*Stored candidate IDs: 2.*Rejected proposals: 1/s);
   assert.match(await summary.innerText(), /Skipped entries: 1/);
   assert.match(await summary.innerText(), /Omitted observations: 1/);
@@ -116,12 +143,35 @@ try {
   assert.equal(await pane.getByLabel("Previous candidate page", { exact: true }).isEnabled(), true);
   const candidateQuery = calls.filter((call) => call.path === "/api/knowledge/query" && call.body.what === "candidates").at(-1).body;
   assert.deepEqual(candidateQuery, { run: "kr_auto", kind: "semantic_structure", limit: 25, offset: 25, what: "candidates" });
+
+  await representation.selectOption("occurrence_graph_v1");
+  await toggle.uncheck();
+  await toggle.check();
+  assert.equal(await representation.inputValue(), "occurrence_graph_v1", "choice remains in run form state while model use toggles");
+  await analyze.click();
+  await summary.getByText("Accepted graph bundles: 1", { exact: false }).waitFor();
+  assert.match(await summary.innerText(), /Entity drafts: 4.*Claim drafts: 6.*Abstentions: 1/s);
+  assert.doesNotMatch(await summary.innerText(), /Accepted proposals:/);
+  const graphRun = calls.filter((call) => call.path === "/api/knowledge/run").at(-1).body;
+  assert.deepEqual(graphRun.stage_params.extract.semantic, { ...auto.stage_params.extract.semantic, representation: "occurrence_graph_v1" });
+  await pane.getByText("1 shown · 1 matching candidates", { exact: true }).waitFor();
+  await pane.getByRole("button", { name: /Occurrence graph · 4 entity drafts · 6 claim drafts/ }).click();
+  const structure = inspector.getByTestId("kb-candidate-structure");
+  await structure.waitFor();
+  assert.match(await structure.innerText(), /scope boundary needs review/);
+  assert.match(await structure.innerText(), /Source interpretation and inference remain unreviewed/);
+  await structure.getByText("Local entity drafts (4)", { exact: true }).click();
+  await structure.getByText("Local claim drafts (6)", { exact: true }).click();
+  assert.match(await structure.innerText(), /@app.*operation_type/s);
+  assert.match(await structure.innerText(), /obs_a · bytes 0 \+ 22/);
+  assert.equal(await structure.locator("blockquote b").count(), 0);
+  assert.match(await inspector.innerText(), /Unpromoted candidate interpretation/);
   assert.equal(await workbench.getByTestId("kb-pane-claims").count(), 1);
   assert.equal(await workbench.getByTestId("kb-pane-graph").count(), 1);
   assert.equal(calls.filter((call) => /judge|promot|chat/.test(call.path)).length, 0);
   assert.deepEqual(unexpected, []);
   assert.deepEqual(pageErrors, []);
-  console.log("[semantic-controls] PASS: default off, explicit bounded auto, missing-model message, result diagnostics, candidate provenance/pagination, retained views; all API calls mocked");
+  console.log("[semantic-controls] PASS: default off/relation mode, bounded auto, experimental graph opt-in/counts/drafts/unknowns/source links, candidate provenance/pagination, retained views; all API calls mocked");
 } finally {
   if (browser) await browser.close();
   await new Promise((resolve) => server.httpServer.close(resolve));

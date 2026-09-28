@@ -529,6 +529,7 @@ Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& requested, const P
   if (!run_lock.owns_lock()) return Error(Errc::Busy, "a knowledge run is already in progress");
   // Native callers construct KnowledgeConfig directly; validate them too.
   LOOM_TRY_ASSIGN(auto cfg, KnowledgeConfig::from_json(requested.to_json()));
+  LOOM_TRY_ASSIGN(auto pk, pack());
   if (cfg.llm == "auto") {
     // The model/provider and its availability change extraction inputs even
     // when the archive bytes and user-facing pipeline config are identical.
@@ -536,9 +537,8 @@ Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& requested, const P
     // tasks cannot silently use a different model under the old cache key.
     auto& params = cfg.stage_params["extract"];
     if (params.is_null()) params = Json::object();
-    params["_semantic_identity"] = extract::semantic_fingerprint(rt_, params, cfg.llm);
+    params["_semantic_identity"] = extract::semantic_fingerprint(rt_, params, cfg.llm, pk->policy("candidate_graph"));
   }
-  LOOM_TRY_ASSIGN(auto pk, pack());
   {
     std::lock_guard lk(st_->mu);
     st_->progress = progress;

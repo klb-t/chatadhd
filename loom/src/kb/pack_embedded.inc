@@ -89,6 +89,10 @@ const char* const kPackChunks0[] = {
    "schema": "loom.kb.evidence_encoding/1"
   },
   {
+   "path": "policy/candidate_graph.json",
+   "schema": "loom.candidate_graph_vocabulary/1"
+  },
+  {
    "path": "goals/goal_types.json",
    "schema": "loom.kb.goal_types/1"
   },
@@ -12070,6 +12074,37 @@ const char* const kPackChunks20[] = {
     nullptr};
 const char* const kPackChunks21[] = {
     R"LOOMKB({
+  "schema": "loom.candidate_graph_vocabulary/1",
+  "status": "experimental_unpromoted",
+  "entity_kinds": ["expression_occurrence", "term_occurrence", "binder", "scope"],
+  "term_types": ["constant", "variable", "predicate"],
+  "scope_types": ["assertion", "quantifier", "quotation", "hypothesis"],
+  "assertion_contexts": ["asserted", "hypothetical", "quoted", "unknown"],
+  "polarities": ["positive", "negative", "unknown"],
+  "predicates": ["operation_type", "quantifier_kind", "operand", "in_scope", "scope_parent", "introduces_scope", "bound_to", "denotes"],
+  "operations": {
+    "predicate_application": {"ports": {"predicate": {"min": 1, "max": 1, "target": "predicate"}, "argument": {"min": 0, "max": 64, "target": "term"}}},
+    "conditional": {"ports": {"antecedent": {"min": 1, "max": 1, "target": "expression_occurrence"}, "consequent": {"min": 1, "max": 1, "target": "expression_occurrence"}}},
+    "negation": {"ports": {"body": {"min": 1, "max": 1, "target": "expression_occurrence"}}},
+    "conjunction": {"ports": {"member": {"min": 2, "max": 64, "target": "expression_occurrence"}}},
+    "quantifier": {"ports": {"binder": {"min": 1, "max": 1, "target": "binder"}, "body": {"min": 1, "max": 1, "target": "expression_occurrence"}, "restriction": {"min": 0, "max": 1, "target": "expression_occurrence"}}}
+  },
+  "quantifier_kinds": ["forall", "exists"],
+  "coverage_statuses": ["represented", "partial", "unsupported", "ambiguous", "omitted"],
+  "limits": {"max_packet_bytes": 1048576, "max_bundle_bytes": 262144, "max_observations": 128, "max_source_bytes": 262144, "max_entities": 256, "max_claims": 1024, "max_support": 16, "max_depth": 32},
+  "policy": {
+    "source_offsets": "UTF-8 bytes within exact Observation.text",
+    "ordinal": "zero-based contiguous within each port; fixed ports require ordinal zero",
+    "unknown": "located coverage and unknown records only; never a wildcard operand",
+    "conjunction_order": "source representation order retained; no claim of truth inequivalence when reordered",
+    "promotion": "none; partial drafts have no evidence class, calibrated confidence or canonical candidate status",
+    "inference": "none; structural validation is not source-interpretation or truth validation"
+  }
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks22[] = {
+    R"LOOMKB({
  "schema": "loom.kb.goal_types/1",
  "description": "Goal types (LOOM_CONCEPTUAL_MODEL §4): what a prompt or task wants. Each declares the relevant roles (most important first), principle levels and evidence classes, the default resolution per role ('*' = any other role), and the token-budget split over the three bands (stable prefix -> project context -> goal tail; shares sum to 1). The context engine types a prompt by its cues and targets (R12).",
  "goal_types": [
@@ -12462,7 +12497,7 @@ const char* const kPackChunks21[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks22[] = {
+const char* const kPackChunks23[] = {
     R"LOOMKB({
  "schema": "loom.kb.anchoring/1",
  "description": "The universal meta-model (LOOM_CONCEPTUAL_MODEL §3.4) as the codomain of every anchoring morphism. Each domain kind anchors on its role (the 'role' of the kind, one anchoring morphism per kind, derived in code: model::anchoring_morphisms). Each relation between domain kinds anchors on a role relation: relation_map[rel] = R, and the roles of its two ends must be in R.from and R.to. A domain relation not listed here, or linking roles R does not link, is a pack error.",
@@ -12868,7 +12903,7 @@ const char* const kPackChunks22[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks23[] = {
+const char* const kPackChunks24[] = {
     R"LOOMKB({
  "schema": "loom.kb.morphisms/1",
  "description": "Transfer morphisms (LOOM_CONCEPTUAL_MODEL §3.6): structure-preserving maps between domain kinds of two paradigms that anchor on the same universal role. When one project fills a role that an analogous project leaves empty, the engine may infer (evidence inferred, depth 1, never chained) that the target should have it; the expected property says what is vouched for. Anchoring morphisms are not listed: they are one per domain kind, derived from its role.",
@@ -13448,7 +13483,7 @@ const char* const kPackChunks23[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks24[] = {
+const char* const kPackChunks25[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "software_app",
@@ -14228,7 +14263,7 @@ const char* const kPackChunks24[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks25[] = {
+const char* const kPackChunks26[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "film",
@@ -15090,7 +15125,7 @@ const char* const kPackChunks25[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks26[] = {
+const char* const kPackChunks27[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "music",
@@ -15727,7 +15762,7 @@ const char* const kPackChunks26[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks27[] = {
+const char* const kPackChunks28[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "legal_case",
@@ -16446,7 +16481,7 @@ const char* const kPackChunks27[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks28[] = {
+const char* const kPackChunks29[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "research",
@@ -16920,7 +16955,7 @@ const char* const kPackChunks28[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks29[] = {
+const char* const kPackChunks30[] = {
     R"LOOMKB({
  "schema": "loom.kb.facet/1",
  "id": "multiplatform",
@@ -17077,7 +17112,7 @@ const char* const kPackChunks29[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks30[] = {
+const char* const kPackChunks31[] = {
     R"LOOMKB({
  "schema": "loom.kb.facet/1",
  "id": "agent",
@@ -17298,7 +17333,7 @@ const char* const kPackChunks30[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks31[] = {
+const char* const kPackChunks32[] = {
     R"LOOMKB({
  "schema": "loom.kb.facet/1",
  "id": "staged_transformation",
@@ -17575,7 +17610,7 @@ const char* const kPackChunks31[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks32[] = {
+const char* const kPackChunks33[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "conversation",
@@ -17696,7 +17731,7 @@ const char* const kPackChunks32[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks33[] = {
+const char* const kPackChunks34[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "brainstorm",
@@ -17882,7 +17917,7 @@ const char* const kPackChunks33[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks34[] = {
+const char* const kPackChunks35[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "specification",
@@ -17987,7 +18022,7 @@ const char* const kPackChunks34[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks35[] = {
+const char* const kPackChunks36[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "codebase",
@@ -18096,7 +18131,7 @@ const char* const kPackChunks35[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks36[] = {
+const char* const kPackChunks37[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "commit",
@@ -18183,7 +18218,7 @@ const char* const kPackChunks36[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks37[] = {
+const char* const kPackChunks38[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "email",
@@ -18287,7 +18322,7 @@ const char* const kPackChunks37[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks38[] = {
+const char* const kPackChunks39[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "recording_transcript",
@@ -18382,7 +18417,7 @@ const char* const kPackChunks38[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks39[] = {
+const char* const kPackChunks40[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "screenplay",
@@ -18479,7 +18514,7 @@ const char* const kPackChunks39[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks40[] = {
+const char* const kPackChunks41[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "pleading",
@@ -18597,25 +18632,26 @@ const EmbeddedPackFile kEmbeddedPack[] = {
     {"policy/selection_rules.json", kPackChunks18},
     {"policy/calibration.json", kPackChunks19},
     {"policy/evidence_encoding.json", kPackChunks20},
-    {"goals/goal_types.json", kPackChunks21},
-    {"morphisms/anchoring.json", kPackChunks22},
-    {"morphisms/transfer.json", kPackChunks23},
-    {"project_kinds/software_app.json", kPackChunks24},
-    {"project_kinds/film.json", kPackChunks25},
-    {"project_kinds/music.json", kPackChunks26},
-    {"project_kinds/legal_case.json", kPackChunks27},
-    {"project_kinds/research.json", kPackChunks28},
-    {"facets/multiplatform.json", kPackChunks29},
-    {"facets/agent.json", kPackChunks30},
-    {"facets/staged_transformation.json", kPackChunks31},
-    {"artifact_types/conversation.json", kPackChunks32},
-    {"artifact_types/brainstorm.json", kPackChunks33},
-    {"artifact_types/specification.json", kPackChunks34},
-    {"artifact_types/codebase.json", kPackChunks35},
-    {"artifact_types/commit.json", kPackChunks36},
-    {"artifact_types/email.json", kPackChunks37},
-    {"artifact_types/recording_transcript.json", kPackChunks38},
-    {"artifact_types/screenplay.json", kPackChunks39},
-    {"artifact_types/pleading.json", kPackChunks40},
+    {"policy/candidate_graph.json", kPackChunks21},
+    {"goals/goal_types.json", kPackChunks22},
+    {"morphisms/anchoring.json", kPackChunks23},
+    {"morphisms/transfer.json", kPackChunks24},
+    {"project_kinds/software_app.json", kPackChunks25},
+    {"project_kinds/film.json", kPackChunks26},
+    {"project_kinds/music.json", kPackChunks27},
+    {"project_kinds/legal_case.json", kPackChunks28},
+    {"project_kinds/research.json", kPackChunks29},
+    {"facets/multiplatform.json", kPackChunks30},
+    {"facets/agent.json", kPackChunks31},
+    {"facets/staged_transformation.json", kPackChunks32},
+    {"artifact_types/conversation.json", kPackChunks33},
+    {"artifact_types/brainstorm.json", kPackChunks34},
+    {"artifact_types/specification.json", kPackChunks35},
+    {"artifact_types/codebase.json", kPackChunks36},
+    {"artifact_types/commit.json", kPackChunks37},
+    {"artifact_types/email.json", kPackChunks38},
+    {"artifact_types/recording_transcript.json", kPackChunks39},
+    {"artifact_types/screenplay.json", kPackChunks40},
+    {"artifact_types/pleading.json", kPackChunks41},
 };
 // NOLINTEND

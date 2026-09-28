@@ -5,6 +5,11 @@ Measured checkpoints: `docs/research/GRAPH_NATIVE_RESULTS_2026-09-28.md`.
 The owner also recalled the inexpensive separately configured semantic model.
 Read `docs/research/SEMANTIC_MODEL_FLOW_2026-09-28.md` for the actual native
 integration, request budgets, candidate boundary and remaining semantic gaps.
+The optional compositional native mode is implemented and verified in
+`docs/research/SEMANTIC_OCCURRENCE_GRAPH_2026-09-28.md`. Latest full CTest is
+71/72; the unchanged catalog recall gate remains 13/45. Independent native
+validator parity and its limits are recorded under
+`loom/tests/fixtures/eval/independent_candidate_graph_native_v1/`.
 The owner clarified that argument/thought structure belongs in the same knowledge
 graph; compare derived subgraph projections without another authoritative store.
 

@@ -165,6 +165,7 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
   const [result, setResult] = useState<KnowledgeRecord | null>(null);
   const [error, setError] = useState("");
   const [useModel, setUseModel] = useState(false);
+  const [representation, setRepresentation] = useState("relation_v1");
   const [modelConfig, setModelConfig] = useState<KnowledgeRecord | null>(null);
   const [modelError, setModelError] = useState("");
   const [semanticBudget, setSemanticBudget] = useState<Record<string, number>>({
@@ -197,7 +198,7 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
     setRunning(true); setError(""); setResult(null);
     try {
       const outcome = await knowledge.run({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), priors, llm: useModel ? "auto" : "off",
-        stage_params: { catalog: { import: { mode: full ? "full" : "selective" } }, ...(useModel ? { extract: { semantic: semanticBudget } } : {}) } });
+        stage_params: { catalog: { import: { mode: full ? "full" : "selective" } }, ...(useModel ? { extract: { semantic: { ...semanticBudget, representation } } } : {}) } });
       setResult(outcome);
       if (outcome.status !== "done") setError(`Analysis ${displayText(outcome.status) || "did not complete"}: ${displayText(outcome.error) || "inspect the stage results"}`);
       onDone(displayText(outcome.run));
@@ -214,6 +215,8 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
         <p role="status">{modelConfig ? semanticModel ? `Semantic model: ${semanticModel}` : "No semantic model configured. Set Semantic model in Settings, then refresh here." : modelError ? `Model settings unavailable: ${modelError}` : "Loading model settings…"}</p>
         {modelConfig?.semantic_analysis === false && <p className="kb-warning">Semantic analysis is disabled in Settings. The engine will report model proposals as unavailable until it is enabled.</p>}
         <button disabled={running} onClick={() => { void loadModelConfig(); }}>Refresh model settings</button>
+        <label>Candidate representation<select aria-label="Semantic candidate representation" value={representation} disabled={running} onChange={(event) => setRepresentation(event.target.value)}><option value="relation_v1">Relation proposals</option><option value="occurrence_graph_v1">Occurrence graph proposals (experimental)</option></select></label>
+        {representation === "occurrence_graph_v1" && <p className="kb-muted">Proposes local entities, claim relationships, scopes and explicit unknowns. Draft checks verify the supplied structure and source spans; interpretation and inference remain unreviewed. Existing views stay open.</p>}
         <fieldset disabled={running}><legend>Semantic model budget</legend>
           <div className="kb-pane-controls">{budgetFields.slice(0, 3).map(({ key, label, min, max }) => <label key={key}>{label} ({min}–{max})<input aria-label={label} type="number" min={min} max={max} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div>
           <details><summary>More semantic limits</summary><div className="kb-pane-controls">{budgetFields.slice(3).map(({ key, label, min, max }) => <label key={key}>{label} ({min}–{max})<input aria-label={label} type="number" min={min} max={max} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div></details>
@@ -229,7 +232,9 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
         <p role="status">Analysis: {displayText(result.status) || "unknown"} · Semantic proposals: {hasSemantic ? displayText(semantic.status) || "status not reported" : "no semantic result reported"}{extractStage?.cache_hit ? " · extract result reused" : ""}</p>
         {!!semantic.reason && <p className="kb-warning">{displayText(semantic.reason)}</p>}
         {hasSemantic && <>
-          <p>Accepted proposals: {displayText(semantic.accepted) || "not reported"} · Stored candidate IDs: {asArray(semantic.candidate_ids).length} · Rejected proposals: {displayText(semantic.rejected) || "not reported"}</p>
+          {(semantic.representation || asRecord(semantic.identity).representation) === "occurrence_graph_v1" ?
+            <p>Accepted graph bundles: {displayText(semantic.accepted_bundles) || "not reported"} · Entity drafts: {displayText(semantic.entity_drafts) || "not reported"} · Claim drafts: {displayText(semantic.claim_drafts) || "not reported"} · Abstentions: {displayText(semantic.abstentions) || "not reported"} · Stored candidate IDs: {asArray(semantic.candidate_ids).length} · Rejected proposals: {displayText(semantic.rejected) || "not reported"}</p> :
+            <p>Accepted proposals: {displayText(semantic.accepted) || "not reported"} · Stored candidate IDs: {asArray(semantic.candidate_ids).length} · Rejected proposals: {displayText(semantic.rejected) || "not reported"}</p>}
           <p>Model requests: {displayText(semantic.requests) || "not reported"} · Cached responses: {displayText(semantic.cache_hits) || "not reported"} · Input bytes: {displayText(semantic.input_bytes) || "not reported"} · Failed requests: {displayText(semantic.failed) || "not reported"} · Omitted observations: {displayText(semantic.omitted_observations) || "not reported"} · Skipped entries: {asArray(semantic.skipped).length}</p>
           <p className="kb-muted">Candidate proposals are unpromoted interpretations. Counts do not establish extraction quality.</p>
           {!!asArray(semantic.rejections).length && <JsonDetail label="Rejected proposals and reasons" value={semantic.rejections} />}
@@ -275,10 +280,11 @@ function CandidatePane({ knowledge, run, refresh, onSelect, entities }: {
     {error && <p className="kb-error" role="alert">{error}</p>}
     <div className="kb-count" role="status">{busy ? "Loading candidate proposals…" : `${rows.length} shown · ${total} matching candidates`}</div>
     <div className="kb-records">{rows.map((row) => {
-      const proposal = asRecord(asRecord(row.payload).proposal);
+      const payload = asRecord(row.payload), proposal = asRecord(payload.proposal), bundle = asRecord(proposal.bundle);
+      const graphProposal = payload.representation === "occurrence_graph_v1";
       return <button className="kb-record" key={idOf(row)} onClick={() => onSelect("candidates", row)}>
-        <strong>{labelOf(asRecord(proposal.claim), entities) || idOf(row)}</strong>
-        <span className="kb-muted">{displayText(proposal.kind || row.kind)} · unpromoted candidate</span><Evidence row={row} />
+        <strong>{graphProposal ? `Occurrence graph · ${asArray(bundle.entity_drafts).length} entity drafts · ${asArray(bundle.claim_drafts).length} claim drafts` : labelOf(asRecord(proposal.claim), entities) || idOf(row)}</strong>
+        <span className="kb-muted">{graphProposal ? "occurrence_graph_v1 · experimental" : displayText(proposal.kind || row.kind)} · unpromoted candidate</span><Evidence row={row} />
       </button>;
     })}{!busy && !rows.length && <p className="empty-state">{run ? "No matching candidate proposals in this run." : "Choose a knowledge run to inspect its proposals."}</p>}</div>
     <div className="kb-actions"><button aria-label="Previous candidate page" disabled={busy || !offset} onClick={() => setOffset((value) => Math.max(0, value - pageSize))}>Previous</button><span className="kb-muted">{offset + (rows.length ? 1 : 0)}–{offset + rows.length}</span><button aria-label="Next candidate page" disabled={busy || !hasMore} onClick={() => setOffset((value) => value + pageSize)}>Next</button></div>
@@ -382,6 +388,34 @@ function KnowledgeGraph({ data, focus, onSelect }: { data: Dataset; focus: strin
   </>;
 }
 
+function CandidateStructure({ payload }: { payload: KnowledgeRecord }) {
+  const proposal = asRecord(payload.proposal), bundle = asRecord(proposal.bundle), validation = asRecord(proposal.validation);
+  const entities = asArray(bundle.entity_drafts).map(asRecord), claims = asArray(bundle.claim_drafts).map(asRecord);
+  const support = (values: unknown) => <div className="kb-support">{asArray(values).map((value, index) => {
+    const span = asRecord(value);
+    return <div key={index}><blockquote>{displayText(span.quote) || "No quote supplied"}</blockquote><code className="kb-id">{displayText(span.observation)} · bytes {displayText(span.byte_start)} + {displayText(span.byte_len)}</code></div>;
+  })}</div>;
+  return <div data-testid="kb-candidate-structure">
+    <p>Experimental occurrence graph · {entities.length} entity drafts · {claims.length} claim drafts</p>
+    <p className="kb-muted">Draft format checks: {validation.valid === true ? "passed" : validation.valid === false ? "failed" : "not reported"}. Source interpretation and inference remain unreviewed.</p>
+    <details className="kb-detail"><summary>Local entity drafts ({entities.length})</summary>{entities.map((entity, index) => <div key={displayText(entity.handle) || index}>
+      <h4>{displayText(entity.label || entity.handle)} · {displayText(entity.kind)}</h4><code className="kb-id">{displayText(entity.handle)}</code>
+      <JsonDetail label="Draft attributes" value={entity.attrs} />{support(entity.support)}
+    </div>)}</details>
+    <details className="kb-detail"><summary>Local claim drafts ({claims.length})</summary>{claims.map((claim, index) => <div key={displayText(claim.handle) || index}>
+      <h4>{displayText(claim.subject)} · {displayText(claim.predicate)} · {displayText(claim.object || claim.value)}</h4>
+      <code className="kb-id">{displayText(claim.handle)}</code>{support(asRecord(asRecord(claim.assessment).basis).support)}
+      <JsonDetail label="Draft qualifiers and old claim premises" value={{ qualifiers: claim.qualifiers, premises: asRecord(claim.assessment).premises }} />
+    </div>)}</details>
+    <JsonDetail label="Draft roots" value={bundle.roots} />
+    <JsonDetail label="Coverage and unsupported spans" value={bundle.coverage} open />
+    <JsonDetail label="Unknowns in proposed structure" value={bundle.unknowns} open />
+    <JsonDetail label="Structure check report" value={validation} />
+    <JsonDetail label="Candidate source packet" value={{ packet_hash: payload.packet_hash, source_packet: payload.source_packet }} />
+    <JsonDetail label="Complete proposed bundle" value={bundle} />
+  </div>;
+}
+
 function Inspector({ selection, entities }: { selection: Selection | null; entities: Map<string, KnowledgeRecord> }) {
   const row = selection?.record;
   const assessment = row ? evidenceOf(row) : {};
@@ -389,19 +423,20 @@ function Inspector({ selection, entities }: { selection: Selection | null; entit
   const candidatePayload = asRecord(row?.payload);
   const proposal = asRecord(candidatePayload.proposal);
   const draft = asRecord(proposal.claim);
+  const graphProposal = candidatePayload.representation === "occurrence_graph_v1";
   return <aside id="knowledge-inspector" className="kb-inspector" aria-label="Knowledge inspector" data-testid="kb-inspector"><h3>Selection & provenance</h3>
     {!row ? <p className="kb-muted">Select an entity, claim, principle or catalog unit in any view. The inspector retains all fields, including uncertainty and missing evidence.</p> : <>
       <h4>{labelOf(row, entities)}</h4><code className="kb-id">{idOf(row)}</code><Evidence row={row} />
       {selection?.kind === "candidates" && <>
         <p className="kb-warning">Unpromoted candidate interpretation · review: {displayText(asRecord(row.eval).review) || "not reported"} · logical semantics: {displayText(asRecord(row.eval).logical_semantics) || "not reported"}</p>
-        <JsonDetail label="Draft claim" value={draft} open />
+        {graphProposal ? <CandidateStructure payload={candidatePayload} /> : <JsonDetail label="Draft claim" value={draft} open />}
         <div className="kb-support"><h4>Located source support</h4>
           {asArray(row.support).map((value, index) => { const support = asRecord(value); return <div key={index}><blockquote>{displayText(support.quote) || "No quote supplied"}</blockquote><code className="kb-id">{displayText(support.observation)}</code><JsonDetail label="Source locator and quote byte span" value={{ locator: support.locator, byte_start: support.byte_start, byte_len: support.byte_len, observation_text_hash: support.observation_text_hash }} /></div>; })}
           {!asArray(row.support).length && <p className="kb-muted">No source support recorded.</p>}
         </div>
         <JsonDetail label="Model and prompt provenance" value={candidatePayload.provenance} open />
         <JsonDetail label="Source group" value={candidatePayload.group} />
-        <JsonDetail label="Unknowns and premises" value={{ unknowns: proposal.unknowns, premises: asRecord(draft.assessment).premises }} />
+        {!graphProposal && <JsonDetail label="Unknowns and premises" value={{ unknowns: proposal.unknowns, premises: asRecord(draft.assessment).premises }} />}
         <JsonDetail label="Candidate checks and review status" value={row.eval} />
       </>}
       {!!row.assessment && <>
