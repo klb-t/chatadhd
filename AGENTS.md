@@ -1,5 +1,12 @@
 # ChatADHD / Loom continuation
 
+**Local build recovery:** source/dependency restoration and portable CMake/Ninja
+setup are complete; CMake configuration passed and a real native build is running.
+See `docs/research/LOCAL_BUILD_RECOVERY_2026-09-28.md` (repo-root path). A reviewed
+client-only encrypted credential handoff is available; private session material
+is outside Git and must never be committed or printed. No real key is received.
+`docs/research/local-execution-attention.json` records the remaining user action.
+
 **Local execution is now the default:** owner said to leave the old Actions
 run alone and continue here. All four research suites pass locally: 387/387
 (350 structure + 10 independent + 12 graph-native + 15 candidate protocol).

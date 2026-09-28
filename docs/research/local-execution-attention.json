@@ -1,0 +1,17 @@
+{
+  "schema": "loom.local_execution_attention/1",
+  "needs_user_action": true,
+  "reason": "live_model_access",
+  "network_status": "public_openrouter_access_unconfirmed",
+  "credential_status": "not_received",
+  "public_form_ready": true,
+  "public_form_file_name": "OpenRouter-key-handoff.html",
+  "public_form_library_file_id": "libfile_8bc928c6e13c81918f6b01c8adbfd76c",
+  "session_id": "da68994f67aaece0573cdd3584953bad",
+  "expires_at": 1790701056,
+  "actions_pl": [
+    "Jeśli przełącznik jest dostępny: Ustawienia ChatGPT → Kontrola danych → Work network access → Allow public internet access.",
+    "Otwórz OpenRouter-key-handoff.html z tej rozmowy; wklej klucz wyłącznie do formularza, wybierz Zaszyfruj i pobierz, a następnie dołącz otrzymany zaszyfrowany JSON do rozmowy."
+  ],
+  "notification_instruction": "Notify once only; disable the watch after delivering. Do not request plaintext key or run experiments."
+}
