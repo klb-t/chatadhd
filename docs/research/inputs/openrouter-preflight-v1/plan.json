@@ -1,0 +1,301 @@
+{
+  "schema": "loom.openrouter_plan/1",
+  "runner_version": "openrouter-runner/1",
+  "manifest_hash": "93f97d72ea470e57327f0b4aa111e265f69be486eb9ff8cf34115084fc0eed5b",
+  "experiment_id": "live-structure-dev-v1",
+  "budget_usd": "2",
+  "total_reservation_usd": "0.2978870",
+  "request_count": 32,
+  "requests": [
+    {
+      "id": "r10555a1566bce86b80f80ded",
+      "request_hash": "a2c364dcc7716499a82761232cdd7a9672d7a4e91aba8416e269cf809a7f14cd",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.015542",
+      "input_token_allowance": 6087,
+      "minimum_reservation_usd": "0.015542"
+    },
+    {
+      "id": "r52dd2a6f8a4ae9585744d75d",
+      "request_hash": "6fabe80690b90f019c67a534ccd1136c918acb8a9c74813f4ec7b99f662546e4",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.003068",
+      "input_token_allowance": 6104,
+      "minimum_reservation_usd": "0.003068"
+    },
+    {
+      "id": "r1fc9eb1f4226c691abcc2a9a",
+      "request_hash": "7e5a0a7f7a99f4e6300d8ed3f1c0143ca0ca6b7dbc88f126b5d7af259e5506ae",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155416",
+      "input_token_allowance": 6086,
+      "minimum_reservation_usd": "0.0155416"
+    },
+    {
+      "id": "r3e8dac2ac8b5e5b75ad1c4d1",
+      "request_hash": "407e16be94be6a8ad0cba239c2f7b5a6555e1afe9db74d2ad94fc276fc1e9ddb",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030679",
+      "input_token_allowance": 6103,
+      "minimum_reservation_usd": "0.0030679"
+    },
+    {
+      "id": "r4a82faa2b6af4e57d770dd71",
+      "request_hash": "fb646ab4ea6e906d39ceaf01705b6a75497f3048b6a5bc95c7dc9c942c33eca3",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.015544",
+      "input_token_allowance": 6092,
+      "minimum_reservation_usd": "0.015544"
+    },
+    {
+      "id": "rcd3d50da68e75313bd42d095",
+      "request_hash": "a10309d6e0fc516281d358ea401a79af1380e7264435f60242b2498a47788e34",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030685",
+      "input_token_allowance": 6109,
+      "minimum_reservation_usd": "0.0030685"
+    },
+    {
+      "id": "ref87161b91e21575c314a1a9",
+      "request_hash": "b1cc9e9cf8ca4ad45c3a94b56953347901b746828bba8a7156b1e43a7387391d",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.015542",
+      "input_token_allowance": 6087,
+      "minimum_reservation_usd": "0.015542"
+    },
+    {
+      "id": "r0cc2c04a76cf1d1392cdf5fd",
+      "request_hash": "c7bd5b244c94415fa0ae398e31a07a81d971f1b06554093e05c0559e3eb59702",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.003068",
+      "input_token_allowance": 6104,
+      "minimum_reservation_usd": "0.003068"
+    },
+    {
+      "id": "rf5d883a74346c16aa75fa483",
+      "request_hash": "b765a16d3f2352491bc2a2d5ef94acf2e42b2e77108c373154070132298adcbb",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155488",
+      "input_token_allowance": 6104,
+      "minimum_reservation_usd": "0.0155488"
+    },
+    {
+      "id": "r797834d928a0680fad85921e",
+      "request_hash": "56aa9b2e62269cab925268b692fc8a8552ca65fa90303226dc7f4d1bd250e986",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030697",
+      "input_token_allowance": 6121,
+      "minimum_reservation_usd": "0.0030697"
+    },
+    {
+      "id": "r02cde3745e704968bb2ff4dd",
+      "request_hash": "f05605ff9874acdacc207813ed90ec93339bd8a3807457900e5e6affb9f5b589",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.015552",
+      "input_token_allowance": 6112,
+      "minimum_reservation_usd": "0.015552"
+    },
+    {
+      "id": "rfa5cf68860a48cbd19f0e2b5",
+      "request_hash": "09444912df49776cb64f75ed8c7036a8415d56742b9a507a9ab043779e8c3174",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030705",
+      "input_token_allowance": 6129,
+      "minimum_reservation_usd": "0.0030705"
+    },
+    {
+      "id": "r82c8b2d8fb6b95f73b212e16",
+      "request_hash": "9d09fbd0cbc622f3ce3a36b9b4d5f88b595ace4f212871fe079be1105ea7062d",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155504",
+      "input_token_allowance": 6108,
+      "minimum_reservation_usd": "0.0155504"
+    },
+    {
+      "id": "rcf4bfc48207b415934a00bbd",
+      "request_hash": "734b97ae6cc24c3d878e1c04c31c640cac7ae407fc83649789864c5a9ec71ae8",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030701",
+      "input_token_allowance": 6125,
+      "minimum_reservation_usd": "0.0030701"
+    },
+    {
+      "id": "r7e5d4863dbd63230e3271808",
+      "request_hash": "046360606444b52b36ff0e6c5ed2c1dcda5942bb5b6face0683fc4152c6c134a",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155484",
+      "input_token_allowance": 6103,
+      "minimum_reservation_usd": "0.0155484"
+    },
+    {
+      "id": "r3a157115d92ffa7101ad0dc6",
+      "request_hash": "5611a0b89e8961f3624c00e34d2405451709ea919dbc2e2ba4c11c2c18c43fc3",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030696",
+      "input_token_allowance": 6120,
+      "minimum_reservation_usd": "0.0030696"
+    },
+    {
+      "id": "rfc0732d91c1feb0fae929ebd",
+      "request_hash": "57839926ec64456642e12efde9e3cc55f8d3bc08caa2a5dbb5715e0d32b5bdb3",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155508",
+      "input_token_allowance": 6109,
+      "minimum_reservation_usd": "0.0155508"
+    },
+    {
+      "id": "r638e5639d080b8f3fc09a1ca",
+      "request_hash": "73fe3c8de9c523e73364099164f46357ac6ba191c1624b5ec592e2be57a740dc",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030702",
+      "input_token_allowance": 6126,
+      "minimum_reservation_usd": "0.0030702"
+    },
+    {
+      "id": "ra17790436df48fee78b0f17d",
+      "request_hash": "f8bee7fe1f34558da90a5b2f0729152b362933a2f983067e2591c948a54bc4ac",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155524",
+      "input_token_allowance": 6113,
+      "minimum_reservation_usd": "0.0155524"
+    },
+    {
+      "id": "r97691291be473fd4e1984189",
+      "request_hash": "a5d7fcbb96bec2a65ad48e85b3a97ab67a520c4147117dd93cdfa6e513f7c3b8",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030706",
+      "input_token_allowance": 6130,
+      "minimum_reservation_usd": "0.0030706"
+    },
+    {
+      "id": "re7f85a359a981966a4644169",
+      "request_hash": "e4423453ad084e42e41abc0c2d0fdff63fe074a479c679e382424abf3e8482d9",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155508",
+      "input_token_allowance": 6109,
+      "minimum_reservation_usd": "0.0155508"
+    },
+    {
+      "id": "rd4aca0b5b965bf092a1ee2da",
+      "request_hash": "6dc7eb944dfbc6f715ab03ca981450e71632b8db75fe1522c330679bb51f4e72",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030702",
+      "input_token_allowance": 6126,
+      "minimum_reservation_usd": "0.0030702"
+    },
+    {
+      "id": "r032f9112e22b366a4cbe203b",
+      "request_hash": "f48491621e9521173915bce96a5116b5a01c5d5a6110cc4fbb6e9bdd9ed21bad",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155516",
+      "input_token_allowance": 6111,
+      "minimum_reservation_usd": "0.0155516"
+    },
+    {
+      "id": "r9a368162b065ceca40ce8fae",
+      "request_hash": "2c536fbdf16ac2127b22b201d10f57e3ab6155008738d3de2acec87d31c6542d",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030704",
+      "input_token_allowance": 6128,
+      "minimum_reservation_usd": "0.0030704"
+    },
+    {
+      "id": "r2350b69068b263d506ca5df1",
+      "request_hash": "1c87e58c3c39ded8cb649cd03b80ebfa0a89118dd48f6a8ab505e2b8f370beaa",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155484",
+      "input_token_allowance": 6103,
+      "minimum_reservation_usd": "0.0155484"
+    },
+    {
+      "id": "r63ce73375601f48fd2f44815",
+      "request_hash": "21166832a520429f24220a116b471a507b987859fda6f9bcc6b3126cbb94a28c",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030696",
+      "input_token_allowance": 6120,
+      "minimum_reservation_usd": "0.0030696"
+    },
+    {
+      "id": "rba24a788e14936412682c116",
+      "request_hash": "a50f2fbcf55893897eb6ade53609252a099f973b43506a43cfe8f91f9fcda7dc",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155492",
+      "input_token_allowance": 6105,
+      "minimum_reservation_usd": "0.0155492"
+    },
+    {
+      "id": "rec5edec04bfe4720a16d8faf",
+      "request_hash": "7d0dcbc7c7c7589919d3a332d0c3416e9861338a27a33467271b5cb32a36a63f",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030698",
+      "input_token_allowance": 6122,
+      "minimum_reservation_usd": "0.0030698"
+    },
+    {
+      "id": "r9b47e1a036d891988e14d3fa",
+      "request_hash": "6138ee135cb74d8992a1f05ffcaf9b2a657e187cf2b7862631932b1ac4119dd4",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155468",
+      "input_token_allowance": 6099,
+      "minimum_reservation_usd": "0.0155468"
+    },
+    {
+      "id": "r22271f868a504c8e10a85db7",
+      "request_hash": "93a495504aefb024d540da0b85a1f0447ef6f84ddadd3f6b4f65ed62a926b50a",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030692",
+      "input_token_allowance": 6116,
+      "minimum_reservation_usd": "0.0030692"
+    },
+    {
+      "id": "re0d55ac146132144a8163374",
+      "request_hash": "470b5427cc6827443e27ed567e6a900f4b0fca64acff99edd4971dd7b28b40ed",
+      "model": "openai/gpt-4.1-mini",
+      "provider": "openai",
+      "reservation_usd": "0.0155544",
+      "input_token_allowance": 6118,
+      "minimum_reservation_usd": "0.0155544"
+    },
+    {
+      "id": "rcac8e9361f3e23f74b7fed72",
+      "request_hash": "be67596a5c465a99563d8c698a56aca4e9d32b6a72e497d796a64e296496b743",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "provider": "nebius/fp8",
+      "reservation_usd": "0.0030711",
+      "input_token_allowance": 6135,
+      "minimum_reservation_usd": "0.0030711"
+    }
+  ],
+  "billing_bound_guaranteed": false,
+  "no_graph_promotion": true
+}

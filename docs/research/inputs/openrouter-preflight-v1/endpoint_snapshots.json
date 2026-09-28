@@ -1,0 +1,407 @@
+[
+  {
+    "data": {
+      "id": "qwen/qwen3-30b-a3b-instruct-2507",
+      "name": "Qwen: Qwen3 30B A3B Instruct 2507",
+      "created": 1753806965,
+      "description": "Qwen3-30B-A3B-Instruct-2507 is a 30.5B-parameter mixture-of-experts language model from Qwen, with 3.3B active parameters per inference. It operates in non-thinking mode and is designed for high-quality instruction following, multilingual understanding, and...",
+      "architecture": {
+        "tokenizer": "Qwen3",
+        "instruct_type": null,
+        "modality": "text->text",
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ]
+      },
+      "endpoints": [
+        {
+          "name": "StreamLake | qwen/qwen3-30b-a3b-instruct-2507",
+          "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+          "model_name": "Qwen: Qwen3 30B A3B Instruct 2507",
+          "context_length": 128000,
+          "pricing": {
+            "prompt": "0.00000004815",
+            "completion": "0.00000019305",
+            "discount": 0.55
+          },
+          "provider_name": "StreamLake",
+          "tag": "streamlake",
+          "quantization": "unknown",
+          "max_completion_tokens": 32000,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "tools",
+            "tool_choice",
+            "response_format",
+            "structured_outputs",
+            "logprobs",
+            "top_logprobs",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "presence_penalty"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 98.24752895518768,
+          "uptime_last_5m": 98.51138353765324,
+          "uptime_last_1d": 98.71060370658084,
+          "supports_implicit_caching": false,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "DekaLLM | qwen/qwen3-30b-a3b-instruct-2507",
+          "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+          "model_name": "Qwen: Qwen3 30B A3B Instruct 2507",
+          "context_length": 262144,
+          "pricing": {
+            "prompt": "0.00000009",
+            "completion": "0.0000003",
+            "discount": 0
+          },
+          "provider_name": "DekaLLM",
+          "tag": "dekallm",
+          "quantization": "unknown",
+          "max_completion_tokens": 235929,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "frequency_penalty",
+            "logit_bias",
+            "max_tokens",
+            "presence_penalty",
+            "seed",
+            "stop",
+            "temperature",
+            "top_p",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice"
+          ],
+          "supports_tool_choice": {
+            "none": false,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 98.04372842347526,
+          "uptime_last_5m": 99.17355371900827,
+          "uptime_last_1d": 98.90038509720225,
+          "supports_implicit_caching": false,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "SiliconFlow | qwen/qwen3-30b-a3b-instruct-2507",
+          "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+          "model_name": "Qwen: Qwen3 30B A3B Instruct 2507",
+          "context_length": 262144,
+          "pricing": {
+            "prompt": "0.00000009",
+            "completion": "0.0000003",
+            "discount": 0
+          },
+          "provider_name": "SiliconFlow",
+          "tag": "siliconflow/fp8",
+          "quantization": "fp8",
+          "max_completion_tokens": 235929,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "structured_outputs",
+            "response_format",
+            "temperature",
+            "top_p",
+            "top_k",
+            "frequency_penalty",
+            "tools",
+            "tool_choice",
+            "max_tokens"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 97.70804326871585,
+          "uptime_last_5m": 99.68017057569296,
+          "uptime_last_1d": 98.61626025807941,
+          "supports_implicit_caching": false,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "Nebius | qwen/qwen3-30b-a3b-instruct-2507",
+          "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+          "model_name": "Qwen: Qwen3 30B A3B Instruct 2507",
+          "context_length": 262144,
+          "pricing": {
+            "prompt": "0.0000001",
+            "completion": "0.0000003",
+            "discount": 0
+          },
+          "provider_name": "Nebius",
+          "tag": "nebius/fp8",
+          "quantization": "fp8",
+          "max_completion_tokens": 235929,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "stop",
+            "frequency_penalty",
+            "presence_penalty",
+            "seed",
+            "top_k",
+            "logit_bias",
+            "tools",
+            "tool_choice",
+            "response_format",
+            "structured_outputs",
+            "repetition_penalty"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 99.08379013312451,
+          "uptime_last_5m": 98.88771186440678,
+          "uptime_last_1d": 97.63026025696718,
+          "supports_implicit_caching": false,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "Alibaba | qwen/qwen3-30b-a3b-instruct-2507",
+          "model_id": "qwen/qwen3-30b-a3b-instruct-2507",
+          "model_name": "Qwen: Qwen3 30B A3B Instruct 2507",
+          "context_length": 131072,
+          "pricing": {
+            "prompt": "0.00000013",
+            "completion": "0.00000052",
+            "discount": 0
+          },
+          "provider_name": "Alibaba",
+          "tag": "alibaba",
+          "quantization": "unknown",
+          "max_completion_tokens": 32768,
+          "max_prompt_tokens": 129024,
+          "supported_parameters": [
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "presence_penalty",
+            "response_format",
+            "tools",
+            "tool_choice",
+            "logprobs",
+            "top_logprobs",
+            "top_k",
+            "frequency_penalty",
+            "stop"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 99.64788732394366,
+          "uptime_last_5m": 100,
+          "uptime_last_1d": 99.7315604485134,
+          "supports_implicit_caching": false,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        }
+      ]
+    }
+  },
+  {
+    "data": {
+      "id": "openai/gpt-4.1-mini",
+      "name": "OpenAI: GPT-4.1 Mini",
+      "created": 1744651381,
+      "description": "GPT-4.1 Mini is a mid-sized model delivering performance competitive with GPT-4o at substantially lower latency and cost. It retains a 1 million token context window and scores 45.1% on hard...",
+      "architecture": {
+        "tokenizer": "GPT",
+        "instruct_type": null,
+        "modality": "text+image+file->text",
+        "input_modalities": [
+          "image",
+          "text",
+          "file"
+        ],
+        "output_modalities": [
+          "text"
+        ]
+      },
+      "endpoints": [
+        {
+          "name": "Azure | openai/gpt-4.1-mini-2025-04-14",
+          "model_id": "openai/gpt-4.1-mini",
+          "model_name": "OpenAI: GPT-4.1 Mini",
+          "context_length": 1047576,
+          "pricing": {
+            "prompt": "0.0000004",
+            "completion": "0.0000016",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000001",
+            "discount": 0
+          },
+          "provider_name": "Azure",
+          "tag": "azure",
+          "quantization": "unknown",
+          "max_completion_tokens": 942818,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "max_completion_tokens",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "temperature",
+            "top_p"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 99.82146213117835,
+          "uptime_last_5m": 99.92458521870287,
+          "uptime_last_1d": 99.96139100953461,
+          "supports_implicit_caching": true,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "OpenAI | openai/gpt-4.1-mini-2025-04-14",
+          "model_id": "openai/gpt-4.1-mini",
+          "model_name": "OpenAI: GPT-4.1 Mini",
+          "context_length": 1047576,
+          "pricing": {
+            "prompt": "0.0000004",
+            "completion": "0.0000016",
+            "web_search": "0.01",
+            "input_cache_read": "0.0000001",
+            "discount": 0
+          },
+          "provider_name": "OpenAI",
+          "tag": "openai",
+          "quantization": "unknown",
+          "max_completion_tokens": 32768,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "seed",
+            "max_tokens",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "temperature",
+            "top_p"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 99.81032194784214,
+          "uptime_last_5m": 99.84205776173285,
+          "uptime_last_1d": 99.88479128437825,
+          "supports_implicit_caching": false,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "Azure | openai/gpt-4.1-mini-2025-04-14",
+          "model_id": "openai/gpt-4.1-mini",
+          "model_name": "OpenAI: GPT-4.1 Mini",
+          "context_length": 1047576,
+          "pricing": {
+            "prompt": "0.00000044",
+            "completion": "0.00000176",
+            "web_search": "0.01",
+            "input_cache_read": "0.00000011",
+            "discount": 0
+          },
+          "provider_name": "Azure",
+          "tag": "azure/swedencentral",
+          "quantization": "unknown",
+          "max_completion_tokens": 942818,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "max_completion_tokens",
+            "seed",
+            "response_format",
+            "structured_outputs",
+            "tools",
+            "tool_choice",
+            "temperature",
+            "top_p"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 100,
+          "uptime_last_5m": 100,
+          "uptime_last_1d": 99.99458874458874,
+          "supports_implicit_caching": true,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        }
+      ]
+    }
+  }
+]

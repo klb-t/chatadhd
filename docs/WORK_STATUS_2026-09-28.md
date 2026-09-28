@@ -1,5 +1,16 @@
 # Current work checkpoint
 
+Latest continuation: `research/OPENROUTER_LIVE_PILOT_2026-09-28.md`.
+The owner explicitly asked to continue and offered OpenRouter access. Prepared
+32 fresh PL/EN diagnostic texts, independent source-to-graph scoring, the exact
+native prompt baseline plus an optional coordinate-aided variant, a bounded
+OpenRouter runner and disabled GitHub Actions activation. **309/309 research
+tests pass** (1.459 seconds); public endpoint/pricing preflight succeeds. First
+development pilot: 32 calls, USD 0.2978870 reservation, proposed USD 2 capped key.
+No paid inference has run. The next live step needs the dedicated repository
+secret and acceptance of that spending ceiling; setup is in
+`research/OPENROUTER_ACTIONS_SETUP_2026-09-28.md`. The programme remains open.
+
 Native base checkpoint: `b818366ffabdd6b1cbe14aab6e062805115a780b` on
 `codex/loom-handoff-2026-09-28`, draft PR #6.
 Recovery/audit checkpoint: `52d50d151d93d631245ce7a7fa1372f3f5f9726f`.
@@ -37,10 +48,11 @@ and `research/GEMINI_EXPERIMENTS_INDEPENDENT_2026-09-28.md`.
 
 ## Next direction
 
-The bounded increment is finished. No child implementation is left pending.
+The preceding offline increment and new live-pilot preparation are complete.
+No child implementation is left pending.
 The larger research programme remains open: independently labelled source-to-
 structure extraction, Polish/English relevance scoring under equal budgets,
 late-topic/return selection, and raw context versus graph-cache/source-refresh
-comparison. Live provider evaluation and a Jev HTTP adapter are not implemented
-or claimed by the saved-score replay. Preserve the existing user-configured
+comparison. Live provider evaluation is prepared but has not run. A Jev HTTP
+adapter is not implemented by the saved-score replay. Preserve the user-configured
 semantic model and explicit provider opt-in when continuing.

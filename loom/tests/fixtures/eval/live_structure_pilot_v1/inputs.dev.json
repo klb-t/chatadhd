@@ -1,0 +1,338 @@
+[
+  {
+    "case_id": "case_001_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_001_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_001_en",
+          "text": "Mira greets Oskar.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_001_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_001_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_001_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_001_pl",
+          "text": "Mira wita Oskara.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_001_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_002_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_002_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_002_en",
+          "text": "The lamp does not glow.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_002_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_002_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_002_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_002_pl",
+          "text": "Lampa nie świeci.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_002_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_003_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_003_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_003_en",
+          "text": "If the valve opens, the bell rings.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_003_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_003_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_003_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_003_pl",
+          "text": "Jeśli zawór się otwiera, dzwonek dzwoni.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_003_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_004_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_004_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_004_en",
+          "text": "The kettle whistles and the lamp glows.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_004_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_004_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_004_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_004_pl",
+          "text": "Czajnik gwiżdże i lampa świeci.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_004_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_005_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_005_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_005_en",
+          "text": "Quoted passage: “Lena follows Igor.”",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_005_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_005_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_005_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_005_pl",
+          "text": "Cytowany fragment: „Lena śledzi Igora”.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_005_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_006_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_006_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_006_en",
+          "text": "For every x, if x vibrates, x resonates.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_006_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_006_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_006_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_006_pl",
+          "text": "Dla każdego x, jeśli x drga, x rezonuje.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_006_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_007_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_007_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_007_en",
+          "text": "For some x, x floats and x shines.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_007_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_007_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_007_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_007_pl",
+          "text": "Dla pewnego x, x pływa i x świeci.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_007_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_008_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_008_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_008_en",
+          "text": "Nora spoke to Ewa. She smiled.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_008_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_008_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_008_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_008_pl",
+          "text": "Nora rozmawiała z Ewą. Ona się uśmiechnęła.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_008_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  }
+]

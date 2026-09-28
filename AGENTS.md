@@ -1,5 +1,12 @@
 # ChatADHD / Loom continuation
 
+Latest direction: `docs/research/OPENROUTER_LIVE_PILOT_2026-09-28.md`.
+Real-model source-to-graph pilot is prepared (309 research tests pass), but no
+paid call has run. Activation is disabled; use the documented capped GitHub
+secret flow, never credentials in chat/repo. Preserve frozen inputs, first
+responses and uncertain-attempt accounting. The owner wants continued work,
+not a declaration that the broad programme is done.
+
 Current graph-native round: `docs/research/GRAPH_NATIVE_PROGRAMME_2026-09-28.md`.
 Measured checkpoints: `docs/research/GRAPH_NATIVE_RESULTS_2026-09-28.md`.
 Latest continuation after the owner's Gemini reports:
