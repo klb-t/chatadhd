@@ -1,0 +1,2815 @@
+{
+  "schema": "loom.independent_graph_oracle/1",
+  "fixture_sha256": "a23645a6eb8ffcd3b1ab231898d72b96f9c0ff9ff29a09649fde30eaf3ebe37c",
+  "oracle_source_sha256": "e9581ebc574abf98141312edec79cae5f0714bc458d20219b6579b1b1ea2f278",
+  "rows": [
+    {
+      "query_id": "inspection_chain-semantic_identity",
+      "candidate_id": "inspection_chain-literal",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "direction",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "p": "clean:p",
+        "q": "clean:q",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "inspection_chain-semantic_identity",
+      "candidate_id": "inspection_chain-embedded",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "direction",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "inspection_chain-semantic_identity",
+      "candidate_id": "inspection_chain-analogy",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "direction",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "inspection_chain-semantic_identity",
+      "candidate_id": "inspection_chain-direction",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "direction",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-semantic_identity",
+      "candidate_id": "inspection_chain-qualifier",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "direction",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-semantic_identity",
+      "candidate_id": "inspection_chain-edge_missing",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "direction",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-template_containment",
+      "candidate_id": "inspection_chain-literal",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "direction",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "p": "clean:p",
+        "q": "clean:q",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "inspection_chain-template_containment",
+      "candidate_id": "inspection_chain-embedded",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "direction",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "p": "embed:p",
+        "q": "embed:q",
+        "s": "embed:s"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "inspection_chain-template_containment",
+      "candidate_id": "inspection_chain-analogy",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "direction",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "inspection_chain-template_containment",
+      "candidate_id": "inspection_chain-direction",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "direction",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-template_containment",
+      "candidate_id": "inspection_chain-qualifier",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "direction",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-template_containment",
+      "candidate_id": "inspection_chain-edge_missing",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "direction",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-structural_analogy",
+      "candidate_id": "inspection_chain-literal",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "direction",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "p": "clean:p",
+        "q": "clean:q",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "inspection_chain-structural_analogy",
+      "candidate_id": "inspection_chain-embedded",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "direction",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "p": "embed:p",
+        "q": "embed:q",
+        "s": "embed:s"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "inspection_chain-structural_analogy",
+      "candidate_id": "inspection_chain-analogy",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "direction",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "p": "analog:p",
+        "q": "analog:q",
+        "s": "analog:s"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "inspection_chain-structural_analogy",
+      "candidate_id": "inspection_chain-direction",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "direction",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-structural_analogy",
+      "candidate_id": "inspection_chain-qualifier",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "direction",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "inspection_chain-structural_analogy",
+      "candidate_id": "inspection_chain-edge_missing",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "direction",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-literal",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "s1": "clean:s1",
+        "s2": "clean:s2"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-embedded",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-analogy",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-direction",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-qualifier",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-edge_missing",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-repeated_source",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "dependent_support_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 0
+    },
+    {
+      "query_id": "two_reviews-semantic_identity",
+      "candidate_id": "two_reviews-duplicate_identity",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "independent_support",
+      "candidate_kind": "duplicate_physical_identity_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-literal",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "s1": "clean:s1",
+        "s2": "clean:s2"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-embedded",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "s1": "embed:s1",
+        "s2": "embed:s2"
+      },
+      "mappings_examined": 9
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-analogy",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-direction",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-qualifier",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-edge_missing",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-repeated_source",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "dependent_support_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 0
+    },
+    {
+      "query_id": "two_reviews-template_containment",
+      "candidate_id": "two_reviews-duplicate_identity",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "independent_support",
+      "candidate_kind": "duplicate_physical_identity_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-literal",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "s1": "clean:s1",
+        "s2": "clean:s2"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-embedded",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "s1": "embed:s1",
+        "s2": "embed:s2"
+      },
+      "mappings_examined": 9
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-analogy",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "c": "analog:c",
+        "s1": "analog:s1",
+        "s2": "analog:s2"
+      },
+      "mappings_examined": 9
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-direction",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-qualifier",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-edge_missing",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-repeated_source",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "dependent_support_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 0
+    },
+    {
+      "query_id": "two_reviews-structural_analogy",
+      "candidate_id": "two_reviews-duplicate_identity",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "independent_support",
+      "candidate_kind": "duplicate_physical_identity_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-semantic_identity",
+      "candidate_id": "negative_constraint-literal",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "polarity",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "c": "clean:c",
+        "d": "clean:d"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "negative_constraint-semantic_identity",
+      "candidate_id": "negative_constraint-embedded",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "polarity",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "negative_constraint-semantic_identity",
+      "candidate_id": "negative_constraint-analogy",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "polarity",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "negative_constraint-semantic_identity",
+      "candidate_id": "negative_constraint-direction",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "polarity",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-semantic_identity",
+      "candidate_id": "negative_constraint-qualifier",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "polarity",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-semantic_identity",
+      "candidate_id": "negative_constraint-edge_missing",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "polarity",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-template_containment",
+      "candidate_id": "negative_constraint-literal",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "polarity",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "c": "clean:c",
+        "d": "clean:d"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "negative_constraint-template_containment",
+      "candidate_id": "negative_constraint-embedded",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "polarity",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "c": "embed:c",
+        "d": "embed:d"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "negative_constraint-template_containment",
+      "candidate_id": "negative_constraint-analogy",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "polarity",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "negative_constraint-template_containment",
+      "candidate_id": "negative_constraint-direction",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "polarity",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-template_containment",
+      "candidate_id": "negative_constraint-qualifier",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "polarity",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-template_containment",
+      "candidate_id": "negative_constraint-edge_missing",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "polarity",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-structural_analogy",
+      "candidate_id": "negative_constraint-literal",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "polarity",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "c": "clean:c",
+        "d": "clean:d"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "negative_constraint-structural_analogy",
+      "candidate_id": "negative_constraint-embedded",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "polarity",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "c": "embed:c",
+        "d": "embed:d"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "negative_constraint-structural_analogy",
+      "candidate_id": "negative_constraint-analogy",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "polarity",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "a": "analog:a",
+        "c": "analog:c",
+        "d": "analog:d"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "negative_constraint-structural_analogy",
+      "candidate_id": "negative_constraint-direction",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "polarity",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-structural_analogy",
+      "candidate_id": "negative_constraint-qualifier",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "polarity",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "negative_constraint-structural_analogy",
+      "candidate_id": "negative_constraint-edge_missing",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "polarity",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-semantic_identity",
+      "candidate_id": "branch_guard-literal",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "scope",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "d": "clean:d",
+        "g": "clean:g"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "branch_guard-semantic_identity",
+      "candidate_id": "branch_guard-embedded",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "scope",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "branch_guard-semantic_identity",
+      "candidate_id": "branch_guard-analogy",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "scope",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "branch_guard-semantic_identity",
+      "candidate_id": "branch_guard-direction",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "scope",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-semantic_identity",
+      "candidate_id": "branch_guard-qualifier",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "scope",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-semantic_identity",
+      "candidate_id": "branch_guard-edge_missing",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "scope",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-template_containment",
+      "candidate_id": "branch_guard-literal",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "scope",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "d": "clean:d",
+        "g": "clean:g"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "branch_guard-template_containment",
+      "candidate_id": "branch_guard-embedded",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "scope",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "d": "embed:d",
+        "g": "embed:g"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "branch_guard-template_containment",
+      "candidate_id": "branch_guard-analogy",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "scope",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "branch_guard-template_containment",
+      "candidate_id": "branch_guard-direction",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "scope",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-template_containment",
+      "candidate_id": "branch_guard-qualifier",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "scope",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-template_containment",
+      "candidate_id": "branch_guard-edge_missing",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "scope",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-structural_analogy",
+      "candidate_id": "branch_guard-literal",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "scope",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "d": "clean:d",
+        "g": "clean:g"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "branch_guard-structural_analogy",
+      "candidate_id": "branch_guard-embedded",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "scope",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "d": "embed:d",
+        "g": "embed:g"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "branch_guard-structural_analogy",
+      "candidate_id": "branch_guard-analogy",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "scope",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "a": "analog:a",
+        "d": "analog:d",
+        "g": "analog:g"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "branch_guard-structural_analogy",
+      "candidate_id": "branch_guard-direction",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "scope",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-structural_analogy",
+      "candidate_id": "branch_guard-qualifier",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "scope",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "branch_guard-structural_analogy",
+      "candidate_id": "branch_guard-edge_missing",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "scope",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "parallel_warrant-semantic_identity",
+      "candidate_id": "parallel_warrant-literal",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "p": "clean:p"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "parallel_warrant-semantic_identity",
+      "candidate_id": "parallel_warrant-embedded",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 12
+    },
+    {
+      "query_id": "parallel_warrant-semantic_identity",
+      "candidate_id": "parallel_warrant-analogy",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 12
+    },
+    {
+      "query_id": "parallel_warrant-semantic_identity",
+      "candidate_id": "parallel_warrant-direction",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-semantic_identity",
+      "candidate_id": "parallel_warrant-qualifier",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-semantic_identity",
+      "candidate_id": "parallel_warrant-edge_missing",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-template_containment",
+      "candidate_id": "parallel_warrant-literal",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "multiplicity",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "p": "clean:p"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "parallel_warrant-template_containment",
+      "candidate_id": "parallel_warrant-embedded",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "multiplicity",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "p": "embed:p"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "parallel_warrant-template_containment",
+      "candidate_id": "parallel_warrant-analogy",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "multiplicity",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 12
+    },
+    {
+      "query_id": "parallel_warrant-template_containment",
+      "candidate_id": "parallel_warrant-direction",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "multiplicity",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-template_containment",
+      "candidate_id": "parallel_warrant-qualifier",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "multiplicity",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-template_containment",
+      "candidate_id": "parallel_warrant-edge_missing",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "multiplicity",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-structural_analogy",
+      "candidate_id": "parallel_warrant-literal",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "p": "clean:p"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "parallel_warrant-structural_analogy",
+      "candidate_id": "parallel_warrant-embedded",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "p": "embed:p"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "parallel_warrant-structural_analogy",
+      "candidate_id": "parallel_warrant-analogy",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "c": "analog:c",
+        "p": "analog:p"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "parallel_warrant-structural_analogy",
+      "candidate_id": "parallel_warrant-direction",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-structural_analogy",
+      "candidate_id": "parallel_warrant-qualifier",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "parallel_warrant-structural_analogy",
+      "candidate_id": "parallel_warrant-edge_missing",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-semantic_identity",
+      "candidate_id": "quoted_assessment-literal",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "quotation",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "quoted_assessment-semantic_identity",
+      "candidate_id": "quoted_assessment-embedded",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "quotation",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 12
+    },
+    {
+      "query_id": "quoted_assessment-semantic_identity",
+      "candidate_id": "quoted_assessment-analogy",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "quotation",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 12
+    },
+    {
+      "query_id": "quoted_assessment-semantic_identity",
+      "candidate_id": "quoted_assessment-direction",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "quotation",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-semantic_identity",
+      "candidate_id": "quoted_assessment-qualifier",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "quotation",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-semantic_identity",
+      "candidate_id": "quoted_assessment-edge_missing",
+      "split": "development",
+      "goal": "semantic_identity",
+      "dimension": "quotation",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-template_containment",
+      "candidate_id": "quoted_assessment-literal",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "quotation",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "quoted_assessment-template_containment",
+      "candidate_id": "quoted_assessment-embedded",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "quotation",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "s": "embed:s"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "quoted_assessment-template_containment",
+      "candidate_id": "quoted_assessment-analogy",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "quotation",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 12
+    },
+    {
+      "query_id": "quoted_assessment-template_containment",
+      "candidate_id": "quoted_assessment-direction",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "quotation",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-template_containment",
+      "candidate_id": "quoted_assessment-qualifier",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "quotation",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-template_containment",
+      "candidate_id": "quoted_assessment-edge_missing",
+      "split": "development",
+      "goal": "template_containment",
+      "dimension": "quotation",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-structural_analogy",
+      "candidate_id": "quoted_assessment-literal",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "quotation",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "quoted_assessment-structural_analogy",
+      "candidate_id": "quoted_assessment-embedded",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "quotation",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "s": "embed:s"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "quoted_assessment-structural_analogy",
+      "candidate_id": "quoted_assessment-analogy",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "quotation",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "c": "analog:c",
+        "s": "analog:s"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "quoted_assessment-structural_analogy",
+      "candidate_id": "quoted_assessment-direction",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "quotation",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-structural_analogy",
+      "candidate_id": "quoted_assessment-qualifier",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "quotation",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "quoted_assessment-structural_analogy",
+      "candidate_id": "quoted_assessment-edge_missing",
+      "split": "development",
+      "goal": "structural_analogy",
+      "dimension": "quotation",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 2
+    },
+    {
+      "query_id": "feedback_cycle-semantic_identity",
+      "candidate_id": "feedback_cycle-literal",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "c": "clean:c"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "feedback_cycle-semantic_identity",
+      "candidate_id": "feedback_cycle-embedded",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "feedback_cycle-semantic_identity",
+      "candidate_id": "feedback_cycle-analogy",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "feedback_cycle-semantic_identity",
+      "candidate_id": "feedback_cycle-direction",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-semantic_identity",
+      "candidate_id": "feedback_cycle-qualifier",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-semantic_identity",
+      "candidate_id": "feedback_cycle-edge_missing",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-template_containment",
+      "candidate_id": "feedback_cycle-literal",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "c": "clean:c"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "feedback_cycle-template_containment",
+      "candidate_id": "feedback_cycle-embedded",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "b": "embed:b",
+        "c": "embed:c"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "feedback_cycle-template_containment",
+      "candidate_id": "feedback_cycle-analogy",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "feedback_cycle-template_containment",
+      "candidate_id": "feedback_cycle-direction",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-template_containment",
+      "candidate_id": "feedback_cycle-qualifier",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-template_containment",
+      "candidate_id": "feedback_cycle-edge_missing",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-structural_analogy",
+      "candidate_id": "feedback_cycle-literal",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "c": "clean:c"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "feedback_cycle-structural_analogy",
+      "candidate_id": "feedback_cycle-embedded",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "b": "embed:b",
+        "c": "embed:c"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "feedback_cycle-structural_analogy",
+      "candidate_id": "feedback_cycle-analogy",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "a": "analog:a",
+        "b": "analog:b",
+        "c": "analog:c"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "feedback_cycle-structural_analogy",
+      "candidate_id": "feedback_cycle-direction",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-structural_analogy",
+      "candidate_id": "feedback_cycle-qualifier",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "feedback_cycle-structural_analogy",
+      "candidate_id": "feedback_cycle-edge_missing",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "direction_and_scope",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "warrant_chain-semantic_identity",
+      "candidate_id": "warrant_chain-literal",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "c": "clean:c",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "warrant_chain-semantic_identity",
+      "candidate_id": "warrant_chain-embedded",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "warrant_chain-semantic_identity",
+      "candidate_id": "warrant_chain-analogy",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "warrant_chain-semantic_identity",
+      "candidate_id": "warrant_chain-direction",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-semantic_identity",
+      "candidate_id": "warrant_chain-qualifier",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-semantic_identity",
+      "candidate_id": "warrant_chain-edge_missing",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-template_containment",
+      "candidate_id": "warrant_chain-literal",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "c": "clean:c",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "warrant_chain-template_containment",
+      "candidate_id": "warrant_chain-embedded",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "b": "embed:b",
+        "c": "embed:c",
+        "s": "embed:s"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "warrant_chain-template_containment",
+      "candidate_id": "warrant_chain-analogy",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "warrant_chain-template_containment",
+      "candidate_id": "warrant_chain-direction",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-template_containment",
+      "candidate_id": "warrant_chain-qualifier",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-template_containment",
+      "candidate_id": "warrant_chain-edge_missing",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-structural_analogy",
+      "candidate_id": "warrant_chain-literal",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "c": "clean:c",
+        "s": "clean:s"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "warrant_chain-structural_analogy",
+      "candidate_id": "warrant_chain-embedded",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "b": "embed:b",
+        "c": "embed:c",
+        "s": "embed:s"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "warrant_chain-structural_analogy",
+      "candidate_id": "warrant_chain-analogy",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "a": "analog:a",
+        "b": "analog:b",
+        "c": "analog:c",
+        "s": "analog:s"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "warrant_chain-structural_analogy",
+      "candidate_id": "warrant_chain-direction",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-structural_analogy",
+      "candidate_id": "warrant_chain-qualifier",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "warrant_chain-structural_analogy",
+      "candidate_id": "warrant_chain-edge_missing",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "multiplicity_and_direction",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-semantic_identity",
+      "candidate_id": "shared_measurement-literal",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "binding",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "p": "clean:p",
+        "q": "clean:q",
+        "x": "clean:x"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "shared_measurement-semantic_identity",
+      "candidate_id": "shared_measurement-embedded",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "binding",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "shared_measurement-semantic_identity",
+      "candidate_id": "shared_measurement-analogy",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "binding",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "shared_measurement-semantic_identity",
+      "candidate_id": "shared_measurement-direction",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "binding",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-semantic_identity",
+      "candidate_id": "shared_measurement-qualifier",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "binding",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-semantic_identity",
+      "candidate_id": "shared_measurement-edge_missing",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "binding",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-template_containment",
+      "candidate_id": "shared_measurement-literal",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "binding",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "p": "clean:p",
+        "q": "clean:q",
+        "x": "clean:x"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "shared_measurement-template_containment",
+      "candidate_id": "shared_measurement-embedded",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "binding",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "p": "embed:p",
+        "q": "embed:q",
+        "x": "embed:x"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "shared_measurement-template_containment",
+      "candidate_id": "shared_measurement-analogy",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "binding",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "shared_measurement-template_containment",
+      "candidate_id": "shared_measurement-direction",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "binding",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-template_containment",
+      "candidate_id": "shared_measurement-qualifier",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "binding",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-template_containment",
+      "candidate_id": "shared_measurement-edge_missing",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "binding",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-structural_analogy",
+      "candidate_id": "shared_measurement-literal",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "binding",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "p": "clean:p",
+        "q": "clean:q",
+        "x": "clean:x"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "shared_measurement-structural_analogy",
+      "candidate_id": "shared_measurement-embedded",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "binding",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "p": "embed:p",
+        "q": "embed:q",
+        "x": "embed:x"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "shared_measurement-structural_analogy",
+      "candidate_id": "shared_measurement-analogy",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "binding",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "c": "analog:c",
+        "p": "analog:p",
+        "q": "analog:q",
+        "x": "analog:x"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "shared_measurement-structural_analogy",
+      "candidate_id": "shared_measurement-direction",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "binding",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-structural_analogy",
+      "candidate_id": "shared_measurement-qualifier",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "binding",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "shared_measurement-structural_analogy",
+      "candidate_id": "shared_measurement-edge_missing",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "binding",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "tentative_attribution-semantic_identity",
+      "candidate_id": "tentative_attribution-literal",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "g": "clean:g",
+        "r": "clean:r"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "tentative_attribution-semantic_identity",
+      "candidate_id": "tentative_attribution-embedded",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "tentative_attribution-semantic_identity",
+      "candidate_id": "tentative_attribution-analogy",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "tentative_attribution-semantic_identity",
+      "candidate_id": "tentative_attribution-direction",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-semantic_identity",
+      "candidate_id": "tentative_attribution-qualifier",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-semantic_identity",
+      "candidate_id": "tentative_attribution-edge_missing",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-template_containment",
+      "candidate_id": "tentative_attribution-literal",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "g": "clean:g",
+        "r": "clean:r"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "tentative_attribution-template_containment",
+      "candidate_id": "tentative_attribution-embedded",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "g": "embed:g",
+        "r": "embed:r"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "tentative_attribution-template_containment",
+      "candidate_id": "tentative_attribution-analogy",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 60
+    },
+    {
+      "query_id": "tentative_attribution-template_containment",
+      "candidate_id": "tentative_attribution-direction",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-template_containment",
+      "candidate_id": "tentative_attribution-qualifier",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-template_containment",
+      "candidate_id": "tentative_attribution-edge_missing",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-structural_analogy",
+      "candidate_id": "tentative_attribution-literal",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "c": "clean:c",
+        "g": "clean:g",
+        "r": "clean:r"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "tentative_attribution-structural_analogy",
+      "candidate_id": "tentative_attribution-embedded",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "c": "embed:c",
+        "g": "embed:g",
+        "r": "embed:r"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "tentative_attribution-structural_analogy",
+      "candidate_id": "tentative_attribution-analogy",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "c": "analog:c",
+        "g": "analog:g",
+        "r": "analog:r"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "tentative_attribution-structural_analogy",
+      "candidate_id": "tentative_attribution-direction",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-structural_analogy",
+      "candidate_id": "tentative_attribution-qualifier",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "tentative_attribution-structural_analogy",
+      "candidate_id": "tentative_attribution-edge_missing",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "uncertainty_and_quotation",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 6
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-literal",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "d": "clean:d",
+        "p": "clean:p",
+        "s1": "clean:s1",
+        "s2": "clean:s2"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-embedded",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-analogy",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-direction",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-qualifier",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-edge_missing",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-repeated_source",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "dependent_support_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 0
+    },
+    {
+      "query_id": "independent_origins-semantic_identity",
+      "candidate_id": "independent_origins-duplicate_identity",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "source_independence",
+      "candidate_kind": "duplicate_physical_identity_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-literal",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "d": "clean:d",
+        "p": "clean:p",
+        "s1": "clean:s1",
+        "s2": "clean:s2"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-embedded",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "d": "embed:d",
+        "p": "embed:p",
+        "s1": "embed:s1",
+        "s2": "embed:s2"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-analogy",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-direction",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-qualifier",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-edge_missing",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-repeated_source",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "dependent_support_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 0
+    },
+    {
+      "query_id": "independent_origins-template_containment",
+      "candidate_id": "independent_origins-duplicate_identity",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "source_independence",
+      "candidate_kind": "duplicate_physical_identity_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-literal",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "d": "clean:d",
+        "p": "clean:p",
+        "s1": "clean:s1",
+        "s2": "clean:s2"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-embedded",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "d": "embed:d",
+        "p": "embed:p",
+        "s1": "embed:s1",
+        "s2": "embed:s2"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-analogy",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "d": "analog:d",
+        "p": "analog:p",
+        "s1": "analog:s1",
+        "s2": "analog:s2"
+      },
+      "mappings_examined": 33
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-direction",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-qualifier",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-edge_missing",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-repeated_source",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "dependent_support_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 0
+    },
+    {
+      "query_id": "independent_origins-structural_analogy",
+      "candidate_id": "independent_origins-duplicate_identity",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "source_independence",
+      "candidate_kind": "duplicate_physical_identity_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-semantic_identity",
+      "candidate_id": "scope_bridge-literal",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "m": "clean:m",
+        "v": "clean:v"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "scope_bridge-semantic_identity",
+      "candidate_id": "scope_bridge-embedded",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "literal_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "scope_bridge-semantic_identity",
+      "candidate_id": "scope_bridge-analogy",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "scope_bridge-semantic_identity",
+      "candidate_id": "scope_bridge-direction",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-semantic_identity",
+      "candidate_id": "scope_bridge-qualifier",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-semantic_identity",
+      "candidate_id": "scope_bridge-edge_missing",
+      "split": "validation",
+      "goal": "semantic_identity",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-template_containment",
+      "candidate_id": "scope_bridge-literal",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "m": "clean:m",
+        "v": "clean:v"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "scope_bridge-template_containment",
+      "candidate_id": "scope_bridge-embedded",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "b": "embed:b",
+        "m": "embed:m",
+        "v": "embed:v"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "scope_bridge-template_containment",
+      "candidate_id": "scope_bridge-analogy",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "cross_domain_embedded",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 360
+    },
+    {
+      "query_id": "scope_bridge-template_containment",
+      "candidate_id": "scope_bridge-direction",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-template_containment",
+      "candidate_id": "scope_bridge-qualifier",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-template_containment",
+      "candidate_id": "scope_bridge-edge_missing",
+      "split": "validation",
+      "goal": "template_containment",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-structural_analogy",
+      "candidate_id": "scope_bridge-literal",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "exact_clean",
+      "present": true,
+      "witness": {
+        "a": "clean:a",
+        "b": "clean:b",
+        "m": "clean:m",
+        "v": "clean:v"
+      },
+      "mappings_examined": 1
+    },
+    {
+      "query_id": "scope_bridge-structural_analogy",
+      "candidate_id": "scope_bridge-embedded",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "literal_embedded",
+      "present": true,
+      "witness": {
+        "a": "embed:a",
+        "b": "embed:b",
+        "m": "embed:m",
+        "v": "embed:v"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "scope_bridge-structural_analogy",
+      "candidate_id": "scope_bridge-analogy",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "cross_domain_embedded",
+      "present": true,
+      "witness": {
+        "a": "analog:a",
+        "b": "analog:b",
+        "m": "analog:m",
+        "v": "analog:v"
+      },
+      "mappings_examined": 3
+    },
+    {
+      "query_id": "scope_bridge-structural_analogy",
+      "candidate_id": "scope_bridge-direction",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "lexical_direction_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-structural_analogy",
+      "candidate_id": "scope_bridge-qualifier",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "lexical_qualifier_trap",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    },
+    {
+      "query_id": "scope_bridge-structural_analogy",
+      "candidate_id": "scope_bridge-edge_missing",
+      "split": "validation",
+      "goal": "structural_analogy",
+      "dimension": "scope_and_binding",
+      "candidate_kind": "missing_required_relation_or_multiplicity",
+      "present": false,
+      "witness": null,
+      "mappings_examined": 24
+    }
+  ]
+}

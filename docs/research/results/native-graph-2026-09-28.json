@@ -1,0 +1,3083 @@
+{
+  "version": "native-core-graph-diagnostic/1",
+  "run_id": "kr_4b76e077273881e3",
+  "source_snapshot_body_sha256": "8fc0e86429169f9ae7f77d80939590746882006ec9feb9fb043bcd4d7ba07069",
+  "source_snapshot_sha256": "e1d2915db13e02afb4aa4af8a87c91c3bf2e71625085c89b10b417db0db4dd01",
+  "source_snapshot_metadata": {
+    "version": "core-readonly-snapshot/1",
+    "consistency": "single_sqlite_read_transaction_including_committed_wal",
+    "schema_metadata": {
+      "schema_version": "2"
+    },
+    "body_sha256": "8fc0e86429169f9ae7f77d80939590746882006ec9feb9fb043bcd4d7ba07069",
+    "counts": {
+      "observations": 1002,
+      "entities": 60,
+      "claims": 2182,
+      "principles": 121,
+      "operators": 2,
+      "morphisms": 136,
+      "instances": 70,
+      "areas": 1,
+      "decisions": 15,
+      "forks": 0,
+      "status_records": 14,
+      "predictions": 2,
+      "models": 2,
+      "products": 142,
+      "slot_values": 2018
+    },
+    "missing_optional_tables": [],
+    "run_completed": true,
+    "max_rows": 1000000,
+    "omitted_derived_indexes": [
+      "aliases (in Entity.aliases)",
+      "claim_support (in Claim.assessment.basis.support)"
+    ],
+    "omitted_global_tables": [
+      "judgements (run records replayed_seq)",
+      "candidates",
+      "policy_versions",
+      "llm_cache"
+    ],
+    "source_bytes_included": false,
+    "semantics_validated": false,
+    "meaning": "consistent source model bodies, not an independent correctness assessment or a full data backup"
+  },
+  "dependency_sha256": {
+    "native_graph_experiment.py": "694f44747e93b05ca80b6e2d3bc612b12a0084c675e187fff46eea752abda3e4",
+    "core_snapshot.py": "bbae5247eacfa058ff2d3a6779d78ada9ae37e9df17f6650932e55cd4446c191",
+    "core_projection.py": "42e864af2046d036f31b1db30e1199a66d7a6b335d24e14090b5a9459ee8aba6",
+    "graph_flow.py": "acc9ad12ec39983f1c6d6a839ba39b97f841278b3030243054fc8a026b099588",
+    "graph_search.py": "798ea9ddde1168c5bf67e48c4538446db211ef815f57eb0984fab16842ed2d6b",
+    "graph_patterns.py": "e488c733a3c43f079ecfaac8ebcb210c8a4e68b695bd3fe43d821e1f3b50f737",
+    "structure_methods.py": "89596297f279ad50b1599d2cb125fc7e140c065c91827d21f2c11ec4021e0fb3"
+  },
+  "selection": {
+    "all_core_claims": 2182,
+    "eligible_observed_active_claims": 238,
+    "source_evidence_status_counts": [
+      {
+        "evidence_class": "absent",
+        "status": "active",
+        "count": 1861
+      },
+      {
+        "evidence_class": "derived",
+        "status": "active",
+        "count": 1
+      },
+      {
+        "evidence_class": "extrapolated",
+        "status": "active",
+        "count": 68
+      },
+      {
+        "evidence_class": "observed",
+        "status": "active",
+        "count": 238
+      },
+      {
+        "evidence_class": "observed",
+        "status": "contested",
+        "count": 14
+      }
+    ],
+    "excluded_by_reason": {
+      "evidence_not_observed:absent": 1861,
+      "evidence_not_observed:derived": 1,
+      "evidence_not_observed:extrapolated": 68,
+      "status_not_active:contested": 14
+    },
+    "sampled_claims": 24,
+    "eligible_claims_omitted_by_record_budget": 214,
+    "eligible_predicate_counts": {
+      "decides": 1,
+      "has_decision": 5,
+      "has_event": 14,
+      "has_invariant": 25,
+      "has_question": 13,
+      "has_requirement": 14,
+      "has_status": 14,
+      "mentioned_in": 71,
+      "states_principle": 81
+    },
+    "sampled_predicate_counts": {
+      "has_status": 5,
+      "mentioned_in": 18,
+      "states_principle": 1
+    },
+    "sampled_entity_object_claims": 0,
+    "sampled_literal_value_claims": 24,
+    "sampled_distinct_literal_values": 6,
+    "sampled_direct_support_observations_distinct": 51,
+    "selection": "round_robin_primary_support_unit_then_subject; ascending_canonical_claim_ID_within_subject",
+    "primary_unit_rule": "smallest_resolved_unit_ID_when_claim_has_multiple_support_units",
+    "unit_groups": [
+      {
+        "unit_id": "un_45af11d9aa3ad47e",
+        "eligible_claims": 77,
+        "sampled_claims": 8,
+        "eligible_subjects": 31,
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ]
+      },
+      {
+        "unit_id": "un_d46a2ed34742fae2",
+        "eligible_claims": 116,
+        "sampled_claims": 8,
+        "eligible_subjects": 43,
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ]
+      },
+      {
+        "unit_id": "un_f3ad92530152e78f",
+        "eligible_claims": 45,
+        "sampled_claims": 8,
+        "eligible_subjects": 11,
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ]
+      }
+    ],
+    "unknown_eligible_support": [],
+    "source_domains_assigned": 0,
+    "source_independence_verified": false
+  },
+  "record_specs": [
+    {
+      "id": "native:cl_25b6b89568dab1c1",
+      "claim_ids": [
+        "cl_25b6b89568dab1c1"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_3d5064591860998b",
+          "ob_ece24dfa2e562f76"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_0157f95388bec53d",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_61d474d4c155dae6",
+      "claim_ids": [
+        "cl_61d474d4c155dae6"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_e4e901d973a6749b"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_02adb79a955fa181",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "3.4",
+          "branch": "",
+          "scope": "",
+          "lang": "en",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_3ac38827a6c834c0",
+      "claim_ids": [
+        "cl_3ac38827a6c834c0"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_209322c6daf546fb",
+          "ob_e87b2d2fc535f20d"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_03500ee33db76b28",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_ffb78b4c35d9d763",
+      "claim_ids": [
+        "cl_ffb78b4c35d9d763"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_3800542e9ee0f575"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_03500ee33db76b28",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_891a75bf227de286",
+      "claim_ids": [
+        "cl_891a75bf227de286"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_0754c4b8cf9f3a89",
+          "ob_7efc42f27a71d662",
+          "ob_dfa94880ef99a2f8"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_03500ee33db76b28",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_c79e24c76b1bb001",
+      "claim_ids": [
+        "cl_c79e24c76b1bb001"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_27d5265328375f21",
+          "ob_e7445a3ffd228fca"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_13afc1ccbece3ac9",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_7537430ce72949fc",
+      "claim_ids": [
+        "cl_7537430ce72949fc"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_67cb36f6e1135546"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_1244d22e62915a74",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_fb6977fa0bb7b332",
+      "claim_ids": [
+        "cl_fb6977fa0bb7b332"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_026ec1bf815a4578"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_0c4aec40280322cc",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_1f99dcabac014eb2",
+      "claim_ids": [
+        "cl_1f99dcabac014eb2"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_5e2b4787a9dac9ae"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_19b6992ad32dc405",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_e61358b72e12edbe",
+      "claim_ids": [
+        "cl_e61358b72e12edbe"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_0217fabfa4b72f43",
+          "ob_2581a9d39d95f9b7"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_1847f076abc84301",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_c9c2d9e504d40b37",
+      "claim_ids": [
+        "cl_c9c2d9e504d40b37"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_69ef2a4ce4559a80",
+          "ob_9ca3e659f2bb6567"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_0c6c2a3655fcde7f",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_f4087e5fea7e6a6c",
+      "claim_ids": [
+        "cl_f4087e5fea7e6a6c"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_d540d205de918e5f"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_541bcffdd830014f",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_a53876a838fc1477",
+      "claim_ids": [
+        "cl_a53876a838fc1477"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_3800542e9ee0f575",
+          "ob_3d5064591860998b",
+          "ob_512265b1dc7a1cfb",
+          "ob_64ab0bda60734900",
+          "ob_93f86bc6447754e1",
+          "ob_b239888539f3f421"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_19b6992ad32dc405",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_b590fb8f91403cdf",
+      "claim_ids": [
+        "cl_b590fb8f91403cdf"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_021bee2cd9363486",
+          "ob_101fdfdb82dc1070",
+          "ob_13e4a41648b830e9",
+          "ob_25eea7bb6767335f",
+          "ob_3e66bd8e08887ae9",
+          "ob_554824f51b09d362",
+          "ob_69abb46b691e8ac6",
+          "ob_6c23466dd863545d",
+          "ob_78a25ac2719d9444",
+          "ob_8e485e96a8c9978a",
+          "ob_9074f5e6464fb6f9",
+          "ob_90f105c613fa315b",
+          "ob_bd37d8157e4026a9",
+          "ob_bf430459e88893a3",
+          "ob_c2956e23ccf8a22f",
+          "ob_e8c12b02215be538"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_19b6992ad32dc405",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_e2f974ebf2c28d0f",
+      "claim_ids": [
+        "cl_e2f974ebf2c28d0f"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_209322c6daf546fb",
+          "ob_28ee2716653921a8",
+          "ob_8a5d5b3ec88ef5dc",
+          "ob_c38bafa7292bf3e1"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_69caa3daabdfd35f",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_afc18e9a6b81a927",
+      "claim_ids": [
+        "cl_afc18e9a6b81a927"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_d964f2ccc0b368db"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_434af1cb9306fa7a",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_0907e321f5b3746d",
+      "claim_ids": [
+        "cl_0907e321f5b3746d"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_68b69e7e82aea71b"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_210b51f28d004c40",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_eadf5ec140d60f51",
+      "claim_ids": [
+        "cl_eadf5ec140d60f51"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_fb3c2d0406c9ddfa"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_7c6865ff1de2bd98",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_b1280ce39af1e910",
+      "claim_ids": [
+        "cl_b1280ce39af1e910"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_750c29a552593737"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_46332559c1b25b7c",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "8.3",
+          "branch": "",
+          "scope": "",
+          "lang": "en",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_9a43ede3276337a4",
+      "claim_ids": [
+        "cl_9a43ede3276337a4"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_53c9f5d37e48e92d"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_390d3819f2ff70bd",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "3.4",
+          "branch": "",
+          "scope": "",
+          "lang": "en",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_0a113ecdadcd9b72",
+      "claim_ids": [
+        "cl_0a113ecdadcd9b72"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_b3936224950adb2a"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_8a8f479ce01e85d6",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_1efc098825643a89",
+      "claim_ids": [
+        "cl_1efc098825643a89"
+      ],
+      "source_group": "unit:un_45af11d9aa3ad47e",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_45af11d9aa3ad47e",
+        "unit_ids": [
+          "un_45af11d9aa3ad47e"
+        ],
+        "source_ids": [
+          "sha256:e192c8a4b905972f14838140f98b0cffc87ca87a1f9f422ea072ed7c111c1d66"
+        ],
+        "observation_ids": [
+          "ob_764cb958ef0b86c0"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_496b7fc3231c79ed",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "8.3",
+          "branch": "",
+          "scope": "",
+          "lang": "en",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_4b5b46a4d6f19f4e",
+      "claim_ids": [
+        "cl_4b5b46a4d6f19f4e"
+      ],
+      "source_group": "unit:un_d46a2ed34742fae2",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_d46a2ed34742fae2",
+        "unit_ids": [
+          "un_d46a2ed34742fae2"
+        ],
+        "source_ids": [
+          "sha256:b1a3bdd1efdd62451e63838a38d9234dbddd35ae315966fc0b5cd6f571d402b6"
+        ],
+        "observation_ids": [
+          "ob_63bbd1b081756b0b"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_39111fa1ed731d9f",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "3.4",
+          "branch": "",
+          "scope": "",
+          "lang": "en",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    },
+    {
+      "id": "native:cl_4141ebff8514b0e7",
+      "claim_ids": [
+        "cl_4141ebff8514b0e7"
+      ],
+      "source_group": "unit:un_f3ad92530152e78f",
+      "domain": null,
+      "scope": {
+        "basis": "declared_grouping_for_diagnostic_not_verified_topic_scope",
+        "primary_unit": "un_f3ad92530152e78f",
+        "unit_ids": [
+          "un_f3ad92530152e78f"
+        ],
+        "source_ids": [
+          "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+        ],
+        "observation_ids": [
+          "ob_5e2b4787a9dac9ae",
+          "ob_6fc98096d5d1b68d"
+        ],
+        "missing_observation_ids": [],
+        "subject_id": "e_b07ede8f43fdf9da",
+        "claim_qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "source_group_independence_verified": false
+      }
+    }
+  ],
+  "modes": {
+    "semantic": {
+      "parameters": {
+        "mode": "semantic",
+        "goal": "literal_semantic",
+        "top_k": 3,
+        "state_budget_per_pair": 1000,
+        "max_records": 24,
+        "max_graph_nodes": 2048
+      },
+      "coverage": {
+        "declared_records": 24,
+        "searched_records": 24,
+        "declared_queries": 24,
+        "executed_queries": 24
+      },
+      "omissions": [],
+      "elapsed_seconds": 6.799726,
+      "retrieval": {
+        "candidate_pairs": 552,
+        "safe_filter_survivors": 0,
+        "safe_filter_rejections_by_reason": {
+          "insufficient_node_labels": 552
+        },
+        "omitted_by_top_k": 0,
+        "verification_status_counts": {},
+        "verification_states_explored": 0,
+        "witness_sample": [],
+        "witness_sample_limit": 8,
+        "semantic_accuracy": null
+      },
+      "source_closure": {
+        "records": [
+          {
+            "record_id": "native:cl_0907e321f5b3746d",
+            "claim_ids": [
+              "cl_0907e321f5b3746d"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_0907e321f5b3746d": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_0a113ecdadcd9b72",
+            "claim_ids": [
+              "cl_0a113ecdadcd9b72"
+            ],
+            "nodes": 21,
+            "edges": 38,
+            "direct_support_observations": 1,
+            "projected_observation_references": 10,
+            "extra_observation_reference_ids": [
+              "ob_03736cf300cacb58",
+              "ob_13844c63e7c110c4",
+              "ob_13cf7090c7e5ce1d",
+              "ob_209322c6daf546fb",
+              "ob_28ee2716653921a8",
+              "ob_614c31799d277248",
+              "ob_7b1faa081ec20344",
+              "ob_8a5d5b3ec88ef5dc",
+              "ob_f4b2be1f9290a834"
+            ],
+            "observation_closure_ratio": 10.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_0a113ecdadcd9b72": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_1efc098825643a89",
+            "claim_ids": [
+              "cl_1efc098825643a89"
+            ],
+            "nodes": 11,
+            "edges": 14,
+            "direct_support_observations": 1,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [
+              "ob_76d4e5942044b60f"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_1efc098825643a89": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_1f99dcabac014eb2",
+            "claim_ids": [
+              "cl_1f99dcabac014eb2"
+            ],
+            "nodes": 34,
+            "edges": 78,
+            "direct_support_observations": 1,
+            "projected_observation_references": 23,
+            "extra_observation_reference_ids": [
+              "ob_021bee2cd9363486",
+              "ob_101fdfdb82dc1070",
+              "ob_13e4a41648b830e9",
+              "ob_25eea7bb6767335f",
+              "ob_3800542e9ee0f575",
+              "ob_3d5064591860998b",
+              "ob_3e66bd8e08887ae9",
+              "ob_512265b1dc7a1cfb",
+              "ob_554824f51b09d362",
+              "ob_64ab0bda60734900",
+              "ob_69abb46b691e8ac6",
+              "ob_6c23466dd863545d",
+              "ob_78a25ac2719d9444",
+              "ob_8e485e96a8c9978a",
+              "ob_9074f5e6464fb6f9",
+              "ob_90f105c613fa315b",
+              "ob_93f86bc6447754e1",
+              "ob_b239888539f3f421",
+              "ob_bd37d8157e4026a9",
+              "ob_bf430459e88893a3",
+              "ob_c2956e23ccf8a22f",
+              "ob_e8c12b02215be538"
+            ],
+            "observation_closure_ratio": 23.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_1f99dcabac014eb2": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_25b6b89568dab1c1",
+            "claim_ids": [
+              "cl_25b6b89568dab1c1"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_25b6b89568dab1c1": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_3ac38827a6c834c0",
+            "claim_ids": [
+              "cl_3ac38827a6c834c0"
+            ],
+            "nodes": 18,
+            "edges": 30,
+            "direct_support_observations": 2,
+            "projected_observation_references": 6,
+            "extra_observation_reference_ids": [
+              "ob_0754c4b8cf9f3a89",
+              "ob_3800542e9ee0f575",
+              "ob_7efc42f27a71d662",
+              "ob_dfa94880ef99a2f8"
+            ],
+            "observation_closure_ratio": 3.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_3ac38827a6c834c0": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_4141ebff8514b0e7",
+            "claim_ids": [
+              "cl_4141ebff8514b0e7"
+            ],
+            "nodes": 23,
+            "edges": 45,
+            "direct_support_observations": 2,
+            "projected_observation_references": 11,
+            "extra_observation_reference_ids": [
+              "ob_1bc1f5356dea2eb8",
+              "ob_7e5d03d273492a78",
+              "ob_8bf03d5168e2a0e1",
+              "ob_9d20fd9491438a33",
+              "ob_b239888539f3f421",
+              "ob_c24274ee9e5bc6fb",
+              "ob_d9c242ed17b6c0c2",
+              "ob_ece24dfa2e562f76",
+              "ob_f27319ee0d610d2f"
+            ],
+            "observation_closure_ratio": 5.5,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_4141ebff8514b0e7": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_4b5b46a4d6f19f4e",
+            "claim_ids": [
+              "cl_4b5b46a4d6f19f4e"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_4b5b46a4d6f19f4e": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_61d474d4c155dae6",
+            "claim_ids": [
+              "cl_61d474d4c155dae6"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_61d474d4c155dae6": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_7537430ce72949fc",
+            "claim_ids": [
+              "cl_7537430ce72949fc"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_7537430ce72949fc": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_891a75bf227de286",
+            "claim_ids": [
+              "cl_891a75bf227de286"
+            ],
+            "nodes": 19,
+            "edges": 33,
+            "direct_support_observations": 3,
+            "projected_observation_references": 6,
+            "extra_observation_reference_ids": [
+              "ob_209322c6daf546fb",
+              "ob_3800542e9ee0f575",
+              "ob_e87b2d2fc535f20d"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_891a75bf227de286": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_9a43ede3276337a4",
+            "claim_ids": [
+              "cl_9a43ede3276337a4"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_9a43ede3276337a4": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_a53876a838fc1477",
+            "claim_ids": [
+              "cl_a53876a838fc1477"
+            ],
+            "nodes": 39,
+            "edges": 93,
+            "direct_support_observations": 6,
+            "projected_observation_references": 23,
+            "extra_observation_reference_ids": [
+              "ob_021bee2cd9363486",
+              "ob_101fdfdb82dc1070",
+              "ob_13e4a41648b830e9",
+              "ob_25eea7bb6767335f",
+              "ob_3e66bd8e08887ae9",
+              "ob_554824f51b09d362",
+              "ob_5e2b4787a9dac9ae",
+              "ob_69abb46b691e8ac6",
+              "ob_6c23466dd863545d",
+              "ob_78a25ac2719d9444",
+              "ob_8e485e96a8c9978a",
+              "ob_9074f5e6464fb6f9",
+              "ob_90f105c613fa315b",
+              "ob_bd37d8157e4026a9",
+              "ob_bf430459e88893a3",
+              "ob_c2956e23ccf8a22f",
+              "ob_e8c12b02215be538"
+            ],
+            "observation_closure_ratio": 3.8333333333333335,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_a53876a838fc1477": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_afc18e9a6b81a927",
+            "claim_ids": [
+              "cl_afc18e9a6b81a927"
+            ],
+            "nodes": 11,
+            "edges": 14,
+            "direct_support_observations": 1,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [
+              "ob_ca046f2a5b1c389e"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_afc18e9a6b81a927": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_b1280ce39af1e910",
+            "claim_ids": [
+              "cl_b1280ce39af1e910"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_b1280ce39af1e910": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_b590fb8f91403cdf",
+            "claim_ids": [
+              "cl_b590fb8f91403cdf"
+            ],
+            "nodes": 49,
+            "edges": 123,
+            "direct_support_observations": 16,
+            "projected_observation_references": 23,
+            "extra_observation_reference_ids": [
+              "ob_3800542e9ee0f575",
+              "ob_3d5064591860998b",
+              "ob_512265b1dc7a1cfb",
+              "ob_5e2b4787a9dac9ae",
+              "ob_64ab0bda60734900",
+              "ob_93f86bc6447754e1",
+              "ob_b239888539f3f421"
+            ],
+            "observation_closure_ratio": 1.4375,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_b590fb8f91403cdf": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_c79e24c76b1bb001",
+            "claim_ids": [
+              "cl_c79e24c76b1bb001"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_c79e24c76b1bb001": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_c9c2d9e504d40b37",
+            "claim_ids": [
+              "cl_c9c2d9e504d40b37"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_c9c2d9e504d40b37": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_e2f974ebf2c28d0f",
+            "claim_ids": [
+              "cl_e2f974ebf2c28d0f"
+            ],
+            "nodes": 22,
+            "edges": 42,
+            "direct_support_observations": 4,
+            "projected_observation_references": 8,
+            "extra_observation_reference_ids": [
+              "ob_3800542e9ee0f575",
+              "ob_5dc7a23b4790729e",
+              "ob_785b424264322245",
+              "ob_f16e2f41effb48ae"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_e2f974ebf2c28d0f": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_e61358b72e12edbe",
+            "claim_ids": [
+              "cl_e61358b72e12edbe"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_e61358b72e12edbe": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_eadf5ec140d60f51",
+            "claim_ids": [
+              "cl_eadf5ec140d60f51"
+            ],
+            "nodes": 25,
+            "edges": 51,
+            "direct_support_observations": 1,
+            "projected_observation_references": 14,
+            "extra_observation_reference_ids": [
+              "ob_208a21155b952f88",
+              "ob_260d91bef6d3d39f",
+              "ob_2e1db4ed54229c02",
+              "ob_416851d90f9afc98",
+              "ob_4a2d7e2a10d9b6d6",
+              "ob_6edc7e5dd110221f",
+              "ob_70f95d22861f78fd",
+              "ob_78a25ac2719d9444",
+              "ob_7cf555ec79c34443",
+              "ob_9074f5e6464fb6f9",
+              "ob_9c8cd97e1dc714d5",
+              "ob_9f46fb2ab442bc27",
+              "ob_ca33c5c8122c608d"
+            ],
+            "observation_closure_ratio": 14.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_eadf5ec140d60f51": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_f4087e5fea7e6a6c",
+            "claim_ids": [
+              "cl_f4087e5fea7e6a6c"
+            ],
+            "nodes": 14,
+            "edges": 18,
+            "direct_support_observations": 1,
+            "projected_observation_references": 3,
+            "extra_observation_reference_ids": [
+              "ob_a09774f96de94c3e",
+              "ob_cc4bb501d7b48a03"
+            ],
+            "observation_closure_ratio": 3.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_f4087e5fea7e6a6c": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_fb6977fa0bb7b332",
+            "claim_ids": [
+              "cl_fb6977fa0bb7b332"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_fb6977fa0bb7b332": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_ffb78b4c35d9d763",
+            "claim_ids": [
+              "cl_ffb78b4c35d9d763"
+            ],
+            "nodes": 17,
+            "edges": 27,
+            "direct_support_observations": 1,
+            "projected_observation_references": 6,
+            "extra_observation_reference_ids": [
+              "ob_0754c4b8cf9f3a89",
+              "ob_209322c6daf546fb",
+              "ob_7efc42f27a71d662",
+              "ob_dfa94880ef99a2f8",
+              "ob_e87b2d2fc535f20d"
+            ],
+            "observation_closure_ratio": 6.0,
+            "loss_registry_entries": 0,
+            "source_contracts": {
+              "cl_ffb78b4c35d9d763": "locally_consistent"
+            }
+          }
+        ],
+        "extra_observation_references_total_with_repeats": 97,
+        "records_with_extra_observation_references": 13,
+        "maximum_observation_closure_ratio": 23.0,
+        "interpretation": "shared_entity_provenance_expansion_not_new_support_for_selected_claim"
+      },
+      "unknown_reasons_across_views": {
+        "referenced_record_missing": 96
+      },
+      "opaque_optional_record_namespaces": {},
+      "motifs": {
+        "parameters": {
+          "radii": [
+            1
+          ],
+          "roots": [
+            "node"
+          ],
+          "max_enumerations": 512,
+          "max_nodes": 10,
+          "min_nodes": 2,
+          "min_edges": 1,
+          "wl_rounds": 2,
+          "alignment_budget": 500,
+          "max_verifications": 1000,
+          "min_occurrences": 2
+        },
+        "statistics": {
+          "planned_enumerations": 399,
+          "enumerations": 399,
+          "oversized_neighborhoods": 18,
+          "below_minimum_neighborhoods": 0,
+          "duplicate_radius_views": 0,
+          "unique_motifs": 381,
+          "verification_calls": 44,
+          "verified_matches": 44,
+          "verified_nonmatches": 0,
+          "verification_unknown": 0,
+          "verification_skipped_by_budget": 0
+        },
+        "coverage": {
+          "enumeration_complete": true,
+          "omitted_enumerations": 0,
+          "all_requested_neighborhoods_represented": false,
+          "verification_complete": true,
+          "search_scope": "induced_undirected_radius_neighborhoods_with_directed_typed_edges"
+        },
+        "comparison": {
+          "cheap_recurring_fingerprint_buckets": 39,
+          "cheap_occurrences_in_recurring_buckets": 83,
+          "verified_recurring_motifs": 39,
+          "nonrecurring_candidate_groups": 298,
+          "buckets_with_unmerged_groups": 0,
+          "interpretation": "fingerprint_retrieval_vs_verified_equality_not_semantic_accuracy"
+        },
+        "candidate_sample": [
+          {
+            "id": "pattern_176f908c3e0542b7db63_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477",
+              "cl_b590fb8f91403cdf"
+            ],
+            "occurrence_count": 3,
+            "record_count": 3,
+            "declared_source_group_count": 3,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477",
+              "native:cl_b590fb8f91403cdf"
+            ],
+            "specificity": {
+              "node_count": 8,
+              "edge_count": 13,
+              "node_kind_count": 3,
+              "relation_type_count": 3,
+              "qualifier_leaf_count": 138,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 8,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_1c21d7f53f557386e4fa_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_20b6c255e5ca1b34a517_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_21d6ef9ff03923f7c96c_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_b590fb8f91403cdf"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_b590fb8f91403cdf"
+            ],
+            "specificity": {
+              "node_count": 7,
+              "edge_count": 6,
+              "node_kind_count": 2,
+              "relation_type_count": 1,
+              "qualifier_leaf_count": 106,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 7,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "source_locator"
+            ]
+          },
+          {
+            "id": "pattern_3026c322cb507e50cde1_0",
+            "source_claim_ids": [
+              "cl_3ac38827a6c834c0",
+              "cl_891a75bf227de286",
+              "cl_ffb78b4c35d9d763"
+            ],
+            "occurrence_count": 3,
+            "record_count": 3,
+            "declared_source_group_count": 3,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_3ac38827a6c834c0",
+              "native:cl_891a75bf227de286",
+              "native:cl_ffb78b4c35d9d763"
+            ],
+            "specificity": {
+              "node_count": 5,
+              "edge_count": 7,
+              "node_kind_count": 3,
+              "relation_type_count": 3,
+              "qualifier_leaf_count": 81,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 5,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_3d4797e3a05ce74ff93e_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_b590fb8f91403cdf"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_b590fb8f91403cdf"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_4067474b17166c7a5e36_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_4ac195fb6f7dee88497a_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_51931050263a86c5823b_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_5249823cc7dbb508b3f6_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_54685b8d410d37cc08e6_0",
+            "source_claim_ids": [
+              "cl_3ac38827a6c834c0",
+              "cl_ffb78b4c35d9d763"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_3ac38827a6c834c0",
+              "native:cl_ffb78b4c35d9d763"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_552b3af590bca164c056_0",
+            "source_claim_ids": [
+              "cl_891a75bf227de286",
+              "cl_ffb78b4c35d9d763"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_d46a2ed34742fae2"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_891a75bf227de286",
+              "native:cl_ffb78b4c35d9d763"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 43,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          }
+        ],
+        "candidate_sample_limit": 12,
+        "motifs_with_core_claim_vertices": 0,
+        "motifs_with_multiple_core_claim_vertices": 0,
+        "source_independence_verified": false,
+        "semantic_accuracy": null
+      },
+      "semantics": {
+        "authoritative_store": "source Claim + Assessment",
+        "projection_persistence": "recomputable_view_only",
+        "ranking_is_proof": false,
+        "match_is_inference": false,
+        "source_scope_verified": false,
+        "semantic_accuracy": null,
+        "graph_mutations_applied": 0,
+        "claims_promoted": 0,
+        "motif_renaming": "none; exact labels of explicit projected view"
+      }
+    },
+    "structural": {
+      "parameters": {
+        "mode": "structural",
+        "goal": "structural_analogy",
+        "top_k": 3,
+        "state_budget_per_pair": 1000,
+        "max_records": 24,
+        "max_graph_nodes": 2048
+      },
+      "coverage": {
+        "declared_records": 24,
+        "searched_records": 24,
+        "declared_queries": 24,
+        "executed_queries": 24
+      },
+      "omissions": [],
+      "elapsed_seconds": 6.765193,
+      "retrieval": {
+        "candidate_pairs": 552,
+        "safe_filter_survivors": 0,
+        "safe_filter_rejections_by_reason": {
+          "insufficient_node_labels": 552
+        },
+        "omitted_by_top_k": 0,
+        "verification_status_counts": {},
+        "verification_states_explored": 0,
+        "witness_sample": [],
+        "witness_sample_limit": 8,
+        "semantic_accuracy": null
+      },
+      "source_closure": {
+        "records": [
+          {
+            "record_id": "native:cl_0907e321f5b3746d",
+            "claim_ids": [
+              "cl_0907e321f5b3746d"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 12,
+            "source_contracts": {
+              "cl_0907e321f5b3746d": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_0a113ecdadcd9b72",
+            "claim_ids": [
+              "cl_0a113ecdadcd9b72"
+            ],
+            "nodes": 21,
+            "edges": 38,
+            "direct_support_observations": 1,
+            "projected_observation_references": 10,
+            "extra_observation_reference_ids": [
+              "ob_03736cf300cacb58",
+              "ob_13844c63e7c110c4",
+              "ob_13cf7090c7e5ce1d",
+              "ob_209322c6daf546fb",
+              "ob_28ee2716653921a8",
+              "ob_614c31799d277248",
+              "ob_7b1faa081ec20344",
+              "ob_8a5d5b3ec88ef5dc",
+              "ob_f4b2be1f9290a834"
+            ],
+            "observation_closure_ratio": 10.0,
+            "loss_registry_entries": 43,
+            "source_contracts": {
+              "cl_0a113ecdadcd9b72": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_1efc098825643a89",
+            "claim_ids": [
+              "cl_1efc098825643a89"
+            ],
+            "nodes": 11,
+            "edges": 14,
+            "direct_support_observations": 1,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [
+              "ob_76d4e5942044b60f"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 17,
+            "source_contracts": {
+              "cl_1efc098825643a89": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_1f99dcabac014eb2",
+            "claim_ids": [
+              "cl_1f99dcabac014eb2"
+            ],
+            "nodes": 34,
+            "edges": 78,
+            "direct_support_observations": 1,
+            "projected_observation_references": 23,
+            "extra_observation_reference_ids": [
+              "ob_021bee2cd9363486",
+              "ob_101fdfdb82dc1070",
+              "ob_13e4a41648b830e9",
+              "ob_25eea7bb6767335f",
+              "ob_3800542e9ee0f575",
+              "ob_3d5064591860998b",
+              "ob_3e66bd8e08887ae9",
+              "ob_512265b1dc7a1cfb",
+              "ob_554824f51b09d362",
+              "ob_64ab0bda60734900",
+              "ob_69abb46b691e8ac6",
+              "ob_6c23466dd863545d",
+              "ob_78a25ac2719d9444",
+              "ob_8e485e96a8c9978a",
+              "ob_9074f5e6464fb6f9",
+              "ob_90f105c613fa315b",
+              "ob_93f86bc6447754e1",
+              "ob_b239888539f3f421",
+              "ob_bd37d8157e4026a9",
+              "ob_bf430459e88893a3",
+              "ob_c2956e23ccf8a22f",
+              "ob_e8c12b02215be538"
+            ],
+            "observation_closure_ratio": 23.0,
+            "loss_registry_entries": 82,
+            "source_contracts": {
+              "cl_1f99dcabac014eb2": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_25b6b89568dab1c1",
+            "claim_ids": [
+              "cl_25b6b89568dab1c1"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 17,
+            "source_contracts": {
+              "cl_25b6b89568dab1c1": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_3ac38827a6c834c0",
+            "claim_ids": [
+              "cl_3ac38827a6c834c0"
+            ],
+            "nodes": 18,
+            "edges": 30,
+            "direct_support_observations": 2,
+            "projected_observation_references": 6,
+            "extra_observation_reference_ids": [
+              "ob_0754c4b8cf9f3a89",
+              "ob_3800542e9ee0f575",
+              "ob_7efc42f27a71d662",
+              "ob_dfa94880ef99a2f8"
+            ],
+            "observation_closure_ratio": 3.0,
+            "loss_registry_entries": 33,
+            "source_contracts": {
+              "cl_3ac38827a6c834c0": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_4141ebff8514b0e7",
+            "claim_ids": [
+              "cl_4141ebff8514b0e7"
+            ],
+            "nodes": 23,
+            "edges": 45,
+            "direct_support_observations": 2,
+            "projected_observation_references": 11,
+            "extra_observation_reference_ids": [
+              "ob_1bc1f5356dea2eb8",
+              "ob_7e5d03d273492a78",
+              "ob_8bf03d5168e2a0e1",
+              "ob_9d20fd9491438a33",
+              "ob_b239888539f3f421",
+              "ob_c24274ee9e5bc6fb",
+              "ob_d9c242ed17b6c0c2",
+              "ob_ece24dfa2e562f76",
+              "ob_f27319ee0d610d2f"
+            ],
+            "observation_closure_ratio": 5.5,
+            "loss_registry_entries": 48,
+            "source_contracts": {
+              "cl_4141ebff8514b0e7": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_4b5b46a4d6f19f4e",
+            "claim_ids": [
+              "cl_4b5b46a4d6f19f4e"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 12,
+            "source_contracts": {
+              "cl_4b5b46a4d6f19f4e": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_61d474d4c155dae6",
+            "claim_ids": [
+              "cl_61d474d4c155dae6"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 12,
+            "source_contracts": {
+              "cl_61d474d4c155dae6": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_7537430ce72949fc",
+            "claim_ids": [
+              "cl_7537430ce72949fc"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 12,
+            "source_contracts": {
+              "cl_7537430ce72949fc": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_891a75bf227de286",
+            "claim_ids": [
+              "cl_891a75bf227de286"
+            ],
+            "nodes": 19,
+            "edges": 33,
+            "direct_support_observations": 3,
+            "projected_observation_references": 6,
+            "extra_observation_reference_ids": [
+              "ob_209322c6daf546fb",
+              "ob_3800542e9ee0f575",
+              "ob_e87b2d2fc535f20d"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 35,
+            "source_contracts": {
+              "cl_891a75bf227de286": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_9a43ede3276337a4",
+            "claim_ids": [
+              "cl_9a43ede3276337a4"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 12,
+            "source_contracts": {
+              "cl_9a43ede3276337a4": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_a53876a838fc1477",
+            "claim_ids": [
+              "cl_a53876a838fc1477"
+            ],
+            "nodes": 39,
+            "edges": 93,
+            "direct_support_observations": 6,
+            "projected_observation_references": 23,
+            "extra_observation_reference_ids": [
+              "ob_021bee2cd9363486",
+              "ob_101fdfdb82dc1070",
+              "ob_13e4a41648b830e9",
+              "ob_25eea7bb6767335f",
+              "ob_3e66bd8e08887ae9",
+              "ob_554824f51b09d362",
+              "ob_5e2b4787a9dac9ae",
+              "ob_69abb46b691e8ac6",
+              "ob_6c23466dd863545d",
+              "ob_78a25ac2719d9444",
+              "ob_8e485e96a8c9978a",
+              "ob_9074f5e6464fb6f9",
+              "ob_90f105c613fa315b",
+              "ob_bd37d8157e4026a9",
+              "ob_bf430459e88893a3",
+              "ob_c2956e23ccf8a22f",
+              "ob_e8c12b02215be538"
+            ],
+            "observation_closure_ratio": 3.8333333333333335,
+            "loss_registry_entries": 92,
+            "source_contracts": {
+              "cl_a53876a838fc1477": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_afc18e9a6b81a927",
+            "claim_ids": [
+              "cl_afc18e9a6b81a927"
+            ],
+            "nodes": 11,
+            "edges": 14,
+            "direct_support_observations": 1,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [
+              "ob_ca046f2a5b1c389e"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 17,
+            "source_contracts": {
+              "cl_afc18e9a6b81a927": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_b1280ce39af1e910",
+            "claim_ids": [
+              "cl_b1280ce39af1e910"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 12,
+            "source_contracts": {
+              "cl_b1280ce39af1e910": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_b590fb8f91403cdf",
+            "claim_ids": [
+              "cl_b590fb8f91403cdf"
+            ],
+            "nodes": 49,
+            "edges": 123,
+            "direct_support_observations": 16,
+            "projected_observation_references": 23,
+            "extra_observation_reference_ids": [
+              "ob_3800542e9ee0f575",
+              "ob_3d5064591860998b",
+              "ob_512265b1dc7a1cfb",
+              "ob_5e2b4787a9dac9ae",
+              "ob_64ab0bda60734900",
+              "ob_93f86bc6447754e1",
+              "ob_b239888539f3f421"
+            ],
+            "observation_closure_ratio": 1.4375,
+            "loss_registry_entries": 112,
+            "source_contracts": {
+              "cl_b590fb8f91403cdf": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_c79e24c76b1bb001",
+            "claim_ids": [
+              "cl_c79e24c76b1bb001"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 17,
+            "source_contracts": {
+              "cl_c79e24c76b1bb001": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_c9c2d9e504d40b37",
+            "claim_ids": [
+              "cl_c9c2d9e504d40b37"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 17,
+            "source_contracts": {
+              "cl_c9c2d9e504d40b37": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_e2f974ebf2c28d0f",
+            "claim_ids": [
+              "cl_e2f974ebf2c28d0f"
+            ],
+            "nodes": 22,
+            "edges": 42,
+            "direct_support_observations": 4,
+            "projected_observation_references": 8,
+            "extra_observation_reference_ids": [
+              "ob_3800542e9ee0f575",
+              "ob_5dc7a23b4790729e",
+              "ob_785b424264322245",
+              "ob_f16e2f41effb48ae"
+            ],
+            "observation_closure_ratio": 2.0,
+            "loss_registry_entries": 43,
+            "source_contracts": {
+              "cl_e2f974ebf2c28d0f": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_e61358b72e12edbe",
+            "claim_ids": [
+              "cl_e61358b72e12edbe"
+            ],
+            "nodes": 10,
+            "edges": 16,
+            "direct_support_observations": 2,
+            "projected_observation_references": 2,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 17,
+            "source_contracts": {
+              "cl_e61358b72e12edbe": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_eadf5ec140d60f51",
+            "claim_ids": [
+              "cl_eadf5ec140d60f51"
+            ],
+            "nodes": 25,
+            "edges": 51,
+            "direct_support_observations": 1,
+            "projected_observation_references": 14,
+            "extra_observation_reference_ids": [
+              "ob_208a21155b952f88",
+              "ob_260d91bef6d3d39f",
+              "ob_2e1db4ed54229c02",
+              "ob_416851d90f9afc98",
+              "ob_4a2d7e2a10d9b6d6",
+              "ob_6edc7e5dd110221f",
+              "ob_70f95d22861f78fd",
+              "ob_78a25ac2719d9444",
+              "ob_7cf555ec79c34443",
+              "ob_9074f5e6464fb6f9",
+              "ob_9c8cd97e1dc714d5",
+              "ob_9f46fb2ab442bc27",
+              "ob_ca33c5c8122c608d"
+            ],
+            "observation_closure_ratio": 14.0,
+            "loss_registry_entries": 55,
+            "source_contracts": {
+              "cl_eadf5ec140d60f51": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_f4087e5fea7e6a6c",
+            "claim_ids": [
+              "cl_f4087e5fea7e6a6c"
+            ],
+            "nodes": 14,
+            "edges": 18,
+            "direct_support_observations": 1,
+            "projected_observation_references": 3,
+            "extra_observation_reference_ids": [
+              "ob_a09774f96de94c3e",
+              "ob_cc4bb501d7b48a03"
+            ],
+            "observation_closure_ratio": 3.0,
+            "loss_registry_entries": 22,
+            "source_contracts": {
+              "cl_f4087e5fea7e6a6c": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_fb6977fa0bb7b332",
+            "claim_ids": [
+              "cl_fb6977fa0bb7b332"
+            ],
+            "nodes": 8,
+            "edges": 10,
+            "direct_support_observations": 1,
+            "projected_observation_references": 1,
+            "extra_observation_reference_ids": [],
+            "observation_closure_ratio": 1.0,
+            "loss_registry_entries": 12,
+            "source_contracts": {
+              "cl_fb6977fa0bb7b332": "locally_consistent"
+            }
+          },
+          {
+            "record_id": "native:cl_ffb78b4c35d9d763",
+            "claim_ids": [
+              "cl_ffb78b4c35d9d763"
+            ],
+            "nodes": 17,
+            "edges": 27,
+            "direct_support_observations": 1,
+            "projected_observation_references": 6,
+            "extra_observation_reference_ids": [
+              "ob_0754c4b8cf9f3a89",
+              "ob_209322c6daf546fb",
+              "ob_7efc42f27a71d662",
+              "ob_dfa94880ef99a2f8",
+              "ob_e87b2d2fc535f20d"
+            ],
+            "observation_closure_ratio": 6.0,
+            "loss_registry_entries": 31,
+            "source_contracts": {
+              "cl_ffb78b4c35d9d763": "locally_consistent"
+            }
+          }
+        ],
+        "extra_observation_references_total_with_repeats": 97,
+        "records_with_extra_observation_references": 13,
+        "maximum_observation_closure_ratio": 23.0,
+        "interpretation": "shared_entity_provenance_expansion_not_new_support_for_selected_claim"
+      },
+      "unknown_reasons_across_views": {
+        "referenced_record_missing": 96
+      },
+      "opaque_optional_record_namespaces": {},
+      "motifs": {
+        "parameters": {
+          "radii": [
+            1
+          ],
+          "roots": [
+            "node"
+          ],
+          "max_enumerations": 512,
+          "max_nodes": 10,
+          "min_nodes": 2,
+          "min_edges": 1,
+          "wl_rounds": 2,
+          "alignment_budget": 500,
+          "max_verifications": 1000,
+          "min_occurrences": 2
+        },
+        "statistics": {
+          "planned_enumerations": 399,
+          "enumerations": 399,
+          "oversized_neighborhoods": 18,
+          "below_minimum_neighborhoods": 0,
+          "duplicate_radius_views": 0,
+          "unique_motifs": 381,
+          "verification_calls": 44,
+          "verified_matches": 44,
+          "verified_nonmatches": 0,
+          "verification_unknown": 0,
+          "verification_skipped_by_budget": 0
+        },
+        "coverage": {
+          "enumeration_complete": true,
+          "omitted_enumerations": 0,
+          "all_requested_neighborhoods_represented": false,
+          "verification_complete": true,
+          "search_scope": "induced_undirected_radius_neighborhoods_with_directed_typed_edges"
+        },
+        "comparison": {
+          "cheap_recurring_fingerprint_buckets": 39,
+          "cheap_occurrences_in_recurring_buckets": 83,
+          "verified_recurring_motifs": 39,
+          "nonrecurring_candidate_groups": 298,
+          "buckets_with_unmerged_groups": 0,
+          "interpretation": "fingerprint_retrieval_vs_verified_equality_not_semantic_accuracy"
+        },
+        "candidate_sample": [
+          {
+            "id": "pattern_01a177dc4d56250909b9_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_b590fb8f91403cdf"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_b590fb8f91403cdf"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_03778b03d1ed0c80bd5b_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_0492fe209002a0696590_0",
+            "source_claim_ids": [
+              "cl_3ac38827a6c834c0",
+              "cl_ffb78b4c35d9d763"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_3ac38827a6c834c0",
+              "native:cl_ffb78b4c35d9d763"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_11bc84bc974e018049d4_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_11f8ce97534f4776f365_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_1dfbe5c8321b2608f370_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_b590fb8f91403cdf"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_b590fb8f91403cdf"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_20bdaa807818aa2b9b71_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_21521058e7374fcd6fb8_0",
+            "source_claim_ids": [
+              "cl_3ac38827a6c834c0",
+              "cl_891a75bf227de286",
+              "cl_ffb78b4c35d9d763"
+            ],
+            "occurrence_count": 3,
+            "record_count": 3,
+            "declared_source_group_count": 3,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_3ac38827a6c834c0",
+              "native:cl_891a75bf227de286",
+              "native:cl_ffb78b4c35d9d763"
+            ],
+            "specificity": {
+              "node_count": 3,
+              "edge_count": 3,
+              "node_kind_count": 3,
+              "relation_type_count": 3,
+              "qualifier_leaf_count": 24,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 3,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_26bacc2ebdac97e89a95_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_32f49604b05a695ccbb1_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 23,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_45968c86a1fc2b422771_0",
+            "source_claim_ids": [
+              "cl_3ac38827a6c834c0",
+              "cl_ffb78b4c35d9d763"
+            ],
+            "occurrence_count": 2,
+            "record_count": 2,
+            "declared_source_group_count": 2,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_3ac38827a6c834c0",
+              "native:cl_ffb78b4c35d9d763"
+            ],
+            "specificity": {
+              "node_count": 4,
+              "edge_count": 4,
+              "node_kind_count": 4,
+              "relation_type_count": 4,
+              "qualifier_leaf_count": 25,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 4,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "source_locator",
+              "unit"
+            ]
+          },
+          {
+            "id": "pattern_46486ed4040b208acc94_0",
+            "source_claim_ids": [
+              "cl_1f99dcabac014eb2",
+              "cl_a53876a838fc1477",
+              "cl_b590fb8f91403cdf"
+            ],
+            "occurrence_count": 3,
+            "record_count": 3,
+            "declared_source_group_count": 3,
+            "source_groups": [
+              "unit:un_45af11d9aa3ad47e",
+              "unit:un_d46a2ed34742fae2",
+              "unit:un_f3ad92530152e78f"
+            ],
+            "domain_count": 0,
+            "source_independence_verified": false,
+            "unknown_domain_record_ids": [
+              "native:cl_1f99dcabac014eb2",
+              "native:cl_a53876a838fc1477",
+              "native:cl_b590fb8f91403cdf"
+            ],
+            "specificity": {
+              "node_count": 3,
+              "edge_count": 3,
+              "node_kind_count": 3,
+              "relation_type_count": 3,
+              "qualifier_leaf_count": 22,
+              "labeled_node_count": 0,
+              "lexical_identity_count": 3,
+              "interpretation": "retained_detail_counts_not_a_probability_or_universality_inverse"
+            },
+            "core_claim_vertices": 0,
+            "edge_predicates": [
+              "native_provenance:observations",
+              "native_provenance:units",
+              "unit"
+            ]
+          }
+        ],
+        "candidate_sample_limit": 12,
+        "motifs_with_core_claim_vertices": 0,
+        "motifs_with_multiple_core_claim_vertices": 0,
+        "source_independence_verified": false,
+        "semantic_accuracy": null
+      },
+      "semantics": {
+        "authoritative_store": "source Claim + Assessment",
+        "projection_persistence": "recomputable_view_only",
+        "ranking_is_proof": false,
+        "match_is_inference": false,
+        "source_scope_verified": false,
+        "semantic_accuracy": null,
+        "graph_mutations_applied": 0,
+        "claims_promoted": 0,
+        "motif_renaming": "none; exact labels of explicit projected view"
+      }
+    }
+  },
+  "coverage_limits": [
+    "sampled observed-active subset only; other source claims retained in snapshot",
+    "unit grouping is a declared grouping assumption, not verified independent support",
+    "no domain labels inferred; unknown domains remain unknown",
+    "bounded motif enumeration and search may be incomplete",
+    "source entity provenance may enlarge a selected claim view",
+    "no independent gold labels or semantic accuracy measure"
+  ],
+  "graph_mutations_applied": 0,
+  "claims_promoted": 0,
+  "native_build_performed": false,
+  "snapshot_load_seconds": 0.140797
+}
