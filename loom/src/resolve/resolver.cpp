@@ -60,16 +60,6 @@ double jaccard(const std::set<std::string>& a, const std::set<std::string>& b) {
   return static_cast<double>(inter) / static_cast<double>(a.size() + b.size() - inter);
 }
 
-double cosine(const std::map<std::string, double>& a, const std::map<std::string, double>& b) {
-  double dot = 0, na = 0, nb = 0;
-  for (const auto& [k, v] : a) {
-    na += v * v;
-    if (auto it = b.find(k); it != b.end()) dot += v * it->second;
-  }
-  for (const auto& [k, v] : b) nb += v * v;
-  return na > 0 && nb > 0 ? dot / std::sqrt(na * nb) : 0.0;
-}
-
 // One word without inner capitals or digits: a name that is also a common word.
 bool plain_word(std::string_view label) {
   if (label.empty() || label.find(' ') != std::string_view::npos) return false;

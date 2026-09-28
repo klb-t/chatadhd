@@ -389,6 +389,22 @@
   {
    "kind": "option",
    "level": 3
+  },
+  {
+   "kind": "foundation",
+   "level": 1
+  },
+  {
+   "kind": "branch",
+   "level": 2
+  },
+  {
+   "kind": "feature",
+   "level": 2
+  },
+  {
+   "kind": "domain",
+   "level": 2
   }
  ],
  "enums": {
@@ -1091,6 +1107,22 @@
   {
    "name": "anchors_on",
    "category": "structural"
+  },
+  {
+   "name": "about",
+   "inverse": "subject_of",
+   "category": "provenance"
+  },
+  {
+   "name": "uses_foundation",
+   "inverse": "foundation_of",
+   "category": "structural"
+  },
+  {
+   "name": "bridges",
+   "inverse": "bridges",
+   "category": "semantic",
+   "symmetric": true
   }
  ],
  "temporal_slots": [

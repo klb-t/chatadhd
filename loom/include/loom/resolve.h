@@ -52,6 +52,8 @@
 #include "loom/util/json.h"
 
 namespace loom {
+class EmbeddingProvider;
+
 namespace knowledge {
 struct StageContext;
 }
@@ -157,6 +159,153 @@ struct Conflict {
 Status calibrate(const kb::Pack& pack, std::vector<model::Claim>& claims);
 // Marks contested claims (status) and returns the conflicts.
 Result<std::vector<Conflict>> detect_conflicts(std::vector<model::Claim>& claims);
+
+// ── Vector layer (project attribution, similarity) ──────────────────
+// One input to a vector space: text by default, or a media item by
+// reference for a multimodal embedder (text + image + audio/video in one
+// space). Vectors are cached by content hash + model id.
+struct EmbedInput {
+  std::string id;
+  std::string modality = "text";  // text | image | audio | video
+  std::string text;               // text modality (also a caption for media)
+  std::string blob;               // media reference (path / blob id), provider-specific
+  std::string content_hash;       // sha256 hex of the content ("" = of `text`)
+};
+// Sparse, l2-normalised vector (dense embeddings use keys "#0", "#1", ...).
+using SparseVec = std::map<std::string, double>;
+double cosine(const SparseVec& a, const SparseVec& b);
+
+class VectorSpace {
+ public:
+  virtual ~VectorSpace() = default;
+  // "tfidf" | "embedding:<model id>" — recorded on every claim it produced.
+  virtual std::string method() const = 0;
+  virtual std::vector<std::string> modalities() const = 0;
+  // Corpus statistics (TF-IDF idf); embeddings ignore it.
+  virtual Status fit(const std::vector<EmbedInput>& corpus) = 0;
+  // One vector per input; an input of a modality the space lacks -> empty vector.
+  virtual Result<std::vector<SparseVec>> vectors(const std::vector<EmbedInput>& inputs) = 0;
+};
+
+// Offline default: TF-IDF over normalizer match keys (PL + EN, glossary):
+// smooth idf ln((1+n)/(1+df)) + 1, raw tf, l2 norm. Text only.
+std::unique_ptr<VectorSpace> make_tfidf_space(std::shared_ptr<const kb::Pack> pack);
+
+// A multimodal embedding capability (ProviderRegistry resource "embedding",
+// capability "embed", constraints {"modalities":[...]}), e.g. a Google
+// multimodal embedding model. Text-only EmbeddingProviders (selector.h)
+// plug in through embedder_from_text_provider().
+class MultimodalEmbedder {
+ public:
+  virtual ~MultimodalEmbedder() = default;
+  virtual std::string model_id() const = 0;
+  virtual std::vector<std::string> modalities() const = 0;
+  virtual Result<std::vector<std::vector<float>>> embed(const std::vector<EmbedInput>& inputs) = 0;
+};
+std::shared_ptr<MultimodalEmbedder> embedder_from_text_provider(std::shared_ptr<EmbeddingProvider> provider);
+
+// Vectors keyed by (content hash, model id). The memory cache serialises to
+// JSON so a stage can persist it next to the data directory.
+class EmbeddingCache {
+ public:
+  virtual ~EmbeddingCache() = default;
+  virtual std::optional<std::vector<float>> get(std::string_view content_hash, std::string_view model) const = 0;
+  virtual void put(std::string_view content_hash, std::string_view model, std::vector<float> v) = 0;
+};
+class MemoryEmbeddingCache : public EmbeddingCache {
+ public:
+  std::optional<std::vector<float>> get(std::string_view content_hash, std::string_view model) const override;
+  void put(std::string_view content_hash, std::string_view model, std::vector<float> v) override;
+  std::size_t size() const noexcept { return m_.size(); }
+  Json to_json() const;  // {"<model>\x1f<hash>": [floats]}
+  static MemoryEmbeddingCache from_json(const Json& j);
+
+ private:
+  std::map<std::string, std::vector<float>, std::less<>> m_;
+};
+std::unique_ptr<VectorSpace> make_embedding_space(std::shared_ptr<MultimodalEmbedder> embedder,
+                                                  std::shared_ptr<EmbeddingCache> cache = nullptr);
+
+// ── Project attribution (units that never name their project) ───────
+// Profiles: one vector per project from its confidently attributed units
+// (units that name it) — their text, the labels of the entities they
+// mention (components, symbols, paths, architecture terms), principles and
+// the project's aliases. Every unattributed unit is scored against every
+// profile: score = w_cosine * cosine + w_context * context, where context
+// combines temporal neighbours (exp(-days / time_scale) to the project's
+// nearest unit), the same Claude project / gizmo, and shared rare
+// identifiers (entities seen in <= rare_df units). Fixpoint: units above
+// tau_confident and unambiguous join their project's profile; repeat
+// (bounded, deterministic). Final pass: every candidate >= tau and >=
+// ambiguity * best is chosen — ambiguous units keep several (multi-label).
+// Output: an `about` claim per chosen target (evidence inferred, origin
+// system, calibrated confidence, Expected Property "the unit mentions >= k
+// terms of P", competing alternatives with scores, method recorded), and
+// for an unambiguous unit inferred copies of its claims re-subjected to the
+// project (original subject in qualifiers.extra.original_subject, the
+// original and the `about` claim as premises).
+//
+// Shared foundations (multi-label): an entity (component, concept, protocol,
+// storage, ...) used by >= 2 projects becomes a foundation entity (kind
+// "foundation"); the entity is `instance_of` it and every project
+// `uses_foundation` it (derived, origin system). Units whose best match is a
+// foundation are `about` the foundation, and so reach every project using it.
+// Small project entities whose profile matches another project's profile
+// (>= alias_tau, unambiguous) are inferred to be the same project: an
+// inferred `same_as` claim and their aliases carried over (method "inferred").
+struct AttributionConfig {
+  // Scores are small on short texts (cosines of TF-IDF vectors), so the
+  // fixpoint accepts by MARGIN over the runner-up, not by absolute level.
+  int max_passes = 64;  // one unit per project per pass: bounded by the unit count
+  double tau = 0.06;            // lowest score that may be chosen at all
+  double tau_confident = 0.08;  // lowest score a fixpoint pass accepts ...
+  double margin = 1.5;          // ... when best >= margin * runner-up
+  double ambiguity = 0.8;       // final pass: every candidate >= ambiguity * best is kept
+  double min_cosine = 0.1;      // content evidence needed (or shared rare identifiers in the final pass)
+  double w_cosine = 0.65;
+  double w_context = 0.35;
+  double time_scale_days = 45.0;
+  int rare_df = 3;
+  int min_shared_terms = 2;
+  bool foundations = true;
+  double alias_tau = 0.2;
+  int alias_max_units = 3;
+  // policy/thresholds.json "attribution" (missing keys keep the defaults)
+  static AttributionConfig from_policy(const kb::Pack& pack);
+};
+
+struct AttributionCandidate {
+  std::string target;  // project / foundation entity id
+  std::string kind;    // project | foundation
+  double score = 0.0;
+  double cosine = 0.0;
+  double context = 0.0;
+  std::vector<std::string> shared;  // shared rare identifiers (labels)
+  Json to_json() const;
+};
+struct UnitAttribution {
+  std::string unit;
+  std::string subject;                     // the unit's document entity
+  std::vector<AttributionCandidate> candidates;  // best first
+  std::vector<std::string> chosen;         // targets (several = ambiguous / multi-label)
+  int pass = 0;                            // fixpoint pass that settled it (0 = final pass)
+  Json to_json() const;
+};
+struct AttributionResult {
+  std::string method;                      // vector space used
+  std::vector<UnitAttribution> units;
+  std::vector<model::Entity> foundations;
+  std::vector<model::Entity> updated_entities;  // projects that gained inferred aliases
+  std::vector<model::Claim> claims;        // about, uses_foundation, instance_of, inferred same_as
+  std::vector<model::Claim> resubjected;   // inferred copies on the attributed project
+  std::map<std::string, std::string> subject_of_unit;  // unit -> project (unambiguous only)
+  Json stats = Json::object();
+  Json to_json() const;
+};
+Result<AttributionResult> attribute_units(const kb::Pack& pack, const std::vector<model::Entity>& entities,
+                                          const std::vector<model::Claim>& claims,
+                                          const std::vector<model::Observation>& observations, VectorSpace& space,
+                                          const AttributionConfig& cfg);
 
 // knowledge.resolve stage: resolve the run's mention entities, remap claims,
 // code lineage for snapshots vs git history (config.repo), lineage claims.

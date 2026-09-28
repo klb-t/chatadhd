@@ -564,6 +564,22 @@ const char* const kPackChunks1[] = {
   {
    "kind": "option",
    "level": 3
+  },
+  {
+   "kind": "foundation",
+   "level": 1
+  },
+  {
+   "kind": "branch",
+   "level": 2
+  },
+  {
+   "kind": "feature",
+   "level": 2
+  },
+  {
+   "kind": "domain",
+   "level": 2
   }
  ],
  "enums": {
@@ -734,7 +750,8 @@ const char* const kPackChunks1[] = {
   {
    "name": "contradicts",
    "inverse": "contradicts",
-   "category": "semantic",
+   "cat)LOOMKB",
+    R"LOOMKB(egory": "semantic",
    "symmetric": true
   },
   {
@@ -744,8 +761,7 @@ const char* const kPackChunks1[] = {
   },
   {
    "name": "states_principle",
-   "inverse":)LOOMKB",
-    R"LOOMKB( "principle_stated_in",
+   "inverse": "principle_stated_in",
    "category": "semantic"
   },
   {
@@ -1197,7 +1213,8 @@ const char* const kPackChunks1[] = {
   },
   {
    "name": "has_experiment",
-   "category": "structural",
+)LOOMKB",
+    R"LOOMKB(   "category": "structural",
    "inverse": "experiment_of"
   },
   {
@@ -1206,8 +1223,7 @@ const char* const kPackChunks1[] = {
   },
   {
    "name": "has_paper",
-   "category": "structura)LOOMKB",
-    R"LOOMKB(l",
+   "category": "structural",
    "inverse": "paper_of"
   },
   {
@@ -1268,6 +1284,22 @@ const char* const kPackChunks1[] = {
   {
    "name": "anchors_on",
    "category": "structural"
+  },
+  {
+   "name": "about",
+   "inverse": "subject_of",
+   "category": "provenance"
+  },
+  {
+   "name": "uses_foundation",
+   "inverse": "foundation_of",
+   "category": "structural"
+  },
+  {
+   "name": "bridges",
+   "inverse": "bridges",
+   "category": "semantic",
+   "symmetric": true
   }
  ],
  "temporal_slots": [
@@ -6664,6 +6696,577 @@ const char* const kPackChunks8[] = {
     },
     {
      "p": "sounds good",
+     "w": 1
+    }
+   ]
+  },
+  "bridge": {
+   "d)LOOMKB",
+    R"LOOMKB(escription": "An explicit bridging statement between two domains (\"X is like Y\", \"ta sama reguła co w ...\"): with concepts of two domains in the same message it is a cross-domain association (analogous_to / bridges).",
+   "phrases": [
+    {
+     "p": "jak w",
+     "w": 1.5
+    },
+    {
+     "p": "tak jak",
+     "w": 1.5
+    },
+    {
+     "p": "to samo co",
+     "w": 2
+    },
+    {
+     "p": "ta sama reguła",
+     "w": 2.5
+    },
+    {
+     "p": "ten sam wzorzec",
+     "w": 2.5
+    },
+    {
+     "p": "analogi*",
+     "w": 2.5
+    },
+    {
+     "p": "przypomina",
+     "w": 1.5
+    },
+    {
+     "p": "odpowiada",
+     "w": 1.5
+    },
+    {
+     "p": "odpowiednik",
+     "w": 2
+    },
+    {
+     "p": "izomorfi*",
+     "w": 2.5
+    },
+    {
+     "p": "jest jak",
+     "w": 2
+    },
+    {
+     "p": "like in",
+     "w": 1.5
+    },
+    {
+     "p": "just as",
+     "w": 2
+    },
+    {
+     "p": "the same as",
+     "w": 2
+    },
+    {
+     "p": "analog*",
+     "w": 2.5
+    },
+    {
+     "p": "mirrors",
+     "w": 2
+    },
+    {
+     "p": "isomorphic",
+     "w": 2.5
+    },
+    {
+     "p": "corresponds to",
+     "w": 2
+    },
+    {
+     "p": "is like",
+     "w": 2
+    },
+    {
+     "p": "maps onto",
+     "w": 2
+    },
+    {
+     "p": "same pattern",
+     "w": 2.5
+    },
+    {
+     "p": "same rule",
+     "w": 2.5
+    }
+   ]
+  },
+  "domain.philosophy": {
+   "description": "Domain terms: philosophy.",
+   "phrases": [
+    {
+     "p": "filozofi*",
+     "w": 2
+    },
+    {
+     "p": "philosoph*",
+     "w": 2
+    },
+    {
+     "p": "epistemolog*",
+     "w": 2
+    },
+    {
+     "p": "ontolog*",
+     "w": 2
+    },
+    {
+     "p": "etyk*",
+     "w": 1.5
+    },
+    {
+     "p": "ethic*",
+     "w": 1.5
+    },
+    {
+     "p": "wartości",
+     "w": 1
+    },
+    {
+     "p": "values",
+     "w": 1
+    },
+    {
+     "p": "prawda",
+     "w": 1
+    },
+    {
+     "p": "truth",
+     "w": 1
+    },
+    {
+     "p": "wolna wola",
+     "w": 2
+    },
+    {
+     "p": "free will",
+     "w": 2
+    },
+    {
+     "p": "świadomość",
+     "w": 1.5
+    },
+    {
+     "p": "consciousness",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.physics": {
+   "description": "Domain terms: physics.",
+   "phrases": [
+    {
+     "p": "fizyk*",
+     "w": 2
+    },
+    {
+     "p": "physic*",
+     "w": 2
+    },
+    {
+     "p": "entropi*",
+     "w": 2
+    },
+    {
+     "p": "entropy",
+     "w": 2
+    },
+    {
+     "p": "termodynami*",
+     "w": 2
+    },
+    {
+     "p": "thermodynamic*",
+     "w": 2
+    },
+    {
+     "p": "energi*",
+     "w": 1
+    },
+    {
+     "p": "energy",
+     "w": 1
+    },
+    {
+     "p": "kwantow*",
+     "w": 2
+    },
+    {
+     "p": "quantum",
+     "w": 2
+    },
+    {
+     "p": "pole grawitacyjne",
+     "w": 2
+    },
+    {
+     "p": "gravity",
+     "w": 1.5
+    },
+    {
+     "p": "grawitacj*",
+     "w": 1.5
+    },
+    {
+     "p": "nieodwracalno*",
+     "w": 1.5
+    },
+    {
+     "p": "irreversib*",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.mathematics": {
+   "description": "Domain terms: mathematics.",
+   "phrases": [
+    {
+     "p": "matematy*",
+     "w": 2
+    },
+    {
+     "p": "mathemati*",
+     "w": 2
+    },
+    {
+     "p": "twierdzeni*",
+     "w": 1.5
+    },
+    {
+     "p": "theorem",
+     "w": 1.5
+    },
+    {
+     "p": "dowód",
+     "w": 1
+    },
+    {
+     "p": "proof",
+     "w": 1
+    },
+    {
+     "p": "izomorfizm*",
+     "w": 2
+    },
+    {
+     "p": "isomorphism",
+     "w": 2
+    },
+    {
+     "p": "topologi*",
+     "w": 2
+    },
+    {
+     "p": "topology",
+     "w": 2
+    },
+    {
+     "p": "kategori* teori*",
+     "w": 2
+    },
+    {
+     "p": "category theory",
+     "w": 2
+    },
+    {
+     "p": "morfizm*",
+     "w": 2
+    },
+    {
+     "p": "morphism",
+     "w": 2
+    },
+    {
+     "p": "gödel*",
+     "w": 2
+    },
+    {
+     "p": "godel*",
+     "w": 2
+    }
+   ]
+  },
+  "domain.ai_alignment": {
+   "description": "Domain terms: AI and alignment.",
+   "phrases": [
+    {
+     "p": "alignment",
+     "w": 2
+    },
+    {
+     "p": "ai safety",
+     "w": 2
+    },
+    {
+     "p": "bezpieczeństwo ai",
+     "w": 2
+    },
+    {
+     "p": "reward",
+     "w": 1
+    },
+    {
+     "p": "nagrod*",
+     "w": 1
+    },
+    {
+     "p": "model językowy",
+     "w": 1.5
+    },
+    {
+     "p": "language model",
+     "w": 1.5
+    },
+    {
+     "p": "llm",
+     "w": 1.5
+    },
+    {
+     "p": "agent*",
+     "w": 1
+    },
+    {
+     "p": "superinteligencj*",
+     "w": 2
+    },
+    {
+     "p": "superintelligence",
+     "w": 2
+    },
+    {
+     "p": "korygowalno*",
+     "w": 2
+    },
+    {
+     "p": "corrigib*",
+     "w": 2
+    }
+   ]
+  },
+  "domain.software": {
+   "description": "Domain terms: software engineering.",
+   "phrases": [
+    {
+     "p": "kod",
+     "w": 1
+    },
+    {
+     "p": "code",
+     "w": 1
+    },
+    {
+     "p": "moduł*",
+     "w": 1
+    },
+    {
+     "p": "module",
+     "w": 1
+    },
+    {
+     "p": "architektur*",
+     "w": 1.5
+    },
+    {
+     "p": "architecture",
+     "w": 1.5
+    },
+    {
+     "p": "api",
+     "w": 1
+    },
+    {
+     "p": "adapter*",
+     "w": 1.5
+    },
+    {
+     "p": "interfejs*",
+     "w": 1
+    },
+    {
+     "p": "interface",
+     "w": 1
+    },
+    {
+     "p": "provider*",
+     "w": 1.5
+    },
+    {
+     "p": "refaktor*",
+     "w": 1.5
+    },
+    {
+     "p": "refactor*",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.law": {
+   "description": "Domain terms: law.",
+   "phrases": [
+    {
+     "p": "sąd",
+     "w": 1.5
+    },
+    {
+     "p": "court",
+     "w": 1.5
+    },
+    {
+     "p": "ustaw*",
+     "w": 1.5
+    },
+    {
+     "p": "statute",
+     "w": 1.5
+    },
+    {
+     "p": "termin procesow*",
+     "w": 2
+    },
+    {
+     "p": "pozew",
+     "w": 2
+    },
+    {
+     "p": "lawsuit",
+     "w": 2
+    },
+    {
+     "p": "kodeks",
+     "w": 1.5
+    },
+    {
+     "p": "art.",
+     "w": 1
+    }
+   ]
+  },
+  "domain.music": {
+   "description": "Domain terms: music.",
+   "phrases": [
+    {
+     "p": "muzyk*",
+     "w": 1.5
+    },
+    {
+     "p": "music",
+     "w": 1.5
+    },
+    {
+     "p": "tonacj*",
+     "w": 2
+    },
+    {
+     "p": "key of",
+     "w": 1
+    },
+    {
+     "p": "akord*",
+     "w": 1.5
+    },
+    {
+     "p": "chord*",
+     "w": 1.5
+    },
+    {
+     "p": "melodi*",
+     "w": 1.5
+    },
+    {
+     "p": "rytm*",
+     "w": 1.5
+    },
+    {
+     "p": "rhythm",
+     "w": 1.5
+    },
+    {
+     "p": "utw*r",
+     "w": 1
+    }
+   ]
+  },
+  "domain.biology": {
+   "description": "Domain terms: biology.",
+   "phrases": [
+    {
+     "p": "biolog*",
+     "w": 2
+    },
+    {
+     "p": "ewolucj*",
+     "w": 2
+    },
+    {
+     "p": "evolution",
+     "w": 2
+    },
+    {
+     "p": "gen*",
+     "w": 0.5
+    },
+    {
+     "p": "dobór naturalny",
+     "w": 2
+    },
+    {
+     "p": "natural selection",
+     "w": 2
+    },
+    {
+     "p": "organizm*",
+     "w": 1.5
+    },
+    {
+     "p": "organism*",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.economics": {
+   "description": "Domain terms: economics.",
+   "phrases": [
+    {
+     "p": "ekonomi*",
+     "w": 2
+    },
+    {
+     "p": "economic*",
+     "w": 2
+    },
+    {
+     "p": "koszt*",
+     "w": 1
+    },
+    {
+     "p": "cost*",
+     "w": 1
+    },
+    {
+     "p": "rynek",
+     "w": 1.5
+    },
+    {
+     "p": "market*",
+     "w": 1.5
+    },
+    {
+     "p": "inflacj*",
+     "w": 2
+    },
+    {
+     "p": "inflation",
+     "w": 2
+    },
+    {
+     "p": "pieniądze",
+     "w": 1
+    },
+    {
+     "p": "money",
      "w": 1
     }
    ]
