@@ -204,6 +204,16 @@ if(LOOM_BUILD_TESTS)
       add_test(NAME compat.${_name} COMMAND ${Python3_EXECUTABLE} ${_py})
       set_tests_properties(compat.${_name} PROPERTIES ENVIRONMENT "${_loom_compat_env}" TIMEOUT 600)
     endforeach()
+    # Offline research mechanism/protocol checks, separate from quality gates.
+    # These exercise no model service and never open the real holdout key.
+    add_test(NAME research.structure
+      COMMAND ${Python3_EXECUTABLE} -m unittest discover
+        -s ${LOOM_ROOT}/tools/structure -p "test_*.py")
+    add_test(NAME research.independent_protocol
+      COMMAND ${Python3_EXECUTABLE} -m unittest discover
+        -s ${LOOM_ROOT}/tools/eval -p "test_independent_cases.py")
+    set_tests_properties(research.structure research.independent_protocol PROPERTIES
+      ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1" TIMEOUT 60)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
   endif()

@@ -66,7 +66,11 @@ struct Row {
   std::string date;
   // Working state across passes.
   std::set<std::string> alias_projects;
-  int alias_hits = 0, trap_hits = 0, version_hits = 0, code_hits = 0;
+  // Keep the existing score transform while exposing the distinct channels.
+  // alias_hits is LEGACY combined alias+principle evidence, not identity alone.
+  int alias_hits = 0, identity_alias_hits = 0, principle_hits = 0;
+  int trap_hits = 0, version_hits = 0, code_hits = 0;
+  bool identity_source_available = false;
   std::string trap_reason;
   Json features = Json::object();
   Json reasons = Json::array();
@@ -189,7 +193,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
       profile = std::move(*p);
     }
   }
-  AliasIndex alias_idx = AliasIndex::from_profile(profile);
+  AliasIndex alias_idx = AliasIndex::from_profile(profile, alias_context_window_tokens(*pack_));
   kb::Normalizer norm(*pack_);
 
   const Json& self = pack_->profile("self");
@@ -237,7 +241,8 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   }
   int max_passes = cfg.max_passes > 0 ? std::min(cfg.max_passes, max_expansion_passes) : max_expansion_passes;
 
-  Json fp{{"profile", profile.input_hash}, {"pack", pack_->hash()}, {"cfg", cfg.to_json()}};
+  Json fp{{"profile", profile.input_hash}, {"pack", pack_->hash()}, {"cfg", cfg.to_json()},
+          {"scoring_evidence_version", 2}};
   std::string run_id = "run_" + Sha256::hex(json::canonical(fp)).substr(0, 16);
 
   // ── Load every unit + its sketch ────────────────────────────────────
@@ -274,8 +279,12 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     if (progress) progress("score.identity", idx_i, static_cast<std::int64_t>(rows.size()), row.unit.unit.id);
     const CatalogUnit& cu = row.unit;
 
-    Json mentions = cu.mentions;  // fallback: scan-time mentions
+    // Stored mentions do not retain the full local context or the profile
+    // that licensed them. If neither original nor retained bytes can be read,
+    // do not present stale scan-time identity/principle hits as verified.
+    Json mentions = Json::array();
     if (auto raw = read_unit(cu.unit.id)) {
+      row.identity_source_available = true;
       std::string prose = reextract_prose(cu, *raw);
       std::string folded = norm.fold(prose.substr(0, static_cast<std::size_t>(std::min<std::int64_t>(
                                         kSketchByteCap, static_cast<std::int64_t>(prose.size())))));
@@ -295,12 +304,28 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
       }
       if (kind == "alias" || kind == "principle") {
         ++row.alias_hits;
+        if (kind == "alias") ++row.identity_alias_hits; else ++row.principle_hits;
         std::string key = json::get_string(mj, "key");
         if (!key.empty()) row.alias_projects.insert(key);
       } else if (kind == "version") {
-        ++row.version_hits;
+        // Version evidence always needs a nearby accepted identity, even if
+        // future mention producers supply their own version annotations.
+        auto offset = json::get_int(mj, "offset", -1);
+        if (offset < 0) continue;
+        for (const auto& anchor : mentions) {
+          if (json::get_string(anchor, "kind") != "alias" || json::get_bool(anchor, "trap")) continue;
+          auto anchor_offset = json::get_int(anchor, "offset", -1);
+          if (anchor_offset < 0) continue;
+          auto distance = anchor_offset > offset ? anchor_offset - offset : offset - anchor_offset;
+          if (distance <= 80) {
+            ++row.version_hits;
+            break;
+          }
+        }
       }
     }
+    // Legacy code_evidence also uses the combined channel; no weight/model
+    // recalibration is implied by adding the diagnostic channel counts.
     if (cu.n_code_chars > 0 && row.alias_hits > 0) row.code_hits = 1;
   }
 
@@ -357,7 +382,13 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
 
   auto set_base_features = [&](Row& row) {
     std::string folded_title = norm.fold(row.title);
-    bool title_hit = !alias_idx.find(folded_title, 5).empty();
+    auto title_mentions = alias_idx.find(folded_title, 5);
+    bool title_hit = std::any_of(title_mentions.begin(), title_mentions.end(), [](const Mention& m) { return !m.trap; });
+    row.features["identity_alias_hits"] = row.identity_alias_hits;
+    row.features["principle_hits"] = row.principle_hits;
+    row.features["identity_source_available"] = row.identity_source_available ? 1.0 : 0.0;
+    // id_hits and class_diversity retain their preexisting combined score
+    // semantics. The new raw counts have no bundled policy weights.
     row.features["id_hits"] = row.alias_hits > 0 ? 1.0 + std::log(static_cast<double>(row.alias_hits)) : 0.0;
     row.features["class_diversity"] = static_cast<double>(std::min<std::size_t>(row.alias_projects.size(), 5));
     row.features["version_mention"] = row.version_hits > 0 ? 1.0 : 0.0;
@@ -522,12 +553,13 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   for (auto& row : rows) compute_linear_and_label(row);
 
   // ── Persist scores ───────────────────────────────────────────────────
-  std::int64_t n_relevant = 0, n_candidate = 0, n_irrelevant = 0, n_traps = 0;
+  std::int64_t n_relevant = 0, n_candidate = 0, n_irrelevant = 0, n_traps = 0, n_identity_unavailable = 0;
   {
     auto lk = rt_.db().lock();
     for (auto& row : rows) {
       if (row.label == "relevant") ++n_relevant; else if (row.label == "candidate") ++n_candidate; else ++n_irrelevant;
       if (row.alias_hits == 0 && row.trap_hits > 0) ++n_traps;
+      if (!row.identity_source_available) ++n_identity_unavailable;
       std::vector<std::string> projects(row.alias_projects.begin(), row.alias_projects.end());
       Json projs = Json::array();
       for (auto& p : projects) projs.push_back(p);
@@ -540,6 +572,9 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   }
 
   return Json{{"run_id", run_id},
+              {"scoring_evidence_version", 2},
+              {"legacy_combined_features", Json::array({"id_hits", "class_diversity", "code_evidence"})},
+              {"identity_unavailable", n_identity_unavailable},
               {"relevant", n_relevant},
               {"candidate", n_candidate},
               {"irrelevant", n_irrelevant},

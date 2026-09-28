@@ -102,8 +102,8 @@ inline constexpr std::size_t kReadChunk = 256 * 1024;
 // One probe term of the self-profile, expanded from profiles/self.json (or a
 // ProfileConfig override): a project alias, a philosophy-probe anchor, or a
 // term discovered by expansion. Context checks are plain substring search
-// over the folded (lowercased, diacritics stripped) unit text -- the pack
-// data files write context cues as bare stems ("aplikacj"), not tokens.
+// over a bounded window around the occurrence in folded (lowercased,
+// diacritics stripped) text -- the pack writes cues as stems ("aplikacj").
 struct AliasTerm {
   std::string project;    // profile project id ("" for the philosophy probe)
   std::string surface;    // as written in the pack ("ChatADHD")
@@ -132,22 +132,26 @@ struct Mention {
 // pack when no profile was explicitly built yet).
 class AliasIndex {
  public:
-  static AliasIndex from_profile(const SelfProfile& profile);
+  static AliasIndex from_profile(const SelfProfile& profile, int context_window_tokens = 30);
   static AliasIndex from_pack(const kb::Pack& pack);
 
   // Every match against `folded_text` (already Normalizer::fold()-ed), valid
   // and trap alike, capped at `max_mentions` (traps count against the same
   // cap so a flooded trap unit does not starve real evidence). Offsets are
-  // byte offsets into `folded_text` (same length as the source text: fold()
-  // is not supposed to change byte length term-for-term in the callers that
-  // matter here, but callers should treat offsets as approximate display
-  // anchors, not exact source spans).
+  // byte offsets into `folded_text`. Folding CAN change byte lengths; these
+  // are approximate display anchors, never exact source spans. Ambiguous
+  // context uses at most context_window_tokens Unicode word tokens before
+  // and after this occurrence, rather than the entire conversation.
   std::vector<Mention> find(std::string_view folded_text, int max_mentions) const;
   const std::vector<AliasTerm>& terms() const noexcept { return terms_; }
 
  private:
   std::vector<AliasTerm> terms_;
+  int context_window_tokens_ = 30;
 };
+
+// Shared by scan's from_pack and score's explicit profile index.
+int alias_context_window_tokens(const kb::Pack& pack);
 
 // Builds the flat SelfProfile.terms/.projects JSON (see catalog.h's
 // SelfProfile doc comment) from profiles/self.json, the pack's principle
@@ -160,7 +164,8 @@ Json flatten_self_profile(const kb::Pack& pack, const kb::Normalizer& norm, cons
 // Folds `text` and searches for a version string near an alias mention
 // (self.json-style version_pattern is not present in this pack revision, so
 // a fixed heuristic regex-free scan is used: a token matching
-// [0-9]+(\.[0-9]+){1,2} within `window_chars` chars of any alias hit).
+// [0-9]+(\.[0-9]+){1,2} within `window_chars` folded-text bytes of a non-trap
+// kind="alias" hit). Principle probes and rejected aliases cannot bind versions.
 std::vector<Mention> find_version_mentions(std::string_view text, const std::vector<Mention>& alias_hits,
                                            int window_chars);
 

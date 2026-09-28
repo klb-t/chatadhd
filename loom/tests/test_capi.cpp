@@ -1,4 +1,4 @@
-// C ABI tests (capi_core fully; other areas: error shape while stubbed).
+// C ABI tests. Every fixture is offline unless it installs its own test transport.
 #include <doctest/doctest.h>
 
 #include <atomic>
@@ -33,6 +33,17 @@ bool is_error(const Json& j, const char* code = nullptr) {
 struct Ctx {
   loom::fsutil::TempDir dir;
   LoomContext* ctx = nullptr;
+  std::atomic<int> denied_http_requests{0};
+
+  static int deny_http(const char*, LoomHttpResponse* response, void* ud) {
+    static_cast<Ctx*>(ud)->denied_http_requests.fetch_add(1);
+    return loom_http_response_fail(response, LOOM_E_NETWORK, "unexpected HTTP request in offline C ABI test");
+  }
+
+  void restore_offline_transport() {
+    REQUIRE(loom_set_http_transport(ctx, deny_http, this) == LOOM_OK);
+  }
+
   Ctx() {
     std::string opts = Json{{"data_dir", dir.path().string()}, {"start_workers", false}}.dump();
     const char* err = nullptr;
@@ -42,8 +53,14 @@ struct Ctx {
       loom_free_string(err);
     }
     REQUIRE(ctx != nullptr);
+    restore_offline_transport();
   }
-  ~Ctx() { loom_shutdown(ctx); }
+  ~Ctx() {
+    loom_shutdown(ctx);
+    // Some APIs intentionally absorb transport failures; they must still fail
+    // this test if they attempted an unscripted request.
+    CHECK(denied_http_requests.load() == 0);
+  }
 };
 
 }  // namespace
@@ -228,7 +245,7 @@ TEST_SUITE("capi") {
     CHECK(is_error(take(loom_expand_graph(c.ctx, "{}", 2)), "invalid_argument"));
   }
 
-  TEST_CASE("wave-2 areas answer with a well-formed error while stubbed") {
+  TEST_CASE("unconfigured areas answer with well-formed results or errors offline") {
     Ctx c;
     struct Chunks {
       std::vector<std::string> chunks;
@@ -263,8 +280,7 @@ TEST_SUITE("capi") {
     for (const char* s : {loom_list_memory(c.ctx), loom_import_file(c.ctx, "/nonexistent.json", nullptr, nullptr, nullptr),
                           loom_export_conversation(c.ctx, "c_x", "json"), loom_select_context(c.ctx, "x", 2, 100),
                           loom_transcribe(c.ctx, "/x.wav", nullptr), loom_ocr(c.ctx, "/x.png", nullptr),
-                          loom_crypto_encrypt(c.ctx, "x"), loom_refresh_models(c.ctx),
-                          loom_github_sync(c.ctx, R"({"action":"status","repo":"a/b"})")}) {
+                          loom_crypto_encrypt(c.ctx, "x"), loom_refresh_models(c.ctx)}) {
       Json j = take(s);
       // Either a real result (once implemented) or a well-formed error.
       if (j.is_object() && j.contains("error")) {
@@ -275,24 +291,57 @@ TEST_SUITE("capi") {
   }
 
   TEST_CASE("platform HTTP transport injection round-trip") {
-    Ctx c;
     struct Platform {
       std::vector<std::string> requests;
+      bool fail = false;
     } plat;
+    Ctx c;  // The callback's state outlives the context, including early failure.
     auto send = [](const char* request_json, LoomHttpResponse* resp, void* ud) -> int {
-      static_cast<Platform*>(ud)->requests.emplace_back(request_json);
+      auto* platform = static_cast<Platform*>(ud);
+      platform->requests.emplace_back(request_json);
+      if (platform->fail) return loom_http_response_fail(resp, LOOM_E_NETWORK, "scripted offline failure");
       if (loom_http_response_begin(resp, 200, R"({"Content-Type":"application/json"})") != LOOM_OK) return LOOM_OK;
-      const char* part1 = "{\"hello\":";
-      const char* part2 = " \"world\"}";
+      const char* part1 = "[";
+      const char* part2 = "]";
       loom_http_response_write(resp, part1, std::strlen(part1));
       loom_http_response_write(resp, part2, std::strlen(part2));
       return LOOM_OK;
     };
-    CHECK(loom_set_http_transport(c.ctx, send, &plat) == LOOM_OK);
+    REQUIRE(loom_set_http_transport(c.ctx, send, &plat) == LOOM_OK);
     Json info = take(loom_info(c.ctx));
     CHECK(info["http_transport"] == "platform-callback");
-    CHECK(loom_set_http_transport(c.ctx, nullptr, nullptr) == LOOM_OK);
+
+    // This was an obsolete stub smoke call using the real default transport.
+    // Exercise the same C ABI -> GitHubSync -> HTTP path with a local response.
+    auto sync_dir = c.dir.path() / "empty_sync";
+    std::filesystem::create_directories(sync_dir);
+    std::string sync_request = Json{{"action", "status"}, {"repo", "a/b"},
+                                    {"local_path", sync_dir.string()}}.dump();
+    Json status = take(loom_github_sync(c.ctx, sync_request.c_str()));
+    REQUIRE_FALSE(status.contains("error"));
+    CHECK(status["files"] == Json::array());
+    REQUIRE(plat.requests.size() == 1);
+    Json request = Json::parse(plat.requests[0]);
+    CHECK(request["method"] == "GET");
+    CHECK(request["url"] == "https://api.github.com/repos/a/b/contents/?ref=main");
+    CHECK(request["body"] == "");
+    CHECK_FALSE(request["headers"].contains("Authorization"));
+
+    // A callback failure must be returned, never retried through a live fallback.
+    REQUIRE(loom_set_secret(c.ctx, "api_key", "sk-offline-test") == LOOM_OK);
+    REQUIRE(loom_set_config_json(c.ctx, R"({"base_url":"https://api.test"})") == LOOM_OK);
+    plat.fail = true;
+    Json failure = take(loom_refresh_models(c.ctx));
+    CHECK(is_error(failure, "network"));
+    CHECK(failure["error"]["message"] == "scripted offline failure");
+    REQUIRE(plat.requests.size() == 2);
+    CHECK(Json::parse(plat.requests[1])["url"] == "https://api.test/models");
+
+    REQUIRE(loom_set_http_transport(c.ctx, nullptr, nullptr) == LOOM_OK);
     CHECK(take(loom_info(c.ctx))["http_transport"] != "platform-callback");
+    // Verify the reset API without sending anything through its live transport.
+    c.restore_offline_transport();
+    CHECK(take(loom_info(c.ctx))["http_transport"] == "platform-callback");
   }
 
   TEST_CASE("C ABI boundary hardening: NULL args, invalid UTF-8, huge inputs") {

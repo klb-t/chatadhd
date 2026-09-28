@@ -123,6 +123,7 @@ const std::vector<Table>& tables() {
                 "    element_ordinal INTEGER NOT NULL DEFAULT -1,\n"
                 "    byte_offset INTEGER NOT NULL DEFAULT 0,\n"
                 "    done INTEGER NOT NULL DEFAULT 0,\n"
+                "    input_hash TEXT NOT NULL DEFAULT '',\n"
                 "    updated TEXT NOT NULL DEFAULT '',\n"
                 "    PRIMARY KEY (source_id, member)\n"
                 ")",
@@ -150,12 +151,18 @@ const std::vector<Table>& tables() {
 Status Catalog::ensure_schema(Database& db) {
   auto lk = db.lock();
   sql::Connection& c = db.conn();
-  if (c.has_table("loom_cat_units") && c.has_table("loom_cat_checkpoint") && c.has_table("loom_cat_links")) return {};
+  if (c.has_table("loom_cat_units") && c.has_table("loom_cat_checkpoint") && c.has_table("loom_cat_links") &&
+      c.has_column("loom_cat_checkpoint", "input_hash")) return {};
   sql::Txn txn(c);
   LOOM_TRY(txn.begin_status());
   for (const auto& t : tables()) {
     LOOM_TRY(c.exec(t.create));
     for (const char* ix : t.indexes) LOOM_TRY(c.exec(ix));
+  }
+  // Additive Loom-only migration. Old checkpoints intentionally have an empty
+  // fingerprint and must not suppress a scan under a new scanner/pack/sketch.
+  if (!c.has_column("loom_cat_checkpoint", "input_hash")) {
+    LOOM_TRY(c.exec("ALTER TABLE loom_cat_checkpoint ADD COLUMN input_hash TEXT NOT NULL DEFAULT ''"));
   }
   return txn.commit();
 }

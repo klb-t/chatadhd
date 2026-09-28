@@ -66,7 +66,7 @@ struct StageContext;
 
 namespace catalog {
 
-inline constexpr std::string_view kScannerVersion = "3";
+inline constexpr std::string_view kScannerVersion = "4";
 
 struct SketchParams {
   int top_k = 128;             // top-K normalised terms per unit

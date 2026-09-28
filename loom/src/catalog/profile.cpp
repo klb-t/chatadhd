@@ -5,7 +5,9 @@
 // read. A light best-effort repo scan adds "path" class terms when
 // ProfileConfig.repo is given (declared symbols/full parsing is a gap, noted
 // in the final report; paths alone already help precision on pasted code).
+#include <algorithm>
 #include <filesystem>
+#include <limits>
 #include <set>
 
 #include "catalog_internal.h"
@@ -122,13 +124,20 @@ Json flatten_self_profile(const kb::Pack& pack, const kb::Normalizer& norm, cons
   return Json{{"terms", terms}, {"projects", projects}};
 }
 
+int alias_context_window_tokens(const kb::Pack& pack) {
+  const Json* cat = json::find(pack.policy("thresholds"), "catalog");
+  auto value = cat ? json::get_int(*cat, "context_window_tokens", 30) : 30;
+  if (value < 0) return 0;
+  return static_cast<int>(std::min<std::int64_t>(value, std::numeric_limits<int>::max()));
+}
+
 AliasIndex AliasIndex::from_pack(const kb::Pack& pack) {
   kb::Normalizer norm(pack);
   Json flat = flatten_self_profile(pack, norm, ProfileConfig{});
   SelfProfile p;
   p.terms = flat["terms"];
   p.projects = flat["projects"];
-  return AliasIndex::from_profile(p);
+  return AliasIndex::from_profile(p, alias_context_window_tokens(pack));
 }
 
 }  // namespace loom::catalog::internal

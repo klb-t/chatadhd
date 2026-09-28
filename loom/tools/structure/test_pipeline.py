@@ -66,6 +66,29 @@ class PipelineTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 analyze({"turns": [], "entities": []}, pair_budget=invalid)
 
+    def test_scoped_binding_is_explicit_and_stays_untrusted(self):
+        output = analyze({"id": "c", "turns": [{"id": "t", "text":
+            "If motor is hot, then motor is stopped. Motor is hot."}],
+            "entities": [{"id": "motor", "aliases": ["motor"]}]}, pair_budget=0)
+        modes = {x["binding"]["mode"]: x for x in output["scope_projections"]}
+        self.assertEqual(set(modes), {"separate", "literal_within_scope"})
+        literal = modes["literal_within_scope"]
+        self.assertLess(len(literal["structure"]["nodes"]), len(modes["separate"]["structure"]["nodes"]))
+        self.assertTrue(literal["binding"]["cross_statement_symbols"])
+        self.assertFalse(literal["inference_eligible"])
+        self.assertFalse(literal["binding"]["identity_verified"])
+        self.assertEqual(output["reasoning"]["candidates"], [])
+
+    def test_scope_limit_preserves_all_source_extractions(self):
+        text = " ".join(["Motor is hot."] * 65)
+        output = analyze({"id": "c", "turns": [{"id": "t", "text": text}],
+                          "entities": [{"id": "motor", "aliases": ["Motor"]}]}, pair_budget=0)
+        self.assertEqual(output["coverage"]["recognized_envelopes"], 65)
+        self.assertEqual(len(output["scope_projection_limits"]), 2)
+        self.assertEqual(output["scope_projections"], [])
+        self.assertEqual(output["input"]["turns"][0]["text"], text)
+        self.assertEqual(output["comparison_budget"]["eligible_pairs"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

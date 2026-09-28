@@ -41,13 +41,16 @@ struct Stats {
   std::int64_t units = 0;
   std::int64_t units_new = 0;
   std::int64_t unchanged = 0;
+  std::int64_t refreshed = 0;
   std::int64_t versions = 0;
   std::int64_t bytes = 0;
   std::vector<std::string> warnings;
+  std::string input_hash;
   Json to_json() const {
     Json w = Json::array();
     for (auto& s : warnings) w.push_back(s);
-    return Json{{"units", units}, {"new", units_new}, {"unchanged", unchanged},
+    return Json{{"units", units}, {"new", units_new}, {"unchanged", unchanged}, {"refreshed", refreshed},
+                {"input_hash", input_hash},
                 {"versions", versions}, {"bytes", bytes}, {"warnings", w}};
   }
 };
@@ -92,20 +95,22 @@ Result<std::string> register_source(Database& db, std::string_view source_id, co
   return std::string(source_id);
 }
 
-Result<bool> checkpoint_done(Database& db, std::string_view source_id, std::string_view member) {
+Result<bool> checkpoint_done(Database& db, std::string_view source_id, std::string_view member,
+                             std::string_view input_hash) {
   auto lk = db.lock();
-  auto v = db.conn().query_int("SELECT done FROM loom_cat_checkpoint WHERE source_id = ? AND member = ?",
-                               std::string(source_id), std::string(member));
+  auto v = db.conn().query_int("SELECT done FROM loom_cat_checkpoint WHERE source_id = ? AND member = ? AND input_hash = ?",
+                               std::string(source_id), std::string(member), std::string(input_hash));
   if (!v) return Error(v.error());
   return v->has_value() && **v != 0;
 }
 
-Status mark_checkpoint(Database& db, std::string_view source_id, std::string_view member, bool done) {
+Status mark_checkpoint(Database& db, std::string_view source_id, std::string_view member, bool done,
+                        std::string_view input_hash) {
   auto lk = db.lock();
   return db.conn().run(
-      "INSERT OR REPLACE INTO loom_cat_checkpoint (source_id, member, element_ordinal, byte_offset, done, updated) "
-      "VALUES (?, ?, -1, 0, ?, ?)",
-      std::string(source_id), std::string(member), done ? 1 : 0, timeutil::utc_now_iso());
+      "INSERT OR REPLACE INTO loom_cat_checkpoint (source_id, member, element_ordinal, byte_offset, done, updated, input_hash) "
+      "VALUES (?, ?, -1, 0, ?, ?, ?)",
+      std::string(source_id), std::string(member), done ? 1 : 0, timeutil::utc_now_iso(), std::string(input_hash));
 }
 
 // One unit's identity, already resolved bytes/hash; ingest_unit() sketches,
@@ -126,11 +131,17 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
                    const std::string& source_id, PendingUnit&& pu, Stats& stats) {
   auto lk = db.lock();
   sql::Connection& c = db.conn();
-  auto existing = c.query_text("SELECT id FROM loom_cat_units WHERE content_hash = ? LIMIT 1", pu.content_hash);
+  auto existing = c.query_text("SELECT body FROM loom_cat_units WHERE content_hash = ? LIMIT 1", pu.content_hash);
   if (!existing) return Error(existing.error());
+  std::optional<CatalogUnit> existing_unit;
   if (*existing) {
-    ++stats.unchanged;
-    return {};
+    LOOM_TRY_ASSIGN(auto body, json::parse(**existing));
+    LOOM_TRY_ASSIGN(auto cu, CatalogUnit::from_json(body));
+    if (json::get_string(cu.unit.attrs, "catalog_scan_fingerprint") == stats.input_hash) {
+      ++stats.unchanged;
+      return {};
+    }
+    existing_unit = std::move(cu);
   }
 
   Sketch sketch = Sketch::build(pu.text.prose, pu.text.code, params, norm);
@@ -148,6 +159,23 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
   Json mentions_j = Json::array();
   for (auto& m : mentions) mentions_j.push_back(m.to_json());
 
+  if (existing_unit) {
+    // Rebuild derived retrieval evidence only. Keep the original source,
+    // locator, content identity, lineage, creation time and retained bytes.
+    auto& cu = *existing_unit;
+    cu.mentions = mentions_j;
+    cu.n_chars = sketch.n_chars;
+    cu.n_code_chars = sketch.n_code_chars;
+    cu.unit.lang = sketch.lang;
+    cu.unit.attrs["catalog_scan_fingerprint"] = stats.input_hash;
+    LOOM_TRY(c.run("UPDATE loom_cat_units SET sketch = ?, body = ?, lang = ? WHERE id = ?",
+                    json::dump(sketch.to_json()), json::dump(cu.to_json()), cu.unit.lang, cu.unit.id));
+    ++stats.units;
+    ++stats.refreshed;
+    stats.bytes += pu.bytes;
+    return {};
+  }
+
   model::Unit unit;
   unit.source = source_id;
   unit.kind = unit_kind_of(pu.kind);
@@ -157,6 +185,7 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
   unit.lang = sketch.lang;
   unit.bytes = pu.bytes;
   unit.id = model::Unit::make_id(source_id, pu.locator);
+  unit.attrs["catalog_scan_fingerprint"] = stats.input_hash;
 
   std::string prev_version;
   if (!pu.ext_id.empty()) {
@@ -374,7 +403,7 @@ Status scan_zip_source(Database& db, const AliasIndex& idx, const kb::Normalizer
     fs::path mp(e.name);
     if (skip_name(mp.filename().string()) || e.name.find("__MACOSX") != std::string::npos) continue;
     if (!force) {
-      LOOM_TRY_ASSIGN(bool done, checkpoint_done(db, source_id, e.name));
+      LOOM_TRY_ASSIGN(bool done, checkpoint_done(db, source_id, e.name, stats.input_hash));
       if (done) continue;
     }
     std::string ext = lower_ext(mp);
@@ -388,7 +417,7 @@ Status scan_zip_source(Database& db, const AliasIndex& idx, const kb::Normalizer
       stats.warnings.push_back(e.name + ": " + st.error().message);
       continue;
     }
-    LOOM_TRY(mark_checkpoint(db, source_id, e.name, true));
+    LOOM_TRY(mark_checkpoint(db, source_id, e.name, true, stats.input_hash));
   }
   return {};
 }
@@ -400,6 +429,8 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
   kb::Normalizer norm(*pack_);
   AliasIndex idx = AliasIndex::from_pack(*pack_);
   Stats stats;
+  stats.input_hash = Sha256::hex(json::canonical(Json{{"scanner_version", std::string(kScannerVersion)},
+      {"pack_hash", pack_->hash()}, {"sketch", cfg.sketch.to_json()}}));
 
   std::int64_t src_i = 0;
   std::int64_t total_src = static_cast<std::int64_t>(cfg.sources.size());
@@ -449,7 +480,7 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
         continue;
       }
       if (!cfg.force) {
-        LOOM_TRY_ASSIGN(bool done, checkpoint_done(rt_.db(), source_id, ""));
+        LOOM_TRY_ASSIGN(bool done, checkpoint_done(rt_.db(), source_id, "", stats.input_hash));
         if (done) continue;
       }
       auto reader = [&](const std::function<void(std::string_view)>& on_chunk) { return stream_file_chunks(file, on_chunk); };
@@ -461,7 +492,7 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
         stats.warnings.push_back(file.string() + ": " + st.error().message);
         continue;
       }
-      LOOM_TRY(mark_checkpoint(rt_.db(), source_id, "", true));
+      LOOM_TRY(mark_checkpoint(rt_.db(), source_id, "", true, stats.input_hash));
     }
   }
   return stats.to_json();

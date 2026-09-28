@@ -1,5 +1,13 @@
 # Codex continuation — 2026-09-28
 
+**Later research continuation:** start at
+[`research/PROGRAMME_2026-09-28.md`](research/PROGRAMME_2026-09-28.md).
+It contains the owner's subsequent thought-structure/topic requirements and
+links to independent experiments. The later native context correction is in
+[`research/NATIVE_CONTEXT_2026-09-28.md`](research/NATIVE_CONTEXT_2026-09-28.md):
+scanner 4 / pipeline 5, **62/63 CTest passing**, with the same 13/45 recall failure.
+The remainder below is the preceding checkpoint, retained as history.
+
 Working branch: `codex/loom-handoff-2026-09-28`, based on Claude's full Loom branch at `3219f88e7e90ab78eabeb80ef77bf7a7b55fecbc` (not the older Python-only main).
 
 Read `docs/HANDOFF_2026-09-28.md`, `CLAUDE.md`, and the owner requirements/conceptual model before continuing. The owner explicitly requested frequent GitHub checkpoints because conversations may become inaccessible.

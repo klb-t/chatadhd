@@ -7,6 +7,7 @@ into assessed Claims. Every result retains its source; no database is opened.
 from __future__ import annotations
 
 import argparse
+from collections import Counter, defaultdict
 from copy import deepcopy
 import hashlib
 from itertools import combinations
@@ -14,13 +15,14 @@ import json
 from pathlib import Path
 
 try:
-    from . import extract, structure_methods, topics
+    from . import extract, scoped_projection, structure_methods, topics
 except ImportError:
     import extract
+    import scoped_projection
     import structure_methods
     import topics
 
-VERSION = "source-structure-pipeline/1"
+VERSION = "source-structure-pipeline/2"
 
 
 def _hash(value):
@@ -43,6 +45,9 @@ def analyze(record: dict, *, policy=None, pair_budget=128) -> dict:
     retrieval and not a measurement of population-wide pattern frequency.
     """
     _budget(pair_budget, "pair_budget")
+    conversation_id = record.get("id") or "local_conversation_" + _hash(record)[:20]
+    if not isinstance(conversation_id, str):
+        raise ValueError("conversation id must be a string")
     segmentation = topics.analyze(record, policy)
     graph_context = segmentation["context_projection"]
     contexts = {c["observation_id"]: c for c in graph_context["contexts"]}
@@ -57,7 +62,7 @@ def analyze(record: dict, *, policy=None, pair_budget=128) -> dict:
             raise ValueError("segmentation source span mismatch")
         result = extract.extract_record({
             "id": observation["id"], "source_id": record.get("id"),
-            "conversation_id": record.get("id"), "scope_status": "candidate",
+            "conversation_id": conversation_id, "scope_status": "candidate",
             "scope_evidence": {"boundary": observation["boundary"],
                                "focus_evidence_observation_ids": deepcopy(observation["focus_evidence_observation_ids"])},
             "turn_id": source["turn_id"], "role": turn.get("role"),
@@ -102,22 +107,44 @@ def analyze(record: dict, *, policy=None, pair_budget=128) -> dict:
                                 "scope": deepcopy(candidate["scope"])})
         extractions.append(result)
     represented = [x for x in extractions if x["candidates"]]
-    comparisons, eligible_pairs = [], 0
-    for left, right in combinations(represented, 2):
-        if left["scope"]["segment_id"] == right["scope"]["segment_id"]:
+    sizes = Counter(x["scope"]["segment_id"] for x in represented)
+    eligible_pairs = (len(represented) ** 2 - sum(n ** 2 for n in sizes.values())) // 2
+    comparisons = []
+    if pair_budget and eligible_pairs:
+        for left, right in combinations(represented, 2):
+            if left["scope"]["segment_id"] == right["scope"]["segment_id"]:
+                continue
+            comparisons.append({
+                "left_observation_id": left["record_id"], "right_observation_id": right["record_id"],
+                "left_segment_id": left["scope"]["segment_id"],
+                "right_segment_id": right["scope"]["segment_id"],
+                "perspectives": {projection: extract.compare_extractions(left, right, projection=projection)
+                                 for projection in ("operations", "logical_candidates")},
+                "interpretation": "structural_analogy_candidate_not_identity_or_validity",
+                "confidence": None, "persistable_claim": False,
+            })
+            if len(comparisons) >= pair_budget:
+                break
+    # Keep both binding hypotheses available. The lexical-binding projection is
+    # explicitly conditional; unknown statements remain inside its source scope.
+    grouped = defaultdict(list)
+    for result in extractions:
+        grouped[result["scope"]["segment_id"]].append(result)
+    scopes, scope_limits = [], []
+    for segment_id, records in grouped.items():
+        if not any(item["candidates"] for item in records):
             continue
-        eligible_pairs += 1
-        if len(comparisons) >= pair_budget:
-            continue
-        comparisons.append({
-            "left_observation_id": left["record_id"], "right_observation_id": right["record_id"],
-            "left_segment_id": left["scope"]["segment_id"],
-            "right_segment_id": right["scope"]["segment_id"],
-            "perspectives": {projection: extract.compare_extractions(left, right, projection=projection)
-                             for projection in ("operations", "logical_candidates")},
-            "interpretation": "structural_analogy_candidate_not_identity_or_validity",
-            "confidence": None, "persistable_claim": False,
-        })
+        for binding in ("separate", "literal_within_scope"):
+            try:
+                scopes.append(scoped_projection.project_scope(records, binding))
+            except ValueError as exc:
+                # A bounded projection can refuse an oversized scope, but every
+                # extraction remains available above. Other errors are bugs or
+                # malformed evidence and must be surfaced to the caller.
+                if not str(exc).startswith("scope exceeds max_"):
+                    raise
+                scope_limits.append({"segment_id": segment_id, "binding": binding,
+                                     "reason": str(exc), "source_omitted": False})
     eligible = sum(e["coverage"]["eligible_characters"] for e in extractions)
     recognized = sum(e["coverage"]["recognized_envelope_characters"] for e in extractions)
     totals = {key: sum(e["coverage"][key] for e in extractions)
@@ -125,8 +152,12 @@ def analyze(record: dict, *, policy=None, pair_budget=128) -> dict:
     return {
         "version": VERSION, "input": deepcopy(record), "input_hash": _hash(record),
         "components": {"topics": topics.VERSION, "extraction": extract.VERSION,
-                       "methods": structure_methods.VERSION},
+                       "methods": structure_methods.VERSION, "scoped_projection": scoped_projection.VERSION},
+        "conversation_identity": {"id": conversation_id,
+                                  "origin": "supplied" if record.get("id") else "local_input_hash",
+                                  "existing_entity_identity_verified": False},
         "segmentation": segmentation, "extractions": extractions,
+        "scope_projections": scopes, "scope_projection_limits": scope_limits,
         "comparisons": comparisons,
         "comparison_budget": {"maximum_pairs": pair_budget, "eligible_pairs": eligible_pairs,
                               "evaluated_pairs": len(comparisons),
