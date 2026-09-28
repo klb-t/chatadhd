@@ -1,5 +1,12 @@
 # Current work checkpoint
 
+**Local execution is now the default:** owner said to leave the old Actions
+run alone and continue here. All four research suites pass locally: 387/387
+(350 structure + 10 independent + 12 graph-native + 15 candidate protocol).
+See `docs/research/LOCAL_EXECUTION_2026-09-28.md` (repo-root path) for commands
+and exact limits. Native C++ build prerequisites are still incomplete; direct
+OpenRouter access/key are unavailable here. No new live-model result is claimed.
+
 **Actions quota stop (2026-09-28):** owner reports 2,000/2,000 included
 minutes used, resetting 2026-10-01. Do not start or rerun Actions, increase
 budgets, or enable model requests. Save every checkpoint with `[skip ci]`;
