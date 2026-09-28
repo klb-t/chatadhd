@@ -39,10 +39,18 @@ injection or a private file written through an appropriate local credential UI.
 Before the first paid POST of an invocation, `GET /api/v1/key` must establish a
 finite **total** key limit no greater than the manifest budget, sufficient
 remaining limit for every untouched reservation, no periodic limit reset,
-`is_management_key: false`, and `include_byok_in_limit: true`. A management or
-provisioning key is refused. Use a dedicated inference key for the pilot, without
-concurrent unrelated requests. This is a deliberately stricter experiment guard,
-not a general OpenRouter requirement. The runner never changes key settings.
+`is_management_key: false`, and a boolean `include_byok_in_limit`. A management
+or provisioning key is refused. An inclusion value of false is accepted only
+when `byok_usage` is present and zero. In that mode each chat request must include
+`usage: {"include": true}`; each response must explicitly report non-BYOK billing
+and a valid cost. Unknown billing or an unexpected BYOK flag stops the batch.
+Zero historical BYOK usage does not prove that upstream keys are disabled. This
+is a bounded accounting check, not a cap on external-provider charges. The owner
+has already authorized this replacement for the original stricter inclusion
+requirement; do not request BYOK setup again. See
+`docs/research/OPENROUTER_BYOK_CORRECTION_2026-09-28.md` from repository root.
+Use a dedicated inference key without concurrent unrelated requests. The runner
+never changes key settings.
 
 `inspect-key` checks the full manifest reservation with one authenticated GET and
 no POST. It creates no run directory or artifacts. Its JSON includes `gate_valid`,

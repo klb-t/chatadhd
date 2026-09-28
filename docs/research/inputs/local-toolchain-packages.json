@@ -1,0 +1,62 @@
+[
+  {
+    "file": "cmake-data_3.28.3-1build7_all.deb",
+    "sha256": "20a3b644211ce82f35c24f1f5052199adeb0ac159978a8740fd6c0959611557f",
+    "metadata": "Package: cmake-data\nVersion: 3.28.3-1build7"
+  },
+  {
+    "file": "cmake_3.28.3-1build7_amd64.deb",
+    "sha256": "4b0a7f8c0daf27b26b46997d994ae5d1ee7a3d11dfcda9f7627bb1462c162295",
+    "metadata": "Package: cmake\nVersion: 3.28.3-1build7"
+  },
+  {
+    "file": "libjsoncpp25_1.9.5-6build1_amd64.deb",
+    "sha256": "8efea5b75952f3ad1c40e6b5b31de687c297ea29f87f8b63efebb55e13467211",
+    "metadata": "Package: libjsoncpp25\nVersion: 1.9.5-6build1"
+  },
+  {
+    "file": "librhash0_1.4.3-3build1_amd64.deb",
+    "sha256": "e9ee69963ff1a56378b9c5ffdd21ea0feaec9647c522349b7612b25103490528",
+    "metadata": "Package: librhash0\nVersion: 1.4.3-3build1"
+  },
+  {
+    "file": "libuv1t64_1.48.0-1.1build1_amd64.deb",
+    "sha256": "72a1856b30af1e533494ab90742a2446f4491b15ddebcade6661a6e8d61b4359",
+    "metadata": "Package: libuv1t64\nVersion: 1.48.0-1.1build1"
+  },
+  {
+    "file": "ninja-build_1.11.1-2_amd64.deb",
+    "sha256": "6a17f76a0f75586f1292f6c61a9b07fd0dec963baf6a102b17673f601c6b323a",
+    "metadata": "Package: ninja-build\nVersion: 1.11.1-2"
+  },
+  {
+    "file": "python3-certifi_2023.11.17-1_all.deb",
+    "sha256": "1a7ee6751fdc263319f4a2e559e8104f7a1e9af0cdb9926e5a145ebfec0dd148",
+    "metadata": "Package: python3-certifi\nVersion: 2023.11.17-1"
+  },
+  {
+    "file": "python3-chardet_5.2.0+dfsg-1_all.deb",
+    "sha256": "042ec127434ad634a1f312514680b8d0de7bd1e9733b255d93170a6bb843a043",
+    "metadata": "Package: python3-chardet\nVersion: 5.2.0+dfsg-1"
+  },
+  {
+    "file": "python3-charset-normalizer_3.3.2-1_all.deb",
+    "sha256": "aa0916f05698b8097fbbed5d3b510a3a97db86c53b8ff8aa32b2cb7c5d482686",
+    "metadata": "Package: python3-charset-normalizer\nVersion: 3.3.2-1"
+  },
+  {
+    "file": "python3-idna_3.6-2ubuntu0.2_all.deb",
+    "sha256": "9094258aba489349e87bbd3ed561c727c5c19f6b940835a431b4f89bae32c602",
+    "metadata": "Package: python3-idna\nVersion: 3.6-2ubuntu0.2"
+  },
+  {
+    "file": "python3-requests_2.31.0+dfsg-1ubuntu1.1_all.deb",
+    "sha256": "e9d0795c374b9be099042444bad44ba6c9cad70523744e4165b087c17d6d5fa0",
+    "metadata": "Package: python3-requests\nVersion: 2.31.0+dfsg-1ubuntu1.1"
+  },
+  {
+    "file": "python3-urllib3_2.0.7-1ubuntu0.7_all.deb",
+    "sha256": "84970da97957c055f5ccc7c4d470f31a4091318dffa2c47f670db23665b7aa95",
+    "metadata": "Package: python3-urllib3\nVersion: 2.0.7-1ubuntu0.7"
+  }
+]

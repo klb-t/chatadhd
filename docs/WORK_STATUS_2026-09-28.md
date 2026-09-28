@@ -4,8 +4,9 @@
 without exposing it; OpenRouter endpoint and USD 2 nonresetting key preflight
 passed. User action is no longer needed. The frozen 48-pair Jev experiment is
 running locally; repository request switches remain disabled and Actions remain
-unused. Native Debug build completed all 189 targets. Initial CTest: 70/72;
-one known catalog recall failure, one missing evaluation harness being restored.
+unused. Native Debug build completed all 189 targets. Local CTest: 71/72 after restoring the missing harness and its targeted rerun;
+the known catalog recall failure remains (13/45). Details and coverage limits:
+`docs/research/LOCAL_NATIVE_VERIFICATION_2026-09-28.md`.
 No model-quality result is claimed until saved first responses are scored.
 
 **Local build recovery:** source/dependency restoration and portable CMake/Ninja

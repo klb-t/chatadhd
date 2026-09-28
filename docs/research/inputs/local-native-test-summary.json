@@ -1,0 +1,588 @@
+{
+  "schema": "loom.local_native_verification/1",
+  "date": "2026-09-28",
+  "source_reference": "30bea23e2aeff2ffa22fe7899b4ce220741dab0f",
+  "environment": {
+    "cmake": "3.28.3",
+    "ninja": "1.11.1",
+    "compiler": "GCC 13.3",
+    "python": "3.12.14",
+    "openssl": "3.0.13",
+    "sqlite": "vendored 3.47.2",
+    "configuration": "Debug, shared library, tests, CLI and HTTP server"
+  },
+  "build": {
+    "completed_targets": 189,
+    "total_targets": 189,
+    "status": "passed"
+  },
+  "initial_full_ctest": {
+    "total": 72,
+    "passed": 70,
+    "failed": 2,
+    "exit_code": 8,
+    "seconds": 61.97,
+    "entries": [
+      {
+        "id": 1,
+        "name": "unit.test_archive",
+        "status": "passed",
+        "seconds": 1.18
+      },
+      {
+        "id": 2,
+        "name": "unit.test_batch_api",
+        "status": "passed",
+        "seconds": 0.1
+      },
+      {
+        "id": 3,
+        "name": "unit.test_capi",
+        "status": "passed",
+        "seconds": 3.6
+      },
+      {
+        "id": 4,
+        "name": "unit.test_capi_knowledge",
+        "status": "passed",
+        "seconds": 0.45
+      },
+      {
+        "id": 5,
+        "name": "unit.test_catalog",
+        "status": "passed",
+        "seconds": 2.88
+      },
+      {
+        "id": 6,
+        "name": "unit.test_catalog_context",
+        "status": "passed",
+        "seconds": 1.94
+      },
+      {
+        "id": 7,
+        "name": "unit.test_catalog_eval",
+        "status": "failed",
+        "seconds": 1.09
+      },
+      {
+        "id": 8,
+        "name": "unit.test_catalog_retention",
+        "status": "passed",
+        "seconds": 1.75
+      },
+      {
+        "id": 9,
+        "name": "unit.test_catalog_scale",
+        "status": "passed",
+        "seconds": 0.01
+      },
+      {
+        "id": 10,
+        "name": "unit.test_chat_engine",
+        "status": "passed",
+        "seconds": 0.09
+      },
+      {
+        "id": 11,
+        "name": "unit.test_config",
+        "status": "passed",
+        "seconds": 0.02
+      },
+      {
+        "id": 12,
+        "name": "unit.test_context_engine",
+        "status": "passed",
+        "seconds": 1.87
+      },
+      {
+        "id": 13,
+        "name": "unit.test_context_eval",
+        "status": "passed",
+        "seconds": 1.07
+      },
+      {
+        "id": 14,
+        "name": "unit.test_crypto",
+        "status": "passed",
+        "seconds": 5.44
+      },
+      {
+        "id": 15,
+        "name": "unit.test_db",
+        "status": "passed",
+        "seconds": 0.41
+      },
+      {
+        "id": 16,
+        "name": "unit.test_event_bus",
+        "status": "passed",
+        "seconds": 0.05
+      },
+      {
+        "id": 17,
+        "name": "unit.test_extract",
+        "status": "passed",
+        "seconds": 1.87
+      },
+      {
+        "id": 18,
+        "name": "unit.test_extract_eval",
+        "status": "passed",
+        "seconds": 2.58
+      },
+      {
+        "id": 19,
+        "name": "unit.test_fts",
+        "status": "passed",
+        "seconds": 0.11
+      },
+      {
+        "id": 20,
+        "name": "unit.test_generalize",
+        "status": "passed",
+        "seconds": 6.43
+      },
+      {
+        "id": 21,
+        "name": "unit.test_generalize_eval",
+        "status": "passed",
+        "seconds": 7.2
+      },
+      {
+        "id": 22,
+        "name": "unit.test_github",
+        "status": "passed",
+        "seconds": 0.04
+      },
+      {
+        "id": 23,
+        "name": "unit.test_graph",
+        "status": "passed",
+        "seconds": 0.07
+      },
+      {
+        "id": 24,
+        "name": "unit.test_import",
+        "status": "passed",
+        "seconds": 0.15
+      },
+      {
+        "id": 25,
+        "name": "unit.test_import_stream",
+        "status": "passed",
+        "seconds": 38.75
+      },
+      {
+        "id": 26,
+        "name": "unit.test_kb_pack",
+        "status": "passed",
+        "seconds": 10.07
+      },
+      {
+        "id": 27,
+        "name": "unit.test_knowledge",
+        "status": "passed",
+        "seconds": 6.42
+      },
+      {
+        "id": 28,
+        "name": "unit.test_knowledge_candidate_graph",
+        "status": "passed",
+        "seconds": 0.37
+      },
+      {
+        "id": 29,
+        "name": "unit.test_knowledge_candidates",
+        "status": "passed",
+        "seconds": 0.03
+      },
+      {
+        "id": 30,
+        "name": "unit.test_knowledge_flow",
+        "status": "passed",
+        "seconds": 1.95
+      },
+      {
+        "id": 31,
+        "name": "unit.test_knowledge_semantic",
+        "status": "passed",
+        "seconds": 4.43
+      },
+      {
+        "id": 32,
+        "name": "unit.test_knowledge_semantic_graph",
+        "status": "passed",
+        "seconds": 3.77
+      },
+      {
+        "id": 33,
+        "name": "unit.test_knowledge_store",
+        "status": "passed",
+        "seconds": 0.19
+      },
+      {
+        "id": 34,
+        "name": "unit.test_materialize",
+        "status": "passed",
+        "seconds": 1.76
+      },
+      {
+        "id": 35,
+        "name": "unit.test_media",
+        "status": "passed",
+        "seconds": 0.01
+      },
+      {
+        "id": 36,
+        "name": "unit.test_memory",
+        "status": "passed",
+        "seconds": 0.02
+      },
+      {
+        "id": 37,
+        "name": "unit.test_model",
+        "status": "passed",
+        "seconds": 0.02
+      },
+      {
+        "id": 38,
+        "name": "unit.test_net_sse",
+        "status": "passed",
+        "seconds": 0.01
+      },
+      {
+        "id": 39,
+        "name": "unit.test_pack_model",
+        "status": "passed",
+        "seconds": 1.85
+      },
+      {
+        "id": 40,
+        "name": "unit.test_provenance",
+        "status": "passed",
+        "seconds": 0.09
+      },
+      {
+        "id": 41,
+        "name": "unit.test_providers",
+        "status": "passed",
+        "seconds": 0.01
+      },
+      {
+        "id": 42,
+        "name": "unit.test_regex",
+        "status": "passed",
+        "seconds": 0.01
+      },
+      {
+        "id": 43,
+        "name": "unit.test_relations",
+        "status": "passed",
+        "seconds": 0.04
+      },
+      {
+        "id": 44,
+        "name": "unit.test_resolve",
+        "status": "passed",
+        "seconds": 0.29
+      },
+      {
+        "id": 45,
+        "name": "unit.test_resolve_attribution",
+        "status": "passed",
+        "seconds": 5.96
+      },
+      {
+        "id": 46,
+        "name": "unit.test_resolve_lineage",
+        "status": "passed",
+        "seconds": 0.01
+      },
+      {
+        "id": 47,
+        "name": "unit.test_runtime",
+        "status": "passed",
+        "seconds": 0.04
+      },
+      {
+        "id": 48,
+        "name": "unit.test_selector",
+        "status": "passed",
+        "seconds": 0.01
+      },
+      {
+        "id": 49,
+        "name": "unit.test_semantic_llm",
+        "status": "passed",
+        "seconds": 0.07
+      },
+      {
+        "id": 50,
+        "name": "unit.test_semantic_worker",
+        "status": "passed",
+        "seconds": 0.26
+      },
+      {
+        "id": 51,
+        "name": "unit.test_tasks",
+        "status": "passed",
+        "seconds": 0.11
+      },
+      {
+        "id": 52,
+        "name": "unit.test_util",
+        "status": "passed",
+        "seconds": 0.05
+      },
+      {
+        "id": 53,
+        "name": "compat.test_abi_compat",
+        "status": "passed",
+        "seconds": 0.37
+      },
+      {
+        "id": 54,
+        "name": "compat.test_candidate_graph_native",
+        "status": "passed",
+        "seconds": 1.39
+      },
+      {
+        "id": 55,
+        "name": "compat.test_chat_compat",
+        "status": "passed",
+        "seconds": 5.35
+      },
+      {
+        "id": 56,
+        "name": "compat.test_config_compat",
+        "status": "passed",
+        "seconds": 0.26
+      },
+      {
+        "id": 57,
+        "name": "compat.test_crypto_compat",
+        "status": "passed",
+        "seconds": 14.46
+      },
+      {
+        "id": 58,
+        "name": "compat.test_db_compat",
+        "status": "passed",
+        "seconds": 1.31
+      },
+      {
+        "id": 59,
+        "name": "compat.test_graph_compat",
+        "status": "passed",
+        "seconds": 3.29
+      },
+      {
+        "id": 60,
+        "name": "compat.test_import_compat",
+        "status": "passed",
+        "seconds": 0.93
+      },
+      {
+        "id": 61,
+        "name": "compat.test_memory_compat",
+        "status": "passed",
+        "seconds": 3.86
+      },
+      {
+        "id": 62,
+        "name": "compat.test_selector_compat",
+        "status": "passed",
+        "seconds": 0.19
+      },
+      {
+        "id": 63,
+        "name": "compat.test_semantic_compat",
+        "status": "passed",
+        "seconds": 6.13
+      },
+      {
+        "id": 64,
+        "name": "compat.test_semantic_recovery",
+        "status": "passed",
+        "seconds": 3.7
+      },
+      {
+        "id": 65,
+        "name": "compat.test_util_compat",
+        "status": "passed",
+        "seconds": 4.04
+      },
+      {
+        "id": 66,
+        "name": "research.structure",
+        "status": "passed",
+        "seconds": 8.63
+      },
+      {
+        "id": 67,
+        "name": "research.independent_protocol",
+        "status": "passed",
+        "seconds": 0.17
+      },
+      {
+        "id": 68,
+        "name": "research.graph_native_protocol",
+        "status": "passed",
+        "seconds": 0.52
+      },
+      {
+        "id": 69,
+        "name": "research.candidate_graph_protocol",
+        "status": "passed",
+        "seconds": 0.57
+      },
+      {
+        "id": 70,
+        "name": "server.smoke",
+        "status": "passed",
+        "seconds": 2.66
+      },
+      {
+        "id": 71,
+        "name": "cli.smoke",
+        "status": "passed",
+        "seconds": 2.52
+      },
+      {
+        "id": 72,
+        "name": "eval.harness",
+        "status": "failed",
+        "seconds": 0.02
+      }
+    ]
+  },
+  "restoration": {
+    "reference": "30bea23e2aeff2ffa22fe7899b4ce220741dab0f",
+    "files": [
+      {
+        "path": "loom/tools/eval/test_eval.py",
+        "sha": "33b0110f24d54017c5181d66eb7702db99ae76d6",
+        "size": 15628,
+        "verified": true
+      },
+      {
+        "path": "loom/tools/eval/knowledge_eval.py",
+        "sha": "dc0d0e12fbc81c1c2c552e6f640aeb0c3ee6ab52",
+        "size": 5562,
+        "verified": true
+      },
+      {
+        "path": "loom/tools/eval/kbeval/common.py",
+        "sha": "245e2f1b26054a07f4e9ff1c2780ca927e97158e",
+        "size": 5360,
+        "verified": true
+      },
+      {
+        "path": "loom/tools/eval/kbeval/realrun.py",
+        "sha": "a88a1883ed675397263968f2e349700d6ae46fc1",
+        "size": 9961,
+        "verified": true
+      },
+      {
+        "path": "loom/tools/eval/kbeval/synthetic.py",
+        "sha": "da5cc7bc02fffbb799577b51584fd8cd1980434b",
+        "size": 22389,
+        "verified": true
+      }
+    ],
+    "code_modified": false
+  },
+  "focused_retest": {
+    "name": "eval.harness",
+    "status": "passed",
+    "python_tests": 19,
+    "seconds": 0.88,
+    "exit_code": 0
+  },
+  "reconciled_result": {
+    "passed": 71,
+    "failed": 1,
+    "total": 72,
+    "fresh_full_rerun": false,
+    "remaining_failure": "unit.test_catalog_eval"
+  },
+  "catalog_measurement": {
+    "relevant_selected": 13,
+    "relevant_total": 45,
+    "recall": 0.28888888888888886,
+    "minimum_recall": 0.55,
+    "conversation_precision": 1.0,
+    "noise_traps_selected": 0,
+    "noise_traps_total": 5,
+    "generic_noise_selected": 0,
+    "generic_noise_total": 15,
+    "auxiliary_documents_selected": 3,
+    "claims": "synthetic development gate; not real archive or clean holdout performance"
+  },
+  "python_test_counts_from_full_log": {
+    "compat.test_abi_compat": 3,
+    "compat.test_candidate_graph_native": 9,
+    "compat.test_config_compat": 5,
+    "compat.test_chat_compat": 2,
+    "compat.test_db_compat": 7,
+    "compat.test_graph_compat": 3,
+    "compat.test_import_compat": 24,
+    "compat.test_memory_compat": 4,
+    "compat.test_selector_compat": 4,
+    "compat.test_crypto_compat": 6,
+    "compat.test_semantic_recovery": 8,
+    "compat.test_semantic_compat": 6,
+    "research.independent_protocol": 10,
+    "research.graph_native_protocol": 12,
+    "research.candidate_graph_protocol": 15,
+    "compat.test_util_compat": 6,
+    "research.structure": 369
+  },
+  "coverage_limits": [
+    "unit.test_catalog_scale was disabled by default and ran zero cases",
+    "unit.test_resolve_lineage registered two passing cases that returned early because original Git history was unavailable",
+    "No release, sanitizer, JNI/Android, web browser or 1GB scale verification",
+    "No provider calls, GitHub Actions or private holdout access"
+  ],
+  "logs": [
+    {
+      "path": "native-local-configure.log",
+      "sha256": "dfe39a620d97d53b202fa214cdc05b79ee9a04fb1c2352bc4fc40063a9779e03",
+      "size": 1045
+    },
+    {
+      "path": "native-local-build.log",
+      "sha256": "9c6ecc521740710ec0b070efd3940843c6c1c6aa940861459255da6bd9edbd48",
+      "size": 15653
+    },
+    {
+      "path": "native-local-test.log",
+      "sha256": "a76bb19027a78b47417fd929419c4885242ab5dc5eb3dbea84002ac372dd31e2",
+      "size": 12115
+    },
+    {
+      "path": "native-local-full-LastTest.log",
+      "sha256": "c9cfb4c4ba7d8cca553b90629007d364b2a68c3663691c278b3507af28f1f239",
+      "size": 89556
+    },
+    {
+      "path": "native-local-eval-harness-retest.log",
+      "sha256": "98313f2aa432cf2fe5593abd798b6b49d9040dfc3fe3d6164ff1a6c36beca10a",
+      "size": 321
+    }
+  ],
+  "source_reference_note": "Pinned remote reference for native source restoration; research tests also included the local anchor-assistance files below before their remote checkpoint.",
+  "additional_local_research_files": [
+    {
+      "path": "loom/tools/structure/anchor_assist.py",
+      "sha256": "c8b1f5ae8dd11bf232e68d3bbea20f3bffc6c26667d23b30656e36046276857a",
+      "size": 12535
+    },
+    {
+      "path": "loom/tools/structure/test_anchor_assist.py",
+      "sha256": "83137edaeb974537c07ee8394615a098ee26306a05aab33a44e048a8db486eaa",
+      "size": 4600
+    }
+  ]
+}
