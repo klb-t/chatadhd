@@ -114,8 +114,8 @@ python3 loom/tools/structure/live_pilot.py score \
   --output "$PILOT_DIR/score.json"
 ```
 
-`PILOT_DIR` is a new working directory selected by the caller; Actions assigns
-one under its temporary runner directory. These commands document the actual
+`PILOT_DIR` is a new working directory selected by the caller; Actions uses
+`/tmp/loom-openrouter-pilot` on its isolated Ubuntu runner. These commands document the actual
 workflow interface, not a claim that live execution has already succeeded.
 
 ## Interrupted and repeated runs
@@ -165,8 +165,18 @@ reservation scenarios passed. The eight independent integration tests in
 repository gold or calling a network endpoint. They check annotation exclusion, capacity before
 network access, model/provider identity and ambiguity, non-token charges,
 explicit routing, immutable preparation, declared response aliases and rejection
-of missing or foreign response identity. A hosted workflow run and paid
-inference remain unverified until an enabled, authorized request completes.
+of missing or foreign response identity.
+
+The first hosted attempt (`36443716109`, commit `7b2d8f3`) failed workflow
+validation before creating any job: `runner.temp` had been used in job-level
+`env`, where the runner context is unavailable. YAML/shell/Python syntax checks
+had not covered Actions context rules. Commit `21ee25c` replaces it with the
+literal isolated scratch path; all 21 context references were reviewed against
+GitHub's official availability table. The corrected disabled run
+[36443951201](https://github.com/klb-t/chatadhd/actions/runs/36443951201) succeeded:
+checkout and gate passed, and every provider/preparation/artifact step was skipped.
+This verifies disabled activation, not paid inference or the enabled artifact path.
+Those remain unverified until an enabled, authorized request completes.
 
 - [GitHub: repository secrets and environment-variable use](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets)
 - [GitHub: artifact listing, exact name filter and read permission](https://docs.github.com/en/rest/actions/artifacts)

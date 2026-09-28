@@ -91,6 +91,11 @@ workflow alone is not evidence of successful semantic evaluation.
   scenarios passed locally. Official action tags/contracts verified; full-SHA pins.
 - Public-price preflight succeeded. No paid calls, real-model accuracy result,
   native CTest rerun, ABI/schema change or canonical graph mutation.
+- Remote Actions verification caught an unavailable `runner.temp` expression in
+  job-level environment configuration. Fixed in `21ee25c`; corrected disabled
+  run [36443951201](https://github.com/klb-t/chatadhd/actions/runs/36443951201)
+  succeeded, with every paid/provider step skipped. The enabled path awaits a
+  credential. Initial failed run is retained and explained in the setup document.
 
 ## Continue
 

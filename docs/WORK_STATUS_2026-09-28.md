@@ -10,6 +10,9 @@ development pilot: 32 calls, USD 0.2978870 reservation, proposed USD 2 capped ke
 No paid inference has run. The next live step needs the dedicated repository
 secret and acceptance of that spending ceiling; setup is in
 `research/OPENROUTER_ACTIONS_SETUP_2026-09-28.md`. The programme remains open.
+Pilot checkpoint `7b2d8f3`; Actions context fix `21ee25c`. Remote disabled run
+`36443951201` succeeded with provider/inference steps skipped. Its first failed
+validation and the correction are documented; enabled inference is still untested.
 
 Native base checkpoint: `b818366ffabdd6b1cbe14aab6e062805115a780b` on
 `codex/loom-handoff-2026-09-28`, draft PR #6.
