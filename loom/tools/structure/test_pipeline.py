@@ -89,6 +89,20 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(output["input"]["turns"][0]["text"], text)
         self.assertEqual(output["comparison_budget"]["eligible_pairs"], 0)
 
+    def test_semicolon_envelope_survives_as_separate_scope_alternative(self):
+        text = "Goal: record music; constraint: preserve dynamics."
+        output = analyze({"id": "c", "turns": [{"id": "t", "text": text}], "entities": []})
+        # Recovery is a separate source interpretation, never a topic merge.
+        self.assertEqual(output["coverage"]["recognized_envelopes"], 0)
+        alternatives = output["boundary_alternatives"]["alternatives"]
+        self.assertEqual(len(alternatives), 1)
+        self.assertEqual(alternatives[0]["source_span"]["quote"], text)
+        self.assertTrue(alternatives[0]["requires_scope_review"])
+        self.assertTrue(alternatives[0]["spans_segmentation_cut"])
+        self.assertIsNone(alternatives[0]["scope"]["segment_id"])
+        self.assertEqual(output["claims_created"], 0)
+        self.assertEqual(output["reasoning"]["candidates"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

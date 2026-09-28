@@ -15,14 +15,15 @@ import json
 from pathlib import Path
 
 try:
-    from . import extract, scoped_projection, structure_methods, topics
+    from . import boundary_alternatives, extract, scoped_projection, structure_methods, topics
 except ImportError:
+    import boundary_alternatives
     import extract
     import scoped_projection
     import structure_methods
     import topics
 
-VERSION = "source-structure-pipeline/2"
+VERSION = "source-structure-pipeline/3"
 
 
 def _hash(value):
@@ -149,15 +150,18 @@ def analyze(record: dict, *, policy=None, pair_budget=128) -> dict:
     recognized = sum(e["coverage"]["recognized_envelope_characters"] for e in extractions)
     totals = {key: sum(e["coverage"][key] for e in extractions)
               for key in ("physical_units", "recognized_envelopes", "logical_candidates")}
+    alternatives = boundary_alternatives.recover_envelopes(record, segmentation, extractions)
     return {
         "version": VERSION, "input": deepcopy(record), "input_hash": _hash(record),
         "components": {"topics": topics.VERSION, "extraction": extract.VERSION,
-                       "methods": structure_methods.VERSION, "scoped_projection": scoped_projection.VERSION},
+                       "methods": structure_methods.VERSION, "scoped_projection": scoped_projection.VERSION,
+                       "boundary_alternatives": boundary_alternatives.VERSION},
         "conversation_identity": {"id": conversation_id,
                                   "origin": "supplied" if record.get("id") else "local_input_hash",
                                   "existing_entity_identity_verified": False},
         "segmentation": segmentation, "extractions": extractions,
         "scope_projections": scopes, "scope_projection_limits": scope_limits,
+        "boundary_alternatives": alternatives,
         "comparisons": comparisons,
         "comparison_budget": {"maximum_pairs": pair_budget, "eligible_pairs": eligible_pairs,
                               "evaluated_pairs": len(comparisons),

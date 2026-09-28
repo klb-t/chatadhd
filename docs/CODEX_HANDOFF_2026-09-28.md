@@ -3,7 +3,9 @@
 **Later research continuation:** start at
 [`research/PROGRAMME_2026-09-28.md`](research/PROGRAMME_2026-09-28.md).
 It contains the owner's subsequent thought-structure/topic requirements and
-links to independent experiments. The later native context correction is in
+links to independent experiments. The measured synthesis is
+[`research/RESULTS_2026-09-28.md`](research/RESULTS_2026-09-28.md).
+The later native context correction is in
 [`research/NATIVE_CONTEXT_2026-09-28.md`](research/NATIVE_CONTEXT_2026-09-28.md):
 scanner 4 / pipeline 5, **62/63 CTest passing**, with the same 13/45 recall failure.
 The remainder below is the preceding checkpoint, retained as history.

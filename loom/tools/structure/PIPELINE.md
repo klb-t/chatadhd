@@ -25,6 +25,7 @@ ID is given, a deterministic local input ID is recorded explicitly as generated.
 | `extractions` | Recognized envelopes and unchecked formulas, with exact source quotes and every unknown span | Complete interpretation of a sentence |
 | `comparisons` | Lexical, role/relation, WL and bounded alignment scores for individual observations across proposed segments | Same subject, same project, truth or valid transfer |
 | `scope_projections` | Whole-segment compositions under separate and literal-symbol binding hypotheses | Verified identity across statements |
+| `boundary_alternatives` | Envelopes recovered from original physical lines across tentative segmentation cuts | A shared topic scope or permission to add them to primary coverage |
 | `interpretation_context_proposals` | Candidate interpretations associated with current observation focus and old graph Claim IDs | New assessed Claims or permission to overwrite old knowledge |
 | `reasoning.blocked_interpretations` | Formula candidates withheld because extraction has no Assessment | Disproof or inability of a future verified reasoner |
 | `coverage` | Grammar coverage with explicit denominator and abstentions | Semantic accuracy |
@@ -56,6 +57,13 @@ comparison = compare_scopes(left_scope, right_scope)  # same binding mode requir
 The result keeps logical structure, literal semantic labels and atomic operation
 shapes as separate perspectives. It exposes missing coverage and exhausted search
 budgets. A high structural score is a proposed analogy, never an inferred fact.
+
+V3 also runs the unchanged grammar over original physical lines. This can recover
+an envelope such as `Goal: record music; constraint: preserve dynamics.` when
+topic observations split at its semicolon. Exact primary matches are suppressed.
+Recovered alternatives retain every overlapping observation's focus and proposed
+segment, choose no single scope, require scope review and stay outside main
+coverage, scoped logic and proof inputs. See [BOUNDARY_ALTERNATIVES.md](BOUNDARY_ALTERNATIVES.md).
 
 ## Bounds and reproducibility
 

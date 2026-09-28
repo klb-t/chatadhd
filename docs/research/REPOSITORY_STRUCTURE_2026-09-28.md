@@ -2,6 +2,16 @@
 
 Status: **source-only integration diagnostic, not semantic validation**.
 
+Follow-up: pipeline version 3 adds a separate physical-line alternative pass to
+recover envelopes cut by topic segmentation. Its rerun is saved separately as
+`repository_structure_v3_report.json`, SHA-256
+`3c6e6775052bf11739ad2953efe5a65de67203ecf19c05d20940d3618fd7af24`.
+All source, observation, focus and primary grammar totals below remain unchanged;
+the new pass finds zero alternatives on these three documents. The semicolon
+repair is covered by authored positive/negative source-mapping tests, not by
+inventing successful interpretations in this corpus. The original version-2
+measurement and its hashes below remain historical and reproducible.
+
 The bounded grammar recognized **0 envelopes and 0 logical candidates** in all
 three architecture documents, both before and after topic/sentence segmentation.
 The pipeline exposes local topic/context candidates and preserves source spans,

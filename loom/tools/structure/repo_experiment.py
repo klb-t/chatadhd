@@ -22,7 +22,7 @@ except ImportError:
     import pipeline
     import topics
 
-VERSION = "repository-source-diagnostic/1"
+VERSION = "repository-source-diagnostic/2"
 SOURCE_PATHS = (
     "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
     "docs/architecture/NOTATKA_GPT_2026-09-26.md",
@@ -34,6 +34,7 @@ DEPENDENCIES = (
     "loom/tools/structure/topics.py", "loom/tools/structure/topics_policy.json",
     "loom/tools/structure/extract.py", "loom/tools/structure/structure_methods.py",
     "loom/tools/structure/operations.json", "loom/tools/structure/scoped_projection.py",
+    "loom/tools/structure/boundary_alternatives.py",
 )
 
 
@@ -182,6 +183,7 @@ def pipeline_summary(result: dict, text: str, turns: list[dict]) -> dict:
                "interpretation_context_proposals": len(result["interpretation_context_proposals"]),
                "scoped_projection_count": len(result.get("scope_projections", [])),
                "scoped_projection_limit_count": len(result.get("scope_projection_limits", [])),
+               "boundary_alternative_diagnostic": deepcopy(result.get("boundary_alternatives", {}).get("diagnostic", {})),
                "segments_without_recognized_operations": len(segmentation["segments"]) - len({
                    x["scope"]["segment_id"] for x in result["extractions"] if x["candidates"]}),
                "blocked_unchecked_interpretations": len(result["reasoning"]["blocked_interpretations"]),
@@ -253,7 +255,7 @@ def run(root: Path, *, modes=("whole_document", "paragraph_turns"), pair_budget=
                             "grammar_coverage_is_not_extracted_meaning_recall",
                             "source_order_pair_sample_not_ranked_retrieval_or_population_frequency",
                             "paragraph_turns_are_exact_source_slices_not_historical_conversation_turns",
-                            "topic_semicolon_splitting_can_break_goal_constraint_envelopes",
+                            "topic_cuts_can_break_primary_envelopes; separate_boundary_alternatives_require_scope_review",
                             "markdown_and_wrapped_lines_remain_unmodified_and_may_block_grammar"],
             "source_bytes_rewritten": 0, "semantic_accuracy": None, "calibration": None,
             "production_claims_created": 0, "production_graph_mutations": 0}

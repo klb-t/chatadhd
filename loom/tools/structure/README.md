@@ -1,5 +1,13 @@
 # Structure methods experiment
 
+Start with [PIPELINE.md](PIPELINE.md) to run the combined source/topic/structure/
+graph-context experiment. Component details: [EXTRACTION.md](EXTRACTION.md),
+[TOPICS.md](TOPICS.md), [SCOPED_PROJECTION.md](SCOPED_PROJECTION.md) and
+[BOUNDARY_ALTERNATIVES.md](BOUNDARY_ALTERNATIVES.md). Measured outcomes and next
+directions are in `docs/research/RESULTS_2026-09-28.md`. The source grammar,
+annotated graph matcher, scoped comparison and native selector have separate
+coverage/quality reports; their scores are not interchangeable.
+
 This is a read-only research harness under `loom/tools`, not a new knowledge
 store or production reasoning engine. It compares **projections of existing
 claims** and reports candidate consequences of supplied logical annotations.
