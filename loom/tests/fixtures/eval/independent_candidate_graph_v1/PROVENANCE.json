@@ -1,0 +1,19 @@
+{
+  "schema": "loom.independent_candidate_provenance/1",
+  "independent_guard_tests": 15,
+  "files": {
+    "loom/tests/fixtures/eval/independent_candidate_graph_v1/INITIAL_RESULTS.md": "34a9eaf8acf7afb14c5cb2168505e8f8b79c45d1c6ea86adfb78c88027ad92b1",
+    "loom/tests/fixtures/eval/independent_candidate_graph_v1/README.md": "eb43a6d45b6e1bb0b3c3870fb3bd9df24bb6cdf39fd56daa8eedd685877d68bc",
+    "loom/tests/fixtures/eval/independent_candidate_graph_v1/VALIDATION_PROTOCOL.md": "c61871f2a464e20b468b5671eb89fca6955b2cf97dd0d7632613b3bc33429d3a",
+    "loom/tests/fixtures/eval/independent_candidate_graph_v1/development_cases.json": "b7b13c9b59806157d4cf23442674b8e49b3bfbe79b86c97014f6f4daa24de790",
+    "loom/tests/fixtures/eval/independent_candidate_graph_v1/initial_report.json": "82ca75d3d3cd8679c084d452a5c253b82d499e3729d066cfe9ba701af786abeb",
+    "loom/tests/fixtures/eval/independent_candidate_graph_v1/validation_cases.json": "0407395230790aaddd9cd2768c81a0b56ac72f401b469bdff6b29d06662d9491",
+    "loom/tools/eval/candidate_graph_eval.py": "20bc74eab109e7b33c15a0dcba332134eae0ffcfe6977edfc18027ae29a07fea",
+    "loom/tools/eval/test_candidate_graph_eval.py": "c728c84a4e7d3d6d89772c390c9e33302ae45dbfd1a9e3aab6d655860a47fe79"
+  },
+  "frozen_methods": {
+    "candidate_graph.py": "ade0944646c3cfc5356787612beb14657335db2067b4a705d5221b0f3810125d",
+    "candidate_graph_vocabulary.json": "0d02838638e6f82c4e5f1cc90e3842f152f4db0ac44d593721cddc8e6af8650d",
+    "grounded_frames.py": "bea98192009085e26fe7c161942ed4dbd682e3b3c3bb204c8e7a6b70f9b010c4"
+  }
+}

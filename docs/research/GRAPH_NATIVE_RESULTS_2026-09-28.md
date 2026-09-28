@@ -181,10 +181,23 @@ not a live provider integration or a quality score for natural-language analysis
 
 Mechanism checks after this increment: **213/213**, including 12 direct compiler,
 17 grounded-frame, 19 context-delta and eight replay integration checks. An
-independent fresh bilingual supplied-structure pilot is recorded separately;
-its agreement and source/graph preservation must not be conflated with model
-extraction quality. The CMake research gate also includes its independent protocol
-checks. Contracts and usage are in `CANDIDATE_GRAPH.md`, `GROUNDED_FRAMES.md`,
+independent fresh bilingual pilot measured 32 supplied cases: all 26 represented
+graphs retained the independently supplied structure, four valid abstentions
+kept their empty graphs and located unknowns, and two dangling references were
+rejected. Thirty accepted outputs retained draft fields and added provenance;
+both sides of 13 declared contrasts retained their fields. These are separate
+checks against immutable gold, not just agreement between A and B.
+
+For the 26 represented cases, median compact response JSON was 10,254 UTF-8 bytes
+for A and 5,228 bytes for both B stages combined. Source prompts, repeated second
+stage input, retries and tokenizer/provider costs are excluded. This motivates a
+budget experiment, not a claim that two-stage inference is cheaper. No model
+was called. Fifteen independent evaluator guards pass. Full frozen inputs,
+method hashes, per-case traces and limitations are in
+`loom/tests/fixtures/eval/independent_candidate_graph_v1/INITIAL_RESULTS.md`.
+
+The CMake research gate also includes the independent protocol checks.
+Contracts and usage are in `CANDIDATE_GRAPH.md`, `GROUNDED_FRAMES.md`,
 `CONTEXT_DELTA.md` and `CANDIDATE_FLOW.md` under `loom/tools/structure/`.
 
 ## Remaining production integration
