@@ -1,5 +1,23 @@
 # Current work checkpoint
 
+**Actions quota stop (2026-09-28):** owner reports 2,000/2,000 included
+minutes used, resetting 2026-10-01. Do not start or rerun Actions, increase
+budgets, or enable model requests. Save every checkpoint with `[skip ci]`;
+run suitable tests locally. Both request switches are now disabled. Jev
+64-request evidence is complete; the 48-pair follow-up is frozen but UNRUN.
+Native continuation finished and its original first-response artifact is
+preserved; see `docs/research/OPENROUTER_NATIVE_REMAINDER_2026-09-28.md`
+(path relative to repository root). Historical pending statuses below are
+superseded by this notice. BYOK setup is resolved, not an active blocker.
+
+**Jev real results:** `research/JEV_RESULTS_2026-09-28.md` and
+`research/JEV_USAGE_RULES_2026-09-28.md`. All 64 first requests / 768 judgments
+completed for USD 0.005341182. Precision 71.74%, recall 100%; complete vectors
+correct 39/64. Preserve the original artifact and the literal-role limitation
+of the first rubric. A direct pair-structure follow-up is exploratory, not a
+fresh validation set. Native continuation is complete; combined report is linked above. Last tested
+research suite: 350/350. No canonical graph promotion.
+
 **Latest result and direction:** `research/OPENROUTER_NATIVE_DEV_2026-09-28.md`.
 The BYOK setup blocker is resolved: five real responses report no BYOK; their
 credit charges sum to USD 0.00636045. A sixth timed out, retains its USD 0.00301020

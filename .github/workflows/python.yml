@@ -3,12 +3,28 @@ name: Python sanity
 on:
   push:
     branches: [ main ]
+    paths:
+      - "main.py"
+      - "core/**/*.py"
+      - "engine/**/*.py"
+      - "gui/**/*.py"
+      - ".github/workflows/python.yml"
   pull_request:
     branches: [ main ]
+    paths:
+      - "main.py"
+      - "core/**/*.py"
+      - "engine/**/*.py"
+      - "gui/**/*.py"
+      - ".github/workflows/python.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: python-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   compile:

@@ -1,0 +1,770 @@
+[
+  {
+    "base_case_id": "jp_04004a1418176015",
+    "case_id": "jp_04004a1418176015",
+    "contrast_kind": "foil",
+    "family_id": "causation_correlation",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_7c9d7d557a448e02",
+      "j_bbd3e1ac4e1206f0"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_0ab5969e50ad1605",
+    "case_id": "jp_0ab5969e50ad1605",
+    "contrast_kind": "domain_transfer",
+    "family_id": "support_counterexample",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_ba2a4230f2061363",
+      "j_f0b67d3ed4f6a1a6"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_181fa63f4e9d8585",
+    "case_id": "jp_181fa63f4e9d8585",
+    "contrast_kind": "foil",
+    "family_id": "causation_correlation",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_24b2b364d4deae33",
+      "j_432f20facc679edf"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_19259a9bea97478f",
+    "case_id": "jp_19259a9bea97478f",
+    "contrast_kind": "paraphrase",
+    "family_id": "conjunction_disjunction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_ab0260b941f772a4",
+      "j_c613cf0f2b04ef0f"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_19d7180a26b7eee2",
+    "case_id": "jp_19d7180a26b7eee2",
+    "contrast_kind": "paraphrase",
+    "family_id": "universal_existential",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_30f01b833a989277",
+      "j_94d6703d22ed30ce"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_28bf8d09143db45c",
+    "case_id": "jp_28bf8d09143db45c",
+    "contrast_kind": "domain_transfer",
+    "family_id": "causation_correlation",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_7c9d7d557a448e02",
+      "j_85895bee1e89ff3a"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_2960aa8d59d4ae21",
+    "case_id": "jp_2960aa8d59d4ae21",
+    "contrast_kind": "domain_transfer",
+    "family_id": "support_counterexample",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_4ff2dacaa180a456",
+      "j_312813a058cf5737"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_2e19690b2ef783e2",
+    "case_id": "jp_2e19690b2ef783e2",
+    "contrast_kind": "domain_transfer",
+    "family_id": "inductive_generalization",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_302eeae9eef81b38",
+      "j_da7ec9b190afc513"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_2e4ffd541e92a4f1",
+    "case_id": "jp_2e4ffd541e92a4f1",
+    "contrast_kind": "paraphrase",
+    "family_id": "analogy_identity",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_fd42d3cce90a4cfd",
+      "j_0074ea85f858782c"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_33afe06483ae5733",
+    "case_id": "jp_33afe06483ae5733",
+    "contrast_kind": "paraphrase",
+    "family_id": "support_counterexample",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_4ff2dacaa180a456",
+      "j_fd405b71f46bc182"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_34504e84b54d853f",
+    "case_id": "jp_34504e84b54d853f",
+    "contrast_kind": "domain_transfer",
+    "family_id": "conjunction_disjunction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_b16f9acf4e697f8f",
+      "j_5f96b265e92764cd"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_35c9fba82648c85a",
+    "case_id": "jp_35c9fba82648c85a",
+    "contrast_kind": "paraphrase",
+    "family_id": "inductive_generalization",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_302eeae9eef81b38",
+      "j_6b4bd24922fa206b"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_36f91a270b7f41b5",
+    "case_id": "jp_36f91a270b7f41b5",
+    "contrast_kind": "domain_transfer",
+    "family_id": "conditional_direction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_6c02589c31d5af40",
+      "j_7feae2c2b0cf33dc"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_414b21aea49b70b6",
+    "case_id": "jp_414b21aea49b70b6",
+    "contrast_kind": "foil",
+    "family_id": "inductive_generalization",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_a71d5696ec7c3b8d",
+      "j_eb4d5ba773a288de"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_426acda1a0c218da",
+    "case_id": "jp_426acda1a0c218da",
+    "contrast_kind": "domain_transfer",
+    "family_id": "analogy_identity",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_fd42d3cce90a4cfd",
+      "j_6f8a0dd030b35e34"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_4919e90b05331dde",
+    "case_id": "jp_4919e90b05331dde",
+    "contrast_kind": "foil",
+    "family_id": "conditional_direction",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_6c02589c31d5af40",
+      "j_f8d4aebeb145b7f6"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_4e62d77cde791799",
+    "case_id": "jp_4e62d77cde791799",
+    "contrast_kind": "foil",
+    "family_id": "support_counterexample",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_ba2a4230f2061363",
+      "j_5e3548de205c11ff"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_4f5a6652ab487699",
+    "case_id": "jp_4f5a6652ab487699",
+    "contrast_kind": "paraphrase",
+    "family_id": "negation_scope",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_f82b964ec50cb0b1",
+      "j_3bbd4e3df121bf9f"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_66e9e034c7c59415",
+    "case_id": "jp_66e9e034c7c59415",
+    "contrast_kind": "paraphrase",
+    "family_id": "conjunction_disjunction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_b16f9acf4e697f8f",
+      "j_36fe1587b6895968"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_691d7817e3a7b977",
+    "case_id": "jp_691d7817e3a7b977",
+    "contrast_kind": "foil",
+    "family_id": "universal_existential",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_30f01b833a989277",
+      "j_4c75d83ac44847c7"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_760aa2cd3adb76cb",
+    "case_id": "jp_760aa2cd3adb76cb",
+    "contrast_kind": "paraphrase",
+    "family_id": "universal_existential",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_1c4826c2c36084fb",
+      "j_c703f324b59fad49"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_834547992ed91dd4",
+    "case_id": "jp_834547992ed91dd4",
+    "contrast_kind": "foil",
+    "family_id": "analogy_identity",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_fd42d3cce90a4cfd",
+      "j_3d96af81320530aa"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_879f4d33d712a1fe",
+    "case_id": "jp_879f4d33d712a1fe",
+    "contrast_kind": "foil",
+    "family_id": "conditional_direction",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_c7cfde2f9c274863",
+      "j_1e05d5a21b478b20"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_8c163db9b0b5a2bc",
+    "case_id": "jp_8c163db9b0b5a2bc",
+    "contrast_kind": "paraphrase",
+    "family_id": "inductive_generalization",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_a71d5696ec7c3b8d",
+      "j_dd2bd70bf51a91cc"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_8d862e029fb6ebc3",
+    "case_id": "jp_8d862e029fb6ebc3",
+    "contrast_kind": "paraphrase",
+    "family_id": "analogy_identity",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_d4e73933f7c50eac",
+      "j_3d9a7b10b229cfc9"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_8d966f2d7f76b6cd",
+    "case_id": "jp_8d966f2d7f76b6cd",
+    "contrast_kind": "domain_transfer",
+    "family_id": "negation_scope",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_f82b964ec50cb0b1",
+      "j_fc17fe2f85922d80"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_90644f0b41e42438",
+    "case_id": "jp_90644f0b41e42438",
+    "contrast_kind": "foil",
+    "family_id": "conjunction_disjunction",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_b16f9acf4e697f8f",
+      "j_60c9d1133de0e517"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_90d304fb08e80c9e",
+    "case_id": "jp_90d304fb08e80c9e",
+    "contrast_kind": "foil",
+    "family_id": "conjunction_disjunction",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_ab0260b941f772a4",
+      "j_41457b1e4e7db09a"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_9362a529719c6b22",
+    "case_id": "jp_9362a529719c6b22",
+    "contrast_kind": "paraphrase",
+    "family_id": "conditional_direction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_c7cfde2f9c274863",
+      "j_9fd47d90d5fb498f"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_9581a1b9755458a8",
+    "case_id": "jp_9581a1b9755458a8",
+    "contrast_kind": "domain_transfer",
+    "family_id": "universal_existential",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_30f01b833a989277",
+      "j_71514b9b77c2ee99"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_96817a8f364a80a5",
+    "case_id": "jp_96817a8f364a80a5",
+    "contrast_kind": "domain_transfer",
+    "family_id": "inductive_generalization",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_a71d5696ec7c3b8d",
+      "j_3a37878820fb926a"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_a0d7275f1edd95a3",
+    "case_id": "jp_a0d7275f1edd95a3",
+    "contrast_kind": "paraphrase",
+    "family_id": "conditional_direction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_6c02589c31d5af40",
+      "j_f836d741e6689c20"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_a548105739124127",
+    "case_id": "jp_a548105739124127",
+    "contrast_kind": "domain_transfer",
+    "family_id": "causation_correlation",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_24b2b364d4deae33",
+      "j_e1d483f9b107c0d2"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_ace3baaf05e49c5e",
+    "case_id": "jp_ace3baaf05e49c5e",
+    "contrast_kind": "domain_transfer",
+    "family_id": "conditional_direction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_c7cfde2f9c274863",
+      "j_f2b971bd0d1ce7cc"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_b3a97be5d12c2283",
+    "case_id": "jp_b3a97be5d12c2283",
+    "contrast_kind": "foil",
+    "family_id": "analogy_identity",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_d4e73933f7c50eac",
+      "j_fde48b1801bfa33e"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_b6862181a58cfd3c",
+    "case_id": "jp_b6862181a58cfd3c",
+    "contrast_kind": "foil",
+    "family_id": "universal_existential",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_1c4826c2c36084fb",
+      "j_4f40eadcc35e7311"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_b969594b5b97d333",
+    "case_id": "jp_b969594b5b97d333",
+    "contrast_kind": "domain_transfer",
+    "family_id": "conjunction_disjunction",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_ab0260b941f772a4",
+      "j_cad008413a5f18e2"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_b98acebeaaaa7378",
+    "case_id": "jp_b98acebeaaaa7378",
+    "contrast_kind": "foil",
+    "family_id": "negation_scope",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_956552c90f3168d2",
+      "j_fac510a226c2d567"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_bc3deb59f3a96649",
+    "case_id": "jp_bc3deb59f3a96649",
+    "contrast_kind": "paraphrase",
+    "family_id": "negation_scope",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_956552c90f3168d2",
+      "j_8ab905dba36d706b"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_d5187ba699226df6",
+    "case_id": "jp_d5187ba699226df6",
+    "contrast_kind": "domain_transfer",
+    "family_id": "analogy_identity",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_d4e73933f7c50eac",
+      "j_a0acf23b951adc0f"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_d5d00e152f385b62",
+    "case_id": "jp_d5d00e152f385b62",
+    "contrast_kind": "paraphrase",
+    "family_id": "support_counterexample",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_ba2a4230f2061363",
+      "j_687f9c86bac18809"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_d756b8c30c8e0aaa",
+    "case_id": "jp_d756b8c30c8e0aaa",
+    "contrast_kind": "paraphrase",
+    "family_id": "causation_correlation",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_7c9d7d557a448e02",
+      "j_784c3d9aaf3b0fd7"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_d7ff6bd52f0eae8e",
+    "case_id": "jp_d7ff6bd52f0eae8e",
+    "contrast_kind": "foil",
+    "family_id": "support_counterexample",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_4ff2dacaa180a456",
+      "j_77e122ef48e324a7"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_e462802d8d04ab27",
+    "case_id": "jp_e462802d8d04ab27",
+    "contrast_kind": "paraphrase",
+    "family_id": "causation_correlation",
+    "labels": {
+      "q01": 1
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_24b2b364d4deae33",
+      "j_e44d0c4b50516cf1"
+    ],
+    "split": "development",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_e929148203b09918",
+    "case_id": "jp_e929148203b09918",
+    "contrast_kind": "domain_transfer",
+    "family_id": "universal_existential",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_1c4826c2c36084fb",
+      "j_c3c763162b7c699b"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_f1399f462c51fff8",
+    "case_id": "jp_f1399f462c51fff8",
+    "contrast_kind": "foil",
+    "family_id": "negation_scope",
+    "labels": {
+      "q01": 0
+    },
+    "language": "en",
+    "source_case_ids": [
+      "j_f82b964ec50cb0b1",
+      "j_194f650f135b0a41"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_f3744fab90a5b995",
+    "case_id": "jp_f3744fab90a5b995",
+    "contrast_kind": "domain_transfer",
+    "family_id": "negation_scope",
+    "labels": {
+      "q01": 1
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_956552c90f3168d2",
+      "j_2b384a0ea05e69f7"
+    ],
+    "split": "validation",
+    "variant": "base"
+  },
+  {
+    "base_case_id": "jp_fbc262f810fb7e5b",
+    "case_id": "jp_fbc262f810fb7e5b",
+    "contrast_kind": "foil",
+    "family_id": "inductive_generalization",
+    "labels": {
+      "q01": 0
+    },
+    "language": "pl",
+    "source_case_ids": [
+      "j_302eeae9eef81b38",
+      "j_d42e627f4ad3b037"
+    ],
+    "split": "development",
+    "variant": "base"
+  }
+]

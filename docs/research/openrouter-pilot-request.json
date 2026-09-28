@@ -1,6 +1,6 @@
 {
   "schema": "loom.live_pilot_request/1",
-  "enabled": true,
+  "enabled": false,
   "experiment_id": "live-structure-dev-remainder-v1",
   "split": "dev",
   "methods": [

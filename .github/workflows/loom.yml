@@ -2,16 +2,22 @@ name: Loom (C++ kernel)
 
 on:
   push:
+    # Feature branches are checked by pull_request, avoiding a second matrix.
+    branches: [ main ]
     paths:
       - "loom/**"
       - "engine/**"
       - "core/**"
+      - "!loom/*.md"
+      - "!loom/tools/structure/*.md"
       - ".github/workflows/loom.yml"
   pull_request:
     paths:
       - "loom/**"
       - "engine/**"
       - "core/**"
+      - "!loom/*.md"
+      - "!loom/tools/structure/*.md"
       - ".github/workflows/loom.yml"
   workflow_dispatch:
 

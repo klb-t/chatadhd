@@ -1,12 +1,30 @@
 # ChatADHD / Loom continuation
 
+**Actions quota stop (2026-09-28):** owner reports 2,000/2,000 included
+minutes used, resetting 2026-10-01. Do not start or rerun Actions, increase
+budgets, or enable model requests. Save every checkpoint with `[skip ci]`;
+run suitable tests locally. Both request switches are now disabled. Jev
+64-request evidence is complete; the 48-pair follow-up is frozen but UNRUN.
+Native continuation finished and its original first-response artifact is
+preserved; see `docs/research/OPENROUTER_NATIVE_REMAINDER_2026-09-28.md`
+(path relative to repository root). Historical pending statuses below are
+superseded by this notice. BYOK setup is resolved, not an active blocker.
+
+Measured Jev result and integration direction:
+`docs/research/JEV_RESULTS_2026-09-28.md` and `JEV_USAGE_RULES_2026-09-28.md`.
+64 requests / 768 decisions completed, USD 0.005341182. Do not quote 96.61%
+bit accuracy without 71.74% positive precision and 39/64 complete vectors.
+Some errors arise from the rubric's explicit-P/Q prerequisite; that prerequisite
+must not become a lexical gate against discovering implicit structure. Follow-up
+pair comparisons reuse inspected examples and must be labelled exploratory.
+
 Latest owner steering: **Jev real-model classification is the primary reason for
 the OpenRouter key**. Finish the started native check, then test Jev and derive
 usage rules. Structural representations must resist synonym/paraphrase changes;
 words/regex are secondary omission diagnostics. Current Jev access works through
 the same key on OpenRouter Decisions/SystemOne API, no separate signup.
-Latest native evidence: `docs/research/OPENROUTER_NATIVE_DEV_2026-09-28.md`:
-6 attempted, 5 non-BYOK replies, 1 timeout, 26 untouched; zero admissible graphs.
+Latest native evidence: `docs/research/OPENROUTER_NATIVE_REMAINDER_2026-09-28.md`:
+22/32 attempted, 20 replies, 2 uncertain timeouts, 10 untouched; zero admissible graphs.
 Do not repeat the uncertain request. Its original ZIP and ledger remain intact.
 
 Current execution: `docs/research/OPENROUTER_BYOK_CORRECTION_2026-09-28.md`.
