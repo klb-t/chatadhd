@@ -51,9 +51,11 @@ class ConfigCompatTest(CompatTestCase):
         self.assertEqual(out["secret_keys"], ["api_key"])
         self.assertTrue(out["has_api_key"])
 
-    def test_auto_upgrade_is_identical(self):
+    def test_user_model_preservation_is_identical(self):
         legacy = {"semantic_model": "anthropic/claude-haiku-4-5", "theme": "amoled", "old_key": 1}
-        for name, content in (("bad_model", legacy), ("already_v3", dict(legacy, _config_version=3)),
+        for name, content in (("haiku_model", legacy), ("already_v3", dict(legacy, _config_version=3)),
+                              ("future_model", {"semantic_model": "local/future-model"}),
+                              ("empty_model", {"semantic_model": ""}),
                               ("clean", {"theme": "dark"})):
             with self.subTest(case=name):
                 a = self.tmp.path / name / "py"
@@ -65,6 +67,10 @@ class ConfigCompatTest(CompatTestCase):
                 out = tool("config-load", b)
                 self.assertEqual(out["config"], py_cfg._data)
                 self.assertEqual((a / "config.json").read_bytes(), (b / "config.json").read_bytes())
+                self.assertEqual((a / "config.json").read_text(encoding="utf-8"), json.dumps(content))
+                self.assertEqual(py_cfg.get("semantic_model"), content.get("semantic_model", ""))
+                self.assertFalse(out["upgraded_on_load"])
+                self.assertEqual(Config(a / "config.json").get("semantic_model"), py_cfg.get("semantic_model"))
 
     def test_corrupt_config_falls_back_to_defaults_like_python(self):
         for content in ("{not json", "[1, 2]", ""):

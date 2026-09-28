@@ -1,6 +1,10 @@
 # ChatADHD / Loom continuation
 
 Current graph-native round: `docs/research/GRAPH_NATIVE_PROGRAMME_2026-09-28.md`.
+Measured checkpoints: `docs/research/GRAPH_NATIVE_RESULTS_2026-09-28.md`.
+The owner also recalled the inexpensive separately configured semantic model.
+Read `docs/research/SEMANTIC_MODEL_FLOW_2026-09-28.md` for the actual native
+integration, request budgets, candidate boundary and remaining semantic gaps.
 The owner clarified that argument/thought structure belongs in the same knowledge
 graph; compare derived subgraph projections without another authoritative store.
 

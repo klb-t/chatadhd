@@ -51,6 +51,12 @@ TEST_SUITE("capi_knowledge") {
     CHECK(r["status"] == "done");
     CHECK(take(loom_kb_runs(ctx, 10)).size() == 1);
     CHECK(take(loom_kb_query(ctx, R"({"what":"stats"})"))["items"]["claims"] == 0);
+    const auto candidates = take(loom_kb_query(ctx, R"({"what":"candidates","kind":"semantic_structure","limit":10})"));
+    CHECK(candidates["items"].empty());
+    CHECK(candidates["total"] == 0);
+    CHECK(candidates["has_more"] == false);
+    CHECK(code_of(take(loom_kb_query(ctx, R"({"what":"candidates","limit":0})"))) == "invalid_argument");
+    CHECK(code_of(take(loom_kb_query(ctx, R"({"what":"candidates","offset":true})"))) == "invalid_argument");
     CHECK(code_of(take(loom_kb_query(ctx, R"({"what":"claims","origin":"rumour"})"))) == "invalid_argument");
     CHECK(take(loom_knowledge_status(ctx, nullptr))["run"]["task_id"] == r["task_id"]);
     CHECK(loom_knowledge_cancel(ctx) == LOOM_E_NOT_FOUND);

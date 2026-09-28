@@ -59,7 +59,7 @@ class Runtime;
 
 namespace knowledge {
 
-inline constexpr std::string_view kPipelineVersion = "5";
+inline constexpr std::string_view kPipelineVersion = "6";
 
 // The stages in execution order (closed set: wiring, not policy).
 inline constexpr std::array<std::string_view, 6> kStages = {"catalog", "extract", "resolve", "assess", "generalize", "materialize"};
@@ -73,7 +73,7 @@ struct KnowledgeConfig {
   std::vector<std::string> stages;        // run these (in pipeline order); empty = all
   std::string prior_cut;                  // temporal holdout: model::PriorFilter::as_of ("" = none)
   bool priors = true;                     // false = no seed priors at all
-  std::string llm = "off";                // "off" | "auto" (areas may refine with a model when a key exists)
+  std::string llm = "off";                // "off" | "auto" (source-linked semantic candidates using semantic_model)
   std::string out_dir;                    // materialized files ("" = artifacts only)
   std::string project;                    // display name ("" = derived)
   bool force = false;                     // ignore cached stage results

@@ -107,11 +107,8 @@ class Config(_JsonStore):
             if key not in cur:
                 self._data[key] = value
                 upgraded = True
-        # Fix known bad model IDs from earlier versions.
-        sem = self._data.get("semantic_model", "")
-        if sem and "claude-haiku-4" in sem:
-            self._data["semantic_model"] = DEFAULTS["semantic_model"]
-            upgraded = True
+        # Model IDs are user/provider choices, including future or local IDs.
+        # Loading configuration must never silently replace them.
         if upgraded:
             ver_old = self._data.get("_config_version", 0)
             self._data["_config_version"] = 3

@@ -7,7 +7,7 @@ import {
 } from "../api/knowledge";
 import "./knowledge.css";
 
-type ViewKind = KnowledgeCollection | "graph" | "context" | "catalog";
+type ViewKind = KnowledgeCollection | "graph" | "context" | "catalog" | "candidates";
 type Pane = { id: string; kind: ViewKind };
 type Selection = { kind: string; record: KnowledgeRecord };
 type Dataset = Partial<Record<KnowledgeCollection, KnowledgeRecord[]>>;
@@ -16,6 +16,7 @@ const VIEWS: Record<ViewKind, string> = {
   entities: "Entities", claims: "Claims", graph: "Knowledge graph", principles: "Principles",
   operators: "Operators", context: "Context trace", catalog: "Source catalog",
   instances: "Project instances", products: "Products",
+  candidates: "Candidate proposals",
 };
 const LAYOUT_KEY = "loom.knowledge.layout.v1";
 let paneSequence = 0;
@@ -144,6 +145,7 @@ export default function KnowledgeWorkbench({ onClose, onDataChanged }: { onClose
             </div></header>
             {pane.kind === "context" ? <ContextPane knowledge={knowledge} run={runId} focus={focus} entities={entityMap} onSelect={select} data={data} /> :
               pane.kind === "catalog" ? <CatalogPane knowledge={knowledge} onSelect={select} refresh={refresh} onImported={onDataChanged} /> :
+              pane.kind === "candidates" ? <CandidatePane knowledge={knowledge} run={runId} refresh={refresh} onSelect={select} entities={entityMap} /> :
               pane.kind === "graph" ? <KnowledgeGraph data={data} focus={focus} onSelect={select} /> :
               <CollectionPane kind={pane.kind} rows={data[pane.kind] ?? []} entities={entityMap} focus={focus} selection={selection} onSelect={select} limit={limit} />}
           </section>)}
@@ -162,10 +164,40 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<KnowledgeRecord | null>(null);
   const [error, setError] = useState("");
+  const [useModel, setUseModel] = useState(false);
+  const [modelConfig, setModelConfig] = useState<KnowledgeRecord | null>(null);
+  const [modelError, setModelError] = useState("");
+  const [semanticBudget, setSemanticBudget] = useState<Record<string, number>>({
+    max_requests: 4, max_observations: 16, max_chunk_bytes: 16000, max_input_bytes: 64000,
+    max_output_tokens: 1600, max_proposals: 16, max_response_bytes: 128000, timeout_ms: 30000,
+  });
+  const budgetFields = [
+    { key: "max_requests", label: "Maximum model requests", min: 0, max: 8 },
+    { key: "max_input_bytes", label: "Maximum total input bytes", min: 0, max: 256000 },
+    { key: "max_output_tokens", label: "Maximum output tokens per request", min: 1, max: 4096 },
+    { key: "max_observations", label: "Maximum observations per chunk", min: 1, max: 64 },
+    { key: "max_chunk_bytes", label: "Maximum input bytes per chunk", min: 1, max: 64000 },
+    { key: "max_proposals", label: "Maximum proposals per response", min: 1, max: 64 },
+    { key: "max_response_bytes", label: "Maximum response bytes", min: 1, max: 256000 },
+    { key: "timeout_ms", label: "Request timeout in milliseconds", min: 1, max: 60000 },
+  ];
+  const invalidBudget = budgetFields.some(({ key, min, max }) => !Number.isInteger(semanticBudget[key]) || semanticBudget[key] < min || semanticBudget[key] > max);
+  const loadModelConfig = useCallback(async () => {
+    setModelError("");
+    try { setModelConfig(await api.getConfig()); }
+    catch (failure) { setModelConfig(null); setModelError(errorText(failure)); }
+  }, []);
+  useEffect(() => { void loadModelConfig(); }, [loadModelConfig]);
+  const semanticModel = displayText(modelConfig?.semantic_model);
+  const extractStage = asArray(result?.stages).map(asRecord).find((stage) => stage.stage === "extract");
+  const semantic = asRecord(asRecord(extractStage?.stats).semantic);
+  const hasSemantic = Object.keys(semantic).length > 0;
   const run = async () => {
+    if (useModel && invalidBudget) { setError("Use whole-number semantic limits within the displayed ranges."); return; }
     setRunning(true); setError(""); setResult(null);
     try {
-      const outcome = await knowledge.run({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), priors, llm: "off", stage_params: { catalog: { import: { mode: full ? "full" : "selective" } } } });
+      const outcome = await knowledge.run({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), priors, llm: useModel ? "auto" : "off",
+        stage_params: { catalog: { import: { mode: full ? "full" : "selective" } }, ...(useModel ? { extract: { semantic: semanticBudget } } : {}) } });
       setResult(outcome);
       if (outcome.status !== "done") setError(`Analysis ${displayText(outcome.status) || "did not complete"}: ${displayText(outcome.error) || "inspect the stage results"}`);
       onDone(displayText(outcome.run));
@@ -176,13 +208,81 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
     <div className="kb-run-form"><label>Paths on the Loom server, one per line<textarea aria-label="Analysis source paths" rows={2} placeholder="/data/exports/archive.zip" value={sources} onChange={(event) => setSources(event.target.value)} /></label>
       <label className="kb-check"><input type="checkbox" checked={full} onChange={(event) => setFull(event.target.checked)} />Import all catalogued source content (full mode)</label>
       <label className="kb-check"><input type="checkbox" checked={priors} onChange={(event) => setPriors(event.target.checked)} />Include candidate principles from the data pack</label>
-      <p className="kb-muted">Selective mode uses the catalog profile. Analysis runs locally with language-model refinement off. Original sources are preserved.</p>
-      <div className="kb-actions"><button className="primary" disabled={running || !sources.trim()} onClick={run}>{running ? "Analyzing…" : "Analyze sources"}</button>
+      <label className="kb-check"><input type="checkbox" checked={useModel} disabled={running} onChange={(event) => setUseModel(event.target.checked)} />Use the configured semantic model for candidate proposals</label>
+      {useModel && <div data-testid="kb-semantic-controls">
+        <p className="kb-muted">Selected source excerpts are sent to the configured model provider and may incur its charges. Proposals remain candidates; they do not become accepted claims automatically.</p>
+        <p role="status">{modelConfig ? semanticModel ? `Semantic model: ${semanticModel}` : "No semantic model configured. Set Semantic model in Settings, then refresh here." : modelError ? `Model settings unavailable: ${modelError}` : "Loading model settings…"}</p>
+        {modelConfig?.semantic_analysis === false && <p className="kb-warning">Semantic analysis is disabled in Settings. The engine will report model proposals as unavailable until it is enabled.</p>}
+        <button disabled={running} onClick={() => { void loadModelConfig(); }}>Refresh model settings</button>
+        <fieldset disabled={running}><legend>Semantic model budget</legend>
+          <div className="kb-pane-controls">{budgetFields.slice(0, 3).map(({ key, label, min, max }) => <label key={key}>{label} ({min}–{max})<input aria-label={label} type="number" min={min} max={max} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div>
+          <details><summary>More semantic limits</summary><div className="kb-pane-controls">{budgetFields.slice(3).map(({ key, label, min, max }) => <label key={key}>{label} ({min}–{max})<input aria-label={label} type="number" min={min} max={max} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div></details>
+          <p className="kb-muted">Input limits count prompt and context bytes, including source excerpts. Request limits include cached chunks. Output-token limits apply to each request. Zero requests or zero total input permits no model work. These limits bound work, not its price.</p>
+        </fieldset>
+        {invalidBudget && <p className="kb-error" role="alert">Use whole-number semantic limits within the displayed ranges.</p>}
+      </div>}
+      <p className="kb-muted">Selective mode uses the catalog profile. Original sources are preserved. {useModel ? "Model proposals use the limits above and the current server settings." : "Language-model proposals are off."}</p>
+      <div className="kb-actions"><button className="primary" disabled={running || !sources.trim() || (useModel && invalidBudget)} onClick={run}>{running ? "Analyzing…" : "Analyze sources"}</button>
         {running && <button onClick={() => knowledge.cancel().catch((failure) => setError(errorText(failure)))}>Cancel analysis</button>}</div>
       {error && <p className="kb-error" role="alert">{error}</p>}
+      {result && <div data-testid="kb-semantic-result">
+        <p role="status">Analysis: {displayText(result.status) || "unknown"} · Semantic proposals: {hasSemantic ? displayText(semantic.status) || "status not reported" : "no semantic result reported"}{extractStage?.cache_hit ? " · extract result reused" : ""}</p>
+        {!!semantic.reason && <p className="kb-warning">{displayText(semantic.reason)}</p>}
+        {hasSemantic && <>
+          <p>Accepted proposals: {displayText(semantic.accepted) || "not reported"} · Stored candidate IDs: {asArray(semantic.candidate_ids).length} · Rejected proposals: {displayText(semantic.rejected) || "not reported"}</p>
+          <p>Model requests: {displayText(semantic.requests) || "not reported"} · Cached responses: {displayText(semantic.cache_hits) || "not reported"} · Input bytes: {displayText(semantic.input_bytes) || "not reported"} · Failed requests: {displayText(semantic.failed) || "not reported"} · Omitted observations: {displayText(semantic.omitted_observations) || "not reported"} · Skipped entries: {asArray(semantic.skipped).length}</p>
+          <p className="kb-muted">Candidate proposals are unpromoted interpretations. Counts do not establish extraction quality.</p>
+          {!!asArray(semantic.rejections).length && <JsonDetail label="Rejected proposals and reasons" value={semantic.rejections} />}
+          {!!asArray(semantic.skipped).length && <JsonDetail label="Skipped inputs and reasons" value={semantic.skipped} />}
+          {!!asArray(semantic.candidate_ids).length && <JsonDetail label="Stored semantic candidate IDs" value={semantic.candidate_ids} />}
+          <JsonDetail label="Complete semantic result" value={semantic} />
+        </>}
+      </div>}
       {result && <JsonDetail label="Analysis result" value={result} />}
     </div>
   </details>;
+}
+
+function CandidatePane({ knowledge, run, refresh, onSelect, entities }: {
+  knowledge: KnowledgeApi; run: string; refresh: number;
+  onSelect: (kind: string, row: KnowledgeRecord) => void; entities: Map<string, KnowledgeRecord>;
+}) {
+  const [kind, setKind] = useState("semantic_structure");
+  const [offset, setOffset] = useState(0);
+  const [pageSize, setPageSize] = useState(25);
+  const [rows, setRows] = useState<KnowledgeRecord[]>([]);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => { setOffset(0); }, [run, refresh]);
+  useEffect(() => {
+    if (!run) { setRows([]); setTotal(0); setHasMore(false); setBusy(false); setError(""); return; }
+    let active = true;
+    setBusy(true); setError(""); setRows([]); setTotal(0); setHasMore(false);
+    knowledge.query("candidates", { run, kind, limit: pageSize, offset }).then((result) => {
+      if (!active) return;
+      setRows(result.items); setTotal(result.total ?? result.items.length); setHasMore(result.has_more === true);
+    }).catch((failure) => { if (active) setError(errorText(failure)); }).finally(() => { if (active) setBusy(false); });
+    return () => { active = false; };
+  }, [knowledge, run, kind, pageSize, offset, refresh]);
+  return <>
+    <div className="kb-pane-controls">
+      <label>Candidate kind<input aria-label="Candidate kind" value={kind} placeholder="All kinds" onChange={(event) => { setKind(event.target.value); setOffset(0); }} /></label>
+      <label>Page size<select aria-label="Candidate page size" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setOffset(0); }}>{[25, 50, 100].map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+    </div>
+    <p className="kb-muted">Candidate proposals remain separate from canonical claims. Select one to inspect its draft claim, exact source quotes and model provenance.</p>
+    {error && <p className="kb-error" role="alert">{error}</p>}
+    <div className="kb-count" role="status">{busy ? "Loading candidate proposals…" : `${rows.length} shown · ${total} matching candidates`}</div>
+    <div className="kb-records">{rows.map((row) => {
+      const proposal = asRecord(asRecord(row.payload).proposal);
+      return <button className="kb-record" key={idOf(row)} onClick={() => onSelect("candidates", row)}>
+        <strong>{labelOf(asRecord(proposal.claim), entities) || idOf(row)}</strong>
+        <span className="kb-muted">{displayText(proposal.kind || row.kind)} · unpromoted candidate</span><Evidence row={row} />
+      </button>;
+    })}{!busy && !rows.length && <p className="empty-state">{run ? "No matching candidate proposals in this run." : "Choose a knowledge run to inspect its proposals."}</p>}</div>
+    <div className="kb-actions"><button aria-label="Previous candidate page" disabled={busy || !offset} onClick={() => setOffset((value) => Math.max(0, value - pageSize))}>Previous</button><span className="kb-muted">{offset + (rows.length ? 1 : 0)}–{offset + rows.length}</span><button aria-label="Next candidate page" disabled={busy || !hasMore} onClick={() => setOffset((value) => value + pageSize)}>Next</button></div>
+  </>;
 }
 
 function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limit }: {
@@ -286,9 +386,24 @@ function Inspector({ selection, entities }: { selection: Selection | null; entit
   const row = selection?.record;
   const assessment = row ? evidenceOf(row) : {};
   const basis = asRecord(assessment.basis);
+  const candidatePayload = asRecord(row?.payload);
+  const proposal = asRecord(candidatePayload.proposal);
+  const draft = asRecord(proposal.claim);
   return <aside id="knowledge-inspector" className="kb-inspector" aria-label="Knowledge inspector" data-testid="kb-inspector"><h3>Selection & provenance</h3>
     {!row ? <p className="kb-muted">Select an entity, claim, principle or catalog unit in any view. The inspector retains all fields, including uncertainty and missing evidence.</p> : <>
       <h4>{labelOf(row, entities)}</h4><code className="kb-id">{idOf(row)}</code><Evidence row={row} />
+      {selection?.kind === "candidates" && <>
+        <p className="kb-warning">Unpromoted candidate interpretation · review: {displayText(asRecord(row.eval).review) || "not reported"} · logical semantics: {displayText(asRecord(row.eval).logical_semantics) || "not reported"}</p>
+        <JsonDetail label="Draft claim" value={draft} open />
+        <div className="kb-support"><h4>Located source support</h4>
+          {asArray(row.support).map((value, index) => { const support = asRecord(value); return <div key={index}><blockquote>{displayText(support.quote) || "No quote supplied"}</blockquote><code className="kb-id">{displayText(support.observation)}</code><JsonDetail label="Source locator and quote byte span" value={{ locator: support.locator, byte_start: support.byte_start, byte_len: support.byte_len, observation_text_hash: support.observation_text_hash }} /></div>; })}
+          {!asArray(row.support).length && <p className="kb-muted">No source support recorded.</p>}
+        </div>
+        <JsonDetail label="Model and prompt provenance" value={candidatePayload.provenance} open />
+        <JsonDetail label="Source group" value={candidatePayload.group} />
+        <JsonDetail label="Unknowns and premises" value={{ unknowns: proposal.unknowns, premises: asRecord(draft.assessment).premises }} />
+        <JsonDetail label="Candidate checks and review status" value={row.eval} />
+      </>}
       {!!row.assessment && <>
         <JsonDetail label="1 · What is claimed?" value={{ subject: row.subject, predicate: row.predicate, object: row.object, value: row.value, qualifiers: row.qualifiers }} />
         <div className="kb-support"><h4>2 · How is it known?</h4>

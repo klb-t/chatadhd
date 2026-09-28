@@ -16,12 +16,17 @@
 //     4. success -> reset failures, return merge(llm, regex)
 //        failure/exception -> ++consecutive_failures; >= 5 -> disabled
 //        (log warning); return convert_regex(regex)
+//   Changing semantic enabled/model/base URL/API key resets the failure latch
+//   on the next enabled()/analyse() check. Completions from older settings do
+//   not affect the current failure state. No automatic replay is scheduled.
 //   merge(): setdefault entities/topics/relations to [], source="llm", then
 //     append regex entities whose text.lower() is not among the LLM entity
 //     names (lowercased) as {"name","kind","relevance": confidence*0.8}.
 #pragma once
 
 #include <atomic>
+#include <cstdint>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -66,15 +71,29 @@ class SemanticLLM {
 
   int consecutive_failures() const noexcept { return failures_.load(); }
   bool disabled_by_errors() const noexcept { return disabled_.load(); }
-  void reset_failures() noexcept;  // Loom addition: re-enable after config fix
+  void reset_failures() noexcept;  // Explicit retry, also invalidates old completions.
 
  private:
+  struct Settings {
+    bool active = false;
+    std::string model;
+    std::string base;
+    std::string key;  // Request-local only; recovery identity stores its digest.
+  };
+  Settings settings_locked() const;
+  void refresh_identity_locked(const Settings& settings) const;
+  void record_result(std::uint64_t generation, bool success);
+  Result<std::optional<Json>> call_llm(std::string_view text, const Settings& settings);
+
   const Config& cfg_;
   const Secrets& secrets_;
   net::HttpTransport& http_;
   const SemanticAnalyzer& regex_;
-  std::atomic<int> failures_{0};
-  std::atomic<bool> disabled_{false};
+  mutable std::mutex state_mu_;
+  mutable std::optional<Json> config_identity_;
+  mutable std::uint64_t config_generation_ = 0;
+  mutable std::atomic<int> failures_{0};
+  mutable std::atomic<bool> disabled_{false};
 };
 
 }  // namespace loom

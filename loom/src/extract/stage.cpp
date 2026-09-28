@@ -15,6 +15,7 @@
 #include "loom/catalog.h"
 #include "loom/extract.h"
 #include "loom/knowledge.h"
+#include "loom/knowledge_semantic.h"
 #include "loom/util/sha256.h"
 
 namespace loom::extract {
@@ -284,6 +285,12 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   LOOM_TRY(st.put_forks(ctx.run, values(acc.forks)));
   LOOM_TRY(st.put_status_records(ctx.run, recs));
 
+  // Optional cheap-model proposals use the already persisted, located
+  // observations. They remain candidates; this never upgrades a model's
+  // interpretation into an observed Claim or overwrites owner judgements.
+  LOOM_TRY_ASSIGN(auto semantic, propose_semantics(ctx, values(acc.observations),
+                                                 values(acc.entities), values(acc.claims)));
+
   Sha256 h;
   auto feed = [&](const auto& m) {
     for (const auto& [id, x] : m) {
@@ -299,6 +306,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   feed(acc.decisions);
   feed(acc.forks);
   for (const auto& r : recs) h.update(json::canonical(r.to_json()));
+  h.update(json::get_string(semantic, "output"));
   Json stats{{"from", from},
              {"units", units.size()},
              {"failed", failed},
@@ -310,7 +318,8 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
              {"principles", acc.principles.size()},
              {"decisions", acc.decisions.size()},
              {"forks", acc.forks.size()},
-             {"statuses", recs.size()}};
+             {"statuses", recs.size()},
+             {"semantic", semantic}};
   return Json{{"output", h.finish_hex()}, {"stats", stats}, {"names", names}};
 }
 

@@ -13,6 +13,7 @@
 #include "loom/catalog.h"
 #include "loom/extract.h"
 #include "loom/generalize.h"
+#include "loom/knowledge_semantic.h"
 #include "loom/log.h"
 #include "loom/materialize.h"
 #include "loom/provenance.h"
@@ -451,7 +452,9 @@ Result<RunResult> KnowledgeEngine::orchestrate(const KnowledgeConfig& cfg, const
     so.dedupe = !cfg.force;
     so.input_hash = sr.input_hash;
     so.parent_id = run_task;
-    so.max_attempts = 2;
+    // Model calls have an explicit request budget. A persistence failure must
+    // not silently restart the paid stage under a fresh invocation budget.
+    so.max_attempts = stage == "extract" && cfg.llm == "auto" ? 1 : 2;
     LOOM_TRY_ASSIGN(sr.task_id, rt_.tasks().submit("knowledge." + stage,
                                                    Json{{"config", cfg.to_json()}, {"run", krun}, {"input", prev_result}}, so));
     bool first = true;
@@ -460,8 +463,23 @@ Result<RunResult> KnowledgeEngine::orchestrate(const KnowledgeConfig& cfg, const
       if (!rec) return Error(Errc::NotFound, "stage task vanished: " + sr.task_id);
       const std::string& s = rec->status;
       if (s == task_status::kDone) {
-        sr.cache_hit = first;
         Json res = rec->result ? *rec->result : Json::object();
+        const bool previous_run_cache = first && rec->parent_id != run_task;
+        if (previous_run_cache && stage == "extract" && cfg.llm == "auto") {
+          const Json* stats = json::find(res, "stats");
+          const Json* semantic = stats ? json::find(*stats, "semantic") : nullptr;
+          if (semantic && (json::get_int(*semantic, "failed") > 0 || json::get_int(*semantic, "rejected") > 0)) {
+            // A NEW explicit run may retry failed/invalid model responses.
+            // Successful chunk responses are cached independently. Do this
+            // once only; no automatic retry loop or repeated charge in a run.
+            so.dedupe = false;
+            LOOM_TRY_ASSIGN(sr.task_id, rt_.tasks().submit("knowledge." + stage,
+                Json{{"config", cfg.to_json()}, {"run", krun}, {"input", prev_result}}, so));
+            first = false;
+            continue;
+          }
+        }
+        sr.cache_hit = previous_run_cache;
         if (sr.cache_hit && stage == "materialize") LOOM_TRY(export_cached_products(rt_, cfg, res));
         sr.output_hash = json::get_string(res, "output");
         sr.stats = res.contains("stats") ? res["stats"] : Json::object();
@@ -511,6 +529,15 @@ Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& requested, const P
   if (!run_lock.owns_lock()) return Error(Errc::Busy, "a knowledge run is already in progress");
   // Native callers construct KnowledgeConfig directly; validate them too.
   LOOM_TRY_ASSIGN(auto cfg, KnowledgeConfig::from_json(requested.to_json()));
+  if (cfg.llm == "auto") {
+    // The model/provider and its availability change extraction inputs even
+    // when the archive bytes and user-facing pipeline config are identical.
+    // Stamp the nonsecret identity into serialized stage parameters so resumed
+    // tasks cannot silently use a different model under the old cache key.
+    auto& params = cfg.stage_params["extract"];
+    if (params.is_null()) params = Json::object();
+    params["_semantic_identity"] = extract::semantic_fingerprint(rt_, params, cfg.llm);
+  }
   LOOM_TRY_ASSIGN(auto pk, pack());
   {
     std::lock_guard lk(st_->mu);

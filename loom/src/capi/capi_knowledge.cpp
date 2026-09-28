@@ -45,6 +45,19 @@ Result<Json> run_query(kb::KnowledgeStore& ks, const Json& q) {
     LOOM_TRY_ASSIGN(run, latest_run(ks));
   }
   std::string what = json::get_string(q, "what");
+  if (what == "candidates") {
+    for (const char* name : {"limit", "offset"}) {
+      if (q.contains(name) && !q[name].is_number_integer())
+        return Error(Errc::InvalidArgument, std::string(name) + " must be an integer");
+    }
+    const auto requested_limit = json::get_int(q, "limit", 100);
+    if (requested_limit < 1 || requested_limit > 1000)
+      return Error(Errc::InvalidArgument, "candidate limit must be 1..1000");
+    LOOM_TRY_ASSIGN(auto page, ks.query_candidates(run, json::get_string(q, "kind"),
+                                                  static_cast<int>(requested_limit), json::get_int(q, "offset", 0)));
+    page["run"] = run;
+    return page;
+  }
   int limit = static_cast<int>(json::get_int(q, "limit", 10000));
   Json items;
   if (what == "claims") {

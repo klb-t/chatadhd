@@ -7,6 +7,8 @@
 #include <atomic>
 
 #include "loom/catalog.h"
+#include "loom/config.h"
+#include "loom/event_bus.h"
 #include "loom/extract.h"
 #include "loom/knowledge.h"
 #include "loom/runtime.h"
@@ -56,6 +58,97 @@ TEST_SUITE("knowledge") {
     CHECK(stage_input("catalog").empty());
     auto none = unwrap(KnowledgeConfig::from_json(Json{{"priors", false}}));
     CHECK(!none.prior_filter().enabled);
+  }
+
+  TEST_CASE("semantic model identity invalidates auto runs without persisting API keys") {
+    fsutil::TempDir td;
+    auto rt = open_rt(td.path());
+    std::atomic<int> calls{0};
+    rt->knowledge().set_stage("extract", fake("extract", calls));
+    KnowledgeConfig cfg;
+    cfg.stages = {"extract"};
+    cfg.llm = "auto";
+    rt->config().set("semantic_model", "economical/a");
+    rt->config().set("base_url", "https://provider.test/v1");
+    auto missing = unwrap(rt->knowledge().run(cfg));
+    rt->secrets().set("api_key", "only-in-memory-test-secret");
+    auto available = unwrap(rt->knowledge().run(cfg));
+    CHECK(missing.run != available.run);
+    CHECK(calls == 2);
+    auto repeated = unwrap(rt->knowledge().run(cfg));
+    CHECK(repeated.run == available.run);
+    CHECK(repeated.stages[0].cache_hit);
+    CHECK(calls == 2);
+    rt->config().set("semantic_model", "economical/b");
+    auto changed = unwrap(rt->knowledge().run(cfg));
+    CHECK(changed.run != available.run);
+    CHECK(calls == 3);
+    {
+      auto lock = rt->db().lock();
+      const auto persisted = unwrap(rt->db().conn().query_text(
+          "SELECT inputs FROM loom_kb_runs WHERE run_id=?", changed.run));
+      REQUIRE(persisted.has_value());
+      CHECK(persisted->find("only-in-memory-test-secret") == std::string::npos);
+      CHECK(persisted->find("economical/b") != std::string::npos);
+    }
+    // When the user asks for no model, model settings are not pipeline inputs.
+    cfg.llm = "off";
+    auto off = unwrap(rt->knowledge().run(cfg));
+    rt->config().set("semantic_model", "economical/c");
+    auto off_again = unwrap(rt->knowledge().run(cfg));
+    CHECK(off.run == off_again.run);
+    CHECK(off_again.stages[0].cache_hit);
+  }
+
+  TEST_CASE("an explicit new run retries incomplete semantic output once and then caches success") {
+    fsutil::TempDir td;
+    auto rt = open_rt(td.path());
+    int calls = 0;
+    rt->knowledge().set_stage("extract", [&](StageContext&) -> Result<Json> {
+      ++calls;
+      return Json{{"output", std::to_string(calls)},
+                  {"stats", Json{{"semantic", Json{{"failed", calls < 3 ? 1 : 0}, {"rejected", 0}}}}}};
+    });
+    KnowledgeConfig cfg;
+    cfg.llm = "auto";
+    cfg.stages = {"extract"};
+    CHECK(unwrap(rt->knowledge().run(cfg)).status == "done");
+    CHECK(calls == 1); // no automatic retry inside the first invocation
+    auto retry = unwrap(rt->knowledge().run(cfg));
+    CHECK(calls == 2);
+    CHECK(!retry.stages[0].cache_hit);
+    auto success = unwrap(rt->knowledge().run(cfg));
+    CHECK(calls == 3);
+    CHECK(!success.stages[0].cache_hit);
+    auto cached = unwrap(rt->knowledge().run(cfg));
+    CHECK(calls == 3);
+    CHECK(cached.stages[0].cache_hit);
+  }
+
+  TEST_CASE("a new stage finishing before the first poll cannot trigger a paid retry") {
+    fsutil::TempDir td;
+    auto rt = open_rt(td.path());
+    int calls = 0;
+    rt->knowledge().set_stage("extract", [&](StageContext&) -> Result<Json> {
+      ++calls;
+      return Json{{"output", "partial"}, {"stats", Json{{"semantic", Json{{"failed", 1}}}}}};
+    });
+    // Deterministically reproduce the worker race: complete the new stage
+    // from its submission notification, before submit() returns to the caller.
+    const auto subscription = rt->bus().on(events::kTaskChanged, [&](std::string_view, const Json& data) {
+      if (json::get_string(data, "kind") == "knowledge.extract" && json::get_string(data, "status") == "pending")
+        unwrap(rt->tasks().run_sync(json::get_string(data, "id")));
+    });
+    ScopedSubscription guard(rt->bus(), subscription);
+    KnowledgeConfig cfg;
+    cfg.llm = "auto";
+    cfg.stages = {"extract"};
+    auto result = unwrap(rt->knowledge().run(cfg));
+    CHECK(calls == 1);
+    CHECK(!result.stages[0].cache_hit);
+    auto retry = unwrap(rt->knowledge().run(cfg));
+    CHECK(calls == 2);
+    CHECK(!retry.stages[0].cache_hit);
   }
 
   TEST_CASE("every area is implemented: a run with no configured sources completes end to end") {

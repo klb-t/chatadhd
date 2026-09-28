@@ -5,21 +5,13 @@
 #include "loom/log.h"
 #include "loom/net/http.h"
 #include "loom/semantic_analyzer.h"
+#include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
 
 namespace loom {
 
 namespace {
-
-std::string cfg_string(const Config& cfg, std::string_view key, std::string fallback = "") {
-  Json v = cfg.get(key);
-  return v.is_string() ? v.get<std::string>() : std::move(fallback);
-}
-
-bool cfg_bool(const Config& cfg, std::string_view key, bool fallback) {
-  return json::truthy(cfg.get(key, fallback));
-}
 
 std::string rstrip_slash(std::string s) {
   while (!s.empty() && s.back() == '/') s.pop_back();
@@ -55,11 +47,45 @@ SemanticLLM::SemanticLLM(const Config& cfg, const Secrets& secrets, net::HttpTra
     : cfg_(cfg), secrets_(secrets), http_(http), regex_(regex) {}
 
 bool SemanticLLM::enabled() const {
-  if (disabled_.load()) return false;
-  if (!cfg_bool(cfg_, "semantic_analysis", true)) return false;
-  if (cfg_string(cfg_, "semantic_model").empty()) return false;
-  if (!secrets_.has("api_key")) return false;
-  return true;
+  std::lock_guard lk(state_mu_);
+  auto settings = settings_locked();
+  refresh_identity_locked(settings);
+  return !disabled_.load() && settings.active && !settings.model.empty() && !settings.key.empty();
+}
+
+SemanticLLM::Settings SemanticLLM::settings_locked() const {
+  Json config = cfg_.all();
+  const Json* active = json::find(config, "semantic_analysis");
+  return Settings{active ? json::truthy(*active) : true,
+                  json::get_string(config, "semantic_model"),
+                  rstrip_slash(json::get_string(config, "base_url")), secrets_.get_string("api_key")};
+}
+
+void SemanticLLM::refresh_identity_locked(const Settings& settings) const {
+  Json identity = Json::array({settings.active, settings.model, settings.base, Sha256::hex(settings.key)});
+  if (!config_identity_ || *config_identity_ != identity) {
+    config_identity_ = std::move(identity);
+    ++config_generation_;
+    failures_.store(0);
+    disabled_.store(false);
+  }
+}
+
+void SemanticLLM::record_result(std::uint64_t generation, bool success) {
+  std::lock_guard lk(state_mu_);
+  refresh_identity_locked(settings_locked());
+  if (generation != config_generation_ || disabled_.load()) return;
+  if (success) {
+    failures_.store(0);
+  } else {
+    int failures = failures_.fetch_add(1) + 1;
+    if (failures >= kMaxConsecutiveFailures) {
+      disabled_.store(true);
+      log::warn("loom.semantic_llm",
+                "Semantic LLM disabled after {} consecutive failures. "
+                "Check semantic model, endpoint and credentials in Settings.", failures);
+    }
+  }
 }
 
 std::optional<Json> SemanticLLM::parse_response_json(std::string_view raw) {
@@ -77,23 +103,29 @@ std::optional<Json> SemanticLLM::parse_response_json(std::string_view raw) {
 }
 
 Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text) {
-  std::string key = secrets_.get_string("api_key");
-  std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
-  std::string model = cfg_string(cfg_, "semantic_model");
-  if (key.empty() || base.empty() || model.empty()) return std::optional<Json>(std::nullopt);
+  Settings settings;
+  {
+    std::lock_guard lk(state_mu_);
+    settings = settings_locked();
+  }
+  return call_llm(text, settings);
+}
+
+Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const Settings& settings) {
+  if (settings.key.empty() || settings.base.empty() || settings.model.empty()) return std::optional<Json>(std::nullopt);
 
   std::string analysis_text(utf8::prefix(text, kMaxAnalysisChars));
 
-  Json body{{"model", model},
+  Json body{{"model", settings.model},
             {"messages", Json::array({Json{{"role", "user"}, {"content", std::string(kAnalysisPrompt) + analysis_text}}})},
             {"temperature", 0.1},
             {"max_tokens", 800}};
 
   net::HttpRequest req;
   req.method = "POST";
-  req.url = base + "/chat/completions";
+  req.url = settings.base + "/chat/completions";
   req.headers = {
-      {"Authorization", "Bearer " + key},
+      {"Authorization", "Bearer " + settings.key},
       {"Content-Type", "application/json"},
       {"HTTP-Referer", "https://github.com/chatadhd"},
       {"X-Title", "ChatADHD-Semantic"},
@@ -134,11 +166,20 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text) {
 Json SemanticLLM::analyse(std::string_view text) {
   Analysis regex_result = regex_.analyse(text);
 
-  if (!enabled() || utf8::length(text) < 20) return convert_regex(regex_result);
+  Settings settings;
+  std::uint64_t generation;
+  {
+    std::lock_guard lk(state_mu_);
+    settings = settings_locked();
+    refresh_identity_locked(settings);
+    if (disabled_.load() || !settings.active || settings.model.empty() || settings.key.empty() || utf8::length(text) < 20)
+      return convert_regex(regex_result);
+    generation = config_generation_;
+  }
 
-  auto result = call_llm(text);
+  auto result = call_llm(text, settings);
   if (result && result->has_value()) {
-    failures_.store(0);
+    record_result(generation, true);
     return merge(std::move(**result), regex_result);
   }
 
@@ -146,12 +187,7 @@ Json SemanticLLM::analyse(std::string_view text) {
     log::debug("loom.semantic_llm", "LLM semantic analysis failed — using regex: {}", result.error().message);
   }
 
-  int failures = failures_.fetch_add(1) + 1;
-  if (failures >= kMaxConsecutiveFailures) {
-    disabled_.store(true);
-    log::warn("loom.semantic_llm",
-              "Semantic LLM disabled after {} consecutive failures. Check model ID in Settings.", failures);
-  }
+  record_result(generation, false);
 
   return convert_regex(regex_result);
 }
@@ -186,6 +222,8 @@ Json SemanticLLM::merge(Json llm, const Analysis& regex) {
 }
 
 void SemanticLLM::reset_failures() noexcept {
+  std::lock_guard lk(state_mu_);
+  ++config_generation_;
   failures_.store(0);
   disabled_.store(false);
 }

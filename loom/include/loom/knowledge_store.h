@@ -221,6 +221,10 @@ class KnowledgeStore {
   Result<std::vector<model::StatusRecord>> status_history(std::string_view run, std::string_view entity);
   // {"<table>": rows, ...} for the run.
   Result<Json> stats(std::string_view run);
+  // Reversible model/learning proposals, scoped by payload.run_id. Returns
+  // {items,total,limit,offset,has_more}; these are never canonical Claims.
+  Result<Json> query_candidates(std::string_view run, std::string_view kind = "",
+                                int limit = 100, std::int64_t offset = 0);
 
   // ── judgements (global, append-only) ──────────────────────────────
   // Validates, fills created (UTC now) and id when empty, assigns seq.

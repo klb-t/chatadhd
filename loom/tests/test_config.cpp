@@ -49,25 +49,25 @@ TEST_SUITE("config") {
     CHECK(again.get("theme") == "amoled");
   }
 
-  TEST_CASE("auto-upgrade: bad semantic model fixed, _config_version 3, saved once") {
+  TEST_CASE("loading preserves configured semantic model IDs and file bytes") {
     fsutil::TempDir td;
     auto p = td.path() / "config.json";
-    LOOM_REQUIRE_OK(fsutil::write_file(p, R"({"semantic_model": "anthropic/claude-haiku-4-5", "theme": "amoled"})"));
-    Config cfg(p);
-    CHECK(cfg.upgraded_on_load());
-    CHECK(cfg.get("semantic_model") == "");
-    CHECK(cfg.get("_config_version") == 3);
-    CHECK(cfg.get("theme") == "amoled");
-    auto on_disk = unwrap(json::parse(unwrap(fsutil::read_file(p))));
-    CHECK(on_disk["_config_version"] == 3);
-    CHECK(on_disk["semantic_model"] == "");
-    CHECK(on_disk.size() == 13);  // 12 defaults + _config_version
-    // Already v3 with a bad model again: fixed in memory, not re-saved.
-    LOOM_REQUIRE_OK(fsutil::write_file(p, R"({"semantic_model": "x/claude-haiku-4", "_config_version": 3})"));
-    Config cfg2(p);
-    CHECK(cfg2.get("semantic_model") == "");
-    CHECK(!cfg2.upgraded_on_load());
-    CHECK(unwrap(fsutil::read_file(p)).find("claude-haiku-4") != std::string::npos);
+    for (const char* model : {"anthropic/claude-haiku-4-5", "x/claude-haiku-4", "local/future-model", ""}) {
+      for (bool versioned : {false, true}) {
+        Json content{{"semantic_model", model}, {"theme", "amoled"}};
+        if (versioned) content["_config_version"] = 3;
+        std::string original = json::dump(content);
+        LOOM_REQUIRE_OK(fsutil::write_file(p, original));
+        Config cfg(p);
+        CHECK(cfg.get("semantic_model") == model);
+        CHECK(cfg.get("theme") == "amoled");
+        CHECK(!cfg.upgraded_on_load());
+        CHECK(unwrap(fsutil::read_file(p)) == original);
+        Config again(p);
+        CHECK(again.get("semantic_model") == model);
+        CHECK(unwrap(fsutil::read_file(p)) == original);
+      }
+    }
   }
 
   TEST_CASE("corrupt or non-object config falls back to defaults") {

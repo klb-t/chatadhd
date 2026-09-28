@@ -113,8 +113,8 @@ const Json& loom_config_defaults();
 class Config : public JsonStore {
  public:
   // Loads, then runs the Python auto-upgrade (missing default keys added,
-  // bad "claude-haiku-4" semantic_model reset, _config_version = 3, saved
-  // only when the old version was < 3).
+  // _config_version = 3, saved only when the old version was < 3).
+  // User model IDs are preserved, without provider-specific overrides.
   explicit Config(fs::path path);
   // get() falls back to loom_config_defaults() for loom_* keys.
   Json get(std::string_view key, const Json& fallback = nullptr) const;

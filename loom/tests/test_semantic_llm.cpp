@@ -1,5 +1,9 @@
 // OWNER: wave 2 net/chat/worker.
 #include <doctest/doctest.h>
+#include <chrono>
+#include <functional>
+#include <future>
+#include <thread>
 
 #include "loom/config.h"
 #include "loom/net/http.h"
@@ -27,6 +31,20 @@ struct Env {
 
   SemanticLLM llm() { return SemanticLLM(cfg, secrets, transport, *analyzer); }
 };
+
+struct CallbackTransport : net::HttpTransport {
+  std::function<Result<net::HttpResponse>(const net::HttpRequest&)> reply;
+  Result<net::HttpResponse> send(const net::HttpRequest& request, const net::StreamSink*, const CancelToken*) override {
+    return reply(request);
+  }
+  std::string name() const override { return "callback-test"; }
+};
+
+net::HttpResponse success_response() {
+  Json content{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()}};
+  Json body{{"choices", Json::array({Json{{"message", Json{{"content", json::dump(content)}}}}})}};
+  return net::HttpResponse{200, {}, json::dump(body)};
+}
 }  // namespace
 
 TEST_SUITE("semantic_llm") {
@@ -146,6 +164,132 @@ TEST_SUITE("semantic_llm") {
 
     llm.reset_failures();
     CHECK(!llm.disabled_by_errors());
+    CHECK(llm.enabled());
+  }
+
+  TEST_CASE("relevant configuration changes recover without replay; other settings preserve the latch") {
+    Env env;
+    env.transport.set_fallback(net::ScriptedTransport::Reply::fail(Errc::Network, "down"));
+    auto llm = env.llm();
+    const std::string text = "This text is long enough to attempt semantic analysis.";
+    auto trip = [&] {
+      for (int i = 0; i < 5; ++i) llm.analyse(text);
+      CHECK(!llm.enabled());
+      CHECK(llm.consecutive_failures() == 5);
+    };
+    trip();
+    env.cfg.set("theme", "amoled");
+    env.cfg.set("semantic_model", "cheap/model");
+    env.cfg.set("base_url", "https://api.test/");  // Same effective endpoint.
+    env.secrets.set("api_key", "sk-test");
+    CHECK(!llm.enabled());
+    llm.analyse(text);
+    CHECK(env.transport.requests().size() == 5);
+
+    std::vector<std::function<void()>> changes{
+        [&] { env.cfg.set("semantic_model", "corrected/model"); },
+        [&] { env.cfg.set("base_url", "https://corrected.test"); },
+        [&] { env.secrets.set("api_key", "corrected-test-key"); },
+        [&] { env.cfg.set("semantic_analysis", false); }};
+    for (const auto& change : changes) {
+      auto before = env.transport.requests().size();
+      change();
+      CHECK(llm.enabled() == json::truthy(env.cfg.get("semantic_analysis")));
+      CHECK(!llm.disabled_by_errors());
+      CHECK(llm.consecutive_failures() == 0);
+      CHECK(env.transport.requests().size() == before);
+      if (llm.enabled()) trip();
+    }
+    env.cfg.set("semantic_analysis", true);
+    env.transport.set_fallback(net::ScriptedTransport::Reply::text(200, success_response().body));
+    CHECK(llm.analyse(text)["source"] == "llm");
+    auto request = env.transport.requests().back();
+    CHECK(request.url == "https://corrected.test/chat/completions");
+    CHECK(unwrap(json::parse(request.body))["model"] == "corrected/model");
+    CHECK(net::header_value(request.headers, "Authorization") == "Bearer corrected-test-key");
+  }
+
+  TEST_CASE("a current successful request resets the consecutive failure count") {
+    Env env;
+    auto llm = env.llm();
+    const std::string text = "This text is long enough to attempt semantic analysis.";
+    for (int i = 0; i < 4; ++i) llm.analyse(text);  // Default unscripted failure.
+    CHECK(llm.consecutive_failures() == 4);
+    env.transport.expect("POST", "", net::ScriptedTransport::Reply::text(200, success_response().body));
+    CHECK(llm.analyse(text)["source"] == "llm");
+    CHECK(llm.consecutive_failures() == 0);
+    llm.analyse(text);
+    CHECK(llm.consecutive_failures() == 1);
+  }
+
+  TEST_CASE("old in-flight results cannot change new configuration failure state") {
+    bool old_success = false;
+    SUBCASE("late failure after config fix without an enabled poll") {}
+    SUBCASE("late success cannot clear failures of corrected settings") { old_success = true; }
+    Env env;
+    CallbackTransport transport;
+    std::promise<void> entered, release;
+    auto started = entered.get_future();
+    auto released = release.get_future().share();
+    transport.reply = [&](const net::HttpRequest& request) -> Result<net::HttpResponse> {
+      auto body = json::parse(request.body);
+      if (body && (*body)["model"] == "cheap/model") {
+        entered.set_value();
+        released.wait();
+        if (old_success) return success_response();
+      }
+      return make_error(Errc::Network, "test failure");
+    };
+    SemanticLLM llm(env.cfg, env.secrets, transport, *env.analyzer);
+    const std::string text = "This text is long enough to attempt semantic analysis.";
+    Json result;
+    std::thread worker([&] { result = llm.analyse(text); });
+    bool reached_http = started.wait_for(std::chrono::seconds(5)) == std::future_status::ready;
+    CHECK(reached_http);
+    if (reached_http) {
+      env.cfg.set("semantic_model", "corrected/model");
+      if (old_success) {
+        for (int i = 0; i < 4; ++i) llm.analyse(text);
+      }
+    }
+    release.set_value();
+    worker.join();
+    CHECK(result["source"] == (old_success ? "llm" : "regex"));
+    CHECK(llm.consecutive_failures() == (old_success ? 4 : 0));
+    CHECK(llm.enabled());
+  }
+
+  TEST_CASE("manual reset and observed config round trip invalidate in-flight failures") {
+    bool round_trip = false;
+    SUBCASE("manual reset") {}
+    SUBCASE("config changed and returned to its previous value") { round_trip = true; }
+    Env env;
+    CallbackTransport transport;
+    std::promise<void> entered, release;
+    auto started = entered.get_future();
+    auto released = release.get_future().share();
+    transport.reply = [&](const net::HttpRequest&) -> Result<net::HttpResponse> {
+      entered.set_value();
+      released.wait();
+      return make_error(Errc::Network, "test failure");
+    };
+    SemanticLLM llm(env.cfg, env.secrets, transport, *env.analyzer);
+    std::thread worker([&] { llm.analyse("This text is long enough to attempt semantic analysis."); });
+    bool reached_http = started.wait_for(std::chrono::seconds(5)) == std::future_status::ready;
+    CHECK(reached_http);
+    if (reached_http) {
+      if (round_trip) {
+        env.cfg.set("semantic_model", "corrected/model");
+        CHECK(llm.enabled());
+        env.cfg.set("semantic_model", "cheap/model");
+        CHECK(llm.enabled());
+      } else {
+        llm.reset_failures();
+      }
+    }
+    release.set_value();
+    worker.join();
+    CHECK(llm.consecutive_failures() == 0);
     CHECK(llm.enabled());
   }
 

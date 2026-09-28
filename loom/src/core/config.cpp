@@ -223,8 +223,8 @@ Config::Config(fs::path path) : JsonStore(std::move(path), config_defaults(), fa
 
 void Config::auto_upgrade() {
   std::lock_guard lk(mu_);
-  // Python: cur = data.copy(); add missing DEFAULTS keys; fix bad semantic
-  // model; if upgraded: bump _config_version to 3 and save if old < 3.
+  // Python: cur = data.copy(); add missing DEFAULTS keys; if upgraded:
+  // bump _config_version to 3 and save if old < 3. Preserve user model IDs.
   // Note: _JsonStore seeds data with DEFAULTS before reading the file, so the
   // "missing key" branch can only trigger for keys the file deleted... which
   // cannot happen through update(). We mirror the code path exactly anyway.
@@ -233,14 +233,6 @@ void Config::auto_upgrade() {
   for (auto it = defs.begin(); it != defs.end(); ++it) {
     if (data_.find(it.key()) == data_.end()) {
       data_[it.key()] = it.value();
-      upgraded = true;
-    }
-  }
-  const Json* sem = json::find(data_, "semantic_model");
-  if (sem && sem->is_string()) {
-    const auto& s = sem->get_ref<const std::string&>();
-    if (!s.empty() && s.find("claude-haiku-4") != std::string::npos) {
-      data_["semantic_model"] = defs["semantic_model"];
       upgraded = true;
     }
   }

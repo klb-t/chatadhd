@@ -2,7 +2,15 @@
 // Open model fields survive as JSON; UI labels must not turn inference into fact.
 export type KnowledgeRecord = Record<string, unknown>;
 export type KnowledgeCollection = "entities" | "claims" | "principles" | "operators" | "instances" | "products";
-export interface KnowledgeQueryResult { run: string; items: KnowledgeRecord[] }
+export interface KnowledgeQueryResult {
+  run: string;
+  items: KnowledgeRecord[];
+  total?: number;
+  limit?: number;
+  offset?: number;
+  has_more?: boolean;
+  interpretation?: string;
+}
 export interface KnowledgeRun extends KnowledgeRecord { id: string; status: string }
 export interface KnowledgeContextRequest {
   text: string;
@@ -37,7 +45,7 @@ export interface KnowledgeContextResult {
 }
 export interface KnowledgeApi {
   listRuns(): Promise<KnowledgeRun[]>;
-  query(what: KnowledgeCollection, filters?: KnowledgeRecord): Promise<KnowledgeQueryResult>;
+  query(what: KnowledgeCollection | "candidates", filters?: KnowledgeRecord): Promise<KnowledgeQueryResult>;
   run(config: KnowledgeRecord): Promise<KnowledgeRecord>;
   cancel(): Promise<void>;
   buildContext(request: KnowledgeContextRequest): Promise<KnowledgeContextResult>;
