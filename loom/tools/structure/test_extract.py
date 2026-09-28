@@ -92,6 +92,7 @@ class ExtractionTests(unittest.TestCase):
     def test_universal_shape_is_not_claim_of_induction(self):
         candidate = extraction("All lanterns are devices.")["candidates"][0]
         self.assertEqual(candidate["operation"], "universal_inclusion")
+        self.assertEqual(candidate["operation_family"], "category_inclusion")
         self.assertEqual(candidate["operation_status"], "representation_only_no_performed_operation_inferred")
         formula = candidate["formula_candidate"]
         self.assertEqual(formula["op"], "forall")

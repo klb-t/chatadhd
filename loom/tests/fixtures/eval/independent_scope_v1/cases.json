@@ -1,0 +1,4298 @@
+{
+  "schema": "loom.independent_eval/1",
+  "version": "1.0.0",
+  "description": "Fresh validation extension authored after the scoped-composition API froze, before any scoped-method measurement. No method author sees its source text or labels.",
+  "cases": [
+    {
+      "id": "scope-antecedent_binding-anchor",
+      "group": "antecedent_binding",
+      "split": "validation",
+      "category": "antecedent_binding",
+      "domain": "quarry",
+      "text": "If Quarry is inspected, then Cart is open.\nQuarry is inspected.\nCart is logged.",
+      "source_sha256": "79a3fa12571749f7a26d6de5ef894597d82e85f95672498af05405c174a5435e",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-antecedent_binding-anchor.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "inspected",
+              "args": [
+                "Quarry"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "open",
+              "args": [
+                "Cart"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-anchor.p1",
+                  "quote": "If Quarry is inspected, then Cart is open.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-anchor",
+                    "byte_range": [
+                      0,
+                      42
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-antecedent_binding-anchor.p2",
+          "formula": {
+            "op": "atom",
+            "predicate": "inspected",
+            "args": [
+              "Quarry"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-anchor.p2",
+                  "quote": "Quarry is inspected.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-anchor",
+                    "byte_range": [
+                      43,
+                      63
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-antecedent_binding-anchor.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "logged",
+            "args": [
+              "Cart"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-anchor.p3",
+                  "quote": "Cart is logged.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-anchor",
+                    "byte_range": [
+                      64,
+                      79
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-antecedent_binding-anchor.record1",
+          "source_id": "scope-antecedent_binding-anchor",
+          "conversation_id": "scope-antecedent_binding-anchor",
+          "segment_id": "scope-antecedent_binding-anchor.segment",
+          "turn_id": "scope-antecedent_binding-anchor.turn1",
+          "text": "If Quarry is inspected, then Cart is open."
+        },
+        {
+          "id": "scope-antecedent_binding-anchor.record2",
+          "source_id": "scope-antecedent_binding-anchor",
+          "conversation_id": "scope-antecedent_binding-anchor",
+          "segment_id": "scope-antecedent_binding-anchor.segment",
+          "turn_id": "scope-antecedent_binding-anchor.turn2",
+          "text": "Quarry is inspected."
+        },
+        {
+          "id": "scope-antecedent_binding-anchor.record3",
+          "source_id": "scope-antecedent_binding-anchor",
+          "conversation_id": "scope-antecedent_binding-anchor",
+          "segment_id": "scope-antecedent_binding-anchor.segment",
+          "turn_id": "scope-antecedent_binding-anchor.turn3",
+          "text": "Cart is logged."
+        }
+      ]
+    },
+    {
+      "id": "scope-antecedent_binding-analogue",
+      "group": "antecedent_binding",
+      "split": "validation",
+      "category": "antecedent_binding",
+      "domain": "harbor",
+      "text": "If Harbor is quiet, then Buoy is safe.\nHarbor is quiet.\nBuoy is marked.",
+      "source_sha256": "7de66af9011f139d062a1ace8bdc6e18fbe4e11fb71aae491c8ddb5765732b7d",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-antecedent_binding-analogue.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "quiet",
+              "args": [
+                "Harbor"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "safe",
+              "args": [
+                "Buoy"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-analogue.p1",
+                  "quote": "If Harbor is quiet, then Buoy is safe.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-analogue",
+                    "byte_range": [
+                      0,
+                      38
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-antecedent_binding-analogue.p2",
+          "formula": {
+            "op": "atom",
+            "predicate": "quiet",
+            "args": [
+              "Harbor"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-analogue.p2",
+                  "quote": "Harbor is quiet.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-analogue",
+                    "byte_range": [
+                      39,
+                      55
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-antecedent_binding-analogue.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "marked",
+            "args": [
+              "Buoy"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-analogue.p3",
+                  "quote": "Buoy is marked.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-analogue",
+                    "byte_range": [
+                      56,
+                      71
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-antecedent_binding-analogue.record1",
+          "source_id": "scope-antecedent_binding-analogue",
+          "conversation_id": "scope-antecedent_binding-analogue",
+          "segment_id": "scope-antecedent_binding-analogue.segment",
+          "turn_id": "scope-antecedent_binding-analogue.turn1",
+          "text": "If Harbor is quiet, then Buoy is safe."
+        },
+        {
+          "id": "scope-antecedent_binding-analogue.record2",
+          "source_id": "scope-antecedent_binding-analogue",
+          "conversation_id": "scope-antecedent_binding-analogue",
+          "segment_id": "scope-antecedent_binding-analogue.segment",
+          "turn_id": "scope-antecedent_binding-analogue.turn2",
+          "text": "Harbor is quiet."
+        },
+        {
+          "id": "scope-antecedent_binding-analogue.record3",
+          "source_id": "scope-antecedent_binding-analogue",
+          "conversation_id": "scope-antecedent_binding-analogue",
+          "segment_id": "scope-antecedent_binding-analogue.segment",
+          "turn_id": "scope-antecedent_binding-analogue.turn3",
+          "text": "Buoy is marked."
+        }
+      ]
+    },
+    {
+      "id": "scope-antecedent_binding-contrast",
+      "group": "antecedent_binding",
+      "split": "validation",
+      "category": "antecedent_binding",
+      "domain": "quarry",
+      "text": "If Quarry is inspected, then Cart is open.\nCart is inspected.\nQuarry is logged.",
+      "source_sha256": "2cabc943212c9809ad5d0d3ba03b056dba29043430cb5823fba164773155ba44",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-antecedent_binding-contrast.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "inspected",
+              "args": [
+                "Quarry"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "open",
+              "args": [
+                "Cart"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-contrast.p1",
+                  "quote": "If Quarry is inspected, then Cart is open.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-contrast",
+                    "byte_range": [
+                      0,
+                      42
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-antecedent_binding-contrast.p2",
+          "formula": {
+            "op": "atom",
+            "predicate": "inspected",
+            "args": [
+              "Cart"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-contrast.p2",
+                  "quote": "Cart is inspected.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-contrast",
+                    "byte_range": [
+                      43,
+                      61
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-antecedent_binding-contrast.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "logged",
+            "args": [
+              "Quarry"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-antecedent_binding-contrast.p3",
+                  "quote": "Quarry is logged.",
+                  "locator": {
+                    "source_id": "scope-antecedent_binding-contrast",
+                    "byte_range": [
+                      62,
+                      79
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-antecedent_binding-contrast.record1",
+          "source_id": "scope-antecedent_binding-contrast",
+          "conversation_id": "scope-antecedent_binding-contrast",
+          "segment_id": "scope-antecedent_binding-contrast.segment",
+          "turn_id": "scope-antecedent_binding-contrast.turn1",
+          "text": "If Quarry is inspected, then Cart is open."
+        },
+        {
+          "id": "scope-antecedent_binding-contrast.record2",
+          "source_id": "scope-antecedent_binding-contrast",
+          "conversation_id": "scope-antecedent_binding-contrast",
+          "segment_id": "scope-antecedent_binding-contrast.segment",
+          "turn_id": "scope-antecedent_binding-contrast.turn2",
+          "text": "Cart is inspected."
+        },
+        {
+          "id": "scope-antecedent_binding-contrast.record3",
+          "source_id": "scope-antecedent_binding-contrast",
+          "conversation_id": "scope-antecedent_binding-contrast",
+          "segment_id": "scope-antecedent_binding-contrast.segment",
+          "turn_id": "scope-antecedent_binding-contrast.turn3",
+          "text": "Quarry is logged."
+        }
+      ]
+    },
+    {
+      "id": "scope-converging_rules-anchor",
+      "group": "converging_rules",
+      "split": "validation",
+      "category": "converging_rules",
+      "domain": "spruce",
+      "text": "If Spruce is watered, then Moss is growing.\nIf Fern is rooted, then Moss is growing.\nSpruce is watered.\nFern is rooted.",
+      "source_sha256": "9dfb3ecae87626ff17cecefce5e200076f0e36d9f0011b0287d9c3272702dfb2",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-converging_rules-anchor.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "watered",
+              "args": [
+                "Spruce"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "growing",
+              "args": [
+                "Moss"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-anchor.p1",
+                  "quote": "If Spruce is watered, then Moss is growing.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-anchor",
+                    "byte_range": [
+                      0,
+                      43
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-anchor.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "rooted",
+              "args": [
+                "Fern"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "growing",
+              "args": [
+                "Moss"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-anchor.p2",
+                  "quote": "If Fern is rooted, then Moss is growing.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-anchor",
+                    "byte_range": [
+                      44,
+                      84
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-anchor.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "watered",
+            "args": [
+              "Spruce"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-anchor.p3",
+                  "quote": "Spruce is watered.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-anchor",
+                    "byte_range": [
+                      85,
+                      103
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-anchor.p4",
+          "formula": {
+            "op": "atom",
+            "predicate": "rooted",
+            "args": [
+              "Fern"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-anchor.p4",
+                  "quote": "Fern is rooted.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-anchor",
+                    "byte_range": [
+                      104,
+                      119
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-converging_rules-anchor.record1",
+          "source_id": "scope-converging_rules-anchor",
+          "conversation_id": "scope-converging_rules-anchor",
+          "segment_id": "scope-converging_rules-anchor.segment",
+          "turn_id": "scope-converging_rules-anchor.turn1",
+          "text": "If Spruce is watered, then Moss is growing."
+        },
+        {
+          "id": "scope-converging_rules-anchor.record2",
+          "source_id": "scope-converging_rules-anchor",
+          "conversation_id": "scope-converging_rules-anchor",
+          "segment_id": "scope-converging_rules-anchor.segment",
+          "turn_id": "scope-converging_rules-anchor.turn2",
+          "text": "If Fern is rooted, then Moss is growing."
+        },
+        {
+          "id": "scope-converging_rules-anchor.record3",
+          "source_id": "scope-converging_rules-anchor",
+          "conversation_id": "scope-converging_rules-anchor",
+          "segment_id": "scope-converging_rules-anchor.segment",
+          "turn_id": "scope-converging_rules-anchor.turn3",
+          "text": "Spruce is watered."
+        },
+        {
+          "id": "scope-converging_rules-anchor.record4",
+          "source_id": "scope-converging_rules-anchor",
+          "conversation_id": "scope-converging_rules-anchor",
+          "segment_id": "scope-converging_rules-anchor.segment",
+          "turn_id": "scope-converging_rules-anchor.turn4",
+          "text": "Fern is rooted."
+        }
+      ]
+    },
+    {
+      "id": "scope-converging_rules-analogue",
+      "group": "converging_rules",
+      "split": "validation",
+      "category": "converging_rules",
+      "domain": "violin",
+      "text": "If Violin is tuned, then Drum is audible.\nIf Flute is ready, then Drum is audible.\nViolin is tuned.\nFlute is ready.",
+      "source_sha256": "dd48a84154e76a7c44bfddc128a9ffeb93b7dcddf53cbd15bf19a85ecce9b7b7",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-converging_rules-analogue.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "tuned",
+              "args": [
+                "Violin"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "audible",
+              "args": [
+                "Drum"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-analogue.p1",
+                  "quote": "If Violin is tuned, then Drum is audible.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-analogue",
+                    "byte_range": [
+                      0,
+                      41
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-analogue.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "ready",
+              "args": [
+                "Flute"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "audible",
+              "args": [
+                "Drum"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-analogue.p2",
+                  "quote": "If Flute is ready, then Drum is audible.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-analogue",
+                    "byte_range": [
+                      42,
+                      82
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-analogue.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "tuned",
+            "args": [
+              "Violin"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-analogue.p3",
+                  "quote": "Violin is tuned.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-analogue",
+                    "byte_range": [
+                      83,
+                      99
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-analogue.p4",
+          "formula": {
+            "op": "atom",
+            "predicate": "ready",
+            "args": [
+              "Flute"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-analogue.p4",
+                  "quote": "Flute is ready.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-analogue",
+                    "byte_range": [
+                      100,
+                      115
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-converging_rules-analogue.record1",
+          "source_id": "scope-converging_rules-analogue",
+          "conversation_id": "scope-converging_rules-analogue",
+          "segment_id": "scope-converging_rules-analogue.segment",
+          "turn_id": "scope-converging_rules-analogue.turn1",
+          "text": "If Violin is tuned, then Drum is audible."
+        },
+        {
+          "id": "scope-converging_rules-analogue.record2",
+          "source_id": "scope-converging_rules-analogue",
+          "conversation_id": "scope-converging_rules-analogue",
+          "segment_id": "scope-converging_rules-analogue.segment",
+          "turn_id": "scope-converging_rules-analogue.turn2",
+          "text": "If Flute is ready, then Drum is audible."
+        },
+        {
+          "id": "scope-converging_rules-analogue.record3",
+          "source_id": "scope-converging_rules-analogue",
+          "conversation_id": "scope-converging_rules-analogue",
+          "segment_id": "scope-converging_rules-analogue.segment",
+          "turn_id": "scope-converging_rules-analogue.turn3",
+          "text": "Violin is tuned."
+        },
+        {
+          "id": "scope-converging_rules-analogue.record4",
+          "source_id": "scope-converging_rules-analogue",
+          "conversation_id": "scope-converging_rules-analogue",
+          "segment_id": "scope-converging_rules-analogue.segment",
+          "turn_id": "scope-converging_rules-analogue.turn4",
+          "text": "Flute is ready."
+        }
+      ]
+    },
+    {
+      "id": "scope-converging_rules-contrast",
+      "group": "converging_rules",
+      "split": "validation",
+      "category": "converging_rules",
+      "domain": "spruce",
+      "text": "If Spruce is watered, then Moss is growing.\nIf Fern is rooted, then Spruce is growing.\nSpruce is watered.\nFern is rooted.",
+      "source_sha256": "58b0faf37131c50fccefcd90a1b1207e320d6c1ae4d29008c15493e567a3d748",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-converging_rules-contrast.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "watered",
+              "args": [
+                "Spruce"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "growing",
+              "args": [
+                "Moss"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-contrast.p1",
+                  "quote": "If Spruce is watered, then Moss is growing.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-contrast",
+                    "byte_range": [
+                      0,
+                      43
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-contrast.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "rooted",
+              "args": [
+                "Fern"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "growing",
+              "args": [
+                "Spruce"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-contrast.p2",
+                  "quote": "If Fern is rooted, then Spruce is growing.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-contrast",
+                    "byte_range": [
+                      44,
+                      86
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-contrast.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "watered",
+            "args": [
+              "Spruce"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-contrast.p3",
+                  "quote": "Spruce is watered.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-contrast",
+                    "byte_range": [
+                      87,
+                      105
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-converging_rules-contrast.p4",
+          "formula": {
+            "op": "atom",
+            "predicate": "rooted",
+            "args": [
+              "Fern"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-converging_rules-contrast.p4",
+                  "quote": "Fern is rooted.",
+                  "locator": {
+                    "source_id": "scope-converging_rules-contrast",
+                    "byte_range": [
+                      106,
+                      121
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-converging_rules-contrast.record1",
+          "source_id": "scope-converging_rules-contrast",
+          "conversation_id": "scope-converging_rules-contrast",
+          "segment_id": "scope-converging_rules-contrast.segment",
+          "turn_id": "scope-converging_rules-contrast.turn1",
+          "text": "If Spruce is watered, then Moss is growing."
+        },
+        {
+          "id": "scope-converging_rules-contrast.record2",
+          "source_id": "scope-converging_rules-contrast",
+          "conversation_id": "scope-converging_rules-contrast",
+          "segment_id": "scope-converging_rules-contrast.segment",
+          "turn_id": "scope-converging_rules-contrast.turn2",
+          "text": "If Fern is rooted, then Spruce is growing."
+        },
+        {
+          "id": "scope-converging_rules-contrast.record3",
+          "source_id": "scope-converging_rules-contrast",
+          "conversation_id": "scope-converging_rules-contrast",
+          "segment_id": "scope-converging_rules-contrast.segment",
+          "turn_id": "scope-converging_rules-contrast.turn3",
+          "text": "Spruce is watered."
+        },
+        {
+          "id": "scope-converging_rules-contrast.record4",
+          "source_id": "scope-converging_rules-contrast",
+          "conversation_id": "scope-converging_rules-contrast",
+          "segment_id": "scope-converging_rules-contrast.segment",
+          "turn_id": "scope-converging_rules-contrast.turn4",
+          "text": "Fern is rooted."
+        }
+      ]
+    },
+    {
+      "id": "scope-diverging_rules-anchor",
+      "group": "diverging_rules",
+      "split": "validation",
+      "category": "diverging_rules",
+      "domain": "packet",
+      "text": "If Packet is signed, then Frame is accepted.\nIf Packet is signed, then Socket is stored.\nPacket is signed.",
+      "source_sha256": "f4dea80aa8d5363cc4bd68b13028859439522fb71f4fd43d172fcdb6ab9cf469",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-diverging_rules-anchor.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "signed",
+              "args": [
+                "Packet"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "accepted",
+              "args": [
+                "Frame"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-anchor.p1",
+                  "quote": "If Packet is signed, then Frame is accepted.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-anchor",
+                    "byte_range": [
+                      0,
+                      44
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-diverging_rules-anchor.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "signed",
+              "args": [
+                "Packet"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "stored",
+              "args": [
+                "Socket"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-anchor.p2",
+                  "quote": "If Packet is signed, then Socket is stored.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-anchor",
+                    "byte_range": [
+                      45,
+                      88
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-diverging_rules-anchor.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "signed",
+            "args": [
+              "Packet"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-anchor.p3",
+                  "quote": "Packet is signed.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-anchor",
+                    "byte_range": [
+                      89,
+                      106
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-diverging_rules-anchor.record1",
+          "source_id": "scope-diverging_rules-anchor",
+          "conversation_id": "scope-diverging_rules-anchor",
+          "segment_id": "scope-diverging_rules-anchor.segment",
+          "turn_id": "scope-diverging_rules-anchor.turn1",
+          "text": "If Packet is signed, then Frame is accepted."
+        },
+        {
+          "id": "scope-diverging_rules-anchor.record2",
+          "source_id": "scope-diverging_rules-anchor",
+          "conversation_id": "scope-diverging_rules-anchor",
+          "segment_id": "scope-diverging_rules-anchor.segment",
+          "turn_id": "scope-diverging_rules-anchor.turn2",
+          "text": "If Packet is signed, then Socket is stored."
+        },
+        {
+          "id": "scope-diverging_rules-anchor.record3",
+          "source_id": "scope-diverging_rules-anchor",
+          "conversation_id": "scope-diverging_rules-anchor",
+          "segment_id": "scope-diverging_rules-anchor.segment",
+          "turn_id": "scope-diverging_rules-anchor.turn3",
+          "text": "Packet is signed."
+        }
+      ]
+    },
+    {
+      "id": "scope-diverging_rules-analogue",
+      "group": "diverging_rules",
+      "split": "validation",
+      "category": "diverging_rules",
+      "domain": "tray",
+      "text": "If Tray is washed, then Bowl is dry.\nIf Tray is washed, then Plate is stacked.\nTray is washed.",
+      "source_sha256": "626b5a4a910ff9c0621954b6ac4ab1c78a9111083a387d38b718a582bca79aaf",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-diverging_rules-analogue.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "washed",
+              "args": [
+                "Tray"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "dry",
+              "args": [
+                "Bowl"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-analogue.p1",
+                  "quote": "If Tray is washed, then Bowl is dry.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-analogue",
+                    "byte_range": [
+                      0,
+                      36
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-diverging_rules-analogue.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "washed",
+              "args": [
+                "Tray"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "stacked",
+              "args": [
+                "Plate"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-analogue.p2",
+                  "quote": "If Tray is washed, then Plate is stacked.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-analogue",
+                    "byte_range": [
+                      37,
+                      78
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-diverging_rules-analogue.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "washed",
+            "args": [
+              "Tray"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-analogue.p3",
+                  "quote": "Tray is washed.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-analogue",
+                    "byte_range": [
+                      79,
+                      94
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-diverging_rules-analogue.record1",
+          "source_id": "scope-diverging_rules-analogue",
+          "conversation_id": "scope-diverging_rules-analogue",
+          "segment_id": "scope-diverging_rules-analogue.segment",
+          "turn_id": "scope-diverging_rules-analogue.turn1",
+          "text": "If Tray is washed, then Bowl is dry."
+        },
+        {
+          "id": "scope-diverging_rules-analogue.record2",
+          "source_id": "scope-diverging_rules-analogue",
+          "conversation_id": "scope-diverging_rules-analogue",
+          "segment_id": "scope-diverging_rules-analogue.segment",
+          "turn_id": "scope-diverging_rules-analogue.turn2",
+          "text": "If Tray is washed, then Plate is stacked."
+        },
+        {
+          "id": "scope-diverging_rules-analogue.record3",
+          "source_id": "scope-diverging_rules-analogue",
+          "conversation_id": "scope-diverging_rules-analogue",
+          "segment_id": "scope-diverging_rules-analogue.segment",
+          "turn_id": "scope-diverging_rules-analogue.turn3",
+          "text": "Tray is washed."
+        }
+      ]
+    },
+    {
+      "id": "scope-diverging_rules-contrast",
+      "group": "diverging_rules",
+      "split": "validation",
+      "category": "diverging_rules",
+      "domain": "packet",
+      "text": "If Packet is signed, then Frame is accepted.\nIf Socket is signed, then Socket is stored.\nPacket is signed.",
+      "source_sha256": "0de6235e39778872a2966d071af127f257d498095777f0f174d16f2b872504d7",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-diverging_rules-contrast.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "signed",
+              "args": [
+                "Packet"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "accepted",
+              "args": [
+                "Frame"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-contrast.p1",
+                  "quote": "If Packet is signed, then Frame is accepted.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-contrast",
+                    "byte_range": [
+                      0,
+                      44
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-diverging_rules-contrast.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "signed",
+              "args": [
+                "Socket"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "stored",
+              "args": [
+                "Socket"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-contrast.p2",
+                  "quote": "If Socket is signed, then Socket is stored.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-contrast",
+                    "byte_range": [
+                      45,
+                      88
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-diverging_rules-contrast.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "signed",
+            "args": [
+              "Packet"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-diverging_rules-contrast.p3",
+                  "quote": "Packet is signed.",
+                  "locator": {
+                    "source_id": "scope-diverging_rules-contrast",
+                    "byte_range": [
+                      89,
+                      106
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-diverging_rules-contrast.record1",
+          "source_id": "scope-diverging_rules-contrast",
+          "conversation_id": "scope-diverging_rules-contrast",
+          "segment_id": "scope-diverging_rules-contrast.segment",
+          "turn_id": "scope-diverging_rules-contrast.turn1",
+          "text": "If Packet is signed, then Frame is accepted."
+        },
+        {
+          "id": "scope-diverging_rules-contrast.record2",
+          "source_id": "scope-diverging_rules-contrast",
+          "conversation_id": "scope-diverging_rules-contrast",
+          "segment_id": "scope-diverging_rules-contrast.segment",
+          "turn_id": "scope-diverging_rules-contrast.turn2",
+          "text": "If Socket is signed, then Socket is stored."
+        },
+        {
+          "id": "scope-diverging_rules-contrast.record3",
+          "source_id": "scope-diverging_rules-contrast",
+          "conversation_id": "scope-diverging_rules-contrast",
+          "segment_id": "scope-diverging_rules-contrast.segment",
+          "turn_id": "scope-diverging_rules-contrast.turn3",
+          "text": "Packet is signed."
+        }
+      ]
+    },
+    {
+      "id": "scope-linked_chain-anchor",
+      "group": "linked_chain",
+      "split": "validation",
+      "category": "linked_chain",
+      "domain": "planet",
+      "text": "If Planet is charted, then Moon is located.\nIf Moon is located, then Star is named.\nPlanet is charted.",
+      "source_sha256": "c7a4f3b0f6c99d5cdc4406908b1a1402a4936e747093372fe18d390e5d71c939",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-linked_chain-anchor.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "charted",
+              "args": [
+                "Planet"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "located",
+              "args": [
+                "Moon"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-anchor.p1",
+                  "quote": "If Planet is charted, then Moon is located.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-anchor",
+                    "byte_range": [
+                      0,
+                      43
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-linked_chain-anchor.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "located",
+              "args": [
+                "Moon"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "named",
+              "args": [
+                "Star"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-anchor.p2",
+                  "quote": "If Moon is located, then Star is named.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-anchor",
+                    "byte_range": [
+                      44,
+                      83
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-linked_chain-anchor.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "charted",
+            "args": [
+              "Planet"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-anchor.p3",
+                  "quote": "Planet is charted.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-anchor",
+                    "byte_range": [
+                      84,
+                      102
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-linked_chain-anchor.record1",
+          "source_id": "scope-linked_chain-anchor",
+          "conversation_id": "scope-linked_chain-anchor",
+          "segment_id": "scope-linked_chain-anchor.segment",
+          "turn_id": "scope-linked_chain-anchor.turn1",
+          "text": "If Planet is charted, then Moon is located."
+        },
+        {
+          "id": "scope-linked_chain-anchor.record2",
+          "source_id": "scope-linked_chain-anchor",
+          "conversation_id": "scope-linked_chain-anchor",
+          "segment_id": "scope-linked_chain-anchor.segment",
+          "turn_id": "scope-linked_chain-anchor.turn2",
+          "text": "If Moon is located, then Star is named."
+        },
+        {
+          "id": "scope-linked_chain-anchor.record3",
+          "source_id": "scope-linked_chain-anchor",
+          "conversation_id": "scope-linked_chain-anchor",
+          "segment_id": "scope-linked_chain-anchor.segment",
+          "turn_id": "scope-linked_chain-anchor.turn3",
+          "text": "Planet is charted."
+        }
+      ]
+    },
+    {
+      "id": "scope-linked_chain-analogue",
+      "group": "linked_chain",
+      "split": "validation",
+      "category": "linked_chain",
+      "domain": "tunnel",
+      "text": "If Tunnel is surveyed, then Road is cleared.\nIf Road is cleared, then Bridge is mapped.\nTunnel is surveyed.",
+      "source_sha256": "394c7b99fcc01c1274bdf655229dcc1e887a9f3191198f0144dd45df6648e78d",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-linked_chain-analogue.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "surveyed",
+              "args": [
+                "Tunnel"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "cleared",
+              "args": [
+                "Road"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-analogue.p1",
+                  "quote": "If Tunnel is surveyed, then Road is cleared.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-analogue",
+                    "byte_range": [
+                      0,
+                      44
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-linked_chain-analogue.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "cleared",
+              "args": [
+                "Road"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "mapped",
+              "args": [
+                "Bridge"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-analogue.p2",
+                  "quote": "If Road is cleared, then Bridge is mapped.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-analogue",
+                    "byte_range": [
+                      45,
+                      87
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-linked_chain-analogue.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "surveyed",
+            "args": [
+              "Tunnel"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-analogue.p3",
+                  "quote": "Tunnel is surveyed.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-analogue",
+                    "byte_range": [
+                      88,
+                      107
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-linked_chain-analogue.record1",
+          "source_id": "scope-linked_chain-analogue",
+          "conversation_id": "scope-linked_chain-analogue",
+          "segment_id": "scope-linked_chain-analogue.segment",
+          "turn_id": "scope-linked_chain-analogue.turn1",
+          "text": "If Tunnel is surveyed, then Road is cleared."
+        },
+        {
+          "id": "scope-linked_chain-analogue.record2",
+          "source_id": "scope-linked_chain-analogue",
+          "conversation_id": "scope-linked_chain-analogue",
+          "segment_id": "scope-linked_chain-analogue.segment",
+          "turn_id": "scope-linked_chain-analogue.turn2",
+          "text": "If Road is cleared, then Bridge is mapped."
+        },
+        {
+          "id": "scope-linked_chain-analogue.record3",
+          "source_id": "scope-linked_chain-analogue",
+          "conversation_id": "scope-linked_chain-analogue",
+          "segment_id": "scope-linked_chain-analogue.segment",
+          "turn_id": "scope-linked_chain-analogue.turn3",
+          "text": "Tunnel is surveyed."
+        }
+      ]
+    },
+    {
+      "id": "scope-linked_chain-contrast",
+      "group": "linked_chain",
+      "split": "validation",
+      "category": "linked_chain",
+      "domain": "planet",
+      "text": "If Planet is charted, then Moon is located.\nIf Star is located, then Moon is named.\nPlanet is charted.",
+      "source_sha256": "744dab6352b1ec74a09ec4c1febc545c774311225fb173ddaadd91c5dd906d8f",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-linked_chain-contrast.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "charted",
+              "args": [
+                "Planet"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "located",
+              "args": [
+                "Moon"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-contrast.p1",
+                  "quote": "If Planet is charted, then Moon is located.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-contrast",
+                    "byte_range": [
+                      0,
+                      43
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-linked_chain-contrast.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "located",
+              "args": [
+                "Star"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "named",
+              "args": [
+                "Moon"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-contrast.p2",
+                  "quote": "If Star is located, then Moon is named.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-contrast",
+                    "byte_range": [
+                      44,
+                      83
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-linked_chain-contrast.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "charted",
+            "args": [
+              "Planet"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-linked_chain-contrast.p3",
+                  "quote": "Planet is charted.",
+                  "locator": {
+                    "source_id": "scope-linked_chain-contrast",
+                    "byte_range": [
+                      84,
+                      102
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-linked_chain-contrast.record1",
+          "source_id": "scope-linked_chain-contrast",
+          "conversation_id": "scope-linked_chain-contrast",
+          "segment_id": "scope-linked_chain-contrast.segment",
+          "turn_id": "scope-linked_chain-contrast.turn1",
+          "text": "If Planet is charted, then Moon is located."
+        },
+        {
+          "id": "scope-linked_chain-contrast.record2",
+          "source_id": "scope-linked_chain-contrast",
+          "conversation_id": "scope-linked_chain-contrast",
+          "segment_id": "scope-linked_chain-contrast.segment",
+          "turn_id": "scope-linked_chain-contrast.turn2",
+          "text": "If Star is located, then Moon is named."
+        },
+        {
+          "id": "scope-linked_chain-contrast.record3",
+          "source_id": "scope-linked_chain-contrast",
+          "conversation_id": "scope-linked_chain-contrast",
+          "segment_id": "scope-linked_chain-contrast.segment",
+          "turn_id": "scope-linked_chain-contrast.turn3",
+          "text": "Planet is charted."
+        }
+      ]
+    },
+    {
+      "id": "scope-independent_subarguments-anchor",
+      "group": "independent_subarguments",
+      "split": "validation",
+      "category": "independent_subarguments",
+      "domain": "nest",
+      "text": "If Nest is occupied, then Branch is stable.\nIf Trunk is occupied, then Leaf is stable.\nNest is occupied.\nTrunk is occupied.",
+      "source_sha256": "8833b0a8d05805bb007c6ea17c698c11f2d1a984ad40708ceeaa3c2987001cf0",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-independent_subarguments-anchor.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "occupied",
+              "args": [
+                "Nest"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "stable",
+              "args": [
+                "Branch"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-anchor.p1",
+                  "quote": "If Nest is occupied, then Branch is stable.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-anchor",
+                    "byte_range": [
+                      0,
+                      43
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-anchor.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "occupied",
+              "args": [
+                "Trunk"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "stable",
+              "args": [
+                "Leaf"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-anchor.p2",
+                  "quote": "If Trunk is occupied, then Leaf is stable.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-anchor",
+                    "byte_range": [
+                      44,
+                      86
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-anchor.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "occupied",
+            "args": [
+              "Nest"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-anchor.p3",
+                  "quote": "Nest is occupied.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-anchor",
+                    "byte_range": [
+                      87,
+                      104
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-anchor.p4",
+          "formula": {
+            "op": "atom",
+            "predicate": "occupied",
+            "args": [
+              "Trunk"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-anchor.p4",
+                  "quote": "Trunk is occupied.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-anchor",
+                    "byte_range": [
+                      105,
+                      123
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-independent_subarguments-anchor.record1",
+          "source_id": "scope-independent_subarguments-anchor",
+          "conversation_id": "scope-independent_subarguments-anchor",
+          "segment_id": "scope-independent_subarguments-anchor.segment",
+          "turn_id": "scope-independent_subarguments-anchor.turn1",
+          "text": "If Nest is occupied, then Branch is stable."
+        },
+        {
+          "id": "scope-independent_subarguments-anchor.record2",
+          "source_id": "scope-independent_subarguments-anchor",
+          "conversation_id": "scope-independent_subarguments-anchor",
+          "segment_id": "scope-independent_subarguments-anchor.segment",
+          "turn_id": "scope-independent_subarguments-anchor.turn2",
+          "text": "If Trunk is occupied, then Leaf is stable."
+        },
+        {
+          "id": "scope-independent_subarguments-anchor.record3",
+          "source_id": "scope-independent_subarguments-anchor",
+          "conversation_id": "scope-independent_subarguments-anchor",
+          "segment_id": "scope-independent_subarguments-anchor.segment",
+          "turn_id": "scope-independent_subarguments-anchor.turn3",
+          "text": "Nest is occupied."
+        },
+        {
+          "id": "scope-independent_subarguments-anchor.record4",
+          "source_id": "scope-independent_subarguments-anchor",
+          "conversation_id": "scope-independent_subarguments-anchor",
+          "segment_id": "scope-independent_subarguments-anchor.segment",
+          "turn_id": "scope-independent_subarguments-anchor.turn4",
+          "text": "Trunk is occupied."
+        }
+      ]
+    },
+    {
+      "id": "scope-independent_subarguments-analogue",
+      "group": "independent_subarguments",
+      "split": "validation",
+      "category": "independent_subarguments",
+      "domain": "canvas",
+      "text": "If Canvas is primed, then Brush is clean.\nIf Pigment is primed, then Easel is clean.\nCanvas is primed.\nPigment is primed.",
+      "source_sha256": "ed14859d3a0117b78ff37106520f83f2ef2388efad407c454fec1260de4223d9",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-independent_subarguments-analogue.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "primed",
+              "args": [
+                "Canvas"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "clean",
+              "args": [
+                "Brush"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-analogue.p1",
+                  "quote": "If Canvas is primed, then Brush is clean.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-analogue",
+                    "byte_range": [
+                      0,
+                      41
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-analogue.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "primed",
+              "args": [
+                "Pigment"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "clean",
+              "args": [
+                "Easel"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-analogue.p2",
+                  "quote": "If Pigment is primed, then Easel is clean.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-analogue",
+                    "byte_range": [
+                      42,
+                      84
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-analogue.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "primed",
+            "args": [
+              "Canvas"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-analogue.p3",
+                  "quote": "Canvas is primed.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-analogue",
+                    "byte_range": [
+                      85,
+                      102
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-analogue.p4",
+          "formula": {
+            "op": "atom",
+            "predicate": "primed",
+            "args": [
+              "Pigment"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-analogue.p4",
+                  "quote": "Pigment is primed.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-analogue",
+                    "byte_range": [
+                      103,
+                      121
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-independent_subarguments-analogue.record1",
+          "source_id": "scope-independent_subarguments-analogue",
+          "conversation_id": "scope-independent_subarguments-analogue",
+          "segment_id": "scope-independent_subarguments-analogue.segment",
+          "turn_id": "scope-independent_subarguments-analogue.turn1",
+          "text": "If Canvas is primed, then Brush is clean."
+        },
+        {
+          "id": "scope-independent_subarguments-analogue.record2",
+          "source_id": "scope-independent_subarguments-analogue",
+          "conversation_id": "scope-independent_subarguments-analogue",
+          "segment_id": "scope-independent_subarguments-analogue.segment",
+          "turn_id": "scope-independent_subarguments-analogue.turn2",
+          "text": "If Pigment is primed, then Easel is clean."
+        },
+        {
+          "id": "scope-independent_subarguments-analogue.record3",
+          "source_id": "scope-independent_subarguments-analogue",
+          "conversation_id": "scope-independent_subarguments-analogue",
+          "segment_id": "scope-independent_subarguments-analogue.segment",
+          "turn_id": "scope-independent_subarguments-analogue.turn3",
+          "text": "Canvas is primed."
+        },
+        {
+          "id": "scope-independent_subarguments-analogue.record4",
+          "source_id": "scope-independent_subarguments-analogue",
+          "conversation_id": "scope-independent_subarguments-analogue",
+          "segment_id": "scope-independent_subarguments-analogue.segment",
+          "turn_id": "scope-independent_subarguments-analogue.turn4",
+          "text": "Pigment is primed."
+        }
+      ]
+    },
+    {
+      "id": "scope-independent_subarguments-contrast",
+      "group": "independent_subarguments",
+      "split": "validation",
+      "category": "independent_subarguments",
+      "domain": "nest",
+      "text": "If Nest is occupied, then Branch is stable.\nIf Branch is occupied, then Leaf is stable.\nNest is occupied.\nTrunk is occupied.",
+      "source_sha256": "65b0d599121996828e2bf0e60195f76ddb839d546f77a289cce9b4d245320ce9",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-independent_subarguments-contrast.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "occupied",
+              "args": [
+                "Nest"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "stable",
+              "args": [
+                "Branch"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-contrast.p1",
+                  "quote": "If Nest is occupied, then Branch is stable.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-contrast",
+                    "byte_range": [
+                      0,
+                      43
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-contrast.p2",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "occupied",
+              "args": [
+                "Branch"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "stable",
+              "args": [
+                "Leaf"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-contrast.p2",
+                  "quote": "If Branch is occupied, then Leaf is stable.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-contrast",
+                    "byte_range": [
+                      44,
+                      87
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-contrast.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "occupied",
+            "args": [
+              "Nest"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-contrast.p3",
+                  "quote": "Nest is occupied.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-contrast",
+                    "byte_range": [
+                      88,
+                      105
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-independent_subarguments-contrast.p4",
+          "formula": {
+            "op": "atom",
+            "predicate": "occupied",
+            "args": [
+              "Trunk"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-independent_subarguments-contrast.p4",
+                  "quote": "Trunk is occupied.",
+                  "locator": {
+                    "source_id": "scope-independent_subarguments-contrast",
+                    "byte_range": [
+                      106,
+                      124
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-independent_subarguments-contrast.record1",
+          "source_id": "scope-independent_subarguments-contrast",
+          "conversation_id": "scope-independent_subarguments-contrast",
+          "segment_id": "scope-independent_subarguments-contrast.segment",
+          "turn_id": "scope-independent_subarguments-contrast.turn1",
+          "text": "If Nest is occupied, then Branch is stable."
+        },
+        {
+          "id": "scope-independent_subarguments-contrast.record2",
+          "source_id": "scope-independent_subarguments-contrast",
+          "conversation_id": "scope-independent_subarguments-contrast",
+          "segment_id": "scope-independent_subarguments-contrast.segment",
+          "turn_id": "scope-independent_subarguments-contrast.turn2",
+          "text": "If Branch is occupied, then Leaf is stable."
+        },
+        {
+          "id": "scope-independent_subarguments-contrast.record3",
+          "source_id": "scope-independent_subarguments-contrast",
+          "conversation_id": "scope-independent_subarguments-contrast",
+          "segment_id": "scope-independent_subarguments-contrast.segment",
+          "turn_id": "scope-independent_subarguments-contrast.turn3",
+          "text": "Nest is occupied."
+        },
+        {
+          "id": "scope-independent_subarguments-contrast.record4",
+          "source_id": "scope-independent_subarguments-contrast",
+          "conversation_id": "scope-independent_subarguments-contrast",
+          "segment_id": "scope-independent_subarguments-contrast.segment",
+          "turn_id": "scope-independent_subarguments-contrast.turn4",
+          "text": "Trunk is occupied."
+        }
+      ]
+    },
+    {
+      "id": "scope-repeated_subject-anchor",
+      "group": "repeated_subject",
+      "split": "validation",
+      "category": "repeated_subject",
+      "domain": "pump",
+      "text": "If Pump is tested, then Pump is active.\nPump is tested.\nValve is tested.",
+      "source_sha256": "037fcb4a6d9dae7081fa54fdb34d2873b089a1312fe300bf951e2829c6948e3d",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-repeated_subject-anchor.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "tested",
+              "args": [
+                "Pump"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "active",
+              "args": [
+                "Pump"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-anchor.p1",
+                  "quote": "If Pump is tested, then Pump is active.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-anchor",
+                    "byte_range": [
+                      0,
+                      39
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-repeated_subject-anchor.p2",
+          "formula": {
+            "op": "atom",
+            "predicate": "tested",
+            "args": [
+              "Pump"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-anchor.p2",
+                  "quote": "Pump is tested.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-anchor",
+                    "byte_range": [
+                      40,
+                      55
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-repeated_subject-anchor.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "tested",
+            "args": [
+              "Valve"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-anchor.p3",
+                  "quote": "Valve is tested.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-anchor",
+                    "byte_range": [
+                      56,
+                      72
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-repeated_subject-anchor.record1",
+          "source_id": "scope-repeated_subject-anchor",
+          "conversation_id": "scope-repeated_subject-anchor",
+          "segment_id": "scope-repeated_subject-anchor.segment",
+          "turn_id": "scope-repeated_subject-anchor.turn1",
+          "text": "If Pump is tested, then Pump is active."
+        },
+        {
+          "id": "scope-repeated_subject-anchor.record2",
+          "source_id": "scope-repeated_subject-anchor",
+          "conversation_id": "scope-repeated_subject-anchor",
+          "segment_id": "scope-repeated_subject-anchor.segment",
+          "turn_id": "scope-repeated_subject-anchor.turn2",
+          "text": "Pump is tested."
+        },
+        {
+          "id": "scope-repeated_subject-anchor.record3",
+          "source_id": "scope-repeated_subject-anchor",
+          "conversation_id": "scope-repeated_subject-anchor",
+          "segment_id": "scope-repeated_subject-anchor.segment",
+          "turn_id": "scope-repeated_subject-anchor.turn3",
+          "text": "Valve is tested."
+        }
+      ]
+    },
+    {
+      "id": "scope-repeated_subject-analogue",
+      "group": "repeated_subject",
+      "split": "validation",
+      "category": "repeated_subject",
+      "domain": "lamp",
+      "text": "If Lamp is powered, then Lamp is bright.\nLamp is powered.\nPrism is powered.",
+      "source_sha256": "ef9d0050e55276f133a877f6401797346ebcf46dfd325b0956b6ace3fb9331df",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-repeated_subject-analogue.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "powered",
+              "args": [
+                "Lamp"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "bright",
+              "args": [
+                "Lamp"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-analogue.p1",
+                  "quote": "If Lamp is powered, then Lamp is bright.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-analogue",
+                    "byte_range": [
+                      0,
+                      40
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-repeated_subject-analogue.p2",
+          "formula": {
+            "op": "atom",
+            "predicate": "powered",
+            "args": [
+              "Lamp"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-analogue.p2",
+                  "quote": "Lamp is powered.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-analogue",
+                    "byte_range": [
+                      41,
+                      57
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-repeated_subject-analogue.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "powered",
+            "args": [
+              "Prism"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-analogue.p3",
+                  "quote": "Prism is powered.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-analogue",
+                    "byte_range": [
+                      58,
+                      75
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-repeated_subject-analogue.record1",
+          "source_id": "scope-repeated_subject-analogue",
+          "conversation_id": "scope-repeated_subject-analogue",
+          "segment_id": "scope-repeated_subject-analogue.segment",
+          "turn_id": "scope-repeated_subject-analogue.turn1",
+          "text": "If Lamp is powered, then Lamp is bright."
+        },
+        {
+          "id": "scope-repeated_subject-analogue.record2",
+          "source_id": "scope-repeated_subject-analogue",
+          "conversation_id": "scope-repeated_subject-analogue",
+          "segment_id": "scope-repeated_subject-analogue.segment",
+          "turn_id": "scope-repeated_subject-analogue.turn2",
+          "text": "Lamp is powered."
+        },
+        {
+          "id": "scope-repeated_subject-analogue.record3",
+          "source_id": "scope-repeated_subject-analogue",
+          "conversation_id": "scope-repeated_subject-analogue",
+          "segment_id": "scope-repeated_subject-analogue.segment",
+          "turn_id": "scope-repeated_subject-analogue.turn3",
+          "text": "Prism is powered."
+        }
+      ]
+    },
+    {
+      "id": "scope-repeated_subject-contrast",
+      "group": "repeated_subject",
+      "split": "validation",
+      "category": "repeated_subject",
+      "domain": "pump",
+      "text": "If Pump is tested, then Valve is active.\nPump is tested.\nValve is tested.",
+      "source_sha256": "01d31b873395f6fbb718674abbdbb67c78d3876bb2ab6007414c7cde8ed0d062",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "hypothetical_premises",
+        "rationale": "Compare repeated literal subject/predicate incidence across premises; the same structure may hold in another domain. Literal sharing is a projection assumption, never assessed identity or truth."
+      },
+      "logic": [
+        {
+          "claim_id": "scope-repeated_subject-contrast.p1",
+          "formula": {
+            "op": "implies",
+            "left": {
+              "op": "atom",
+              "predicate": "tested",
+              "args": [
+                "Pump"
+              ]
+            },
+            "right": {
+              "op": "atom",
+              "predicate": "active",
+              "args": [
+                "Valve"
+              ]
+            }
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-contrast.p1",
+                  "quote": "If Pump is tested, then Valve is active.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-contrast",
+                    "byte_range": [
+                      0,
+                      40
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-repeated_subject-contrast.p2",
+          "formula": {
+            "op": "atom",
+            "predicate": "tested",
+            "args": [
+              "Pump"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-contrast.p2",
+                  "quote": "Pump is tested.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-contrast",
+                    "byte_range": [
+                      41,
+                      56
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        },
+        {
+          "claim_id": "scope-repeated_subject-contrast.p3",
+          "formula": {
+            "op": "atom",
+            "predicate": "tested",
+            "args": [
+              "Valve"
+            ]
+          },
+          "assessment": {
+            "evidence_class": "observed",
+            "origin": "archive",
+            "confidence": 1.0,
+            "status": "active",
+            "basis": {
+              "support": [
+                {
+                  "observation": "obs-scope-repeated_subject-contrast.p3",
+                  "quote": "Valve is tested.",
+                  "locator": {
+                    "source_id": "scope-repeated_subject-contrast",
+                    "byte_range": [
+                      57,
+                      73
+                    ]
+                  },
+                  "extractor": "independent_scope_gold@1"
+                }
+              ],
+              "derivation": null
+            },
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "claims": [],
+              "observations": []
+            },
+            "expected_property": null,
+            "check_state": "not_applicable",
+            "alternatives": []
+          }
+        }
+      ],
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-repeated_subject-contrast.record1",
+          "source_id": "scope-repeated_subject-contrast",
+          "conversation_id": "scope-repeated_subject-contrast",
+          "segment_id": "scope-repeated_subject-contrast.segment",
+          "turn_id": "scope-repeated_subject-contrast.turn1",
+          "text": "If Pump is tested, then Valve is active."
+        },
+        {
+          "id": "scope-repeated_subject-contrast.record2",
+          "source_id": "scope-repeated_subject-contrast",
+          "conversation_id": "scope-repeated_subject-contrast",
+          "segment_id": "scope-repeated_subject-contrast.segment",
+          "turn_id": "scope-repeated_subject-contrast.turn2",
+          "text": "Pump is tested."
+        },
+        {
+          "id": "scope-repeated_subject-contrast.record3",
+          "source_id": "scope-repeated_subject-contrast",
+          "conversation_id": "scope-repeated_subject-contrast",
+          "segment_id": "scope-repeated_subject-contrast.segment",
+          "turn_id": "scope-repeated_subject-contrast.turn3",
+          "text": "Valve is tested."
+        }
+      ]
+    },
+    {
+      "id": "scope-unknown-epistemic_source",
+      "group": "epistemic_source",
+      "split": "validation",
+      "category": "unknown_or_unresolved",
+      "domain": "epistemic_source",
+      "text": "A witness says the beacon is visible. Record what the witness said without asserting that the beacon is visible.",
+      "source_sha256": "54e97b1a451a582e4110b58ce55765ec51c868a69c63bd690cc0e70a2c3918a1",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "observation_or_limitation",
+        "rationale": "Unrepresented source attribution, causal direction or incomplete branching must remain explicit; no proof may be promoted."
+      },
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-unknown-epistemic_source.r1",
+          "source_id": "scope-unknown-epistemic_source",
+          "conversation_id": "scope-unknown-epistemic_source",
+          "segment_id": "scope-unknown-epistemic_source.s1",
+          "turn_id": "scope-unknown-epistemic_source.t1",
+          "text": "A witness says the beacon is visible. Record what the witness said without asserting that the beacon is visible."
+        }
+      ],
+      "expected_abstention": true
+    },
+    {
+      "id": "scope-unknown-temporal_causal",
+      "group": "temporal_causal",
+      "split": "validation",
+      "category": "unknown_or_unresolved",
+      "domain": "temporal_causal",
+      "text": "The bell rang before the gate opened. Sequence alone does not establish that the bell caused the gate to open.",
+      "source_sha256": "75bbedf35c6a4bb243146b82834bee040e7c93416b5e03a1c8acb999c0d33c4f",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "observation_or_limitation",
+        "rationale": "Unrepresented source attribution, causal direction or incomplete branching must remain explicit; no proof may be promoted."
+      },
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-unknown-temporal_causal.r1",
+          "source_id": "scope-unknown-temporal_causal",
+          "conversation_id": "scope-unknown-temporal_causal",
+          "segment_id": "scope-unknown-temporal_causal.s1",
+          "turn_id": "scope-unknown-temporal_causal.t1",
+          "text": "The bell rang before the gate opened. Sequence alone does not establish that the bell caused the gate to open."
+        }
+      ],
+      "expected_abstention": true
+    },
+    {
+      "id": "scope-unknown-nonexhaustive_branch",
+      "group": "nonexhaustive_branch",
+      "split": "validation",
+      "category": "unknown_or_unresolved",
+      "domain": "nonexhaustive_branch",
+      "text": "If the gauge is readable, use the measured route. Other cases have not been specified; an unreadable gauge does not determine a route.",
+      "source_sha256": "fc765341b02bc1f28fecdecf559cb6d35a5ee25294342bd5c3dae24f45541b10",
+      "goals": {
+        "self_project": "exclude",
+        "owner_philosophy": "abstain",
+        "conceptual_structure": "include",
+        "self_discovery": "abstain"
+      },
+      "labels": {
+        "project_membership": "no",
+        "owner_philosophy_evidence": "underdetermined",
+        "evidence_scope": "observation_or_limitation",
+        "rationale": "Unrepresented source attribution, causal direction or incomplete branching must remain explicit; no proof may be promoted."
+      },
+      "conclusions": [],
+      "source_records": [
+        {
+          "id": "scope-unknown-nonexhaustive_branch.r1",
+          "source_id": "scope-unknown-nonexhaustive_branch",
+          "conversation_id": "scope-unknown-nonexhaustive_branch",
+          "segment_id": "scope-unknown-nonexhaustive_branch.s1",
+          "turn_id": "scope-unknown-nonexhaustive_branch.t1",
+          "text": "If the gauge is readable, use the measured route. Other cases have not been specified; an unreadable gauge does not determine a route."
+        }
+      ],
+      "expected_abstention": true
+    }
+  ],
+  "pairs": [
+    {
+      "id": "scope-pair-antecedent_binding-1",
+      "group": "antecedent_binding",
+      "split": "validation",
+      "category": "antecedent_binding",
+      "a": "scope-antecedent_binding-anchor",
+      "b": "scope-antecedent_binding-analogue",
+      "expected": "equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-antecedent_binding-2",
+      "group": "antecedent_binding",
+      "split": "validation",
+      "category": "antecedent_binding",
+      "a": "scope-antecedent_binding-anchor",
+      "b": "scope-antecedent_binding-contrast",
+      "expected": "non_equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-converging_rules-1",
+      "group": "converging_rules",
+      "split": "validation",
+      "category": "converging_rules",
+      "a": "scope-converging_rules-anchor",
+      "b": "scope-converging_rules-analogue",
+      "expected": "equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-converging_rules-2",
+      "group": "converging_rules",
+      "split": "validation",
+      "category": "converging_rules",
+      "a": "scope-converging_rules-anchor",
+      "b": "scope-converging_rules-contrast",
+      "expected": "non_equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-diverging_rules-1",
+      "group": "diverging_rules",
+      "split": "validation",
+      "category": "diverging_rules",
+      "a": "scope-diverging_rules-anchor",
+      "b": "scope-diverging_rules-analogue",
+      "expected": "equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-diverging_rules-2",
+      "group": "diverging_rules",
+      "split": "validation",
+      "category": "diverging_rules",
+      "a": "scope-diverging_rules-anchor",
+      "b": "scope-diverging_rules-contrast",
+      "expected": "non_equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-linked_chain-1",
+      "group": "linked_chain",
+      "split": "validation",
+      "category": "linked_chain",
+      "a": "scope-linked_chain-anchor",
+      "b": "scope-linked_chain-analogue",
+      "expected": "equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-linked_chain-2",
+      "group": "linked_chain",
+      "split": "validation",
+      "category": "linked_chain",
+      "a": "scope-linked_chain-anchor",
+      "b": "scope-linked_chain-contrast",
+      "expected": "non_equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-independent_subarguments-1",
+      "group": "independent_subarguments",
+      "split": "validation",
+      "category": "independent_subarguments",
+      "a": "scope-independent_subarguments-anchor",
+      "b": "scope-independent_subarguments-analogue",
+      "expected": "equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-independent_subarguments-2",
+      "group": "independent_subarguments",
+      "split": "validation",
+      "category": "independent_subarguments",
+      "a": "scope-independent_subarguments-anchor",
+      "b": "scope-independent_subarguments-contrast",
+      "expected": "non_equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-repeated_subject-1",
+      "group": "repeated_subject",
+      "split": "validation",
+      "category": "repeated_subject",
+      "a": "scope-repeated_subject-anchor",
+      "b": "scope-repeated_subject-analogue",
+      "expected": "equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    },
+    {
+      "id": "scope-pair-repeated_subject-2",
+      "group": "repeated_subject",
+      "split": "validation",
+      "category": "repeated_subject",
+      "a": "scope-repeated_subject-anchor",
+      "b": "scope-repeated_subject-contrast",
+      "expected": "non_equivalent",
+      "rationale": "Equivalent cross-domain incidence versus changed binding with overlapping words; no threshold fitted."
+    }
+  ],
+  "scope_probes": [
+    {
+      "id": "same_segment_new_turn",
+      "records": [
+        {
+          "id": "same_segment_new_turn.r1",
+          "source_id": "source-same_segment_new_turn",
+          "conversation_id": "probe",
+          "segment_id": "first",
+          "turn_id": "t1",
+          "text": "If Locker is shut, then Locker is secure."
+        },
+        {
+          "id": "same_segment_new_turn.r2",
+          "source_id": "source-same_segment_new_turn",
+          "text": "Locker is shut.",
+          "conversation_id": "probe",
+          "segment_id": "first",
+          "turn_id": "t2"
+        }
+      ],
+      "expected": "accept",
+      "rationale": "Only explicit shared conversation+segment scope permits literal projection composition; turn boundaries alone do not prohibit it."
+    },
+    {
+      "id": "different_segment",
+      "records": [
+        {
+          "id": "different_segment.r1",
+          "source_id": "source-different_segment",
+          "conversation_id": "probe",
+          "segment_id": "first",
+          "turn_id": "t1",
+          "text": "If Locker is shut, then Locker is secure."
+        },
+        {
+          "id": "different_segment.r2",
+          "source_id": "source-different_segment",
+          "text": "Locker is shut.",
+          "conversation_id": "probe",
+          "segment_id": "second",
+          "turn_id": "t2"
+        }
+      ],
+      "expected": "reject",
+      "rationale": "Only explicit shared conversation+segment scope permits literal projection composition; turn boundaries alone do not prohibit it."
+    },
+    {
+      "id": "different_conversation",
+      "records": [
+        {
+          "id": "different_conversation.r1",
+          "source_id": "source-different_conversation",
+          "conversation_id": "probe",
+          "segment_id": "first",
+          "turn_id": "t1",
+          "text": "If Locker is shut, then Locker is secure."
+        },
+        {
+          "id": "different_conversation.r2",
+          "source_id": "source-different_conversation",
+          "text": "Locker is shut.",
+          "conversation_id": "elsewhere",
+          "segment_id": "first",
+          "turn_id": "t2"
+        }
+      ],
+      "expected": "reject",
+      "rationale": "Only explicit shared conversation+segment scope permits literal projection composition; turn boundaries alone do not prohibit it."
+    },
+    {
+      "id": "missing_segment",
+      "records": [
+        {
+          "id": "missing_segment.r1",
+          "source_id": "source-missing_segment",
+          "conversation_id": "probe",
+          "segment_id": "first",
+          "turn_id": "t1",
+          "text": "If Locker is shut, then Locker is secure."
+        },
+        {
+          "id": "missing_segment.r2",
+          "source_id": "source-missing_segment",
+          "text": "Locker is shut.",
+          "conversation_id": "probe",
+          "turn_id": "t2"
+        }
+      ],
+      "expected": "reject",
+      "rationale": "Only explicit shared conversation+segment scope permits literal projection composition; turn boundaries alone do not prohibit it."
+    },
+    {
+      "id": "missing_conversation",
+      "records": [
+        {
+          "id": "missing_conversation.r1",
+          "source_id": "source-missing_conversation",
+          "conversation_id": "probe",
+          "segment_id": "first",
+          "turn_id": "t1",
+          "text": "If Locker is shut, then Locker is secure."
+        },
+        {
+          "id": "missing_conversation.r2",
+          "source_id": "source-missing_conversation",
+          "text": "Locker is shut.",
+          "segment_id": "first",
+          "turn_id": "t2"
+        }
+      ],
+      "expected": "reject",
+      "rationale": "Only explicit shared conversation+segment scope permits literal projection composition; turn boundaries alone do not prohibit it."
+    }
+  ],
+  "label_protocol": {
+    "split": "Validation only. New compositions, subjects, properties and domains; no thresholds fitted.",
+    "comparison": "Structural incidence is separate from literal semantic equality.",
+    "proof": "No unchecked extraction is an eligible proof premise."
+  },
+  "authored_before_independent_method_results": true,
+  "frozen_labels_sha256": "3cf16c0d6acd793d49e7ebf4e161ac43f8a8cd6d61b097f310d72992908fe57e"
+}

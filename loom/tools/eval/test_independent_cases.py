@@ -85,6 +85,15 @@ class IndependentProtocolTests(unittest.TestCase):
         named = {"op": "atom", "predicate": "property:CHARGED", "args": ["ROVER"]}
         self.assertEqual(suite.formula_signature(named), suite.formula_signature(p))
 
+    def test_fresh_scope_probe_metadata_is_frozen(self):
+        path = suite.DEFAULT_FIXTURE.parent.parent / "independent_scope_v1/cases.json"
+        fixture = suite.load_fixture(path)
+        self.assertEqual(len(fixture["cases"]), 21)
+        self.assertEqual(len(fixture["scope_probes"]), 5)
+        fixture["scope_probes"][0]["records"][0]["segment_id"] = "different"
+        with self.assertRaisesRegex(AssertionError, "frozen labels"):
+            suite.validate(fixture)
+
 
 if __name__ == "__main__":
     unittest.main()

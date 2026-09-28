@@ -47,7 +47,8 @@ No existing synthetic development examples or real holdout key were read.
 - Method SHA256:
   `166322e6ddc6ffc102eee4009b3733b1e30c9bd7189534285704b094583ace60`.
 - Machine results: `initial_structure_report.json`.
-- Protocol checks: 9/9 Python tests pass.
+- Protocol checks: 10/10 Python tests pass after adding the fresh-scope
+  metadata freeze check.
 - Before the first completed measurement, an invalid `source_artifact` role
   caused graph validation to abort. It was corrected to the binding model's
   `artifact` role, versioned and refrozen; no result or label was used to tune

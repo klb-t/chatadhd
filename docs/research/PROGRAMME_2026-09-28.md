@@ -82,6 +82,8 @@ the shared model and validate the real graph/transport paths.
 
 ## Active artifacts and status
 
+Measured synthesis and next directions: [`RESULTS_2026-09-28.md`](RESULTS_2026-09-28.md).
+
 - `loom/tools/structure/`: offline research prototypes; no production graph
   writes, no external model calls, no new application behavior implied.
 - `STRUCTURE_METHODS_2026-09-28.md`: primary-source rationale and contrasting
@@ -96,13 +98,16 @@ the shared model and validate the real graph/transport paths.
   successful comparisons on supplied graphs and failed comparisons after text
   extraction, along with topic-focus and native selector results. Further work
   against disclosed cases is diagnostic, not untouched validation.
+- `loom/tests/fixtures/eval/independent_scope_v1/`: fresh 21-case scoped-source
+  validation. Literal binding improves exact contrast ordering from 2/6 to 6/6
+  under supplied segment boundaries and simple supported conditional syntax.
 - `REPOSITORY_STRUCTURE_2026-09-28.md` and `repository_structure_report.json`:
   reproducible source-only integration run over three real repository documents;
   current grammar coverage is zero both before and after segmentation.
 - `NATIVE_CONTEXT_2026-09-28.md`: bounded alias context, source-aware diagnostics,
-  cache migration and offline test repair. Final native build:62/63 CTest passing;
-  sole failure remains13/45 recall vs unchanged0.55 minimum. No gain was observed
-  on the independent100-case selector comparison either.
+  cache migration and offline test repair. Final native build: 62/63 CTest passing;
+  sole failure remains 13/45 recall vs unchanged 0.55 minimum. No gain was observed
+  on the independent 100-case selector comparison either.
 - Native C++ checkout is rebuilt from the verified remote snapshot `33fb083`.
   Its local git history is synthetic; remote Git-data commits retain the real
   parent/tree. Original historical files omitted locally remain on GitHub.

@@ -82,7 +82,10 @@ def validate(fixture: dict) -> dict:
 def label_payload(fixture: dict) -> dict:
     # Freeze source prose AND annotations. A changed formula must not silently
     # keep the same nominal label hash and appear to be the same benchmark.
-    return {"cases": fixture["cases"], "pairs": fixture["pairs"]}
+    result = {"cases": fixture["cases"], "pairs": fixture["pairs"]}
+    if "scope_probes" in fixture:
+        result["scope_probes"] = fixture["scope_probes"]
+    return result
 
 
 def materialize(fixture: dict, output: Path, split: str = "all") -> dict:
@@ -377,7 +380,7 @@ def run_topics(fixture: dict, implementation: Path, expectations: Path) -> dict:
     return report
 
 
-def run_catalog(fixture: dict, library: Path) -> dict:
+def run_catalog(fixture: dict, library: Path, native_ref: str = "unspecified") -> dict:
     """Production baseline through public catalog C ABI; no import/model calls."""
     lib = ctypes.CDLL(str(library.resolve()))
     pointer, string = ctypes.c_void_p, ctypes.c_char_p
@@ -446,12 +449,109 @@ def run_catalog(fixture: dict, library: Path) -> dict:
                   for p in sorted(data.rglob("*")) if p.is_file()} if data.is_dir() else {}
     return {"schema": "loom.independent_catalog_report/1", "fixture_hash": fixture["frozen_labels_sha256"],
         "method": {"library": str(library), "sha256": hashlib.sha256(library.read_bytes()).hexdigest(),
-            "native_baseline": "33fb083", "policy": "unchanged production default", "llm": "off"},
+            "native_ref": native_ref, "policy": "unchanged production default", "llm": "off"},
         "data_file_manifest_sha256": digest(pack_files), "data_file_manifest": pack_files,
         "runs": runs, "decisions": results, "goal_reports": goals,
         "limitations": ["This corpus is balanced synthetic diagnostics, not original synthetic_dev or owner exports.",
             "The production policy is not conditioned on these four goals; comparisons expose scope mismatch, not four separate tuned selectors.",
             "Whole-source scan/score/select only; no data import, network, model inference or runtime mutation beyond disposable catalog state."]}
+
+
+def run_pipeline(fixture: dict, implementation: Path) -> dict:
+    module = load_method(implementation)
+    rows = []
+    for case in fixture["cases"]:
+        record = {"id": case["id"], "turns": case.get("turns", [{"id": case["id"] + ".t1", "role": "user", "text": case["text"]}]),
+                  "entities": case.get("entities", []), "graph": {"nodes": [], "edges": []}}
+        original = canonical(record)
+        result = module.analyze(record)
+        turns = {t["id"]: t["text"] for t in record["turns"]}
+        proposals = result["interpretation_context_proposals"]
+        verified = sum(turns[p["source"]["turn_id"]].encode()[p["source"]["byte_start"]:p["source"]["byte_end"]].decode() == p["source"]["quote"] for p in proposals)
+        gold = {formula_signature(c["formula"]) for c in case.get("logic", [])}
+        formulas = [c["formula_candidate"] for e in result["extractions"] for c in e["candidates"] if c.get("formula_candidate") is not None]
+        rows.append({"id": case["id"], "split": case["split"], "category": case["category"],
+            "coverage": result["coverage"], "input_preserved": canonical(result["input"]) == original and canonical(record) == original,
+            "context_proposals": len(proposals), "verified_proposal_spans": verified,
+            "formula_proposals": len(formulas), "gold_formulas": len(gold),
+            "exact_formula_matches": len({formula_signature(f) for f in formulas} & gold),
+            "reasoning_candidates": len(result["reasoning"]["candidates"]),
+            "blocked_unchecked_interpretations": len(result["reasoning"]["blocked_interpretations"]),
+            "claims_created": result["claims_created"], "graph_mutations_applied": result["graph_mutations_applied"],
+            "comparison_budget": result["comparison_budget"], "components": result["components"],
+            "proposals": proposals})
+    report = {"schema": "loom.independent_pipeline_report/1", "fixture_hash": fixture["frozen_labels_sha256"],
+        "implementation_hashes": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted(implementation.parent.iterdir()) if p.is_file() and p.suffix in {".py", ".json"}},
+        "cases": rows, "summaries": {}, "limitations": ["Actual source-only pipeline run; gold was withheld from method inputs.",
+            "The supplied graph is empty, so useful traversal of a populated knowledge graph is not evaluated.",
+            "No assessed interpretations exist: proof promotion is correctly blocked, not counted as successful deduction.",
+            "Cross-case contrast matching is measured separately in source extraction reports; this pipeline samples within-conversation segment pairs."]}
+    for split in ("development", "validation"):
+        subset = [r for r in rows if r["split"] == split]
+        report["summaries"][split] = {"cases": len(subset), "inputs_preserved": sum(r["input_preserved"] for r in subset),
+            **{k: sum(r[k] for r in subset) for k in ("context_proposals", "verified_proposal_spans", "formula_proposals", "gold_formulas",
+                "exact_formula_matches", "reasoning_candidates", "blocked_unchecked_interpretations", "claims_created", "graph_mutations_applied")},
+            "recognized_envelopes": sum(r["coverage"]["recognized_envelopes"] for r in subset),
+            "physical_units": sum(r["coverage"]["physical_units"] for r in subset),
+            "evaluated_cross_segment_pairs": sum(r["comparison_budget"]["evaluated_pairs"] for r in subset)}
+    return report
+
+
+def run_scoped(fixture: dict, implementation: Path) -> dict:
+    module = load_method(implementation)
+    extractor = load_method(implementation.with_name("extract.py"))
+    projected, case_rows = {}, []
+    for case in fixture["cases"]:
+        extractions = [extractor.extract_record(record) for record in case["source_records"]]
+        golden = {formula_signature(c["formula"]) for c in case.get("logic", [])}
+        for mode in ("separate", "literal_within_scope"):
+            result = module.project_scope(extractions, binding=mode)
+            projected[(case["id"], mode)] = result
+            formulae = [c["formula_candidate"] for e in extractions for c in e["candidates"] if c.get("formula_candidate") is not None]
+            case_rows.append({"id": case["id"], "mode": mode, "category": case["category"],
+                "coverage": result["coverage"], "gold_formulas": len(golden),
+                "formula_proposals": len(formulae), "exact_formula_matches": len({formula_signature(f) for f in formulae} & golden),
+                "status": result["status"], "inference_eligible": result["inference_eligible"],
+                "persistable_claim": result["persistable_claim"], "automatic_mutation": result["automatic_mutation"],
+                "unknown_statements": result["unknown_statements"], "binding": result["binding"]})
+    pair_predictions, details = [], []
+    for pair in fixture["pairs"]:
+        scores = {}
+        for mode in ("separate", "literal_within_scope"):
+            result = module.compare_scopes(projected[(pair["a"], mode)], projected[(pair["b"], mode)])
+            details.append({"pair_id": pair["id"], "mode": mode, "result": result})
+            for projection, comparison in result["comparisons"].items():
+                for method in ("lexical_cosine", "role_relation_cosine", "wl_cosine"):
+                    scores[mode + ":" + projection + ":" + method] = comparison[method]
+                scores[mode + ":" + projection + ":alignment"] = comparison["alignment"]["score"]
+        pair_predictions.append({"id": pair["id"], "scores": scores})
+    probes = []
+    for probe in fixture.get("scope_probes", []):
+        extractions = [extractor.extract_record(record) for record in probe["records"]]
+        try:
+            module.project_scope(extractions, binding="literal_within_scope")
+            actual, reason = "accept", None
+        except ValueError as error:
+            actual, reason = "reject", str(error)
+        probes.append({"id": probe["id"], "expected": probe["expected"], "actual": actual,
+                       "correct": actual == probe["expected"], "reason": reason})
+    report = evaluate(fixture, {"goal": "conceptual_structure", "pairs": pair_predictions})
+    report.pop("split_reports")
+    report["implementation_hashes"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+        for p in sorted(implementation.parent.iterdir()) if p.is_file() and p.suffix in {".py", ".json"}}
+    report["case_results"], report["pair_results"], report["scope_probes"] = case_rows, details, probes
+    summary = {}
+    for method in sorted({r["method"] for r in report["structural_pair_ordering"]}):
+        rows = [r for r in report["structural_pair_ordering"] if r["method"] == method]
+        summary[method] = {"correct": sum(bool(r["correct"]) for r in rows), "ties": sum(r["tie"] for r in rows),
+                           "available": sum(r["available"] for r in rows), "groups": len(rows)}
+    report["summary"] = summary
+    report["limitations"] = ["Fresh validation-only compositions; source text and labels were withheld from method authors.",
+        "Scope membership is explicitly supplied and not independently discovered or verified.",
+        "Literal sharing is conditional lexical identity, not validated entity identity, semantic truth or a proof premise.",
+        "No thresholds were fitted and no source/label/method was modified after this measurement."]
+    return report
 
 
 def main() -> None:
@@ -478,6 +578,14 @@ def main() -> None:
     catalog = sub.add_parser("run-catalog")
     catalog.add_argument("--library", type=Path, required=True)
     catalog.add_argument("--output", type=Path, required=True)
+    catalog.add_argument("--native-ref", default="unspecified")
+    catalog.add_argument("--baseline-report", type=Path)
+    pipeline = sub.add_parser("run-pipeline")
+    pipeline.add_argument("--implementation", type=Path, required=True)
+    pipeline.add_argument("--output", type=Path, required=True)
+    scoped = sub.add_parser("run-scoped")
+    scoped.add_argument("--implementation", type=Path, required=True)
+    scoped.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     fixture = load_fixture(args.fixture)
     if args.command == "validate":
@@ -492,7 +600,22 @@ def main() -> None:
         elif args.command == "run-topics":
             result = run_topics(fixture, args.implementation, args.expectations)
         elif args.command == "run-catalog":
-            result = run_catalog(fixture, args.library)
+            result = run_catalog(fixture, args.library, args.native_ref)
+            if args.baseline_report:
+                baseline = json.loads(args.baseline_report.read_text())
+                assert baseline["fixture_hash"] == result["fixture_hash"]
+                before = {r["id"]: r for r in baseline["decisions"]}
+                assert set(before) == {r["id"] for r in result["decisions"]}
+                result["baseline_comparison"] = {"report": str(args.baseline_report),
+                    "method": baseline["method"], "changes": [{"id": row["id"], "split": row["split"],
+                        "selected_before": before[row["id"]]["selected"], "selected_after": row["selected"],
+                        "score_before": before[row["id"]]["score"], "score_after": row["score"]}
+                        for row in result["decisions"] if row["selected"] != before[row["id"]]["selected"]
+                            or row["score"] != before[row["id"]]["score"]]}
+        elif args.command == "run-pipeline":
+            result = run_pipeline(fixture, args.implementation)
+        elif args.command == "run-scoped":
+            result = run_scoped(fixture, args.implementation)
         else:
             result = evaluate(fixture, json.loads(args.predictions.read_text()))
         args.output.parent.mkdir(parents=True, exist_ok=True)

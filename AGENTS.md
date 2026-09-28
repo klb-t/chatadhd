@@ -3,6 +3,9 @@
 The resumed research round starts at `docs/research/PROGRAMME_2026-09-28.md`:
 composable thought structures, independent experiments, topic segmentation and
 existing-graph context. Its measured status is separate from the native baseline.
+Read `docs/research/RESULTS_2026-09-28.md` for measured outcomes, limitations and
+the next research directions; the fresh scoped-source comparison is separate
+from supplied-gold graph scores and broad natural-language coverage.
 Read `docs/CODEX_HANDOFF_2026-09-28.md` for the preceding work, tests and
 remaining limits. Claude's original handoff is `docs/HANDOFF_2026-09-28.md`.
 The complete Loom development line is `codex/loom-handoff-2026-09-28`; verify

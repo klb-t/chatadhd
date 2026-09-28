@@ -107,3 +107,26 @@ python tools/eval/independent_cases.py run-topics --implementation tools/structu
 Inspect implementation hashes before comparing regenerated reports. The
 v1.0.0 invalid-role correction and both fixture hashes are documented in
 `INITIAL_RESULTS.md`; it happened before the first completed measurement.
+
+## Composed pipeline
+
+`initial_pipeline_report.json` measures actual source turns through topic
+segmentation, extraction and context-review proposal construction on all 100
+cases. It uses the metadata-corrected extractor v2 and proof-soundness method
+v2. Per split, all 50 input records remain unchanged; 36/51 gold formulas are
+matched, all 36 proposal spans verify, and all 36 unchecked interpretations
+remain blocked from proof promotion. It creates no claims or graph mutations.
+
+The source turns are divided into 115 development and 114 validation physical
+units; 36 envelopes are recognized per split. No eligible within-conversation
+cross-segment comparison is produced on this fixture. That zero is reported
+as missing coverage, not successful pattern discovery. The supplied graph is
+empty, so useful traversal of an already populated knowledge graph is not
+evaluated. The independent cross-conversation contrast result above remains
+the comparison-quality measurement.
+
+Pipeline SHA256:
+`6cca63a6cbcc3d8da31407ba6e9e68395cc39612330d625f0274af89e42f9200`.
+The machine report records all component and policy hashes. First historical
+method checkpoints are retained remotely at `9df520f1cb12b2f06d361ba0b727e69388d471e6`
+(structure) and `e3e2bb676e154d8eceb43c77a5b744ddaebde5e1` (extractor/topics).
