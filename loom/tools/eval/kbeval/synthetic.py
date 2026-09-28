@@ -309,55 +309,63 @@ def score_operators(kb: KB, j: Join, gt: dict[str, Any], dmatch: dict[str, Any])
     dec_obs = {g["id"]: j.obs_of(g["unit"]) for g in all_decisions(gt)}
     rec = 0
     for g in gt["operators"]:
-        want: set[str] = set()
-        want_claims: set[str] = set()
-        for ex in g["examples"]:
-            want |= dec_obs.get(ex["decision_id"], set())
-            m = dmatch.get(ex["decision_id"])
-            if m:
-                want_claims.add(m["id"])
+        wanted_decisions = {ex["decision_id"] for ex in g["examples"]}
         ok = False
         for o in ops:
             got_obs = {e.get("observation", "") for e in o.get("examples", [])}
             got_claims = {e.get("claim", "") for e in o.get("examples", [])} | set((o.get("basis") or {}).get("decisions", []))
-            # an operator recovers g when it generalises >= 2 of g's example decisions
-            if len((got_obs & want)) + len(got_claims & want_claims) >= 2:
+            recovered = set()
+            for decision_id in wanted_decisions:
+                claim_id = (dmatch.get(decision_id) or {}).get("id")
+                if dec_obs.get(decision_id, set()) & got_obs or (claim_id and claim_id in got_claims):
+                    recovered.add(decision_id)
+            # An observation and its claim are two locators for ONE decision.
+            # Each recovered operator must generalise at least two distinct
+            # labelled example decisions; separate operators cannot combine.
+            if len(recovered) >= 2:
                 ok = True
+                break
         rec += ok
     return {"operator_recall": ratio(rec, len(gt["operators"])), "operators_found": len(ops)}
 
 
 def score_false_certainty(kb: KB, j: Join) -> dict[str, Any]:
-    n = bad_support = bad_quote = bad_ep = 0
+    bad_support = bad_quote = bad_ep = 0
     by_class: dict[str, int] = defaultdict(int)
     ep_state: dict[str, int] = defaultdict(int)
     ids = {c["id"]: c for c in j.claims}
+    violating_claims: set[str] = set()
     extrap_premise = 0
-    for c in j.claims:
+    for c in ids.values():
         a = c.get("assessment") or {}
         ec = a.get("evidence_class", "")
         by_class[ec] += 1
-        n += 1
         if ec == "observed":
             sup = (a.get("basis") or {}).get("support") or []
             if not sup:
                 bad_support += 1
+                violating_claims.add(c["id"])
             for s in sup:
                 o = j.obs.get(s.get("observation", ""))
-                if o is None or fold(s.get("quote", "")) not in fold(o.get("text", "")):
+                quote = fold(s.get("quote", ""))
+                if o is None or not quote or quote not in fold(o.get("text", "")):
                     bad_quote += 1
+                    violating_claims.add(c["id"])
                     break
         if ec == "inferred":
             if not a.get("expected_property"):
                 bad_ep += 1
+                violating_claims.add(c["id"])
             ep_state[a.get("check_state", "")] += 1
         for pid in (a.get("premises") or {}).get("claims", []):
             p = ids.get(pid)
             if p and evidence_class(p) in ("extrapolated", "absent"):
                 extrap_premise += 1
-    fc = bad_support + bad_ep + extrap_premise
+                violating_claims.add(c["id"])
     return {
-        "false_certainty_rate": ratio(fc, n) if n else 0.0,
+        "false_certainty_rate": ratio(len(violating_claims), len(ids)) if ids else 0.0,
+        "claims_with_structural_violations": len(violating_claims),
+        "claims_evaluated": len(ids),
         "observed_without_support": bad_support,
         "observed_quote_not_in_observation": bad_quote,
         "inferred_without_expected_property": bad_ep,

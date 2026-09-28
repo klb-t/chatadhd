@@ -28,6 +28,15 @@ Catalog precision and recall use the labeled conversations. Selected provider
 project/memory documents have no relevance labels and are reported separately
 as `unlabeled_selected`; they are not assumed relevant or irrelevant.
 
+These are development coverage metrics, not comprehensive semantic correctness.
+Version recall currently pools version strings across projects; status-event
+recall pools `(status, date)` across features/projects. Both are approximate
+coverage measures and can match the wrong entity. Operator recall requires at
+least two distinct labelled example decisions per recovered operator.
+`false_certainty_rate` is the fraction of distinct claims with one or more
+checked structural violations (including missing/unsupported quotations), not
+a calibrated probability of factual error; detailed counters can overlap.
+
 Runs A and A' measure extraction and repeatability. Run B sees the **entire**
 corpus with `prior_cut=T`: that setting cuts seed priors, not source records.
 Its output is therefore named `retrospective_consistency`, with

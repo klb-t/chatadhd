@@ -214,10 +214,11 @@ struct UnitQuery {
 //     per-message-span extraction and the cross-unit linking pass this area
 //     does not yet have; see catalog.h's ownership map for extract/generalize).
 // `store_mode` answers "copy vs. link to the source file": "copy" (default)
-// retains each unit's original bytes in the BlobStore and optionally writes
+// retains each unit's hash-verified representation in the BlobStore and optionally writes
 // message text into core tables. mode="full" additionally retains complete
-// source files/ZIPs, including unknown metadata and binary members. Selective
-// copy retains only chosen units. Normalised messages are a derived view;
+// exact source files/ZIPs, including unknown metadata and binary members. Selective
+// copy retains only chosen units (wrapper JSON elements may be reserialized).
+// Normalised messages are a derived view;
 // retained raw sources remain authoritative. "link" writes a placeholder carrying the
 // unit's locator/content_hash in its metadata plus a provenance row, so nothing
 // is duplicated into the database and the source file stays the copy of

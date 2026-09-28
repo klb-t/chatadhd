@@ -223,6 +223,58 @@ class HarnessTests(unittest.TestCase):
         self.assertIn("solution_class_match_rate", result)
         self.assertTrue(synthetic.check_floors({"retrospective_consistency": result}, {"holdout.prediction_accuracy_solution_class": 0.5}))
 
+    def test_operator_recall_requires_distinct_example_decisions(self):
+        gt = {"projects": [{"decisions": [
+            {"id": "first", "unit": {"observation": "obs1"}},
+            {"id": "second", "unit": {"observation": "obs2"}},
+        ]}], "operators": [{"examples": [{"decision_id": "first"}, {"decision_id": "second"}]}]}
+        join = SimpleNamespace(obs_of=lambda unit: {unit["observation"]})
+        matches = {"first": {"id": "claim1"}, "second": {"id": "claim2"}}
+        cases = [
+            # One decision represented twice must still count only once.
+            ([{"examples": [{"observation": "obs1", "claim": "claim1"}],
+               "basis": {"decisions": ["claim1"]}}], 0.0),
+            # Two different decisions can be recovered through either locator.
+            ([{"examples": [{"observation": "obs1"}],
+               "basis": {"decisions": ["claim2"]}}], 1.0),
+            # Two singleton operators do not constitute a generalisation.
+            ([{"examples": [{"observation": "obs1"}]},
+              {"examples": [{"claim": "claim2"}]}], 0.0),
+        ]
+        for operators, expected in cases:
+            with self.subTest(operators=operators):
+                kb = SimpleNamespace(table=lambda _: operators)
+                result = synthetic.score_operators(kb, join, gt, matches)
+                self.assertEqual(result["operator_recall"], expected)
+        gt["operators"][0]["examples"] = [{"decision_id": "first"}, {"decision_id": "first"}]
+        kb = SimpleNamespace(table=lambda _: [{"examples": [{"observation": "obs1", "claim": "claim1"}]}])
+        self.assertEqual(synthetic.score_operators(kb, join, gt, matches)["operator_recall"], 0.0)
+
+    def test_wrong_or_missing_quote_counts_as_false_certainty(self):
+        for quote in ["invented quotation", ""]:
+            with self.subTest(quote=quote):
+                claim = {"id": "observed-claim", "assessment": {"evidence_class": "observed",
+                         "basis": {"support": [{"observation": "obs", "quote": quote}]}}}
+                join = SimpleNamespace(claims=[claim], obs={"obs": {"text": "original source text"}})
+                result = synthetic.score_false_certainty(None, join)
+                self.assertEqual(result["false_certainty_rate"], 1.0)
+                self.assertEqual(result["observed_quote_not_in_observation"], 1)
+                self.assertEqual(result["claims_with_structural_violations"], 1)
+                self.assertEqual(result["observed_without_support"], 0)
+
+    def test_false_certainty_counts_violating_claims_not_violation_sum(self):
+        claims = [
+            {"id": "bad", "assessment": {"evidence_class": "inferred",
+             "premises": {"claims": ["premise", "premise", "premise"]}}},
+            {"id": "premise", "assessment": {"evidence_class": "extrapolated"}},
+        ]
+        result = synthetic.score_false_certainty(None, SimpleNamespace(claims=claims, obs={}))
+        self.assertEqual(result["false_certainty_rate"], 0.5)
+        self.assertEqual(result["claims_with_structural_violations"], 1)
+        self.assertEqual(result["claims_evaluated"], 2)
+        self.assertEqual(result["inferred_without_expected_property"], 1)
+        self.assertEqual(result["extrapolated_or_absent_premises"], 3)
+
     def test_nonzero_cli_exit_is_failure_even_with_done_json(self):
         with tempfile.TemporaryDirectory() as temp:
             proc = SimpleNamespace(stdout='{"status":"done"}', stderr="failure", returncode=7)
