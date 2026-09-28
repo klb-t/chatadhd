@@ -94,8 +94,13 @@ Commands:
               [--project NAME] [--max-passes N] [--max-new-terms N] [--max-hits N]
               [--rounds N] [--exclude FRAGMENT]... [--no-git] [--no-code]
               [--include-db] [--llm auto|off] [--force] [--config FILE.json]
-              [--knowledge]                  also run the knowledge.catalog stage over the same sources
+              [--knowledge]                  also run the knowledge pipeline over the same sources
   archive status [RUN_ID]
+  knowledge run [--source PATH]... [--repo DIR] [--out DIR] [--project NAME] [--cut YYYY-MM-DD]
+                [--no-priors] [--snapshot DIR[=LABEL]]... [--stage S]... [--llm auto|off]
+                [--force] [--config FILE.json]
+                catalog -> extract -> resolve -> assess -> generalize -> materialize (resumable)
+  knowledge status [TASK_ID]
   catalog scan [--source PATH]... [--threads N] [--mobile] [--force]
                stream files/dirs/zips into loom_cat_units + sketches (R1: no import)
   catalog profile [--repo DIR]              build the self-profile from the pack + repo
@@ -123,7 +128,7 @@ Archive example (the self-hosting run):
 const std::set<std::string>& flag_names() {
   static const std::set<std::string> k = {"json",   "quiet",  "force",   "all",     "refresh", "no-git",
                                           "no-code", "include-db", "web", "help",    "deep",    "mobile",
-                                          "dry-run", "knowledge", "include-project-siblings"};
+                                          "dry-run", "knowledge", "include-project-siblings", "no-priors"};
   return k;
 }
 
@@ -757,18 +762,18 @@ int cmd_archive(Runtime& rt, const Args& a) {
   auto r = must(rt.archive().run(cfg, progress_line, &g_cancel));
   if (!g_quiet) std::cerr << "\r\x1b[K";
 
-  // --knowledge: also run the knowledge.catalog stage over the same sources
-  // (knowledge.h: "wiring `loom archive run --knowledge` to start a
-  // knowledge run after `relate` belongs to the catalog area"). Only
-  // "catalog" is requested: the other stages are still stubs, so asking for
-  // the whole pipeline here would just fail at "extract" today.
+  // --knowledge: also run the knowledge pipeline (catalog -> extract ->
+  // resolve -> assess -> generalize -> materialize) over the same sources;
+  // its products go to <out>/knowledge when --out is given.
   Json kr_json = Json(nullptr);
   if (a.has("knowledge") && r.status == "done") {
     knowledge::KnowledgeConfig kcfg;
     kcfg.sources = cfg.sources;
     kcfg.repo = cfg.repo;
-    kcfg.stages = {"catalog"};
     kcfg.force = cfg.force;
+    kcfg.project = cfg.project;
+    kcfg.llm = cfg.llm;
+    if (!cfg.out_dir.empty()) kcfg.out_dir = (fsutil::expand_user(cfg.out_dir) / "knowledge").string();
     auto kr = rt.knowledge().run(kcfg, progress_line, &g_cancel);
     if (!g_quiet) std::cerr << "\r\x1b[K";
     kr_json = kr ? kr->to_json() : Json{{"error", Json{{"code", std::string(errc_name(kr.error().code))}, {"message", kr.error().message}}}};
@@ -801,10 +806,61 @@ int cmd_archive(Runtime& rt, const Args& a) {
   for (const auto& art : sm["artifacts"]) std::cout << "  " << json::get_string(art, "id") << "  " << json::get_string(art, "name") << "\n";
   for (const auto& w : sm["warnings"]) std::cerr << "warning: " << w.get<std::string>() << "\n";
   if (!kr_json.is_null()) {
-    std::cout << "knowledge.catalog: " << json::get_string(kr_json, "status", "") << "\n";
+    std::cout << "knowledge run " << json::get_string(kr_json, "run", "") << ": " << json::get_string(kr_json, "status", "") << "\n";
     if (json::find(kr_json, "error")) std::cerr << "warning: " << json::dump(kr_json["error"]) << "\n";
   }
   return 0;
+}
+
+// `loom knowledge run|status`: the knowledge pipeline on its own
+// (knowledge.h). Options map onto KnowledgeConfig; --config FILE.json gives
+// the whole config (options given on the command line are added to it).
+int cmd_knowledge(Runtime& rt, const Args& a) {
+  std::string sub = need(a, 0, "knowledge subcommand");
+  if (sub == "status") {
+    print_json(must(rt.knowledge().status(a.pos.size() > 1 ? a.pos[1] : "")));
+    return 0;
+  }
+  if (sub != "run") throw UsageError{"unknown knowledge subcommand: " + sub};
+  Json cj = Json::object();
+  if (a.has("config")) cj = must(json::parse(must(fsutil::read_file(a.get("config")))));
+  knowledge::KnowledgeConfig cfg = must(knowledge::KnowledgeConfig::from_json(cj));
+  for (const auto& s : a.all("source")) cfg.sources.push_back(s);
+  if (a.has("repo")) cfg.repo = a.get("repo");
+  if (a.has("out")) cfg.out_dir = a.get("out");
+  if (a.has("project")) cfg.project = a.get("project");
+  if (a.has("cut")) cfg.prior_cut = a.get("cut");
+  if (a.has("llm")) cfg.llm = a.get("llm");
+  if (a.has("no-priors")) cfg.priors = false;
+  if (a.has("force")) cfg.force = true;
+  for (const auto& s : a.all("stage")) cfg.stages.push_back(s);
+  if (a.has("snapshot")) {
+    Json snaps = Json::array();
+    for (const auto& s : a.all("snapshot")) {
+      auto eq = s.find('=');
+      if (eq == std::string::npos) snaps.push_back(s);
+      else snaps.push_back(Json{{"dir", s.substr(0, eq)}, {"label", s.substr(eq + 1)}});
+    }
+    if (!cfg.stage_params.is_object()) cfg.stage_params = Json::object();
+    cfg.stage_params["resolve"]["snapshots"] = snaps;
+  }
+  cfg = must(knowledge::KnowledgeConfig::from_json(cfg.to_json()));  // validate + order stages
+  if (cfg.sources.empty() && !cfg.repo) throw UsageError{"knowledge run needs --source or --repo"};
+  std::signal(SIGINT, sigint_handler);
+  auto r = must(rt.knowledge().run(cfg, progress_line, &g_cancel));
+  if (!g_quiet) std::cerr << "\r\x1b[K";
+  if (g_json) {
+    print_json(r.to_json());
+    return r.status == "done" ? 0 : 4;
+  }
+  std::cout << "knowledge run " << r.run << ": " << r.status << (r.error.empty() ? "" : "  (" + r.error + ")") << "\n";
+  for (const auto& s : r.stages) {
+    std::cout << "  " << s.stage << (s.cache_hit ? "  (cache hit)" : s.resumed ? "  (resumed)" : "") << "  "
+              << one_line(json::dump(s.stats), 160) << "\n";
+  }
+  if (r.status == "paused") std::cout << "Run the same command again to resume from the last checkpoint.\n";
+  if (!cfg.out_dir.empty() && r.status == "done") std::cout << "products written to " << cfg.out_dir << "\n";
+  return r.status == "done" ? 0 : 4;
 }
 
 void print_catalog_unit_line(const catalog::CatalogUnit& u) {
@@ -1089,6 +1145,7 @@ int main(int argc, char** argv) {
     if (cmd == "artifacts") return cmd_artifacts(rt, args);
     if (cmd == "archive") return cmd_archive(rt, args);
     if (cmd == "catalog") return cmd_catalog(rt, args);
+    if (cmd == "knowledge") return cmd_knowledge(rt, args);
     if (cmd == "crypto") return cmd_crypto(rt, args);
     std::cerr << "unknown command: " << cmd << "\n(see loom --help)\n";
     return 2;
