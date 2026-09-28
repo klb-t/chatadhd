@@ -181,7 +181,9 @@ def prepare(request, output_dir, *, endpoint_loader=fetch_endpoints):
         if len(found) != 1:
             raise ValueError("explicit provider endpoint unavailable or ambiguous")
         endpoint = found[0]
-        if endpoint.get("status") != 0 or not {"response_format", "temperature", "max_tokens"} <= set(endpoint["supported_parameters"]):
+        if endpoint.get("status") != 0:
+            raise ValueError("explicit provider endpoint currently unavailable")
+        if not {"response_format", "temperature", "max_tokens"} <= set(endpoint["supported_parameters"]):
             raise ValueError("endpoint lacks required request parameters")
         if request["max_tokens"] > endpoint["max_completion_tokens"]:
             raise ValueError("output budget exceeds endpoint limit")
@@ -200,6 +202,7 @@ def prepare(request, output_dir, *, endpoint_loader=fetch_endpoints):
             for method in request["methods"]:
                 body = {"model": choice["id"], "messages": messages_for(case, method),
                         "max_tokens": request["max_tokens"], "temperature": 0, "stream": False,
+                        "usage": {"include": True},
                         "response_format": {"type": "json_object"},
                         "provider": {"only": [choice["provider"]], "allow_fallbacks": False,
                                      "require_parameters": True,

@@ -1,5 +1,12 @@
 # Current work checkpoint
 
+Current authorized continuation: `research/OPENROUTER_BYOK_CORRECTION_2026-09-28.md`.
+The owner has disabled reset and asked us to remove our unnecessary setup
+blocker. The earlier requirement for BYOK inclusion is superseded by the
+documented per-response billing check, retaining the USD 2 credit cap and local
+reservations. Reconciled experiment `live-structure-dev-v2` is being launched;
+v1's zero-POST evidence remains intact. Sections below are historical.
+
 Latest actual result: `research/OPENROUTER_FIRST_RUN_2026-09-28.md`.
 Owner-authorized activation `7ebd545` reached the key guard, with **zero model
 POSTs**. The exact first artifact is retained. Read-only preflight `36445312994`

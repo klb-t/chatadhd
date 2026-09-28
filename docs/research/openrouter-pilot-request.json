@@ -1,7 +1,7 @@
 {
   "schema": "loom.live_pilot_request/1",
   "enabled": true,
-  "experiment_id": "live-structure-dev-v1",
+  "experiment_id": "live-structure-dev-v2",
   "split": "dev",
   "methods": [
     "native_v1"
@@ -9,7 +9,7 @@
   "models": [
     {
       "id": "qwen/qwen3-30b-a3b-instruct-2507",
-      "provider": "nebius/fp8"
+      "provider": "siliconflow/fp8"
     },
     {
       "id": "openai/gpt-4.1-mini",

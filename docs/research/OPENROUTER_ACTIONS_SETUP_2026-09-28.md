@@ -1,7 +1,7 @@
 # Real-model pilot through GitHub Actions
 
-Status on 2026-09-28: execution path prepared; no paid model requests have been
-made by this workflow. The checked-in request is disabled. This path permits an
+Current status: the owner configured the secret and authorized USD 2. Reconciled
+execution v2 is enabled; see `OPENROUTER_BYOK_CORRECTION_2026-09-28.md`. This path permits an
 explicit, bounded experiment when the assistant's own execution environment
 cannot reach OpenRouter. It does not relay the assistant's network traffic.
 
@@ -9,9 +9,10 @@ cannot reach OpenRouter. It does not relay the assistant's network traffic.
 
 1. Create a dedicated key at [OpenRouter API keys](https://openrouter.ai/settings/keys).
    Set a total spending limit of **at most USD 2**, with **no periodic reset**.
-   Include BYOK usage in that limit. The runner checks the current-key API fields
-   `limit`, `limit_reset` and `include_byok_in_limit` before sending inference
-   requests; an unlimited or resetting key is rejected. The normal chat key is
+   BYOK inclusion is not required for an ordinary credit-funded pilot. If it is
+   off, the runner requires zero historical BYOK usage and checks actual billing
+   flags/costs after each response, stopping on BYOK or unclear accounting.
+   An unlimited or resetting key is rejected. The normal chat key is
    unnecessary for this pilot.
 2. Open [this repository's Actions secrets](https://github.com/klb-t/chatadhd/settings/secrets/actions).
    Choose **New repository secret**. Name it `LOOM_OPENROUTER_PILOT_KEY` and put
@@ -37,9 +38,8 @@ command has a 20-minute limit, leaving time to retain a partial result.
 
 The activation file is `docs/research/openrouter-pilot-request.json`. Its schema
 is `loom.live_pilot_request/1`. It specifies `enabled`, `experiment_id`, `split`,
-`methods`, `models`, `budget_usd`, `max_tokens` and `max_requests`. The default
-request remains `enabled: false` until the owner has configured the key and the
-bounded run is authorized.
+`methods`, `models`, `budget_usd`, `max_tokens` and `max_requests`. A new installation should leave `enabled: false` until its key is configured
+and spending is authorized. This owner has already completed both steps.
 
 The first experiment uses the independently authored development cases and the
 native extraction prompt (`native_v1`). The alternative `native_anchors_v1`

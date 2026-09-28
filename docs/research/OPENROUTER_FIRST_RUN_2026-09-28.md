@@ -1,5 +1,10 @@
 # First authorized pilot: stopped before inference
 
+**Continuation:** the setup requirement below has been superseded by
+`OPENROUTER_BYOK_CORRECTION_2026-09-28.md` after the owner disabled reset and
+authorized correcting our overbroad BYOK guard. The evidence here remains the
+unaltered history of the zero-POST first attempt.
+
 The owner confirmed the key setup and proposed USD 2 pilot on 2026-09-28.
 Activation commit: `7ebd54556c001d12e95f0b366de6b003bc83730f`.
 Actions run: https://github.com/klb-t/chatadhd/actions/runs/36444725653

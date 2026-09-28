@@ -18,7 +18,7 @@ except ImportError:
 def manifest(count=1):
     body = {"model": "test/tiny-v1", "stream": False, "temperature": 0, "max_tokens": 64,
             "messages": [{"role": "user", "content": "Jeżeli pada, ziemia jest mokra."}],
-            "response_format": {"type": "json_object"},
+            "response_format": {"type": "json_object"}, "usage": {"include": True},
             "provider": {"only": ["test/fp8"], "allow_fallbacks": False,
                          "require_parameters": True, "max_price": {"prompt": 1, "completion": 2}}}
     return {"schema": runner.MANIFEST_SCHEMA, "experiment_id": "unit-pilot", "budget_usd": "1",
@@ -41,7 +41,7 @@ def key_info(**changes):
 def completion(**changes):
     data = {"id": "remote-test-id", "model": "test/tiny-v1", "provider": "test/fp8",
             "choices": [{"finish_reason": "stop", "message": {"role": "assistant", "content": '{"claims": []}'}}],
-            "usage": {"prompt_tokens": 24, "completion_tokens": 6, "cost": 0.000036}}
+            "usage": {"prompt_tokens": 24, "completion_tokens": 6, "cost": 0.000036, "is_byok": False}}
     data.update(changes)
     return runner.canonical(data)
 
@@ -278,11 +278,103 @@ class RunnerTests(unittest.TestCase):
         metadata = ledger["key_check_failure"]["metadata"]
         self.assertEqual(metadata, {"limit": "1", "limit_remaining": "1", "limit_reset": "invalid",
                          "is_management_key": "invalid", "is_provisioning_key": "invalid",
-                         "include_byok_in_limit": "invalid"})
+                         "include_byok_in_limit": "invalid", "byok_usage": "missing"})
         for path in self.directory.iterdir():
             for prohibited in (b"fixture-token", b"private-label", b"private-owner", b"private-key-hash"):
                 self.assertNotIn(prohibited, path.read_bytes())
 
+    def test_credits_only_key_with_zero_byok_history_runs_and_records_tripwire(self):
+        http = MockHTTP(key=key_info(include_byok_in_limit=False, byok_usage=0))
+        result = self.run_mock(manifest(2), http)
+        self.assertEqual(len(result["attempts"]), 2)
+        self.assertEqual(result["key_check"]["billing_mode"], "credits_with_byok_tripwire")
+        self.assertFalse(result["key_check"]["includes_byok"])
+        self.assertTrue(all(r["reported_is_byok"] is False for r in result["attempts"]))
+        self.assertNotIn("stopped_reason", result)
+
+    def test_credits_only_key_rejects_nonzero_invalid_or_missing_byok_history_before_post(self):
+        for value in (1, "0.000001", None, False, "private-remote-label"):
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as folder:
+                http = MockHTTP(key=key_info(include_byok_in_limit=False, byok_usage=value))
+                with self.assertRaises(runner.RunnerError):
+                    runner.run_manifest(manifest(), folder, transport_fn=http, key_loader=lambda: "fixture-token")
+                self.assertEqual([c[0] for c in http.calls], ["GET"])
+                saved = runner.parse_json((Path(folder) / "ledger.json").read_bytes())
+                self.assertEqual(saved["attempts"], [])
+                self.assertNotIn(b"private-remote-label", runner.canonical(saved))
+
+    def test_tripwire_requires_accounting_request_without_silently_mutating_prompt(self):
+        m = manifest()
+        del m["requests"][0]["body"]["usage"]
+        http = MockHTTP(key=key_info(include_byok_in_limit=False, byok_usage=0))
+        with self.assertRaisesRegex(runner.RunnerError, "byok_tripwire_requires_usage_accounting"):
+            self.run_mock(m, http)
+        self.assertEqual([c[0] for c in http.calls], ["GET"])
+        for value in ({"include": False}, {"include": 1}, {"include": True, "extra": True}, True):
+            with self.subTest(value=value):
+                m["requests"][0]["body"]["usage"] = value
+                with self.assertRaisesRegex(runner.RunnerError, "usage_accounting_must_be_enabled"):
+                    runner.plan_manifest(m)
+
+    def test_byok_and_unclear_billing_stop_after_one_and_remain_stopped_on_resume(self):
+        cases = [(completion(usage={"cost": 0.001, "is_byok": True}), "uncapped_byok_detected_stop"),
+                 (completion(usage={"cost": 0.001}), "byok_billing_unknown_stop"),
+                 (completion(usage={"cost": 0.001, "is_byok": "false"}), "byok_billing_unknown_stop"),
+                 (completion(usage={"is_byok": False}), "byok_billing_unknown_stop"),
+                 (completion(usage={"cost": "invalid", "is_byok": False}), "byok_billing_unknown_stop"),
+                 (b"invalid-json", "byok_billing_unknown_stop")]
+        for raw, reason in cases:
+            with self.subTest(reason=reason, raw=raw), tempfile.TemporaryDirectory() as folder:
+                m = manifest(2)
+                http = MockHTTP([(200, raw)], key=key_info(include_byok_in_limit=False, byok_usage=0))
+                first = runner.run_manifest(m, folder, transport_fn=http, key_loader=lambda: "fixture-token")
+                self.assertEqual(first["stopped_reason"], reason)
+                self.assertEqual([c[0] for c in http.calls], ["GET", "POST"])
+                self.assertEqual((Path(folder) / "case-0.response.bin").read_bytes(), raw)
+                def forbidden(*args):
+                    self.fail("Unknown or BYOK billing must stay stopped on resume")
+                self.assertEqual(runner.run_manifest(m, folder, transport_fn=forbidden, key_loader=forbidden), first)
+
+    def test_billing_preserved_for_truncated_error_and_http_error_responses(self):
+        truncated = completion(choices=[{"finish_reason": "length", "message": {"content": "{"}}],
+                               usage={"cost": 0.02, "is_byok": False})
+        result = self.run_mock(manifest(2), MockHTTP([(200, truncated)]))
+        self.assertEqual(result["attempts"][0]["state"], "rejected")
+        self.assertEqual(result["attempts"][0]["reported_cost_usd"], "0.02")
+        self.assertEqual(result["stopped_reason"], "reported_cost_exceeded_reservation")
+        for status in (200, 502):
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as folder:
+                raw = runner.canonical({"error": {"code": 502}, "usage": {"cost": 0.001, "is_byok": True}})
+                http = MockHTTP([(status, raw)], key=key_info(include_byok_in_limit=False, byok_usage=0))
+                result = runner.run_manifest(manifest(2), folder, transport_fn=http, key_loader=lambda: "fixture-token")
+                self.assertEqual(result["attempts"][0]["reported_cost_usd"], "0.001")
+                self.assertEqual(result["stopped_reason"], "uncapped_byok_detected_stop")
+                self.assertEqual(len(result["attempts"]), 1)
+
+    def test_ordinary_upstream_cost_is_not_misclassified_as_byok(self):
+        raw = completion(usage={"cost": 0.001, "is_byok": False,
+                                "cost_details": {"upstream_inference_cost": 0.0012}})
+        result = self.run_mock(manifest(2), MockHTTP([(200, raw)],
+                               key=key_info(include_byok_in_limit=False, byok_usage=0)))
+        self.assertEqual(len(result["attempts"]), 2)
+        self.assertNotIn("stopped_reason", result)
+
+    def test_tripwire_uncertain_and_interrupted_attempts_never_advance_on_resume(self):
+        for failure in (TimeoutError(), KeyboardInterrupt()):
+            with self.subTest(failure=type(failure).__name__), tempfile.TemporaryDirectory() as folder:
+                m = manifest(2)
+                http = MockHTTP([failure], key=key_info(include_byok_in_limit=False, byok_usage=0))
+                if isinstance(failure, KeyboardInterrupt):
+                    with self.assertRaises(KeyboardInterrupt):
+                        runner.run_manifest(m, folder, transport_fn=http, key_loader=lambda: "fixture-token")
+                else:
+                    runner.run_manifest(m, folder, transport_fn=http, key_loader=lambda: "fixture-token")
+                def forbidden(*args):
+                    self.fail("Unknown billing cannot advance after interruption")
+                result = runner.run_manifest(m, folder, transport_fn=forbidden, key_loader=forbidden)
+                self.assertEqual(result["stopped_reason"], "byok_billing_unknown_stop")
+                self.assertEqual(len(result["attempts"]), 1)
+                self.assertEqual(result["attempts"][0]["state"], "uncertain")
     def test_inspect_key_get_only_sanitizes_missing_and_null_without_artifacts(self):
         data = runner.parse_json(key_info())
         del data["data"]["is_management_key"]

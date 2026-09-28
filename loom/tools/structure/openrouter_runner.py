@@ -29,7 +29,7 @@ MAX_BODY_BYTES = 256 * 1024
 TIMEOUT_SECONDS = 60
 _ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,95}\Z")
 _BODY_KEYS = {"model", "messages", "max_tokens", "temperature", "top_p", "seed",
-              "response_format", "provider", "stream", "reasoning"}
+              "response_format", "provider", "stream", "reasoning", "usage"}
 
 
 class RunnerError(ValueError):
@@ -217,6 +217,10 @@ def plan_manifest(manifest):
             raise RunnerError("invalid_top_p")
         if "seed" in body and type(body["seed"]) is not int:
             raise RunnerError("invalid_seed")
+        if "usage" in body and (not isinstance(body["usage"], dict) or
+                                set(body["usage"]) != {"include"} or
+                                body["usage"]["include"] is not True):
+            raise RunnerError("usage_accounting_must_be_enabled")
         if "reasoning" in body:
             # Enabled reasoning may have provider-dependent budgets/charges.
             if body["reasoning"] != {"enabled": False}:
@@ -401,7 +405,7 @@ def _safe_key_metadata(raw):
     if not isinstance(data, dict):
         return {"metadata_status": "invalid_envelope"}
     safe = {}
-    for name in ("limit", "limit_remaining"):
+    for name in ("limit", "limit_remaining", "byok_usage"):
         if name not in data:
             safe[name] = "missing"
         elif data[name] is None:
@@ -445,10 +449,28 @@ def _key_gate(raw, budget, needed):
             raise RunnerError("key_provisioning_flag_invalid")
         if data["is_provisioning_key"] is True:
             raise RunnerError("provisioning_key_forbidden")
-    if data.get("include_byok_in_limit") is not True:
-        raise RunnerError("key_must_include_byok_usage_in_limit")
+    includes_byok = data.get("include_byok_in_limit")
+    if type(includes_byok) is not bool:
+        raise RunnerError("key_byok_inclusion_flag_missing_or_invalid")
+    if not includes_byok:
+        try:
+            byok_usage = _money(data.get("byok_usage"))
+        except RunnerError:
+            raise RunnerError("key_byok_usage_missing_or_invalid") from None
+        if byok_usage != 0:
+            raise RunnerError("key_has_uncapped_byok_usage")
+        # Zero historical spend does NOT prove BYOK is disabled. This mode
+        # observes every billed response and stops on BYOK or unclear billing.
+        # It is a bounded pilot tripwire, not an external-provider billing cap.
     return {"checked_at": _utc(), "limit_usd": _amount(limit), "remaining_usd": _amount(remaining),
-            "nonresetting": True, "includes_byok": True}
+            "nonresetting": True, "includes_byok": includes_byok,
+            "billing_mode": "credits_and_byok_capped" if includes_byok else "credits_with_byok_tripwire"}
+
+
+def _require_usage_accounting(key_check, requests):
+    if key_check["billing_mode"] == "credits_with_byok_tripwire":
+        if any(request["body"].get("usage") != {"include": True} for request in requests):
+            raise RunnerError("byok_tripwire_requires_usage_accounting")
 
 
 def inspect_key(manifest, *, transport_fn=None, key_loader=None):
@@ -472,7 +494,9 @@ def inspect_key(manifest, *, transport_fn=None, key_loader=None):
         if not isinstance(raw, bytes) or len(raw) > MAX_RESPONSE_BYTES:
             raise RunnerError("key_metadata_size_or_type_invalid")
         result["metadata"] = _safe_key_metadata(raw)
-        _key_gate(raw, _money(plan["budget_usd"]), _money(plan["total_reservation_usd"]))
+        check = _key_gate(raw, _money(plan["budget_usd"]), _money(plan["total_reservation_usd"]))
+        _require_usage_accounting(check, manifest["requests"])
+        result["billing_mode"] = check["billing_mode"]
         result["gate_valid"] = True
         result["reason"] = "key_guard_satisfied"
     except RunnerError as exc:
@@ -485,25 +509,34 @@ def _response_result(raw):
         response = parse_json(raw)
     except RunnerError:
         return {"state": "rejected", "reason": "invalid_response_json"}
-    if not isinstance(response, dict) or response.get("error") is not None:
+    if not isinstance(response, dict):
         return {"state": "rejected", "reason": "provider_error_envelope"}
+    # Billing belongs to the attempt even if its content is truncated, refused,
+    # malformed, or an error. Never discard cost because semantic parsing failed.
+    billing = {}
+    usage = response.get("usage")
+    if isinstance(usage, dict):
+        if type(usage.get("is_byok")) is bool:
+            billing["reported_is_byok"] = usage["is_byok"]
+        if "cost" in usage:
+            try:
+                billing["reported_cost_usd"] = _amount(_money(usage["cost"]))
+            except RunnerError:
+                billing["cost_status"] = "invalid_reported_cost"
+    # upstream_inference_cost is also present for ordinary credit requests;
+    # only the explicit is_byok boolean identifies BYOK.
+    if response.get("error") is not None:
+        return {**billing, "state": "rejected", "reason": "provider_error_envelope"}
     choices = response.get("choices")
     if not isinstance(choices, list) or len(choices) != 1 or not isinstance(choices[0], dict):
-        return {"state": "rejected", "reason": "invalid_choices"}
+        return {**billing, "state": "rejected", "reason": "invalid_choices"}
     choice = choices[0]
     if choice.get("finish_reason") != "stop":
-        return {"state": "rejected", "reason": "nonstop_finish_reason"}
+        return {**billing, "state": "rejected", "reason": "nonstop_finish_reason"}
     message = choice.get("message")
     if not isinstance(message, dict) or not isinstance(message.get("content"), str) or message.get("refusal") or message.get("tool_calls"):
-        return {"state": "rejected", "reason": "nontext_or_refusal_response"}
-    result = {"state": "completed", "reason": "transport_complete_semantics_unchecked"}
-    usage = response.get("usage")
-    if isinstance(usage, dict) and "cost" in usage:
-        try:
-            result["reported_cost_usd"] = _amount(_money(usage["cost"]))
-        except RunnerError:
-            result["cost_status"] = "invalid_reported_cost"
-    return result
+        return {**billing, "state": "rejected", "reason": "nontext_or_refusal_response"}
+    return {**billing, "state": "completed", "reason": "transport_complete_semantics_unchecked"}
 
 
 def _validate_ledger(ledger, plan, directory):
@@ -549,6 +582,8 @@ def run_manifest(manifest, run_dir, *, transport_fn=None, key_loader=None):
             for row in attempts:
                 if row["state"] == "started":
                     row.update(state="uncertain", reason="interrupted_after_writeahead_no_retry")
+                    if ledger.get("key_check", {}).get("billing_mode") == "credits_with_byok_tripwire":
+                        ledger["stopped_reason"] = "byok_billing_unknown_stop"
             _atomic(ledger_path, canonical(ledger))
         else:
             key = get_key()
@@ -589,6 +624,7 @@ def run_manifest(manifest, run_dir, *, transport_fn=None, key_loader=None):
             if not isinstance(raw, bytes) or len(raw) > MAX_RESPONSE_BYTES:
                 raise RunnerError("key_metadata_size_or_type_invalid")
             ledger["key_check"] = _key_gate(raw, _money(plan["budget_usd"]), needed)
+            _require_usage_accounting(ledger["key_check"], manifest["requests"][len(attempts):])
         except RunnerError as exc:
             failure = {"checked_at": _utc(), "reason": str(exc)}
             if status == 200 and isinstance(raw, bytes) and len(raw) <= MAX_RESPONSE_BYTES:
@@ -597,6 +633,7 @@ def run_manifest(manifest, run_dir, *, transport_fn=None, key_loader=None):
             _atomic(ledger_path, canonical(ledger))
             raise
         _atomic(ledger_path, canonical(ledger))
+        byok_tripwire = ledger["key_check"]["billing_mode"] == "credits_with_byok_tripwire"
         for index in range(len(attempts), len(plan["requests"])):
             planned, request = plan["requests"][index], manifest["requests"][index]
             row = {"id": planned["id"], "request_hash": planned["request_hash"],
@@ -614,7 +651,9 @@ def run_manifest(manifest, run_dir, *, transport_fn=None, key_loader=None):
                 _atomic(directory / name, raw)
                 row.update(response_file=name, response_sha256=hashlib.sha256(raw).hexdigest(),
                            http_status=status, elapsed_seconds=round(time.monotonic() - started, 6))
-                row.update(_response_result(raw) if status == 200 else {"state": "http_error", "reason": "http_error_no_retry"})
+                row.update(_response_result(raw))
+                if status != 200:
+                    row.update(state="http_error", reason="http_error_no_retry")
                 if "reported_cost_usd" in row and _money(row["reported_cost_usd"]) > _money(row["reservation_usd"]):
                     row["cost_status"] = "reservation_exceeded_stop"
                 row["finished_at"] = _utc()
@@ -622,12 +661,19 @@ def run_manifest(manifest, run_dir, *, transport_fn=None, key_loader=None):
                     ledger["stopped_reason"] = "terminal_http_" + str(status)
                 elif row.get("cost_status") == "reservation_exceeded_stop":
                     ledger["stopped_reason"] = "reported_cost_exceeded_reservation"
+                elif byok_tripwire and row.get("reported_is_byok") is True:
+                    ledger["stopped_reason"] = "uncapped_byok_detected_stop"
+                elif byok_tripwire and (row.get("reported_is_byok") is not False or
+                                        "reported_cost_usd" not in row):
+                    ledger["stopped_reason"] = "byok_billing_unknown_stop"
                 # Record terminal status and stop reason together, before any next POST.
                 _atomic(ledger_path, canonical(ledger))
                 if ledger.get("stopped_reason"):
                     break
             except Exception:
                 row.update(state="uncertain", reason="attempt_outcome_uncertain_no_retry", finished_at=_utc())
+                if byok_tripwire:
+                    ledger["stopped_reason"] = "byok_billing_unknown_stop"
                 _atomic(ledger_path, canonical(ledger))
                 # Stop this invocation after ambiguity; resume may run untouched requests only.
                 break

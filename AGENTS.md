@@ -1,12 +1,14 @@
 # ChatADHD / Loom continuation
 
-Latest live attempt: `docs/research/OPENROUTER_FIRST_RUN_2026-09-28.md`.
-Owner confirmed setup; authenticated key is valid but has weekly reset and
-excludes BYOK usage from its USD 2 cap. Both differ from the agreed pilot guard.
-Zero model POSTs; original artifact and sanitized diagnosis are saved. Await
-owner setting correction, then recheck without inference. Do not silently
-relax the guard or rerun the reserved ID. Research suite now 314 tests; a new
-16-conversation/96-prefix corpus is ready for its separate scorer/adapter.
+Current execution: `docs/research/OPENROUTER_BYOK_CORRECTION_2026-09-28.md`.
+Owner disabled reset and explicitly authorized resolving our overbroad BYOK
+requirement in code. The replacement accepts an excluded-BYOK credit cap only
+with zero historical BYOK usage, then checks explicit billing flags and costs
+after each bounded request. It does not claim BYOK is disabled in routing.
+Original v1 had zero POSTs and retains its reservation/artifact. Reconciled v2
+uses a new ID and fresh frozen manifest. Inspect its actual ledger and artifact;
+do not rerun an uncertain request or ask for an administrative key.
+A 16-conversation/96-prefix corpus awaits its separate scorer/live adapter.
 
 Latest direction: `docs/research/OPENROUTER_LIVE_PILOT_2026-09-28.md`.
 Real-model source-to-graph pilot is prepared (309 research tests pass), but no
