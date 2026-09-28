@@ -1,5 +1,9 @@
 # ChatADHD / Loom continuation
 
+Current graph-native round: `docs/research/GRAPH_NATIVE_PROGRAMME_2026-09-28.md`.
+The owner clarified that argument/thought structure belongs in the same knowledge
+graph; compare derived subgraph projections without another authoritative store.
+
 The resumed research round starts at `docs/research/PROGRAMME_2026-09-28.md`:
 composable thought structures, independent experiments, topic segmentation and
 existing-graph context. Its measured status is separate from the native baseline.
