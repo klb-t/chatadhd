@@ -89,6 +89,11 @@ Formula schemas (all keys required, unknown keys rejected):
 | `causes` | `left`, `right` formulas | Structure only, never strict implication |
 
 Variables are bound by `forall`/`exists`; other term strings are constants.
+Open formulas with free-variable terms are not in this compact grammar. A string
+spelled `x` outside a binder explicitly denotes a constant; the harness cannot
+recover a caller's different intention. Extractors must abstain or retain an
+unrepresented variable form instead of replacing open variables with strings.
+Bound-variable names never seed the set of instantiation constants.
 Predicate symbols are never renamed during inference. Structure comparison can
 rename them consistently; this detects a shared form, not an equivalence of
 meanings. `compare` reports both structural and semantic alignment for logic
@@ -132,3 +137,22 @@ production anchored partial-homomorphism matcher. Limits are reported as unknown
 1-WL is not an isomorphism or logical-equivalence proof. Empty vectors score zero
 with separate coverage. Raw scores are not probabilities. Apparent proof absence
 means only unsupported by this bounded subset, never disproven or false.
+
+## Versioned correctness correction
+
+The first independent measurement froze `structure-experiment/1` at SHA-256
+`166322e6ddc6ffc102eee4009b3733b1e30c9bd7189534285704b094583ace60`.
+Subsequent author-owned review reproduced a generic defect: newly derived `Q`
+and `not Q` could be reused before the final contested marking, producing an
+apparently viable downstream consequence. No independent example was inspected
+or used to design the fix.
+
+`structure-experiment/2` quarantines contradictory formulas before the next
+round, retains formula-level dependency edges, and retracts earlier descendants
+if the contradictory evidence arrives later. Withheld results are preserved in
+`contested_candidates`, separate from viable `candidates`. The conservative
+first-proof policy may withhold a conclusion for which a different, uncontested
+proof exists; discovering and selecting those alternatives is future work.
+Version 1 results remain historical, and version 2 must be scored separately.
+The author-owned suite now includes 23 mechanism/regression checks, including
+immediate/delayed contradictions and bound-variable nonleakage.

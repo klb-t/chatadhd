@@ -17,7 +17,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-VERSION = "structure-experiment/1"
+VERSION = "structure-experiment/2"
 ROLES = {"intent", "constraint", "part", "actor", "resource", "interface", "flow",
          "event", "artifact", "transformation", "check", "output", "decision", "question"}
 REGISTRY_PATH = Path(__file__).with_name("operations.json")
@@ -417,7 +417,7 @@ def infer(logic: list[dict], max_rounds: int = 3, max_candidates: int = 128) -> 
         scope = canonical({k: v for k, v in qualifiers.items() if k not in {"argument_role"}})
         key = (scope, alpha_key(formula))
         known.setdefault(key, {"formula": deepcopy(formula), "premise_claim_ids": [ident],
-                               "proof": [], "scope": scope})
+                               "proof": [], "scope": scope, "_dependencies": []})
     original = set(known)
     initial = list(known.items())
     # Direct explicit contradictions do not license explosion or arbitrary choice.
@@ -432,6 +432,42 @@ def infer(logic: list[dict], max_rounds: int = 3, max_candidates: int = 128) -> 
         for ident in known[key]["premise_claim_ids"]:
             blocked.append({"claim_id": ident, "reason": "explicit_contradiction"})
         del known[key]
+    initial_eligible_count = len(known)
+    all_records = dict(known)
+    quarantined = set(conflicting)
+    quarantine_reasons = {key: "explicit_contradiction" for key in conflicting}
+
+    def quarantine_conflicts() -> None:
+        """Withhold contradictions before reuse; retract their prior descendants.
+
+        A contradiction can arrive several rounds after an earlier consequence.
+        Formula dependencies therefore have to be retained beyond source Claim
+        IDs. Alternative valid proofs may be lost by this conservative policy.
+        """
+        for key, item in list(known.items()):
+            f = item["formula"]
+            opposite = f["arg"] if f["op"] == "not" else {"op": "not", "arg": f}
+            other = (item["scope"], alpha_key(opposite))
+            if other in known:
+                for conflict in (key, other):
+                    quarantined.add(conflict)
+                    quarantine_reasons[conflict] = "explicit_contradiction"
+        changed = True
+        while changed:
+            changed = False
+            for key, item in all_records.items():
+                if key not in quarantined and any(parent in quarantined for parent in item["_dependencies"]):
+                    quarantined.add(key)
+                    quarantine_reasons[key] = "dependency_on_contested_claim"
+                    changed = True
+        for key in list(known):
+            if key in quarantined:
+                if key in original:
+                    for ident in known[key]["premise_claim_ids"]:
+                        record = {"claim_id": ident, "reason": "explicit_contradiction"}
+                        if record not in blocked:
+                            blocked.append(record)
+                del known[key]
     constants_by_scope = defaultdict(set)
     for (scope, _), item in known.items():
         constants_by_scope[scope].update(_terms(item["formula"]))
@@ -442,7 +478,7 @@ def infer(logic: list[dict], max_rounds: int = 3, max_candidates: int = 128) -> 
             nonlocal limited
             scope = parents[0]["scope"]
             key = (scope, alpha_key(formula))
-            if key in known or key in additions or key in conflicting:
+            if key in known or key in additions or key in quarantined:
                 return
             if len(candidates) + len(additions) >= max_candidates:
                 limited = True
@@ -461,7 +497,8 @@ def infer(logic: list[dict], max_rounds: int = 3, max_candidates: int = 128) -> 
                                    "implemented_in_core": False,
                                    "confirm_if": "all source premises, scopes and listed rule steps verify",
                                    "refute_if": "a premise, scope, annotation or proof step is invalid"},
-                              "persistable_claim": False}
+                              "persistable_claim": False,
+                              "_dependencies": [(p["scope"], alpha_key(p["formula"])) for p in parents]}
         for key in sorted(known):
             item = known[key]
             f, scope = item["formula"], item["scope"]
@@ -483,17 +520,28 @@ def infer(logic: list[dict], max_rounds: int = 3, max_candidates: int = 128) -> 
             break
         for key in sorted(additions):
             known[key] = additions[key]
+            all_records[key] = additions[key]
             if key not in original:
                 candidates.append(additions[key])
+        quarantine_conflicts()
         if limited:
             break
-    # Mark any newly derived contradictions as contested research results.
+    # Reports preserve withdrawn hypotheses, but do not present them as viable
+    # proposals. No internal dependency bookkeeping leaks into the public schema.
+    contested_candidates = []
+    viable_candidates = []
     for item in candidates:
-        opposite = item["formula"]["arg"] if item["formula"]["op"] == "not" else {"op": "not", "arg": item["formula"]}
-        item["status"] = "contested" if (item["scope"], alpha_key(opposite)) in known else "candidate"
-    return {"version": VERSION, "candidates": candidates,
+        key = (item["scope"], alpha_key(item["formula"]))
+        report = {k: v for k, v in item.items() if not k.startswith("_")}
+        if key in quarantined:
+            report.update(status="contested", withheld_reason=quarantine_reasons[key])
+            contested_candidates.append(report)
+        else:
+            report["status"] = "candidate"
+            viable_candidates.append(report)
+    return {"version": VERSION, "candidates": viable_candidates, "contested_candidates": contested_candidates,
             "blocked": sorted(blocked, key=lambda x: (x["claim_id"], x["reason"])),
-            "coverage": {"input_claims": len(logic), "eligible_claims": len(original) - len(conflicting),
+            "coverage": {"input_claims": len(logic), "eligible_claims": initial_eligible_count,
                          "trusted_rules": ["universal_instantiation", "modus_ponens", "modus_tollens", "conjunction_elimination"],
                          "saturated_within_limits": saturated, "candidate_limit_reached": limited,
                          "no_proof_means": "unknown_or_unsupported_by_this_bounded_subset",

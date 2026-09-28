@@ -167,6 +167,41 @@ class InferenceTests(unittest.TestCase):
         self.assertEqual(result["candidates"], [])
         self.assertEqual(len(result["blocked"]), 2)
 
+    def test_derived_contradiction_is_quarantined_before_reuse(self):
+        result = infer([claim("p", atom("P")),
+                        claim("pq", implication(atom("P"), atom("Q"))),
+                        claim("pnq", implication(atom("P"), neg(atom("Q")))),
+                        claim("qr", implication(atom("Q"), atom("R")))])
+        self.assertNotIn(alpha_key(atom("R")), outputs(result))
+        self.assertNotIn(alpha_key(atom("Q")), outputs(result))
+        self.assertEqual({alpha_key(c["formula"]) for c in result["contested_candidates"]},
+                         {alpha_key(atom("Q")), alpha_key(neg(atom("Q")))})
+
+    def test_late_contradiction_retracts_prior_dependents(self):
+        result = infer([claim("p", atom("P")), claim("s", atom("S")),
+                        claim("pq", implication(atom("P"), atom("Q"))),
+                        claim("qr", implication(atom("Q"), atom("R"))),
+                        claim("st", implication(atom("S"), atom("T"))),
+                        claim("tu", implication(atom("T"), atom("U"))),
+                        claim("unq", implication(atom("U"), neg(atom("Q"))))], max_rounds=4)
+        self.assertNotIn(alpha_key(atom("R")), outputs(result))
+        withdrawn = next(c for c in result["contested_candidates"] if c["formula"] == atom("R"))
+        self.assertEqual(withdrawn["withheld_reason"], "dependency_on_contested_claim")
+
+    def test_bound_variables_never_supply_ground_constants(self):
+        f = forall("x", implication(atom("P", "x"), atom("Q", "x")))
+        result = infer([claim("r", f)])
+        self.assertEqual(result["candidates"], [])
+        result = infer([claim("r", f), claim("all", forall("y", atom("P", "y")))])
+        self.assertEqual(result["candidates"], [])
+
+    def test_explicit_free_variable_objects_are_rejected(self):
+        # The compact grammar has constants and bound variables, no open-formula
+        # variable constructor. Do not silently turn an unknown constructor into
+        # a ground constant.
+        with self.assertRaises(ValueError):
+            infer([claim("open", {"op": "atom", "predicate": "P", "args": [{"var": "x"}]})])
+
     def test_malformed_formula_is_not_silently_weakened(self):
         with self.assertRaises(ValueError):
             validate_formula({"op": "atom", "predicate": "P", "args": [], "negated": True})

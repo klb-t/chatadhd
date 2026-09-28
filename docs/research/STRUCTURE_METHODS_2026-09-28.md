@@ -130,6 +130,16 @@ extrapolated premise or transferred-premise chain is allowed. Direct
 contradictions are reported; there is no explosion rule. Scope must match exactly.
 No proof found means unknown/unsupported by the subset, not false.
 
+Post-freeze generic correctness review found that version 1 marked newly derived
+contradictions too late, allowing a downstream proposal to use them. Version 2
+quarantines them before reuse and retracts dependent proposals if conflict arrives
+later. Contradicted/withdrawn results remain in a separate report channel. This
+fix used author-owned examples only; original independent metrics remain tied to
+the frozen version 1 hash documented in the harness README, with re-evaluation
+required for version 2. Free variables are unsupported by the compact grammar;
+unbound term strings mean constants, so extractors must preserve or abstain on
+unrepresented free-variable interpretations rather than silently grounding them.
+
 The report's candidate conclusions are conditional on supplied logical
 annotations and premises. They are not persisted Claims: a `proof_replay`
 Expected-Property verifier is absent from the core. Every result explicitly has

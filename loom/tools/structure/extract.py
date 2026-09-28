@@ -26,13 +26,13 @@ try:
 except ImportError:
     from structure_methods import compare, formula_graph, validate_formula, validate_graph
 
-VERSION = "bounded-text-structure/1"
+VERSION = "bounded-text-structure/2"
 FLAGS = re.IGNORECASE | re.UNICODE
 WORD = r"[^\W\d_][\w-]*"
 OPERATION_FAMILIES = {"conditional": "conditional_branch", "branch": "conditional_branch",
-                      "exception": "exception", "universal_inclusion": "generalization",
-                      "type_inclusion": "specialization", "comparison": "comparison",
-                      "goal_constraint": "means_end", "assertion": "predicate"}
+                      "exception": "exception", "universal_inclusion": "category_inclusion",
+                      "type_inclusion": "category_inclusion", "comparison": "comparison",
+                      "goal_constraint": "goal_constraint", "assertion": "predicate"}
 # This list gates *logical interpretation*, not detection of an opaque envelope.
 # In particular neither negation nor modal/quantifier scope is guessed.
 LOGICAL_UNSAFE = re.compile(
