@@ -1,0 +1,252 @@
+{
+  "schema": "loom.independent_thread_gold/1",
+  "fixture_hash": "113421e9ff11aecdbfffa4af9f4d6e991ace3a814603d532f9428c0a5269a39a",
+  "authored_before_topic_measurement": true,
+  "interpretation": "Local grounded referent, not whole-conversation membership. Aliases and explicit references can retain multiple active topics. Missing or extra focus is reported separately from boundaries.",
+  "cases": [
+    {
+      "case_id": "ind-thread-late_identity",
+      "split": "development",
+      "expected_spans": [
+        {
+          "id": "ind-thread-late_identity.span1",
+          "turn_id": "ind-thread-late_identity.t1",
+          "char_start": 0,
+          "char_end": 46,
+          "quote": "Let us plan the garden bench dimensions first.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-late_identity.span2",
+          "turn_id": "ind-thread-late_identity.t2",
+          "char_start": 0,
+          "char_end": 40,
+          "quote": "We can compare a narrow and a wide seat.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-late_identity.span3",
+          "turn_id": "ind-thread-late_identity.t3",
+          "char_start": 0,
+          "char_end": 90,
+          "quote": "One more topic: in ChatADHD, save an interrupted model response before changing providers.",
+          "focus_entity_ids": [
+            "chatadhd"
+          ]
+        }
+      ],
+      "ambiguous_reference": false
+    },
+    {
+      "case_id": "ind-thread-topic_return",
+      "split": "validation",
+      "expected_spans": [
+        {
+          "id": "ind-thread-topic_return.span1",
+          "turn_id": "ind-thread-topic_return.t1",
+          "char_start": 0,
+          "char_end": 45,
+          "quote": "For Loom SDK, keep a durable task checkpoint.",
+          "focus_entity_ids": [
+            "loom"
+          ]
+        },
+        {
+          "id": "ind-thread-topic_return.span2",
+          "turn_id": "ind-thread-topic_return.t2",
+          "char_start": 0,
+          "char_end": 51,
+          "quote": "Now switch to dinner: the oven timer is unreliable.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-topic_return.span3",
+          "turn_id": "ind-thread-topic_return.t3",
+          "char_start": 0,
+          "char_end": 88,
+          "quote": "Returning to the SDK task: it must resume from that checkpoint, not from the oven timer.",
+          "focus_entity_ids": [
+            "loom"
+          ]
+        }
+      ],
+      "ambiguous_reference": false
+    },
+    {
+      "case_id": "ind-thread-ambiguous_reference",
+      "split": "development",
+      "expected_spans": [
+        {
+          "id": "ind-thread-ambiguous_reference.span1",
+          "turn_id": "ind-thread-ambiguous_reference.t1",
+          "char_start": 0,
+          "char_end": 88,
+          "quote": "I am comparing our conversation app and a separate lighting console. Both have a buffer.",
+          "focus_entity_ids": [
+            "lighting"
+          ]
+        },
+        {
+          "id": "ind-thread-ambiguous_reference.span2",
+          "turn_id": "ind-thread-ambiguous_reference.t2",
+          "char_start": 0,
+          "char_end": 46,
+          "quote": "It must survive restart. Make that persistent.",
+          "focus_entity_ids": []
+        }
+      ],
+      "ambiguous_reference": true
+    },
+    {
+      "case_id": "ind-thread-resolved_reference",
+      "split": "validation",
+      "expected_spans": [
+        {
+          "id": "ind-thread-resolved_reference.span1",
+          "turn_id": "ind-thread-resolved_reference.t1",
+          "char_start": 0,
+          "char_end": 61,
+          "quote": "A knitting counter and our ChatADHD client both keep history.",
+          "focus_entity_ids": [
+            "chatadhd",
+            "counter"
+          ]
+        },
+        {
+          "id": "ind-thread-resolved_reference.span2",
+          "turn_id": "ind-thread-resolved_reference.t2",
+          "char_start": 0,
+          "char_end": 22,
+          "quote": "The counter can reset.",
+          "focus_entity_ids": [
+            "counter"
+          ]
+        },
+        {
+          "id": "ind-thread-resolved_reference.span3",
+          "turn_id": "ind-thread-resolved_reference.t2",
+          "char_start": 23,
+          "char_end": 102,
+          "quote": "By it in the next sentence I mean the client: it must retain every edited turn.",
+          "focus_entity_ids": [
+            "chatadhd"
+          ]
+        }
+      ],
+      "ambiguous_reference": false
+    },
+    {
+      "case_id": "ind-thread-mid_turn_reset",
+      "split": "development",
+      "expected_spans": [
+        {
+          "id": "ind-thread-mid_turn_reset.span1",
+          "turn_id": "ind-thread-mid_turn_reset.t1",
+          "char_start": 0,
+          "char_end": 46,
+          "quote": "First topic: my wooden loom makes woven cloth.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-mid_turn_reset.span2",
+          "turn_id": "ind-thread-mid_turn_reset.t1",
+          "char_start": 47,
+          "char_end": 105,
+          "quote": "New topic: our Loom SDK must expose the C++ task callback.",
+          "focus_entity_ids": [
+            "loom"
+          ]
+        }
+      ],
+      "ambiguous_reference": false
+    },
+    {
+      "case_id": "ind-thread-late_context",
+      "split": "validation",
+      "expected_spans": [
+        {
+          "id": "ind-thread-late_context.span1",
+          "turn_id": "ind-thread-late_context.t1",
+          "char_start": 0,
+          "char_end": 53,
+          "quote": "At the fair I saw a loom and admired the woven cloth.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-late_context.span2",
+          "turn_id": "ind-thread-late_context.t1",
+          "char_start": 54,
+          "char_end": 102,
+          "quote": "New topic: explain what a C++ SDK is in general.",
+          "focus_entity_ids": []
+        }
+      ],
+      "ambiguous_reference": false
+    },
+    {
+      "case_id": "ind-thread-unresolved_switch",
+      "split": "development",
+      "expected_spans": [
+        {
+          "id": "ind-thread-unresolved_switch.span1",
+          "turn_id": "ind-thread-unresolved_switch.t1",
+          "char_start": 0,
+          "char_end": 35,
+          "quote": "Our client saves a response buffer.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-unresolved_switch.span2",
+          "turn_id": "ind-thread-unresolved_switch.t1",
+          "char_start": 36,
+          "char_end": 87,
+          "quote": "The laboratory sensor also saves a response buffer.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-unresolved_switch.span3",
+          "turn_id": "ind-thread-unresolved_switch.t1",
+          "char_start": 88,
+          "char_end": 132,
+          "quote": "New topic: it should use the smaller buffer.",
+          "focus_entity_ids": []
+        }
+      ],
+      "ambiguous_reference": true
+    },
+    {
+      "case_id": "ind-thread-late_named_return",
+      "split": "validation",
+      "expected_spans": [
+        {
+          "id": "ind-thread-late_named_return.span1",
+          "turn_id": "ind-thread-late_named_return.t1",
+          "char_start": 0,
+          "char_end": 51,
+          "quote": "We began by discussing a wooden loom and its cloth.",
+          "focus_entity_ids": []
+        },
+        {
+          "id": "ind-thread-late_named_return.span2",
+          "turn_id": "ind-thread-late_named_return.t1",
+          "char_start": 52,
+          "char_end": 113,
+          "quote": "Later I started a separate Loom SDK task about C++ callbacks.",
+          "focus_entity_ids": [
+            "loom"
+          ]
+        },
+        {
+          "id": "ind-thread-late_named_return.span3",
+          "turn_id": "ind-thread-late_named_return.t1",
+          "char_start": 114,
+          "char_end": 165,
+          "quote": "Back to the wooden loom: it needs a stronger frame.",
+          "focus_entity_ids": []
+        }
+      ],
+      "ambiguous_reference": false
+    }
+  ],
+  "sha256": "d40d737026a826b4f71e9ac883801f244604b5abb0e950e4a555e261f528a56e"
+}
