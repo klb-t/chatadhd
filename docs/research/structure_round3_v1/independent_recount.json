@@ -1,0 +1,479 @@
+{
+  "schema": "loom.research.independent_relation_recount/1",
+  "method": "direct_counter_multiset_recount_no_scorer_helpers",
+  "fixture_sha256": "3abca3a3abb835f5f854182a626bc69effd24ef6daab0f93a75f1d790ad74a5c",
+  "results": {
+    "baseline": {
+      "counts": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 16,
+        "gold_relations": 16,
+        "predicted_relations": 0,
+        "cases": 32,
+        "abstain_gold_cases": 16,
+        "invalid_outputs": 0
+      },
+      "per_family": {
+        "conditional": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "cause": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "contrast": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "exception": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "means_goal": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "generalization": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "conjunction_alternative": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "evidence_claim": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        }
+      },
+      "source_exact_candidate_count": 0,
+      "failure_ids": [
+        "sr3v1_validation_001",
+        "sr3v1_validation_002",
+        "sr3v1_validation_005",
+        "sr3v1_validation_006",
+        "sr3v1_validation_009",
+        "sr3v1_validation_010",
+        "sr3v1_validation_013",
+        "sr3v1_validation_014",
+        "sr3v1_validation_017",
+        "sr3v1_validation_018",
+        "sr3v1_validation_021",
+        "sr3v1_validation_022",
+        "sr3v1_validation_025",
+        "sr3v1_validation_026",
+        "sr3v1_validation_029",
+        "sr3v1_validation_030"
+      ],
+      "failures": [
+        {
+          "case_id": "sr3v1_validation_001",
+          "family": "conditional",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "The drawer opens only if the brass key turns."
+        },
+        {
+          "case_id": "sr3v1_validation_002",
+          "family": "conditional",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "O ile wiatr nie zmieni kierunku, balon doleci do polany."
+        },
+        {
+          "case_id": "sr3v1_validation_005",
+          "family": "cause",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Because the cooling fan stopped, the cabinet overheated."
+        },
+        {
+          "case_id": "sr3v1_validation_006",
+          "family": "cause",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Ziemia osiadła, ponieważ rura przeciekała."
+        },
+        {
+          "case_id": "sr3v1_validation_009",
+          "family": "contrast",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Although the sleeve is thick, the shaft is light."
+        },
+        {
+          "case_id": "sr3v1_validation_010",
+          "family": "contrast",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Choć rama jest ciężka, koła są lekkie."
+        },
+        {
+          "case_id": "sr3v1_validation_013",
+          "family": "exception",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Unless the backup pump starts, the cellar will flood."
+        },
+        {
+          "case_id": "sr3v1_validation_014",
+          "family": "exception",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Wszystkie szkice trafią do druku oprócz ostatniej wersji."
+        },
+        {
+          "case_id": "sr3v1_validation_017",
+          "family": "means_goal",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "The crew drains the basin so that the concrete can set."
+        },
+        {
+          "case_id": "sr3v1_validation_018",
+          "family": "means_goal",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Zamontowano siatkę w celu zatrzymania drobnych kamieni."
+        },
+        {
+          "case_id": "sr3v1_validation_021",
+          "family": "generalization",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Every hexagonal tile is a polygonal piece."
+        },
+        {
+          "case_id": "sr3v1_validation_022",
+          "family": "generalization",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Każda ameba jest organizmem jednokomórkowym."
+        },
+        {
+          "case_id": "sr3v1_validation_025",
+          "family": "conjunction_alternative",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "The upper gauge is steady and the lower gauge is moving."
+        },
+        {
+          "case_id": "sr3v1_validation_026",
+          "family": "conjunction_alternative",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Paczkę odbierze kurier lub przesyłka wróci do magazynu."
+        },
+        {
+          "case_id": "sr3v1_validation_029",
+          "family": "evidence_claim",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "The timestamped photograph supports the conclusion that the pier was empty."
+        },
+        {
+          "case_id": "sr3v1_validation_030",
+          "family": "evidence_claim",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Pomiary przewodności wskazują na to, że roztwór zawiera sól."
+        }
+      ],
+      "matches_preserved_report": true,
+      "prediction_file_sha256": "e3aa5e6dc843bf85f8c7363a2bf22bcbe1212f3cbdbb1dc3932dbde8af6e239f"
+    },
+    "final": {
+      "counts": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 11,
+        "gold_relations": 16,
+        "predicted_relations": 5,
+        "cases": 32,
+        "abstain_gold_cases": 16,
+        "invalid_outputs": 0
+      },
+      "per_family": {
+        "conditional": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "cause": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1,
+          "gold_relations": 2,
+          "predicted_relations": 1,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "contrast": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "exception": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "means_goal": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "generalization": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "gold_relations": 2,
+          "predicted_relations": 2,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "conjunction_alternative": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "gold_relations": 2,
+          "predicted_relations": 2,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        },
+        "evidence_claim": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "gold_relations": 2,
+          "predicted_relations": 0,
+          "cases": 4,
+          "abstain_gold_cases": 2,
+          "invalid_outputs": 0
+        }
+      },
+      "source_exact_candidate_count": 5,
+      "failure_ids": [
+        "sr3v1_validation_001",
+        "sr3v1_validation_002",
+        "sr3v1_validation_006",
+        "sr3v1_validation_009",
+        "sr3v1_validation_010",
+        "sr3v1_validation_013",
+        "sr3v1_validation_014",
+        "sr3v1_validation_017",
+        "sr3v1_validation_018",
+        "sr3v1_validation_029",
+        "sr3v1_validation_030"
+      ],
+      "failures": [
+        {
+          "case_id": "sr3v1_validation_001",
+          "family": "conditional",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "The drawer opens only if the brass key turns."
+        },
+        {
+          "case_id": "sr3v1_validation_002",
+          "family": "conditional",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "O ile wiatr nie zmieni kierunku, balon doleci do polany."
+        },
+        {
+          "case_id": "sr3v1_validation_006",
+          "family": "cause",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Ziemia osiadła, ponieważ rura przeciekała."
+        },
+        {
+          "case_id": "sr3v1_validation_009",
+          "family": "contrast",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Although the sleeve is thick, the shaft is light."
+        },
+        {
+          "case_id": "sr3v1_validation_010",
+          "family": "contrast",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Choć rama jest ciężka, koła są lekkie."
+        },
+        {
+          "case_id": "sr3v1_validation_013",
+          "family": "exception",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Unless the backup pump starts, the cellar will flood."
+        },
+        {
+          "case_id": "sr3v1_validation_014",
+          "family": "exception",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Wszystkie szkice trafią do druku oprócz ostatniej wersji."
+        },
+        {
+          "case_id": "sr3v1_validation_017",
+          "family": "means_goal",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "The crew drains the basin so that the concrete can set."
+        },
+        {
+          "case_id": "sr3v1_validation_018",
+          "family": "means_goal",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Zamontowano siatkę w celu zatrzymania drobnych kamieni."
+        },
+        {
+          "case_id": "sr3v1_validation_029",
+          "family": "evidence_claim",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "The timestamped photograph supports the conclusion that the pier was empty."
+        },
+        {
+          "case_id": "sr3v1_validation_030",
+          "family": "evidence_claim",
+          "label": "supported",
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "text": "Pomiary przewodności wskazują na to, że roztwór zawiera sól."
+        }
+      ],
+      "matches_preserved_report": true,
+      "prediction_file_sha256": "3129843d578acbae98f595884b37138c537573b378cc1dd19db9812a911fc048"
+    }
+  }
+}

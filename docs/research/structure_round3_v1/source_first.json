@@ -1,0 +1,823 @@
+{
+  "canonical_claims_created": 0,
+  "graph_mutations": 0,
+  "implementation_sha256": {
+    "loom/tools/structure/extract.py": "a20e3a8422684ee073443ae89be60b01ff87dfa6af848f3b000a481283518964",
+    "loom/tools/structure/relation_envelopes.py": "932faad15b77ec3954ab6741a4e85c6026e633ba111b6129e8b5328b260d3fe9",
+    "loom/tools/structure/relation_envelopes_policy.json": "d629d979f504544bbe00444fea4de7f305614f49278c5fe78de61eaa3ebacd21",
+    "loom/tools/structure/round3_eval.py": "dcfdca228f534e283d707aea7243fa895fe4f76051e4f3abbaa7a38e65c82478"
+  },
+  "limits": [
+    "architecture_text_not_gold_recall",
+    "policies_have_different_segmentation_denominators",
+    "quotes_code_or_unclear_scope_abstain_in_selected_channel_only",
+    "optional_channel_not_wired_to_native_pipeline_or_default_research_pipeline"
+  ],
+  "schema": "loom.research.structure_round3_sources/1",
+  "semantic_accuracy": null,
+  "source_bytes_rewritten": 0,
+  "sources": [
+    {
+      "bytes": 35415,
+      "characters": 34628,
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "policies": {
+        "bounded": {
+          "candidates": [],
+          "coverage": {
+            "eligible_characters": 34120,
+            "envelope_character_coverage": 0.0,
+            "interpretation": "grammar_coverage_not_gold_structure_accuracy",
+            "logical_candidates": 0,
+            "physical_units": 377,
+            "recognized_envelope_characters": 0,
+            "recognized_envelopes": 0,
+            "semantic_accuracy": null
+          },
+          "families": {},
+          "refusals": {
+            "no_supported_envelope": 271,
+            "sentence_boundary_or_punctuation_outside_grammar": 106
+          },
+          "unit_definition": "physical_nonempty_lines",
+          "version": "bounded-text-structure/2"
+        },
+        "explicit_relations": {
+          "candidates": [
+            {
+              "calibration_status": "unavailable",
+              "confidence": null,
+              "cue": {
+                "normalized_text": " and ",
+                "source_fragments": [
+                  {
+                    "byte_end": 19072,
+                    "byte_start": 19067,
+                    "char_end": 18541,
+                    "char_start": 18536,
+                    "coordinate_space": "input.text",
+                    "quote": " and "
+                  }
+                ],
+                "span": {
+                  "byte_end": 19072,
+                  "byte_start": 19067,
+                  "char_end": 18541,
+                  "char_start": 18536,
+                  "coordinate_space": "input.text",
+                  "quote": " and "
+                },
+                "text": " and "
+              },
+              "formula_candidate": null,
+              "formula_reason": "opaque_operands_not_logical_semantics",
+              "formula_status": "abstained",
+              "id": "candidate_4e8054b22fe475c8d168",
+              "interpretation": "recognized_envelope_with_opaque_slots",
+              "known_at": null,
+              "language": "en",
+              "method": "en.and",
+              "operation": "and",
+              "operation_family": "conjunction_alternative",
+              "operation_status": "representation_only_no_performed_operation_inferred",
+              "qualifiers": {
+                "relation_polarity": "affirmative"
+              },
+              "record_id": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+              "scope": {
+                "segment_id": null,
+                "topic_id": null,
+                "turn_id": null,
+                "unit": null
+              },
+              "slots": {
+                "left": {
+                  "normalized_text": "Scan the whole codebase for generalisations",
+                  "source_fragments": [
+                    {
+                      "byte_end": 19067,
+                      "byte_start": 19024,
+                      "char_end": 18536,
+                      "char_start": 18493,
+                      "coordinate_space": "input.text",
+                      "quote": "Scan the whole codebase for generalisations"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 19067,
+                    "byte_start": 19024,
+                    "char_end": 18536,
+                    "char_start": 18493,
+                    "coordinate_space": "input.text",
+                    "quote": "Scan the whole codebase for generalisations"
+                  },
+                  "text": "Scan the whole codebase for generalisations"
+                },
+                "right": {
+                  "normalized_text": "for choices that should be owner options",
+                  "source_fragments": [
+                    {
+                      "byte_end": 19114,
+                      "byte_start": 19072,
+                      "char_end": 18583,
+                      "char_start": 18541,
+                      "coordinate_space": "input.text",
+                      "quote": "for choices that should be\n  owner options"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 19114,
+                    "byte_start": 19072,
+                    "char_end": 18583,
+                    "char_start": 18541,
+                    "coordinate_space": "input.text",
+                    "quote": "for choices that should be\n  owner options"
+                  },
+                  "text": "for choices that should be\n  owner options"
+                }
+              },
+              "source_id": "sha256:52baa8174f97563b8cbb085588fb756607a3954fa3d1a43eb2b9de6f4c52f025",
+              "span": {
+                "byte_end": 19115,
+                "byte_start": 19024,
+                "char_end": 18584,
+                "char_start": 18493,
+                "coordinate_space": "input.text",
+                "quote": "Scan the whole codebase for generalisations and for choices that should be\n  owner options."
+              },
+              "statement_type": "explicit_relation_source_envelope"
+            }
+          ],
+          "coverage": {
+            "eligible_characters": 34304,
+            "envelope_character_coverage": 0.0026527518656716416,
+            "interpretation": "grammar_coverage_not_gold_structure_accuracy",
+            "logical_candidates": 0,
+            "physical_units": 211,
+            "recognized_envelope_characters": 91,
+            "recognized_envelopes": 1,
+            "semantic_accuracy": null
+          },
+          "families": {
+            "conjunction_alternative": 1
+          },
+          "refusals": {
+            "heading_context": 44,
+            "nested_or_ambiguous_relation_scope": 4,
+            "no_supported_envelope": 14,
+            "quoted_block_context": 44,
+            "quoted_or_code_context": 79,
+            "unresolved_punctuation_or_attachment": 25
+          },
+          "unit_definition": "proposed_sentences_from_reversible_blocks",
+          "version": "explicit-relation-envelopes/1"
+        }
+      },
+      "source_sha256": "52baa8174f97563b8cbb085588fb756607a3954fa3d1a43eb2b9de6f4c52f025"
+    },
+    {
+      "bytes": 13069,
+      "characters": 12538,
+      "path": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+      "policies": {
+        "bounded": {
+          "candidates": [],
+          "coverage": {
+            "eligible_characters": 12028,
+            "envelope_character_coverage": 0.0,
+            "interpretation": "grammar_coverage_not_gold_structure_accuracy",
+            "logical_candidates": 0,
+            "physical_units": 321,
+            "recognized_envelope_characters": 0,
+            "recognized_envelopes": 0,
+            "semantic_accuracy": null
+          },
+          "families": {},
+          "refusals": {
+            "no_supported_envelope": 289,
+            "sentence_boundary_or_punctuation_outside_grammar": 32
+          },
+          "unit_definition": "physical_nonempty_lines",
+          "version": "bounded-text-structure/2"
+        },
+        "explicit_relations": {
+          "candidates": [
+            {
+              "calibration_status": "unavailable",
+              "confidence": null,
+              "cue": {
+                "normalized_text": "ale",
+                "source_fragments": [
+                  {
+                    "byte_end": 5812,
+                    "byte_start": 5809,
+                    "char_end": 5572,
+                    "char_start": 5569,
+                    "coordinate_space": "input.text",
+                    "quote": "ale"
+                  }
+                ],
+                "span": {
+                  "byte_end": 5812,
+                  "byte_start": 5809,
+                  "char_end": 5572,
+                  "char_start": 5569,
+                  "coordinate_space": "input.text",
+                  "quote": "ale"
+                },
+                "text": "ale"
+              },
+              "formula_candidate": null,
+              "formula_reason": "opaque_operands_not_logical_semantics",
+              "formula_status": "abstained",
+              "id": "candidate_70c14f7f793f2a0284a6",
+              "interpretation": "recognized_envelope_with_opaque_slots",
+              "known_at": null,
+              "language": "pl",
+              "method": "pl.contrast",
+              "operation": "contrasts",
+              "operation_family": "contrast",
+              "operation_status": "representation_only_no_performed_operation_inferred",
+              "qualifiers": {
+                "relation_polarity": "affirmative"
+              },
+              "record_id": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+              "scope": {
+                "segment_id": null,
+                "topic_id": null,
+                "turn_id": null,
+                "unit": null
+              },
+              "slots": {
+                "left": {
+                  "normalized_text": "Powinien zachować wspólną strukturę epistemiczną",
+                  "source_fragments": [
+                    {
+                      "byte_end": 5807,
+                      "byte_start": 5754,
+                      "char_end": 5567,
+                      "char_start": 5519,
+                      "coordinate_space": "input.text",
+                      "quote": "Powinien zachować wspólną strukturę epistemiczną"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 5807,
+                    "byte_start": 5754,
+                    "char_end": 5567,
+                    "char_start": 5519,
+                    "coordinate_space": "input.text",
+                    "quote": "Powinien zachować wspólną strukturę epistemiczną"
+                  },
+                  "text": "Powinien zachować wspólną strukturę epistemiczną"
+                },
+                "right": {
+                  "normalized_text": "lokalnie dostosowywać reprezentację do opisywanego systemu",
+                  "source_fragments": [
+                    {
+                      "byte_end": 5873,
+                      "byte_start": 5813,
+                      "char_end": 5631,
+                      "char_start": 5573,
+                      "coordinate_space": "input.text",
+                      "quote": "lokalnie dostosowywać reprezentację do opisywanego systemu"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 5873,
+                    "byte_start": 5813,
+                    "char_end": 5631,
+                    "char_start": 5573,
+                    "coordinate_space": "input.text",
+                    "quote": "lokalnie dostosowywać reprezentację do opisywanego systemu"
+                  },
+                  "text": "lokalnie dostosowywać reprezentację do opisywanego systemu"
+                }
+              },
+              "source_id": "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b",
+              "span": {
+                "byte_end": 5874,
+                "byte_start": 5754,
+                "char_end": 5632,
+                "char_start": 5519,
+                "coordinate_space": "input.text",
+                "quote": "Powinien zachować wspólną strukturę epistemiczną, ale lokalnie dostosowywać reprezentację do opisywanego systemu."
+              },
+              "statement_type": "explicit_relation_source_envelope"
+            },
+            {
+              "calibration_status": "unavailable",
+              "confidence": null,
+              "cue": {
+                "normalized_text": "ale",
+                "source_fragments": [
+                  {
+                    "byte_end": 6780,
+                    "byte_start": 6777,
+                    "char_end": 6506,
+                    "char_start": 6503,
+                    "coordinate_space": "input.text",
+                    "quote": "ale"
+                  }
+                ],
+                "span": {
+                  "byte_end": 6780,
+                  "byte_start": 6777,
+                  "char_end": 6506,
+                  "char_start": 6503,
+                  "coordinate_space": "input.text",
+                  "quote": "ale"
+                },
+                "text": "ale"
+              },
+              "formula_candidate": null,
+              "formula_reason": "opaque_operands_not_logical_semantics",
+              "formula_status": "abstained",
+              "id": "candidate_f79672008077916f51ae",
+              "interpretation": "recognized_envelope_with_opaque_slots",
+              "known_at": null,
+              "language": "pl",
+              "method": "pl.contrast",
+              "operation": "contrasts",
+              "operation_family": "contrast",
+              "operation_status": "representation_only_no_performed_operation_inferred",
+              "qualifiers": {
+                "relation_polarity": "affirmative"
+              },
+              "record_id": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+              "scope": {
+                "segment_id": null,
+                "topic_id": null,
+                "turn_id": null,
+                "unit": null
+              },
+              "slots": {
+                "left": {
+                  "normalized_text": "Heuristics — zasady skuteczne zazwyczaj",
+                  "source_fragments": [
+                    {
+                      "byte_end": 6742,
+                      "byte_start": 6732,
+                      "char_end": 6470,
+                      "char_start": 6460,
+                      "coordinate_space": "input.text",
+                      "quote": "Heuristics"
+                    },
+                    {
+                      "byte_end": 6775,
+                      "byte_start": 6744,
+                      "char_end": 6501,
+                      "char_start": 6472,
+                      "coordinate_space": "input.text",
+                      "quote": " — zasady skuteczne zazwyczaj"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 6775,
+                    "byte_start": 6732,
+                    "char_end": 6501,
+                    "char_start": 6460,
+                    "coordinate_space": "input.text",
+                    "quote": "Heuristics** — zasady skuteczne zazwyczaj"
+                  },
+                  "text": "Heuristics** — zasady skuteczne zazwyczaj"
+                },
+                "right": {
+                  "normalized_text": "nie absolutne",
+                  "source_fragments": [
+                    {
+                      "byte_end": 6794,
+                      "byte_start": 6781,
+                      "char_end": 6520,
+                      "char_start": 6507,
+                      "coordinate_space": "input.text",
+                      "quote": "nie absolutne"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 6794,
+                    "byte_start": 6781,
+                    "char_end": 6520,
+                    "char_start": 6507,
+                    "coordinate_space": "input.text",
+                    "quote": "nie absolutne"
+                  },
+                  "text": "nie absolutne"
+                }
+              },
+              "source_id": "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b",
+              "span": {
+                "byte_end": 6795,
+                "byte_start": 6732,
+                "char_end": 6521,
+                "char_start": 6460,
+                "coordinate_space": "input.text",
+                "quote": "Heuristics** — zasady skuteczne zazwyczaj, ale nie absolutne."
+              },
+              "statement_type": "explicit_relation_source_envelope"
+            },
+            {
+              "calibration_status": "unavailable",
+              "confidence": null,
+              "cue": {
+                "normalized_text": " i ",
+                "source_fragments": [
+                  {
+                    "byte_end": 9956,
+                    "byte_start": 9953,
+                    "char_end": 9546,
+                    "char_start": 9543,
+                    "coordinate_space": "input.text",
+                    "quote": " i "
+                  }
+                ],
+                "span": {
+                  "byte_end": 9956,
+                  "byte_start": 9953,
+                  "char_end": 9546,
+                  "char_start": 9543,
+                  "coordinate_space": "input.text",
+                  "quote": " i "
+                },
+                "text": " i "
+              },
+              "formula_candidate": null,
+              "formula_reason": "opaque_operands_not_logical_semantics",
+              "formula_status": "abstained",
+              "id": "candidate_394a3b959b6feb451274",
+              "interpretation": "recognized_envelope_with_opaque_slots",
+              "known_at": null,
+              "language": "pl",
+              "method": "pl.and",
+              "operation": "and",
+              "operation_family": "conjunction_alternative",
+              "operation_status": "representation_only_no_performed_operation_inferred",
+              "qualifiers": {
+                "relation_polarity": "affirmative"
+              },
+              "record_id": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+              "scope": {
+                "segment_id": null,
+                "topic_id": null,
+                "turn_id": null,
+                "unit": null
+              },
+              "slots": {
+                "left": {
+                  "normalized_text": "LEM — reprezentacja epistemiczna",
+                  "source_fragments": [
+                    {
+                      "byte_end": 9920,
+                      "byte_start": 9917,
+                      "char_end": 9512,
+                      "char_start": 9509,
+                      "coordinate_space": "input.text",
+                      "quote": "LEM"
+                    },
+                    {
+                      "byte_end": 9953,
+                      "byte_start": 9922,
+                      "char_end": 9543,
+                      "char_start": 9514,
+                      "coordinate_space": "input.text",
+                      "quote": " — reprezentacja epistemiczna"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 9953,
+                    "byte_start": 9917,
+                    "char_end": 9543,
+                    "char_start": 9509,
+                    "coordinate_space": "input.text",
+                    "quote": "LEM** — reprezentacja epistemiczna"
+                  },
+                  "text": "LEM** — reprezentacja epistemiczna"
+                },
+                "right": {
+                  "normalized_text": "operacje na stanach wiedzy / wartości / provenance",
+                  "source_fragments": [
+                    {
+                      "byte_end": 10007,
+                      "byte_start": 9956,
+                      "char_end": 9596,
+                      "char_start": 9546,
+                      "coordinate_space": "input.text",
+                      "quote": "operacje na stanach wiedzy / wartości / provenance"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 10007,
+                    "byte_start": 9956,
+                    "char_end": 9596,
+                    "char_start": 9546,
+                    "coordinate_space": "input.text",
+                    "quote": "operacje na stanach wiedzy / wartości / provenance"
+                  },
+                  "text": "operacje na stanach wiedzy / wartości / provenance"
+                }
+              },
+              "source_id": "sha256:726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b",
+              "span": {
+                "byte_end": 10008,
+                "byte_start": 9917,
+                "char_end": 9597,
+                "char_start": 9509,
+                "coordinate_space": "input.text",
+                "quote": "LEM** — reprezentacja epistemiczna i operacje na stanach wiedzy / wartości / provenance."
+              },
+              "statement_type": "explicit_relation_source_envelope"
+            }
+          ],
+          "coverage": {
+            "eligible_characters": 11679,
+            "envelope_character_coverage": 0.022433427519479406,
+            "interpretation": "grammar_coverage_not_gold_structure_accuracy",
+            "logical_candidates": 0,
+            "physical_units": 335,
+            "recognized_envelope_characters": 262,
+            "recognized_envelopes": 3,
+            "semantic_accuracy": null
+          },
+          "families": {
+            "conjunction_alternative": 1,
+            "contrast": 2
+          },
+          "refusals": {
+            "heading_context": 38,
+            "nested_or_ambiguous_relation_scope": 8,
+            "no_supported_envelope": 235,
+            "operand_clause_outside_bounded_coordination": 6,
+            "quoted_block_context": 18,
+            "quoted_or_code_context": 27
+          },
+          "unit_definition": "proposed_sentences_from_reversible_blocks",
+          "version": "explicit-relation-envelopes/1"
+        }
+      },
+      "source_sha256": "726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b"
+    },
+    {
+      "bytes": 38750,
+      "characters": 38364,
+      "path": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+      "policies": {
+        "bounded": {
+          "candidates": [],
+          "coverage": {
+            "eligible_characters": 37497,
+            "envelope_character_coverage": 0.0,
+            "interpretation": "grammar_coverage_not_gold_structure_accuracy",
+            "logical_candidates": 0,
+            "physical_units": 488,
+            "recognized_envelope_characters": 0,
+            "recognized_envelopes": 0,
+            "semantic_accuracy": null
+          },
+          "families": {},
+          "refusals": {
+            "no_supported_envelope": 318,
+            "sentence_boundary_or_punctuation_outside_grammar": 170
+          },
+          "unit_definition": "physical_nonempty_lines",
+          "version": "bounded-text-structure/2"
+        },
+        "explicit_relations": {
+          "candidates": [
+            {
+              "calibration_status": "unavailable",
+              "confidence": null,
+              "cue": {
+                "normalized_text": "If",
+                "source_fragments": [
+                  {
+                    "byte_end": 517,
+                    "byte_start": 515,
+                    "char_end": 515,
+                    "char_start": 513,
+                    "coordinate_space": "input.text",
+                    "quote": "If"
+                  }
+                ],
+                "span": {
+                  "byte_end": 517,
+                  "byte_start": 515,
+                  "char_end": 515,
+                  "char_start": 513,
+                  "coordinate_space": "input.text",
+                  "quote": "If"
+                },
+                "text": "If"
+              },
+              "formula_candidate": null,
+              "formula_reason": "opaque_operands_not_logical_semantics",
+              "formula_status": "abstained",
+              "id": "candidate_542d40842978005dc3fc",
+              "interpretation": "recognized_envelope_with_opaque_slots",
+              "known_at": null,
+              "language": "en",
+              "method": "en.conditional",
+              "operation": "implies",
+              "operation_family": "conditional",
+              "operation_status": "representation_only_no_performed_operation_inferred",
+              "qualifiers": {
+                "relation_polarity": "affirmative"
+              },
+              "record_id": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+              "scope": {
+                "segment_id": null,
+                "topic_id": null,
+                "turn_id": null,
+                "unit": null
+              },
+              "slots": {
+                "condition": {
+                  "normalized_text": "a component needs a meaning that is not here",
+                  "source_fragments": [
+                    {
+                      "byte_end": 562,
+                      "byte_start": 518,
+                      "char_end": 560,
+                      "char_start": 516,
+                      "coordinate_space": "input.text",
+                      "quote": "a component needs a meaning that is not here"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 562,
+                    "byte_start": 518,
+                    "char_end": 560,
+                    "char_start": 516,
+                    "coordinate_space": "input.text",
+                    "quote": "a component needs a meaning that is not here"
+                  },
+                  "text": "a component needs a meaning that is not here"
+                },
+                "consequence": {
+                  "normalized_text": "it stops and asks for a model change — it does not invent a local meaning",
+                  "source_fragments": [
+                    {
+                      "byte_end": 639,
+                      "byte_start": 564,
+                      "char_end": 635,
+                      "char_start": 562,
+                      "coordinate_space": "input.text",
+                      "quote": "it stops and asks for a\nmodel change — it does not invent a local meaning"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 639,
+                    "byte_start": 564,
+                    "char_end": 635,
+                    "char_start": 562,
+                    "coordinate_space": "input.text",
+                    "quote": "it stops and asks for a\nmodel change — it does not invent a local meaning"
+                  },
+                  "text": "it stops and asks for a\nmodel change — it does not invent a local meaning"
+                }
+              },
+              "source_id": "sha256:d124c0b5772fd9dad1586b369d39cbdd0c228ca61ed96dfe7e699e6c6703f37e",
+              "span": {
+                "byte_end": 640,
+                "byte_start": 515,
+                "char_end": 636,
+                "char_start": 513,
+                "coordinate_space": "input.text",
+                "quote": "If a component needs a meaning that is not here, it stops and asks for a\nmodel change — it does not invent a local meaning."
+              },
+              "statement_type": "explicit_relation_source_envelope"
+            },
+            {
+              "calibration_status": "unavailable",
+              "confidence": null,
+              "cue": {
+                "normalized_text": " and ",
+                "source_fragments": [
+                  {
+                    "byte_end": 10487,
+                    "byte_start": 10482,
+                    "char_end": 10343,
+                    "char_start": 10338,
+                    "coordinate_space": "input.text",
+                    "quote": "\nand "
+                  }
+                ],
+                "span": {
+                  "byte_end": 10487,
+                  "byte_start": 10482,
+                  "char_end": 10343,
+                  "char_start": 10338,
+                  "coordinate_space": "input.text",
+                  "quote": "\nand "
+                },
+                "text": "\nand "
+              },
+              "formula_candidate": null,
+              "formula_reason": "opaque_operands_not_logical_semantics",
+              "formula_status": "abstained",
+              "id": "candidate_1b1a5d0e0d4145276461",
+              "interpretation": "recognized_envelope_with_opaque_slots",
+              "known_at": null,
+              "language": "en",
+              "method": "en.and",
+              "operation": "and",
+              "operation_family": "conjunction_alternative",
+              "operation_status": "representation_only_no_performed_operation_inferred",
+              "qualifiers": {
+                "relation_polarity": "affirmative"
+              },
+              "record_id": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+              "scope": {
+                "segment_id": null,
+                "topic_id": null,
+                "turn_id": null,
+                "unit": null
+              },
+              "slots": {
+                "left": {
+                  "normalized_text": "This is what lets the system produce solutions nobody wrote down",
+                  "source_fragments": [
+                    {
+                      "byte_end": 10482,
+                      "byte_start": 10418,
+                      "char_end": 10338,
+                      "char_start": 10274,
+                      "coordinate_space": "input.text",
+                      "quote": "This is what lets the system produce solutions nobody wrote down"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 10482,
+                    "byte_start": 10418,
+                    "char_end": 10338,
+                    "char_start": 10274,
+                    "coordinate_space": "input.text",
+                    "quote": "This is what lets the system produce solutions nobody wrote down"
+                  },
+                  "text": "This is what lets the system produce solutions nobody wrote down"
+                },
+                "right": {
+                  "normalized_text": "predict the owner's next decisions",
+                  "source_fragments": [
+                    {
+                      "byte_end": 10521,
+                      "byte_start": 10487,
+                      "char_end": 10377,
+                      "char_start": 10343,
+                      "coordinate_space": "input.text",
+                      "quote": "predict the owner's next decisions"
+                    }
+                  ],
+                  "span": {
+                    "byte_end": 10521,
+                    "byte_start": 10487,
+                    "char_end": 10377,
+                    "char_start": 10343,
+                    "coordinate_space": "input.text",
+                    "quote": "predict the owner's next decisions"
+                  },
+                  "text": "predict the owner's next decisions"
+                }
+              },
+              "source_id": "sha256:d124c0b5772fd9dad1586b369d39cbdd0c228ca61ed96dfe7e699e6c6703f37e",
+              "span": {
+                "byte_end": 10522,
+                "byte_start": 10418,
+                "char_end": 10378,
+                "char_start": 10274,
+                "coordinate_space": "input.text",
+                "quote": "This is what lets the system produce solutions nobody wrote down\nand predict the owner's next decisions."
+              },
+              "statement_type": "explicit_relation_source_envelope"
+            }
+          ],
+          "coverage": {
+            "eligible_characters": 37809,
+            "envelope_character_coverage": 0.00600386151445423,
+            "interpretation": "grammar_coverage_not_gold_structure_accuracy",
+            "logical_candidates": 0,
+            "physical_units": 248,
+            "recognized_envelope_characters": 227,
+            "recognized_envelopes": 2,
+            "semantic_accuracy": null
+          },
+          "families": {
+            "conditional": 1,
+            "conjunction_alternative": 1
+          },
+          "refusals": {
+            "fenced_code_context": 7,
+            "heading_context": 48,
+            "nested_or_ambiguous_relation_scope": 17,
+            "no_supported_envelope": 25,
+            "operand_clause_outside_bounded_coordination": 1,
+            "quoted_or_code_context": 122,
+            "unresolved_punctuation_or_attachment": 26
+          },
+          "unit_definition": "proposed_sentences_from_reversible_blocks",
+          "version": "explicit-relation-envelopes/1"
+        }
+      },
+      "source_sha256": "d124c0b5772fd9dad1586b369d39cbdd0c228ca61ed96dfe7e699e6c6703f37e"
+    }
+  ]
+}

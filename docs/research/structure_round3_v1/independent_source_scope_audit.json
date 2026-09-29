@@ -1,0 +1,69 @@
+{
+  "schema": "loom.research.independent_source_scope_audit/1",
+  "source_artifact_sha256": "82ca15e1796bc8b148eaa4007f7df400fa16fcce83787a0094451e46adb7feb7",
+  "frozen_parser_unchanged": true,
+  "scope_criterion": "explicit relation at source grammatical scope; shared governor cannot belong only to left operand; opaque source envelopes are not logical formula validation",
+  "counts": {
+    "valid": 2,
+    "invalid": 3,
+    "needs_review": 1
+  },
+  "candidate_count": 6,
+  "raw_span_instances_checked": 44,
+  "candidates": [
+    {
+      "candidate_id": "candidate_4e8054b22fe475c8d168",
+      "source": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "source_sha256": "52baa8174f97563b8cbb085588fb756607a3954fa3d1a43eb2b9de6f4c52f025",
+      "verdict": "invalid",
+      "reason": "shared imperative governing two prepositional complements split asymmetrically",
+      "all_raw_spans_exact": true,
+      "raw_span_instances_checked": 7
+    },
+    {
+      "candidate_id": "candidate_70c14f7f793f2a0284a6",
+      "source": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+      "source_sha256": "726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b",
+      "verdict": "valid",
+      "reason": "explicit contrast envelope; no independent logical formulas claimed",
+      "all_raw_spans_exact": true,
+      "raw_span_instances_checked": 7
+    },
+    {
+      "candidate_id": "candidate_f79672008077916f51ae",
+      "source": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+      "source_sha256": "726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b",
+      "verdict": "needs_review",
+      "reason": "elliptical property contrast under a definition needs shared-subject policy",
+      "all_raw_spans_exact": true,
+      "raw_span_instances_checked": 8
+    },
+    {
+      "candidate_id": "candidate_394a3b959b6feb451274",
+      "source": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+      "source_sha256": "726775d93537533403d7938fc996c7ff34d0a0908710666708a4df622319de1b",
+      "verdict": "invalid",
+      "reason": "shared LEM definition governing two nominal complements split asymmetrically",
+      "all_raw_spans_exact": true,
+      "raw_span_instances_checked": 8
+    },
+    {
+      "candidate_id": "candidate_542d40842978005dc3fc",
+      "source": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+      "source_sha256": "d124c0b5772fd9dad1586b369d39cbdd0c228ca61ed96dfe7e699e6c6703f37e",
+      "verdict": "valid",
+      "reason": "explicit sufficient-condition source envelope retaining whole consequence",
+      "all_raw_spans_exact": true,
+      "raw_span_instances_checked": 7
+    },
+    {
+      "candidate_id": "candidate_1b1a5d0e0d4145276461",
+      "source": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+      "source_sha256": "d124c0b5772fd9dad1586b369d39cbdd0c228ca61ed96dfe7e699e6c6703f37e",
+      "verdict": "invalid",
+      "reason": "shared lets-the-system governor of two activities split asymmetrically",
+      "all_raw_spans_exact": true,
+      "raw_span_instances_checked": 7
+    }
+  ]
+}

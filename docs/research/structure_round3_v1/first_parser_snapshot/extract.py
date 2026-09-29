@@ -211,9 +211,6 @@ def extract_record(record: dict, *, policy: str = "bounded") -> dict:
     ``turn_id``, ``topic_id``, ``unit``, ``locator``, ``source_span``, assessment
     and any unknown fields survive unchanged under ``input``. Offsets always
     refer to the preserved input text. Missing source identity is explicit.
-    The default ``bounded`` policy retains the original physical-line grammar.
-    ``explicit_relations`` opts into a separate research envelope projection
-    with reversible Markdown/line-wrap mapping and no logical formulas.
     """
     if policy == "explicit_relations":
         try:
@@ -360,9 +357,7 @@ def main() -> int:
     if not isinstance(records, list):
         parser.error("input must be a JSON array")
     results = [extract_record(record, policy=args.policy) for record in records]
-    output_version = (results[0]["version"] if results else
-                      extract_record({"text": ""}, policy=args.policy)["version"])
-    output = {"version": output_version, "extractions": results}
+    output = {"version": results[0]["version"] if results else VERSION, "extractions": results}
     if args.policy != "bounded":
         output["policy"] = args.policy
     if args.compare:

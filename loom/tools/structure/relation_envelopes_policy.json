@@ -1,0 +1,856 @@
+{
+  "schema": "loom.research.relation_envelope_policy/1",
+  "id": "explicit_relations_v1",
+  "status": "research_candidate_not_core_pack",
+  "assertion_scope": "unembedded_source_wording_only",
+  "formula_policy": "always_abstain_opaque_operands",
+  "unit_guards": [
+    {
+      "pattern": "[?!]",
+      "reason": "question_or_exclamation_scope"
+    },
+    {
+      "pattern": "[\"„“”«»`]|(?:^|\\s)(?:~~~|```)",
+      "reason": "quoted_or_code_context"
+    },
+    {
+      "pattern": "^(?:The word|The term|The phrase|Słowo|Wyraz|Litera|Termin)\\b",
+      "reason": "metalinguistic_context"
+    },
+    {
+      "pattern": "^(?:Nie wiadomo|Nie ustalono|Nie wiemy|It is unknown|It is unclear|We wonder|Perhaps|Maybe|Suppose|Assume|Hypothetically|Czy|What|How|Why|Whether)\\b",
+      "reason": "embedded_unresolved_or_hypothetical_scope"
+    },
+    {
+      "pattern": "\\.|[\\[\\]{}()]",
+      "reason": "unresolved_punctuation_or_attachment"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "en.conditional",
+      "language": "en",
+      "family": "conditional",
+      "operation": "implies",
+      "pattern": "(?P<cue>If|Provided that|On condition that) (?P<condition>.+?), (?:then )?(?P<consequence>.+)",
+      "roles": [
+        "condition",
+        "consequence"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "condition",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "consequence",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.conditional",
+      "language": "pl",
+      "family": "conditional",
+      "operation": "implies",
+      "pattern": "(?P<cue>Jeśli|Jeżeli|Pod warunkiem że) (?P<condition>.+?), (?:to )?(?P<consequence>.+)",
+      "roles": [
+        "condition",
+        "consequence"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "condition",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "consequence",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.cause_initial",
+      "language": "en",
+      "family": "cause",
+      "operation": "causes",
+      "pattern": "(?P<cue>Because) (?P<cause>.+?), (?P<effect>.+)",
+      "roles": [
+        "cause",
+        "effect"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "cause",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "effect",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.cause_initial",
+      "language": "pl",
+      "family": "cause",
+      "operation": "causes",
+      "pattern": "(?P<cue>Ponieważ) (?P<cause>.+?), (?P<effect>.+)",
+      "roles": [
+        "cause",
+        "effect"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "cause",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "effect",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.cause_reason",
+      "language": "en",
+      "family": "cause",
+      "operation": "causes",
+      "pattern": "(?P<effect>.+?) (?P<cue>because) (?P<cause>.+)",
+      "roles": [
+        "cause",
+        "effect"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "cause",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "effect",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.cause_reason",
+      "language": "pl",
+      "family": "cause",
+      "operation": "causes",
+      "pattern": "(?P<effect>.+?) (?P<cue>ponieważ|bo) (?P<cause>.+)",
+      "roles": [
+        "cause",
+        "effect"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "cause",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "effect",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.cause_verb",
+      "language": "en",
+      "family": "cause",
+      "operation": "causes",
+      "pattern": "(?P<cause>.+?) (?P<cue>cause|causes|caused) (?P<effect>.+)",
+      "roles": [
+        "cause",
+        "effect"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "cause",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "effect",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "cause",
+          "pattern": "\\b(?:not|never|nie|cannot)\\s*$|(?:n't)\\s*$|\\b(?:may|might|could|perhaps|probably|prawdopodobnie|może)\\s*(?:have\\s*)?$",
+          "reason": "relation_denied_or_modal",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.cause_verb",
+      "language": "pl",
+      "family": "cause",
+      "operation": "causes",
+      "pattern": "(?P<cause>.+?) (?P<cue>powoduje|powodują|spowodował|spowodowała|spowodowało|spowodowały) (?P<effect>.+)",
+      "roles": [
+        "cause",
+        "effect"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "cause",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "effect",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "cause",
+          "pattern": "\\b(?:not|never|nie|cannot)\\s*$|(?:n't)\\s*$|\\b(?:may|might|could|perhaps|probably|prawdopodobnie|może)\\s*(?:have\\s*)?$",
+          "reason": "relation_denied_or_modal",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.contrast",
+      "language": "en",
+      "family": "contrast",
+      "operation": "contrasts",
+      "pattern": "(?P<left>.+?), (?P<cue>whereas|but) (?P<right>.+)",
+      "roles": [
+        "left",
+        "right"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "left",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "right",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "left",
+          "pattern": "^not only\\b|^nie tylko\\b",
+          "reason": "idiomatic_noncontrast",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.contrast",
+      "language": "pl",
+      "family": "contrast",
+      "operation": "contrasts",
+      "pattern": "(?P<left>.+?), (?P<cue>natomiast|ale|lecz) (?P<right>.+)",
+      "roles": [
+        "left",
+        "right"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "left",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "right",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "left",
+          "pattern": "^not only\\b|^nie tylko\\b",
+          "reason": "idiomatic_noncontrast",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.exception",
+      "language": "en",
+      "family": "exception",
+      "operation": "except",
+      "pattern": "(?P<default_rule>.+?)(?:,)? (?P<cue>except(?: for)?) (?P<exception>.+)",
+      "roles": [
+        "default_rule",
+        "exception"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "exception_scope": "default_rule"
+      },
+      "guards": [
+        {
+          "role": "default_rule",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "exception",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.exception",
+      "language": "pl",
+      "family": "exception",
+      "operation": "except",
+      "pattern": "(?P<default_rule>.+?)(?:,)? (?P<cue>z wyjątkiem) (?P<exception>.+)",
+      "roles": [
+        "default_rule",
+        "exception"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "exception_scope": "default_rule"
+      },
+      "guards": [
+        {
+          "role": "default_rule",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "exception",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.unless",
+      "language": "en",
+      "family": "exception",
+      "operation": "unless",
+      "pattern": "(?P<default_consequence>.+?)(?:,)? (?P<cue>unless) (?P<exception_condition>.+)",
+      "roles": [
+        "exception_condition",
+        "default_consequence"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "exception_scope": "default_consequence"
+      },
+      "guards": [
+        {
+          "role": "default_consequence",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "exception_condition",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.unless",
+      "language": "pl",
+      "family": "exception",
+      "operation": "unless",
+      "pattern": "(?P<default_consequence>.+?)(?:,)? (?P<cue>chyba że) (?P<exception_condition>.+)",
+      "roles": [
+        "exception_condition",
+        "default_consequence"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "exception_scope": "default_consequence"
+      },
+      "guards": [
+        {
+          "role": "default_consequence",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "exception_condition",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.means_goal",
+      "language": "en",
+      "family": "means_goal",
+      "operation": "achieves",
+      "pattern": "(?P<means>.+?)(?:,)? (?P<cue>in order to) (?P<goal>.+)",
+      "roles": [
+        "means",
+        "goal"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "success": "not_asserted"
+      },
+      "guards": [
+        {
+          "role": "means",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "goal",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.means_goal",
+      "language": "pl",
+      "family": "means_goal",
+      "operation": "achieves",
+      "pattern": "(?P<means>.+?)(?:,)? (?P<cue>aby|żeby|by) (?P<goal>.+)",
+      "roles": [
+        "means",
+        "goal"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "success": "not_asserted"
+      },
+      "guards": [
+        {
+          "role": "means",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "goal",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.means_to",
+      "language": "en",
+      "family": "means_goal",
+      "operation": "achieves",
+      "pattern": "(?P<means>.+?) (?P<cue>to) (?P<goal>.+)",
+      "roles": [
+        "means",
+        "goal"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "success": "not_asserted"
+      },
+      "guards": [
+        {
+          "role": "means",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "goal",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "means",
+          "pattern": "\\b(?:use|uses|used|using|install|installs|installed|add|adds|added|build|builds|built|apply|applies|applied|deploy|deploys|deployed|choose|chooses|chose)\\b",
+          "reason": "plain_to_without_explicit_means_action",
+          "reject_on_match": false
+        },
+        {
+          "role": "means",
+          "pattern": "\\bin order\\s*$",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.universal",
+      "language": "en",
+      "family": "generalization",
+      "operation": "generalizes",
+      "pattern": "(?P<cue>Every|Each|All) (?P<subclass>.+?) (?:is(?: a| an)?|are) (?P<superclass>.+)",
+      "roles": [
+        "subclass",
+        "superclass"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "quantifier": "universal"
+      },
+      "guards": [
+        {
+          "role": "subclass",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "superclass",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "superclass",
+          "pattern": "^(?:not|never|nie)\\b",
+          "reason": "negated_universal_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.universal",
+      "language": "pl",
+      "family": "generalization",
+      "operation": "generalizes",
+      "pattern": "(?P<cue>Każdy|Każda|Każde|Wszystkie|Wszyscy) (?P<subclass>.+?) (?:jest|są) (?P<superclass>.+)",
+      "roles": [
+        "subclass",
+        "superclass"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "quantifier": "universal"
+      },
+      "guards": [
+        {
+          "role": "subclass",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "superclass",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "superclass",
+          "pattern": "^(?:not|never|nie)\\b",
+          "reason": "negated_universal_scope",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "en.and",
+      "language": "en",
+      "family": "conjunction_alternative",
+      "operation": "and",
+      "pattern": "(?:Either )?(?P<left>.+?)(?P<cue> (?:and) )(?P<right>.+)",
+      "roles": [
+        "left",
+        "right"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "left",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "right",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "left",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        },
+        {
+          "role": "right",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        }
+      ]
+    },
+    {
+      "id": "en.or",
+      "language": "en",
+      "family": "conjunction_alternative",
+      "operation": "or",
+      "pattern": "(?:Either )?(?P<left>.+?)(?P<cue> (?:or) )(?P<right>.+)",
+      "roles": [
+        "left",
+        "right"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "exclusivity": "unspecified"
+      },
+      "guards": [
+        {
+          "role": "left",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "right",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "left",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        },
+        {
+          "role": "right",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        }
+      ]
+    },
+    {
+      "id": "pl.and",
+      "language": "pl",
+      "family": "conjunction_alternative",
+      "operation": "and",
+      "pattern": "(?:Albo )?(?P<left>.+?)(?P<cue> (?:i|oraz) )(?P<right>.+)",
+      "roles": [
+        "left",
+        "right"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "left",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "right",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "left",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        },
+        {
+          "role": "right",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        }
+      ]
+    },
+    {
+      "id": "pl.or",
+      "language": "pl",
+      "family": "conjunction_alternative",
+      "operation": "or",
+      "pattern": "(?:Albo )?(?P<left>.+?)(?P<cue> (?:albo|lub) )(?P<right>.+)",
+      "roles": [
+        "left",
+        "right"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative",
+        "exclusivity": "unspecified"
+      },
+      "guards": [
+        {
+          "role": "left",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "right",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]|\\b(?:and|or|either|i|oraz|albo|lub)\\b",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "left",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        },
+        {
+          "role": "right",
+          "pattern": "^\\S+\\s+\\S+\\s+\\S",
+          "reason": "operand_clause_outside_bounded_coordination",
+          "reject_on_match": false
+        }
+      ]
+    },
+    {
+      "id": "en.evidence",
+      "language": "en",
+      "family": "evidence_claim",
+      "operation": "supports",
+      "pattern": "(?P<evidence>.+?) (?P<cue>supports? the claim that|is evidence that) (?P<claim>.+)",
+      "roles": [
+        "evidence",
+        "claim"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "evidence",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "claim",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "evidence",
+          "pattern": "\\b(?:not|never|nie|cannot)\\s*$|(?:n't)\\s*$|\\b(?:may|might|could|perhaps|probably|prawdopodobnie|może)\\s*(?:have\\s*)?$",
+          "reason": "relation_denied_or_modal",
+          "reject_on_match": true
+        }
+      ]
+    },
+    {
+      "id": "pl.evidence",
+      "language": "pl",
+      "family": "evidence_claim",
+      "operation": "supports",
+      "pattern": "(?P<evidence>.+?) (?P<cue>wspiera(?:ją)? tezę, że|jest dowodem na to, że) (?P<claim>.+)",
+      "roles": [
+        "evidence",
+        "claim"
+      ],
+      "qualifiers": {
+        "relation_polarity": "affirmative"
+      },
+      "guards": [
+        {
+          "role": "evidence",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "claim",
+          "pattern": "\\b(?:if|then|else|unless|except|because|whereas|provided that|jeśli|jeżeli|ponieważ|chyba że|z wyjątkiem|natomiast)\\b|[,;]",
+          "reason": "nested_or_ambiguous_relation_scope",
+          "reject_on_match": true
+        },
+        {
+          "role": "evidence",
+          "pattern": "\\b(?:not|never|nie|cannot)\\s*$|(?:n't)\\s*$|\\b(?:may|might|could|perhaps|probably|prawdopodobnie|może)\\s*(?:have\\s*)?$",
+          "reason": "relation_denied_or_modal",
+          "reject_on_match": true
+        }
+      ]
+    }
+  ],
+  "block_guards": [
+    {
+      "pattern": "[\"„“”«»‘`]|(?:^|\\s)'(?=\\w)",
+      "reason": "quoted_or_code_context"
+    }
+  ]
+}

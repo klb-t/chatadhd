@@ -1,0 +1,9 @@
+{
+  "fixture_manifest_sha256": "e8d7b8247afbfb39dd893e6dd2ed49261943fd152b5cd33821d67423f783d867",
+  "implementation_sha256": {
+    "loom/tools/structure/extract.py": "a20e3a8422684ee073443ae89be60b01ff87dfa6af848f3b000a481283518964",
+    "loom/tools/structure/relation_envelopes.py": "932faad15b77ec3954ab6741a4e85c6026e633ba111b6129e8b5328b260d3fe9",
+    "loom/tools/structure/relation_envelopes_policy.json": "d629d979f504544bbe00444fea4de7f305614f49278c5fe78de61eaa3ebacd21",
+    "loom/tools/structure/round3_eval.py": "2b16a61f9c2364cbbf2269fb24d21d2e5b8146e1de233733ea925a5098df1263"
+  }
+}
