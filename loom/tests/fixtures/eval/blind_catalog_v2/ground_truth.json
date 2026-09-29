@@ -32,7 +32,7 @@
     "decisions": []
    },
    {
-    "label": "U002",
+    "label": "U005",
     "conv_id": "ca26c6cb-016e-50fc-974d-46df188f64cc",
     "provider": "claude",
     "title": "baza",
@@ -60,7 +60,7 @@
     ]
    },
    {
-    "label": "U003",
+    "label": "U006",
     "conv_id": "1d24a003-4684-5924-9c69-5a9efeb35c7e",
     "provider": "chatgpt",
     "title": "wspolna baza - podejscie",
@@ -87,12 +87,12 @@
      "dec.event_store_sqlite"
     ],
     "duplicate_of": "ca26c6cb-016e-50fc-974d-46df188f64cc",
-    "duplicate_of_label": "U002",
+    "duplicate_of_label": "U005",
     "base_category": "shared_foundation",
     "note": "re-export / edited version of s01"
    },
    {
-    "label": "U004",
+    "label": "U007",
     "conv_id": "b11e4baf-308f-57fb-9597-4b2138696b5c",
     "provider": "claude",
     "title": "czujniki",
@@ -111,7 +111,7 @@
     "decisions": []
    },
    {
-    "label": "U005",
+    "label": "U008",
     "conv_id": "f67273c6-cdf0-52a0-bdc2-2b53d8943c77",
     "provider": "chatgpt",
     "title": "CO2 w kotlowni (wersja 2)",
@@ -129,12 +129,12 @@
     "principles": [],
     "decisions": [],
     "duplicate_of": "b11e4baf-308f-57fb-9597-4b2138696b5c",
-    "duplicate_of_label": "U004",
+    "duplicate_of_label": "U007",
     "base_category": "explicit_name",
     "note": "re-export / edited version of e01"
    },
    {
-    "label": "U006",
+    "label": "U010",
     "conv_id": "95ceae00-b3f7-5d0d-b4f2-0361342f761d",
     "provider": "chatgpt",
     "title": "rozne pytania",
@@ -155,7 +155,7 @@
     "decisions": []
    },
    {
-    "label": "U007",
+    "label": "U011",
     "conv_id": "14b7475d-02c0-554d-846c-c7e12cf167d6",
     "provider": "claude",
     "title": "harmonogram",
@@ -174,7 +174,7 @@
     "decisions": []
    },
    {
-    "label": "U008",
+    "label": "U014",
     "conv_id": "d7acd5e8-35c1-5b4d-99de-e139d2fe1706",
     "provider": "chatgpt",
     "title": "refleksja niedzielna",
@@ -193,7 +193,7 @@
     "decisions": []
    },
    {
-    "label": "U009",
+    "label": "U015",
     "conv_id": "b172e15a-0742-5f9c-812d-efa5490e5a69",
     "provider": "claude",
     "title": "ladowanie modulow",
@@ -220,7 +220,7 @@
     ]
    },
    {
-    "label": "U010",
+    "label": "U017",
     "conv_id": "59d36aa8-14ce-5b9f-b395-3c9f326ece7a",
     "provider": "claude",
     "title": "cieplo w domu",
@@ -239,7 +239,7 @@
     "decisions": []
    },
    {
-    "label": "U011",
+    "label": "U018",
     "conv_id": "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
     "provider": "claude",
     "title": "komunikacja",
@@ -263,7 +263,7 @@
     ]
    },
    {
-    "label": "U012",
+    "label": "U020",
     "conv_id": "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
     "provider": "chatgpt",
     "title": "co jak padnie",
@@ -286,7 +286,7 @@
     ]
    },
    {
-    "label": "U013",
+    "label": "U021",
     "conv_id": "deb8b63e-215c-5089-9a47-a508af842453",
     "provider": "claude",
     "title": "awaria zima",
@@ -308,12 +308,12 @@
      "dec.manual_override_wall_switch"
     ],
     "duplicate_of": "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
-    "duplicate_of_label": "U012",
+    "duplicate_of_label": "U020",
     "base_category": "architecture_unnamed",
     "note": "re-export / edited version of a02"
    },
    {
-    "label": "U014",
+    "label": "U022",
     "conv_id": "3eb1ae19-73f6-5c9d-b0f0-eaa2c77f99fc",
     "provider": "claude",
     "title": "ciaglosc",
@@ -332,7 +332,7 @@
     "decisions": []
    },
    {
-    "label": "U015",
+    "label": "U023",
     "conv_id": "13b3e041-78c2-5395-8bc9-8e6b9bd32a66",
     "provider": "claude",
     "title": "wieczorne pytania",
@@ -352,7 +352,7 @@
     "note": "only inflected forms of the project name (Kotwica/Kotwicy)"
    },
    {
-    "label": "U016",
+    "label": "U025",
     "conv_id": "bfa7b527-ddfa-58c7-a2cb-e3d2dc5d5b6b",
     "provider": "chatgpt",
     "title": "pomysl na scene",
@@ -371,7 +371,7 @@
     "decisions": []
    },
    {
-    "label": "U017",
+    "label": "U026",
     "conv_id": "9277c985-98f3-5e80-bf2e-9a3a1bd30bf8",
     "provider": "claude",
     "title": "sobota",
@@ -390,7 +390,7 @@
     "decisions": []
    },
    {
-    "label": "U018",
+    "label": "U027",
     "conv_id": "e7473482-3731-5494-bfe9-c87a0c0a9c15",
     "provider": "chatgpt",
     "title": "migracje",
@@ -417,7 +417,7 @@
     ]
    },
    {
-    "label": "U019",
+    "label": "U028",
     "conv_id": "8d826c12-65de-5365-badb-8ef4515fd71f",
     "provider": "claude",
     "title": "numeracja",
@@ -438,7 +438,7 @@
     ]
    },
    {
-    "label": "U020",
+    "label": "U029",
     "conv_id": "2a7ba7a9-4292-5f63-aeba-42e63cabb4ee",
     "provider": "chatgpt",
     "title": "kolejne numery",
@@ -458,12 +458,12 @@
      "dec.gapless_numbering_at_commit"
     ],
     "duplicate_of": "8d826c12-65de-5365-badb-8ef4515fd71f",
-    "duplicate_of_label": "U019",
+    "duplicate_of_label": "U028",
     "base_category": "architecture_unnamed",
     "note": "re-export / edited version of a07"
    },
    {
-    "label": "U021",
+    "label": "U032",
     "conv_id": "6038de05-109e-59b3-8be1-2b09733b00a6",
     "provider": "chatgpt",
     "title": "wilgotnosc",
@@ -482,7 +482,7 @@
     "decisions": []
    },
    {
-    "label": "U022",
+    "label": "U033",
     "conv_id": "07f76143-6726-5e84-81a2-7b1ecf717dac",
     "provider": "chatgpt",
     "title": "urzadzenia",
@@ -501,7 +501,7 @@
     "decisions": []
    },
    {
-    "label": "U023",
+    "label": "U035",
     "conv_id": "7b8fec2b-3643-58d8-b721-dfc44d726026",
     "provider": "claude",
     "title": "3 w nocy",
@@ -520,7 +520,7 @@
     "decisions": []
    },
    {
-    "label": "U024",
+    "label": "U036",
     "conv_id": "8543f75c-776f-53e6-97d5-ec8535b90135",
     "provider": "chatgpt",
     "title": "test trzeciej w nocy",
@@ -538,12 +538,12 @@
     ],
     "decisions": [],
     "duplicate_of": "7b8fec2b-3643-58d8-b721-dfc44d726026",
-    "duplicate_of_label": "U023",
+    "duplicate_of_label": "U035",
     "base_category": "philosophy",
     "note": "re-export / edited version of f03"
    },
    {
-    "label": "U025",
+    "label": "U037",
     "conv_id": "62bdb9ee-360b-58e3-b7ca-67b8520ac37e",
     "provider": "claude",
     "title": "papiery zony",
@@ -562,7 +562,7 @@
     "decisions": []
    },
    {
-    "label": "U026",
+    "label": "U039",
     "conv_id": "96b85ad1-d622-55d6-a09d-ca1bf76c3a1d",
     "provider": "chatgpt",
     "title": "wersje szkicow",
@@ -585,7 +585,7 @@
     ]
    },
    {
-    "label": "U027",
+    "label": "U041",
     "conv_id": "ec492d13-8bba-56da-823d-814320b6c207",
     "provider": "chatgpt",
     "title": "co jak modul padnie",
@@ -612,7 +612,7 @@
     ]
    },
    {
-    "label": "U028",
+    "label": "U043",
     "conv_id": "754ef437-8bbc-5bd1-aa5d-44f51ad8114c",
     "provider": "claude",
     "title": "pytanie o VAT",
@@ -631,7 +631,7 @@
     "decisions": []
    },
    {
-    "label": "U029",
+    "label": "U044",
     "conv_id": "d3a7a95e-9bbe-5884-8c11-4f70b39a7fb8",
     "provider": "chatgpt",
     "title": "lista rzeczy",
@@ -652,7 +652,7 @@
     ]
    },
    {
-    "label": "U030",
+    "label": "U045",
     "conv_id": "443393ae-408d-5b85-af59-95517fddf8fd",
     "provider": "chatgpt",
     "title": "pdf",
@@ -671,7 +671,7 @@
     "decisions": []
    },
    {
-    "label": "U031",
+    "label": "U048",
     "conv_id": "719fbe1b-1b94-5829-82a7-5652e9a74aec",
     "provider": "chatgpt",
     "title": "rozmowa",
@@ -690,7 +690,7 @@
     "decisions": []
    },
    {
-    "label": "U032",
+    "label": "U049",
     "conv_id": "182c135f-672d-5161-9f78-587da08ecb6f",
     "provider": "chatgpt",
     "title": "duplikaty zdarzen",
@@ -718,7 +718,7 @@
     ]
    },
    {
-    "label": "U033",
+    "label": "U050",
     "conv_id": "4480c4b0-0960-596f-8d09-88d482361f32",
     "provider": "claude",
     "title": "statystyki",
@@ -737,7 +737,7 @@
     "decisions": []
    },
    {
-    "label": "U034",
+    "label": "U052",
     "conv_id": "7b19b2bf-0a26-5274-a691-51b02499e514",
     "provider": "chatgpt",
     "title": "notatka do siebie",
@@ -757,7 +757,7 @@
     "decisions": []
    },
    {
-    "label": "U035",
+    "label": "U053",
     "conv_id": "cce6532b-0ff6-5991-86a5-00fc3179993e",
     "provider": "claude",
     "title": "prosba",
@@ -776,7 +776,7 @@
     "decisions": []
    },
    {
-    "label": "U036",
+    "label": "U054",
     "conv_id": "92909a78-7794-51e0-a189-d9f15bd9df8f",
     "provider": "claude",
     "title": "dluga rozmowa",
@@ -802,7 +802,7 @@
     ]
    },
    {
-    "label": "U037",
+    "label": "U056",
     "conv_id": "f6cf7f32-058f-53ad-83a9-68aab82a67bd",
     "provider": "chatgpt",
     "title": "Untitled",
@@ -821,7 +821,7 @@
     "decisions": []
    },
    {
-    "label": "U038",
+    "label": "U058",
     "conv_id": "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
     "provider": "claude",
     "title": "kolejnosc",
@@ -846,7 +846,7 @@
     ]
    },
    {
-    "label": "U039",
+    "label": "U060",
     "conv_id": "c51a60ab-d216-5fd5-90fd-68441d42a8de",
     "provider": "claude",
     "title": "kto ma jakie oczy",
@@ -865,7 +865,7 @@
     "decisions": []
    },
    {
-    "label": "U040",
+    "label": "U061",
     "conv_id": "0e43d8b0-e66b-5de9-ad09-7b56b826495f",
     "provider": "chatgpt",
     "title": "spojnosc fikcji",
@@ -883,12 +883,12 @@
     "principles": [],
     "decisions": [],
     "duplicate_of": "c51a60ab-d216-5fd5-90fd-68441d42a8de",
-    "duplicate_of_label": "U039",
+    "duplicate_of_label": "U060",
     "base_category": "paraphrase_only",
     "note": "re-export / edited version of p03"
    },
    {
-    "label": "U041",
+    "label": "U063",
     "conv_id": "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
     "provider": "chatgpt",
     "title": "raport dla ksiegowej",
@@ -911,7 +911,7 @@
     ]
    },
    {
-    "label": "U042",
+    "label": "U064",
     "conv_id": "343dca50-068d-5123-87d1-100da91b1d25",
     "provider": "claude",
     "title": "epub",
@@ -930,7 +930,7 @@
     "decisions": []
    },
    {
-    "label": "U043",
+    "label": "U066",
     "conv_id": "e8c8f31a-d207-5683-bc4e-6776f9fc20f7",
     "provider": "claude",
     "title": "wieczorne mysli",
@@ -950,7 +950,7 @@
     "decisions": []
    },
    {
-    "label": "U044",
+    "label": "U068",
     "conv_id": "e18e2170-3f49-5846-8e9b-faabc52df768",
     "provider": "chatgpt",
     "title": "korekty",
@@ -973,7 +973,7 @@
     ]
    },
    {
-    "label": "U045",
+    "label": "U070",
     "conv_id": "e20b5b86-3f66-52b1-bdd2-ab7fc989e3f0",
     "provider": "chatgpt",
     "title": "do czytnika",
@@ -992,7 +992,7 @@
     "decisions": []
    },
    {
-    "label": "U046",
+    "label": "U071",
     "conv_id": "b0c38530-a90a-5675-952b-e61b858aea01",
     "provider": "chatgpt",
     "title": "misc",
@@ -1021,7 +1021,7 @@
     ]
    },
    {
-    "label": "U047",
+    "label": "U074",
     "conv_id": "f8de0248-a04b-5f42-95d2-dd0bff2fbb8d",
     "provider": "chatgpt",
     "title": "kwestia rachunkow",
@@ -1040,7 +1040,7 @@
     "decisions": []
    },
    {
-    "label": "U048",
+    "label": "U076",
     "conv_id": "3e990889-7c0f-5991-b6b0-05c93d76b0e7",
     "provider": "chatgpt",
     "title": "aktualizacja",
@@ -1059,7 +1059,7 @@
     "decisions": []
    },
    {
-    "label": "U049",
+    "label": "U080",
     "conv_id": "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
     "provider": "chatgpt",
     "title": "porzadek w repo",
@@ -1088,7 +1088,7 @@
     ]
    },
    {
-    "label": "U050",
+    "label": "U082",
     "conv_id": "9c269a7e-215e-545b-8252-3c258988ca77",
     "provider": "chatgpt",
     "title": "porada",
@@ -1108,7 +1108,7 @@
     "decisions": []
    },
    {
-    "label": "U051",
+    "label": "U083",
     "conv_id": "910684a3-48cf-52e9-94ac-726795f53a82",
     "provider": "claude",
     "title": "drobiazg",
@@ -1127,7 +1127,7 @@
     "decisions": []
    },
    {
-    "label": "U052",
+    "label": "U086",
     "conv_id": "b2295d1f-61ff-5645-be00-748c8aadec28",
     "provider": "claude",
     "title": "wszystko naraz",
@@ -1148,7 +1148,7 @@
     "decisions": []
    },
    {
-    "label": "U053",
+    "label": "U088",
     "conv_id": "60b201ce-491f-5e5a-b7b1-68cc08617237",
     "provider": "chatgpt",
     "title": "hmm",
@@ -1167,7 +1167,7 @@
     "decisions": []
    },
    {
-    "label": "U054",
+    "label": "U091",
     "conv_id": "0faae13f-f774-5683-87b3-bb813c24e026",
     "provider": "chatgpt",
     "title": "rozne 2",
@@ -1188,8 +1188,485 @@
     "decisions": []
    }
   ],
-  "noise_traps": [],
-  "noise_generic": []
+  "noise_traps": [
+   {
+    "label": "U003",
+    "conv_id": "3b89e594-61e2-5312-a669-00cc35d65920",
+    "provider": "claude",
+    "title": "lodka",
+    "date": "2024-07-19",
+    "message_count": 5,
+    "term": "kotwic",
+    "real_sense": "boat anchor (marine hardware), unrelated to software",
+    "collides_with": [
+     "proj.kotwica"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U012",
+    "conv_id": "128dcbe4-676e-543e-99f3-5dc73739fced",
+    "provider": "claude",
+    "title": "ptaki",
+    "date": "2024-10-09",
+    "message_count": 6,
+    "term": "migracj",
+    "real_sense": "bird migration (ornithology), not a database migration",
+    "collides_with": [
+     "found.storage"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U030",
+    "conv_id": "c10f9587-3384-5596-91a2-827ddc1758d0",
+    "provider": "claude",
+    "title": "kurs malarstwa",
+    "date": "2025-03-12",
+    "message_count": 5,
+    "term": "faktura",
+    "real_sense": "texture of a painted surface (art term), not an invoice",
+    "collides_with": [
+     "proj.fakturka"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U040",
+    "conv_id": "63c63eed-f931-532e-ada8-2a89410c1d12",
+    "provider": "claude",
+    "title": "halas",
+    "date": "2025-05-20",
+    "message_count": 4,
+    "term": "szyn",
+    "real_sense": "tram rails outside the window (noise), not software",
+    "collides_with": [
+     "found.bus"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U042",
+    "conv_id": "abb43468-24a4-55c2-bb17-19e66b3bdf88",
+    "provider": "chatgpt",
+    "title": "muzeum",
+    "date": "2025-06-14",
+    "message_count": 4,
+    "term": "manuskrypt",
+    "real_sense": "a medieval manuscript on display in a museum, not a novel draft",
+    "collides_with": [
+     "proj.latarnik"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U047",
+    "conv_id": "d4e50dd8-357d-5f69-bef9-e49f65bf14e1",
+    "provider": "chatgpt",
+    "title": "wycieczka",
+    "date": "2025-08-05",
+    "message_count": 6,
+    "term": "latarnik",
+    "real_sense": "an actual lighthouse keeper on a tourist visit",
+    "collides_with": [
+     "proj.latarnik"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U051",
+    "conv_id": "5b88499f-0162-567f-88d1-3345e7a7e7a7",
+    "provider": "chatgpt",
+    "title": "adapter do UK",
+    "date": "2025-09-09",
+    "message_count": 4,
+    "term": "wtyczk",
+    "real_sense": "electrical wall plug for travel, not a software plugin",
+    "collides_with": [
+     "found.plugins"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U057",
+    "conv_id": "6385bc32-b7dc-5e79-88ab-ed53bc96c6b8",
+    "provider": "claude",
+    "title": "boks",
+    "date": "2025-11-12",
+    "message_count": 4,
+    "term": "storage",
+    "real_sense": "self-storage unit for winter tires, not a data storage layer",
+    "collides_with": [
+     "found.storage"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U062",
+    "conv_id": "a3e5c71d-e3fc-5a91-9e0b-f8ed2fab84c0",
+    "provider": "chatgpt",
+    "title": "hydraulik",
+    "date": "2025-12-19",
+    "message_count": 4,
+    "term": "faktur",
+    "real_sense": "a real plumber's invoice the user disputes as a customer, not the invoicing tool",
+    "collides_with": [
+     "proj.fakturka"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U065",
+    "conv_id": "a7a63672-d3d4-58e0-9a4f-edca904768e6",
+    "provider": "chatgpt",
+    "title": "komoda",
+    "date": "2026-01-17",
+    "message_count": 4,
+    "term": "szuflad",
+    "real_sense": "a piece of furniture drawer, not a software module",
+    "collides_with": [
+     "found.storage"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U067",
+    "conv_id": "63381de9-f610-5295-a284-596089716c4f",
+    "provider": "claude",
+    "title": "usb-c",
+    "date": "2026-02-05",
+    "message_count": 4,
+    "term": "hub",
+    "real_sense": "a USB-C hub for a laptop, not a home-automation hub",
+    "collides_with": [
+     "proj.kotwica"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U073",
+    "conv_id": "37e9a0c8-c4d2-5123-8d5a-8f8d84e1a70c",
+    "provider": "chatgpt",
+    "title": "drukarka",
+    "date": "2026-03-14",
+    "message_count": 4,
+    "term": "sterownik",
+    "real_sense": "a printer driver, not a home controller",
+    "collides_with": [
+     "proj.kotwica"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U077",
+    "conv_id": "b8111f3a-a75b-5efe-a149-c3e7271c289a",
+    "provider": "claude",
+    "title": "stluczka",
+    "date": "2026-04-28",
+    "message_count": 4,
+    "term": "zdarzeni",
+    "real_sense": "a traffic incident reported to an insurer, not an event log",
+    "collides_with": [
+     "found.bus",
+     "found.storage"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U079",
+    "conv_id": "b6591caa-a75e-5125-964f-3c2903564d6b",
+    "provider": "claude",
+    "title": "klub ksiazki",
+    "date": "2026-05-06",
+    "message_count": 4,
+    "term": "rozdzia",
+    "real_sense": "reading someone else's novel for a book club, not writing one",
+    "collides_with": [
+     "proj.latarnik"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   },
+   {
+    "label": "U085",
+    "conv_id": "f09b6104-a2ed-548f-9af3-aad7647e4ab3",
+    "provider": "chatgpt",
+    "title": "parkowanie",
+    "date": "2026-06-14",
+    "message_count": 4,
+    "term": "czujnik",
+    "real_sense": "a car parking sensor, not a home sensor",
+    "collides_with": [
+     "proj.kotwica"
+    ],
+    "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
+   }
+  ],
+  "noise_generic": [
+   {
+    "label": "U002",
+    "conv_id": "0af0e5e4-41e7-5ff6-94ad-216d34609392",
+    "provider": "chatgpt",
+    "title": "program na weekend",
+    "date": "2024-07-06",
+    "message_count": 4,
+    "categories": [
+     "cooking"
+    ]
+   },
+   {
+    "label": "U004",
+    "conv_id": "9f5e900e-432a-5c23-b7fa-f43a934eb7ce",
+    "provider": "claude",
+    "title": "architektura",
+    "date": "2024-08-03",
+    "message_count": 4,
+    "categories": [
+     "travel_leisure"
+    ]
+   },
+   {
+    "label": "U009",
+    "conv_id": "95ef3951-68d6-592a-9a37-327129d57fd2",
+    "provider": "chatgpt",
+    "title": "sernik",
+    "date": "2024-09-21",
+    "message_count": 4,
+    "categories": [
+     "cooking"
+    ]
+   },
+   {
+    "label": "U013",
+    "conv_id": "fc6eb03c-ccb5-5622-8e7b-89a45ea3c721",
+    "provider": "chatgpt",
+    "title": "kregoslup",
+    "date": "2024-10-14",
+    "message_count": 4,
+    "categories": [
+     "health"
+    ]
+   },
+   {
+    "label": "U016",
+    "conv_id": "921b8da9-48ff-56ed-b44c-89550ecec0bd",
+    "provider": "claude",
+    "title": "system",
+    "date": "2024-11-09",
+    "message_count": 4,
+    "categories": [
+     "health"
+    ]
+   },
+   {
+    "label": "U019",
+    "conv_id": "f559f22b-64aa-5990-a62b-d1be40f0772c",
+    "provider": "chatgpt",
+    "title": "dane",
+    "date": "2024-12-02",
+    "message_count": 4,
+    "categories": [
+     "health"
+    ]
+   },
+   {
+    "label": "U024",
+    "conv_id": "59cbc04c-62f0-57bb-b0f3-512c4f771337",
+    "provider": "claude",
+    "title": "PIT",
+    "date": "2025-02-01",
+    "message_count": 4,
+    "categories": [
+     "life_admin"
+    ]
+   },
+   {
+    "label": "U031",
+    "conv_id": "72cd2654-a233-5876-b294-c7b77ddf024b",
+    "provider": "chatgpt",
+    "title": "urzad",
+    "date": "2025-03-18",
+    "message_count": 4,
+    "categories": [
+     "life_admin"
+    ]
+   },
+   {
+    "label": "U034",
+    "conv_id": "28e7ab89-5412-5c4a-af81-5f8f3ee72423",
+    "provider": "claude",
+    "title": "moduly",
+    "date": "2025-04-16",
+    "message_count": 3,
+    "categories": [
+     "family"
+    ]
+   },
+   {
+    "label": "U038",
+    "conv_id": "2b45ea85-8ab5-503b-81f3-789cd95c1b47",
+    "provider": "chatgpt",
+    "title": "harmonogram",
+    "date": "2025-05-08",
+    "message_count": 4,
+    "categories": [
+     "car"
+    ]
+   },
+   {
+    "label": "U046",
+    "conv_id": "f3799218-0a4e-5693-ae67-c9ebbe92f38a",
+    "provider": "chatgpt",
+    "title": "trasa",
+    "date": "2025-07-30",
+    "message_count": 4,
+    "categories": [
+     "travel_leisure"
+    ]
+   },
+   {
+    "label": "U055",
+    "conv_id": "f127f0f4-09d2-541e-ad04-ca788c3d0a40",
+    "provider": "chatgpt",
+    "title": "opony",
+    "date": "2025-10-25",
+    "message_count": 4,
+    "categories": [
+     "car"
+    ]
+   },
+   {
+    "label": "U059",
+    "conv_id": "a55acd28-aeb1-5472-82ed-a14dbea77cd3",
+    "provider": "claude",
+    "title": "pomysl",
+    "date": "2025-11-30",
+    "message_count": 4,
+    "categories": [
+     "gifts"
+    ]
+   },
+   {
+    "label": "U069",
+    "conv_id": "2fa85f04-5467-5cf1-a00a-860848cb2453",
+    "provider": "chatgpt",
+    "title": "nauka",
+    "date": "2026-02-19",
+    "message_count": 4,
+    "categories": [
+     "language"
+    ]
+   },
+   {
+    "label": "U072",
+    "conv_id": "de103202-3639-5ccb-a34d-5e283af59b61",
+    "provider": "claude",
+    "title": "email",
+    "date": "2026-03-09",
+    "message_count": 4,
+    "categories": [
+     "life_admin"
+    ]
+   },
+   {
+    "label": "U075",
+    "conv_id": "bd1ffde2-fdb0-5501-a6a6-733ba48f583b",
+    "provider": "claude",
+    "title": "planning",
+    "date": "2026-04-03",
+    "message_count": 4,
+    "categories": [
+     "travel_leisure"
+    ]
+   },
+   {
+    "label": "U078",
+    "conv_id": "26e338ca-ee1b-5828-85f2-71d9be88dee6",
+    "provider": "chatgpt",
+    "title": "kot",
+    "date": "2026-05-02",
+    "message_count": 4,
+    "categories": [
+     "pets"
+    ]
+   },
+   {
+    "label": "U081",
+    "conv_id": "3c2f96f6-8768-5af5-a6db-ca430e094530",
+    "provider": "claude",
+    "title": "kran",
+    "date": "2026-05-22",
+    "message_count": 3,
+    "categories": [
+     "household"
+    ]
+   },
+   {
+    "label": "U084",
+    "conv_id": "76dd7e8c-253b-5a44-9c5c-184cb50539e2",
+    "provider": "chatgpt",
+    "title": "zakup",
+    "date": "2026-06-05",
+    "message_count": 4,
+    "categories": [
+     "shopping"
+    ]
+   },
+   {
+    "label": "U087",
+    "conv_id": "4486af23-3f0f-5357-96cd-d320d9bd8583",
+    "provider": "claude",
+    "title": "CV",
+    "date": "2026-06-27",
+    "message_count": 3,
+    "categories": [
+     "career"
+    ]
+   },
+   {
+    "label": "U089",
+    "conv_id": "404f0ec4-6c46-519b-a743-b52a611559ae",
+    "provider": "chatgpt",
+    "title": "plan",
+    "date": "2026-07-11",
+    "message_count": 4,
+    "categories": [
+     "sports"
+    ]
+   },
+   {
+    "label": "U090",
+    "conv_id": "19b55743-36a1-580b-894d-3d8f288f61cf",
+    "provider": "claude",
+    "title": "hobby",
+    "date": "2026-07-25",
+    "message_count": 4,
+    "categories": [
+     "music"
+    ]
+   },
+   {
+    "label": "U092",
+    "conv_id": "b5387de2-cfc9-5cd0-a39e-cf7d52d601ae",
+    "provider": "chatgpt",
+    "title": "projekt",
+    "date": "2026-08-08",
+    "message_count": 6,
+    "categories": [
+     "home_renovation"
+    ]
+   },
+   {
+    "label": "U093",
+    "conv_id": "989a62a0-45ce-548d-9830-089917fada7b",
+    "provider": "claude",
+    "title": "mowa",
+    "date": "2026-08-21",
+    "message_count": 4,
+    "categories": [
+     "small_talk"
+    ]
+   }
+  ]
  },
  "multi_label_units": [
   "ca26c6cb-016e-50fc-974d-46df188f64cc",
@@ -1821,13 +2298,13 @@
   }
  ],
  "counts": {
-  "conversations_total": 54,
+  "conversations_total": 93,
   "relevant": 54,
-  "noise_traps": 0,
-  "noise_generic": 0,
-  "conversations_chatgpt": 30,
-  "conversations_claude": 24,
-  "messages_total": 213,
+  "noise_traps": 15,
+  "noise_generic": 24,
+  "conversations_chatgpt": 50,
+  "conversations_claude": 43,
+  "messages_total": 374,
   "relevant_by_category": {
    "explicit_name": 6,
    "architecture_unnamed": 9,
