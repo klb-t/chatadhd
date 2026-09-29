@@ -67,3 +67,33 @@ fixed extract/resolve output.
   becoming projects, a software project matched to the music paradigm, and
   wrong computed versions. A `bench`/`spot.py` harness exists to measure them.
 - Release-optimized (`-O2`) timings were not taken.
+
+## Determinism fix
+
+Cause: `Run::do_dates` in `loom/src/extract/extractors.cpp` looped over
+`iso->finditer(utf8::decode(text))`. `re::Match` holds a `u32string_view` into
+its subject, and the decoded `u32string` was a temporary destroyed after the
+range-init expression, so `m.group_utf8(0)` read freed heap. The bytes read
+depended on allocator state, so `has_event` claim values (for example
+`{"date":"喽??6-09-26"}` instead of `2026-09-26`) and therefore claim ids,
+the extract hash and every later stage varied from run to run. It appeared
+only at repository scale because small inputs reuse no freed memory before the
+read. Every other `finditer` call site in `src/` binds the subject to a named
+variable.
+
+Fix: the decoded subject is a named local that outlives the loop.
+
+Regression test: `tests/test_extract.cpp`, "determinism (I5)": twelve `.eml`
+units with ISO dates through `extract_units` twice and in reversed input order.
+All persisted sections must match (only `stats.per_unit` mirrors input order),
+and every `has_event` date must be well formed.
+
+Proof: two repository-scale selfhost runs of the same binary with the same
+work path (`mkdtemp` pinned): run id `kr_1d5b0d37977e88bd` both times, all six
+stage output hashes equal, every product and dossier file byte-identical.
+Before the fix, five dossiers and SELF.md differed between two runs. Note the
+harness uses a random `selfhost-*` work subdirectory, and the path is part of
+run identity, so runs compared for identity must pin it. `ctest --preset dev`:
+72 of 73 pass, only `unit.test_catalog_eval` red (unchanged).
+The identity check for `generalize` on the fixed extract output can now be
+repeated on repository scale.

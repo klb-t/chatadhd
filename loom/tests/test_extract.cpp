@@ -368,6 +368,44 @@ TEST_SUITE("extract") {
     CHECK(json::canonical(a.to_json()) == json::canonical(b.to_json()));
   }
 
+  TEST_CASE("determinism (I5): multi-unit extract_units is byte-identical across runs and input order; dates are intact") {
+    std::vector<extract::UnitContent> units;
+    for (int i = 0; i < 12; ++i) {
+      std::string t = "From: Zenon Kowalczyk <z@example.invalid>\nTo: Ola <o@example.invalid>\nSubject: kaucja " + std::to_string(i) +
+                      "\nDate: 2026-01-" + std::to_string(10 + i) + "\n\nRozprawa odbedzie sie 2026-10-0" + std::to_string(1 + i % 9) +
+                      ". Nie zwrocę kaucji do 2026-09-" + std::to_string(10 + i) + ". Wersja 0." + std::to_string(i) + " gotowa.\n";
+      units.push_back(extract::text_unit("m" + std::to_string(i) + ".eml", t, "2026-09-01"));
+    }
+    auto canon = [&](const std::vector<extract::UnitContent>& us) {
+      return json::canonical(extract::extract_units(pack(), us, nullptr).to_json());
+    };
+    std::string a = canon(units);
+    std::string b = canon(units);
+    CHECK(a == b);
+    auto rev = units;
+    std::reverse(rev.begin(), rev.end());
+    // Only `stats.per_unit` mirrors input order (the stage sorts units by id
+    // first); every persisted record must be independent of it.
+    Json ja = extract::extract_units(pack(), units, nullptr).to_json();
+    Json jb = extract::extract_units(pack(), rev, nullptr).to_json();
+    for (auto it = ja.begin(); it != ja.end(); ++it) {
+      if (it.key() == "stats") continue;
+      CHECK_MESSAGE(json::canonical(it.value()) == json::canonical(jb[it.key()]), "order-dependent section: " << it.key());
+    }
+    auto ex = extract::extract_units(pack(), units, nullptr);
+    int events = 0;
+    for (const auto& c : ex.claims) {
+      if (c.predicate != "has_event") continue;
+      const Json* d = json::find(c.value, "date");
+      REQUIRE(d != nullptr);
+      std::string ds = d->get<std::string>();
+      ++events;
+      bool ok = ds.size() == 10 && ds[4] == '-' && ds[7] == '-' && ds.rfind("2026-", 0) == 0;
+      CHECK_MESSAGE(ok, "corrupt has_event date: " << ds);
+    }
+    CHECK(events > 0);
+  }
+
   TEST_CASE("knowledge stages extract -> resolve -> assess over real catalog handoff") {
     fsutil::TempDir td;
     RuntimeOptions o;
