@@ -1,0 +1,63 @@
+{
+  "schema": "loom.refinement_freeze/1",
+  "frozen_at": "2026-09-29T14:21:47.651535+00:00",
+  "authorship": "ChatGPT-authored synthetic corpus; not independent human labels or blind holdout",
+  "files": {
+    "dev.jsonl": {
+      "sha256": "01eba7493c631a4e54e5c009d17690bf231b4c2aa5caf4680275af235906511c",
+      "bytes": 24931,
+      "blocks": 20,
+      "language": {
+        "pl": 9,
+        "en": 11
+      },
+      "domain": {
+        "letter": 5,
+        "code": 5,
+        "text": 5,
+        "analysis": 5
+      }
+    },
+    "validation.jsonl": {
+      "sha256": "6da59f0d216e63f5dacb24b318576afc9964bd1591ee4f90f34e89142b3342f0",
+      "bytes": 24540,
+      "blocks": 20,
+      "language": {
+        "en": 9,
+        "pl": 11
+      },
+      "domain": {
+        "letter": 5,
+        "code": 5,
+        "text": 5,
+        "analysis": 5
+      }
+    },
+    "PLAN.md": {
+      "sha256": "3b0b6accedd8e6592ea8a9e0d9f107bf0f369e4b36147add215fe88b2dc9fb6f",
+      "bytes": 4184
+    }
+  },
+  "expanded_gold": {
+    "dev": {
+      "sha256": "37e5d799dc2db1e4ef632f0a324611402a9020a2f12aa7e98c813e9c7cb04eb3",
+      "blocks": 20,
+      "specs": 22
+    },
+    "validation": {
+      "sha256": "fa27253ce0f5555e1e4f21c7d48eed0d048d24eb2f2aaafc35567e97a59e6ac1",
+      "blocks": 20,
+      "specs": 22
+    }
+  },
+  "materializer_sha256": "361cbdfc0d23fb3df5b7f93ee12d57a1af705499657defa62194c792b64a754a",
+  "no_model_outputs": true,
+  "amendments": [
+    {
+      "at": "2026-09-29T14:26:27.949566+00:00",
+      "old_materializer_sha256": "4c9f3c6e39e4fae7db1a8a7617dca854609b95fee532245baa8424827e26b96d",
+      "new_materializer_sha256": "361cbdfc0d23fb3df5b7f93ee12d57a1af705499657defa62194c792b64a754a",
+      "reason": "Fix shallow sharing of act lists between output and fixture. Corpus and expanded-gold byte hashes unchanged; no model output observed."
+    }
+  ]
+}
