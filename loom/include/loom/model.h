@@ -904,6 +904,10 @@ struct ContextItem {
   int tokens = 0;
   std::string why;                 // human explanation (required)
   std::vector<std::string> required_by;  // refs whose dependency closure pulled it in
+  // Premises the dependency closure needed for this item but could not include
+  // (over budget or unresolvable). Non-empty => the item is INCOMPLETE and is
+  // rendered with an explicit marker; never a silent drop. Omitted from JSON when empty.
+  std::vector<std::string> missing_premises;
   std::string text;                // rendered content at `resolution` ("" when not rendered)
   Json to_json() const;
   static Result<ContextItem> from_json(const Json& j);

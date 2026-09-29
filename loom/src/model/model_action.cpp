@@ -104,16 +104,18 @@ Result<Goal> Goal::from_json(const Json& j) {
 }
 
 Json ContextItem::to_json() const {
-  return Json{{"ref_kind", detail::en(ref_kind)},
-              {"ref", ref},
-              {"band", detail::en(band)},
-              {"resolution", detail::en(resolution)},
-              {"score", score},
-              {"factors", factors},
-              {"tokens", tokens},
-              {"why", why},
-              {"required_by", detail::strs(required_by)},
-              {"text", text}};
+  Json j{{"ref_kind", detail::en(ref_kind)},
+         {"ref", ref},
+         {"band", detail::en(band)},
+         {"resolution", detail::en(resolution)},
+         {"score", score},
+         {"factors", factors},
+         {"tokens", tokens},
+         {"why", why},
+         {"required_by", detail::strs(required_by)},
+         {"text", text}};
+  if (!missing_premises.empty()) j["missing_premises"] = detail::strs(missing_premises);
+  return j;
 }
 Result<ContextItem> ContextItem::from_json(const Json& j) {
   Rd r(j, "context_item");
@@ -127,6 +129,7 @@ Result<ContextItem> ContextItem::from_json(const Json& j) {
   x.tokens = r.integer("tokens", 0);
   x.why = r.str("why", true);
   x.required_by = r.strs("required_by");
+  x.missing_premises = r.strs("missing_premises");
   x.text = r.str("text");
   if (r.ok() && x.tokens < 0) r.fail("tokens", "must be >= 0");
   if (!r.ok()) return r.error();

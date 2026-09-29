@@ -121,13 +121,24 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
 ## 6b. Code defects confirmed on 2026-09-29 (from the GPT interaction note §17)
 
 1. `ContextEngine` is not on the chat request path (`loom_context_build` only).
-2. Context dependency closure silently drops a premise when the budget is
-   exhausted (no `incomplete` marker).
+2. ~~Context dependency closure silently drops a premise~~ **fixed 2026-09-29**:
+   `ContextItem.missing_premises` + `[INCOMPLETE …]` marker in render/trace; budget-sweep test.
 3. `resolve/assess.cpp`: every `User` claim gets `confidence = 1.0` (conflates
    reading fidelity, content credibility, authority to decide).
 4. Catalog link building is O(N²) over unit pairs (`catalog/score.cpp`).
 5. (reported) default calibration has hand-set priors.
 Details and the linked acceptance criteria: `docs/architecture/ACCEPTANCE_TESTS_2026-09-29.md`.
+
+## 6c. Work in flight (unmerged, backed up on remote `wip/*` branches, 2026-09-29 13:40 UTC)
+
+Interrupted by the session limit; resume or merge next session, verifying the ratchet.
+| Branch | Stream | Size |
+|---|---|---|
+| `wip/worktree-agent-a56d696101c89a58c` | catalog recall round 2 (semantic channels, lexical shadow, O(N²) links) | ~1.2k lines, uncommitted WIP snapshot |
+| `wip/worktree-agent-a06d7260ba8b658cc` | lossless OpenAI/Anthropic export interpretation | 2 commits |
+| `wip/worktree-agent-a436abbcd1b794a18` | resolve/generalize performance + precision | 1 commit + WIP |
+| `wip/worktree-agent-a342fccb481c4116c` | blind validation corpus v2 (**do not read** before final catalog eval) | 3 commits + WIP |
+Offline tasks handed to ChatGPT: `docs/GPT_OFFLINE_TASKS_2026-09-29.md`.
 
 ## 7. Open work, by priority
 
