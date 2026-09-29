@@ -57,7 +57,7 @@ The GitHub repo is **private**. Actions minutes are exhausted until
 |---|---|
 | `cmake --preset dev` + full build (112 targets) | OK |
 | `ctest --preset dev` | **73/74** (2026-09-29 evening, after merges); sole failure `unit.test_catalog_eval` (recall gate) |
-| Catalog eval on `synthetic_dev` | recall **21/45 = 0.467** after round 2 (was 13/45; gate ≥ 0.55 still red), precision 21/21, traps 0/5, generic noise 0/15 |
+| Catalog eval on `synthetic_dev` | recall **31/45 = 0.689** after round 3 (gate ≥ 0.55 **passes**; was 13 → 21 → 31), precision 31/31 — consensus weights tuned on dev only, validate on the blind corpus, traps 0/5, generic noise 0/15 |
 | Test count consistency | 60 / 63 / 72 registrations match the 59/60, 62/63, 71/72 claims in the older docs |
 | Quality gates weakened? | No: thresholds 0.55 / 0.75 / 0.05 unchanged; the failing gate stays red |
 | Secrets in Git | Pattern scan of the whole Codex branch found none (API keys, tokens, private keys) |

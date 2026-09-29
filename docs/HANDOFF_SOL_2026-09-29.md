@@ -17,7 +17,7 @@ wants you to explore.
    `docs/architecture/ACCEPTANCE_TESTS_2026-09-29.md`, `CLAUDE.md` (build/test).
 3. Build + test (Linux, CMake ≥3.28, Ninja, GCC/Clang):
    `cd loom && cmake --preset dev && cmake --build --preset dev -j && ctest --preset dev`
-   → **expected 73/74**, the only red test is `unit.test_catalog_eval` (recall gate ≥ 0.55).
+   → expected all green after the round‑3 catalog merge (before it: 73/74 with only the recall gate red).
    Python research/eval suites: see §5.
 4. GitHub Actions minutes: used up until **2026-10-01** → commit with `[skip ci]`, verify locally.
 
@@ -29,7 +29,7 @@ wants you to explore.
 | Knowledge pipeline | catalog → extract → resolve → assess → generalize → materialize, resumable, deterministic. **Repository-scale runs now byte-identical** (use-after-free in extract date matching fixed today). |
 | Performance | generalize ~6× faster (repo run 1064 s → 177 s at -O0); extract `extract_units` (~79 s) is now the biggest cost. |
 | Export import | Lossless on 6 synthetic OpenAI/Anthropic exports (1604/1604 JSON leaves); `loom import <zip> --audit`. **Never run on real owner exports.** |
-| Catalog (selective import) | synthetic_dev: recall **21/45 = 0.467** (gate 0.55), precision 21/21, traps 0/5, generic noise 0/15. Channels: lexical (BM25/aliases/links) + TF‑IDF cosine (word stems + char 4‑grams). `ScoreConfig.llm`/`verify_max_units` exist but **no model is called**. Pair linking is **O(N²)**. |
+| Catalog (selective import) | synthetic_dev: recall **31/45 = 0.689** (gate 0.55 now passes; ctest all green on its branch), precision 31/31; ranking AUC 0.966; 14 relevant units still missed; weights of the new `consensus` feature were set on dev data → first real check = blind corpus, traps 0/5, generic noise 0/15. Channels: lexical (BM25/aliases/links) + TF‑IDF cosine (word stems + char 4‑grams). `ScoreConfig.llm`/`verify_max_units` exist but **no model is called**. Pair linking now uses candidate generation (LSH/inverted index), output‑identical to exhaustive. |
 | Precision | Known noise: code fragments (`const Json& d`) become projects; a software project matched to the *music* paradigm; wrong computed versions; 8,928 claims / 506 principles for 283 files. |
 | Context engine | Three bands (stable → project → goal), `why` per item, budget, dependency closure (a premise that cannot fit is now flagged `missing_premises` / `[INCOMPLETE]`). **Not wired into chat** (`ChatEngine` never uses it). |
 | Thought-structure research (`loom/tools/structure`, Python) | Works on *supplied* graphs; fails on raw text (0 structures in 3 real repo docs). Premise-binding composition 2/6 → 6/6 on a small scoped set. |
