@@ -1807,7 +1807,10 @@ void Run::do_dates() {
     if (!in.text) continue;
     std::vector<std::string> dates;
     if (iso) {
-      for (const auto& m : iso->finditer(utf8::decode(in.o->text))) dates.push_back(m.group_utf8(0));
+      // Match keeps a view into its subject: the decoded text must outlive
+      // the loop (a temporary here dangled and produced garbage dates, I5).
+      const std::u32string subject = utf8::decode(in.o->text);
+      for (const auto& m : iso->finditer(subject)) dates.push_back(m.group_utf8(0));
     }
     const auto& t = in.toks;
     std::string year = date10(in.o->date).substr(0, 4);
