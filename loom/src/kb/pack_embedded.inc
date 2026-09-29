@@ -11304,7 +11304,18 @@ const char* const kPackChunks16[] = {
     "project_share_ratio": 0.25,
     "verify_max_units": 3000,
     "neighbour_time_hours": 48,
-    "neighbour_sketch_jaccard": 0.3
+    "neighbour_sketch_jaccard": 0.3,
+    "sem_ngram": 4,
+    "sem_floor_percentile": 10,
+    "sem_ref_percentile": 75,
+    "sem_cap": 1.5,
+    "sem_min_seeds": 2,
+    "sem_passes": 2,
+    "sem_self_doc_weight": 0.5,
+    "link_exact_max_units": 2000,
+    "link_session_max_neighbours": 32,
+    "link_project_max_clique": 32,
+    "link_session_similarity_ref": 0.15
   },
   "concepts": {
     "min_units": 2,
@@ -11372,7 +11383,33 @@ const char* const kPackChunks17[] = {
     "date_prior": 0.3,
     "neg_context": -2.5,
     "link": 1.0,
-    "title": 0.2
+    "title": 0.2,
+    "sem_word": 1.5,
+    "sem_ngram": 2.0
+  },
+  "channels": {
+    "lexical": [
+      "id_hits",
+      "class_diversity",
+      "code_evidence",
+      "version_mention",
+      "title",
+      "neg_context",
+      "bm25_self",
+      "bm25_phil"
+    ],
+    "semantic": [
+      "sem_word",
+      "sem_ngram",
+      "sem_phil",
+      "sem_embed",
+      "llm"
+    ],
+    "structure": [
+      "project_member",
+      "link",
+      "date_prior"
+    ]
   },
   "term_class_weights": {
     "alias": 3.0,
@@ -11388,7 +11425,11 @@ const char* const kPackChunks17[] = {
   },
   "archive_only_version_boost": 2.0,
   "code_block_multiplier": 1.5,
-  "bm25": {"k1": 1.2, "b": 0.75, "normalise_percentile": 99}
+  "bm25": {
+    "k1": 1.2,
+    "b": 0.75,
+    "normalise_percentile": 99
+  }
 }
 )LOOMKB",
     nullptr};

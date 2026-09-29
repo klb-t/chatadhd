@@ -103,3 +103,45 @@ Plik: `docs/research/OPTIONS_AUDIT_2026-09-29.md`.
 Nie uruchamiać niczego z kluczem, nie symulować wyników Jev/OpenRouter jako
 prawdziwych, nie zmieniać progów testów, nie przepisywać `STATE.md` (to robi Claude
 po weryfikacji), nie tworzyć drugiego magazynu wiedzy obok grafu.
+
+## Runda 2 (dopisane 2026-09-29, po T1–T8)
+
+Te same zasady co wyżej. Gałęzie `wip/*` możesz **czytać** (nie zmieniać), chyba że napisano inaczej.
+
+### T9. Recenzja dokumentacji formatów eksportów
+Przeczytaj `docs/exports/OPENAI_ANTHROPIC_EXPORT_FORMATS.md` na gałęzi
+`wip/worktree-agent-ab76c2dece93103a1` i porównaj ze swoją wiedzą o eksportach
+ChatGPT (mapping/current_node, content_type: text, code, multimodal_text,
+thoughts, reasoning_recap, execution_output, tether_*, file-service:// / sediment://,
+sharded conversations-NNN.json, user.json, shared_conversations.json,
+message_feedback.json, chat.html) i Claude (conversations.json, projects.json,
+users.json, memories, content blocks thinking/tool_use/tool_result/…).
+Wynik: lista braków, błędów i pytań „tylko prawdziwy eksport rozstrzygnie”.
+Plik: `docs/research/EXPORT_FORMATS_REVIEW_2026-09-29.md`.
+
+### T10. Przewodnik dla właściciela: pierwszy przebieg na prawdziwych eksportach
+Krótki, praktyczny (PL): jak zrobić eksport w ChatGPT i Claude, gdzie wrzucić ZIP,
+jakie polecenia `loom` uruchomić (odczytaj z `loom/cli/main.cpp`, `docs/selfhost/v2/README.md`),
+co sprawdzić w wyniku (raport kompletności importu, katalog, dossier), jak zgłosić
+problem bez ujawniania prywatnych treści. Plik: `docs/OWNER_REAL_EXPORT_GUIDE.md`.
+
+### T11. Rodzaj projektu `legal_case` — szczegółowa specyfikacja danych (R9)
+Na bazie `loom/data/project_kinds/legal_case.json` i modelu pojęciowego:
+dziedzinowe rodzaje (postępowania, instytucje, strony, dowody, podstawy prawne,
+terminy, pisma), reguły terminów jako dane (doręczenie + N dni, dni wolne,
+reguły liczenia per kodeks — jako szablon z polami, bez twierdzeń prawnych
+podanych jako pewne), weryfikacja cytatów, łańcuch dowodowy. Tylko projekt
+danych + przykłady fikcyjne. Plik: `docs/research/LEGAL_CASE_KIND_2026-09-29.md`.
+
+### T12. Model zagrożeń i tryb paranoid (R19)
+Katalog napastników z wymaganym wysiłkiem (kompromitacja API, przymus prawny,
+spyware klasy Pegasus, dostęp fizyczny, kanały akustyczne/optyczne), strefy
+„kontrolujemy / nie kontrolujemy / nie wiemy”, profil prywatności każdej ścieżki
+danych Looma (lokalna baza, blob store, dostawcy LLM, OCR/ASR, GitHub sync),
+propozycja schematu danych i co pokazuje tryb paranoid. Plik:
+`docs/research/THREAT_MODEL_2026-09-29.md`.
+
+### T13. Kolejka dla Claude'a
+Na koniec każdej sesji dopisz do `docs/research/GPT_OFFLINE_LOG_2026-09-29.md`
+sekcję „Do sprawdzenia przez Claude'a w natywnym buildzie” — konkretne pliki,
+komendy i oczekiwane wyniki, żeby weryfikacja była tania.
