@@ -57,7 +57,7 @@ The GitHub repo is **private**. Actions minutes are exhausted until
 |---|---|
 | `cmake --preset dev` + full build (112 targets) | OK |
 | `ctest --preset dev` | **71/72**; sole failure `unit.test_catalog_eval` (recall gate) |
-| Catalog eval on `synthetic_dev` | recall **13/45 = 0.2889** (gate ≥ 0.55), labeled-conversation precision 13/13, traps 0/5, generic noise 0/15 |
+| Catalog eval on `synthetic_dev` | recall **21/45 = 0.467** after round 2 (was 13/45; gate ≥ 0.55 still red), precision 21/21, traps 0/5, generic noise 0/15 |
 | Test count consistency | 60 / 63 / 72 registrations match the 59/60, 62/63, 71/72 claims in the older docs |
 | Quality gates weakened? | No: thresholds 0.55 / 0.75 / 0.05 unchanged; the failing gate stays red |
 | Secrets in Git | Pattern scan of the whole Codex branch found none (API keys, tokens, private keys) |
@@ -134,7 +134,7 @@ Details and the linked acceptance criteria: `docs/architecture/ACCEPTANCE_TESTS_
 Interrupted by the session limit; resume or merge next session, verifying the ratchet.
 | Branch | Stream | Size |
 |---|---|---|
-| `wip/worktree-agent-a56d696101c89a58c` | catalog recall round 2 (semantic channels, lexical shadow, O(N²) links) | ~1.2k lines, uncommitted WIP snapshot |
+| `wip/catalog-finish` | catalog recall round 2 — **merged 2026-09-29** (21/45) | done |
 | `wip/worktree-agent-a06d7260ba8b658cc` | lossless OpenAI/Anthropic export interpretation | 2 commits |
 | `wip/worktree-agent-a436abbcd1b794a18` | resolve/generalize performance + precision | 1 commit + WIP |
 | `wip/worktree-agent-a342fccb481c4116c` | blind validation corpus v2 (**do not read** before final catalog eval) | 3 commits + WIP |
