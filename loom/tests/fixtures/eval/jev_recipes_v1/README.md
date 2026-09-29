@@ -1,35 +1,83 @@
-# Jev recipes v1 — T3
+# Jev recipes v1 — T3, przygotowanie offline
 
-[P] 32 freshly authored PL/EN cases, separate reference labels, 188 prepared
-request bodies; **zero model calls**. Same author as implementation, not a blind
-or human-independent evaluation. The former 64 texts are not reused as new cases.
+[U] T3 / R37–R38. [P/H] Nowy pakiet do przyszłego uruchomienia, **nie wyniki Jev**.
+Baza repo: `494b164c4515b875014b3cfd1c3760de23bda401`.
+Plan analizy: `docs/research/JEV_RECIPES_PLAN_2026-09-29.md`.
 
-Read `docs/research/JEV_RECIPES_PLAN_2026-09-29.md` for preregistered comparisons,
-limitations and analysis. `manifest.json` freezes inputs, plan, generator and
-prepared request identities. `examples.json` contains three ready body examples.
-These envelopes include management metadata: send only their `body` to the API.
+## Zawartość
+
+36 fikcyjnych przypadków (18 PL / 18 EN): 16 relacyjnych, 12 kontekstowych,
+8 routingu. 18 development i 18 validation. Teksty nie zostały skopiowane z
+poprzednich 64 przypadków. Ten sam asystent napisał korpus, etykiety i kod:
+**nie jest to ślepy ani niezależnie oceniony zbiór walidacyjny**.
+
+`corpus.json` = materiał wejściowy; `gold.json` = etykiety/uzasadnienia autora;
+`recipes.json` = jawne rubryki, warianty i plan; `requests.zip` = kompaktowy
+zestaw przygotowanych żądań. `example_request.json` można otworzyć bezpośrednio
+w edytorze raw JSON Jev Lab. Gold nie jest wejściem generatora.
+
+ZIP zawiera dwa człony: `requests.jsonl` (rekordy `file` + `body`) i
+`request_index.json` (hash każdego body, pochodzenie, plan hierarchii).
+**Nie wysyłać rekordu JSONL jako body API.** Eksporter tworzy samodzielne,
+czyste body JSON o dokładnie sprawdzonych bajtach.
+
+Cztery warianty instrukcji: znaczące klucze, neutralne klucze, bezsensowne
+klucze, string z tymi samymi wartościami. State i treść rubryki są stałe;
+nie zmieniamy zastrzeżonych nazw pól API. Przydatność trzech podgrafów jest
+oceniana niezależnie, nie jako jeden zwycięzca Choice. Szczegółowość wybiera
+najmniejszą wystarczającą spośród rzeczywiście pokazanych reprezentacji,
+z osobnymi `omit` i `unavailable`.
+
+Choice: flat kontra root→child, 4/8/16 liści. Kategorie prawdziwe są w pierwszych
+czterech — ten eksperyment bada dodawanie dystraktorów, nie pokrycie 16 klas.
+Obie możliwe gałęzie są przygotowane, ale wykonywana jest tylko wybrana przez
+rzeczywistą odpowiedź korzenia. Nie wolno wybierać dziecka na podstawie gold.
+`next_child` jest funkcją czysto lokalną; zły/niekompletny rozkład → brak wyboru.
+
+## Liczby i koszt
+
+**208 przygotowanych body; maks. 184 wywołania przy pełnym wykonaniu bez retry.**
+Różnica wynika z dwóch gotowych dzieci, z których wybiera się jedno.
+112 żądań relacyjnych/kontekstowych plus 24 epizody × (flat 1 + hierarchy 2).
+Nie są to 208 nowych odpowiedzi. Liczba wysłanych żądań i nowy koszt API = 0.
+
+Indeks zawiera `execution_enabled=false` i `authorized_cost_usd=null`.
+To nie upoważnia do live. Claude musi osobno potwierdzić budżet, bieżący kontrakt
+API i cenę, tożsamość modelu/providera oraz zapisywanie pierwszych odpowiedzi.
+Przy testach narzędziowych trzeba unikać powielania efektów zewnętrznych.
+
+## Odtworzenie
+
+Z katalogu repo; generator i jego testy wymagają tylko biblioteki standardowej:
 
 ```sh
-python -B loom/tools/eval/jev_recipes.py
-python -B -m unittest discover -s loom/tools/eval -p test_jev_recipes.py -v
-python -B loom/tools/eval/jev_recipes.py --export /tmp/jev_recipes_v1_requests
+python loom/tools/eval/jev_recipes.py
+python -m unittest discover -s loom/tools/eval -p test_jev_recipes.py -v
+python loom/tools/eval/jev_recipes.py --export-to /tmp/jev-recipes-v1
 ```
 
-Export requires a new directory. It emits individual plain request JSONs and an
-INDEX with `activation=disabled`, unset budget, body hashes, conditional children
-and a deterministic shuffled schedule. No execution code exists here.
-A root must complete before its selected child; never run both children merely
-because they have JSON files. 188 prepared bodies imply at most 180 selected
-calls across the full plan, not 188 completed experiments. A future live run
-requires a separately authorized budget, current model/provider validation and
-an immutable execution manifest.
+Katalog eksportu musi być nowy (brak nadpisywania). W `requests/` powstaną 208
+plików, z oddzielnym indeksem. Modele nie są wywoływane przez ten program.
 
-27 local preparation/protocol tests passed. They check leaf-preserving key
-changes, question-ID negative control, cumulative detail, multiple relevant
-subgraphs, actual-root (not gold) child selection, explicit missing/tie handling,
-file freezing and no network. This says nothing about Jev accuracy.
+`source_freeze.json` zamraża korpus, gold, rubryki i plan przed wynikami.
+Jego amendment dokumentuje wyłącznie zmianę opisu pakowania ZIP/eksportu;
+nie zmieniono przy tym treści korpusu, gold ani rubryk. `manifest.json`
+zawiera dodatkowo hash generatora, testów, archiwum i przykładowego body.
+Weryfikacja sprawdza hash plików, ponowne zbudowanie requestów bez gold oraz
+zgodność dokładnych bajtów każdego body po eksporcie. To lokalny freeze,
+nie podpis cyfrowy ani zewnętrzna rejestracja badania.
 
-The corpus has no positive `other` routing cases; routing cannot measure general
-abstention. Context cases are controlled short examples, not demonstrated code
-repair or complete graph retrieval. English rubrics are used for both input
-languages. The semantic validity of author labels needs independent review.
+## Wykonane kontrole / ograniczenia
+
+**30/30 testów mechanizmu przeszło**: liczniki, niezmienność stanów/wartości
+między ramionami, brak etykiet w body, wieloetykietowość, wymagane reprezentacje,
+partycja drzewa, błędny routing/tie, kontrola nazw plików, hash, round-trip,
+CLI i brak sieci. Dodatkowo **208/208** body przyjęło `validate_request`
+z dostarczonego Jev Lab (`protocol.py` SHA-256
+`de0b83da481f14aeb7a4073438f1515c582ebb7615e7ce02a22a70478489addb`).
+To zgodność z lokalnym kontraktem, nie weryfikacja działającego endpointu.
+
+Nie ma automatycznej analizy rzeczywistych odpowiedzi w tym przyroście; zasady
+analizy zapisano przed wynikami. Nie ma modelu klasyfikacji, parsera struktury,
+pełnego klienta inferencji ani integracji natywnej. Jakość rubryk i etykiet
+pozostaje do niezależnej kontroli. Żaden współczynnik produkcyjny nie został zmieniony.
