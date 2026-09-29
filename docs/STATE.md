@@ -136,6 +136,13 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   outside Git (environment secret), if live measurements are wanted.
 - Nothing else is blocking; the docs above are sufficient to continue.
 
+## 8b. Working rules decided by the owner (2026-09-29)
+
+- Python compatibility no longer required (D1); compat tests remain sentinels.
+- Linear development, ratchet: never worsen a tracked test or metric (D2).
+- Search by every method; keywords/regex are complementary, no channel vetoes (R25).
+- Owner decisions and verbatim requirements: `OWNER_REQUIREMENTS_2026-09-26.md`.
+
 ## 9. History (superseded status logs — keep, do not extend)
 
 `AGENTS.md` (old accreted log → `docs/research/AGENTS_STATUS_LOG_2026-09-28.md`),

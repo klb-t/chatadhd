@@ -387,8 +387,10 @@ is a tracked metric.
   from the applicable principles and preferences.
 - **I9** Capability honesty: when a capability is missing, the result is
   marked unverified at a lower evidence class — never a fabricated metric.
-- **I10** The legacy Python-parity modules and the core schema v4 stay
-  untouched; this model lives in `loom_*` tables and new modules.
+- **I10** (relaxed 2026-09-29, owner decision D1) Python compatibility is no longer
+  required. The legacy Python-parity modules and core schema v4 stay as regression
+  sentinels until a deliberate migration; this model lives in `loom_*` tables and new
+  modules, and new schema is allowed when deliberate (migration + note).
 
 ---
 

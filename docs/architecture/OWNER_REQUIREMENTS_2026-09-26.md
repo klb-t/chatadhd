@@ -257,6 +257,35 @@ the recommended `anthropic/claude-haiku-4-5`) to `""`, disabling LLM semantic
 analysis; the Codex branch removed the reset in Python and C++ (mirrored).
 This is a plausible reason the owner "never saw meaningful results".
 
+## R25 — Search by every method; words and regex are only complementary (2026-09-29)
+> "żeby się nie sugerować słowami, że słowa kluczowe i regex to tylko metody uzupełniające, żeby na wszystkie sposoby szukać i znaleźć wszystko co jest potrzebne"
+
+(Said to GPT earlier in the session, outside the saved MHT window; here in the
+owner's words of 2026-09-29. GPT's paraphrase: "lexical/regex signals are
+secondary omission diagnostics", `docs/research/JEV_USAGE_RULES_2026-09-28.md`.)
+Retrieval and relevance use ALL methods together — lexical, regex, morphology,
+vector/embedding similarity, graph structure, model judgements — and no single
+channel (lexical or semantic) may define relevance or veto another. Recall
+first (union of evidence, coverage-first), precision by verification; every
+inclusion/exclusion explainable per channel.
+
+## D1 — Python compatibility is no longer required (2026-09-29)
+> "nie musi być zgodności z pytonem to był tylko plan minimum żeby chociaż to działało, a dużo już dalej poszliśmy"
+
+The Python/C++ on-disk compatibility invariant (schema v4, CLAUDE.md, model I10)
+was a minimum plan. It no longer constrains new work. Existing compat tests stay
+green as regression sentinels until a deliberate schema migration replaces
+them; schema changes are allowed when deliberate (migration + note in STATE.md).
+
+## D2 — Develop linearly while there is no regression (2026-09-29)
+> "Ja myślę że jedziemy liniowo tak długo jak żadnego regresu nie ma"
+
+One development line (`claude/chataddhd-cpp-loom-core-IRGRN`); helper branches
+are merged forward promptly; no long-lived divergence. Progress is a ratchet:
+a change may not worsen any tracked test or quality metric (baseline in
+`docs/STATE.md` §4/§5); if something regresses, stop and fix or revert before
+continuing.
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
