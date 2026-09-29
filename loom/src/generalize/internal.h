@@ -33,6 +33,7 @@ struct Index {
   std::map<std::string, std::vector<const model::Claim*>, std::less<>> by_subject;   // sorted by id
   std::map<std::string, std::vector<const model::Observation*>, std::less<>> unit_obs;  // by ordinal, id
   std::map<std::string, std::set<std::string>, std::less<>> subject_units;          // entity -> unit ids
+  std::map<std::string, std::set<std::string>, std::less<>> subject_obs;            // entity -> observation ids that support its claims
   std::map<std::string, const model::Decision*, std::less<>> decision;
   std::string corpus_end;  // max observation / decision date (day)
 

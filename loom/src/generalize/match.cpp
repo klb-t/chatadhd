@@ -65,7 +65,7 @@ struct AnchorEnv {
   std::map<std::string, std::optional<detail::PreparedCues>, std::less<>> classes;
   std::unordered_map<const model::Observation*, detail::FoldedText> folded;
   std::map<std::pair<std::string, std::string>, int> unit_hits;
-  std::map<std::pair<std::string, std::string>, double> unit_weights;
+  std::map<std::pair<std::string, const model::Observation*>, std::set<std::size_t>> obs_phrases;
 
   AnchorEnv(const kb::Pack& p, const kb::Normalizer& n, const Index& i) : pack(p), norm(n), ix(i) {}
 
@@ -96,23 +96,71 @@ struct AnchorEnv {
     return n;
   }
 
-  // Summed weight of the DISTINCT cue phrases found anywhere in `unit`: one
-  // ambiguous word repeated a hundred times is not domain evidence, several
-  // different domain words in one document are.
-  double distinct_weight(const std::string& cls, const detail::PreparedCues& cues, const std::string& unit) {
-    auto key = std::make_pair(cls, unit);
-    if (auto it = unit_weights.find(key); it != unit_weights.end()) return it->second;
+  // Mention counts (observations supporting the entity's claims) per unit,
+  // per entity kind; built on first use.
+  struct KindStat {
+    std::map<std::string, std::map<std::string, int>> per;  // entity -> unit -> count
+    std::map<std::string, int> best;                        // unit -> highest count of any entity
+  };
+  std::map<std::string, KindStat> kind_stats;
+  bool dominant(const std::string& entity, const std::string& kind, const std::string& unit) {
+    auto ks = kind_stats.find(kind);
+    if (ks == kind_stats.end()) {
+      KindStat st;
+      for (const auto& e : ix.ev.entities) {
+        if (e.kind != kind || e.status == model::ClaimStatus::Rejected) continue;
+        auto so = ix.subject_obs.find(e.id);
+        if (so == ix.subject_obs.end()) continue;
+        for (const auto& oid : so->second) {
+          if (auto* o = ix.find_obs(oid)) {
+            int n = ++st.per[e.id][o->unit];
+            st.best[o->unit] = std::max(st.best[o->unit], n);
+          }
+        }
+      }
+      ks = kind_stats.emplace(kind, std::move(st)).first;
+    }
+    auto pe = ks->second.per.find(entity);
+    if (pe == ks->second.per.end()) return false;
+    auto pu = pe->second.find(unit);
+    auto bu = ks->second.best.find(unit);
+    return pu != pe->second.end() && bu != ks->second.best.end() && pu->second >= bu->second;
+  }
+
+  // Summed weight of the DISTINCT cue phrases found in the observations of
+  // `unit` that mention `entity` and their `window` neighbours on each side:
+  // one ambiguous word repeated a hundred times is not domain evidence,
+  // several different domain words next to the subject are, and words in a
+  // document that merely also names the subject are not.
+  double distinct_weight(const std::string& cls, const detail::PreparedCues& cues, const std::string& entity,
+                         const std::string& kind, const std::string& unit, int window) {
+    auto uo = ix.unit_obs.find(unit);
+    auto so = ix.subject_obs.find(entity);
+    if (uo == ix.unit_obs.end() || so == ix.subject_obs.end()) return 0.0;
+    const auto& list = uo->second;
+    // The unit is ABOUT the subject when no other entity of its kind is
+    // mentioned more often in it: then the whole unit is its context.
+    if (dominant(entity, kind, unit)) window = static_cast<int>(list.size());
     std::set<std::size_t> seen;
-    if (auto uo = ix.unit_obs.find(unit); uo != ix.unit_obs.end()) {
-      for (auto* o : uo->second) {
-        auto f = folded.find(o);
-        if (f == folded.end()) f = folded.emplace(o, detail::fold_text(norm, o->text)).first;
-        cues.hit_phrases(f->second, seen);
+    for (std::size_t i = 0; i < list.size(); ++i) {
+      if (!so->second.count(list[i]->id)) continue;
+      std::size_t lo = i >= static_cast<std::size_t>(window) ? i - window : 0;
+      std::size_t hi = std::min(list.size(), i + window + 1);
+      for (std::size_t k = lo; k < hi; ++k) {
+        auto key = std::make_pair(cls, list[k]);
+        auto pit = obs_phrases.find(key);
+        if (pit == obs_phrases.end()) {
+          auto f = folded.find(list[k]);
+          if (f == folded.end()) f = folded.emplace(list[k], detail::fold_text(norm, list[k]->text)).first;
+          std::set<std::size_t> ph;
+          cues.hit_phrases(f->second, ph);
+          pit = obs_phrases.emplace(std::move(key), std::move(ph)).first;
+        }
+        seen.insert(pit->second.begin(), pit->second.end());
       }
     }
     double w = 0;
     for (std::size_t i : seen) w += cues.weight_of(i);
-    unit_weights.emplace(std::move(key), w);
     return w;
   }
 };
@@ -138,7 +186,7 @@ double anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& r
       if (it != ix.subject_units.end()) {
         for (const auto& u : it->second) {
           if (min_weight > 0) {
-            best = std::max(best, env.distinct_weight(cls, *c, u));
+            best = std::max(best, env.distinct_weight(cls, *c, e.id, e.kind, u, static_cast<int>(json::get_int(op, "window", 1))));
           } else {
             n += env.hits(cls, *c, u);
           }

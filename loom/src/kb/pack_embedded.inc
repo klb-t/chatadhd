@@ -14537,7 +14537,7 @@ const char* const kPackChunks27[] = {
    {
     "op": "cue",
     "class": "paradigm.film",
-    "min_weight": 4
+    "min_weight": 3
    }
   ],
   "min_score": 0.4
@@ -15398,7 +15398,7 @@ const char* const kPackChunks28[] = {
    {
     "op": "cue",
     "class": "paradigm.music",
-    "min_weight": 4
+    "min_weight": 3
    }
   ],
   "min_score": 0.45
@@ -16031,7 +16031,7 @@ const char* const kPackChunks29[] = {
    {
     "op": "cue",
     "class": "paradigm.legal_case",
-    "min_weight": 4
+    "min_weight": 3
    }
   ],
   "min_score": 0.45

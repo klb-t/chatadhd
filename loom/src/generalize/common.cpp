@@ -62,7 +62,10 @@ Index::Index(const Evidence& e) : ev(e) {
     claim.emplace(c.id, &c);
     by_subject[c.subject].push_back(&c);
     for (const auto& s : c.assessment.support) {
-      if (auto it = obs.find(s.observation); it != obs.end()) subject_units[c.subject].insert(it->second->unit);
+      if (auto it = obs.find(s.observation); it != obs.end()) {
+        subject_units[c.subject].insert(it->second->unit);
+        subject_obs[c.subject].insert(s.observation);
+      }
     }
     if (c.predicate == "mentioned_in" && c.value.is_string()) subject_units[c.subject].insert(c.value.get<std::string>());
   }
