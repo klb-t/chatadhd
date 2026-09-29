@@ -1,0 +1,1859 @@
+{
+ "schema": "loom.eval.ground_truth/1",
+ "corpus_id": "blind_catalog_v2",
+ "generated_by": "loom/tools/gen_blind_catalog_v2.py",
+ "persona": {
+  "name": "Witold Sowa",
+  "fictional": true,
+  "note": "Wholly invented for this corpus: a hobbyist tinkerer in Gdynia with a home-automation hub, a novel-in-progress and a small invoicing tool for his wife's ceramics shop. No real person, shop, product, statute or data. Any resemblance to real people or to the repo owner's projects is coincidental.",
+  "git_author": "Witold Sowa <witold.sowa@example.invalid>"
+ },
+ "purpose": "Blind validation set for selective-import catalog scoring: find every relevant conversation (project work, shared foundations, philosophy) even when no project is named.",
+ "units": {
+  "relevant": [
+   {
+    "label": "U001",
+    "conv_id": "ea00313b-08a0-5277-8ad8-c6c64d6fa833",
+    "provider": "claude",
+    "title": "jak ja buduje",
+    "date": "2024-06-10",
+    "message_count": 4,
+    "project": null,
+    "projects": [],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "philosophy",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.boring_tech",
+     "pr.replaceable_pieces"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U002",
+    "conv_id": "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "provider": "claude",
+    "title": "baza",
+    "date": "2024-08-20",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only",
+     "pr.boring_tech"
+    ],
+    "decisions": [
+     "dec.event_store_sqlite"
+    ]
+   },
+   {
+    "label": "U003",
+    "conv_id": "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "provider": "chatgpt",
+    "title": "wspolna baza - podejscie",
+    "date": "2024-08-21",
+    "message_count": 6,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage"
+    ],
+    "category": "near_duplicate",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only",
+     "pr.boring_tech"
+    ],
+    "decisions": [
+     "dec.event_store_sqlite"
+    ],
+    "duplicate_of": "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "duplicate_of_label": "U002",
+    "base_category": "shared_foundation",
+    "note": "re-export / edited version of s01"
+   },
+   {
+    "label": "U004",
+    "conv_id": "b11e4baf-308f-57fb-9597-4b2138696b5c",
+    "provider": "claude",
+    "title": "czujniki",
+    "date": "2024-09-14",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "explicit_name",
+    "hardness": "easy",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U005",
+    "conv_id": "f67273c6-cdf0-52a0-bdc2-2b53d8943c77",
+    "provider": "chatgpt",
+    "title": "CO2 w kotlowni (wersja 2)",
+    "date": "2024-09-15",
+    "message_count": 6,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "near_duplicate",
+    "hardness": "easy",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": [],
+    "duplicate_of": "b11e4baf-308f-57fb-9597-4b2138696b5c",
+    "duplicate_of_label": "U004",
+    "base_category": "explicit_name",
+    "note": "re-export / edited version of e01"
+   },
+   {
+    "label": "U006",
+    "conv_id": "95ceae00-b3f7-5d0d-b4f2-0361342f761d",
+    "provider": "chatgpt",
+    "title": "rozne pytania",
+    "date": "2024-09-30",
+    "message_count": 7,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U007",
+    "conv_id": "14b7475d-02c0-554d-846c-c7e12cf167d6",
+    "provider": "claude",
+    "title": "harmonogram",
+    "date": "2024-10-02",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U008",
+    "conv_id": "d7acd5e8-35c1-5b4d-99de-e139d2fe1706",
+    "provider": "chatgpt",
+    "title": "refleksja niedzielna",
+    "date": "2024-10-20",
+    "message_count": 3,
+    "project": null,
+    "projects": [],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "philosophy",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U009",
+    "conv_id": "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "provider": "claude",
+    "title": "ladowanie modulow",
+    "date": "2024-11-05",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.plugins"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.replaceable_pieces"
+    ],
+    "decisions": [
+     "dec.plugin_manifest_capabilities"
+    ]
+   },
+   {
+    "label": "U010",
+    "conv_id": "59d36aa8-14ce-5b9f-b395-3c9f326ece7a",
+    "provider": "claude",
+    "title": "cieplo w domu",
+    "date": "2024-11-22",
+    "message_count": 3,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "paraphrase_only",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U011",
+    "conv_id": "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
+    "provider": "claude",
+    "title": "komunikacja",
+    "date": "2024-12-01",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.bus"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": [
+     "dec.inproc_bus_queue_per_subscriber"
+    ]
+   },
+   {
+    "label": "U012",
+    "conv_id": "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
+    "provider": "chatgpt",
+    "title": "co jak padnie",
+    "date": "2024-12-11",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.manual_fallback"
+    ],
+    "decisions": [
+     "dec.manual_override_wall_switch"
+    ]
+   },
+   {
+    "label": "U013",
+    "conv_id": "deb8b63e-215c-5089-9a47-a508af842453",
+    "provider": "claude",
+    "title": "awaria zima",
+    "date": "2024-12-12",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "near_duplicate",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.manual_fallback"
+    ],
+    "decisions": [
+     "dec.manual_override_wall_switch"
+    ],
+    "duplicate_of": "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
+    "duplicate_of_label": "U012",
+    "base_category": "architecture_unnamed",
+    "note": "re-export / edited version of a02"
+   },
+   {
+    "label": "U014",
+    "conv_id": "3eb1ae19-73f6-5c9d-b0f0-eaa2c77f99fc",
+    "provider": "claude",
+    "title": "ciaglosc",
+    "date": "2025-01-22",
+    "message_count": 4,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U015",
+    "conv_id": "13b3e041-78c2-5395-8bc9-8e6b9bd32a66",
+    "provider": "claude",
+    "title": "wieczorne pytania",
+    "date": "2025-01-30",
+    "message_count": 3,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "inflected_alias",
+    "hardness": "medium",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": [],
+    "note": "only inflected forms of the project name (Kotwica/Kotwicy)"
+   },
+   {
+    "label": "U016",
+    "conv_id": "bfa7b527-ddfa-58c7-a2cb-e3d2dc5d5b6b",
+    "provider": "chatgpt",
+    "title": "pomysl na scene",
+    "date": "2025-02-03",
+    "message_count": 4,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "explicit_name",
+    "hardness": "easy",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U017",
+    "conv_id": "9277c985-98f3-5e80-bf2e-9a3a1bd30bf8",
+    "provider": "claude",
+    "title": "sobota",
+    "date": "2025-02-14",
+    "message_count": 7,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U018",
+    "conv_id": "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "provider": "chatgpt",
+    "title": "migracje",
+    "date": "2025-02-25",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.boring_tech"
+    ],
+    "decisions": [
+     "dec.forward_only_migrations"
+    ]
+   },
+   {
+    "label": "U019",
+    "conv_id": "8d826c12-65de-5365-badb-8ef4515fd71f",
+    "provider": "claude",
+    "title": "numeracja",
+    "date": "2025-03-05",
+    "message_count": 4,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": [
+     "dec.gapless_numbering_at_commit"
+    ]
+   },
+   {
+    "label": "U020",
+    "conv_id": "2a7ba7a9-4292-5f63-aeba-42e63cabb4ee",
+    "provider": "chatgpt",
+    "title": "kolejne numery",
+    "date": "2025-03-06",
+    "message_count": 4,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "near_duplicate",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": [
+     "dec.gapless_numbering_at_commit"
+    ],
+    "duplicate_of": "8d826c12-65de-5365-badb-8ef4515fd71f",
+    "duplicate_of_label": "U019",
+    "base_category": "architecture_unnamed",
+    "note": "re-export / edited version of a07"
+   },
+   {
+    "label": "U021",
+    "conv_id": "6038de05-109e-59b3-8be1-2b09733b00a6",
+    "provider": "chatgpt",
+    "title": "wilgotnosc",
+    "date": "2025-03-27",
+    "message_count": 3,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "paraphrase_only",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U022",
+    "conv_id": "07f76143-6726-5e84-81a2-7b1ecf717dac",
+    "provider": "chatgpt",
+    "title": "urzadzenia",
+    "date": "2025-04-09",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U023",
+    "conv_id": "7b8fec2b-3643-58d8-b721-dfc44d726026",
+    "provider": "claude",
+    "title": "3 w nocy",
+    "date": "2025-04-27",
+    "message_count": 4,
+    "project": null,
+    "projects": [],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "philosophy",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.manual_fallback"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U024",
+    "conv_id": "8543f75c-776f-53e6-97d5-ec8535b90135",
+    "provider": "chatgpt",
+    "title": "test trzeciej w nocy",
+    "date": "2025-04-29",
+    "message_count": 4,
+    "project": null,
+    "projects": [],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "near_duplicate",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.manual_fallback"
+    ],
+    "decisions": [],
+    "duplicate_of": "7b8fec2b-3643-58d8-b721-dfc44d726026",
+    "duplicate_of_label": "U023",
+    "base_category": "philosophy",
+    "note": "re-export / edited version of f03"
+   },
+   {
+    "label": "U025",
+    "conv_id": "62bdb9ee-360b-58e3-b7ca-67b8520ac37e",
+    "provider": "claude",
+    "title": "papiery zony",
+    "date": "2025-04-30",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "paraphrase_only",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U026",
+    "conv_id": "96b85ad1-d622-55d6-a09d-ca1bf76c3a1d",
+    "provider": "chatgpt",
+    "title": "wersje szkicow",
+    "date": "2025-05-16",
+    "message_count": 4,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only"
+    ],
+    "decisions": [
+     "dec.chapter_versions_as_events"
+    ]
+   },
+   {
+    "label": "U027",
+    "conv_id": "ec492d13-8bba-56da-823d-814320b6c207",
+    "provider": "chatgpt",
+    "title": "co jak modul padnie",
+    "date": "2025-06-01",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.plugins"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.replaceable_pieces",
+     "pr.manual_fallback"
+    ],
+    "decisions": [
+     "dec.plugin_fault_isolation"
+    ]
+   },
+   {
+    "label": "U028",
+    "conv_id": "754ef437-8bbc-5bd1-aa5d-44f51ad8114c",
+    "provider": "claude",
+    "title": "pytanie o VAT",
+    "date": "2025-06-20",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "explicit_name",
+    "hardness": "easy",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U029",
+    "conv_id": "d3a7a95e-9bbe-5884-8c11-4f70b39a7fb8",
+    "provider": "chatgpt",
+    "title": "lista rzeczy",
+    "date": "2025-06-25",
+    "message_count": 5,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": [
+     "dec.advance_invoices_as_negative_lines"
+    ]
+   },
+   {
+    "label": "U030",
+    "conv_id": "443393ae-408d-5b85-af59-95517fddf8fd",
+    "provider": "chatgpt",
+    "title": "pdf",
+    "date": "2025-07-18",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U031",
+    "conv_id": "719fbe1b-1b94-5829-82a7-5652e9a74aec",
+    "provider": "chatgpt",
+    "title": "rozmowa",
+    "date": "2025-08-12",
+    "message_count": 3,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "inflected_alias",
+    "hardness": "medium",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U032",
+    "conv_id": "182c135f-672d-5161-9f78-587da08ecb6f",
+    "provider": "chatgpt",
+    "title": "duplikaty zdarzen",
+    "date": "2025-08-25",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.bus",
+     "found.storage"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only"
+    ],
+    "decisions": [
+     "dec.idempotent_handlers"
+    ]
+   },
+   {
+    "label": "U033",
+    "conv_id": "4480c4b0-0960-596f-8d09-88d482361f32",
+    "provider": "claude",
+    "title": "statystyki",
+    "date": "2025-09-03",
+    "message_count": 3,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U034",
+    "conv_id": "7b19b2bf-0a26-5274-a691-51b02499e514",
+    "provider": "chatgpt",
+    "title": "notatka do siebie",
+    "date": "2025-09-14",
+    "message_count": 3,
+    "project": null,
+    "projects": [],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "philosophy",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.write_the_why",
+     "pr.ugly_first"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U035",
+    "conv_id": "cce6532b-0ff6-5991-86a5-00fc3179993e",
+    "provider": "claude",
+    "title": "prosba",
+    "date": "2025-10-01",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "inflected_alias",
+    "hardness": "medium",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U036",
+    "conv_id": "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "provider": "claude",
+    "title": "dluga rozmowa",
+    "date": "2025-10-22",
+    "message_count": 7,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage"
+    ],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only"
+    ],
+    "decisions": [
+     "dec.upcast_on_read"
+    ]
+   },
+   {
+    "label": "U037",
+    "conv_id": "f6cf7f32-058f-53ad-83a9-68aab82a67bd",
+    "provider": "chatgpt",
+    "title": "Untitled",
+    "date": "2025-11-08",
+    "message_count": 3,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "explicit_name",
+    "hardness": "easy",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U038",
+    "conv_id": "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "provider": "claude",
+    "title": "kolejnosc",
+    "date": "2025-11-20",
+    "message_count": 3,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage",
+     "found.bus"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": [
+     "dec.outbox_pattern"
+    ]
+   },
+   {
+    "label": "U039",
+    "conv_id": "c51a60ab-d216-5fd5-90fd-68441d42a8de",
+    "provider": "claude",
+    "title": "kto ma jakie oczy",
+    "date": "2025-12-05",
+    "message_count": 3,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "paraphrase_only",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U040",
+    "conv_id": "0e43d8b0-e66b-5de9-ad09-7b56b826495f",
+    "provider": "chatgpt",
+    "title": "spojnosc fikcji",
+    "date": "2025-12-06",
+    "message_count": 6,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "near_duplicate",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": [],
+    "duplicate_of": "c51a60ab-d216-5fd5-90fd-68441d42a8de",
+    "duplicate_of_label": "U039",
+    "base_category": "paraphrase_only",
+    "note": "re-export / edited version of p03"
+   },
+   {
+    "label": "U041",
+    "conv_id": "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
+    "provider": "chatgpt",
+    "title": "raport dla ksiegowej",
+    "date": "2026-01-08",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "paraphrase_only",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.own_your_data"
+    ],
+    "decisions": [
+     "dec.csv_bom_semicolon"
+    ]
+   },
+   {
+    "label": "U042",
+    "conv_id": "343dca50-068d-5123-87d1-100da91b1d25",
+    "provider": "claude",
+    "title": "epub",
+    "date": "2026-01-12",
+    "message_count": 3,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "explicit_name",
+    "hardness": "easy",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U043",
+    "conv_id": "e8c8f31a-d207-5683-bc4e-6776f9fc20f7",
+    "provider": "claude",
+    "title": "wieczorne mysli",
+    "date": "2026-01-25",
+    "message_count": 3,
+    "project": null,
+    "projects": [],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "philosophy",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.own_your_data",
+     "pr.replaceable_pieces"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U044",
+    "conv_id": "e18e2170-3f49-5846-8e9b-faabc52df768",
+    "provider": "chatgpt",
+    "title": "korekty",
+    "date": "2026-02-10",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "architecture_unnamed",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only"
+    ],
+    "decisions": [
+     "dec.issued_documents_immutable"
+    ]
+   },
+   {
+    "label": "U045",
+    "conv_id": "e20b5b86-3f66-52b1-bdd2-ab7fc989e3f0",
+    "provider": "chatgpt",
+    "title": "do czytnika",
+    "date": "2026-02-27",
+    "message_count": 3,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "paraphrase_only",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U046",
+    "conv_id": "b0c38530-a90a-5675-952b-e61b858aea01",
+    "provider": "chatgpt",
+    "title": "misc",
+    "date": "2026-03-03",
+    "message_count": 6,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage",
+     "found.plugins",
+     "found.bus"
+    ],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.replaceable_pieces"
+    ],
+    "decisions": [
+     "dec.core_has_no_domain_deps"
+    ]
+   },
+   {
+    "label": "U047",
+    "conv_id": "f8de0248-a04b-5f42-95d2-dd0bff2fbb8d",
+    "provider": "chatgpt",
+    "title": "kwestia rachunkow",
+    "date": "2026-03-30",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "explicit_name",
+    "hardness": "easy",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U048",
+    "conv_id": "3e990889-7c0f-5991-b6b0-05c93d76b0e7",
+    "provider": "chatgpt",
+    "title": "aktualizacja",
+    "date": "2026-04-19",
+    "message_count": 3,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "inflected_alias",
+    "hardness": "medium",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U049",
+    "conv_id": "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
+    "provider": "chatgpt",
+    "title": "porzadek w repo",
+    "date": "2026-05-14",
+    "message_count": 4,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage",
+     "found.plugins",
+     "found.bus"
+    ],
+    "category": "shared_foundation",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.replaceable_pieces"
+    ],
+    "decisions": [
+     "dec.core_versioned_package"
+    ]
+   },
+   {
+    "label": "U050",
+    "conv_id": "9c269a7e-215e-545b-8252-3c258988ca77",
+    "provider": "chatgpt",
+    "title": "porada",
+    "date": "2026-05-30",
+    "message_count": 3,
+    "project": null,
+    "projects": [],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "philosophy",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.ugly_first",
+     "pr.boring_tech"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U051",
+    "conv_id": "910684a3-48cf-52e9-94ac-726795f53a82",
+    "provider": "claude",
+    "title": "drobiazg",
+    "date": "2026-06-02",
+    "message_count": 3,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "inflected_alias",
+    "hardness": "medium",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U052",
+    "conv_id": "b2295d1f-61ff-5645-be00-748c8aadec28",
+    "provider": "claude",
+    "title": "wszystko naraz",
+    "date": "2026-06-18",
+    "message_count": 7,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.manual_fallback"
+    ],
+    "decisions": []
+   },
+   {
+    "label": "U053",
+    "conv_id": "60b201ce-491f-5e5a-b7b1-68cc08617237",
+    "provider": "chatgpt",
+    "title": "hmm",
+    "date": "2026-07-07",
+    "message_count": 3,
+    "project": "proj.fakturka",
+    "projects": [
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "inflected_alias",
+    "hardness": "medium",
+    "names_project_explicitly": true,
+    "principles": [],
+    "decisions": []
+   },
+   {
+    "label": "U054",
+    "conv_id": "0faae13f-f774-5683-87b3-bb813c24e026",
+    "provider": "chatgpt",
+    "title": "rozne 2",
+    "date": "2026-08-04",
+    "message_count": 4,
+    "project": "proj.latarnik",
+    "projects": [
+     "proj.latarnik"
+    ],
+    "mentions_projects": [],
+    "foundations": [],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.ugly_first"
+    ],
+    "decisions": []
+   }
+  ],
+  "noise_traps": [],
+  "noise_generic": []
+ },
+ "multi_label_units": [
+  "ca26c6cb-016e-50fc-974d-46df188f64cc",
+  "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+  "b172e15a-0742-5f9c-812d-efa5490e5a69",
+  "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
+  "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+  "ec492d13-8bba-56da-823d-814320b6c207",
+  "182c135f-672d-5161-9f78-587da08ecb6f",
+  "92909a78-7794-51e0-a189-d9f15bd9df8f",
+  "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+  "b0c38530-a90a-5675-952b-e61b858aea01",
+  "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
+ ],
+ "duplicate_groups": [
+  [
+   "ca26c6cb-016e-50fc-974d-46df188f64cc",
+   "1d24a003-4684-5924-9c69-5a9efeb35c7e"
+  ],
+  [
+   "b11e4baf-308f-57fb-9597-4b2138696b5c",
+   "f67273c6-cdf0-52a0-bdc2-2b53d8943c77"
+  ],
+  [
+   "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
+   "deb8b63e-215c-5089-9a47-a508af842453"
+  ],
+  [
+   "8d826c12-65de-5365-badb-8ef4515fd71f",
+   "2a7ba7a9-4292-5f63-aeba-42e63cabb4ee"
+  ],
+  [
+   "7b8fec2b-3643-58d8-b721-dfc44d726026",
+   "8543f75c-776f-53e6-97d5-ec8535b90135"
+  ],
+  [
+   "c51a60ab-d216-5fd5-90fd-68441d42a8de",
+   "0e43d8b0-e66b-5de9-ad09-7b56b826495f"
+  ]
+ ],
+ "projects": [
+  {
+   "id": "proj.kotwica",
+   "name": "Kotwica",
+   "kind": "home_automation",
+   "description": "Raspberry Pi hub in the basement: MQTT sensors (ESP32, DS18B20), boiler relay, heating schedule with cheap-tariff pre-heating, presence detection, vacation mode, wall-switch fallback.",
+   "aliases": [
+    "Kotwica",
+    "sterownik domu",
+    "hub w piwnicy",
+    "domowy mozg"
+   ],
+   "inflected_forms": [
+    "Kotwicy",
+    "Kotwice",
+    "Kotwica",
+    "Kotwico",
+    "sterownika domu",
+    "hubie piwnicznym"
+   ],
+   "relevant_units": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "b11e4baf-308f-57fb-9597-4b2138696b5c",
+    "f67273c6-cdf0-52a0-bdc2-2b53d8943c77",
+    "95ceae00-b3f7-5d0d-b4f2-0361342f761d",
+    "14b7475d-02c0-554d-846c-c7e12cf167d6",
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "59d36aa8-14ce-5b9f-b395-3c9f326ece7a",
+    "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
+    "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
+    "deb8b63e-215c-5089-9a47-a508af842453",
+    "13b3e041-78c2-5395-8bc9-8e6b9bd32a66",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "6038de05-109e-59b3-8be1-2b09733b00a6",
+    "07f76143-6726-5e84-81a2-7b1ecf717dac",
+    "ec492d13-8bba-56da-823d-814320b6c207",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "f6cf7f32-058f-53ad-83a9-68aab82a67bd",
+    "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "3e990889-7c0f-5991-b6b0-05c93d76b0e7",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
+    "b2295d1f-61ff-5645-be00-748c8aadec28"
+   ],
+   "units_not_naming_project": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "95ceae00-b3f7-5d0d-b4f2-0361342f761d",
+    "14b7475d-02c0-554d-846c-c7e12cf167d6",
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "59d36aa8-14ce-5b9f-b395-3c9f326ece7a",
+    "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
+    "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
+    "deb8b63e-215c-5089-9a47-a508af842453",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "6038de05-109e-59b3-8be1-2b09733b00a6",
+    "07f76143-6726-5e84-81a2-7b1ecf717dac",
+    "ec492d13-8bba-56da-823d-814320b6c207",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
+    "b2295d1f-61ff-5645-be00-748c8aadec28"
+   ]
+  },
+  {
+   "id": "proj.latarnik",
+   "name": "Latarnik",
+   "kind": "novel_and_writing_tools",
+   "description": "A novel about a lighthouse keeper (Anzelm) on a fictional island, plus the writer's toolkit: chapter versions as events, continuity checker for characters/timeline, word-count stats, epub export.",
+   "aliases": [
+    "Latarnik",
+    "powiesc o latarniku",
+    "ksiazka o latarniku"
+   ],
+   "inflected_forms": [
+    "Latarnika",
+    "Latarnikowi",
+    "Latarnikiem",
+    "Latarniku",
+    "ksiazce o latarniku",
+    "powiesci o latarniku"
+   ],
+   "relevant_units": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
+    "3eb1ae19-73f6-5c9d-b0f0-eaa2c77f99fc",
+    "bfa7b527-ddfa-58c7-a2cb-e3d2dc5d5b6b",
+    "9277c985-98f3-5e80-bf2e-9a3a1bd30bf8",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "96b85ad1-d622-55d6-a09d-ca1bf76c3a1d",
+    "ec492d13-8bba-56da-823d-814320b6c207",
+    "719fbe1b-1b94-5829-82a7-5652e9a74aec",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "4480c4b0-0960-596f-8d09-88d482361f32",
+    "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "c51a60ab-d216-5fd5-90fd-68441d42a8de",
+    "0e43d8b0-e66b-5de9-ad09-7b56b826495f",
+    "343dca50-068d-5123-87d1-100da91b1d25",
+    "e20b5b86-3f66-52b1-bdd2-ab7fc989e3f0",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
+    "910684a3-48cf-52e9-94ac-726795f53a82",
+    "0faae13f-f774-5683-87b3-bb813c24e026"
+   ],
+   "units_not_naming_project": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
+    "3eb1ae19-73f6-5c9d-b0f0-eaa2c77f99fc",
+    "9277c985-98f3-5e80-bf2e-9a3a1bd30bf8",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "96b85ad1-d622-55d6-a09d-ca1bf76c3a1d",
+    "ec492d13-8bba-56da-823d-814320b6c207",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "4480c4b0-0960-596f-8d09-88d482361f32",
+    "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "c51a60ab-d216-5fd5-90fd-68441d42a8de",
+    "0e43d8b0-e66b-5de9-ad09-7b56b826495f",
+    "e20b5b86-3f66-52b1-bdd2-ab7fc989e3f0",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
+    "0faae13f-f774-5683-87b3-bb813c24e026"
+   ]
+  },
+  {
+   "id": "proj.fakturka",
+   "name": "Fakturka",
+   "kind": "small_business_tool",
+   "description": "Invoicing tool for his wife Halina's ceramics shop: gapless numbering, VAT per rate, PDF, corrections instead of edits, advance invoices, CSV for the accountant.",
+   "aliases": [
+    "Fakturka",
+    "programik do faktur",
+    "rozliczenia Haliny"
+   ],
+   "inflected_forms": [
+    "Fakturki",
+    "Fakturce",
+    "Fakturke",
+    "Fakturka",
+    "Fakturko",
+    "programiku do faktur"
+   ],
+   "relevant_units": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "8d826c12-65de-5365-badb-8ef4515fd71f",
+    "2a7ba7a9-4292-5f63-aeba-42e63cabb4ee",
+    "62bdb9ee-360b-58e3-b7ca-67b8520ac37e",
+    "754ef437-8bbc-5bd1-aa5d-44f51ad8114c",
+    "d3a7a95e-9bbe-5884-8c11-4f70b39a7fb8",
+    "443393ae-408d-5b85-af59-95517fddf8fd",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "cce6532b-0ff6-5991-86a5-00fc3179993e",
+    "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
+    "e18e2170-3f49-5846-8e9b-faabc52df768",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "f8de0248-a04b-5f42-95d2-dd0bff2fbb8d",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
+    "60b201ce-491f-5e5a-b7b1-68cc08617237"
+   ],
+   "units_not_naming_project": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "8d826c12-65de-5365-badb-8ef4515fd71f",
+    "2a7ba7a9-4292-5f63-aeba-42e63cabb4ee",
+    "62bdb9ee-360b-58e3-b7ca-67b8520ac37e",
+    "d3a7a95e-9bbe-5884-8c11-4f70b39a7fb8",
+    "443393ae-408d-5b85-af59-95517fddf8fd",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
+    "e18e2170-3f49-5846-8e9b-faabc52df768",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
+   ]
+  }
+ ],
+ "foundations": [
+  {
+   "id": "found.storage",
+   "name": "storage layer",
+   "aliases": [
+    "Szuflada",
+    "warstwa zapisu",
+    "event store",
+    "dziennik zdarzen"
+   ],
+   "used_by": [
+    "proj.kotwica",
+    "proj.latarnik",
+    "proj.fakturka"
+   ],
+   "description": "Append-only event store on SQLite, forward-only migrations, upcasting on read.",
+   "units": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
+   ]
+  },
+  {
+   "id": "found.plugins",
+   "name": "plugin system",
+   "aliases": [
+    "system wtyczek",
+    "dodatki",
+    "plugins"
+   ],
+   "used_by": [
+    "proj.kotwica",
+    "proj.latarnik",
+    "proj.fakturka"
+   ],
+   "description": "Folder-scanned plugins with manifest + declared capabilities; fault isolation.",
+   "units": [
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "ec492d13-8bba-56da-823d-814320b6c207",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
+   ]
+  },
+  {
+   "id": "found.bus",
+   "name": "event bus",
+   "aliases": [
+    "Szyna",
+    "szyna zdarzen",
+    "event bus"
+   ],
+   "used_by": [
+    "proj.kotwica",
+    "proj.latarnik",
+    "proj.fakturka"
+   ],
+   "description": "In-process pub/sub, queue per subscriber, idempotent handlers, outbox.",
+   "units": [
+    "285a9fd2-1b03-50eb-8151-2abb417ce1d7",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
+   ]
+  }
+ ],
+ "principles": [
+  {
+   "id": "pr.boring_tech",
+   "level": "strategy",
+   "form": "heuristic",
+   "statement_pl": "Wybieraj nudne, sprawdzone technologie zamiast nowinek.",
+   "statement_en": "Prefer boring, proven technology over novelty.",
+   "phrasing_units": [
+    "ea00313b-08a0-5277-8ad8-c6c64d6fa833",
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15",
+    "9c269a7e-215e-545b-8252-3c258988ca77"
+   ],
+   "philosophy_only_units": [
+    "ea00313b-08a0-5277-8ad8-c6c64d6fa833",
+    "9c269a7e-215e-545b-8252-3c258988ca77"
+   ]
+  },
+  {
+   "id": "pr.append_only",
+   "level": "value",
+   "form": "invariant",
+   "statement_pl": "Nigdy nie kasuj ani nie nadpisuj danych - dopisuj; stan to widok na historie.",
+   "statement_en": "Never delete or overwrite data - append; state is a view over history.",
+   "phrasing_units": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e",
+    "95ceae00-b3f7-5d0d-b4f2-0361342f761d",
+    "d7acd5e8-35c1-5b4d-99de-e139d2fe1706",
+    "96b85ad1-d622-55d6-a09d-ca1bf76c3a1d",
+    "182c135f-672d-5161-9f78-587da08ecb6f",
+    "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "e18e2170-3f49-5846-8e9b-faabc52df768"
+   ],
+   "philosophy_only_units": [
+    "d7acd5e8-35c1-5b4d-99de-e139d2fe1706"
+   ]
+  },
+  {
+   "id": "pr.manual_fallback",
+   "level": "value",
+   "form": "invariant",
+   "statement_pl": "Kazda automatyka musi miec reczny tryb dzialajacy bez niej (test: trzecia w nocy, bez internetu).",
+   "statement_en": "Every automation needs a manual mode that works without it (the 3 a.m. offline test).",
+   "phrasing_units": [
+    "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
+    "deb8b63e-215c-5089-9a47-a508af842453",
+    "7b8fec2b-3643-58d8-b721-dfc44d726026",
+    "8543f75c-776f-53e6-97d5-ec8535b90135",
+    "ec492d13-8bba-56da-823d-814320b6c207",
+    "b2295d1f-61ff-5645-be00-748c8aadec28"
+   ],
+   "philosophy_only_units": [
+    "7b8fec2b-3643-58d8-b721-dfc44d726026"
+   ]
+  },
+  {
+   "id": "pr.replaceable_pieces",
+   "level": "strategy",
+   "form": "heuristic",
+   "statement_pl": "Buduj male klocki z wyraznymi granicami, wymienialne w jeden wieczor.",
+   "statement_en": "Build small pieces with clear borders, replaceable in one evening.",
+   "phrasing_units": [
+    "ea00313b-08a0-5277-8ad8-c6c64d6fa833",
+    "b172e15a-0742-5f9c-812d-efa5490e5a69",
+    "ec492d13-8bba-56da-823d-814320b6c207",
+    "e8c8f31a-d207-5683-bc4e-6776f9fc20f7",
+    "b0c38530-a90a-5675-952b-e61b858aea01",
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
+   ],
+   "philosophy_only_units": [
+    "ea00313b-08a0-5277-8ad8-c6c64d6fa833",
+    "e8c8f31a-d207-5683-bc4e-6776f9fc20f7"
+   ]
+  },
+  {
+   "id": "pr.write_the_why",
+   "level": "epistemic",
+   "form": "default",
+   "statement_pl": "Zapisuj dlaczego, nie co.",
+   "statement_en": "Record the why, not the what.",
+   "phrasing_units": [
+    "7b19b2bf-0a26-5274-a691-51b02499e514"
+   ],
+   "philosophy_only_units": [
+    "7b19b2bf-0a26-5274-a691-51b02499e514"
+   ]
+  },
+  {
+   "id": "pr.own_your_data",
+   "level": "value",
+   "form": "invariant",
+   "statement_pl": "Dane w otwartych formatach, do odczytania zwyklym notatnikiem za 20 lat; zadnego vendor locka.",
+   "statement_en": "Data in open formats readable by a plain editor in 20 years; no vendor lock-in.",
+   "phrasing_units": [
+    "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
+    "e8c8f31a-d207-5683-bc4e-6776f9fc20f7"
+   ],
+   "philosophy_only_units": [
+    "e8c8f31a-d207-5683-bc4e-6776f9fc20f7"
+   ]
+  },
+  {
+   "id": "pr.ugly_first",
+   "level": "strategy",
+   "form": "heuristic",
+   "statement_pl": "Brzydka, skonczona pierwsza wersja w ~14 dni; polerka dopiero potem; obcinaj zakres zamiast przedluzac.",
+   "statement_en": "Ship an ugly, finished first version in ~14 days; polish later; cut scope instead of extending.",
+   "phrasing_units": [
+    "7b19b2bf-0a26-5274-a691-51b02499e514",
+    "9c269a7e-215e-545b-8252-3c258988ca77",
+    "0faae13f-f774-5683-87b3-bb813c24e026"
+   ],
+   "philosophy_only_units": [
+    "7b19b2bf-0a26-5274-a691-51b02499e514",
+    "9c269a7e-215e-545b-8252-3c258988ca77"
+   ]
+  }
+ ],
+ "decisions": [
+  {
+   "id": "dec.manual_override_wall_switch",
+   "statement": "Wall switch bypasses all electronics; automation is an add-on, not a pillar.",
+   "units": [
+    "e1f42632-cd7d-5075-8508-53e60ba5c1b8",
+    "deb8b63e-215c-5089-9a47-a508af842453"
+   ],
+   "projects": [
+    "proj.kotwica"
+   ]
+  },
+  {
+   "id": "dec.chapter_versions_as_events",
+   "statement": "Every chapter save is an event; current text = latest, history retained.",
+   "units": [
+    "96b85ad1-d622-55d6-a09d-ca1bf76c3a1d"
+   ],
+   "projects": [
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.gapless_numbering_at_commit",
+   "statement": "Invoice numbers are assigned at commit inside a transaction, drafts have none.",
+   "units": [
+    "8d826c12-65de-5365-badb-8ef4515fd71f",
+    "2a7ba7a9-4292-5f63-aeba-42e63cabb4ee"
+   ],
+   "projects": [
+    "proj.fakturka"
+   ]
+  },
+  {
+   "id": "dec.issued_documents_immutable",
+   "statement": "Issued invoices are never edited; a correcting document references the original.",
+   "units": [
+    "e18e2170-3f49-5846-8e9b-faabc52df768"
+   ],
+   "projects": [
+    "proj.fakturka"
+   ]
+  },
+  {
+   "id": "dec.csv_bom_semicolon",
+   "statement": "Accountant export: CSV, semicolon, UTF-8 BOM, decimal comma, document number as text.",
+   "units": [
+    "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0"
+   ],
+   "projects": [
+    "proj.fakturka"
+   ]
+  },
+  {
+   "id": "dec.event_store_sqlite",
+   "statement": "One SQLite file per project via a shared event-store library; domain lives in payloads.",
+   "units": [
+    "ca26c6cb-016e-50fc-974d-46df188f64cc",
+    "1d24a003-4684-5924-9c69-5a9efeb35c7e"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.forward_only_migrations",
+   "statement": "Schema changes via PRAGMA user_version, forward-only, file copy before migrating.",
+   "units": [
+    "e7473482-3731-5494-bfe9-c87a0c0a9c15"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.plugin_manifest_capabilities",
+   "statement": "Plugins live in a folder with manifest.toml and declared capabilities + core API version.",
+   "units": [
+    "b172e15a-0742-5f9c-812d-efa5490e5a69"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.plugin_fault_isolation",
+   "statement": "Plugin calls are wrapped with timeout; N consecutive failures disable the plugin.",
+   "units": [
+    "ec492d13-8bba-56da-823d-814320b6c207"
+   ],
+   "projects": [
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.inproc_bus_queue_per_subscriber",
+   "statement": "In-process bus with hierarchical topics; one queue per subscriber.",
+   "units": [
+    "285a9fd2-1b03-50eb-8151-2abb417ce1d7"
+   ],
+   "projects": [
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.idempotent_handlers",
+   "statement": "Handlers are idempotent; subscriber offsets are stored in the same transaction as effects.",
+   "units": [
+    "182c135f-672d-5161-9f78-587da08ecb6f"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.outbox_pattern",
+   "statement": "Event + to-send marker written in one transaction; a separate worker publishes.",
+   "units": [
+    "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica"
+   ]
+  },
+  {
+   "id": "dec.core_versioned_package",
+   "statement": "Shared core is a versioned package with contract tests run in each project's CI.",
+   "units": [
+    "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.advance_invoices_as_negative_lines",
+   "statement": "Final invoice carries full value and a negative line for advances.",
+   "units": [
+    "d3a7a95e-9bbe-5884-8c11-4f70b39a7fb8"
+   ],
+   "projects": [
+    "proj.fakturka"
+   ]
+  },
+  {
+   "id": "dec.upcast_on_read",
+   "statement": "Old event versions are upcast in memory on read; stored events are never rewritten.",
+   "units": [
+    "92909a78-7794-51e0-a189-d9f15bd9df8f"
+   ],
+   "projects": [
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
+   "id": "dec.core_has_no_domain_deps",
+   "statement": "Core never imports from domain code; CI enforces the dependency direction.",
+   "units": [
+    "b0c38530-a90a-5675-952b-e61b858aea01"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  }
+ ],
+ "non_conversation_artifacts": [
+  {
+   "kind": "claude_project",
+   "uuid": "a9654dff-6aa8-5044-b1c1-6dcad0782fcb",
+   "name": "Warsztat",
+   "relevance": {
+    "kind": "philosophy",
+    "principles": [
+     "pr.boring_tech",
+     "pr.append_only",
+     "pr.manual_fallback",
+     "pr.replaceable_pieces",
+     "pr.write_the_why",
+     "pr.ugly_first"
+    ]
+   }
+  },
+  {
+   "kind": "claude_project",
+   "uuid": "51a1494b-d0b6-527d-baec-2aa8203dfae0",
+   "name": "Sklep Haliny",
+   "relevance": {
+    "kind": "project_context",
+    "projects": [
+     "proj.fakturka"
+    ]
+   }
+  }
+ ],
+ "counts": {
+  "conversations_total": 54,
+  "relevant": 54,
+  "noise_traps": 0,
+  "noise_generic": 0,
+  "conversations_chatgpt": 30,
+  "conversations_claude": 24,
+  "messages_total": 213,
+  "relevant_by_category": {
+   "explicit_name": 6,
+   "architecture_unnamed": 9,
+   "inflected_alias": 6,
+   "paraphrase_only": 6,
+   "shared_foundation": 8,
+   "philosophy": 6,
+   "multi_topic_late": 7,
+   "near_duplicate": 6
+  },
+  "relevant_by_hardness": {
+   "hard": 41,
+   "easy": 7,
+   "medium": 6
+  },
+  "relevant_multi_label": 11,
+  "relevant_not_naming_project": 41,
+  "relevant_by_project": {
+   "proj.kotwica": 24,
+   "proj.latarnik": 22,
+   "proj.fakturka": 19
+  },
+  "relevant_philosophy_only": 6,
+  "near_duplicate_pairs": 6,
+  "principles": 7,
+  "decisions": 16,
+  "foundations": 3
+ }
+}
