@@ -301,9 +301,9 @@ TEST_SUITE("model") {
     cs.budget_tokens = 1000;
     cs.id = ContextSet::make_id(cs.goal.id, cs.budget_tokens, "h");
     ContextItem a{RefKind::Principle, "p.kod_ne_dane", ContextBand::Stable, Resolution::Label, 0.9, Json::object(), 12,
-                  "core invariant", {}, ""};
+                  "core invariant", {}, {}, ""};
     ContextItem b{RefKind::Claim, "cl_1", ContextBand::Goal, Resolution::Full, 0.7, Json::object(), 100,
-                  "the module to implement", {}, ""};
+                  "the module to implement", {}, {}, ""};
     cs.items = {a, b};
     cs.used_tokens = 112;
     LOOM_REQUIRE_OK(cs.validate());
