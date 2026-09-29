@@ -262,6 +262,11 @@ TEST_SUITE("catalog_eval") {
 
     MESSAGE("selected auxiliary documents (outside conversation labels): " << auxiliary_selected);
     MESSAGE("selector stats: " << score_stats.dump());
+    // Linking runs on candidate generation (LSH + rare-term index + time sweep),
+    // not the all-pairs scan; on this corpus it yields exactly the 56 links
+    // the exhaustive reference produced (verified byte-identical score table).
+    CHECK(json::get_string(score_stats["link_stats"], "mode") == "candidates");
+    CHECK(json::get_int(score_stats["link_stats"], "links") == 56);
 
     // Trap rejection and precision are the safety-critical properties (R1:
     // never auto-import irrelevant content from a multi-GB archive) and are

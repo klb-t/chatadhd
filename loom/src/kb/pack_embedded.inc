@@ -11312,7 +11312,7 @@ const char* const kPackChunks16[] = {
     "sem_min_seeds": 2,
     "sem_passes": 2,
     "sem_self_doc_weight": 0.5,
-    "link_exact_max_units": 2000,
+    "link_exact_max_units": 0,
     "link_session_max_neighbours": 32,
     "link_project_max_clique": 32,
     "link_session_similarity_ref": 0.15
@@ -11383,7 +11383,7 @@ const char* const kPackChunks17[] = {
     "date_prior": 0.3,
     "neg_context": -2.5,
     "link": 1.0,
-    "consensus": 0.8,
+    "consensus": 1.0,
     "title": 0.2,
     "sem_word": 1.5,
     "sem_ngram": 2.0

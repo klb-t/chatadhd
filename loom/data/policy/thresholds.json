@@ -24,7 +24,7 @@
     "sem_min_seeds": 2,
     "sem_passes": 2,
     "sem_self_doc_weight": 0.5,
-    "link_exact_max_units": 2000,
+    "link_exact_max_units": 0,
     "link_session_max_neighbours": 32,
     "link_project_max_clique": 32,
     "link_session_similarity_ref": 0.15

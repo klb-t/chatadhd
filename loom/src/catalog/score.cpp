@@ -246,7 +246,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   int sem_ngram = 4, sem_min_seeds = 2, sem_passes = 2;
   int link_exact_max_units = 2000, link_session_max_neighbours = 32, link_project_max_clique = 32;
   double link_session_similarity_ref = 0.15;
-  int link_rounds = 2;
+  int link_rounds = 2, feedback_cycles = 1;
   double consensus_min_lex = 0.15, consensus_min_sem = 0.3, consensus_min_link = 0.15;
   double sem_floor_pct = 10.0, sem_ref_pct = 50.0, sem_cap = 1.5, sem_self_doc_weight = 0.5;
   if (const Json* cat = json::find(thresholds, "catalog"); cat && cat->is_object()) {
@@ -274,6 +274,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     consensus_min_lex = json::get_number(*cat, "consensus_min_lexical", consensus_min_lex);
     consensus_min_sem = json::get_number(*cat, "consensus_min_semantic", consensus_min_sem);
     consensus_min_link = json::get_number(*cat, "consensus_min_link", consensus_min_link);
+    feedback_cycles = std::max(0, static_cast<int>(json::get_int(*cat, "feedback_cycles", feedback_cycles)));
     link_rounds = std::max(1, static_cast<int>(json::get_int(*cat, "link_rounds", link_rounds)));
   }
   int max_passes = cfg.max_passes > 0 ? std::min(cfg.max_passes, max_expansion_passes) : max_expansion_passes;
@@ -531,6 +532,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   auto has_semantic_evidence = [](const Row& row) {
     return json::get_number(row.features, "sem_word", 0.0) > 0.05 || json::get_number(row.features, "sem_ngram", 0.0) > 0.05;
   };
+  auto run_semantic = [&](int max_pass) {
   if (space) {
     std::vector<std::pair<std::string, double>> self_pseudo;
     for (const auto& qt : self_terms) self_pseudo.emplace_back(qt.term, qt.weight);
@@ -538,7 +540,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     for (int i = 0; i < N; ++i) {
       if (rows[static_cast<std::size_t>(i)].label != "irrelevant") seed_w[static_cast<std::size_t>(i)] = rows[static_cast<std::size_t>(i)].score;
     }
-    for (int pass = 1; pass <= sem_passes; ++pass) {
+    for (int pass = 1; pass <= max_pass; ++pass) {
       if (cancel && cancel->cancelled()) break;
       SemanticProfile prof = space->new_profile();
       int seeds = 0;
@@ -597,6 +599,8 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
       if (!changed) break;
     }
   }
+  };
+  run_semantic(sem_passes);
 
   // ── Linking pass: same project/gizmo, MinHash continuation, shared rare
   // identifiers, same-session -- one damped propagation step. Candidate
@@ -647,7 +651,8 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   std::vector<double> pre_link_score(static_cast<std::size_t>(N));
   std::vector<double> link_value(static_cast<std::size_t>(N), 0.0);
   std::int64_t uncorroborated_sessions = 0;
-  for (int round = 0; round < link_rounds; ++round) {
+  auto propagate = [&](int rounds) {
+  for (int round = 0; round < rounds; ++round) {
   for (int i = 0; i < N; ++i) pre_link_score[static_cast<std::size_t>(i)] = rows[static_cast<std::size_t>(i)].score;
   std::fill(link_value.begin(), link_value.end(), 0.0);
   uncorroborated_sessions = 0;
@@ -691,6 +696,15 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     row.features["project_member"] = has_project_link[static_cast<std::size_t>(i)] ? 1.0 : 0.0;
   }
   for (auto& row : rows) compute_linear_and_label(row);
+  }
+  };
+  propagate(link_rounds);
+  // Coverage-first feedback: the units confirmed by linking (in every band)
+  // seed the semantic profile again, then propagation runs once more.
+  for (int cycle = 0; cycle < feedback_cycles && space; ++cycle) {
+    if (cancel && cancel->cancelled()) break;
+    run_semantic(1);
+    propagate(1);
   }
   {
     auto lk = rt_.db().lock();
