@@ -15,8 +15,11 @@ Python↔C++ compatibility invariant), `loom/README.md`.
   judgement always wins; missing capability => lower evidence class, never a
   fabricated metric.
 - Preserve all source bytes; derived state must be rebuildable.
-- Core Python/C++ on-disk compatibility is mandatory (schema v4). New state goes
-  in `loom_*` tables. Every public ABI addition needs the exported-symbol test.
+- Python compatibility is NOT required any more (owner, 2026-09-29: it was a
+  minimum plan). Existing compat tests stay green as sentinels until a deliberate
+  migration; schema changes must be deliberate (migration + note in STATE.md).
+  Every public ABI addition needs the exported-symbol test.
+- Develop linearly: one line, ratchet — never worsen a tracked test/metric.
 - Never weaken a quality gate to make it pass. Report honest numbers with their
   denominators, data provenance and caveats; keep development, independent and
   holdout data separate. Do **not** read or tune against `eval/real-holdout-key`.

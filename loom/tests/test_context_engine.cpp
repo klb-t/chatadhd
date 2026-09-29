@@ -285,6 +285,47 @@ TEST_SUITE("context_engine") {
     for (const auto& d : set.dropped) CHECK(!d.why.empty());
   }
 
+  TEST_CASE("select: a premise the budget cannot hold is flagged, never silently dropped") {
+    Fixture f;
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    int incomplete_seen = 0, complete_with_premise = 0;
+    for (int budget = 4; budget <= 700; budget += 2) {
+      context::ContextRequest req;
+      req.text = "zaimplementuj checklisty w NoteFlow";
+      req.targets = {f.feat.id};
+      req.project = f.proj.id;
+      req.goal_type = "implement_part";
+      req.budget_tokens = budget;
+      auto set = unwrap(engine.select(req));
+      const model::ContextItem* impl = nullptr;
+      bool premise_present = false;
+      for (const auto& it : set.items) {
+        if (it.ref == f.c_impl.id) impl = &it;
+        if (it.ref == f.p_project.id) premise_present = true;
+      }
+      if (!impl) continue;
+      if (premise_present) {
+        CHECK(impl->missing_premises.empty());
+        ++complete_with_premise;
+      } else {
+        INFO("budget=", budget);
+        REQUIRE(impl->missing_premises.size() == 1);
+        CHECK(impl->missing_premises[0] == f.p_project.id);
+        auto text = unwrap(engine.render(set));
+        CHECK(text.find("[INCOMPLETE") != std::string::npos);
+        auto trace = engine.trace(set);
+        CHECK(trace.dump().find("missing_premises") != std::string::npos);
+        ++incomplete_seen;
+      }
+      // JSON round trip keeps the flag.
+      auto rt_item = unwrap(model::ContextItem::from_json(impl->to_json()));
+      CHECK(rt_item.missing_premises == impl->missing_premises);
+    }
+    CHECK(complete_with_premise > 0);
+    // The sweep must actually exercise the incomplete path, otherwise this test proves nothing.
+    CHECK(incomplete_seen > 0);
+  }
+
   TEST_CASE("render + trace: sections-as-data match the rendered text, with evidence markers") {
     Fixture f;
     context::ContextEngine engine(*f.rt, *f.ks, f.pack);

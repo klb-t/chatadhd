@@ -387,8 +387,10 @@ is a tracked metric.
   from the applicable principles and preferences.
 - **I9** Capability honesty: when a capability is missing, the result is
   marked unverified at a lower evidence class — never a fabricated metric.
-- **I10** The legacy Python-parity modules and the core schema v4 stay
-  untouched; this model lives in `loom_*` tables and new modules.
+- **I10** (relaxed 2026-09-29, owner decision D1) Python compatibility is no longer
+  required. The legacy Python-parity modules and core schema v4 stay as regression
+  sentinels until a deliberate migration; this model lives in `loom_*` tables and new
+  modules, and new schema is allowed when deliberate (migration + note).
 
 ---
 
@@ -433,3 +435,147 @@ is a tracked metric.
 | context set | zestaw kontekstu | memory |
 | product | produkt (zmaterializowany wynik) | artifact (any document, including sources) |
 | prediction | przewidywanie | extrapolation |
+
+---
+
+## 11. Extensions v1.1 (2026-09-29) — from `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md`
+
+Additive. Terms keep exactly one meaning. "Requirement" = owner statement
+(OWNER_REQUIREMENTS R26–R38); "proposal" = design suggestion not yet approved or
+implemented. **Nothing here marks an existing feature as done.** Names are working
+names; existing objects (`Goal`, `ContextSet`, `Resolution`, claims, assessments,
+sources, products, tasks, provenance) are extended, no parallel store is created.
+
+### 11.1 The five layers (R26) — glossary additions
+
+| Layer | Meaning | Is / is not |
+|---|---|---|
+| **Conversation history** | Recorded messages and events: roles, order, branches, edits, attachments, tool calls/results, metadata. | A *source*. Not an active-instruction list; not the request. |
+| **Knowledge state** | Entities, claims, assessments, decisions, principles, dependencies, alternatives, sources in the graph, possibly across many conversations. | Derived; rebuildable. |
+| **Active task specification** | The currently valid outcome of clarifying intent, content, form and constraints, with references to the utterances that changed it. | A *derived product* (see 11.5), never a verbatim user utterance. |
+| **Query context** (`ContextSet`) | Material selected and materialised for one model call. | A *compilation result*. |
+| **Request / execution** | The concrete package sent to a chosen API with settings, plus the surrounding tool/validation/continuation workflow. | May be `recorded`, `reconstructed` or `unknown` for imported conversations (11.2). |
+
+Four audit cross-sections must be independently showable: what happened in the
+conversation · what currently holds · what is in the graph · what was actually sent.
+
+### 11.2 Request provenance status (R26, R30)
+Every request snapshot attached to a conversation turn carries
+`provenance ∈ {recorded, reconstructed, unknown}`. An export is not a
+transmission record: never present a reconstruction as a copy of the provider
+app's request, never fabricate missing memory, system instructions, hidden state
+or truncation algorithms. Provider adapters report per capability:
+`native | equivalent | limited | unavailable`.
+
+### 11.3 Scope and detail — two independent axes of context control (R28)
+`ContextSet` selection is parameterised by **scope** (how widely material is
+reached) and **detail** (which `Resolution`/representation each element gets,
+non-uniform, task-dependent). A token budget is a constraint, not their
+definition; sampling density (R32) is a third, separate parameter. Proposal: a
+*plan* (section/thesis list of the intended product) acts as a structural query
+that assigns scope/detail per thesis and must also retrieve counter-evidence and
+report missing support.
+
+### 11.4 Retrieval channels and the lexical shadow pipeline (R25, R27) — proposal
+`C_semantic = union(vector, graph, small model, Jev, structural, …)`,
+`C_lexical = union(keywords, regex, exact symbols, exact quotes, …)`,
+`diagnostic_gap = C_lexical − C_semantic`. Each gap element is verified as
+*lexical rescue* (real miss of the main pipeline → regression case), *lexical
+noise* (no action) or *undecided*. Similarity of a fragment never confirms
+entity identity, truth of a claim, or permission to send material externally.
+
+### 11.5 Refinement consolidation (R34)
+A **refinement block** is a coherent stretch of clarifying/negotiating/correcting.
+Its result is the **active task specification**: goal, required information,
+structure/format, style, prohibitions, exceptions, resolved alternatives, open
+issues — compiled into one current instruction with a map to source utterances and
+a version. Distinguish: new requirement · change of an old one · exception ·
+rejected proposal · scope clarification · question · executor-only context.
+"I don't like it" creates an *unresolved need for correction*, never an invented
+fix. Rejected answers stay in the sources but do not compete as active
+solutions. Representation may reuse claims/decisions; a `RefinementChain` name
+does not mandate a new store. Hypothesis (H): less stale/contradictory
+instruction → fewer returns to rejected variants; needs fidelity tests (details
+may be lost) and a way back to the source.
+
+### 11.6 Entity relations beyond `same_as` (R35)
+`same_as` is only for real identity (alias, ASR/spelling variant). Separate,
+time-scoped, provenance-carrying relations: **lineage** (predecessor, successor,
+fork, supersession, evolution), **convergence** (independent lines that later
+join), **composition** (component/capability of), **sharing** (module used by
+several projects). Simultaneous **projections** of one graph: historical-design,
+architectural, ecosystem, generative. No projection is canonical; derived
+projections are never a second source of truth.
+
+### 11.7 Structural transfer hypothesis and graph seeding (R36) — proposal
+If a partial mapping between sub-graphs preserves stated relations/properties, a
+missing element on the target side is a **hypothesis of structural transfer**,
+recorded with: premises, operator/mapping, preserved and unverified properties,
+expected properties, assessment, alternatives, counter-evidence, and a
+`predicted_at` timestamp. It is never an observation until validated. Seedable
+items: nodes, candidate relations, qualifiers, exceptions, abstraction levels,
+capability implementations, applications of shared modules,
+generalisations/specialisations, consequences, conflicts, missing evidence. On
+later confirmation keep genealogy + prediction time (ground truth for the
+generator). Edges therefore carry, by type: qualifiers, scope, time/version,
+provenance, operator/derivation, assessment, exceptions, counter-evidence,
+alternatives and the properties a mapping must preserve; do not freeze one format
+before the algebra of needed operations is settled. Tests: temporal/structural
+hold-out, leave-one-project-out, hiding capabilities/modules, counterfactual
+removal of a principle, baselines, future-knowledge leakage control.
+
+### 11.8 ModelProfile — model of models (R37) — proposal
+Keyed by `model/version × task/operation × domain × representation/context shape ×
+renderer/question recipe` → observed performance, failure modes, biases,
+calibration, cost/latency, evidence, validity period. A global `model_reliability`
+is insufficient; a new model/provider/recipe version does not inherit the
+predecessor's assessments. Profiles rest on *observed* behaviour (ground truth,
+later corrections, hold-outs, ablations, differences between instruments,
+downstream results); a model's explanation of its own error is only a hypothesis
+(avoid the loop "model errs → describes its error → system fixes the wrong
+compensation"). A *compensating instruction/policy* is itself a versioned,
+testable product of `ModelProfile × Task`. Failure-aware promotion: in a known
+weak area raise the promotion threshold, require extra sources/counter-examples
+or another instrument, choose another model/pipeline, and/or add a specific
+compensating request element.
+
+### 11.9 Evaluation packet for classifier calls (R38) — proposal
+`EvaluationPacket{target turn/span, conversation-history view, effective task and
+artifact plan, model-request snapshot if known, candidate nodes/relations/
+subgraphs/representations, question + rubric, known_at/branch/source refs}`.
+History, analysed utterance, current goal, sent request and candidates stay
+separately labelled. Only an authorised projection goes to the second model; no
+keys/authorisation headers; source text is data, not instructions. A classifier
+score is named for what it measures (`relevance_to_query` ≠ probability the
+relation is true ≠ strength of evidence ≠ importance for future tasks) and is not
+promoted to an observation. Separate the questions "is the relation *expressed in
+the source*?" and "is it a *sensible inferred abstraction*?".
+
+### 11.10 Workspace and interaction composition (R29–R31) — proposal
+UI-IR extension: `Workspace → Container(kind = window|fullscreen|dock|split|tabs|
+adaptive|…) → View(data query, projection, renderer, interactions) → Components`.
+Parameter couplings are directed, scoped, detachable and cycle-safe ("coupled" ≠
+"every move overwrites every panel"); a panel may follow another's time yet keep
+its own detail, or be frozen as a reference. A saved layout + filters + bindings +
+selection + data version + projection is a reproducible analysis perspective;
+changing a view never changes canonical data. Execution: selection → spec variant
+→ scope/representation variant → request compilation + capability validation →
+model/tool call → evaluation/aggregation → presentation and controlled policy
+update; only real request fields become API parameters (experiment strategy,
+privacy policy, retry, aggregation do not). Provider profiles are detachable
+presets over: `source, interface, conversation, context, request_adapter, tools,
+model/provider, memory, rendering`.
+
+### 11.11 Latent space of reasoning models (R32) — research direction (H)
+`sources → reasoning structures and qualifiers → representations/similarity
+relations → local neighbourhoods and directions of variation inferred from data →
+region/trajectory/samples → explicit assumption structure → materialisation for a
+chosen interaction element → model behaviour and measurement`. Representation
+stays open (neighbourhood graph, vectors, several projections, local maps); no
+assumed global linearity/smooth manifold/meaning of distance; derived
+representations never become a parallel truth. "Non-refuted" is a status relative
+to stated data, assumptions and criteria; "all" in a finite study needs an
+explicit scope, coverage strategy, resolution and budget. Support share among
+samples is region- and sampling-dependent, not a probability of truth. Controls
+for style, topic, length, author and renderer are required before attributing a
+behaviour change to the representation.

@@ -1,0 +1,2261 @@
+{
+  "schema": "loom.model_profiles/1",
+  "source_extract_sha256": "8324583ed959b475b13dc21893779f68e63f6c818fa458bb402de6a55d18ea2a",
+  "new_model_calls": 0,
+  "sources": [
+    {
+      "id": "jev_aggregate",
+      "path": "docs/research/inputs/jev-structure-analysis-2026-09-28.json",
+      "git_blob_sha": "7f935790844adfaf0b27684a480dcc80ec237441",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "jev_questions",
+      "path": "loom/tests/fixtures/eval/jev_structure_pilot_v1/inputs.json",
+      "git_blob_sha": "5e9976f23f5f3bcbf1c4f621099bd196331fae64",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "jev_report",
+      "path": "docs/research/JEV_RESULTS_2026-09-28.md",
+      "git_blob_sha": "2951757b257c4e7560629b3aa765f734641c6a58",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "native_reconciled",
+      "path": "docs/research/OPENROUTER_NATIVE_REMAINDER_2026-09-28.md",
+      "git_blob_sha": "42c4700dbec9e54a23a4a2bd492d27ef311e90e8",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "native_mechanical",
+      "path": "docs/research/LOCAL_NATIVE_VERIFICATION_2026-09-28.md",
+      "git_blob_sha": "25c050749860dcbc2af33c6d386f2b2514f87dbb",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "requirements",
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "git_blob_sha": "54a3670928443c1a6e6fd3dc9e072e173b5ac88e",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "jev-structure-v1.q01",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "asserted_conditional_forward",
+        "question_id": "q01",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q01",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q01"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 0.78125,
+          "numerator": 50,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q01/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 0.3,
+          "numerator": 6,
+          "denominator": 20,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q01/precision_available"
+          },
+          "note": "q01: six true positives among twenty positive decisions, as recorded by the audit.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q01/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.11916875,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q01/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.71875,
+          "numerator": 46,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q01/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.10869565217391304,
+          "numerator": 5,
+          "denominator": 46,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q01/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 14,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/errors_by_question/q01"
+          }
+        },
+        {
+          "kind": "rubric_sensitivity",
+          "status": "interpretation_hypothesis",
+          "description": "Literal role binding differs from a plausible implicit conditional reading. Errors may reflect recipe/goal mismatch, not inability to reason about implication.",
+          "count": null,
+          "evidence": {
+            "source_id": "jev_report",
+            "location": "Errors and a limitation of the questions themselves"
+          }
+        },
+        {
+          "kind": "high_score_mismatch",
+          "status": "reported_observation",
+          "description": "Five development mismatches survived band 0.2/0.8, scores 0.81–0.86. A q01 quarantine was post hoc, not validated.",
+          "count": 5,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/high_confidence/errors"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change.",
+          "Test expressed-source relation separately from sensible inferred abstraction (T3), without silently changing historical gold."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q02",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "asserted_conditional_reverse",
+        "question_id": "q02",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q02",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q02"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q02/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q02/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q02/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0272015625,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q02/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.796875,
+          "numerator": 51,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q02/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 51,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q02/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q02/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q03",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "endorsed_universal_claim",
+        "question_id": "q03",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q03",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q03"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 0.984375,
+          "numerator": 63,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q03/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 0.9230769230769231,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q03/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q03/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0284375,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q03/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.78125,
+          "numerator": 50,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q03/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 50,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q03/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 1,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/errors_by_question/q03"
+          }
+        },
+        {
+          "kind": "rubric_sensitivity",
+          "status": "interpretation_hypothesis",
+          "description": "One universality mismatch near threshold. Category quantification and a proposition-level sufficient condition may be read differently.",
+          "count": null,
+          "evidence": {
+            "source_id": "jev_report",
+            "location": "Errors and a limitation of the questions themselves"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q04",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "endorsed_existential_claim",
+        "question_id": "q04",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q04",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q04"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q04/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q04/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q04/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0088765625,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q04/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q04/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q04/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q04/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q05",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "sample_to_universal_generalization",
+        "question_id": "q05",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q05",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q05"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q05/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q05/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q05/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0215859375,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q05/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.859375,
+          "numerator": 55,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q05/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 55,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q05/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q05/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q06",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "negated_joint_truth",
+        "question_id": "q06",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q06",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q06"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q06/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q06/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q06/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0097140625,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q06/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.96875,
+          "numerator": 62,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q06/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 62,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q06/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q06/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q07",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "evidence_in_favor_of_target",
+        "question_id": "q07",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q07",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q07"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 0.90625,
+          "numerator": 58,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q07/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 0.7,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q07/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q07/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0761640625,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q07/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.546875,
+          "numerator": 35,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q07/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 35,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q07/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 6,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/errors_by_question/q07"
+          }
+        },
+        {
+          "kind": "rubric_sensitivity",
+          "status": "interpretation_hypothesis",
+          "description": "Extra support judgments for analogy/identity descriptions. A target T may have been supplied implicitly instead of using the evaluated target.",
+          "count": null,
+          "evidence": {
+            "source_id": "jev_report",
+            "location": "Errors and a limitation of the questions themselves"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q08",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "universal_counterexample",
+        "question_id": "q08",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q08",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q08"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q08/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q08/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q08/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0027046875,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q08/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q08/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q08/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q08/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q09",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "distinct_system_analogy",
+        "question_id": "q09",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q09",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q09"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q09/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q09/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q09/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0080265625,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q09/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.984375,
+          "numerator": 63,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q09/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 63,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q09/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q09/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q10",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "asserted_identity",
+        "question_id": "q10",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q10",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q10"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q10/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q10/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q10/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.0049703125,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q10/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.96875,
+          "numerator": 62,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q10/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 62,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q10/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q10/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q11",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "asserted_causation",
+        "question_id": "q11",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q11",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q11"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 0.921875,
+          "numerator": 59,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q11/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 0.5454545454545454,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q11/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q11/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.040434375,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q11/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 0.890625,
+          "numerator": 57,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q11/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 57,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q11/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 5,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/errors_by_question/q11"
+          }
+        },
+        {
+          "kind": "rubric_sensitivity",
+          "status": "interpretation_hypothesis",
+          "description": "Extra causal judgments in conditional statements. A plausible mechanism may have been added to what the source explicitly states.",
+          "count": null,
+          "evidence": {
+            "source_id": "jev_report",
+            "location": "Errors and a limitation of the questions themselves"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "jev-structure-v1.q12",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "typesafe/jev-1.13",
+        "version": "typesafe/jev-1.13-20260917",
+        "version_status": "reported_returned_identifier",
+        "provider": "typesafe",
+        "operation": "positive_inclusive_disjunction",
+        "question_id": "q12",
+        "domain": [
+          "authored structural families",
+          "pl",
+          "en"
+        ],
+        "context_shape": "state:{text}; 12 fixed independent Noul questions; locally named roles where required",
+        "recipe_id": "jev-structure-v1/q12",
+        "recipe_source": {
+          "source_id": "jev_questions",
+          "location": "/0/questions/q12"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 64,
+        "available": 64,
+        "missing": 0,
+        "unit": "question decisions",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "accuracy": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q12/accuracy_available"
+          },
+          "note": "Count reconstructed from recorded n and errors.",
+          "unit": "fraction"
+        },
+        "positive_precision": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q12/precision_available"
+          },
+          "note": "Positive denominator is not loaded for this question.",
+          "unit": "fraction"
+        },
+        "positive_recall": {
+          "value": 1.0,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q12/recall_available"
+          },
+          "note": "Do not infer the number of positive labels from a reported recall of 1.",
+          "unit": "fraction"
+        },
+        "brier": {
+          "value": 0.011125000000000001,
+          "numerator": null,
+          "denominator": null,
+          "method": "reported_scalar",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q12/brier_available"
+          },
+          "note": "Reported mean squared probability error, not an ECE certification.",
+          "unit": "mean_squared_error"
+        },
+        "selective_coverage": {
+          "value": 1.0,
+          "numerator": 64,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q12/selective_coverage_planned"
+          },
+          "note": "Fixed historical diagnostic band p<=0.2 or p>=0.8.",
+          "unit": "fraction"
+        },
+        "selective_error": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 64,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q12/selective_error"
+          },
+          "note": "Error among retained decisions; selection is not correction.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": null,
+        "allocation": "shared_batch_only",
+        "batch_ref": "jev-structure-v1",
+        "note": "Twelve judgments share one request; per-question billing is unavailable."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "jev-structure-v1",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "reference_mismatch",
+          "status": "reported_observation",
+          "description": "Disagreements with the frozen narrow source-structure rubric; all historical errors were FP.",
+          "count": 0,
+          "evidence": {
+            "source_id": "jev_aggregate",
+            "location": "/score/groups/question/q12/accuracy_available"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change."
+        ]
+      }
+    },
+    {
+      "id": "native_v1.openai/gpt-4.1-mini",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "openai/gpt-4.1-mini",
+        "version": null,
+        "version_status": "requested_identifier_only",
+        "provider": "openai",
+        "operation": "source_to_occurrence_graph",
+        "question_id": null,
+        "domain": [
+          "authored development source packets",
+          "pl",
+          "en"
+        ],
+        "context_shape": "One-call graph JSON: local handles, occurrence scopes, UTF-8 byte source support",
+        "recipe_id": "native_v1",
+        "recipe_source": {
+          "source_id": "native_reconciled",
+          "location": "Model and explicit provider table"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 16,
+        "available": 11,
+        "missing": 5,
+        "unit": "planned model requests",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "request_coverage": {
+          "value": 0.6875,
+          "numerator": 11,
+          "denominator": 16,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          },
+          "note": "Missing responses include uncertain and never-started requests, not semantic failures.",
+          "unit": "fraction"
+        },
+        "contract_acceptance_returned": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 11,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Reconciliation and denominator"
+          },
+          "note": "No returned graph passed the full contract.",
+          "unit": "fraction"
+        },
+        "end_to_end_success_planned": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 16,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Reconciliation and denominator"
+          },
+          "note": "Denominator includes missing outcomes, explicitly separated below.",
+          "unit": "fraction"
+        },
+        "semantic_accuracy_conditional_on_valid_contract": {
+          "value": null,
+          "numerator": null,
+          "denominator": 0,
+          "method": "unavailable",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Reconciliation and denominator"
+          },
+          "note": "No valid graph: conditional semantic accuracy is unavailable, not zero.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": "0.0222088",
+        "allocation": "per_model_returned_responses",
+        "batch_ref": "native_v1_combined",
+        "note": "Available returned usage only; uncertain charges remain unknown. No allocation by individual question."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "native_v1_combined",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "duplicate_json",
+          "status": "reported_observation",
+          "description": "Duplicate-key response rejected without repair.",
+          "count": 6,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        },
+        {
+          "kind": "contract_failures",
+          "status": "reported_observation",
+          "description": "First graph contract violation; not a count of every semantic mistake.",
+          "count": 5,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        },
+        {
+          "kind": "uncertain",
+          "status": "reported_observation",
+          "description": "Started request with unknown outcome/charge, not automatically retried.",
+          "count": 0,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        },
+        {
+          "kind": "untouched",
+          "status": "reported_observation",
+          "description": "Never started; not an observed incorrect response.",
+          "count": 5,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change.",
+          "Separate semantic choice from deterministic identifiers/UTF-8 coordinates; test this new recipe before adoption."
+        ]
+      }
+    },
+    {
+      "id": "native_v1.qwen/qwen3-30b-a3b-instruct-2507",
+      "representation": "derived_profile_projection",
+      "key": {
+        "model": "qwen/qwen3-30b-a3b-instruct-2507",
+        "version": null,
+        "version_status": "requested_identifier_only",
+        "provider": "siliconflow/fp8",
+        "operation": "source_to_occurrence_graph",
+        "question_id": null,
+        "domain": [
+          "authored development source packets",
+          "pl",
+          "en"
+        ],
+        "context_shape": "One-call graph JSON: local handles, occurrence scopes, UTF-8 byte source support",
+        "recipe_id": "native_v1",
+        "recipe_source": {
+          "source_id": "native_reconciled",
+          "location": "Model and explicit provider table"
+        }
+      },
+      "validity": {
+        "observed_on": "2026-09-28",
+        "expires_on": null,
+        "applicability": "historical_recipe_and_population_only",
+        "inherit_to_other_version": false
+      },
+      "population": {
+        "planned": 16,
+        "available": 9,
+        "missing": 7,
+        "unit": "planned model requests",
+        "dependent_observations": "Authored families, translations and variants; not independent trials."
+      },
+      "metrics": {
+        "request_coverage": {
+          "value": 0.5625,
+          "numerator": 9,
+          "denominator": 16,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          },
+          "note": "Missing responses include uncertain and never-started requests, not semantic failures.",
+          "unit": "fraction"
+        },
+        "contract_acceptance_returned": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 9,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Reconciliation and denominator"
+          },
+          "note": "No returned graph passed the full contract.",
+          "unit": "fraction"
+        },
+        "end_to_end_success_planned": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 16,
+          "method": "counted_ratio",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Reconciliation and denominator"
+          },
+          "note": "Denominator includes missing outcomes, explicitly separated below.",
+          "unit": "fraction"
+        },
+        "semantic_accuracy_conditional_on_valid_contract": {
+          "value": null,
+          "numerator": null,
+          "denominator": 0,
+          "method": "unavailable",
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Reconciliation and denominator"
+          },
+          "note": "No valid graph: conditional semantic accuracy is unavailable, not zero.",
+          "unit": "fraction"
+        }
+      },
+      "cost": {
+        "reported_total_usd": "0.00396339",
+        "allocation": "per_model_returned_responses",
+        "batch_ref": "native_v1_combined",
+        "note": "Available returned usage only; uncertain charges remain unknown. No allocation by individual question."
+      },
+      "latency": {
+        "per_question_seconds": null,
+        "batch_ref": "native_v1_combined",
+        "note": "Per-question latency is unavailable; do not divide request latency by question count."
+      },
+      "failure_modes": [
+        {
+          "kind": "duplicate_json",
+          "status": "reported_observation",
+          "description": "Duplicate-key response rejected without repair.",
+          "count": 0,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        },
+        {
+          "kind": "contract_failures",
+          "status": "reported_observation",
+          "description": "First graph contract violation; not a count of every semantic mistake.",
+          "count": 9,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        },
+        {
+          "kind": "uncertain",
+          "status": "reported_observation",
+          "description": "Started request with unknown outcome/charge, not automatically retried.",
+          "count": 2,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        },
+        {
+          "kind": "untouched",
+          "status": "reported_observation",
+          "description": "Never started; not an observed incorrect response.",
+          "count": 5,
+          "evidence": {
+            "source_id": "native_reconciled",
+            "location": "Model and explicit provider table"
+          }
+        }
+      ],
+      "calibration": {
+        "empirically_certified": false,
+        "ece": null,
+        "reason": "Only aggregate evidence loaded; no raw probability bins or fresh population calibration."
+      },
+      "promotion": {
+        "automatic": false,
+        "status": "policy_proposal_not_enabled",
+        "checks": [
+          "Preserve epistemic class and provenance.",
+          "Do not substitute a high classifier score for source validation.",
+          "Re-evaluate after model/provider/recipe or population change.",
+          "Separate semantic choice from deterministic identifiers/UTF-8 coordinates; test this new recipe before adoption."
+        ]
+      }
+    }
+  ],
+  "batches": {
+    "jev-structure-v1": {
+      "experiment_id": "jev-structure-v1",
+      "manifest_hash": "c654843d137241d7b427d42c63f3db462810a541df892aa5d5bfd9ad7b8a8e72",
+      "observed_on": "2026-09-28",
+      "cases": 64,
+      "decisions": 768,
+      "cost_usd": "0.005341182",
+      "input_tokens": 127171,
+      "output_tokens": 14080,
+      "p50_seconds": 0.183089,
+      "p95_seconds_nearest_rank": 7.679959,
+      "max_seconds": 10.272925,
+      "group_dependencies": "64 authored texts; 8 families, 4 variants, PL/EN, not 768 independent cases"
+    },
+    "native_v1_combined": {
+      "original_plan": 32,
+      "started": 22,
+      "responses": 20,
+      "uncertain": 2,
+      "untouched": 10,
+      "accepted": 0,
+      "cost_usd": "0.02617219",
+      "uncertain_reservation_usd": "0.00602193",
+      "pooled_first_contract_failures": {
+        "quote_mismatch": 9,
+        "handle": 2,
+        "subject": 1,
+        "scope_membership": 1,
+        "utf8_boundary": 1
+      },
+      "original_manifest": "e7c047d815e92172c183e4da5c0cc598e3babeb32bdeec6f4970a389a71c2a06",
+      "continuation_manifest": "ff5f0e59859b0853336543277bc9f708e10c2799e85ed3e52bb1f9e80fd84756",
+      "original_archive_sha256": "da619121ff8d4ed2fd28ea9a1753cb1c9f4d1da414447647ad1ae3acb2afed48",
+      "continuation_archive_sha256": "0fe70aa08572f46e4d12640e046925bb62960bbfa6c415f9d070eb6c9bedc792",
+      "note": "Two disjoint continuations of one 32-request plan; do not add 32+26 or assign pooled failure codes to models without per-row evidence."
+    }
+  },
+  "mechanism_evidence": {
+    "build_completed": 189,
+    "build_total": 189,
+    "ctest_initial_passed": 70,
+    "ctest_initial_total": 72,
+    "focused_rerun_passed": 1,
+    "ctest_reconciled_passed": 71,
+    "catalog_recall_numerator": 13,
+    "catalog_recall_denominator": 45,
+    "scope": "Historical report, not rerun here. Scale test ran zero cases; lineage cases returned early. Not a model reliability observation."
+  },
+  "owner_observations": [
+    {
+      "kind": "owner_task_class_assessment",
+      "source": {
+        "source_id": "requirements",
+        "location": "R37"
+      },
+      "text": "Owner assesses current models as medium/medium-weak at generalising his philosophy. This is task-class feedback, not a measured numerical reliability.",
+      "model_ids": [],
+      "benchmark_score": null,
+      "status": "feedback_not_population_benchmark"
+    }
+  ],
+  "compensation": {
+    "status": "proposed_unrun",
+    "operation": "induce_user_generative_principles",
+    "instruction_pl": "Odtwórz kandydackie modele sposobu rozumowania z podanych źródeł. Oddziel cytowane deklaracje, interpretacje i nowe uogólnienia. Nie zastępuj modeli myślowych etykietami szkół ani narzuconymi osiami pojęciowymi. Każde uogólnienie powiąż z przykładami, zakresem i wyjątkami; zachowaj nieekwiwalentne alternatywy. Szukaj danych odróżniających hipotezy i kontrprzykładów. Brak kontrprzykładu nie jest potwierdzeniem. Nie przypisuj właścicielowi niewypowiedzianej zasady jako faktu ani nie promuj jej tylko za elegancję retrospektywnego wyjaśnienia. Gdy materiał nie rozstrzyga, wskaż brakujące rozróżnienie.",
+    "ablation": {
+      "unit": "Frozen source/task bundle; not each repeated response.",
+      "arms": [
+        "A: fixed task and sources, without compensating instruction",
+        "B: same task/sources with the recorded compensating instruction",
+        "C: same task/sources with length-matched generic procedural reminder; exact text frozen before run"
+      ],
+      "primary_criteria": [
+        "Source-faithful vs unsupported attributed principles, judged blind to arm.",
+        "Preservation of scope, exceptions and competing non-equivalent hypotheses.",
+        "Predictive reconstruction on untouched material if that material is actually available."
+      ],
+      "secondary_criteria": [
+        "Cost and latency of the whole workflow.",
+        "Loss of useful supported generalisations / excessive abstention.",
+        "Negative transfer on code-edit and ordinary source-extraction controls."
+      ],
+      "controls": [
+        "Freeze all sources, prompt arms including C, model/provider and scoring rubric before inference.",
+        "Counterbalance order; independent scoring and case-level paired analysis, no answer-level pseudo-replication.",
+        "A new study needs authorised budget; no model run or dataset for this ablation is claimed here.",
+        "Do not turn preference agreement into truth or model agreement into independent evidence."
+      ],
+      "current_results": null,
+      "promotion": "requires_frozen_data_authorized_run_and_review"
+    }
+  }
+}

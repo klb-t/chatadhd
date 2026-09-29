@@ -27,9 +27,11 @@ constexpr std::string_view kLog = "loom.import";
 Json ImportResult::to_json() const {
   Json convs = Json::array();
   for (const auto& c : conversations) convs.push_back(c.to_json());
-  return Json{{"conversations", convs},   {"format", format},         {"source_id", source_id},
-              {"blob_hash", blob_hash},   {"messages", messages},     {"cancelled", cancelled},
-              {"already_imported", already_imported}, {"warnings", warnings}};
+  Json out = Json{{"conversations", convs},   {"format", format},         {"source_id", source_id},
+                  {"blob_hash", blob_hash},   {"messages", messages},     {"cancelled", cancelled},
+                  {"already_imported", already_imported}, {"warnings", warnings}};
+  if (!export_report.is_null()) out["export_report"] = export_report;
+  return out;
 }
 
 bool JsonArrayStreamer::feed(std::string_view chunk, const ElementFn& on_element) {
@@ -139,7 +141,8 @@ std::string ConversationImporter::detect_format(const fs::path& path) const {
 
 // ── Provenance / blob bookkeeping ───────────────────────────────────
 Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_source(
-    const fs::path& path, std::string_view fmt, const ImportOptions& opts, std::string_view kind, SourceCtx& ctx) {
+    const fs::path& path, std::string_view fmt, const ImportOptions& opts, std::string_view kind, SourceCtx& ctx,
+    std::string_view parser_version, std::string_view parser_suffix) {
   if (!opts.record_provenance || !blobs_ || !prov_) return std::optional<std::vector<Conversation>>{};
 
   LOOM_TRY_ASSIGN(BlobRef blob, blobs_->put_file(path, idt::mime_for_format(fmt)));
@@ -148,7 +151,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   if (!opts.force) {
     LOOM_TRY_ASSIGN(auto sources, prov_->find_sources_by_hash(blob.hash));
     for (const auto& s : sources) {
-      if (s.parser_version != kImporterParserVersion) continue;
+      if (s.parser_version != parser_version) continue;
       auto recs = prov_->for_source(s.id, 1'000'000);
       if (!recs) continue;  // best-effort: fall through and re-register instead of failing the import
       std::vector<Conversation> convs;
@@ -167,8 +170,8 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   rec.blob_hash = blob.hash;
   rec.size = blob.size;
   rec.format = std::string(fmt);
-  rec.parser = "loom.importer." + std::string(fmt);
-  rec.parser_version = std::string(kImporterParserVersion);
+  rec.parser = "loom.importer." + std::string(fmt) + std::string(parser_suffix);
+  rec.parser_version = std::string(parser_version);
   if (opts.title) rec.title = *opts.title;
   LOOM_TRY_ASSIGN(ctx.source_id, prov_->add_source(std::move(rec)));
   return std::optional<std::vector<Conversation>>{};
@@ -233,9 +236,16 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   result.format = fmt;
   if (fmt == "unknown") return Error(Errc::Unsupported, "Unknown format: " + path.string());
 
+  // Provider-export path: every ZIP (unless ExportMode::Off), and bare .json
+  // files only with ExportMode::On. Distinct parser version so a prior legacy
+  // import of the same bytes does not short-circuit the lossless one.
+  const bool use_export = opts.export_mode != ExportMode::Off &&
+                          (fmt == "zip" || (fmt == "json" && opts.export_mode == ExportMode::On));
+
   SourceCtx ctx;
   ctx.zip_member = std::move(zip_member_rel);
-  LOOM_TRY_ASSIGN(auto dup, prepare_source(path, fmt, opts, source_kind, ctx));
+  LOOM_TRY_ASSIGN(auto dup, use_export ? prepare_source(path, fmt, opts, source_kind, ctx, kExportParserVersion, ".export")
+                                       : prepare_source(path, fmt, opts, source_kind, ctx));
   result.source_id = ctx.source_id;
   result.blob_hash = ctx.blob_hash;
 
@@ -250,7 +260,15 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   }
 
   SourceCtxGuard guard(*this, &ctx);
+  Json export_report = nullptr;
   Result<std::vector<Conversation>> convs = [&]() -> Result<std::vector<Conversation>> {
+    if (use_export && fmt == "zip") return export_zip_body(path, opts, export_report);
+    if (use_export && fmt == "json") {
+      auto r = export_json_body(path, opts, export_report);
+      if (!r) return r.error();
+      if (*r) return std::move(**r);
+      return json_body(path, opts);  // not a provider export: legacy flattening
+    }
     if (fmt == "zip") return zip_body(path, opts);
     if (fmt == "jsonl") return jsonl_body(path, opts);
     if (fmt == "sqlite") return sqlite_body(path, opts);
@@ -265,6 +283,14 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   if (!convs) return convs.error();
 
   result.conversations = std::move(*convs);
+  if (!export_report.is_null()) {
+    result.export_report = export_report;
+    if (const Json* w = json::find(export_report, "warnings"); w && w->is_array()) {
+      for (const auto& x : *w) {
+        if (x.is_string()) result.warnings.push_back(x.get<std::string>());
+      }
+    }
+  }
   for (const auto& c : result.conversations) {
     if (auto msgs = db_.get_msgs(c.id, true); msgs) result.messages += static_cast<std::int64_t>(msgs->size());
   }

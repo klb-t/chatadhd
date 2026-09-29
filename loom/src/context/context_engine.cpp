@@ -695,6 +695,15 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   for (auto& c : project_d) try_accept(std::move(c));
   for (auto& c : goal_d) try_accept(std::move(c));
 
+  // A premise the closure needs but cannot include must never vanish silently:
+  // the pulling item is flagged INCOMPLETE (rendered marker + trace field).
+  auto mark_missing = [&](const std::string& puller, const std::string& premise_ref) {
+    auto pi = accepted_index.find(puller);
+    if (pi == accepted_index.end()) return;
+    auto& v = accepted[pi->second].missing_premises;
+    if (std::find(v.begin(), v.end(), premise_ref) == v.end()) v.push_back(premise_ref);
+  };
+
   // ── dependency closure: premises of accepted items are pulled in too ──
   std::set<std::string> expanded;
   for (int round = 0; round < 3; ++round) {
@@ -756,7 +765,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
           ok = true;
         }
       }
-      if (!ok) continue;
+      if (!ok) {
+        mark_missing(puller, pref);  // unresolvable premise: flag, do not ignore
+        continue;
+      }
       c.subject = c.subject.empty() ? c.ref : c.subject;
       c.why = "required premise of " + puller;
       c.base_relevance = 1.0;
@@ -765,6 +777,8 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
       if (try_accept(std::move(c))) {
         accepted.back().required_by.push_back(puller);
         any_new = true;
+      } else {
+        mark_missing(puller, pref);  // over budget: the pulling item is incomplete
       }
     }
     if (!any_new) break;
@@ -825,6 +839,11 @@ Result<std::string> ContextEngine::render(const model::ContextSet& set) {
       any = true;
     }
     out += "- " + item.text;
+    if (!item.missing_premises.empty()) {
+      out += "  [INCOMPLETE: premises not included:";
+      for (const auto& m : item.missing_premises) out += " " + m;
+      out += "]";
+    }
     if (!item.why.empty()) out += "  <!-- why: " + item.why + " -->";
     out += "\n";
   }

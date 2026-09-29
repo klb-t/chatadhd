@@ -387,6 +387,10 @@ firewall), returns caller-freed heap JSON strings, and is covered by
 `test_abi_compat.py` so `libloom.so` never exports more or less than
 `loom.h` declares.
 
+> **Update 2026-09-29 (owner):** Python compatibility is no longer required — it was
+> only a minimum plan. The invariant below remains enforced by tests as a regression
+> sentinel until a deliberate schema migration; it does not constrain new work.
+
 **Python↔C++ compat invariant**: Loom and the Python app share one on-disk
 format and must stay indistinguishable to a reader of the data directory —
 same schema DDL (`schema_version` stays `"4"`), same forward-only guarded

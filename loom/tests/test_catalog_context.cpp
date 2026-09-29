@@ -161,7 +161,7 @@ TEST_SUITE("catalog_context") {
     config.profile_id = profile.id;
     config.max_passes = 1;
     auto stats = unwrap(cat.score(config));
-    CHECK(json::get_int(stats, "scoring_evidence_version") == 2);
+    CHECK(json::get_int(stats, "scoring_evidence_version") == 3);
     CHECK(stats["legacy_combined_features"] == Json::array({"id_hits", "class_diversity", "code_evidence"}));
     auto units = unwrap(cat.query(UnitQuery{}));
     REQUIRE(units.size() == 7);

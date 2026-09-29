@@ -1,0 +1,333 @@
+{
+  "schema": "loom.jev_recipes_gold/1",
+  "cases": {
+    "r01": {
+      "expressed": 1,
+      "inferred": 1,
+      "rationale": "Warunek jest wyrażony bez symboli P/Q; brak symboli nie czyni go domysłem."
+    },
+    "r02": {
+      "expressed": 0,
+      "inferred": 0,
+      "rationale": "The proposed direction contradicts the source."
+    },
+    "r03": {
+      "expressed": 0,
+      "inferred": 1,
+      "rationale": "A scoped candidate strategy or extension grounded in the examples, not a reported intention, implementation or universal fact."
+    },
+    "r04": {
+      "expressed": 0,
+      "inferred": 0,
+      "rationale": "No support for the other section; absence of contradiction alone is insufficient."
+    },
+    "r05": {
+      "expressed": 1,
+      "inferred": 1,
+      "rationale": "Tożsamość jest wprost stwierdzona."
+    },
+    "r06": {
+      "expressed": 0,
+      "inferred": 0,
+      "rationale": "Same output does not justify the specific shared implementation."
+    },
+    "r07": {
+      "expressed": 0,
+      "inferred": 1,
+      "rationale": "A scoped candidate strategy or extension grounded in the examples, not a reported intention, implementation or universal fact."
+    },
+    "r08": {
+      "expressed": 1,
+      "inferred": 1,
+      "rationale": "Scoped universal statement; no claim about trays outside the experiment."
+    },
+    "r09": {
+      "expressed": 0,
+      "inferred": 1,
+      "rationale": "A scoped candidate strategy or extension grounded in the examples, not a reported intention, implementation or universal fact."
+    },
+    "r10": {
+      "expressed": 0,
+      "inferred": 0,
+      "rationale": "Explicit implementation-status mismatch."
+    },
+    "r11": {
+      "expressed": 0,
+      "inferred": 0,
+      "rationale": "Następstwo czasowe i jawny brak ustalenia przyczyny nie uzasadniają tej relacji."
+    },
+    "r12": {
+      "expressed": 1,
+      "inferred": 1,
+      "rationale": "Conditional with explicit role bindings in ordinary language."
+    },
+    "r13": {
+      "expressed": 0,
+      "inferred": 1,
+      "rationale": "A scoped candidate strategy or extension grounded in the examples, not a reported intention, implementation or universal fact."
+    },
+    "r14": {
+      "expressed": 1,
+      "inferred": 1,
+      "rationale": "Directly expressed interaction, not an assumption that layout also changes."
+    },
+    "r15": {
+      "expressed": 0,
+      "inferred": 0,
+      "rationale": "The stated senses differ; lexical resemblance is not identity."
+    },
+    "r16": {
+      "expressed": 0,
+      "inferred": 1,
+      "rationale": "A scoped candidate strategy or extension grounded in the examples, not a reported intention, implementation or universal fact."
+    },
+    "c01": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "full"
+        },
+        "s2": {
+          "relevant": 1,
+          "minimum_detail": "summary"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Implementacja potrzebna do poprawki, kontrakt wywołań wystarczy w streszczeniu; kolor nie pomaga."
+    },
+    "c02": {
+      "relation_relevance": 0,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "label"
+        },
+        "s2": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "The label alone answers the fixed task; historical name is not needed."
+    },
+    "c03": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "raw"
+        },
+        "s2": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Wymagany lokator strony występuje tylko w raw pierwszego kandydata."
+    },
+    "c04": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "summary"
+        },
+        "s2": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Intake routing is needed; order and former design fall outside the short current-arrangement task."
+    },
+    "c05": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "label"
+        },
+        "s2": {
+          "relevant": 1,
+          "minimum_detail": "summary"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Nazwy w etykiecie, charakter współdzielenia w streszczeniu. Nie jest potrzebny marketing."
+    },
+    "c06": {
+      "relation_relevance": 0,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "full"
+        },
+        "s2": {
+          "relevant": 1,
+          "minimum_detail": "full"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Exact values exist only at full; compute comparisons in code, not by asking the classifier to perform arithmetic."
+    },
+    "c07": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "label"
+        },
+        "s2": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Historia rozstrzyga odniesienie; etykieta identyfikuje część. Relacja architektoniczna jest przydatną informacją pomocniczą, nie wymogiem jej wypisania."
+    },
+    "c08": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "full"
+        },
+        "s2": {
+          "relevant": 1,
+          "minimum_detail": "summary"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Exception text requires full paragraph, style constraints need summary, font is irrelevant."
+    },
+    "c09": {
+      "relation_relevance": 0,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "label"
+        },
+        "s2": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Nazwy publiczne już w label; nie trzeba implementacji prywatnej."
+    },
+    "c10": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "summary"
+        },
+        "s2": {
+          "relevant": 1,
+          "minimum_detail": "summary"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "One supplied supporting argument plus counterevidence, without merging catalogs; covers add no needed argument."
+    },
+    "c11": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "raw"
+        },
+        "s2": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Celem są źródło i czas pierwszego cytatu; pozostałe materiały nie odpowiadają na to pytanie."
+    },
+    "c12": {
+      "relation_relevance": 1,
+      "candidates": {
+        "s1": {
+          "relevant": 1,
+          "minimum_detail": "summary"
+        },
+        "s2": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        },
+        "s3": {
+          "relevant": 0,
+          "minimum_detail": "omit"
+        }
+      },
+      "rationale": "Label gives only the task; summary also supplies the prerequisite."
+    },
+    "n01": {
+      "route": "access",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    },
+    "n02": {
+      "route": "sync",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    },
+    "n03": {
+      "route": "billing",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    },
+    "n04": {
+      "route": "delivery",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    },
+    "n05": {
+      "route": "access",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    },
+    "n06": {
+      "route": "sync",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    },
+    "n07": {
+      "route": "billing",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    },
+    "n08": {
+      "route": "delivery",
+      "rationale": "Jawnie wskazany cel sprawy / explicit target of request."
+    }
+  }
+}

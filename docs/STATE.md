@@ -41,9 +41,11 @@ The GitHub repo is **private**. Actions minutes are exhausted until
 
 ## 3. Read in this order
 
-1. `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` — R1–R24, owner's words.
+1. `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` — R1–R38 + D1/D2, owner's words.
 2. `docs/architecture/LOOM_CONCEPTUAL_MODEL.md` — the binding vocabulary/invariants.
-3. `docs/architecture/NOTATKA_GPT_2026-09-26.md`, `MEGA_MASTER_2026-09-16.md`.
+3. `docs/architecture/NOTATKA_GPT_2026-09-26.md`, `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md`
+   (interaction compiler, five layers, model-of-models; marks owner [U] vs proposal [P] vs hypothesis [H]),
+   `ACCEPTANCE_TESTS_2026-09-29.md`, `MEGA_MASTER_2026-09-16.md`.
 4. This file, then `docs/research/PROGRAMME_2026-09-28.md` + `RESULTS_2026-09-28.md`
    (thought-structure research), `docs/CATALOG_QUALITY_2026-09-28.md`,
    `docs/research/CATALOG_SEMANTIC_GAP_2026-09-28.md`, `docs/selfhost/v2/README.md`.
@@ -55,7 +57,7 @@ The GitHub repo is **private**. Actions minutes are exhausted until
 |---|---|
 | `cmake --preset dev` + full build (112 targets) | OK |
 | `ctest --preset dev` | **71/72**; sole failure `unit.test_catalog_eval` (recall gate) |
-| Catalog eval on `synthetic_dev` | recall **13/45 = 0.2889** (gate ≥ 0.55), labeled-conversation precision 13/13, traps 0/5, generic noise 0/15 |
+| Catalog eval on `synthetic_dev` | recall **21/45 = 0.467** after round 2 (was 13/45; gate ≥ 0.55 still red), precision 21/21, traps 0/5, generic noise 0/15 |
 | Test count consistency | 60 / 63 / 72 registrations match the 59/60, 62/63, 71/72 claims in the older docs |
 | Quality gates weakened? | No: thresholds 0.55 / 0.75 / 0.05 unchanged; the failing gate stays red |
 | Secrets in Git | Pattern scan of the whole Codex branch found none (API keys, tokens, private keys) |
@@ -91,10 +93,30 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   precision 71.7 %, complete 12-bit vectors 39/64; "always no" scores 91.4 %.
   Follow-up 48 pair questions 47/48 (exploratory, reused texts). Useful as a
   cheap *judge of supplied hypotheses*, not as an extractor.
+- **Jev offline policy audit** (`docs/research/JEV_OFFLINE_POLICY_AUDIT_2026-09-29.md`,
+  no new inference, cost 0): threshold 0.5 → 26/768 errors; keep only p≤0.2/p≥0.8
+  → 5/673 errors, 87.6 % coverage; a *post hoc* rule "send all q01 to
+  verification" → 0/627 (not validated, chosen after seeing errors; all 5 errors
+  are in the development half). Per-question profiles differ strongly (q01
+  positive precision 30 %, q07 70 %, q11 ≈55 %): the instrument needs a
+  per-task profile (R37), not one accuracy number. Stability of paired
+  answers ≠ correctness (paraphrase pairs: 8/12 identical vectors both correct).
 - **Temporal holdout**: strict predictive accuracy is **unavailable** — the
   data pack contains later knowledge (contaminated); runs with priors cut are
   only "retrospective consistency". Needs a neutral pack (`priors=none`) and
   post-cutoff scoring.
+
+### Export fidelity (OpenAI / Anthropic data exports, synthetic fixtures only)
+
+- 6 deterministic fixtures (OpenAI legacy, 2026 sharded, single JSON; Anthropic legacy, 2026 full, single JSON) plus 3 stress
+  fixtures (nested container, unknown provider, malformed). `unit.test_import_exports`: 18 cases green against the independent oracle.
+- Completeness (independent recount): 15 conversations, **1604/1604 JSON leaves** rebuilt from stored data equal to the source;
+  attachment pointers resolved to archive members (10 links in the sharded OpenAI fixture, 2 unresolved and reported).
+  One documented lossy step: lone surrogate escapes become U+FFFD (reported).
+- `loom import <zip> --audit` prints the readable summary. History is not a request: `request_provenance` stays `unknown`.
+- Only real exports can settle: actual member lists, field sets of account/feedback/memory/project files, wrapper/shard use,
+  timestamp forms, whether Claude ships file bytes. Fixtures are built from public format knowledge, not from real data.
+  Remaining list: `docs/exports/OPENAI_ANTHROPIC_EXPORT_FORMATS.md` section 7.
 
 ## 6. Bugs found and fixed (Codex work, mirrored in Python and C++)
 
@@ -108,11 +130,37 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   not matching hashes; Android callbacks on early errors; a research test that
   called the live GitHub API.
 
+## 6b. Code defects confirmed on 2026-09-29 (from the GPT interaction note §17)
+
+1. `ContextEngine` is not on the chat request path (`loom_context_build` only).
+2. ~~Context dependency closure silently drops a premise~~ **fixed 2026-09-29**:
+   `ContextItem.missing_premises` + `[INCOMPLETE …]` marker in render/trace; budget-sweep test.
+3. `resolve/assess.cpp`: every `User` claim gets `confidence = 1.0` (conflates
+   reading fidelity, content credibility, authority to decide).
+4. Catalog link building is O(N²) over unit pairs (`catalog/score.cpp`).
+5. (reported) default calibration has hand-set priors.
+Details and the linked acceptance criteria: `docs/architecture/ACCEPTANCE_TESTS_2026-09-29.md`.
+
+## 6c. Work in flight (unmerged, backed up on remote `wip/*` branches, 2026-09-29 13:40 UTC)
+
+Interrupted by the session limit; resume or merge next session, verifying the ratchet.
+| Branch | Stream | Size |
+|---|---|---|
+| `wip/catalog-finish` | catalog recall round 2 — **merged 2026-09-29** (21/45) | done |
+| `wip/worktree-agent-a06d7260ba8b658cc` | lossless OpenAI/Anthropic export interpretation | 2 commits |
+| `wip/worktree-agent-a436abbcd1b794a18` | resolve/generalize performance + precision | 1 commit + WIP |
+| `wip/worktree-agent-a342fccb481c4116c` | blind validation corpus v2 (**do not read** before final catalog eval) | 3 commits + WIP |
+Offline tasks handed to ChatGPT: `docs/GPT_OFFLINE_TASKS_2026-09-29.md`.
+
 ## 7. Open work, by priority
 
 1. **Real exports** (blocked on owner data): everything is measured on
    fictional/synthetic material. Meanwhile make the OpenAI/Anthropic export
    handling *complete and lossless* from public format knowledge (R21).
+   *Done for the synthetic fixtures (2026-09-29):* lossless import in
+   `loom/src/import/export_*.cpp`, checked against `EXPECTED.json` by
+   `unit.test_import_exports`; see `loom/README.md` (Provider exports) for what is
+   stored and what remains lossy.
 2. **Catalog recall**: semantic evidence beyond lexical (morphology-aware
    whole-token aliases, profile-vector cosine incl. shared foundations,
    optional embeddings, coverage-first LLM triage); rank and select measured
@@ -123,7 +171,15 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
    (usage rules in `JEV_USAGE_RULES`), all behind explicit budgets and caches.
 6. UI: multiple coordinated simultaneous views, layout persistence/free
    docking, judgement editing, provider-inspired interface profiles (R16/R17/R21).
-7. Android device validation; privacy/threat-model layer (R19); legal-case
+7. Interaction compiler (R26–R34): five layers made explicit in the request
+   path, scope/detail controls, refinement consolidation into an active task
+   specification, composable workspace with coupled views, detachable provider
+   profiles, experiment triggers under budget — order to be decided; start with
+   defects 1–3 in §6b.
+8. Model-of-models profiles (R37), graph seeding / structural-transfer hypotheses
+   with predict-before-observe genealogy (R36), latent space of reasoning models
+   (R32, research).
+9. Android device validation; privacy/threat-model layer (R19); legal-case
    kind (R9).
 
 ## 8. Needed from the owner (only when convenient)
@@ -134,7 +190,18 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   keeps only the ~9 rendered turns of a virtualized list).
 - An OpenRouter key with a small cap (for live semantic/Jev runs), delivered
   outside Git (environment secret), if live measurements are wanted.
+- Optional: the Jev Lab files produced in the GPT conversation
+  (`JevLab_Pydroid.py`, `JevLab_sources.zip`, `README_PL.md`, its test report)
+  and the Gemini document "Wydajność i optymalizacja zapytań dla modelu
+  klasyfikacyjnego jev.docx" are **not in the repo** (R38).
 - Nothing else is blocking; the docs above are sufficient to continue.
+
+## 8b. Working rules decided by the owner (2026-09-29)
+
+- Python compatibility no longer required (D1); compat tests remain sentinels.
+- Linear development, ratchet: never worsen a tracked test or metric (D2).
+- Search by every method; keywords/regex are complementary, no channel vetoes (R25).
+- Owner decisions and verbatim requirements: `OWNER_REQUIREMENTS_2026-09-26.md`.
 
 ## 9. History (superseded status logs — keep, do not extend)
 

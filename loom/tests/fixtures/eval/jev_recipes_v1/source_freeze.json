@@ -1,0 +1,20 @@
+{
+  "schema": "loom.jev_recipes_source_freeze/1",
+  "frozen_at": "2026-09-29T17:38:56.349689+00:00",
+  "observed_model_responses": 0,
+  "files": {
+    "loom/tests/fixtures/eval/jev_recipes_v1/corpus.json": "619b17794f55254874324f4a18be872ec74bd8dbb3027b6553ec1f33998d028d",
+    "loom/tests/fixtures/eval/jev_recipes_v1/gold.json": "00b9ee9264c18b20516d180767835e77eb2a6a81932f594aedf411fd8962726b",
+    "loom/tests/fixtures/eval/jev_recipes_v1/recipes.json": "2a2ddf4e14db014d5828d99be54e8c739163d56914cf944da86d1fe5dee3cae7",
+    "docs/research/JEV_RECIPES_PLAN_2026-09-29.md": "3cb5a19a0093c160ff4ba55e926e6f9740b5eb0f646bfc3f90b2dccccd509aa4"
+  },
+  "amendments": [
+    {
+      "at": "2026-09-29T17:43:13.070588+00:00",
+      "path": "docs/research/JEV_RECIPES_PLAN_2026-09-29.md",
+      "old_sha256": "3eebc1244a16a5eb28881106f7d25b0be0bed9dfb09a480a8f0f325595ba75ce",
+      "new_sha256": "3cb5a19a0093c160ff4ba55e926e6f9740b5eb0f646bfc3f90b2dccccd509aa4",
+      "reason": "Packaging clarification: solid-compressed JSONL envelopes plus exact body exporter, no semantic source/gold/recipe change; no model outputs seen."
+    }
+  ]
+}

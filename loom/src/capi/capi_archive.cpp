@@ -33,6 +33,10 @@ LOOM_API const char* loom_import_file_ex(LoomContext* ctx, const char* path, con
         opts.force = v.get<bool>();
       } else if (k == "record_provenance" && v.is_boolean()) {
         opts.record_provenance = v.get<bool>();
+      } else if (k == "export_mode" && v.is_string() &&
+                 (v.get<std::string>() == "auto" || v.get<std::string>() == "on" || v.get<std::string>() == "off")) {
+        const std::string m = v.get<std::string>();
+        opts.export_mode = m == "on" ? ExportMode::On : (m == "off" ? ExportMode::Off : ExportMode::Auto);
       } else {
         return out_error(Errc::InvalidArgument, "unknown or invalid import option: " + k);
       }

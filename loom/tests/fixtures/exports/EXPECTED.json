@@ -1,0 +1,258 @@
+{
+ "anthropic_2026_full.zip": {
+  "counts": {
+   "account": 1,
+   "artifact": 1,
+   "attachment": 3,
+   "block": 17,
+   "block_kind": {
+    "document": 1,
+    "media": 1,
+    "reasoning": 1,
+    "text": 8,
+    "tool_call": 2,
+    "tool_result": 2,
+    "transcript": 1,
+    "unknown": 1
+   },
+   "branch": 3,
+   "citation": 1,
+   "citation_group": 0,
+   "conversation": 2,
+   "current_path_messages": 6,
+   "custom_instruction": 0,
+   "feedback": 0,
+   "fork_points": 1,
+   "memory": 2,
+   "message": 8,
+   "project": 2,
+   "project_doc": 2,
+   "record": 0,
+   "shared_link": 0
+  },
+  "members": 4,
+  "provider": "anthropic"
+ },
+ "anthropic_legacy.zip": {
+  "counts": {
+   "account": 1,
+   "artifact": 0,
+   "attachment": 1,
+   "block": 6,
+   "block_kind": {
+    "text": 6
+   },
+   "branch": 2,
+   "citation": 0,
+   "citation_group": 0,
+   "conversation": 2,
+   "current_path_messages": 6,
+   "custom_instruction": 0,
+   "feedback": 0,
+   "fork_points": 0,
+   "memory": 0,
+   "message": 6,
+   "project": 1,
+   "project_doc": 1,
+   "record": 0,
+   "shared_link": 0
+  },
+  "members": 3,
+  "provider": "anthropic"
+ },
+ "anthropic_single_chat.json": {
+  "counts": {
+   "account": 0,
+   "artifact": 1,
+   "attachment": 3,
+   "block": 15,
+   "block_kind": {
+    "document": 1,
+    "media": 1,
+    "reasoning": 1,
+    "text": 6,
+    "tool_call": 2,
+    "tool_result": 2,
+    "transcript": 1,
+    "unknown": 1
+   },
+   "branch": 2,
+   "citation": 1,
+   "citation_group": 0,
+   "conversation": 1,
+   "current_path_messages": 4,
+   "custom_instruction": 0,
+   "feedback": 0,
+   "fork_points": 1,
+   "memory": 0,
+   "message": 6,
+   "project": 0,
+   "project_doc": 0,
+   "record": 0,
+   "shared_link": 0
+  },
+  "provider": "anthropic"
+ },
+ "openai_2026_sharded.zip": {
+  "asset_members": [
+   "dalle-generations/file-Dq3Zx9-11111111-2222-4333-8444-555555555555.webp",
+   "file-A1b2C3d4E5f6G7h8-schemat.png",
+   "file-Boundary1-a.png",
+   "file-Boundary12-b.png",
+   "file-Dup1-a.png",
+   "file-Dup2-b.png",
+   "file-Orphan9-old.png",
+   "file-RealId77-raport-q3.pdf",
+   "file-Zz9Dat.dat",
+   "file_00000000a0d10001-voice.wav",
+   "file_00000000feed0002-sanitized.png",
+   "user-FAKEUSER0001/file_00000000c0ffee01-66666666-7777-4888-9999-000000000000.png"
+  ],
+  "counts": {
+   "account": 1,
+   "artifact": 2,
+   "attachment": 7,
+   "block": 53,
+   "block_kind": {
+    "browse": 3,
+    "code": 6,
+    "context": 3,
+    "error": 1,
+    "media": 7,
+    "quote": 1,
+    "reasoning": 3,
+    "search_results": 1,
+    "text": 24,
+    "tool_result": 1,
+    "transcript": 2,
+    "unknown": 1
+   },
+   "branch": 9,
+   "citation": 7,
+   "citation_group": 1,
+   "conversation": 7,
+   "current_path_messages": 35,
+   "custom_instruction": 2,
+   "feedback": 2,
+   "fork_points": 2,
+   "memory": 1,
+   "message": 45,
+   "project": 0,
+   "project_doc": 0,
+   "record": 0,
+   "shared_link": 1
+  },
+  "duplicate_groups": [
+   [
+    "file-Dup1-a.png",
+    "file-Dup2-b.png"
+   ]
+  ],
+  "members": 25,
+  "pointer_links": {
+   "file-A1b2C3d4E5f6G7h8": [
+    "file-A1b2C3d4E5f6G7h8-schemat.png",
+    "id_prefix"
+   ],
+   "file-Boundary1": [
+    "file-Boundary1-a.png",
+    "id_prefix"
+   ],
+   "file-Dq3Zx9": [
+    "dalle-generations/file-Dq3Zx9-11111111-2222-4333-8444-555555555555.webp",
+    "id_prefix"
+   ],
+   "file-Dup1": [
+    "file-Dup1-a.png",
+    "id_prefix"
+   ],
+   "file-Dup2": [
+    "file-Dup2-b.png",
+    "id_prefix"
+   ],
+   "file-NoSuchId0": [
+    "file-RealId77-raport-q3.pdf",
+    "name"
+   ],
+   "file-Zz9Dat": [
+    "file-Zz9Dat.dat",
+    "id_prefix"
+   ],
+   "file_00000000a0d10001": [
+    "file_00000000a0d10001-voice.wav",
+    "id_prefix"
+   ],
+   "file_00000000c0ffee01": [
+    "user-FAKEUSER0001/file_00000000c0ffee01-66666666-7777-4888-9999-000000000000.png",
+    "id_prefix"
+   ],
+   "file_00000000feed0002": [
+    "file_00000000feed0002-sanitized.png",
+    "id_prefix"
+   ]
+  },
+  "provider": "openai",
+  "unreferenced_members": [
+   "file-Boundary12-b.png",
+   "file-Orphan9-old.png"
+  ],
+  "unresolved_keys": [
+   "file_00000000dead0000",
+   "file-Plot0001"
+  ]
+ },
+ "openai_legacy.zip": {
+  "counts": {
+   "account": 1,
+   "artifact": 0,
+   "attachment": 0,
+   "block": 6,
+   "block_kind": {
+    "text": 6
+   },
+   "branch": 2,
+   "citation": 0,
+   "citation_group": 0,
+   "conversation": 2,
+   "current_path_messages": 6,
+   "custom_instruction": 0,
+   "feedback": 1,
+   "fork_points": 0,
+   "memory": 0,
+   "message": 6,
+   "project": 0,
+   "project_doc": 0,
+   "record": 0,
+   "shared_link": 0
+  },
+  "json_leaves": 109,
+  "members": 6,
+  "provider": "openai"
+ },
+ "openai_single_conversations.json": {
+  "counts": {
+   "account": 0,
+   "artifact": 0,
+   "attachment": 0,
+   "block": 2,
+   "block_kind": {
+    "text": 2
+   },
+   "branch": 1,
+   "citation": 0,
+   "citation_group": 0,
+   "conversation": 1,
+   "current_path_messages": 2,
+   "custom_instruction": 0,
+   "feedback": 0,
+   "fork_points": 0,
+   "memory": 0,
+   "message": 2,
+   "project": 0,
+   "project_doc": 0,
+   "record": 0,
+   "shared_link": 0
+  },
+  "provider": "openai"
+ }
+}

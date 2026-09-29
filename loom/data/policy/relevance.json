@@ -13,7 +13,33 @@
     "date_prior": 0.3,
     "neg_context": -2.5,
     "link": 1.0,
-    "title": 0.2
+    "title": 0.2,
+    "sem_word": 1.5,
+    "sem_ngram": 2.0
+  },
+  "channels": {
+    "lexical": [
+      "id_hits",
+      "class_diversity",
+      "code_evidence",
+      "version_mention",
+      "title",
+      "neg_context",
+      "bm25_self",
+      "bm25_phil"
+    ],
+    "semantic": [
+      "sem_word",
+      "sem_ngram",
+      "sem_phil",
+      "sem_embed",
+      "llm"
+    ],
+    "structure": [
+      "project_member",
+      "link",
+      "date_prior"
+    ]
   },
   "term_class_weights": {
     "alias": 3.0,
@@ -29,5 +55,9 @@
   },
   "archive_only_version_boost": 2.0,
   "code_block_multiplier": 1.5,
-  "bm25": {"k1": 1.2, "b": 0.75, "normalise_percentile": 99}
+  "bm25": {
+    "k1": 1.2,
+    "b": 0.75,
+    "normalise_percentile": 99
+  }
 }

@@ -1,0 +1,11 @@
+{
+  "schema": "loom.jev_recipes_bundle_freeze/1",
+  "frozen_at": "2026-09-29T17:45:01.624808+00:00",
+  "model_calls": 0,
+  "files": {
+    "loom/tests/fixtures/eval/jev_recipes_v1/requests.zip": "c14ba47a84192f708fe1fae06454996eb9a90444e42a93cf379b8fb92619673c",
+    "loom/tests/fixtures/eval/jev_recipes_v1/example_request.json": "912a93146bfe3e0abe1bb573744cd947e7f97a4140d089e65d47f321e7445eb1",
+    "loom/tools/eval/jev_recipes.py": "df5e139967279f305c36f1c84dd5afab0a05566219f8ebfff3f5d992ef8f90f5",
+    "loom/tools/eval/test_jev_recipes.py": "c73838cf46f3dd0d55b53bec8e8ab62cacb58690829e3283fcea991a9b03b47f"
+  }
+}

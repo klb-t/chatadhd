@@ -72,7 +72,9 @@ Commands:
   msg status ID active|excluded|version|deleted
   chat [--conv ID] [--model M] [--depth N] [--effort E] [--web] MESSAGE...
                                         stream an answer ("-" reads the message from stdin)
-  import PATH [--title T] [--force]     universal importer (ChatGPT/Claude/HTML/MD/...)
+  import PATH [--title T] [--force] [--export-mode auto|off|on] [--audit]
+                                        universal importer (ChatGPT/Claude/HTML/MD/...); ChatGPT/Claude
+                                        export ZIPs are imported losslessly (on: bare .json too)
   export CONV_ID [--format json|markdown|text|html] [--out FILE]
   graph nodes [--kind K] [--limit N]
   graph edges [--node ID] [--type T]
@@ -127,7 +129,7 @@ Archive example (the self-hosting run):
 
 // ── argument parsing ────────────────────────────────────────────────
 const std::set<std::string>& flag_names() {
-  static const std::set<std::string> k = {"json",   "quiet",  "force",   "all",     "refresh", "no-git",
+  static const std::set<std::string> k = {"json",   "quiet",  "force",   "audit",   "all",     "refresh", "no-git",
                                           "no-code", "include-db", "web", "help",    "deep",    "mobile",
                                           "dry-run", "knowledge", "include-project-siblings", "no-priors"};
   return k;
@@ -390,10 +392,42 @@ int cmd_chat(Runtime& rt, const Args& a) {
   return 0;
 }
 
+// Readable summary of the lossless-export report (import --audit).
+void print_export_audit(const Json& rep) {
+  auto num = [](const Json& j, const char* k) { return j.contains(k) && j[k].is_number() ? j[k].get<std::int64_t>() : 0; };
+  auto list = [](const Json& j, const char* k) {
+    std::cout << "  " << k << ": " << (j.contains(k) ? j[k].size() : 0) << "\n";
+    if (j.contains(k) && j[k].is_array()) {
+      for (const auto& x : j[k]) std::cout << "    - " << (x.is_string() ? x.get<std::string>() : x.dump()) << "\n";
+    }
+  };
+  std::cout << "export audit: provider " << (rep.contains("provider") ? rep["provider"].dump() : "?") << ", "
+            << num(rep, "member_count") << " archive members" << (rep.value("partial", false) ? " (PARTIAL)" : "") << "\n";
+  const Json& c = rep["counts"];
+  std::cout << "  conversations " << num(c, "conversation") << ", messages " << num(c, "message") << ", blocks "
+            << num(c, "block") << ", attachments " << num(c, "attachment") << ", branches " << num(c, "branch")
+            << ", fork points " << num(c, "fork_points") << "\n";
+  std::cout << "  json leaves preserved verbatim: " << num(rep, "leaves_preserved") << "/" << num(rep, "json_leaves") << "\n";
+  std::cout << "  attachment pointers linked to archive files: " << (rep.contains("pointer_links") ? rep["pointer_links"].size() : 0)
+            << "\n";
+  list(rep, "unresolved_keys");
+  list(rep, "unreferenced_members");
+  list(rep, "unknown_members");
+  list(rep, "errors");
+  list(rep, "warnings");
+  if (rep.contains("repairs") && !rep["repairs"].empty()) std::cout << "  repairs: " << rep["repairs"].dump() << "\n";
+}
+
 int cmd_import(Runtime& rt, const Args& a) {
   ImportOptions o;
   if (a.has("title")) o.title = a.get("title");
   o.force = a.has("force");
+  if (a.has("export-mode")) {
+    const std::string m = a.get("export-mode");
+    if (m == "on") o.export_mode = ExportMode::On;
+    else if (m == "off") o.export_mode = ExportMode::Off;
+    else if (m != "auto") throw UsageError{"--export-mode must be auto, off or on"};
+  }
   o.progress = [](std::int64_t c, std::int64_t t, std::string_view s) { progress_line("import", c, t, s); };
   auto r = must(rt.importer().import_file(need(a, 0, "path"), o));
   if (!g_quiet) std::cerr << "\n";
@@ -404,6 +438,8 @@ int cmd_import(Runtime& rt, const Args& a) {
               << " messages" << (r.already_imported ? " (already imported; --force re-imports)" : "") << "\n";
     for (const auto& c : r.conversations) print_conv_line(c);
     for (const auto& w : r.warnings) std::cerr << "warning: " << w << "\n";
+    if (a.has("audit") && r.export_report.is_object()) print_export_audit(r.export_report);
+    else if (a.has("audit")) std::cout << "audit: not an OpenAI/Anthropic export (no export report)\n";
   }
   return 0;
 }

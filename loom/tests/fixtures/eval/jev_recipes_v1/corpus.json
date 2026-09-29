@@ -1,0 +1,783 @@
+{
+  "schema": "loom.jev_recipes_corpus/1",
+  "authorship": "New synthetic source texts and labels authored in this ChatGPT session; not copied from the previous 64-text pilot; not human-independent or a blind holdout. No model outputs observed.",
+  "cases": [
+    {
+      "id": "r01",
+      "language": "pl",
+      "family": "relation",
+      "domain": "fabrication",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Jeżeli szablon ma pęknięcie, pracownik odkłada go do kontroli.",
+        "candidate_relation": "Pęknięcie szablonu jest warunkiem odłożenia go do kontroli."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r02",
+      "language": "en",
+      "family": "relation",
+      "domain": "editing",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "For this edition, chapter nine comes before chapter six.",
+        "candidate_relation": "In this edition chapter six precedes chapter nine."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r03",
+      "language": "pl",
+      "family": "relation",
+      "domain": "data",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Eksporty dwóch edytorów zapisujemy jako osobne oryginały. Każdy konwerter daje potem wspólną postać roboczą.",
+        "candidate_relation": "Kandydat na rozwinięcie: oba konwertery mogłyby udostępniać jeden wspólny interfejs konwersji."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r04",
+      "language": "en",
+      "family": "relation",
+      "domain": "music",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "The rehearsal log records that the brass section paused. It says nothing about the percussion section.",
+        "candidate_relation": "The percussion section also paused."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r05",
+      "language": "pl",
+      "family": "relation",
+      "domain": "archive",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Orlik i O-r-l-i-k oznaczają tu ten sam katalog, a nie dwa katalogi.",
+        "candidate_relation": "Orlik i O-r-l-i-k są dwiema nazwami tego samego katalogu."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r06",
+      "language": "en",
+      "family": "relation",
+      "domain": "design",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "The checkout screen and the parcel screen display dates in the same order.",
+        "candidate_relation": "The two screens call the same date-formatting module."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r07",
+      "language": "pl",
+      "family": "relation",
+      "domain": "workflow",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Dla przesyłek lokalnych wystarcza kod. Dla przesyłek zagranicznych pracownik sprawdza także nazwę kraju.",
+        "candidate_relation": "Możliwe uogólnienie projektu: oddzielić dane o rodzaju przesyłki od wspólnej operacji sprawdzania, sterowanej polityką."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r08",
+      "language": "en",
+      "family": "relation",
+      "domain": "ecology_fiction",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Every tray in this fictional experiment contains exactly one marked pebble.",
+        "candidate_relation": "Each tray in the experiment contains one marked pebble."
+      },
+      "split": "development"
+    },
+    {
+      "id": "r09",
+      "language": "pl",
+      "family": "relation",
+      "domain": "code",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Dwa programy importują pakiet miedziany_parser. Każdy utrzymuje własną bazę.",
+        "candidate_relation": "Kandydat na rozwinięcie: wspólny parser można zaoferować także trzeciemu programowi bez współdzielenia jego bazy."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "r10",
+      "language": "en",
+      "family": "relation",
+      "domain": "planning",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "We have discussed a backup process, but have not selected a design or implemented it.",
+        "candidate_relation": "A backup process has been implemented."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "r11",
+      "language": "pl",
+      "family": "relation",
+      "domain": "craft",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Zmiana farby nastąpiła dzień przed uszkodzeniem deski. Nie ustalono przyczyny uszkodzenia.",
+        "candidate_relation": "Zmiana farby spowodowała uszkodzenie deski."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "r12",
+      "language": "en",
+      "family": "relation",
+      "domain": "routing",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "If the envelope lacks a destination, return it to the sender; otherwise put it in the outgoing tray.",
+        "candidate_relation": "An envelope without a destination must be returned to the sender."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "r13",
+      "language": "pl",
+      "family": "relation",
+      "domain": "research",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "W tej serii raportów najpierw zachowujemy konkurencyjne wyjaśnienia, a dopiero nowy test rozstrzyga między nimi.",
+        "candidate_relation": "Hipoteza o strategii autora w tej serii: chronić możliwość wyboru do czasu pojawienia się testu rozróżniającego."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "r14",
+      "language": "en",
+      "family": "relation",
+      "domain": "interface",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Selecting a scene in the table highlights the same scene in the map, without moving either panel.",
+        "candidate_relation": "Selection in the table propagates to highlighting in the map."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "r15",
+      "language": "pl",
+      "family": "relation",
+      "domain": "lab_fiction",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "W notatce słowo „fala” oznacza kampanię próbek, a w nazwie wave_buf oznacza bufor dźwięku.",
+        "candidate_relation": "„fala” i wave_buf wskazują tę samą encję."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "r16",
+      "language": "en",
+      "family": "relation",
+      "domain": "engineering",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "We rebuilt two adapters while leaving their common interface unchanged.",
+        "candidate_relation": "Candidate strategy suggested by these replacements: put replaceable implementations behind stable interfaces."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "c01",
+      "language": "pl",
+      "family": "context",
+      "domain": "code",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Popraw limit k w funkcji cut: przy k=0 wynik ma być pusty. Nie zmieniaj sygnatury.",
+        "candidate_relation": "cut jest wywoływana przez eksport miniatur.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Funkcja cut",
+              "summary": "cut skraca sekwencję.",
+              "full": "def cut(xs, k):\n    return xs if k == 0 else xs[:k]",
+              "raw": "Plik cut.py; linie 1–2:\ndef cut(xs, k):\n    return xs if k == 0 else xs[:k]"
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Wywołania cut",
+              "summary": "Exporter oczekuje listy; wywołuje cut(items, limit), także z zerem.",
+              "full": "Exporter oczekuje listy; wywołuje cut(items, limit), także z zerem. Test wymaga pustej listy dla zera.",
+              "raw": "caller.py:12 oraz test_cut.py:4: te same wymagania."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Kolory",
+              "summary": "Ikona eksportera jest bursztynowa.",
+              "full": "Bursztynowa ikona ma margines 8 px.",
+              "raw": "assets.css: margin:8px;"
+            }
+          }
+        ]
+      },
+      "split": "development"
+    },
+    {
+      "id": "c02",
+      "language": "en",
+      "family": "context",
+      "domain": "artifact",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Return only the current release label, with no explanation.",
+        "candidate_relation": "The release used to be named Copper.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Current release: Quartz",
+              "summary": "The current release is Quartz; Copper was superseded.",
+              "full": "Release log records the change Copper → Quartz.",
+              "raw": "Log entry 12: Quartz approved."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Old screenshots",
+              "summary": "Screenshots use an obsolete color scheme.",
+              "full": "The old toolbar was red.",
+              "raw": "ui-old.css: red;"
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Release schedule",
+              "summary": "Next meeting is on Friday.",
+              "full": "The meeting agenda includes testing.",
+              "raw": "Calendar note: Friday."
+            }
+          }
+        ]
+      },
+      "split": "development"
+    },
+    {
+      "id": "c03",
+      "language": "pl",
+      "family": "context",
+      "domain": "evidence",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Przytocz dokładne słowa o ograniczeniu wilgotności wraz z numerem strony; nie parafrazuj.",
+        "candidate_relation": "Warunek wilgotności pochodzi z instrukcji pakowania.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Wilgotność",
+              "summary": "Instrukcja zabrania mokrego opakowania.",
+              "full": "Nie pakować do wilgotnych pojemników.",
+              "raw": "Instrukcja P, strona 7: „Nie pakować do wilgotnych pojemników.”"
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Transport",
+              "summary": "Przewoźnik obsługuje trzy miasta.",
+              "full": "Lista miast: A, B, C.",
+              "raw": "Umowa przewozu: miasta A, B, C."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Tytuł instrukcji",
+              "summary": "Pełny tytuł: Pakowanie próbek, edycja P.",
+              "full": "Tytuł i numer wydania są aktualne.",
+              "raw": "Okładka: Pakowanie próbek, edycja P."
+            }
+          }
+        ]
+      },
+      "split": "development"
+    },
+    {
+      "id": "c04",
+      "language": "en",
+      "family": "context",
+      "domain": "workflow",
+      "state": {
+        "conversation_history": [
+          "User: Only describe the current arrangement, not its history."
+        ],
+        "target_turn": "Explain briefly how incoming items reach the review queue.",
+        "candidate_relation": "The intake adapter sends items to the review queue.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Intake adapter",
+              "summary": "Incoming items go through the intake adapter, which sends them to the review queue.",
+              "full": "The adapter checks envelope shape, then places each item in review.",
+              "raw": "Flow file v3 contains the same arrangement."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Queue order",
+              "summary": "The review queue uses arrival order.",
+              "full": "Reviewers take the earliest queued item.",
+              "raw": "policy.json: first-in-first-out."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Former queue",
+              "summary": "An earlier queue routed to an archive.",
+              "full": "Old pipeline v1 archived items directly.",
+              "raw": "Deprecated flow file v1."
+            }
+          }
+        ]
+      },
+      "split": "development"
+    },
+    {
+      "id": "c05",
+      "language": "pl",
+      "family": "context",
+      "domain": "architecture",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Podaj nazwy dwóch aplikacji używających modułu Splot i wyjaśnij, co współdzielą.",
+        "candidate_relation": "Dwie aplikacje używają wspólnego Splotu, a nie są jego aliasami.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Aplikacje: Latarnik i Pióro",
+              "summary": "Latarnik i Pióro używają Splotu.",
+              "full": "Obie importują splot.core.",
+              "raw": "Manifest obu aplikacji: splot.core."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Splot",
+              "summary": "Splot udostępnia wspólne parsowanie pakietów; aplikacje mają oddzielne bazy.",
+              "full": "Parser pakietów jest współdzielony, ale storage każdej aplikacji jest niezależny.",
+              "raw": "Design 4: parser wspólny, bazy odrębne."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Marketing",
+              "summary": "Obie aplikacje pokazano na targach.",
+              "full": "Stoisko prezentowało produkty w maju.",
+              "raw": "Katalog targowy, s. 9."
+            }
+          }
+        ]
+      },
+      "split": "development"
+    },
+    {
+      "id": "c06",
+      "language": "en",
+      "family": "context",
+      "domain": "analysis",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Compare the stated storage sizes exactly and show both values.",
+        "candidate_relation": "Both datasets were presented at the same meeting.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Dataset A",
+              "summary": "A is the larger dataset.",
+              "full": "A occupies 1536 bytes.",
+              "raw": "Inventory record A: 1536 bytes."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Dataset B",
+              "summary": "B is the smaller dataset.",
+              "full": "B occupies 1024 bytes.",
+              "raw": "Inventory record B: 1024 bytes."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Meeting",
+              "summary": "The two datasets were presented together.",
+              "full": "The presentation took 15 minutes.",
+              "raw": "Meeting minutes: both datasets."
+            }
+          }
+        ]
+      },
+      "split": "development"
+    },
+    {
+      "id": "c07",
+      "language": "pl",
+      "family": "context",
+      "domain": "request",
+      "state": {
+        "conversation_history": [
+          "Użytkownik: Chodzi o temat omówiony w drugiej wypowiedzi.",
+          "Użytkownik: W drugiej wypowiedzi chodziło o dobór dowodów, nie o stylistykę."
+        ],
+        "target_turn": "Jaką część systemu mam teraz poprawić?",
+        "candidate_relation": "Selektor dowodów należy do kompilatora kontekstu.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Selektor dowodów",
+              "summary": "Selektor wybiera źródła pod tezy planu.",
+              "full": "Pełna lista operatorów selekcji.",
+              "raw": "Dokument implementacyjny."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Styl wiadomości",
+              "summary": "Renderer wybiera ton.",
+              "full": "Przykłady tonu.",
+              "raw": "Notatki stylu."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Kompilator kontekstu",
+              "summary": "Składa materiał dla wywołania modelu.",
+              "full": "Diagram wszystkich etapów.",
+              "raw": "Historia diagramu."
+            }
+          }
+        ]
+      },
+      "split": "validation"
+    },
+    {
+      "id": "c08",
+      "language": "en",
+      "family": "context",
+      "domain": "editing",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Rewrite the paragraph, preserving the exact exception in its final sentence.",
+        "candidate_relation": "The final sentence limits the general rule in the paragraph.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Paragraph",
+              "summary": "Most records are deleted after review, with an exception.",
+              "full": "Reviewed records are deleted after seven days. Records under active audit are retained until the audit closes.",
+              "raw": "Draft p.2: Reviewed records are deleted after seven days. Records under active audit are retained until the audit closes."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Tone guide",
+              "summary": "Use plain language, without adding legal conclusions.",
+              "full": "No new legal claim is to be added; keep wording accessible.",
+              "raw": "Style card #3."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Old font",
+              "summary": "Previously the paragraph used a serif font.",
+              "full": "A 12-point serif face was used.",
+              "raw": "Typography revision 1."
+            }
+          }
+        ]
+      },
+      "split": "validation"
+    },
+    {
+      "id": "c09",
+      "language": "pl",
+      "family": "context",
+      "domain": "code",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Wymień tylko nazwy funkcji stanowiących publiczne API modułu; nie analizuj implementacji.",
+        "candidate_relation": "Moduł ma zaimplementowany prywatny cache.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Publiczne API: open_box, close_box",
+              "summary": "Dwie publiczne funkcje: open_box oraz close_box.",
+              "full": "def open_box(path): ...\ndef close_box(handle): ...",
+              "raw": "api.py: funkcje publiczne open_box, close_box."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Prywatny cache",
+              "summary": "Cache trzyma ostatni uchwyt.",
+              "full": "_last_handle = None",
+              "raw": "private.py:1: _last_handle = None"
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Benchmark",
+              "summary": "Cache skrócił test lokalny.",
+              "full": "Czasy lokalne są w tabeli.",
+              "raw": "benchmark.csv"
+            }
+          }
+        ]
+      },
+      "split": "validation"
+    },
+    {
+      "id": "c10",
+      "language": "en",
+      "family": "context",
+      "domain": "evidence",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "List one argument for and one against the claim that the two catalogs are aliases.",
+        "candidate_relation": "Two catalog records might refer to the same object.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Support",
+              "summary": "Both records share an identical stable catalog identifier.",
+              "full": "Identifier catalog-77 appears in both records.",
+              "raw": "Record A/B: catalog-77."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Counterevidence",
+              "summary": "They have different owners at the same recorded time.",
+              "full": "A lists North; B lists South, with the same timestamp.",
+              "raw": "A.owner=North; B.owner=South."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Meeting room paint",
+              "summary": "The meeting room was painted blue.",
+              "full": "The meeting room walls are blue.",
+              "raw": "Maintenance record: room paint, blue."
+            }
+          }
+        ]
+      },
+      "split": "validation"
+    },
+    {
+      "id": "c11",
+      "language": "pl",
+      "family": "context",
+      "domain": "research",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Sprawdź, z którego nagrania pochodzi cytat i podaj zakres czasowy.",
+        "candidate_relation": "Cytat jest przypięty do obserwacji z nagrania.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Cytat o szkicu",
+              "summary": "Rozmówca omawia wersję szkicu.",
+              "full": "„To jest dopiero szkic, nie zatwierdzenie.”",
+              "raw": "Źródło: sample_14.wav; 00:17–00:21; „To jest dopiero szkic, nie zatwierdzenie.”"
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Model transkrypcji",
+              "summary": "Tekst otrzymano z automatycznej transkrypcji.",
+              "full": "Model ma nieznaną stopę błędów dla tego nagrania.",
+              "raw": "Profil niezweryfikowany."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Kolejny cytat",
+              "summary": "Dalej mowa o kawie.",
+              "full": "„Zróbmy kawę.”",
+              "raw": "sample_14.wav; 00:42–00:44."
+            }
+          }
+        ]
+      },
+      "split": "validation"
+    },
+    {
+      "id": "c12",
+      "language": "en",
+      "family": "context",
+      "domain": "planning",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "State only which task is blocked, and name its missing prerequisite.",
+        "candidate_relation": "Layout testing depends on an approved wireframe.",
+        "candidate_subgraphs": [
+          {
+            "id": "s1",
+            "representations": {
+              "label": "Blocked task: layout testing",
+              "summary": "Layout testing is blocked until the wireframe is approved.",
+              "full": "The implementation schedule marks the test as blocked.",
+              "raw": "Planning record 5."
+            }
+          },
+          {
+            "id": "s2",
+            "representations": {
+              "label": "Parallel task: icon drawing",
+              "summary": "Icon drawing is not blocked.",
+              "full": "Icon sketches can proceed independently.",
+              "raw": "Planning record 6."
+            }
+          },
+          {
+            "id": "s3",
+            "representations": {
+              "label": "Budget",
+              "summary": "A separate budget review is next week.",
+              "full": "No relation to this task is recorded.",
+              "raw": "Budget agenda."
+            }
+          }
+        ]
+      },
+      "split": "validation"
+    },
+    {
+      "id": "n01",
+      "language": "pl",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Utraciłem możliwość logowania po zmianie hasła. Rozliczenia i przesyłki są poprawne."
+      },
+      "split": "development"
+    },
+    {
+      "id": "n02",
+      "language": "en",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "A change made on my tablet never arrives on my laptop. I can sign in on both."
+      },
+      "split": "development"
+    },
+    {
+      "id": "n03",
+      "language": "pl",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Dokument opłaty zawiera dwukrotnie tę samą pozycję. Proszę poprawić dokument, nie status dostawy."
+      },
+      "split": "development"
+    },
+    {
+      "id": "n04",
+      "language": "en",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "The tracking record says the parcel is waiting at the wrong depot; please reroute it."
+      },
+      "split": "development"
+    },
+    {
+      "id": "n05",
+      "language": "en",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "My account is locked before I can reach any page. Please restore entry to the service."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "n06",
+      "language": "pl",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Notatki na dwóch zalogowanych urządzeniach rozjeżdżają się po edycji, choć oba są online."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "n07",
+      "language": "en",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Please issue a corrected invoice with the purchase quantity already present in the order."
+      },
+      "split": "validation"
+    },
+    {
+      "id": "n08",
+      "language": "pl",
+      "family": "routing",
+      "domain": "fictional_service",
+      "state": {
+        "conversation_history": [],
+        "target_turn": "Kurier nie odebrał paczki z umówionego punktu. Potrzebne ponowne zlecenie odbioru."
+      },
+      "split": "validation"
+    }
+  ]
+}
