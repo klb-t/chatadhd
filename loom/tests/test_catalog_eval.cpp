@@ -21,6 +21,7 @@
 // project and memory documents are reported separately, not mislabeled noise.
 #include <doctest/doctest.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <set>
 
@@ -75,6 +76,41 @@ struct Metrics {
   double precision() const { return selected_total ? static_cast<double>(relevant_selected) / selected_total : 0.0; }
   double trap_fpr() const { return trap_total ? static_cast<double>(trap_selected) / trap_total : 0.0; }
 };
+
+// Ranking quality is reported separately from selection (thresholds/rules):
+// AUC over the labeled conversations (relevant vs trap + generic noise, ties
+// count 1/2), recall@k and precision@k of the score-ordered list.
+struct Ranked {
+  std::string id;
+  bool relevant = false;
+  double score = 0.0;
+};
+
+double auc_of(const std::vector<Ranked>& v) {
+  double pos = 0, wins = 0;
+  for (const auto& p : v) {
+    if (!p.relevant) continue;
+    ++pos;
+    for (const auto& n : v) {
+      if (n.relevant) continue;
+      wins += p.score > n.score ? 1.0 : (p.score == n.score ? 0.5 : 0.0);
+    }
+  }
+  double neg = 0;
+  for (const auto& n : v) neg += n.relevant ? 0 : 1;
+  return pos > 0 && neg > 0 ? wins / (pos * neg) : 0.0;
+}
+
+// Number of relevant units among the k best (ties broken by id, so the
+// figure is deterministic).
+int hits_at(std::vector<Ranked> v, std::size_t k) {
+  std::sort(v.begin(), v.end(), [](const Ranked& a, const Ranked& b) {
+    return a.score != b.score ? a.score > b.score : a.id < b.id;
+  });
+  int n = 0;
+  for (std::size_t i = 0; i < std::min(k, v.size()); ++i) n += v[i].relevant;
+  return n;
+}
 
 }  // namespace
 
@@ -146,16 +182,78 @@ TEST_SUITE("catalog_eval") {
     for (const auto& [ext_id, selected] : selected_by_ext) {
       if (selected && !labeled.count(ext_id)) ++auxiliary_selected;
     }
+    // LOOM_CATALOG_EVAL_VERBOSE=1 prints the misclassified conversations, =2
+    // every labeled conversation (score distribution per class).
     if (const char* v = std::getenv("LOOM_CATALOG_EVAL_VERBOSE"); v && *v && std::string(v) != "0") {
+      const bool all = std::string(v) == "2";
       for (const char* category : {"relevant", "noise_traps", "noise_generic"}) {
         for (const auto& unit : units[category]) {
           std::string id = json::get_string(unit, "conv_id");
           bool selected = selected_by_ext.count(id) && selected_by_ext.at(id);
-          if (selected != (std::string(category) == "relevant"))
+          if (all || selected != (std::string(category) == "relevant"))
             MESSAGE(std::string(category) << " " << id << " selected=" << selected << " " << diagnostics_by_ext[id].dump());
         }
       }
     }
+
+    // ── Ranking (independent of thresholds) and the lexical/semantic shadow
+    // audit (R25/R27): C_lexical and C_semantic are the elements each
+    // independent channel puts in the relevant band on its own; their
+    // difference is a diagnostic, verified against the ground truth as
+    // lexical rescue (truly relevant), lexical noise (trap/generic) or
+    // undecided (no label). Neither channel gates the other in the final
+    // score. ────────────────────────────────────────────────────────────
+    std::vector<Ranked> rank_final, rank_lex, rank_sem;
+    std::set<std::string> c_lexical, c_semantic;
+    const double tau = 0.7;
+    for (const char* category : {"relevant", "noise_traps", "noise_generic"}) {
+      for (const auto& unit : units[category]) {
+        std::string id = json::get_string(unit, "conv_id");
+        if (!diagnostics_by_ext.count(id)) continue;
+        const Json& d = diagnostics_by_ext[id];
+        bool rel = std::string(category) == "relevant";
+        double lex = json::get_number(d["features"], "lexical_score", 0.0);
+        double sem = json::get_number(d["features"], "semantic_score", 0.0);
+        rank_final.push_back({id, rel, json::get_number(d, "score")});
+        rank_lex.push_back({id, rel, lex});
+        rank_sem.push_back({id, rel, sem});
+        if (lex >= tau) c_lexical.insert(id);
+        if (sem >= tau) c_semantic.insert(id);
+      }
+    }
+    for (const auto& [ext_id, selected] : selected_by_ext) {
+      if (labeled.count(ext_id)) continue;
+      const Json& d = diagnostics_by_ext[ext_id];
+      if (json::get_number(d["features"], "lexical_score", 0.0) >= tau) c_lexical.insert(ext_id);
+      if (json::get_number(d["features"], "semantic_score", 0.0) >= tau) c_semantic.insert(ext_id);
+    }
+    std::set<std::string> relevant_ids, noise_ids;
+    for (const auto& r : units["relevant"]) relevant_ids.insert(json::get_string(r, "conv_id"));
+    for (const char* category : {"noise_traps", "noise_generic"}) {
+      for (const auto& r : units[category]) noise_ids.insert(json::get_string(r, "conv_id"));
+    }
+    int gap_rescue = 0, gap_noise = 0, gap_undecided = 0, sem_only_relevant = 0, sem_only_noise = 0;
+    std::string rescue_ids;
+    for (const auto& id : c_lexical) {
+      if (c_semantic.count(id)) continue;  // diagnostic_gap = C_lexical - C_semantic
+      if (relevant_ids.count(id)) { ++gap_rescue; rescue_ids += id + " "; }
+      else if (noise_ids.count(id)) ++gap_noise;
+      else ++gap_undecided;
+    }
+    for (const auto& id : c_semantic) {
+      if (c_lexical.count(id)) continue;
+      if (relevant_ids.count(id)) ++sem_only_relevant;
+      else if (noise_ids.count(id)) ++sem_only_noise;
+    }
+    double auc_final = auc_of(rank_final), auc_lex = auc_of(rank_lex), auc_sem = auc_of(rank_sem);
+    MESSAGE("ranking AUC final=" << auc_final << " lexical=" << auc_lex << " semantic=" << auc_sem);
+    MESSAGE("ranking hits@20=" << hits_at(rank_final, 20) << "/20 hits@45=" << hits_at(rank_final, 45) << "/45"
+                               << " (lexical hits@45=" << hits_at(rank_lex, 45) << ", semantic hits@45="
+                               << hits_at(rank_sem, 45) << ")");
+    MESSAGE("shadow: |C_lexical|=" << c_lexical.size() << " |C_semantic|=" << c_semantic.size()
+                                    << " gap(lex-sem): rescue=" << gap_rescue << " noise=" << gap_noise
+                                    << " undecided=" << gap_undecided << " [" << rescue_ids << "]"
+                                    << " semantic-only: relevant=" << sem_only_relevant << " noise=" << sem_only_noise);
 
     MESSAGE("relevant: " << m.relevant_selected << "/" << m.relevant_total << " recall=" << m.recall());
     MESSAGE("traps: " << m.trap_selected << "/" << m.trap_total << " trap_fpr=" << m.trap_fpr());
