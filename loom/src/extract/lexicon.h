@@ -134,6 +134,7 @@ class Lexicons {
   std::vector<VersionDecl> version_decls;
   std::vector<std::string> version_excludes;  // folded
   int version_window = 12;
+  std::set<std::string, std::less<>> third_party_kinds;  // entity kinds whose version is not the project's
 
   // ── relation patterns ───────────────────────────────────────────
   std::vector<RelPattern> patterns;
@@ -143,6 +144,8 @@ class Lexicons {
   // or ends with a function word / a bare lowercase common noun. `strict`
   // false: only the syntax rules (the caller has a strong structural cue such
   // as an explicit 'projects (A, B, C)' head).
+  // False for a code line / code comment (prose gate of the sentence extractors).
+  bool prose_ok(std::string_view text) const;
   bool name_ok(std::string_view kind, std::string_view label, std::string_view artifact_type = {},
                bool strict = true) const;
 
@@ -154,6 +157,7 @@ class Lexicons {
  private:
   Json name_rules_ = Json::object();
   std::vector<re::Regex> name_reject_;
+  std::vector<re::Regex> prose_reject_;
   std::map<std::string, std::vector<Phrase>> cues_;
   std::vector<Phrase> empty_;
   std::vector<Phrase> neg_particles_;

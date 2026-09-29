@@ -4,6 +4,7 @@
 // from. All matching tables are pack data (lexicon.h); the code holds the
 // algorithms. Deterministic.
 #include <algorithm>
+#include <cstring>
 #include <cctype>
 #include <chrono>
 #include <cmath>
@@ -49,6 +50,7 @@ struct ObsInfo {
   std::vector<Token> toks;   // tokens of the folded text
   std::vector<Token> otoks;  // tokens of the original text (parallel when sizes match)
   bool text = false;         // a leaf text observation (sentence, list item, heading, lone utterance)
+  bool prose = true;         // not a code line / code comment (lexicons/name_rules.json `prose`)
 };
 
 struct Mention {
@@ -413,6 +415,7 @@ void Run::prepare() {
       default:
         break;
     }
+    in.prose = lex_.prose_ok(o.text);
     obs_index_.emplace(o.id, info_.size());
     info_.push_back(std::move(in));
   }
@@ -820,6 +823,21 @@ void Run::find_version_mentions() {
       versions_.emplace_back(oi, v);
       std::string ffs = lex_.fold(raw);
       std::size_t fs = in.folded.find(ffs);
+      // "SQLite 3.47.2", "Kivy 2.3", "python >= 3.11": the version of a named
+      // platform / language / tool right before it, not of the project.
+      if (fs != std::string::npos) {
+        for (const auto& tp : mentions_) {
+          if (tp.obs != oi || tp.entity.empty() || tp.fend > fs || fs - tp.fend > 14) continue;
+          if (!lex_.third_party_kinds.count(tp.kind)) continue;
+          std::string gap = in.folded.substr(tp.fend, fs - tp.fend);
+          bool plain = true;
+          for (unsigned char ch : gap) plain = plain && (ch == ' ' || std::strchr("v.@=<>~^:-", ch) != nullptr);
+          if (!plain && gap.find("version") == std::string::npos && gap.find("wersja") == std::string::npos) continue;
+          project = tp.entity;
+          how = "third_party";
+          break;
+        }
+      }
       Mention mn;
       mn.obs = oi;
       mn.kind = "version";
@@ -1109,7 +1127,7 @@ void Run::do_relation_patterns() {
 void Run::do_items() {
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     std::map<std::string, double> score;
     for (const auto& [type, phrases] : lex_.item_cues) {
       for (const auto& p : phrases) {
@@ -1223,7 +1241,7 @@ std::vector<std::string> Run::parse_options(std::string text) const {
 void Run::do_decisions() {
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     double reversal = lex_.score("decision.reversal", in.folded);
     if (item_type_[oi] != "decision" && reversal < 2.5) continue;
     // alternatives: the latest option enumeration in the 8 observations before (or this one)
@@ -1351,7 +1369,7 @@ void Run::do_status() {
   std::optional<Topic> last_topic;
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     // clauses: split at , ; and " - "
     std::vector<std::pair<std::size_t, std::size_t>> clauses;
     std::size_t a = 0;
@@ -1606,7 +1624,7 @@ model::PrincipleForm form_of(const Lexicons& lex, std::string_view folded) {
 void Run::do_normative() {
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     double s = 0;
     for (const auto& h : lex_.match("normative", in.folded)) s += h.w;
     if (s < 1.0) continue;

@@ -246,6 +246,7 @@ Lexicons::Lexicons(const kb::Pack& pack, const Json& discovered) : norm(pack) {
     version_re = std::move(*r);
   }
   version_window = static_cast<int>(json::get_int(vp, "window_tokens", 12));
+  for (const auto& k : strings_of(json::find(vp, "third_party_kinds") ? vp["third_party_kinds"] : Json())) third_party_kinds.insert(k);
   if (const Json* an = json::find(vp, "anchors"); an && an->is_object()) {
     for (auto it = an->begin(); it != an->end(); ++it) {
       for (const auto& s : strings_of(it.value())) version_anchors.push_back(norm.fold(s));
@@ -269,6 +270,15 @@ Lexicons::Lexicons(const kb::Pack& pack, const Json& discovered) : norm(pack) {
       for (const auto& x : *rr) {
         if (!x.is_string()) continue;
         if (auto r = re::Regex::compile(x.get<std::string>())) name_reject_.push_back(std::move(*r));
+      }
+    }
+  }
+
+  if (const Json* a = json::find(name_rules_, "prose")) {
+    if (const Json* rr = json::find(*a, "reject_regex"); rr && rr->is_array()) {
+      for (const auto& x : *rr) {
+        if (!x.is_string()) continue;
+        if (auto r = re::Regex::compile(x.get<std::string>())) prose_reject_.push_back(std::move(*r));
       }
     }
   }
@@ -484,24 +494,51 @@ bool Lexicons::name_ok(std::string_view kind, std::string_view label, std::strin
       if (r.search(u)) return false;
     }
   }
-  if (kind == "project" && strict) {
+  if (kind == "project") {
     if (const Json* p = json::find(name_rules_, "project")) {
-      // Casual media (chat, mail, transcripts) name projects by lowercase
-      // descriptions ("generator reelsow"); the strict rules are for
-      // technical text where a bare lowercase noun is a term, not a name.
-      for (const auto& t : strings_of(json::find(*p, "lenient_types") ? (*p)["lenient_types"] : Json())) {
-        if (t == artifact_type) return true;
-      }
       auto toks = norm.tokens(l);
       if (toks.empty()) return false;
       if (u.size() < static_cast<std::size_t>(json::get_int(*p, "min_chars", 0))) return false;
       if (toks.size() > static_cast<std::size_t>(json::get_int(*p, "max_tokens", 99))) return false;
-      if (json::get_bool(*p, "require_upper")) {
+      for (const auto& w : strings_of(json::find(*p, "reject_leading_words") ? (*p)["reject_leading_words"] : Json())) {
+        if (toks.front() == w) return false;
+      }
+      if (strict && json::get_bool(*p, "reject_stopword_edges") && (norm.is_stopword(toks.front()) || norm.is_stopword(toks.back()))) return false;
+      // A bare lowercase noun is a term, not a name, in technical text; casual
+      // media (chat, mail, transcripts) name projects by lowercase
+      // descriptions ("generator reelsow"), and so does an explicit
+      // 'projects (A, B, C)' enumeration (`strict` false).
+      if (strict && json::get_bool(*p, "require_upper")) {
+        for (const auto& t : strings_of(json::find(*p, "lenient_types") ? (*p)["lenient_types"] : Json())) {
+          if (t == artifact_type) return true;
+        }
         bool up = false;
         for (unsigned char ch : l) up = up || std::isupper(ch);
         if (!up) return false;
       }
-      if (json::get_bool(*p, "reject_stopword_edges") && (norm.is_stopword(toks.front()) || norm.is_stopword(toks.back()))) return false;
+    }
+  }
+  return true;
+}
+
+bool Lexicons::prose_ok(std::string_view text) const {
+  const Json* pr = json::find(name_rules_, "prose");
+  if (!pr) return true;
+  std::string t(utf8::strip(text));
+  if (t.empty()) return true;
+  for (const auto& p : strings_of(json::find(*pr, "reject_prefixes") ? (*pr)["reject_prefixes"] : Json())) {
+    if (t.compare(0, p.size(), p) == 0) return false;
+  }
+  for (const auto& p : strings_of(json::find(*pr, "reject_suffixes") ? (*pr)["reject_suffixes"] : Json())) {
+    if (t.size() >= p.size() && t.compare(t.size() - p.size(), p.size(), p) == 0) return false;
+  }
+  for (const auto& p : strings_of(json::find(*pr, "reject_substrings") ? (*pr)["reject_substrings"] : Json())) {
+    if (t.find(p) != std::string::npos) return false;
+  }
+  if (!prose_reject_.empty()) {
+    const std::u32string u = utf8::decode(t);
+    for (const auto& r : prose_reject_) {
+      if (r.search(u)) return false;
     }
   }
   return true;
