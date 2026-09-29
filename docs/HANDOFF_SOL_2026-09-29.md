@@ -46,6 +46,18 @@ wants you to explore.
 If they finished, merge them first (ratchet rule below); if they are unfinished, either build on
 them or work in other files — do not edit the same files in parallel and then overwrite.
 
+
+### Update (container restart) — status of the in-flight branches
+- `wip/catalog-r3` — **merged** (recall 31/45, gate passes).
+- `wip/precision` — **interrupted, NOT verified** (container restart). 3 commits on top of the
+  T5 merge, 17 files (+761/−118): name-plausibility rules as data (code fragments must not
+  become projects), distinct-weight paradigm cues (against cross-domain matches such as
+  software→music), `User`-class reading fidelity separated from authority, a prose gate and
+  third-party version binding. Last commit is an untested WIP snapshot. To use it: merge onto
+  the current tip, build, `ctest --preset dev` (must stay all green), run
+  `knowledge_eval.py synthetic` + `selfhost` before/after and keep only changes with measured
+  non-negative effect; write `docs/research/PRECISION_ROUND1_2026-09-29.md`.
+
 ## 2. The problem you are asked to attack
 
 **What the owner wants from the graph and the selector** (R3, R12, R22–R25, R27–R28, R32–R37):
