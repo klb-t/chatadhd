@@ -1,5 +1,8 @@
 # Codex continuation — 2026-09-28
 
+> **Historical status log.** Superseded by `docs/STATE.md` (canonical, verified 2026-09-29). Kept unchanged below for provenance.
+
+
 **Later research continuation:** start at
 [`research/PROGRAMME_2026-09-28.md`](research/PROGRAMME_2026-09-28.md).
 It contains the owner's subsequent thought-structure/topic requirements and

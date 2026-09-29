@@ -1,5 +1,8 @@
 # Current work checkpoint
 
+> **Historical status log.** Superseded by `docs/STATE.md` (canonical, verified 2026-09-29). Kept unchanged below for provenance.
+
+
 **Local Jev pair result:** all48 first replies retained;47/48 match the frozen
 exploratory labels (16/16 paraphrases,15/16 domain transfers,16/16 structural
 foils), USD0.001540350. See `docs/research/JEV_PAIRS_RESULTS_2026-09-28.md`.

@@ -338,6 +338,11 @@ _meta(key, value)
 3. Guard any new indexes with `ensure_index()` and a column check
 4. Never use `CREATE TABLE` with new columns — use `ALTER TABLE ADD COLUMN`
 
+## Current project state
+
+The canonical, dated state of the project (verified numbers, open work, what is
+needed from the owner) is `docs/STATE.md`. Read it first.
+
 ## Loom (C++ Core)
 
 `loom/` is a C++20 port of `engine/` + `core/`: one kernel library
