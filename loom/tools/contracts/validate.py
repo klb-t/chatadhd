@@ -18,7 +18,7 @@ try:
     from referencing import Registry, Resource
     from referencing.exceptions import NoSuchResource
 except ImportError as exc:
-    raise SystemExit('Missing local dependency: install jsonschema and referencing before offline use.') from exc
+    raise SystemExit('Missing local dependency: install loom/tools/contracts/requirements.txt before offline use.') from exc
 
 SCHEMA_DIR = Path(__file__).resolve().parents[3] / 'docs' / 'contracts'
 SCHEMAS = {
@@ -98,10 +98,16 @@ class ContractValidator:
 
     def __init__(self, schema_dir: Path = SCHEMA_DIR):
         self.schemas = {}
+        self.format_checker = FormatChecker()
         registry = Registry(retrieve=_no_remote)
         for path in sorted(schema_dir.glob('*.schema.json')):
             schema = read_json(path)
             Draft202012Validator.check_schema(schema)
+            required_formats = {item['format'] for _, item in _walk(schema)
+                                if isinstance(item, dict) and isinstance(item.get('format'), str)}
+            if required_formats - self.format_checker.checkers.keys():
+                raise RuntimeError('Required JSON Schema format checker unavailable; install '
+                                   'loom/tools/contracts/requirements.txt before offline use.')
             registry = registry.with_resource(schema['$id'], Resource.from_contents(schema))
             self.schemas[path.name] = schema
         self.registry = registry
@@ -127,7 +133,7 @@ class ContractValidator:
         if name is None:
             return [Issue('/schema', 'schema', 'Unknown or missing projection schema.')]
         validator = Draft202012Validator(self.schemas[name], registry=self.registry,
-                                         format_checker=FormatChecker())
+                                         format_checker=self.format_checker)
         try:
             errors = sorted(validator.iter_errors(value),
                             key=lambda e: tuple(str(x) for x in e.absolute_path))
