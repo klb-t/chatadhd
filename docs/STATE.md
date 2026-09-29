@@ -56,7 +56,7 @@ The GitHub repo is **private**. Actions minutes are exhausted until
 | Check | Result |
 |---|---|
 | `cmake --preset dev` + full build (112 targets) | OK |
-| `ctest --preset dev` | **71/72**; sole failure `unit.test_catalog_eval` (recall gate) |
+| `ctest --preset dev` | **73/74** (2026-09-29 evening, after merges); sole failure `unit.test_catalog_eval` (recall gate) |
 | Catalog eval on `synthetic_dev` | recall **21/45 = 0.467** after round 2 (was 13/45; gate ≥ 0.55 still red), precision 21/21, traps 0/5, generic noise 0/15 |
 | Test count consistency | 60 / 63 / 72 registrations match the 59/60, 62/63, 71/72 claims in the older docs |
 | Quality gates weakened? | No: thresholds 0.55 / 0.75 / 0.05 unchanged; the failing gate stays red |
@@ -151,6 +151,15 @@ Interrupted by the session limit; resume or merge next session, verifying the ra
 | `wip/worktree-agent-a436abbcd1b794a18` | resolve/generalize performance + precision | 1 commit + WIP |
 | `wip/worktree-agent-a342fccb481c4116c` | blind validation corpus v2 (**do not read** before final catalog eval) | 3 commits + WIP |
 Offline tasks handed to ChatGPT: `docs/GPT_OFFLINE_TASKS_2026-09-29.md`.
+
+
+## 6d. Merged on 2026-09-29 (evening)
+- Catalog recall round 2: 13/45 → **21/45** (precision 21/21, traps 0/5, noise 0/15).
+- Lossless export import: 1604/1604 JSON leaves preserved on 6 synthetic exports; `loom import --audit`.
+- Resolve/generalize performance: ~6× faster (repo run 1064 s → 177 s at -O0); identical outputs on synthetic_dev.
+- GPT offline T1–T4 (contracts, refinement corpus, Jev recipes, ModelProfile): 220/220 Python tests.
+- Open: extract nondeterminism at repository scale (in progress), precision issues (code fragments as projects,
+  cross-domain paradigm matches, wrong versions), catalog gate ≥ 0.55, blind corpus eval (`wip/worktree-agent-a342fccb481c4116c`, keep unread).
 
 ## 7. Open work, by priority
 
