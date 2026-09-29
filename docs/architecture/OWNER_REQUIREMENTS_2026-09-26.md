@@ -286,6 +286,152 @@ a change may not worsen any tracked test or quality metric (baseline in
 `docs/STATE.md` §4/§5); if something regresses, stop and fix or revert before
 continuing.
 
+## Requirements from the 2026-09-29 discussion (GPT note R26–R38)
+
+Source: `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md` (written by GPT from the
+owner's conversation; §-references below). Only statements the note marks **[U]**
+(owner) are recorded here as requirements; **[P]** proposals and **[H]**
+hypotheses stay in the note, the conceptual model (v1.1 section) and
+`ACCEPTANCE_TESTS_2026-09-29.md`. Where the note quotes the owner, the quote is
+verbatim; otherwise it is GPT's paraphrase (marked "paraphrase"). New
+requirements do not mark any existing feature as done.
+
+## R26 — Five layers, never conflated (note §1, §2)
+Conversation history · project/knowledge state · active task specification ·
+query context · request/execution are different objects. History is a source;
+request context is a compilation result. The owner corrected earlier
+shorthand that equated "whole context" with history. Audit views: what happened
+in the conversation / what currently holds / what is in the graph / what was
+actually sent to the model. (paraphrase)
+
+## R27 — Retrieval is semantic; words/regex are a shadow pipeline (note §1, §4, §20.1)
+> "Ja mówiłem o wektorach, o odpytywaniu małego modelu i klasyfikacyjnego modelu"
+
+Preferred retrieval: vector representations, the cheap model (interpretation,
+generalisation), the Jev classifier (judgements of supplied hypotheses) and graph
+structure. Keyword/regex matching complements them and additionally serves as an
+independent *shadow pipeline that evaluates the main one*: material found by
+lexical search but missed by the semantic pipeline is a diagnostic gap
+(`C_lexical − C_semantic`); verified "lexical rescue" cases become regression
+cases, "lexical noise" changes nothing. Extends R25. (paraphrase of §20.1)
+
+## R28 — Scope and detail are two independent controls; a plan is a structural query (note §7)
+How widely to reach for material (scope) and how much / in which representation
+to take from each element (detail) are separate, adjustable by the user also
+after an unsatisfying answer ("more detail at the same scope" vs "wider scope at
+similar detail"); a token budget is a constraint, not their definition. If a
+plan of the product exists (owner's example: a formal notification built on an
+earlier agreed plan), material is selected from the graph *according to that
+plan*, with per-thesis scope/detail, counter-evidence and gaps. (paraphrase)
+
+## R29 — Composable workspace; any number of coupled views (note §8)
+Independent UI elements and parent containers (fullscreen views, windows, docked
+windows, tabs, splits, adaptive layouts) that the user composes. Any number of
+simultaneous views, including several graphs with coupled selection/presentation
+parameters, for moving through a multidimensional space; never "graph OR table".
+Parameters may be shared, independent or coupled by a chosen dependency
+(selection, time, branch/version, relations, evidence filters, scope/detail,
+projection, scale/opacity). Five graphs was an example, not a maximum. (paraphrase; extends R16/R21)
+
+## R30 — Provider profiles are detachable presets (note §9)
+Conditional assignment by import source: Anthropic export → Claude-like view of a
+chosen earlier app version (owner said "the second-to-last" — pin a concrete
+reference/date when creating the preset); OpenAI export → web-app-like view
+adapted to a phone. As full a reproduction of interaction and tools as possible,
+not only colours; a simple/compatibility mode that assembles context/request as
+the source app did within reproducible limits, alongside Loom's compilation, with
+freedom to mix parts. Settings remain user-changeable and composable. Fidelity
+boundary: an export is not a transmission record; missing memory/system
+instructions/hidden state/history-truncation algorithms are never fabricated;
+adapters report native / equivalent / limited / unavailable. (paraphrase; extends R17/R21)
+
+## R31 — Interaction composer (note §10)
+The user can combine, e.g., the ChatGPT interface, Loom's context selection,
+tool functionality associated with Claude, n prompt variants, contexts composed
+in several ways and i models. A preset may bundle these but nothing may depend on
+another element without real necessity; changing a UI profile must not implicitly
+change model, permissions, privacy or context selection. UI = composition of
+components; execution = composition of transformations bound by data and events.
+(paraphrase)
+
+## R32 — A latent space of reasoning models emerges from the data (note §11, §12)
+The owner sees a space hidden in the data/graph that can be explored and sampled,
+with samples materialised into a chosen query element (example: select
+`user → philosophical preferences`, set a sampling resolution, render to a
+system prompt). What matters are reasoning models, assumption structures,
+transformations, relations, exceptions and ways of updating a position; names of
+schools/authors are only helper anchors. **Not** a hand-made global database of
+`idealism/physicalism/scepticism` with arbitrary values, and not hand-designed
+axes. Within a studied scope, admissible, non-trivial, unrefuted stances are
+materialised systematically as *separate* configurations and their results
+compared — never averaged into one personality. System prompt is one example of
+a target; the same mechanism feeds many interaction elements. Sampling resolution,
+source detail and output length are different parameters. (paraphrase)
+
+## R33 — Automatic experiments under user budget and triggers (note §14)
+The user sets a budget and triggers that launch chosen experiments, including
+automatic selection of parameters and models during work and comparison of answer
+quality. Trigger examples (open): user correction, poor rating, new task type,
+model disagreement, cost/time overrun. The variant space (prompts, contexts,
+detail, models, renderers, examples, tools, evaluators) is configurable; the
+product P×C×M is not executed exhaustively. (paraphrase)
+
+## R34 — Consolidate each refinement block into one current instruction (note §15)
+> "każdy blok taki właśnie precyzowania przez użytkownika, dogadywania się z modelem, to trzeba do jednej tury streścić. Znaczy nie tyle streścić, co optymalnie i systematycznie wyłożyć."
+> "nie z tym, że użytkownikowi się nie podoba, tylko z modyfikacją prompta."
+
+The next request carries the *modified prompt*, not the history of dislike plus
+rejected attempts. Primary goal: **semantic purity of the context**; token saving
+is secondary; improved quality is the owner's expectation, not yet demonstrated.
+Source history is kept; the compiled turn is a derived input with a map to
+utterances and a version. (Quotes verbatim.)
+
+## R35 — Entities: not everything is `same_as`; several true projections (note §21)
+Historical "separate projects" may be spelling/ASR/alias variants of one entity,
+successive lineage stages (predecessor, successor, fork, supersession, evolution),
+independent approaches to parts of a larger project that later *converge*,
+components/capabilities of a whole, or shared modules used by many projects.
+Merge only real identity; keep evolution, convergence, composition and sharing as
+rich time-scoped, provenance-carrying relations. Several simultaneous projections
+of one graph (historical-design, architectural, ecosystem, generative); none is
+"the" true one. Later recognition of a whole does not rewrite history. (paraphrase)
+
+## R36 — Philosophy as generator; seeding the graph with extrapolated data (note §22)
+Above the coding projects sits a layer of philosophy/way of thinking that shapes
+their generation; the goal is to model the *way projects are generated* well
+enough to reconstruct/extrapolate unsaid and unrealised elements from parts of
+the archives and the existing ecosystem. Links run through concrete generative
+relations/operators, and project practice may correct a principle. Graph seeding
+= proposing missing nodes, candidate relations, qualifiers, exceptions,
+abstraction levels, capability implementations, applications of shared modules,
+generalisations/specialisations, consequences, conflicts and missing evidence —
+always distinguishable from observation. Rich edges are required so such
+dependencies can be described, compared and used formally; `related_to` is not
+enough. If later sources confirm a seeded hypothesis, keep its genealogy and
+prediction timestamp (ground truth for measuring the generator). (paraphrase)
+
+## R37 — Model of models: the epistemics of cognitive instruments (note §23)
+The system needs a model of the models it uses: biases, typical failure modes and
+quality that depends on the kind of operation, because the system co-depends on
+the models used to build it. Owner's observation (a task-class assessment, not a
+benchmark): even the newest models currently generalise the owner's philosophy at
+best "medium / medium-weak". This must lead to caution in promoting such
+generalisations and/or an important compensating element of the request.
+(paraphrase; observation recorded as the owner's)
+
+## R38 — Owner-driven Jev exploration; Jev Lab (note §5, §6, §20.2)
+The owner wants to learn the classifier's behaviour first-hand, experiment with
+how questions are asked and give agents concrete hints (kept as annotated
+knowledge with provenance, not as statistics). Three families of questions to the
+classifier: relation relevance while building the graph, relevance of candidate
+subgraphs during context selection, and needed level of detail. An application
+for Pydroid over OpenRouter ("Jev Lab": query parameters GUI, contextual help,
+files/parsing, experiment history, automatic statistics) was produced in the GPT
+conversation (`JevLab_Pydroid.py`, `JevLab_sources.zip`, `README_PL.md`, test
+report) — **not in this repository**. Also supplied: a Gemini document on
+query optimisation for the classifier (research material, not a verified
+TypeSafe specification). (paraphrase)
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

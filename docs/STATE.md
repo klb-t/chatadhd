@@ -41,9 +41,11 @@ The GitHub repo is **private**. Actions minutes are exhausted until
 
 ## 3. Read in this order
 
-1. `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` — R1–R24, owner's words.
+1. `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` — R1–R38 + D1/D2, owner's words.
 2. `docs/architecture/LOOM_CONCEPTUAL_MODEL.md` — the binding vocabulary/invariants.
-3. `docs/architecture/NOTATKA_GPT_2026-09-26.md`, `MEGA_MASTER_2026-09-16.md`.
+3. `docs/architecture/NOTATKA_GPT_2026-09-26.md`, `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md`
+   (interaction compiler, five layers, model-of-models; marks owner [U] vs proposal [P] vs hypothesis [H]),
+   `ACCEPTANCE_TESTS_2026-09-29.md`, `MEGA_MASTER_2026-09-16.md`.
 4. This file, then `docs/research/PROGRAMME_2026-09-28.md` + `RESULTS_2026-09-28.md`
    (thought-structure research), `docs/CATALOG_QUALITY_2026-09-28.md`,
    `docs/research/CATALOG_SEMANTIC_GAP_2026-09-28.md`, `docs/selfhost/v2/README.md`.
@@ -91,6 +93,14 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   precision 71.7 %, complete 12-bit vectors 39/64; "always no" scores 91.4 %.
   Follow-up 48 pair questions 47/48 (exploratory, reused texts). Useful as a
   cheap *judge of supplied hypotheses*, not as an extractor.
+- **Jev offline policy audit** (`docs/research/JEV_OFFLINE_POLICY_AUDIT_2026-09-29.md`,
+  no new inference, cost 0): threshold 0.5 → 26/768 errors; keep only p≤0.2/p≥0.8
+  → 5/673 errors, 87.6 % coverage; a *post hoc* rule "send all q01 to
+  verification" → 0/627 (not validated, chosen after seeing errors; all 5 errors
+  are in the development half). Per-question profiles differ strongly (q01
+  positive precision 30 %, q07 70 %, q11 ≈55 %): the instrument needs a
+  per-task profile (R37), not one accuracy number. Stability of paired
+  answers ≠ correctness (paraphrase pairs: 8/12 identical vectors both correct).
 - **Temporal holdout**: strict predictive accuracy is **unavailable** — the
   data pack contains later knowledge (contaminated); runs with priors cut are
   only "retrospective consistency". Needs a neutral pack (`priors=none`) and
@@ -108,6 +118,17 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   not matching hashes; Android callbacks on early errors; a research test that
   called the live GitHub API.
 
+## 6b. Code defects confirmed on 2026-09-29 (from the GPT interaction note §17)
+
+1. `ContextEngine` is not on the chat request path (`loom_context_build` only).
+2. Context dependency closure silently drops a premise when the budget is
+   exhausted (no `incomplete` marker).
+3. `resolve/assess.cpp`: every `User` claim gets `confidence = 1.0` (conflates
+   reading fidelity, content credibility, authority to decide).
+4. Catalog link building is O(N²) over unit pairs (`catalog/score.cpp`).
+5. (reported) default calibration has hand-set priors.
+Details and the linked acceptance criteria: `docs/architecture/ACCEPTANCE_TESTS_2026-09-29.md`.
+
 ## 7. Open work, by priority
 
 1. **Real exports** (blocked on owner data): everything is measured on
@@ -123,7 +144,15 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
    (usage rules in `JEV_USAGE_RULES`), all behind explicit budgets and caches.
 6. UI: multiple coordinated simultaneous views, layout persistence/free
    docking, judgement editing, provider-inspired interface profiles (R16/R17/R21).
-7. Android device validation; privacy/threat-model layer (R19); legal-case
+7. Interaction compiler (R26–R34): five layers made explicit in the request
+   path, scope/detail controls, refinement consolidation into an active task
+   specification, composable workspace with coupled views, detachable provider
+   profiles, experiment triggers under budget — order to be decided; start with
+   defects 1–3 in §6b.
+8. Model-of-models profiles (R37), graph seeding / structural-transfer hypotheses
+   with predict-before-observe genealogy (R36), latent space of reasoning models
+   (R32, research).
+9. Android device validation; privacy/threat-model layer (R19); legal-case
    kind (R9).
 
 ## 8. Needed from the owner (only when convenient)
@@ -134,6 +163,10 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   keeps only the ~9 rendered turns of a virtualized list).
 - An OpenRouter key with a small cap (for live semantic/Jev runs), delivered
   outside Git (environment secret), if live measurements are wanted.
+- Optional: the Jev Lab files produced in the GPT conversation
+  (`JevLab_Pydroid.py`, `JevLab_sources.zip`, `README_PL.md`, its test report)
+  and the Gemini document "Wydajność i optymalizacja zapytań dla modelu
+  klasyfikacyjnego jev.docx" are **not in the repo** (R38).
 - Nothing else is blocking; the docs above are sufficient to continue.
 
 ## 8b. Working rules decided by the owner (2026-09-29)
