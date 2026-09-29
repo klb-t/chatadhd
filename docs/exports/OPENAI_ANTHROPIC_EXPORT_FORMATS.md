@@ -283,7 +283,25 @@ hidden-by-default classes the original app hides (registry `visibility` flags). 
 the ZIP (or copies) and every entity carries its `origin` provider/version, a profile can render an archived export the way the
 source app did without any provider-specific code. Profiles must not copy the vendors' graphics or text (R17 copyright note).
 
-## 7. Implementation notes
+## 7. Implementation status (2026-09-29)
 
-See `docs/exports/EXPORT_REGISTRY_AND_AUDIT.md` (written with the implementation) for the registry schema, the lossless
-accounting rule, the coverage table (before/after) and the CLI.
+Code: `loom/src/import/export_*.cpp` (OpenAI, Anthropic, unknown-provider fallback, archive walker, shared helpers).
+Tests: `loom/tests/test_import_exports.cpp` against `loom/tests/fixtures/exports/EXPECTED.json` (independent oracle produced by
+`loom/tools/gen_export_fixtures.py`, never by Loom). CLI: `loom import <zip> [--export-mode auto|off|on] [--audit]`;
+`--audit` prints provider, counts, leaves preserved/total, pointer links, unresolved asset keys, unreferenced and unknown members,
+errors, warnings and repairs (the same data is `export_report` in the C ABI result).
+
+Completeness rule (test `completeness: ...`): each conversation object is rebuilt only from what is stored (per-message `raw`
+and node wrapper, `null_nodes`, conversation `fields`) and compared leaf by leaf with the source JSON parsed independently from
+the fixture file. Result on the 6 fixtures: 15 conversations, 1604 JSON leaves, all present and equal. The only deliberate
+non-verbatim step is a lone UTF-16 surrogate escape, replaced by U+FFFD (UTF-8 cannot hold it) and reported under `repairs`.
+
+Not done / remaining (nothing here can be settled without real exports, except where marked):
+
+- `request_provenance` is recorded as `unknown` for imported history; no system prompt/memory is ever reconstructed (by design).
+- Leaves outside conversations (`user.json`, feedback, memories, projects, unknown members) are kept as nodes/records and counted by
+  the oracle, but there is no leaf-by-leaf rebuild test for them yet (small extension of the completeness test).
+- Attachment bytes: copy-vs-link owner option (R20) is only exercised for bytes present in the ZIP; Claude exports that carry no
+  file bytes stay metadata-only (`extracted_content` kept verbatim).
+- Checklist items 1-7 of section 5 (real member lists, field sets, wrapper/shard use, timestamp forms) are open.
+- Registry-driven profiles (section 6) are not built.

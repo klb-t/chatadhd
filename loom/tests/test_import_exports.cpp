@@ -21,6 +21,7 @@
 #include "loom/util/fs.h"
 #include "loom/util/json.h"
 #include "loom/util/utf8.h"
+#include "../third_party/miniz/miniz.h"
 #include "test_helpers.h"
 
 using namespace loom;
@@ -180,6 +181,127 @@ const Message* by_key(const std::vector<Message>& v, const std::string& key) {
     if (m.metadata["export"]["key"] == key) return &m;
   }
   return nullptr;
+}
+
+// ── independent completeness check ─────────────────────────────────────────
+std::int64_t leaf_count(const Json& j) {
+  if (j.is_object() || j.is_array()) {
+    std::int64_t n = 0;
+    for (const auto& x : j) n += leaf_count(x);
+    return n;
+  }
+  return 1;
+}
+
+// Every leaf path of `src` that is missing or different in `got` (paths like a.b[3].c).
+void diff_leaves(const Json& src, const Json& got, const std::string& path, std::vector<std::string>& missing) {
+  if (src.is_object()) {
+    if (!got.is_object()) {
+      missing.push_back(path);
+      return;
+    }
+    for (auto it = src.begin(); it != src.end(); ++it) {
+      if (!got.contains(it.key())) missing.push_back(path + "." + it.key());
+      else diff_leaves(it.value(), got[it.key()], path + "." + it.key(), missing);
+    }
+  } else if (src.is_array()) {
+    if (!got.is_array() || got.size() != src.size()) {
+      missing.push_back(path);
+      return;
+    }
+    for (std::size_t i = 0; i < src.size(); ++i) diff_leaves(src[i], got[i], path + "[" + std::to_string(i) + "]", missing);
+  } else if (src != got) {
+    missing.push_back(path);
+  }
+}
+
+// Conversation JSON documents of a fixture, parsed straight from the file / archive members.
+std::vector<Json> source_conversations(const std::string& name) {
+  std::vector<std::string> docs;
+  const auto path = xfix(name);
+  if (path.extension() == ".json") {
+    docs.push_back(*fsutil::read_file(path));
+  } else {
+    mz_zip_archive z{};
+    REQUIRE(mz_zip_reader_init_file(&z, path.string().c_str(), 0));
+    for (mz_uint i = 0; i < mz_zip_reader_get_num_files(&z); ++i) {
+      char nm[512];
+      mz_zip_reader_get_filename(&z, i, nm, sizeof nm);
+      const std::string n = nm;
+      if (n.rfind("conversations", 0) != 0 || n.size() < 5 || n.substr(n.size() - 5) != ".json") continue;
+      std::size_t sz = 0;
+      void* p = mz_zip_reader_extract_to_heap(&z, i, &sz, 0);
+      REQUIRE(p != nullptr);
+      docs.emplace_back(static_cast<char*>(p), sz);
+      mz_free(p);
+    }
+    mz_zip_reader_end(&z);
+  }
+  std::vector<Json> out;
+  for (auto& d : docs) {
+    // Lone \uD800-\uDFFF escapes cannot be stored as UTF-8; the importer replaces each with U+FFFD
+    // (documented, reported as repairs.lone_surrogates). The oracle applies the same replacement.
+    auto hex4 = [&](std::size_t at) -> long {
+      if (at + 6 > d.size() || d[at] != '\\' || d[at + 1] != 'u') return -1;
+      long v = 0;
+      for (int k = 2; k < 6; ++k) {
+        const char ch = d[at + static_cast<std::size_t>(k)];
+        int h = (ch >= '0' && ch <= '9') ? ch - '0' : (ch >= 'a' && ch <= 'f') ? ch - 'a' + 10 : (ch >= 'A' && ch <= 'F') ? ch - 'A' + 10 : -1;
+        if (h < 0) return -1;
+        v = v * 16 + h;
+      }
+      return v;
+    };
+    for (std::size_t i = 0; i + 1 < d.size();) {
+      if (d[i] != '\\') { ++i; continue; }
+      const long c = hex4(i);
+      if (c < 0) { i += 2; continue; }
+      if (c >= 0xD800 && c <= 0xDBFF) {
+        const long lo = hex4(i + 6);
+        if (lo >= 0xDC00 && lo <= 0xDFFF) { i += 12; continue; }
+        d.replace(i, 6, "\\ufffd");
+      } else if (c >= 0xDC00 && c <= 0xDFFF) {
+        d.replace(i, 6, "\\ufffd");
+      }
+      i += 6;
+    }
+    auto p = json::parse(d);
+    INFO(name << ": " << (p.has_value() ? "" : p.error().message));
+    REQUIRE(p.has_value());
+    if (p->is_object() && p->contains("conversations") && (*p)["conversations"].is_array()) {
+      for (const auto& c : (*p)["conversations"]) out.push_back(c);  // wrapper object: {"conversations": [...]}
+    } else if (p->is_array()) {
+      for (const auto& c : *p) out.push_back(c);
+    } else {
+      out.push_back(*p);
+    }
+  }
+  return out;
+}
+
+// Rebuilds a source conversation from what the importer stored (raw message objects, node
+// wrappers, null nodes, conversation-level fields), independent of the importer's own counters.
+Json reassemble(Database& db, const Conversation& c, bool openai) {
+  auto conv = unwrap(db.get_conv(c.id));
+  REQUIRE(conv.has_value());
+  const Json& cex = conv->metadata["export"];
+  Json out = cex["fields"];
+  if (openai) {
+    Json mapping = Json::object();
+    for (const auto& m : all_msgs(db, c)) {
+      const Json& ex = m.metadata["export"];
+      Json node = ex["node"];
+      node["message"] = ex["raw"];
+      mapping[ex["key"].get<std::string>()] = node;
+    }
+    for (const auto& nn : cex["null_nodes"]) mapping[nn["id"].get<std::string>()] = nn["node"];
+    if (cex["has_mapping"].get<bool>()) out["mapping"] = mapping;
+  } else {
+    Json arr = Json::array();
+    for (const auto& m : all_msgs(db, c)) arr.push_back(m.metadata["export"]["raw"]);
+    if (cex["has_mapping"].get<bool>()) out["chat_messages"] = arr;
+  }
+  return out;
 }
 
 }  // namespace
@@ -596,6 +718,53 @@ TEST_SUITE("import_exports") {
     off.export_mode = ExportMode::Off;
     auto legacy = unwrap(fx.imp->import_file(xfix("anthropic_legacy.zip"), off));
     CHECK(legacy.export_report.is_null());
+  }
+
+  TEST_CASE("completeness: every JSON leaf path of every fixture conversation is stored verbatim (independent recount)") {
+    std::int64_t total = 0, kept = 0;
+    for (const char* name : {"openai_legacy.zip", "openai_2026_sharded.zip", "anthropic_legacy.zip", "anthropic_2026_full.zip",
+                             "openai_single_conversations.json", "anthropic_single_chat.json"}) {
+      Fx fx;
+      auto r = fx.ok(name);
+      auto srcs = source_conversations(name);
+      REQUIRE(!srcs.empty());
+      CHECK(srcs.size() <= r.conversations.size());  // extra conversations come from other members (textdocs, html)
+      for (const Json& src : srcs) {
+        const bool openai = src.contains("mapping");
+        REQUIRE((openai || src.contains("chat_messages")));
+        std::string key = json::get_string(src, openai ? "conversation_id" : "uuid", "");
+        if (key.empty()) key = json::get_string(src, "id", "");
+        const Conversation* found = nullptr;
+        for (const auto& c : r.conversations) {
+          auto cv = unwrap(fx.db->get_conv(c.id));
+          if (!cv->metadata.contains("export") || !cv->metadata["export"].contains("fields")) continue;
+          const Json& cex = cv->metadata["export"];
+          if (!key.empty() ? cex["key"] == key : cex["title_original"] == json::get_string(src, openai ? "title" : "name", "")) found = &c;
+        }
+        INFO(name << " conversation " << key);
+        REQUIRE(found != nullptr);
+        Json back = reassemble(*fx.db, *found, openai);
+        Json s2 = src;
+        if (!openai) {  // chat_messages are compared by uuid, not by storage order
+          auto by_uuid = [](const Json& a, const Json& b) { return a["uuid"].get<std::string>() < b["uuid"].get<std::string>(); };
+          std::vector<Json> a(s2["chat_messages"].begin(), s2["chat_messages"].end());
+          std::vector<Json> b(back["chat_messages"].begin(), back["chat_messages"].end());
+          std::sort(a.begin(), a.end(), by_uuid);
+          std::sort(b.begin(), b.end(), by_uuid);
+          s2["chat_messages"] = a;
+          back["chat_messages"] = b;
+        }
+        std::vector<std::string> missing;
+        diff_leaves(s2, back, "$", missing);
+        for (const auto& m : missing) MESSAGE("lost leaf: " << m);
+        CHECK(missing.empty());
+        total += leaf_count(src);
+        if (missing.empty()) kept += leaf_count(src);
+      }
+    }
+    MESSAGE("completeness: " << kept << "/" << total << " conversation JSON leaves preserved verbatim");
+    CHECK(kept == total);
+    CHECK(total > 1000);
   }
 
   TEST_CASE("C ABI: loom_import_file_ex export_mode returns the export report") {

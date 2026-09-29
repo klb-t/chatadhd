@@ -106,6 +106,18 @@ research suites (387/387 claimed), host JNI smoke (claimed passing).
   only "retrospective consistency". Needs a neutral pack (`priors=none`) and
   post-cutoff scoring.
 
+### Export fidelity (OpenAI / Anthropic data exports, synthetic fixtures only)
+
+- 6 deterministic fixtures (OpenAI legacy, 2026 sharded, single JSON; Anthropic legacy, 2026 full, single JSON) plus 3 stress
+  fixtures (nested container, unknown provider, malformed). `unit.test_import_exports`: 18 cases green against the independent oracle.
+- Completeness (independent recount): 15 conversations, **1604/1604 JSON leaves** rebuilt from stored data equal to the source;
+  attachment pointers resolved to archive members (10 links in the sharded OpenAI fixture, 2 unresolved and reported).
+  One documented lossy step: lone surrogate escapes become U+FFFD (reported).
+- `loom import <zip> --audit` prints the readable summary. History is not a request: `request_provenance` stays `unknown`.
+- Only real exports can settle: actual member lists, field sets of account/feedback/memory/project files, wrapper/shard use,
+  timestamp forms, whether Claude ships file bytes. Fixtures are built from public format knowledge, not from real data.
+  Remaining list: `docs/exports/OPENAI_ANTHROPIC_EXPORT_FORMATS.md` section 7.
+
 ## 6. Bugs found and fixed (Codex work, mirrored in Python and C++)
 
 - `Config.auto_upgrade` reset any `semantic_model` containing `claude-haiku-4`
