@@ -10,6 +10,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #include "loom/catalog.h"
@@ -168,6 +169,97 @@ Json flatten_self_profile(const kb::Pack& pack, const kb::Normalizer& norm, cons
 // kind="alias" hit). Principle probes and rejected aliases cannot bind versions.
 std::vector<Mention> find_version_mentions(std::string_view text, const std::vector<Mention>& alias_hits,
                                            int window_chars);
+
+// ── Semantic profile channels (semantic.cpp) ───────────────────────────
+// Offline vector-space evidence between a unit and a *profile* (a weighted
+// centroid of confidently identified units plus the self-profile terms).
+// Two independent spaces are kept so every contribution stays explainable
+// per channel: (1) sublinear-tf x idf over the sketch's stemmed terms, and
+// (2) the same over character n-grams of those terms (robust to inflection,
+// derivation and compounds that whole-word matching cannot see). Vectors
+// are derived from the sketch (top-K terms with exact tf) on demand and
+// never retained per unit, so memory is O(vocabulary), not O(units x
+// n-grams). Everything is deterministic: ids are assigned in unit order,
+// sums run in a fixed order, callers round the results.
+struct SemanticProfile {
+  std::vector<double> word;  // unnormalised weighted sum of L2-normalised unit vectors
+  std::vector<double> gram;
+  double word_sq = 0.0, gram_sq = 0.0;  // squared L2 norms (after finish())
+  double mass = 0.0;                    // sum of unit weights added
+  int units = 0;                        // units added (excludes term pseudo-documents)
+};
+
+struct ChannelCosine {
+  double word = 0.0, gram = 0.0;
+};
+
+class SemanticSpace {
+ public:
+  // `sketches` in a stable order; index i is the unit index used below.
+  explicit SemanticSpace(const std::vector<const Sketch*>& sketches, int ngram = 4);
+  std::size_t size() const noexcept { return sketches_.size(); }
+  SemanticProfile new_profile() const;
+  // profile += weight * v_unit (v_unit L2-normalised in each space).
+  void add_unit(SemanticProfile& p, std::size_t unit, double weight) const;
+  // profile += weight * v_terms, a pseudo-document made of (stemmed key,
+  // weight) pairs (the self-profile). Keys that no unit contains are ignored.
+  void add_terms(SemanticProfile& p, const std::vector<std::pair<std::string, double>>& terms, double weight) const;
+  void finish(SemanticProfile& p) const;
+  // cos(v_unit, profile). `own_weight` > 0 removes the unit's own
+  // contribution first (leave-one-out) so a seed cannot vouch for itself.
+  ChannelCosine cosine(std::size_t unit, const SemanticProfile& p, double own_weight = 0.0) const;
+  // cos(v_a, v_b) of two units (both spaces averaged), used to corroborate
+  // continuity: temporal proximity alone must never make a unit relevant.
+  double similarity(std::size_t a, std::size_t b) const;
+  // Number of distinct word terms / n-grams (diagnostics).
+  std::size_t word_vocabulary() const noexcept { return word_idf_.size(); }
+  std::size_t gram_vocabulary() const noexcept { return gram_idf_.size(); }
+
+ private:
+  struct UnitVec {
+    std::vector<std::pair<std::uint32_t, double>> word, gram;
+  };
+  UnitVec unit_vec(std::size_t unit) const;
+  void grams_of(std::string_view term, std::vector<std::uint64_t>& out) const;
+  std::vector<const Sketch*> sketches_;
+  int ngram_ = 4;
+  std::unordered_map<std::string, std::uint32_t> word_ids_;
+  std::unordered_map<std::uint64_t, std::uint32_t> gram_ids_;
+  std::vector<double> word_idf_, gram_idf_;
+};
+
+// ── Linking pass (links.cpp) ────────────────────────────────────────────
+// Everything the linker needs about a unit; no raw bytes are ever read.
+struct LinkUnit {
+  const Sketch* sketch = nullptr;
+  std::string platform;
+  std::string project;         // project_ext_id ("" = none)
+  std::optional<double> time;  // epoch seconds when the unit's date parses
+};
+struct LinkParams {
+  double min_jaccard = 0.4;       // policy: link_minhash_jaccard
+  int shared_rare_min = 3;        // policy: link_shared_rare_terms
+  double session_hours = 2.0;     // policy: link_same_session_hours
+  std::size_t exact_max_units = 2000;  // <= : exhaustive reference scan
+  int lsh_rows = 2;               // lanes per LSH band (recall >= 99.6 % at J = 0.4 with 64 lanes)
+  int lsh_max_bucket = 256;       // larger buckets are compared as a sliding window
+  int session_max_neighbours = 32;  // nearest same_session neighbours kept per unit
+  int project_max_clique = 32;    // larger project groups are aggregated, not materialised
+};
+struct Link {
+  int i = 0, j = 0;  // unit indices, i < j
+  std::string type;  // same_project | continuation | shared_rare | same_session
+  double strength = 0.0;
+};
+struct LinkResult {
+  std::vector<Link> links;                      // sorted by (i, j, type)
+  std::vector<std::vector<int>> project_groups;  // same_project groups above project_max_clique
+  Json stats = Json::object();
+};
+LinkResult build_links(const std::vector<LinkUnit>& units, const LinkParams& params);
+
+// p-th percentile (0..100, nearest rank on the sorted copy); 0 for empty.
+double percentile_of(std::vector<double> values, double pct);
 
 // ── Sax-ish text extraction from one catalogued unit kind ───────────────
 // Concatenates message/section texts of a conversation/project/memory

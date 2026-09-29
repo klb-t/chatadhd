@@ -21,6 +21,7 @@
 #include <chrono>
 #include <cmath>
 #include <map>
+#include <memory>
 #include <set>
 #include <tuple>
 #include <unordered_map>
@@ -210,6 +211,19 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   if (const Json* w = json::find(relevance, "weights"); w && w->is_object()) {
     for (auto it = w->begin(); it != w->end(); ++it) weights[it.key()] = it.value().get<double>();
   }
+  // Evidence channels (R25/R27): every feature belongs to exactly one channel.
+  // The lexical and semantic channels are also scored on their own (shadow
+  // scores) so each can audit the other; the final score fuses all of them
+  // additively in log-odds space, so no channel can veto another.
+  std::map<std::string, std::string> channel_of;
+  if (const Json* ch = json::find(relevance, "channels"); ch && ch->is_object()) {
+    for (auto it = ch->begin(); it != ch->end(); ++it) {
+      if (!it.value().is_array()) continue;
+      for (const auto& f : it.value()) {
+        if (f.is_string()) channel_of[f.get<std::string>()] = it.key();
+      }
+    }
+  }
   std::map<std::string, double> class_weights;
   if (const Json* cw = json::find(relevance, "term_class_weights"); cw && cw->is_object()) {
     for (auto it = cw->begin(); it != cw->end(); ++it) class_weights[it.key()] = it.value().get<double>();
@@ -227,6 +241,11 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   int max_expansion_passes = 3, expansion_max_terms = 16, link_shared_rare = 3, link_same_session_hours = 2;
   double expansion_min_lift = 3.0, link_min_jaccard = 0.4, link_damping = 0.6;
   int expansion_min_df_rel = 3;
+  // Semantic (profile-vector) channel; policy lives in thresholds.json "catalog".
+  int sem_ngram = 4, sem_min_seeds = 2, sem_passes = 2;
+  int link_exact_max_units = 2000, link_session_max_neighbours = 32, link_project_max_clique = 32;
+  double link_session_similarity_ref = 0.15;
+  double sem_floor_pct = 10.0, sem_ref_pct = 50.0, sem_cap = 1.5, sem_self_doc_weight = 0.5;
   if (const Json* cat = json::find(thresholds, "catalog"); cat && cat->is_object()) {
     tau_relevant = json::get_number(*cat, "tau_relevant", tau_relevant);
     tau_candidate = json::get_number(*cat, "tau_candidate", tau_candidate);
@@ -238,11 +257,22 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     link_shared_rare = static_cast<int>(json::get_int(*cat, "link_shared_rare_terms", link_shared_rare));
     link_same_session_hours = static_cast<int>(json::get_int(*cat, "link_same_session_hours", link_same_session_hours));
     link_damping = json::get_number(*cat, "link_damping", link_damping);
+    sem_ngram = static_cast<int>(json::get_int(*cat, "sem_ngram", sem_ngram));
+    sem_floor_pct = json::get_number(*cat, "sem_floor_percentile", sem_floor_pct);
+    sem_ref_pct = json::get_number(*cat, "sem_ref_percentile", sem_ref_pct);
+    sem_cap = json::get_number(*cat, "sem_cap", sem_cap);
+    sem_min_seeds = static_cast<int>(json::get_int(*cat, "sem_min_seeds", sem_min_seeds));
+    sem_passes = static_cast<int>(json::get_int(*cat, "sem_passes", sem_passes));
+    sem_self_doc_weight = json::get_number(*cat, "sem_self_doc_weight", sem_self_doc_weight);
+    link_exact_max_units = static_cast<int>(json::get_int(*cat, "link_exact_max_units", link_exact_max_units));
+    link_session_max_neighbours = static_cast<int>(json::get_int(*cat, "link_session_max_neighbours", link_session_max_neighbours));
+    link_project_max_clique = static_cast<int>(json::get_int(*cat, "link_project_max_clique", link_project_max_clique));
+    link_session_similarity_ref = json::get_number(*cat, "link_session_similarity_ref", link_session_similarity_ref);
   }
   int max_passes = cfg.max_passes > 0 ? std::min(cfg.max_passes, max_expansion_passes) : max_expansion_passes;
 
   Json fp{{"profile", profile.input_hash}, {"pack", pack_->hash()}, {"cfg", cfg.to_json()},
-          {"scoring_evidence_version", 2}};
+          {"scoring_evidence_version", 3}};
   std::string run_id = "run_" + Sha256::hex(json::canonical(fp)).substr(0, 16);
 
   // ── Load every unit + its sketch ────────────────────────────────────
@@ -360,23 +390,33 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     }
   };
 
+  auto round4 = [](double x) { return std::round(x * 1e4) / 1e4; };
   auto compute_linear_and_label = [&](Row& row) {
     double linear = bias;
+    double lexical_linear = bias, semantic_linear = bias;
     Json reasons = Json::array();
     for (auto& [k, w] : weights) {
       double f = json::get_number(row.features, k, 0.0);
       double contribution = w * f;
       linear += contribution;
-      if (std::abs(contribution) > 1e-9) reasons.push_back(Json{{"feature", k}, {"contribution", contribution}, {"evidence", f}});
+      auto ch = channel_of.find(k);
+      const std::string channel = ch == channel_of.end() ? "lexical" : ch->second;
+      if (channel == "lexical") lexical_linear += contribution;
+      else if (channel == "semantic") semantic_linear += contribution;
+      if (std::abs(contribution) > 1e-9) {
+        reasons.push_back(Json{{"feature", k}, {"channel", channel}, {"contribution", round4(contribution)}, {"evidence", f}});
+      }
     }
     if (!date_from.empty() && !row.date.empty() && row.date < date_from) {
       linear += date_penalty;
-      reasons.push_back(Json{{"feature", "date_prior"}, {"contribution", date_penalty}, {"evidence", row.date}});
+      reasons.push_back(Json{{"feature", "date_prior"}, {"channel", "structure"}, {"contribution", date_penalty}, {"evidence", row.date}});
     }
-    std::sort(reasons.begin(), reasons.end(),
+    std::stable_sort(reasons.begin(), reasons.end(),
              [](const Json& a, const Json& b) { return std::abs(a["contribution"].get<double>()) > std::abs(b["contribution"].get<double>()); });
     row.reasons = reasons;
-    row.score = std::round(sigmoid(linear) * 1e4) / 1e4;
+    row.features["lexical_score"] = round4(sigmoid(lexical_linear));
+    row.features["semantic_score"] = round4(sigmoid(semantic_linear));
+    row.score = round4(sigmoid(linear));
     row.label = row.score >= tau_relevant ? "relevant" : (row.score >= tau_candidate ? "candidate" : "irrelevant");
   };
 
@@ -456,104 +496,222 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     for (auto& row : rows) compute_linear_and_label(row);
   }
 
+  // ── Semantic channel (R25/R27): cosine of every unit to profile vectors
+  // built from the confidently identified units (seeds) and the self-profile
+  // terms, in a word-stem space and a character n-gram space. Bounded,
+  // deterministic enrichment: units that reach the relevant band join the
+  // profile for the next pass (at most `sem_passes`). This channel is fused
+  // additively with the lexical one -- it neither gates nor is gated. ─────
+  Json semantic_report{{"available", false}, {"passes", 0}};
+  std::unique_ptr<SemanticSpace> space;
+  {
+    std::vector<const Sketch*> sketches;
+    sketches.reserve(rows.size());
+    for (const auto& r : rows) sketches.push_back(&r.sketch);
+    if (sem_passes > 0 && N >= 4) space = std::make_unique<SemanticSpace>(sketches, sem_ngram);
+  }
+  auto has_semantic_evidence = [](const Row& row) {
+    return json::get_number(row.features, "sem_word", 0.0) > 0.05 || json::get_number(row.features, "sem_ngram", 0.0) > 0.05;
+  };
+  if (space) {
+    std::vector<std::pair<std::string, double>> self_pseudo;
+    for (const auto& qt : self_terms) self_pseudo.emplace_back(qt.term, qt.weight);
+    std::vector<double> seed_w(static_cast<std::size_t>(N), 0.0);
+    for (int i = 0; i < N; ++i) {
+      if (rows[static_cast<std::size_t>(i)].label == "relevant") seed_w[static_cast<std::size_t>(i)] = rows[static_cast<std::size_t>(i)].score;
+    }
+    for (int pass = 1; pass <= sem_passes; ++pass) {
+      if (cancel && cancel->cancelled()) break;
+      SemanticProfile prof = space->new_profile();
+      int seeds = 0;
+      double mass = 0.0;
+      for (int i = 0; i < N; ++i) {
+        double w = seed_w[static_cast<std::size_t>(i)];
+        if (w <= 0.0) continue;
+        space->add_unit(prof, static_cast<std::size_t>(i), w);
+        ++seeds;
+        mass += w;
+      }
+      if (seeds < sem_min_seeds) {
+        semantic_report["reason"] = "fewer than " + std::to_string(sem_min_seeds) + " confidently identified units";
+        break;
+      }
+      space->add_terms(prof, self_pseudo, sem_self_doc_weight * mass / seeds);
+      space->finish(prof);
+      std::vector<ChannelCosine> cs(static_cast<std::size_t>(N));
+      std::vector<double> seed_word, seed_gram, other_word, other_gram;
+      for (int i = 0; i < N; ++i) {
+        std::size_t u = static_cast<std::size_t>(i);
+        cs[u] = space->cosine(u, prof, seed_w[u]);
+        (seed_w[u] > 0.0 ? seed_word : other_word).push_back(cs[u].word);
+        (seed_w[u] > 0.0 ? seed_gram : other_gram).push_back(cs[u].gram);
+      }
+      // Contrast normalisation: 0 = the background level of the corpus,
+      // 1 = a typical confidently identified unit (measured leave-one-out).
+      const double floor_w = percentile_of(other_word, sem_floor_pct), ref_w = percentile_of(seed_word, sem_ref_pct);
+      const double floor_g = percentile_of(other_gram, sem_floor_pct), ref_g = percentile_of(seed_gram, sem_ref_pct);
+      auto contrast = [&](double c, double floor, double ref) {
+        return ref - floor > 1e-9 ? std::clamp((c - floor) / (ref - floor), 0.0, sem_cap) : 0.0;
+      };
+      for (int i = 0; i < N; ++i) {
+        Row& row = rows[static_cast<std::size_t>(i)];
+        row.features["sem_word"] = round4(contrast(cs[static_cast<std::size_t>(i)].word, floor_w, ref_w));
+        row.features["sem_ngram"] = round4(contrast(cs[static_cast<std::size_t>(i)].gram, floor_g, ref_g));
+        row.features["sem_cos_word"] = round4(cs[static_cast<std::size_t>(i)].word);
+        row.features["sem_cos_ngram"] = round4(cs[static_cast<std::size_t>(i)].gram);
+        compute_linear_and_label(row);
+      }
+      semantic_report = Json{{"available", true},
+                             {"passes", pass},
+                             {"seeds", seeds},
+                             {"method", "tfidf_cosine(word_stems)+tfidf_cosine(char_" + std::to_string(sem_ngram) + "grams)"},
+                             {"floor_word", round4(floor_w)}, {"ref_word", round4(ref_w)},
+                             {"floor_gram", round4(floor_g)}, {"ref_gram", round4(ref_g)},
+                             {"word_vocabulary", static_cast<std::int64_t>(space->word_vocabulary())},
+                             {"gram_vocabulary", static_cast<std::int64_t>(space->gram_vocabulary())}};
+      bool changed = false;
+      for (int i = 0; i < N; ++i) {
+        const Row& row = rows[static_cast<std::size_t>(i)];
+        double w = row.label == "relevant" ? row.score : 0.0;
+        if ((w > 0.0) != (seed_w[static_cast<std::size_t>(i)] > 0.0)) changed = true;
+        seed_w[static_cast<std::size_t>(i)] = w;
+      }
+      if (!changed) break;
+    }
+  }
+
   // ── Linking pass: same project/gizmo, MinHash continuation, shared rare
-  // identifiers, same-session -- one damped propagation step. ────────────
+  // identifiers, same-session -- one damped propagation step. Candidate
+  // generation (links.cpp) replaces the former all-pairs scan; content is
+  // never re-read here. ─────────────────────────────────────────────────
   {
     auto lk = rt_.db().lock();
     LOOM_TRY(rt_.db().conn().run("DELETE FROM loom_cat_links WHERE run_id = ?", run_id));
   }
-  // idf per corpus term (top-K union) for the "shared rare identifiers" test.
-  std::unordered_map<std::string, int> term_df;
-  for (auto& row : rows) {
-    std::set<std::string> seen;
-    for (auto& [t, _] : row.sketch.top_terms) {
-      if (seen.insert(t).second) ++term_df[t];
-    }
-  }
-  double rare_idf_floor = N > 20 ? std::log(static_cast<double>(N) / 20.0) : 0.0;
-
-  struct LinkRow { int i, j; std::string type; double strength; };
-  std::vector<LinkRow> links;
+  std::vector<LinkUnit> link_units(static_cast<std::size_t>(N));
   for (int i = 0; i < N; ++i) {
-    for (int j = i + 1; j < N; ++j) {
-      Row& a = rows[static_cast<std::size_t>(i)];
-      Row& b = rows[static_cast<std::size_t>(j)];
-      // (a) same project/gizmo.
-      if (!a.unit.project_ext_id.empty() && a.unit.project_ext_id == b.unit.project_ext_id) {
-        links.push_back({i, j, "same_project", 1.0});
-      }
-      // (b) continuation: MinHash Jaccard of the sketches.
-      double jac = a.sketch.minhash.jaccard(b.sketch.minhash);
-      if (jac >= link_min_jaccard) links.push_back({i, j, "continuation", jac});
-      // (c) shared rare identifiers.
-      if (a.unit.platform == b.unit.platform) {
-        int shared_rare = 0;
-        std::set<std::string> a_terms;
-        for (auto& [t, _] : a.sketch.top_terms) a_terms.insert(t);
-        for (auto& [t, _] : b.sketch.top_terms) {
-          auto dfit = term_df.find(t);
-          double idf = dfit == term_df.end() ? 0.0 : std::log(1.0 + (static_cast<double>(N) - dfit->second + 0.5) / (dfit->second + 0.5));
-          if (a_terms.count(t) && idf > rare_idf_floor) ++shared_rare;
-        }
-        if (shared_rare >= link_shared_rare) links.push_back({i, j, "shared_rare", std::min(1.0, shared_rare / 10.0)});
-      }
-      // (d) same session: same platform, close in time.
-      if (a.unit.platform == b.unit.platform && !a.date.empty() && !b.date.empty()) {
-        auto ta = timeutil::parse_iso_utc(a.date), tb = timeutil::parse_iso_utc(b.date);
-        if (ta && tb) {
-          double hours = std::abs(std::chrono::duration<double>(*ta - *tb).count()) / 3600.0;
-          if (hours <= link_same_session_hours) links.push_back({i, j, "same_session", 1.0 - hours / (link_same_session_hours + 1)});
-        }
+    const Row& row = rows[static_cast<std::size_t>(i)];
+    LinkUnit& lu = link_units[static_cast<std::size_t>(i)];
+    lu.sketch = &row.sketch;
+    lu.platform = row.unit.platform;
+    lu.project = row.unit.project_ext_id;
+    if (!row.date.empty()) {
+      if (auto t = timeutil::parse_iso_utc(row.date)) {
+        lu.time = std::chrono::duration<double>(t->time_since_epoch()).count();
       }
     }
   }
-  {
-    auto lk = rt_.db().lock();
-    for (auto& l : links) {
-      LOOM_TRY(rt_.db().conn().run("INSERT OR REPLACE INTO loom_cat_links (run_id, src, dst, link_type, strength) VALUES (?,?,?,?,?)",
-                                   run_id, rows[static_cast<std::size_t>(l.i)].unit.unit.id,
-                                   rows[static_cast<std::size_t>(l.j)].unit.unit.id, l.type, l.strength));
-    }
-  }
-  // Project-member feature: any same_project link at all.
-  std::vector<double> best_strength(static_cast<std::size_t>(N), 0.0);
+  LinkParams link_params;
+  link_params.min_jaccard = link_min_jaccard;
+  link_params.shared_rare_min = link_shared_rare;
+  link_params.session_hours = link_same_session_hours;
+  link_params.exact_max_units = static_cast<std::size_t>(std::max(0, link_exact_max_units));
+  link_params.session_max_neighbours = link_session_max_neighbours;
+  link_params.project_max_clique = link_project_max_clique;
+  LinkResult link_result = build_links(link_units, link_params);
+  const std::vector<Link>& links = link_result.links;
+
   std::vector<bool> has_project_link(static_cast<std::size_t>(N), false);
-  for (auto& l : links) {
-    best_strength[static_cast<std::size_t>(l.i)] = std::max(best_strength[static_cast<std::size_t>(l.i)], l.strength);
-    best_strength[static_cast<std::size_t>(l.j)] = std::max(best_strength[static_cast<std::size_t>(l.j)], l.strength);
+  for (const auto& l : links) {
     if (l.type == "same_project") {
       has_project_link[static_cast<std::size_t>(l.i)] = true;
       has_project_link[static_cast<std::size_t>(l.j)] = true;
     }
   }
+  for (const auto& g : link_result.project_groups) {
+    for (int m : g) has_project_link[static_cast<std::size_t>(m)] = true;
+  }
   // One damped propagation step: link only helps a unit that already has its
-  // own evidence (alias hit or non-trivial BM25), so it cannot single-handedly
-  // pull in a unit with zero own signal (proposal_scale.md §5.5).
+  // own evidence (identity, lexical or semantic), so it cannot single-handedly
+  // pull in a unit with zero own signal (proposal_scale.md §5.5). A
+  // same_session link is corroborated by content: its strength is scaled by
+  // the similarity of the two units, so a nearby timestamp alone is worth 0.
   std::vector<double> pre_link_score(static_cast<std::size_t>(N));
   for (int i = 0; i < N; ++i) pre_link_score[static_cast<std::size_t>(i)] = rows[static_cast<std::size_t>(i)].score;
-  for (auto& l : links) {
-    Row& a = rows[static_cast<std::size_t>(l.i)];
-    Row& b = rows[static_cast<std::size_t>(l.j)];
-    auto has_own_evidence = [](const Row& row) {
-      return row.alias_hits > 0 || json::get_number(row.features, "bm25_self", 0.0) > 0.05 ||
-             json::get_number(row.features, "bm25_phil", 0.0) > 0.05;
-    };
-    bool a_has_own = has_own_evidence(a);
-    bool b_has_own = has_own_evidence(b);
-    if (a_has_own) {
-      double v = link_damping * pre_link_score[static_cast<std::size_t>(l.j)] * l.strength;
-      if (v > json::get_number(a.features, "link", 0.0)) a.features["link"] = v;
+  auto has_own_evidence = [&](const Row& row) {
+    return row.alias_hits > 0 || json::get_number(row.features, "bm25_self", 0.0) > 0.05 ||
+           json::get_number(row.features, "bm25_phil", 0.0) > 0.05 || has_semantic_evidence(row);
+  };
+  std::vector<double> link_value(static_cast<std::size_t>(N), 0.0);
+  auto offer = [&](int to, int from, double strength) {
+    if (!has_own_evidence(rows[static_cast<std::size_t>(to)])) return;
+    double v = link_damping * pre_link_score[static_cast<std::size_t>(from)] * strength;
+    if (v > link_value[static_cast<std::size_t>(to)]) link_value[static_cast<std::size_t>(to)] = v;
+  };
+  std::int64_t uncorroborated_sessions = 0;
+  for (const auto& l : links) {
+    double strength = l.strength;
+    if (l.type == "same_session" && space) {
+      double sim = space->similarity(static_cast<std::size_t>(l.i), static_cast<std::size_t>(l.j));
+      double corroboration = std::clamp(sim / std::max(1e-9, link_session_similarity_ref), 0.0, 1.0);
+      if (corroboration <= 0.0) ++uncorroborated_sessions;
+      strength *= corroboration;
     }
-    if (b_has_own) {
-      double v = link_damping * pre_link_score[static_cast<std::size_t>(l.i)] * l.strength;
-      if (v > json::get_number(b.features, "link", 0.0)) b.features["link"] = v;
+    offer(l.i, l.j, strength);
+    offer(l.j, l.i, strength);
+  }
+  // Large project groups: the maximum over the other members, exactly as
+  // the clique would give, from the two best pre-link scores.
+  for (const auto& g : link_result.project_groups) {
+    int top1 = -1, top2 = -1;
+    for (int m : g) {
+      if (top1 < 0 || pre_link_score[static_cast<std::size_t>(m)] > pre_link_score[static_cast<std::size_t>(top1)]) {
+        top2 = top1;
+        top1 = m;
+      } else if (top2 < 0 || pre_link_score[static_cast<std::size_t>(m)] > pre_link_score[static_cast<std::size_t>(top2)]) {
+        top2 = m;
+      }
+    }
+    for (int m : g) offer(m, m == top1 ? top2 : top1, 1.0);
+  }
+  for (int i = 0; i < N; ++i) {
+    Row& row = rows[static_cast<std::size_t>(i)];
+    row.features["link"] = round4(link_value[static_cast<std::size_t>(i)]);
+    row.features["project_member"] = has_project_link[static_cast<std::size_t>(i)] ? 1.0 : 0.0;
+  }
+  {
+    auto lk = rt_.db().lock();
+    for (const auto& l : links) {
+      LOOM_TRY(rt_.db().conn().run("INSERT OR REPLACE INTO loom_cat_links (run_id, src, dst, link_type, strength) VALUES (?,?,?,?,?)",
+                                   run_id, rows[static_cast<std::size_t>(l.i)].unit.unit.id,
+                                   rows[static_cast<std::size_t>(l.j)].unit.unit.id, l.type, l.strength));
+    }
+    // Aggregated project groups: each member points at the group's four
+    // best pre-link members (a bounded stand-in for the clique).
+    for (const auto& g : link_result.project_groups) {
+      std::vector<int> best = g;
+      std::stable_sort(best.begin(), best.end(), [&](int a, int b) {
+        return pre_link_score[static_cast<std::size_t>(a)] > pre_link_score[static_cast<std::size_t>(b)];
+      });
+      if (best.size() > 4) best.resize(4);
+      for (int m : g) {
+        for (int hub : best) {
+          if (hub == m) continue;
+          LOOM_TRY(rt_.db().conn().run("INSERT OR REPLACE INTO loom_cat_links (run_id, src, dst, link_type, strength) VALUES (?,?,?,?,?)",
+                                       run_id, rows[static_cast<std::size_t>(m)].unit.unit.id,
+                                       rows[static_cast<std::size_t>(hub)].unit.unit.id, "same_project", 1.0));
+        }
+      }
     }
   }
-  for (int i = 0; i < N; ++i) rows[static_cast<std::size_t>(i)].features["project_member"] = has_project_link[static_cast<std::size_t>(i)] ? 1.0 : 0.0;
+  link_result.stats["uncorroborated_sessions"] = uncorroborated_sessions;
   for (auto& row : rows) compute_linear_and_label(row);
 
   // ── Persist scores ───────────────────────────────────────────────────
   std::int64_t n_relevant = 0, n_candidate = 0, n_irrelevant = 0, n_traps = 0, n_identity_unavailable = 0;
+  // Shadow audit between the independent channels (R27): the elements one
+  // channel puts in the relevant band and the other does not.
+  Json channel_stats;
+  {
+    std::int64_t lex = 0, sem = 0, both = 0, lex_only = 0, sem_only = 0;
+    for (const auto& row : rows) {
+      bool l = json::get_number(row.features, "lexical_score", 0.0) >= tau_relevant;
+      bool m = json::get_number(row.features, "semantic_score", 0.0) >= tau_relevant;
+      lex += l; sem += m; both += (l && m); lex_only += (l && !m); sem_only += (m && !l);
+    }
+    channel_stats = Json{{"lexical_relevant", lex}, {"semantic_relevant", sem}, {"both", both},
+                         {"lexical_only", lex_only}, {"semantic_only", sem_only}};
+  }
   {
     auto lk = rt_.db().lock();
     for (auto& row : rows) {
@@ -572,7 +730,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   }
 
   return Json{{"run_id", run_id},
-              {"scoring_evidence_version", 2},
+              {"scoring_evidence_version", 3},
               {"legacy_combined_features", Json::array({"id_hits", "class_diversity", "code_evidence"})},
               {"identity_unavailable", n_identity_unavailable},
               {"relevant", n_relevant},
@@ -580,7 +738,10 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
               {"irrelevant", n_irrelevant},
               {"traps", n_traps},
               {"expanded_terms", expanded_terms_log},
-              {"links", static_cast<std::int64_t>(links.size())}};
+              {"semantic", semantic_report},
+              {"channels", channel_stats},
+              {"links", static_cast<std::int64_t>(links.size())},
+              {"link_stats", link_result.stats}};
 }
 
 }  // namespace loom::catalog
