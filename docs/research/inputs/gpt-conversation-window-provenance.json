@@ -1,0 +1,21 @@
+{
+ "source_file": "Przejęcie pracy i synchronizacja.mht",
+ "sha256": "4c4cdd7898872746c9f0e8e1ae048020efefa5a2c627f9b090a2a1468130df4e",
+ "saved_by": "Blink (browser page save)",
+ "saved_at": "2026-09-28T22:38:28Z",
+ "subject": "Przejęcie pracy i synchronizacja",
+ "turns_in_file": 9,
+ "extraction": "BeautifulSoup over [data-turn-key] elements; text only; images (46) were favicons/UI assets",
+ "not_contained": [
+  "hidden reasoning",
+  "command lines and outputs",
+  "file contents",
+  "agent run logs",
+  "turns outside the rendered window"
+ ],
+ "committed_artifacts": [
+  "gpt-conversation-window-2026-09-28.md"
+ ],
+ "note": "The ChatGPT share link supplied by the owner was not fetched: chatgpt.com is denied by the session egress policy (HTTP 403 on CONNECT).",
+ "web_search_sources": "~224 links in the page's Web search panel (OpenRouter docs, TypeSafe/Jev docs, Codex docs, arXiv, plus unrelated noise from searches about a stalled session); list intentionally not committed"
+}

@@ -224,6 +224,39 @@ export from source services where they allow it.
 - Scan the whole codebase for generalisations and for choices that should be
   owner options.
 
+## R22 — Thought-structure generalisation, atomic elements, topic-change recognition (2026-09-28, to GPT)
+Verbatim source: `docs/research/inputs/gpt-conversation-window-2026-09-28.md`
+(turns 1–5; also quoted in `docs/research/PROGRAMME_2026-09-28.md`).
+> "potrzebujemy jakiegoś uogólnienia rozmów, które by oddawało strukturę argumentu, myśli czy idei, żeby później to łatwo matematycznie porównać."
+> "Chodzi mi o struktury na tyle ogólne jak na przykład syllogizmy jako podstawowe elementy tych struktur. [...] jak jest rozmowa na jakiś temat, ale struktura jest bardzo popularna w uogólnieniu w innych tematach, no to to uogólnienie trzeba wyłapać."
+> "To jest przykład właśnie taki atomowy element. Innego rodzaju rzeczy to będą uogólnienia albo sprecyzowania, warunki rozgałęzienia i wiesz, takich atomowych rzeczy każdą prawie że strukturę myśli można opisać."
+> "Dobrze by było też rozpoznać ogólnie zmianę tematu, żeby wyciągnąć z rozmów wielowątkowych, gdzie na przykład dopiero pod koniec się jakiś temat projektu omawia [...]. I także odwoływać się do umieszczonych w grafie danych. W ich kontekście umieszczać nowe, a w razie potrzeby updateować - rozbudowywać graf, czasem upraszczać, zawsze udoskonalać."
+
+Atomic elements of thought structures (syllogisms, generalisations and
+specialisations, branching conditions, ...) composable into any structure; the
+same structure recognised across topics; topic changes inside multi-thread
+conversations detected; new material placed in the context of, and updating,
+the existing graph.
+
+## R23 — Argument structure lives in the graph; multi-track experiments (2026-09-28, to GPT)
+> "a ja zauważyłem że chyba niepotrzebnie mnożę byty bo przecież struktura argumentu, myśli, idei, to wszystko z założenia ma być reprezentowane w grafie więc szukanie powiązań to będzie szukanie podobnych struktur w grafie. Co o tym myślisz? Przemyśl jak to ugryźć. eksperymentuj wielotorowo, żeby z wyników skompilować w miarę optymalny flow. nie przerywaj pracy, o ile nie stwierdzisz że wszystko już zrobione idealnie"
+
+No parallel store of "thought entities": structure of arguments, thoughts and
+ideas is represented in the one knowledge graph; finding connections = finding
+similar structures (sub-graphs) in it. Explore several paths in parallel and
+compile the best flow from the results.
+
+## R24 — The cheap second model for semantic and structural analysis (2026-09-28, to GPT)
+> "a wiesz co jeszcze myślę że chyba nie jest wykorzystywane w odkrywanie struktury? a może jest, bo nawet nie patrzyłem, a Claude mówił, że wszystko odtworzył i sprawdził przy porcie. No ale znowuż przed portem też nie działało tak jak powinno być. bo jeszcze przed wyłonieniem loom w apce pytonowej był drugi model do ustalenia właśnie do analizy semantycznej i strukturalnej. żeby można było ustawić jakiś bardzo tani i zadawać mu proste pytania o ustrukturyzowanie, uogólnienie rozmowy i tak dalej"
+
+The separately configured cheap `semantic_model` must actually drive semantic
+and structural analysis (structuring, generalising conversations) — in Loom
+and in the Python app. **Finding (2026-09-29):** Python 0.7.10 `Config.auto_upgrade`
+silently reset any `semantic_model` containing `claude-haiku-4` (which includes
+the recommended `anthropic/claude-haiku-4-5`) to `""`, disabling LLM semantic
+analysis; the Codex branch removed the reset in Python and C++ (mirrored).
+This is a plausible reason the owner "never saw meaningful results".
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
