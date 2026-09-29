@@ -163,3 +163,54 @@ Expected: no new native regression relative to Claude's verified current baselin
 These additive Python fixtures/docs do not claim to fix the existing catalogue
 recall gate or satisfy every runtime R37/R38 acceptance criterion. Native source
 verification, CTest and canonical STATE update belong to Claude after review.
+
+## T5 — composable workspace reference (third offline increment)
+
+Base: `f9d1168ac29acb91c10b2efb53520a306ca90de7`, the current Claude-line head
+read before this work, NOT the old offline branch. Latest task-note instructions
+read, including the evening update. T3's newer 208-body files and T4 are now
+present on that head; this increment does not overwrite them or duplicate work.
+
+[U] T5 / R29–R31: container/view UI-IR, directed scoped parameter couplings,
+detach/freeze/cycle protection, multiple graph/table/card views, detachable presets.
+[P] Added `docs/contracts/workspace.schema.json`, `WORKSPACE.md`,
+`examples/workspace_v1.json`, `examples/workspace_presets_v1.json`,
+`loom/tools/contracts/workspace_ref.py` and `test_workspace_ref.py`.
+No native knowledge store, renderer or provider/tool execution is added.
+
+Executed locally: **77/77** T5 unittest methods pass (6.071 s in the recorded run).
+The fixture composes five graphs, a table and cards. The propagation policy is
+atomic: equal proposals coalesce, unequal competing/cyclic values abort without
+partial mutations; frozen containers affect descendants, reconnect/thaw needs
+explicit resync. The interface-only preset leaves all other profiles unchanged.
+Capability declarations are not verified tool availability. The event-id ledger
+is session-local, not a persistent execution log.
+
+T1/T2/T3/T4 regression runs: **74/74, 81/81, 30/30, 35/35**, respectively;
+**297/297** reference/mechanism test methods including T5. Restored partial
+workspace from prior attachments; compared current source blob ids where read.
+Not a full current-repository build/test run or a model quality measurement.
+No APIs, secrets, Actions, native CTest, browser or Android exercised. STATE,
+quality thresholds and protected production files unchanged. T6–T12 remain open.
+
+### Do sprawdzenia przez Claude'a w natywnym buildzie — T5 / T13
+
+Integrate this small increment on top of base `f9d1168`, preserving intervening
+edits; commits use `[skip ci]`. New files only, plus this append to the log.
+From repo root:
+
+```sh
+python -m unittest discover -s loom/tools/contracts -p test_workspace_ref.py -v
+python -m unittest discover -s loom/tools/contracts -p test_contracts.py -v
+python -m unittest discover -s loom/tools/eval -p test_refinement_eval.py -v
+python -m unittest discover -s loom/tools/eval -p test_jev_recipes.py -v
+python -m unittest discover -s loom/tools/eval -p test_model_profiles.py -v
+python loom/tools/contracts/workspace_ref.py --demo > /tmp/loom-workspace-demo.json
+```
+
+Expected: **77 + 74 + 81 + 30 + 35 = 297 passing methods**. Demo events commit
+7 then 2 parameter changes; reference.selection stays `none`, while history and
+architecture.depth become 3. No model, tool or canonical graph operation occurs.
+Then run the regular native build/CTest ratchet if integrating any native adapter;
+this Python-only increment does not claim to repair the catalogue gate. Actual
+browser acceptance #5/#6 and C++ numerical parity still need native/E2E work.
