@@ -888,7 +888,34 @@
     "note": "re-export / edited version of p03"
    },
    {
-    "label": "U063",
+    "label": "U062",
+    "conv_id": "a8551f1f-0e53-5749-b139-e6c81a491f38",
+    "provider": "claude",
+    "title": "notatki z tygodnia",
+    "date": "2025-12-14",
+    "message_count": 14,
+    "project": "proj.kotwica",
+    "projects": [
+     "proj.kotwica",
+     "proj.latarnik",
+     "proj.fakturka"
+    ],
+    "mentions_projects": [],
+    "foundations": [
+     "found.storage"
+    ],
+    "category": "multi_topic_late",
+    "hardness": "hard",
+    "names_project_explicitly": false,
+    "principles": [
+     "pr.append_only"
+    ],
+    "decisions": [
+     "dec.snapshots_are_derived"
+    ]
+   },
+   {
+    "label": "U064",
     "conv_id": "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
     "provider": "chatgpt",
     "title": "raport dla ksiegowej",
@@ -911,7 +938,7 @@
     ]
    },
    {
-    "label": "U064",
+    "label": "U065",
     "conv_id": "343dca50-068d-5123-87d1-100da91b1d25",
     "provider": "claude",
     "title": "epub",
@@ -930,7 +957,7 @@
     "decisions": []
    },
    {
-    "label": "U066",
+    "label": "U067",
     "conv_id": "e8c8f31a-d207-5683-bc4e-6776f9fc20f7",
     "provider": "claude",
     "title": "wieczorne mysli",
@@ -950,7 +977,7 @@
     "decisions": []
    },
    {
-    "label": "U068",
+    "label": "U069",
     "conv_id": "e18e2170-3f49-5846-8e9b-faabc52df768",
     "provider": "chatgpt",
     "title": "korekty",
@@ -973,7 +1000,7 @@
     ]
    },
    {
-    "label": "U070",
+    "label": "U071",
     "conv_id": "e20b5b86-3f66-52b1-bdd2-ab7fc989e3f0",
     "provider": "chatgpt",
     "title": "do czytnika",
@@ -992,7 +1019,7 @@
     "decisions": []
    },
    {
-    "label": "U071",
+    "label": "U072",
     "conv_id": "b0c38530-a90a-5675-952b-e61b858aea01",
     "provider": "chatgpt",
     "title": "misc",
@@ -1021,7 +1048,7 @@
     ]
    },
    {
-    "label": "U074",
+    "label": "U075",
     "conv_id": "f8de0248-a04b-5f42-95d2-dd0bff2fbb8d",
     "provider": "chatgpt",
     "title": "kwestia rachunkow",
@@ -1040,7 +1067,7 @@
     "decisions": []
    },
    {
-    "label": "U076",
+    "label": "U077",
     "conv_id": "3e990889-7c0f-5991-b6b0-05c93d76b0e7",
     "provider": "chatgpt",
     "title": "aktualizacja",
@@ -1059,7 +1086,7 @@
     "decisions": []
    },
    {
-    "label": "U080",
+    "label": "U081",
     "conv_id": "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
     "provider": "chatgpt",
     "title": "porzadek w repo",
@@ -1088,7 +1115,7 @@
     ]
    },
    {
-    "label": "U082",
+    "label": "U083",
     "conv_id": "9c269a7e-215e-545b-8252-3c258988ca77",
     "provider": "chatgpt",
     "title": "porada",
@@ -1108,7 +1135,7 @@
     "decisions": []
    },
    {
-    "label": "U083",
+    "label": "U084",
     "conv_id": "910684a3-48cf-52e9-94ac-726795f53a82",
     "provider": "claude",
     "title": "drobiazg",
@@ -1127,7 +1154,7 @@
     "decisions": []
    },
    {
-    "label": "U086",
+    "label": "U087",
     "conv_id": "b2295d1f-61ff-5645-be00-748c8aadec28",
     "provider": "claude",
     "title": "wszystko naraz",
@@ -1148,7 +1175,7 @@
     "decisions": []
    },
    {
-    "label": "U088",
+    "label": "U089",
     "conv_id": "60b201ce-491f-5e5a-b7b1-68cc08617237",
     "provider": "chatgpt",
     "title": "hmm",
@@ -1167,7 +1194,7 @@
     "decisions": []
    },
    {
-    "label": "U091",
+    "label": "U092",
     "conv_id": "0faae13f-f774-5683-87b3-bb813c24e026",
     "provider": "chatgpt",
     "title": "rozne 2",
@@ -1302,7 +1329,7 @@
     "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
    },
    {
-    "label": "U062",
+    "label": "U063",
     "conv_id": "a3e5c71d-e3fc-5a91-9e0b-f8ed2fab84c0",
     "provider": "chatgpt",
     "title": "hydraulik",
@@ -1316,7 +1343,7 @@
     "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
    },
    {
-    "label": "U065",
+    "label": "U066",
     "conv_id": "a7a63672-d3d4-58e0-9a4f-edca904768e6",
     "provider": "chatgpt",
     "title": "komoda",
@@ -1330,7 +1357,7 @@
     "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
    },
    {
-    "label": "U067",
+    "label": "U068",
     "conv_id": "63381de9-f610-5295-a284-596089716c4f",
     "provider": "claude",
     "title": "usb-c",
@@ -1344,7 +1371,7 @@
     "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
    },
    {
-    "label": "U073",
+    "label": "U074",
     "conv_id": "37e9a0c8-c4d2-5123-8d5a-8f8d84e1a70c",
     "provider": "chatgpt",
     "title": "drukarka",
@@ -1358,7 +1385,7 @@
     "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
    },
    {
-    "label": "U077",
+    "label": "U078",
     "conv_id": "b8111f3a-a75b-5efe-a149-c3e7271c289a",
     "provider": "claude",
     "title": "stluczka",
@@ -1373,7 +1400,7 @@
     "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
    },
    {
-    "label": "U079",
+    "label": "U080",
     "conv_id": "b6591caa-a75e-5125-964f-3c2903564d6b",
     "provider": "claude",
     "title": "klub ksiazki",
@@ -1387,7 +1414,7 @@
     "why_not_relevant": "uses a project/module vocabulary word in an unrelated real-world sense"
    },
    {
-    "label": "U085",
+    "label": "U086",
     "conv_id": "f09b6104-a2ed-548f-9af3-aad7647e4ab3",
     "provider": "chatgpt",
     "title": "parkowanie",
@@ -1546,7 +1573,7 @@
     ]
    },
    {
-    "label": "U069",
+    "label": "U070",
     "conv_id": "2fa85f04-5467-5cf1-a00a-860848cb2453",
     "provider": "chatgpt",
     "title": "nauka",
@@ -1557,7 +1584,7 @@
     ]
    },
    {
-    "label": "U072",
+    "label": "U073",
     "conv_id": "de103202-3639-5ccb-a34d-5e283af59b61",
     "provider": "claude",
     "title": "email",
@@ -1568,7 +1595,7 @@
     ]
    },
    {
-    "label": "U075",
+    "label": "U076",
     "conv_id": "bd1ffde2-fdb0-5501-a6a6-733ba48f583b",
     "provider": "claude",
     "title": "planning",
@@ -1579,7 +1606,7 @@
     ]
    },
    {
-    "label": "U078",
+    "label": "U079",
     "conv_id": "26e338ca-ee1b-5828-85f2-71d9be88dee6",
     "provider": "chatgpt",
     "title": "kot",
@@ -1590,7 +1617,7 @@
     ]
    },
    {
-    "label": "U081",
+    "label": "U082",
     "conv_id": "3c2f96f6-8768-5af5-a6db-ca430e094530",
     "provider": "claude",
     "title": "kran",
@@ -1601,7 +1628,7 @@
     ]
    },
    {
-    "label": "U084",
+    "label": "U085",
     "conv_id": "76dd7e8c-253b-5a44-9c5c-184cb50539e2",
     "provider": "chatgpt",
     "title": "zakup",
@@ -1612,7 +1639,7 @@
     ]
    },
    {
-    "label": "U087",
+    "label": "U088",
     "conv_id": "4486af23-3f0f-5357-96cd-d320d9bd8583",
     "provider": "claude",
     "title": "CV",
@@ -1623,7 +1650,7 @@
     ]
    },
    {
-    "label": "U089",
+    "label": "U090",
     "conv_id": "404f0ec4-6c46-519b-a743-b52a611559ae",
     "provider": "chatgpt",
     "title": "plan",
@@ -1634,7 +1661,7 @@
     ]
    },
    {
-    "label": "U090",
+    "label": "U091",
     "conv_id": "19b55743-36a1-580b-894d-3d8f288f61cf",
     "provider": "claude",
     "title": "hobby",
@@ -1645,7 +1672,7 @@
     ]
    },
    {
-    "label": "U092",
+    "label": "U093",
     "conv_id": "b5387de2-cfc9-5cd0-a39e-cf7d52d601ae",
     "provider": "chatgpt",
     "title": "projekt",
@@ -1656,7 +1683,7 @@
     ]
    },
    {
-    "label": "U093",
+    "label": "U094",
     "conv_id": "989a62a0-45ce-548d-9830-089917fada7b",
     "provider": "claude",
     "title": "mowa",
@@ -1678,6 +1705,7 @@
   "182c135f-672d-5161-9f78-587da08ecb6f",
   "92909a78-7794-51e0-a189-d9f15bd9df8f",
   "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+  "a8551f1f-0e53-5749-b139-e6c81a491f38",
   "b0c38530-a90a-5675-952b-e61b858aea01",
   "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
  ],
@@ -1748,6 +1776,7 @@
     "92909a78-7794-51e0-a189-d9f15bd9df8f",
     "f6cf7f32-058f-53ad-83a9-68aab82a67bd",
     "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "b0c38530-a90a-5675-952b-e61b858aea01",
     "3e990889-7c0f-5991-b6b0-05c93d76b0e7",
     "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
@@ -1770,6 +1799,7 @@
     "182c135f-672d-5161-9f78-587da08ecb6f",
     "92909a78-7794-51e0-a189-d9f15bd9df8f",
     "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "b0c38530-a90a-5675-952b-e61b858aea01",
     "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
     "b2295d1f-61ff-5645-be00-748c8aadec28"
@@ -1810,6 +1840,7 @@
     "92909a78-7794-51e0-a189-d9f15bd9df8f",
     "c51a60ab-d216-5fd5-90fd-68441d42a8de",
     "0e43d8b0-e66b-5de9-ad09-7b56b826495f",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "343dca50-068d-5123-87d1-100da91b1d25",
     "e20b5b86-3f66-52b1-bdd2-ab7fc989e3f0",
     "b0c38530-a90a-5675-952b-e61b858aea01",
@@ -1832,6 +1863,7 @@
     "92909a78-7794-51e0-a189-d9f15bd9df8f",
     "c51a60ab-d216-5fd5-90fd-68441d42a8de",
     "0e43d8b0-e66b-5de9-ad09-7b56b826495f",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "e20b5b86-3f66-52b1-bdd2-ab7fc989e3f0",
     "b0c38530-a90a-5675-952b-e61b858aea01",
     "8ec8426c-e3ce-533a-810f-c0642d18b0d7",
@@ -1870,6 +1902,7 @@
     "182c135f-672d-5161-9f78-587da08ecb6f",
     "cce6532b-0ff6-5991-86a5-00fc3179993e",
     "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
     "e18e2170-3f49-5846-8e9b-faabc52df768",
     "b0c38530-a90a-5675-952b-e61b858aea01",
@@ -1889,6 +1922,7 @@
     "443393ae-408d-5b85-af59-95517fddf8fd",
     "182c135f-672d-5161-9f78-587da08ecb6f",
     "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "f2f5c721-cfd6-56fa-b21b-25e5ecf00bb0",
     "e18e2170-3f49-5846-8e9b-faabc52df768",
     "b0c38530-a90a-5675-952b-e61b858aea01",
@@ -1919,6 +1953,7 @@
     "182c135f-672d-5161-9f78-587da08ecb6f",
     "92909a78-7794-51e0-a189-d9f15bd9df8f",
     "dc1b0f6d-f0bc-5daf-b9b3-2a83433da86c",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "b0c38530-a90a-5675-952b-e61b858aea01",
     "8ec8426c-e3ce-533a-810f-c0642d18b0d7"
    ]
@@ -2000,6 +2035,7 @@
     "96b85ad1-d622-55d6-a09d-ca1bf76c3a1d",
     "182c135f-672d-5161-9f78-587da08ecb6f",
     "92909a78-7794-51e0-a189-d9f15bd9df8f",
+    "a8551f1f-0e53-5749-b139-e6c81a491f38",
     "e18e2170-3f49-5846-8e9b-faabc52df768"
    ],
    "philosophy_only_units": [
@@ -2256,6 +2292,18 @@
    ]
   },
   {
+   "id": "dec.snapshots_are_derived",
+   "statement": "Snapshots are a rebuildable cache carrying the last event hash; the old log is archived, never deleted.",
+   "units": [
+    "a8551f1f-0e53-5749-b139-e6c81a491f38"
+   ],
+   "projects": [
+    "proj.fakturka",
+    "proj.kotwica",
+    "proj.latarnik"
+   ]
+  },
+  {
    "id": "dec.core_has_no_domain_deps",
    "statement": "Core never imports from domain code; CI enforces the dependency direction.",
    "units": [
@@ -2298,13 +2346,13 @@
   }
  ],
  "counts": {
-  "conversations_total": 93,
-  "relevant": 54,
+  "conversations_total": 94,
+  "relevant": 55,
   "noise_traps": 15,
   "noise_generic": 24,
   "conversations_chatgpt": 50,
-  "conversations_claude": 43,
-  "messages_total": 374,
+  "conversations_claude": 44,
+  "messages_total": 388,
   "relevant_by_category": {
    "explicit_name": 6,
    "architecture_unnamed": 9,
@@ -2312,25 +2360,25 @@
    "paraphrase_only": 6,
    "shared_foundation": 8,
    "philosophy": 6,
-   "multi_topic_late": 7,
+   "multi_topic_late": 8,
    "near_duplicate": 6
   },
   "relevant_by_hardness": {
-   "hard": 41,
+   "hard": 42,
    "easy": 7,
    "medium": 6
   },
-  "relevant_multi_label": 11,
-  "relevant_not_naming_project": 41,
+  "relevant_multi_label": 12,
+  "relevant_not_naming_project": 42,
   "relevant_by_project": {
-   "proj.kotwica": 24,
-   "proj.latarnik": 22,
-   "proj.fakturka": 19
+   "proj.kotwica": 25,
+   "proj.latarnik": 23,
+   "proj.fakturka": 20
   },
   "relevant_philosophy_only": 6,
   "near_duplicate_pairs": 6,
   "principles": 7,
-  "decisions": 16,
+  "decisions": 17,
   "foundations": 3
  }
 }

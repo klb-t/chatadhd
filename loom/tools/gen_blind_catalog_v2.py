@@ -346,6 +346,23 @@ R("m07", "chatgpt", "rozne 2", "2026-08-04", "multi_topic_late", [L], [
     "Pierwszy szkic sluzy do tego, by wiedziec, co historia w ogole mowi. Polerka ma sens dopiero po zamknieciu calosci."],
   principles=["pr.ugly_first"])
 
+R("m08", "claude", "notatki z tygodnia", "2025-12-14", "multi_topic_late", [K, L, F], [
+    "notatki z tygodnia: 1) zadzwonic do dentysty 2) kupic karme dla kota 3) odswiezyc CV. od czego zaczac zeby nie odkladac?",
+    "Zacznij od telefonu do dentysty - najmniejszy koszt startu, najwiekszy ciezar psychiczny. Potem karma, CV na koniec.",
+    "dentysta ok. a kolacja dzis? mam cukinie, jajka i ser feta",
+    "Placki z cukinii z feta albo szakszuka z cukinia. 25 minut.",
+    "placki. dobra, a teraz cos z pracy nad rdzeniem: dziennik zdarzen urosl do 2 GB po roku i start trwa dluzej niz minute bo odtwarzam wszystko od poczatku",
+    "Zapisuj snapshoty stanu co N zdarzen i przy starcie ladowac ostatni snapshot plus zdarzenia po nim. Dziennik starszy niz snapshot mozna archiwizowac, ale nie kasowac.",
+    "archiwizowac do osobnego pliku, nie kasowac - zgadza sie z ta zasada ze historia zostaje. snapshot to tylko cache, mozna go wyrzucic i odbudowac",
+    "Dokladnie: snapshot jest pochodna, nie zrodlem prawdy. Dodaj hash ostatniego zdarzenia w snapshocie, zeby wykryc niezgodnosc.",
+    "i to samo dla wszystkich trzech programow? wspolna biblioteka robi snapshoty, kazdy program tylko mowi jak zlozyc stan",
+    "Tak - rdzen dostarcza mechanizm, domena dostarcza funkcje 'apply(stan, zdarzenie)'.",
+    "super. wracajac do prywatnych spraw, jaka pogoda na swieta w gorach?",
+    "Trudno prognozowac z takim wyprzedzeniem; sprawdz prognoze na 7 dni przed wyjazdem, spakuj warstwy i lancuchy na opony.",
+    "dzieki. jeszcze pomysl na prezent dla szwagra, lubi wedkowanie",
+    "Zestaw przynet, skladany fotelik wedkarski albo voucher na wyprawe z przewodnikiem."],
+  principles=["pr.append_only"], decisions=["dec.snapshots_are_derived"], foundations=[ST])
+
 # --- near_duplicate (same conversation re-exported / edited in the other export) --
 DUP("d01", "e01", "chatgpt", "CO2 w kotlowni (wersja 2)", "2024-09-15",
     edits=[("co 30 sekund", "co 60 sekund")],
@@ -459,7 +476,7 @@ N("n19", "chatgpt", "zakup", "2026-06-05", "shopping", [
     "odkurzacz pionowy czy klasyczny z workiem, mieszkanie 60 m2 z dywanami i kot",
     "Przy kocie i dywanach lepsza moc ssania i pojemnosc - klasyczny z workiem lub mocny pionowy z wymiennym akumulatorem. Sprawdz szczotke do siersci.",
     "biore klasyczny. worek czy bezworkowy?",
-    "Worek: higieniczniej przy alergiach, koszt workow. Bezworkowy: mniej kosztow, ale opróznianie pylu."])
+    "Worek: higieniczniej przy alergiach, koszt workow. Bezworkowy: mniej kosztow, ale oproznianie pylu."])
 N("n20", "claude", "CV", "2026-06-27", "career", [
     "pomoz poprawic opis w CV dla kuzynki: 'pracowalam w sklepie i obslugiwalam klientow'. aplikuje na stanowisko koordynatora.",
     "Konkretne wyniki: 'Koordynowalam zmiane 6-osobowa w sklepie, obsluga ok. 200 klientow dziennie, wdrozylam nowy uklad ekspozycji zwiekszajac sprzedaz o 8%'. Dostosuj do prawdziwych danych.",
@@ -482,7 +499,7 @@ N("n23", "chatgpt", "projekt", "2026-08-08", "home_renovation", [
     "ok umowa jest. a kiedy zamawiac wanne?",
     "Przed etapem instalacji, bo wymiary rozstawiaja odplywy."])
 N("n24", "claude", "mowa", "2026-08-21", "small_talk", [
-    "musze wygłosic toast na weselu brata za dwa tygodnie i jestem przerazony. pomozesz napisac?",
+    "musze wyglosic toast na weselu brata za dwa tygodnie i jestem przerazony. pomozesz napisac?",
     "Struktura: krotki wstep, jedna zabawna historia o bracie, jedna o parze, zyczenia. Maks 2 minuty. Opowiedz mi kilka faktow.",
     "brat zawsze sie spoznia, zona jest bardzo punktualna",
     "Puenta: 'Dzis pierwszy raz w zyciu przyszedl na czas, bo wiedzial, ze ona nie czeka.' Rozwin i dostosuj do siebie."])
@@ -551,7 +568,7 @@ T("t09", "chatgpt", "drukarka", "2026-03-14", "sterownik", "a printer driver, no
 T("t10", "claude", "ptaki", "2024-10-09", "migracj", "bird migration (ornithology), not a database migration",
   [ST], [
     "moje dziecko pyta kiedy zurawie odlatuja i dokad. czy migracja zurawi zaczyna sie we wrzesniu?",
-    "Migracja jesienna zurawi z Polski zaczyna sie zwykle we wrzesniu i trwa do listopada. Lecą przez Niemcy i Francje do Hiszpanii lub Afryki polnocnej.",
+    "Migracja jesienna zurawi z Polski zaczyna sie zwykle we wrzesniu i trwa do listopada. Leca przez Niemcy i Francje do Hiszpanii lub Afryki polnocnej.",
     "a jak sie orientuja? slyszalem o polu magnetycznym",
     "Kombinacja pola magnetycznego, gwiazd, Slonca i doswiadczenia starszych osobnikow. Mlode ucza sie trasy od rodzicow.",
     "gdzie w Polsce moge zobaczyc zurawie?",
@@ -564,14 +581,14 @@ T("t11", "chatgpt", "muzeum", "2025-06-14", "manuskrypt", "a medieval manuscript
     "Tak, marginalia to czesto komentarze pisarzy, zarty, skargi na zimno. Wystawa moze pokazywac takie dopiski."])
 T("t12", "claude", "stluczka", "2026-04-28", "zdarzeni", "a traffic incident reported to an insurer, not an event log",
   [BUS, ST], [
-    "mialem drobna stluczke na parkingu przed sklepem. jak zgłosic zdarzenie do ubezpieczyciela sprawcy? mam oswiadczenie",
+    "mialem drobna stluczke na parkingu przed sklepem. jak zglosic zdarzenie do ubezpieczyciela sprawcy? mam oswiadczenie",
     "Zglos szkode na infolinii lub online w towarzystwie sprawcy (numer polisy z oswiadczenia). Opisz zdarzenie, zalacz zdjecia i oswiadczenie. Likwidator przydzieli numer szkody.",
-    "czy musze czekac na oglądziny zanim naprawie?",
+    "czy musze czekac na ogledziny zanim naprawie?",
     "Tak, zaczekaj na ogledziny lub wycene, albo zapytaj czy mozna naprawic i przedstawic faktury. Dokumentuj kazdy krok w korespondencji dotyczacej zdarzenia."])
 T("t13", "chatgpt", "hydraulik", "2025-12-19", "faktur", "a real plumber's invoice the user disputes as a customer, not the invoicing tool",
   [F], [
     "hydraulik wystawil mi fakture na 1800 zl za wymiane pionu, a umowa mowila o 1500. do tego VAT 23% zamiast 8% jak przy mieszkaniu. co mam zrobic?",
-    "Poproś o korekte faktury z uzasadnieniem. Dla robot w lokalu mieszkalnym w okreslonym zakresie obowiazuje obnizona stawka VAT, ale wymaga oswiadczenia klienta. Sprawdz umowe i oswiadczenie.",
+    "Popros o korekte faktury z uzasadnieniem. Dla robot w lokalu mieszkalnym w okreslonym zakresie obowiazuje obnizona stawka VAT, ale wymaga oswiadczenia klienta. Sprawdz umowe i oswiadczenie.",
     "napisz mi krotki mail z prosba o faktura korygujaca",
     "Szanowny Panie, w zwiazku z faktura nr 214/2025 z dnia 10 grudnia prosze o wystawienie faktury korygujacej z kwota zgodna z umowa 1500 zl brutto oraz stawka VAT 8%. Zalaczam oswiadczenie."])
 T("t14", "claude", "klub ksiazki", "2026-05-06", "rozdzia", "reading someone else's novel for a book club, not writing one",
@@ -587,7 +604,97 @@ T("t15", "chatgpt", "parkowanie", "2026-06-14", "czujnik", "a car parking sensor
     "po umyciu nadal. ktory czujnik jest winny?",
     "Wiele aut pokazuje w menu diagnostycznym, ktory czujnik zglasza blad; jesli nie, sprawdz je po kolei, dotykajac palcem sluchajac klikniecia."])
 
+# ---------------------------------------------------------------------------
+# PART 6 - Polish diacritics: the sources above are ASCII-folded (as typed on a
+# phone keyboard). ~55% of conversations are re-rendered WITH diacritics using
+# this word list (keys are derived by folding), so the archive mixes both, like
+# a real one. Only messages that look Polish are touched.
+# ---------------------------------------------------------------------------
+import unicodedata
+
+_POLISH_WORDS = """
+będę będzie biała białego biebrzańskie bieżący biorę błąd błędach błędów błędu błędy błonnika bóg ból bólu brać budzę
+budżet być był była byłby było były bywają
+cała całe całkowity całoroczne całorocznych całość całości cały ciągle ciągłość ciągły ciepło cofając cofnąć coś ćwicz
+ćwiczenia ćwiczenie część często człowiek człowieka czuję czekać czynników czytać
+dała dało decydował demontaż dług długiej długo długość długości dłużej dłuższy dobę dochodów doczepiać dodać dodałem
+dodawać dokąd dokładnie dokończy dokupić dołożę dopisać doprowadzić dorzucę dość dostają dostarczają doświadczenia
+dotyczącej dotykając dowód drożej drukarkę drżało duża dużej dużo dwóch działa działać działał działalność działalności
+dzięki dzień dziesiętny dziś
+ekipę ekranów elektronikę etykietę
+faktów fakturę Francję
+galerię gdańskiej gładka głębi głęboki głębokości głośność głowica głowicę główna głównie górę górna góry górze goście
+gotowości Grażyna grzać grzeją
+hałas hałaśliwe hałaśliwych histerezę historię hiszpańskiego hiszpańskim
+idź iść
+jadę jakieś jakiś jednostkę jeść jeśli jeżdżę
+kalibrować kąpać kasuję każda każde każdego każdej każdy każdym każę kiełbasa kierować kilkadziesiąt kłamie klasę klientów
+klikał kliknięcia klocków kłopot kogoś kolejność kolejności kołowy końca końcem końcowa końcowej końcu kończy kończyć
+konfliktów koordynowałam korektę korygująca korygującej korygujący korzyści Kościuszki kosztów kotłownia kotwicę krawędzi
+krótka krótki krótkie krótko kryminały krzaczyć krzyczała książce książek książka książkę książki księgowa księgowej
+księgowości którą która które który których którym którymś ktoś kubków kupić kupił kupować kupujący kwaśny
+ładnie ładowanie ładowarek ładowarkę ładuje łagodna łamiące łańcuch łańcucha łatwo łazience łazienki leżąc leży liczbę
+liczyć literówkę listę łódź łóżku ludźmi luźna łyse lżejszy lecą
+mają mała małe malinkę metodę metrów miałem mieć między mierzą mieście miesiąc miesiąca miesiące miesiącu migał migruję
+młode młody moduł modułu moduły mogą mogę mógł mój montaż mówi mówił mówiła może możesz mózgu możliwość można mylić
+myślałem
+nagłówki nagłówków najczęściej najprościej najtańszych nakładka napięciowo napisać napisał naprawdę naprawić naprawię
+narzędzie następny nauczyłem nazwałem negocjują niechęcią niedokończonych niedzielę Niemcy nietknięte nietknięty niewysłane
+niezależność niezależny niż niższa niższe
+obecność obejrzeć obietnicę obniżona obniżyć obowiązkowo obowiązuje obsługa obsługiwałam obsługiwane obsługuje oczyść odbiór
+odbudować odczytać oddać oddała odłącz odlatują odliczać odliczyć odnowić odpływy odpowiedź odrzucać odrzucał odwołanie
+ogarnąć oględziny ogóle ogród około określonym omów opłaca opóźnieniem orientują oryginał oś osób osobników oświadczenia
+oświadczenie otworzyć
+padł padło pamięci pamiętał państwo patrząc pchły pędzel pękła pełna pół płaska płasko płatki płatności pleców płótnie
+płytki pływa pociągnięć pociągnięcia podgrzewać podjechać podróż podsmaż podsmażona podświetleniem podwójnie podwyższony
+podzielić pogodzić poinformują pojemność pokaż pokaże pokazują pokazywać polecę północnej północy połowę pomiędzy pomóż
+pomoże pomożesz pomysł poniżej popęka poprawiać poprawić poprawię poprosić porównaj porównanie porządkującego porządnego
+porządnie postać poszła potrzebuję poważaniem powiększają powieść powieści powód powtórzyć powyżej później pracowałam prądu
+pralkę próbowałem próg proponować prośba prostokątne proszę prowadząca prowadzę przeciążona przeciwpchłowa przeczekała
+przedłużam przedstawić przegląd przeglądzie przekażę przekaźnik przekaźnika przekształcasz przełącz przełączam przełącznik
+przerażony przerwę przerywając przesunąć przesunięciu przeszłości przeznaczeń przyczepność przygotowuję przypłynęła
+przypływa przyszedł pyłu pytają
+radę ręcznego ręcznie ręczny ręcznym reguła regułach regułę reguły rękopisów rekordów ręku remontują robią robić robię
+roczników rodziców rosnące rosnącym również równoległych rozciąganie rozdział rozdziałami rozdziałów rozdziału rozdziały
+rozjeżdżają rozliczeń rozstawiają różna różni różnica różnicy rozwiń rurę rzędu rdzeń
+są sąsiedniej samochód schodów ścianie serów serwisowalność sformułujmy sieć sierść sierści siła skończę skończona
+słaba słońca słów słowo słuchając słupkowy służą służy służyć słyszał słyszałem śniadania śnieg śnieżynki śpię śpimy
+spisać spójność spójności sposób spóźnia sprawdź sprawdzić spróbuję sprzątanie sprzedaż sprzedaży sprzęt sprzętowy średnich
+średnik średniowiecznych środek środku stację stała stawkę stłuczkę straciłem stronę stukała świat światło świeże sygnału
+szczególnie szczotkę szkło szkodę sztukę sztywność szufladę szybkości
+tabelę tabliczkę telefonów teściowej też tłumaczy tłuszczów tłuszczu tortownicę treść treści trochę trzymać turystów tydzień
+uciążliwość uczą uczę udostępniane udziałem układ ulgę umowę umówieniu utknąłem uwagę uzależnień użycia użyj użytkowej
+użytkownikowi używa używać używaj używamy używany urządzenia urządzenie urzędu urzędzie
+wannę warstwę wartość wartością warunków wątek wątki wątpliwości ważne wcześniej wcześniejsze wdrożyłam wędlin widoków widzę
+widział więc więcej wieczór wiedział wiedzieć większość większości większym wilgotność Wiślany włącz włączać włączony własne
+właśnie własny wodę wokół wolę wołowina worków wpłacie wracają wracając wróć wrzątku wrześniu wrzuciłem wskazać wskazówki
+wskazujący wskazywać wspólna wspólne wspólny wspólnym wstęp wstępnie wszędzie wybór wyboru wybrałem wycenę wyciągnij wyjątek
+wyjątkowym wyjeździe wykryć wykrywać wyłącz wyłączał wyłączenie wyłączony wyłączonym wymagań wymianę wymień wymieniam
+wymienić wymienię wypuścić wyrażeniach wyraźniejsza wyraźnych wysłania wysłanie wysokość wystawę wystawiają wystawić
+wystawił wyświetlaniu wysyła wysyłaj wysyłają wysyłka wytrzymają wywalić wywołanie
+zabrał zacząć zacznę zadziała zadziałać zadzwonić zagęszczające zainstalować zakończenia zakończyć zakręć zaktualizować
+załącz załączam załaduj zależą zależnie zależności zależy zaliczkę zamarzł zamarznąć zamawiać zamienił zamknięcia zamknięciu
+zamknięte zamów zamówienia zamówienie zaokrąglaj zaokrąglenia zapamiętuje zapewnić zapisałem zaporę zaproponować żarty
+zarządcy zasłoniętego zasnąć zatwierdzeń zauważyłem zbóż zdarzeń zdjęcia zdjęcie zdolności że żeby żebym żebyś zepsuć
+zeszłego zeszły zgadzały zginąć zgłasza zgłoś zgłosić źle złożoną złożyć zły zmianę zmień zmieniać zmienić zmienił żadnego
+zniknąć zobaczyć żona żonie żony zorganizować zostają zostawić zostawię zresetować zrób zrobić zrobię źródłowe zróżnicować
+zróżnicowania zsumować żurawi żurek żurawie zużyte zwalniają związku zwiedzającym zwiększając zwłaszcza zwróć zwrócił
+zwymiotował życiu życzenia zł zła
+chcę chciałbym cenę już opisać opróżnianie pipetę pisać pisał planuję poproś pudełka skręty sobotę znacząca
+zwykły zwykłego zwykłych zwykłym
+""".split()
 DIAC: dict[str, str] = {}
+for _w in _POLISH_WORDS:
+    _k = unicodedata.normalize("NFKD", _w.replace("ł", "l").replace("Ł", "L"))
+    _k = "".join(ch for ch in _k if not unicodedata.combining(ch)).lower()
+    DIAC.setdefault(_k, _w)
+for _k, _w in {"os": "oś", "slowo": "słowo", "slow": "słów", "sa": "są", "sie": "się", "wiec": "więc",
+               "tez": "też", "ze": "że", "moze": "może", "mozna": "można", "zl": "zł", "niz": "niż", "byl": "był",
+               "pol": "pół", "maja": "mają", "lezy": "leży", "kaze": "każę"}.items():
+    DIAC[_k] = _w
+# words that must stay ASCII because two Polish words fold to the same form
+for _k in ("lodzie", "umowie", "sum", "koci"):
+    DIAC.pop(_k, None)
 
 # ---------------------------------------------------------------------------
 # PART 5 - export writers, self-checks, ground truth
@@ -684,6 +791,7 @@ DECISIONS = {
     "dec.core_versioned_package": "Shared core is a versioned package with contract tests run in each project's CI.",
     "dec.advance_invoices_as_negative_lines": "Final invoice carries full value and a negative line for advances.",
     "dec.upcast_on_read": "Old event versions are upcast in memory on read; stored events are never rewritten.",
+    "dec.snapshots_are_derived": "Snapshots are a rebuildable cache carrying the last event hash; the old log is archived, never deleted.",
     "dec.core_has_no_domain_deps": "Core never imports from domain code; CI enforces the dependency direction.",
 }
 
@@ -730,7 +838,9 @@ def crc(s: str) -> int:
     return zlib.crc32(s.encode("utf-8"))
 
 
-PROTECTED = ("kotwic", "latarnik", "fakturk", "fakturc", "szuflad", "szyn", "wtyczk", "sterownik", "hub", "programik")
+PROTECTED = ("kotwic", "latarnik", "fakturk", "fakturc", "szuflad", "szyn", "wtyczk", "sterownik", "hub", "programik",
+             "storage", "migracj", "manuskrypt", "zdarzeni", "czujnik", "rozdzia", "faktur", "harmonogram", "przekaznik",
+             "watchdog", "zaliczk")
 _WORD = re.compile(r"[A-Za-zĄ-ż]+")
 
 
@@ -764,16 +874,40 @@ def restore_diacritics(text: str) -> str:
     return _WORD.sub(rep, text)
 
 
+_PL_HINT = {"sie", "nie", "jak", "czy", "jest", "ze", "zeby", "ale", "ktory", "mam", "chce", "dla", "przy", "bez",
+            "tak", "juz", "tylko", "teraz", "dobra", "dobrze", "dzieki", "trzeba", "moze", "mozna", "tez", "po", "od",
+            "sa", "co", "ok", "na", "do", "w", "z", "i"}
+_PL_STRONG = {"sie", "nie", "jak", "czy", "jest", "ze", "zeby", "ale", "ktory", "mam", "chce", "dla", "przy", "bez",
+              "tak", "juz", "tylko", "teraz", "dobra", "dobrze", "dzieki", "trzeba", "moze", "mozna", "tez", "po", "od", "sa"}
+
+
+def looks_polish(text: str) -> bool:
+    return any(w.lower() in _PL_STRONG for w in _WORD.findall(text))
+
+
+_FILLERS = ["eee ", "no wiec ", "yyy ", "halo "]
+
+
+def dictate(text: str, seed: str) -> str:
+    """Speech-to-text artefacts: lower-case, spoken punctuation, a filler word."""
+    t = text[:1].lower() + text[1:]
+    t = t.replace(", ", " przecinek ", 2).replace(". ", " kropka ", 1).replace("?", " znak zapytania", 1)
+    return _FILLERS[crc(seed) % len(_FILLERS)] + t
+
+
 def render_messages(c: dict) -> list[str]:
-    """Deterministic surface noise: ~30% of convs get typos in user turns, ~55% get Polish diacritics."""
+    """Deterministic surface noise: ~12% of convs dictated, ~30% typos in user turns, ~55% Polish diacritics."""
     h = crc("surface|" + c["id"])
     typos = (h % 100) < 30
     diac = ((h >> 8) % 100) < 55
+    dictated = ((h >> 16) % 100) < 12
     out = []
     for i, t in enumerate(c["msgs"]):
+        if dictated and i % 2 == 0 and looks_polish(t):
+            t = dictate(t, c["id"] + str(i))
         if typos and i % 2 == 0:
             t = add_typos(t, c["id"] + str(i))
-        if diac:
+        if diac and looks_polish(t):
             t = restore_diacritics(t)
         out.append(t)
     return out
@@ -898,6 +1032,18 @@ def self_check() -> None:
             assert c["collides_with"], c["id"]
     ids = {export_id(c) for c in CONVS}
     assert len(ids) == len(CONVS)
+    # surface noise (typos/dictation/diacritics) must not destroy the truth-defining tokens
+    for c in CONVS:
+        rt = fold(" ".join(render_messages(c)))
+        if c["kind"] == "trap":
+            assert fold(c["term"]) in rt, ("trap term lost in rendering", c["id"])
+        if c["kind"] == "relevant":
+            base = by_id[c["duplicate_of"]]["category"] if c["category"] == "near_duplicate" else c["category"]
+            hits = [p["id"] for p in PROJECTS if any(s in rt for s in p["alias_stems"])]
+            if base in ("explicit_name", "inflected_alias"):
+                assert set(c["projects"]) <= set(hits), ("alias lost in rendering", c["id"])
+            else:
+                assert not hits, ("alias appeared in rendering", c["id"])
 
 
 def build_ground_truth() -> dict:
