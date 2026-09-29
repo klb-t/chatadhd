@@ -73,13 +73,28 @@ class ProvenanceStore;
 class MediaProviders;
 
 inline constexpr std::string_view kImporterParserVersion = "1";
+inline constexpr std::string_view kExportParserVersion = "export-1";
 
 // (current, total, status). Units: conversations when the total is known,
 // otherwise bytes read; total = -1 when unknown.
 using ImportProgressFn = std::function<void(std::int64_t current, std::int64_t total, std::string_view status)>;
 
+// Provider-export interpretation (OpenAI/ChatGPT and Anthropic/Claude data
+// exports; see docs/exports/OPENAI_ANTHROPIC_EXPORT_FORMATS.md).
+//   Auto: ZIP archives go through the lossless provider-export path (which
+//         falls back to the legacy per-member importers for archives that are
+//         not provider exports, and reports what it could not interpret);
+//         bare .json files keep the legacy Python-parity flattening
+//         (tests/test_import.cpp and tests/compat/test_import_compat.py pin it).
+//   Off:  legacy behaviour everywhere.
+//   On:   as Auto, and bare .json files that look like a provider export
+//         (ChatGPT `mapping` / Claude `chat_messages` objects) are interpreted
+//         losslessly too.
+enum class ExportMode { Auto, Off, On };
+
 struct ImportOptions {
   std::optional<std::string> title;
+  ExportMode export_mode = ExportMode::Auto;
   ImportProgressFn progress;
   const CancelToken* cancel = nullptr;
   bool record_provenance = true;  // store raw bytes + sources + provenance rows
@@ -103,7 +118,12 @@ struct ImportResult {
   // conversations instead of importing again.
   bool already_imported = false;
   std::vector<std::string> warnings;
+  // Provider-export interpretation report (null unless the lossless export
+  // path ran): provider, member dispositions, counts, asset links, errors,
+  // repairs. Shape documented in src/import/export_internal.h.
+  Json export_report = nullptr;
   // {"conversations":[...],"format","source_id","blob_hash","messages","cancelled","warnings","already_imported"}
+  // (+ "export_report" when set)
   Json to_json() const;
 };
 
@@ -116,6 +136,8 @@ class JsonArrayStreamer {
   // Returns false when the input is not a JSON array (first non-space byte).
   bool feed(std::string_view chunk, const ElementFn& on_element);
   bool finished() const noexcept { return done_; }
+  // Bytes of an element that has started but not completed (truncated input).
+  std::size_t pending_bytes() const noexcept { return buf_.size(); }
 
  private:
   std::string buf_;
@@ -202,7 +224,9 @@ class ConversationImporter {
   // returns them instead of nullopt so the caller can short-circuit.
   Result<std::optional<std::vector<Conversation>>> prepare_source(const std::filesystem::path& path,
                                                                    std::string_view fmt, const ImportOptions& opts,
-                                                                   std::string_view kind, SourceCtx& ctx);
+                                                                   std::string_view kind, SourceCtx& ctx,
+                                                                   std::string_view parser_version = kImporterParserVersion,
+                                                                   std::string_view parser_suffix = "");
   // Wraps a *_body() call with prepare_source()/SourceCtxGuard for the
   // public per-format entry points (import_zip, import_json, ...), which are
   // independently testable/callable and so each self-registers its source.
@@ -218,6 +242,14 @@ class ConversationImporter {
   // public import_<format>() wrappers and import_file_as() set up SourceCtx
   // around a call to these).
   Result<std::vector<Conversation>> zip_body(const std::filesystem::path& path, const ImportOptions& opts);
+  // Lossless provider-export path (src/import/export_*.cpp). export_zip_body
+  // handles every ZIP when ExportMode != Off; export_json_body returns nullopt
+  // when a bare JSON file is not a provider export (caller falls back to the
+  // legacy json_body). Both fill `report`.
+  Result<std::vector<Conversation>> export_zip_body(const std::filesystem::path& path, const ImportOptions& opts,
+                                                    Json& report);
+  Result<std::optional<std::vector<Conversation>>> export_json_body(const std::filesystem::path& path,
+                                                                     const ImportOptions& opts, Json& report);
   Result<std::vector<Conversation>> jsonl_body(const std::filesystem::path& path, const ImportOptions& opts);
   Result<std::vector<Conversation>> sqlite_body(const std::filesystem::path& path, const ImportOptions& opts);
   Result<std::vector<Conversation>> json_body(const std::filesystem::path& path, const ImportOptions& opts);
