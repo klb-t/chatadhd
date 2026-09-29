@@ -1,0 +1,22 @@
+{
+  "schema": "loom.research.fixture_manifest/1",
+  "fixture": "structure_round3_v1",
+  "authoring": "independent human-like authored labels by isolated agent; parser and source benchmark unread",
+  "frozen_before_predictions": true,
+  "frozen_utc_date": "2026-09-29",
+  "counts": {
+    "dev": 64,
+    "validation": 32,
+    "families": 8,
+    "supported": 48,
+    "abstain": 48,
+    "pl": 48,
+    "en": 48
+  },
+  "files": {
+    "PLAN.md": "6379e8cea4e0f602cf29847073738a75beca4ad9ef73bf75de614001c54985d1",
+    "README.md": "dd6a4f88c1255bb34ac860498ea9e544e4b595211058ef969cd70ad3a9caa9a5",
+    "dev.json": "69bb3542c4abf24eb57444b21274f76e02a5c60d4e6ea184e852f089c41cb616",
+    "validation.json": "3abca3a3abb835f5f854182a626bc69effd24ef6daab0f93a75f1d790ad74a5c"
+  }
+}

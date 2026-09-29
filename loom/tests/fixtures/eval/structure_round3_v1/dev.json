@@ -1,0 +1,2037 @@
+{
+  "schema": "loom.research.explicit_relation_fixture/1",
+  "split": "dev",
+  "span_unit": "unicode_codepoint_half_open",
+  "cases": [
+    {
+      "id": "sr3v1_dev_001",
+      "language": "en",
+      "family": "conditional",
+      "label": "supported",
+      "text": "If the valve stays closed, the pressure rises.",
+      "expected": [
+        {
+          "family": "conditional",
+          "operation": "implies",
+          "operands": [
+            {
+              "role": "condition",
+              "text": "the valve stays closed",
+              "span": [
+                3,
+                25
+              ],
+              "utf8_byte_span": [
+                3,
+                25
+              ]
+            },
+            {
+              "role": "consequence",
+              "text": "the pressure rises",
+              "span": [
+                27,
+                45
+              ],
+              "utf8_byte_span": [
+                27,
+                45
+              ]
+            }
+          ],
+          "cue": {
+            "text": "If",
+            "span": [
+              0,
+              2
+            ],
+            "utf8_byte_span": [
+              0,
+              2
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_002",
+      "language": "en",
+      "family": "conditional",
+      "label": "supported",
+      "text": "Provided that the checksum matches, the image may be mounted.",
+      "expected": [
+        {
+          "family": "conditional",
+          "operation": "implies",
+          "operands": [
+            {
+              "role": "condition",
+              "text": "the checksum matches",
+              "span": [
+                14,
+                34
+              ],
+              "utf8_byte_span": [
+                14,
+                34
+              ]
+            },
+            {
+              "role": "consequence",
+              "text": "the image may be mounted",
+              "span": [
+                36,
+                60
+              ],
+              "utf8_byte_span": [
+                36,
+                60
+              ]
+            }
+          ],
+          "cue": {
+            "text": "Provided that",
+            "span": [
+              0,
+              13
+            ],
+            "utf8_byte_span": [
+              0,
+              13
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_003",
+      "language": "pl",
+      "family": "conditional",
+      "label": "supported",
+      "text": "Jeśli czujnik nie zgłasza błędu, pomiar trafia do archiwum.",
+      "expected": [
+        {
+          "family": "conditional",
+          "operation": "implies",
+          "operands": [
+            {
+              "role": "condition",
+              "text": "czujnik nie zgłasza błędu",
+              "span": [
+                6,
+                31
+              ],
+              "utf8_byte_span": [
+                7,
+                35
+              ]
+            },
+            {
+              "role": "consequence",
+              "text": "pomiar trafia do archiwum",
+              "span": [
+                33,
+                58
+              ],
+              "utf8_byte_span": [
+                37,
+                62
+              ]
+            }
+          ],
+          "cue": {
+            "text": "Jeśli",
+            "span": [
+              0,
+              5
+            ],
+            "utf8_byte_span": [
+              0,
+              6
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_004",
+      "language": "pl",
+      "family": "conditional",
+      "label": "supported",
+      "text": "Jeżeli osłona jest zdjęta, silnik nie rusza.",
+      "expected": [
+        {
+          "family": "conditional",
+          "operation": "implies",
+          "operands": [
+            {
+              "role": "condition",
+              "text": "osłona jest zdjęta",
+              "span": [
+                7,
+                25
+              ],
+              "utf8_byte_span": [
+                8,
+                28
+              ]
+            },
+            {
+              "role": "consequence",
+              "text": "silnik nie rusza",
+              "span": [
+                27,
+                43
+              ],
+              "utf8_byte_span": [
+                30,
+                46
+              ]
+            }
+          ],
+          "cue": {
+            "text": "Jeżeli",
+            "span": [
+              0,
+              6
+            ],
+            "utf8_byte_span": [
+              0,
+              7
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_005",
+      "language": "en",
+      "family": "conditional",
+      "label": "abstain",
+      "text": "If only the museum opened earlier.",
+      "expected": [],
+      "annotation_note": "If only expresses a wish, not an asserted implication."
+    },
+    {
+      "id": "sr3v1_dev_006",
+      "language": "en",
+      "family": "conditional",
+      "label": "abstain",
+      "text": "Is it true that if the window is open, the alarm sounds?",
+      "expected": [],
+      "annotation_note": "The putative relation is under an unresolved question."
+    },
+    {
+      "id": "sr3v1_dev_007",
+      "language": "pl",
+      "family": "conditional",
+      "label": "abstain",
+      "text": "Napis na plakacie brzmi: „Jeśli pada deszcz, droga jest śliska”.",
+      "expected": [],
+      "annotation_note": "Quoted proposition needs explicit quotation/speaker scope, excluded by this benchmark."
+    },
+    {
+      "id": "sr3v1_dev_008",
+      "language": "pl",
+      "family": "conditional",
+      "label": "abstain",
+      "text": "Nie wiadomo, czy jeśli filtr pęknie, próbka zostanie skażona.",
+      "expected": [],
+      "annotation_note": "Unresolved embedded proposition is not an unembedded assertion."
+    },
+    {
+      "id": "sr3v1_dev_009",
+      "language": "en",
+      "family": "cause",
+      "label": "supported",
+      "text": "The lamp went dark because the fuse broke.",
+      "expected": [
+        {
+          "family": "cause",
+          "operation": "causes",
+          "operands": [
+            {
+              "role": "cause",
+              "text": "the fuse broke",
+              "span": [
+                27,
+                41
+              ],
+              "utf8_byte_span": [
+                27,
+                41
+              ]
+            },
+            {
+              "role": "effect",
+              "text": "The lamp went dark",
+              "span": [
+                0,
+                18
+              ],
+              "utf8_byte_span": [
+                0,
+                18
+              ]
+            }
+          ],
+          "cue": {
+            "text": "because",
+            "span": [
+              19,
+              26
+            ],
+            "utf8_byte_span": [
+              19,
+              26
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_010",
+      "language": "en",
+      "family": "cause",
+      "label": "supported",
+      "text": "The road closure caused the delivery delay.",
+      "expected": [
+        {
+          "family": "cause",
+          "operation": "causes",
+          "operands": [
+            {
+              "role": "cause",
+              "text": "The road closure",
+              "span": [
+                0,
+                16
+              ],
+              "utf8_byte_span": [
+                0,
+                16
+              ]
+            },
+            {
+              "role": "effect",
+              "text": "the delivery delay",
+              "span": [
+                24,
+                42
+              ],
+              "utf8_byte_span": [
+                24,
+                42
+              ]
+            }
+          ],
+          "cue": {
+            "text": "caused",
+            "span": [
+              17,
+              23
+            ],
+            "utf8_byte_span": [
+              17,
+              23
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_011",
+      "language": "pl",
+      "family": "cause",
+      "label": "supported",
+      "text": "Ponieważ przewód pękł, zbiornik stracił ciśnienie.",
+      "expected": [
+        {
+          "family": "cause",
+          "operation": "causes",
+          "operands": [
+            {
+              "role": "cause",
+              "text": "przewód pękł",
+              "span": [
+                9,
+                21
+              ],
+              "utf8_byte_span": [
+                10,
+                25
+              ]
+            },
+            {
+              "role": "effect",
+              "text": "zbiornik stracił ciśnienie",
+              "span": [
+                23,
+                49
+              ],
+              "utf8_byte_span": [
+                27,
+                55
+              ]
+            }
+          ],
+          "cue": {
+            "text": "Ponieważ",
+            "span": [
+              0,
+              8
+            ],
+            "utf8_byte_span": [
+              0,
+              9
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_012",
+      "language": "pl",
+      "family": "cause",
+      "label": "supported",
+      "text": "Brak smarowania spowodował zatarcie łożyska.",
+      "expected": [
+        {
+          "family": "cause",
+          "operation": "causes",
+          "operands": [
+            {
+              "role": "cause",
+              "text": "Brak smarowania",
+              "span": [
+                0,
+                15
+              ],
+              "utf8_byte_span": [
+                0,
+                15
+              ]
+            },
+            {
+              "role": "effect",
+              "text": "zatarcie łożyska",
+              "span": [
+                27,
+                43
+              ],
+              "utf8_byte_span": [
+                28,
+                46
+              ]
+            }
+          ],
+          "cue": {
+            "text": "spowodował",
+            "span": [
+              16,
+              26
+            ],
+            "utf8_byte_span": [
+              16,
+              27
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_013",
+      "language": "en",
+      "family": "cause",
+      "label": "abstain",
+      "text": "The word because contains seven letters.",
+      "expected": [],
+      "annotation_note": "Metalinguistic mention of a causal marker."
+    },
+    {
+      "id": "sr3v1_dev_014",
+      "language": "en",
+      "family": "cause",
+      "label": "abstain",
+      "text": "The vibration did not cause the crack.",
+      "expected": [],
+      "annotation_note": "The existence of the proposed causal relation is explicitly denied."
+    },
+    {
+      "id": "sr3v1_dev_015",
+      "language": "pl",
+      "family": "cause",
+      "label": "abstain",
+      "text": "Czy mróz spowodował pęknięcie szkła?",
+      "expected": [],
+      "annotation_note": "Question asks about a causal relation without asserting one."
+    },
+    {
+      "id": "sr3v1_dev_016",
+      "language": "pl",
+      "family": "cause",
+      "label": "abstain",
+      "text": "W kodzie zapisano `because = sample_count`.",
+      "expected": [],
+      "annotation_note": "Code identifier is not a prose causal assertion."
+    },
+    {
+      "id": "sr3v1_dev_017",
+      "language": "en",
+      "family": "contrast",
+      "label": "supported",
+      "text": "The housing is rigid, whereas the gasket is flexible.",
+      "expected": [
+        {
+          "family": "contrast",
+          "operation": "contrasts",
+          "operands": [
+            {
+              "role": "left",
+              "text": "The housing is rigid",
+              "span": [
+                0,
+                20
+              ],
+              "utf8_byte_span": [
+                0,
+                20
+              ]
+            },
+            {
+              "role": "right",
+              "text": "the gasket is flexible",
+              "span": [
+                30,
+                52
+              ],
+              "utf8_byte_span": [
+                30,
+                52
+              ]
+            }
+          ],
+          "cue": {
+            "text": "whereas",
+            "span": [
+              22,
+              29
+            ],
+            "utf8_byte_span": [
+              22,
+              29
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_018",
+      "language": "en",
+      "family": "contrast",
+      "label": "supported",
+      "text": "The preview is small, but the print is large.",
+      "expected": [
+        {
+          "family": "contrast",
+          "operation": "contrasts",
+          "operands": [
+            {
+              "role": "left",
+              "text": "The preview is small",
+              "span": [
+                0,
+                20
+              ],
+              "utf8_byte_span": [
+                0,
+                20
+              ]
+            },
+            {
+              "role": "right",
+              "text": "the print is large",
+              "span": [
+                26,
+                44
+              ],
+              "utf8_byte_span": [
+                26,
+                44
+              ]
+            }
+          ],
+          "cue": {
+            "text": "but",
+            "span": [
+              22,
+              25
+            ],
+            "utf8_byte_span": [
+              22,
+              25
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_019",
+      "language": "pl",
+      "family": "contrast",
+      "label": "supported",
+      "text": "Pierwszy tor jest cichy, natomiast drugi tor szumi.",
+      "expected": [
+        {
+          "family": "contrast",
+          "operation": "contrasts",
+          "operands": [
+            {
+              "role": "left",
+              "text": "Pierwszy tor jest cichy",
+              "span": [
+                0,
+                23
+              ],
+              "utf8_byte_span": [
+                0,
+                23
+              ]
+            },
+            {
+              "role": "right",
+              "text": "drugi tor szumi",
+              "span": [
+                35,
+                50
+              ],
+              "utf8_byte_span": [
+                35,
+                50
+              ]
+            }
+          ],
+          "cue": {
+            "text": "natomiast",
+            "span": [
+              25,
+              34
+            ],
+            "utf8_byte_span": [
+              25,
+              34
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_020",
+      "language": "pl",
+      "family": "contrast",
+      "label": "supported",
+      "text": "Obudowa jest tania, ale montaż jest kosztowny.",
+      "expected": [
+        {
+          "family": "contrast",
+          "operation": "contrasts",
+          "operands": [
+            {
+              "role": "left",
+              "text": "Obudowa jest tania",
+              "span": [
+                0,
+                18
+              ],
+              "utf8_byte_span": [
+                0,
+                18
+              ]
+            },
+            {
+              "role": "right",
+              "text": "montaż jest kosztowny",
+              "span": [
+                24,
+                45
+              ],
+              "utf8_byte_span": [
+                24,
+                46
+              ]
+            }
+          ],
+          "cue": {
+            "text": "ale",
+            "span": [
+              20,
+              23
+            ],
+            "utf8_byte_span": [
+              20,
+              23
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_021",
+      "language": "en",
+      "family": "contrast",
+      "label": "abstain",
+      "text": "There is nothing but gravel in the tray.",
+      "expected": [],
+      "annotation_note": "Nothing but is a restriction idiom, not a contrast between two propositions."
+    },
+    {
+      "id": "sr3v1_dev_022",
+      "language": "en",
+      "family": "contrast",
+      "label": "abstain",
+      "text": "Does the front panel stay cold whereas the rear panel warms up?",
+      "expected": [],
+      "annotation_note": "Question does not assert the contrast."
+    },
+    {
+      "id": "sr3v1_dev_023",
+      "language": "pl",
+      "family": "contrast",
+      "label": "abstain",
+      "text": "„Ale” ma trzy litery.",
+      "expected": [],
+      "annotation_note": "Metalinguistic conjunction mention."
+    },
+    {
+      "id": "sr3v1_dev_024",
+      "language": "pl",
+      "family": "contrast",
+      "label": "abstain",
+      "text": "Nie ustalono, czy wynik jest mały, ale powtarzalny.",
+      "expected": [],
+      "annotation_note": "Unresolved embedding and elliptical right operand do not license an unembedded contrast."
+    },
+    {
+      "id": "sr3v1_dev_025",
+      "language": "en",
+      "family": "exception",
+      "label": "supported",
+      "text": "All shuttles stop here except the night shuttle.",
+      "expected": [
+        {
+          "family": "exception",
+          "operation": "except",
+          "operands": [
+            {
+              "role": "default_rule",
+              "text": "All shuttles stop here",
+              "span": [
+                0,
+                22
+              ],
+              "utf8_byte_span": [
+                0,
+                22
+              ]
+            },
+            {
+              "role": "exception",
+              "text": "the night shuttle",
+              "span": [
+                30,
+                47
+              ],
+              "utf8_byte_span": [
+                30,
+                47
+              ]
+            }
+          ],
+          "cue": {
+            "text": "except",
+            "span": [
+              23,
+              29
+            ],
+            "utf8_byte_span": [
+              23,
+              29
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "exception_scope": "default_rule"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_026",
+      "language": "en",
+      "family": "exception",
+      "label": "supported",
+      "text": "The tray remains locked unless the release lever moves.",
+      "expected": [
+        {
+          "family": "exception",
+          "operation": "unless",
+          "operands": [
+            {
+              "role": "exception_condition",
+              "text": "the release lever moves",
+              "span": [
+                31,
+                54
+              ],
+              "utf8_byte_span": [
+                31,
+                54
+              ]
+            },
+            {
+              "role": "default_consequence",
+              "text": "The tray remains locked",
+              "span": [
+                0,
+                23
+              ],
+              "utf8_byte_span": [
+                0,
+                23
+              ]
+            }
+          ],
+          "cue": {
+            "text": "unless",
+            "span": [
+              24,
+              30
+            ],
+            "utf8_byte_span": [
+              24,
+              30
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "exception_scope": "default_consequence"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_027",
+      "language": "pl",
+      "family": "exception",
+      "label": "supported",
+      "text": "Wszystkie pliki są publiczne z wyjątkiem kopii zapasowej.",
+      "expected": [
+        {
+          "family": "exception",
+          "operation": "except",
+          "operands": [
+            {
+              "role": "default_rule",
+              "text": "Wszystkie pliki są publiczne",
+              "span": [
+                0,
+                28
+              ],
+              "utf8_byte_span": [
+                0,
+                29
+              ]
+            },
+            {
+              "role": "exception",
+              "text": "kopii zapasowej",
+              "span": [
+                41,
+                56
+              ],
+              "utf8_byte_span": [
+                43,
+                58
+              ]
+            }
+          ],
+          "cue": {
+            "text": "z wyjątkiem",
+            "span": [
+              29,
+              40
+            ],
+            "utf8_byte_span": [
+              30,
+              42
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "exception_scope": "default_rule"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_028",
+      "language": "pl",
+      "family": "exception",
+      "label": "supported",
+      "text": "Pociąg zatrzyma się na stacji, chyba że sygnał będzie czerwony.",
+      "expected": [
+        {
+          "family": "exception",
+          "operation": "unless",
+          "operands": [
+            {
+              "role": "exception_condition",
+              "text": "sygnał będzie czerwony",
+              "span": [
+                40,
+                62
+              ],
+              "utf8_byte_span": [
+                43,
+                67
+              ]
+            },
+            {
+              "role": "default_consequence",
+              "text": "Pociąg zatrzyma się na stacji",
+              "span": [
+                0,
+                29
+              ],
+              "utf8_byte_span": [
+                0,
+                31
+              ]
+            }
+          ],
+          "cue": {
+            "text": "chyba że",
+            "span": [
+              31,
+              39
+            ],
+            "utf8_byte_span": [
+              33,
+              42
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "exception_scope": "default_consequence"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_029",
+      "language": "en",
+      "family": "exception",
+      "label": "abstain",
+      "text": "The exception handler writes a diagnostic.",
+      "expected": [],
+      "annotation_note": "Software exception noun is not a rule exception relation."
+    },
+    {
+      "id": "sr3v1_dev_030",
+      "language": "en",
+      "family": "exception",
+      "label": "abstain",
+      "text": "Unless what?",
+      "expected": [],
+      "annotation_note": "Fragment contains no recoverable default consequence."
+    },
+    {
+      "id": "sr3v1_dev_031",
+      "language": "pl",
+      "family": "exception",
+      "label": "abstain",
+      "text": "Wyjątek potwierdza regułę.",
+      "expected": [],
+      "annotation_note": "Named exception and rule are absent; proverb does not give scoped operands."
+    },
+    {
+      "id": "sr3v1_dev_032",
+      "language": "pl",
+      "family": "exception",
+      "label": "abstain",
+      "text": "Czy wszyscy wejdą poza strażnikiem?",
+      "expected": [],
+      "annotation_note": "The proposed exception is questioned rather than asserted."
+    },
+    {
+      "id": "sr3v1_dev_033",
+      "language": "en",
+      "family": "means_goal",
+      "label": "supported",
+      "text": "We installed a timer to limit the heating period.",
+      "expected": [
+        {
+          "family": "means_goal",
+          "operation": "achieves",
+          "operands": [
+            {
+              "role": "means",
+              "text": "We installed a timer",
+              "span": [
+                0,
+                20
+              ],
+              "utf8_byte_span": [
+                0,
+                20
+              ]
+            },
+            {
+              "role": "goal",
+              "text": "limit the heating period",
+              "span": [
+                24,
+                48
+              ],
+              "utf8_byte_span": [
+                24,
+                48
+              ]
+            }
+          ],
+          "cue": {
+            "text": "to",
+            "span": [
+              21,
+              23
+            ],
+            "utf8_byte_span": [
+              21,
+              23
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "success": "not_asserted"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_034",
+      "language": "en",
+      "family": "means_goal",
+      "label": "supported",
+      "text": "The team uses a mesh screen in order to keep leaves out.",
+      "expected": [
+        {
+          "family": "means_goal",
+          "operation": "achieves",
+          "operands": [
+            {
+              "role": "means",
+              "text": "The team uses a mesh screen",
+              "span": [
+                0,
+                27
+              ],
+              "utf8_byte_span": [
+                0,
+                27
+              ]
+            },
+            {
+              "role": "goal",
+              "text": "keep leaves out",
+              "span": [
+                40,
+                55
+              ],
+              "utf8_byte_span": [
+                40,
+                55
+              ]
+            }
+          ],
+          "cue": {
+            "text": "in order to",
+            "span": [
+              28,
+              39
+            ],
+            "utf8_byte_span": [
+              28,
+              39
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "success": "not_asserted"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_035",
+      "language": "pl",
+      "family": "means_goal",
+      "label": "supported",
+      "text": "Dodaliśmy podkładkę, aby zmniejszyć drgania.",
+      "expected": [
+        {
+          "family": "means_goal",
+          "operation": "achieves",
+          "operands": [
+            {
+              "role": "means",
+              "text": "Dodaliśmy podkładkę",
+              "span": [
+                0,
+                19
+              ],
+              "utf8_byte_span": [
+                0,
+                22
+              ]
+            },
+            {
+              "role": "goal",
+              "text": "zmniejszyć drgania",
+              "span": [
+                25,
+                43
+              ],
+              "utf8_byte_span": [
+                28,
+                47
+              ]
+            }
+          ],
+          "cue": {
+            "text": "aby",
+            "span": [
+              21,
+              24
+            ],
+            "utf8_byte_span": [
+              24,
+              27
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "success": "not_asserted"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_036",
+      "language": "pl",
+      "family": "means_goal",
+      "label": "supported",
+      "text": "Używamy poziomicy, żeby wyrównać półkę.",
+      "expected": [
+        {
+          "family": "means_goal",
+          "operation": "achieves",
+          "operands": [
+            {
+              "role": "means",
+              "text": "Używamy poziomicy",
+              "span": [
+                0,
+                17
+              ],
+              "utf8_byte_span": [
+                0,
+                18
+              ]
+            },
+            {
+              "role": "goal",
+              "text": "wyrównać półkę",
+              "span": [
+                24,
+                38
+              ],
+              "utf8_byte_span": [
+                26,
+                45
+              ]
+            }
+          ],
+          "cue": {
+            "text": "żeby",
+            "span": [
+              19,
+              23
+            ],
+            "utf8_byte_span": [
+              20,
+              25
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "success": "not_asserted"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_037",
+      "language": "en",
+      "family": "means_goal",
+      "label": "abstain",
+      "text": "The train goes to Leiden.",
+      "expected": [],
+      "annotation_note": "To introduces a destination, not a purpose clause."
+    },
+    {
+      "id": "sr3v1_dev_038",
+      "language": "en",
+      "family": "means_goal",
+      "label": "abstain",
+      "text": "Is a screen used in order to keep insects out?",
+      "expected": [],
+      "annotation_note": "Question does not assert an intentional means/goal relation."
+    },
+    {
+      "id": "sr3v1_dev_039",
+      "language": "pl",
+      "family": "means_goal",
+      "label": "abstain",
+      "text": "To jest mosiężna nakrętka.",
+      "expected": [],
+      "annotation_note": "Polish demonstrative to is not an English purpose marker."
+    },
+    {
+      "id": "sr3v1_dev_040",
+      "language": "pl",
+      "family": "means_goal",
+      "label": "abstain",
+      "text": "Hasło reklamowe brzmi: „Ćwicz, żeby wygrać”.",
+      "expected": [],
+      "annotation_note": "Quoted slogan requires embedded speech scope; no unembedded means assertion."
+    },
+    {
+      "id": "sr3v1_dev_041",
+      "language": "en",
+      "family": "generalization",
+      "label": "supported",
+      "text": "Every silver fern is a vascular plant.",
+      "expected": [
+        {
+          "family": "generalization",
+          "operation": "generalizes",
+          "operands": [
+            {
+              "role": "subclass",
+              "text": "silver fern",
+              "span": [
+                6,
+                17
+              ],
+              "utf8_byte_span": [
+                6,
+                17
+              ]
+            },
+            {
+              "role": "superclass",
+              "text": "vascular plant",
+              "span": [
+                23,
+                37
+              ],
+              "utf8_byte_span": [
+                23,
+                37
+              ]
+            }
+          ],
+          "cue": {
+            "text": "Every",
+            "span": [
+              0,
+              5
+            ],
+            "utf8_byte_span": [
+              0,
+              5
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "quantifier": "universal"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_042",
+      "language": "en",
+      "family": "generalization",
+      "label": "supported",
+      "text": "All basalt samples are rock specimens.",
+      "expected": [
+        {
+          "family": "generalization",
+          "operation": "generalizes",
+          "operands": [
+            {
+              "role": "subclass",
+              "text": "basalt samples",
+              "span": [
+                4,
+                18
+              ],
+              "utf8_byte_span": [
+                4,
+                18
+              ]
+            },
+            {
+              "role": "superclass",
+              "text": "rock specimens",
+              "span": [
+                23,
+                37
+              ],
+              "utf8_byte_span": [
+                23,
+                37
+              ]
+            }
+          ],
+          "cue": {
+            "text": "All",
+            "span": [
+              0,
+              3
+            ],
+            "utf8_byte_span": [
+              0,
+              3
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "quantifier": "universal"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_043",
+      "language": "pl",
+      "family": "generalization",
+      "label": "supported",
+      "text": "Każdy wróbel jest ptakiem.",
+      "expected": [
+        {
+          "family": "generalization",
+          "operation": "generalizes",
+          "operands": [
+            {
+              "role": "subclass",
+              "text": "wróbel",
+              "span": [
+                6,
+                12
+              ],
+              "utf8_byte_span": [
+                7,
+                14
+              ]
+            },
+            {
+              "role": "superclass",
+              "text": "ptakiem",
+              "span": [
+                18,
+                25
+              ],
+              "utf8_byte_span": [
+                20,
+                27
+              ]
+            }
+          ],
+          "cue": {
+            "text": "Każdy",
+            "span": [
+              0,
+              5
+            ],
+            "utf8_byte_span": [
+              0,
+              6
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "quantifier": "universal"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_044",
+      "language": "pl",
+      "family": "generalization",
+      "label": "supported",
+      "text": "Wszystkie soczewki wypukłe są elementami optycznymi.",
+      "expected": [
+        {
+          "family": "generalization",
+          "operation": "generalizes",
+          "operands": [
+            {
+              "role": "subclass",
+              "text": "soczewki wypukłe",
+              "span": [
+                10,
+                26
+              ],
+              "utf8_byte_span": [
+                10,
+                27
+              ]
+            },
+            {
+              "role": "superclass",
+              "text": "elementami optycznymi",
+              "span": [
+                30,
+                51
+              ],
+              "utf8_byte_span": [
+                32,
+                53
+              ]
+            }
+          ],
+          "cue": {
+            "text": "Wszystkie",
+            "span": [
+              0,
+              9
+            ],
+            "utf8_byte_span": [
+              0,
+              9
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "quantifier": "universal"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_045",
+      "language": "en",
+      "family": "generalization",
+      "label": "abstain",
+      "text": "Are all blue crystals minerals?",
+      "expected": [],
+      "annotation_note": "Subclass proposition is under a question."
+    },
+    {
+      "id": "sr3v1_dev_046",
+      "language": "en",
+      "family": "generalization",
+      "label": "abstain",
+      "text": "The shelf is almost full.",
+      "expected": [],
+      "annotation_note": "Substring all in almost is not a universal quantifier."
+    },
+    {
+      "id": "sr3v1_dev_047",
+      "language": "pl",
+      "family": "generalization",
+      "label": "abstain",
+      "text": "Nie każdy przewód jest izolatorem.",
+      "expected": [],
+      "annotation_note": "Negated universal does not assert the positive subclass relation; excluded quantified-negation scope."
+    },
+    {
+      "id": "sr3v1_dev_048",
+      "language": "pl",
+      "family": "generalization",
+      "label": "abstain",
+      "text": "Wszystko jedno, który kubek wybierzesz.",
+      "expected": [],
+      "annotation_note": "Polish idiom is not a taxonomic generalization."
+    },
+    {
+      "id": "sr3v1_dev_049",
+      "language": "en",
+      "family": "conjunction_alternative",
+      "label": "supported",
+      "text": "The seal is intact and the latch is closed.",
+      "expected": [
+        {
+          "family": "conjunction_alternative",
+          "operation": "and",
+          "operands": [
+            {
+              "role": "left",
+              "text": "The seal is intact",
+              "span": [
+                0,
+                18
+              ],
+              "utf8_byte_span": [
+                0,
+                18
+              ]
+            },
+            {
+              "role": "right",
+              "text": "the latch is closed",
+              "span": [
+                23,
+                42
+              ],
+              "utf8_byte_span": [
+                23,
+                42
+              ]
+            }
+          ],
+          "cue": {
+            "text": " and ",
+            "span": [
+              18,
+              23
+            ],
+            "utf8_byte_span": [
+              18,
+              23
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_050",
+      "language": "en",
+      "family": "conjunction_alternative",
+      "label": "supported",
+      "text": "Either the bus arrives early or the meeting starts late.",
+      "expected": [
+        {
+          "family": "conjunction_alternative",
+          "operation": "or",
+          "operands": [
+            {
+              "role": "left",
+              "text": "the bus arrives early",
+              "span": [
+                7,
+                28
+              ],
+              "utf8_byte_span": [
+                7,
+                28
+              ]
+            },
+            {
+              "role": "right",
+              "text": "the meeting starts late",
+              "span": [
+                32,
+                55
+              ],
+              "utf8_byte_span": [
+                32,
+                55
+              ]
+            }
+          ],
+          "cue": {
+            "text": " or ",
+            "span": [
+              28,
+              32
+            ],
+            "utf8_byte_span": [
+              28,
+              32
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "exclusivity": "unspecified"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_051",
+      "language": "pl",
+      "family": "conjunction_alternative",
+      "label": "supported",
+      "text": "Zamek jest otwarty i brama jest uchylona.",
+      "expected": [
+        {
+          "family": "conjunction_alternative",
+          "operation": "and",
+          "operands": [
+            {
+              "role": "left",
+              "text": "Zamek jest otwarty",
+              "span": [
+                0,
+                18
+              ],
+              "utf8_byte_span": [
+                0,
+                18
+              ]
+            },
+            {
+              "role": "right",
+              "text": "brama jest uchylona",
+              "span": [
+                21,
+                40
+              ],
+              "utf8_byte_span": [
+                21,
+                40
+              ]
+            }
+          ],
+          "cue": {
+            "text": " i ",
+            "span": [
+              18,
+              21
+            ],
+            "utf8_byte_span": [
+              18,
+              21
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_052",
+      "language": "pl",
+      "family": "conjunction_alternative",
+      "label": "supported",
+      "text": "Lampka jest zepsuta albo gniazdo nie ma zasilania.",
+      "expected": [
+        {
+          "family": "conjunction_alternative",
+          "operation": "or",
+          "operands": [
+            {
+              "role": "left",
+              "text": "Lampka jest zepsuta",
+              "span": [
+                0,
+                19
+              ],
+              "utf8_byte_span": [
+                0,
+                19
+              ]
+            },
+            {
+              "role": "right",
+              "text": "gniazdo nie ma zasilania",
+              "span": [
+                25,
+                49
+              ],
+              "utf8_byte_span": [
+                25,
+                49
+              ]
+            }
+          ],
+          "cue": {
+            "text": " albo ",
+            "span": [
+              19,
+              25
+            ],
+            "utf8_byte_span": [
+              19,
+              25
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative",
+            "exclusivity": "unspecified"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_053",
+      "language": "en",
+      "family": "conjunction_alternative",
+      "label": "abstain",
+      "text": "Sand covers the orange tile.",
+      "expected": [],
+      "annotation_note": "Sand/orange substrings do not license and/or operators."
+    },
+    {
+      "id": "sr3v1_dev_054",
+      "language": "en",
+      "family": "conjunction_alternative",
+      "label": "abstain",
+      "text": "The mark is red or blue and green.",
+      "expected": [],
+      "annotation_note": "Mixed coordination scope is ambiguous without an explicit grouping policy."
+    },
+    {
+      "id": "sr3v1_dev_055",
+      "language": "pl",
+      "family": "conjunction_alternative",
+      "label": "abstain",
+      "text": "Czy okno jest otwarte i lampa jest włączona?",
+      "expected": [],
+      "annotation_note": "Interrogative conjunction is not an asserted conjunction."
+    },
+    {
+      "id": "sr3v1_dev_056",
+      "language": "pl",
+      "family": "conjunction_alternative",
+      "label": "abstain",
+      "text": "Litera „i” jest w nazwie.",
+      "expected": [],
+      "annotation_note": "Metalinguistic one-letter conjunction mention."
+    },
+    {
+      "id": "sr3v1_dev_057",
+      "language": "en",
+      "family": "evidence_claim",
+      "label": "supported",
+      "text": "The repeated weighings support the claim that the parcel lost moisture.",
+      "expected": [
+        {
+          "family": "evidence_claim",
+          "operation": "supports",
+          "operands": [
+            {
+              "role": "evidence",
+              "text": "The repeated weighings",
+              "span": [
+                0,
+                22
+              ],
+              "utf8_byte_span": [
+                0,
+                22
+              ]
+            },
+            {
+              "role": "claim",
+              "text": "the parcel lost moisture",
+              "span": [
+                46,
+                70
+              ],
+              "utf8_byte_span": [
+                46,
+                70
+              ]
+            }
+          ],
+          "cue": {
+            "text": "support the claim that",
+            "span": [
+              23,
+              45
+            ],
+            "utf8_byte_span": [
+              23,
+              45
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_058",
+      "language": "en",
+      "family": "evidence_claim",
+      "label": "supported",
+      "text": "The clean control sample is evidence that the dye came from the test tube.",
+      "expected": [
+        {
+          "family": "evidence_claim",
+          "operation": "supports",
+          "operands": [
+            {
+              "role": "evidence",
+              "text": "The clean control sample",
+              "span": [
+                0,
+                24
+              ],
+              "utf8_byte_span": [
+                0,
+                24
+              ]
+            },
+            {
+              "role": "claim",
+              "text": "the dye came from the test tube",
+              "span": [
+                42,
+                73
+              ],
+              "utf8_byte_span": [
+                42,
+                73
+              ]
+            }
+          ],
+          "cue": {
+            "text": "is evidence that",
+            "span": [
+              25,
+              41
+            ],
+            "utf8_byte_span": [
+              25,
+              41
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_059",
+      "language": "pl",
+      "family": "evidence_claim",
+      "label": "supported",
+      "text": "Zapis temperatury wspiera tezę, że chłodzenie było wyłączone.",
+      "expected": [
+        {
+          "family": "evidence_claim",
+          "operation": "supports",
+          "operands": [
+            {
+              "role": "evidence",
+              "text": "Zapis temperatury",
+              "span": [
+                0,
+                17
+              ],
+              "utf8_byte_span": [
+                0,
+                17
+              ]
+            },
+            {
+              "role": "claim",
+              "text": "chłodzenie było wyłączone",
+              "span": [
+                35,
+                60
+              ],
+              "utf8_byte_span": [
+                37,
+                66
+              ]
+            }
+          ],
+          "cue": {
+            "text": "wspiera tezę, że",
+            "span": [
+              18,
+              34
+            ],
+            "utf8_byte_span": [
+              18,
+              36
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_060",
+      "language": "pl",
+      "family": "evidence_claim",
+      "label": "supported",
+      "text": "Brak osadu jest dowodem na to, że filtr zatrzymał pył.",
+      "expected": [
+        {
+          "family": "evidence_claim",
+          "operation": "supports",
+          "operands": [
+            {
+              "role": "evidence",
+              "text": "Brak osadu",
+              "span": [
+                0,
+                10
+              ],
+              "utf8_byte_span": [
+                0,
+                10
+              ]
+            },
+            {
+              "role": "claim",
+              "text": "filtr zatrzymał pył",
+              "span": [
+                34,
+                53
+              ],
+              "utf8_byte_span": [
+                35,
+                56
+              ]
+            }
+          ],
+          "cue": {
+            "text": "jest dowodem na to, że",
+            "span": [
+              11,
+              33
+            ],
+            "utf8_byte_span": [
+              11,
+              34
+            ]
+          },
+          "qualifiers": {
+            "relation_polarity": "affirmative"
+          }
+        }
+      ],
+      "annotation_note": "Explicit source assertion; operand truth is not evaluated."
+    },
+    {
+      "id": "sr3v1_dev_061",
+      "language": "en",
+      "family": "evidence_claim",
+      "label": "abstain",
+      "text": "The support bracket is made of steel.",
+      "expected": [],
+      "annotation_note": "Physical support noun is not evidential support."
+    },
+    {
+      "id": "sr3v1_dev_062",
+      "language": "en",
+      "family": "evidence_claim",
+      "label": "abstain",
+      "text": "The readings do not support the claim that the motor is healthy.",
+      "expected": [],
+      "annotation_note": "Evidential support relation itself is denied."
+    },
+    {
+      "id": "sr3v1_dev_063",
+      "language": "pl",
+      "family": "evidence_claim",
+      "label": "abstain",
+      "text": "Czy zapis kamery wspiera tezę, że brama była zamknięta?",
+      "expected": [],
+      "annotation_note": "Question does not assert evidential support."
+    },
+    {
+      "id": "sr3v1_dev_064",
+      "language": "pl",
+      "family": "evidence_claim",
+      "label": "abstain",
+      "text": "Słowo „dowód” ma pięć liter.",
+      "expected": [],
+      "annotation_note": "Metalinguistic evidence cue mention."
+    }
+  ]
+}
