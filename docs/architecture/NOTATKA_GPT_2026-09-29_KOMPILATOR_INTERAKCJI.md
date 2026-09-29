@@ -490,3 +490,138 @@ To kontekst diagnostyczny z początku tej rozmowy, nie nowy audyt wykonany przy 
 Claude ma zintegrować treść zgodnie z własną organizacją pracy; niniejszy dodatek nie przenosi, nie renumeruje i nie zastępuje dokumentów. Dokładne algorytmy, nazwy typów, progi, geometria, zakres emulacji dostawców i kolejność realizacji pozostają otwarte. Nowe wymagania nie uprawniają do wstecznego oznaczenia istniejących funkcji jako gotowych.
 
 **Najkrótsza synteza intencji właściciela:** system ma pozwalać składać interakcje z niezależnych elementów, materializowanych z wiedzy i wyłaniających się modeli myślowych, badać warianty pod kontrolą użytkownika i budżetu, a przy kontynuacji pracy przekazywać aktualny sens ustaleń zamiast utrwalać historię nieporozumień.
+
+
+---
+
+## 20. Dopisek po pierwszym przekazaniu — retrieval, encje, ekstrapolacja i model modeli
+
+### 20.1 Regex/słowa jako shadow pipeline
+
+**[U]** Właściciel doprecyzował szczególnie ważną rolę wyszukiwania po słowach i regexach: mogą służyć przede wszystkim do **oceny głównego pipeline’u skojarzeniowego/semantycznego**. Jeśli prosty kanał leksykalny znajduje istotny materiał pominięty przez wektory, graf, mały model lub klasyfikator, jest to sygnał do diagnozy i ulepszenia głównej metody — podtunowania czynników albo dodania/zmiany metody.
+
+**[P]** Trzymać kanał leksykalny jako niezależny shadow retrieval, nie jako veto dla semantyki:
+
+\`\`\`text
+C_semantic = union(vector, graph, small_model, Jev, structural, ...)
+C_lexical  = union(keywords, regex, exact_symbols, exact_quotes, ...)
+diagnostic_gap = C_lexical - C_semantic
+\`\`\`
+
+Każdy element luki zweryfikować: rzeczywisty **lexical rescue**, powierzchowny **lexical noise** albo przypadek nierozstrzygnięty. Zweryfikowane rescue stają się naturalnymi kontrprzykładami/regresjami dla głównego retrievalu. Typ pominięcia (np. symbol kodu, stary alias, krótka wzmianka, powrót w wielowątkowej rozmowie, dokładny cytat) może diagnozować konkretny failure mode.
+
+### 20.2 Dokument Gemini/Jev dostarczony po pierwszej wersji notatki
+
+**[U]** Właściciel dołączył \`Wydajność i optymalizacja zapytań dla modelu klasyfikacyjnego jev.docx\`, wybrany wcześniej z rozmowy z Gemini. Traktować go jako materiał badawczy do Jev Lab i projektowania eksperymentów, nie automatycznie jako zweryfikowaną specyfikację TypeSafe.
+
+Dokument akcentuje m.in.: rozdzielenie \`state\` i niezależnych ocen; hipotezę silnej wrażliwości Jev na semantykę nazw kluczy JSON i strukturę rubryki; dekompozycję na małe prymitywy; Choice/Score/Noul; ostrzeżenie przed dużym płaskim Choice („over-fanning”) i sugestię hierarchicznego kaskadowania; ograniczenia dla obliczeń, chronologii i bardzo dużego surowego wejścia; potrzebę interpretowania rozkładu/progu w kontekście liczby opcji.
+
+**[P/H]** Sprawdzić w Jev Lab: znaczące vs neutralne/bezsensowne nazwy kluczy przy identycznej treści; string vs strukturalna rubryka; płaskie vs hierarchiczne Choice; liczbę opcji; długość state; parafrazy; kalibrację per typ pytania. Promować wnioski dopiero po własnych pomiarach lub weryfikacji źródeł pierwotnych.
+
+## 21. Encje i wiele prawdziwych projekcji grafu
+
+**[U]** Nie sprowadzać wszystkich powiązań do \`same_as\`. Historyczne „osobne projekty” mogą być:
+- wariantami zapisu/ASR/aliasami tej samej encji;
+- kolejnymi etapami lineage: poprzednik, następca, fork, supersession, ewolucja;
+- niezależnymi podejściami do różnych części większego projektu, które później **konwergują**;
+- komponentami/capabilities większej całości;
+- elementami ekosystemu lub współdzielonymi modułami używanymi przez wiele projektów.
+
+Właściciel podał jako przykład historycznie osobno omawiane/realizowane podejścia — m.in. analizę archiwów, Python ChatADHD i inne części — które z dzisiejszej perspektywy składają się na większy ChatADHD. Nie przepisywać historii: późniejsze rozpoznanie wspólnej całości nie oznacza, że od początku wszystko było jawnie jednym projektem.
+
+**[U]** Przydatne są równoczesne projekcje tego samego grafu:
+- historyczno-projektowa: tak, jak rzeczy były wtedy omawiane w rozmowach;
+- architektoniczna: obecne komponenty, capabilities i wspólne moduły;
+- ekosystemowa: zależności i współdzielenie pomiędzy projektami;
+- dalej również generatywna: z jakich zasad/operatorów konstrukcje wynikają.
+
+Nie wybierać jednej jako jedynej „prawdziwej”. Scalanie zostawić dla rzeczywistej tożsamości; ewolucję, konwergencję, kompozycję i współdzielenie zachować jako bogate relacje z czasem i provenance.
+
+**[P]** Sprzężone widoki mogą jednocześnie pokazać dawny projekt/rozmowy, jego obecne miejsce architektoniczne, implementujące moduły, timeline przejścia i współdzielenie w ekosystemie.
+
+## 22. Filozofia jako generator i zasiewanie grafu ekstrapolowanymi danymi
+
+**[U]** Nad projektami koderskimi istnieje warstwa filozofii/sposobu myślenia, która wpływa na ich generację. Celem nie jest tylko katalog zasad, lecz odwzorowanie sposobu generowania projektów na tyle dobrze, aby z części archiwów i istniejącego ekosystemu rekonstruować/ekstrapolować niewypowiedziane i niezrealizowane brakujące elementy.
+
+**[K]** „Filozofia nad projektami” nie jest zwykłym folderem nadrzędnym. Powiązania mają przechodzić przez konkretne generatywne relacje/operatory, a praktyka projektu może także korygować zasadę.
+
+**[P/H]** Przykładowa projekcja, nie sztywna ontologia:
+
+\`\`\`text
+wartości / epistemika
+  → modele rozumowania
+  → zasady / heurystyki
+  → strategie / operatory transformacji
+  → abstrakcje architektoniczne
+  → capabilities / wspólne moduły
+  → projekty
+  → implementacje
+\`\`\`
+
+### 22.1 Zasiewanie grafu
+
+**[U]** Rekonstrukcja brakującego projektu jest tylko przypadkiem ogólniejszej operacji: **zasiewania grafu ekstrapolowanymi danymi**. Po zbudowaniu z archiwów modelu ekosystemu system ma móc proponować niewypowiedziane i niezrealizowane brakujące elementy wynikające ze struktury, filozofii i relacji.
+
+**[U]** Bogate krawędzie są potrzebne właśnie po to, aby te zależności dało się formalnie/matematycznie opisać, porównywać i wykorzystywać w ekstrapolacji. Samo \`related_to\` jest niewystarczające.
+
+**[P]** Relacja powinna, odpowiednio do typu, przenosić kwalifikatory, zakres, czas/wersję, provenance/evidence, operator/derivation, assessment, wyjątki, kontrdowody, alternatywy i własności, które odwzorowanie ma zachować. Nie zamrażać jednego formatu przed ustaleniem algebry potrzebnych operacji.
+
+Jeśli między podgrafami istnieje częściowe odwzorowanie zachowujące określone relacje/własności, brakujący element po stronie docelowej może być **hipotezą transferu strukturalnego**. Zapisać przesłanki, operator/odwzorowanie, zachowane i niezweryfikowane własności, expected properties, assessment, alternatywy i kontrdowody. Podobieństwo/homomorfizm nie staje się faktem.
+
+**[U/P]** Zasiewać można nie tylko węzły, lecz także kandydackie relacje, kwalifikatory, wyjątki, poziomy abstrakcji, implementacje capability, zastosowania wspólnych modułów, generalizacje/specjalizacje, konsekwencje, konflikty i brakujące dowody. Wszystko pozostaje odróżnione od obserwacji.
+
+Jeśli późniejsze źródła potwierdzą wcześniej zasianą hipotezę, zachować jej genealogię i timestamp przewidywania. To tworzy ground truth do mierzenia generatora na przyszłych stanach grafu.
+
+### 22.2 Test generatora
+
+**[P]** Nie oceniać generatora po przekonującej charakterystyce. Używać temporal/structural holdout, leave-one-project-out, ukrywania capabilities/modułów i dopiero późniejszego odsłonięcia prawdy. Można badać kontrfaktycznie, które przewidywane struktury znikają po zmianie/usunięciu zasady. Porównywać z baseline’ami i pilnować wycieku przyszłej wiedzy.
+
+## 23. Model modeli — epistemika instrumentów poznawczych
+
+**[U]** System potrzebuje również **modelu modeli**: biasów, typowych failure modes i jakości zależnej od rodzaju operacji. Projektowany system współzależy z modelami używanymi do jego budowy.
+
+Właściciel podał konkretną obserwację: uogólnianie jego filozofii przez nawet najnowsze modele ocenia obecnie najwyżej jako średnie/średnio słabe. To **ocena właściciela dotycząca konkretnej klasy zadania**, nie globalny ranking modeli ani zmierzony benchmark. Powinna powodować ostrożność w promocji takich generalizacji i/lub ważny kompensujący element requestu.
+
+**[P]** Profil instrumentu powinien być warunkowy:
+
+\`\`\`text
+model/version
+ × task/operation
+ × domain
+ × representation/context shape
+ × renderer/question recipe
+ → observed performance, failure modes, biases,
+   calibration, cost/latency, evidence
+\`\`\`
+
+Nie wystarcza globalne \`model_reliability\`.
+
+Ten sam model może być słabym generatorem zasady z surowej historii, ale dobrym krytykiem konkretnej hipotezy, wyszukiwaczem kontrprzykładów albo syntetyzatorem. Mierzyć role osobno. Umożliwia to kompozycję instrumentów według ich empirycznych profili, zamiast wybierania globalnie „najlepszego modelu”.
+
+### 23.1 Failure-aware promotion i kompensujący request
+
+**[U/P]** Jeśli zadanie leży w znanym słabym obszarze instrumentu, ma to wpływać na:
+- próg/warunki promocji hipotezy;
+- wymóg dodatkowych źródeł, kontrprzykładów lub innego instrumentu;
+- wybór modelu/pipeline’u;
+- ważny element requestu przypominający o konkretnym failure mode.
+
+Przykład dla uogólniania filozofii: nie utożsamiać powtarzających się decyzji z jedną zasadą ogólną; zachować konkurencyjne generalizacje; szukać przypadków rozróżniających hipotezy; nie promować eleganckiej zasady tylko dlatego, że retrospektywnie tłumaczy znane przykłady.
+
+**[P]** Kompensująca instrukcja/polityka sama jest wersjonowanym, testowalnym produktem \`ModelProfile × Task\`. Ogólne „be careful” nie wystarcza.
+
+Failure profile opierać przede wszystkim na obserwowanym zachowaniu: ground truth, późniejszych korektach, holdoutach, ablations, różnicach między instrumentami i wynikach downstream. Model może zaproponować wyjaśnienie własnego błędu, ale to pozostaje hipotezą. Unikać pętli „model popełnia błąd → sam opisuje swój błąd → system utrwala błędną kompensację”.
+
+Model modeli jest częścią grafu/epistemiki z provenance i czasem obowiązywania. Nowa wersja modelu/provider/recipe nie dziedziczy automatycznie wszystkich ocen poprzednika.
+
+## 24. Dodatkowe testy do integracji
+
+**[P]** Do listy z §18 dopisać przy integracji:
+
+11. **Lexical shadow:** zweryfikowany lexical-only hit tworzy przypadek regresyjny; lexical noise nie wymusza zmiany semantyki.
+12. **Entity semantics:** alias/ASR może scalać tożsamość, ale lineage, convergence, composition i shared-module relation pozostają relacjami.
+13. **Multi-projection:** dawny projekt może być jednocześnie pokazany historycznie i jako źródło/komponent obecnej architektury bez utraty provenance.
+14. **Extrapolated seed:** kandydat strukturalny jest oznaczony jako hipoteza z operatorem i expected properties; nie staje się obserwacją przed walidacją.
+15. **Predict-before-observe:** późniejsze potwierdzenie zachowuje moment przewidywania i umożliwia uczciwy pomiar generatora.
+16. **Model-of-models:** słabość przypisana jest do konkretnej operacji i danych pomiarowych; nie degraduje modelu globalnie.
+17. **Compensation ablation:** porównać wykonanie z/bez failure-aware instruction przy zamrożonym zadaniu; sprawdzić również, czy kompensacja nie pogarsza innych przypadków.
