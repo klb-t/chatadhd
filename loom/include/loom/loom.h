@@ -271,9 +271,13 @@ LOOM_API const char* loom_detect_format(LoomContext* ctx, const char* path);
 LOOM_API const char* loom_import_file(LoomContext* ctx, const char* path, const char* title, LoomProgressCallback cb,
                                       void* ud);
 /* Like loom_import_file with options_json (nullable):
- * {"title"?, "force"?: false, "record_provenance"?: true}. force re-imports a
+ * {"title"?, "force"?: false, "record_provenance"?: true,
+ *  "export_mode"?: "auto"|"off"|"on"}. force re-imports a
  * file whose bytes were already imported (otherwise the prior conversations
- * are returned with "already_imported": true). */
+ * are returned with "already_imported": true). export_mode selects the
+ * lossless ChatGPT/Claude export interpretation: auto (default) = ZIP archives,
+ * on = also bare .json files, off = legacy flattening; the result then carries
+ * "export_report". */
 LOOM_API const char* loom_import_file_ex(LoomContext* ctx, const char* path, const char* options_json,
                                          LoomProgressCallback cb, void* ud);
 /* fmt: json | markdown | text | html -> {"format","content"} */

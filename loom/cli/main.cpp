@@ -72,7 +72,9 @@ Commands:
   msg status ID active|excluded|version|deleted
   chat [--conv ID] [--model M] [--depth N] [--effort E] [--web] MESSAGE...
                                         stream an answer ("-" reads the message from stdin)
-  import PATH [--title T] [--force]     universal importer (ChatGPT/Claude/HTML/MD/...)
+  import PATH [--title T] [--force] [--export-mode auto|off|on]
+                                        universal importer (ChatGPT/Claude/HTML/MD/...); ChatGPT/Claude
+                                        export ZIPs are imported losslessly (on: bare .json too)
   export CONV_ID [--format json|markdown|text|html] [--out FILE]
   graph nodes [--kind K] [--limit N]
   graph edges [--node ID] [--type T]
@@ -394,6 +396,12 @@ int cmd_import(Runtime& rt, const Args& a) {
   ImportOptions o;
   if (a.has("title")) o.title = a.get("title");
   o.force = a.has("force");
+  if (a.has("export-mode")) {
+    const std::string m = a.get("export-mode");
+    if (m == "on") o.export_mode = ExportMode::On;
+    else if (m == "off") o.export_mode = ExportMode::Off;
+    else if (m != "auto") throw UsageError{"--export-mode must be auto, off or on"};
+  }
   o.progress = [](std::int64_t c, std::int64_t t, std::string_view s) { progress_line("import", c, t, s); };
   auto r = must(rt.importer().import_file(need(a, 0, "path"), o));
   if (!g_quiet) std::cerr << "\n";

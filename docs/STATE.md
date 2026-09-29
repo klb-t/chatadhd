@@ -145,6 +145,10 @@ Offline tasks handed to ChatGPT: `docs/GPT_OFFLINE_TASKS_2026-09-29.md`.
 1. **Real exports** (blocked on owner data): everything is measured on
    fictional/synthetic material. Meanwhile make the OpenAI/Anthropic export
    handling *complete and lossless* from public format knowledge (R21).
+   *Done for the synthetic fixtures (2026-09-29):* lossless import in
+   `loom/src/import/export_*.cpp`, checked against `EXPECTED.json` by
+   `unit.test_import_exports`; see `loom/README.md` (Provider exports) for what is
+   stored and what remains lossy.
 2. **Catalog recall**: semantic evidence beyond lexical (morphology-aware
    whole-token aliases, profile-vector cosine incl. shared foundations,
    optional embeddings, coverage-first LLM triage); rank and select measured

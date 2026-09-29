@@ -173,7 +173,8 @@ loom init                                  # create/open the data directory
 loom conv list | conv show ID [--all] | conv create/rename/delete
 loom msg edit ID "new text" | msg versions ID | msg restore ID | msg status ID excluded
 loom chat --model M --depth 2 "question"   # streams; reasoning is shown dimmed
-loom import ~/export.zip [--force]         # universal importer
+loom import ~/export.zip [--force]         # universal importer (ChatGPT/Claude export ZIPs: lossless)
+loom import conversations.json --export-mode on   # lossless for a bare export .json too
 loom export CONV_ID --format markdown --out chat.md
 loom search "knowledge graph" | context "text" | graph nodes/edges/expand/reindex/stats
 loom semantic status|pause|resume|wake|run | memory list/add/delete/context
@@ -185,6 +186,38 @@ loom archive run ... | archive status [RUN_ID] | crypto status/setup/unlock/lock
 Secrets and passwords are read from stdin (with echo off on a terminal) and
 never accepted as arguments. Ctrl-C cancels a chat (the partial answer is kept)
 or pauses an archive run at its next checkpoint.
+
+## Provider exports (ChatGPT / Claude), lossless
+
+`ImportOptions::export_mode` (`auto` default, `on`, `off`; CLI `--export-mode`,
+C ABI option `export_mode`) selects the interpretation in
+`src/import/export_*.cpp`. Format knowledge and confidence levels:
+`docs/exports/OPENAI_ANTHROPIC_EXPORT_FORMATS.md`; fixtures and the independent
+oracle: `tests/fixtures/exports/` (`EXPECTED.json`, made by
+`tools/gen_export_fixtures.py`); tests: `tests/test_import_exports.cpp`.
+
+- **When**: `auto` sends every ZIP through this path (nested containers, sharded
+  `conversations-NNN.json`, unknown providers are reported; archives that are not
+  provider exports fall back to the per-member legacy importers) and keeps bare
+  `.json` on the Python-parity flattening; `on` also interprets bare exports.
+- **Stored** (no schema change): conversation `source` is `import:openai|anthropic|unknown`;
+  messages keep the provider role (`system`/`tool` included) and `model`; the
+  current branch is `active`, hidden plumbing (system, tool, thoughts, code,
+  browse, ...) is `excluded`, alternate branches are `version` rows (siblings
+  share `version_group_id`, `parent_id` follows the provider tree), unreachable
+  nodes are `excluded`. `messages.metadata.export` holds the complete original message
+  object (`raw`), typed block summaries, attachments/pointers (resolved to ZIP
+  members, bytes in the BlobStore), citations, flags; `conversations.metadata.export`
+  holds every unmodelled conversation key, the graph facts and the branch
+  bookkeeping. Accounts, feedback, shared links, projects, project docs, memories,
+  canvas documents and unknown members are `nodes` of kind `export:*`.
+- **Report** (`ImportResult::export_report`): provider, per-member disposition,
+  counts in the shape of `EXPECTED.json`, asset links, unresolved keys,
+  unreferenced/duplicate assets, errors, repairs, `json_leaves == leaves_preserved`.
+- **Never a crash**: truncated arrays are salvaged element by element, invalid
+  UTF-8 and lone surrogates are repaired (counted in `repairs`), zip-slip names are
+  skipped, nesting > 512 is refused; each problem is an entry in `errors` and
+  `partial` is set.
 
 ## Archive Intelligence
 
