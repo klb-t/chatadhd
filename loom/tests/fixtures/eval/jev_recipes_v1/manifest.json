@@ -1,0 +1,28 @@
+{
+  "schema": "loom.jev_recipes_freeze/1",
+  "frozen_at": "2026-09-29T17:43:00.697766+00:00",
+  "new_model_calls": 0,
+  "author_independent_of_implementation": false,
+  "files_sha256": {
+    "loom/tests/fixtures/eval/jev_recipes_v1/cases.json": "17e4c2d482dadfe5986ddbe1060931b4cfa8d98d03240ae713a420ae722a4afa",
+    "loom/tests/fixtures/eval/jev_recipes_v1/gold.json": "d45d2a0a117f436e52d6104a302b53368cf28d46ae8553168cbcbc8938d0f1e5",
+    "loom/tests/fixtures/eval/jev_recipes_v1/examples.json": "6579ce67880b1170c5819a0f347ee1e7ad714d0caa8c80dbb62a4e3b174eddf1",
+    "docs/research/JEV_RECIPES_PLAN_2026-09-29.md": "79a7ef93764e653c3d1b803930cf7b3e68afe006d34e27dc2781727a2919f16a",
+    "loom/tools/eval/jev_recipes.py": "831abeba5e51ba963642822727083305cc4e8e8a9610c158ddebeefa53623b43"
+  },
+  "prepared_trials_sha256": "8158285092808f57f6dabca76f865a50181b6284ff0961d4b30e2dd666e81d01",
+  "prepared_bodies": 188,
+  "conditional_children": 16,
+  "max_selected_calls": 180,
+  "packaging_amendment": {
+    "at": "2026-09-29T17:49:25.032955+00:00",
+    "reason": "Whitespace-only JSON compaction before publication; no content or prepared-trial hash changed, no model outcomes. Curated repository examples to three representative ready bodies; full export remains 188 unchanged bodies.",
+    "previous_files_sha256": {
+      "loom/tests/fixtures/eval/jev_recipes_v1/cases.json": "689f2ff3401d78682026de483932c0d96b9e4a183fcd3bb497f3fd40f44cb931",
+      "loom/tests/fixtures/eval/jev_recipes_v1/gold.json": "0b286c1dbd66d9ea686a86c91fef3d25efca89dd53a326d389c3f45ab5170f17",
+      "loom/tests/fixtures/eval/jev_recipes_v1/examples.json": "4d0b29bc52383f58568ce0d04e16e1f6620c4ae46a62720b6d370778554f1b5f",
+      "docs/research/JEV_RECIPES_PLAN_2026-09-29.md": "79a7ef93764e653c3d1b803930cf7b3e68afe006d34e27dc2781727a2919f16a",
+      "loom/tools/eval/jev_recipes.py": "831abeba5e51ba963642822727083305cc4e8e8a9610c158ddebeefa53623b43"
+    }
+  }
+}
