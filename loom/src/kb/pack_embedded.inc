@@ -11383,6 +11383,7 @@ const char* const kPackChunks17[] = {
     "date_prior": 0.3,
     "neg_context": -2.5,
     "link": 1.0,
+    "consensus": 0.8,
     "title": 0.2,
     "sem_word": 1.5,
     "sem_ngram": 2.0
@@ -11408,6 +11409,7 @@ const char* const kPackChunks17[] = {
     "structure": [
       "project_member",
       "link",
+      "consensus",
       "date_prior"
     ]
   },
