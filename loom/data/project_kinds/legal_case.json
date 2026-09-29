@@ -39,7 +39,7 @@
    {
     "op": "cue",
     "class": "paradigm.legal_case",
-    "min": 2
+    "min_weight": 4
    }
   ],
   "min_score": 0.45

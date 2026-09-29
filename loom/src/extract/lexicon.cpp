@@ -262,6 +262,17 @@ Lexicons::Lexicons(const kb::Pack& pack, const Json& discovered) : norm(pack) {
     version_excludes.push_back(norm.fold(s));
   }
 
+  // name plausibility
+  name_rules_ = pack.lexicon("name_rules");
+  if (const Json* a = json::find(name_rules_, "all")) {
+    if (const Json* rr = json::find(*a, "reject_regex"); rr && rr->is_array()) {
+      for (const auto& x : *rr) {
+        if (!x.is_string()) continue;
+        if (auto r = re::Regex::compile(x.get<std::string>())) name_reject_.push_back(std::move(*r));
+      }
+    }
+  }
+
   // relation patterns
   if (const Json* ps = json::find(pack.lexicon("relation_patterns"), "patterns"); ps && ps->is_array()) {
     for (const auto& p : *ps) {
@@ -445,6 +456,55 @@ double Lexicons::score(std::string_view cls, std::string_view folded) const {
     if (!h.negated) s += h.w;
   }
   return s;
+}
+
+bool Lexicons::name_ok(std::string_view kind, std::string_view label, std::string_view artifact_type, bool strict) const {
+  std::string l(utf8::strip(label));
+  if (l.empty()) return false;
+  const std::u32string u = utf8::decode(l);
+  if (const Json* all = json::find(name_rules_, "all")) {
+    const std::u32string cs = utf8::decode(json::get_string(*all, "reject_chars"));
+    for (char32_t ch : u) {
+      if (cs.find(ch) != std::u32string::npos) return false;
+    }
+    for (const auto& s : strings_of(json::find(*all, "reject_substrings") ? (*all)["reject_substrings"] : Json())) {
+      if (l.find(s) != std::string::npos) return false;
+    }
+    std::string low = fold(l);
+    for (const auto& s : strings_of(json::find(*all, "reject_suffixes") ? (*all)["reject_suffixes"] : Json())) {
+      if (low.size() > s.size() && low.compare(low.size() - s.size(), s.size(), s) == 0) return false;
+    }
+    auto toks = norm.tokens(l);
+    if (!toks.empty()) {
+      for (const auto& s : strings_of(json::find(*all, "reject_leading_tokens") ? (*all)["reject_leading_tokens"] : Json())) {
+        if (toks.front() == s) return false;
+      }
+    }
+    for (const auto& r : name_reject_) {
+      if (r.search(u)) return false;
+    }
+  }
+  if (kind == "project" && strict) {
+    if (const Json* p = json::find(name_rules_, "project")) {
+      // Casual media (chat, mail, transcripts) name projects by lowercase
+      // descriptions ("generator reelsow"); the strict rules are for
+      // technical text where a bare lowercase noun is a term, not a name.
+      for (const auto& t : strings_of(json::find(*p, "lenient_types") ? (*p)["lenient_types"] : Json())) {
+        if (t == artifact_type) return true;
+      }
+      auto toks = norm.tokens(l);
+      if (toks.empty()) return false;
+      if (u.size() < static_cast<std::size_t>(json::get_int(*p, "min_chars", 0))) return false;
+      if (toks.size() > static_cast<std::size_t>(json::get_int(*p, "max_tokens", 99))) return false;
+      if (json::get_bool(*p, "require_upper")) {
+        bool up = false;
+        for (unsigned char ch : l) up = up || std::isupper(ch);
+        if (!up) return false;
+      }
+      if (json::get_bool(*p, "reject_stopword_edges") && (norm.is_stopword(toks.front()) || norm.is_stopword(toks.back()))) return false;
+    }
+  }
+  return true;
 }
 
 }  // namespace loom::extract::detail

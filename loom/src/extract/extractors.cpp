@@ -590,6 +590,7 @@ void Run::find_named_mentions() {
         std::size_t fs = p + 1, fe = q;
         std::string name = surface_bytes(oi, fs, fe);
         if (lex_.norm.tokens(name).size() > 3 || lex_.norm.tokens(name).empty()) continue;
+        if (!lex_.name_ok("project", name, type_, false)) continue;
         std::string np = surface_of(oi, head, tp);
         std::string id = mention_label(oi, "project", name, fs, fe, "appositive", 0.8);
         if (!np.empty()) {
@@ -614,6 +615,7 @@ void Run::find_named_mentions() {
           if (parts.empty() || lex_.norm.tokens(parts[0]).empty() || lex_.norm.tokens(parts[0]).size() > 4) continue;
           std::size_t p0 = f.find(parts[0], at);
           std::string label = surface_bytes(oi, p0, p0 + parts[0].size());
+          if (!lex_.name_ok("project", label, type_, false)) continue;
           std::string id = mention_label(oi, "project", label, p0, p0 + parts[0].size(), "enumeration", 0.75);
           std::vector<std::string> al;
           for (std::size_t k = 1; k < parts.size(); ++k) {
@@ -650,7 +652,7 @@ void Run::find_named_mentions() {
       }
       if (stop <= k + 1 || stop - (k + 1) > 3) continue;
       std::string label = surface_of(oi, k + 1, stop);
-      if (lex_.norm.phrase_key(label).empty()) continue;
+      if (lex_.norm.phrase_key(label).empty() || !lex_.name_ok("project", label, type_)) continue;
       mention_label(oi, "project", label, in.toks[k + 1].start, in.toks[stop - 1].end, "head_colon", 0.6);
       note_name("project", label, {});
     }
@@ -672,6 +674,7 @@ void Run::find_named_mentions() {
       if ((ti > 0 && is_head(in.toks[ti - 1].lower)) || (ti + 1 < in.toks.size() && is_head(in.toks[ti + 1].lower))) {
         kind = "project";
       }
+      if (!lex_.name_ok(kind, ident, type_)) continue;
       mention_label(oi, kind, ident, fs, fs + fid.size(), "camel", 0.6);
       if (kind != "concept") note_name(kind, ident, {});
     }
@@ -690,7 +693,7 @@ void Run::find_named_mentions() {
         if (title) {
           std::string fi = lex_.fold(inner);
           std::size_t fs = f.find(fi);
-          if (fs != std::string::npos && !overlaps(oi, fs, fs + fi.size())) {
+          if (fs != std::string::npos && !overlaps(oi, fs, fs + fi.size()) && lex_.name_ok("concept", inner)) {
             mention_label(oi, "concept", inner, fs, fs + fi.size(), "quoted_title", 0.6);
             note_name("concept", inner, {});
           }

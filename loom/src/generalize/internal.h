@@ -83,6 +83,9 @@ class PreparedCues {
   PreparedCues() = default;
   PreparedCues(const kb::Normalizer& norm, const Json& cls);
   double score(const FoldedText& t) const;
+  // Adds the indexes of the phrases hitting `t` to `seen` (distinct-phrase evidence).
+  void hit_phrases(const FoldedText& t, std::set<std::size_t>& seen) const;
+  double weight_of(std::size_t phrase) const { return phrases_[phrase].w; }
   bool empty() const noexcept { return phrases_.empty(); }
 
  private:
@@ -93,6 +96,7 @@ class PreparedCues {
     bool symbolic = false;           // no word character: substring match
     double w = 1.0;
   };
+  bool hits(const Phrase& p, const FoldedText& t) const;
   std::vector<Phrase> phrases_;
 };
 

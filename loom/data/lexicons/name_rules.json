@@ -1,0 +1,18 @@
+{
+  "schema": "loom.kb.name_rules/1",
+  "description": "Plausibility of MINED entity names (appositives, enumerations, 'project: X', CamelCase, quoted titles). Names from the owner's profile/gazetteer are never filtered. A mined label that is a code fragment ('const Json& d', 'graph: dict', 'route_chat', 'binding=\"x'), a file name, or (for projects) a phrase starting/ending with a function word or a bare lowercase common noun is not a project name; it is dropped as a NAME (the text stays as an observation). `all` applies to every kind, `project` only to projects. Tokens are checked with the normalizer's stop words (stopwords*.json).",
+  "all": {
+    "reject_chars": "&*<>{}[]=;`\"\\|@#$%^~\u2192",
+    "reject_substrings": ["::", "->", "=>", "()", "://", " + ", ": ", " / ", ".."],
+    "reject_suffixes": [".h", ".hpp", ".cpp", ".c", ".py", ".js", ".ts", ".tsx", ".json", ".md", ".txt", ".cmake", ".sh", ".yml", ".yaml", ".inc", ".html", ".css"],
+    "reject_leading_tokens": ["const", "static", "void", "int", "auto", "struct", "class", "enum", "def", "return", "std", "unsigned", "constexpr", "inline", "virtual", "template", "typename", "namespace", "using", "import", "from", "self", "this", "bool", "string", "size_t", "nullptr", "true", "false", "null", "none"],
+    "reject_regex": ["^[A-Za-z]\\d{0,3}$", "^[a-z0-9]+(?:_[a-z0-9]+)+$", "^\\w+\\.\\w*_\\w+$", "^[A-Za-z_]\\w*\\s*\\(.*\\)$"]
+  },
+  "project": {
+    "lenient_types": ["conversation", "email", "recording_transcript", "brainstorm"],
+    "min_chars": 3,
+    "max_tokens": 4,
+    "require_upper": true,
+    "reject_stopword_edges": true
+  }
+}

@@ -480,6 +480,25 @@ void v_cues(V& v, const Json& d) {
   }
 }
 
+void v_name_rules(V& v, const Json& d) {
+  if (const Json* a = v.object(d, "", "all")) {
+    v.str(*a, "/all", "reject_chars", false, false);
+    v.strings(*a, "/all", "reject_substrings", false);
+    v.strings(*a, "/all", "reject_suffixes", false);
+    v.strings(*a, "/all", "reject_leading_tokens", false);
+    if (const Json* rr = v.array(*a, "/all", "reject_regex", false)) {
+      for (std::size_t i = 0; i < rr->size(); ++i) {
+        if (!(*rr)[i].is_string()) v.err(idx("/all/reject_regex", i), "expected a regex string");
+        else if (!re::Regex::compile((*rr)[i].get<std::string>())) v.err(idx("/all/reject_regex", i), "invalid regex");
+      }
+    }
+  }
+  if (const Json* p = v.object(d, "", "project")) {
+    v.integer(*p, "/project", "min_chars", 0, 100, false);
+    v.integer(*p, "/project", "max_tokens", 1, 100, false);
+  }
+}
+
 void v_version_patterns(V& v, const Json& d) {
   v.regex(d, "", "regex");
   v.integer(d, "", "window_tokens", 1, 200);
@@ -866,7 +885,11 @@ void v_anchors(V& v, const Json& an, const std::string& p0, const TypesVocab& t)
       if (op == "kind_hint") v.str(o, p, "value");
       if (op == "cue") {
         v.str(o, p, "class");
-        v.integer(o, p, "min", 1, 1000);
+        // `min`: observations hitting the class; `min_weight`: summed weight
+        // of the distinct phrases in one unit (one of the two is required).
+        const bool weighted = json::find(o, "min_weight") != nullptr;
+        v.integer(o, p, "min", 1, 1000, !weighted);
+        v.num(o, p, "min_weight", 0.5, 1000, weighted);
       }
       if (op == "has_items") {
         v.one_of(o, p, "type", t.enum_values("item_type"));
@@ -1167,6 +1190,7 @@ bool validate_document(std::string_view relpath, std::string_view schema, const 
   else if (schema == "loom.kb.item_cues/1") v_item_cues(v, d, t);
   else if (schema == "loom.kb.cues/1") v_cues(v, d);
   else if (schema == "loom.kb.version_patterns/1") v_version_patterns(v, d);
+  else if (schema == "loom.kb.name_rules/1") v_name_rules(v, d);
   else if (schema == "loom.kb.relation_patterns/1") v_relation_patterns(v, d, t);
   else if (schema == "loom.kb.profile/1") v_profile(v, d, t);
   else if (schema == "loom.kb.principles/2") v_principles(v, d);

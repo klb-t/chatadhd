@@ -138,12 +138,22 @@ class Lexicons {
   // ── relation patterns ───────────────────────────────────────────
   std::vector<RelPattern> patterns;
 
+  // ── plausibility of mined names (name_rules.json) ───────────────
+  // False for a code fragment, file name, or (projects) a phrase that starts
+  // or ends with a function word / a bare lowercase common noun. `strict`
+  // false: only the syntax rules (the caller has a strong structural cue such
+  // as an explicit 'projects (A, B, C)' head).
+  bool name_ok(std::string_view kind, std::string_view label, std::string_view artifact_type = {},
+               bool strict = true) const;
+
   // ── thresholds (policy/thresholds.json) ─────────────────────────
   int context_window = 30;
   double status_min_weight = 1.5;
   Json thresholds = Json::object();
 
  private:
+  Json name_rules_ = Json::object();
+  std::vector<re::Regex> name_reject_;
   std::map<std::string, std::vector<Phrase>> cues_;
   std::vector<Phrase> empty_;
   std::vector<Phrase> neg_particles_;

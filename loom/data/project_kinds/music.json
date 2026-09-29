@@ -43,7 +43,7 @@
    {
     "op": "cue",
     "class": "paradigm.music",
-    "min": 2
+    "min_weight": 4
    }
   ],
   "min_score": 0.45

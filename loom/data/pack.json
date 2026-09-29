@@ -45,6 +45,10 @@
    "schema": "loom.kb.relation_patterns/1"
   },
   {
+   "path": "lexicons/name_rules.json",
+   "schema": "loom.kb.name_rules/1"
+  },
+  {
    "path": "profiles/self.json",
    "schema": "loom.kb.profile/1"
   },

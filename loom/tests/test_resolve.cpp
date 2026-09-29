@@ -159,7 +159,8 @@ TEST_SUITE("resolve") {
     u.assessment.evidence = model::EvidenceClass::User;
     std::vector<model::Claim> w{u};
     LOOM_REQUIRE_OK(resolve::calibrate(*pack(), w));
-    CHECK(w[0].assessment.confidence == 1.0);
+    // the owner's authority is precedence, not reading fidelity: the read is still measured
+    CHECK(w[0].assessment.confidence == doctest::Approx(0.6));
   }
 
   TEST_CASE("detect_conflicts: incompatible values stay, contested, with a candidate resolution") {

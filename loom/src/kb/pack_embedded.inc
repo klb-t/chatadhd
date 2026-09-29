@@ -49,6 +49,10 @@ const char* const kPackChunks0[] = {
    "schema": "loom.kb.relation_patterns/1"
   },
   {
+   "path": "lexicons/name_rules.json",
+   "schema": "loom.kb.name_rules/1"
+  },
+  {
    "path": "profiles/self.json",
    "schema": "loom.kb.profile/1"
   },
@@ -7346,6 +7350,27 @@ const char* const kPackChunks10[] = {
     nullptr};
 const char* const kPackChunks11[] = {
     R"LOOMKB({
+  "schema": "loom.kb.name_rules/1",
+  "description": "Plausibility of MINED entity names (appositives, enumerations, 'project: X', CamelCase, quoted titles). Names from the owner's profile/gazetteer are never filtered. A mined label that is a code fragment ('const Json& d', 'graph: dict', 'route_chat', 'binding=\"x'), a file name, or (for projects) a phrase starting/ending with a function word or a bare lowercase common noun is not a project name; it is dropped as a NAME (the text stays as an observation). `all` applies to every kind, `project` only to projects. Tokens are checked with the normalizer's stop words (stopwords*.json).",
+  "all": {
+    "reject_chars": "&*<>{}[]=;`\"\\|@#$%^~\u2192",
+    "reject_substrings": ["::", "->", "=>", "()", "://", " + ", ": ", " / ", ".."],
+    "reject_suffixes": [".h", ".hpp", ".cpp", ".c", ".py", ".js", ".ts", ".tsx", ".json", ".md", ".txt", ".cmake", ".sh", ".yml", ".yaml", ".inc", ".html", ".css"],
+    "reject_leading_tokens": ["const", "static", "void", "int", "auto", "struct", "class", "enum", "def", "return", "std", "unsigned", "constexpr", "inline", "virtual", "template", "typename", "namespace", "using", "import", "from", "self", "this", "bool", "string", "size_t", "nullptr", "true", "false", "null", "none"],
+    "reject_regex": ["^[A-Za-z]\\d{0,3}$", "^[a-z0-9]+(?:_[a-z0-9]+)+$", "^\\w+\\.\\w*_\\w+$", "^[A-Za-z_]\\w*\\s*\\(.*\\)$"]
+  },
+  "project": {
+    "lenient_types": ["conversation", "email", "recording_transcript", "brainstorm"],
+    "min_chars": 3,
+    "max_tokens": 4,
+    "require_upper": true,
+    "reject_stopword_edges": true
+  }
+}
+)LOOMKB",
+    nullptr};
+const char* const kPackChunks12[] = {
+    R"LOOMKB({
  "schema": "loom.kb.profile/1",
  "id": "self",
  "description": "The self-profile probe: what 'the system itself' is. Seeded from MEGA MASTER §0, §1, §5 and §15; each project names its project kind and facets; the catalog merges it with terms derived from the repository (paths, declared symbols, config keys, git versions) and with terms discovered in expansion passes. Aliases are matched on match keys. An 'ambiguous' alias counts only when requires_context.min of its context terms occur within policy/thresholds.json catalog.context_window_tokens, and not when negative_context dominates; such rejected hits are reported as noise-trap candidates with the reason.",
@@ -7808,7 +7833,7 @@ const char* const kPackChunks11[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks12[] = {
+const char* const kPackChunks13[] = {
     R"LOOMKB({
  "schema": "loom.kb.principles/2",
  "description": "Seed principles: PRIORS, not facts (validation_status candidate). The engine must still DISCOVER principles in the sources: a seed counts as observed for a corpus only when sources match its phrasings; unmatched seeds are reported as 'seed, not found in corpus'. Every source is dated so the temporal holdout can drop priors that did not exist yet (model::PriorFilter, priors_as_of). Levels/forms/fields: LOOM_CONCEPTUAL_MODEL §3.1. Preferences are principles owned by the user with a product scope.",
@@ -9475,7 +9500,7 @@ const char* const kPackChunks12[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks13[] = {
+const char* const kPackChunks14[] = {
     R"LOOMKB({
  "schema": "loom.kb.operators/1",
  "description": "Seed design operators (LOOM_CONCEPTUAL_MODEL §3.3): situation type -> solution class, with justifying principles and dated sources. PRIORS (candidate): mining from decision sequences must confirm them. The first five are the note's seeds (§7 F), the rest are justified by the MEGA MASTER, the historical report and the requirements.",
@@ -9937,7 +9962,7 @@ const char* const kPackChunks13[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks14[] = {
+const char* const kPackChunks15[] = {
     R"LOOMKB({
  "schema": "loom.kb.rules/2",
  "description": "Inference rules = operators that PRODUCE claims (LOOM_CONCEPTUAL_MODEL §3.3). Stratified: 0 derived (deterministic function of observed values), 1 inferred (value + checkable expected property), 2 extrapolated (philosophy-driven proposal, confidence capped by policy/thresholds.json paradigm.extrapolation_cap, never a premise). Targets: {paradigm (project kind | facet | artifact type), slot (domain kind / structure field)[, field]}, {temporal: versions|current_version|forks|lineage|status|part_status[, field]} or {entity_kind, attr}. References: $slot:<kind> (same instance), $slot:<paradigm>.<kind> (another paradigm's instance of the subject), $temporal:<slot>, $field:<field>, $analog:<kind>. Conditions, value ops and predicates are closed sets in code (include/loom/kb.h).",
@@ -11149,7 +11174,7 @@ const char* const kPackChunks14[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks15[] = {
+const char* const kPackChunks16[] = {
     R"LOOMKB({
  "schema": "loom.kb.checks/1",
  "description": "Principle and preference checks run over code digests (and code pasted into conversations). A hit is a failing check (I8): a 'violates' claim (principle -> file:line) and a backlog item; for products a preference violation is a test failure, not a style note. Detector kinds are a closed set in code; patterns and thresholds are data.",
@@ -11285,7 +11310,7 @@ const char* const kPackChunks15[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks16[] = {
+const char* const kPackChunks17[] = {
     R"LOOMKB({
   "schema": "loom.kb.thresholds/1",
   "description": "Numeric policy for every area. Changing a value changes the pack hash, so every dependent stage recomputes deterministically. Values here are priors; the learning track fits candidates on the dev corpus and promotes them only without regression on holdout.",
@@ -11367,7 +11392,7 @@ const char* const kPackChunks16[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks17[] = {
+const char* const kPackChunks18[] = {
     R"LOOMKB({
   "schema": "loom.kb.relevance/1",
   "description": "Catalog relevance model: score = sigmoid(bias + sum(weight_i * feature_i)). Features are computed in code (catalog.h); weights are data. Fitted offline on the dev corpus by logistic regression over loom_cat_decisions feature vectors -> candidate file -> promoted only without regression on holdout.",
@@ -11433,7 +11458,7 @@ const char* const kPackChunks17[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks18[] = {
+const char* const kPackChunks19[] = {
     R"LOOMKB({
   "schema": "loom.kb.selection_rules/1",
   "description": "Default selection rules. Precedence (fixed, in code): 1. user pin/exclude (loom_cat_decisions with decided_by='user'); 2. these rules in order, first match wins; 3. label default (relevant -> include, candidate -> review, irrelevant -> exclude). Match keys: label, project, title_regex, date_from, date_to, file_glob, score_min, score_max, lang, min_chars, max_chars. Actions: include | exclude | review.",
@@ -11444,7 +11469,7 @@ const char* const kPackChunks18[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks19[] = {
+const char* const kPackChunks20[] = {
     R"LOOMKB({
   "schema": "loom.kb.calibration/1",
   "description": "Confidence calibration. raw = unit-deduplicated noisy-OR: 1 - prod_units(1 - r_source * q), where r_source is the Beta mean of the extractor/rule reliability below and q the match quality; evidence from one conversation counts once. Final confidence = isotonic map of raw for the evidence class (monotone piecewise-linear, points sorted by x). Priors are hand-set until the dev ground truth exists; `loom kb calibrate` fits candidates (isotonic only when n >= min_labels per class) and promotion requires ECE <= gates.ece on holdout.",
@@ -11473,7 +11498,7 @@ const char* const kPackChunks19[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks20[] = {
+const char* const kPackChunks21[] = {
     R"LOOMKB({
  "schema": "loom.kb.evidence_encoding/1",
  "description": "The visual evidence language shared by every UI (web, Android, CLI, Markdown). Each meaning is carried by an independent, redundant channel (shape, outline, fill pattern, glyph AND hue) so it survives colour blindness, greyscale and small screens. Hues are Okabe-Ito. Clients never hard-code semantics: the API returns a style_key per element (see 'style_key') and clients render it from this file (GET /api/kb/policy/evidence_encoding, loom_kb_policy).",
@@ -12113,7 +12138,7 @@ const char* const kPackChunks20[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks21[] = {
+const char* const kPackChunks22[] = {
     R"LOOMKB({
   "schema": "loom.candidate_graph_vocabulary/1",
   "status": "experimental_unpromoted",
@@ -12144,7 +12169,7 @@ const char* const kPackChunks21[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks22[] = {
+const char* const kPackChunks23[] = {
     R"LOOMKB({
  "schema": "loom.kb.goal_types/1",
  "description": "Goal types (LOOM_CONCEPTUAL_MODEL §4): what a prompt or task wants. Each declares the relevant roles (most important first), principle levels and evidence classes, the default resolution per role ('*' = any other role), and the token-budget split over the three bands (stable prefix -> project context -> goal tail; shares sum to 1). The context engine types a prompt by its cues and targets (R12).",
@@ -12538,7 +12563,7 @@ const char* const kPackChunks22[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks23[] = {
+const char* const kPackChunks24[] = {
     R"LOOMKB({
  "schema": "loom.kb.anchoring/1",
  "description": "The universal meta-model (LOOM_CONCEPTUAL_MODEL §3.4) as the codomain of every anchoring morphism. Each domain kind anchors on its role (the 'role' of the kind, one anchoring morphism per kind, derived in code: model::anchoring_morphisms). Each relation between domain kinds anchors on a role relation: relation_map[rel] = R, and the roles of its two ends must be in R.from and R.to. A domain relation not listed here, or linking roles R does not link, is a pack error.",
@@ -12944,7 +12969,7 @@ const char* const kPackChunks23[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks24[] = {
+const char* const kPackChunks25[] = {
     R"LOOMKB({
  "schema": "loom.kb.morphisms/1",
  "description": "Transfer morphisms (LOOM_CONCEPTUAL_MODEL §3.6): structure-preserving maps between domain kinds of two paradigms that anchor on the same universal role. When one project fills a role that an analogous project leaves empty, the engine may infer (evidence inferred, depth 1, never chained) that the target should have it; the expected property says what is vouched for. Anchoring morphisms are not listed: they are one per domain kind, derived from its role.",
@@ -13524,7 +13549,7 @@ const char* const kPackChunks24[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks25[] = {
+const char* const kPackChunks26[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "software_app",
@@ -14304,7 +14329,7 @@ const char* const kPackChunks25[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks26[] = {
+const char* const kPackChunks27[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "film",
@@ -14351,7 +14376,7 @@ const char* const kPackChunks26[] = {
    {
     "op": "cue",
     "class": "paradigm.film",
-    "min": 2
+    "min_weight": 4
    }
   ],
   "min_score": 0.4
@@ -14782,9 +14807,9 @@ const char* const kPackChunks26[] = {
     "en": "Motif",
     "pl": "Motyw"
    },
-   "entity_kind": "motif",
-   "ca)LOOMKB",
-    R"LOOMKB(rd": "many",
+   "entity_kind": "motif",)LOOMKB",
+    R"LOOMKB(
+   "card": "many",
    "relation": "has_motif",
    "relations": [
     {
@@ -15166,7 +15191,7 @@ const char* const kPackChunks26[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks27[] = {
+const char* const kPackChunks28[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "music",
@@ -15212,7 +15237,7 @@ const char* const kPackChunks27[] = {
    {
     "op": "cue",
     "class": "paradigm.music",
-    "min": 2
+    "min_weight": 4
    }
   ],
   "min_score": 0.45
@@ -15643,8 +15668,8 @@ const char* const kPackChunks27[] = {
    },
    "entity_kind": "synthesis_pass",
    "card": "many",
-   "relation": "ha)LOOMKB",
-    R"LOOMKB(s_pass",
+   "relatio)LOOMKB",
+    R"LOOMKB(n": "has_pass",
    "relations": [
     {
      "rel": "produces",
@@ -15803,7 +15828,7 @@ const char* const kPackChunks27[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks28[] = {
+const char* const kPackChunks29[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "legal_case",
@@ -15845,7 +15870,7 @@ const char* const kPackChunks28[] = {
    {
     "op": "cue",
     "class": "paradigm.legal_case",
-    "min": 2
+    "min_weight": 4
    }
   ],
   "min_score": 0.45
@@ -16265,9 +16290,9 @@ const char* const kPackChunks28[] = {
    "labels": {
     "en": "Pleading / letter",
     "pl": "Pismo procesowe / pismo"
-   },
-   "en)LOOMKB",
-    R"LOOMKB(tity_kind": "pleading",
+   },)LOOMKB",
+    R"LOOMKB(
+   "entity_kind": "pleading",
    "card": "many",
    "relation": "has_pleading",
    "relations": [
@@ -16522,7 +16547,7 @@ const char* const kPackChunks28[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks29[] = {
+const char* const kPackChunks30[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "research",
@@ -16559,7 +16584,7 @@ const char* const kPackChunks29[] = {
    {
     "op": "cue",
     "class": "paradigm.research",
-    "min": 2
+    "min_weight": 5
    }
   ],
   "min_score": 0.45
@@ -16996,7 +17021,7 @@ const char* const kPackChunks29[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks30[] = {
+const char* const kPackChunks31[] = {
     R"LOOMKB({
  "schema": "loom.kb.facet/1",
  "id": "multiplatform",
@@ -17153,7 +17178,7 @@ const char* const kPackChunks30[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks31[] = {
+const char* const kPackChunks32[] = {
     R"LOOMKB({
  "schema": "loom.kb.facet/1",
  "id": "agent",
@@ -17374,7 +17399,7 @@ const char* const kPackChunks31[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks32[] = {
+const char* const kPackChunks33[] = {
     R"LOOMKB({
  "schema": "loom.kb.facet/1",
  "id": "staged_transformation",
@@ -17651,7 +17676,7 @@ const char* const kPackChunks32[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks33[] = {
+const char* const kPackChunks34[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "conversation",
@@ -17772,7 +17797,7 @@ const char* const kPackChunks33[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks34[] = {
+const char* const kPackChunks35[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "brainstorm",
@@ -17958,7 +17983,7 @@ const char* const kPackChunks34[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks35[] = {
+const char* const kPackChunks36[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "specification",
@@ -18063,7 +18088,7 @@ const char* const kPackChunks35[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks36[] = {
+const char* const kPackChunks37[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "codebase",
@@ -18172,7 +18197,7 @@ const char* const kPackChunks36[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks37[] = {
+const char* const kPackChunks38[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "commit",
@@ -18259,7 +18284,7 @@ const char* const kPackChunks37[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks38[] = {
+const char* const kPackChunks39[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "email",
@@ -18363,7 +18388,7 @@ const char* const kPackChunks38[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks39[] = {
+const char* const kPackChunks40[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "recording_transcript",
@@ -18458,7 +18483,7 @@ const char* const kPackChunks39[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks40[] = {
+const char* const kPackChunks41[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "screenplay",
@@ -18555,7 +18580,7 @@ const char* const kPackChunks40[] = {
 }
 )LOOMKB",
     nullptr};
-const char* const kPackChunks41[] = {
+const char* const kPackChunks42[] = {
     R"LOOMKB({
  "schema": "loom.kb.artifact_type/1",
  "id": "pleading",
@@ -18663,36 +18688,37 @@ const EmbeddedPackFile kEmbeddedPack[] = {
     {"lexicons/cues.json", kPackChunks8},
     {"lexicons/version_patterns.json", kPackChunks9},
     {"lexicons/relation_patterns.json", kPackChunks10},
-    {"profiles/self.json", kPackChunks11},
-    {"philosophy/principles.json", kPackChunks12},
-    {"philosophy/operators.json", kPackChunks13},
-    {"rules/inference_rules.json", kPackChunks14},
-    {"rules/checks.json", kPackChunks15},
-    {"policy/thresholds.json", kPackChunks16},
-    {"policy/relevance.json", kPackChunks17},
-    {"policy/selection_rules.json", kPackChunks18},
-    {"policy/calibration.json", kPackChunks19},
-    {"policy/evidence_encoding.json", kPackChunks20},
-    {"policy/candidate_graph.json", kPackChunks21},
-    {"goals/goal_types.json", kPackChunks22},
-    {"morphisms/anchoring.json", kPackChunks23},
-    {"morphisms/transfer.json", kPackChunks24},
-    {"project_kinds/software_app.json", kPackChunks25},
-    {"project_kinds/film.json", kPackChunks26},
-    {"project_kinds/music.json", kPackChunks27},
-    {"project_kinds/legal_case.json", kPackChunks28},
-    {"project_kinds/research.json", kPackChunks29},
-    {"facets/multiplatform.json", kPackChunks30},
-    {"facets/agent.json", kPackChunks31},
-    {"facets/staged_transformation.json", kPackChunks32},
-    {"artifact_types/conversation.json", kPackChunks33},
-    {"artifact_types/brainstorm.json", kPackChunks34},
-    {"artifact_types/specification.json", kPackChunks35},
-    {"artifact_types/codebase.json", kPackChunks36},
-    {"artifact_types/commit.json", kPackChunks37},
-    {"artifact_types/email.json", kPackChunks38},
-    {"artifact_types/recording_transcript.json", kPackChunks39},
-    {"artifact_types/screenplay.json", kPackChunks40},
-    {"artifact_types/pleading.json", kPackChunks41},
+    {"lexicons/name_rules.json", kPackChunks11},
+    {"profiles/self.json", kPackChunks12},
+    {"philosophy/principles.json", kPackChunks13},
+    {"philosophy/operators.json", kPackChunks14},
+    {"rules/inference_rules.json", kPackChunks15},
+    {"rules/checks.json", kPackChunks16},
+    {"policy/thresholds.json", kPackChunks17},
+    {"policy/relevance.json", kPackChunks18},
+    {"policy/selection_rules.json", kPackChunks19},
+    {"policy/calibration.json", kPackChunks20},
+    {"policy/evidence_encoding.json", kPackChunks21},
+    {"policy/candidate_graph.json", kPackChunks22},
+    {"goals/goal_types.json", kPackChunks23},
+    {"morphisms/anchoring.json", kPackChunks24},
+    {"morphisms/transfer.json", kPackChunks25},
+    {"project_kinds/software_app.json", kPackChunks26},
+    {"project_kinds/film.json", kPackChunks27},
+    {"project_kinds/music.json", kPackChunks28},
+    {"project_kinds/legal_case.json", kPackChunks29},
+    {"project_kinds/research.json", kPackChunks30},
+    {"facets/multiplatform.json", kPackChunks31},
+    {"facets/agent.json", kPackChunks32},
+    {"facets/staged_transformation.json", kPackChunks33},
+    {"artifact_types/conversation.json", kPackChunks34},
+    {"artifact_types/brainstorm.json", kPackChunks35},
+    {"artifact_types/specification.json", kPackChunks36},
+    {"artifact_types/codebase.json", kPackChunks37},
+    {"artifact_types/commit.json", kPackChunks38},
+    {"artifact_types/email.json", kPackChunks39},
+    {"artifact_types/recording_transcript.json", kPackChunks40},
+    {"artifact_types/screenplay.json", kPackChunks41},
+    {"artifact_types/pleading.json", kPackChunks42},
 };
 // NOLINTEND

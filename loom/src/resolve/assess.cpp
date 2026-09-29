@@ -4,7 +4,8 @@
 //   r(extractor) * quality (evidence from one conversation / file counts
 //   once, its best support), r = Beta mean from policy/calibration.json;
 //   derived/inferred/extrapolated keep their producer's raw confidence;
-//   then the isotonic map of the evidence class. user -> 1, absent -> 0.
+//   then the isotonic map of the evidence class. user: reading fidelity only
+//   (precedence is the evidence class, see detect_conflicts); absent -> 0.
 // detect_conflicts(): two or more active, supported, incompatible values of a
 //   single-valued (subject, predicate, qualifiers) -> every value stays and is
 //   marked contested; the conflict records the candidate resolution: user,
@@ -77,6 +78,22 @@ std::string unit_key(const model::Locator& l) {
 
 double round4(double x) { return std::round(x * 1e4) / 1e4; }
 
+// Unit-deduplicated noisy-OR of r(extractor) * quality over the supports.
+double reading_fidelity(const model::Assessment& a, std::map<std::string, double>& rel) {
+  std::map<std::string, double> best;  // unit -> best r*q
+  for (const auto& s : a.support) {
+    auto it = rel.find(reliability_key(s.extractor));
+    double r = it == rel.end() ? rel["rule.default"] : it->second;
+    if (r <= 0) r = 0.7;
+    double v = std::clamp(r * s.quality, 0.0, 1.0);
+    auto& b = best[unit_key(s.locator)];
+    b = std::max(b, v);
+  }
+  double miss = 1.0;
+  for (const auto& [u, v] : best) miss *= 1.0 - v;
+  return 1.0 - miss;
+}
+
 }  // namespace
 
 Status calibrate(const kb::Pack& pack, std::vector<model::Claim>& claims) {
@@ -100,24 +117,24 @@ Status calibrate(const kb::Pack& pack, std::vector<model::Claim>& claims) {
     double raw = a.confidence;
     switch (a.evidence) {
       case model::EvidenceClass::User:
-        a.confidence = 1.0;
+        // Three separate things: reading fidelity (this confidence), content
+        // credibility (not asserted here) and the owner's authority
+        // (precedence: evidence class User wins in detect_conflicts). The
+        // owner's word wins a conflict, but how faithfully the system READ
+        // it stays measured; only a statement with no reading step keeps
+        // the confidence it came with.
+        if (a.support.empty()) {
+          a.confidence = round4(std::clamp(raw, 0.0, 1.0));
+          continue;
+        }
+        raw = reading_fidelity(a, rel);
+        a.confidence = round4(std::clamp(raw, 0.0, 1.0));
         continue;
       case model::EvidenceClass::Absent:
         a.confidence = 0.0;
         continue;
       case model::EvidenceClass::Observed: {
-        std::map<std::string, double> best;  // unit -> best r*q
-        for (const auto& s : a.support) {
-          auto it = rel.find(reliability_key(s.extractor));
-          double r = it == rel.end() ? rel["rule.default"] : it->second;
-          if (r <= 0) r = 0.7;
-          double v = std::clamp(r * s.quality, 0.0, 1.0);
-          auto& b = best[unit_key(s.locator)];
-          b = std::max(b, v);
-        }
-        double miss = 1.0;
-        for (const auto& [u, v] : best) miss *= 1.0 - v;
-        raw = best.empty() ? raw : 1.0 - miss;
+        if (!a.support.empty()) raw = reading_fidelity(a, rel);
         break;
       }
       default:

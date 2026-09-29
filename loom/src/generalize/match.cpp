@@ -65,6 +65,7 @@ struct AnchorEnv {
   std::map<std::string, std::optional<detail::PreparedCues>, std::less<>> classes;
   std::unordered_map<const model::Observation*, detail::FoldedText> folded;
   std::map<std::pair<std::string, std::string>, int> unit_hits;
+  std::map<std::pair<std::string, std::string>, double> unit_weights;
 
   AnchorEnv(const kb::Pack& p, const kb::Normalizer& n, const Index& i) : pack(p), norm(n), ix(i) {}
 
@@ -94,6 +95,26 @@ struct AnchorEnv {
     unit_hits.emplace(std::move(key), n);
     return n;
   }
+
+  // Summed weight of the DISTINCT cue phrases found anywhere in `unit`: one
+  // ambiguous word repeated a hundred times is not domain evidence, several
+  // different domain words in one document are.
+  double distinct_weight(const std::string& cls, const detail::PreparedCues& cues, const std::string& unit) {
+    auto key = std::make_pair(cls, unit);
+    if (auto it = unit_weights.find(key); it != unit_weights.end()) return it->second;
+    std::set<std::size_t> seen;
+    if (auto uo = ix.unit_obs.find(unit); uo != ix.unit_obs.end()) {
+      for (auto* o : uo->second) {
+        auto f = folded.find(o);
+        if (f == folded.end()) f = folded.emplace(o, detail::fold_text(norm, o->text)).first;
+        cues.hit_phrases(f->second, seen);
+      }
+    }
+    double w = 0;
+    for (std::size_t i : seen) w += cues.weight_of(i);
+    unit_weights.emplace(std::move(key), w);
+    return w;
+  }
 };
 
 double anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& reasons) {
@@ -109,15 +130,30 @@ double anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& r
     std::string cls = json::get_string(op, "class", json::get_string(op, "value"));
     const detail::PreparedCues* c = env.cues(cls);
     double min = std::max(1.0, json::get_number(op, "min", 1));
+    const double min_weight = json::get_number(op, "min_weight", 0);
     int n = 0;
+    double best = 0;
     if (c) {
       auto it = ix.subject_units.find(e.id);
       if (it != ix.subject_units.end()) {
-        for (const auto& u : it->second) n += env.hits(cls, *c, u);
+        for (const auto& u : it->second) {
+          if (min_weight > 0) {
+            best = std::max(best, env.distinct_weight(cls, *c, u));
+          } else {
+            n += env.hits(cls, *c, u);
+          }
+        }
       }
     }
     // Fewer hits than the anchor asks for is weak evidence, not a match.
-    s = n >= min ? 1.0 : 0.5 * n / min;
+    // `min_weight`: the domain evidence is the summed weight of distinct cue
+    // phrases in ONE unit the subject appears in (cross-domain words such as
+    // "track" or "master" in software text stay below it).
+    if (min_weight > 0) {
+      s = best >= min_weight ? 1.0 : 0.5 * best / min_weight;
+    } else {
+      s = n >= min ? 1.0 : 0.5 * n / min;
+    }
   } else if (name == "codebase") {
     auto it = ix.by_subject.find(e.id);
     if (it != ix.by_subject.end()) {

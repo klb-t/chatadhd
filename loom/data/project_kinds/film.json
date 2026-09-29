@@ -44,7 +44,7 @@
    {
     "op": "cue",
     "class": "paradigm.film",
-    "min": 2
+    "min_weight": 4
    }
   ],
   "min_score": 0.4
