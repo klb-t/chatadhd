@@ -11,8 +11,10 @@
 //   replay the owner's judgements last (I4).
 #include <algorithm>
 #include <map>
+#include <optional>
 #include <set>
 
+#include "kb/stage_profile.h"
 #include "loom/knowledge.h"
 #include "loom/resolve.h"
 #include "loom/util/sha256.h"
@@ -41,6 +43,9 @@ Json ids_json(const std::vector<T>& v) {
 Result<Json> run_resolve_stage(knowledge::StageContext& ctx) {
   auto& st = ctx.store;
   const std::string& run = ctx.run;
+  prof::Scope prof_total("resolve.total");
+  std::optional<prof::Scope> ph(std::in_place, "resolve.load");
+  auto phase = [&](const char* name) { ph.reset(); ph.emplace(name); };
   kb::EntityQuery eq;
   eq.limit = kAll;
   LOOM_TRY_ASSIGN(auto ents, st.query_entities(run, eq));
@@ -66,8 +71,10 @@ Result<Json> run_resolve_stage(knowledge::StageContext& ctx) {
   for (const auto& e : ents) {
     if (!e.attrs.contains("merged_into")) mentions.push_back(e);
   }
+  phase("resolve.resolve");
   Resolver resolver(ctx.pack);
   LOOM_TRY_ASSIGN(auto res, resolver.resolve(mentions, obs));
+  phase("resolve.remap");
   auto remapped = resolver.apply_remap(claims, res);
   std::map<std::string, std::string> claim_map;  // old claim id -> new claim id
   for (const auto& c : remapped) {
@@ -96,6 +103,7 @@ Result<Json> run_resolve_stage(knowledge::StageContext& ctx) {
   }
   std::vector<model::Claim> out_claims = remapped;
   for (const auto& c : res.same_as) out_claims.push_back(c);
+  phase("resolve.repoint");
   // decisions, statuses, areas, forks
   LOOM_TRY_ASSIGN(auto decisions, st.list_decisions(run));
   std::vector<model::Decision> out_dec;
@@ -140,6 +148,7 @@ Result<Json> run_resolve_stage(knowledge::StageContext& ctx) {
     out_forks.push_back(std::move(f));
   }
 
+  phase("resolve.lineage");
   // code lineage
   Json lineage = Json::array();
   std::vector<model::Entity> lin_ents;
@@ -188,6 +197,7 @@ Result<Json> run_resolve_stage(knowledge::StageContext& ctx) {
   }
   for (auto& e : lin_ents) out_ents.push_back(std::move(e));
 
+  phase("resolve.store");
   LOOM_TRY(st.put_entities(run, out_ents));
   LOOM_TRY(st.put_claims(run, out_claims));
   LOOM_TRY(st.put_decisions(run, out_dec));
@@ -200,6 +210,7 @@ Result<Json> run_resolve_stage(knowledge::StageContext& ctx) {
     merges += d.merged ? 1 : 0;
     blocked += !d.merged && !d.blocked_by.empty() ? 1 : 0;
   }
+  phase("resolve.hash");
   std::vector<Json> parts{ids_json(out_ents), ids_json(out_claims), ids_json(out_dec), ids_json(out_status),
                           ids_json(areas), ids_json(out_forks), lineage};
   Json stats{{"entities", res.entities.size()}, {"mentions", mentions.size()}, {"merges", merges},
@@ -223,6 +234,7 @@ std::set<std::string> keys_of(const kb::Normalizer& norm, std::string_view text)
 Result<Json> run_assess_stage(knowledge::StageContext& ctx) {
   auto& st = ctx.store;
   const std::string& run = ctx.run;
+  prof::Scope prof_total("assess.total");
   kb::ClaimQuery cq;
   cq.limit = kAll;
   LOOM_TRY_ASSIGN(auto claims, st.query_claims(run, cq));

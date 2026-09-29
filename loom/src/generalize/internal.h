@@ -66,21 +66,92 @@ const Json& cue_class(const kb::Pack& pack, std::string_view name);
 // area (documented in generalize.h; promotion into the pack is a lead edit).
 Json cue_class_or_default(const kb::Pack& pack, std::string_view name);
 
+// A text folded and tokenized once: the input of cue matching. Cue matching
+// of one text against several classes (or of one observation for several
+// subjects) must not repeat this work.
+struct FoldedText {
+  std::string folded;
+  std::vector<std::string> toks;  // tokens of the folded text
+};
+FoldedText fold_text(const kb::Normalizer& norm, std::string_view text);
+
+// A cue class (lexicons/cues.json shape) prepared once: every phrase folded
+// and tokenized. score() is exactly cue_score() (same phrases, same order of
+// summation), without re-normalizing the phrases for every text.
+class PreparedCues {
+ public:
+  PreparedCues() = default;
+  PreparedCues(const kb::Normalizer& norm, const Json& cls);
+  double score(const FoldedText& t) const;
+  bool empty() const noexcept { return phrases_.empty(); }
+
+ private:
+  struct Phrase {
+    std::string text;                // folded, without the trailing '*'
+    std::vector<std::string> toks;   // tokens of `text`
+    bool star = false;               // the last token is a prefix
+    bool symbolic = false;           // no word character: substring match
+    double w = 1.0;
+  };
+  std::vector<Phrase> phrases_;
+};
+
 // Document-frequency weights over a corpus of term sets: w(t) = log(1 + N/df).
 class TermWeights {
  public:
   void add(const std::vector<std::string>& doc);
   double w(const std::string& t) const;
   std::size_t docs() const noexcept { return n_; }
+  // Read access for callers that need the raw counts (df, N).
+  const std::map<std::string, int, std::less<>>& df() const noexcept { return df_; }
 
  private:
   std::map<std::string, int, std::less<>> df_;
   std::size_t n_ = 0;
 };
-// Weighted Jaccard of two sorted term sets.
-double wjaccard(const std::vector<std::string>& a, const std::vector<std::string>& b, const TermWeights& w);
+
+// Weighted Jaccard of two sorted term sets. `W` is anything with
+// `double w(const std::string&) const` (TermWeights or an overlay of it).
+template <class W>
+double wjaccard(const std::vector<std::string>& a, const std::vector<std::string>& b, const W& w) {
+  double inter = 0, uni = 0;
+  std::size_t i = 0, j = 0;
+  while (i < a.size() || j < b.size()) {
+    if (j == b.size() || (i < a.size() && a[i] < b[j])) {
+      uni += w.w(a[i++]);
+    } else if (i == a.size() || b[j] < a[i]) {
+      uni += w.w(b[j++]);
+    } else {
+      double x = w.w(a[i]);
+      inter += x;
+      uni += x;
+      ++i;
+      ++j;
+    }
+  }
+  return uni > 0 ? inter / uni : 0.0;
+}
 // Weighted overlap coefficient (|a∩b| / min(|a|,|b|), weighted).
-double woverlap(const std::vector<std::string>& a, const std::vector<std::string>& b, const TermWeights& w);
+template <class W>
+double woverlap(const std::vector<std::string>& a, const std::vector<std::string>& b, const W& w) {
+  double inter = 0, sa = 0, sb = 0;
+  for (const auto& t : a) sa += w.w(t);
+  for (const auto& t : b) sb += w.w(t);
+  std::size_t i = 0, j = 0;
+  while (i < a.size() && j < b.size()) {
+    if (a[i] < b[j]) {
+      ++i;
+    } else if (b[j] < a[i]) {
+      ++j;
+    } else {
+      inter += w.w(a[i]);
+      ++i;
+      ++j;
+    }
+  }
+  double m = std::min(sa, sb);
+  return m > 0 ? inter / m : 0.0;
+}
 std::vector<std::string> set_union(const std::vector<std::string>& a, const std::vector<std::string>& b);
 std::vector<std::string> set_minus(const std::vector<std::string>& a, const std::vector<std::string>& b);
 

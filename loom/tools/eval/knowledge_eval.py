@@ -26,7 +26,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from kbeval import realrun, synthetic  # noqa: E402
+from kbeval import bench, realrun, synthetic  # noqa: E402
 
 LOOM_ROOT = HERE.parent.parent
 
@@ -42,6 +42,28 @@ def parse_cut(value: str) -> str:
 def write_json(path: Path, value: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+
+def bench_main(a) -> int:
+    if a.bcmd == "stage":
+        print(json.dumps(bench.stage(Path(a.repo).resolve(), Path(a.dest).resolve())))
+        return 0
+    if a.bcmd == "compare":
+        ra = json.loads(Path(a.a).read_text(encoding="utf-8"))
+        rb = json.loads(Path(a.b).read_text(encoding="utf-8"))
+        print(bench.compare(ra, rb))
+        return 0 if all(v is True for k, v in bench.identical(ra, rb).items() if isinstance(v, bool)) else 1
+    if a.synthetic:
+        gt = json.loads((synthetic.gt_dir(LOOM_ROOT) / "ground_truth.json").read_text(encoding="utf-8"))
+        cfg = synthetic.base_config(LOOM_ROOT, gt)
+        if a.import_mode:
+            cfg["stage_params"]["catalog"]["import"] = {"mode": a.import_mode}
+    else:
+        cfg = {"sources": [str(Path(a.input).resolve())]}
+    rep = bench.run(a.loom, cfg, Path(a.work), a.label)
+    write_json(Path(a.out), rep)
+    print(json.dumps({k: rep[k] for k in ("label", "wall_s", "timers_ms", "counters", "stage_hashes")}, indent=1))
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -69,11 +91,32 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--work", help="work directory (default: a temp dir)")
     r.add_argument("--out", required=True, help="products directory")
 
+    b = sub.add_parser("bench", help="timing + output-identity harness (see kbeval/bench.py)")
+    bsub = b.add_subparsers(dest="bcmd", required=True)
+    bs = bsub.add_parser("stage", help="freeze tracked-HEAD text sources of a repository into DEST")
+    bs.add_argument("--repo", required=True)
+    bs.add_argument("--dest", required=True)
+    br = bsub.add_parser("run", help="run the pipeline over a frozen input and write a report")
+    br.add_argument("--loom", required=True)
+    br.add_argument("--input", help="frozen repository input directory (from `bench stage`)")
+    br.add_argument("--synthetic", action="store_true", help="use synthetic_dev exports instead")
+    br.add_argument("--import-mode", help="catalog import mode, e.g. full")
+    br.add_argument("--work", required=True)
+    br.add_argument("--label", default="run")
+    br.add_argument("--out", required=True, help="report JSON")
+    bc = bsub.add_parser("compare", help="compare two reports")
+    bc.add_argument("a")
+    bc.add_argument("b")
+
+    s.add_argument("--import-mode", help="catalog import mode (e.g. full: extract every unit)")
+
     a = ap.parse_args(argv)
+    if a.cmd == "bench":
+        return bench_main(a)
     work = Path(a.work) if a.work else Path(tempfile.mkdtemp(prefix="loom-kbeval-"))
 
     if a.cmd == "synthetic":
-        card = synthetic.evaluate(a.loom, LOOM_ROOT, work)
+        card = synthetic.evaluate(a.loom, LOOM_ROOT, work, import_mode=a.import_mode)
         if a.out:
             write_json(Path(a.out), card)
         if a.markdown:
