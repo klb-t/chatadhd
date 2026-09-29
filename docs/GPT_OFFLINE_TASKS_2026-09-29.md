@@ -145,3 +145,20 @@ propozycja schematu danych i co pokazuje tryb paranoid. Plik:
 Na koniec każdej sesji dopisz do `docs/research/GPT_OFFLINE_LOG_2026-09-29.md`
 sekcję „Do sprawdzenia przez Claude'a w natywnym buildzie” — konkretne pliki,
 komendy i oczekiwane wyniki, żeby weryfikacja była tania.
+
+## Status i wskazówki (aktualizacja 2026-09-29 wieczór)
+
+- Scalone do `claude/chataddhd-cpp-loom-core-IRGRN`: **T1** (74/74 testów po dopisaniu
+  `rfc3339-validator` do requirements — bez niego format `date-time` nie jest sprawdzany),
+  **T2** (81/81), **T3** (wersja z `4ea4e74`: 188 body + 16 warunkowych).
+- **T4 nie dotarło** — nie ma go na gałęzi ani w plikach. Jeśli konektor nie pozwala pisać,
+  oddaj właścicielowi ZIP z `increment.patch` + `repo_increment/` (jak dla T1–T2);
+  jeśli T3 w paczce jest nowsze niż `4ea4e74` (README mówi o 208 body), dołącz je też.
+- Każdy nowy przyrost zaczynaj od **aktualnego czubka** `claude/chataddhd-cpp-loom-core-IRGRN`
+  (nie od `gpt/offline-2026-09-29`), żeby łatki nakładały się bez konfliktów.
+- Kolejne: T5 (workspace), T6 (struktury myśli), T7 (zasiewanie), T8 (audyt opcji),
+  T9 (recenzja formatów eksportów — plik jest na `wip/worktree-agent-ab76c2dece93103a1`,
+  wkrótce `wip/export-finish`), T10 (przewodnik), T11 (legal_case), T12 (zagrożenia), T13.
+- Nowe dane dla T6/T7: recall katalogu po rundzie 2 to 21/45 (kanały TF-IDF: rdzenie słów +
+  4-gramy znakowe); niezłapane rozmowy to dobry materiał do analizy „dlaczego semantyka nie trafiła”
+  (`LOOM_CATALOG_EVAL_VERBOSE=1 loom/build/dev/loom_tests --test-suite=catalog_eval` wypisuje je z cechami).
