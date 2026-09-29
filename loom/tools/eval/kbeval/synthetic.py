@@ -435,11 +435,13 @@ def determinism(res_a: dict[str, Any], res_b: dict[str, Any], out_a: Path, out_b
             "run_ids_identical": res_a["run"] == res_b["run"], "products": len(files_a)}
 
 
-def evaluate(loom: str, loom_root: Path, work: Path) -> dict[str, Any]:
+def evaluate(loom: str, loom_root: Path, work: Path, import_mode: str | None = None) -> dict[str, Any]:
     gt = json.loads((gt_dir(loom_root) / "ground_truth.json").read_text(encoding="utf-8"))
     cut = gt["temporal_cut"]["date"]
     work = new_workspace(work, "synthetic-")
     cfg = base_config(loom_root, gt)
+    if import_mode:
+        cfg["stage_params"]["catalog"]["import"] = {"mode": import_mode}
     res_a = run_knowledge(loom, work / "a", {**cfg, "out_dir": str(work / "a_out")})
     res_a2 = run_knowledge(loom, work / "a2", {**cfg, "out_dir": str(work / "a2_out")})
     res_b = run_knowledge(loom, work / "b", {**cfg, "prior_cut": cut, "out_dir": str(work / "b_out")})

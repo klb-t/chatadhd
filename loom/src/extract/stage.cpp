@@ -11,7 +11,10 @@
 #include <map>
 #include <set>
 
+#include <optional>
+
 #include "extract/extract_internal.h"
+#include "kb/stage_profile.h"
 #include "loom/catalog.h"
 #include "loom/extract.h"
 #include "loom/knowledge.h"
@@ -226,6 +229,9 @@ Extraction extract_units(std::shared_ptr<const kb::Pack> pack, const std::vector
 }
 
 Result<Json> run_stage(knowledge::StageContext& ctx) {
+  prof::Scope prof_total("extract.total");
+  std::optional<prof::Scope> ph(std::in_place, "extract.read_units");
+  auto phase = [&](const char* name) { ph.reset(); ph.emplace(name); };
   std::vector<UnitContent> units;
   std::string from = "catalog";
   if (json::find(ctx.input, "units")) {
@@ -261,6 +267,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
     }
     units = std::move(kept);
   }
+  phase("extract.extract_units");
   bool paused = false;
   Extraction all = extract_units(ctx.pack, units, [&] {
     paused = paused || (ctx.should_stop && ctx.should_stop());
@@ -274,6 +281,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   auto recs = values(acc.statuses);
   std::sort(recs.begin(), recs.end(), [](const model::StatusRecord& x, const model::StatusRecord& y) { return x.id < y.id; });
 
+  phase("extract.store");
   auto& st = ctx.store;
   LOOM_TRY(st.clear_run(ctx.run));
   LOOM_TRY(st.put_observations(ctx.run, values(acc.observations)));
@@ -288,9 +296,11 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   // Optional cheap-model proposals use the already persisted, located
   // observations. They remain candidates; this never upgrades a model's
   // interpretation into an observed Claim or overwrites owner judgements.
+  phase("extract.semantic_proposals");
   LOOM_TRY_ASSIGN(auto semantic, propose_semantics(ctx, values(acc.observations),
                                                  values(acc.entities), values(acc.claims)));
 
+  phase("extract.hash");
   Sha256 h;
   auto feed = [&](const auto& m) {
     for (const auto& [id, x] : m) {

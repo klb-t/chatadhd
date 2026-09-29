@@ -4,6 +4,7 @@
 #include <set>
 
 #include "internal.h"
+#include "kb/stage_profile.h"
 #include "loom/knowledge.h"
 
 namespace loom::generalize {
@@ -123,37 +124,53 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
     if (ctx.progress) ctx.progress(i, 8, msg);
   };
   bool do_predict = json::get_bool(ctx.params, "predict", true);
+  prof::Scope prof_total("generalize.total");
+  std::optional<prof::Scope> ph(std::in_place, "generalize.load_evidence");
   LOOM_TRY_ASSIGN(Evidence ev, Evidence::load(ctx.store, ctx.run));
+  prof::count("generalize.observations", static_cast<long>(ev.observations.size()));
+  prof::count("generalize.entities", static_cast<long>(ev.entities.size()));
+  prof::count("generalize.claims", static_cast<long>(ev.claims.size()));
+  auto phase = [&](const char* name) { ph.reset(); ph.emplace(name); };
   const std::string cut = ctx.config.prior_cut;
   Evidence base = cut.empty() ? ev : detail::slice(ev, cut, true);
 
   progress(0, "match");
+  phase("generalize.match_projects");
   ParadigmMatcher matcher(ctx.pack);
   LOOM_TRY_ASSIGN(auto matches, matcher.match_projects(ev));
+  phase("generalize.match_artifacts");
   LOOM_TRY_ASSIGN(auto artifacts, matcher.match_artifacts(ev));
   for (auto& a : artifacts) matches.push_back(std::move(a));
+  phase("generalize.analogies");
   LOOM_TRY_ASSIGN(auto analog, matcher.analogies(matches));
   if (stop(ctx, "match")) return Error(Errc::Paused, "knowledge.generalize paused");
 
   progress(1, "infer");
+  phase("generalize.infer");
   LOOM_TRY_ASSIGN(auto inferred, infer(pack, ev, matches));
   progress(2, "transfer");
+  phase("generalize.transfer");
   LOOM_TRY_ASSIGN(auto transferred, transfer(pack, matches));
   attach_all(matches, transferred, pack);
   progress(3, "extrapolate");
+  phase("generalize.extrapolate");
   LOOM_TRY_ASSIGN(auto extrapolated, extrapolate(pack, ev, matches));
   attach_all(matches, extrapolated, pack);
   if (stop(ctx, "infer")) return Error(Errc::Paused, "knowledge.generalize paused");
 
   progress(4, "principles");
+  phase("generalize.principles");
   LOOM_TRY_ASSIGN(auto report, discover_principles(pack, base, ctx.priors));
   Evidence with_principles = base;
   with_principles.principles = report.principles;
   progress(5, "operators");
+  phase("generalize.operators");
   LOOM_TRY_ASSIGN(auto ops, mine_operators(pack, with_principles, ctx.priors));
   progress(6, "models");
+  phase("generalize.models");
   LOOM_TRY_ASSIGN(auto models, build_models(base, report.principles));
   progress(7, "predictions");
+  phase("generalize.predictions");
   std::vector<model::Prediction> preds;
   if (do_predict) {
     LOOM_TRY_ASSIGN(preds, predict(ops, base, cut));
@@ -161,6 +178,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
       LOOM_TRY_ASSIGN(preds, evaluate_predictions(std::move(preds), detail::slice(ev, cut, false)));
     }
   }
+  phase("generalize.assemble");
   // Predictive power of each reading: share of evaluated predictions that
   // held among those justified by (or not contradicting) its principles.
   for (auto& m : models) {
@@ -216,6 +234,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   }
   std::sort(morphs.begin(), morphs.end(), [](const auto& a, const auto& b) { return a.id < b.id; });
 
+  phase("generalize.store");
   LOOM_TRY(ctx.store.put_claims(ctx.run, claims));
   LOOM_TRY(ctx.store.put_instances(ctx.run, instances));
   LOOM_TRY(ctx.store.put_principles(ctx.run, report.principles));
@@ -224,6 +243,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   LOOM_TRY(ctx.store.put_models(ctx.run, models));
   LOOM_TRY(ctx.store.put_predictions(ctx.run, preds));
   LOOM_TRY(ctx.store.put_areas(ctx.run, areas));
+  phase("generalize.hash_output");
   progress(8, "done");
 
   Json written{{"claims", ids_json(claims)},  {"instances", all_json(instances)}, {"principles", all_json(report.principles)},
