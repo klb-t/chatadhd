@@ -7,6 +7,7 @@
 #include <set>
 
 #include "internal.h"
+#include "kb/stage_profile.h"
 
 namespace loom::generalize {
 
@@ -288,9 +289,19 @@ Result<std::vector<Claim>> infer(const kb::Pack& pack, const Evidence& ev, std::
   kb::Normalizer norm(pack);
   Index ix(ev);
   RuleRun rr(pack, norm, ix, matches, ev);
-  std::vector<Claim> out = rr.stratum(0);
-  for (auto& c : rr.stratum(1)) out.push_back(std::move(c));
-  for (auto& c : area_members(pack, ix, matches)) out.push_back(std::move(c));
+  std::vector<Claim> out;
+  {
+    prof::Scope t("generalize.infer.stratum0");
+    out = rr.stratum(0);
+  }
+  {
+    prof::Scope t("generalize.infer.stratum1");
+    for (auto& c : rr.stratum(1)) out.push_back(std::move(c));
+  }
+  {
+    prof::Scope t("generalize.infer.areas");
+    for (auto& c : area_members(pack, ix, matches)) out.push_back(std::move(c));
+  }
   detail::dedupe(out);
   return out;
 }
@@ -300,6 +311,7 @@ Result<std::vector<Claim>> extrapolate(const kb::Pack& pack, const Evidence& ev,
   Index ix(ev);
   std::vector<Match> work = matches;  // extrapolations never feed back (never premises)
   RuleRun rr(pack, norm, ix, work, ev);
+  prof::Scope t("generalize.extrapolate.stratum2");
   std::vector<Claim> out = rr.stratum(2);
   detail::dedupe(out);
   return out;
@@ -319,30 +331,36 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
     auto& b = best[m.instance.subject];
     if (!b || m.score > b->score) b = &m;
   }
-  auto filled_roles = [](const Match& m) {
-    std::set<model::Role> r;
-    std::map<std::string, const Claim*> cs;
-    for (const auto& c : m.claims) cs.emplace(c.id, &c);
-    for (const auto& sv : m.instance.slots) {
-      auto it = cs.find(sv.claim);
-      if (sv.role && it != cs.end() && detail::observed_grade(*it->second)) r.insert(*sv.role);
-    }
-    return r;
-  };
   auto slot_of = [](const Match& m, const model::MorphismEnd& e) -> std::string {
     if (m.instance.paradigm == e.paradigm) return e.kind;
     if (std::find(m.instance.facets.begin(), m.instance.facets.end(), e.paradigm) != m.instance.facets.end()) return e.paradigm + "." + e.kind;
     return "";
   };
-  auto claims_in = [](const Match& m, const std::string& slot) {
-    std::vector<const Claim*> out;
+  // Per-instance lookups, built once (they used to be rebuilt for every pair
+  // of instances and morphism): the observed-grade roles it fills, and its
+  // claims per slot in slot order.
+  struct View {
+    std::set<model::Role> roles;
+    std::map<std::string, std::vector<const Claim*>> by_slot;
+  };
+  std::map<const Match*, View> views;
+  for (const auto& [subject, m] : best) {
+    View v;
     std::map<std::string, const Claim*> cs;
-    for (const auto& c : m.claims) cs.emplace(c.id, &c);
-    for (const auto& sv : m.instance.slots) {
+    for (const auto& c : m->claims) cs.emplace(c.id, &c);
+    for (const auto& sv : m->instance.slots) {
       auto it = cs.find(sv.claim);
-      if (sv.slot == slot && it != cs.end()) out.push_back(it->second);
+      if (it == cs.end()) continue;
+      v.by_slot[sv.slot].push_back(it->second);
+      if (sv.role && detail::observed_grade(*it->second)) v.roles.insert(*sv.role);
     }
-    return out;
+    views.emplace(m, std::move(v));
+  }
+  static const std::vector<const Claim*> kNoClaims;
+  auto claims_in = [&](const Match& m, const std::string& slot) -> const std::vector<const Claim*>& {
+    const View& v = views.at(&m);
+    auto it = v.by_slot.find(slot);
+    return it == v.by_slot.end() ? kNoClaims : it->second;
   };
   std::vector<Claim> out;
   for (const auto& mo : *ms) {
@@ -350,6 +368,22 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
     std::vector<std::pair<const model::MorphismEnd*, const model::MorphismEnd*>> dirs{{&mo.from, &mo.to}};
     if (mo.bidirectional) dirs.emplace_back(&mo.to, &mo.from);
     for (const auto& [src, dst] : dirs) {
+      // Targets: instances with an empty slot at the destination end (a
+      // property of the instance and the direction, not of the source).
+      struct Target {
+        const std::string* subject;
+        const Match* b;
+        std::string slot;
+      };
+      std::vector<Target> targets;
+      for (const auto& [sb, b] : best) {
+        std::string tslot = slot_of(*b, *dst);
+        if (tslot.empty()) continue;
+        bool empty = true;
+        for (auto* c : claims_in(*b, tslot)) empty &= !detail::usable(*c);
+        if (!empty) continue;
+        targets.push_back(Target{&sb, b, std::move(tslot)});
+      }
       for (const auto& [sa, a] : best) {
         std::string sslot = slot_of(*a, *src);
         if (sslot.empty()) continue;
@@ -358,17 +392,14 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
           if (detail::observed_grade(*c) && !detail::transferred(*c)) source.push_back(c);
         }
         if (source.empty()) continue;
-        auto ra = filled_roles(*a);
-        for (const auto& [sb, b] : best) {
-          if (sb == sa) continue;
-          std::string tslot = slot_of(*b, *dst);
-          if (tslot.empty()) continue;
-          bool empty = true;
-          for (auto* c : claims_in(*b, tslot)) empty &= !detail::usable(*c);
-          if (!empty) continue;
-          // The two projects must be analogous at role level (≥ 2 shared
+        const auto& ra = views.at(a).roles;
+        for (const auto& tg : targets) {
+          const Match* b = tg.b;
+          if (*tg.subject == sa) continue;
+          const std::string& tslot = tg.slot;
+          // The two projects must be analogous at role level (>= 2 shared
           // filled roles besides the transferred one).
-          auto rb = filled_roles(*b);
+          const auto& rb = views.at(b).roles;
           int shared = 0;
           for (auto r : ra) shared += rb.count(r) > 0;
           if (shared < 2) continue;

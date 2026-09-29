@@ -5,9 +5,12 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <optional>
 #include <set>
+#include <unordered_map>
 
 #include "internal.h"
+#include "kb/stage_profile.h"
 
 namespace loom::generalize {
 
@@ -51,8 +54,50 @@ int count_claims(const Index& ix, std::string_view subject, std::string_view rel
   return n;
 }
 
-double anchor_op(const kb::Pack& pack, const kb::Normalizer& norm, const Index& ix, const model::Entity& e, const Json& op,
-                 Json& reasons) {
+// What anchor evaluation reads besides the evidence index, shared by every
+// entity and paradigm of one matching call: the cue classes (prepared once),
+// every observation folded and tokenized at most once, and how many
+// observations of a unit hit a class (a unit is shared by many entities).
+struct AnchorEnv {
+  const kb::Pack& pack;
+  const kb::Normalizer& norm;
+  const Index& ix;
+  std::map<std::string, std::optional<detail::PreparedCues>, std::less<>> classes;
+  std::unordered_map<const model::Observation*, detail::FoldedText> folded;
+  std::map<std::pair<std::string, std::string>, int> unit_hits;
+
+  AnchorEnv(const kb::Pack& p, const kb::Normalizer& n, const Index& i) : pack(p), norm(n), ix(i) {}
+
+  // nullptr: the pack has no such class.
+  const detail::PreparedCues* cues(const std::string& cls) {
+    auto it = classes.find(cls);
+    if (it == classes.end()) {
+      const Json& c = detail::cue_class(pack, cls);
+      it = classes.emplace(cls, c.is_null() ? std::optional<detail::PreparedCues>() : std::optional<detail::PreparedCues>(detail::PreparedCues(norm, c)))
+               .first;
+    }
+    return it->second ? &*it->second : nullptr;
+  }
+
+  // Observations of `unit` whose text hits the class (score > 0).
+  int hits(const std::string& cls, const detail::PreparedCues& cues, const std::string& unit) {
+    auto key = std::make_pair(cls, unit);
+    if (auto it = unit_hits.find(key); it != unit_hits.end()) return it->second;
+    int n = 0;
+    if (auto uo = ix.unit_obs.find(unit); uo != ix.unit_obs.end()) {
+      for (auto* o : uo->second) {
+        auto f = folded.find(o);
+        if (f == folded.end()) f = folded.emplace(o, detail::fold_text(norm, o->text)).first;
+        n += cues.score(f->second) > 0;
+      }
+    }
+    unit_hits.emplace(std::move(key), n);
+    return n;
+  }
+};
+
+double anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& reasons) {
+  const Index& ix = env.ix;
   std::string name = json::get_string(op, "op");
   double s = 0.0;
   if (name == "claim_count") {
@@ -62,17 +107,13 @@ double anchor_op(const kb::Pack& pack, const kb::Normalizer& norm, const Index& 
     s = kind_hinted(ix, e, json::get_string(op, "value")) ? 1.0 : 0.0;
   } else if (name == "cue") {
     std::string cls = json::get_string(op, "class", json::get_string(op, "value"));
-    const Json& c = detail::cue_class(pack, cls);
+    const detail::PreparedCues* c = env.cues(cls);
     double min = std::max(1.0, json::get_number(op, "min", 1));
     int n = 0;
-    if (!c.is_null()) {
+    if (c) {
       auto it = ix.subject_units.find(e.id);
       if (it != ix.subject_units.end()) {
-        for (const auto& u : it->second) {
-          auto uo = ix.unit_obs.find(u);
-          if (uo == ix.unit_obs.end()) continue;
-          for (auto* o : uo->second) n += detail::cue_score(norm, o->text, c) > 0;
-        }
+        for (const auto& u : it->second) n += env.hits(cls, *c, u);
       }
     }
     // Fewer hits than the anchor asks for is weak evidence, not a match.
@@ -97,17 +138,16 @@ double anchor_op(const kb::Pack& pack, const kb::Normalizer& norm, const Index& 
   return s;
 }
 
-AnchorResult anchors(const kb::Pack& pack, const kb::Normalizer& norm, const Index& ix, const model::Entity& e,
-                     const Json& a) {
+AnchorResult anchors(AnchorEnv& env, const model::Entity& e, const Json& a) {
   AnchorResult r;
   double any = -1, all = -1;
   if (const Json* v = json::find(a, "any"); v && v->is_array()) {
     any = 0;
-    for (const auto& op : *v) any = std::max(any, anchor_op(pack, norm, ix, e, op, r.reasons));
+    for (const auto& op : *v) any = std::max(any, anchor_op(env, e, op, r.reasons));
   }
   if (const Json* v = json::find(a, "all"); v && v->is_array()) {
     all = 1;
-    for (const auto& op : *v) all = std::min(all, anchor_op(pack, norm, ix, e, op, r.reasons));
+    for (const auto& op : *v) all = std::min(all, anchor_op(env, e, op, r.reasons));
   }
   if (any < 0 && all < 0) {
     r.score = 0;
@@ -362,13 +402,26 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
   kb::Normalizer norm(pack);
   Index ix(ev);
   Filler filler(pack, norm, ix);
+  AnchorEnv env(pack, norm, ix);
+  // Facets are parsed from the pack once, not once per entity.
+  std::map<std::string, std::optional<model::Facet>, std::less<>> facets;
+  auto facet_of = [&](const std::string& id) -> const model::Facet* {
+    auto it = facets.find(id);
+    if (it == facets.end()) {
+      auto f = model::facet(pack, id);
+      it = facets.emplace(id, f ? std::optional<model::Facet>(std::move(*f)) : std::nullopt).first;
+    }
+    return it->second ? &*it->second : nullptr;
+  };
   std::vector<Match> out;
+  std::optional<prof::Scope> ps(std::in_place, "generalize.match_projects.anchor_fill");
   for (const auto& pk_id : pack.ids("project_kinds")) {
     LOOM_TRY_ASSIGN(auto pk, model::project_kind(pack, pk_id));
     double min_score = json::get_number(pk.anchors, "min_score", 0.4);
+    const auto owners = relation_owners(pk.domain_kinds, "");
     for (const auto& e : ev.entities) {
       if (e.kind != pk.subject_kind || e.status == model::ClaimStatus::Rejected) continue;
-      auto ar = anchors(pack, norm, ix, e, pk.anchors);
+      auto ar = anchors(env, e, pk.anchors);
       if (ar.score < min_score || ar.score <= 0) continue;
       Match m;
       m.instance.id = model::Instance::make_id(pk.header.id, e.id);
@@ -380,7 +433,6 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
       m.reasons = ar.reasons;
       double wsum = 0, wfill = 0;
       int required = 0, required_filled = 0;
-      auto owners = relation_owners(pk.domain_kinds, "");
       auto account = [&](const model::DomainKind& dk, double c) {
         double w = dk.weight * (dk.required ? filler.req_mult : 1.0);
         wsum += w;
@@ -391,9 +443,9 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
       for (const auto& dk : pk.domain_kinds) account(dk, filler.fill(m, e, dk, dk.id, owners));
       // Facets: optional sub-templates whose own anchors fire on the subject.
       for (const auto& f_id : pk.facets) {
-        auto f = model::facet(pack, f_id);
+        const model::Facet* f = facet_of(f_id);
         if (!f) continue;
-        auto fr = anchors(pack, norm, ix, e, f->anchors);
+        auto fr = anchors(env, e, f->anchors);
         if (fr.score < json::get_number(f->anchors, "min_score", 0.4) || fr.score <= 0) continue;
         m.instance.facets.push_back(f_id);
         m.reasons.push_back(Json{{"facet", f_id}, {"anchors", fr.reasons}, {"score", fr.score}});
@@ -407,16 +459,25 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
   // Constraint propagation: a violated constraint never deletes a value; it
   // marks the slots it reads as conflicting (or rejects / extends the
   // instance, per its on_violation), with the reason kept.
+  ps.reset();
+  ps.emplace("generalize.match_projects.constraints");
+  prof::count("generalize.match_projects.instances", static_cast<long>(out.size()));
   std::set<std::string> active;  // constraints may use principle_active
   std::vector<Match> kept;
+  std::map<std::string, std::optional<model::ProjectKind>, std::less<>> kinds;
   for (auto& m : out) {
-    auto pk = model::project_kind(pack, m.instance.paradigm);
-    if (!pk) continue;
+    auto kit = kinds.find(m.instance.paradigm);
+    if (kit == kinds.end()) {
+      auto loaded = model::project_kind(pack, m.instance.paradigm);
+      kit = kinds.emplace(m.instance.paradigm, loaded ? std::optional<model::ProjectKind>(std::move(*loaded)) : std::nullopt).first;
+    }
+    if (!kit->second) continue;
+    const model::ProjectKind* pk = &*kit->second;
     bool reject = false;
     std::vector<Json> constraints;
     for (const auto& c : pk->constraints) constraints.push_back(c);
     for (const auto& f_id : m.instance.facets) {
-      if (auto f = model::facet(pack, f_id)) {
+      if (const model::Facet* f = facet_of(f_id)) {
         for (const auto& c : f->constraints) constraints.push_back(c);
       }
     }

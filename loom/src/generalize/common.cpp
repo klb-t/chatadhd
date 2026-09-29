@@ -215,18 +215,54 @@ bool cue_hit(const kb::Normalizer& norm, std::string_view folded_text, std::stri
   return cue_hit_tokens(norm, folded_text, norm.tokens(folded_text), phrase);
 }
 
-double cue_score(const kb::Normalizer& norm, std::string_view text, const Json& cls) {
+FoldedText fold_text(const kb::Normalizer& norm, std::string_view text) {
+  FoldedText t;
+  t.folded = norm.fold(text);
+  t.toks = norm.tokens(t.folded);
+  return t;
+}
+
+PreparedCues::PreparedCues(const kb::Normalizer& norm, const Json& cls) {
   const Json* ph = json::find(cls, "phrases");
-  if (!ph || !ph->is_array()) return 0.0;
-  std::string folded = norm.fold(text);
-  auto toks = norm.tokens(folded);
-  double s = 0.0;
+  if (!ph || !ph->is_array()) return;
   for (const auto& p : *ph) {
     std::string phrase = json::get_string(p, "p");
     if (phrase.empty()) continue;
-    if (cue_hit_tokens(norm, folded, toks, phrase)) s += json::get_number(p, "w", 1.0);
+    Phrase x;
+    x.text = norm.fold(phrase);
+    x.star = !x.text.empty() && x.text.back() == '*';
+    if (x.star) x.text.pop_back();
+    if (x.text.empty()) continue;  // never matches
+    x.toks = norm.tokens(x.text);
+    x.symbolic = x.toks.empty() || !has_word_char(x.text);
+    x.w = json::get_number(p, "w", 1.0);
+    phrases_.push_back(std::move(x));
+  }
+}
+
+double PreparedCues::score(const FoldedText& t) const {
+  double s = 0.0;
+  for (const auto& p : phrases_) {
+    bool hit = false;
+    if (p.symbolic) {
+      hit = t.folded.find(p.text) != std::string::npos;
+    } else if (p.toks.size() <= t.toks.size()) {
+      for (std::size_t i = 0; i + p.toks.size() <= t.toks.size() && !hit; ++i) {
+        bool ok = true;
+        for (std::size_t k = 0; k < p.toks.size() && ok; ++k) {
+          bool last = k + 1 == p.toks.size();
+          ok = (last && p.star) ? starts_with(t.toks[i + k], p.toks[k]) : t.toks[i + k] == p.toks[k];
+        }
+        hit = ok;
+      }
+    }
+    if (hit) s += p.w;
   }
   return s;
+}
+
+double cue_score(const kb::Normalizer& norm, std::string_view text, const Json& cls) {
+  return PreparedCues(norm, cls).score(fold_text(norm, text));
 }
 
 const Json& cue_class(const kb::Pack& pack, std::string_view name) {
@@ -309,36 +345,6 @@ double TermWeights::w(const std::string& t) const {
   double df = it == df_.end() ? 1.0 : static_cast<double>(it->second);
   double n = static_cast<double>(std::max<std::size_t>(n_, 1));
   return std::log(1.0 + n / df);
-}
-
-double wjaccard(const std::vector<std::string>& a, const std::vector<std::string>& b, const TermWeights& w) {
-  double inter = 0, uni = 0;
-  std::size_t i = 0, j = 0;
-  while (i < a.size() || j < b.size()) {
-    if (j == b.size() || (i < a.size() && a[i] < b[j])) {
-      uni += w.w(a[i++]);
-    } else if (i == a.size() || b[j] < a[i]) {
-      uni += w.w(b[j++]);
-    } else {
-      double x = w.w(a[i]);
-      inter += x;
-      uni += x;
-      ++i;
-      ++j;
-    }
-  }
-  return uni > 0 ? inter / uni : 0.0;
-}
-
-double woverlap(const std::vector<std::string>& a, const std::vector<std::string>& b, const TermWeights& w) {
-  double inter = 0, sa = 0, sb = 0;
-  for (const auto& t : a) sa += w.w(t);
-  for (const auto& t : b) sb += w.w(t);
-  std::vector<std::string> both;
-  std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(both));
-  for (const auto& t : both) inter += w.w(t);
-  double m = std::min(sa, sb);
-  return m > 0 ? inter / m : 0.0;
 }
 
 std::vector<std::string> set_union(const std::vector<std::string>& a, const std::vector<std::string>& b) {
