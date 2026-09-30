@@ -1,0 +1,16 @@
+{
+  "implementation_sha": "7714b0f7dce8f1a609ec1d0091293708b98c00c4",
+  "python": "3.12.14",
+  "jsonschema": "4.26.0",
+  "files": {
+    "docs/coordination/receipts/W4-2026-09-30-graph-runtime/PROTOCOL.md": "856b370394d7e848dda29511f6c7ec6a3bc011d4c704640e6b6899ebc7f6fbd3",
+    "loom/tools/coordination/ANALYSIS_GRAPH.md": "da655aeeced35e200aa692268dfbd9829a20141137e19ae284ede2df7339a7c5",
+    "loom/tools/coordination/__main__.py": "36c88da09d82dfe582a5f69db1515919b86ec09bb8e5c795eda82c42b0ddff6b",
+    "loom/tools/coordination/analysis_graph.py": "355a70bb9172f5a51acc6b21740a9cd7f1d0a5d365f1b5804d3772c4ffce4a82",
+    "loom/tools/coordination/benchmark_analysis_graph.py": "4f7c8118fad64bc38c5cfe90cc733726b34a481d7b4e3696bb9ee96960448c33",
+    "loom/tools/coordination/examples/graph-review-packet.json": "a176a50c2f0510c78a8a5e579ad8f22747951f813156e2cbb44bae2a6777e177",
+    "loom/tools/coordination/examples/graph-review-plan.json": "5ac26020561ac10bdbda8f17319af1ff7b5ece563a0a22eeb2a826b1f0050463",
+    "loom/tools/coordination/test_analysis_graph.py": "de7c8844e2f26397787adf8580c194855b0011a3aa9337683d3aad6406741391",
+    "loom/tools/coordination/test_analysis_graph_adversarial.py": "59c0904bd68c4c643df848f8bf51774664fef949a6b171449f676b134fb39cb9"
+  }
+}
