@@ -1,0 +1,54 @@
+{
+  "schema": "loom.latest_native_run_probe/1",
+  "fixture": "one completed empty catalog run, then 51 newer synthetic running rows",
+  "library_sha256": "f1c7a45000bee6b6efc73a5ec92cb87d519872d4214dccc85df42dced479db40",
+  "instrument_sha256": "7a45b2331b41126ea0657a53ced5cbb67cd5ce2c61893636740e31af8c7978ab",
+  "expected_run": "kr_0122ca496dd9e79c",
+  "automatic": {
+    "run": "kr_probe_000",
+    "items": {
+      "observations": 0,
+      "entities": 0,
+      "aliases": 0,
+      "claims": 0,
+      "claim_support": 0,
+      "principles": 0,
+      "operators": 0,
+      "morphisms": 0,
+      "instances": 0,
+      "slot_values": 0,
+      "areas": 0,
+      "decisions": 0,
+      "forks": 0,
+      "status_records": 0,
+      "predictions": 0,
+      "models": 0,
+      "products": 0
+    }
+  },
+  "explicit": {
+    "run": "kr_0122ca496dd9e79c",
+    "items": {
+      "observations": 0,
+      "entities": 0,
+      "aliases": 0,
+      "claims": 0,
+      "claim_support": 0,
+      "principles": 0,
+      "operators": 0,
+      "morphisms": 0,
+      "instances": 0,
+      "slot_values": 0,
+      "areas": 0,
+      "decisions": 0,
+      "forks": 0,
+      "status_records": 0,
+      "predictions": 0,
+      "models": 0,
+      "products": 0
+    }
+  },
+  "automatic_selects_completed": false,
+  "explicit_selects_requested": true,
+  "remote_model_calls": 0
+}
