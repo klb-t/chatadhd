@@ -77,10 +77,11 @@ them or work in other files — do not edit the same files in parallel and then 
 
 ## 3. Concrete experiments you can run now (live), in suggested order
 
-> **Owner, 2026-09-30: no paid model calls on synthetic data.** Implement and handle every method,
-> and verify it offline (scripted transport, fixtures, previously saved responses). Live runs wait
-> until the owner imports his own archives. The live parts of the experiments below are deferred
-> until then.
+> **Owner, 2026-09-30: paid calls are allowed, but funds are limited — use them wisely.** Do what
+> can be done offline offline (scripted transport, fixtures, saved responses). Spend where a live
+> result actually informs a decision, with the smallest sample that answers the question. Saving
+> most of the money for the owner's real archives beats spending it on synthetic data, where the
+> results transfer weakly. Record the cost of every live run.
 
 Each with a frozen plan, a budget cap, saved first responses, no silent retries, and results
 split into development vs untouched validation. The OpenRouter key must never enter Git.
@@ -137,8 +138,8 @@ split into development vs untouched validation. The OpenRouter key must never en
      - critique the existing graph;
      - ask about gaps;
      - reason at length over a whole archive when the user wants that.
-   - **No paid pilot.** The owner has no budget for it. Implement these methods so they are handled
-     and configurable, and test them offline: scripted transport, fixtures, stored responses.
+   - **Implement these methods so they are handled and configurable.** Test them offline first. Use
+     live calls sparingly, where they inform a decision (funds are limited, not forbidden).
      `loom/tools/eval/archive_cost.py` (offline) gives planning numbers.
    - **Proposal: one graph exchange form, `loom.graph_packet/1`.** The same shape would serve as
      model input and output, export, preview and manual editing, so every method gets the graph
@@ -201,7 +202,7 @@ A proposal only; you lead and decide. Each thread owns a disjoint set of files s
 overwrites anything. Each thread works on its own `gpt/<thread>` branch and merges into the
 development line only after a green `ctest` (ratchet D2). Commit small increments with
 `[skip ci]` and push them. At the end of a thread, add a line to `docs/STATE.md`.
-All tests stay offline (no paid calls). The owner principle at the top of `AGENTS.md` applies.
+Test offline by default; live calls are allowed but funds are limited, so use them sparingly and record their cost. The owner principle at the top of `AGENTS.md` applies.
 
 1. **Knowledge precision** — `loom/src/{extract,resolve,generalize}`, `loom/data/rules|policy`.
    - Verify and merge `wip/precision`: build, ctest, knowledge_eval synthetic + selfhost before
