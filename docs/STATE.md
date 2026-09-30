@@ -9,14 +9,15 @@ original reports and Git revisions; they are not current verification claims.
 - **Current integration:** [W1–W6 status](coordination/PUBLICATION_STATUS.md).
   All six published lanes and the continuity audit are merged, with additional
   durable-acceptance, real-chat retrieval, importer and web corrections.
-  Source freeze `8cc5a5648ada511053d57a0f3979d96c5e0f1d36` is published on
-  `gpt/integration-w1-w6-2026-10-01`. Combined verification is in progress;
-  historical green runs below do not establish this candidate's result.
+  Verified implementation: `da77c769d3e020c396db5bef6a3a3755314d75c0`.
+  Full combined CTest is **94/94**, with native import/transport and browser
+  checks complete. See the current ledger below; historical runs are separate.
 - Repository: `klb-t/chatadhd`. GitHub metadata checked in this session reports
   **public** visibility, contrary to the older private-repository description.
   No visibility change was performed. Do not publish private source archives or credentials.
-- Established integration line: `gpt/research-2026-09-30`; it will advance only
-  after the current candidate passes its combined gates.
+- Current integration line: `gpt/research-2026-09-30`. The verification candidate
+  is also preserved as `gpt/integration-w1-w6-2026-10-01`; both carry the combined
+  source and final handoff. Use the current line rather than old W1–W6 heads.
 - Recovered source: `fafc77f8eeebdff4c32897b5e8ef94dd26d4ec38`.
 - Previously verified baseline: `a79862837c6726f534471f8dbcdccfe749dfb942`.
   Its receipt is retained separately from current integration verification.
@@ -43,7 +44,7 @@ Read `AGENTS.md`, `architecture/OWNER_REQUIREMENTS_2026-09-26.md`,
 `research/OWNER_CLARIFICATION_2026-09-30.md`. The ecosystem note in
 `../ECOSYSTEM.md` is a conceptual direction, not a mandate to build every integration.
 
-## Current integration — implemented, combined verification pending
+## Current integration — implemented and verified
 
 | Area | Integrated behavior and boundary |
 |---|---|
@@ -58,8 +59,47 @@ Implementation/review receipts: [W1 durability](coordination/receipts/W1-2026-10
 [W2 chat adapter](coordination/receipts/W2-2026-10-01-chat-adapter.md),
 [import fidelity](coordination/receipts/IMPORT_FIDELITY_2026-10-01.md),
 [web controls](research/integration_2026-10-01/WEB_PLAN_RECEIPT.md).
-New native cases: 14 for W1, 8 for W2, and 4 importer cases; execution is pending.
-These case counts are not added to suite-level CTest denominators.
+All **27** new native cases passed: 14 for W1 (including 6 independently authored),
+8 for W2, and 5 importer cases. These case counts are included in the full run
+and are not added to suite-level CTest denominators.
+
+## Current verification ledger — 2026-10-01
+
+Implementation `da77c769d3e020c396db5bef6a3a3755314d75c0`, tree
+`abe386316d6fc66a3fa2b0ba8aabc2b28c8df41d`: full Debug build with warnings treated
+as errors passed. Full CTest: **94/94 entries passed, 0 failed, 0 skipped**,
+**111.01 seconds**. This includes native and Python suites; entries are not
+individual assertions. `research.structure` passed **841/841** within that run.
+The new W2 suite preserves five actual synthetic provider-payload/trace records.
+
+- Frozen W6 import V2: **24/24**, closing the earlier Anthropic structural-order
+  failure. Its embedded older V1 arm is **54/59**, improved from **47/59**;
+  the five remaining negatives are two separate-member-blob requirements and
+  three wrapped-root locator checks in the older oracle. Native tests separately
+  resolve the corrected pointers against the actual wrapper roots. The frozen
+  oracle and first failures remain unchanged; these are overlapping measures.
+- Frozen W6 transport: **72/72**, with six local fake-provider requests and no
+  external model calls. The instrument retains its historical requested baseline
+  label; the integration wrapper records actual source/binary hashes.
+- Web production build, retrieval-form semantics, W5 state **8/8** groups and
+  mocked transport pass. Browser → final native server → local fake provider
+  passes with **5** captured calls, including per-thesis plan dispatch, exact
+  request/trace agreement and W5 perspective coexistence. Separate native W5
+  workspace scenarios pass **10/10**, with no model calls.
+- The initial combined build exposed a malformed initializer in a new import
+  fixture; it was corrected without weakening assertions. The first browser
+  launch failed before page creation on Chromium's singleton socket in this
+  environment; the installed Playwright headless shell ran both unchanged
+  behavioral gates successfully. First-attempt logs remain in the evidence.
+
+Evidence: [integration verification](research/integration_2026-10-01/verification/),
+[web receipt](research/integration_2026-10-01/WEB_PLAN_RECEIPT.md),
+[publication tree identities](research/integration_2026-10-01/PUBLICATION.json).
+Native server SHA-256:
+`52858ae162f449ae636429d3c2d4dd63e120651d1b17f3ca27939fc7ca556cc3`.
+Build uses bundled SQLite and `TMPDIR=/var/tmp`. No paid inference or sealed
+holdout access occurred. Source branches, original evidence and prior failures
+remain; no repository file was deleted by the combined integration.
 
 ## Baseline features retained in this integration
 
@@ -148,11 +188,9 @@ PR6 and `main` remain unchanged.
 
 ## Next work and remaining product/research boundaries
 
-1. Finish the single combined build, full CTest, frozen W6 synthetic import and
-   transport instruments, and browser → native server → local fake-provider
-   checks. Publish exact source/binary hashes and actual denominators before
-   advancing the established integration branch. Individual lane results are
-   not a substitute.
+1. This thread's integration, durability/adapter/import corrections and combined
+   verification are complete. Start future work from the current integration
+   line and this ledger; do not restart delivered W1–W6 increments.
 2. Automatic prose-to-ActiveTaskSpec inference is not implemented. Supplied-spec
    compilation, revisions, durable acceptance and per-thesis retrieval are now
    implemented; do not rebuild those mechanisms under a new name.

@@ -9,22 +9,23 @@ in the initial audit; ROOT recovered and published it. Subsequent integration
 also fixes W1 durability, admits W2 fields through real chat, corrects importer
 fidelity, and adds explicit web plan controls.
 
-Candidate branch: `gpt/integration-w1-w6-2026-10-01`. Published source freeze:
-`8cc5a5648ada511053d57a0f3979d96c5e0f1d36`. Combined build/tests are in progress;
-this is not yet a verified-product claim. The established
-`gpt/research-2026-09-30` remains at publication audit `d3bb33f` until those gates
-pass. `main` is not the current Loom integration line.
+Verified implementation: `da77c769d3e020c396db5bef6a3a3755314d75c0`.
+The current `gpt/research-2026-09-30` line and preserved candidate
+`gpt/integration-w1-w6-2026-10-01` contain the combined source and final handoff.
+Full combined CTest **94/94**, import V2 **24/24**, transport **72/72** and both
+native browser gates pass. Detailed boundaries and retained failures are below.
+`main` and draft PR6 remain unchanged.
 
 ## One map of the six conversations
 
 | Lane / remote branch | Published HEAD | Delivered | Remaining work |
 |---|---|---|---|
-| W1 — `gpt/w1-active-task-2026-09-30` | `ba792b920fba36fb738ff39421d27b6d965aa11a` | Supplied ActiveTaskSpec compiled into real chat, source coverage, revisions, replay/edit/rebinding, C ABI and HTTP/SSE path | Candidate adds atomic EventLog acceptance, complete snapshots, legacy baseline and paginated history; 14 new cases await combined execution. No automatic inference from conversation prose. |
-| W2 — `gpt/w2-retrieval-2026-09-30` | `f6b44f6059777892474b45e54e7fae516bd1eb04` | Per-thesis scope/detail, explicit claim/counter-evidence selection, graph/TF-IDF channels, lexical shadow and diagnostics through `loom_context_build` | Candidate admits all six extensions through real chat and adds 8 runtime cases. Plan provenance is declared, not W1-verified. Real-export semantic quality remains unestablished. |
+| W1 — `gpt/w1-active-task-2026-09-30` | `ba792b920fba36fb738ff39421d27b6d965aa11a` | Supplied ActiveTaskSpec compiled into real chat, source coverage, revisions, replay/edit/rebinding, C ABI and HTTP/SSE path | Integration adds atomic EventLog acceptance, complete snapshots, legacy baseline and paginated history; 14 new cases pass. No automatic inference from conversation prose. |
+| W2 — `gpt/w2-retrieval-2026-09-30` | `f6b44f6059777892474b45e54e7fae516bd1eb04` | Per-thesis scope/detail, explicit claim/counter-evidence selection, graph/TF-IDF channels, lexical shadow and diagnostics through `loom_context_build` | Integration admits all six extensions through real chat; 8 new runtime cases pass. Plan provenance is declared, not W1-verified. Real-export semantic quality remains unestablished. |
 | W3 — `gpt/w3-model-recipes-2026-09-30` | `078378d5fa65225b5978e2641dd1849cd4830536` | `directed_refute_v3`, 48 prepared DEV requests, compatible profiles and replay of 96 historical responses | No new model calls or measured effectiveness of the new recipe. Any live run retains existing budget/first-response accounting. |
 | W4 — `gpt/w4-graph-runtime-2026-09-30` | `e7000a9beda08769254f1893da5ed3a5097bfe58` | Local `analysis-graph` CLI links AnalysisPlan, resource budgets, dependent graph transforms and durable coordination | Output is GraphPacket projection; writing results to the native graph/store remains unconnected. |
-| W5 — `gpt/w5-workspace-2026-09-30` | `ecf6931bdde797799d2a1081ff898d3d0f1d3c8c` | Durable views, independent references, parameter couplings, saved perspective and run-correct inspectors | Candidate adds default-off explicit retrieval-plan editor. Browser-origin persistence, one perspective slot, no cross-device sync. Combined native/browser regression remains pending. |
-| W6 — `gpt/w6-evidence-2026-09-30` | `84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd` | Published import/transport instruments, counterexamples and bounded real OpenAI export checks | Candidate corrects source order, forward parents, locators and wrapper fields with parser export-2. Frozen synthetic instruments await rerun. Real Anthropic was not measured after a download timeout. |
+| W5 — `gpt/w5-workspace-2026-09-30` | `ecf6931bdde797799d2a1081ff898d3d0f1d3c8c` | Durable views, independent references, parameter couplings, saved perspective and run-correct inspectors | Integration adds default-off explicit retrieval-plan editor; combined chat/browser and W5 10/10 pass. Browser-origin persistence, one perspective slot, no cross-device sync. |
+| W6 — `gpt/w6-evidence-2026-09-30` | `84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd` | Published import/transport instruments, counterexamples and bounded real OpenAI export checks | Integration corrects source order, forward parents, locators including nested ZIP, and wrapper fields with export-2. Synthetic V2 24/24 and transport72/72 pass. Real Anthropic remains unmeasured. |
 
 Each listed lane checkpoint is now an ancestor of the shared candidate, through
 separate no-conflict merges. Original branch heads and evidence remain intact.
@@ -43,12 +44,33 @@ outside the examined sources.
 | `e807d8d64a17e57495882f68b127c2a144056130` | Six independently authored W1 counterexamples |
 | `1f06e005b528fd8175f2f51dc2745e422e7de4a9` | Importer fidelity correction and four cases |
 | `8cc5a5648ada511053d57a0f3979d96c5e0f1d36` | Eight further W1 crash/race/restart cases and implementation receipt |
+| `523a9cfe824f9792ed855028aa77f48e257c9348` | Nested ZIP source-hash/member binding and fifth importer case |
+| `da77c769d3e020c396db5bef6a3a3755314d75c0` | Corrected test fixture syntax; final implementation verified by the combined build |
 
 Publication uses the authenticated repository connection because shell Git has
 no push credentials. Each recreated commit's Git tree is checked against its
 local source tree; changed commit IDs reflect publication metadata, not content
 differences. No force push or history replacement is used on remote branches.
 Native verification uses one frozen source/build owner to avoid mixed objects.
+
+## Current combined verification
+
+Full Debug/Werror build passes; **94/94 CTest entries**, 0 failed/skipped, in
+**111.01 s**. All 27 newly added native cases pass. Structure's **841/841** is
+inside that full run, not an additive independent denominator.
+
+Frozen synthetic import V2 is **24/24**; its embedded V1 is **54/59**. The five
+retained V1 negatives cover two separate-member-blob checks and three wrapped-root
+locator checks using the older oracle's unwrapped root. Native actual-root and
+nested-source locator tests pass; the frozen instrument was not altered.
+Transport is **72/72**. Web build/form/state/mock gates pass; both browser/native
+gates pass, including **10/10** W5 scenarios and actual plan payload/trace equality.
+Initial compile and browser-environment failures remain in the reports.
+
+See [current STATE](../STATE.md), [verification evidence](../research/integration_2026-10-01/verification/)
+and [exact publication identities](../research/integration_2026-10-01/PUBLICATION.json).
+These are synthetic/local correctness checks, not real-export semantic quality
+or proof of model answer quality. No paid inference was used.
 
 ## What the retained pre-integration evidence actually supports
 
@@ -112,11 +134,11 @@ also decoded two saved conversation captures without locating the source.
 
 1. Keep this map and `../STATE.md` as the entry points; inspect fresh remote HEADs
    before continuing a lane. Do not restart already-delivered primitives.
-2. Complete combined build/native/browser and frozen W6 regression on the shared
-   candidate, retaining first failures and exact source/binary hashes. W1/W2 and
-   importer corrections are implemented, with execution results pending.
-3. Advance the established integration line only after those gates pass, then
-   update STATE with exact denominators and known limits.
+2. The combined integration and its gates are complete. Use the current shared
+   line and retained receipts; do not repeat delivered mechanisms or old runs
+   merely because their original lane handoffs say verification was pending.
+3. Pick new work from STATE's explicit remaining product/research boundaries;
+   current passing correctness gates do not establish semantic model quality.
 4. Keep unavailable real Anthropic data distinct from a synthetic importer pass,
    and the unavailable semantic prototype distinct from a new implementation.
 

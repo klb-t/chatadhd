@@ -4,8 +4,10 @@
 [PUBLICATION_STATUS.md](PUBLICATION_STATUS.md).** W1–W6 już wykonały przyrosty.
 Wszystkie odnalezione gotowe wyniki są opublikowane i scalone do wspólnego
 kandydata `gpt/integration-w1-w6-2026-10-01`; W5 zostało odzyskane.
-Źródło `8cc5a56` zawiera też poprawki trwałości W1, adapter W2, importer i UI.
-Trwa wspólna weryfikacja; historyczne wyniki gałęzi jej nie zastępują.
+Zweryfikowane źródło `da77c76` zawiera też poprawki trwałości W1, adapter W2,
+importer i UI. Wspólne CTest **94/94**, import V2 **24/24**, transport **72/72**
+i testy przeglądarkowe przeszły. Bieżący punkt wznowienia to
+`gpt/research-2026-09-30` oraz `docs/STATE.md`.
 Poniższe pakiety opisują przydziały, a nie aktualny stan wykonania.
 
 Stan organizacyjny: 2026-09-30. Integrator: ROOT w nowym wątku kontynuacji.
