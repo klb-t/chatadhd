@@ -1,0 +1,357 @@
+{
+  "always_false": {
+    "membership": {
+      "bits": 84,
+      "correct_bits": 48,
+      "exact_sets_correct": 12,
+      "exact_sets_planned": 48,
+      "candidate_subset_correct": 12,
+      "candidate_subset_planned": 48
+    },
+    "selected_claim": {
+      "bits": 44,
+      "correct_bits": 28,
+      "exact_sets_correct": 32,
+      "exact_sets_planned": 48,
+      "candidate_subset_correct": 8,
+      "candidate_subset_planned": 24
+    },
+    "joint_exact_correct": 12
+  },
+  "unknown_time_candidates": [
+    {
+      "case_id": "c_64face0fd8ae",
+      "decision": 0,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_dae085d849d8",
+      "kind": "selected_claim",
+      "label": 0,
+      "language": "pl",
+      "message_id": "m_680ca6d76980",
+      "probability": 0.09,
+      "question": "q03",
+      "request_id": "c_64face0fd8ae-m_680ca6d76980",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_f116f61beed9"
+      ]
+    },
+    {
+      "case_id": "c_64face0fd8ae",
+      "decision": 1,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_dae085d849d8",
+      "kind": "selected_claim",
+      "label": 1,
+      "language": "pl",
+      "message_id": "m_b9f8290151c9",
+      "probability": 0.7,
+      "question": "q03",
+      "request_id": "c_64face0fd8ae-m_b9f8290151c9",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_f116f61beed9"
+      ]
+    },
+    {
+      "case_id": "c_64face0fd8ae",
+      "decision": 0,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_dae085d849d8",
+      "kind": "selected_claim",
+      "label": 0,
+      "language": "pl",
+      "message_id": "m_433bf29faa35",
+      "probability": 0.06,
+      "question": "q04",
+      "request_id": "c_64face0fd8ae-m_433bf29faa35",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_f116f61beed9"
+      ]
+    },
+    {
+      "case_id": "c_64face0fd8ae",
+      "decision": 0,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_dae085d849d8",
+      "kind": "selected_claim",
+      "label": 0,
+      "language": "pl",
+      "message_id": "m_acd72631ea9f",
+      "probability": 0.45,
+      "question": "q04",
+      "request_id": "c_64face0fd8ae-m_acd72631ea9f",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_f116f61beed9"
+      ]
+    },
+    {
+      "case_id": "c_64face0fd8ae",
+      "decision": 1,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_dae085d849d8",
+      "kind": "selected_claim",
+      "label": 1,
+      "language": "pl",
+      "message_id": "m_480efa1ab12f",
+      "probability": 0.78,
+      "question": "q04",
+      "request_id": "c_64face0fd8ae-m_480efa1ab12f",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_f116f61beed9"
+      ]
+    },
+    {
+      "case_id": "c_64face0fd8ae",
+      "decision": 1,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_dae085d849d8",
+      "kind": "selected_claim",
+      "label": 1,
+      "language": "pl",
+      "message_id": "m_c2ca043d0b7e",
+      "probability": 0.82,
+      "question": "q04",
+      "request_id": "c_64face0fd8ae-m_c2ca043d0b7e",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_f116f61beed9"
+      ]
+    },
+    {
+      "case_id": "c_001f84cadd8a",
+      "decision": 0,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_f30c5f4a83d2",
+      "kind": "selected_claim",
+      "label": 0,
+      "language": "en",
+      "message_id": "m_ace79ce2443f",
+      "probability": 0.09,
+      "question": "q03",
+      "request_id": "c_001f84cadd8a-m_ace79ce2443f",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_42928180c572"
+      ]
+    },
+    {
+      "case_id": "c_001f84cadd8a",
+      "decision": 1,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_f30c5f4a83d2",
+      "kind": "selected_claim",
+      "label": 1,
+      "language": "en",
+      "message_id": "m_5b63fb76897e",
+      "probability": 0.76,
+      "question": "q03",
+      "request_id": "c_001f84cadd8a-m_5b63fb76897e",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_42928180c572"
+      ]
+    },
+    {
+      "case_id": "c_001f84cadd8a",
+      "decision": 0,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_f30c5f4a83d2",
+      "kind": "selected_claim",
+      "label": 0,
+      "language": "en",
+      "message_id": "m_5dcd5eefb560",
+      "probability": 0.1,
+      "question": "q04",
+      "request_id": "c_001f84cadd8a-m_5dcd5eefb560",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_42928180c572"
+      ]
+    },
+    {
+      "case_id": "c_001f84cadd8a",
+      "decision": 0,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_f30c5f4a83d2",
+      "kind": "selected_claim",
+      "label": 0,
+      "language": "en",
+      "message_id": "m_f0e43a7edb5c",
+      "probability": 0.12,
+      "question": "q04",
+      "request_id": "c_001f84cadd8a-m_f0e43a7edb5c",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_42928180c572"
+      ]
+    },
+    {
+      "case_id": "c_001f84cadd8a",
+      "decision": 1,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_f30c5f4a83d2",
+      "kind": "selected_claim",
+      "label": 1,
+      "language": "en",
+      "message_id": "m_225ad4d06094",
+      "probability": 0.75,
+      "question": "q04",
+      "request_id": "c_001f84cadd8a-m_225ad4d06094",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_42928180c572"
+      ]
+    },
+    {
+      "case_id": "c_001f84cadd8a",
+      "decision": 1,
+      "error": null,
+      "family": "availability_and_unknown_time",
+      "id": "k_f30c5f4a83d2",
+      "kind": "selected_claim",
+      "label": 1,
+      "language": "en",
+      "message_id": "m_ca7e1f440ae6",
+      "probability": 0.77,
+      "question": "q04",
+      "request_id": "c_001f84cadd8a-m_ca7e1f440ae6",
+      "unknown_temporal_fields": [
+        "claim",
+        "support:o_42928180c572"
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "error": {
+        "case_id": "c_3553baf3e7eb",
+        "decision": 1,
+        "error": "false_positive",
+        "family": "correction_and_contradiction",
+        "id": "k_3f8cdf30a15f",
+        "kind": "selected_claim",
+        "label": 0,
+        "language": "pl",
+        "message_id": "m_a7f80fb232c6",
+        "probability": 0.6,
+        "question": "q03",
+        "request_id": "c_3553baf3e7eb-m_a7f80fb232c6"
+      },
+      "response_sha256": "4b599787f7dbe580a4d62def2a00b4737a43fc776c2f574814a095d6b104deb1",
+      "response_file": "run/c_3553baf3e7eb-m_a7f80fb232c6.response.bin",
+      "target_text": "Odpowiednio zmieńmy konfigurację połączenia z bazą.",
+      "visible_prefix_texts": [
+        "Kupiłem nowy kubek.",
+        "Poprawiam moją wcześniejszą notatkę o Rivet: bazą jest PostgreSQL, nie SQLite.",
+        "Odpowiednio zmieńmy konfigurację połączenia z bazą."
+      ],
+      "expected_sets": {
+        "membership": [
+          "t_c2ba80d905f9"
+        ],
+        "selected_claim": []
+      },
+      "predicted_sets": {
+        "membership": [
+          "t_c2ba80d905f9"
+        ],
+        "selected_claim": [
+          "k_3f8cdf30a15f"
+        ]
+      }
+    },
+    {
+      "error": {
+        "case_id": "c_f69279d98b85",
+        "decision": 1,
+        "error": "false_positive",
+        "family": "correction_and_contradiction",
+        "id": "k_67c710cbf045",
+        "kind": "selected_claim",
+        "label": 0,
+        "language": "en",
+        "message_id": "m_861d9cee96ff",
+        "probability": 0.62,
+        "question": "q04",
+        "request_id": "c_f69279d98b85-m_861d9cee96ff"
+      },
+      "response_sha256": "bb78ff04831d9202a93dcb71ac566b161d842af446393bf005c794257cf7c54a",
+      "response_file": "run/c_f69279d98b85-m_861d9cee96ff.response.bin",
+      "target_text": "Update the database connection configuration accordingly.",
+      "visible_prefix_texts": [
+        "I bought a new mug.",
+        "I am correcting my earlier Rivet note: the database is PostgreSQL, not SQLite.",
+        "Update the database connection configuration accordingly."
+      ],
+      "expected_sets": {
+        "membership": [
+          "t_a5302398863d"
+        ],
+        "selected_claim": []
+      },
+      "predicted_sets": {
+        "membership": [
+          "t_a5302398863d"
+        ],
+        "selected_claim": [
+          "k_67c710cbf045"
+        ]
+      }
+    },
+    {
+      "error": {
+        "case_id": "c_64face0fd8ae",
+        "decision": 1,
+        "error": "false_positive",
+        "family": "availability_and_unknown_time",
+        "id": "t_6df51c1c4cfc",
+        "kind": "membership",
+        "label": 0,
+        "language": "pl",
+        "message_id": "m_b9f8290151c9",
+        "probability": 0.5,
+        "question": "q01",
+        "request_id": "c_64face0fd8ae-m_b9f8290151c9"
+      },
+      "response_sha256": "ac8f35a9d63d7c92e5798e2e0943c5a56a7172edcac698e9711ca5404bbb39ac",
+      "response_file": "run/c_64face0fd8ae-m_b9f8290151c9.response.bin",
+      "target_text": "Czy dostępne źródła potwierdzają, że Flint już wcześniej używał portu 8080?",
+      "visible_prefix_texts": [
+        "Przed chwilą zacząłem przeglądać dokumentację API Flint.",
+        "Czy dostępne źródła potwierdzają, że Flint już wcześniej używał portu 8080?"
+      ],
+      "expected_sets": {
+        "membership": [
+          "t_7ba92965bfc6"
+        ],
+        "selected_claim": [
+          "k_dae085d849d8"
+        ]
+      },
+      "predicted_sets": {
+        "membership": [
+          "t_6df51c1c4cfc",
+          "t_7ba92965bfc6"
+        ],
+        "selected_claim": [
+          "k_dae085d849d8"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "loom.context_scorer_freeze/1",
+  "frozen_at_utc": "2026-09-30T02:06:25.849676+00:00",
+  "origin": "copied_previous_workspace_untracked_not_integrated_remote",
+  "status": "independently_reviewed_offline_executable_before_actual_context_responses",
+  "code_changed": false,
+  "tests": 13,
+  "actual_context_model_calls_by_reviewer": 0,
+  "validation_labels_parsed": false,
+  "files": {
+    "loom/tools/structure/jev_context_score.py": {
+      "sha256": "41975d03937a9f15027eadab3f3ecb32a091a1cb4bdf3b52741963466c41c714"
+    },
+    "loom/tools/structure/test_jev_context_score.py": {
+      "sha256": "e9da4a4a5eb660cc2c07dd5fa9ba5dc5d564bb960e9f36020f84f428883c93a9"
+    }
+  }
+}

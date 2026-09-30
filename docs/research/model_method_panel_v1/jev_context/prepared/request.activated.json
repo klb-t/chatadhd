@@ -1,0 +1,1 @@
+{"batch_cap_usd": ".10", "budget_usd": 2, "enabled": true, "experiment_id": "jev-context-dev-v1", "max_requests": 48, "model": "typesafe/jev-1.13", "schema": "loom.jev_pilot_request/1"}

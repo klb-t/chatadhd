@@ -1,0 +1,15 @@
+{
+  "status": "previous_workspace_untracked_candidate_before_adoption",
+  "saved_at_utc": "2026-09-30T02:04:57.733168+00:00",
+  "head": "3a3c6236506c2606c5e365109804a6e19fdd76d1",
+  "files": {
+    "jev_context_score.py": {
+      "sha256": "41975d03937a9f15027eadab3f3ecb32a091a1cb4bdf3b52741963466c41c714",
+      "snapshot_file": "jev_context_score.py.txt"
+    },
+    "test_jev_context_score.py": {
+      "sha256": "24afdbbc3a5dcd25cab63edefe1f79f87b1b52db3c6ffdfd19bd894db6b14d80",
+      "snapshot_file": "test_jev_context_score.py.txt"
+    }
+  }
+}

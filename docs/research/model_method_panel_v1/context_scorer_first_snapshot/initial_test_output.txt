@@ -1,0 +1,15 @@
+test_development_gold_oracle_checks_wiring_not_model_accuracy (test_jev_context_score.ContextScoringTests.test_development_gold_oracle_checks_wiring_not_model_accuracy) ... ok
+test_empty_claim_sets_require_valid_output_and_subset_excludes_them (test_jev_context_score.ContextScoringTests.test_empty_claim_sets_require_valid_output_and_subset_excludes_them) ... ok
+test_fabricated_mixed_probabilities_and_selective_boundaries (test_jev_context_score.ContextScoringTests.test_fabricated_mixed_probabilities_and_selective_boundaries) ... ok
+test_foreign_gold_and_bool_probabilities_rejected (test_jev_context_score.ContextScoringTests.test_foreign_gold_and_bool_probabilities_rejected) ... ok
+test_gold_file_tampering_aborts_before_parsing_labels (test_jev_context_score.ContextScoringTests.test_gold_file_tampering_aborts_before_parsing_labels) ... ok
+test_invalid_completed_response_fails_whole_query (test_jev_context_score.ContextScoringTests.test_invalid_completed_response_fails_whole_query) ... ok
+test_live_mapping_and_source_hash_tampering_rejected (test_jev_context_score.ContextScoringTests.test_live_mapping_and_source_hash_tampering_rejected) ... ok
+test_missing_is_fn_for_positive_never_valid_negative (test_jev_context_score.ContextScoringTests.test_missing_is_fn_for_positive_never_valid_negative) ... ok
+test_response_hash_mismatch_aborts (test_jev_context_score.ContextScoringTests.test_response_hash_mismatch_aborts) ... ok
+test_validation_label_bodies_not_parsed (test_jev_context_score.ContextScoringTests.test_validation_label_bodies_not_parsed) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.218s
+
+OK

@@ -1,0 +1,1 @@
+{"model":"typesafe/jev-1.13-20260917","answers":{"q01":{"type":"noul","noul":0.96},"q02":{"type":"noul","noul":0.09},"q03":{"type":"noul","noul":0.16},"q04":{"type":"noul","noul":0.79}},"usage":{"input_tokens":4515,"output_tokens":76,"cost":0.00018963},"id":"gen-dec-1790734441-jkFMt9tYue6YqLbDAVyn","provider":"TypeSafe"}
