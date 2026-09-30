@@ -1,0 +1,25 @@
+test_actor_name_metadata_conflict_abstains (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_actor_name_metadata_conflict_abstains) ... ok
+test_colliding_turn_ids_remain_bound_to_distinct_source_hashes (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_colliding_turn_ids_remain_bound_to_distinct_source_hashes) ... ok
+test_conflicting_epoch_date_abstains (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_conflicting_epoch_date_abstains) ... ok
+test_inside_codepoint_is_unavailable (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_inside_codepoint_is_unavailable) ... ok
+test_invalid_actor_type_abstains (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_invalid_actor_type_abstains) ... ok
+test_known_at_none_is_unknown_without_epoch_imputation (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_known_at_none_is_unknown_without_epoch_imputation) ... ok
+test_malformed_locator_is_unavailable (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_malformed_locator_is_unavailable) ... ok
+test_malformed_pointer_scalar_is_unavailable (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_malformed_pointer_scalar_is_unavailable) ... ok
+test_missing_actor_does_not_fall_back_to_user_role (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_missing_actor_does_not_fall_back_to_user_role) ... ok
+test_missing_locator_is_unavailable (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_missing_locator_is_unavailable) ... ok
+test_missing_observation_date_is_explicit (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_missing_observation_date_is_explicit) ... ok
+test_mixed_source_ids_explicit_abstention (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_mixed_source_ids_explicit_abstention) ... ok
+test_narrow_quote_retains_message_actor (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_narrow_quote_retains_message_actor) ... ok
+test_one_raw_actor_source_can_resolve_without_second (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_one_raw_actor_source_can_resolve_without_second) ... ok
+test_projection_never_mutates_raw_or_observation (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_projection_never_mutates_raw_or_observation) ... ok
+test_same_recorded_actor_and_role_remain_separate (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_same_recorded_actor_and_role_remain_separate) ... ok
+test_source_hash_mismatch_is_unavailable (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_source_hash_mismatch_is_unavailable) ... ok
+test_span_outside_source_does_not_accept_empty_quote (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_span_outside_source_does_not_accept_empty_quote) ... ok
+test_turn_id_source_fields_conflict (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_turn_id_source_fields_conflict) ... ok
+test_unsupported_pointer_is_not_guessed (loom.tools.structure.retrieval_exploration_v1.actor_projection_v1.test_actor_projection.ActorProjectionTests.test_unsupported_pointer_is_not_guessed) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.003s
+
+OK

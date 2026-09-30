@@ -1,0 +1,779 @@
+{
+  "schema": "loom.independent_native_actor_controls/1",
+  "author": "frontier_matrix",
+  "scope": "literal source_recorded label transport controls, not verified world identity",
+  "cases": [
+    {
+      "id": "equal_actor_labels",
+      "document": {
+        "id": "container:equal_actor_labels",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Nela",
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:equal_actor_labels",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "The test recorder preserves this statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 43
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "resolved",
+          "value": "Nela"
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "turn"
+        },
+        "source_known_at_statement": {
+          "state": "resolved",
+          "value": "2026-01-02T03:04:05Z"
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "conflicting_actor_labels",
+      "document": {
+        "id": "container:conflicting_actor_labels",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Other Nela",
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:conflicting_actor_labels",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "The test recorder preserves this statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 43
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "conflicting_source_fields",
+          "value": null
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "turn"
+        },
+        "source_known_at_statement": {
+          "state": "resolved",
+          "value": "2026-01-02T03:04:05Z"
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "absent_actor_and_timestamp_no_fallback",
+      "document": {
+        "id": "container:absent_actor_and_timestamp_no_fallback",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:absent_actor_and_timestamp_no_fallback",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "The test recorder preserves this statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 43
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "unknown",
+          "value": null
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "turn"
+        },
+        "source_known_at_statement": {
+          "state": "unknown",
+          "value": null
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "name_only_narrow_utf8_quote",
+      "document": {
+        "id": "container:name_only_narrow_utf8_quote",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Żaneta"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "Początek: „łęźdź”.\nZachowaj ślad źródłowy."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:name_only_narrow_utf8_quote",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "łęźdź",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 14,
+          "byte_len": 9
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "resolved",
+          "value": "Żaneta"
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "turn"
+        },
+        "source_known_at_statement": {
+          "state": "resolved",
+          "value": "2026-01-02T03:04:05Z"
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "conflicting_source_ids",
+      "document": {
+        "id": "container:conflicting_source_ids",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Nela",
+                "loom_source_id": "control:other-source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:conflicting_source_ids",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "The test recorder preserves this statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 43
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "resolved",
+          "value": "Nela"
+        },
+        "source_id": {
+          "state": "conflicting_source_fields",
+          "value": null
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "turn"
+        },
+        "source_known_at_statement": {
+          "state": "resolved",
+          "value": "2026-01-02T03:04:05Z"
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "collision_source_a_metadata_actor_only",
+      "document": {
+        "id": "container:collision_source_a_metadata_actor_only",
+        "metadata": {
+          "loom_source_id": "control:source-a"
+        },
+        "mapping": {
+          "shared-turn": {
+            "message": {
+              "id": "shared-turn",
+              "author": {
+                "role": "user"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Lina",
+                "loom_source_id": "control:source-a",
+                "loom_source_turn_id": "shared-turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "Source A reports a local statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:shared-native-id",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "Source A reports a local statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/shared-turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 35
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "resolved",
+          "value": "Lina"
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source-a"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "shared-turn"
+        },
+        "source_known_at_statement": {
+          "state": "resolved",
+          "value": "2026-01-02T03:04:05Z"
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "collision_source_b_same_literal_ids",
+      "document": {
+        "id": "container:collision_source_b_same_literal_ids",
+        "metadata": {
+          "loom_source_id": "control:source-b"
+        },
+        "mapping": {
+          "shared-turn": {
+            "message": {
+              "id": "shared-turn",
+              "author": {
+                "role": "user",
+                "name": "Lina"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Lina",
+                "loom_source_id": "control:source-b",
+                "loom_source_turn_id": "shared-turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "Source B reports a distinct local statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:shared-native-id",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "Source B reports a distinct local statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/shared-turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 44
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "resolved",
+          "value": "Lina"
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source-b"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "shared-turn"
+        },
+        "source_known_at_statement": {
+          "state": "resolved",
+          "value": "2026-01-02T03:04:05Z"
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "missing_locator",
+      "document": {
+        "id": "container:missing_locator",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Nela",
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:missing_locator",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "The test recorder preserves this statement."
+      },
+      "expected_state": "unavailable",
+      "expected_fields": {},
+      "hash_mode": "actual",
+      "expected_reason": "missing_or_invalid_native_locator"
+    },
+    {
+      "id": "unsupported_second_text_part",
+      "document": {
+        "id": "container:unsupported_second_text_part",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Nela",
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement.",
+                  "Second source part exists but is outside the declared pointer contract."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:unsupported_second_text_part",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "Second source part exists but is outside the declared pointer contract.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/1",
+          "byte_start": 0,
+          "byte_len": 71
+        }
+      },
+      "expected_state": "unavailable",
+      "expected_fields": {},
+      "hash_mode": "actual",
+      "expected_reason": "unsupported_source_pointer_format"
+    },
+    {
+      "id": "explicit_null_known_at",
+      "document": {
+        "id": "container:explicit_null_known_at",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Nela",
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": null
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:explicit_null_known_at",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "The test recorder preserves this statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 43
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "resolved",
+          "value": "Nela"
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "turn"
+        },
+        "source_known_at_statement": {
+          "state": "unknown",
+          "value": null
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "known_at_observation_date_conflict",
+      "document": {
+        "id": "container:known_at_observation_date_conflict",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Nela",
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:known_at_observation_date_conflict",
+        "speaker": "user",
+        "date": "2026-01-02T03:05:05Z",
+        "text": "The test recorder preserves this statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 43
+        }
+      },
+      "expected_state": "bound_source_projection",
+      "expected_fields": {
+        "source_actor_label": {
+          "state": "resolved",
+          "value": "Nela"
+        },
+        "source_id": {
+          "state": "resolved",
+          "value": "control:source"
+        },
+        "source_turn_id": {
+          "state": "resolved",
+          "value": "turn"
+        },
+        "source_known_at_statement": {
+          "state": "conflicting_source_fields",
+          "value": null
+        },
+        "transport_role": {
+          "state": "resolved",
+          "value": "user"
+        }
+      },
+      "hash_mode": "actual"
+    },
+    {
+      "id": "wrong_raw_source_hash",
+      "document": {
+        "id": "container:wrong_raw_source_hash",
+        "metadata": {
+          "loom_source_id": "control:source"
+        },
+        "mapping": {
+          "turn": {
+            "message": {
+              "id": "turn",
+              "author": {
+                "role": "user",
+                "name": "Nela"
+              },
+              "create_time": 1767323045.0,
+              "metadata": {
+                "loom_source_speaker": "Nela",
+                "loom_source_id": "control:source",
+                "loom_source_turn_id": "turn",
+                "loom_source_known_at": "2026-01-02T03:04:05Z"
+              },
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  "The test recorder preserves this statement."
+                ]
+              }
+            }
+          }
+        }
+      },
+      "observation": {
+        "id": "obs:wrong_raw_source_hash",
+        "speaker": "user",
+        "date": "2026-01-02T03:04:05Z",
+        "text": "The test recorder preserves this statement.",
+        "locator": {
+          "source": "caller_computes_exact_raw_hash",
+          "json_pointer": "/mapping/turn/message/content/parts/0",
+          "byte_start": 0,
+          "byte_len": 43
+        }
+      },
+      "expected_state": "unavailable",
+      "expected_fields": {},
+      "hash_mode": "wrong",
+      "expected_reason": "raw_source_hash_mismatch"
+    }
+  ],
+  "cross_case_checks": [
+    {
+      "kind": "source_namespace_distinct",
+      "case_ids": [
+        "collision_source_a_metadata_actor_only",
+        "collision_source_b_same_literal_ids"
+      ]
+    }
+  ],
+  "native_graph_modified": false,
+  "native_runs": 0,
+  "actual_paid_requests": 0,
+  "actual_paid_cost_usd": "0",
+  "gold_or_validation_read": false
+}

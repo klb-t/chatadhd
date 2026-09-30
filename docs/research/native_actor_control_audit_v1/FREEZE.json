@@ -1,0 +1,42 @@
+{
+  "schema": "loom.independent_native_actor_control_freeze/1",
+  "frozen_at_utc": "2026-09-30T13:46:40.361267+00:00",
+  "files_sha256": {
+    "build_controls.py": "c1495be95a981e0a8cddd31a0403e83c6ce8fc66b67cbf4607d292847166d872",
+    "PROTOCOL.md": "03f3abfe1068bf4df96208547c61218062dcf79841287ea29b0946073541e541",
+    "controls.json": "cbcab26e642297e750c3f0aa22c6e2db58e250857489a3b73fd0f1e9ec9287e3"
+  },
+  "cases": 12,
+  "case_input_canonical_sha256": {
+    "equal_actor_labels": "d23565f93b1d9962606097377ee836e7ff5b658871c6a5118cdd8005f07c908f",
+    "conflicting_actor_labels": "61e611f584b477d164f5760a383ef0d06e448d011673ada4d90ce3930385ab09",
+    "absent_actor_and_timestamp_no_fallback": "2c903a50ddcaa3860bce25ab41abd2ac55760354b4431cc1a51887c039dd5b76",
+    "name_only_narrow_utf8_quote": "931b6eb47ff76afce3eaf0e2bcc6f71d2757416f7e6f40cb92ed5dd1113462e4",
+    "conflicting_source_ids": "8fd1961628fb5849762f5c10b5400a827cb640335b359d3f2697bc2fb0d45d4d",
+    "collision_source_a_metadata_actor_only": "5c0886e3c55baff790d72c2cd7dc761f2cdec15101e6f4456c697eaff5167465",
+    "collision_source_b_same_literal_ids": "de2c9b71e29eed28755d5ef7ae84a82d57d02ddb6c0dc6642fe721e46338647b",
+    "missing_locator": "5d124977c0ca81b5daa681c4560f185bc24586887effceea60b0aa4058cb1647",
+    "unsupported_second_text_part": "34ad989bd7c702770a779114a428028a6b7c45a66413ff9917fc80e2cb24a31a",
+    "explicit_null_known_at": "9a4ee0246ba6ce81ba9d976a8643bedc9d47e42b090dfbdacc4ad4e543a54dfb",
+    "known_at_observation_date_conflict": "a578ccecf790f4a0e5ca3a35c0ee0c920f7058928ec78950b21588371fdc6ea8",
+    "wrong_raw_source_hash": "57cd50109dccf758d0aef5b8aaa83219ef63cc286cdada13aefb31f083d0dec1"
+  },
+  "case_document_canonical_sha256": {
+    "equal_actor_labels": "a0b6545ac5b94ab69f01ce5d6e203b00e5b0438b89b6d8af82f7420faa8452a4",
+    "conflicting_actor_labels": "ecb2e718a60427de060d9995b62fbf46f5b10f1d9636dbd2f6fb92c97280f315",
+    "absent_actor_and_timestamp_no_fallback": "c674aacfad4a4fee2a8b0537ff36065a1035014293de5af91fdb0a71a05d2230",
+    "name_only_narrow_utf8_quote": "cc315f69d0f60ddade63831dd1ac85252240a7539c0d93fee24ddae4e1d65ed7",
+    "conflicting_source_ids": "0c7d3aeaa5c2020af121adab10e71f9ac6865e92feb5df8496aed03da597c01c",
+    "collision_source_a_metadata_actor_only": "d62277ea210163c0eff62f267f19b2352ab9304ea6fded9ebc17d9768ff1f83a",
+    "collision_source_b_same_literal_ids": "42c8f068d6bd0a06a6ec88e7c375b8fd09e2cecb195ac0c5f36516886c038537",
+    "missing_locator": "5689ae47ea16cfe66f6bb4aa6ee4ac6ce516f52eb721ab32a5b392fba59f9a54",
+    "unsupported_second_text_part": "bb457c682511f02367923dbe67ceb5b712ce33a26df2ab6786807eb86f70cd5a",
+    "explicit_null_known_at": "fc25c93b798ba12a00da79b95913c3e3ce4ce79735006410120b2e9df0bb9566",
+    "known_at_observation_date_conflict": "b349b0660b2a864593ee874b4d43d9cb00f5e9460ac58d86bbd288f36a3c612f",
+    "wrong_raw_source_hash": "c7e3d11da4c5b6d6184c998a15be662bf421abc98f85d0d72b1553c688a646b3"
+  },
+  "projection_executed": false,
+  "native_runs": 0,
+  "actual_paid_requests": 0,
+  "gold_or_validation_read": false
+}
