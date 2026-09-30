@@ -1,0 +1,15 @@
+Test project /workspace/scratch/23947acf329f/verification/build
+    Start 16: unit.test_chat_knowledge_context
+    Start 11: unit.test_chat_active_task
+    Start 63: compat.test_chat_active_task_http
+    Start 61: compat.test_abi_compat
+1/8 Test #61: compat.test_abi_compat ...................   Passed    0.55 sec
+    Start 15: unit.test_chat_engine
+2/8 Test #15: unit.test_chat_engine ....................   Passed    0.15 sec
+    Start 12: unit.test_chat_active_task_concurrency
+3/8 Test #63: compat.test_chat_active_task_http ........   Passed    0.75 sec
+    Start 13: unit.test_chat_active_task_retention
+4/8 Test #12: unit.test_chat_active_task_concurrency ...   Passed    0.22 sec
+    Start 14: unit.test_chat_active_task_revisions
+5/8 Test #11: unit.test_chat_active_task ...............   Passed    1.46 sec
+6/8 Test #13: unit.test_chat_active_task_retention .....   Passed    0.88 sec

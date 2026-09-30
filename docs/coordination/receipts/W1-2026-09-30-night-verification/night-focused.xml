@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="8"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="5"
+	timestamp="2026-09-30T23:40:58"
+	>
+	<testcase name="unit.test_chat_active_task" classname="unit.test_chat_active_task" time="1.45871" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 449 skipped
+[doctest] assertions: 186 | 186 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_concurrency" classname="unit.test_chat_active_task_concurrency" time="0.218148" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 464 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_retention" classname="unit.test_chat_active_task_retention" time="0.881059" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 457 skipped
+[doctest] assertions: 232 | 232 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_revisions" classname="unit.test_chat_active_task_revisions" time="1.05739" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 458 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_engine" classname="unit.test_chat_engine" time="0.153039" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 453 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_knowledge_context" classname="unit.test_chat_knowledge_context" time="5.15102" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 453 skipped
+[doctest] assertions: 212 | 212 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="compat.test_abi_compat" classname="compat.test_abi_compat" time="0.546418" status="run">
+		<properties/>
+		<system-out>test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.415s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_active_task_http" classname="compat.test_chat_active_task_http" time="0.754688" status="run">
+		<properties/>
+		<system-out>test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not) ... 23:40:59 [INFO ] loom.config: config.json not found - using defaults
+23:40:59 [INFO ] loom.config: secrets.json not found - using defaults
+23:40:59 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+23:40:59 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-http-x0tdzull/chatadhd.db
+23:40:59 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:40:59 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-http-x0tdzull)
+23:40:59 [INFO ] loom.db: Database closed
+23:40:59 [INFO ] loom.runtime: Loom runtime shut down
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.601s
+
+OK
+W1 transport receipt: 3 local provider calls, 0 remote calls; invalid binding adds 0 messages.
+</system-out>
+	</testcase>
+</testsuite>

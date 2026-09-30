@@ -1,0 +1,14 @@
+{
+  "loom/include/loom/chat_engine.h": "b03ba4dcf19a43aa0f62f1ba00bc745f6597aae0ac9bf2482118a6e5264e4883",
+  "loom/src/chat/active_task_spec.cpp": "2e97fa10d0f231a32862bbdaf150a293c62210e2670f25e848b465dc3ba20904",
+  "loom/src/chat/active_task_spec.h": "e6ab83172115b2863aec6c944a4b95f1995705695b58f6d8444ad3f218d77229",
+  "loom/src/chat/batch_api.cpp": "7a7e1fba5e2947e1297c06d74ddc023cfc82e80000be38f28e124d7743cf08fc",
+  "loom/src/chat/chat_engine.cpp": "1c20e43f5b98dd2a233f60705b9344cdf5a30d414ce6751bcc348a822ced8c81",
+  "loom/tests/compat/test_chat_active_task_http.py": "cfa7cf841243b4b3a037fbfb9c282f331facabeee4d4f0437ef157ccbbe84864",
+  "loom/tests/test_chat_active_task.cpp": "24ea3fb0e8630e4617076fe701ec9fa1fa71d0bbcaa2606142a2be7ad5809127",
+  "loom/tests/test_chat_active_task_concurrency.cpp": "2b80021cd81af09226004811074e6de450251df11a6053de93a7439f38b2de5d",
+  "loom/tests/test_chat_active_task_retention.cpp": "3f58e115bae363d08321d7f6d13757b3367a4b317f5b3dc5579d2e4580961fdb",
+  "loom/tests/test_chat_active_task_revisions.cpp": "d173349ed53ce4ef3a7cbb5fe2ca6d707595dfdffaf4148f59e82e50d860373a",
+  "loom/tests/test_chat_engine.cpp": "f846c2aa2074139bc6cc4b6d0a1e29077ed31aedb371716024c652c37f35e1cc",
+  "loom/tests/test_chat_knowledge_context.cpp": "2ae24afa30339c32540e138152ca7fa28bf9cc094678f66c4521027197a9fc7d"
+}

@@ -1,0 +1,56 @@
+{
+  "source_commit": "79361c5f7a19d132f46bb55e1d91eb5f8eab3509",
+  "previous_local_commit": "83ed579e94e48edc4cba68104ff0b22cfb66ec4e",
+  "source_unchanged_after_full_run": true,
+  "full_ctest": {
+    "entries": 82,
+    "failed": 0,
+    "skipped": 0,
+    "ctest_seconds": 82.21,
+    "wall_seconds": 82.238
+  },
+  "focused_ctest": {
+    "entries": 8,
+    "failed": 0,
+    "skipped": 0,
+    "junit_time_seconds": 5,
+    "subset_of_full": true,
+    "console_capture": "partial; complete results and case output preserved in JUnit"
+  },
+  "native_suites": [
+    {
+      "name": "unit.test_chat_active_task",
+      "cases": 19,
+      "assertions": 186
+    },
+    {
+      "name": "unit.test_chat_active_task_concurrency",
+      "cases": 4,
+      "assertions": 49
+    },
+    {
+      "name": "unit.test_chat_active_task_retention",
+      "cases": 11,
+      "assertions": 232
+    },
+    {
+      "name": "unit.test_chat_active_task_revisions",
+      "cases": 10,
+      "assertions": 228
+    }
+  ],
+  "native_total_cases": 44,
+  "native_total_assertions": 695,
+  "abi_unittest_methods_per_run": 3,
+  "http_unittest_methods_per_run": 1,
+  "loopback_provider_calls_per_run": 3,
+  "loopback_provider_calls_focused_and_full_total": 6,
+  "remote_model_calls": 0,
+  "evidence_class": "synthetic local mechanism tests; no semantic quality measurement",
+  "configuration": "Debug, WERROR, vendored SQLite, shared ABI, CLI, HTTP server",
+  "independent_review": "source review; execution owned by coordinator",
+  "binary_sha256": {
+    "loom_tests": "7487256af2676808e1c40a605e54e9a46c5b2c630e784aea8b82bc54800c3756",
+    "libloom.so.0.1.0": "0916b6bb82a497bd1038501f85c5f1d73fce94857ff07a6727a814211d7c7496"
+  }
+}

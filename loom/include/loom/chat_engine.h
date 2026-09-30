@@ -48,6 +48,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <mutex>
 #include <optional>
 #include <string>
@@ -165,6 +166,9 @@ class ChatEngine {
   MemoryEngine* memory_;
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
+  // Canonical accepted tasks while send() is running. Protected by db_.lock(),
+  // not mu_; this is same-engine process-local reentrancy/concurrency fencing.
+  std::map<std::string, Json> active_task_in_flight_;
   mutable std::mutex mu_;
   std::optional<Conversation> conv_;
   std::optional<std::string> last_reasoning_;

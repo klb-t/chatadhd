@@ -1,0 +1,42 @@
+{
+  "night-build-2.log": {
+    "bytes": 515,
+    "sha256": "9169b9234a2cea83d8dd3944f8c5a9d517302db6f94a8d9fcf62d0790246d48b"
+  },
+  "night-build-3.log": {
+    "bytes": 1381,
+    "sha256": "6f1b28b00954b3ef12ba564a89608a83b23f7de49df59213ff4e837a7258b8c0"
+  },
+  "night-build.log": {
+    "bytes": 56262,
+    "sha256": "3acf8e77bce0efc72b636d5cf746345ebdf7bd7cfc47b5713e6d7e9f3a5987fb"
+  },
+  "night-focused.log": {
+    "bytes": 896,
+    "sha256": "a67adbe1221d2e8f6c2e3142d1c911d1ad77aa16ac3bf01245659a1c001d4825"
+  },
+  "night-focused.xml": {
+    "bytes": 4269,
+    "sha256": "819d9126c271ae0a487b8b4f9a0c07fb84ff95324908b5cc544a9f3022edd431"
+  },
+  "night-full-execution.json": {
+    "bytes": 439,
+    "sha256": "e426088240d22ea2bcbfe2d73989492f9080a9a896e18f764110cc0f961aad94"
+  },
+  "night-full.log": {
+    "bytes": 9919,
+    "sha256": "b35f535481dd6d4e6d21bba893bb0552107b2e95404dfa61d5ee377e53093d02"
+  },
+  "night-full.xml": {
+    "bytes": 45044,
+    "sha256": "aa6ac008439b8816d963c520da0fe451e3dd6ebef579fdd98ebea459b9d4c989"
+  },
+  "night-source-before.json": {
+    "bytes": 1340,
+    "sha256": "4a8caf1f26fafe54e23e09d4492f4df11e9325958ed743917ddfed88342a01bd"
+  },
+  "results.json": {
+    "bytes": 1695,
+    "sha256": "d03a231ba0c7ddebfac17957ba757599a854568ac755cf35c770c0b107f924af"
+  }
+}

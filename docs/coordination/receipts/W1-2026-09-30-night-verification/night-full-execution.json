@@ -1,0 +1,15 @@
+{
+  "returncode": 0,
+  "wall_seconds": 82.238,
+  "command": [
+    "/workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/ctest",
+    "--test-dir",
+    "/workspace/scratch/23947acf329f/verification/build",
+    "-j4",
+    "--output-on-failure",
+    "--output-junit",
+    "/workspace/scratch/23947acf329f/verification/night-full.xml"
+  ],
+  "source_commit": "79361c5f7a19d132f46bb55e1d91eb5f8eab3509",
+  "source_unchanged": true
+}

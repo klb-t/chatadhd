@@ -1,5 +1,11 @@
 # W1 — ActiveTaskSpec request compiler
 
+This is the first-increment receipt. The publication block at its end is
+historical: the owner subsequently approved publication and remote commit
+`25710d33e8cb044ba3b464286f1dfba91649c169` contains the exact verified tree.
+See the [overnight queue](W1-2026-09-30-night-queue.md) and later W1 night receipts
+for subsequent increments; do not apply these test counts to later source code.
+
 ## Identity and coordination
 
 - `base_sha`: `b118c80e981c08ec6d7f9ab6aacc177979186cf2`.
