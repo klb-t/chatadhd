@@ -13,6 +13,10 @@
 //   messages.attachments   JSON array of readable locations (blob path or zip member) of *resolved* files
 //   messages.metadata      {"export": {provider, key, node, raw (the complete original message object),
 //                            blocks[], attachments[], pointers[], citations[], citation_groups[], flags...}}
+//   export-2 additions     source_index is an original array position (never DFS/time order);
+//                          traversal_index is the parser's graph walk; source_key addresses OpenAI mapping.
+//                          json_pointer is RFC 6901 relative to the complete JSON member/file;
+//                          wrapper_fields keeps siblings of a wrapper's conversations array.
 //   nodes/links            non-conversation entities (kinds "export:account", "export:feedback",
 //                            "export:shared_link", "export:project", "export:project_doc", "export:memory",
 //                            "export:artifact", "export:member") with the verbatim record in metadata.
@@ -100,7 +104,7 @@ struct MsgModel {
 struct ConvModel {
   std::string key, title, created, updated, source;
   Json export_meta = Json::object();  // conversations.metadata["export"]
-  std::vector<MsgModel> msgs;         // insertion order: parents before children
+  std::vector<MsgModel> msgs;         // insertion order; Anthropic retains source array order
   int groups = 0;
   std::int64_t leaves_total = 0;      // JSON leaves of the source conversation object
   std::int64_t leaves_kept = 0;       // ... of which are stored verbatim (fields + raw messages + node structure)
@@ -139,6 +143,7 @@ struct Loader {
   std::function<void(std::int64_t index, const std::string& why)> bad_element;
   bool wrapper = false;
   bool top_is_array = false;
+  Json wrapper_fields = Json::object();  // every sibling of the conversations array, verbatim
 };
 LoadStats load_json_file(const fs::path& path, Loader& loader);
 // Whole-document convenience (small files): parsed value or nullopt (see stats).

@@ -194,7 +194,20 @@ void ConversationImporter::record_provenance(const Conversation& conv, std::stri
   Json loc = Json{{"conversation_index", ctx.conv_index}};
   if (ctx.zip_member) loc["zip_member"] = *ctx.zip_member;
   if (ctx.json_path) loc["json_path"] = *ctx.json_path;
-  std::string transform = "import." + std::string(handler) + "@" + std::string(kImporterParserVersion);
+  const bool provider_export = handler == "export";
+  if (provider_export) {
+    if (!ctx.blob_hash.empty()) loc["source"] = "sha256:" + ctx.blob_hash;
+    if (ctx.zip_member) loc["member"] = *ctx.zip_member;
+    if (const Json* metadata = json::find(conv.metadata, "export"); metadata && metadata->is_object()) {
+      if (const Json* pointer = json::find(*metadata, "json_pointer"); pointer && pointer->is_string()) {
+        loc["json_pointer"] = *pointer;
+        loc["json_path"] = *pointer;  // existing provenance consumer spelling
+        loc["source_conversation_index"] = (*metadata)["source_index"];
+      }
+    }
+  }
+  std::string transform = "import." + std::string(handler) + "@" +
+      std::string(provider_export ? kExportParserVersion : kImporterParserVersion);
 
   ProvenanceRecord conv_rec;
   conv_rec.subject_id = conv.id;
@@ -212,6 +225,21 @@ void ConversationImporter::record_provenance(const Conversation& conv, std::stri
     for (std::size_t i = 0; i < msgs->size(); ++i) {
       Json mloc = loc;
       mloc["message_index"] = static_cast<std::int64_t>(i);
+      if (provider_export) {
+        const Json* metadata = json::find((*msgs)[i].metadata, "export");
+        if (metadata && metadata->is_object()) {
+          if (const Json* pointer = json::find(*metadata, "json_pointer"); pointer && pointer->is_string()) {
+            mloc["json_pointer"] = *pointer;
+            mloc["json_path"] = *pointer;
+            mloc["view_message_index"] = static_cast<std::int64_t>(i);
+            mloc.erase("message_index");  // object keys are not array offsets
+            if (const Json* source_index = json::find(*metadata, "source_index"); source_index && source_index->is_number_integer())
+              mloc["message_index"] = *source_index;
+            if (const Json* key = json::find(*metadata, "source_key")) mloc["source_key"] = *key;
+            if (const Json* traversal = json::find(*metadata, "traversal_index")) mloc["traversal_index"] = *traversal;
+          }
+        }
+      }
       ProvenanceRecord mr;
       mr.subject_id = (*msgs)[i].id;
       mr.subject_kind = "message";

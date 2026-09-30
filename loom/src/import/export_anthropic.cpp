@@ -181,7 +181,7 @@ void parse_anthropic_conversation(const Json& conv, int index, const std::string
   for (int i = 0; i < N; ++i) path_msgs += on_path[static_cast<std::size_t>(i)] ? 1 : 0;
   counts.current_path_messages += path_msgs;
 
-  // per-message model, in insertion (DFS) order
+  // Source array order is a separate axis from traversal and display time.
   std::optional<std::string> conv_model;
   if (std::string cmod = gets(conv, "model"); !cmod.empty()) conv_model = cmod;
   std::optional<std::string> conv_created = to_iso(getp(conv, "created_at") ? *getp(conv, "created_at") : Json(nullptr));
@@ -201,8 +201,8 @@ void parse_anthropic_conversation(const Json& conv, int index, const std::string
     if (auto t = to_iso(*u)) updated = *t;
   }
 
-  std::vector<int> mindex(static_cast<std::size_t>(N), -1);
-  for (std::size_t p = 0; p < order.size(); ++p) mindex[static_cast<std::size_t>(order[p])] = static_cast<int>(p);
+  std::vector<int> traversal_index(static_cast<std::size_t>(N), -1);
+  for (std::size_t p = 0; p < order.size(); ++p) traversal_index[static_cast<std::size_t>(order[p])] = static_cast<int>(p);
 
   // sibling groups
   std::vector<int> group(static_cast<std::size_t>(N), -1), vnum(static_cast<std::size_t>(N), 1),
@@ -226,7 +226,9 @@ void parse_anthropic_conversation(const Json& conv, int index, const std::string
   std::int64_t kept = 0;
   out.msgs.resize(order.size());
   for (std::size_t p = 0; p < order.size(); ++p) {
-    int i = order[p];
+    // Emit in the original chat_messages array order, including a child that
+    // precedes its parent. The writer preassigns all IDs before inserting rows.
+    int i = static_cast<int>(p);
     const Json& m = *raws[static_cast<std::size_t>(i)];
     MsgModel& mm = out.msgs[p];
     counts.message += 1;
@@ -236,7 +238,7 @@ void parse_anthropic_conversation(const Json& conv, int index, const std::string
     mm.created = mtime[static_cast<std::size_t>(i)].empty() ? created : mtime[static_cast<std::size_t>(i)];
     if (has_parents) {
       int pi = parent[static_cast<std::size_t>(i)];
-      mm.parent = (pi >= 0 && reachable[static_cast<std::size_t>(i)]) ? mindex[static_cast<std::size_t>(pi)] : -1;
+      mm.parent = (pi >= 0 && reachable[static_cast<std::size_t>(i)]) ? pi : -1;
     } else {
       mm.parent = p == 0 ? -1 : static_cast<int>(p) - 1;  // linear export: implied chain
     }
@@ -368,6 +370,8 @@ void parse_anthropic_conversation(const Json& conv, int index, const std::string
     ex["provider"] = "anthropic";
     ex["kind"] = "message";
     ex["key"] = mm.key;
+    ex["source_index"] = i;
+    ex["traversal_index"] = traversal_index[static_cast<std::size_t>(i)];
     ex["raw"] = m;
     ex["role_raw"] = sender.empty() ? Json(nullptr) : Json(sender);
     ex["blocks"] = bl;

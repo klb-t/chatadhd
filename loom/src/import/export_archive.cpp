@@ -47,6 +47,16 @@ std::string dir_of(const std::string& rel) {
 int depth_of(const std::string& rel) { return static_cast<int>(std::count(rel.begin(), rel.end(), '/')); }
 bool ends_with(std::string_view s, std::string_view suf) { return s.size() >= suf.size() && s.compare(s.size() - suf.size(), suf.size(), suf) == 0; }
 
+std::string pointer_token(std::string_view key) {
+  std::string escaped;
+  for (char character : key) {
+    if (character == '~') escaped += "~0";
+    else if (character == '/') escaped += "~1";
+    else escaped += character;
+  }
+  return escaped;
+}
+
 Json member_json(const std::string& name, std::int64_t size, std::string_view disposition, Json extra = Json::object()) {
   extra["name"] = name;
   extra["size"] = size;
@@ -90,7 +100,8 @@ struct Run {
   }
 
   // Returns false to stop (cancelled).
-  bool element(Json&& el, const std::string& member, std::int64_t idx, const std::string& provider_default) {
+  bool element(Json&& el, const std::string& member, std::int64_t idx, const std::string& provider_default,
+               const Loader& loader) {
     if (env.cancelled()) return false;
     if (!el.is_object()) {
       rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "unrecognized_element"},
@@ -105,6 +116,28 @@ struct Run {
     Counts c;
     if (prov == "openai") parse_openai_conversation(el, conv_index, member, oa, cm, c);
     else parse_anthropic_conversation(el, conv_index, member, env, cm, c);
+
+    // Global import/traversal order is not an address in the source member.
+    const std::string conversation_pointer = loader.wrapper ? "/conversations/" + std::to_string(idx)
+        : loader.top_is_array ? "/" + std::to_string(idx) : "";
+    cm.export_meta["source_index"] = idx;
+    cm.export_meta["source_container"] = loader.wrapper ? "conversations_wrapper" : loader.top_is_array ? "array" : "object";
+    cm.export_meta["json_pointer"] = conversation_pointer;
+    if (loader.wrapper) cm.export_meta["wrapper_fields"] = loader.wrapper_fields;
+    for (std::size_t message_index = 0; message_index < cm.msgs.size(); ++message_index) {
+      auto& message = cm.msgs[message_index];
+      auto& metadata = message.export_meta;
+      metadata["member"] = member;
+      metadata["source_conversation_index"] = idx;
+      if (prov == "openai") {
+        metadata["source_key"] = message.key;
+        metadata["traversal_index"] = message_index;
+        metadata["json_pointer"] = conversation_pointer + "/mapping/" + pointer_token(message.key) + "/message";
+      } else {
+        metadata["json_pointer"] = conversation_pointer + "/chat_messages/" +
+            std::to_string(json::get_int(metadata, "source_index", -1));
+      }
+    }
 
     std::map<std::string, std::string> key_to_id;
     auto w = write_conversation(env, cm, &key_to_id);
@@ -281,7 +314,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
       if (run.env.cancelled()) break;
       Loader L;
       const std::string member = e.rel;
-      L.element = [&](Json&& el, std::int64_t idx) { return run.element(std::move(el), member, idx, provider); };
+      L.element = [&](Json&& el, std::int64_t idx) { return run.element(std::move(el), member, idx, provider, L); };
       L.bad_element = [&](std::int64_t idx, const std::string& why) {
         run.rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "invalid_element"}, {"message", why}});
         run.rep.partial = true;
@@ -525,7 +558,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
       }
       run.rep.provider = provider;
     }
-    return run.element(std::move(el), member, idx, provider);
+    return run.element(std::move(el), member, idx, provider, L);
   };
   L.bad_element = [&](std::int64_t idx, const std::string& why) {
     if (provider.empty()) return;

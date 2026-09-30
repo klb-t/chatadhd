@@ -365,6 +365,9 @@ LoadStats load_json_file(const fs::path& path, Loader& L) {
                                                        !json::find(doc, "chat_messages")) {
       L.wrapper = true;
       L.top_is_array = true;
+      for (auto it = doc.begin(); it != doc.end(); ++it) {
+        if (it.key() != "conversations") L.wrapper_fields[it.key()] = it.value();
+      }
       std::int64_t i = 0;
       for (const auto& item : *c) {
         Json copy = item;
@@ -420,7 +423,11 @@ Result<Conversation> write_conversation(Env& env, ConvModel& cm, std::map<std::s
   for (std::size_t i = 0; i < cm.msgs.size(); ++i) {
     const MsgModel& m = cm.msgs[i];
     std::optional<std::string> parent;
-    if (m.parent >= 0 && static_cast<std::size_t>(m.parent) < i) parent = ids[static_cast<std::size_t>(m.parent)];
+    // IDs are allocated for the whole conversation above. parent_id has no
+    // immediate foreign-key constraint; the transaction commits only after all
+    // rows exist, so source ordering need not be parent-before-child ordering.
+    if (m.parent >= 0 && static_cast<std::size_t>(m.parent) < ids.size() && static_cast<std::size_t>(m.parent) != i)
+      parent = ids[static_cast<std::size_t>(m.parent)];
     std::string vg = m.group >= 0 ? group_ids[static_cast<std::size_t>(m.group)] : gen_id(id_prefix::kVersionGroup);
     Json md = Json::object();
     md["export"] = m.export_meta;

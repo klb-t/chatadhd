@@ -73,7 +73,7 @@ class ProvenanceStore;
 class MediaProviders;
 
 inline constexpr std::string_view kImporterParserVersion = "1";
-inline constexpr std::string_view kExportParserVersion = "export-1";
+inline constexpr std::string_view kExportParserVersion = "export-2";
 
 // (current, total, status). Units: conversations when the total is known,
 // otherwise bytes read; total = -1 when unknown.
