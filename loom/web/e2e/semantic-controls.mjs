@@ -169,6 +169,22 @@ try {
   assert.equal(await workbench.getByTestId("kb-pane-claims").count(), 1);
   assert.equal(await workbench.getByTestId("kb-pane-graph").count(), 1);
   assert.equal(calls.filter((call) => /judge|promot|chat/.test(call.path)).length, 0);
+  // W5 persistence resolves the saved ID against loaded candidate rows. The
+  // inspector must never relabel a selection from another run as this run's data.
+  await page.reload();
+  await page.getByTestId("nav-knowledge").click();
+  await workbench.getByTestId("kb-candidate-structure").waitFor();
+  assert.match(await inspector.innerText(), /scope boundary needs review/);
+  assert.equal(await pane.getByLabel("Candidate page size").inputValue(), "25");
+  await page.evaluate(() => {
+    const key = "loom.knowledge.workspace.v2", saved = JSON.parse(localStorage.getItem(key));
+    saved.panes.find(p => p.kind === "candidates").parameters.selection.run = "kr_other";
+    localStorage.setItem(key, JSON.stringify(saved));
+  });
+  await page.reload();
+  await page.getByTestId("nav-knowledge").click();
+  await pane.getByText("1 shown · 1 matching candidates", { exact: true }).waitFor();
+  assert.equal(await inspector.getByTestId("kb-candidate-structure").count(), 0, "mismatched-run selection is not resolved");
   assert.deepEqual(unexpected, []);
   assert.deepEqual(pageErrors, []);
   console.log("[semantic-controls] PASS: default off/relation mode, bounded auto, experimental graph opt-in/counts/drafts/unknowns/source links, candidate provenance/pagination, retained views; all API calls mocked");

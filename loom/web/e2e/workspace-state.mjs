@@ -27,6 +27,19 @@ check("unlink removes ingress and egress, duplicate retains settings independent
   assert.equal(w.panes[3].parameters.filter,"reference"); assert.equal(w.panes[3].followRun,false);
   assert.notEqual(w.panes[3].id,id);
 });
+check("adding views never reconnects a detached reference", () => {
+  let w = m.initialWorkspace(); const id = w.panes[0].id;
+  w = m.unlink(w,id); w = m.addPane(w,"graph");
+  assert.ok(!w.bindings.some(b => b.source === id || b.target === id));
+  assert.equal(w.panes[0].followRun,false);
+});
+check("pagination survives reload and refresh but resets when the data run changes", () => {
+  let w = m.setWorkspaceRun(m.initialWorkspace(["candidates"]), "r1");
+  w = m.changeParameter(w,w.panes[0].id,"offset",25);
+  w = m.parseWorkspace(JSON.stringify(w));
+  assert.equal(m.setWorkspaceRun(w,"r1").panes[0].parameters.offset,25);
+  assert.equal(m.setWorkspaceRun(w,"r2").panes[0].parameters.offset,0);
+});
 check("round trip preserves stable IDs, empty layout, run, query, links and selection", () => {
   let w = m.initialWorkspace(); w = m.setWorkspaceRun(w,"r123");
   w = m.changeParameter(w,w.panes[0].id,"text","Goal");

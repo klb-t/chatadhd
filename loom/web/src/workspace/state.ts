@@ -24,7 +24,7 @@ export const SAVED_KEY = "loom.knowledge.perspective.v2";
 const defaults: Parameters = {
   run: "", limit: 1000, filter: "", confidence: 0, evidence: "", depth: 1, fade: 20,
   maxNodes: 60, follow: true, selection: null, text: "", budget: 4000,
-  candidateKind: "", pageSize: 50, offset: 0, selectedOnly: false,
+  candidateKind: "semantic_structure", pageSize: 25, offset: 0, selectedOnly: false,
 };
 let sequence = 0;
 export function newPane(kind: ViewKind, run = "", limit = 1000): Pane {
@@ -68,8 +68,16 @@ export function connect(state: Workspace, source: string, target: string, parame
 }
 export function setWorkspaceRun(state: Workspace, run: string): Workspace {
   return { ...state, run, panes: state.panes.map((pane) => pane.followRun ? {
-    ...pane, parameters: { ...pane.parameters, run, selection: pane.parameters.run === run ? pane.parameters.selection : null },
+    ...pane, parameters: { ...pane.parameters, run, offset: pane.parameters.run === run ? pane.parameters.offset : 0, selection: pane.parameters.run === run ? pane.parameters.selection : null },
   } : pane) };
+}
+export function addPane(state: Workspace, kind: ViewKind): Workspace {
+  const pane = newPane(kind, state.run, state.limit);
+  // An unlinked reference must never be recruited as a default selection hub.
+  const first = state.panes.find((p) => p.followRun && state.bindings.some((b) => b.parameter === "selection" && (b.source === p.id || b.target === p.id)));
+  return { ...state, panes: [...state.panes, pane], bindings: first ? [...state.bindings,
+    { source: first.id, target: pane.id, parameter: "selection" },
+    { source: pane.id, target: first.id, parameter: "selection" }] : state.bindings };
 }
 export function duplicatePane(state: Workspace, id: string): Workspace {
   const original = state.panes.find((p) => p.id === id);

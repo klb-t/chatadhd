@@ -66,3 +66,18 @@
 .kb-node text.kb-node-evidence { fill: var(--dim); font-size: 8px; }
 @media (max-width: 1200px) { .kb-workspace { flex-direction: column; } .kb-panels { width: 100%; } .kb-inspector { width: 100%; flex-basis: auto; position: static; max-height: none; } }
 @media (max-width: 720px) { .kb-toolbar, .kb-heading { padding-left: 12px; padding-right: 12px; } .kb-toolbar label { flex: 1; } .kb-workspace { padding: 0 8px 16px; } .kb-run-controls { margin-left: 12px; margin-right: 12px; } }
+/* Presentation profiles affect only layout and density. */
+.kb-profile-stacked .kb-panels { grid-template-columns: minmax(0, 1fr); }
+.kb-profile-compact .kb-record { padding: 6px 10px; gap: 3px; }
+.kb-profile-compact .kb-panels { gap: 8px; }
+.kb-view-settings { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.kb-view-settings > summary { cursor: pointer; padding: 4px 0; }
+.kb-view-settings label { margin: 8px 0; }
+.kb-view-settings select, .kb-view-settings input, .kb-toolbar select, .kb-toolbar input { min-width: 0; max-width: 100%; }
+.kb-view-settings .kb-link { overflow-wrap: anywhere; }
+.kb-view-settings .kb-link button { padding: 3px 6px; }
+.kb-count, .kb-warning { overflow-wrap: anywhere; }
+.kb-pane > .kb-warning { margin: 8px 12px; }
+.kb-toolbar label { min-width: 0; }
+
+.kb-run-status { font-size: 11px; color: var(--dim); padding: 8px 12px; overflow-wrap: anywhere; }

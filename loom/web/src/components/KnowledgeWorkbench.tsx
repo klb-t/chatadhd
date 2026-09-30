@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { api } from "../api";
 import {
   asArray, asRecord, displayText,
@@ -7,29 +7,12 @@ import {
 } from "../api/knowledge";
 import "./knowledge.css";
 
-type ViewKind = KnowledgeCollection | "graph" | "context" | "catalog" | "candidates";
-type Pane = { id: string; kind: ViewKind };
+import { VIEWS, STORAGE_KEY, SAVED_KEY, loadWorkspace, parseWorkspace, addPane, changeParameter, connect, unlink, duplicatePane, setWorkspaceRun,
+  type ViewKind, type Pane, type Parameters, type Parameter, type Workspace } from "../workspace/state";
 type Selection = { kind: string; record: KnowledgeRecord };
 type Dataset = Partial<Record<KnowledgeCollection, KnowledgeRecord[]>>;
 const COLLECTIONS: KnowledgeCollection[] = ["entities", "claims", "principles", "operators", "instances", "products"];
-const VIEWS: Record<ViewKind, string> = {
-  entities: "Entities", claims: "Claims", graph: "Knowledge graph", principles: "Principles",
-  operators: "Operators", context: "Context trace", catalog: "Source catalog",
-  instances: "Project instances", products: "Products",
-  candidates: "Candidate proposals",
-};
-const LAYOUT_KEY = "loom.knowledge.layout.v1";
-let paneSequence = 0;
-const newPane = (kind: ViewKind): Pane => ({ id: `view-${Date.now()}-${++paneSequence}`, kind });
-function initialPanes(): Pane[] {
-  try {
-    const saved: unknown = JSON.parse(localStorage.getItem(LAYOUT_KEY) ?? "null");
-    if (Array.isArray(saved) && saved.length && saved.every((kind) => typeof kind === "string" && kind in VIEWS)) {
-      return saved.map((kind) => newPane(kind as ViewKind));
-    }
-  } catch { /* Storage may be disabled. The workbench still works. */ }
-  return [newPane("entities"), newPane("claims"), newPane("graph")];
-}
+type Change = <K extends Parameter>(parameter: K, value: Parameters[K]) => void;
 const idOf = (row: KnowledgeRecord): string => displayText(row.id || asRecord(row.unit).id);
 const errorText = (error: unknown): string => error instanceof Error ? error.message : String(error);
 function evidenceOf(row: KnowledgeRecord): KnowledgeRecord {
@@ -60,100 +43,154 @@ function JsonDetail({ label, value, open = false }: { label: string; value: unkn
 
 export default function KnowledgeWorkbench({ onClose, onDataChanged }: { onClose: () => void; onDataChanged?: () => void }) {
   const knowledge = api.knowledge;
-  const [panes, setPanes] = useState<Pane[]>(initialPanes);
+  const [loaded] = useState(loadWorkspace);
+  const [workspace, setWorkspace] = useState(loaded.workspace);
+  const [storageError, setStorageError] = useState(loaded.error);
+  const [saveStatus, setSaveStatus] = useState("");
   const [addKind, setAddKind] = useState<ViewKind>("graph");
   const [runs, setRuns] = useState<KnowledgeRun[]>([]);
-  const [runId, setRunId] = useState("");
-  const [data, setData] = useState<Dataset>({});
-  const [limit, setLimit] = useState(1000);
-  const [busy, setBusy] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [error, setError] = useState("");
   const [refresh, setRefresh] = useState(0);
-  const [selection, setSelection] = useState<Selection | null>(null);
-  const [focus, setFocus] = useState("");
-  const entityMap = useMemo(() => new Map((data.entities ?? []).map((row) => [idOf(row), row])), [data.entities]);
-
+  const [inspection, setInspection] = useState<{ pane: string; run: string; limit: number; refresh: number; selection: Selection; entities: Map<string, KnowledgeRecord> } | null>(null);
+  const { panes, run: runId, limit } = workspace;
+  const inspectedPane = panes.find((p) => p.id === inspection?.pane);
+  const currentInspection = inspection && inspectedPane && inspection.run === inspectedPane.parameters.run &&
+    inspection.limit === inspectedPane.parameters.limit && inspection.refresh === refresh &&
+    inspection.selection.kind === inspectedPane.parameters.selection?.kind &&
+    idOf(inspection.selection.record) === inspectedPane.parameters.selection?.id ? inspection : null;
   useEffect(() => {
-    try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(panes.map((pane) => pane.kind))); } catch { /* optional layout persistence */ }
-  }, [panes]);
-
+    if (storageError) return;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace)); }
+    catch (failure) { setStorageError(`Workspace changes are not saved: ${errorText(failure)}`); }
+  }, [workspace, storageError]);
   useEffect(() => {
     if (!knowledge) return;
     let active = true;
     knowledge.listRuns().then((next) => {
       if (!active) return;
-      setRuns(next);
-      setRunId((current) => next.some((run) => run.id === current) ? current : (next.find((run) => run.status === "done")?.id ?? next[0]?.id ?? ""));
-    }).catch((error) => active && setErrors([errorText(error)]));
+      setRuns(next); setError("");
+      // Never replace an explicitly saved, now unavailable run with newer data.
+      setWorkspace((current) => current.run ? current : setWorkspaceRun(current, next.find((run) => run.status === "done")?.id ?? next[0]?.id ?? ""));
+    }).catch((failure) => active && setError(errorText(failure)));
     return () => { active = false; };
   }, [knowledge, refresh]);
-
-  useEffect(() => {
-    if (!knowledge || !runId) { setData({}); setBusy(false); return; }
-    let active = true;
-    setBusy(true);
-    setSelection(null);
-    setFocus("");
-    setData({});
-    Promise.allSettled(COLLECTIONS.map((what) => knowledge.query(what, { run: runId, limit }))).then((results) => {
-      if (!active) return;
-      const next: Dataset = {};
-      const failures: string[] = [];
-      results.forEach((result, index) => {
-        if (result.status === "fulfilled") next[COLLECTIONS[index]] = result.value.items;
-        else failures.push(`${VIEWS[COLLECTIONS[index]]}: ${errorText(result.reason)}`);
-      });
-      setData(next);
-      setErrors(failures);
-      setBusy(false);
-    });
-    return () => { active = false; };
-  }, [knowledge, runId, limit, refresh]);
-
-  const select = useCallback((kind: string, record: KnowledgeRecord) => {
-    setSelection({ kind, record });
-    if (kind === "entities") setFocus(idOf(record));
-    else if (kind === "claims") setFocus(displayText(record.subject));
-  }, []);
-
-  return <section className="knowledge-workbench" aria-label="Knowledge workbench" data-testid="knowledge-workbench">
-    <header className="kb-heading"><div><h2>Knowledge workbench</h2><p>Sources → claims → principles → context. Views share selection; each keeps its own filters.</p></div>
+  const save = () => {
+    try { localStorage.setItem(SAVED_KEY, JSON.stringify(workspace)); setSaveStatus("Perspective saved in this browser."); }
+    catch (failure) { setSaveStatus(`Save failed: ${errorText(failure)}`); }
+  };
+  const restore = () => {
+    try {
+      const raw = localStorage.getItem(SAVED_KEY);
+      if (!raw) { setSaveStatus("No saved perspective yet."); return; }
+      setWorkspace(parseWorkspace(raw)); setInspection(null); setRefresh((n) => n + 1); setSaveStatus("Perspective restored; referenced data is reloaded from the server.");
+    } catch (failure) { setSaveStatus(`Restore failed: ${errorText(failure)}`); }
+  };
+  return <section className={`knowledge-workbench kb-profile-${workspace.profile}`} aria-label="Knowledge workbench" data-testid="knowledge-workbench">
+    <header className="kb-heading"><div><h2>Knowledge workbench</h2><p>Compose views, choose parameter links, or unlink an independent reference. Perspectives are saved in this browser.</p></div>
       <button className="icon-btn" aria-label="Close knowledge workbench" onClick={onClose}>×</button></header>
-    {!knowledge ? <div className="empty-state" role="status">The knowledge workbench is not available through this Android bridge yet. Chat, memory and the existing graph remain available. Open Loom through its HTTP server to use knowledge analysis.</div> : <>
+    {!knowledge ? <div className="empty-state" role="status">The knowledge workbench is not available through this Android bridge yet. Open Loom through its HTTP server to use knowledge analysis.</div> : <>
       <div className="kb-toolbar">
-        <label>Knowledge run<select aria-label="Knowledge run" value={runId} onChange={(event) => setRunId(event.target.value)}>
-          {!runs.length && <option value="">No run yet</option>}
+        <label>Knowledge run<select aria-label="Knowledge run" value={runId} onChange={(event) => { setWorkspace((w) => setWorkspaceRun(w, event.target.value)); setInspection(null); }}>
+          {!runs.some((r) => r.id === runId) && <option value={runId}>{runId ? `Unavailable · ${runId}` : "No run yet"}</option>}
           {runs.map((run) => <option key={run.id} value={run.id}>{run.status} · {run.id}</option>)}
         </select></label>
-        <label>Records per collection<select aria-label="Record limit" value={limit} onChange={(event) => setLimit(Number(event.target.value))}>{[250, 1000, 5000, 10000].map((count) => <option key={count} value={count}>{count.toLocaleString()}</option>)}</select></label>
-        <button onClick={() => setRefresh((key) => key + 1)} disabled={busy}>Refresh</button>
-        <label>Add coordinated view<select aria-label="View type" value={addKind} onChange={(event) => setAddKind(event.target.value as ViewKind)}>{Object.entries(VIEWS).map(([kind, label]) => <option key={kind} value={kind}>{label}</option>)}</select></label>
-        <button onClick={() => setPanes((current) => [...current, newPane(addKind)])} data-testid="kb-add-view">Add view</button>
+        <label>Records per collection<input aria-label="Record limit" type="number" min={1} value={limit} onChange={(event) => { const value = Number(event.target.value); if (Number.isSafeInteger(value) && value > 0) setWorkspace((w) => ({ ...w, limit: value, panes: w.panes.map((p) => p.followRun ? { ...p, parameters: { ...p.parameters, limit: value } } : p) })); }} /></label>
+        <button onClick={() => { setRefresh((key) => key + 1); setInspection(null); }}>Refresh</button>
+        <label>Add view<select aria-label="View type" value={addKind} onChange={(event) => setAddKind(event.target.value as ViewKind)}>{Object.entries(VIEWS).map(([kind, label]) => <option key={kind} value={kind}>{label}</option>)}</select></label>
+        <button onClick={() => setWorkspace((w) => addPane(w, addKind))} data-testid="kb-add-view">Add view</button>
+        <label>View profile<select aria-label="View profile" value={workspace.profile} onChange={(event) => setWorkspace((w) => ({ ...w, profile: event.target.value as Workspace["profile"] }))}><option value="adaptive">Adaptive</option><option value="stacked">Stacked</option><option value="compact">Compact</option></select></label>
+        <button onClick={save}>Save perspective</button><button onClick={restore}>Restore perspective</button>
       </div>
-      <RunControls knowledge={knowledge} onDone={(nextRun) => { if (nextRun) setRunId(nextRun); setRefresh((key) => key + 1); onDataChanged?.(); }} />
-      <div className="kb-status" role="status">{busy ? "Loading knowledge…" : runs.length ? `${(data.entities ?? []).length} entities · ${(data.claims ?? []).length} claims · ${(data.principles ?? []).length} principles` : "No knowledge run yet. Analyze a source below or catalog it first."}
-        {focus && <button className="kb-focus" onClick={() => setFocus("")}>Focus: {displayText(entityMap.get(focus)?.label || focus)} ×</button>}
-        {selection && <a className="kb-inspect-link" href="#knowledge-inspector">Inspect selection ↓</a>}
-      </div>
-      {errors.map((error) => <p className="kb-error" role="alert" key={error}>{error}</p>)}
-      <div className="kb-workspace">
-        <div className="kb-panels">
-          {panes.map((pane, index) => <section className="kb-pane" key={pane.id} data-testid={`kb-pane-${pane.kind}`} aria-label={`${VIEWS[pane.kind]} view ${index + 1}`}>
-            <header className="kb-pane-header"><h3>{VIEWS[pane.kind]}</h3><div>
-              <button title="Duplicate this view" aria-label={`Duplicate ${VIEWS[pane.kind]} view`} onClick={() => setPanes((current) => [...current, newPane(pane.kind)])}>+</button>
-              <button aria-label={`Close ${VIEWS[pane.kind]} view`} onClick={() => setPanes((current) => current.filter((item) => item.id !== pane.id))}>×</button>
-            </div></header>
-            {pane.kind === "context" ? <ContextPane knowledge={knowledge} run={runId} focus={focus} entities={entityMap} onSelect={select} data={data} /> :
-              pane.kind === "catalog" ? <CatalogPane knowledge={knowledge} onSelect={select} refresh={refresh} onImported={onDataChanged} /> :
-              pane.kind === "candidates" ? <CandidatePane knowledge={knowledge} run={runId} refresh={refresh} onSelect={select} entities={entityMap} /> :
-              pane.kind === "graph" ? <KnowledgeGraph data={data} focus={focus} onSelect={select} /> :
-              <CollectionPane kind={pane.kind} rows={data[pane.kind] ?? []} entities={entityMap} focus={focus} selection={selection} onSelect={select} limit={limit} />}
-          </section>)}
-          {!panes.length && <div className="empty-state">Add a view to explore the knowledge model.</div>}
-        </div>
-        <Inspector selection={selection} entities={entityMap} />
-      </div>
+      <p className="kb-status" role="status">{saveStatus || "Layout, filters, references and links autosave locally. Data remains on the server. View profiles change presentation only."}</p>
+      {storageError && <p className="kb-error" role="alert">{storageError} Autosave is paused; the in-memory workspace still works.</p>}
+      {error && <p className="kb-error" role="alert">{error}</p>}
+      <RunControls knowledge={knowledge} onDone={(nextRun) => { if (nextRun) setWorkspace((w) => setWorkspaceRun(w, nextRun)); setRefresh((key) => key + 1); onDataChanged?.(); }} />
+      <div className="kb-workspace"><div className="kb-panels">
+        {panes.map((pane, index) => <WorkspacePane key={pane.id} pane={pane} index={index} workspace={workspace} setWorkspace={setWorkspace} knowledge={knowledge} runs={runs} refresh={refresh} onDataChanged={onDataChanged}
+          onInspect={(selection, entities) => { setInspection({ pane: pane.id, run: pane.parameters.run, limit: pane.parameters.limit, refresh, selection, entities }); setWorkspace((w) => w.active === pane.id || !w.panes.some((p) => p.id === pane.id) ? w : ({ ...w, active: pane.id })); }} />)}
+        {!panes.length && <div className="empty-state">Add a view to explore the knowledge model.</div>}
+      </div><Inspector selection={currentInspection?.selection ?? null} entities={currentInspection?.entities ?? new Map()} /></div>
     </>}
+  </section>;
+}
+
+function WorkspacePane({ pane, index, workspace, setWorkspace, knowledge, runs, refresh, onDataChanged, onInspect }: {
+  pane: Pane; index: number; workspace: Workspace; setWorkspace: React.Dispatch<React.SetStateAction<Workspace>>;
+  knowledge: KnowledgeApi; runs: KnowledgeRun[]; refresh: number; onDataChanged?: () => void;
+  onInspect: (selection: Selection, entities: Map<string, KnowledgeRecord>) => void;
+}) {
+  const p = pane.parameters;
+  const [loaded, setLoaded] = useState<{ key: string; data: Dataset; errors: string[]; fetched: string } | null>(null);
+  const [linkSource, setLinkSource] = useState("");
+  const [linkParameter, setLinkParameter] = useState<Parameter>("selection");
+  const key = JSON.stringify([p.run, p.limit, refresh]);
+  const run = runs.find((r) => r.id === p.run);
+  const usable = !!run;
+  const data = usable && loaded?.key === key ? loaded.data : {};
+  const busy = usable && loaded?.key !== key;
+  const errors = loaded?.key === key ? loaded.errors : [];
+  const entities = useMemo(() => new Map((data.entities ?? []).map((row) => [idOf(row), row])), [data.entities]);
+  const focus = p.selection?.run === p.run ? p.selection.focus : "";
+  const selected = p.selection?.run === p.run ? (data[p.selection.kind as KnowledgeCollection] ?? []).find((r) => idOf(r) === p.selection?.id) : undefined;
+  const selection = selected && p.selection ? { kind: p.selection.kind, record: selected } : null;
+  const change: Change = (parameter, value) => setWorkspace((w) => changeParameter(w, pane.id, parameter, value));
+  useEffect(() => {
+    if (!usable) return;
+    let active = true;
+    Promise.allSettled(COLLECTIONS.map((what) => knowledge.query(what, { run: p.run, limit: p.limit }))).then((results) => {
+      if (!active) return;
+      const next: Dataset = {}, failures: string[] = [];
+      results.forEach((result, i) => {
+        if (result.status === "fulfilled" && result.value.run === p.run) {
+          next[COLLECTIONS[i]] = result.value.items;
+          if (result.value.has_more || result.value.items.length >= p.limit) failures.push(`${VIEWS[COLLECTIONS[i]]}: loaded prefix only; increase the record limit for coverage.`);
+        } else failures.push(`${VIEWS[COLLECTIONS[i]]}: ${result.status === "rejected" ? errorText(result.reason) : "server returned a different run; data not displayed"}`);
+      });
+      setLoaded({ key, data: next, errors: failures, fetched: new Date().toISOString() });
+    });
+    return () => { active = false; };
+  }, [knowledge, key, usable, p.run, p.limit]);
+  // Restore the active inspector from actual freshly fetched records, not saved row copies.
+  useEffect(() => { if (selection && workspace.active === pane.id) onInspect(selection, entities); }, [loaded, workspace.active, p.selection]); // eslint-disable-line react-hooks/exhaustive-deps
+  const select = (kind: string, record: KnowledgeRecord) => {
+    const nextFocus = kind === "entities" ? idOf(record) : kind === "claims" ? displayText(record.subject) : focus;
+    change("selection", { kind, id: idOf(record), focus: nextFocus, run: p.run });
+    onInspect({ kind, record }, entities);
+  };
+  const inspectRef = useRef(onInspect);
+  inspectRef.current = onInspect;
+  const resolveSelection = useCallback((kind: string, record: KnowledgeRecord) => {
+    if (workspace.active === pane.id && p.selection?.kind === kind && p.selection.id === idOf(record) && (kind === "catalog" || p.selection.run === p.run)) inspectRef.current({ kind, record }, entities);
+  }, [workspace.active, pane.id, p.run, p.selection?.run, p.selection?.kind, p.selection?.id, entities]);
+  const links = workspace.bindings.filter((b) => b.source === pane.id || b.target === pane.id);
+  return <section className="kb-pane" data-view-id={pane.id} data-testid={`kb-pane-${pane.kind}`} aria-label={`${VIEWS[pane.kind]} view ${index + 1}`}>
+    <header className="kb-pane-header"><h3>{index + 1} · {VIEWS[pane.kind]}</h3><div>
+      <button title="Duplicate as an independent reference" aria-label={`Duplicate ${VIEWS[pane.kind]} view`} onClick={() => setWorkspace((w) => duplicatePane(w, pane.id))}>+</button>
+      <button aria-label={`Close ${VIEWS[pane.kind]} view`} onClick={() => setWorkspace((w) => ({ ...unlink(w, pane.id), active: w.active === pane.id ? "" : w.active, panes: w.panes.filter((item) => item.id !== pane.id) }))}>×</button>
+    </div></header>
+    <details className="kb-view-settings"><summary>View settings & links</summary>
+      <code className="kb-id">{pane.id}</code>
+      <label className="kb-check"><input type="checkbox" checked={pane.followRun} onChange={(e) => setWorkspace((w) => ({ ...w, panes: w.panes.map((v) => v.id === pane.id ? { ...v, followRun: e.target.checked, parameters: e.target.checked ? { ...v.parameters, run: w.run, limit: w.limit, selection: null } : v.parameters } : v) }))} />Follow workspace run and limit</label>
+      <label>Data run<select aria-label="View data run" value={p.run} onChange={(e) => { change("run", e.target.value); change("selection", null); }} disabled={pane.followRun}>
+        {!usable && <option value={p.run}>{p.run ? `Unavailable · ${p.run}` : "No run yet"}</option>}{runs.map((r) => <option key={r.id} value={r.id}>{r.status} · {r.id}</option>)}
+      </select></label>
+      <label>Record limit<input aria-label="View record limit" type="number" min={1} value={p.limit} onChange={(e) => { const n = Number(e.target.value); if (Number.isSafeInteger(n) && n > 0) change("limit", n); }} /></label>
+      <div className="kb-actions"><button onClick={() => setWorkspace((w) => unlink(w, pane.id))}>Unlink as reference</button><button onClick={() => change("selection", null)}>Clear view focus</button></div>
+      <p className="kb-muted">{links.length} parameter links · {pane.followRun ? "following workspace run" : "independent run"}. Unlink keeps current parameters; it does not freeze server data.</p>
+      <label>Follow view<select aria-label="Link source view" value={linkSource} onChange={(e) => setLinkSource(e.target.value)}><option value="">Choose source</option>{workspace.panes.filter((v) => v.id !== pane.id).map((v) => <option key={v.id} value={v.id}>{workspace.panes.indexOf(v) + 1} · {VIEWS[v.kind]}</option>)}</select></label>
+      <label>Parameter<select aria-label="Link parameter" value={linkParameter} onChange={(e) => setLinkParameter(e.target.value as Parameter)}>{(["selection", "filter", "depth", "confidence", "evidence", "fade", "maxNodes"] as Parameter[]).map((k) => <option key={k} value={k}>{k}</option>)}</select></label>
+      <button disabled={!workspace.panes.some((v) => v.id === linkSource)} onClick={() => setWorkspace((w) => connect(w, linkSource, pane.id, linkParameter))}>Link parameter</button>
+      {links.map((link) => <p className="kb-link" key={`${link.source}/${link.target}/${link.parameter}`}>{workspace.panes.findIndex((v) => v.id === link.source) + 1} → {workspace.panes.findIndex((v) => v.id === link.target) + 1} · {link.parameter} <button aria-label={`Detach ${link.parameter} link`} onClick={() => setWorkspace((w) => ({ ...w, bindings: w.bindings.filter((b) => b !== link) }))}>Detach</button></p>)}
+      <JsonDetail label="Data version and execution status" value={{ requested_run: p.run, run: run ?? null, retrieved_at: loaded?.key === key ? loaded.fetched : null, projection: pane.kind, status: busy ? "loading" : !usable ? "run unavailable" : errors.length ? "partial" : "loaded", saved_selection: p.selection, snapshot: "Run reference; immutable server snapshot not guaranteed" }} />
+    </details>
+    <p className="kb-run-status" role="status">{pane.kind === "catalog" ? "Live catalog · not scoped to a knowledge run" : `Run: ${p.run || "none"} · ${!usable ? "unavailable" : busy ? "loading" : run.status}`}{focus && ` · focus: ${displayText(entities.get(focus)?.label || focus)}`}</p>
+    {errors.map((e) => <p className="kb-warning" key={e}>{e}</p>)}
+    {p.selection && p.selection.kind !== "catalog" && (p.selection.run !== p.run || (COLLECTIONS.includes(p.selection.kind as KnowledgeCollection) && !busy && !selection)) && <p className="kb-warning">Saved selection is outside this loaded collection or run. No replacement has been selected.</p>}
+    {pane.kind === "context" ? <ContextPane knowledge={knowledge} run={usable ? p.run : ""} focus={focus} entities={entities} onSelect={select} data={data} parameters={p} change={change} refresh={refresh} /> :
+      pane.kind === "catalog" ? <CatalogPane knowledge={knowledge} onSelect={select} refresh={refresh} onImported={onDataChanged} parameters={p} change={change} onResolve={resolveSelection} /> :
+      pane.kind === "candidates" ? <CandidatePane knowledge={knowledge} run={usable ? p.run : ""} refresh={refresh} onSelect={select} entities={entities} parameters={p} change={change} onResolve={resolveSelection} /> :
+      pane.kind === "graph" ? <KnowledgeGraph data={data} focus={focus} onSelect={select} parameters={p} change={change} /> :
+      <CollectionPane kind={pane.kind} rows={data[pane.kind] ?? []} entities={entities} focus={focus} selection={selection} onSelect={select} limit={p.limit} parameters={p} change={change} />}
   </section>;
 }
 
@@ -248,29 +285,40 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
   </details>;
 }
 
-function CandidatePane({ knowledge, run, refresh, onSelect, entities }: {
+function CandidatePane({ knowledge, run, refresh, onSelect, entities, parameters, change, onResolve }: {
   knowledge: KnowledgeApi; run: string; refresh: number;
-  onSelect: (kind: string, row: KnowledgeRecord) => void; entities: Map<string, KnowledgeRecord>;
+  onSelect: (kind: string, row: KnowledgeRecord) => void; entities: Map<string, KnowledgeRecord>; parameters: Parameters; change: Change; onResolve: (kind: string, row: KnowledgeRecord) => void;
 }) {
-  const [kind, setKind] = useState("semantic_structure");
-  const [offset, setOffset] = useState(0);
-  const [pageSize, setPageSize] = useState(25);
-  const [rows, setRows] = useState<KnowledgeRecord[]>([]);
+  const kind = parameters.candidateKind;
+  const setKind = (value: string) => change("candidateKind", value);
+  const offset = parameters.offset;
+  const setOffset = (value: number | ((current: number) => number)) => change("offset", typeof value === "function" ? value(parameters.offset) : value);
+  const pageSize = parameters.pageSize;
+  const setPageSize = (value: number) => change("pageSize", value);
+  const [loadedRows, setRows] = useState<KnowledgeRecord[]>([]);
+  const [loadedKey, setLoadedKey] = useState("");
+  const queryKey = JSON.stringify([run, kind, pageSize, offset, refresh]);
+  const rows = loadedKey === queryKey ? loadedRows : [];
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  useEffect(() => { setOffset(0); }, [run, refresh]);
   useEffect(() => {
     if (!run) { setRows([]); setTotal(0); setHasMore(false); setBusy(false); setError(""); return; }
     let active = true;
     setBusy(true); setError(""); setRows([]); setTotal(0); setHasMore(false);
     knowledge.query("candidates", { run, kind, limit: pageSize, offset }).then((result) => {
       if (!active) return;
-      setRows(result.items); setTotal(result.total ?? result.items.length); setHasMore(result.has_more === true);
+      if (result.run !== run) throw new Error("Candidate result belongs to a different run");
+      setLoadedKey(queryKey); setRows(result.items); setTotal(result.total ?? result.items.length); setHasMore(result.has_more === true);
     }).catch((failure) => { if (active) setError(errorText(failure)); }).finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, [knowledge, run, kind, pageSize, offset, refresh]);
+  useEffect(() => {
+    if (loadedKey !== queryKey || parameters.selection?.kind !== "candidates") return;
+    const selected = loadedRows.find((row) => idOf(row) === parameters.selection?.id);
+    if (selected) onResolve("candidates", selected);
+  }, [loadedRows, loadedKey, queryKey, parameters.selection?.id, parameters.selection?.kind, onResolve]);
   return <>
     <div className="kb-pane-controls">
       <label>Candidate kind<input aria-label="Candidate kind" value={kind} placeholder="All kinds" onChange={(event) => { setKind(event.target.value); setOffset(0); }} /></label>
@@ -291,14 +339,18 @@ function CandidatePane({ knowledge, run, refresh, onSelect, entities }: {
   </>;
 }
 
-function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limit }: {
+function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limit, parameters, change }: {
   kind: KnowledgeCollection; rows: KnowledgeRecord[]; entities: Map<string, KnowledgeRecord>;
-  focus: string; selection: Selection | null; onSelect: (kind: string, row: KnowledgeRecord) => void; limit: number;
+  focus: string; selection: Selection | null; onSelect: (kind: string, row: KnowledgeRecord) => void; limit: number; parameters: Parameters; change: Change;
 }) {
-  const [filter, setFilter] = useState("");
-  const [confidence, setConfidence] = useState(0);
-  const [follow, setFollow] = useState(true);
-  const [evidence, setEvidence] = useState("");
+  const filter = parameters.filter;
+  const setFilter = (value: string) => change("filter", value);
+  const confidence = parameters.confidence;
+  const setConfidence = (value: number) => change("confidence", value);
+  const follow = parameters.follow;
+  const setFollow = (value: boolean) => change("follow", value);
+  const evidence = parameters.evidence;
+  const setEvidence = (value: string) => change("evidence", value);
   const visible = rows.filter((row) => {
     if (filter && !JSON.stringify(row).toLocaleLowerCase().includes(filter.toLocaleLowerCase())) return false;
     const assessment = evidenceOf(row);
@@ -314,7 +366,7 @@ function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limi
       <input type="search" aria-label={`Filter ${VIEWS[kind]}`} placeholder="Filter this view…" value={filter} onChange={(event) => setFilter(event.target.value)} />
       <label>Minimum confidence: {confidence}%<input aria-label={`${VIEWS[kind]} minimum confidence`} type="range" min={0} max={100} value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} /></label>
       {!!evidences.length && <select aria-label={`${VIEWS[kind]} evidence class`} value={evidence} onChange={(event) => setEvidence(event.target.value)}><option value="">All evidence classes</option>{evidences.map((item) => <option key={item}>{item}</option>)}</select>}
-      {(kind === "claims" || kind === "instances") && <label className="kb-check"><input type="checkbox" checked={follow} onChange={(event) => setFollow(event.target.checked)} />Follow shared entity focus</label>}
+      {(kind === "claims" || kind === "instances") && <label className="kb-check"><input type="checkbox" checked={follow} onChange={(event) => setFollow(event.target.checked)} />Follow this view’s entity focus</label>}
     </div>
     <div className="kb-count">{visible.length} shown / {rows.length} loaded{rows.length >= limit ? ` · collection may continue beyond the ${limit.toLocaleString()} record limit` : ""}</div>
     <div className="kb-records">
@@ -330,13 +382,18 @@ function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limi
   </>;
 }
 
-function KnowledgeGraph({ data, focus, onSelect }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void }) {
+function KnowledgeGraph({ data, focus, onSelect, parameters, change }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change }) {
   const marker = useId().replace(/:/g, "");
-  const [filter, setFilter] = useState("");
-  const [depth, setDepth] = useState(1);
-  const [fade, setFade] = useState(20);
-  const [maxNodes, setMaxNodes] = useState(60);
-  const [confidence, setConfidence] = useState(0);
+  const filter = parameters.filter;
+  const setFilter = (value: string) => change("filter", value);
+  const depth = parameters.depth;
+  const setDepth = (value: number) => change("depth", value);
+  const fade = parameters.fade;
+  const setFade = (value: number) => change("fade", value);
+  const maxNodes = parameters.maxNodes;
+  const setMaxNodes = (value: number) => change("maxNodes", value);
+  const confidence = parameters.confidence;
+  const setConfidence = (value: number) => change("confidence", value);
   const entities = data.entities ?? [];
   const claims = data.claims ?? [];
   const neighborhood = useMemo(() => {
@@ -364,7 +421,7 @@ function KnowledgeGraph({ data, focus, onSelect }: { data: Dataset; focus: strin
       <label>Minimum confidence: {confidence}%<input aria-label="Graph minimum confidence" type="range" min={0} max={100} value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} /></label>
       <label>Node limit<select aria-label="Graph node limit" value={maxNodes} onChange={(event) => setMaxNodes(Number(event.target.value))}>{[30, 60, 120, 300].map((count) => <option key={count}>{count}</option>)}</select></label>
     </div>
-    <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus all linked views</div>
+    <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus linked views</div>
     <div className="kb-graph-scroll">
       {!nodes.length ? <p className="empty-state">Analyze sources to build a knowledge graph.</p> : <svg className="kb-graph" viewBox={`0 0 680 ${height}`} role="group" aria-label="Knowledge entities and claim relations">
         <defs><marker id={marker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--dim)" /></marker></defs>
@@ -461,18 +518,21 @@ function Inspector({ selection, entities }: { selection: Selection | null; entit
   </aside>;
 }
 
-function ContextPane({ knowledge, run, focus, entities, onSelect, data }: {
+function ContextPane({ knowledge, run, focus, entities, onSelect, data, parameters, change, refresh }: {
   knowledge: KnowledgeApi; run: string; focus: string; entities: Map<string, KnowledgeRecord>;
-  onSelect: (kind: string, row: KnowledgeRecord) => void; data: Dataset;
+  onSelect: (kind: string, row: KnowledgeRecord) => void; data: Dataset; parameters: Parameters; change: Change; refresh: number;
 }) {
-  const [text, setText] = useState("");
-  const [budget, setBudget] = useState(4000);
-  const [follow, setFollow] = useState(true);
+  const text = parameters.text;
+  const setText = (value: string) => change("text", value);
+  const budget = parameters.budget;
+  const setBudget = (value: number) => change("budget", value);
+  const follow = parameters.follow;
+  const setFollow = (value: boolean) => change("follow", value);
   const [result, setResult] = useState<KnowledgeContextResult | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [builtFor, setBuiltFor] = useState("");
-  const requestKey = JSON.stringify({ run, text, budget, focus: follow ? focus : "" });
+  const requestKey = JSON.stringify({ run, text, budget, focus: follow ? focus : "", refresh });
   const build = async () => {
     setBusy(true); setError("");
     const key = requestKey;
@@ -487,8 +547,8 @@ function ContextPane({ knowledge, run, focus, entities, onSelect, data }: {
   return <div className="kb-context">
     <label>Goal / prompt<textarea aria-label="Context goal" rows={3} value={text} placeholder="What should this context help you do?" onChange={(event) => setText(event.target.value)} /></label>
     <label>Token budget: {budget.toLocaleString()}<input aria-label="Knowledge context token budget" type="range" min={200} max={32000} step={100} value={budget} onChange={(event) => setBudget(Number(event.target.value))} /></label>
-    <label className="kb-check"><input type="checkbox" checked={follow} onChange={(event) => setFollow(event.target.checked)} />Use shared entity focus as target</label>
-    <p className="kb-muted">Target: {follow && focus ? displayText(entities.get(focus)?.label || focus) : "none selected"}. Token counts are estimates. Previewing does not send a model request.</p>
+    <label className="kb-check"><input type="checkbox" checked={follow} onChange={(event) => setFollow(event.target.checked)} />Use this view’s entity focus as target</label>
+    <p className="kb-muted">Target: {follow && focus ? displayText(entities.get(focus)?.label || focus) : "none selected"}. Token counts are estimates. Previewing does not send a model request. Preview output is not restored from browser storage; rebuild it from the selected run.</p>
     <button className="primary" onClick={build} disabled={!text.trim() || !run || busy}>{busy ? "Selecting…" : "Build context preview"}</button>
     {error && <p className="kb-error" role="alert">{error}</p>}
     {context && <>
@@ -509,11 +569,14 @@ function ContextPane({ knowledge, run, focus, entities, onSelect, data }: {
   </div>;
 }
 
-function CatalogPane({ knowledge, onSelect, refresh, onImported }: { knowledge: KnowledgeApi; onSelect: (kind: string, row: KnowledgeRecord) => void; refresh: number; onImported?: () => void }) {
+function CatalogPane({ knowledge, onSelect, refresh, onImported, parameters, change, onResolve }: { knowledge: KnowledgeApi; onSelect: (kind: string, row: KnowledgeRecord) => void; refresh: number; onImported?: () => void; parameters: Parameters; change: Change; onResolve: (kind: string, row: KnowledgeRecord) => void }) {
   const [sources, setSources] = useState("");
-  const [filter, setFilter] = useState("");
-  const [rows, setRows] = useState<KnowledgeRecord[]>([]);
-  const [offset, setOffset] = useState(0);
+  const filter = parameters.filter;
+  const setFilter = (value: string) => change("filter", value);
+  const [loadedRows, setRows] = useState<KnowledgeRecord[]>([]);
+  const [loadedKey, setLoadedKey] = useState("");
+  const offset = parameters.offset;
+  const setOffset = (value: number | ((current: number) => number)) => change("offset", typeof value === "function" ? value(parameters.offset) : value);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [tick, setTick] = useState(0);
@@ -521,14 +584,28 @@ function CatalogPane({ knowledge, onSelect, refresh, onImported }: { knowledge: 
   const [mode, setMode] = useState("selective");
   const [storeMode, setStoreMode] = useState("copy");
   const [reviewed, setReviewed] = useState("");
-  const [selectedOnly, setSelectedOnly] = useState(false);
+  const selectedOnly = parameters.selectedOnly;
+  const setSelectedOnly = (value: boolean) => change("selectedOnly", value);
   const importKey = JSON.stringify({ mode, store_mode: storeMode, tick, refresh });
+  const queryKey = JSON.stringify([filter, offset, selectedOnly, tick, refresh]);
+  const rows = loadedKey === queryKey ? loadedRows : [];
   useEffect(() => {
     let active = true;
     setError("");
-    knowledge.catalogUnits({ limit: 50, offset, ...(filter ? { text: filter } : {}), ...(selectedOnly ? { selected: true } : {}) }).then((items) => active && setRows(items)).catch((failure) => active && setError(errorText(failure)));
+    knowledge.catalogUnits({ limit: 50, offset, ...(filter ? { text: filter } : {}), ...(selectedOnly ? { selected: true } : {}) }).then((items) => { if (active) { setRows(items); setLoadedKey(queryKey); } }).catch((failure) => active && setError(errorText(failure)));
     return () => { active = false; };
   }, [knowledge, filter, offset, selectedOnly, tick, refresh]);
+  useEffect(() => {
+    if (loadedKey !== queryKey || parameters.selection?.kind !== "catalog") return;
+    const selected = loadedRows.find((row) => idOf(row) === parameters.selection?.id);
+    if (!selected) return;
+    let active = true;
+    onResolve("catalog", selected);
+    knowledge.catalogPreview(idOf(selected)).then((preview) => {
+      if (active) onResolve("catalog", { ...selected, preview });
+    }).catch((failure) => { if (active) setError(errorText(failure)); });
+    return () => { active = false; };
+  }, [knowledge, loadedRows, loadedKey, queryKey, parameters.selection?.id, parameters.selection?.kind, onResolve]);
   const action = async (operation: () => Promise<KnowledgeRecord>, reload = false) => {
     setBusy(true); setError("");
     try { const outcome = await operation(); setResult(outcome); if (reload) { setTick((key) => key + 1); setOffset(0); setReviewed(""); } return outcome; }
@@ -550,7 +627,7 @@ function CatalogPane({ knowledge, onSelect, refresh, onImported }: { knowledge: 
     {error && <p className="kb-error" role="alert">{error}</p>}
     <div className="kb-records">
       {rows.map((row) => { const unit = asRecord(row.unit); const id = idOf(row); return <article className="kb-catalog-unit" key={id}>
-        <button className="kb-record" onClick={() => { onSelect("catalog", row); action(() => knowledge.catalogPreview(id)).then((preview) => { if (preview) onSelect("catalog", { ...row, preview }); }); }}>
+        <button className="kb-record" onClick={() => onSelect("catalog", row)}>
           <strong>{displayText(unit.title || unit.id)}</strong><span className="kb-muted">{displayText(row.platform)} · {displayText(unit.kind)} · {displayText(row.n_msgs || 0)} messages · {asArray(row.attachments).length} attachments</span>
           <span className="kb-snippet">{displayText(row.head)}</span>
         </button>
