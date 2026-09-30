@@ -93,6 +93,20 @@ ZIP byte preservation is a different claim.
 
 Implementation test-file SHA-256:
 `79dd9144712e035b28b2aabf376c7c594f1ccdfb93506cb1e48329852785f482`
-(at nested-archive follow-up).
+(at nested-archive follow-up, before the fixture syntax correction below).
 Fresh shared-build results and source/binary hashes belong in the verifier's
 new receipt; this freeze receipt does not substitute for them.
+
+## First build failure and fixture correction
+
+The first shared build at integrated source `8cc5a56` failed to compile the
+new OpenAI test fixture: its nested C++ JSON initializer had an unmatched
+brace. The verifier retains the original `build-first.log`; this is not a
+successful native run. The fixture construction is now split into explicit
+message/node values with unchanged intended source data and assertions.
+The final five-case source passed `-fsyntax-only` with the exact compiler,
+includes, defines and warning flags extracted from the shared compile database
+(exit 0). Command/result: `import_fidelity_syntax_check.txt` beside this receipt.
+This check does not link or execute tests; shared runtime verification remains
+required. Independent read-only review also found no blocker in nested-source
+follow-up `2bddeb157`.

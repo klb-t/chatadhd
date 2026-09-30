@@ -117,10 +117,11 @@ Json anthropic_conversation() {
 }
 
 Json openai_conversation() {
+  const Json message{{"id", "different-message-id"}, {"author", Json{{"role", "user"}}},
+    {"content", Json{{"content_type", "text"}, {"parts", Json::array({"Message"})}}}};
+  const Json node{{"id", "node/~key"}, {"parent", nullptr}, {"children", Json::array()}, {"message", message}};
   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
-    {"mapping", Json{{"node/~key", Json{{"id", "node/~key"}, {"parent", nullptr}, {"children", Json::array()},
-      {"message", Json{{"id", "different-message-id"}, {"author", Json{{"role", "user"}}},
-        {"content", Json{{"content_type", "text"}, {"parts", Json::array({"Message"})}}}}}}}}};
+    {"mapping", Json{{"node/~key", node}}}};
 }
 }  // namespace
 
