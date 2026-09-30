@@ -1,0 +1,90 @@
+{
+  "schema": "loom.w4_mechanism_timing/1",
+  "source_commit": "7714b0f7dce8f1a609ec1d0091293708b98c00c4",
+  "samples": [
+    {
+      "sample": 0,
+      "raw_algebra_seconds": 0.01746329799789237,
+      "cold_cli_seconds": 0.6718497469992144,
+      "deduplicated_cli_seconds": 0.6082220390017028,
+      "cold_adapter_seconds": 0.48784606,
+      "callback_measurements": {
+        "calls": "0",
+        "cpu_seconds": "0.009960967",
+        "input_tokens": "0",
+        "money_usd": "0",
+        "output_tokens": "0",
+        "wall_seconds": "0.009962084"
+      }
+    },
+    {
+      "sample": 1,
+      "raw_algebra_seconds": 0.018971135999890976,
+      "cold_cli_seconds": 0.8124040570000943,
+      "deduplicated_cli_seconds": 0.7132381179981166,
+      "cold_adapter_seconds": 0.582812758,
+      "callback_measurements": {
+        "calls": "0",
+        "cpu_seconds": "0.013371764",
+        "input_tokens": "0",
+        "money_usd": "0",
+        "output_tokens": "0",
+        "wall_seconds": "0.013373741"
+      }
+    },
+    {
+      "sample": 2,
+      "raw_algebra_seconds": 0.010743016999185784,
+      "cold_cli_seconds": 1.0958474819999537,
+      "deduplicated_cli_seconds": 0.44680325299850665,
+      "cold_adapter_seconds": 0.822162367,
+      "callback_measurements": {
+        "calls": "0",
+        "cpu_seconds": "0.01633712",
+        "input_tokens": "0",
+        "money_usd": "0",
+        "output_tokens": "0",
+        "wall_seconds": "0.016348198"
+      }
+    },
+    {
+      "sample": 3,
+      "raw_algebra_seconds": 0.013493712001945823,
+      "cold_cli_seconds": 0.7639662369983853,
+      "deduplicated_cli_seconds": 0.8098424089985201,
+      "cold_adapter_seconds": 0.566034917,
+      "callback_measurements": {
+        "calls": "0",
+        "cpu_seconds": "0.015455975",
+        "input_tokens": "0",
+        "money_usd": "0",
+        "output_tokens": "0",
+        "wall_seconds": "0.015458615"
+      }
+    },
+    {
+      "sample": 4,
+      "raw_algebra_seconds": 0.024966607001260854,
+      "cold_cli_seconds": 0.9749948909993691,
+      "deduplicated_cli_seconds": 1.1718358710022585,
+      "cold_adapter_seconds": 0.732962034,
+      "callback_measurements": {
+        "calls": "0",
+        "cpu_seconds": "0.011387339",
+        "input_tokens": "0",
+        "money_usd": "0",
+        "output_tokens": "0",
+        "wall_seconds": "0.011389876"
+      }
+    }
+  ],
+  "network_calls": 0,
+  "data": "repository synthetic graph-review example",
+  "medians": {
+    "raw_algebra_seconds": 0.01746329799789237,
+    "cold_cli_seconds": 0.8124040570000943,
+    "deduplicated_cli_seconds": 0.7132381179981166,
+    "cold_adapter_seconds": 0.582812758
+  },
+  "limitation": "Total operator path comparison, not isolated coordination overhead or model quality."
+}

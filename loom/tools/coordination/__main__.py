@@ -45,10 +45,30 @@ def parser():
     replay.add_argument("--lease-seconds", type=float, default=300)
     replay.add_argument("--explicit-acceptance", type=Path,
                         help="Optional original acceptance selection JSON; must reproduce saved requests")
+    analysis = commands.add_parser("analysis-graph", help="Execute one AnalysisPlan variant with local GraphPacket diffs")
+    analysis.add_argument("--task", required=True)
+    analysis.add_argument("--source-commit", required=True)
+    analysis.add_argument("--owner", required=True)
+    analysis.add_argument("--plan", type=Path, required=True)
+    analysis.add_argument("--packet", type=Path, required=True)
+    analysis.add_argument("--variant-index", type=int, default=0)
+    analysis.add_argument("--ledger-directory", type=Path, required=True)
+    analysis.add_argument("--output-root", type=Path, required=True)
+    analysis.add_argument("--lease-seconds", type=float, default=300)
     return root
 
 
 def run(args):
+    if args.command == "analysis-graph":
+        from .analysis_graph import run_coordinated_analysis_graph
+        plan_raw, packet_raw = args.plan.read_bytes(), args.packet.read_bytes()
+        return run_coordinated_analysis_graph(LeaseStore(args.database),
+            task_id=args.task, source_commit=args.source_commit, owner=args.owner,
+            plan=decode_json(plan_raw), packet=decode_json(packet_raw), variant_index=args.variant_index,
+            ledger_directory=args.ledger_directory, output_root=args.output_root,
+            lease_seconds=args.lease_seconds, input_binding={
+                "plan_file_sha256": hashlib.sha256(plan_raw).hexdigest(),
+                "packet_file_sha256": hashlib.sha256(packet_raw).hexdigest()})
     if args.command in ("status", "backup") and not args.database.is_file():
         raise CoordinationError("database_not_found")
     if args.command == "register":
