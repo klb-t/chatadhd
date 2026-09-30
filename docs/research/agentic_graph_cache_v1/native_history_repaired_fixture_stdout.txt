@@ -1,0 +1,9 @@
+test_all_native_heads_application_receipts_and_inverse_exact (__main__.NativeHistoryTests.test_all_native_heads_application_receipts_and_inverse_exact) ... ok
+test_raw_tombstones_and_origin_known_at_are_exactly_retained (__main__.NativeHistoryTests.test_raw_tombstones_and_origin_known_at_are_exactly_retained) ... ok
+test_rehashed_native_before_after_and_old_journal_corruption_reject (__main__.NativeHistoryTests.test_rehashed_native_before_after_and_old_journal_corruption_reject) ... ok
+test_stale_native_diff_and_obsolete_inverse_remain_rejected (__main__.NativeHistoryTests.test_stale_native_diff_and_obsolete_inverse_remain_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.922s
+
+OK

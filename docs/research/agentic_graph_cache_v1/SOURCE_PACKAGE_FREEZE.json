@@ -1,0 +1,281 @@
+{
+  "schema": "loom.graph_packet_cache_package_freeze/1",
+  "records": [
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/__init__.py",
+      "bytes": 83,
+      "sha256": "d18abf78f20ad9b71d8fd6c61162fc8ee18662b3ee306214248207fa80392abd"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/benchmark.py",
+      "bytes": 16702,
+      "sha256": "3b198da965ee46daaa63cbfff5122cdad261ae1fd59ad6de47a0ab61c217d3ec"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/cache.py",
+      "bytes": 14887,
+      "sha256": "bb6ac98489a85a807eb2879d877943c2f38843d852c8ffe1aaa4d0a67e225425"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/chain_benchmark.py",
+      "bytes": 7858,
+      "sha256": "880fc00c99388732e6b7fef772d1e4563d7515f6b798720debc04ab89472e3af"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/retention_fork_probe.py",
+      "bytes": 3948,
+      "sha256": "7605f46a370858f3962a9d1a13b958097bca86165dbd7fb4d36560a9147721cf"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/test_cache.py",
+      "bytes": 16424,
+      "sha256": "155908711081f77d35261150d27158f52fb5d41986c56f98948dd3e64d6f5170"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/test_native_history.py",
+      "bytes": 11465,
+      "sha256": "0a17a46b9a4827860fcdb6f897e391e82d585bf1a66617782b945727f3c1fb40"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/test_retention_fork.py",
+      "bytes": 1690,
+      "sha256": "f28f4c19d3ff0e834f8bcd23c1049edc7314da9bba5caea0c90fe5f1eabb2542"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/CACHE_INTERFACE.md",
+      "bytes": 3677,
+      "sha256": "fef90462ff729c091beaa8a1401196512c37c420e5587c21d24a5c08c4dfde60"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/CHAIN_PROTOCOL.md",
+      "bytes": 3194,
+      "sha256": "82adcbadd44ef4f2e7d5b421e493d8634d6f5e4fee88601f5c4bafc683238b3d"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/CHAIN_RESULTS.md",
+      "bytes": 3522,
+      "sha256": "f2306bd0d027636e5f86f94ba20cedb1a69793d501582e8450b80dce430a4362"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/FIRST_RESULTS.md",
+      "bytes": 6699,
+      "sha256": "ce34253bf124965ced0e1d9dcdc6822457256da6d5ac80ff580a1f5151679a5e"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/HANDOFF.md",
+      "bytes": 6795,
+      "sha256": "996475a72df3afdd25fb6b7a881e702ca85c0befc013c859744d1fe926b22a5f"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/NATIVE_HISTORY_AUDIT_PROTOCOL.md",
+      "bytes": 1890,
+      "sha256": "3fb0f3ae75e48e5beaf51a7bd065a0496e920d7bfacefded5f4e4769d0084739"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/NATIVE_HISTORY_FIRST_FAILURE.json",
+      "bytes": 315,
+      "sha256": "a8fd12f72bcdfea0854f888adb44cfdfe7e2a3596c9e104e8cccbe56f954d61e"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/NATIVE_HISTORY_REPAIRED_FIXTURE_FREEZE.json",
+      "bytes": 711,
+      "sha256": "dbf4243e3afd8d508943bbcf90f61c24041e12a756c89de2414cafee001ba13b"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/PROTOCOL.md",
+      "bytes": 3839,
+      "sha256": "8fcc62f818b8b9d2d043990f4eaa05a63ebcc5b75fe9033fa96f095a7c5173c4"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/RETENTION_FORK_PROTOCOL.md",
+      "bytes": 995,
+      "sha256": "04628fea5a1bf533ea61dcaad9e81722611221528be437029dbaf0feebf8ee5b"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/SCHEMA_CHECK_FIRST.json",
+      "bytes": 147,
+      "sha256": "2ce4555b5923cd6fd48310c25341d5544813bc424b5d538de3d10f054aade9b5"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/cache_policy.schema.json",
+      "bytes": 593,
+      "sha256": "5be7069125034e3c2d075ab518a11a9cf8c9e21cd745a9a0ae4997cc7d3fa1af"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/FREEZE.json",
+      "bytes": 21982,
+      "sha256": "166b6bd0a027cca66f475b583edaf1898616b6a01a836a3b1087bd6bc34a7e03"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/RETENTION_FORK_FREEZE.json",
+      "bytes": 1621,
+      "sha256": "0d84851e2694df42a6cad9861826f28b0960997cf03ca6c754af85cb187fb7af"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/SUMMARY_FIRST.json",
+      "bytes": 21782,
+      "sha256": "d0c8257c3a75d91495eaa700d5980345076398c4dfb4dd13da88cc790f677cdb"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/fixtures.json",
+      "bytes": 6747464,
+      "sha256": "50a76a2d9293855373b2edeb9e713baac42bcda7aaa8e95a67ba42e86ae4589a"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/memory_first.jsonl",
+      "bytes": 104484,
+      "sha256": "3896cccd6325f8a0133bee6fdbd00db04345201436fa7f1ece4be99c14b76092"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/memory_totals_first.json",
+      "bytes": 1146,
+      "sha256": "29f0587b1047dd8c6c7beecf78aca23f7b0ffe560bb4fe102795da816a20cbef"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/retention_fork_first.json",
+      "bytes": 1107,
+      "sha256": "31e39ed1ed901a8bb4fa505e159b30d8089cd68f154f618cd580d0706af64202"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/retention_fork_fixture.json",
+      "bytes": 130275,
+      "sha256": "307d70b9c9453ad5056c3a04d91bf99a64208437c2fe6e43e6409fc1d625b502"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/timed_first.jsonl",
+      "bytes": 847070,
+      "sha256": "27b341952d4cf5ff71099f95264361e97cb2817704546065f764187b6689bc74"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_first/timed_totals_first.json",
+      "bytes": 8559,
+      "sha256": "d8d1d4d794e71fc693e381f086ab2f56aa7623bec48f3cedb7be411de4846a20"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_memory_first_stdout.txt",
+      "bytes": 159,
+      "sha256": "27c0bdb1c7dd46ba97510f46a2e5aa73715c48e91042e1178d57fdc522c5c0ad"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/chain_timed_first_stdout.txt",
+      "bytes": 984,
+      "sha256": "9f1a2afc20198e3f589facc43836864011b577bea57c367f99fefd832427e608"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/first_series/FREEZE.json",
+      "bytes": 6667,
+      "sha256": "982f85d568142f1c54dc0ac2c92f464f8279f5cddba6c76f557adadacb9ab415"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/first_series/SUMMARY_FIRST.json",
+      "bytes": 77271,
+      "sha256": "d4825b77d9a29d3ce1320acef1ccb355b3f7e756ff30117623b078ff8ffef31c"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/first_series/equivalence_first.json",
+      "bytes": 15129,
+      "sha256": "300d03775b2bdb2132519b4cd89b7db3b6062dba47157a3dea201e413878be6c"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/first_series/fixtures.json",
+      "bytes": 942339,
+      "sha256": "ca2199f02f9649d3e092fd40642ad044a5b54b12984feb0326139fb9f428fa0a"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/first_series/memory_first.json",
+      "bytes": 36925,
+      "sha256": "22b3bbe8948d19d69cfbccb590ef8b3993a196901f9df1939f2b7ef5b9dc757d"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/first_series/timed_first.json",
+      "bytes": 175660,
+      "sha256": "6e75e68ea938d516adac4d983a95366dad1d4deca25c01aaae2433e4a7211c2e"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/mechanism_tests_after_binding_fix.txt",
+      "bytes": 3463,
+      "sha256": "cd54b9fbccc1bdfc21f794811cdaa9e1448b8c15ed4339a8b6102c6f0104f327"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/mechanism_tests_after_native_audit.txt",
+      "bytes": 4526,
+      "sha256": "e750279642efeecc51ad14ca85902f62d70b4ef07b98886ef85a175fc5830eb2"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/mechanism_tests_final_before_benchmark.txt",
+      "bytes": 3658,
+      "sha256": "897e0fab7f1aa5f5a4a33fcbb95c6b0a2c4901c4582d3cfaf9d35ece6d0783b5"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/mechanism_tests_first.txt",
+      "bytes": 2935,
+      "sha256": "83fa878b0a8faf95ed1324c0f2bc2c8c2a38cfefca943adfbb50fe6d7942c995"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/memory_first_stdout.txt",
+      "bytes": 274,
+      "sha256": "9d3a8d4f50d4d3d1627b772989d87f9557fa617868cd0ac0f02979240d38e58e"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/native_history_first.json",
+      "bytes": 142,
+      "sha256": "657f07167054ebdeb9b5426c724ffa75cdbed0ecf01393c6d1dd35fe5d4af9e0"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/native_history_first_source.py",
+      "bytes": 11297,
+      "sha256": "33c232fa9a0a757af96bf39bc283bdfe5d1a553249ccd4ce4e2a6fe4b3e83f17"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/native_history_first_stdout.txt",
+      "bytes": 2129,
+      "sha256": "7644f08e13f9c303d0bf18d2add09731adc68a5fef11385bd835155a953f6f7d"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/native_history_repaired_fixture_results.json",
+      "bytes": 14039,
+      "sha256": "16e77dcd38ed6d1a7ffa8e7740eef7fa83ff91e95d2f9dfcb11cadc7faeb6713"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/native_history_repaired_fixture_stdout.txt",
+      "bytes": 746,
+      "sha256": "793181de0654c3236623715161046278893aa04d09f41edb1695d6148df91767"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/preset.json",
+      "bytes": 172,
+      "sha256": "9429dd2edef1f82329cc4807c537c83551473f6c1f6c54b3bffc6cb7a5c6aa3c"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/preset_last_head.json",
+      "bytes": 170,
+      "sha256": "f12e98268e62deedbab0afac7c3d6a1afd9bbdadb365b380281a11bc98294ed8"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/retention_fork_first_stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/structure_discovery_final.txt",
+      "bytes": 1357,
+      "sha256": "e26fb48c9517ee13442ba6c180601157ab8e6a251502710fb018fcc1696c2b14"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/timed_first_stdout.txt",
+      "bytes": 272,
+      "sha256": "a575c726efe4e29d4890f9b7020ea7061626d41b26e8d89bbe180a65c0d3ba37"
+    }
+  ],
+  "record_count": 53,
+  "cache_sha256": "bb6ac98489a85a807eb2879d877943c2f38843d852c8ffe1aaa4d0a67e225425",
+  "strict_packet_sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+  "standalone_structure_tests": {
+    "passed": 821,
+    "failed": 0,
+    "log": "docs/research/agentic_graph_cache_v1/structure_discovery_final.txt"
+  },
+  "paid_calls": 0,
+  "model_quality_measured": false,
+  "root_owns_integration_commit": true
+}

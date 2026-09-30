@@ -1,0 +1,17 @@
+{
+  "source_records": [
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/test_native_history.py",
+      "sha256": "0a17a46b9a4827860fcdb6f897e391e82d585bf1a66617782b945727f3c1fb40"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_cache_v1/cache.py",
+      "sha256": "bb6ac98489a85a807eb2879d877943c2f38843d852c8ffe1aaa4d0a67e225425"
+    },
+    {
+      "path": "docs/research/agentic_graph_cache_v1/NATIVE_HISTORY_AUDIT_PROTOCOL.md",
+      "sha256": "3fb0f3ae75e48e5beaf51a7bd065a0496e920d7bfacefded5f4e4769d0084739"
+    }
+  ],
+  "change": "native Alias fixture shape corrected; first failed setup retained; no cache implementation change; result filename preserves firstfailure"
+}

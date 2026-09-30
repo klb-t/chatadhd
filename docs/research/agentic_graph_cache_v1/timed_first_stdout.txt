@@ -1,0 +1,5 @@
+{"timed_history_completed": 0, "rows_preserved": 45}
+{"timed_history_completed": 5, "rows_preserved": 90}
+{"timed_history_completed": 20, "rows_preserved": 135}
+{"timed_history_completed": 50, "rows_preserved": 180}
+{"timed_history_completed": 100, "rows_preserved": 225}

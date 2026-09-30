@@ -1,0 +1,1 @@
+{"schema":"loom.graph_packet_cache_policy/1","mode":"verified_history","max_entries":1,"max_retained_bytes":16777216,"max_entry_bytes":2097152,"on_capacity":"evict_lru"}

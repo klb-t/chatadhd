@@ -1,0 +1,12 @@
+{"timed_run_completed": "strict", "repetition": 0, "total_wall_ns": 25302465873}
+{"timed_run_completed": "whole128", "repetition": 0, "total_wall_ns": 27205451244}
+{"timed_run_completed": "parent128", "repetition": 0, "total_wall_ns": 1309422053}
+{"timed_run_completed": "parent1", "repetition": 0, "total_wall_ns": 1294952635}
+{"timed_run_completed": "whole128", "repetition": 1, "total_wall_ns": 26029092322}
+{"timed_run_completed": "parent128", "repetition": 1, "total_wall_ns": 1342726272}
+{"timed_run_completed": "parent1", "repetition": 1, "total_wall_ns": 1365952788}
+{"timed_run_completed": "strict", "repetition": 1, "total_wall_ns": 24569592942}
+{"timed_run_completed": "parent128", "repetition": 2, "total_wall_ns": 1579122595}
+{"timed_run_completed": "parent1", "repetition": 2, "total_wall_ns": 1619225408}
+{"timed_run_completed": "strict", "repetition": 2, "total_wall_ns": 25652926728}
+{"timed_run_completed": "whole128", "repetition": 2, "total_wall_ns": 25361187695}

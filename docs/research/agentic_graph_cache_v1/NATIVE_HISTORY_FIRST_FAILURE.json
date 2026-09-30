@@ -1,0 +1,8 @@
+{
+  "source_sha256": "33c232fa9a0a757af96bf39bc283bdfe5d1a553249ccd4ce4e2a6fe4b3e83f17",
+  "failure": "fixture setup used a string alias instead of native Alias record",
+  "tests_run": 0,
+  "cache_cases_executed": 0,
+  "first_log": "native_history_first_stdout.txt",
+  "first_result": "native_history_first.json"
+}

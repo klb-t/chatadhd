@@ -1,0 +1,536 @@
+{
+  "complete": true,
+  "tests_run": 4,
+  "failures": 0,
+  "errors": 0,
+  "rows": [
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 0,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": false
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 1,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 2,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 3,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 4,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 5,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 6,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 7,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 8,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 9,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 10,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 11,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "whole_packet",
+      "event_count": 12,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 0,
+      "pass": true,
+      "path": "strict_fallback",
+      "receipt_and_inverse_checked": false
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 1,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 2,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 3,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 4,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 5,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 6,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 7,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 8,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 9,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 10,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 11,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "native_head_equivalence",
+      "mode": "verified_history",
+      "event_count": 12,
+      "pass": true,
+      "path": "verified_immediate_parent_hit",
+      "receipt_and_inverse_checked": true
+    },
+    {
+      "case": "source_tombstone_restore_origin_time",
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:before_record",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:before_provenance",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:wrong_action",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:missing_before",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:duplicate_change",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:previous_order",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:before_record",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:before_provenance",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:wrong_action",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:missing_before",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:duplicate_change",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:previous_order",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:before_record",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:before_provenance",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:wrong_action",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:missing_before",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:duplicate_change",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:previous_order",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "latest:after_record",
+      "mode": "whole_packet",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:before_record",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:before_provenance",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:wrong_action",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:missing_before",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:duplicate_change",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "2:previous_order",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:before_record",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:before_provenance",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:wrong_action",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:missing_before",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:duplicate_change",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "7:previous_order",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:before_record",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:before_provenance",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:wrong_action",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:missing_before",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:duplicate_change",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "9:previous_order",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "rehashed_native_history_corruption",
+      "variant": "latest:after_record",
+      "mode": "verified_history",
+      "strict_rejects": true,
+      "cache_rejects": true,
+      "pass": true
+    },
+    {
+      "case": "stale_update_and_obsolete_inverse",
+      "mode": "whole_packet",
+      "pass": true
+    },
+    {
+      "case": "stale_update_and_obsolete_inverse",
+      "mode": "verified_history",
+      "pass": true
+    }
+  ],
+  "model_quality_measured": false,
+  "paid_calls": 0
+}
