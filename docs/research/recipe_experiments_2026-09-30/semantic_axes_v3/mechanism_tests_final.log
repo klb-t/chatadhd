@@ -1,0 +1,12 @@
+test_billing_mismatch_hard_fails (loom.tools.structure.test_graph_free_semantic_axes_v3.SemanticRecipeMechanisms.test_billing_mismatch_hard_fails) ... ok
+test_duplicate_keys_and_bad_evidence_still_rejected_without_salvage (loom.tools.structure.test_graph_free_semantic_axes_v3.SemanticRecipeMechanisms.test_duplicate_keys_and_bad_evidence_still_rejected_without_salvage) ... ok
+test_only_generic_semantic_suffix_changes_model_body (loom.tools.structure.test_graph_free_semantic_axes_v3.SemanticRecipeMechanisms.test_only_generic_semantic_suffix_changes_model_body) ... ok
+test_prepare_uses_no_gold_or_validation (loom.tools.structure.test_graph_free_semantic_axes_v3.SemanticRecipeMechanisms.test_prepare_uses_no_gold_or_validation) ... ok
+test_prior_v2_or_changed_whole_batch_rejected_before_ledger (loom.tools.structure.test_graph_free_semantic_axes_v3.SemanticRecipeMechanisms.test_prior_v2_or_changed_whole_batch_rejected_before_ledger) ... ok
+test_semantic_examples_are_generic_and_preserve_grammar_bytes (loom.tools.structure.test_graph_free_semantic_axes_v3.SemanticRecipeMechanisms.test_semantic_examples_are_generic_and_preserve_grammar_bytes) ... ok
+test_valid_synthetic_response_uses_exact_existing_compiler (loom.tools.structure.test_graph_free_semantic_axes_v3.SemanticRecipeMechanisms.test_valid_synthetic_response_uses_exact_existing_compiler) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.013s
+
+OK

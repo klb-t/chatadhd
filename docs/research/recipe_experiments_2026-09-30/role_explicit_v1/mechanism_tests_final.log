@@ -1,0 +1,15 @@
+test_billing_raw_ledger_mismatch_is_hard_error (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_billing_raw_ledger_mismatch_is_hard_error) ... ok
+test_future_source_changes_cannot_change_causal_prefix (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_future_source_changes_cannot_change_causal_prefix) ... ok
+test_invalid_endpoint_identity_and_formal_scope_refused (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_invalid_endpoint_identity_and_formal_scope_refused) ... ok
+test_missing_and_conflicting_preserve_denominators (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_missing_and_conflicting_preserve_denominators) ... ok
+test_negation_aliases_operator_and_source_injection_are_bytes_not_policy (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_negation_aliases_operator_and_source_injection_are_bytes_not_policy) ... ok
+test_predictions_persist_before_gold_and_never_overwrite (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_predictions_persist_before_gold_and_never_overwrite) ... ok
+test_preparation_never_reads_labels_and_declares_shared_reserve (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_preparation_never_reads_labels_and_declares_shared_reserve) ... ok
+test_questions_order_payload_and_sources_exactly_preserved (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_questions_order_payload_and_sources_exactly_preserved) ... ok
+test_reverse_query_roles_change_without_transforming_atom_text (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_reverse_query_roles_change_without_transforming_atom_text) ... ok
+test_whole_manifest_and_public_aliases_gate_before_ledger (loom.tools.structure.test_source_view_roles_v1.RoleRendererTests.test_whole_manifest_and_public_aliases_gate_before_ledger) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.022s
+
+OK

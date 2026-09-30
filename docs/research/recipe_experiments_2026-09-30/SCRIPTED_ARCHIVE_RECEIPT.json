@@ -1,0 +1,16 @@
+{
+  "actual_reported_cost_usd": "0",
+  "all_bytes_reverified": true,
+  "archive_bytes": 44643,
+  "archive_sha256": "5ad6e0d80d364e5a46a9750600233b251dd3ff70f4d3061196d01d056c07fa10",
+  "excluded": [
+    "run.lock"
+  ],
+  "execution_kind": "scripted_not_model",
+  "first_mock_failure_preserved": "scripted_first_evidence schema-hint receipt writer missing aggregate ledger cost field; raw outputs and score preserved",
+  "inventory_entries_including_inventory": 47,
+  "inventory_payloads": 46,
+  "model_quality_measured": false,
+  "real_api_calls": 0,
+  "schema": "loom.scripted_recipe_archive_receipt/1"
+}
