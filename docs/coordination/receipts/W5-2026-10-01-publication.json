@@ -1,0 +1,51 @@
+{
+  "recorded_at_utc": "2026-09-30T22:33:42.416913+00:00",
+  "status": "recovered and published on an independent W5 branch; not integrated",
+  "repository": "klb-t/chatadhd",
+  "branch": "gpt/w5-workspace-2026-09-30",
+  "base_sha": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "original_head": "e03bd02d42c8235b58f035a8689e593b4d570e95",
+  "published_payload_head": "411b18be4d8a8906d9587b1a5761861aad089f47",
+  "payload_tree": "9e75bd383a9e75f03dce39bfb48f837f0418f30b",
+  "original_package": "W5-workspace-2026-09-30.zip",
+  "package_sha256": "6f13c295b097dc119f24a3f13b9461f2190ba90ff58b36ba2532ae70f40fbecf",
+  "bundle_sha256": "6f911995f84e48419b0358e3ed1c24d155d99fb587130ab7d17b8c3c8d45f1bc",
+  "mapping": [
+    {
+      "original_commit": "d9a9e05c0d255c2cd8cc3e731caa9bf78f265e63",
+      "published_commit": "e4412f86bfac026440d0d7b57910791fb1dccecf",
+      "tree": "c59cb1649759949197aa9c0ad9bbcca5a4610e0d"
+    },
+    {
+      "original_commit": "8c62f189a541d2462863ba389673b215a1cc68e6",
+      "published_commit": "e4dec09362b3e4b533918b27a6df2fb68d73be47",
+      "tree": "d8cbdf3fad3c26186aacc50f58b14e8bbedac9c2"
+    },
+    {
+      "original_commit": "c6a83bd87de0249ca65e4228192e5b469ac60f74",
+      "published_commit": "01154829687dff84921c8039e9c8e87e050ce266",
+      "tree": "c5fcf60063346dcad70541b15cd1240394501471"
+    },
+    {
+      "original_commit": "e03bd02d42c8235b58f035a8689e593b4d570e95",
+      "published_commit": "411b18be4d8a8906d9587b1a5761861aad089f47",
+      "tree": "9e75bd383a9e75f03dce39bfb48f837f0418f30b"
+    }
+  ],
+  "recovery": "Original bundle verified against package checksums and restored. Git transport lacked credentials; authenticated repository connector recreated four commits. Every created tree equals the corresponding original tree; commit identities differ because publication metadata differs.",
+  "independent_review": {
+    "files": 15,
+    "implementation_hashes_matched": 7,
+    "log_hashes_matched": 6,
+    "native_source_hashes_matched": 258,
+    "deleted_paths": 0,
+    "private_archives_or_credentials_found": false
+  },
+  "verification": "Preserved existing source-bound build, 8/8 state groups, 10/10 native browser scenarios and mocked semantic-controls evidence. Earlier 16/16 regression remains labelled earlier. No new product test run in this publication audit.",
+  "limits": [
+    "Not a merge into the integration branch or main.",
+    "Not deployment.",
+    "Original source commits remain available in the saved source bundle.",
+    "This note supersedes the historical pre-publication status in the original receipt."
+  ]
+}

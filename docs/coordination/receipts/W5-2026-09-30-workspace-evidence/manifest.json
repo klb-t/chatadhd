@@ -1,0 +1,36 @@
+{
+  "recorded_at_utc": "2026-09-30T22:08:15.294848+00:00",
+  "base_sha": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "implementation_sha": "c6a83bd87de0249ca65e4228192e5b469ac60f74",
+  "implementation_tree": "c5fcf60063346dcad70541b15cd1240394501471",
+  "implementation_files": {
+    "loom/web/e2e/semantic-controls.mjs": "c691f429e64765c323fad5e4b793ffc67b153a50f5e6753f488b726c81bab799",
+    "loom/web/e2e/workspace-state.mjs": "abc3f2761821ac427f5ce408ad9b2f73c9d24603dd898fc29320dd0753307ee4",
+    "loom/web/e2e/workspace.mjs": "27c05b1e230445f458d7b2672057273f5e76c56d13bae9c39c4eee2de9762999",
+    "loom/web/package.json": "eeec11b304b18f7178f54fb9b610f8681e89e1952da5522dc0a284cdbfb2a5b6",
+    "loom/web/src/components/KnowledgeWorkbench.tsx": "249276a0196220890f02278b8bd05220bf7db7067aa2566c99fb8957060c5763",
+    "loom/web/src/components/knowledge.css": "588dc19a713cfcd8b1c4b6e076001861ffd4363858eff9249d9f43f710ca1f7d",
+    "loom/web/src/workspace/state.ts": "68f3b1318950074ae86cdc44ef440bd7294cf5606c84ef45582e87738e67b6d3"
+  },
+  "fixture_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+  "native_binary_sha256": "3fc10a60b7aa4e5336cf98e38a8b88d175d27b4ce0b351b4a43b823ff3262bd6",
+  "native_source_hashes_match_prior_receipt": 258,
+  "logs": {
+    "build.log": "1a366acc425524d69dfe19a0733da2d32f15d8090d408b343f3bea4454954450",
+    "first-regression-selector-failure.log": "7676660d838f362d5f64f11c11521da6da3875211adbfa241c93569e03b123be",
+    "workspace.log": "272a2b8eb7884c9ff5c6e2659e7a296f5729f5f42a79863988b48a4a8c5a8ef4",
+    "regression-checkpoint.log": "54ecf99ece102dc2b82a2d0289c0a9f526a52dd8d6c47cbbe2b7158e93d894bc",
+    "first-chromium-environment-failure.log": "8e4ee1bb6d5cacfe4d6ad795d99728b441deacf00525f09cfe5c32aa6e262cbc",
+    "semantic-controls.log": "bce8d40106415293704b0227e1fb426ce9576e95e2e15504f39d1bc0afa5757a"
+  },
+  "results": {
+    "state_groups": "8/8",
+    "native_browser_scenarios": "10/10",
+    "typescript_vite": "pass",
+    "semantic_controls_mocked": "pass including live/reload cross-run negative controls",
+    "earlier_browser_regression_checkpoint": "16/16; before final candidate guard"
+  },
+  "remote_calls_in_w5_browser_scenario": 0,
+  "model_calls_in_w5_browser_scenario": 0,
+  "timings": "Start/review durations not instrumented; no throughput estimate claimed."
+}
