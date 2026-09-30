@@ -1,0 +1,34 @@
+{
+  "doc": "/workspace/scratch/34e008d7a951/chatadhd/docs/research/LEGAL_CASE_KIND_2026-09-29.md",
+  "schema_valid": true,
+  "parsed_json_blocks": 6,
+  "schema_valid_positive_objects": 7,
+  "rejected_negative_mutations": [
+    "negative_period",
+    "bad_period_unit",
+    "bad_known_at",
+    "bad_end_clock",
+    "bad_source_hash",
+    "bad_workday",
+    "duplicate_calendar_date",
+    "bad_calendar_date",
+    "confirmed_mode",
+    "invalid_due_date",
+    "missing_unresolved",
+    "missing_premises",
+    "unrequested_legal_certainty_field"
+  ],
+  "source_hash_and_exact_range_checks": 3,
+  "pack_hash_checks": 2,
+  "resolved_reference_occurrences": 25,
+  "toy_due_dates": [
+    "2026-09-22",
+    "2026-09-19"
+  ],
+  "unresolved_hypothetical_preserved": true,
+  "domain_kinds": 21,
+  "universal_roles": 14,
+  "production_changes": false,
+  "legal_accuracy_measured": false,
+  "paid_api_calls": 0
+}
