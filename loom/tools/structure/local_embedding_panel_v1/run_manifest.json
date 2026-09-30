@@ -1,0 +1,15 @@
+{
+  "schema": "loom.local_embedding_panel.run_manifest/1",
+  "scores_sha256": "0b59dd984a254f6080edb74886d469436e3cb0bba98902b070d8e78f702bec3f",
+  "vectors_sha256": "0563b156a8865f7acaa961550c460bd8fa204d5429f744828312ba326024d26c",
+  "inputs_sha256": "3474eef3ee9060f790aae21ee30fd962569ae902f2352dda46deea576e44c545",
+  "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+  "code_sha256": "d52a2708a90358fb5d696b4e7b5839eb3bcbccc08f0cc38714bc038f9f315614",
+  "availability": {
+    "pair_total": 48,
+    "available_pairs": 48,
+    "unavailable_pairs": 0,
+    "unique_texts": 64,
+    "truncated_unique_texts": 0
+  }
+}

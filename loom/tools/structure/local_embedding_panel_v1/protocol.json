@@ -1,0 +1,65 @@
+{
+  "schema": "loom.local_embedding_panel.protocol/1",
+  "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+  "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+  "model_card": "https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "representation": "learned_sentence_embedding",
+  "dimensions": 384,
+  "runtime": "CPU ONNXRuntime; no torch or remote inference",
+  "input_text": "exact left/right strings; no text normalization or prompt prefixes",
+  "tokenization": "pinned tokenizer.json, special tokens, longest-first truncation to128 total tokens",
+  "truncation_policy": "retain prefix at128 tokens; report per-text untruncated token counts",
+  "pooling": "attention-mask mean of token embeddings, including non-padding special tokens",
+  "normalization": "L2 normalization after pooling, float32 vectors",
+  "score": "cosine = float64 accumulation of dot product of normalized float32 vectors",
+  "prediction": null,
+  "threshold_policy": "no decision threshold; no fit or calibration on48pairs",
+  "primary_measurement": "frozen per-pair cosine; all quality scoring delegated after vectors freeze",
+  "max_model_bytes": 600000000,
+  "expected_artifacts": {
+    "onnx/model.onnx": [
+      470301610,
+      "10f7a088420252b26caf819236ca2c9d2987afd0fc06fec7553b542a5655a05a"
+    ],
+    "tokenizer.json": [
+      9081518,
+      "2c3387be76557bd40970cec13153b3bbf80407865484b209e655e5e4729076b8"
+    ],
+    "config.json": [
+      645,
+      null
+    ],
+    "tokenizer_config.json": [
+      526,
+      null
+    ],
+    "special_tokens_map.json": [
+      239,
+      null
+    ],
+    "sentence_bert_config.json": [
+      53,
+      null
+    ],
+    "1_Pooling/config.json": [
+      190,
+      null
+    ],
+    "modules.json": [
+      229,
+      null
+    ],
+    "README.md": [
+      3888,
+      null
+    ]
+  },
+  "not_claimed": [
+    "logical equivalence",
+    "structural graph extraction",
+    "calibrated similarity",
+    "model-free method"
+  ],
+  "separation": "this program never reads gold labels, outcome reports, holdout keys or paid APIs"
+}

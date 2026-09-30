@@ -1,0 +1,214 @@
+{
+  "schema": "loom.research.current_remote_test_inventory/1",
+  "selected": [
+    {
+      "path": "loom/tools/structure/test_anchor_assist.py",
+      "module": "test_anchor_assist",
+      "git_blob_sha": "55d408c76a6473d28615fb6208c72336e57d3b31",
+      "sha256": "83137edaeb974537c07ee8394615a098ee26306a05aab33a44e048a8db486eaa"
+    },
+    {
+      "path": "loom/tools/structure/test_assertion_view.py",
+      "module": "test_assertion_view",
+      "git_blob_sha": "8fd7a5bf55352aafd3395ee6ec5f7ca90879e5fe",
+      "sha256": "8b61a272d002a1807a820af8fb4d9f35445790fdd03965a1b8970fc702e73b66"
+    },
+    {
+      "path": "loom/tools/structure/test_boundary_alternatives.py",
+      "module": "test_boundary_alternatives",
+      "git_blob_sha": "02845a5d2e915ff6644fb38b8cef5188e0f73cec",
+      "sha256": "6793280d3f28d8b89b1756910746e2d3a34ea5e32f39b2d38f8eafddf6cfa1dd"
+    },
+    {
+      "path": "loom/tools/structure/test_candidate_flow.py",
+      "module": "test_candidate_flow",
+      "git_blob_sha": "a464d86e449f253e9e51c9a08faee539cfa8911c",
+      "sha256": "1ae7ef6b59a1ba717a3890fba142f2282c9a05066f8bb0537b6ca0d0d667ca1b"
+    },
+    {
+      "path": "loom/tools/structure/test_candidate_graph.py",
+      "module": "test_candidate_graph",
+      "git_blob_sha": "2bdc59f94bb49dd1ec86c6ef38e20f49da087672",
+      "sha256": "5516c817725e15e5bfd68970c6535f278ee84eb272d7c46b440c5da27581cf10"
+    },
+    {
+      "path": "loom/tools/structure/test_context_delta.py",
+      "module": "test_context_delta",
+      "git_blob_sha": "f71b53afbfc9614a12e2b878a9c2269056613b62",
+      "sha256": "c05fb644c41722207d719fed410907182b1878d07f7ce4f1f5a3baf66439e71a"
+    },
+    {
+      "path": "loom/tools/structure/test_context_scores.py",
+      "module": "test_context_scores",
+      "git_blob_sha": "40df5990d38f20f69dc32d59efc512afe2769bd0",
+      "sha256": "bfd42b486bf5a75d92a2053e58cfeabb78fff06ac7ce31a7b8d6e142bc59273c"
+    },
+    {
+      "path": "loom/tools/structure/test_conversation_pilot_score.py",
+      "module": "test_conversation_pilot_score",
+      "git_blob_sha": "99f1c83c02a670cf4df80977b3ffbbd3f0c08f5a",
+      "sha256": "7c5dc26dea4a91abd382107eeabd3d2f9d4a9970e9613d15f0b432fe1225e077"
+    },
+    {
+      "path": "loom/tools/structure/test_core_projection.py",
+      "module": "test_core_projection",
+      "git_blob_sha": "451bfb09fc92c3dd7a96ae0beda24f5a50e99afb",
+      "sha256": "579d23739d6eb8abb6a79bb8698839170f31903b5b1e366c4150ec4b0fd444eb"
+    },
+    {
+      "path": "loom/tools/structure/test_core_snapshot.py",
+      "module": "test_core_snapshot",
+      "git_blob_sha": "8a096fa36f3fb33f56ab2872fc9d5850d0c0bf91",
+      "sha256": "41623398ebde4cc3ca668421d3cc7b1b0c79956eae7de68ced4e8db6f2da40ca"
+    },
+    {
+      "path": "loom/tools/structure/test_credential_handoff.py",
+      "module": "test_credential_handoff",
+      "git_blob_sha": "7bd0bbbd027f2814414b47f074472af882caa595",
+      "sha256": "26b5e736c632c186e10a818d550c98d1c57521b4b820241fecf0d2fff3985d9b"
+    },
+    {
+      "path": "loom/tools/structure/test_extract.py",
+      "module": "test_extract",
+      "git_blob_sha": "b72654622ddee6857f67045f6eb6d8dac1f7604e",
+      "sha256": "fe1ec4c532ced0cdeb7f7b84648b4bd005adcd9f44c1701a45b736b6542f252f"
+    },
+    {
+      "path": "loom/tools/structure/test_gemini_experiments_independent.py",
+      "module": "test_gemini_experiments_independent",
+      "git_blob_sha": "e4a1c5216979f588a1bdc36011fe399b10a62a3c",
+      "sha256": "e213a43813e9594d7339d157abe43dd23581dec96d6ffbb3f0b487e80a8ba590"
+    },
+    {
+      "path": "loom/tools/structure/test_graph_flow.py",
+      "module": "test_graph_flow",
+      "git_blob_sha": "e6d045a24af99cb899866e5910c00a2633b2f2c3",
+      "sha256": "0ff39d3acf202d8a9d7338be7ab823894f32ab4b0fb9c03961afb9ac2febfea0"
+    },
+    {
+      "path": "loom/tools/structure/test_graph_patterns.py",
+      "module": "test_graph_patterns",
+      "git_blob_sha": "ccadb8bf70e8027328dee527eb984498f3cd7478",
+      "sha256": "d6252ef28c05b2ed401de7d9eaac9d8c8bd93bbbbca680ac3a6aaaebbfd397da"
+    },
+    {
+      "path": "loom/tools/structure/test_graph_search.py",
+      "module": "test_graph_search",
+      "git_blob_sha": "e5dba6fc3a48ebb9ac58195277b96aef3389baaf",
+      "sha256": "ddb2e6a9704d73f5bc964273ba278518f45ebf0b093b4d0066f3be0369b64249"
+    },
+    {
+      "path": "loom/tools/structure/test_grounded_frames.py",
+      "module": "test_grounded_frames",
+      "git_blob_sha": "8cd4e65362f940fac217ea3ba42fe73b13642992",
+      "sha256": "8bb170a0cd366963edc0ce14d6e05befe5781fe5f6b04d1bcf391c4cc0d2f1ae"
+    },
+    {
+      "path": "loom/tools/structure/test_jev_context_pilot.py",
+      "module": "test_jev_context_pilot",
+      "git_blob_sha": "6371ee57989a5fd766d8f5f5350e0bb1b366c547",
+      "sha256": "e5bd35daeda846bdcd9deeafab0ebd16da4420bf38a14b9b8da3b264b670371c"
+    },
+    {
+      "path": "loom/tools/structure/test_jev_live_pilot.py",
+      "module": "test_jev_live_pilot",
+      "git_blob_sha": "0bd86d04363c25a333070bcd10694e7bc7684f3a",
+      "sha256": "bb2286b823a4b014ad0ef801b84ef246fb42c7016eafb4cae9ddbaab163f46d3"
+    },
+    {
+      "path": "loom/tools/structure/test_jev_pair_analysis.py",
+      "module": "test_jev_pair_analysis",
+      "git_blob_sha": "e1d10e606658b5818c4a2546d4d108f8a40dccd3",
+      "sha256": "7330a88f9d9ef7eb830af2b914d8110f7277b54f6064f706a305b053166d6262"
+    },
+    {
+      "path": "loom/tools/structure/test_live_pilot.py",
+      "module": "test_live_pilot",
+      "git_blob_sha": "18263881e731c982980348bffbd6dc18e5088ccf",
+      "sha256": "f59952745b2a2c1e9d4e4fe70ed1c631a90420b220a3db7d18c73cf1bd240c30"
+    },
+    {
+      "path": "loom/tools/structure/test_live_pilot_independent.py",
+      "module": "test_live_pilot_independent",
+      "git_blob_sha": "59e32d1195cebfa4db2749891fc5cbd4c0cf8376",
+      "sha256": "d697a6aa5c2a1c560bd725e32876b74ca3b0ebfc1593c7a076b65117bd147ad3"
+    },
+    {
+      "path": "loom/tools/structure/test_live_pilot_score.py",
+      "module": "test_live_pilot_score",
+      "git_blob_sha": "7fa2eeda773bdb8eab35b3033821b1f840fa7351",
+      "sha256": "87099ea1e4da7f2750313feb864e79f7f5a45ba25ffb23c619d75a8d1cc2c56a"
+    },
+    {
+      "path": "loom/tools/structure/test_logic_check.py",
+      "module": "test_logic_check",
+      "git_blob_sha": "b768200ba383075b3a2a0b996c54810d4596f5aa",
+      "sha256": "c2c1b2a031922c75360e02b96c03ba176ee8099fa59d603b75a41d4193d19633"
+    },
+    {
+      "path": "loom/tools/structure/test_native_assertion_experiment.py",
+      "module": "test_native_assertion_experiment",
+      "git_blob_sha": "5dc9ba82bc9b207390ef0eb29814964b4a977c60",
+      "sha256": "f197b0ec9b4aed3779171b2b1264e802236df11587a8f848d34e2a158dcb21b4"
+    },
+    {
+      "path": "loom/tools/structure/test_native_counter_experiment.py",
+      "module": "test_native_counter_experiment",
+      "git_blob_sha": "6bf17f0bb8f1616b4fb7a13736f3ff9587bb458b",
+      "sha256": "1b1dc8108d1d59c05b887ba4f199f57eb9fd07767e1f9340d2cc8c9baaaba1f2"
+    },
+    {
+      "path": "loom/tools/structure/test_openrouter_runner.py",
+      "module": "test_openrouter_runner",
+      "git_blob_sha": "bcaa96d51254d6d610723ff5d4a1222ae5fffcd6",
+      "sha256": "d1e8ede90c5c201c52865ca58ad3ea424daef8813b8e33bc07309d7f86f37960"
+    },
+    {
+      "path": "loom/tools/structure/test_pipeline.py",
+      "module": "test_pipeline",
+      "git_blob_sha": "3cc3b11e8421b5826daa05b5beb6f089ea0265d3",
+      "sha256": "32ad9d2acc93766bda8d268db79f6ef026e88ec1dae795275fe9989fc09116c3"
+    },
+    {
+      "path": "loom/tools/structure/test_relation_envelopes.py",
+      "module": "test_relation_envelopes",
+      "git_blob_sha": "858ed64f66d09418d8a77a60daab8a359863bd66",
+      "sha256": "2223ee3b681c7e0e68ff83a7022242ec85ead1a9c6074d5023d21e3b232fc6b6"
+    },
+    {
+      "path": "loom/tools/structure/test_round3_eval_independent.py",
+      "module": "test_round3_eval_independent",
+      "git_blob_sha": "7b44eb79ab52daa517bd0c44ace09f4a124379f6",
+      "sha256": "450abdab32428d18b0f4aaa40f401c7617f47b2f601f60da24e946acf46076cb"
+    },
+    {
+      "path": "loom/tools/structure/test_scoped_projection.py",
+      "module": "test_scoped_projection",
+      "git_blob_sha": "fbc3e39257038be6fac9abbb096e07ab79c30149",
+      "sha256": "7c6b97a317ee288087d2ca50e3a1e28b017aedc9dc96f962827e45f3291687cd"
+    },
+    {
+      "path": "loom/tools/structure/test_structure_methods.py",
+      "module": "test_structure_methods",
+      "git_blob_sha": "7ec56042114e781c9796593baff85da0b1376867",
+      "sha256": "8354f7611be13362b27e91f8281c536e996ec793007c092af6b6c1d8de91fafd"
+    },
+    {
+      "path": "loom/tools/structure/test_structure_pair_chat.py",
+      "module": "test_structure_pair_chat",
+      "git_blob_sha": "417a77adf77ced6655441b3ae0581b80b8ecd7ca",
+      "sha256": "4a4dc261630a3e558b8138904a1ebb3cd552639d53eae9cbae29576ee8ce6939"
+    },
+    {
+      "path": "loom/tools/structure/test_topics.py",
+      "module": "test_topics",
+      "git_blob_sha": "d133e8f0045804c8a3dc894980b4c5bb1e3d35b0",
+      "sha256": "57500e6413e59a24a031910a293991623689e8b0ebfa14d0870449ff03a6393b"
+    }
+  ],
+  "excluded_untracked_oldcopy_not_in_remote_index": [
+    "loom/tools/structure/test_jev_context_score.py",
+    "loom/tools/structure/test_semantic_sketch.py"
+  ],
+  "gate_changes": false
+}

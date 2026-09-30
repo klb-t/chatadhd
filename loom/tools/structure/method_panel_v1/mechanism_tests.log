@@ -1,0 +1,15 @@
+test_abstentions_keep_positive_planned_denominator (test_methods_panel.MethodsPanelMechanismTests.test_abstentions_keep_positive_planned_denominator) ... ok
+test_cosine_transparent_baseline_symmetry_scaling_and_empty (test_methods_panel.MethodsPanelMechanismTests.test_cosine_transparent_baseline_symmetry_scaling_and_empty) ... ok
+test_empty_graph_does_not_self_match_as_evidence (test_methods_panel.MethodsPanelMechanismTests.test_empty_graph_does_not_self_match_as_evidence) ... ok
+test_opaque_slot_graph_does_not_recover_named_proposition_identity (test_methods_panel.MethodsPanelMechanismTests.test_opaque_slot_graph_does_not_recover_named_proposition_identity) ... ok
+test_rank_ties_are_complete_blocks_and_abstentions_explicit (test_methods_panel.MethodsPanelMechanismTests.test_rank_ties_are_complete_blocks_and_abstentions_explicit) ... ok
+test_source_text_is_not_normalized_in_tfidf_source_identity (test_methods_panel.MethodsPanelMechanismTests.test_source_text_is_not_normalized_in_tfidf_source_identity) ... ok
+test_tfidf_deduplicates_exact_sources_without_label_inputs (test_methods_panel.MethodsPanelMechanismTests.test_tfidf_deduplicates_exact_sources_without_label_inputs) ... ok
+test_union_adds_candidates_without_unknown_or_negative_veto (test_methods_panel.MethodsPanelMechanismTests.test_union_adds_candidates_without_unknown_or_negative_veto) ... ok
+test_word_paths_retain_order_without_claiming_semantics (test_methods_panel.MethodsPanelMechanismTests.test_word_paths_retain_order_without_claiming_semantics) ... ok
+test_zero_positive_predictions_have_undefined_precision (test_methods_panel.MethodsPanelMechanismTests.test_zero_positive_predictions_have_undefined_precision) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.001s
+
+OK

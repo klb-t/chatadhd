@@ -1,0 +1,21 @@
+{
+  "files": {
+    "first_results.json": {
+      "bytes": 444847,
+      "sha256": "61d63f056c9c7e3fa1e1c6aa876bce801f7cdef682a0985a2b5cc5eaa3a34635"
+    },
+    "first_scores.jsonl": {
+      "bytes": 105904,
+      "sha256": "85a818804c1d1b7325286da08e3faa4321ff5ce6caacea7bd885c9cf788dfff6"
+    },
+    "run_manifest.json": {
+      "bytes": 1535,
+      "sha256": "c7c70e3dca693d92da6b3bcd35cf7018c97d8b6a7b0e3b14e357fc2a0c1f3f62"
+    },
+    "source_extractions.jsonl": {
+      "bytes": 465278,
+      "sha256": "f96234cfb16f94df56258ccc124d78b177ed7742e8ee37089ac25a5389c35bdf"
+    }
+  },
+  "schema": "loom.research.method_panel_evidence/1"
+}

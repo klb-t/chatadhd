@@ -1,0 +1,1 @@
+Answer the supplied q01 using its instructions and true/false criteria applied to state.text. Return only one JSON object with exactly one key, q01, whose value is a JSON boolean: {"q01":true} or {"q01":false}. Do not include explanation, confidence, or Markdown.

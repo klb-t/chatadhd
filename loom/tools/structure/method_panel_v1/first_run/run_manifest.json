@@ -1,0 +1,27 @@
+{
+  "evaluation_status": "exploratory_all_reused_48_pairs_not_independent_holdout",
+  "fixture_manifest_sha256": "970846e4834902d1064c1e4b0cac4761ad17994c1bdf4272307f58fc25bdd716",
+  "gold_sha256": "2db33aeba01fc004ace04bfa206e8d60d2aa171234822a7f36d71769f2a116c0",
+  "independent_structural_annotations": {
+    "available_pairs": 0,
+    "planned_pairs": 48,
+    "quality_metrics": null,
+    "status": "not_present_in_pair_or_source_fixture"
+  },
+  "input_sha256": "3474eef3ee9060f790aae21ee30fd962569ae902f2352dda46deea576e44c545",
+  "no_graph_promotion": true,
+  "no_model_calls": true,
+  "policy_sha256": "7059def88dd78f7029cec06876b18c671f7e3b24ff29bd8b83130448a1494ad3",
+  "protocol_sha256": "0a098682be776b708dfecae72610a7b9acffa13af07963fec6ac7e8331bd0826",
+  "schema": "loom.research.method_panel_run/1",
+  "source_extraction_is_separate_unassessed_channel": true,
+  "source_hashes": {
+    "extract.py": "a20e3a8422684ee073443ae89be60b01ff87dfa6af848f3b000a481283518964",
+    "method_panel_v1/methods_panel.py": "01b09004e82f06616d5e71cf8d45699a9321ddddbe41d91fe91fd76befed6a04",
+    "operations.json": "0bdd4dbe0a915577999c595c5f215be8cc0fa2c0c10405e9b101a2eb1a7c0ba1",
+    "relation_envelopes.py": "932faad15b77ec3954ab6741a4e85c6026e633ba111b6129e8b5328b260d3fe9",
+    "relation_envelopes_policy.json": "d629d979f504544bbe00444fea4de7f305614f49278c5fe78de61eaa3ebacd21",
+    "structure_methods.py": "89596297f279ad50b1599d2cb125fc7e140c065c91827d21f2c11ec4021e0fb3"
+  },
+  "started_at": "2026-09-30T01:50:24.242002+00:00"
+}

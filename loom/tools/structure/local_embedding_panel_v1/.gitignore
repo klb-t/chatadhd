@@ -1,0 +1,5 @@
+model/
+runtime_packages/
+tmp/
+*.part
+dependency_install*.log
