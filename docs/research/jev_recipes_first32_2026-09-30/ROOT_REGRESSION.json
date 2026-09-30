@@ -1,0 +1,1 @@
+{"contracts":{"dependency_install_from_declared_requirements":true,"log_sha256":"89a512688d9588c75a184ebb41b1a0ff1ee5d53288855f71e376dd41342ef645","passed":153,"planned":153},"no_gate_changes":true,"no_live_calls_in_tests":true,"structure":{"log_sha256":"b375ed45f65c63b6f5765c73a6a74815a7f8f7a31829416ca98944def168088f","passed":491,"planned":491,"tmpdir":"/var/tmp"}}
