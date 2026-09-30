@@ -110,3 +110,11 @@ Repeat `--cut` for several cuts; then `--out` denotes a directory. Successful
 command exits are 0, synthetic gate failures are 1, and unavailable/invalid runs
 are 2. An empty prediction list with `status: unavailable` is **not** a measured
 zero-accuracy result.
+
+## Archive reading cost (offline estimate)
+
+`archive_cost.py --db <data_dir>/chatadhd.db [--fraction 0.1] [--json]` counts the text a
+model would read per imported conversation (active, older branch versions, excluded) and
+estimates one reading pass per model from `pricing_2026-09-25.json` (batch discount included).
+Read-only, no network; token counts are a chars/4–chars/3 range, prices are dated list prices —
+planning numbers, not a bill. Tests: `test_archive_cost.py`.

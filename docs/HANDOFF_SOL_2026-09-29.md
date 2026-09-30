@@ -114,6 +114,27 @@ split into development vs untouched validation. The OpenRouter key must never en
    tokens and quality separately. Wiring the ContextEngine into the chat request path
    (acceptance test #1) is a good native task if you want one.
 
+7. **Frontier reader pilot** (owner idea, 2026-09-30). The idea: a frontier model reads any selected
+   conversation, with deep reasoning when needed. It completes the graph and names new, unnamed
+   structures. It sees the graph's own definitions (predefined in `loom/data/**`, discovered, and
+   user-defined) as a stable, cached prompt prefix. Its output is candidates only: exact quote,
+   model, prompt version and date. The owner can edit everything by hand.
+   - **Pilot:** 10–20 conversations from `synthetic_dev` through `propose_semantics`, using Fable 5.1,
+     Opus 5.5 and Sonnet 5.5 (plus a GPT model if you want).
+   - **Measure** against the regex baseline:
+     - decision, principle and structure recall;
+     - admissibility of the candidates;
+     - genuinely new structures;
+     - real tokens and USD per conversation from `usage`.
+   - **Cap:** USD 20. Record the results in ModelProfiles.
+   - **Planning numbers** come from `python3 loom/tools/eval/archive_cost.py --db <data_dir>/chatadhd.db`.
+     It is offline and read-only, estimates tokens from characters and prices from
+     `loom/tools/eval/pricing_2026-09-25.json`. Compare its estimate with measured `usage`, then
+     correct `output_ratio`/`prefix_tokens`.
+   - **Design target** (spec only, code after the pilot): annotations of messages as links
+     message → graph node, carrying a character span and origin `recorded | model | user`. Live
+     ChatADHD chats, imports and manual edits all share this one layer.
+
 ## 4. Data and integrity rules (non‑negotiable)
 
 - **Development data:** `loom/tests/fixtures/eval/synthetic_dev` (fictional persona) and the
