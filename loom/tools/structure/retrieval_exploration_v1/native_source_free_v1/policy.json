@@ -1,0 +1,29 @@
+{
+  "schema": "loom.research.native_source_free_policy/1",
+  "split": "dev",
+  "arms": ["transport_user", "literal_speaker_role"],
+  "input_scope": "only_case_id_language_source_id_turns_no_nodes_queries_gold",
+  "transport_user_role": "user",
+  "original_speaker_fields": ["author.name", "message.metadata.loom_source_speaker"],
+  "literal_role_control": "author.role_equals_original_fixture_speaker_identity",
+  "pipeline_config": {
+    "stages": ["catalog", "extract"],
+    "priors": false,
+    "llm": "off",
+    "stage_params": {
+      "catalog": {
+        "scan": {"threads": 1, "retain_raw": "all"},
+        "score": {"llm": "off"},
+        "import": {"mode": "full", "store_mode": "copy", "import_messages": true}
+      }
+    }
+  },
+  "case_isolation": "each_case_arm_has_fresh_isolated_data_directory",
+  "per_process_timeout_seconds": 60,
+  "whole_series_timeout_seconds": 240,
+  "semantic_quality_abi": "unavailable_unless_native_claims_legitimately_represent_implies_or_causes_with_actor_polarity_source_binding",
+  "no_native_code_or_pack_changes": true,
+  "no_gold_tuning": true,
+  "no_paid_api": true,
+  "validation_access": "sealed_not_authorized"
+}

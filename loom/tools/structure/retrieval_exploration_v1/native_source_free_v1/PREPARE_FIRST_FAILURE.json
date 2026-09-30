@@ -1,0 +1,8 @@
+{
+  "stage": "prepare",
+  "reason": "source fixture document wraps cases in top-level cases member; implementation initially counted document keys",
+  "source_outputs_observed": false,
+  "prepare_error": "ValueError: expected24sourcecases",
+  "dependent_freeze_error": "FileNotFoundError: source_only_inputs.json",
+  "decision": "correct fixture envelope parser before inputs/freeze/native execution; no first native run discarded"
+}

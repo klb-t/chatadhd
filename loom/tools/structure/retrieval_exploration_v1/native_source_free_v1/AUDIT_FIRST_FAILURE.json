@@ -1,0 +1,10 @@
+{
+ "stage":"same-author source binding recount",
+ "first_outcome":"AssertionError: quote equals exact locator slice",
+ "cause":"three of thirteen native claim EvidenceRef quotes are subspans of a whole-observation locator, not the entire locator slice",
+ "native_outputs_preserved":true,
+ "native_reruns":false,
+ "decision":"retain exact-equality and substring coverage as distinct diagnostics; do not discard the three mismatches or declare a contract bug without a strict quote-span contract",
+ "first_audit_source_preserved":"audit_source_bindings.py",
+ "corrected_recount_source":"audit_source_bindings2.py"
+}

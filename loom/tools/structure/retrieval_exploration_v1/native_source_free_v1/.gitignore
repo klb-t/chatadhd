@@ -1,0 +1,10 @@
+# Exact source-only inputs and first outputs are preserved in first_evidence.zip.
+/source_only_inputs.json
+/prepared_manifest.json
+/prepared/
+/first_runs/
+/first_runs2/
+/first_run_ledger.json
+/first_run_ledger2.json
+/first_results3.json
+/SOURCE_BINDING_RECOUNT.json

@@ -1,0 +1,10 @@
+{
+  "stage": "evaluate first actual outputs",
+  "error": "KeyError: evidence",
+  "cause": "scorer expected assessment.evidence; actual native JSON uses assessment.evidence_class",
+  "native_outputs_preserved": true,
+  "native_processes_rerun": false,
+  "first_evaluation_source_preserved": "evaluate_native_v2.py",
+  "corrected_inventory_scorer": "evaluate_native_v3.py",
+  "policy_or_threshold_changed": false
+}
