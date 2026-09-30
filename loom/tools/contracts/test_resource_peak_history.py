@@ -50,6 +50,7 @@ def process_overlap(directory, p, index, channel, release):
 
 def process_crash_boundary(directory, p, phase, channel):
     original = ref._write_new
+    original_reserve = ref.ResourceLedger.reserve
 
     def stop_here():
         channel.send(('boundary', phase))
@@ -59,10 +60,17 @@ def process_crash_boundary(directory, p, phase, channel):
         name = Path(path).name
         if name == 'reservation.json' and phase == 'before_reservation': stop_here()
         original(path, value)
-        if name == 'reservation.json' and phase == 'after_reservation': stop_here()
         if name == 'completion.json' and phase == 'after_completion': stop_here()
 
+    def reserving(self, *args, **kwargs):
+        folder = original_reserve(self, *args, **kwargs)
+        # The full reserve operation includes fsync of the ledger directory,
+        # not only the file and attempt directory, before packet loading.
+        if phase == 'after_reservation': stop_here()
+        return folder
+
     ref._write_new = writing
+    ref.ResourceLedger.reserve = reserving
     try:
         def callback(*_):
             Path(directory, 'callback-dispatched').write_text('scripted')
