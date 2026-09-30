@@ -1,0 +1,33 @@
+{
+  "new_api_calls": 0,
+  "new_model_cost_usd": "0",
+  "mechanism_tests": {
+    "passed": 20,
+    "total": 20,
+    "includes_independent": 9
+  },
+  "structure_regression": {
+    "passed": 841,
+    "total": 841,
+    "seconds": 36.972,
+    "includes_w3_mechanisms": true
+  },
+  "existing_profile_contract_tests": {
+    "passed": 35,
+    "total": 35
+  },
+  "historical_raw_responses_replayed": 96,
+  "independent_dev_queries": 48,
+  "new_recipe_quality": null,
+  "native_build": "not rerun: no C++/ABI changes",
+  "python": "3.12",
+  "dependency": "jsonschema 4.26.0",
+  "environment": {
+    "PYTHONPATH": "/workspace/scratch/47408c3bd5bc/deps",
+    "TMPDIR": "/var/tmp"
+  },
+  "code_sha256": {
+    "loom/tools/structure/w3_directed_commitment_v1/experiment.py": "c9d5fe122e8630e2e9df50e62e48833ea611754ff666b18d2eb782c9a9a7a203",
+    "loom/tools/structure/w3_directed_commitment_v1/recipe.json": "7749b406a130c8ff4ab95bd0eaac293c8eb233c5040e34d8505e39d36bff281d"
+  }
+}

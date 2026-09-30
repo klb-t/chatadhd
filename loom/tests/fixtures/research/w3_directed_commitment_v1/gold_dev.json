@@ -1,0 +1,1587 @@
+{
+  "schema": "loom.research.source_view_lifecycle.gold/1",
+  "split": "dev",
+  "policy_id": "source_view.latest_active_commitment/1",
+  "cases": [
+    {
+      "id": "w3dcv1_dev_001",
+      "language": "pl",
+      "family": "withdrawal_direction",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_001_a1",
+          "attributed_to": "Iga",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T01:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_001_source",
+              "turn_id": "w3dcv1_dev_001_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 59,
+              "byte_start": 0,
+              "byte_end": 62,
+              "quote": "Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_001_e1",
+          "assertion_id": "w3dcv1_dev_001_a1",
+          "attributed_to": "Iga",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T01:01:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_001_source",
+              "turn_id": "w3dcv1_dev_001_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 121,
+              "byte_start": 0,
+              "byte_end": 131,
+              "quote": "Wycofuję swoją deklarację: Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód. Nie zastępuję jej nową deklaracją."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_001_q1",
+          "label": "supported",
+          "rationale": "The speaker explicitly asserted A→B.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T01:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_001_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_001_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_001_q2",
+          "label": "refuted",
+          "rationale": "Withdrawal defeats this source commitment under policy /1; it does not establish objective falsity.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T01:01:00Z",
+            "stance": "withdrawn_positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_001_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_001_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_001_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_001_q3",
+          "label": "unknown",
+          "rationale": "Withdrawal of A→B says nothing about the distinct directed B→A commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T01:01:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_001_q4",
+          "label": "unknown",
+          "rationale": "The unrelated extension cannot create a reverse relation.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T01:02:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_002",
+      "language": "en",
+      "family": "withdrawal_direction",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_002_a1",
+          "attributed_to": "Nora",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T02:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_002_source",
+              "turn_id": "w3dcv1_dev_002_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 67,
+              "byte_start": 0,
+              "byte_end": 67,
+              "quote": "If the sensor detects vibration, then the relay closes the circuit."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_002_e1",
+          "assertion_id": "w3dcv1_dev_002_a1",
+          "attributed_to": "Nora",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T02:01:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_002_source",
+              "turn_id": "w3dcv1_dev_002_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 133,
+              "byte_start": 0,
+              "byte_end": 133,
+              "quote": "I retract my assertion: If the sensor detects vibration, then the relay closes the circuit. I do not replace it with a new assertion."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_002_q1",
+          "label": "supported",
+          "rationale": "The speaker explicitly asserted A→B.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T02:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_002_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_002_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_002_q2",
+          "label": "refuted",
+          "rationale": "Withdrawal defeats this source commitment under policy /1; it does not establish objective falsity.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T02:01:00Z",
+            "stance": "withdrawn_positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_002_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_002_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_002_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_002_q3",
+          "label": "unknown",
+          "rationale": "Withdrawal of A→B says nothing about the distinct directed B→A commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T02:01:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_002_q4",
+          "label": "unknown",
+          "rationale": "The unrelated extension cannot create a reverse relation.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T02:02:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_003",
+      "language": "pl",
+      "family": "denial_withdrawal_extension",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_003_a1",
+          "attributed_to": "Iga",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "negative",
+          "known_at": "2026-09-20T03:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_003_source",
+              "turn_id": "w3dcv1_dev_003_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 85,
+              "byte_start": 0,
+              "byte_end": 89,
+              "quote": "Zaprzeczam całej relacji: Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_003_e1",
+          "assertion_id": "w3dcv1_dev_003_a1",
+          "attributed_to": "Iga",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T03:01:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_003_source",
+              "turn_id": "w3dcv1_dev_003_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 77,
+              "byte_start": 0,
+              "byte_end": 79,
+              "quote": "Wycofuję to zaprzeczenie. Nie zajmuję teraz stanowiska w sprawie tej relacji."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_003_q1",
+          "label": "refuted",
+          "rationale": "The whole directed relation is explicitly denied.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T03:00:00Z",
+            "stance": "negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_003_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_003_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_003_q2",
+          "label": "unknown",
+          "rationale": "Retracting a denial is not affirming the relation.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T03:01:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_003_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_003_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_003_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_003_q3",
+          "label": "unknown",
+          "rationale": "Unrelated later text leaves the withdrawn denial inactive.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T03:02:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_003_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_003_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_003_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_003_q4",
+          "label": "unknown",
+          "rationale": "Neither original denial nor its withdrawal concerns B→A.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T03:02:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_004",
+      "language": "en",
+      "family": "denial_withdrawal_extension",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_004_a1",
+          "attributed_to": "Nora",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "negative",
+          "known_at": "2026-09-20T04:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_004_source",
+              "turn_id": "w3dcv1_dev_004_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 95,
+              "byte_start": 0,
+              "byte_end": 95,
+              "quote": "I deny the entire relation: If the sensor detects vibration, then the relay closes the circuit."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_004_e1",
+          "assertion_id": "w3dcv1_dev_004_a1",
+          "attributed_to": "Nora",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T04:01:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_004_source",
+              "turn_id": "w3dcv1_dev_004_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 63,
+              "byte_start": 0,
+              "byte_end": 63,
+              "quote": "I retract that denial. I now take no position on that relation."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_004_q1",
+          "label": "refuted",
+          "rationale": "The whole directed relation is explicitly denied.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T04:00:00Z",
+            "stance": "negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_004_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_004_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_004_q2",
+          "label": "unknown",
+          "rationale": "Retracting a denial is not affirming the relation.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T04:01:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_004_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_004_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_004_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_004_q3",
+          "label": "unknown",
+          "rationale": "Unrelated later text leaves the withdrawn denial inactive.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T04:02:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_004_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_004_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_004_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_004_q4",
+          "label": "unknown",
+          "rationale": "Neither original denial nor its withdrawal concerns B→A.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T04:02:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_005",
+      "language": "pl",
+      "family": "other_speaker_isolation",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_005_a1",
+          "attributed_to": "Iga",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T05:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_005_source",
+              "turn_id": "w3dcv1_dev_005_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 59,
+              "byte_start": 0,
+              "byte_end": 62,
+              "quote": "Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód."
+            }
+          ]
+        },
+        {
+          "id": "w3dcv1_dev_005_a2",
+          "attributed_to": "Leon",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "negative",
+          "known_at": "2026-09-20T05:01:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_005_source",
+              "turn_id": "w3dcv1_dev_005_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 99,
+              "byte_start": 0,
+              "byte_end": 102,
+              "quote": "To moje stanowisko: zaprzeczam relacji: Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_005_e1",
+          "assertion_id": "w3dcv1_dev_005_a2",
+          "attributed_to": "Leon",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T05:02:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_005_source",
+              "turn_id": "w3dcv1_dev_005_t3",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 64,
+              "byte_start": 0,
+              "byte_end": 66,
+              "quote": "Wycofuję moje zaprzeczenie; nie wypowiadam się za nikogo innego."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_005_q1",
+          "label": "supported",
+          "rationale": "A second speaker cannot overwrite the first speaker’s commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T05:01:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_005_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_005_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_005_q2",
+          "label": "refuted",
+          "rationale": "The second speaker explicitly denies A→B in their own voice.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T05:01:00Z",
+            "stance": "negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_005_a2"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_005_a2"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_005_q3",
+          "label": "supported",
+          "rationale": "The second speaker’s withdrawal leaves the first speaker’s assertion intact.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T05:02:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_005_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_005_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_005_q4",
+          "label": "unknown",
+          "rationale": "Only the second speaker’s negative commitment was withdrawn.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T05:02:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_005_a2"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_005_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_005_e1"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_006",
+      "language": "en",
+      "family": "other_speaker_isolation",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_006_a1",
+          "attributed_to": "Nora",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T06:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_006_source",
+              "turn_id": "w3dcv1_dev_006_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 67,
+              "byte_start": 0,
+              "byte_end": 67,
+              "quote": "If the sensor detects vibration, then the relay closes the circuit."
+            }
+          ]
+        },
+        {
+          "id": "w3dcv1_dev_006_a2",
+          "attributed_to": "Eli",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "negative",
+          "known_at": "2026-09-20T06:01:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_006_source",
+              "turn_id": "w3dcv1_dev_006_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 105,
+              "byte_start": 0,
+              "byte_end": 105,
+              "quote": "My own position: I deny the relation: If the sensor detects vibration, then the relay closes the circuit."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_006_e1",
+          "assertion_id": "w3dcv1_dev_006_a2",
+          "attributed_to": "Eli",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T06:02:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_006_source",
+              "turn_id": "w3dcv1_dev_006_t3",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 53,
+              "byte_start": 0,
+              "byte_end": 53,
+              "quote": "I withdraw my denial; I do not speak for anyone else."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_006_q1",
+          "label": "supported",
+          "rationale": "A second speaker cannot overwrite the first speaker’s commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T06:01:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_006_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_006_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_006_q2",
+          "label": "refuted",
+          "rationale": "The second speaker explicitly denies A→B in their own voice.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T06:01:00Z",
+            "stance": "negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_006_a2"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_006_a2"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_006_q3",
+          "label": "supported",
+          "rationale": "The second speaker’s withdrawal leaves the first speaker’s assertion intact.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T06:02:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_006_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_006_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_006_q4",
+          "label": "unknown",
+          "rationale": "Only the second speaker’s negative commitment was withdrawn.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T06:02:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_006_a2"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_006_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_006_e1"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_007",
+      "language": "pl",
+      "family": "quoted_withdrawal_attribution",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_007_a1",
+          "attributed_to": "Iga",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T07:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_007_source",
+              "turn_id": "w3dcv1_dev_007_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 59,
+              "byte_start": 0,
+              "byte_end": 62,
+              "quote": "Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_007_e1",
+          "assertion_id": "w3dcv1_dev_007_a1",
+          "attributed_to": "Iga",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T07:01:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_007_source",
+              "turn_id": "w3dcv1_dev_007_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 146,
+              "byte_start": 0,
+              "byte_end": 161,
+              "quote": "Iga napisała: „Wycofuję moją deklarację: Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód.”. Cytuję ją, nie wyrażam własnego stanowiska."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_007_q1",
+          "label": "supported",
+          "rationale": "Before the quoted withdrawal the original assertion is active.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T07:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_007_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_007_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_007_q2",
+          "label": "refuted",
+          "rationale": "The explicitly attributed quotation reports the original speaker’s withdrawal.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T07:01:00Z",
+            "stance": "withdrawn_positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_007_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_007_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_007_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_007_q3",
+          "label": "unknown",
+          "rationale": "The quoting speaker explicitly disclaims adopting the quoted position.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T07:01:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_007_q4",
+          "label": "unknown",
+          "rationale": "The quoting speaker’s unrelated continuation supplies no commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T07:02:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_008",
+      "language": "en",
+      "family": "quoted_withdrawal_attribution",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_008_a1",
+          "attributed_to": "Nora",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T08:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_008_source",
+              "turn_id": "w3dcv1_dev_008_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 67,
+              "byte_start": 0,
+              "byte_end": 67,
+              "quote": "If the sensor detects vibration, then the relay closes the circuit."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_008_e1",
+          "assertion_id": "w3dcv1_dev_008_a1",
+          "attributed_to": "Nora",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T08:01:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_008_source",
+              "turn_id": "w3dcv1_dev_008_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 153,
+              "byte_start": 0,
+              "byte_end": 157,
+              "quote": "Nora wrote: “I withdraw my assertion: If the sensor detects vibration, then the relay closes the circuit.”. I am quoting her, not giving my own position."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_008_q1",
+          "label": "supported",
+          "rationale": "Before the quoted withdrawal the original assertion is active.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T08:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_008_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_008_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_008_q2",
+          "label": "refuted",
+          "rationale": "The explicitly attributed quotation reports the original speaker’s withdrawal.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T08:01:00Z",
+            "stance": "withdrawn_positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_008_a1"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_008_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_008_e1"
+            ]
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_008_q3",
+          "label": "unknown",
+          "rationale": "The quoting speaker explicitly disclaims adopting the quoted position.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T08:01:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_008_q4",
+          "label": "unknown",
+          "rationale": "The quoting speaker’s unrelated continuation supplies no commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T08:02:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_009",
+      "language": "pl",
+      "family": "negative_antecedent_identity",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_009_a1",
+          "attributed_to": "Iga",
+          "source": "NA",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T09:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_009_source",
+              "turn_id": "w3dcv1_dev_009_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 61,
+              "byte_start": 0,
+              "byte_end": 65,
+              "quote": "Jeżeli czujnik nie wykrywa drgań, to przekaźnik zamyka obwód."
+            }
+          ]
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_009_q1",
+          "label": "supported",
+          "rationale": "The negation belongs inside antecedent NA; relation polarity is positive.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T09:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_009_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_009_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_009_q2",
+          "label": "unknown",
+          "rationale": "NA→B does not constitute a source assertion or denial of A→B.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T09:00:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_009_q3",
+          "label": "unknown",
+          "rationale": "Operand negation cannot be moved to the whole relation or reversed.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T09:01:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_009_q4",
+          "label": "supported",
+          "rationale": "The unrelated extension does not erase the positive NA→B commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T09:01:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_009_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_009_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_010",
+      "language": "en",
+      "family": "negative_antecedent_identity",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_010_a1",
+          "attributed_to": "Nora",
+          "source": "NA",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T10:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_010_source",
+              "turn_id": "w3dcv1_dev_010_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 75,
+              "byte_start": 0,
+              "byte_end": 75,
+              "quote": "If the sensor does not detect vibration, then the relay closes the circuit."
+            }
+          ]
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_010_q1",
+          "label": "supported",
+          "rationale": "The negation belongs inside antecedent NA; relation polarity is positive.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T10:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_010_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_010_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_010_q2",
+          "label": "unknown",
+          "rationale": "NA→B does not constitute a source assertion or denial of A→B.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T10:00:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_010_q3",
+          "label": "unknown",
+          "rationale": "Operand negation cannot be moved to the whole relation or reversed.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T10:01:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_010_q4",
+          "label": "supported",
+          "rationale": "The unrelated extension does not erase the positive NA→B commitment.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T10:01:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_010_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_010_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_011",
+      "language": "pl",
+      "family": "negative_consequent_vs_denial",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_011_a1",
+          "attributed_to": "Iga",
+          "source": "A",
+          "target": "NB",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T11:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_011_source",
+              "turn_id": "w3dcv1_dev_011_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 64,
+              "byte_start": 0,
+              "byte_end": 66,
+              "quote": "Jeżeli czujnik wykrywa drgania, to przekaźnik nie zamyka obwodu."
+            }
+          ]
+        },
+        {
+          "id": "w3dcv1_dev_011_a2",
+          "attributed_to": "Iga",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "negative",
+          "known_at": "2026-09-20T11:01:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_011_source",
+              "turn_id": "w3dcv1_dev_011_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 92,
+              "byte_start": 0,
+              "byte_end": 96,
+              "quote": "Osobno zaprzeczam całej relacji: Jeżeli czujnik wykrywa drgania, to przekaźnik zamyka obwód."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_011_e1",
+          "assertion_id": "w3dcv1_dev_011_a2",
+          "attributed_to": "Iga",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T11:02:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_011_source",
+              "turn_id": "w3dcv1_dev_011_t3",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 56,
+              "byte_start": 0,
+              "byte_end": 58,
+              "quote": "Wycofuję tylko moje ostatnie zaprzeczenie całej relacji."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_011_q1",
+          "label": "supported",
+          "rationale": "Negated consequent NB is an operand; A→NB is positively asserted.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T11:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_011_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_011_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_011_q2",
+          "label": "unknown",
+          "rationale": "No explicit A→B position has yet been expressed; source scope does not add logical inference.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T11:00:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_011_q3",
+          "label": "refuted",
+          "rationale": "A separate explicit denial now supplies negative polarity for A→B.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T11:01:00Z",
+            "stance": "negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_011_a2"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_011_a2"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_011_q4",
+          "label": "unknown",
+          "rationale": "Withdrawal targets only the denial of A→B; remaining A→NB does not become an explicit A→B denial.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T11:02:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_011_a2"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_011_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_011_e1"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "w3dcv1_dev_012",
+      "language": "en",
+      "family": "negative_consequent_vs_denial",
+      "source_assertions": [
+        {
+          "id": "w3dcv1_dev_012_a1",
+          "attributed_to": "Nora",
+          "source": "A",
+          "target": "NB",
+          "relation": "implies",
+          "polarity": "positive",
+          "known_at": "2026-09-20T12:00:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_012_source",
+              "turn_id": "w3dcv1_dev_012_t1",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 75,
+              "byte_start": 0,
+              "byte_end": 75,
+              "quote": "If the sensor detects vibration, then the relay does not close the circuit."
+            }
+          ]
+        },
+        {
+          "id": "w3dcv1_dev_012_a2",
+          "attributed_to": "Nora",
+          "source": "A",
+          "target": "B",
+          "relation": "implies",
+          "polarity": "negative",
+          "known_at": "2026-09-20T12:01:00Z",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_012_source",
+              "turn_id": "w3dcv1_dev_012_t2",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 107,
+              "byte_start": 0,
+              "byte_end": 107,
+              "quote": "Separately, I deny the entire relation: If the sensor detects vibration, then the relay closes the circuit."
+            }
+          ]
+        }
+      ],
+      "status_events": [
+        {
+          "id": "w3dcv1_dev_012_e1",
+          "assertion_id": "w3dcv1_dev_012_a2",
+          "attributed_to": "Nora",
+          "status": "withdrawn",
+          "superseded_by": null,
+          "known_at": "2026-09-20T12:02:00Z",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "source_id": "w3dcv1_dev_012_source",
+              "turn_id": "w3dcv1_dev_012_t3",
+              "coordinate_space": "turn.text",
+              "char_start": 0,
+              "char_end": 53,
+              "byte_start": 0,
+              "byte_end": 53,
+              "quote": "I retract only my last denial of the entire relation."
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "w3dcv1_dev_012_q1",
+          "label": "supported",
+          "rationale": "Negated consequent NB is an operand; A→NB is positively asserted.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T12:00:00Z",
+            "stance": "positive",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_012_a1"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_012_a1"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_012_q2",
+          "label": "unknown",
+          "rationale": "No explicit A→B position has yet been expressed; source scope does not add logical inference.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T12:00:00Z",
+            "stance": "no_position",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_012_q3",
+          "label": "refuted",
+          "rationale": "A separate explicit denial now supplies negative polarity for A→B.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T12:01:00Z",
+            "stance": "negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [
+              "w3dcv1_dev_012_a2"
+            ],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_012_a2"
+            ],
+            "active_status_event_ids": [],
+            "historical_status_event_ids": []
+          }
+        },
+        {
+          "query_id": "w3dcv1_dev_012_q4",
+          "label": "unknown",
+          "rationale": "Withdrawal targets only the denial of A→B; remaining A→NB does not become an explicit A→B denial.",
+          "source_view": {
+            "policy_id": "source_view.latest_active_commitment/1",
+            "as_of": "2026-09-20T12:02:00Z",
+            "stance": "withdrawn_negative",
+            "content_truth": "unverified",
+            "active_assertion_ids": [],
+            "historical_assertion_ids": [
+              "w3dcv1_dev_012_a2"
+            ],
+            "active_status_event_ids": [
+              "w3dcv1_dev_012_e1"
+            ],
+            "historical_status_event_ids": [
+              "w3dcv1_dev_012_e1"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
