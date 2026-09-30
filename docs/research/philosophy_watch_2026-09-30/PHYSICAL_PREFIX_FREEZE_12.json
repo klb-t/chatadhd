@@ -1,0 +1,24 @@
+{
+  "schema": "loom.philosophy_watch_prefix_freeze/1",
+  "frozen_at_utc": "2026-09-30T13:15:26.365839+00:00",
+  "files_sha256": {
+    "docs/research/philosophy_watch_2026-09-30/formal_audited_source_12.py": "26f0d44804c6d577b7d9bc92c51a3b0438c52e937f3b17a961c896ebec670880",
+    "docs/research/philosophy_watch_2026-09-30/graph_formal_paths_policy.json": "2c592a4de8328760002c4592017e6eaa8794208d2ab8a4abbdf37cf6ca990e85",
+    "docs/research/philosophy_watch_2026-09-30/physical_prefix_probe_12.py": "01cccf389d40edc56300e84d9c3a129f0ab5670bc3a1ebcb4ba1c165c847bced",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_12_PHYSICAL_PREFIX.md": "b2490070acc548eccc9e4e15b261af3180096bd7828a31784339cf2884b27aa0"
+  },
+  "inputs_sha256": "c9e500fac1cc7b04cf213b8f70dd4a2f8a64cbe64a0fd957d5902c1ca672be8f",
+  "case_ids": [
+    "baseline",
+    "future_cross_speaker",
+    "future_invalid_premise",
+    "future_dangling_event",
+    "future_duplicate_id",
+    "future_bad_polarity",
+    "current_cross_speaker",
+    "current_invalid_premise",
+    "unknown_timestamp",
+    "later_cutoff_cross_speaker"
+  ],
+  "paid_requests": 0
+}

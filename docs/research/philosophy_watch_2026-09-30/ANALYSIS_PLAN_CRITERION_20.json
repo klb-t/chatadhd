@@ -1,0 +1,21 @@
+{
+  "schema": "loom.philosophy_watch_plan_criterion/1",
+  "known_at": "2026-09-30T13:33:23.913773+00:00",
+  "criteria": {
+    "null_zero_provenance": true,
+    "empty_zero_provenance": true,
+    "unbound_disclosed_unavailable": true,
+    "bound_replay_disclosed": true,
+    "unknown_held": true,
+    "estimated_default_held": true,
+    "estimated_config_admission_preserves_status": true,
+    "reported_nonempty_zero": true,
+    "revision_new_attempt": true,
+    "semantic_source_context_preserved": true,
+    "tools_data_no_graph_apply": true
+  },
+  "passed": 11,
+  "failed": 0,
+  "source_result_sha256": "2673c07893bb82283c20b66a0d895cf4c91280c918ecc9083ee50c45f4af439d",
+  "first_finite_candidate_bytes_independently_inspected": true
+}

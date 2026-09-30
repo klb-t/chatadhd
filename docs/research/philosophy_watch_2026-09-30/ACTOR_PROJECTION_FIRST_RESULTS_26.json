@@ -1,0 +1,808 @@
+{
+  "actual_paid_cost_usd": "0",
+  "actual_paid_requests": 0,
+  "canonical_graph_writes": 0,
+  "controls": {
+    "cases": 12,
+    "checks": 105,
+    "checks_passed": 105,
+    "exact_saved_v2_results": true,
+    "passed": 12,
+    "rows": [
+      {
+        "case_id": "equal_actor_labels",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "5a5d3c135ca9a7a9d0afad0fc57a1e8dc544a77e187d4f612f0ce4f6950780ef",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "resolved",
+              "value": "Nela"
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source"
+            },
+            "source_known_at_statement": {
+              "state": "resolved",
+              "value": "2026-01-02T03:04:05Z"
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:equal_actor_labels",
+          "source_sha256": "5a5d3c135ca9a7a9d0afad0fc57a1e8dc544a77e187d4f612f0ce4f6950780ef",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "conflicting_actor_labels",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "dbdf135aa07f3fdd48f2b6f2b642812c3615e9178674542b494b0d0de52a3072",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "conflicting_source_fields",
+              "value": null
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source"
+            },
+            "source_known_at_statement": {
+              "state": "resolved",
+              "value": "2026-01-02T03:04:05Z"
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:conflicting_actor_labels",
+          "source_sha256": "dbdf135aa07f3fdd48f2b6f2b642812c3615e9178674542b494b0d0de52a3072",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "absent_actor_and_timestamp_no_fallback",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "52793bf44de06a24b5129774bac2688d130693deb8b59a7f7820443a8363c3e3",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "unknown",
+              "value": null
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source"
+            },
+            "source_known_at_statement": {
+              "state": "unknown",
+              "value": null
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:absent_actor_and_timestamp_no_fallback",
+          "source_sha256": "52793bf44de06a24b5129774bac2688d130693deb8b59a7f7820443a8363c3e3",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "name_only_narrow_utf8_quote",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "caf226848343df95f6c103d37b346027452bacb52a5d970d2f6add9f53163d97",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "resolved",
+              "value": "Żaneta"
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source"
+            },
+            "source_known_at_statement": {
+              "state": "resolved",
+              "value": "2026-01-02T03:04:05Z"
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:name_only_narrow_utf8_quote",
+          "source_sha256": "caf226848343df95f6c103d37b346027452bacb52a5d970d2f6add9f53163d97",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "conflicting_source_ids",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "030a330c3a0130d9853fa9a7baed93b275b1df62d463c5fd15715f10fb0743d6",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "resolved",
+              "value": "Nela"
+            },
+            "source_id": {
+              "state": "conflicting_source_fields",
+              "value": null
+            },
+            "source_known_at_statement": {
+              "state": "resolved",
+              "value": "2026-01-02T03:04:05Z"
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:conflicting_source_ids",
+          "source_sha256": "030a330c3a0130d9853fa9a7baed93b275b1df62d463c5fd15715f10fb0743d6",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "collision_source_a_metadata_actor_only",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "3143800fe037ed1fd6d9fb0e9a09c189946dea2db050c57226db52c6f7f12d86",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "resolved",
+              "value": "Lina"
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source-a"
+            },
+            "source_known_at_statement": {
+              "state": "resolved",
+              "value": "2026-01-02T03:04:05Z"
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "shared-turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/shared-turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:shared-native-id",
+          "source_sha256": "3143800fe037ed1fd6d9fb0e9a09c189946dea2db050c57226db52c6f7f12d86",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "collision_source_b_same_literal_ids",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "78eb4f9cb3a37117d8699f367403c135b96eda0a79660a036524799334c5d410",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "resolved",
+              "value": "Lina"
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source-b"
+            },
+            "source_known_at_statement": {
+              "state": "resolved",
+              "value": "2026-01-02T03:04:05Z"
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "shared-turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/shared-turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:shared-native-id",
+          "source_sha256": "78eb4f9cb3a37117d8699f367403c135b96eda0a79660a036524799334c5d410",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "missing_locator",
+        "checks": 2,
+        "passed": 2,
+        "raw_sha256": "7b1d84ea10231f04519640b07e3248b1631fbb78b2aff1b4f4ac0105aadb2c17",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "observation_id": "obs:missing_locator",
+          "reason": "missing_or_invalid_native_locator",
+          "state": "unavailable"
+        }
+      },
+      {
+        "case_id": "unsupported_second_text_part",
+        "checks": 2,
+        "passed": 2,
+        "raw_sha256": "3ff98b6793c6c2de0419f5cdfab840a9f062c0f144d58fce65faee841c4275a4",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "observation_id": "obs:unsupported_second_text_part",
+          "reason": "unsupported_source_pointer_format",
+          "state": "unavailable"
+        }
+      },
+      {
+        "case_id": "explicit_null_known_at",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "60431e0f54b40fc7f61c54864d04c874b896db0e567672897f66017563c74614",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "resolved",
+              "value": "Nela"
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source"
+            },
+            "source_known_at_statement": {
+              "state": "unknown",
+              "value": null
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:explicit_null_known_at",
+          "source_sha256": "60431e0f54b40fc7f61c54864d04c874b896db0e567672897f66017563c74614",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "known_at_observation_date_conflict",
+        "checks": 11,
+        "passed": 11,
+        "raw_sha256": "ec4253e65410fad461aeffca223c06bd23fe611330735c3f1b4aef45cf863b6e",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "fields": {
+            "source_actor_label": {
+              "state": "resolved",
+              "value": "Nela"
+            },
+            "source_id": {
+              "state": "resolved",
+              "value": "control:source"
+            },
+            "source_known_at_statement": {
+              "state": "conflicting_source_fields",
+              "value": null
+            },
+            "source_turn_id": {
+              "state": "resolved",
+              "value": "turn"
+            },
+            "transport_role": {
+              "state": "resolved",
+              "value": "user"
+            }
+          },
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "message_pointer": "/mapping/turn/message",
+          "native_graph_modified": false,
+          "native_speaker": "user",
+          "observation_id": "obs:known_at_observation_date_conflict",
+          "source_sha256": "ec4253e65410fad461aeffca223c06bd23fe611330735c3f1b4aef45cf863b6e",
+          "state": "bound_source_projection"
+        }
+      },
+      {
+        "case_id": "wrong_raw_source_hash",
+        "checks": 2,
+        "passed": 2,
+        "raw_sha256": "c1378a1c8a01ac8d8004f5add2b77ed2222662072320144e71fde5e4f40bf464",
+        "result": {
+          "actor_epistemic_status": "source_recorded",
+          "epistemic_kind": "source_assertion",
+          "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+          "observation_id": "obs:wrong_raw_source_hash",
+          "reason": "raw_source_hash_mismatch",
+          "state": "unavailable"
+        }
+      }
+    ]
+  },
+  "decision": "keep_named_source_projection_mechanism",
+  "freeze_checks": [
+    {
+      "failures": [],
+      "file": "freeze_before_outputs.json",
+      "passed": 315,
+      "pins": 315
+    },
+    {
+      "failures": [],
+      "file": "freeze_before_outputs2.json",
+      "passed": 323,
+      "pins": 323
+    }
+  ],
+  "known_at": "2026-09-30T13:57:56.562377+00:00",
+  "native_runs": 0,
+  "new_case_count": 10,
+  "new_case_passed": 10,
+  "new_cases": [
+    {
+      "case_id": "future_append_requires_new_source_version",
+      "observation_sha256": "9d2bcd5db1402b9ab07671ccb5cab5cf8b3c183402c2b40ebf0bc7131cc9a4fa",
+      "pass": true,
+      "raw_sha256": "017ff9715e6c6349e51ca047ad8151f103f5228577d5306f1fd123efe255bfe3",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "observation_id": "obs:equal_actor_labels",
+        "reason": "raw_source_hash_mismatch",
+        "state": "unavailable"
+      }
+    },
+    {
+      "case_id": "preserved_raw_version_retains_exact_past_result",
+      "observation_sha256": "9d2bcd5db1402b9ab07671ccb5cab5cf8b3c183402c2b40ebf0bc7131cc9a4fa",
+      "pass": true,
+      "raw_sha256": "5a5d3c135ca9a7a9d0afad0fc57a1e8dc544a77e187d4f612f0ce4f6950780ef",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "resolved",
+            "value": "Nela"
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:equal_actor_labels",
+        "source_sha256": "5a5d3c135ca9a7a9d0afad0fc57a1e8dc544a77e187d4f612f0ce4f6950780ef",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "explicit_new_version_rebind_keeps_message_local_fields",
+      "observation_sha256": "90ed36c94194c686429806f5f1cc51464b951fad2561f2515ac442025fddf3df",
+      "pass": true,
+      "raw_sha256": "017ff9715e6c6349e51ca047ad8151f103f5228577d5306f1fd123efe255bfe3",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "resolved",
+            "value": "Nela"
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:equal_actor_labels",
+        "source_sha256": "017ff9715e6c6349e51ca047ad8151f103f5228577d5306f1fd123efe255bfe3",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "changed_author_conflicts_without_provenance_loss",
+      "observation_sha256": "197a40fc30739914cbd50cb083500c607ecac34c31be7302821131f5e98faa82",
+      "pass": true,
+      "raw_sha256": "f795b10c75f11eee24606dca3a288f5629c3bddf1342d3fd76ff2cd9e82c0565",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "conflicting_source_fields",
+            "value": null
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:equal_actor_labels",
+        "source_sha256": "f795b10c75f11eee24606dca3a288f5629c3bddf1342d3fd76ff2cd9e82c0565",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "quoted_third_party_does_not_replace_source_actor",
+      "observation_sha256": "805fc44dc7b012049cfa4bcf92a7397be6a48d57faa9fac55ee8686ec0f7c2ea",
+      "pass": true,
+      "raw_sha256": "fa22daf2591beb4dcb5bdeb90d492e2a5adc713f76ae166a1c3526cea5dccd83",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "resolved",
+            "value": "Nela"
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:equal_actor_labels",
+        "source_sha256": "fa22daf2591beb4dcb5bdeb90d492e2a5adc713f76ae166a1c3526cea5dccd83",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "escaped_message_key_resolves_exact_local_turn",
+      "observation_sha256": "a8cff9cfb00ad2f02a5d901f943f95501b11f2df0810460147afd0215ee4bf40",
+      "pass": true,
+      "raw_sha256": "07216154991697819111057481701f8d61f724c0e7d1d121120ddf136ebeb6fa",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "resolved",
+            "value": "Nela"
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn/~local"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn~1~0local/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:equal_actor_labels",
+        "source_sha256": "07216154991697819111057481701f8d61f724c0e7d1d121120ddf136ebeb6fa",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "malformed_actor_abstains_per_field",
+      "observation_sha256": "9f365e6907b49fcd4d729c239f1ce47b6dfc05c3a4876a9ca297832e24e5e5b9",
+      "pass": true,
+      "raw_sha256": "9b81dde68c7ee8eb97d376affcd42e3dd277621ee894a59e2f0aa96fa02e47f2",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "invalid_type_or_empty",
+            "value": null
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:equal_actor_labels",
+        "source_sha256": "9b81dde68c7ee8eb97d376affcd42e3dd277621ee894a59e2f0aa96fa02e47f2",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "explicit_second_part_policy_supported",
+      "observation_sha256": "aca57a6f61caf4d3ff5955a1a9609455a1b0ab42010dbce805bf27dd3ac0ab6b",
+      "pass": true,
+      "policy_sha256": "7c362b0ddc2bd4e59fa2c1fe401b7af443f2e7478c0e20592971c3e9ade9e4d3",
+      "raw_sha256": "3ff98b6793c6c2de0419f5cdfab840a9f062c0f144d58fce65faee841c4275a4",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "resolved",
+            "value": "Nela"
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:unsupported_second_text_part",
+        "source_sha256": "3ff98b6793c6c2de0419f5cdfab840a9f062c0f144d58fce65faee841c4275a4",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "missing_actor_does_not_use_role_or_impute_time",
+      "observation_sha256": "83990bd04f79eb57d89b0ce1c69f9f26e5e689a1564b1871ae1813bc7ddcb5f9",
+      "pass": true,
+      "raw_sha256": "52793bf44de06a24b5129774bac2688d130693deb8b59a7f7820443a8363c3e3",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "unknown",
+            "value": null
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source"
+          },
+          "source_known_at_statement": {
+            "state": "unknown",
+            "value": null
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:absent_actor_and_timestamp_no_fallback",
+        "source_sha256": "52793bf44de06a24b5129774bac2688d130693deb8b59a7f7820443a8363c3e3",
+        "state": "bound_source_projection"
+      }
+    },
+    {
+      "case_id": "equal_literal_names_do_not_create_global_same_as",
+      "observation_sha256": "064c83a54958b460fd6d3b43036ecd4a80a35ef5d60d70c3fef9d52962411e12",
+      "other_source_sha256": "78eb4f9cb3a37117d8699f367403c135b96eda0a79660a036524799334c5d410",
+      "pass": true,
+      "raw_sha256": "3143800fe037ed1fd6d9fb0e9a09c189946dea2db050c57226db52c6f7f12d86",
+      "result": {
+        "actor_epistemic_status": "source_recorded",
+        "epistemic_kind": "source_assertion",
+        "fields": {
+          "source_actor_label": {
+            "state": "resolved",
+            "value": "Lina"
+          },
+          "source_id": {
+            "state": "resolved",
+            "value": "control:source-a"
+          },
+          "source_known_at_statement": {
+            "state": "resolved",
+            "value": "2026-01-02T03:04:05Z"
+          },
+          "source_turn_id": {
+            "state": "resolved",
+            "value": "shared-turn"
+          },
+          "transport_role": {
+            "state": "resolved",
+            "value": "user"
+          }
+        },
+        "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+        "message_pointer": "/mapping/shared-turn/message",
+        "native_graph_modified": false,
+        "native_speaker": "user",
+        "observation_id": "obs:shared-native-id",
+        "source_sha256": "3143800fe037ed1fd6d9fb0e9a09c189946dea2db050c57226db52c6f7f12d86",
+        "state": "bound_source_projection"
+      }
+    }
+  ],
+  "new_validation_or_old_holdout_read": false,
+  "primary": {
+    "bound": 84,
+    "observations": 84,
+    "planned_case_arms": 48,
+    "resolved_actor": 84,
+    "result_sha256": "32748f05a2da9294891572b135f04e4137ab74aeefb0b07276bf54de958886b9",
+    "same_v2_exact_objects": true,
+    "unavailable_case_arms": 0,
+    "v1_v2_canonical_objects_equal": true
+  },
+  "schema": "loom.philosophy.actor_projection_audit/1",
+  "semantic_identity_accuracy_measured": false
+}

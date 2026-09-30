@@ -1,0 +1,15 @@
+{
+  "schema": "loom.philosophy_watch_loaded_packet_results/1",
+  "known_at": "2026-09-30T13:39:36.207244+00:00",
+  "snapshot_retained_before_callback": true,
+  "private_callback_mutation_preserved_original": true,
+  "caller_declared_not_verified_on_context_dispatch_replay": true,
+  "resolved_packet_envelope_sha256": "b9419fbc34342898ce8827dd7f4c634322370e2b08532851a78ddd0f59235e33",
+  "raw_packet_sha256": "933cb306895f28fd48b5fc970b7a142a20194377ff64cbf429baac6b633d0997",
+  "loader_calls": 1,
+  "callback_calls": 1,
+  "replay_dispatch": "replayed_bound_snapshot",
+  "paid_requests": 0,
+  "canonical_graph_writes": 0,
+  "retained_packet_drift_rejected": "result_receipt_hash_drift"
+}

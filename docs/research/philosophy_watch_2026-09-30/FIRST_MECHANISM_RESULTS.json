@@ -1,0 +1,191 @@
+{
+  "schema": "loom.philosophy_watch_mechanism_results/1",
+  "finished_at_utc": "2026-09-30T12:45:29.163380+00:00",
+  "freeze_sha256": "61d9a8a0e70a97f6efc71ea54ca908ac453d9fb28378269f9d73c00caecae4ae",
+  "planned_checks": 17,
+  "invariant_pass": 14,
+  "diagnostics_reproduced": 3,
+  "failed": 0,
+  "checks": [
+    {
+      "id": "raw_query_future_append_invariance",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "equal_body": true,
+        "supplied_turns": 1,
+        "future_turns_supplied": 0
+      }
+    },
+    {
+      "id": "compiler_input_immutability",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "input_mutated": false,
+        "compiled_assertions": 1
+      }
+    },
+    {
+      "id": "utf8_source_locator",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "source_id": "authored-watch-source",
+        "turn_id": "t1",
+        "quote": "Żółć 🧪",
+        "char_start": 15,
+        "char_end": 21,
+        "byte_start": 16,
+        "byte_end": 29,
+        "coordinate_space": "turn.text"
+      }
+    },
+    {
+      "id": "missing_edge_unknown",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "label": "unknown",
+        "world_truth": "unverified"
+      }
+    },
+    {
+      "id": "directed_edge_no_reverse",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "label": "unknown"
+      }
+    },
+    {
+      "id": "source_time_is_not_instrument_availability",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "causal_prefix_extraction_verified": false,
+        "source_known_at_semantics": "supporting_source_turn_timestamp_not_model_claim_availability",
+        "source_binding_is_semantic_proof": false,
+        "no_graph_promotion": true
+      }
+    },
+    {
+      "id": "exact_locator_can_bind_unsupported_reverse",
+      "kind": "diagnostic",
+      "state": "diagnostic_reproduced",
+      "trace": {
+        "compiled": true,
+        "lookup_label": "supported",
+        "quote_semantically_supports_edge": false,
+        "meaning": "Exact locator is not semantic entailment certification; no model made this candidate."
+      }
+    },
+    {
+      "id": "full_turn_can_bind_unsupported_attribution",
+      "kind": "diagnostic",
+      "state": "diagnostic_reproduced",
+      "trace": {
+        "compiled": true,
+        "lookup_label": "supported",
+        "source_actor_supported": false,
+        "meaning": "Compiler validates nonempty attribution, not semantic speaker resolution."
+      }
+    },
+    {
+      "id": "source_projection_preserves_original_candidates",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "original_assertions": 2,
+        "original_events": 1,
+        "withheld_events": 1,
+        "raw_event_retained": true,
+        "derived_label": "supported"
+      }
+    },
+    {
+      "id": "same_source_supersession_changes_view_only",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "derived_label": "unknown",
+        "old_assertion_deleted": false
+      }
+    },
+    {
+      "id": "withdrawal_abi_honesty",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "state": "unavailable",
+        "reason": "unsupported_withdrawal_only_abi",
+        "invented_negative_assertion": false
+      }
+    },
+    {
+      "id": "formal_inference_class_and_all_alternatives",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "label": "supported",
+        "basis_class": "inferred",
+        "paths": 2,
+        "world_truth_accuracy": null,
+        "confidence_fabricated": false
+      }
+    },
+    {
+      "id": "formal_signed_nodes_no_contraposition",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "contraposition_invented": false,
+        "label": "unknown"
+      }
+    },
+    {
+      "id": "formal_extrapolation_rejected_as_premise",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "rejected": true,
+        "reason": "premise_is_not_unverified_source_assertion"
+      }
+    },
+    {
+      "id": "formal_bound_is_incomplete_unavailable",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "state": "unavailable",
+        "complete": false,
+        "reason": "max_path_length"
+      }
+    },
+    {
+      "id": "formal_conflict_explicit_declared_policy",
+      "kind": "invariant",
+      "state": "pass",
+      "trace": {
+        "label": "supported",
+        "conflict_visible": true,
+        "policy": "retain_positive_with_diagnostic",
+        "world_truth": "unverified"
+      }
+    },
+    {
+      "id": "past_formal_query_future_cross_actor_event",
+      "kind": "diagnostic",
+      "state": "diagnostic_reproduced",
+      "trace": {
+        "past_baseline_label": "supported",
+        "after_future_append": "exception",
+        "reason": "cross_speaker_supersession",
+        "future_event_time": "2026-09-02T10:00:00Z",
+        "query_cutoff": "2026-09-01T10:00:00Z",
+        "meaning": "Whole-graph event validation precedes temporal selection; this is not a causal prefix-extracted comparison."
+      }
+    }
+  ],
+  "measurement_scope": "authored mechanism counterexamples, not model quality"
+}

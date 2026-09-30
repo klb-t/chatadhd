@@ -1,0 +1,22 @@
+{
+  "actual_paid_requests": 0,
+  "files_sha256": {
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_26_ACTOR_PROJECTION.md": "b361a78aea061a3479f7461d1dc78b1aeaa23f031c70c6ca5ea5b5345f015c51",
+    "docs/research/philosophy_watch_2026-09-30/actor_projection_audited_controls_26.json": "cbcab26e642297e750c3f0aa22c6e2db58e250857489a3b73fd0f1e9ec9287e3",
+    "docs/research/philosophy_watch_2026-09-30/actor_projection_audited_policy_26.json": "2e195c02936c5dfd6158e8c34b89345cc33bd6669f38ec8f25952f7bc20a3cf2",
+    "docs/research/philosophy_watch_2026-09-30/actor_projection_audited_source_26.py": "6a09b2183f87f9796db538c009a4ca831cad03755826d704b474933eb2946ac9",
+    "docs/research/philosophy_watch_2026-09-30/actor_projection_probe_26.py": "04d8f2bb3af3d1cef376defc348d381c5563d7624d25879575a1ebd6bcc8e87d",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/first_controls.json": "82ae53f96f615d09c3dcfc55133d78d8453f5ff57d119af81d64dc0068cf8d09",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/first_projection.json": "a81abba519a4f7e538cdf88b80a88801b5e3ffc24ee4d78cb51ebbf8f050ea17",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/freeze_before_outputs.json": "9bb57375ac7c4953a4d7daeae4942b0980e9a73cf5ac7bc51d3fdbbdbbbf6698",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/freeze_before_outputs2.json": "901eba658a584b07db00cc594a9dbeca994e333646aa691430978aafcf31972d",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/second_controls.json": "fc3e363eed968081f7e99af4643241ced8b40ee42fd06b2cc708b7521dd8ac0b",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/second_projection.json": "1add49d235e2770c2cf51056462ba2a069515067b5224e06269c3dd7c51d62f2",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/evaluate_native_v3.py": "e873747682a88cb99f39d9c46fe2bc79391075dc9cf0a0e890010c73f57093e8",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/first_run_ledger2.json": "170c023ea6bf6e3717fde6cae608375cd791f9f063617e0ce52d1ef30e902a87",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/native_panel_v2.py": "34b848e370d6b361d51b8c7fae81c8f400a71012393e5a75d522d225234d9f21"
+  },
+  "known_at": "2026-09-30T13:57:56.522144+00:00",
+  "new_case_criteria_registered_in": "PROTOCOL_26_ACTOR_PROJECTION.md",
+  "scope": "disclosed nonblind DEV/mechanism replay; first upstream summaries already known"
+}

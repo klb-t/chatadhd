@@ -1,0 +1,95 @@
+{
+  "schema": "loom.philosophy_watch_frontier_results/1",
+  "finished_at_utc": "2026-09-30T13:01:10.803436+00:00",
+  "planned_scripted_cases": 2,
+  "actual_paid_requests": 0,
+  "actual_paid_cost_usd": "0",
+  "observations": [
+    {
+      "id": "configured_8mib_response",
+      "scripted_post_count": 1,
+      "calls": [
+        {
+          "method": "GET",
+          "path": "/key",
+          "body_sha256": null
+        },
+        {
+          "method": "POST",
+          "path": "/chat/completions",
+          "body_sha256": "589cba3aa5e56331dec86843b9b07c2f4586d6cf1e153891885b79bed6355994"
+        }
+      ],
+      "raw_bytes": 2097530,
+      "raw_sha256": "17f75170f181054ce0388d5fa1feaed8faad8b7b3a1c5e80fe3beeaa069d9a94",
+      "configured_response_bytes": 8388608,
+      "fake_reported_cost_usd": "0.00001",
+      "actual_paid_cost_usd": "0",
+      "run_attempt_state": "completed",
+      "run_retained_reported_cost": "0.00001",
+      "replay_returned": false,
+      "replay_exception_type": "RunnerError",
+      "replay_exception": "response_artifact_size_limit"
+    },
+    {
+      "id": "configured_large_cost",
+      "scripted_post_count": 1,
+      "calls": [
+        {
+          "method": "GET",
+          "path": "/key",
+          "body_sha256": null
+        },
+        {
+          "method": "POST",
+          "path": "/chat/completions",
+          "body_sha256": "589cba3aa5e56331dec86843b9b07c2f4586d6cf1e153891885b79bed6355994"
+        }
+      ],
+      "raw_bytes": 261,
+      "raw_sha256": "105bd19cdcf070f0b80abe0731e6d7db0bf7c7d076d6aaeafecabff12a7c9a14",
+      "configured_response_bytes": 8388608,
+      "fake_reported_cost_usd": "2000000",
+      "actual_paid_cost_usd": "0",
+      "run_attempt_state": "completed",
+      "run_retained_reported_cost": "2000000",
+      "replay_returned": false,
+      "replay_exception_type": "BillingIntegrityError",
+      "replay_exception": "invalid_billing_amount"
+    }
+  ],
+  "evidence_archive_sha256": "868afe9693931ac44d63e7822d4f3c2d8c0bf4fe6f4c7f80f78fd64632a11092",
+  "evidence_inventory": [
+    {
+      "path": "configured_8mib_response/manifest.json",
+      "bytes": 5436,
+      "sha256": "4d0c6576b48866d567792e94971ab48d8eb4b16089b7c46b2ee653472e09655d"
+    },
+    {
+      "path": "configured_8mib_response/ledger.json",
+      "bytes": 1029,
+      "sha256": "e4aeacd563f24b18edc43bf21981fe66b0da23c74815b41d1276b5ad1b214dd0"
+    },
+    {
+      "path": "configured_8mib_response/gpv1_dev_001_q1.response.bin",
+      "bytes": 2097530,
+      "sha256": "17f75170f181054ce0388d5fa1feaed8faad8b7b3a1c5e80fe3beeaa069d9a94"
+    },
+    {
+      "path": "configured_large_cost/manifest.json",
+      "bytes": 5456,
+      "sha256": "859c4d23888614b9e843f01396f26163356a8c672644750dc5a2204a8d7ad745"
+    },
+    {
+      "path": "configured_large_cost/ledger.json",
+      "bytes": 1044,
+      "sha256": "4c21c4ff9c8bef1ecbda84fb40c18208c01daac66a164f1e4a8c27142ef35293"
+    },
+    {
+      "path": "configured_large_cost/gpv1_dev_001_q1.response.bin",
+      "bytes": 261,
+      "sha256": "105bd19cdcf070f0b80abe0731e6d7db0bf7c7d076d6aaeafecabff12a7c9a14"
+    }
+  ],
+  "scope": "configured-bound mechanics; fabricated transport receipts, not real model quality/billing"
+}

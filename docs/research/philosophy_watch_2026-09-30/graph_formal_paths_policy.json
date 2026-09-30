@@ -1,0 +1,11 @@
+{
+  "schema": "loom.graph_formal_paths_policy/1",
+  "inference_rule": "positive_implies_transitivity",
+  "temporal": "active_at_cutoff",
+  "attribution": "same_requested_speaker",
+  "conflict_policy": "retain_positive_with_diagnostic",
+  "min_edges": 1,
+  "max_path_length": 64,
+  "max_paths": 4096,
+  "max_search_states": 200000
+}

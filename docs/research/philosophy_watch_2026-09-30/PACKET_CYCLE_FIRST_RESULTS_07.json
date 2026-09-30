@@ -1,0 +1,13 @@
+{
+  "schema": "loom.philosophy_watch_cycle_results/1",
+  "finished_at_utc": "2026-09-30T13:06:29.450144+00:00",
+  "source_sha256": "47d6e7a3ce21acd8209db59f1a2398881c3b7ba15e9f5f3e1ed8d91f1cb77de9",
+  "cyclic_python_json": {
+    "state": "did_not_return_after_entered",
+    "terminated": true,
+    "entered_deadline_seconds": 0.2
+  },
+  "shared_acyclic_reference_accepted": true,
+  "paid_requests": 0,
+  "scope": "JSON-validity counterexample, not a latency/model-quality benchmark"
+}

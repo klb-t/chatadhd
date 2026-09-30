@@ -1,0 +1,13 @@
+{
+  "schema": "loom.philosophy_watch_cycle_results/1",
+  "finished_at_utc": "2026-09-30T13:11:24.320624+00:00",
+  "source_sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+  "cyclic_python_json": {
+    "state": "rejected",
+    "exception_type": "ValueError",
+    "exception": "graph_packet_circular_json_reference"
+  },
+  "shared_acyclic_reference_accepted": true,
+  "paid_requests": 0,
+  "scope": "JSON-validity counterexample, not a latency/model-quality benchmark"
+}

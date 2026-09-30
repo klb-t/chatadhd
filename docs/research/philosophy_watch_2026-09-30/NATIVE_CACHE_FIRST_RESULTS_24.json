@@ -1,0 +1,62 @@
+{
+  "schema": "loom.philosophy_watch_native_cache_results/1",
+  "known_at": "2026-09-30T13:45:08.058497+00:00",
+  "checks": [
+    {
+      "id": "coupled_tombstone_parent",
+      "state": "pass",
+      "trace": {
+        "path": "verified_immediate_parent_hit",
+        "exact_head_and_application_receipt": true
+      }
+    },
+    {
+      "id": "restore_parent",
+      "state": "pass",
+      "trace": {
+        "path": "verified_immediate_parent_hit",
+        "exact_source_and_claim_restored": true
+      }
+    },
+    {
+      "id": "raw_origin_time_retention",
+      "state": "pass",
+      "trace": {
+        "raw_utf8_sha256": "3460d48bc9647bb7204b1f649528b0cd23108a8391ab13330f8778b1441f3dab",
+        "source_known_at": "2026-09-01T10:00:00Z",
+        "instrument_origin_separate": true,
+        "acceptance_is_not_content_truth": true
+      }
+    },
+    {
+      "id": "stale_inverse",
+      "state": "pass",
+      "trace": {
+        "exception_type": "ValueError",
+        "exception": "graph_packet_inverse_requires_current_application_head"
+      }
+    },
+    {
+      "id": "rehashed_raw_before",
+      "state": "pass",
+      "trace": {
+        "equal_rejection": {
+          "exception_type": "ValueError",
+          "exception": "graph_packet_history_parent_hash_mismatch"
+        }
+      }
+    },
+    {
+      "id": "valid_last_event_alternative",
+      "state": "pass",
+      "trace": {
+        "path": "verified_immediate_parent_hit",
+        "alternative_identity_retained": true
+      }
+    }
+  ],
+  "passed": 6,
+  "failed": 0,
+  "paid_requests": 0,
+  "scope": "nonempty native structural/origin equivalence, not source semantics or timing"
+}

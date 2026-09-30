@@ -1,0 +1,494 @@
+{
+  "schema": "loom.philosophy_watch_free_projection_audit/1",
+  "finished_at_utc": "2026-09-30T13:04:27.152108+00:00",
+  "freeze_pins_verified": 42,
+  "raw_response_pins_verified": 24,
+  "primary_free_compiler_sha256": "5ccb81d038d80343a0407630fc4ce806b549e9f3c1a2c5798971092f5a70d91d",
+  "planned_cases": 24,
+  "gold_assertions": 60,
+  "gold_events": 6,
+  "unavailable_case_ids_unchanged": [
+    "gpv1_dev_002",
+    "gpv1_dev_003",
+    "gpv1_dev_005",
+    "gpv1_dev_019",
+    "gpv1_dev_021",
+    "gpv1_dev_022"
+  ],
+  "conversion_only_source_turn_ids": 45,
+  "previously_accepted_records_preserved": 9,
+  "projected_exact_source_bindings_verified": 52,
+  "source_only_projection_before_gold_recount": true,
+  "node_alignment_unchanged": true,
+  "baseline": {
+    "edges": {
+      "tp": 6,
+      "fp": 43,
+      "fn": 54
+    },
+    "events": {
+      "tp": 0,
+      "fp": 6,
+      "fn": 6
+    },
+    "nodes": {
+      "tp": 45,
+      "fp": 15,
+      "fn": 15
+    },
+    "cases": [
+      {
+        "case_id": "gpv1_dev_001",
+        "tp": 0,
+        "fp": 2,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_002",
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_003",
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_004",
+        "tp": 0,
+        "fp": 3,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_005",
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_006",
+        "tp": 2,
+        "fp": 1,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_007",
+        "tp": 0,
+        "fp": 2,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_008",
+        "tp": 0,
+        "fp": 2,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_009",
+        "tp": 0,
+        "fp": 2,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_010",
+        "tp": 1,
+        "fp": 2,
+        "fn": 1,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_011",
+        "tp": 0,
+        "fp": 2,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_012",
+        "tp": 0,
+        "fp": 3,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_013",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_014",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_015",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_016",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_017",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_018",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_019",
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_020",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_021",
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_022",
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_023",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_024",
+        "tp": 0,
+        "fp": 3,
+        "fn": 3,
+        "state": "completed"
+      }
+    ]
+  },
+  "projection": {
+    "edges": {
+      "tp": 38,
+      "fp": 11,
+      "fn": 22
+    },
+    "events": {
+      "tp": 0,
+      "fp": 6,
+      "fn": 6
+    },
+    "nodes": {
+      "tp": 45,
+      "fp": 15,
+      "fn": 15
+    },
+    "cases": [
+      {
+        "case_id": "gpv1_dev_001",
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_002",
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_003",
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_004",
+        "tp": 2,
+        "fp": 1,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_005",
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_006",
+        "tp": 2,
+        "fp": 1,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_007",
+        "tp": 0,
+        "fp": 2,
+        "fn": 2,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_008",
+        "tp": 1,
+        "fp": 1,
+        "fn": 1,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_009",
+        "tp": 1,
+        "fp": 1,
+        "fn": 1,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_010",
+        "tp": 1,
+        "fp": 2,
+        "fn": 1,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_011",
+        "tp": 1,
+        "fp": 1,
+        "fn": 1,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_012",
+        "tp": 1,
+        "fp": 2,
+        "fn": 1,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_013",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_014",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_015",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_016",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_017",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_018",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_019",
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_020",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_021",
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_022",
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "state": "unavailable"
+      },
+      {
+        "case_id": "gpv1_dev_023",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      },
+      {
+        "case_id": "gpv1_dev_024",
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "state": "completed"
+      }
+    ]
+  },
+  "per_case_conversion": [
+    {
+      "case_id": "gpv1_dev_001",
+      "conversions": 2,
+      "new_accepted_assertions": 2
+    },
+    {
+      "case_id": "gpv1_dev_004",
+      "conversions": 3,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_006",
+      "conversions": 0,
+      "new_accepted_assertions": 0
+    },
+    {
+      "case_id": "gpv1_dev_007",
+      "conversions": 2,
+      "new_accepted_assertions": 1
+    },
+    {
+      "case_id": "gpv1_dev_008",
+      "conversions": 2,
+      "new_accepted_assertions": 2
+    },
+    {
+      "case_id": "gpv1_dev_009",
+      "conversions": 2,
+      "new_accepted_assertions": 2
+    },
+    {
+      "case_id": "gpv1_dev_010",
+      "conversions": 0,
+      "new_accepted_assertions": 0
+    },
+    {
+      "case_id": "gpv1_dev_011",
+      "conversions": 2,
+      "new_accepted_assertions": 2
+    },
+    {
+      "case_id": "gpv1_dev_012",
+      "conversions": 3,
+      "new_accepted_assertions": 2
+    },
+    {
+      "case_id": "gpv1_dev_013",
+      "conversions": 4,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_014",
+      "conversions": 4,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_015",
+      "conversions": 4,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_016",
+      "conversions": 4,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_017",
+      "conversions": 0,
+      "new_accepted_assertions": 0
+    },
+    {
+      "case_id": "gpv1_dev_018",
+      "conversions": 4,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_020",
+      "conversions": 3,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_023",
+      "conversions": 3,
+      "new_accepted_assertions": 3
+    },
+    {
+      "case_id": "gpv1_dev_024",
+      "conversions": 3,
+      "new_accepted_assertions": 3
+    }
+  ],
+  "known_original_cost_usd": "0.0263512",
+  "new_paid_requests": 0,
+  "new_paid_cost_usd": "0",
+  "sealed_validation_reads": 0,
+  "interpretation": "DEV syntax-decoding intervention; strict alignment lower bound, not independent model-quality or semantic hallucination rate"
+}

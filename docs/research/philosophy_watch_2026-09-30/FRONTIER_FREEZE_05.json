@@ -1,0 +1,25 @@
+{
+  "schema": "loom.philosophy_watch_frontier_freeze/1",
+  "frozen_at_utc": "2026-09-30T13:07:20.356876+00:00",
+  "files_sha256": {
+    "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_05/adapter.py": "2a5c92e582a25228f4b55166b3a5c8b8c220a99b4ef413df21ccfc42de35d3d0",
+    "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_05/bounded_runner.py": "417a023bae0798b1b21c7eec3ebea341fa3589744d143b4ecf4b4aac3bf9a9aa",
+    "docs/research/philosophy_watch_2026-09-30/frontier_probe_05.py": "ecc9eb00664a7979e30fd409fcb116b2e94dfec8b109ca392f32ae3b3445f38a",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_05_FRONTIER_RETEST.md": "325f8828d23a6c9b2a325158f0eb3d1a05b600ebdc21d18f976c3d156caf5299",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635"
+  },
+  "snapshot_dependencies": {
+    "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_05/adapter.py": "2a5c92e582a25228f4b55166b3a5c8b8c220a99b4ef413df21ccfc42de35d3d0",
+    "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_05/bounded_runner.py": "417a023bae0798b1b21c7eec3ebea341fa3589744d143b4ecf4b4aac3bf9a9aa",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/graph_free_extraction.py": "5ccb81d038d80343a0407630fc4ce806b549e9f3c1a2c5798971092f5a70d91d",
+    "loom/tools/structure/graph_panel_score_run.py": "2e29dd9f4c4af0bbb9760996af6ad63ee6fcc133ff8a0d348518c1d57a295018",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635"
+  },
+  "paid_requests": 0,
+  "actual_credentials_read": false,
+  "cases": [
+    "configured_8mib_response",
+    "configured_large_cost"
+  ]
+}

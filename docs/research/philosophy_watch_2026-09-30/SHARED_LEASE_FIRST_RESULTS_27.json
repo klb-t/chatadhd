@@ -1,0 +1,90 @@
+{
+  "actual_paid_cost_usd": "0",
+  "actual_paid_requests": 0,
+  "artifact_count": 40,
+  "canonical_graph_writes": 0,
+  "case_count": 9,
+  "cases": [
+    {
+      "case_id": "interpret_throws_control",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "interpret_returns_set",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "interpret_returns_nan",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "interpret_returns_cycle",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "usage_instrument_throws",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "unknown_fee",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "estimated_zero",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "gate_revoked_at_start",
+      "criterion_pass": false,
+      "exception_text": "analysis_plan_schema",
+      "harness_or_mechanism_exception_class": "PlanError"
+    },
+    {
+      "case_id": "configurable_two_million_fee",
+      "criterion_pass": false,
+      "dispatch_count": 2,
+      "first_core_state": "completed",
+      "first_step_artifacts_sha256": {
+        "binding.json": "4432ac27b360a463a28ce27b5356d8b53307d9b2876c5843fabafd391dd80dac",
+        "dispatch_started.json": "5f169d0fa88f1d6c25c6331c31afe93d29a93c3d1259ef8508cc827398e5d22e",
+        "raw_first.bin": "c02b132e98bae62e293f5349ed60e921341a666662c533e6d28ed568e476b225",
+        "raw_receipt.json": "0d1af69f16a68897997a8f12fdd1d4214869989b01e746ba0891eeafdff5f771",
+        "usage_first.json": "b90f07f7e6de1c737a0dc41ce0d8054d4e0594fbaf17efd6fc0b729b1c3197cb"
+      },
+      "first_usage_saved_exact": true,
+      "gate_checks": 4,
+      "measurements_status": "provider_reported",
+      "overrun_dimensions": [],
+      "policy_usage_money_usd": "4000000",
+      "raw_retained_exact": true,
+      "raw_sha256": "c02b132e98bae62e293f5349ed60e921341a666662c533e6d28ed568e476b225",
+      "second_reason": null,
+      "second_state": "completed",
+      "source_binding_verification": "caller_declared_not_verified",
+      "source_context_preserved": true,
+      "source_known_at_remains_null": true,
+      "state": "completed"
+    }
+  ],
+  "criteria_passed": 0,
+  "decision": "investigate_preserved_failures",
+  "known_at": "2026-09-30T14:00:24.067358+00:00",
+  "new_validation_or_old_holdout_read": false,
+  "schema": "loom.philosophy.shared_lease_raw_audit/1",
+  "source_sha256": "8a51e0073c79b61dad4ab64f1abd06b15c5f349e127803d6e8b05a57b53d717c",
+  "usage_kind": "synthetic_policy_accounting_not_actual_billing"
+}

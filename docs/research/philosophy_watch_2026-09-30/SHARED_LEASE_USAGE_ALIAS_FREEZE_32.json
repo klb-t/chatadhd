@@ -1,0 +1,12 @@
+{
+  "actual_paid_requests": 0,
+  "baseline_source": "corrected adapter; identical callback-alias fixture and explicit external-parent lineage",
+  "files_sha256": {
+    "docs/contracts/analysis_plan.schema.json": "3f70b5db565c191e72af4200a6348c342e7210dfac4a96c2d217da78725e3776",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_32_SHARED_LEASE_USAGE_ALIAS.md": "5892c2ff2fa181fad3a4bfb7a8c3fb360cf9b808717cbb0f4642d47bee2e2930",
+    "docs/research/philosophy_watch_2026-09-30/shared_lease_usage_alias_probe_32.py": "4128c6133d9317a85496173dcbc0c4080f70f069e951f183b28ac989365d3b4a",
+    "docs/research/philosophy_watch_2026-09-30/shared_lease_usage_alias_source_32.py": "737f49f82e2fe11806beee2996d4c39c72c7c597e9b6a6244f8894870beec2e6",
+    "loom/tools/contracts/analysis_plan_ref.py": "2dfc9c3c67fb7135477b91e5599bbc30c96e006ab301b55b4a1d0f142f442372"
+  },
+  "known_at": "2026-09-30T14:06:32.294742+00:00"
+}

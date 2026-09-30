@@ -1,0 +1,851 @@
+{
+  "schema": "loom.philosophy_watch_prefix_results/1",
+  "finished_at_utc": "2026-09-30T13:15:26.369541+00:00",
+  "criterion": {
+    "future_denominator": 5,
+    "future_exact_baseline": 5,
+    "current_invalid_denominator": 3,
+    "current_invalid_rejected": 3,
+    "undated_unavailable": true,
+    "all_inputs_unchanged": true
+  },
+  "decision": "keep_separate_candidate_investigate_time_metadata",
+  "observations": [
+    {
+      "id": "baseline",
+      "whole_graph_baseline": {
+        "returned": {
+          "schema": "loom.graph_formal_paths/1",
+          "query_id": "prefix-query",
+          "as_of": "2026-09-01T10:00:00Z",
+          "relation": "implies",
+          "source": "a",
+          "target": "b",
+          "attributed_to": "Ada",
+          "scope": "formal_implication",
+          "premise_mode": "authored_mechanism",
+          "policy": {
+            "schema": "loom.graph_formal_paths_policy/1",
+            "inference_rule": "positive_implies_transitivity",
+            "temporal": "active_at_cutoff",
+            "attribution": "same_requested_speaker",
+            "conflict_policy": "retain_positive_with_diagnostic",
+            "min_edges": 1,
+            "max_path_length": 64,
+            "max_paths": 4096,
+            "max_search_states": 200000
+          },
+          "state": "completed",
+          "complete": true,
+          "label": "supported",
+          "basis_class": "inferred",
+          "content_truth": "unverified",
+          "known_at": "2026-09-01T10:00:00Z",
+          "paths": [
+            {
+              "premise_assertion_ids": [
+                "ab"
+              ],
+              "node_ids": [
+                "a",
+                "b"
+              ],
+              "known_at": "2026-09-01T10:00:00Z",
+              "provenance": [
+                {
+                  "assertion_id": "ab",
+                  "attributed_to": "Ada",
+                  "known_at": "2026-09-01T10:00:00Z",
+                  "evidence": [
+                    {
+                      "source_id": "authored-prefix-source",
+                      "turn_id": "t1",
+                      "quote": "If A, B."
+                    }
+                  ]
+                }
+              ],
+              "basis_class": "inferred",
+              "content_truth": "unverified"
+            }
+          ],
+          "search_states": 1,
+          "eligible_positive_assertion_ids": [
+            "ab"
+          ],
+          "eligible_negative_assertion_ids": [],
+          "inactive_assertion_ids": [],
+          "status_event_provenance": [],
+          "positive_negative_conflict_assertion_ids": [],
+          "world_truth_accuracy": null,
+          "no_graph_promotion": true,
+          "limitation": "formal_support_conditional_on_supplied_premises; not_direct_observation_or_semantic_truth"
+        }
+      },
+      "physical_prefix": {
+        "returned": {
+          "schema": "loom.graph_formal_paths/1",
+          "query_id": "prefix-query",
+          "as_of": "2026-09-01T10:00:00Z",
+          "relation": "implies",
+          "source": "a",
+          "target": "b",
+          "attributed_to": "Ada",
+          "scope": "formal_implication",
+          "premise_mode": "authored_mechanism",
+          "policy": {
+            "schema": "loom.graph_formal_paths_policy/1",
+            "inference_rule": "positive_implies_transitivity",
+            "temporal": "active_at_cutoff",
+            "attribution": "same_requested_speaker",
+            "conflict_policy": "retain_positive_with_diagnostic",
+            "min_edges": 1,
+            "max_path_length": 64,
+            "max_paths": 4096,
+            "max_search_states": 200000
+          },
+          "state": "completed",
+          "complete": true,
+          "label": "supported",
+          "basis_class": "inferred",
+          "content_truth": "unverified",
+          "known_at": "2026-09-01T10:00:00Z",
+          "paths": [
+            {
+              "premise_assertion_ids": [
+                "ab"
+              ],
+              "node_ids": [
+                "a",
+                "b"
+              ],
+              "known_at": "2026-09-01T10:00:00Z",
+              "provenance": [
+                {
+                  "assertion_id": "ab",
+                  "attributed_to": "Ada",
+                  "known_at": "2026-09-01T10:00:00Z",
+                  "evidence": [
+                    {
+                      "source_id": "authored-prefix-source",
+                      "turn_id": "t1",
+                      "quote": "If A, B."
+                    }
+                  ]
+                }
+              ],
+              "basis_class": "inferred",
+              "content_truth": "unverified"
+            }
+          ],
+          "search_states": 1,
+          "eligible_positive_assertion_ids": [
+            "ab"
+          ],
+          "eligible_negative_assertion_ids": [],
+          "inactive_assertion_ids": [],
+          "status_event_provenance": [],
+          "positive_negative_conflict_assertion_ids": [],
+          "world_truth_accuracy": null,
+          "no_graph_promotion": true,
+          "limitation": "formal_support_conditional_on_supplied_premises; not_direct_observation_or_semantic_truth"
+        },
+        "receipt": {
+          "schema": "loom.philosophy_watch_prefix_receipt/1",
+          "as_of": "2026-09-01T10:00:00Z",
+          "raw_assertions": 1,
+          "raw_events": 0,
+          "selected_assertions": 1,
+          "selected_events": 0,
+          "excluded_future": [],
+          "undated": [],
+          "raw_sha256": "2229c769387f3fd115066e90621a6f29b683f2b857289158135dd65377d80f83",
+          "source_known_at_is_instrument_availability": false,
+          "causal_prefix_extraction_verified": false
+        },
+        "exact_baseline_solver_result": true
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "future_cross_speaker",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "cross_speaker_supersession"
+      },
+      "physical_prefix": {
+        "returned": {
+          "schema": "loom.graph_formal_paths/1",
+          "query_id": "prefix-query",
+          "as_of": "2026-09-01T10:00:00Z",
+          "relation": "implies",
+          "source": "a",
+          "target": "b",
+          "attributed_to": "Ada",
+          "scope": "formal_implication",
+          "premise_mode": "authored_mechanism",
+          "policy": {
+            "schema": "loom.graph_formal_paths_policy/1",
+            "inference_rule": "positive_implies_transitivity",
+            "temporal": "active_at_cutoff",
+            "attribution": "same_requested_speaker",
+            "conflict_policy": "retain_positive_with_diagnostic",
+            "min_edges": 1,
+            "max_path_length": 64,
+            "max_paths": 4096,
+            "max_search_states": 200000
+          },
+          "state": "completed",
+          "complete": true,
+          "label": "supported",
+          "basis_class": "inferred",
+          "content_truth": "unverified",
+          "known_at": "2026-09-01T10:00:00Z",
+          "paths": [
+            {
+              "premise_assertion_ids": [
+                "ab"
+              ],
+              "node_ids": [
+                "a",
+                "b"
+              ],
+              "known_at": "2026-09-01T10:00:00Z",
+              "provenance": [
+                {
+                  "assertion_id": "ab",
+                  "attributed_to": "Ada",
+                  "known_at": "2026-09-01T10:00:00Z",
+                  "evidence": [
+                    {
+                      "source_id": "authored-prefix-source",
+                      "turn_id": "t1",
+                      "quote": "If A, B."
+                    }
+                  ]
+                }
+              ],
+              "basis_class": "inferred",
+              "content_truth": "unverified"
+            }
+          ],
+          "search_states": 1,
+          "eligible_positive_assertion_ids": [
+            "ab"
+          ],
+          "eligible_negative_assertion_ids": [],
+          "inactive_assertion_ids": [],
+          "status_event_provenance": [],
+          "positive_negative_conflict_assertion_ids": [],
+          "world_truth_accuracy": null,
+          "no_graph_promotion": true,
+          "limitation": "formal_support_conditional_on_supplied_premises; not_direct_observation_or_semantic_truth"
+        },
+        "receipt": {
+          "schema": "loom.philosophy_watch_prefix_receipt/1",
+          "as_of": "2026-09-01T10:00:00Z",
+          "raw_assertions": 2,
+          "raw_events": 1,
+          "selected_assertions": 1,
+          "selected_events": 0,
+          "excluded_future": [
+            {
+              "collection": "source_assertions",
+              "ordinal": 1,
+              "row": {
+                "id": "future",
+                "relation": "implies",
+                "source": "a",
+                "target": "b",
+                "polarity": "positive",
+                "attributed_to": "Bo",
+                "known_at": "2026-09-02T10:00:00Z",
+                "evidence": [
+                  {
+                    "source_id": "authored-prefix-source",
+                    "turn_id": "t1",
+                    "quote": "If A, B."
+                  }
+                ],
+                "basis_class": "observed_source_assertion",
+                "content_truth": "unverified"
+              },
+              "sha256": "fbf4cae4469c2e9e7bf1aae9b9293b77f10d1d99dcc84a8578af446c65018bca"
+            },
+            {
+              "collection": "status_events",
+              "ordinal": 0,
+              "row": {
+                "assertion_id": "ab",
+                "superseded_by": "future",
+                "known_at": "2026-09-02T10:00:00Z",
+                "status": "superseded",
+                "evidence": [
+                  {
+                    "source_id": "authored-prefix-source",
+                    "turn_id": "t1",
+                    "quote": "If A, B."
+                  }
+                ]
+              },
+              "sha256": "c1851ff90421fb3b26f37c90362333dda284c7b1ba0c29740720a4b74f1bb5fa"
+            }
+          ],
+          "undated": [],
+          "raw_sha256": "85865d6df904969abee88b6c96ad01ee686b658f483fe69b33c0aed843148c46",
+          "source_known_at_is_instrument_availability": false,
+          "causal_prefix_extraction_verified": false
+        },
+        "exact_baseline_solver_result": true
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "future_invalid_premise",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "premise_is_not_unverified_source_assertion"
+      },
+      "physical_prefix": {
+        "returned": {
+          "schema": "loom.graph_formal_paths/1",
+          "query_id": "prefix-query",
+          "as_of": "2026-09-01T10:00:00Z",
+          "relation": "implies",
+          "source": "a",
+          "target": "b",
+          "attributed_to": "Ada",
+          "scope": "formal_implication",
+          "premise_mode": "authored_mechanism",
+          "policy": {
+            "schema": "loom.graph_formal_paths_policy/1",
+            "inference_rule": "positive_implies_transitivity",
+            "temporal": "active_at_cutoff",
+            "attribution": "same_requested_speaker",
+            "conflict_policy": "retain_positive_with_diagnostic",
+            "min_edges": 1,
+            "max_path_length": 64,
+            "max_paths": 4096,
+            "max_search_states": 200000
+          },
+          "state": "completed",
+          "complete": true,
+          "label": "supported",
+          "basis_class": "inferred",
+          "content_truth": "unverified",
+          "known_at": "2026-09-01T10:00:00Z",
+          "paths": [
+            {
+              "premise_assertion_ids": [
+                "ab"
+              ],
+              "node_ids": [
+                "a",
+                "b"
+              ],
+              "known_at": "2026-09-01T10:00:00Z",
+              "provenance": [
+                {
+                  "assertion_id": "ab",
+                  "attributed_to": "Ada",
+                  "known_at": "2026-09-01T10:00:00Z",
+                  "evidence": [
+                    {
+                      "source_id": "authored-prefix-source",
+                      "turn_id": "t1",
+                      "quote": "If A, B."
+                    }
+                  ]
+                }
+              ],
+              "basis_class": "inferred",
+              "content_truth": "unverified"
+            }
+          ],
+          "search_states": 1,
+          "eligible_positive_assertion_ids": [
+            "ab"
+          ],
+          "eligible_negative_assertion_ids": [],
+          "inactive_assertion_ids": [],
+          "status_event_provenance": [],
+          "positive_negative_conflict_assertion_ids": [],
+          "world_truth_accuracy": null,
+          "no_graph_promotion": true,
+          "limitation": "formal_support_conditional_on_supplied_premises; not_direct_observation_or_semantic_truth"
+        },
+        "receipt": {
+          "schema": "loom.philosophy_watch_prefix_receipt/1",
+          "as_of": "2026-09-01T10:00:00Z",
+          "raw_assertions": 2,
+          "raw_events": 0,
+          "selected_assertions": 1,
+          "selected_events": 0,
+          "excluded_future": [
+            {
+              "collection": "source_assertions",
+              "ordinal": 1,
+              "row": {
+                "id": "future",
+                "relation": "implies",
+                "source": "a",
+                "target": "b",
+                "polarity": "positive",
+                "attributed_to": "Ada",
+                "known_at": "2026-09-02T10:00:00Z",
+                "evidence": [
+                  {
+                    "source_id": "authored-prefix-source",
+                    "turn_id": "t1",
+                    "quote": "If A, B."
+                  }
+                ],
+                "basis_class": "extrapolated",
+                "content_truth": "unverified"
+              },
+              "sha256": "29610fd4e7aed079ef4ee7644589ad6a74609f2fba2bd6c63b540dd97df3dac9"
+            }
+          ],
+          "undated": [],
+          "raw_sha256": "4d68fe1dc206faf24c0d023551ffdd29c8496d224322fce7cad677d2c168f045",
+          "source_known_at_is_instrument_availability": false,
+          "causal_prefix_extraction_verified": false
+        },
+        "exact_baseline_solver_result": true
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "future_dangling_event",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "event_assertion_missing"
+      },
+      "physical_prefix": {
+        "returned": {
+          "schema": "loom.graph_formal_paths/1",
+          "query_id": "prefix-query",
+          "as_of": "2026-09-01T10:00:00Z",
+          "relation": "implies",
+          "source": "a",
+          "target": "b",
+          "attributed_to": "Ada",
+          "scope": "formal_implication",
+          "premise_mode": "authored_mechanism",
+          "policy": {
+            "schema": "loom.graph_formal_paths_policy/1",
+            "inference_rule": "positive_implies_transitivity",
+            "temporal": "active_at_cutoff",
+            "attribution": "same_requested_speaker",
+            "conflict_policy": "retain_positive_with_diagnostic",
+            "min_edges": 1,
+            "max_path_length": 64,
+            "max_paths": 4096,
+            "max_search_states": 200000
+          },
+          "state": "completed",
+          "complete": true,
+          "label": "supported",
+          "basis_class": "inferred",
+          "content_truth": "unverified",
+          "known_at": "2026-09-01T10:00:00Z",
+          "paths": [
+            {
+              "premise_assertion_ids": [
+                "ab"
+              ],
+              "node_ids": [
+                "a",
+                "b"
+              ],
+              "known_at": "2026-09-01T10:00:00Z",
+              "provenance": [
+                {
+                  "assertion_id": "ab",
+                  "attributed_to": "Ada",
+                  "known_at": "2026-09-01T10:00:00Z",
+                  "evidence": [
+                    {
+                      "source_id": "authored-prefix-source",
+                      "turn_id": "t1",
+                      "quote": "If A, B."
+                    }
+                  ]
+                }
+              ],
+              "basis_class": "inferred",
+              "content_truth": "unverified"
+            }
+          ],
+          "search_states": 1,
+          "eligible_positive_assertion_ids": [
+            "ab"
+          ],
+          "eligible_negative_assertion_ids": [],
+          "inactive_assertion_ids": [],
+          "status_event_provenance": [],
+          "positive_negative_conflict_assertion_ids": [],
+          "world_truth_accuracy": null,
+          "no_graph_promotion": true,
+          "limitation": "formal_support_conditional_on_supplied_premises; not_direct_observation_or_semantic_truth"
+        },
+        "receipt": {
+          "schema": "loom.philosophy_watch_prefix_receipt/1",
+          "as_of": "2026-09-01T10:00:00Z",
+          "raw_assertions": 1,
+          "raw_events": 1,
+          "selected_assertions": 1,
+          "selected_events": 0,
+          "excluded_future": [
+            {
+              "collection": "status_events",
+              "ordinal": 0,
+              "row": {
+                "assertion_id": "ab",
+                "superseded_by": "future",
+                "known_at": "2026-09-02T10:00:00Z",
+                "status": "superseded",
+                "evidence": [
+                  {
+                    "source_id": "authored-prefix-source",
+                    "turn_id": "t1",
+                    "quote": "If A, B."
+                  }
+                ]
+              },
+              "sha256": "c1851ff90421fb3b26f37c90362333dda284c7b1ba0c29740720a4b74f1bb5fa"
+            }
+          ],
+          "undated": [],
+          "raw_sha256": "a1596296d68845ef78c3babaacd243b2914d91f1ef7e78c26886f8080f4e64b0",
+          "source_known_at_is_instrument_availability": false,
+          "causal_prefix_extraction_verified": false
+        },
+        "exact_baseline_solver_result": true
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "future_duplicate_id",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "duplicate_assertion_id"
+      },
+      "physical_prefix": {
+        "returned": {
+          "schema": "loom.graph_formal_paths/1",
+          "query_id": "prefix-query",
+          "as_of": "2026-09-01T10:00:00Z",
+          "relation": "implies",
+          "source": "a",
+          "target": "b",
+          "attributed_to": "Ada",
+          "scope": "formal_implication",
+          "premise_mode": "authored_mechanism",
+          "policy": {
+            "schema": "loom.graph_formal_paths_policy/1",
+            "inference_rule": "positive_implies_transitivity",
+            "temporal": "active_at_cutoff",
+            "attribution": "same_requested_speaker",
+            "conflict_policy": "retain_positive_with_diagnostic",
+            "min_edges": 1,
+            "max_path_length": 64,
+            "max_paths": 4096,
+            "max_search_states": 200000
+          },
+          "state": "completed",
+          "complete": true,
+          "label": "supported",
+          "basis_class": "inferred",
+          "content_truth": "unverified",
+          "known_at": "2026-09-01T10:00:00Z",
+          "paths": [
+            {
+              "premise_assertion_ids": [
+                "ab"
+              ],
+              "node_ids": [
+                "a",
+                "b"
+              ],
+              "known_at": "2026-09-01T10:00:00Z",
+              "provenance": [
+                {
+                  "assertion_id": "ab",
+                  "attributed_to": "Ada",
+                  "known_at": "2026-09-01T10:00:00Z",
+                  "evidence": [
+                    {
+                      "source_id": "authored-prefix-source",
+                      "turn_id": "t1",
+                      "quote": "If A, B."
+                    }
+                  ]
+                }
+              ],
+              "basis_class": "inferred",
+              "content_truth": "unverified"
+            }
+          ],
+          "search_states": 1,
+          "eligible_positive_assertion_ids": [
+            "ab"
+          ],
+          "eligible_negative_assertion_ids": [],
+          "inactive_assertion_ids": [],
+          "status_event_provenance": [],
+          "positive_negative_conflict_assertion_ids": [],
+          "world_truth_accuracy": null,
+          "no_graph_promotion": true,
+          "limitation": "formal_support_conditional_on_supplied_premises; not_direct_observation_or_semantic_truth"
+        },
+        "receipt": {
+          "schema": "loom.philosophy_watch_prefix_receipt/1",
+          "as_of": "2026-09-01T10:00:00Z",
+          "raw_assertions": 2,
+          "raw_events": 0,
+          "selected_assertions": 1,
+          "selected_events": 0,
+          "excluded_future": [
+            {
+              "collection": "source_assertions",
+              "ordinal": 1,
+              "row": {
+                "id": "ab",
+                "relation": "implies",
+                "source": "a",
+                "target": "b",
+                "polarity": "positive",
+                "attributed_to": "Ada",
+                "known_at": "2026-09-02T10:00:00Z",
+                "evidence": [
+                  {
+                    "source_id": "authored-prefix-source",
+                    "turn_id": "t1",
+                    "quote": "If A, B."
+                  }
+                ],
+                "basis_class": "observed_source_assertion",
+                "content_truth": "unverified"
+              },
+              "sha256": "195b6fd46c75a40d9242e3b641013fb1a115d677c7012c41205ff5dc1defda08"
+            }
+          ],
+          "undated": [],
+          "raw_sha256": "6b8ecf0f4c8972c48edfd368ae8c959e52e659f2ad20d77a631a80dda2aace50",
+          "source_known_at_is_instrument_availability": false,
+          "causal_prefix_extraction_verified": false
+        },
+        "exact_baseline_solver_result": true
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "future_bad_polarity",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "invalid_polarity"
+      },
+      "physical_prefix": {
+        "returned": {
+          "schema": "loom.graph_formal_paths/1",
+          "query_id": "prefix-query",
+          "as_of": "2026-09-01T10:00:00Z",
+          "relation": "implies",
+          "source": "a",
+          "target": "b",
+          "attributed_to": "Ada",
+          "scope": "formal_implication",
+          "premise_mode": "authored_mechanism",
+          "policy": {
+            "schema": "loom.graph_formal_paths_policy/1",
+            "inference_rule": "positive_implies_transitivity",
+            "temporal": "active_at_cutoff",
+            "attribution": "same_requested_speaker",
+            "conflict_policy": "retain_positive_with_diagnostic",
+            "min_edges": 1,
+            "max_path_length": 64,
+            "max_paths": 4096,
+            "max_search_states": 200000
+          },
+          "state": "completed",
+          "complete": true,
+          "label": "supported",
+          "basis_class": "inferred",
+          "content_truth": "unverified",
+          "known_at": "2026-09-01T10:00:00Z",
+          "paths": [
+            {
+              "premise_assertion_ids": [
+                "ab"
+              ],
+              "node_ids": [
+                "a",
+                "b"
+              ],
+              "known_at": "2026-09-01T10:00:00Z",
+              "provenance": [
+                {
+                  "assertion_id": "ab",
+                  "attributed_to": "Ada",
+                  "known_at": "2026-09-01T10:00:00Z",
+                  "evidence": [
+                    {
+                      "source_id": "authored-prefix-source",
+                      "turn_id": "t1",
+                      "quote": "If A, B."
+                    }
+                  ]
+                }
+              ],
+              "basis_class": "inferred",
+              "content_truth": "unverified"
+            }
+          ],
+          "search_states": 1,
+          "eligible_positive_assertion_ids": [
+            "ab"
+          ],
+          "eligible_negative_assertion_ids": [],
+          "inactive_assertion_ids": [],
+          "status_event_provenance": [],
+          "positive_negative_conflict_assertion_ids": [],
+          "world_truth_accuracy": null,
+          "no_graph_promotion": true,
+          "limitation": "formal_support_conditional_on_supplied_premises; not_direct_observation_or_semantic_truth"
+        },
+        "receipt": {
+          "schema": "loom.philosophy_watch_prefix_receipt/1",
+          "as_of": "2026-09-01T10:00:00Z",
+          "raw_assertions": 2,
+          "raw_events": 0,
+          "selected_assertions": 1,
+          "selected_events": 0,
+          "excluded_future": [
+            {
+              "collection": "source_assertions",
+              "ordinal": 1,
+              "row": {
+                "id": "future",
+                "relation": "implies",
+                "source": "a",
+                "target": "b",
+                "polarity": "invented",
+                "attributed_to": "Ada",
+                "known_at": "2026-09-02T10:00:00Z",
+                "evidence": [
+                  {
+                    "source_id": "authored-prefix-source",
+                    "turn_id": "t1",
+                    "quote": "If A, B."
+                  }
+                ],
+                "basis_class": "observed_source_assertion",
+                "content_truth": "unverified"
+              },
+              "sha256": "2966fca9b6707f3cf4f00987012d6bbf2b7cabd2443d5842fa0d03ea52a3c272"
+            }
+          ],
+          "undated": [],
+          "raw_sha256": "73ec3c7565003704aed619606de85fb480152cdbc31b2e5ab6304da787621293",
+          "source_known_at_is_instrument_availability": false,
+          "causal_prefix_extraction_verified": false
+        },
+        "exact_baseline_solver_result": true
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "current_cross_speaker",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "cross_speaker_supersession"
+      },
+      "physical_prefix": {
+        "exception_type": "ValueError",
+        "exception": "cross_speaker_supersession"
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "current_invalid_premise",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "premise_is_not_unverified_source_assertion"
+      },
+      "physical_prefix": {
+        "exception_type": "ValueError",
+        "exception": "premise_is_not_unverified_source_assertion"
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "unknown_timestamp",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "known_at_not_string"
+      },
+      "physical_prefix": {
+        "returned": {
+          "state": "unavailable",
+          "label": null,
+          "reason": "undated_input_cannot_be_assigned_to_prefix"
+        },
+        "receipt": {
+          "schema": "loom.philosophy_watch_prefix_receipt/1",
+          "as_of": "2026-09-01T10:00:00Z",
+          "raw_assertions": 2,
+          "raw_events": 0,
+          "selected_assertions": 1,
+          "selected_events": 0,
+          "excluded_future": [],
+          "undated": [
+            {
+              "collection": "source_assertions",
+              "ordinal": 1,
+              "row": {
+                "id": "undated",
+                "relation": "implies",
+                "source": "a",
+                "target": "b",
+                "polarity": "positive",
+                "attributed_to": "Ada",
+                "known_at": null,
+                "evidence": [
+                  {
+                    "source_id": "authored-prefix-source",
+                    "turn_id": "t1",
+                    "quote": "If A, B."
+                  }
+                ],
+                "basis_class": "observed_source_assertion",
+                "content_truth": "unverified"
+              },
+              "sha256": "aa5a0d4c1d17dbbaf8c01fe7e41282d9e8676f2beb4a783c53b81e25a85e522a",
+              "reason": "known_at_not_string"
+            }
+          ],
+          "raw_sha256": "7a43319fbd05494788eeb0f83d45e1352c3bd491d819a20136b8e60e0a6be867",
+          "source_known_at_is_instrument_availability": false,
+          "causal_prefix_extraction_verified": false
+        },
+        "exact_baseline_solver_result": false
+      },
+      "input_unchanged": true
+    },
+    {
+      "id": "later_cutoff_cross_speaker",
+      "whole_graph_baseline": {
+        "exception_type": "ValueError",
+        "exception": "cross_speaker_supersession"
+      },
+      "physical_prefix": {
+        "exception_type": "ValueError",
+        "exception": "cross_speaker_supersession"
+      },
+      "input_unchanged": true
+    }
+  ],
+  "scope": "authored prefix-selection mechanics, not model-quality or causal extraction",
+  "paid_requests": 0
+}

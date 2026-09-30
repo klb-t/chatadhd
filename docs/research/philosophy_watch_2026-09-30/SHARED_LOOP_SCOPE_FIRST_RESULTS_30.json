@@ -1,0 +1,103 @@
+{
+  "actual_paid_cost_usd": "0",
+  "actual_paid_requests": 0,
+  "adapter_sha256": "8a51e0073c79b61dad4ab64f1abd06b15c5f349e127803d6e8b05a57b53d717c",
+  "artifact_count": 14,
+  "criterion_pass": false,
+  "dispatch_count": 1,
+  "known_at": "2026-09-30T14:05:44.460899+00:00",
+  "loop_receipt": {
+    "accounting_owner": false,
+    "canonical_graph_written": false,
+    "final_content": null,
+    "network_transport_provided": false,
+    "results": [
+      {
+        "accounting_owner": "leaf",
+        "attempt_id": "db5fe176b77c55aceff3c1a486ddf288e009743c4bc3b7fcf7115557101bcac7",
+        "core_receipt": {
+          "attempt_id": "db5fe176b77c55aceff3c1a486ddf288e009743c4bc3b7fcf7115557101bcac7",
+          "dispatch": "callback_dispatched",
+          "loaded_packet_sha256": "c5cde0010595d043c6366fe22a3ff4f9ca4006ac1ea914aee47723f6e59034bd",
+          "result": {
+            "measurement_provenance": {
+              "calls": {
+                "scope": "one_declared_dispatch_not_hidden_executor_side_effects",
+                "source_ref": "registered-executor-return",
+                "status": "instrument_measured"
+              },
+              "money_usd": {
+                "scope": "reported_usage_not_independently_verified_invoice",
+                "source_ref": "raw-response:sha256:08cb78acede355d84236521301e9828554466dd4c5694327718573ff5827cde5",
+                "status": "provider_reported"
+              }
+            },
+            "measurements": {
+              "calls": "1",
+              "money_usd": "0.06"
+            },
+            "output": {
+              "accounting_owner": "leaf",
+              "failure_class": "KeyError",
+              "raw_bytes": 41,
+              "raw_sha256": "08cb78acede355d84236521301e9828554466dd4c5694327718573ff5827cde5",
+              "state": "semantic_rejected"
+            }
+          },
+          "source_binding_verification": "caller_declared_not_verified",
+          "source_bindings": {
+            "source": {
+              "mode": "pinned_snapshot",
+              "snapshot_id": "authored-frozen"
+            }
+          },
+          "state": "completed"
+        },
+        "logical_key": "906bfd46b988fbdf5e4692bf60d4563429f899f5a1c38cfd69c996ab888a8369",
+        "mode": "first",
+        "overrun_dimensions": [
+          "money_usd"
+        ],
+        "parent_attempt_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "raw_receipt": {
+          "bytes": 41,
+          "received_at": "2026-09-30T14:05:44.443300+00:00",
+          "sha256": "08cb78acede355d84236521301e9828554466dd4c5694327718573ff5827cde5"
+        },
+        "request_sha256": "8b12c8381aa48816ec1a9e480e47a26589b1cb658878dd02022bc2236dc0bd62",
+        "resource_usage": {
+          "agents": "0",
+          "calls": "1",
+          "cpu_seconds": "0",
+          "gpu_seconds": "0",
+          "input_tokens": "0",
+          "memory_bytes": "0",
+          "money_usd": "0.06",
+          "output_tokens": "0",
+          "storage_bytes": "0",
+          "wall_seconds": "0"
+        },
+        "state": "semantic_rejected"
+      }
+    ],
+    "schema": "loom.shared_runtime_loop_receipt/1",
+    "scope_budget_is_additional_not_shared_reset": true,
+    "scope_retained_allowance_usd": "0",
+    "shared_usage": {
+      "agents": "0",
+      "calls": "1",
+      "cpu_seconds": "0",
+      "gpu_seconds": "0",
+      "input_tokens": "0",
+      "memory_bytes": "0",
+      "money_usd": "0.06",
+      "output_tokens": "0",
+      "storage_bytes": "0",
+      "wall_seconds": "0"
+    },
+    "stopped_reason": "semantic_rejected"
+  },
+  "raw_preserved": true,
+  "source_sha256": "39774485eca7e73661849cc606e5790bb7ee97bf52e9b57bb39dd72fe04962b9",
+  "usage_kind": "synthetic_policy_accounting_not_actual_invoice"
+}

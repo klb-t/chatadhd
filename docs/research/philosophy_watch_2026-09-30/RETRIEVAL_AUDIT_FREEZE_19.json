@@ -1,0 +1,14 @@
+{
+  "schema": "loom.philosophy_watch_retrieval_freeze/1",
+  "known_at": "2026-09-30T13:30:48.637656+00:00",
+  "files_sha256": {
+    "loom/tools/structure/retrieval_exploration_v1/first_evidence.zip": "03686a8a6eb2fa79e0f6791ff6f06655e83cf9f65274c6fcd7d9836a747a4f82",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/first_evidence.zip": "685784b964606a672e988d31b2a3e7614ab7ec7d2032c4ffc9b7384472d12c5a",
+    "docs/research/philosophy_watch_2026-09-30/retrieval_membership_audit_19.py": "233624a16a673dd02e04d44186942e76c7435e32ebdc9b7341dd747b4970ecc5",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_19_RETRIEVAL_MEMBERSHIP.md": "5aa5cb435f05d2fea841d8fdd7ccaa783f0d14b8569f7967d7241482858b21d9"
+  },
+  "results_previously_seen": true,
+  "paid_requests": 0,
+  "model_inferences": 0,
+  "sealed_validation_reads": 0
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "loom.philosophy_watch_incomplete_harness/1",
+  "case": "resolved_packet_receipt_22",
+  "observed_exit_code": 1,
+  "observed_exception_type": "AssertionError",
+  "observed_failing_expression": "out['loaded_packet_sha256']==replayed['loaded_packet_sha256']==ref.digest(original)",
+  "fixture_error": "Expected raw packet and its digest; producer artifact/hash identifies loader_supplied/packet envelope.",
+  "outcomes_not_persisted": true,
+  "temporary_artifacts_removed_by_context_manager": true,
+  "preserved": ["plan_loaded_packet_probe_22.py", "PLAN_LOADED_PACKET_FREEZE_22.json", "analysis_plan_audited_source_22.py"],
+  "producer_defect_established": false,
+  "paid_requests": 0,
+  "next_independent_harness": "plan_loaded_packet_probe_23.py"
+}

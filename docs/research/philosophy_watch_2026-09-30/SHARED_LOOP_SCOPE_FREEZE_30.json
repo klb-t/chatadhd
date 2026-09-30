@@ -1,0 +1,13 @@
+{
+  "actual_paid_requests": 0,
+  "files_sha256": {
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_30_SHARED_LOOP_SCOPE.md": "e92974dfdbeecb2e646902ae55e7ecd154f8549f6f067aab8df2f421e838aa42",
+    "docs/research/philosophy_watch_2026-09-30/shared_lease_audited_source_28.py": "8a51e0073c79b61dad4ab64f1abd06b15c5f349e127803d6e8b05a57b53d717c",
+    "docs/research/philosophy_watch_2026-09-30/shared_loop_audited_source_30.py": "39774485eca7e73661849cc606e5790bb7ee97bf52e9b57bb39dd72fe04962b9",
+    "docs/research/philosophy_watch_2026-09-30/shared_loop_scope_probe_30.py": "aaea53f79e62f9049d201da215c1a112d00c90e0955931170b675128903bf405",
+    "loom/tools/contracts/analysis_plan_ref.py": "2dfc9c3c67fb7135477b91e5599bbc30c96e006ab301b55b4a1d0f142f442372",
+    "loom/tools/structure/frontier_panel_v1/runtime.py": "4f960d829bf3e92ca5d436f1c1a758ec7e9b1c01f6c0cb7d21ad3870e92ecf8f",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635"
+  },
+  "known_at": "2026-09-30T14:05:44.166593+00:00"
+}

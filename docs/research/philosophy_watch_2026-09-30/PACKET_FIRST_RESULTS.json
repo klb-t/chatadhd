@@ -1,0 +1,13 @@
+{
+  "schema": "loom.philosophy_watch_packet_results/1",
+  "finished_at_utc": "2026-09-30T12:57:53.378298+00:00",
+  "planned": 27,
+  "ran": 27,
+  "failures": 0,
+  "errors": 0,
+  "successful": true,
+  "tested_snapshot_sha256": "bfc04c9592b3f3d730aea1f10cb010db1c2cc50f2e92ae5d5363c1952631e390",
+  "production_source_still_same": true,
+  "scope": "authored codec/diff mechanisms, not model semantic quality",
+  "failed_cases": []
+}

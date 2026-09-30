@@ -1,0 +1,13 @@
+{
+  "schema": "loom.philosophy_watch_archive_cost_freeze/1",
+  "frozen_at_utc": "2026-09-30T13:11:05.887703+00:00",
+  "files_sha256": {
+    "loom/tools/eval/archive_cost.py": "2eac2fbb90a2ff1976ecd3414c33c1a960c1b96d77d9a0451e387f519cc4cfef",
+    "loom/tools/eval/pricing_2026-09-25.json": "046b7d458df78f73dc82ca1154ab5475940769d82ce98886c2890ec58118abfa",
+    "docs/research/philosophy_watch_2026-09-30/archive_cost_probe_09.py": "91dc18e08aec84f29da96592a8b6cfc711d3100a6dc8f2957077024c2e787627",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_09_ARCHIVE_COST_RETEST.md": "5b038f8b05234109a4e33ad5ef41cacac6637ca7ab467ebff7a9974232ae00d5"
+  },
+  "paid_requests": 0,
+  "owner_archive_reads": 0,
+  "canonical_writes": 0
+}

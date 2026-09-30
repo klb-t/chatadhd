@@ -1,0 +1,85 @@
+{
+  "schema": "loom.philosophy_watch_mechanism_freeze/1",
+  "frozen_at_utc": "2026-09-30T12:45:29.158957+00:00",
+  "files_sha256": {
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/new_graph_direct_lookup.py": "99806c4753e63e2457024803fd7b7d37bb68e87f24a07debe21074e354764792",
+    "loom/tools/structure/graph_source_commitment_projection.py": "3e8137fa9ffe9619a09d9606e6a5dfd57b60c6dd29633ad34a25f01b1ab02b65",
+    "loom/tools/structure/graph_formal_paths.py": "26f0d44804c6d577b7d9bc92c51a3b0438c52e937f3b17a961c896ebec670880",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_01.md": "25cecc3601749d7b404c92bbd1ea56879f771535e1cb56a64f3a1b7e72fee60f",
+    "docs/research/philosophy_watch_2026-09-30/mechanism_probe_01.py": "b122e0bba347bd9bf811d42c1195aa76275f1922e145bddf002d90a4ff02bc60"
+  },
+  "check_inventory": [
+    {
+      "id": "raw_query_future_append_invariance",
+      "kind": "invariant"
+    },
+    {
+      "id": "compiler_input_immutability",
+      "kind": "invariant"
+    },
+    {
+      "id": "utf8_source_locator",
+      "kind": "invariant"
+    },
+    {
+      "id": "missing_edge_unknown",
+      "kind": "invariant"
+    },
+    {
+      "id": "directed_edge_no_reverse",
+      "kind": "invariant"
+    },
+    {
+      "id": "source_time_is_not_instrument_availability",
+      "kind": "invariant"
+    },
+    {
+      "id": "exact_locator_can_bind_unsupported_reverse",
+      "kind": "diagnostic"
+    },
+    {
+      "id": "full_turn_can_bind_unsupported_attribution",
+      "kind": "diagnostic"
+    },
+    {
+      "id": "source_projection_preserves_original_candidates",
+      "kind": "invariant"
+    },
+    {
+      "id": "same_source_supersession_changes_view_only",
+      "kind": "invariant"
+    },
+    {
+      "id": "withdrawal_abi_honesty",
+      "kind": "invariant"
+    },
+    {
+      "id": "formal_inference_class_and_all_alternatives",
+      "kind": "invariant"
+    },
+    {
+      "id": "formal_signed_nodes_no_contraposition",
+      "kind": "invariant"
+    },
+    {
+      "id": "formal_extrapolation_rejected_as_premise",
+      "kind": "invariant"
+    },
+    {
+      "id": "formal_bound_is_incomplete_unavailable",
+      "kind": "invariant"
+    },
+    {
+      "id": "formal_conflict_explicit_declared_policy",
+      "kind": "invariant"
+    },
+    {
+      "id": "past_formal_query_future_cross_actor_event",
+      "kind": "diagnostic"
+    }
+  ],
+  "sealed_fixture_reads": 0,
+  "paid_requests": 0,
+  "canonical_writes": 0
+}

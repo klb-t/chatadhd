@@ -1,0 +1,433 @@
+{
+  "schema": "loom.philosophy_watch_checkpoint_inventory/1",
+  "known_at": "2026-09-30T13:22:31.778333+00:00",
+  "actual_paid_requests": 0,
+  "files": [
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/ANALYSIS_PLAN_FIRST_RESULTS_15.json",
+      "bytes": 12981,
+      "sha256": "5152212c9858f3e44fb77dce480f902aaa9e2c2c27c89743ac5565e7002ae782"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/ANALYSIS_PLAN_FREEZE_15.json",
+      "bytes": 1203,
+      "sha256": "b78b2eb0283a019b12b07d199f91d9439c782491964921dc32904e4d16a78207"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/ARCHIVE_COST_FIRST_RESULTS.json",
+      "bytes": 15166,
+      "sha256": "c3973e79d6f0165cd90337e47a9cd37b6bc74865467c62d3653e145ced8c7956"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/ARCHIVE_COST_FREEZE_02.json",
+      "bytes": 725,
+      "sha256": "b19b544dd673a06106891ee6275873bd75503726360e545c9f04d5cf011628d5"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/ARCHIVE_COST_FREEZE_09.json",
+      "bytes": 732,
+      "sha256": "36beb9b287470cd781050dfb9b79bf058d53e3c0fb58da3fdfab089aa8eac4c8"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/ARCHIVE_COST_RETEST_RESULTS_09.json",
+      "bytes": 12370,
+      "sha256": "ce510846366e31c86bdc5804f14a2637f93fe5d7e88414bdbf2a953468957814"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/CHECKPOINT_INVENTORY_14.json",
+      "bytes": 16141,
+      "sha256": "a582f4b592fa2b995139c4e65e30a3a3b1503f332f0dbcf837cfa19862732bdc"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FIRST_MECHANISM_RESULTS.json",
+      "bytes": 5278,
+      "sha256": "b6fae47c584044946f1767fc78d6f420ceb8ae37690f56f79ca56762e2bde112"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FREEZE_01.json",
+      "bytes": 2542,
+      "sha256": "61d9a8a0e70a97f6efc71ea54ca908ac453d9fb28378269f9d73c00caecae4ae"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FREE_PROJECTION_AUDIT_06.json",
+      "bytes": 9796,
+      "sha256": "baf1f0d4044e18d7fa63855a33fe395688c026183383114a0fd03ae7921e1a9e"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FREE_PROJECTION_FREEZE_06.json",
+      "bytes": 873,
+      "sha256": "05bf1f8034430e6190e405a360f351e92e88dd44cbd4749a6fe65d2dbe3e0e2c"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FRONTIER_FIRST_RESULTS_04.json",
+      "bytes": 3224,
+      "sha256": "d1be7abd8b73fb4eea47f1448c409af8bf6fe3cc3cd22577f7ee5f95a012d1f6"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FRONTIER_FIRST_RESULTS_05.json",
+      "bytes": 4408,
+      "sha256": "83ee23d999a73adf3023e3bf4153edee85745084191aab6645bb7d3ebb368e48"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FRONTIER_FREEZE_04.json",
+      "bytes": 1811,
+      "sha256": "3e32de120accb9c2940b4458974198e2cfcc55396a64aa5fd917abefa6292531"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/FRONTIER_FREEZE_05.json",
+      "bytes": 1818,
+      "sha256": "52893cec45e191838c859a36b0d1f83b3094b22fe82939e82222294acc69bc3c"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PACKET_CYCLE_FIRST_RESULTS_07.json",
+      "bytes": 485,
+      "sha256": "0bc83f0634463a038829681848131b2ff3f8e78e3600d1eecbf7bedb1bd2aada"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PACKET_CYCLE_FIRST_RESULTS_10.json",
+      "bytes": 497,
+      "sha256": "ae5fa00f0f5932fed7e0e55cd27c60c6e68a6a7d047f0cbe1891ecc92fe797e6"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PACKET_CYCLE_FREEZE_07.json",
+      "bytes": 372,
+      "sha256": "b6e14cc30e939562b088ef88ffdf3b4e2dc2a8c7a56079497e9bcb868403e9bf"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PACKET_CYCLE_FREEZE_10.json",
+      "bytes": 372,
+      "sha256": "f8c1874c8503816cee05693b2aca8d12b488eea57202af76bd9c84eddbce5160"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PACKET_FIRST_RESULTS.json",
+      "bytes": 429,
+      "sha256": "6cc1881291352459af724f6567ba49d67174b7e2bc1690e87313925912a5cd79"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PACKET_FIRST_TEST_OUTPUT.log",
+      "bytes": 4234,
+      "sha256": "1a7cffeb450e4572a41696e48ca6ba52aa84262f5eeb4a197159a103e92e8281"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PACKET_FREEZE_03.json",
+      "bytes": 923,
+      "sha256": "4c10e8d229c77b3b29885bd454fabad98a15112e2a3a8b42a360a4493cbaaed3"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PHYSICAL_PREFIX_FIRST_RESULTS_12.json",
+      "bytes": 29293,
+      "sha256": "501d656b81e3848944e2ae32cbdbec0a1db5f88eb4c5ccb24a579440978853aa"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PHYSICAL_PREFIX_FREEZE_12.json",
+      "bytes": 1126,
+      "sha256": "a51e3d0bfefaaddd6714810781e2f714e7ac2e07f960fb432c838819dd4065e0"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_01.md",
+      "bytes": 3618,
+      "sha256": "25cecc3601749d7b404c92bbd1ea56879f771535e1cb56a64f3a1b7e72fee60f"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_02_ARCHIVE_COST.md",
+      "bytes": 1681,
+      "sha256": "5c492cbae530c966179cd5eeeb56cf9be9ee73f00a4062c8947dcab324c14718"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_03_PACKET.md",
+      "bytes": 1190,
+      "sha256": "426f91e22886d09546ddeb40be5c30983f158a0fe8229900ce22ca10ce1b192a"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_04_FRONTIER.md",
+      "bytes": 1394,
+      "sha256": "7458cddc204f014495d7b16a843b4a2011dae41e19e97f3427ffdc94c7776066"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_05_FRONTIER_RETEST.md",
+      "bytes": 673,
+      "sha256": "325f8828d23a6c9b2a325158f0eb3d1a05b600ebdc21d18f976c3d156caf5299"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_06_FREE_PROJECTION.md",
+      "bytes": 1059,
+      "sha256": "e7f5f58ef0f4abae20d8349251ae6584f83fc20966ddefb72df0119eadfe9a21"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_07_PACKET_CYCLES.md",
+      "bytes": 856,
+      "sha256": "0784172be378679ec0bb33036c3f412cfa27997f51df67a30855a26cf6364fae"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_08_PACKET_CYCLE_RETEST.md",
+      "bytes": 595,
+      "sha256": "425755015502d0ba34ff403d37851e37ec08c9209e366a8658e8f0db1d87c05f"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_09_ARCHIVE_COST_RETEST.md",
+      "bytes": 764,
+      "sha256": "5b038f8b05234109a4e33ad5ef41cacac6637ca7ab467ebff7a9974232ae00d5"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_10_PACKET_CYCLE_RETEST.md",
+      "bytes": 829,
+      "sha256": "90ae7b4dd649d5673856d920ff62615154504c161c983ff3660357e6b288dafb"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_11_RUNTIME.md",
+      "bytes": 1219,
+      "sha256": "c659d6ff2bf579687c101e96dc29dc9f9d104987e2d1d37e2b5e43cc4d5f37cf"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_12_PHYSICAL_PREFIX.md",
+      "bytes": 1517,
+      "sha256": "b2490070acc548eccc9e4e15b261af3180096bd7828a31784339cf2884b27aa0"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_13_RUNTIME_RETEST.md",
+      "bytes": 749,
+      "sha256": "3dea17ca2968d3719d3da790d2ba76cf8952cd24943d318e73e721235c99dbb8"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/PROTOCOL_15_ANALYSIS_PLAN_PROVENANCE.md",
+      "bytes": 1630,
+      "sha256": "186e594f63d18230eb917e868ee83a2f2b8711876ace8eed46b16541b2b4df68"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/RESEARCH_DIRECTIONS_01.md",
+      "bytes": 12057,
+      "sha256": "01ba08827f70b2862895e583afd9825ef0e92c9864b16efaf0853f10c4bee064"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/RUNTIME_FIRST_RESULTS_11.json",
+      "bytes": 11693,
+      "sha256": "04b5a42bea2933a8063a42834d6d32224e20e4600c2c70be543490a7fd7a05d1"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/RUNTIME_FIRST_RESULTS_13.json",
+      "bytes": 13774,
+      "sha256": "9b530ded60deef395cf5abc8a6c51685fa80891aa996583f5d7d9dbc2d8e67cb"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/RUNTIME_FREEZE_11.json",
+      "bytes": 1766,
+      "sha256": "5093169e7fd6d0d1def946cecb56c1f571bcc7c1663d959609913bcc9e83b0ac"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/RUNTIME_FREEZE_13.json",
+      "bytes": 1773,
+      "sha256": "8c7a849c8369740b49981e05aa8ee57a8e99ee7a3106ce3f3ed9042729280c9f"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/SNAPSHOT_01.md",
+      "bytes": 5882,
+      "sha256": "e0fcc7d02ef7d6bab9ac8ea474913638e3c548ab5ffa031f3180b135a758cb83"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/SNAPSHOT_02_ARCHIVE_COST_AND_NATIVE.md",
+      "bytes": 5250,
+      "sha256": "4150a909a90994dbf0541d25004b804de014de144032283b9454ee939912c4f8"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/SNAPSHOT_03_OWNER_AND_ECOSYSTEM.md",
+      "bytes": 2106,
+      "sha256": "5aea6c2e253e8101c2dd04eafd330c0d83176bfaa41c73d1f0735dea89810f28"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/SNAPSHOT_04_RETESTS_AND_OPEN_QUESTIONS.md",
+      "bytes": 5109,
+      "sha256": "c47f80344c2c5bc46617e2969620529b4e1b2bdaa43a067c8cbf83a337a8deec"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/SNAPSHOT_05_ANALYSIS_PLAN_PROVENANCE.md",
+      "bytes": 2946,
+      "sha256": "a57f42841ef33420ac210b7190c9b12844aa3debc1a2b78b05b5696ba41b18cf"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/analysis_plan_audited_source_15.py",
+      "bytes": 16780,
+      "sha256": "b8cf2694dcc7d3ecd9c7e0794877dbeb12349009fbd5b83eed02f49540b0823e"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/analysis_plan_first_scripted_evidence_15.zip",
+      "bytes": 23615,
+      "sha256": "e206b531e94e6c8f68a5efd86d358e927ff87d9bfa71052bac33abf33b23ba30"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/analysis_plan_probe_15.py",
+      "bytes": 7407,
+      "sha256": "44940976573d631dcca438c64fee6cf992ddf5d5a71e1eb6ccc378c35f674dbd"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/archive_cost_probe_02.py",
+      "bytes": 6895,
+      "sha256": "c4290c6703e7a013b741de9fc4c08b5718dfd7dc2e09431529d9846fa3e087a0"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/archive_cost_probe_09.py",
+      "bytes": 6906,
+      "sha256": "91dc18e08aec84f29da96592a8b6cfc711d3100a6dc8f2957077024c2e787627"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/formal_audited_source_12.py",
+      "bytes": 10214,
+      "sha256": "26f0d44804c6d577b7d9bc92c51a3b0438c52e937f3b17a961c896ebec670880"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/free_projection_audit_06.py",
+      "bytes": 10884,
+      "sha256": "c3e0126772832a91ec2c51fa8cc1432274560390e8b916e9b561bc810e2169c1"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_04/adapter.py",
+      "bytes": 31384,
+      "sha256": "9aa01125a03799b9a4c945636f011dd37a08f21c673028851313a18b079133fa"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_04/bounded_runner.py",
+      "bytes": 2995,
+      "sha256": "417a023bae0798b1b21c7eec3ebea341fa3589744d143b4ecf4b4aac3bf9a9aa"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_05/adapter.py",
+      "bytes": 33419,
+      "sha256": "2a5c92e582a25228f4b55166b3a5c8b8c220a99b4ef413df21ccfc42de35d3d0"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_audited_source_05/bounded_runner.py",
+      "bytes": 2995,
+      "sha256": "417a023bae0798b1b21c7eec3ebea341fa3589744d143b4ecf4b4aac3bf9a9aa"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_first_scripted_evidence_04.zip",
+      "bytes": 10011,
+      "sha256": "868afe9693931ac44d63e7822d4f3c2d8c0bf4fe6f4c7f80f78fd64632a11092"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_first_scripted_evidence_05.zip",
+      "bytes": 10012,
+      "sha256": "3fcfc3b0ae12ab2cd7e4baa4d92cc9c054d30f89edee237f165fa78c0260ffeb"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_probe_04.py",
+      "bytes": 6823,
+      "sha256": "c1ba507b3ce00207344666e388bfe0e4af2bd44ffd66f966be6cfd4fc714ddce"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/frontier_probe_05.py",
+      "bytes": 6830,
+      "sha256": "ecc9eb00664a7979e30fd409fcb116b2e94dfec8b109ca392f32ae3b3445f38a"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/graph_formal_paths_policy.json",
+      "bytes": 332,
+      "sha256": "2c592a4de8328760002c4592017e6eaa8794208d2ab8a4abbdf37cf6ca990e85"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/mechanism_probe_01.py",
+      "bytes": 14449,
+      "sha256": "b122e0bba347bd9bf811d42c1195aa76275f1922e145bddf002d90a4ff02bc60"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/packet_audited_source_03.py",
+      "bytes": 35108,
+      "sha256": "bfc04c9592b3f3d730aea1f10cb010db1c2cc50f2e92ae5d5363c1952631e390"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/packet_audited_source_07.py",
+      "bytes": 35174,
+      "sha256": "47d6e7a3ce21acd8209db59f1a2398881c3b7ba15e9f5f3e1ed8d91f1cb77de9"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/packet_audited_source_08.py",
+      "bytes": 35648,
+      "sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/packet_audited_source_10.py",
+      "bytes": 35648,
+      "sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/packet_cycle_probe_07.py",
+      "bytes": 2347,
+      "sha256": "8c529473bc7c6425a29e897facb8b0598bc7036c696e86a83fb3ece919d9502c"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/packet_cycle_probe_08.py",
+      "bytes": 2347,
+      "sha256": "e1a9cae4740137a3cb79a8c622f22d84737824c0a3a357c8481f8aa1e55d01ae"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/packet_cycle_probe_10.py",
+      "bytes": 2353,
+      "sha256": "9d8293b637d4d7ca578cc6c4c85ee04137c70b5ab23ca6ba9e921f8e0afccc48"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/physical_prefix_probe_12.py",
+      "bytes": 6977,
+      "sha256": "01cccf389d40edc56300e84d9c3a129f0ab5670bc3a1ebcb4ba1c165c847bced"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/run_packet_watch_03.py",
+      "bytes": 2353,
+      "sha256": "c1bebdb5aae93a9f76d025b52f2ed444ae180e08237d42d50942418f00e5adf1"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_audited_source_11/adapter.py",
+      "bytes": 35520,
+      "sha256": "11e4ab913d04db43d29762fec23a55a06cec4794354c48c663d8ebe5842573a3"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_audited_source_11/bounded_runner.py",
+      "bytes": 2995,
+      "sha256": "417a023bae0798b1b21c7eec3ebea341fa3589744d143b4ecf4b4aac3bf9a9aa"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_audited_source_11/runtime.py",
+      "bytes": 18091,
+      "sha256": "da9431c4460d5fbf9367a7338243f42d9a168657d84798f757e332868e19fda6"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_audited_source_13/adapter.py",
+      "bytes": 35520,
+      "sha256": "11e4ab913d04db43d29762fec23a55a06cec4794354c48c663d8ebe5842573a3"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_audited_source_13/bounded_runner.py",
+      "bytes": 2995,
+      "sha256": "417a023bae0798b1b21c7eec3ebea341fa3589744d143b4ecf4b4aac3bf9a9aa"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_audited_source_13/runtime.py",
+      "bytes": 21867,
+      "sha256": "4f960d829bf3e92ca5d436f1c1a758ec7e9b1c01f6c0cb7d21ad3870e92ecf8f"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_first_scripted_evidence_11.zip",
+      "bytes": 33144,
+      "sha256": "5105d58a27ceb7a2e60877a9b9d8107660964a8962ef80d579110bc3aad25e9b"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_first_scripted_evidence_13.zip",
+      "bytes": 34549,
+      "sha256": "745edbaa1faa1d3461942b45c31d683b839690a22931891c08c3c3b345dde1b9"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_probe_11.py",
+      "bytes": 7600,
+      "sha256": "5d4d4800c87932c954f8a2f867904971ca349e2fd808a77be3c0776e0eae5ab2"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/runtime_probe_13.py",
+      "bytes": 7607,
+      "sha256": "6f3881b31a5649fd7e4e86d9b51f06c3329db17015184befad464c7da601d0d5"
+    },
+    {
+      "path": "docs/research/philosophy_watch_2026-09-30/test_packet_watch_03.py",
+      "bytes": 13186,
+      "sha256": "bed22e3e6d65e41ea1251e761fea5adee1426652c96f87bd5f2cad042d309d37"
+    }
+  ],
+  "note": "Append checkpoint after AnalysisPlan source/provenance audit15. Prior checkpoint14 remains unchanged."
+}

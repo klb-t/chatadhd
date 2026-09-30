@@ -1,0 +1,13 @@
+{
+  "schema": "loom.philosophy_watch_loaded_packet_freeze/1",
+  "known_at": "2026-09-30T13:38:23.494844+00:00",
+  "files_sha256": {
+    "docs/research/philosophy_watch_2026-09-30/analysis_plan_audited_source_22.py": "2dfc9c3c67fb7135477b91e5599bbc30c96e006ab301b55b4a1d0f142f442372",
+    "docs/contracts/analysis_plan.schema.json": "3f70b5db565c191e72af4200a6348c342e7210dfac4a96c2d217da78725e3776",
+    "docs/research/philosophy_watch_2026-09-30/plan_loaded_packet_probe_22.py": "a501e112e1bb38901afa5b05c8cfce35cc0fa4ef5ac982ed9638edcbe523a764",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_22_PLAN_LOADED_PACKET.md": "23fc679e6e1e60d1ee8641998fcab2c8390736a10e5691cb14f0e63625ef0e9c"
+  },
+  "plan_sha256": "53cb1ebfc0b4d969dff86885e061c82106cb5a998f8ee48fc5daf517f07b8eab",
+  "packet_sha256": "933cb306895f28fd48b5fc970b7a142a20194377ff64cbf429baac6b633d0997",
+  "paid_requests": 0
+}

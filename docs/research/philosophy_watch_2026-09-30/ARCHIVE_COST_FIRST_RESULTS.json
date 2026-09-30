@@ -1,0 +1,566 @@
+{
+  "schema": "loom.philosophy_watch_archive_cost_results/1",
+  "finished_at_utc": "2026-09-30T12:50:52.811728+00:00",
+  "planned_probes": 20,
+  "probes": [
+    {
+      "id": "nominal",
+      "expected_domain_or_assumption": "finite positive planning estimate",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": 0.09,
+            "low_batch": 0.04,
+            "high": 0.09,
+            "high_batch": 0.04
+          }
+        }
+      }
+    },
+    {
+      "id": "zero_output_zero_prefix",
+      "expected_domain_or_assumption": "valid finite zero output/prefix",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0,
+          "prefix_tokens": 0,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": 0.0,
+            "low_batch": 0.0,
+            "high": 0.0,
+            "high_batch": 0.0
+          }
+        }
+      }
+    },
+    {
+      "id": "negative_output_ratio",
+      "expected_domain_or_assumption": "reject negative count ratio, no maximum ratio restriction",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": -20,
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": -0.08,
+            "low_batch": -0.04,
+            "high": -0.13,
+            "high_batch": -0.07
+          }
+        }
+      }
+    },
+    {
+      "id": "nan_output_ratio",
+      "expected_domain_or_assumption": "reject nonfinite count ratio",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": {
+            "nonfinite": "nan"
+          },
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": {
+              "nonfinite": "nan"
+            },
+            "low_batch": {
+              "nonfinite": "nan"
+            },
+            "high": {
+              "nonfinite": "nan"
+            },
+            "high_batch": {
+              "nonfinite": "nan"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "infinite_output_ratio",
+      "expected_domain_or_assumption": "reject nonfinite count ratio",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": {
+            "nonfinite": "inf"
+          },
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": {
+              "nonfinite": "inf"
+            },
+            "low_batch": {
+              "nonfinite": "inf"
+            },
+            "high": {
+              "nonfinite": "inf"
+            },
+            "high_batch": {
+              "nonfinite": "inf"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "negative_prefix_count",
+      "expected_domain_or_assumption": "reject negative token count",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": -100000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": -0.99,
+            "low_batch": -0.5,
+            "high": -0.99,
+            "high_batch": -0.5
+          }
+        }
+      }
+    },
+    {
+      "id": "boolean_prefix_count",
+      "expected_domain_or_assumption": "boolean is not an integer token count",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": true,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": 0.01,
+            "low_batch": 0.0,
+            "high": 0.01,
+            "high_batch": 0.0
+          }
+        }
+      }
+    },
+    {
+      "id": "nan_fraction",
+      "expected_domain_or_assumption": "reject nonfinite fraction",
+      "exception_type": "ValueError",
+      "exception_message": "fraction must be in (0, 1]"
+    },
+    {
+      "id": "infinite_fraction",
+      "expected_domain_or_assumption": "reject out-of-range fraction",
+      "exception_type": "ValueError",
+      "exception_message": "fraction must be in (0, 1]"
+    },
+    {
+      "id": "zero_fraction",
+      "expected_domain_or_assumption": "declared existing API fraction domain is (0,1]",
+      "exception_type": "ValueError",
+      "exception_message": "fraction must be in (0, 1]"
+    },
+    {
+      "id": "negative_price",
+      "expected_domain_or_assumption": "reject negative price",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": 0,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": -0.1,
+            "low_batch": -0.05,
+            "high": -0.13,
+            "high_batch": -0.06
+          }
+        }
+      }
+    },
+    {
+      "id": "nan_price",
+      "expected_domain_or_assumption": "reject nonfinite price",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": 0,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": {
+              "nonfinite": "nan"
+            },
+            "low_batch": {
+              "nonfinite": "nan"
+            },
+            "high": {
+              "nonfinite": "nan"
+            },
+            "high_batch": {
+              "nonfinite": "nan"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "boolean_conversation_count",
+      "expected_domain_or_assumption": "boolean is not an archive count",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": 0.01,
+            "low_batch": 0.01,
+            "high": 0.01,
+            "high_batch": 0.01
+          }
+        }
+      }
+    },
+    {
+      "id": "fractional_conversation_selection",
+      "expected_domain_or_assumption": "fraction times count is an expectation, not actual selected integer inventory",
+      "returned": {
+        "assumptions": {
+          "fraction": 0.01,
+          "output_ratio": 0.4,
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 10,
+          "high": 13
+        },
+        "models": {
+          "authored-frontier": {
+            "low": 0.0,
+            "low_batch": 0.0,
+            "high": 0.0,
+            "high_batch": 0.0
+          }
+        }
+      }
+    },
+    {
+      "id": "theoretical_cached_first_prefix",
+      "expected_domain_or_assumption": "cache_read used on every conversation; no first write/unavailable cache modeling",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": 0.09,
+            "low_batch": 0.04,
+            "high": 0.09,
+            "high_batch": 0.04
+          }
+        }
+      }
+    },
+    {
+      "id": "theoretical_uniform_batch_discount",
+      "expected_domain_or_assumption": "all model bands discounted without endpoint batch capability check",
+      "returned": {
+        "assumptions": {
+          "fraction": 1.0,
+          "output_ratio": 0.4,
+          "prefix_tokens": 8000,
+          "include_versions": true,
+          "chars_per_token": {
+            "low": 4.0,
+            "high": 3.0
+          },
+          "pricing_as_of": "authored-planning-example"
+        },
+        "tokens": {
+          "low": 1000,
+          "high": 1333
+        },
+        "models": {
+          "authored-frontier": {
+            "low": 0.09,
+            "low_batch": 0.04,
+            "high": 0.09,
+            "high_batch": 0.04
+          }
+        }
+      }
+    },
+    {
+      "id": "sqlite_null_status",
+      "expected_domain_or_assumption": "NULL status must be explicitly accounted for or reported, not silently omitted",
+      "returned": {
+        "filename": "ordinary.db",
+        "input_rows": [
+          [
+            "c",
+            "user",
+            "active",
+            "abcd"
+          ],
+          [
+            "c",
+            "user",
+            null,
+            "hidden"
+          ]
+        ],
+        "files_before": {
+          "ordinary.db": "844939b15a82b9ff3b23f149979e13b91c4fab956047b93734ce10b3e87870ca"
+        },
+        "files_after": {
+          "ordinary.db": "844939b15a82b9ff3b23f149979e13b91c4fab956047b93734ce10b3e87870ca"
+        },
+        "source_hash_unchanged": true,
+        "unexpected_created_files": [],
+        "returned": {
+          "conversations": 1,
+          "messages": 1,
+          "chars_active": 4,
+          "chars_versions": 0,
+          "chars_excluded": 0,
+          "chars_by_role": {
+            "user": 4
+          },
+          "conversation_chars": {
+            "median": 4,
+            "max": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "sqlite_question_mark_filename",
+      "expected_domain_or_assumption": "read correct literal filename read-only and create no other file",
+      "returned": {
+        "filename": "literal?archive.db",
+        "input_rows": [
+          [
+            "c",
+            "user",
+            "active",
+            "abcd"
+          ]
+        ],
+        "files_before": {
+          "literal?archive.db": "1e34c082bc1b98aeb176f3ca95a33a7e1d1798596641f11fa4ba626964728072"
+        },
+        "files_after": {
+          "literal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "literal?archive.db": "1e34c082bc1b98aeb176f3ca95a33a7e1d1798596641f11fa4ba626964728072"
+        },
+        "source_hash_unchanged": true,
+        "unexpected_created_files": [
+          "literal"
+        ],
+        "exception_type": "OperationalError",
+        "exception_message": "no such table: messages"
+      }
+    },
+    {
+      "id": "sqlite_hash_filename",
+      "expected_domain_or_assumption": "read correct literal filename read-only and create no other file",
+      "returned": {
+        "filename": "literal#archive.db",
+        "input_rows": [
+          [
+            "c",
+            "user",
+            "active",
+            "abcd"
+          ]
+        ],
+        "files_before": {
+          "literal#archive.db": "1e34c082bc1b98aeb176f3ca95a33a7e1d1798596641f11fa4ba626964728072"
+        },
+        "files_after": {
+          "literal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "literal#archive.db": "1e34c082bc1b98aeb176f3ca95a33a7e1d1798596641f11fa4ba626964728072"
+        },
+        "source_hash_unchanged": true,
+        "unexpected_created_files": [
+          "literal"
+        ],
+        "exception_type": "OperationalError",
+        "exception_message": "no such table: messages"
+      }
+    },
+    {
+      "id": "excluded_only_conversation",
+      "expected_domain_or_assumption": "count eligible reading-conversation denominator separately from all nondeleted conversations",
+      "returned": {
+        "filename": "excluded.db",
+        "input_rows": [
+          [
+            "excluded-only",
+            "user",
+            "excluded",
+            "abcd"
+          ]
+        ],
+        "files_before": {
+          "excluded.db": "e876565be5792dea593bb0a8c0ca372f5001f806ca3d3ac463fdcc66bf60040b"
+        },
+        "files_after": {
+          "excluded.db": "e876565be5792dea593bb0a8c0ca372f5001f806ca3d3ac463fdcc66bf60040b"
+        },
+        "source_hash_unchanged": true,
+        "unexpected_created_files": [],
+        "returned": {
+          "conversations": 1,
+          "messages": 1,
+          "chars_active": 0,
+          "chars_versions": 0,
+          "chars_excluded": 4,
+          "chars_by_role": {},
+          "conversation_chars": {
+            "median": 0,
+            "max": 0
+          }
+        }
+      }
+    }
+  ],
+  "source_hash_unchanged": true,
+  "scope": "offline numeric/data boundary audit; not model quality or actual billed usage"
+}

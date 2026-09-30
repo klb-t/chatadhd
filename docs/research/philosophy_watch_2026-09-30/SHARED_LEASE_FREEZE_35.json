@@ -1,0 +1,24 @@
+{
+  "actual_paid_cost_usd": "0",
+  "actual_paid_requests": 0,
+  "cases": [
+    "interpret_throws_control",
+    "interpret_returns_set",
+    "interpret_returns_nan",
+    "interpret_returns_cycle",
+    "usage_instrument_throws",
+    "unknown_fee",
+    "estimated_zero",
+    "gate_revoked_at_start",
+    "configurable_two_million_fee"
+  ],
+  "files_sha256": {
+    "docs/contracts/analysis_plan.schema.json": "3f70b5db565c191e72af4200a6348c342e7210dfac4a96c2d217da78725e3776",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_35_SHARED_LEASE_RETEST.md": "5163ef73ffcaa7c2240584e42cc534329e9f448430efa205c757b0b570337a13",
+    "docs/research/philosophy_watch_2026-09-30/shared_lease_audited_source_35.py": "f2f14e3494fb572609d4538e577e1596b0a37a22b2ec62bd0899455f5a63abb0",
+    "docs/research/philosophy_watch_2026-09-30/shared_lease_probe_35.py": "511779a77799cf5c9d58c404b2d9244ac989e9958dd2f5b2a5ad9532d7ec4103",
+    "loom/tools/contracts/analysis_plan_ref.py": "2dfc9c3c67fb7135477b91e5599bbc30c96e006ab301b55b4a1d0f142f442372"
+  },
+  "hypothesis_previously_suggested_by": "recipe_experiments independent reviewer; no outcomes supplied",
+  "known_at": "2026-09-30T14:10:19.320502+00:00"
+}

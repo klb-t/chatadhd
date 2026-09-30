@@ -1,0 +1,23 @@
+{
+  "schema": "loom.philosophy_watch_native_cache_freeze/1",
+  "known_at": "2026-09-30T13:45:08.016009+00:00",
+  "files_sha256": {
+    "docs/research/philosophy_watch_2026-09-30/cache_audited_source_24.py": "bb6ac98489a85a807eb2879d877943c2f38843d852c8ffe1aaa4d0a67e225425",
+    "loom/tools/structure/agentic_graph_v1/packet.py": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "docs/research/philosophy_watch_2026-09-30/test_packet_watch_03.py": "bed22e3e6d65e41ea1251e761fea5adee1426652c96f87bd5f2cad042d309d37",
+    "docs/research/philosophy_watch_2026-09-30/packet_audited_source_03.py": "bfc04c9592b3f3d730aea1f10cb010db1c2cc50f2e92ae5d5363c1952631e390",
+    "docs/research/philosophy_watch_2026-09-30/native_cache_spot_24.py": "23ebcc972e37ab1801f2a3efe4e2d773d88679959fe356075befd4fc623140b4",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_24_NATIVE_CACHE_SPOT.md": "0dc6a2c4067fe002e349ff5e65ee26edba2ae74fbc984164640b425920960b19"
+  },
+  "case_ids": [
+    "coupled_tombstone_parent",
+    "restore_parent",
+    "raw_origin_time_retention",
+    "stale_inverse",
+    "rehashed_raw_before",
+    "valid_last_event_alternative"
+  ],
+  "input_packet_id": "d1cd49c9f68d032fb31d39342f3c9438bc9933ca99dd512309c8db86f328f55e",
+  "paid_requests": 0
+}

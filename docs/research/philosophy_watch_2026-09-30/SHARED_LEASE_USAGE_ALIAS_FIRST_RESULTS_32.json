@@ -1,0 +1,46 @@
+{
+  "actual_paid_cost_usd": "0",
+  "actual_paid_requests": 0,
+  "artifact_count": 13,
+  "criterion_pass": true,
+  "dispatch_count": 1,
+  "known_at": "2026-09-30T14:06:32.566412+00:00",
+  "mutated_callback_object": {
+    "measurement_provenance": {
+      "calls": {
+        "source_ref": "authored-local-counter",
+        "status": "instrument_measured"
+      },
+      "money_usd": {
+        "source_ref": "authored-billing-fixture",
+        "status": "provider_reported"
+      }
+    },
+    "measurements": {
+      "calls": "1",
+      "money_usd": "0"
+    }
+  },
+  "policy_usage_money_usd": "0.06",
+  "raw_preserved": true,
+  "returned_state": "completed",
+  "saved_usage": {
+    "measurement_provenance": {
+      "calls": {
+        "source_ref": "authored-local-counter",
+        "status": "instrument_measured"
+      },
+      "money_usd": {
+        "source_ref": "authored-billing-fixture",
+        "status": "provider_reported"
+      }
+    },
+    "measurements": {
+      "calls": "1",
+      "money_usd": "0.06"
+    }
+  },
+  "saved_usage_is_original": true,
+  "source_sha256": "737f49f82e2fe11806beee2996d4c39c72c7c597e9b6a6244f8894870beec2e6",
+  "usage_kind": "synthetic_policy_accounting_not_actual_invoice"
+}

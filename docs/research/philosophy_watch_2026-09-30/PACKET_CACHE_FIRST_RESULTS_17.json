@@ -1,0 +1,109 @@
+{
+  "schema": "loom.philosophy_watch_cache_results/1",
+  "finished_at_utc": "2026-09-30T13:27:38.328553+00:00",
+  "planned": 13,
+  "passed": 12,
+  "failed": 1,
+  "checks": [
+    {
+      "id": "whole_hit_exact_application",
+      "state": "pass",
+      "trace": {
+        "exact_graph_and_application_receipt_bytes": true
+      }
+    },
+    {
+      "id": "verified_parent_extension",
+      "state": "pass",
+      "trace": {
+        "path": "verified_immediate_parent_hit"
+      }
+    },
+    {
+      "id": "changed_old_prefix",
+      "state": "pass",
+      "trace": {
+        "path": "strict_fallback"
+      }
+    },
+    {
+      "id": "invalid_old_history",
+      "state": "pass",
+      "trace": {
+        "strict_and_cache_rejection": {
+          "exception_type": "ValueError",
+          "exception": "graph_packet_history_parent_hash_mismatch"
+        }
+      }
+    },
+    {
+      "id": "mutable_callers",
+      "state": "pass",
+      "trace": {
+        "private_bytes_retained": true
+      }
+    },
+    {
+      "id": "foreign_entry",
+      "state": "pass",
+      "trace": {
+        "exception_type": "CacheIntegrityError",
+        "exception": "foreign_or_corrupt_cache_authorization"
+      }
+    },
+    {
+      "id": "public_receipt",
+      "state": "pass",
+      "trace": {
+        "exception_type": "RunnerError",
+        "exception": "invalid_object_fields"
+      }
+    },
+    {
+      "id": "resources_on_hit",
+      "state": "pass",
+      "trace": {
+        "exception_type": "ValueError",
+        "exception": "graph_packet_configured_node_resource_limit"
+      }
+    },
+    {
+      "id": "policy_and_limits_change",
+      "state": "pass",
+      "trace": {
+        "both_changes_miss": true
+      }
+    },
+    {
+      "id": "zero_storage",
+      "state": "pass",
+      "trace": {
+        "valid_without_storage": true
+      }
+    },
+    {
+      "id": "large_unlimited_input",
+      "state": "pass",
+      "trace": {
+        "bytes": 17826100,
+        "entries": 1
+      }
+    },
+    {
+      "id": "selected_function_binding",
+      "state": "pass",
+      "trace": {
+        "exception_type": "CacheIntegrityError",
+        "exception": "strict_validator_binding_changed"
+      }
+    },
+    {
+      "id": "transitive_history_binding",
+      "state": "failed",
+      "exception_type": "AssertionError",
+      "exception": "transitive_validator_rebound_but_cache_returned_whole_packet_hit"
+    }
+  ],
+  "paid_requests": 0,
+  "scope": "authored strict/cache equivalence, not CPU or semantic-quality benchmark"
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "loom.philosophy_watch_plan_freeze/1",
+  "frozen_at_utc": "2026-09-30T13:21:06.617638+00:00",
+  "files_sha256": {
+    "docs/research/philosophy_watch_2026-09-30/analysis_plan_audited_source_15.py": "b8cf2694dcc7d3ecd9c7e0794877dbeb12349009fbd5b83eed02f49540b0823e",
+    "loom/tools/contracts/validate.py": "5cf67c4608ab13596e8c3282cced90403061d511a1585ed003f5e7fb4e149314",
+    "docs/contracts/analysis_plan.schema.json": "593845bbc4a59776c8b6c5e597f1aa4f738ed2d3facc1efe86d373a74b0ddf52",
+    "docs/research/philosophy_watch_2026-09-30/analysis_plan_probe_15.py": "44940976573d631dcca438c64fee6cf992ddf5d5a71e1eb6ccc378c35f674dbd",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_15_ANALYSIS_PLAN_PROVENANCE.md": "186e594f63d18230eb917e868ee83a2f2b8711876ace8eed46b16541b2b4df68"
+  },
+  "inputs_sha256": "34211c7b7fa57f279e1d19a1d62fbc49c992534dfeef844a29a6af9e40565842",
+  "case_ids": [
+    "context_preserved",
+    "unpinned_source_resolution_drift",
+    "null_zero_provenance",
+    "empty_zero_provenance",
+    "unknown_measurement_held",
+    "tool_configuration_no_dispatch",
+    "explicit_revision_changes_identity"
+  ],
+  "paid_requests": 0,
+  "canonical_graph_writes": 0
+}

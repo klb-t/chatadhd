@@ -1,0 +1,127 @@
+{
+  "schema": "loom.philosophy_watch_frontier_results/1",
+  "finished_at_utc": "2026-09-30T13:07:20.589541+00:00",
+  "planned_scripted_cases": 2,
+  "actual_paid_requests": 0,
+  "actual_paid_cost_usd": "0",
+  "observations": [
+    {
+      "id": "configured_8mib_response",
+      "scripted_post_count": 1,
+      "calls": [
+        {
+          "method": "GET",
+          "path": "/key",
+          "body_sha256": null
+        },
+        {
+          "method": "POST",
+          "path": "/chat/completions",
+          "body_sha256": "589cba3aa5e56331dec86843b9b07c2f4586d6cf1e153891885b79bed6355994"
+        }
+      ],
+      "raw_bytes": 2097530,
+      "raw_sha256": "17f75170f181054ce0388d5fa1feaed8faad8b7b3a1c5e80fe3beeaa069d9a94",
+      "configured_response_bytes": 8388608,
+      "fake_reported_cost_usd": "0.00001",
+      "actual_paid_cost_usd": "0",
+      "run_attempt_state": "completed",
+      "run_retained_reported_cost": "0.00001",
+      "replay_returned": true,
+      "compiled_state": "unavailable",
+      "summary": {
+        "schema": "loom.frontier_panel/1",
+        "model": "openai/gpt-6-luna",
+        "provider": "openai",
+        "track": "supplied_edge_judgment",
+        "recipe": "baseline",
+        "selection": "all24",
+        "planned_requests": 1,
+        "attempted_requests": 1,
+        "compiled_complete": 0,
+        "reported_cost_usd": "0.00001",
+        "missing_cost_attempts": 0,
+        "manifest_sha256": "09f268541e88ad741e3351f0ff00b09de933d923ef8b8ddd2ed25ae6fcc4aff3",
+        "ledger_sha256": "eb0bd8fc02d203a3c20f828f2a832c6e63891ffad2970619064a2121a1fff109",
+        "no_graph_promotion": true,
+        "split": "dev"
+      }
+    },
+    {
+      "id": "configured_large_cost",
+      "scripted_post_count": 1,
+      "calls": [
+        {
+          "method": "GET",
+          "path": "/key",
+          "body_sha256": null
+        },
+        {
+          "method": "POST",
+          "path": "/chat/completions",
+          "body_sha256": "589cba3aa5e56331dec86843b9b07c2f4586d6cf1e153891885b79bed6355994"
+        }
+      ],
+      "raw_bytes": 261,
+      "raw_sha256": "105bd19cdcf070f0b80abe0731e6d7db0bf7c7d076d6aaeafecabff12a7c9a14",
+      "configured_response_bytes": 8388608,
+      "fake_reported_cost_usd": "2000000",
+      "actual_paid_cost_usd": "0",
+      "run_attempt_state": "completed",
+      "run_retained_reported_cost": "2000000",
+      "replay_returned": true,
+      "compiled_state": "completed",
+      "summary": {
+        "schema": "loom.frontier_panel/1",
+        "model": "openai/gpt-6-luna",
+        "provider": "openai",
+        "track": "supplied_edge_judgment",
+        "recipe": "baseline",
+        "selection": "all24",
+        "planned_requests": 1,
+        "attempted_requests": 1,
+        "compiled_complete": 1,
+        "reported_cost_usd": "2000000",
+        "missing_cost_attempts": 0,
+        "manifest_sha256": "164f941edc47e03f9899d975a9c40237a62ab38d6c679b797748f5513bdddfff",
+        "ledger_sha256": "79ab775fdb9a03664a3403db37e624e2d575d6bce64ab9ab53c23252de36fcf5",
+        "no_graph_promotion": true,
+        "split": "dev"
+      }
+    }
+  ],
+  "evidence_archive_sha256": "3fcfc3b0ae12ab2cd7e4baa4d92cc9c054d30f89edee237f165fa78c0260ffeb",
+  "evidence_inventory": [
+    {
+      "path": "configured_8mib_response/manifest.json",
+      "bytes": 5436,
+      "sha256": "09f268541e88ad741e3351f0ff00b09de933d923ef8b8ddd2ed25ae6fcc4aff3"
+    },
+    {
+      "path": "configured_8mib_response/ledger.json",
+      "bytes": 1029,
+      "sha256": "eb0bd8fc02d203a3c20f828f2a832c6e63891ffad2970619064a2121a1fff109"
+    },
+    {
+      "path": "configured_8mib_response/gpv1_dev_001_q1.response.bin",
+      "bytes": 2097530,
+      "sha256": "17f75170f181054ce0388d5fa1feaed8faad8b7b3a1c5e80fe3beeaa069d9a94"
+    },
+    {
+      "path": "configured_large_cost/manifest.json",
+      "bytes": 5456,
+      "sha256": "164f941edc47e03f9899d975a9c40237a62ab38d6c679b797748f5513bdddfff"
+    },
+    {
+      "path": "configured_large_cost/ledger.json",
+      "bytes": 1044,
+      "sha256": "79ab775fdb9a03664a3403db37e624e2d575d6bce64ab9ab53c23252de36fcf5"
+    },
+    {
+      "path": "configured_large_cost/gpv1_dev_001_q1.response.bin",
+      "bytes": 261,
+      "sha256": "105bd19cdcf070f0b80abe0731e6d7db0bf7c7d076d6aaeafecabff12a7c9a14"
+    }
+  ],
+  "scope": "configured-bound mechanics; fabricated transport receipts, not real model quality/billing"
+}

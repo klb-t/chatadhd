@@ -1,0 +1,47 @@
+{
+  "actual_paid_cost_usd": "0",
+  "actual_paid_requests": 0,
+  "artifact_count": 13,
+  "criterion_pass": false,
+  "dispatch_count": 1,
+  "known_at": "2026-09-30T14:03:01.330965+00:00",
+  "mutated_callback_object": {
+    "measurement_provenance": {
+      "calls": {
+        "source_ref": "authored-local-counter",
+        "status": "instrument_measured"
+      },
+      "money_usd": {
+        "source_ref": "authored-billing-fixture",
+        "status": "provider_reported"
+      }
+    },
+    "measurements": {
+      "calls": "1",
+      "money_usd": "0"
+    }
+  },
+  "policy_usage_money_usd": "0",
+  "raw_preserved": true,
+  "receipt_exception_class": "LeaseError",
+  "receipt_exception_code": "completed_leaf_evidence_drift",
+  "saved_usage": {
+    "measurement_provenance": {
+      "calls": {
+        "source_ref": "authored-local-counter",
+        "status": "instrument_measured"
+      },
+      "money_usd": {
+        "source_ref": "authored-billing-fixture",
+        "status": "provider_reported"
+      }
+    },
+    "measurements": {
+      "calls": "1",
+      "money_usd": "0.06"
+    }
+  },
+  "saved_usage_is_original": true,
+  "source_sha256": "8a51e0073c79b61dad4ab64f1abd06b15c5f349e127803d6e8b05a57b53d717c",
+  "usage_kind": "synthetic_policy_accounting_not_actual_invoice"
+}

@@ -1,0 +1,432 @@
+{
+  "schema": "loom.philosophy_watch_runtime_results/1",
+  "finished_at_utc": "2026-09-30T13:16:08.102564+00:00",
+  "actual_paid_requests": 0,
+  "actual_paid_cost_usd": "0",
+  "cases": [
+    {
+      "id": "malformed_tool_cost",
+      "handled": [],
+      "state": "rejected",
+      "stopped_reason": "stage_failure_no_retry",
+      "retained_scripted_charge_usd": "0.01",
+      "reported_scripted_cost_usd": "0.01",
+      "actual_paid_cost_usd": "0",
+      "tool_result_files": [],
+      "replay_returned": true,
+      "replay_outputs": [
+        {
+          "state": "replay_rejected",
+          "failure_class": "RunnerError"
+        }
+      ]
+    },
+    {
+      "id": "unknown_cost",
+      "handled": [],
+      "state": "completed",
+      "stopped_reason": "completed",
+      "retained_scripted_charge_usd": "0.1",
+      "reported_scripted_cost_usd": null,
+      "actual_paid_cost_usd": "0",
+      "tool_result_files": [],
+      "replay_returned": true,
+      "replay_outputs": [
+        {
+          "reported_cost_usd": null,
+          "reported_usage": {
+            "completion_tokens": 2,
+            "is_byok": false,
+            "prompt_tokens": 2
+          },
+          "cost_status": "unknown",
+          "state": "completed",
+          "final_content": "{}",
+          "pending_tools": [],
+          "continuation_items": [
+            {
+              "content": "{}",
+              "role": "assistant"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "identity_rejection_cost",
+      "handled": [],
+      "state": "rejected",
+      "stopped_reason": "stage_failure_no_retry",
+      "retained_scripted_charge_usd": "0.01",
+      "reported_scripted_cost_usd": "0.01",
+      "actual_paid_cost_usd": "0",
+      "tool_result_files": [],
+      "replay_returned": true,
+      "replay_outputs": [
+        {
+          "state": "replay_rejected",
+          "failure_class": "IdentityIntegrityError"
+        }
+      ]
+    },
+    {
+      "id": "denied_tool",
+      "handled": [],
+      "state": "awaiting_tools",
+      "stopped_reason": "stage_failure_no_retry",
+      "retained_scripted_charge_usd": "0.01",
+      "reported_scripted_cost_usd": "0.01",
+      "actual_paid_cost_usd": "0",
+      "tool_result_files": [],
+      "replay_returned": true,
+      "replay_outputs": [
+        {
+          "reported_cost_usd": "0.01",
+          "reported_usage": {
+            "completion_tokens": 2,
+            "cost": ".01",
+            "is_byok": false,
+            "prompt_tokens": 2
+          },
+          "cost_status": "provider_reported",
+          "state": "awaiting_tools",
+          "final_content": null,
+          "pending_tools": [
+            {
+              "call_id": "a",
+              "name": "lookup",
+              "arguments": {},
+              "original": {
+                "function": {
+                  "arguments": "{}",
+                  "name": "lookup"
+                },
+                "id": "a",
+                "type": "function"
+              }
+            }
+          ],
+          "continuation_items": [
+            {
+              "content": null,
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{}",
+                    "name": "lookup"
+                  },
+                  "id": "a",
+                  "type": "function"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "partial_tools_failure",
+      "handled": [
+        "first_completed",
+        "second_entered"
+      ],
+      "state": "awaiting_tools",
+      "stopped_reason": "stage_failure_no_retry",
+      "retained_scripted_charge_usd": "0.01",
+      "reported_scripted_cost_usd": "0.01",
+      "actual_paid_cost_usd": "0",
+      "tool_result_files": [
+        "call0001.tool_results.json"
+      ],
+      "replay_returned": true,
+      "replay_outputs": [
+        {
+          "reported_cost_usd": "0.01",
+          "reported_usage": {
+            "completion_tokens": 2,
+            "cost": ".01",
+            "is_byok": false,
+            "prompt_tokens": 2
+          },
+          "cost_status": "provider_reported",
+          "state": "awaiting_tools",
+          "final_content": null,
+          "pending_tools": [
+            {
+              "call_id": "a",
+              "name": "first",
+              "arguments": {},
+              "original": {
+                "function": {
+                  "arguments": "{}",
+                  "name": "first"
+                },
+                "id": "a",
+                "type": "function"
+              }
+            },
+            {
+              "call_id": "b",
+              "name": "second",
+              "arguments": {},
+              "original": {
+                "function": {
+                  "arguments": "{}",
+                  "name": "second"
+                },
+                "id": "b",
+                "type": "function"
+              }
+            }
+          ],
+          "continuation_items": [
+            {
+              "content": null,
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "function": {
+                    "arguments": "{}",
+                    "name": "first"
+                  },
+                  "id": "a",
+                  "type": "function"
+                },
+                {
+                  "function": {
+                    "arguments": "{}",
+                    "name": "second"
+                  },
+                  "id": "b",
+                  "type": "function"
+                }
+              ]
+            }
+          ],
+          "tool_execution_receipts": [
+            {
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "call_id": "a",
+              "execution_context": {
+                "executor_binding": "first",
+                "packet_sha256": "017a3809f85b91d7f47d5cdd3e2493ba6cd3614d93e52e050228bf1741f23912",
+                "permission": {
+                  "execute": true,
+                  "scope": "scripted"
+                },
+                "resource_scope": {
+                  "kind": "supplied_packet",
+                  "project_access_grants": []
+                },
+                "semantic_contract": "loom.graph_packet/1"
+              },
+              "finished_at": "2026-09-30T13:16:08.010118+00:00",
+              "name": "first",
+              "result_file": "call0001.tool0001.result.json",
+              "result_sha256": "5cc01ec0a9e2520108eff4c59722152553ee681f3c5ccb3661f4fbfff0a5244d",
+              "started_at": "2026-09-30T13:16:08.009215+00:00",
+              "state": "completed"
+            },
+            {
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "call_id": "b",
+              "execution_context": {
+                "executor_binding": "second",
+                "packet_sha256": "017a3809f85b91d7f47d5cdd3e2493ba6cd3614d93e52e050228bf1741f23912",
+                "permission": {
+                  "execute": true,
+                  "scope": "scripted"
+                },
+                "resource_scope": {
+                  "kind": "supplied_packet",
+                  "project_access_grants": []
+                },
+                "semantic_contract": "loom.graph_packet/1"
+              },
+              "failure_class": "RuntimeError",
+              "finished_at": "2026-09-30T13:16:08.010920+00:00",
+              "name": "second",
+              "result_file": "call0001.tool0002.result.json",
+              "started_at": "2026-09-30T13:16:08.010432+00:00",
+              "state": "uncertain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "initial_request_content_drift",
+      "handled": [],
+      "state": "completed",
+      "stopped_reason": "completed",
+      "retained_scripted_charge_usd": "0.01",
+      "reported_scripted_cost_usd": "0.01",
+      "actual_paid_cost_usd": "0",
+      "tool_result_files": [],
+      "initial_contents_match_stored_hash": false,
+      "replay_returned": false,
+      "replay_exception_type": "IdentityIntegrityError",
+      "replay_exception": "scripted_initial_request_drift"
+    },
+    {
+      "id": "symbolic_million_agents",
+      "configured_concurrency": 1000000,
+      "worker_allocation_performed": false,
+      "account_availability_verified": false
+    }
+  ],
+  "artifact_inventory": [
+    {
+      "path": "malformed_tool_cost/call0001.request.json",
+      "bytes": 3906,
+      "sha256": "860c139c1cb7f48c125536480d91872cf60a31cf0d5831143eb9a41b49eaa453"
+    },
+    {
+      "path": "malformed_tool_cost/call0001.response.bin",
+      "bytes": 323,
+      "sha256": "42977dd65c9fb6d7387e6ed1e699840e43d201cee55ff31db610053cfcece0c1"
+    },
+    {
+      "path": "malformed_tool_cost/initial_request.json",
+      "bytes": 3906,
+      "sha256": "860c139c1cb7f48c125536480d91872cf60a31cf0d5831143eb9a41b49eaa453"
+    },
+    {
+      "path": "malformed_tool_cost/ledger.json",
+      "bytes": 818,
+      "sha256": "0fae35dc502124e55b5a06b03ee5ed454b74eacf6a2802fb519d783446ee5af7"
+    },
+    {
+      "path": "unknown_cost/call0001.parsed.json",
+      "bytes": 245,
+      "sha256": "782ab0ba1c8fc60b7e868e68157bcfe48b9268a84a58b582b079472100a4d21d"
+    },
+    {
+      "path": "unknown_cost/call0001.request.json",
+      "bytes": 3906,
+      "sha256": "860c139c1cb7f48c125536480d91872cf60a31cf0d5831143eb9a41b49eaa453"
+    },
+    {
+      "path": "unknown_cost/call0001.response.bin",
+      "bytes": 208,
+      "sha256": "131e4875311d2feda50ae3625a7ff3a3ef2068e3bf333cad10c32ef7d84c6ede"
+    },
+    {
+      "path": "unknown_cost/initial_request.json",
+      "bytes": 3906,
+      "sha256": "860c139c1cb7f48c125536480d91872cf60a31cf0d5831143eb9a41b49eaa453"
+    },
+    {
+      "path": "unknown_cost/ledger.json",
+      "bytes": 819,
+      "sha256": "796c2349dd1081e0b0ace98f7ba130d98dd84536cb1c3dcfd010eca7336e9f2f"
+    },
+    {
+      "path": "identity_rejection_cost/call0001.request.json",
+      "bytes": 3906,
+      "sha256": "860c139c1cb7f48c125536480d91872cf60a31cf0d5831143eb9a41b49eaa453"
+    },
+    {
+      "path": "identity_rejection_cost/call0001.response.bin",
+      "bytes": 215,
+      "sha256": "4dc0548a5fe5c2aff680e89f9e6cb57862c97ca0f47893baa57420b35e8cb592"
+    },
+    {
+      "path": "identity_rejection_cost/initial_request.json",
+      "bytes": 3906,
+      "sha256": "860c139c1cb7f48c125536480d91872cf60a31cf0d5831143eb9a41b49eaa453"
+    },
+    {
+      "path": "identity_rejection_cost/ledger.json",
+      "bytes": 829,
+      "sha256": "818f62795eb98755cba2f147c0e643de6381e83f2193435802b328380c001654"
+    },
+    {
+      "path": "denied_tool/call0001.parsed.json",
+      "bytes": 497,
+      "sha256": "f3bb200ca8506b1849fd8b7e19c543f1f858e5af2fcedf871299a39f5c6be3e6"
+    },
+    {
+      "path": "denied_tool/call0001.request.json",
+      "bytes": 4155,
+      "sha256": "2fd629fc711299a4b059985b41d18a21db06323850f1799be288d38823784fd1"
+    },
+    {
+      "path": "denied_tool/call0001.response.bin",
+      "bytes": 317,
+      "sha256": "14a1ef22f705266c66dc392c6a5668a5ad4888acb45df4b1a5376f1ac18ea418"
+    },
+    {
+      "path": "denied_tool/initial_request.json",
+      "bytes": 4155,
+      "sha256": "2fd629fc711299a4b059985b41d18a21db06323850f1799be288d38823784fd1"
+    },
+    {
+      "path": "denied_tool/ledger.json",
+      "bytes": 872,
+      "sha256": "602d2e1da4a93c3b59a091c330300d764b73b38a3d2906aea7460c18b7d85e90"
+    },
+    {
+      "path": "partial_tools_failure/call0001.parsed.json",
+      "bytes": 702,
+      "sha256": "7578e2aa542c00c979ec5b1e531a70861d05ecb3e5586d0d992193f1ca7a29e8"
+    },
+    {
+      "path": "partial_tools_failure/call0001.request.json",
+      "bytes": 4433,
+      "sha256": "0d0d9bdf058f6567cdb10cfaa5f938342b12b13488fa9bf1e154e40eebb4d8d8"
+    },
+    {
+      "path": "partial_tools_failure/call0001.response.bin",
+      "bytes": 391,
+      "sha256": "98de202ef33c18b0062436e726674d6a6f2b4ead9e8a82fa9cab08301869a71e"
+    },
+    {
+      "path": "partial_tools_failure/call0001.tool0001.result.json",
+      "bytes": 386,
+      "sha256": "dbcb70ed4b60c05834ecf7d5500bfe321abd20e629d7e31ba5422bae6c62822e"
+    },
+    {
+      "path": "partial_tools_failure/call0001.tool_results.json",
+      "bytes": 388,
+      "sha256": "eca4488814f812b17dd7c7b927f7e7a8d8c1534bae39985b3113f267dbe5108e"
+    },
+    {
+      "path": "partial_tools_failure/initial_request.json",
+      "bytes": 4433,
+      "sha256": "0d0d9bdf058f6567cdb10cfaa5f938342b12b13488fa9bf1e154e40eebb4d8d8"
+    },
+    {
+      "path": "partial_tools_failure/ledger.json",
+      "bytes": 2329,
+      "sha256": "d94bf390bc3a2e42ba1a79cbacf91fc07743c557347ef5750f588b095fa6e8f0"
+    },
+    {
+      "path": "initial_request_content_drift/call0001.parsed.json",
+      "bytes": 270,
+      "sha256": "bbe9876915787e26968edbd75885d0a14c52d70945424d74eb6500ad04f0ea19"
+    },
+    {
+      "path": "initial_request_content_drift/call0001.request.json",
+      "bytes": 3906,
+      "sha256": "860c139c1cb7f48c125536480d91872cf60a31cf0d5831143eb9a41b49eaa453"
+    },
+    {
+      "path": "initial_request_content_drift/call0001.response.bin",
+      "bytes": 221,
+      "sha256": "e629bd545d4f0794e99781434e6e6c322715b05ff5e19eb5e1d13734207ea1d3"
+    },
+    {
+      "path": "initial_request_content_drift/initial_request.json",
+      "bytes": 3911,
+      "sha256": "b1d54d33f5057409b8dcb8cf9f3d76c746adcc398e08f1d9d83d1c4c4617af5d"
+    },
+    {
+      "path": "initial_request_content_drift/ledger.json",
+      "bytes": 846,
+      "sha256": "9d2b7313a8c67effe9c2c4f95828d32f09b6a6eeda92464814f32a14114cbd45"
+    }
+  ],
+  "scope": "offline scripted invariant probes, not hosted API access or model quality"
+}

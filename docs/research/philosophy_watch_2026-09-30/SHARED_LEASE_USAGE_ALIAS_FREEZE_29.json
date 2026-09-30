@@ -1,0 +1,12 @@
+{
+  "actual_paid_requests": 0,
+  "baseline_source": "preserved initial adapter from round28",
+  "files_sha256": {
+    "docs/contracts/analysis_plan.schema.json": "3f70b5db565c191e72af4200a6348c342e7210dfac4a96c2d217da78725e3776",
+    "docs/research/philosophy_watch_2026-09-30/PROTOCOL_29_SHARED_LEASE_USAGE_ALIAS.md": "8e3f8d0f2193919210dc2599b2b792afec75203d252bbc7233a57e2e39e8adcc",
+    "docs/research/philosophy_watch_2026-09-30/shared_lease_usage_alias_probe_29.py": "9d75aba8c06a297de431aa2daadff1eeb56c2192c491960fb7c5c66dc3f89d17",
+    "docs/research/philosophy_watch_2026-09-30/shared_lease_usage_alias_source_29.py": "8a51e0073c79b61dad4ab64f1abd06b15c5f349e127803d6e8b05a57b53d717c",
+    "loom/tools/contracts/analysis_plan_ref.py": "2dfc9c3c67fb7135477b91e5599bbc30c96e006ab301b55b4a1d0f142f442372"
+  },
+  "known_at": "2026-09-30T14:03:00.953606+00:00"
+}
