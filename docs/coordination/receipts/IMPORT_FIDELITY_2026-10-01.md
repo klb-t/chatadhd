@@ -2,6 +2,7 @@
 
 Base: `96ea1c727ee5bbba4ee056dfa15aa844d1102d22` (integrated W1–W6).
 Implementation: `0f29a689d1af06115ba16dff69f8bf877226122a`.
+Nested-archive locator follow-up: `2bddeb15788e8696cdeb851b6ffc1cd39aea98c4`.
 Branch: `gpt/fix-export-fidelity-2026-10-01`.
 Scope: importer implementation, approved parser-version constant, independent
 `loom/tests/test_import_export_fidelity.cpp`. No schema/ABI change, model call,
@@ -21,6 +22,9 @@ private archive access, sealed-data access, or frozen W6 modification.
   object keys are not presented as array offsets. Anthropic `message_index`
   now means source array position; `view_message_index` labels the separate
   time-sorted database view. Legacy global `conversation_index` remains.
+  For nested ZIPs, `source` identifies the innermost source blob and `member`
+  names an entry local to that blob. Legacy `zip_member` retains its contextual
+  containing-archive chain; it is not reused as an entry name in another blob.
 - Conversation metadata records the source container and local position.
   Every sibling field of a recognized `conversations` wrapper is retained in
   `export.wrapper_fields`, including unknown, null and empty values. Raw input
@@ -52,7 +56,7 @@ local inputs, not committed changes to the frozen dataset.
 
 Native build/tests are **pending the single shared verification build**;
 no old binary result is claimed for this implementation. New independent
-suite `import_export_fidelity` has four test cases covering:
+suite `import_export_fidelity` has five test cases covering:
 
 1. Source array reconstruction, forward parent relationships, distinct DFS
    positions, branch statuses and original bytes.
@@ -64,6 +68,9 @@ suite `import_export_fidelity` has four test cases covering:
 4. Two ZIP shards containing three conversations: member-local indices reset
    independently of global import order; locators resolve in each member;
    original ZIP bytes survive.
+5. A ZIP containing another ZIP: the conversation's actual source record
+   binds the inner archive bytes; local member and JSON pointer resolve in
+   that source; the contextual legacy chain and outer archive bytes survive.
 
 Independent read-only review by `design_audit` at implementation `0f29a68`
 found no blocker; no build or native test was performed during that review.
@@ -85,6 +92,7 @@ V1 separate-member-blob checks also remain outside this correction; original
 ZIP byte preservation is a different claim.
 
 Implementation test-file SHA-256:
-`cc420984e0a45a73314584985597718162ac2ddd5d7879bbde63872af6a51e62`.
+`79dd9144712e035b28b2aabf376c7c594f1ccdfb93506cb1e48329852785f482`
+(at nested-archive follow-up).
 Fresh shared-build results and source/binary hashes belong in the verifier's
 new receipt; this freeze receipt does not substitute for them.
