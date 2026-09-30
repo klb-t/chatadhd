@@ -500,6 +500,11 @@ TEST_SUITE("context_engine") {
 
   TEST_CASE("select: three bands, evidence markers, dependency closure, budget respected") {
     Fixture f;
+    // A distinct goal claim keeps this a three-band test. The decision and its
+    // underlying c_impl claim deliberately share one reference and must not be
+    // counted twice merely to populate an additional band.
+    const auto direct_goal = claim(f.feat.id, "has_detail", "goal_specific_detail", EvidenceClass::Observed, 0.9, "2025-05-10");
+    LOOM_REQUIRE_OK(f.ks->put_claims(f.run, {direct_goal}));
     context::ContextEngine engine(*f.rt, *f.ks, f.pack);
     context::ContextRequest req;
     req.text = "zaimplementuj checklisty w NoteFlow";
@@ -529,6 +534,10 @@ TEST_SUITE("context_engine") {
     CHECK(have_stable_pref);
     CHECK(have_project_band);
     CHECK(have_goal_band);
+    CHECK(std::count_if(set.items.begin(), set.items.end(), [&](const auto& it) { return it.ref == f.c_impl.id; }) == 1);
+    CHECK(std::count_if(set.items.begin(), set.items.end(), [&](const auto& it) {
+      return it.ref == direct_goal.id && it.band == ContextBand::Goal;
+    }) == 1);
     // pr.decide_fast_correct_later is a premise of c_impl and of the decision;
     // it should be pulled in even though it is not independently a top scorer.
     CHECK(have_dependency_pull);
@@ -561,6 +570,14 @@ TEST_SUITE("context_engine") {
 
   TEST_CASE("select: a premise the budget cannot hold is flagged, never silently dropped") {
     Fixture f;
+    // Keep this a closure-budget test after shared-reference deduplication and
+    // forward carry made the old short, independently selected premise always
+    // fit alongside its conclusion. A non-core Value principle is outside
+    // implement_part's Strategy/Epistemic policy, but remains mandatory through
+    // c_impl's premise reference. Its larger text exercises both budget paths.
+    f.p_project.level = PrincipleLevel::Value;
+    f.p_project.statement = {{"en", "Required supporting rationale: " + std::string(720, 'p')}};
+    LOOM_REQUIRE_OK(f.ks->put_principles(f.run, {f.p_project}));
     context::ContextEngine engine(*f.rt, *f.ks, f.pack);
     int incomplete_seen = 0, complete_with_premise = 0;
     for (int budget = 4; budget <= 700; budget += 2) {

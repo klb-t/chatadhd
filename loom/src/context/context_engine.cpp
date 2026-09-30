@@ -15,6 +15,11 @@
 #include "loom/semantic_llm.h"
 #include "loom/util/utf8.h"
 #include "ctx_common.h"
+#include "loom/context_plan.h"
+#include "context_request_ext.h"
+#include "context_candidates.h"
+#include "context_evidence.h"
+#include "context_diagnostics.h"
 
 namespace loom::context {
 
@@ -79,11 +84,72 @@ struct Candidate {
   double base_relevance = 0.5;
   double score = 0.0;  // filled by score_all()
   std::optional<int> relation_hops;
+  Json extra_factors = Json::object();  // additive discovery/channel metadata
 
   // Filled once accepted.
   int tokens = 0;
   std::string rendered_text;
 };
+
+void union_refs(std::vector<std::string>& into, const std::vector<std::string>& from) {
+  for (const auto& ref : from) {
+    if (std::find(into.begin(), into.end(), ref) == into.end()) into.push_back(ref);
+  }
+}
+
+void merge_factors(Json& into, const Json& from) {
+  if (!from.is_object()) return;
+  for (const auto& [key, value] : from.items()) {
+    if (!into.contains(key)) into[key] = value;
+    else if (into[key].is_object() && value.is_object()) merge_factors(into[key], value);
+    else if (into[key].is_array() && value.is_array()) {
+      for (const auto& item : value) {
+        if (std::find(into[key].begin(), into[key].end(), item) == into[key].end()) into[key].push_back(item);
+      }
+    } else if (into[key].is_boolean() && value.is_boolean()) {
+      into[key] = into[key].get<bool>() || value.get<bool>();
+    }
+  }
+}
+
+// A Decision is a view of its underlying claim, not a second item of evidence.
+// Preserve distinct representations, provenance and the union of dependencies
+// while charging shared references once. Candidate-view factors retain any
+// channel-specific scalar values that cannot be combined generically.
+void merge_candidate(Candidate& into, Candidate from) {
+  auto view = [](const Candidate& c) {
+    return Json{{"ref_kind", std::string(model::to_string(c.ref_kind))},
+                {"band", std::string(model::to_string(c.band))}, {"why", c.why},
+                {"factors", c.extra_factors}};
+  };
+  Json views = into.extra_factors.value("candidate_views", Json::array());
+  if (views.empty()) views.push_back(view(into));
+  views.push_back(view(from));
+  auto append = [](std::string& value, const std::string& extra) {
+    if (extra.empty() || value.find(extra) != std::string::npos) return;
+    if (!value.empty()) value += "\n";
+    value += extra;
+  };
+  append(into.content.label, from.content.label);
+  append(into.content.summary, from.content.summary);
+  append(into.content.full, from.content.full);
+  append(into.content.raw, from.content.raw);
+  union_refs(into.premise_claims, from.premise_claims);
+  union_refs(into.premise_principles, from.premise_principles);
+  if (into.why != from.why && !from.why.empty()) into.why += "; " + from.why;
+  into.band = std::min(into.band, from.band);
+  into.base_relevance = std::max(into.base_relevance, from.base_relevance);
+  if (!into.role) into.role = from.role;
+  if (from.ref_kind == model::RefKind::Decision) {
+    into.ref_kind = from.ref_kind;
+    into.role = from.role;
+  }
+  if (from.relation_hops) {
+    into.relation_hops = into.relation_hops ? std::min(*into.relation_hops, *from.relation_hops) : from.relation_hops;
+  }
+  merge_factors(into.extra_factors, from.extra_factors);
+  into.extra_factors["candidate_views"] = std::move(views);
+}
 
 bool contains_role(const std::vector<model::Role>& roles, model::Role r) {
   return std::find(roles.begin(), roles.end(), r) != roles.end();
@@ -177,6 +243,7 @@ Result<ContextRequest> ContextRequest::from_json(const Json& j) {
     LOOM_TRY_ASSIGN(auto value, model::parse<Resolution>(detail->get<std::string>(), "detail_resolution"));
     r.detail_resolution = value;
   }
+  LOOM_TRY(parse_context_extensions(j, r));
   return r;
 }
 
@@ -193,6 +260,7 @@ Json ContextRequest::to_json() const {
   // Keep the historical serialized defaults unchanged.
   if (relation_hops != 1) result["relation_hops"] = relation_hops;
   if (detail_resolution) result["detail_resolution"] = std::string(model::to_string(*detail_resolution));
+  serialize_context_extensions(result, *this);
   return result;
 }
 
@@ -484,10 +552,12 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
 // ── selection ────────────────────────────────────────────────────────
 
 Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
+  LOOM_TRY(validate_context_extensions(req));
   if (req.relation_hops < 0) return Error(Errc::InvalidArgument, "relation_hops must be non-negative");
   if (req.detail_resolution && !model::from_string<Resolution>(model::to_string(*req.detail_resolution))) {
     return Error(Errc::InvalidArgument, "invalid detail_resolution");
   }
+  if (!req.plan.is_null()) return select_context_plan(*this, store_, req);
   LOOM_TRY_ASSIGN(model::Goal goal, type_goal(req));
   LOOM_TRY_ASSIGN(std::string run, ctx::resolve_run(store_, req.run));
   LOOM_TRY_ASSIGN(auto all_types, ctx::list_goal_types(*pack_));
@@ -501,12 +571,53 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   int total_budget = req.budget_tokens > 0 ? req.budget_tokens : 4000;
   std::string lang = req.lang;
 
+  // These are bounded store queries, not an assertion of complete retrieval or
+  // semantic relevance. Reaching a cap is ambiguous until paging exists; a
+  // failed query must never look like a successful query with zero matches.
+  Json diagnostics{{"status", "bounded"}, {"exhaustive", false},
+                   {"queries", Json::array()}, {"lookup_issues", Json::array()},
+                   {"excluded", Json::array()}, {"missing_premises", Json::array()},
+                   {"query_errors", 0}, {"cap_hits", 0}};
+  auto query_diagnostic = [&](std::string_view operation, Json selector, const auto& result, int limit) {
+    Json row{{"operation", operation}, {"selector", std::move(selector)}, {"limit", limit}};
+    if (!result) {
+      row["status"] = "error";
+      row["error_code"] = std::string(errc_name(result.error().code));
+      row["returned"] = nullptr;
+      diagnostics["query_errors"] = diagnostics["query_errors"].get<int>() + 1;
+      diagnostics["status"] = "incomplete";
+    } else {
+      row["returned"] = result->size();
+      const bool capped = result->size() >= static_cast<std::size_t>(limit);
+      row["status"] = capped ? "cap_reached" : "below_cap";
+      if (capped) {
+        diagnostics["cap_hits"] = diagnostics["cap_hits"].get<int>() + 1;
+        diagnostics["status"] = "incomplete";
+      }
+    }
+    diagnostics["queries"].push_back(std::move(row));
+  };
+  auto lookup_diagnostic = [&](std::string_view operation, const std::string& ref, const auto& result) {
+    if (result && *result) return;
+    Json row{{"operation", operation}, {"ref", ref}, {"status", result ? "missing_record" : "query_error"}};
+    if (!result) {
+      row["error_code"] = std::string(errc_name(result.error().code));
+      diagnostics["query_errors"] = diagnostics["query_errors"].get<int>() + 1;
+      diagnostics["status"] = "incomplete";
+    }
+    diagnostics["lookup_issues"].push_back(std::move(row));
+  };
+  auto excluded = [&](const std::string& ref, std::string_view channel, std::string_view reason) {
+    diagnostics["excluded"].push_back(Json{{"ref", ref}, {"channel", channel}, {"reason", reason}});
+  };
+
   std::map<std::string, model::Entity> entity_cache;
   auto label_of = [&](const std::string& id) -> std::string {
     if (id.empty()) return "";
     auto it = entity_cache.find(id);
     if (it == entity_cache.end()) {
       auto r = store_.get_entity(run, id);
+      lookup_diagnostic("entity_label", id, r);
       model::Entity e;
       if (r && *r) e = **r;
       else e.label = id;
@@ -558,13 +669,19 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   };
 
   // ── principles: stable (invariant + preference) or project (matching level) ──
-  LOOM_TRY_ASSIGN(auto principles, store_.list_principles(run));
+  auto principle_rows = store_.list_principles(run);
+  query_diagnostic("principles", Json::object(), principle_rows, 1000000);
+  if (!principle_rows) return principle_rows.error();
+  auto principles = std::move(*principle_rows);
   for (auto& p : principles) {
     std::string d = model::earliest_source_date(p.sources);
     note_date(d);
     bool core = p.form == model::PrincipleForm::Invariant || p.is_preference();
     bool level_ok = contains_level(gt.principle_levels, p.level);
-    if (!core && !level_ok) continue;
+    if (!core && !level_ok) {
+      excluded(p.id, "principles", "principle_level");
+      continue;
+    }
     Candidate c;
     c.ref_kind = model::RefKind::Principle;
     c.ref = p.id;
@@ -594,18 +711,27 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   // ── project band: instance slots, decisions, status history ─────────
   if (!anchor_project.empty()) {
     auto insts = store_.query_instances(run, "", anchor_project);
+    query_diagnostic("project_instances", Json{{"project", anchor_project}}, insts, 1000000);
     if (insts) {
       for (auto& inst : *insts) {
         kb::SlotQuery sq;
         sq.instance = inst.id;
         auto rows = store_.query_slots(run, sq);
+        query_diagnostic("project_slots", Json{{"instance", inst.id}}, rows, sq.limit);
         if (!rows) continue;
         for (auto& row : *rows) {
-          if (row.value.role && !contains_role(gt.roles, *row.value.role)) continue;
+          if (row.value.role && !contains_role(gt.roles, *row.value.role)) {
+            excluded(row.value.claim, "project_slots", "role");
+            continue;
+          }
           auto claim_r = store_.get_claim(run, row.value.claim);
+          lookup_diagnostic("slot_claim", row.value.claim, claim_r);
           if (!claim_r || !*claim_r) continue;
           const auto& claim = **claim_r;
-          if (!contains_evidence(gt.evidence, claim.assessment.evidence)) continue;
+          if (!contains_evidence(gt.evidence, claim.assessment.evidence)) {
+            excluded(claim.id, "project_slots", "evidence_class");
+            continue;
+          }
           note_date(claim.qualifiers.valid_from);
           Candidate c;
           c.ref_kind = model::RefKind::Claim;
@@ -643,13 +769,18 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     }
 
     auto decisions = store_.list_decisions(run, anchor_project);
+    query_diagnostic("project_decisions", Json{{"project", anchor_project}}, decisions, 1000000);
     if (decisions) {
       for (auto& d : *decisions) {
         auto claim_r = store_.get_claim(run, d.id);
+        lookup_diagnostic("decision_claim", d.id, claim_r);
         model::Claim underlying;
         bool have_claim = claim_r && *claim_r;
         if (have_claim) underlying = **claim_r;
-        if (have_claim && !contains_evidence(gt.evidence, underlying.assessment.evidence)) continue;
+        if (have_claim && !contains_evidence(gt.evidence, underlying.assessment.evidence)) {
+          excluded(d.id, "project_decisions", "evidence_class");
+          continue;
+        }
         note_date(d.date);
         Candidate c;
         c.ref_kind = model::RefKind::Decision;
@@ -674,6 +805,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         c.content.full = full;
         c.content.raw = json::dump(d.to_json());
         c.premise_principles = d.principles;
+        if (have_claim) {
+          c.premise_claims = underlying.assessment.premises.claims;
+          union_refs(c.premise_principles, underlying.assessment.premises.principles);
+        }
         c.why = "decision recorded for " + subj_label;
         double static_rel = contains_role(gt.roles, model::Role::Decision) ? 0.75 : 0.5;
         c.base_relevance = std::clamp(0.6 * static_rel + 0.5 * lexical_overlap(c.content), 0.0, 1.0);
@@ -683,6 +818,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
 
     for (const auto& e : seeds) {
       auto hist = store_.status_history(run, e);
+      query_diagnostic("status_history", Json{{"entity", e}}, hist, 1000000);
       if (!hist) continue;
       for (auto& sr : *hist) {
         note_date(sr.date);
@@ -740,9 +876,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     c.content.raw = raw.empty() ? full : raw;
     c.premise_claims = claim.assessment.premises.claims;
     c.premise_principles = claim.assessment.premises.principles;
-    c.relation_hops = hops;
+    if (hops > 0) c.relation_hops = hops;
     c.why = hops == 1 ? "one hop from '" + label_of(via_entity) + "' via '" + claim.predicate + "'"
         : "within " + std::to_string(hops) + " relation hops of a target/project seed, via '" + label_of(via_entity) + "' and '" + claim.predicate + "'";
+    if (hops == 0) c.why = "explicit claim or candidate instrument";
     double lex = lexical_overlap(c.content);
     c.base_relevance = std::clamp(0.35 + 0.65 * lex, 0.0, 1.0);
     goal_b.push_back(std::move(c));
@@ -758,7 +895,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     for (const auto& e : frontier) {
       auto visit = [&](const model::Claim& claim) {
         // A filtered claim cannot become an invisible bridge to other data.
-        if (!contains_evidence(gt.evidence, claim.assessment.evidence)) return;
+        if (!contains_evidence(gt.evidence, claim.assessment.evidence)) {
+          excluded(claim.id, "graph", "evidence_class");
+          return;
+        }
         add_goal_claim(claim, e, hop + 1);
         for (const auto& endpoint : {claim.subject, claim.object}) {
           if (!endpoint.empty() && visited_entities.insert(endpoint).second) next.push_back(endpoint);
@@ -766,16 +906,118 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
       };
       kb::ClaimQuery qs;
       qs.subject = e;
-      if (auto r = store_.query_claims(run, qs)) {
+      {
+        auto r = store_.query_claims(run, qs);
+        query_diagnostic("graph", Json{{"entity", e}, {"direction", "outgoing"}, {"hop", hop + 1}}, r, qs.limit);
+        if (r) {
         for (const auto& claim : *r) visit(claim);
+        }
       }
       kb::ClaimQuery qo;
       qo.object = e;
-      if (auto r = store_.query_claims(run, qo)) {
+      {
+        auto r = store_.query_claims(run, qo);
+        query_diagnostic("graph", Json{{"entity", e}, {"direction", "incoming"}, {"hop", hop + 1}}, r, qo.limit);
+        if (r) {
         for (const auto& claim : *r) visit(claim);
+        }
       }
     }
     frontier = std::move(next);
+  }
+
+  // Union independent candidate instruments before the shared selector. A
+  // lexical shadow only diagnoses omissions; it cannot veto or admit items.
+  std::vector<std::string> direct_refs;
+  std::set<std::string> known_refs;
+  for (const auto* band : {&project_b, &goal_b}) {
+    for (const auto& c : *band) {
+      known_refs.insert(c.ref);
+      if (c.ref_kind == model::RefKind::Claim || c.ref_kind == model::RefKind::Decision) direct_refs.push_back(c.ref);
+    }
+  }
+  const std::set<std::string> graph_ids(direct_refs.begin(), direct_refs.end());
+  const auto retrieved = gather_context_candidates(store_, run, pack_, req, gt.evidence, direct_refs, candidate_channels_);
+  for (const auto& claim : retrieved.claims) {
+    if (known_refs.insert(claim.id).second) add_goal_claim(claim, "", 0);
+    direct_refs.push_back(claim.id);
+  }
+  std::set<std::string> direct_ids(direct_refs.begin(), direct_refs.end());
+  direct_ids.insert(req.claim_targets.begin(), req.claim_targets.end());
+  ContextEvidence evidence;
+  if (!req.claim_targets.empty() || req.include_counter_evidence) {
+    evidence = gather_context_evidence(store_, run, req, direct_refs, gt.evidence);
+    for (const auto& claim : evidence.claims) {
+      if (known_refs.insert(claim.id).second) add_goal_claim(claim, "", 0);
+    }
+    for (const auto& observation : evidence.observations) {
+      Candidate c;
+      c.ref_kind = model::RefKind::Observation;
+      c.ref = observation.id;
+      c.subject = observation.unit;
+      c.date = observation.date;
+      c.band = ContextBand::Goal;
+      c.origin = model::Origin::Archive;
+      c.evidence = model::EvidenceClass::Observed;
+      c.confidence = 1.0; // quoted observation, not confidence in its assertion
+      c.content.label = "Recorded counter-observation: " + std::string(utf8::prefix(observation.text, 100));
+      c.content.summary = c.content.label;
+      c.content.full = "Recorded counter-observation: " + observation.text;
+      c.content.raw = c.content.full;
+      c.why = "recorded counter-observation of a retrieved claim";
+      c.base_relevance = 0.6;
+      c.extra_factors["observation_locator"] = observation.locator.to_json();
+      note_date(c.date);
+      goal_b.push_back(std::move(c));
+    }
+  }
+  const bool extended = !req.claim_targets.empty() || req.include_counter_evidence ||
+      !req.candidate_channels.empty() || req.lexical_shadow;
+  for (auto* band : {&project_b, &goal_b}) {
+    for (auto& c : *band) {
+      if (direct_ids.count(c.ref)) c.extra_factors["direct_goal_candidate"] = true;
+      if (std::find(req.claim_targets.begin(), req.claim_targets.end(), c.ref) != req.claim_targets.end()) {
+        c.base_relevance = 1.0;
+        c.why += "; explicit claim anchor";
+      }
+      if (auto counter = evidence.counter_for.find(c.ref); counter != evidence.counter_for.end()) {
+        c.extra_factors["counter_for"] = counter->second;
+        c.why += "; recorded counter-evidence";
+      }
+      if (auto channels = retrieved.factors.find(c.ref); channels != retrieved.factors.end()) {
+        if (!graph_ids.count(c.ref) && std::find(req.claim_targets.begin(), req.claim_targets.end(), c.ref) == req.claim_targets.end()) {
+          c.base_relevance = 0.0;
+        }
+        merge_factors(c.extra_factors, channels->second);
+        for (const auto& signal : channels->second["candidate_channels"]) {
+          c.base_relevance = std::max(c.base_relevance, signal.value("selection_relevance", 0.0));
+        }
+        c.why += "; independent candidate instrument (reciprocal rank signal)";
+      }
+    }
+  }
+
+  // Merge discovery paths before scoring/budgeting. Dependencies and distinct
+  // views of one reference survive even when the graph also finds a slot or
+  // decision already gathered from the project.
+  std::map<std::string, Candidate> unique;
+  std::size_t gathered = 0;
+  for (auto* band : {&stable, &project_b, &goal_b}) {
+    for (auto& candidate : *band) {
+      ++gathered;
+      auto found = unique.find(candidate.ref);
+      if (found == unique.end()) unique.emplace(candidate.ref, std::move(candidate));
+      else merge_candidate(found->second, std::move(candidate));
+    }
+    band->clear();
+  }
+  diagnostics["gathered_candidates"] = gathered;
+  diagnostics["unique_candidates"] = unique.size();
+  diagnostics["duplicate_candidates_merged"] = gathered - unique.size();
+  for (auto& [ref, candidate] : unique) {
+    (void)ref;
+    (candidate.band == ContextBand::Stable ? stable : candidate.band == ContextBand::Project ? project_b : goal_b)
+        .push_back(std::move(candidate));
   }
 
   // ── score, diversify, budget (cascading leftover forward) ───────────
@@ -786,11 +1028,17 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   auto project_d = diversify(std::move(project_b));
   auto goal_d = diversify(std::move(goal_b));
 
-  std::array<int, 3> band_budget = {
-      static_cast<int>(std::llround(gt.budget.count(ContextBand::Stable) ? gt.budget.at(ContextBand::Stable) * total_budget : 0.15 * total_budget)),
-      static_cast<int>(std::llround(gt.budget.count(ContextBand::Project) ? gt.budget.at(ContextBand::Project) * total_budget : 0.25 * total_budget)),
-      static_cast<int>(std::llround(gt.budget.count(ContextBand::Goal) ? gt.budget.at(ContextBand::Goal) * total_budget : 0.6 * total_budget))};
+  // Round cumulative boundaries, not independent shares: the capacities always
+  // add up to the exact item budget, including budgets of one or two tokens.
+  const double stable_share = gt.budget.count(ContextBand::Stable) ? gt.budget.at(ContextBand::Stable) : 0.15;
+  const double project_share = gt.budget.count(ContextBand::Project) ? gt.budget.at(ContextBand::Project) : 0.25;
+  const int stable_end = std::clamp(static_cast<int>(std::llround(stable_share * total_budget)), 0, total_budget);
+  const int project_end = std::clamp(static_cast<int>(std::llround((stable_share + project_share) * total_budget)), stable_end, total_budget);
+  std::array<int, 3> band_budget = {stable_end, project_end - stable_end, total_budget - project_end};
   std::array<int, 3> used = {0, 0, 0};
+  int used_total = 0;
+  diagnostics["budget"] = Json{{"metric", "rendered_item_codepoints_div_4"},
+      {"includes_prompt_overhead", false}, {"initial_band_tokens", band_budget}, {"total_tokens", total_budget}};
 
   std::vector<model::ContextItem> accepted;
   std::vector<model::ContextItem> dropped;
@@ -812,8 +1060,9 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     int bi = static_cast<int>(c.band);
     for (int j = bi; j < 3; ++j) {
       int room = band_budget[static_cast<std::size_t>(j)] - used[static_cast<std::size_t>(j)];
-      if (c.tokens <= room || (room <= 0 && c.tokens == 0)) {
+      if (c.tokens <= room && c.tokens <= total_budget - used_total) {
         used[static_cast<std::size_t>(j)] += c.tokens;
+        used_total += c.tokens;
         model::ContextItem item;
         item.ref_kind = c.ref_kind;
         item.ref = c.ref;
@@ -822,6 +1071,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         item.score = c.score;
         item.factors = Json{{"relevance", c.base_relevance}, {"authority", ctx::authority_score(c.origin)},
                             {"freshness", ctx::freshness_score(c.date, anchor_date)}, {"confidence", c.confidence}};
+        merge_factors(item.factors, c.extra_factors);
         if (explicit_controls && c.relation_hops) item.factors["relation_hops"] = *c.relation_hops;
         item.tokens = c.tokens;
         item.why = c.why;
@@ -838,6 +1088,11 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     d.resolution = res;
     d.score = c.score;
     d.tokens = c.tokens;
+    d.factors = Json{{"relevance", c.base_relevance}, {"authority", ctx::authority_score(c.origin)},
+                     {"freshness", ctx::freshness_score(c.date, anchor_date)}, {"confidence", c.confidence},
+                     {"exclusion_reason", "budget"}, {"discovery_reason", c.why}};
+    merge_factors(d.factors, c.extra_factors);
+    if (explicit_controls && c.relation_hops) d.factors["relation_hops"] = *c.relation_hops;
     d.why = "over budget (needed " + std::to_string(c.tokens) + " tokens, none of the remaining bands had room)";
     dropped.push_back(std::move(d));
     return false;
@@ -850,17 +1105,25 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   for (auto& c : project_d) premises_of[c.ref] = {c.premise_claims, c.premise_principles};
   for (auto& c : goal_d) premises_of[c.ref] = {c.premise_claims, c.premise_principles};
 
+  auto carry_forward = [&](std::size_t band) {
+    const int unused = band_budget[band] - used[band];
+    band_budget[band] -= unused;
+    band_budget[band + 1] += unused;
+  };
   for (auto& c : stable_d) try_accept(std::move(c));
+  carry_forward(0);
   for (auto& c : project_d) try_accept(std::move(c));
+  carry_forward(1);
   for (auto& c : goal_d) try_accept(std::move(c));
 
   // A premise the closure needs but cannot include must never vanish silently:
   // the pulling item is flagged INCOMPLETE (rendered marker + trace field).
-  auto mark_missing = [&](const std::string& puller, const std::string& premise_ref) {
+  auto mark_missing = [&](const std::string& puller, const std::string& premise_ref, std::string_view reason) {
     auto pi = accepted_index.find(puller);
     if (pi == accepted_index.end()) return;
     auto& v = accepted[pi->second].missing_premises;
     if (std::find(v.begin(), v.end(), premise_ref) == v.end()) v.push_back(premise_ref);
+    diagnostics["missing_premises"].push_back(Json{{"ref", premise_ref}, {"required_by", puller}, {"reason", reason}});
   };
 
   // ── dependency closure: premises of accepted items are pulled in too ──
@@ -888,7 +1151,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
       // Resolve the premise: a claim id ("cl_...") or a principle id.
       Candidate c;
       bool ok = false;
+      bool lookup_failed = false;
       auto claim_r = store_.get_claim(run, pref);
+      lookup_diagnostic("premise_claim", pref, claim_r);
+      lookup_failed = !claim_r;
       if (claim_r && *claim_r) {
         const auto& claim = **claim_r;
         c.ref_kind = model::RefKind::Claim;
@@ -920,6 +1186,8 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         ok = true;
       } else {
         auto pr = store_.get_principle(run, pref);
+        lookup_diagnostic("premise_principle", pref, pr);
+        lookup_failed = lookup_failed || !pr;
         if (pr && *pr) {
           const auto& p = **pr;
           c.ref_kind = model::RefKind::Principle;
@@ -943,7 +1211,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         }
       }
       if (!ok) {
-        mark_missing(puller, pref);  // unresolvable premise: flag, do not ignore
+        mark_missing(puller, pref, lookup_failed ? "query_error" : "missing_record");
         continue;
       }
       c.subject = c.subject.empty() ? c.ref : c.subject;
@@ -955,11 +1223,21 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         accepted.back().required_by.push_back(puller);
         any_new = true;
       } else {
-        mark_missing(puller, pref);  // over budget: the pulling item is incomplete
+        mark_missing(puller, pref, "budget");
       }
     }
     if (!any_new) break;
   }
+
+  // A candidate can fail its original band's budget and later fit as a
+  // required premise after unused capacity cascades. Keep that earlier event
+  // in diagnostics, not in the final "not included" list.
+  diagnostics["recovered_budget_drops"] = Json::array();
+  dropped.erase(std::remove_if(dropped.begin(), dropped.end(), [&](const auto& item) {
+    if (!accepted_index.count(item.ref)) return false;
+    diagnostics["recovered_budget_drops"].push_back(item.to_json());
+    return true;
+  }), dropped.end());
 
   // Final order: band, then score desc, then ref (header contract).
   std::sort(accepted.begin(), accepted.end(), [](const model::ContextItem& a, const model::ContextItem& b) {
@@ -973,7 +1251,16 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     return a.ref < b.ref;
   });
 
+  finalize_context_evidence(evidence, accepted);
+  if (!req.claim_targets.empty()) goal.params["claim_selection"] = evidence.requested;
+  if (req.include_counter_evidence) goal.params["counter_evidence"] = evidence.counters;
+  if (!retrieved.trace.empty()) goal.params["candidate_retrieval"] = retrieved.trace;
+
   model::ContextSet set;
+  diagnostics["budget"]["final_band_tokens"] = band_budget;
+  diagnostics["budget"]["used_band_tokens"] = used;
+  diagnostics["budget"]["used_tokens"] = used_total;
+  goal.params["retrieval_diagnostics"] = std::move(diagnostics);
   set.goal = goal;
   set.budget_tokens = total_budget;
   set.used_tokens = 0;
@@ -986,6 +1273,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   }
   set.items = std::move(accepted);
   set.dropped = std::move(dropped);
+  if (extended) {
+    set.id.clear();
+    set.id = kb::stable_id("cx_", json::dump(Json{{"request", req.to_json()}, {"run", run}, {"context_set", set.to_json()}}));
+  }
   return set;
 }
 
@@ -1020,6 +1311,7 @@ Result<std::string> ContextEngine::render(const model::ContextSet& set) {
       any = true;
     }
     out += "- " + item.text;
+    if (const auto* theses = json::find(item.factors, "thesis_ids")) out += " [plan theses: " + json::dump(*theses) + "]";
     if (!item.missing_premises.empty()) {
       out += "  [INCOMPLETE: premises not included:";
       for (const auto& m : item.missing_premises) out += " " + m;
@@ -1031,6 +1323,11 @@ Result<std::string> ContextEngine::render(const model::ContextSet& set) {
   if (!set.dropped.empty()) {
     out += "\n<!-- " + std::to_string(set.dropped.size()) + " item(s) considered but not included (budget); see trace() -->\n";
   }
+  if (const auto* diagnostics = json::find(set.goal.params, "retrieval_diagnostics");
+      diagnostics && json::get_string(*diagnostics, "status") == "incomplete") {
+    out += "\n[INCOMPLETE: retrieval encountered a store query error or reached a query cap; see retrieval_diagnostics.]\n";
+  }
+  out += render_context_diagnostics(set);
   return out;
 }
 
