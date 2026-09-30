@@ -1,5 +1,11 @@
 # ChatADHD — równoległa praca i wznowienie
 
+**Aktualny stan publikacji i integracji (2026-10-01):
+[PUBLICATION_STATUS.md](PUBLICATION_STATUS.md).** W1–W6 już wykonały przyrosty.
+Wszystkie odnalezione gotowe wyniki są na własnych gałęziach; W5 zostało odzyskane
+i opublikowane. Nie są jeszcze scalone do jednej przetestowanej wersji.
+Poniższe pakiety opisują przydziały, a nie aktualny stan wykonania.
+
 Stan organizacyjny: 2026-09-30. Integrator: ROOT w nowym wątku kontynuacji.
 Punkt odzyskania: `fafc77f8eeebdff4c32897b5e8ef94dd26d4ec38`.
 Scalono także historię gałęzi Claude'a do `46066308ac6306a1b30f65b98e19a40da6df7e9c`;
@@ -35,10 +41,11 @@ prowadzili również wzajemne przeglądy. Dodatkowe rozmowy nie zostały automat
 utworzone. Ich gotowe pakiety są poniżej; wynik wspólnej weryfikacji opisuje
 aktualny `../STATE.md`.
 
-## Osobne wątki — gotowe pakiety
+## Pakiety osobnych wątków
 
-Otwieraj wątki od W1 do W6 zależnie od dostępnej pojemności. Każdy może użyć
-własnych agentów, ale najpierw sprawdza faktyczne limity swojego środowiska.
+Wątki W1–W6 zostały już uruchomione. Przy wznowieniu sprawdź powyższą mapę,
+aktualny zdalny HEAD i receipts, żeby nie powielać wykonanych przyrostów. Każdy
+wątek może użyć własnych agentów po sprawdzeniu faktycznych limitów środowiska.
 
 | Pakiet | Następny rezultat | Zależność |
 |---|---|---|

@@ -1,11 +1,16 @@
 # STATE — ChatADHD / Loom
 
-Updated 2026-09-30 by the continuation integrator. This replaces the internally
+Updated 2026-10-01 (Europe/Amsterdam) by the continuation integrator. This replaces the internally
 contradictory 2026-09-29 status summary. Historical measurements remain in their
 original reports and Git revisions; they are not current verification claims.
 
 ## Current checkout and coordination
 
+- **Latest publication audit:** [W1–W6 status](coordination/PUBLICATION_STATUS.md).
+  All six located deliverables are now on their own GitHub branches; W5 was
+  recovered and published during the audit. Their code is **not yet merged**
+  into the integration baseline `b118c80`. The audit update is documentation only.
+  Use that map before treating the older next-work list as unimplemented work.
 - Repository: `klb-t/chatadhd`. GitHub metadata checked in this session reports
   **public** visibility, contrary to the older private-repository description.
   No visibility change was performed. Do not publish private source archives or credentials.
@@ -120,7 +125,24 @@ PR6 and `main` remain unchanged.
 - Temporal prediction is not established: the older temporal package leaks
   later knowledge. Retrospective consistency is not predictive accuracy.
 
-## Next work by priority
+## Next work by priority — updated after the W1–W6 audit
+
+1. Integrate the published lanes into one verified revision. W1 has supplied
+   ActiveTaskSpec compilation; W2 has per-thesis retrieval. Do not rebuild them.
+2. Fix W1's reproduced durable-acceptance failures when metadata or the accepting
+   message moves. Then connect W2's new options through W1's real chat path.
+3. Integrate the delivered W3 recipes, W4 execution CLI, W5 workspace and W6
+   evidence with scoped review and combined regression. Individual green runs
+   do not establish that all lane changes work together.
+4. Follow W6's Anthropic reconstruction/source-locator findings; distinguish its
+   bounded real OpenAI checks from full-export fidelity and model quality.
+5. Review the older semantic-sketch recovery gap without discarding the already
+   preserved GPT/Jev results or inventing recovered source. See the audit map.
+
+The following is the pre-lane backlog retained for context. Some primitives are
+now implemented on the published W branches, as mapped above.
+
+### Backlog recorded before separate W1–W6 work
 
 1. **ActiveTaskSpec in actual requests (W1):** retain source history while compiling
    refinements, exceptions, rejections and unresolved corrections into a current
