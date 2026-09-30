@@ -49,3 +49,14 @@ The original run used `--out docs/research/w6_evidence_2026-09-30` before the
 immutable-output improvement. The source hash, binary hash and measured counts
 are in `real-export-before.json` / `real-export-first-result.json`. Private
 paths/Drive IDs are omitted intentionally; the source hash identifies the bytes.
+
+Independent synthetic review also found that the original `pointer()` accepted
+noncanonical array indices (`-1`, `01`, `+1`). The active runner now rejects
+those indices and malformed `~` escapes. Original review controls/results remain
+in `transport_review_real_export.json`; follow-up controls are separate. The
+actual shard had zero pointer fields, so this changes no real-data comparison
+or measurement. Pointer presence is not being promoted into locator correctness.
+
+The offline label records the deliberately keyless, semantic-disabled execution
+configuration. This run did not include a packet-level egress monitor; its
+`provider_requests` field is not an independently measured network counter.

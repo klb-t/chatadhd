@@ -1,0 +1,22 @@
+23:53:10 [INFO ] loom.config: config.json not found - using defaults
+23:53:10 [INFO ] loom.config: secrets.json not found - using defaults
+23:53:10 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:53:10 [INFO ] loom.db: Database opened: /workspace/scratch/a22a9f93cf94/w6-transport-attempt-02/runtime/chatadhd.db
+23:53:10 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:53:10 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /workspace/scratch/a22a9f93cf94/w6-transport-attempt-02/runtime)
+loom-server: listening on 127.0.0.1:34757
+loom-server: stopped
+23:53:13 [INFO ] loom.db: Database closed
+23:53:13 [INFO ] loom.runtime: Loom runtime shut down
+23:53:13 [INFO ] loom.config: Loaded config.json (12 keys)
+23:53:13 [INFO ] loom.config: Loaded secrets.json (1 keys)
+23:53:13 [INFO ] loom.db: Database opened: /workspace/scratch/a22a9f93cf94/w6-transport-attempt-02/runtime/chatadhd.db
+23:53:13 [INFO ] loom.memory: Loaded 1 memory nodes from memory.json
+23:53:13 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:53:13 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /workspace/scratch/a22a9f93cf94/w6-transport-attempt-02/runtime)
+loom-server: listening on 127.0.0.1:34757
+23:53:13 [INFO ] loom.graph: Reindexed 13 messages for conv c_9a8083b8b86a
+23:53:13 [INFO ] loom.graph: Reindexed 1 messages for conv c_3de7b9ae177c
+loom-server: stopped
+23:53:13 [INFO ] loom.db: Database closed
+23:53:13 [INFO ] loom.runtime: Loom runtime shut down

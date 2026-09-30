@@ -29,8 +29,16 @@ def pointer(value, ptr):
     if not ptr.startswith('/'):
         raise ValueError('not JSON Pointer')
     for s in ptr[1:].split('/'):
+        for i, c in enumerate(s):
+            if c == '~' and (i + 1 == len(s) or s[i + 1] not in '01'):
+                raise ValueError('invalid JSON Pointer escape')
         s = s.replace('~1', '/').replace('~0', '~')
-        value = value[int(s)] if isinstance(value, list) else value[s]
+        if isinstance(value, list):
+            if not s or any(c < '0' or c > '9' for c in s) or (len(s) > 1 and s[0] == '0'):
+                raise ValueError('noncanonical JSON Pointer array index')
+            value = value[int(s)]
+        else:
+            value = value[s]
     return value
 
 

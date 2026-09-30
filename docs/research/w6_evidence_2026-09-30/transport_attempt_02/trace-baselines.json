@@ -1,0 +1,495 @@
+{
+  "m_48d8bbd11b23": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "system",
+        "content": "## Project context\n- **Loom W6 synthetic architecture decided: Decision: use a provider registry. (2026-06-01T00:00:00Z) — among: Decision: use a provider registry.**  <!-- why: decision recorded for Loom W6 synthetic architecture -->\n\n\n## This goal\n- **Loom W6 synthetic architecture has_requirement Requirement: Loom must preserve original source bytes. — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'has_requirement' -->\n- **Loom W6 synthetic architecture decides Decision: use a provider registry. (2026-06-01) — \"Decision: use a provider registry.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'decides' -->\n- **Loom W6 synthetic architecture states_principle p_0f4d1ff1112cf03e — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'states_principle' -->\n"
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      }
+    ],
+    "messages_sha256": "3d14dc1d283d0b71b7381d372015f3743a09e100c8170248190f99458d9ff1eb",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": false,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+      "targets": [
+        "e_4ba7b1e5e0af0a4b"
+      ],
+      "project": "",
+      "budget_tokens": 1000,
+      "goal_type": null,
+      "run": "kr_564a2ca724ad21d4",
+      "lang": "",
+      "detail_resolution": "full"
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_4cd483c0d17d2954",
+        "type": "answer_question",
+        "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+        "targets": [
+          "e_4ba7b1e5e0af0a4b"
+        ],
+        "project": "",
+        "confidence": 0.25,
+        "params": {
+          "confidence_basis": "heuristic_cue_margin",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "cue",
+          "scores": {
+            "answer_question": 0.0,
+            "brainstorm": 0.0,
+            "compute_deadline": 0.0,
+            "extend_scene": 0.0,
+            "implement_part": 0.0,
+            "review_decision": 0.0,
+            "verify_claim": 0.0,
+            "write_artifact": 0.0
+          },
+          "context_controls": {
+            "relation_hops": 1,
+            "detail_resolution": "full"
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_bc4d17d065ed561f",
+        "goal": {
+          "id": "g_4cd483c0d17d2954",
+          "type": "answer_question",
+          "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+          "targets": [
+            "e_4ba7b1e5e0af0a4b"
+          ],
+          "project": "",
+          "confidence": 0.25,
+          "params": {
+            "confidence_basis": "heuristic_cue_margin",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "cue",
+            "scores": {
+              "answer_question": 0.0,
+              "brainstorm": 0.0,
+              "compute_deadline": 0.0,
+              "extend_scene": 0.0,
+              "implement_part": 0.0,
+              "review_decision": 0.0,
+              "verify_claim": 0.0,
+              "write_artifact": 0.0
+            },
+            "context_controls": {
+              "relation_hops": 1,
+              "detail_resolution": "full"
+            }
+          }
+        },
+        "budget_tokens": 1000,
+        "used_tokens": 141,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [
+          {
+            "ref_kind": "decision",
+            "ref": "cl_a5da42dc7d8dfad0",
+            "band": "project",
+            "resolution": "full",
+            "score": 0.15017142857142854,
+            "factors": {
+              "relevance": 0.5214285714285714,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.36
+            },
+            "tokens": 36,
+            "why": "decision recorded for Loom W6 synthetic architecture",
+            "required_by": [],
+            "text": "**Loom W6 synthetic architecture decided: Decision: use a provider registry. (2026-06-01T00:00:00Z) — among: Decision: use a provider registry.**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_afb4827558df6d05",
+            "band": "goal",
+            "resolution": "full",
+            "score": 0.135,
+            "factors": {
+              "relevance": 0.5357142857142857,
+              "authority": 0.8,
+              "freshness": 0.6,
+              "confidence": 0.525,
+              "relation_hops": 1
+            },
+            "tokens": 41,
+            "why": "one hop from 'Loom W6 synthetic architecture' via 'has_requirement'",
+            "required_by": [],
+            "text": "**Loom W6 synthetic architecture has_requirement Requirement: Loom must preserve original source bytes. — \"Requirement: Loom must preserve original source bytes.\"**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_a5da42dc7d8dfad0",
+            "band": "goal",
+            "resolution": "full",
+            "score": 0.12754285714285715,
+            "factors": {
+              "relevance": 0.44285714285714284,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.36,
+              "relation_hops": 1
+            },
+            "tokens": 32,
+            "why": "one hop from 'Loom W6 synthetic architecture' via 'decides'",
+            "required_by": [],
+            "text": "**Loom W6 synthetic architecture decides Decision: use a provider registry. (2026-06-01) — \"Decision: use a provider registry.\"**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_4ba123f2d7e41407",
+            "band": "goal",
+            "resolution": "full",
+            "score": 0.04464,
+            "factors": {
+              "relevance": 0.44285714285714284,
+              "authority": 0.8,
+              "freshness": 0.6,
+              "confidence": 0.21,
+              "relation_hops": 1
+            },
+            "tokens": 32,
+            "why": "one hop from 'Loom W6 synthetic architecture' via 'states_principle'",
+            "required_by": [],
+            "text": "**Loom W6 synthetic architecture states_principle p_0f4d1ff1112cf03e — \"Requirement: Loom must preserve original source bytes.\"**"
+          }
+        ],
+        "dropped": []
+      },
+      "prompt": "## Project context\n- **Loom W6 synthetic architecture decided: Decision: use a provider registry. (2026-06-01T00:00:00Z) — among: Decision: use a provider registry.**  <!-- why: decision recorded for Loom W6 synthetic architecture -->\n\n\n## This goal\n- **Loom W6 synthetic architecture has_requirement Requirement: Loom must preserve original source bytes. — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'has_requirement' -->\n- **Loom W6 synthetic architecture decides Decision: use a provider registry. (2026-06-01) — \"Decision: use a provider registry.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'decides' -->\n- **Loom W6 synthetic architecture states_principle p_0f4d1ff1112cf03e — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'states_principle' -->\n",
+      "request": {
+        "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+        "targets": [
+          "e_4ba7b1e5e0af0a4b"
+        ],
+        "project": "",
+        "budget_tokens": 1000,
+        "goal_type": null,
+        "run": "kr_564a2ca724ad21d4",
+        "lang": "",
+        "detail_resolution": "full"
+      }
+    }
+  },
+  "m_1f8d106effb7": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      }
+    ],
+    "messages_sha256": "52d8dabd925ade5bc43ca4da0436a1553c17eee10bded9bc3e646311003548f8",
+    "history_message_ids": [
+      "m_48d8bbd11b23",
+      "m_399e6d18522c"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": false,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_e6f20b5906eb": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      }
+    ],
+    "messages_sha256": "bc96447aeef9513a82ecd9f0f13580b8331b44c56a03f9cc8e53d0fea3f5a694",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_bcccefeb5ef0": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_NO_TRACE"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_HTTP"
+      }
+    ],
+    "messages_sha256": "ff3e0f2ea11f69b231e7f407be77b6a9dc5e550702df9dc634524489faf64e49",
+    "history_message_ids": [
+      "m_48d8bbd11b23",
+      "m_399e6d18522c",
+      "m_1f8d106effb7",
+      "m_8d7ce3662314",
+      "m_e6f20b5906eb",
+      "m_0ec370bd7dd8",
+      "m_b16bc54008a6",
+      "m_45500ac434f6"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": true,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_1ae75812fea9": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_NO_TRACE"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_HTTP"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_AUTH"
+      }
+    ],
+    "messages_sha256": "fb272f687410b19f1dcd936254d4a47d370c9f87ff658c01fc29c0917e88ad00",
+    "history_message_ids": [
+      "m_48d8bbd11b23",
+      "m_399e6d18522c",
+      "m_1f8d106effb7",
+      "m_8d7ce3662314",
+      "m_e6f20b5906eb",
+      "m_0ec370bd7dd8",
+      "m_b16bc54008a6",
+      "m_45500ac434f6",
+      "m_bcccefeb5ef0"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": true,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_89783b62a99f": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_NO_TRACE"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_HTTP"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_AUTH"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_RUN"
+      },
+      {
+        "role": "user",
+        "content": "W6_STREAM"
+      }
+    ],
+    "messages_sha256": "c5323abd05a45d63646fc03c33351139a1c2c298d318829106f6f451961227be",
+    "history_message_ids": [
+      "m_48d8bbd11b23",
+      "m_399e6d18522c",
+      "m_1f8d106effb7",
+      "m_8d7ce3662314",
+      "m_e6f20b5906eb",
+      "m_0ec370bd7dd8",
+      "m_b16bc54008a6",
+      "m_45500ac434f6",
+      "m_bcccefeb5ef0",
+      "m_1ae75812fea9",
+      "m_7a4e82afab02"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": true,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  }
+}
