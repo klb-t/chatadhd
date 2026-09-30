@@ -1,0 +1,26 @@
+{
+  "base_sha": "926072ce43b8de21a42a3abe439a7781598136f6",
+  "files": {
+    "docs/contracts/ANALYSIS_PLAN.md": "dc94f33171448448a791d5a7e793aae558a9e99f1487861931a2b9e497cb8835",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks.md": "6d5d54546f4bd791638e7754010092c86f28f174543da2033af7f9f5c82b3191",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/PROTOCOL.md": "68790935c47000529ed3077da9c64849bf5375663c22d161e21fd1e6c6503b08",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/after.json": "66cff8ec7ea68802d145cb086b8ee84d446e45df5d627cf834f089f163ff613e",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/before.json": "b1a4a3fef6aea459253e0f547e55fb9f7adcfece3a8208a674aed38308cfab7d",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/final-after.json": "95d972ab707085b513a5310438a2403e4ee3c5bcdc5df67bde607767c94e634d",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/final-regression-suite.txt": "310b4f164ffa44fb4160a383f0c26cd821d7403185ca212208f6e0b6674f2854",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/first-new-suite.txt": "c37397f933e759b30326de938c991ff9224a2131ece0e48c0e25e0764dbb44ab",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/regression-suite.txt": "78518877f26a46e483dd4ab68ddc7b7df3f8c4aee75cc8d84dc17cde349b042d",
+    "docs/coordination/receipts/N5-2026-10-01-resource-peaks/reproduce.py": "0a1dcbe7c80d6fa2c0587e573952ce3152ce3641cadd51d7bc3ed03dc6a33faf",
+    "loom/tools/contracts/analysis_plan_ref.py": "40357cfbede7a17238f6fb0efc818c20fbde18460afc36466ddf8c75ac118fa3",
+    "loom/tools/contracts/test_analysis_plan_ref.py": "a5e4fa15178e0dd0f39f28515137aefc849b6eeff60a7d4182654a980cc10f60",
+    "loom/tools/contracts/test_resource_peak_history.py": "09e784378ed42f5c916157bb5b142a904350eee690b58e40c4492e7f24e1561a",
+    "loom/tools/coordination/test_analysis_graph.py": "de7c8844e2f26397787adf8580c194855b0011a3aa9337683d3aad6406741391",
+    "loom/tools/coordination/test_analysis_graph_adversarial.py": "59c0904bd68c4c643df848f8bf51774664fef949a6b171449f676b134fb39cb9",
+    "loom/tools/coordination/test_cli.py": "7467f15ed05e4f0f43fd824d3494d2290e4bd74b1b549c708917b23bb50d66bc",
+    "loom/tools/coordination/test_graph_workflow.py": "f99895de735fc263567b22512053b11d8e6b1e8415f49de1f52ab725202f1ec5",
+    "loom/tools/coordination/test_leases.py": "46408d197c81ae69b1452d4c8ba6be84bc0cc06b9ebd62c502d8f420ae80c2c9"
+  },
+  "implementation_sha": "7ecbe6ed34dfd024b571d5c4581794c12fe3a99d",
+  "protocol_sha": "e8e706c18727097c6c48fe4fdd76fbc9bdfedd8c",
+  "source_head": "bcc930ac0e8fa3ff28da06f5227604c8e6398e2c"
+}

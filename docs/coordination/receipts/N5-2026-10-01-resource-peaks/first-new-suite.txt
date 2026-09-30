@@ -1,0 +1,17 @@
+test_capacity_reuse_does_not_erase_peak_and_rejected_limit_adds_no_observation (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_capacity_reuse_does_not_erase_peak_and_rejected_limit_adds_no_observation) ... ok
+test_kill_after_completion_replays_without_losing_previous_overlap (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_kill_after_completion_replays_without_losing_previous_overlap) ... ok
+test_kill_after_reservation_retains_overlap_before_callback (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_kill_after_reservation_retains_overlap_before_callback) ... ok
+test_kill_before_reservation_write_has_no_callback_and_fails_closed (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_kill_before_reservation_write_has_no_callback_and_fails_closed) ... ok
+test_large_estimate_increases_admission_but_not_original_reservation_history (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_large_estimate_increases_admission_but_not_original_reservation_history) ... ok
+test_legacy_held_load_is_visible_only_at_new_observation_boundary (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_legacy_held_load_is_visible_only_at_new_observation_boundary) ... ok
+test_observation_binding_dimensions_and_arithmetic_fail_closed (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_observation_binding_dimensions_and_arithmetic_fail_closed) ... ok
+test_old_completed_attempts_have_no_invented_peak_and_are_never_rewritten (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_old_completed_attempts_have_no_invented_peak_and_are_never_rewritten) ... ok
+test_opening_balances_are_not_reconstructed_history (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_opening_balances_are_not_reconstructed_history) ... ok
+test_reservation_history_preserves_exact_decimal_sums (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_reservation_history_preserves_exact_decimal_sums) ... ok
+test_two_ledger_objects_threads_overlap_then_reopen_and_replay (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_two_ledger_objects_threads_overlap_then_reopen_and_replay) ... ok
+test_two_spawned_processes_overlap_and_survive_reopen (loom.tools.contracts.test_resource_peak_history.ResourcePeakHistoryChecks.test_two_spawned_processes_overlap_and_survive_reopen) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 5.082s
+
+OK

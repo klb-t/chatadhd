@@ -1,0 +1,136 @@
+{
+  "after_both_completed": "7",
+  "both_completed": true,
+  "command": "PYTHONUSERBASE=/workspace/scratch/a371a1ca13b1/verification/python-userbase python3 -B docs/coordination/receipts/N5-2026-10-01-resource-peaks/reproduce.py",
+  "fixture_evidence": "scripted mechanism quantities, not instrumented memory or actual global peak",
+  "held_concurrently": "20",
+  "resource_accounting": {
+    "actual_instrumented_peak": {
+      "amounts": {
+        "agents": null,
+        "calls": null,
+        "cpu_seconds": null,
+        "gpu_seconds": null,
+        "input_tokens": null,
+        "memory_bytes": null,
+        "money_usd": null,
+        "output_tokens": null,
+        "storage_bytes": null,
+        "wall_seconds": null
+      },
+      "evidence_class": "unavailable",
+      "reason": "callback_quantities_are_not_a_global_peak_instrument",
+      "scope": "simultaneous_whole_ledger"
+    },
+    "callback_provenance_verification": "caller_supplied_not_independently_verified",
+    "current_admission_load": {
+      "agents": "7",
+      "calls": "14",
+      "cpu_seconds": "14",
+      "gpu_seconds": "14",
+      "input_tokens": "14",
+      "memory_bytes": "7",
+      "money_usd": "14",
+      "output_tokens": "14",
+      "storage_bytes": "14",
+      "wall_seconds": "14"
+    },
+    "current_reserved_load": {
+      "agents": "0",
+      "calls": "0",
+      "cpu_seconds": "0",
+      "gpu_seconds": "0",
+      "input_tokens": "0",
+      "memory_bytes": "0",
+      "money_usd": "0",
+      "output_tokens": "0",
+      "storage_bytes": "0",
+      "wall_seconds": "0"
+    },
+    "historical_reserved_peak": {
+      "amounts": {
+        "agents": "2",
+        "calls": "2",
+        "cpu_seconds": "2",
+        "gpu_seconds": "2",
+        "input_tokens": "2",
+        "memory_bytes": "20",
+        "money_usd": "2",
+        "output_tokens": "2",
+        "storage_bytes": "2",
+        "wall_seconds": "2"
+      },
+      "complete_for_retained_attempts": true,
+      "evidence_class": "reservation_accounting_not_usage_measurement",
+      "external_history_before_opening_balances": "not_reconstructed",
+      "legacy_reservations_without_observation": 0,
+      "observed_reservations": 2,
+      "scope": "recorded_reservation_boundaries_in_this_ledger"
+    },
+    "maximum_callback_quantity_by_status": {
+      "declared": {
+        "agents": null,
+        "calls": null,
+        "cpu_seconds": null,
+        "gpu_seconds": null,
+        "input_tokens": null,
+        "memory_bytes": null,
+        "money_usd": null,
+        "output_tokens": null,
+        "storage_bytes": null,
+        "wall_seconds": null
+      },
+      "estimated": {
+        "agents": null,
+        "calls": null,
+        "cpu_seconds": null,
+        "gpu_seconds": null,
+        "input_tokens": null,
+        "memory_bytes": null,
+        "money_usd": null,
+        "output_tokens": null,
+        "storage_bytes": null,
+        "wall_seconds": null
+      },
+      "instrument_measured": {
+        "agents": "7",
+        "calls": "7",
+        "cpu_seconds": "7",
+        "gpu_seconds": "7",
+        "input_tokens": "7",
+        "memory_bytes": "7",
+        "money_usd": "7",
+        "output_tokens": "7",
+        "storage_bytes": "7",
+        "wall_seconds": "7"
+      },
+      "provider_reported": {
+        "agents": null,
+        "calls": null,
+        "cpu_seconds": null,
+        "gpu_seconds": null,
+        "input_tokens": null,
+        "memory_bytes": null,
+        "money_usd": null,
+        "output_tokens": null,
+        "storage_bytes": null,
+        "wall_seconds": null
+      },
+      "unknown": {
+        "agents": null,
+        "calls": null,
+        "cpu_seconds": null,
+        "gpu_seconds": null,
+        "input_tokens": null,
+        "memory_bytes": null,
+        "money_usd": null,
+        "output_tokens": null,
+        "storage_bytes": null,
+        "wall_seconds": null
+      }
+    },
+    "schema": "loom.analysis_resource_accounting/1"
+  },
+  "source_head": "bcc930ac0e8fa3ff28da06f5227604c8e6398e2c",
+  "source_sha256": "40357cfbede7a17238f6fb0efc818c20fbde18460afc36466ddf8c75ac118fa3"
+}
