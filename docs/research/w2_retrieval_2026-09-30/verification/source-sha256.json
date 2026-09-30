@@ -1,0 +1,33 @@
+{
+  "captured_at": "2026-09-30T21:37:01.911941+00:00",
+  "implementation_commit": "9a6f54c254b3996946bc87067b467d6c927b8361",
+  "scope": "W2 changed context sources/tests versus preregistration commit 4ade73f plus unchanged actual chat and C ABI consumers. No pristine baseline pass.",
+  "files": {
+    "loom/include/loom/context_engine.h": "354d10dc6d635a87ab021a85228bf37d0bd660ff2e9fdb87349fb6b1dcace3a1",
+    "loom/include/loom/context_plan.h": "ffe0acc0b4250e984d20496f122012888d194d878ad47bc361a6ee49ee70a2c7",
+    "loom/include/loom/context_retrieval.h": "71a62eac829ad5a79b3b1c780d694d82bad26dca8e75ad8a21fba1896d0bea68",
+    "loom/src/capi/capi_context.cpp": "896ba2a0cd8320b5ba4ba1156d6c5af7545ada5ce47ded3304813c8ac26a97cb",
+    "loom/src/chat/chat_engine.cpp": "8ed606b2cafeb5d1f3dd8e018bc125641bdfa027c4014e0877fb3f3ab6e739ef",
+    "loom/src/context/context_candidates.cpp": "99514a62e75386167e31b261cadbb03923c7c3fef8ee20e006a9c5460b3a25eb",
+    "loom/src/context/context_candidates.h": "b017e199dac0a4d337eca41fdd64e125699dbb439282e36db377f5dcd57b9694",
+    "loom/src/context/context_diagnostics.cpp": "ce0b4a2c3f1e99b94cb3c9bdc3582c47dc0f060d13c4aefb23ae60afed5c748f",
+    "loom/src/context/context_diagnostics.h": "9831ea4b0de8456e44a54f94438fd1ab3950bbd84f34c38c9f704d99bc83af3d",
+    "loom/src/context/context_engine.cpp": "3a07a63b2208a868063ad9ad1822bef9c2b57baf4002dd57910f1d977d6db812",
+    "loom/src/context/context_evidence.cpp": "c44cd5d0b6f561cd57da13c33936d0d08a06fc6bd63ba4a7ea0904b08e3e7a8e",
+    "loom/src/context/context_evidence.h": "665f776ba4d39e24032fa95ea49e402f886a39fd194c92093111bc938c400918",
+    "loom/src/context/context_plan.cpp": "c4f34b68a6318fa1fd5c136b3f8469cd396460f20f157e3a009d130359bd2436",
+    "loom/src/context/context_request_ext.cpp": "1ace8b95d52c5ad779653dd9fa34e35716a5b61c231610a159ad4dd30baebeb0",
+    "loom/src/context/context_request_ext.h": "ab072d83bc2c81d02766a8e6cc15820234eb5c217e09740d5f669f42dffc58d3",
+    "loom/src/context/retrieval.cpp": "6fe5ada85560cfbb118c1b4eadb535a36ab0ca0fe18f2686e25c1db7a10328c9",
+    "loom/tests/test_context_channel_integration.cpp": "324206cadca0e15b7de731d022a6dcc8ef0cf97dc7a3fc0dbad3a8fa1c891d3b",
+    "loom/tests/test_context_counter.cpp": "acd78fe3e58ca8d87fedf5203a899b52202f194b2a640ce3f53bd506a917ef2a",
+    "loom/tests/test_context_diagnostics.cpp": "9f000c0e5c9d50579318f5e1bbdbc3adebe0e31453dfae1891ccf53e506dad61",
+    "loom/tests/test_context_engine.cpp": "6f3cc9055f4cfb609c3fd094d91d56d7d696347f54c2a597d16cf162bdc8be32",
+    "loom/tests/test_context_native_consumer.cpp": "7540bde8abcad6eeba44b4bc82d1bda1ad701f622fecf97f80907cdcbd035935",
+    "loom/tests/test_context_plan.cpp": "2feeed91e60b503c1ae27977e5287a38ca55d308298552133cdf3125f4bae6fd",
+    "loom/tests/test_context_retrieval.cpp": "fe5c14b4a0aa1397a1171d55da8e5ba0542a506e9f1461b2ce4ba364405ab191",
+    "loom/tests/test_context_retrieval_dev.cpp": "1a7d5cf2fe4f23eb33fd4536933149674d0d3f7edb97836c7977fb980e7f29e6"
+  },
+  "implementation_tree": "cd89eaebd4bb71c4b6a08a8a5d43af7e7c7ad685",
+  "local_test_commit_alias": "3bd4b9e"
+}

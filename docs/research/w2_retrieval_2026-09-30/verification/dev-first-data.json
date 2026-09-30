@@ -1,0 +1,5597 @@
+[
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "checkpoint_union",
+    "mode": "graph",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full"
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "used_tokens": 61,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 2,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            61
+          ],
+          "used_tokens": 61
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "checkpoint_union",
+    "mode": "tfidf",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "relation_hops": 0,
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      }
+    ],
+    "used_tokens": 55,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 0,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 5,
+            "eligible_count": 2,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            55
+          ],
+          "used_tokens": 55
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "checkpoint_union",
+    "mode": "union",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 4,
+      "relevant_count": 2,
+      "irrelevant_count": 2,
+      "recall": 1.0,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 4,
+      "relevant_count": 2,
+      "irrelevant_count": 2,
+      "recall": 1.0,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      },
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      },
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "used_tokens": 116,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 5,
+            "eligible_count": 2,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 2,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 4,
+        "unique_candidates": 4,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            116
+          ],
+          "used_tokens": 116
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "checkpoint_union",
+    "mode": "graph_shadow",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "lexical_shadow": true
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "used_tokens": 61,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0,
+        "lexical_shadow": {
+          "method": "lexical_token_overlap",
+          "status": "ok",
+          "reason": "",
+          "corpus_count": 7,
+          "scored_count": 7,
+          "unrepresentable_count": 0,
+          "unrepresentable_refs": [],
+          "zero_score_count": 5,
+          "eligible_count": 2,
+          "truncated": false,
+          "scores": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.crypto",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.orchid",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.resume",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.toolbar",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.weather",
+              "score": 0.0
+            }
+          ],
+          "hits": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0
+            }
+          ],
+          "diagnostic_gap": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0,
+              "verification": "undecided"
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0,
+              "verification": "undecided"
+            }
+          ],
+          "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+          "selection_effect": "none"
+        }
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 2,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            61
+          ],
+          "used_tokens": 61
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "support_quote_only",
+    "mode": "graph",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "orchid",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full"
+    },
+    "gold": [
+      "cl.dev.orchid"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "support_quote_only",
+    "mode": "tfidf",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "orchid",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "relation_hops": 0,
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.orchid"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.orchid",
+        "score": 0.8
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.orchid",
+        "score": 0.8
+      }
+    ],
+    "used_tokens": 30,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 0,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 6,
+            "eligible_count": 1,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.29681010828190285
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.29681010828190285
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.29681010828190285
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 1,
+        "unique_candidates": 1,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            30
+          ],
+          "used_tokens": 30
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "support_quote_only",
+    "mode": "union",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "orchid",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.orchid"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.orchid",
+        "score": 0.8
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.orchid",
+        "score": 0.8
+      }
+    ],
+    "used_tokens": 30,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 6,
+            "eligible_count": 1,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.29681010828190285
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.29681010828190285
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.29681010828190285
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 1,
+        "unique_candidates": 1,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            30
+          ],
+          "used_tokens": 30
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "support_quote_only",
+    "mode": "graph_shadow",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "orchid",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "lexical_shadow": true
+    },
+    "gold": [
+      "cl.dev.orchid"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0,
+        "lexical_shadow": {
+          "method": "lexical_token_overlap",
+          "status": "ok",
+          "reason": "",
+          "corpus_count": 7,
+          "scored_count": 7,
+          "unrepresentable_count": 0,
+          "unrepresentable_refs": [],
+          "zero_score_count": 6,
+          "eligible_count": 1,
+          "truncated": false,
+          "scores": [
+            {
+              "ref": "cl.dev.orchid",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.crypto",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.offset",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.resume",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.toolbar",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.weather",
+              "score": 0.0
+            }
+          ],
+          "hits": [
+            {
+              "ref": "cl.dev.orchid",
+              "score": 1.0
+            }
+          ],
+          "diagnostic_gap": [
+            {
+              "ref": "cl.dev.orchid",
+              "score": 1.0,
+              "verification": "undecided"
+            }
+          ],
+          "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+          "selection_effect": "none"
+        }
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "glossary_pl_en",
+    "mode": "graph",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "szyfrowanie",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full"
+    },
+    "gold": [
+      "cl.dev.crypto"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "glossary_pl_en",
+    "mode": "tfidf",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "szyfrowanie",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "relation_hops": 0,
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.crypto"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.crypto",
+        "score": 0.8
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.crypto",
+        "score": 0.8
+      }
+    ],
+    "used_tokens": 28,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 0,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 6,
+            "eligible_count": 1,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.35627921077737135
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.35627921077737135
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.35627921077737135
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 1,
+        "unique_candidates": 1,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            28
+          ],
+          "used_tokens": 28
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "glossary_pl_en",
+    "mode": "union",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "szyfrowanie",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.crypto"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 1,
+      "relevant_count": 1,
+      "irrelevant_count": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.crypto",
+        "score": 0.8
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.crypto",
+        "score": 0.8
+      }
+    ],
+    "used_tokens": 28,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 6,
+            "eligible_count": 1,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.35627921077737135
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.35627921077737135
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.35627921077737135
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 1,
+        "unique_candidates": 1,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            28
+          ],
+          "used_tokens": 28
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "glossary_pl_en",
+    "mode": "graph_shadow",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "szyfrowanie",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "lexical_shadow": true
+    },
+    "gold": [
+      "cl.dev.crypto"
+    ],
+    "candidate_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "selected_metrics": {
+      "gold_count": 1,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0,
+        "lexical_shadow": {
+          "method": "lexical_token_overlap",
+          "status": "ok",
+          "reason": "",
+          "corpus_count": 7,
+          "scored_count": 7,
+          "unrepresentable_count": 0,
+          "unrepresentable_refs": [],
+          "zero_score_count": 7,
+          "eligible_count": 0,
+          "truncated": false,
+          "scores": [
+            {
+              "ref": "cl.dev.crypto",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.offset",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.orchid",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.resume",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.toolbar",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.weather",
+              "score": 0.0
+            }
+          ],
+          "hits": [],
+          "diagnostic_gap": [],
+          "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+          "selection_effect": "none"
+        }
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "misleading_word",
+    "mode": "graph",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full"
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "misleading_word",
+    "mode": "tfidf",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "relation_hops": 0,
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      }
+    ],
+    "used_tokens": 55,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 0,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 5,
+            "eligible_count": 2,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            55
+          ],
+          "used_tokens": 55
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "misleading_word",
+    "mode": "union",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      }
+    ],
+    "selected_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      }
+    ],
+    "used_tokens": 55,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 5,
+            "eligible_count": 2,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            55
+          ],
+          "used_tokens": 55
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "misleading_word",
+    "mode": "graph_shadow",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "lexical_shadow": true
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0,
+        "lexical_shadow": {
+          "method": "lexical_token_overlap",
+          "status": "ok",
+          "reason": "",
+          "corpus_count": 7,
+          "scored_count": 7,
+          "unrepresentable_count": 0,
+          "unrepresentable_refs": [],
+          "zero_score_count": 5,
+          "eligible_count": 2,
+          "truncated": false,
+          "scores": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.crypto",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.orchid",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.resume",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.toolbar",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.weather",
+              "score": 0.0
+            }
+          ],
+          "hits": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0
+            }
+          ],
+          "diagnostic_gap": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0,
+              "verification": "undecided"
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0,
+              "verification": "undecided"
+            }
+          ],
+          "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+          "selection_effect": "none"
+        }
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "no_answer",
+    "mode": "graph",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "quasarflux",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full"
+    },
+    "gold": [],
+    "candidate_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "selected_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "no_answer",
+    "mode": "tfidf",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "quasarflux",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "relation_hops": 0,
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [],
+    "candidate_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "selected_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 0,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 7,
+            "eligible_count": 0,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": []
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "no_answer",
+    "mode": "union",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "quasarflux",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [],
+    "candidate_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "selected_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 7,
+            "eligible_count": 0,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": []
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "no_answer",
+    "mode": "graph_shadow",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "quasarflux",
+      "targets": [
+        "e_f10e3a58512ccb1e"
+      ],
+      "project": "",
+      "budget_tokens": 4096,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "lexical_shadow": true
+    },
+    "gold": [],
+    "candidate_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "selected_metrics": {
+      "gold_count": 0,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": null,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": null,
+      "hits_at_1": null,
+      "hits_at_3": null
+    },
+    "candidate_rank": [],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0,
+        "lexical_shadow": {
+          "method": "lexical_token_overlap",
+          "status": "ok",
+          "reason": "",
+          "corpus_count": 7,
+          "scored_count": 7,
+          "unrepresentable_count": 0,
+          "unrepresentable_refs": [],
+          "zero_score_count": 7,
+          "eligible_count": 0,
+          "truncated": false,
+          "scores": [
+            {
+              "ref": "cl.dev.crypto",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.offset",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.orchid",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.resume",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.toolbar",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.weather",
+              "score": 0.0
+            }
+          ],
+          "hits": [],
+          "diagnostic_gap": [],
+          "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+          "selection_effect": "none"
+        }
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_f10e3a58512ccb1e",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 0,
+        "unique_candidates": 0,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            614,
+            1434,
+            2048
+          ],
+          "total_tokens": 4096,
+          "final_band_tokens": [
+            0,
+            0,
+            4096
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "low_budget",
+    "mode": "graph",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 1,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full"
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.resume",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.27999999999999997,
+        "factors": {
+          "relevance": 0.35,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "one hop from 'node alpha' via 'records'",
+          "relation_hops": 1
+        },
+        "tokens": 34,
+        "why": "over budget (needed 34 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      },
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.toolbar",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.27999999999999997,
+        "factors": {
+          "relevance": 0.35,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "one hop from 'node alpha' via 'records'",
+          "relation_hops": 1
+        },
+        "tokens": 27,
+        "why": "over budget (needed 27 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      }
+    ],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 2,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            0,
+            1,
+            0
+          ],
+          "total_tokens": 1,
+          "final_band_tokens": [
+            0,
+            0,
+            1
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "low_budget",
+    "mode": "tfidf",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 1,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "relation_hops": 0,
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      }
+    ],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.wallpaper",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.8,
+        "factors": {
+          "relevance": 1.0,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+          "direct_goal_candidate": true,
+          "candidate_channels": {
+            "tfidf": {
+              "method": "tfidf",
+              "score": 0.3128445040346275,
+              "rank": 1,
+              "selection_relevance": 1.0,
+              "ranking_signal": "reciprocal_channel_rank"
+            }
+          }
+        },
+        "tokens": 27,
+        "why": "over budget (needed 27 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      },
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.offset",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.4,
+        "factors": {
+          "relevance": 0.5,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+          "direct_goal_candidate": true,
+          "candidate_channels": {
+            "tfidf": {
+              "method": "tfidf",
+              "score": 0.2591976395028348,
+              "rank": 2,
+              "selection_relevance": 0.5,
+              "ranking_signal": "reciprocal_channel_rank"
+            }
+          }
+        },
+        "tokens": 28,
+        "why": "over budget (needed 28 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      }
+    ],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 0,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 5,
+            "eligible_count": 2,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            0,
+            1,
+            0
+          ],
+          "total_tokens": 1,
+          "final_band_tokens": [
+            0,
+            0,
+            1
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "low_budget",
+    "mode": "union",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 1,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 100,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 4,
+      "relevant_count": 2,
+      "irrelevant_count": 2,
+      "recall": 1.0,
+      "precision": 0.5,
+      "first_relevant_rank": 2,
+      "reciprocal_rank": 0.5,
+      "hits_at_1": false,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.wallpaper",
+        "score": 0.8
+      },
+      {
+        "ref": "cl.dev.offset",
+        "score": 0.4
+      },
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.wallpaper",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.8,
+        "factors": {
+          "relevance": 1.0,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+          "direct_goal_candidate": true,
+          "candidate_channels": {
+            "tfidf": {
+              "method": "tfidf",
+              "score": 0.3128445040346275,
+              "rank": 1,
+              "selection_relevance": 1.0,
+              "ranking_signal": "reciprocal_channel_rank"
+            }
+          }
+        },
+        "tokens": 27,
+        "why": "over budget (needed 27 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      },
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.offset",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.4,
+        "factors": {
+          "relevance": 0.5,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+          "direct_goal_candidate": true,
+          "candidate_channels": {
+            "tfidf": {
+              "method": "tfidf",
+              "score": 0.2591976395028348,
+              "rank": 2,
+              "selection_relevance": 0.5,
+              "ranking_signal": "reciprocal_channel_rank"
+            }
+          }
+        },
+        "tokens": 28,
+        "why": "over budget (needed 28 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      },
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.resume",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.27999999999999997,
+        "factors": {
+          "relevance": 0.35,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "one hop from 'node alpha' via 'records'",
+          "direct_goal_candidate": true,
+          "relation_hops": 1
+        },
+        "tokens": 34,
+        "why": "over budget (needed 34 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      },
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.toolbar",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.27999999999999997,
+        "factors": {
+          "relevance": 0.35,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "one hop from 'node alpha' via 'records'",
+          "direct_goal_candidate": true,
+          "relation_hops": 1
+        },
+        "tokens": 27,
+        "why": "over budget (needed 27 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      }
+    ],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [
+          {
+            "method": "tfidf",
+            "status": "ok",
+            "reason": "",
+            "corpus_count": 7,
+            "scored_count": 7,
+            "unrepresentable_count": 0,
+            "unrepresentable_refs": [],
+            "zero_score_count": 5,
+            "eligible_count": 2,
+            "truncated": false,
+            "scores": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              },
+              {
+                "ref": "cl.dev.crypto",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.orchid",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.resume",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.toolbar",
+                "score": 0.0
+              },
+              {
+                "ref": "cl.dev.weather",
+                "score": 0.0
+              }
+            ],
+            "hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ],
+            "id": "tfidf",
+            "request": {
+              "id": "tfidf",
+              "limit": 100,
+              "min_score": 0.0
+            },
+            "invalid_hits": [],
+            "accepted_hits": [
+              {
+                "ref": "cl.dev.wallpaper",
+                "score": 0.3128445040346275
+              },
+              {
+                "ref": "cl.dev.offset",
+                "score": 0.2591976395028348
+              }
+            ]
+          }
+        ],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 2,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 4,
+        "unique_candidates": 4,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            0,
+            1,
+            0
+          ],
+          "total_tokens": 1,
+          "final_band_tokens": [
+            0,
+            0,
+            1
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "case": "low_budget",
+    "mode": "graph_shadow",
+    "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "request": {
+      "text": "checkpoint",
+      "targets": [
+        "e_6dcaaa07327a560f"
+      ],
+      "project": "",
+      "budget_tokens": 1,
+      "goal_type": "answer_question",
+      "run": "kr_69c5ea8ee1f275a0",
+      "lang": "en",
+      "detail_resolution": "full",
+      "lexical_shadow": true
+    },
+    "gold": [
+      "cl.dev.offset",
+      "cl.dev.resume"
+    ],
+    "candidate_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "irrelevant_count": 1,
+      "recall": 0.5,
+      "precision": 0.5,
+      "first_relevant_rank": 1,
+      "reciprocal_rank": 1.0,
+      "hits_at_1": true,
+      "hits_at_3": true
+    },
+    "selected_metrics": {
+      "gold_count": 2,
+      "retrieved_count": 0,
+      "relevant_count": 0,
+      "irrelevant_count": 0,
+      "recall": 0.0,
+      "precision": null,
+      "first_relevant_rank": null,
+      "reciprocal_rank": 0.0,
+      "hits_at_1": false,
+      "hits_at_3": false
+    },
+    "candidate_rank": [
+      {
+        "ref": "cl.dev.resume",
+        "score": 0.27999999999999997
+      },
+      {
+        "ref": "cl.dev.toolbar",
+        "score": 0.27999999999999997
+      }
+    ],
+    "selected_rank": [],
+    "used_tokens": 0,
+    "dropped": [
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.resume",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.27999999999999997,
+        "factors": {
+          "relevance": 0.35,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "one hop from 'node alpha' via 'records'",
+          "direct_goal_candidate": true,
+          "relation_hops": 1
+        },
+        "tokens": 34,
+        "why": "over budget (needed 34 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      },
+      {
+        "ref_kind": "claim",
+        "ref": "cl.dev.toolbar",
+        "band": "goal",
+        "resolution": "full",
+        "score": 0.27999999999999997,
+        "factors": {
+          "relevance": 0.35,
+          "authority": 0.8,
+          "freshness": 1.0,
+          "confidence": 1.0,
+          "exclusion_reason": "budget",
+          "discovery_reason": "one hop from 'node alpha' via 'records'",
+          "direct_goal_candidate": true,
+          "relation_hops": 1
+        },
+        "tokens": 27,
+        "why": "over budget (needed 27 tokens, none of the remaining bands had room)",
+        "required_by": [],
+        "text": ""
+      }
+    ],
+    "engine_diagnostics": {
+      "confidence_basis": "explicit_owner_type",
+      "calibration_status": "unavailable",
+      "external_goal_typing": {
+        "status": "offline",
+        "requests": 0
+      },
+      "classifier": "forced",
+      "context_controls": {
+        "relation_hops": 1,
+        "detail_resolution": "full"
+      },
+      "candidate_retrieval": {
+        "run": "kr_69c5ea8ee1f275a0",
+        "scan_limit": 10000,
+        "channels": [],
+        "corpus_status": "ok",
+        "possibly_truncated": false,
+        "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+        "scanned_claims": 7,
+        "admitted_claims": 7,
+        "filtered_claims": 0,
+        "entity_label_query_errors": 0,
+        "lexical_shadow": {
+          "method": "lexical_token_overlap",
+          "status": "ok",
+          "reason": "",
+          "corpus_count": 7,
+          "scored_count": 7,
+          "unrepresentable_count": 0,
+          "unrepresentable_refs": [],
+          "zero_score_count": 5,
+          "eligible_count": 2,
+          "truncated": false,
+          "scores": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.crypto",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.orchid",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.resume",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.toolbar",
+              "score": 0.0
+            },
+            {
+              "ref": "cl.dev.weather",
+              "score": 0.0
+            }
+          ],
+          "hits": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0
+            }
+          ],
+          "diagnostic_gap": [
+            {
+              "ref": "cl.dev.offset",
+              "score": 1.0,
+              "verification": "undecided"
+            },
+            {
+              "ref": "cl.dev.wallpaper",
+              "score": 1.0,
+              "verification": "undecided"
+            }
+          ],
+          "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+          "selection_effect": "none"
+        }
+      },
+      "retrieval_diagnostics": {
+        "status": "bounded",
+        "exhaustive": false,
+        "queries": [
+          {
+            "operation": "principles",
+            "selector": {},
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_instances",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "project_decisions",
+            "selector": {
+              "project": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "status_history",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f"
+            },
+            "limit": 1000000,
+            "returned": 0,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "outgoing",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 2,
+            "status": "below_cap"
+          },
+          {
+            "operation": "graph",
+            "selector": {
+              "entity": "e_6dcaaa07327a560f",
+              "direction": "incoming",
+              "hop": 1
+            },
+            "limit": 10000,
+            "returned": 0,
+            "status": "below_cap"
+          }
+        ],
+        "lookup_issues": [],
+        "excluded": [],
+        "missing_premises": [],
+        "query_errors": 0,
+        "cap_hits": 0,
+        "gathered_candidates": 2,
+        "unique_candidates": 2,
+        "duplicate_candidates_merged": 0,
+        "budget": {
+          "metric": "rendered_item_codepoints_div_4",
+          "includes_prompt_overhead": false,
+          "initial_band_tokens": [
+            0,
+            1,
+            0
+          ],
+          "total_tokens": 1,
+          "final_band_tokens": [
+            0,
+            0,
+            1
+          ],
+          "used_band_tokens": [
+            0,
+            0,
+            0
+          ],
+          "used_tokens": 0
+        },
+        "recovered_budget_drops": []
+      }
+    },
+    "answer_correctness": "not_measured"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "mode": "graph",
+    "candidate": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 4,
+      "relevant_count": 2,
+      "micro_recall": 0.25,
+      "micro_precision": 0.5,
+      "mrr": 0.4,
+      "hits_at_1_count": 2,
+      "hits_at_3_count": 2
+    },
+    "selected": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "micro_recall": 0.125,
+      "micro_precision": 0.5,
+      "mrr": 0.2,
+      "hits_at_1_count": 1,
+      "hits_at_3_count": 1
+    },
+    "answer_correctness": "not_measured",
+    "quality_thresholds": "none; fixed synthetic DEV diagnostic"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "mode": "tfidf",
+    "candidate": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 8,
+      "relevant_count": 5,
+      "micro_recall": 0.625,
+      "micro_precision": 0.625,
+      "mrr": 0.7,
+      "hits_at_1_count": 2,
+      "hits_at_3_count": 5
+    },
+    "selected": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 6,
+      "relevant_count": 4,
+      "micro_recall": 0.5,
+      "micro_precision": 0.6666666666666666,
+      "mrr": 0.6,
+      "hits_at_1_count": 2,
+      "hits_at_3_count": 4
+    },
+    "answer_correctness": "not_measured",
+    "quality_thresholds": "none; fixed synthetic DEV diagnostic"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "mode": "union",
+    "candidate": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 12,
+      "relevant_count": 7,
+      "micro_recall": 0.875,
+      "micro_precision": 0.5833333333333334,
+      "mrr": 0.7,
+      "hits_at_1_count": 2,
+      "hits_at_3_count": 5
+    },
+    "selected": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 8,
+      "relevant_count": 5,
+      "micro_recall": 0.625,
+      "micro_precision": 0.625,
+      "mrr": 0.6,
+      "hits_at_1_count": 2,
+      "hits_at_3_count": 4
+    },
+    "answer_correctness": "not_measured",
+    "quality_thresholds": "none; fixed synthetic DEV diagnostic"
+  },
+  {
+    "protocol": "w2.synthetic_dev.v1",
+    "mode": "graph_shadow",
+    "candidate": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 4,
+      "relevant_count": 2,
+      "micro_recall": 0.25,
+      "micro_precision": 0.5,
+      "mrr": 0.4,
+      "hits_at_1_count": 2,
+      "hits_at_3_count": 2
+    },
+    "selected": {
+      "case_count": 6,
+      "nonempty_gold_case_count": 5,
+      "gold_count": 8,
+      "retrieved_count": 2,
+      "relevant_count": 1,
+      "micro_recall": 0.125,
+      "micro_precision": 0.5,
+      "mrr": 0.2,
+      "hits_at_1_count": 1,
+      "hits_at_3_count": 1
+    },
+    "answer_correctness": "not_measured",
+    "quality_thresholds": "none; fixed synthetic DEV diagnostic"
+  }
+]
