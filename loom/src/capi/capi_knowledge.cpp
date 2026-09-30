@@ -23,10 +23,10 @@ Json arr(const std::vector<T>& v) {
 std::optional<std::string> opt(const Json& q, const char* key) { return json::get_opt_string(q, key); }
 
 Result<std::string> latest_run(kb::KnowledgeStore& ks) {
-  LOOM_TRY_ASSIGN(auto runs, ks.list_runs(50));
-  for (const auto& r : runs) {
-    if (r.status == "done") return r.id;
-  }
+  LOOM_TRY_ASSIGN(auto completed, ks.list_runs(1, "done"));
+  if (!completed.empty()) return completed.front().id;
+  // Preserve the existing fallback for a store with no completed run.
+  LOOM_TRY_ASSIGN(auto runs, ks.list_runs(1));
   if (!runs.empty()) return runs.front().id;
   return Error(Errc::NotFound, "no knowledge run yet");
 }
