@@ -1,0 +1,9 @@
+{
+  "after_both_completed": "7",
+  "both_completed": true,
+  "command": "PYTHONUSERBASE=/workspace/scratch/a371a1ca13b1/verification/python-userbase python3 -B docs/coordination/receipts/N5-2026-10-01-resource-peaks/reproduce.py",
+  "fixture_evidence": "scripted mechanism quantities, not instrumented memory or actual global peak",
+  "held_concurrently": "20",
+  "source_head": "926072ce43b8de21a42a3abe439a7781598136f6",
+  "source_sha256": "2dfc9c3c67fb7135477b91e5599bbc30c96e006ab301b55b4a1d0f142f442372"
+}
