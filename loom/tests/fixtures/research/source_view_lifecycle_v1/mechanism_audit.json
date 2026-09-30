@@ -1,0 +1,24 @@
+{
+  "always_unknown_baseline_correct": 16,
+  "dependency_hashes_match": {
+    "loom/tools/structure/graph_panel_live.py": true
+  },
+  "first_test_log_sha256": "ee831e1942459a2d65112484812b69a310fb6bb7952b3ad2c8e074567a7c9f3e",
+  "frozen_file_hashes_match": {
+    "PROTOCOL.md": true,
+    "author_fixture.py": true,
+    "gold_dev.json": true,
+    "inputs_dev.json": true,
+    "policy.json": true,
+    "test_fixture.py": true
+  },
+  "live_calls": 0,
+  "manifest_sha256": "c47a87f62dd7724d50243c40494d70ae1a20ccd278d3bf3e3b12d3f28ef4072b",
+  "mechanism_tests_errored": 0,
+  "mechanism_tests_failed": 0,
+  "mechanism_tests_passed": 15,
+  "no_method_evaluation": true,
+  "query_denominator": 48,
+  "schema": "loom.research.source_view_lifecycle.mechanism_audit/1",
+  "world_truth_accuracy": null
+}

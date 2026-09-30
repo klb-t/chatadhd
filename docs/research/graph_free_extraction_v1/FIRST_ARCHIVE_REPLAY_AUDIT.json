@@ -1,0 +1,48 @@
+{
+  "all_offline_first_json_matches": true,
+  "archive_sha256": "5571ab4ff59c85b23bd32f9733df68495155998666203394120a1b99632530ef",
+  "existing_destination_refused": true,
+  "first_replay_commands": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "loom.tools.structure.graph_free_extraction",
+        "score",
+        "docs/research/graph_free_extraction_v1/prepared/batch01/prepared/manifest.json",
+        "docs/research/graph_free_extraction_v1/prepared/batch01/run",
+        "--output",
+        "replay_batch01"
+      ],
+      "exit_code": 0,
+      "first_json_matches": {
+        "compiled_first.json": true,
+        "execution_summary.json": true,
+        "score_first.json": true
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "loom.tools.structure.graph_free_extraction",
+        "score",
+        "docs/research/graph_free_extraction_v1/prepared/batch02/prepared/manifest.json",
+        "docs/research/graph_free_extraction_v1/prepared/batch02/run",
+        "--output",
+        "replay_batch02"
+      ],
+      "exit_code": 0,
+      "first_json_matches": {
+        "compiled_first.json": true,
+        "execution_summary.json": true,
+        "score_first.json": true
+      }
+    }
+  ],
+  "new_destination_restore_succeeded": true,
+  "no_api_calls": true,
+  "schema": "loom.first_evidence_archive_replay_audit/1",
+  "validation_access": false,
+  "verified_container_and_every_payload": true
+}

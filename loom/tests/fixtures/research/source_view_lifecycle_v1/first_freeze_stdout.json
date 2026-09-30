@@ -1,0 +1,49 @@
+{
+  "schema": "loom.research.source_view_lifecycle.manifest/1",
+  "frozen_at_utc": "2026-09-30T02:53:36.275453+00:00",
+  "status": "frozen_before_method_predictions",
+  "split": "diagnostic_dev",
+  "cases": 12,
+  "queries": 48,
+  "languages": [
+    "pl",
+    "en"
+  ],
+  "whole_bilingual_families": [
+    "reaffirmation_after_denial",
+    "withdrawal_without_replacement",
+    "quoted_withdrawal_attribution",
+    "repeated_positive_history",
+    "other_speaker_reaffirmation",
+    "withdrawn_denial_and_silence"
+  ],
+  "policy_id": "source_view.latest_active_commitment/1",
+  "judgment_label_counts": {
+    "supported": 18,
+    "refuted": 14,
+    "unknown": 16
+  },
+  "source_assertions": 24,
+  "status_events": 12,
+  "content_truth": "unverified",
+  "live_model_calls": 0,
+  "method_predictions_read": false,
+  "old_validation_gold_read": false,
+  "no_graph_promotion": true,
+  "files": {
+    "inputs_dev.json": "63e056cd67cfb7e8257fbca291130e2942457b1bab324c46f3630593a53570e5",
+    "gold_dev.json": "ef42470e0a2ee4c1b559a6431d19929703522456517c24f1acb8477531b6f2c4",
+    "policy.json": "43dbc5c1563511aa5f3d48850d939ea5c7ff5b8302327f082c03178c15e756e9",
+    "PROTOCOL.md": "aedf336b093b823b3055c1989b9993d8c1fe8f89f5f167f6deaf5c5f2fb3dd07",
+    "author_fixture.py": "832c54a3cf7cfe2adb03ce7522974e1fd6f43076cf0a8e0c0ea3ae2abeaa0112",
+    "test_fixture.py": "efc046a4e466da82e3fc6ee7c7ba25805266d5a5b893988a00d91c81cfd89fe7"
+  },
+  "dependencies": {
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16"
+  },
+  "compatibility": {
+    "query_payload": true,
+    "score_judgments": true,
+    "withdrawal_extraction_abi": false
+  }
+}

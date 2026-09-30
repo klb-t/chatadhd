@@ -1,0 +1,54 @@
+{
+  "all_offline_first_json_matches": true,
+  "archive_sha256": "5f80af7c5f0dfe059c4b74e50f221e8b6902dd80c1c14bd3e24f151ce1ed59f3",
+  "existing_destination_refused": true,
+  "first_replay_commands": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "loom.tools.structure.source_view_experiment",
+        "score",
+        "--manifest",
+        "docs/research/source_view_experiment_2026-09-30/historical_refute_v1/prepared/manifest.json",
+        "--run-dir",
+        "docs/research/source_view_experiment_2026-09-30/historical_refute_v1/run",
+        "--arm",
+        "historical_refute_v1",
+        "--output",
+        "replay_historical_refute_v1"
+      ],
+      "exit_code": 0,
+      "first_json_matches": {
+        "compiled_first.json": true,
+        "score_first.json": true
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "loom.tools.structure.source_view_experiment",
+        "score",
+        "--manifest",
+        "docs/research/source_view_experiment_2026-09-30/active_refute_v2/prepared/manifest.json",
+        "--run-dir",
+        "docs/research/source_view_experiment_2026-09-30/active_refute_v2/run",
+        "--arm",
+        "active_refute_v2",
+        "--output",
+        "replay_active_refute_v2"
+      ],
+      "exit_code": 0,
+      "first_json_matches": {
+        "compiled_first.json": true,
+        "score_first.json": true
+      }
+    }
+  ],
+  "new_destination_restore_succeeded": true,
+  "no_api_calls": true,
+  "schema": "loom.first_evidence_archive_replay_audit/1",
+  "validation_access": false,
+  "verified_container_and_every_payload": true
+}

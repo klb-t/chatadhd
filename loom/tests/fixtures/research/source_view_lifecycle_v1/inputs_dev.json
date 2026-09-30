@@ -1,0 +1,978 @@
+{
+  "cases": [
+    {
+      "id": "svlv1_dev_001",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T10:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_001_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T10:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_001_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T10:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_001_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T10:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_001_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "language": "pl",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "sygnał zielonej lampki jest aktywny"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "brama zostaje odblokowana"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "notatka jest archiwizowana"
+        }
+      ],
+      "source_id": "svlv1_dev_001_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_001_t1",
+          "known_at": "2026-09-02T10:00:00Z",
+          "speaker": "Mira",
+          "text": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_001_t2",
+          "known_at": "2026-09-02T10:01:00Z",
+          "speaker": "Mira",
+          "text": "Wycofuję moją poprzednią deklarację. Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_001_t3",
+          "known_at": "2026-09-02T10:02:00Z",
+          "speaker": "Mira",
+          "text": "Wycofuję moje poprzednie zaprzeczenie i ponownie deklaruję: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_002",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T11:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_002_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T11:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_002_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T11:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_002_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T11:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_002_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "language": "en",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "the green lamp signal is active"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "the gate is unlocked"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "the note is archived"
+        }
+      ],
+      "source_id": "svlv1_dev_002_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_002_t1",
+          "known_at": "2026-09-02T11:00:00Z",
+          "speaker": "Mira",
+          "text": "If the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_002_t2",
+          "known_at": "2026-09-02T11:01:00Z",
+          "speaker": "Mira",
+          "text": "I withdraw my previous assertion. I deny the relation: if the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_002_t3",
+          "known_at": "2026-09-02T11:02:00Z",
+          "speaker": "Mira",
+          "text": "I withdraw my previous denial and reaffirm: If the green lamp signal is active, then the gate is unlocked."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_003",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T12:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_003_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T12:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_003_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T12:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_003_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T12:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_003_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "language": "pl",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "sygnał zielonej lampki jest aktywny"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "brama zostaje odblokowana"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "notatka jest archiwizowana"
+        }
+      ],
+      "source_id": "svlv1_dev_003_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_003_t1",
+          "known_at": "2026-09-02T12:00:00Z",
+          "speaker": "Mira",
+          "text": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_003_t2",
+          "known_at": "2026-09-02T12:01:00Z",
+          "speaker": "Mira",
+          "text": "Wycofuję moją wcześniejszą deklarację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana. Nie podaję żadnej relacji zastępczej."
+        },
+        {
+          "id": "svlv1_dev_003_t3",
+          "known_at": "2026-09-02T12:02:00Z",
+          "speaker": "Mira",
+          "text": "Dzisiaj uporządkowałem szufladę z papierami."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_004",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T13:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_004_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T13:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_004_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T13:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_004_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T13:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_004_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "language": "en",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "the green lamp signal is active"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "the gate is unlocked"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "the note is archived"
+        }
+      ],
+      "source_id": "svlv1_dev_004_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_004_t1",
+          "known_at": "2026-09-02T13:00:00Z",
+          "speaker": "Mira",
+          "text": "If the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_004_t2",
+          "known_at": "2026-09-02T13:01:00Z",
+          "speaker": "Mira",
+          "text": "I withdraw my earlier assertion: If the green lamp signal is active, then the gate is unlocked. I supply no replacement relation."
+        },
+        {
+          "id": "svlv1_dev_004_t3",
+          "known_at": "2026-09-02T13:02:00Z",
+          "speaker": "Mira",
+          "text": "Today I organized a drawer full of papers."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_005",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T14:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_005_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T14:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_005_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T14:01:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_005_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T14:02:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_005_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "language": "pl",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "sygnał zielonej lampki jest aktywny"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "brama zostaje odblokowana"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "notatka jest archiwizowana"
+        }
+      ],
+      "source_id": "svlv1_dev_005_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_005_t1",
+          "known_at": "2026-09-02T14:00:00Z",
+          "speaker": "Mira",
+          "text": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_005_t2",
+          "known_at": "2026-09-02T14:01:00Z",
+          "speaker": "Owen",
+          "text": "Mira napisała: „Wycofuję moją wcześniejszą deklarację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana. Nie podaję relacji zastępczej”. To cytat Miry, nie moje stanowisko."
+        },
+        {
+          "id": "svlv1_dev_005_t3",
+          "known_at": "2026-09-02T14:02:00Z",
+          "speaker": "Owen",
+          "text": "Dzisiaj uporządkowałem szufladę z papierami."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_006",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T15:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_006_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T15:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_006_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T15:01:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_006_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T15:02:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_006_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "language": "en",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "the green lamp signal is active"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "the gate is unlocked"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "the note is archived"
+        }
+      ],
+      "source_id": "svlv1_dev_006_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_006_t1",
+          "known_at": "2026-09-02T15:00:00Z",
+          "speaker": "Mira",
+          "text": "If the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_006_t2",
+          "known_at": "2026-09-02T15:01:00Z",
+          "speaker": "Owen",
+          "text": "Mira wrote: \"I withdraw my earlier assertion: If the green lamp signal is active, then the gate is unlocked. I supply no replacement relation\". That is Mira's quote, not my position."
+        },
+        {
+          "id": "svlv1_dev_006_t3",
+          "known_at": "2026-09-02T15:02:00Z",
+          "speaker": "Owen",
+          "text": "Today I organized a drawer full of papers."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_007",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T16:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_007_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T16:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_007_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T16:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_007_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T16:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_007_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "language": "pl",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "sygnał zielonej lampki jest aktywny"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "brama zostaje odblokowana"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "notatka jest archiwizowana"
+        }
+      ],
+      "source_id": "svlv1_dev_007_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_007_t1",
+          "known_at": "2026-09-02T16:00:00Z",
+          "speaker": "Mira",
+          "text": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_007_t2",
+          "known_at": "2026-09-02T16:01:00Z",
+          "speaker": "Mira",
+          "text": "Powtarzam moją deklarację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_007_t3",
+          "known_at": "2026-09-02T16:02:00Z",
+          "speaker": "Mira",
+          "text": "Jeszcze raz deklaruję tę samą relację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_008",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T17:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_008_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T17:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_008_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T17:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_008_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T17:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_008_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "language": "en",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "the green lamp signal is active"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "the gate is unlocked"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "the note is archived"
+        }
+      ],
+      "source_id": "svlv1_dev_008_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_008_t1",
+          "known_at": "2026-09-02T17:00:00Z",
+          "speaker": "Mira",
+          "text": "If the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_008_t2",
+          "known_at": "2026-09-02T17:01:00Z",
+          "speaker": "Mira",
+          "text": "I repeat my assertion: If the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_008_t3",
+          "known_at": "2026-09-02T17:02:00Z",
+          "speaker": "Mira",
+          "text": "Once again I assert the same relation: If the green lamp signal is active, then the gate is unlocked."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_009",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T18:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_009_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T18:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_009_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T18:02:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_009_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T18:03:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_009_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "language": "pl",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "sygnał zielonej lampki jest aktywny"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "brama zostaje odblokowana"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "notatka jest archiwizowana"
+        }
+      ],
+      "source_id": "svlv1_dev_009_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_009_t1",
+          "known_at": "2026-09-02T18:00:00Z",
+          "speaker": "Mira",
+          "text": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_009_t2",
+          "known_at": "2026-09-02T18:01:00Z",
+          "speaker": "Mira",
+          "text": "Wycofuję moją poprzednią deklarację. Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_009_t3",
+          "known_at": "2026-09-02T18:02:00Z",
+          "speaker": "Owen",
+          "text": "Mówię wyłącznie we własnym imieniu: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_009_t4",
+          "known_at": "2026-09-02T18:03:00Z",
+          "speaker": "Mira",
+          "text": "Dzisiaj uporządkowałem szufladę z papierami."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_010",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T19:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_010_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T19:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_010_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T19:02:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_010_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T19:03:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_010_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "language": "en",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "the green lamp signal is active"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "the gate is unlocked"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "the note is archived"
+        }
+      ],
+      "source_id": "svlv1_dev_010_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_010_t1",
+          "known_at": "2026-09-02T19:00:00Z",
+          "speaker": "Mira",
+          "text": "If the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_010_t2",
+          "known_at": "2026-09-02T19:01:00Z",
+          "speaker": "Mira",
+          "text": "I withdraw my previous assertion. I deny the relation: if the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_010_t3",
+          "known_at": "2026-09-02T19:02:00Z",
+          "speaker": "Owen",
+          "text": "I speak only for myself: If the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_010_t4",
+          "known_at": "2026-09-02T19:03:00Z",
+          "speaker": "Mira",
+          "text": "Today I organized a drawer full of papers."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_011",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T20:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_011_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T20:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_011_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T20:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_011_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T20:02:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_011_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "language": "pl",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "sygnał zielonej lampki jest aktywny"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "brama zostaje odblokowana"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "notatka jest archiwizowana"
+        }
+      ],
+      "source_id": "svlv1_dev_011_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_011_t1",
+          "known_at": "2026-09-02T20:00:00Z",
+          "speaker": "Mira",
+          "text": "Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana."
+        },
+        {
+          "id": "svlv1_dev_011_t2",
+          "known_at": "2026-09-02T20:01:00Z",
+          "speaker": "Mira",
+          "text": "Wycofuję moje wcześniejsze zaprzeczenie relacji: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana. Nie twierdzę teraz ani że ta relacja zachodzi, ani że nie zachodzi."
+        },
+        {
+          "id": "svlv1_dev_011_t3",
+          "known_at": "2026-09-02T20:02:00Z",
+          "speaker": "Mira",
+          "text": "Dzisiaj uporządkowałem szufladę z papierami."
+        }
+      ]
+    },
+    {
+      "id": "svlv1_dev_012",
+      "judgment_queries": [
+        {
+          "as_of": "2026-09-02T21:00:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_012_q1",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T21:01:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_012_q2",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T21:02:00Z",
+          "attributed_to": "Mira",
+          "id": "svlv1_dev_012_q3",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "as_of": "2026-09-02T21:02:00Z",
+          "attributed_to": "Owen",
+          "id": "svlv1_dev_012_q4",
+          "relation": "implies",
+          "scope": "explicit_source",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "language": "en",
+      "node_inventory": [
+        {
+          "aliases": [],
+          "id": "A",
+          "text": "the green lamp signal is active"
+        },
+        {
+          "aliases": [],
+          "id": "B",
+          "text": "the gate is unlocked"
+        },
+        {
+          "aliases": [],
+          "id": "C",
+          "text": "the note is archived"
+        }
+      ],
+      "source_id": "svlv1_dev_012_source",
+      "turns": [
+        {
+          "id": "svlv1_dev_012_t1",
+          "known_at": "2026-09-02T21:00:00Z",
+          "speaker": "Mira",
+          "text": "I deny the relation: if the green lamp signal is active, then the gate is unlocked."
+        },
+        {
+          "id": "svlv1_dev_012_t2",
+          "known_at": "2026-09-02T21:01:00Z",
+          "speaker": "Mira",
+          "text": "I withdraw my earlier denial of the relation: If the green lamp signal is active, then the gate is unlocked. I now assert neither that this relation holds nor that it does not hold."
+        },
+        {
+          "id": "svlv1_dev_012_t3",
+          "known_at": "2026-09-02T21:02:00Z",
+          "speaker": "Mira",
+          "text": "Today I organized a drawer full of papers."
+        }
+      ]
+    }
+  ],
+  "schema": "loom.research.graph_methods_panel.inputs/1",
+  "split": "dev"
+}

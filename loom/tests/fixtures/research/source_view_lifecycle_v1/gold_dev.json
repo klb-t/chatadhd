@@ -1,0 +1,1811 @@
+{
+  "cases": [
+    {
+      "family": "reaffirmation_after_denial",
+      "id": "svlv1_dev_001",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_001_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_001_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T10:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_001_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_001_q2",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_001_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T10:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_001_a1",
+              "svlv1_dev_001_a2"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_001_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_001_q3",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_001_a3"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T10:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_001_a1",
+              "svlv1_dev_001_a2",
+              "svlv1_dev_001_a3"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_001_e1",
+              "svlv1_dev_001_e2"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_001_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T10:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "pl",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 75,
+              "byte_start": 0,
+              "char_end": 73,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_001_source",
+              "turn_id": "svlv1_dev_001_t1"
+            }
+          ],
+          "id": "svlv1_dev_001_a1",
+          "known_at": "2026-09-02T10:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 136,
+              "byte_start": 0,
+              "char_end": 130,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moją poprzednią deklarację. Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_001_source",
+              "turn_id": "svlv1_dev_001_t2"
+            }
+          ],
+          "id": "svlv1_dev_001_a2",
+          "known_at": "2026-09-02T10:01:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 137,
+              "byte_start": 0,
+              "char_end": 133,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moje poprzednie zaprzeczenie i ponownie deklaruję: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_001_source",
+              "turn_id": "svlv1_dev_001_t3"
+            }
+          ],
+          "id": "svlv1_dev_001_a3",
+          "known_at": "2026-09-02T10:02:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_001_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 136,
+              "byte_start": 0,
+              "char_end": 130,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moją poprzednią deklarację. Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_001_source",
+              "turn_id": "svlv1_dev_001_t2"
+            }
+          ],
+          "id": "svlv1_dev_001_e1",
+          "known_at": "2026-09-02T10:01:00Z",
+          "status": "superseded",
+          "superseded_by": "svlv1_dev_001_a2"
+        },
+        {
+          "assertion_id": "svlv1_dev_001_a2",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 137,
+              "byte_start": 0,
+              "char_end": 133,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moje poprzednie zaprzeczenie i ponownie deklaruję: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_001_source",
+              "turn_id": "svlv1_dev_001_t3"
+            }
+          ],
+          "id": "svlv1_dev_001_e2",
+          "known_at": "2026-09-02T10:02:00Z",
+          "status": "superseded",
+          "superseded_by": "svlv1_dev_001_a3"
+        }
+      ]
+    },
+    {
+      "family": "reaffirmation_after_denial",
+      "id": "svlv1_dev_002",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_002_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_002_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T11:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_002_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_002_q2",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_002_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T11:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_002_a1",
+              "svlv1_dev_002_a2"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_002_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_002_q3",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_002_a3"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T11:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_002_a1",
+              "svlv1_dev_002_a2",
+              "svlv1_dev_002_a3"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_002_e1",
+              "svlv1_dev_002_e2"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_002_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T11:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "en",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 62,
+              "byte_start": 0,
+              "char_end": 62,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_002_source",
+              "turn_id": "svlv1_dev_002_t1"
+            }
+          ],
+          "id": "svlv1_dev_002_a1",
+          "known_at": "2026-09-02T11:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 117,
+              "byte_start": 0,
+              "char_end": 117,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my previous assertion. I deny the relation: if the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_002_source",
+              "turn_id": "svlv1_dev_002_t2"
+            }
+          ],
+          "id": "svlv1_dev_002_a2",
+          "known_at": "2026-09-02T11:01:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 106,
+              "byte_start": 0,
+              "char_end": 106,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my previous denial and reaffirm: If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_002_source",
+              "turn_id": "svlv1_dev_002_t3"
+            }
+          ],
+          "id": "svlv1_dev_002_a3",
+          "known_at": "2026-09-02T11:02:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_002_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 117,
+              "byte_start": 0,
+              "char_end": 117,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my previous assertion. I deny the relation: if the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_002_source",
+              "turn_id": "svlv1_dev_002_t2"
+            }
+          ],
+          "id": "svlv1_dev_002_e1",
+          "known_at": "2026-09-02T11:01:00Z",
+          "status": "superseded",
+          "superseded_by": "svlv1_dev_002_a2"
+        },
+        {
+          "assertion_id": "svlv1_dev_002_a2",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 106,
+              "byte_start": 0,
+              "char_end": 106,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my previous denial and reaffirm: If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_002_source",
+              "turn_id": "svlv1_dev_002_t3"
+            }
+          ],
+          "id": "svlv1_dev_002_e2",
+          "known_at": "2026-09-02T11:02:00Z",
+          "status": "superseded",
+          "superseded_by": "svlv1_dev_002_a3"
+        }
+      ]
+    },
+    {
+      "family": "withdrawal_without_replacement",
+      "id": "svlv1_dev_003",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_003_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_003_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T12:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_003_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_003_q2",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_003_e1"
+            ],
+            "as_of": "2026-09-02T12:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_003_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_003_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_003_q3",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_003_e1"
+            ],
+            "as_of": "2026-09-02T12:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_003_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_003_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_003_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T12:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "pl",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 75,
+              "byte_start": 0,
+              "char_end": 73,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_003_source",
+              "turn_id": "svlv1_dev_003_t1"
+            }
+          ],
+          "id": "svlv1_dev_003_a1",
+          "known_at": "2026-09-02T12:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_003_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 160,
+              "byte_start": 0,
+              "char_end": 150,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moją wcześniejszą deklarację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana. Nie podaję żadnej relacji zastępczej.",
+              "source_id": "svlv1_dev_003_source",
+              "turn_id": "svlv1_dev_003_t2"
+            }
+          ],
+          "id": "svlv1_dev_003_e1",
+          "known_at": "2026-09-02T12:01:00Z",
+          "status": "withdrawn",
+          "superseded_by": null
+        }
+      ]
+    },
+    {
+      "family": "withdrawal_without_replacement",
+      "id": "svlv1_dev_004",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_004_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_004_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T13:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_004_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_004_q2",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_004_e1"
+            ],
+            "as_of": "2026-09-02T13:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_004_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_004_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_004_q3",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_004_e1"
+            ],
+            "as_of": "2026-09-02T13:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_004_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_004_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_004_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T13:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "en",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 62,
+              "byte_start": 0,
+              "char_end": 62,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_004_source",
+              "turn_id": "svlv1_dev_004_t1"
+            }
+          ],
+          "id": "svlv1_dev_004_a1",
+          "known_at": "2026-09-02T13:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_004_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 129,
+              "byte_start": 0,
+              "char_end": 129,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my earlier assertion: If the green lamp signal is active, then the gate is unlocked. I supply no replacement relation.",
+              "source_id": "svlv1_dev_004_source",
+              "turn_id": "svlv1_dev_004_t2"
+            }
+          ],
+          "id": "svlv1_dev_004_e1",
+          "known_at": "2026-09-02T13:01:00Z",
+          "status": "withdrawn",
+          "superseded_by": null
+        }
+      ]
+    },
+    {
+      "family": "quoted_withdrawal_attribution",
+      "id": "svlv1_dev_005",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_005_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_005_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T14:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_005_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_005_q2",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_005_e1"
+            ],
+            "as_of": "2026-09-02T14:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_005_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_005_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_005_q3",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T14:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_005_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T14:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "pl",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 75,
+              "byte_start": 0,
+              "char_end": 73,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_005_source",
+              "turn_id": "svlv1_dev_005_t1"
+            }
+          ],
+          "id": "svlv1_dev_005_a1",
+          "known_at": "2026-09-02T14:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_005_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 210,
+              "byte_start": 0,
+              "char_end": 196,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Mira napisała: „Wycofuję moją wcześniejszą deklarację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana. Nie podaję relacji zastępczej”. To cytat Miry, nie moje stanowisko.",
+              "source_id": "svlv1_dev_005_source",
+              "turn_id": "svlv1_dev_005_t2"
+            }
+          ],
+          "id": "svlv1_dev_005_e1",
+          "known_at": "2026-09-02T14:01:00Z",
+          "status": "withdrawn",
+          "superseded_by": null
+        }
+      ]
+    },
+    {
+      "family": "quoted_withdrawal_attribution",
+      "id": "svlv1_dev_006",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_006_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_006_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T15:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_006_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_006_q2",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_006_e1"
+            ],
+            "as_of": "2026-09-02T15:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_006_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_006_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_006_q3",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T15:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_006_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T15:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "en",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 62,
+              "byte_start": 0,
+              "char_end": 62,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_006_source",
+              "turn_id": "svlv1_dev_006_t1"
+            }
+          ],
+          "id": "svlv1_dev_006_a1",
+          "known_at": "2026-09-02T15:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_006_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 182,
+              "byte_start": 0,
+              "char_end": 182,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Mira wrote: \"I withdraw my earlier assertion: If the green lamp signal is active, then the gate is unlocked. I supply no replacement relation\". That is Mira's quote, not my position.",
+              "source_id": "svlv1_dev_006_source",
+              "turn_id": "svlv1_dev_006_t2"
+            }
+          ],
+          "id": "svlv1_dev_006_e1",
+          "known_at": "2026-09-02T15:01:00Z",
+          "status": "withdrawn",
+          "superseded_by": null
+        }
+      ]
+    },
+    {
+      "family": "repeated_positive_history",
+      "id": "svlv1_dev_007",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_007_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_007_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T16:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_007_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_007_q2",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_007_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T16:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_007_a1",
+              "svlv1_dev_007_a2"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_007_q3",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_007_a3"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T16:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_007_a1",
+              "svlv1_dev_007_a2",
+              "svlv1_dev_007_a3"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_007_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T16:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "pl",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 75,
+              "byte_start": 0,
+              "char_end": 73,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_007_source",
+              "turn_id": "svlv1_dev_007_t1"
+            }
+          ],
+          "id": "svlv1_dev_007_a1",
+          "known_at": "2026-09-02T16:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 104,
+              "byte_start": 0,
+              "char_end": 100,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Powtarzam moją deklarację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_007_source",
+              "turn_id": "svlv1_dev_007_t2"
+            }
+          ],
+          "id": "svlv1_dev_007_a2",
+          "known_at": "2026-09-02T16:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 118,
+              "byte_start": 0,
+              "char_end": 112,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Jeszcze raz deklaruję tę samą relację: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_007_source",
+              "turn_id": "svlv1_dev_007_t3"
+            }
+          ],
+          "id": "svlv1_dev_007_a3",
+          "known_at": "2026-09-02T16:02:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": []
+    },
+    {
+      "family": "repeated_positive_history",
+      "id": "svlv1_dev_008",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_008_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_008_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T17:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_008_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_008_q2",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_008_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T17:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_008_a1",
+              "svlv1_dev_008_a2"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_008_q3",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_008_a3"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T17:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_008_a1",
+              "svlv1_dev_008_a2",
+              "svlv1_dev_008_a3"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_008_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T17:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "en",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 62,
+              "byte_start": 0,
+              "char_end": 62,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_008_source",
+              "turn_id": "svlv1_dev_008_t1"
+            }
+          ],
+          "id": "svlv1_dev_008_a1",
+          "known_at": "2026-09-02T17:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 85,
+              "byte_start": 0,
+              "char_end": 85,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I repeat my assertion: If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_008_source",
+              "turn_id": "svlv1_dev_008_t2"
+            }
+          ],
+          "id": "svlv1_dev_008_a2",
+          "known_at": "2026-09-02T17:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 101,
+              "byte_start": 0,
+              "char_end": 101,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Once again I assert the same relation: If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_008_source",
+              "turn_id": "svlv1_dev_008_t3"
+            }
+          ],
+          "id": "svlv1_dev_008_a3",
+          "known_at": "2026-09-02T17:02:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": []
+    },
+    {
+      "family": "other_speaker_reaffirmation",
+      "id": "svlv1_dev_009",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_009_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_009_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T18:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_009_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_009_q2",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_009_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T18:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_009_a1",
+              "svlv1_dev_009_a2"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_009_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_009_q3",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_009_a3"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T18:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_009_a3"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_009_q4",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_009_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T18:03:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_009_a1",
+              "svlv1_dev_009_a2"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_009_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        }
+      ],
+      "language": "pl",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 75,
+              "byte_start": 0,
+              "char_end": 73,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_009_source",
+              "turn_id": "svlv1_dev_009_t1"
+            }
+          ],
+          "id": "svlv1_dev_009_a1",
+          "known_at": "2026-09-02T18:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 136,
+              "byte_start": 0,
+              "char_end": 130,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moją poprzednią deklarację. Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_009_source",
+              "turn_id": "svlv1_dev_009_t2"
+            }
+          ],
+          "id": "svlv1_dev_009_a2",
+          "known_at": "2026-09-02T18:01:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Owen",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 116,
+              "byte_start": 0,
+              "char_end": 109,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Mówię wyłącznie we własnym imieniu: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_009_source",
+              "turn_id": "svlv1_dev_009_t3"
+            }
+          ],
+          "id": "svlv1_dev_009_a3",
+          "known_at": "2026-09-02T18:02:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_009_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 136,
+              "byte_start": 0,
+              "char_end": 130,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moją poprzednią deklarację. Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_009_source",
+              "turn_id": "svlv1_dev_009_t2"
+            }
+          ],
+          "id": "svlv1_dev_009_e1",
+          "known_at": "2026-09-02T18:01:00Z",
+          "status": "superseded",
+          "superseded_by": "svlv1_dev_009_a2"
+        }
+      ]
+    },
+    {
+      "family": "other_speaker_reaffirmation",
+      "id": "svlv1_dev_010",
+      "judgments": [
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_010_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_010_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T19:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_010_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_010_q2",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_010_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T19:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_010_a1",
+              "svlv1_dev_010_a2"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_010_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        },
+        {
+          "label": "supported",
+          "query_id": "svlv1_dev_010_q3",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_010_a3"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T19:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_010_a3"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "positive"
+          }
+        },
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_010_q4",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_010_a2"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T19:03:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_010_a1",
+              "svlv1_dev_010_a2"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_010_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        }
+      ],
+      "language": "en",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 62,
+              "byte_start": 0,
+              "char_end": 62,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_010_source",
+              "turn_id": "svlv1_dev_010_t1"
+            }
+          ],
+          "id": "svlv1_dev_010_a1",
+          "known_at": "2026-09-02T19:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 117,
+              "byte_start": 0,
+              "char_end": 117,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my previous assertion. I deny the relation: if the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_010_source",
+              "turn_id": "svlv1_dev_010_t2"
+            }
+          ],
+          "id": "svlv1_dev_010_a2",
+          "known_at": "2026-09-02T19:01:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "Owen",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 87,
+              "byte_start": 0,
+              "char_end": 87,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I speak only for myself: If the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_010_source",
+              "turn_id": "svlv1_dev_010_t3"
+            }
+          ],
+          "id": "svlv1_dev_010_a3",
+          "known_at": "2026-09-02T19:02:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_010_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 117,
+              "byte_start": 0,
+              "char_end": 117,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my previous assertion. I deny the relation: if the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_010_source",
+              "turn_id": "svlv1_dev_010_t2"
+            }
+          ],
+          "id": "svlv1_dev_010_e1",
+          "known_at": "2026-09-02T19:01:00Z",
+          "status": "superseded",
+          "superseded_by": "svlv1_dev_010_a2"
+        }
+      ]
+    },
+    {
+      "family": "withdrawn_denial_and_silence",
+      "id": "svlv1_dev_011",
+      "judgments": [
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_011_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_011_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T20:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_011_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_011_q2",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_011_e1"
+            ],
+            "as_of": "2026-09-02T20:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_011_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_011_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_negative"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_011_q3",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_011_e1"
+            ],
+            "as_of": "2026-09-02T20:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_011_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_011_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_negative"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_011_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T20:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "pl",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 95,
+              "byte_start": 0,
+              "char_end": 93,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Zaprzeczam relacji: jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana.",
+              "source_id": "svlv1_dev_011_source",
+              "turn_id": "svlv1_dev_011_t1"
+            }
+          ],
+          "id": "svlv1_dev_011_a1",
+          "known_at": "2026-09-02T20:00:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_011_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 197,
+              "byte_start": 0,
+              "char_end": 190,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "Wycofuję moje wcześniejsze zaprzeczenie relacji: Jeżeli sygnał zielonej lampki jest aktywny, to brama zostaje odblokowana. Nie twierdzę teraz ani że ta relacja zachodzi, ani że nie zachodzi.",
+              "source_id": "svlv1_dev_011_source",
+              "turn_id": "svlv1_dev_011_t2"
+            }
+          ],
+          "id": "svlv1_dev_011_e1",
+          "known_at": "2026-09-02T20:01:00Z",
+          "status": "withdrawn",
+          "superseded_by": null
+        }
+      ]
+    },
+    {
+      "family": "withdrawn_denial_and_silence",
+      "id": "svlv1_dev_012",
+      "judgments": [
+        {
+          "label": "refuted",
+          "query_id": "svlv1_dev_012_q1",
+          "source_view": {
+            "active_assertion_ids": [
+              "svlv1_dev_012_a1"
+            ],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T21:00:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_012_a1"
+            ],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "negative"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_012_q2",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_012_e1"
+            ],
+            "as_of": "2026-09-02T21:01:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_012_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_012_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_negative"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_012_q3",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [
+              "svlv1_dev_012_e1"
+            ],
+            "as_of": "2026-09-02T21:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [
+              "svlv1_dev_012_a1"
+            ],
+            "historical_status_event_ids": [
+              "svlv1_dev_012_e1"
+            ],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "withdrawn_negative"
+          }
+        },
+        {
+          "label": "unknown",
+          "query_id": "svlv1_dev_012_q4",
+          "source_view": {
+            "active_assertion_ids": [],
+            "active_status_event_ids": [],
+            "as_of": "2026-09-02T21:02:00Z",
+            "content_truth": "unverified",
+            "historical_assertion_ids": [],
+            "historical_status_event_ids": [],
+            "policy_id": "source_view.latest_active_commitment/1",
+            "stance": "no_position"
+          }
+        }
+      ],
+      "language": "en",
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "basis_class": "observed_source_assertion",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 83,
+              "byte_start": 0,
+              "char_end": 83,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I deny the relation: if the green lamp signal is active, then the gate is unlocked.",
+              "source_id": "svlv1_dev_012_source",
+              "turn_id": "svlv1_dev_012_t1"
+            }
+          ],
+          "id": "svlv1_dev_012_a1",
+          "known_at": "2026-09-02T21:00:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "svlv1_dev_012_a1",
+          "attributed_to": "Mira",
+          "content_truth": "unverified",
+          "evidence": [
+            {
+              "byte_end": 181,
+              "byte_start": 0,
+              "char_end": 181,
+              "char_start": 0,
+              "coordinate_space": "turn.text",
+              "quote": "I withdraw my earlier denial of the relation: If the green lamp signal is active, then the gate is unlocked. I now assert neither that this relation holds nor that it does not hold.",
+              "source_id": "svlv1_dev_012_source",
+              "turn_id": "svlv1_dev_012_t2"
+            }
+          ],
+          "id": "svlv1_dev_012_e1",
+          "known_at": "2026-09-02T21:01:00Z",
+          "status": "withdrawn",
+          "superseded_by": null
+        }
+      ]
+    }
+  ],
+  "policy_id": "source_view.latest_active_commitment/1",
+  "schema": "loom.research.source_view_lifecycle.gold/1",
+  "split": "dev"
+}

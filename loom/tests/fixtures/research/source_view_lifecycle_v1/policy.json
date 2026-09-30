@@ -1,0 +1,26 @@
+{
+  "content_truth": "unverified",
+  "cutoff": "known_at <= as_of; exact timestamps, no future backfill",
+  "id": "source_view.latest_active_commitment/1",
+  "key": [
+    "relation",
+    "source",
+    "target",
+    "attributed_to"
+  ],
+  "negative_withdrawal_is_not_positive_assertion": true,
+  "no_graph_promotion": true,
+  "positive_withdrawal_is_not_negative_assertion": true,
+  "quoted_speaker_not_reporter": true,
+  "retain_all_observations_assertions_and_status_events": true,
+  "schema": "loom.research.source_view_policy/1",
+  "scope": "diagnostic_supplied_edge_judgment",
+  "silence_changes_no_commitment": true,
+  "state_labels": {
+    "negative": "refuted",
+    "no_position": "unknown",
+    "positive": "supported",
+    "withdrawn_negative": "unknown",
+    "withdrawn_positive": "refuted"
+  }
+}

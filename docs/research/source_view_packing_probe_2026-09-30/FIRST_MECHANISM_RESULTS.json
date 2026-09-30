@@ -1,0 +1,55 @@
+{
+  "schema": "loom.source_view_packing_probe.mechanism_results/1",
+  "paid_calls": 0,
+  "gold_accuracy_measured": false,
+  "first_run_preserved": {
+    "schema": "loom.source_view_packing_probe.mechanism_first/1",
+    "first_command": "PYTHONDONTWRITEBYTECODE=1 python -m unittest loom.tools.structure.test_source_view_packing_probe -v",
+    "tests": 21,
+    "passed": 20,
+    "failed": 1,
+    "errors": 0,
+    "model_quality_measured": false,
+    "paid_calls": 0,
+    "failure": {
+      "test": "CellSummaryTests.test_decimal_mean_range_and_contrasts_descriptive_only",
+      "observed_ranges": [
+        "0.2",
+        "0.2",
+        "0.20"
+      ],
+      "expected_ranges": [
+        "0.2",
+        "0.2",
+        "0.2"
+      ],
+      "cause": "numeric range correct but Decimal display scale not canonical; unchanged test requests canonical display"
+    },
+    "code_sha256_before_fix": "868bdebc8e087f80d3f0e303cdfdc5e0f25031822a0787f9a72fbb525cdb43e3",
+    "tests_sha256": "92ce91080fb4b578f317593be7c638298b67b0db194906f7967a6f42aaaddaf2"
+  },
+  "correction": "Canonical decimal display normalizes equivalent trailing-zero scales; numerical values and original 21 tests unchanged.",
+  "second_run_original_suite": {
+    "tests": 21,
+    "passed": 21,
+    "failures": 0,
+    "errors": 0
+  },
+  "third_run_with_end_to_end_ratchet": {
+    "tests": 22,
+    "passed": 22,
+    "failures": 0,
+    "errors": 0
+  },
+  "final_regression": {
+    "tests": 108,
+    "passed": 108,
+    "failures": 0,
+    "errors": 0,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=loom/tools/structure python -m unittest loom.tools.structure.test_source_view_packing_probe loom.tools.structure.test_source_view_experiment loom.tools.structure.test_graph_panel_live loom.tools.structure.test_graph_panel_score_run loom.tools.structure.test_jev_live_pilot loom.tools.structure.test_openrouter_runner"
+  },
+  "tested_synthetic_prepare": "24 outer IDs,12 distinct repeated bodies,one mocked public GET,no POST and no key",
+  "tested_synthetic_replay": "24 authored receipts,12 complete cells,4 contrasts,fatal frozen-plan input mutation",
+  "code_sha256": "b1e399fcdbd1c38c5604ef23490c15f065b89ec06e308393483edb9a96e4e446",
+  "tests_sha256": "255d30ed2f3cb236974616ea9924d0c5442a80db6f4ebe1c9cb4ced063a5bff0"
+}

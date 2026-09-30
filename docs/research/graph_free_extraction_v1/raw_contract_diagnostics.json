@@ -1,0 +1,2467 @@
+{
+  "api_calls": 0,
+  "assertion_evidence_shapes": {
+    "required_turn_id_objects": 9,
+    "string_ids_instead_of_required_objects": 53
+  },
+  "cases": [
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 2
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_001",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "the hatch is open"
+          },
+          {
+            "id": "n2",
+            "text": "the panel is lit"
+          },
+          {
+            "id": "n3",
+            "text": "Mira said: “If the hatch is open, the panel is lit.”"
+          },
+          {
+            "id": "n4",
+            "text": "I am reporting Mira's words, not endorsing the conditional."
+          },
+          {
+            "id": "n5",
+            "text": "In my own test notes, “the hatch is open” does not imply “the panel is lit”."
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "Mira",
+            "evidence": [
+              "gpv1_dev_001_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "analyst",
+            "evidence": [
+              "gpv1_dev_001_t3"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.000796",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_001.response.bin",
+      "response_sha256": "4736904245aa3da0e5de955e82de9dd0d717cf67c413aa6df5b90c3f9d7ccff2",
+      "source_payload": {
+        "id": "gpv1_dev_001",
+        "source_id": "synthetic:gpv1_dev_001",
+        "turns": [
+          {
+            "id": "gpv1_dev_001_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "reporter",
+            "text": "Mira said: “If the hatch is open, the panel is lit.”"
+          },
+          {
+            "id": "gpv1_dev_001_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "reporter",
+            "text": "I am reporting Mira's words, not endorsing the conditional."
+          },
+          {
+            "id": "gpv1_dev_001_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "analyst",
+            "text": "In my own test notes, “the hatch is open” does not imply “the panel is lit”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "attempt_state": "rejected",
+      "case_id": "gpv1_dev_002",
+      "diagnostic_json_complete": false,
+      "duplicate_fields": [],
+      "finish_reason": "length",
+      "no_output_repair_or_primary_rescore": true,
+      "object": null,
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0035",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_002.response.bin",
+      "response_sha256": "e152ed19e1874af546a7969cdc1b22d121f70edcc3908fe2d2716555e6129ddb",
+      "source_payload": {
+        "id": "gpv1_dev_002",
+        "source_id": "synthetic:gpv1_dev_002",
+        "turns": [
+          {
+            "id": "gpv1_dev_002_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "reporter",
+            "text": "Owen said: “If the parcel is scanned, the receipt is printed.”"
+          },
+          {
+            "id": "gpv1_dev_002_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "reporter",
+            "text": "I am reporting Owen's words, not endorsing the conditional."
+          },
+          {
+            "id": "gpv1_dev_002_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "analyst",
+            "text": "In my own test notes, “the parcel is scanned” does not imply “the receipt is printed”."
+          }
+        ]
+      }
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 2
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_003",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [
+        {
+          "competing_values": [
+            "gpv1_dev_003_t1",
+            "n1"
+          ],
+          "path": "$.source_assertions[0].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_003_t3",
+            "n1"
+          ],
+          "path": "$.source_assertions[1].source"
+        }
+      ],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "the beacon flashes"
+          },
+          {
+            "id": "n2",
+            "text": "the ferry waits"
+          },
+          {
+            "id": "n3",
+            "text": "I am reporting Priya's words, not endorsing the conditional"
+          },
+          {
+            "id": "n4",
+            "text": "In my own test notes, the beacon flashes does not imply the ferry waits"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "Priya",
+            "evidence": [
+              "gpv1_dev_003_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_003_t1",
+                "n1"
+              ]
+            },
+            "target": "n2"
+          },
+          {
+            "attributed_to": "analyst",
+            "evidence": [
+              "gpv1_dev_003_t3"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_003_t3",
+                "n1"
+              ]
+            },
+            "target": "n2"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.000774",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_003.response.bin",
+      "response_sha256": "070af1374c017eada9369b35f9648b9ce16f033f205cbd7b5b407f1aa159b54e",
+      "source_payload": {
+        "id": "gpv1_dev_003",
+        "source_id": "synthetic:gpv1_dev_003",
+        "turns": [
+          {
+            "id": "gpv1_dev_003_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "reporter",
+            "text": "Priya said: “If the beacon flashes, the ferry waits.”"
+          },
+          {
+            "id": "gpv1_dev_003_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "reporter",
+            "text": "I am reporting Priya's words, not endorsing the conditional."
+          },
+          {
+            "id": "gpv1_dev_003_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "analyst",
+            "text": "In my own test notes, “the beacon flashes” does not imply “the ferry waits”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": false
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_004",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "pokrywa jest otwarta"
+          },
+          {
+            "id": "n2",
+            "text": "panel się świeci"
+          },
+          {
+            "id": "n3",
+            "text": "Mira powiedział: „Jeśli pokrywa jest otwarta, panel się świeci”."
+          },
+          {
+            "id": "n4",
+            "text": "Przytaczam słowa osoby Mira; sam nie przyjmuję tego warunku."
+          },
+          {
+            "id": "n5",
+            "text": "W moich własnych notatkach „pokrywa jest otwarta” nie implikuje „panel się świeci”."
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "Mira",
+            "evidence": [
+              "gpv1_dev_004_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "reporter",
+            "evidence": [
+              "gpv1_dev_004_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "analyst",
+            "evidence": [
+              "gpv1_dev_004_t3"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.000984",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_004.response.bin",
+      "response_sha256": "795db2b5d468107ca0fecbb8a9bbf1d8a6735cdd12d5a10fe13c17b332825974",
+      "source_payload": {
+        "id": "gpv1_dev_004",
+        "source_id": "synthetic:gpv1_dev_004",
+        "turns": [
+          {
+            "id": "gpv1_dev_004_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "reporter",
+            "text": "Mira powiedział: „Jeśli pokrywa jest otwarta, panel się świeci”."
+          },
+          {
+            "id": "gpv1_dev_004_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "reporter",
+            "text": "Przytaczam słowa osoby Mira; sam nie przyjmuję tego warunku."
+          },
+          {
+            "id": "gpv1_dev_004_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "analyst",
+            "text": "W moich własnych notatkach „pokrywa jest otwarta” nie implikuje „panel się świeci”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 4
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_005",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [
+        {
+          "competing_values": [
+            "gpv1_dev_005_t1",
+            "n1"
+          ],
+          "path": "$.source_assertions[0].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_005_t1",
+            "n1"
+          ],
+          "path": "$.source_assertions[1].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_005_t2",
+            null
+          ],
+          "path": "$.source_assertions[2].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_005_t3",
+            null
+          ],
+          "path": "$.source_assertions[3].source"
+        }
+      ],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "paczka jest zeskanowana"
+          },
+          {
+            "id": "n2",
+            "text": "drukuje się paragon"
+          },
+          {
+            "id": "n3",
+            "text": "warunek: jeśli paczka jest zeskanowana, drukuje się paragon"
+          },
+          {
+            "id": "n4",
+            "text": "paczka jest zeskanowana nie implikuje drukuje się paragon"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "Olek",
+            "evidence": [
+              "gpv1_dev_005_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_005_t1",
+                "n1"
+              ]
+            },
+            "target": "n2"
+          },
+          {
+            "attributed_to": "Olek",
+            "evidence": [
+              "gpv1_dev_005_t1"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "requires",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_005_t1",
+                "n1"
+              ]
+            },
+            "target": "n3"
+          },
+          {
+            "attributed_to": "reporter",
+            "evidence": [
+              "gpv1_dev_005_t2"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "denies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_005_t2",
+                null
+              ]
+            },
+            "target": "n3"
+          },
+          {
+            "attributed_to": "analyst",
+            "evidence": [
+              "gpv1_dev_005_t3"
+            ],
+            "id": "a4",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "denies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_005_t3",
+                null
+              ]
+            },
+            "target": "a1"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0011336",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_005.response.bin",
+      "response_sha256": "9fa86e7127333a59deebb38e76c010ff39188c10d6fbbd57f072249b05408bfa",
+      "source_payload": {
+        "id": "gpv1_dev_005",
+        "source_id": "synthetic:gpv1_dev_005",
+        "turns": [
+          {
+            "id": "gpv1_dev_005_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "reporter",
+            "text": "Olek powiedział: „Jeśli paczka jest zeskanowana, drukuje się paragon”."
+          },
+          {
+            "id": "gpv1_dev_005_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "reporter",
+            "text": "Przytaczam słowa osoby Olek; sam nie przyjmuję tego warunku."
+          },
+          {
+            "id": "gpv1_dev_005_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "analyst",
+            "text": "W moich własnych notatkach „paczka jest zeskanowana” nie implikuje „drukuje się paragon”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": false
+    },
+    {
+      "assertion_evidence_shapes": {
+        "required_turn_id_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_006",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "boja miga"
+          },
+          {
+            "id": "n2",
+            "text": "prom czeka"
+          },
+          {
+            "id": "n3",
+            "text": "Iga powiedział: Jeśli boja miga, prom czeka"
+          },
+          {
+            "id": "n4",
+            "text": "Przytaczam słowa osoby Iga"
+          },
+          {
+            "id": "n5",
+            "text": "sam nie przyjmuję tego warunku"
+          },
+          {
+            "id": "n6",
+            "text": "W moich własnych notatkach boja miga nie implikuje prom czeka"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "Iga",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_006_t1"
+              }
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "Iga",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_006_t2"
+              }
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "analyst",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_006_t3"
+              }
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0007428",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_006.response.bin",
+      "response_sha256": "c73ca1077dedd06356f89e605fd25eaceef6a816c3c0222578a182307b982e8e",
+      "source_payload": {
+        "id": "gpv1_dev_006",
+        "source_id": "synthetic:gpv1_dev_006",
+        "turns": [
+          {
+            "id": "gpv1_dev_006_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "reporter",
+            "text": "Iga powiedział: „Jeśli boja miga, prom czeka”."
+          },
+          {
+            "id": "gpv1_dev_006_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "reporter",
+            "text": "Przytaczam słowa osoby Iga; sam nie przyjmuję tego warunku."
+          },
+          {
+            "id": "gpv1_dev_006_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "analyst",
+            "text": "W moich własnych notatkach „boja miga” nie implikuje „prom czeka”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 2
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_007",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "the sensor reports no error"
+          },
+          {
+            "id": "n2",
+            "text": "the record is not discarded"
+          },
+          {
+            "id": "n3",
+            "text": "the fan stops"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_007_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "negative",
+            "relation": "prevents",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_007_t3"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "denies",
+            "source": "n2",
+            "target": "n1"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0006604",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_007.response.bin",
+      "response_sha256": "4239de68268f8c6d53e5e9edf1b165042b47acf650d0fba03ef2618f7929ff94",
+      "source_payload": {
+        "id": "gpv1_dev_007",
+        "source_id": "synthetic:gpv1_dev_007",
+        "turns": [
+          {
+            "id": "gpv1_dev_007_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "tester",
+            "text": "If the sensor reports no error, the record is not discarded."
+          },
+          {
+            "id": "gpv1_dev_007_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "tester",
+            "text": "This rule says nothing about whether the fan stops."
+          },
+          {
+            "id": "gpv1_dev_007_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "tester",
+            "text": "The statement “the record is not discarded” does not imply “the sensor reports no error”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 2
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_008",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "the gate is not locked"
+          },
+          {
+            "id": "n2",
+            "text": "the courier does not leave"
+          },
+          {
+            "id": "n3",
+            "text": "the bell rings"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_008_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_008_t3"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n2",
+            "target": "n1"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0006604",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_008.response.bin",
+      "response_sha256": "dde3827c03ce8aaae64d7a2fd1e6d784d665bbb60688de1c6b2e3daaf4958bd3",
+      "source_payload": {
+        "id": "gpv1_dev_008",
+        "source_id": "synthetic:gpv1_dev_008",
+        "turns": [
+          {
+            "id": "gpv1_dev_008_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "tester",
+            "text": "If the gate is not locked, the courier does not leave."
+          },
+          {
+            "id": "gpv1_dev_008_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "tester",
+            "text": "This rule says nothing about whether the bell rings."
+          },
+          {
+            "id": "gpv1_dev_008_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "tester",
+            "text": "The statement “the courier does not leave” does not imply “the gate is not locked”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 2
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_009",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "the rope is not wet"
+          },
+          {
+            "id": "n2",
+            "text": "the knot does not slip"
+          },
+          {
+            "id": "n3",
+            "text": "the hook bends"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_009_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "prevents",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_009_t3"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n2",
+            "target": "n1"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0006604",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_009.response.bin",
+      "response_sha256": "c83970ffae03b37dedf2ac8a7d534e79701a92d3bf9cb5762bcb0e48dc42fcef",
+      "source_payload": {
+        "id": "gpv1_dev_009",
+        "source_id": "synthetic:gpv1_dev_009",
+        "turns": [
+          {
+            "id": "gpv1_dev_009_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "tester",
+            "text": "If the rope is not wet, the knot does not slip."
+          },
+          {
+            "id": "gpv1_dev_009_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "tester",
+            "text": "This rule says nothing about whether the hook bends."
+          },
+          {
+            "id": "gpv1_dev_009_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "tester",
+            "text": "The statement “the knot does not slip” does not imply “the rope is not wet”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "required_turn_id_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_010",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "czujnik nie zgłasza błędu"
+          },
+          {
+            "id": "n2",
+            "text": "rekord nie jest odrzucany"
+          },
+          {
+            "id": "n3",
+            "text": "ta reguła nic nie mówi o tym, czy wentylator staje"
+          },
+          {
+            "id": "n4",
+            "text": "stwierdzenie „rekord nie jest odrzucany” nie implikuje „czujnik nie zgłasza błędu”"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_010_t1"
+              }
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "prevents",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_010_t2"
+              }
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "denies",
+            "source": "ta reguła",
+            "target": "wentylator staje"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_010_t3"
+              }
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n2",
+            "target": "n1"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0007316",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_010.response.bin",
+      "response_sha256": "9c826518a3771749ec9be4ec20aee6f8471687edc93aa2123f0efb895a294eb3",
+      "source_payload": {
+        "id": "gpv1_dev_010",
+        "source_id": "synthetic:gpv1_dev_010",
+        "turns": [
+          {
+            "id": "gpv1_dev_010_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "tester",
+            "text": "Jeśli czujnik nie zgłasza błędu, rekord nie jest odrzucany."
+          },
+          {
+            "id": "gpv1_dev_010_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "tester",
+            "text": "Ta reguła nic nie mówi o tym, czy wentylator staje."
+          },
+          {
+            "id": "gpv1_dev_010_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "tester",
+            "text": "Stwierdzenie „rekord nie jest odrzucany” nie implikuje „czujnik nie zgłasza błędu”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 2
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_011",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "brama nie jest zamknięta"
+          },
+          {
+            "id": "n2",
+            "text": "kurier nie odchodzi"
+          },
+          {
+            "id": "n3",
+            "text": "dzwonek dzwoni"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_011_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "prevents",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_011_t3"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n2",
+            "target": "n1"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0006796",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_011.response.bin",
+      "response_sha256": "1cde70fad0c6bca6d8a01fc2e103f1cbcaddbb8cd9605b460d53ba848e7d2627",
+      "source_payload": {
+        "id": "gpv1_dev_011",
+        "source_id": "synthetic:gpv1_dev_011",
+        "turns": [
+          {
+            "id": "gpv1_dev_011_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "tester",
+            "text": "Jeśli brama nie jest zamknięta, kurier nie odchodzi."
+          },
+          {
+            "id": "gpv1_dev_011_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "tester",
+            "text": "Ta reguła nic nie mówi o tym, czy dzwonek dzwoni."
+          },
+          {
+            "id": "gpv1_dev_011_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "tester",
+            "text": "Stwierdzenie „kurier nie odchodzi” nie implikuje „brama nie jest zamknięta”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_012",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "lina nie jest mokra"
+          },
+          {
+            "id": "n2",
+            "text": "węzeł się nie zsuwa"
+          },
+          {
+            "id": "n3",
+            "text": "ta reguła nic nie mówi o tym, czy hak się wygina"
+          },
+          {
+            "id": "n4",
+            "text": "węzeł się nie zsuwa nie implikuje lina nie jest mokra"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_012_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "prevents",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_012_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "supports",
+            "source": "n3",
+            "target": "n3"
+          },
+          {
+            "attributed_to": "tester",
+            "evidence": [
+              "gpv1_dev_012_t3"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n2",
+            "target": "n1"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0008984",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch01/run/gpv1_dev_012.response.bin",
+      "response_sha256": "a00e85aedf79995cf8d45c01126fd00ce3bed0027b56a6040d80beecc73c45b2",
+      "source_payload": {
+        "id": "gpv1_dev_012",
+        "source_id": "synthetic:gpv1_dev_012",
+        "turns": [
+          {
+            "id": "gpv1_dev_012_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "tester",
+            "text": "Jeśli lina nie jest mokra, węzeł się nie zsuwa."
+          },
+          {
+            "id": "gpv1_dev_012_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "tester",
+            "text": "Ta reguła nic nie mówi o tym, czy hak się wygina."
+          },
+          {
+            "id": "gpv1_dev_012_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "tester",
+            "text": "Stwierdzenie „węzeł się nie zsuwa” nie implikuje „lina nie jest mokra”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_013",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "a power dip"
+          },
+          {
+            "id": "n2",
+            "text": "a controller reset"
+          },
+          {
+            "id": "n3",
+            "text": "a clock drift"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_013_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_013_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n3"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_013_t2"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          }
+        ],
+        "status_events": [
+          {
+            "assertion_id": "a1",
+            "evidence": [
+              "gpv1_dev_013_t2"
+            ],
+            "known_at": "2026-08-10T09:01:00Z",
+            "status": "superseded",
+            "superseded_by": "a3"
+          }
+        ]
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.000924",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_013.response.bin",
+      "response_sha256": "c820b52408c46a026891dcd10d3c7c0878f7622cb2e0966a8e66a27ace8d02ee",
+      "source_payload": {
+        "id": "gpv1_dev_013",
+        "source_id": "synthetic:gpv1_dev_013",
+        "turns": [
+          {
+            "id": "gpv1_dev_013_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "owner",
+            "text": "A power dip causes a controller reset."
+          },
+          {
+            "id": "gpv1_dev_013_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "owner",
+            "text": "Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead."
+          },
+          {
+            "id": "gpv1_dev_013_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "owner",
+            "text": "Keep the initial statement in the record. This correction was not known when I wrote it."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_014",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "a blocked drain"
+          },
+          {
+            "id": "n2",
+            "text": "a wet floor"
+          },
+          {
+            "id": "n3",
+            "text": "a flooded sump"
+          },
+          {
+            "id": "n4",
+            "text": "a blocked drain does not cause a wet floor"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_014_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_014_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n3"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_014_t2"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          }
+        ],
+        "status_events": [
+          {
+            "assertion_id": "a1",
+            "evidence": [
+              "gpv1_dev_014_t2"
+            ],
+            "known_at": "2026-08-10T09:01:00Z",
+            "status": "superseded",
+            "superseded_by": "a3"
+          }
+        ]
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0009672",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_014.response.bin",
+      "response_sha256": "e9d03c73de3ac0831d8c1718409d5013f8ec5cdb03cd17d0613cd5830b0e06f5",
+      "source_payload": {
+        "id": "gpv1_dev_014",
+        "source_id": "synthetic:gpv1_dev_014",
+        "turns": [
+          {
+            "id": "gpv1_dev_014_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "owner",
+            "text": "A blocked drain causes a wet floor."
+          },
+          {
+            "id": "gpv1_dev_014_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "owner",
+            "text": "Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead."
+          },
+          {
+            "id": "gpv1_dev_014_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "owner",
+            "text": "Keep the initial statement in the record. This correction was not known when I wrote it."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_015",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "a loose belt"
+          },
+          {
+            "id": "n2",
+            "text": "a stalled wheel"
+          },
+          {
+            "id": "n3",
+            "text": "a squeaking pulley"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_015_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_015_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n3"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_015_t2"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          }
+        ],
+        "status_events": [
+          {
+            "assertion_id": "a1",
+            "evidence": [
+              "gpv1_dev_015_t2"
+            ],
+            "known_at": "2026-08-10T09:01:00Z",
+            "status": "superseded",
+            "superseded_by": "a3"
+          }
+        ]
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.000926",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_015.response.bin",
+      "response_sha256": "00756b623c405b98fc3c5aacc4a80a2555bb9e52c78b7d0ba8d3f1dcaa0584c3",
+      "source_payload": {
+        "id": "gpv1_dev_015",
+        "source_id": "synthetic:gpv1_dev_015",
+        "turns": [
+          {
+            "id": "gpv1_dev_015_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "owner",
+            "text": "A loose belt causes a stalled wheel."
+          },
+          {
+            "id": "gpv1_dev_015_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "owner",
+            "text": "Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead."
+          },
+          {
+            "id": "gpv1_dev_015_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "owner",
+            "text": "Keep the initial statement in the record. This correction was not known when I wrote it."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_016",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "spadek napięcia"
+          },
+          {
+            "id": "n2",
+            "text": "reset sterownika"
+          },
+          {
+            "id": "n3",
+            "text": "dryf zegara"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_016_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_016_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n3"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_016_t2"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          }
+        ],
+        "status_events": [
+          {
+            "assertion_id": "a1",
+            "evidence": [
+              "gpv1_dev_016_t2"
+            ],
+            "known_at": "2026-08-10T09:01:00Z",
+            "status": "superseded",
+            "superseded_by": "a3"
+          }
+        ]
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.000936",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_016.response.bin",
+      "response_sha256": "c4d8951d416c81b9980b27cced52a6556a957b4172f25c9d9ced76196be99dd4",
+      "source_payload": {
+        "id": "gpv1_dev_016",
+        "source_id": "synthetic:gpv1_dev_016",
+        "turns": [
+          {
+            "id": "gpv1_dev_016_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "owner",
+            "text": "„spadek napięcia” powoduje „reset sterownika”."
+          },
+          {
+            "id": "gpv1_dev_016_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "owner",
+            "text": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”."
+          },
+          {
+            "id": "gpv1_dev_016_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "owner",
+            "text": "Zachowaj pierwszy zapis w historii. Sprostowanie nie było znane w chwili jego napisania."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "required_turn_id_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_017",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "zatkany odpływ"
+          },
+          {
+            "id": "n2",
+            "text": "mokra podłoga"
+          },
+          {
+            "id": "n3",
+            "text": "zalana studzienka"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_017_t1"
+              }
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_017_t2"
+              }
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_017_t2"
+              }
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n3"
+          }
+        ],
+        "status_events": [
+          {
+            "assertion_id": "a1",
+            "evidence": [
+              {
+                "turn_id": "gpv1_dev_017_t2"
+              }
+            ],
+            "known_at": "2026-08-10T09:01:00Z",
+            "status": "superseded",
+            "superseded_by": "a2"
+          }
+        ]
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0009964",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_017.response.bin",
+      "response_sha256": "cea035a95248e0906f07da662a9f08476fcff9a6511aa28b70366515eddb5f42",
+      "source_payload": {
+        "id": "gpv1_dev_017",
+        "source_id": "synthetic:gpv1_dev_017",
+        "turns": [
+          {
+            "id": "gpv1_dev_017_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "owner",
+            "text": "„zatkany odpływ” powoduje „mokra podłoga”."
+          },
+          {
+            "id": "gpv1_dev_017_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "owner",
+            "text": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”."
+          },
+          {
+            "id": "gpv1_dev_017_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "owner",
+            "text": "Zachowaj pierwszy zapis w historii. Sprostowanie nie było znane w chwili jego napisania."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_018",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "luźny pasek"
+          },
+          {
+            "id": "n2",
+            "text": "zatrzymane koło"
+          },
+          {
+            "id": "n3",
+            "text": "piszczące koło pasowe"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_018_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_018_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "negative",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "owner",
+            "evidence": [
+              "gpv1_dev_018_t2"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "causes",
+            "source": "n1",
+            "target": "n3"
+          }
+        ],
+        "status_events": [
+          {
+            "assertion_id": "a1",
+            "evidence": [
+              "gpv1_dev_018_t2"
+            ],
+            "known_at": "2026-08-10T09:01:00Z",
+            "status": "superseded",
+            "superseded_by": "a2"
+          }
+        ]
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0009512",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_018.response.bin",
+      "response_sha256": "1e79fb4a6870996e3138736ecbed4d49666a6b294c54b3669729b35b8a4afa8c",
+      "source_payload": {
+        "id": "gpv1_dev_018",
+        "source_id": "synthetic:gpv1_dev_018",
+        "turns": [
+          {
+            "id": "gpv1_dev_018_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "owner",
+            "text": "„luźny pasek” powoduje „zatrzymane koło”."
+          },
+          {
+            "id": "gpv1_dev_018_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "owner",
+            "text": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”."
+          },
+          {
+            "id": "gpv1_dev_018_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "owner",
+            "text": "Zachowaj pierwszy zapis w historii. Sprostowanie nie było znane w chwili jego napisania."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_019",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [
+        {
+          "competing_values": [
+            "gpv1_dev_019_t1",
+            "gpv1_dev_019_t1"
+          ],
+          "path": "$.source_assertions[0].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_019_t2",
+            "gpv1_dev_019_t2"
+          ],
+          "path": "$.source_assertions[1].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_019_t3",
+            "gpv1_dev_019_t3"
+          ],
+          "path": "$.source_assertions[2].source"
+        }
+      ],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "the latch is released"
+          },
+          {
+            "id": "n2",
+            "text": "the bolt is free"
+          },
+          {
+            "id": "n3",
+            "text": "the catch no longer holds"
+          },
+          {
+            "id": "n4",
+            "text": "the pin can move"
+          },
+          {
+            "id": "n5",
+            "text": "the lever is down"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_019_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_019_t1",
+                "gpv1_dev_019_t1"
+              ]
+            },
+            "target": "n2"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_019_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_019_t2",
+                "gpv1_dev_019_t2"
+              ]
+            },
+            "target": "n4"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_019_t3"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_019_t3",
+                "gpv1_dev_019_t3"
+              ]
+            },
+            "target": "n5"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0009772",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_019.response.bin",
+      "response_sha256": "d60d0c5db117ffd5bac80bb173f509c501fa26c352348c7b6a1588b80f49435b",
+      "source_payload": {
+        "id": "gpv1_dev_019",
+        "source_id": "synthetic:gpv1_dev_019",
+        "turns": [
+          {
+            "id": "gpv1_dev_019_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "author",
+            "text": "If the latch is released, the bolt is free."
+          },
+          {
+            "id": "gpv1_dev_019_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "author",
+            "text": "To restate the same rule in different words: whenever the catch no longer holds, the pin can move."
+          },
+          {
+            "id": "gpv1_dev_019_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "author",
+            "text": "However, “the latch is released” does not imply “the lever is down”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": false
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_020",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "the sky is cloudless"
+          },
+          {
+            "id": "n2",
+            "text": "the camera uses a short exposure"
+          },
+          {
+            "id": "n3",
+            "text": "no clouds cover the sky"
+          },
+          {
+            "id": "n4",
+            "text": "the shutter interval is brief"
+          },
+          {
+            "id": "n5",
+            "text": "the lens is capped"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_020_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_020_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n3",
+            "target": "n4"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_020_t3"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n5"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0008896",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_020.response.bin",
+      "response_sha256": "bb8e3cda5f153cca99538f14afe6cb6d15a4fe399b2502a7c22f75500f71fd98",
+      "source_payload": {
+        "id": "gpv1_dev_020",
+        "source_id": "synthetic:gpv1_dev_020",
+        "turns": [
+          {
+            "id": "gpv1_dev_020_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "author",
+            "text": "If the sky is cloudless, the camera uses a short exposure."
+          },
+          {
+            "id": "gpv1_dev_020_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "author",
+            "text": "To restate the same rule in different words: whenever no clouds cover the sky, the shutter interval is brief."
+          },
+          {
+            "id": "gpv1_dev_020_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "author",
+            "text": "However, “the sky is cloudless” does not imply “the lens is capped”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "attempt_state": "rejected",
+      "case_id": "gpv1_dev_021",
+      "diagnostic_json_complete": false,
+      "duplicate_fields": [],
+      "finish_reason": "length",
+      "no_output_repair_or_primary_rescore": true,
+      "object": null,
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0034996",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_021.response.bin",
+      "response_sha256": "cff1db49ef84e299c26b03a0d1bf30839221fd3c6d6e7c7dfa9fb3d16b89eef6",
+      "source_payload": {
+        "id": "gpv1_dev_021",
+        "source_id": "synthetic:gpv1_dev_021",
+        "turns": [
+          {
+            "id": "gpv1_dev_021_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "author",
+            "text": "If the seal is broken, the vessel loses pressure."
+          },
+          {
+            "id": "gpv1_dev_021_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "author",
+            "text": "To restate the same rule in different words: whenever the closure is no longer intact, the container cannot hold its pressure."
+          },
+          {
+            "id": "gpv1_dev_021_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "author",
+            "text": "However, “the seal is broken” does not imply “the heater starts”."
+          }
+        ]
+      }
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 4
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_022",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [
+        {
+          "competing_values": [
+            "gpv1_dev_022_t1",
+            "gpv1_dev_022_t1"
+          ],
+          "path": "$.source_assertions[0].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_022_t2",
+            "gpv1_dev_022_t2"
+          ],
+          "path": "$.source_assertions[1].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_022_t2",
+            "gpv1_dev_022_t2"
+          ],
+          "path": "$.source_assertions[2].source"
+        },
+        {
+          "competing_values": [
+            "gpv1_dev_022_t3",
+            "gpv1_dev_022_t3"
+          ],
+          "path": "$.source_assertions[3].source"
+        }
+      ],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "zatrzask jest zwolniony"
+          },
+          {
+            "id": "n2",
+            "text": "rygiel jest wolny"
+          },
+          {
+            "id": "n3",
+            "text": "zapadka już nie trzyma"
+          },
+          {
+            "id": "n4",
+            "text": "trzpień może się przesuwać"
+          },
+          {
+            "id": "n5",
+            "text": "dźwignia jest opuszczona"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_022_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_022_t1",
+                "gpv1_dev_022_t1"
+              ]
+            },
+            "target": "n2"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_022_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_022_t2",
+                "gpv1_dev_022_t2"
+              ]
+            },
+            "target": "n4"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_022_t2"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_022_t2",
+                "gpv1_dev_022_t2"
+              ]
+            },
+            "target": "n3"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_022_t3"
+            ],
+            "id": "a4",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": {
+              "duplicate_values": [
+                "gpv1_dev_022_t3",
+                "gpv1_dev_022_t3"
+              ]
+            },
+            "target": "n5"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0011968",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_022.response.bin",
+      "response_sha256": "0e79b6d1a47157b9e26d28160fab682e4d8a152cc4fb7d8f310534a848e77b26",
+      "source_payload": {
+        "id": "gpv1_dev_022",
+        "source_id": "synthetic:gpv1_dev_022",
+        "turns": [
+          {
+            "id": "gpv1_dev_022_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "author",
+            "text": "Jeśli zatrzask jest zwolniony, rygiel jest wolny."
+          },
+          {
+            "id": "gpv1_dev_022_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "author",
+            "text": "Tę samą regułę ujmę innymi słowami: zawsze gdy zapadka już nie trzyma, trzpień może się przesuwać."
+          },
+          {
+            "id": "gpv1_dev_022_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "author",
+            "text": "Natomiast „zatrzask jest zwolniony” nie implikuje „dźwignia jest opuszczona”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": false
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_023",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "niebo jest bezchmurne"
+          },
+          {
+            "id": "n2",
+            "text": "aparat używa krótkiej ekspozycji"
+          },
+          {
+            "id": "n3",
+            "text": "chmury nie zasłaniają nieba"
+          },
+          {
+            "id": "n4",
+            "text": "czas otwarcia migawki jest krótki"
+          },
+          {
+            "id": "n5",
+            "text": "obiektyw jest zasłonięty"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_023_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_023_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n3",
+            "target": "n4"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_023_t3"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n5"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0009376",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_023.response.bin",
+      "response_sha256": "6ca8eb5b38229390ef6c4cf4f8abf566dd36b225aa67b538305f4cf658765df2",
+      "source_payload": {
+        "id": "gpv1_dev_023",
+        "source_id": "synthetic:gpv1_dev_023",
+        "turns": [
+          {
+            "id": "gpv1_dev_023_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "author",
+            "text": "Jeśli niebo jest bezchmurne, aparat używa krótkiej ekspozycji."
+          },
+          {
+            "id": "gpv1_dev_023_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "author",
+            "text": "Tę samą regułę ujmę innymi słowami: zawsze gdy chmury nie zasłaniają nieba, czas otwarcia migawki jest krótki."
+          },
+          {
+            "id": "gpv1_dev_023_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "author",
+            "text": "Natomiast „niebo jest bezchmurne” nie implikuje „obiektyw jest zasłonięty”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    },
+    {
+      "assertion_evidence_shapes": {
+        "string_ids_instead_of_required_objects": 3
+      },
+      "attempt_state": "completed",
+      "case_id": "gpv1_dev_024",
+      "diagnostic_json_complete": true,
+      "duplicate_fields": [],
+      "finish_reason": "stop",
+      "no_output_repair_or_primary_rescore": true,
+      "object": {
+        "nodes": [
+          {
+            "id": "n1",
+            "text": "uszczelnienie jest przerwane"
+          },
+          {
+            "id": "n2",
+            "text": "naczynie traci ciśnienie"
+          },
+          {
+            "id": "n3",
+            "text": "zamknięcie nie jest już szczelne"
+          },
+          {
+            "id": "n4",
+            "text": "pojemnik nie utrzymuje ciśnienia"
+          },
+          {
+            "id": "n5",
+            "text": "grzałka rusza"
+          }
+        ],
+        "source_assertions": [
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_024_t1"
+            ],
+            "id": "a1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n2"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_024_t2"
+            ],
+            "id": "a2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "polarity": "positive",
+            "relation": "implies",
+            "source": "n3",
+            "target": "n4"
+          },
+          {
+            "attributed_to": "author",
+            "evidence": [
+              "gpv1_dev_024_t3"
+            ],
+            "id": "a3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "polarity": "negative",
+            "relation": "implies",
+            "source": "n1",
+            "target": "n5"
+          }
+        ],
+        "status_events": []
+      },
+      "post_outcome_diagnostic_only": true,
+      "reported_cost_usd": "0.0009284",
+      "response_file": "docs/research/graph_free_extraction_v1/prepared/batch02/run/gpv1_dev_024.response.bin",
+      "response_sha256": "8697574729c19150004ab53a96809046279cce5ae25e63765c1d76abe30e012c",
+      "source_payload": {
+        "id": "gpv1_dev_024",
+        "source_id": "synthetic:gpv1_dev_024",
+        "turns": [
+          {
+            "id": "gpv1_dev_024_t1",
+            "known_at": "2026-08-10T09:00:00Z",
+            "speaker": "author",
+            "text": "Jeśli uszczelnienie jest przerwane, naczynie traci ciśnienie."
+          },
+          {
+            "id": "gpv1_dev_024_t2",
+            "known_at": "2026-08-10T09:01:00Z",
+            "speaker": "author",
+            "text": "Tę samą regułę ujmę innymi słowami: zawsze gdy zamknięcie nie jest już szczelne, pojemnik nie utrzymuje ciśnienia."
+          },
+          {
+            "id": "gpv1_dev_024_t3",
+            "known_at": "2026-08-10T09:02:00Z",
+            "speaker": "author",
+            "text": "Natomiast „uszczelnienie jest przerwane” nie implikuje „grzałka rusza”."
+          }
+        ]
+      },
+      "strict_duplicate_free_json": true
+    }
+  ],
+  "duplicate_fields_by_case": {
+    "gpv1_dev_003": 2,
+    "gpv1_dev_005": 4,
+    "gpv1_dev_019": 3,
+    "gpv1_dev_022": 4
+  },
+  "finish_counts": {
+    "length": 2,
+    "stop": 22
+  },
+  "primary_unchanged": true,
+  "schema": "loom.free_raw_contract_diagnostics/1",
+  "split": "dev",
+  "validation_read": false
+}
