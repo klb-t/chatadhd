@@ -1,0 +1,52 @@
+test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not) ... 00:10:49 [INFO ] loom.config: config.json not found - using defaults
+00:10:49 [INFO ] loom.config: secrets.json not found - using defaults
+00:10:49 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:10:49 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-http-dtl1eljv/chatadhd.db
+00:10:49 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:10:49 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-http-dtl1eljv)
+00:10:49 [INFO ] loom.db: Database closed
+00:10:49 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding (__main__.ActiveTaskRevisionHttpTest.test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding) ... 00:10:50 [INFO ] loom.config: config.json not found - using defaults
+00:10:50 [INFO ] loom.config: secrets.json not found - using defaults
+00:10:50 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:10:50 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-zddc1qza/chatadhd.db
+00:10:50 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:10:50 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-zddc1qza)
+00:10:50 [INFO ] loom.db: Database closed
+00:10:50 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_selective_v2_v3_latest_replay_and_stale_rejection (__main__.ActiveTaskRevisionHttpTest.test_selective_v2_v3_latest_replay_and_stale_rejection) ... 00:10:51 [INFO ] loom.config: config.json not found - using defaults
+00:10:51 [INFO ] loom.config: secrets.json not found - using defaults
+00:10:51 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:10:51 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-a5si3x_z/chatadhd.db
+00:10:51 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:10:51 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-a5si3x_z)
+00:10:51 [INFO ] loom.db: Database closed
+00:10:51 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_trace_off_provider_failure_retains_product_across_runtime_restart (__main__.ActiveTaskRevisionHttpTest.test_trace_off_provider_failure_retains_product_across_runtime_restart) ... 00:10:51 [INFO ] loom.config: config.json not found - using defaults
+00:10:51 [INFO ] loom.config: secrets.json not found - using defaults
+00:10:51 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:10:51 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-mjac8nf9/chatadhd.db
+00:10:51 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:10:51 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-mjac8nf9)
+00:10:51 [INFO ] loom.db: Database closed
+00:10:51 [INFO ] loom.runtime: Loom runtime shut down
+00:10:51 [INFO ] loom.config: Loaded config.json (12 keys)
+00:10:51 [INFO ] loom.config: Loaded secrets.json (1 keys)
+00:10:51 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-mjac8nf9/chatadhd.db
+00:10:51 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:10:51 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-mjac8nf9)
+00:10:52 [INFO ] loom.db: Database closed
+00:10:52 [INFO ] loom.runtime: Loom runtime shut down
+ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.660s
+
+OK
+W1 transport receipt: 3 local provider calls, 0 remote calls; invalid binding adds 0 messages.
+W1 native edit transport: 3 local calls, 0 remote; 2 rejected rebinding attempts add 0 calls/rows.
+W1 revisions transport: 7 local calls, 0 remote; 2 stale rejections add 0 calls/rows.
+W1 restart transport: 5 local calls (1 HTTP 503), 0 remote; 2 version rejections add 0 calls/rows.

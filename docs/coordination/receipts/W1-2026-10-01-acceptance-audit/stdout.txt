@@ -1,0 +1,74 @@
+{
+  "schema": "w1.acceptance_boundary_audit/1",
+  "measurement": "known_failure_reproduction_not_correctness_gate",
+  "library": "/workspace/scratch/23947acf329f/verification/build/libloom.so.0.1.0",
+  "library_sha256": "0916b6bb82a497bd1038501f85c5f1d73fce94857ff07a6727a814211d7c7496",
+  "script_sha256": "ebd19f2c9d5d9b3a350424699854a79af55b914b27976f90fef7ced106af6bda",
+  "retained_synthetic_data_dir": "/workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n",
+  "scenarios": [
+    {
+      "scenario": "metadata_relayout",
+      "conversation_id": "c_633729c2de36",
+      "source_message_id": "m_3a8f4c9f13c3",
+      "original_accepting_message_id": "m_c738091c6ad9",
+      "competing_accepting_message_id": "m_4ad340e5157e",
+      "seed_error": {
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      },
+      "original_acceptance_error": {
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      },
+      "before_mutation_error": {
+        "code": "invalid_argument",
+        "message": "active_task: revision must extend the latest retained product of this task and goal"
+      },
+      "after_restart_error": {
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      },
+      "new_competing_root_persisted": true,
+      "original_acceptance_preserved": true,
+      "source_unchanged": true,
+      "original_scope_rows_before_second_acceptance": 2,
+      "original_scope_rows_after_second_acceptance": 3,
+      "new_message_count": 1
+    },
+    {
+      "scenario": "move_accepting_row",
+      "conversation_id": "c_92e761ac2adc",
+      "source_message_id": "m_0e6330fab589",
+      "original_accepting_message_id": "m_006d805d614c",
+      "competing_accepting_message_id": "m_9388cde6dada",
+      "seed_error": {
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      },
+      "original_acceptance_error": {
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      },
+      "before_mutation_error": {
+        "code": "invalid_argument",
+        "message": "active_task: revision must extend the latest retained product of this task and goal"
+      },
+      "after_restart_error": {
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      },
+      "new_competing_root_persisted": true,
+      "original_acceptance_preserved": true,
+      "source_unchanged": true,
+      "original_scope_rows_before_second_acceptance": 1,
+      "original_scope_rows_after_second_acceptance": 2,
+      "new_message_count": 1
+    }
+  ],
+  "distinct_scenarios": 2,
+  "provider_calls": 0,
+  "remote_calls": 0,
+  "deletions": 0,
+  "accounting_basis": "fresh directories, no key installed, every accepted send returns auth before transport",
+  "reproduced_scenarios": 2
+}
