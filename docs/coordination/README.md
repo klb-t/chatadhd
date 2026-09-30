@@ -2,8 +2,10 @@
 
 **Aktualny stan publikacji i integracji (2026-10-01):
 [PUBLICATION_STATUS.md](PUBLICATION_STATUS.md).** W1–W6 już wykonały przyrosty.
-Wszystkie odnalezione gotowe wyniki są na własnych gałęziach; W5 zostało odzyskane
-i opublikowane. Nie są jeszcze scalone do jednej przetestowanej wersji.
+Wszystkie odnalezione gotowe wyniki są opublikowane i scalone do wspólnego
+kandydata `gpt/integration-w1-w6-2026-10-01`; W5 zostało odzyskane.
+Źródło `8cc5a56` zawiera też poprawki trwałości W1, adapter W2, importer i UI.
+Trwa wspólna weryfikacja; historyczne wyniki gałęzi jej nie zastępują.
 Poniższe pakiety opisują przydziały, a nie aktualny stan wykonania.
 
 Stan organizacyjny: 2026-09-30. Integrator: ROOT w nowym wątku kontynuacji.
