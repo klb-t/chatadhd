@@ -81,6 +81,15 @@ class ArchiveCostTest(unittest.TestCase):
             archive_cost.archive_stats(path)
         self.assertEqual({p.name for p in path.parent.iterdir()}, names)
 
+    def test_even_conversation_median_uses_both_middle_sizes(self):
+        stats=archive_cost.archive_stats(self.db)
+        # c1=4200, c2=1200. The prior upper-middle value4200 overstated this.
+        self.assertEqual(stats["conversation_chars"], {"median":2700,"max":4200})
+        with sqlite3.connect(self.db) as con:
+            con.execute("DELETE FROM messages")
+        self.assertEqual(archive_cost.archive_stats(self.db)["conversation_chars"],
+                         {"median":0,"max":0})
+
     def test_unknown_status_counted_explicitly_and_configurable(self):
         with sqlite3.connect(self.db) as con:
             con.executemany("INSERT INTO messages VALUES (?,?,?,?,?)", [

@@ -1,0 +1,285 @@
+test_db_opened_read_only (test_archive_cost.ArchiveCostTest.test_db_opened_read_only) ... ok
+test_estimate_arithmetic (test_archive_cost.ArchiveCostTest.test_estimate_arithmetic) ... ok
+test_even_conversation_median_uses_both_middle_sizes (test_archive_cost.ArchiveCostTest.test_even_conversation_median_uses_both_middle_sizes) ... ok
+test_fraction_and_versions (test_archive_cost.ArchiveCostTest.test_fraction_and_versions) ... ok
+test_invalid_counts_and_prices_rejected (test_archive_cost.ArchiveCostTest.test_invalid_counts_and_prices_rejected) ... ok
+test_invalid_parameters_rejected_before_cost (test_archive_cost.ArchiveCostTest.test_invalid_parameters_rejected_before_cost) ... ok
+test_large_finite_budget_supported_overflow_rejected (test_archive_cost.ArchiveCostTest.test_large_finite_budget_supported_overflow_rejected) ... ok
+test_missing_database_is_not_created (test_archive_cost.ArchiveCostTest.test_missing_database_is_not_created) ... ok
+test_reserved_uri_characters_open_exact_file_without_creating_sibling (test_archive_cost.ArchiveCostTest.test_reserved_uri_characters_open_exact_file_without_creating_sibling) ... ok
+test_stats_split_by_status (test_archive_cost.ArchiveCostTest.test_stats_split_by_status) ... ok
+test_unknown_status_counted_explicitly_and_configurable (test_archive_cost.ArchiveCostTest.test_unknown_status_counted_explicitly_and_configurable) ... ok
+test_added_provenance_is_checked_even_when_original_quote_matches (test_candidate_graph_eval.CandidateEvaluationGuards.test_added_provenance_is_checked_even_when_original_quote_matches) ... ok
+test_both_frozen_splits_have_source_integrity_and_equivalent_authored_encodings (test_candidate_graph_eval.CandidateEvaluationGuards.test_both_frozen_splits_have_source_integrity_and_equivalent_authored_encodings) ... ok
+test_changed_source_packet_invalidates_anchor_hash (test_candidate_graph_eval.CandidateEvaluationGuards.test_changed_source_packet_invalidates_anchor_hash) ... ok
+test_character_offsets_cannot_replace_utf8_byte_offsets (test_candidate_graph_eval.CandidateEvaluationGuards.test_character_offsets_cannot_replace_utf8_byte_offsets) ... ok
+test_copied_drafts_cannot_pass_an_empty_comparison_graph (test_candidate_graph_eval.CandidateEvaluationGuards.test_copied_drafts_cannot_pass_an_empty_comparison_graph) ... ok
+test_copied_input_cannot_pass_empty_compiled_drafts (test_candidate_graph_eval.CandidateEvaluationGuards.test_copied_input_cannot_pass_empty_compiled_drafts) ... ok
+test_declared_root_loss_is_detected (test_candidate_graph_eval.CandidateEvaluationGuards.test_declared_root_loss_is_detected) ... ok
+test_development_source_bytes_and_anchor_hashes_are_independently_valid (test_candidate_graph_eval.CandidateEvaluationGuards.test_development_source_bytes_and_anchor_hashes_are_independently_valid) ... ok
+test_empty_abstention_requires_its_located_unknown (test_candidate_graph_eval.CandidateEvaluationGuards.test_empty_abstention_requires_its_located_unknown) ... ok
+test_fabricated_assessment_is_not_allowed (test_candidate_graph_eval.CandidateEvaluationGuards.test_fabricated_assessment_is_not_allowed) ... ok
+test_graph_port_order_loss_is_detected_even_when_drafts_remain (test_candidate_graph_eval.CandidateEvaluationGuards.test_graph_port_order_loss_is_detected_even_when_drafts_remain) ... ok
+test_missing_eligibility_flags_are_not_closed_gates (test_candidate_graph_eval.CandidateEvaluationGuards.test_missing_eligibility_flags_are_not_closed_gates) ... ok
+test_port_order_loss_is_detected (test_candidate_graph_eval.CandidateEvaluationGuards.test_port_order_loss_is_detected) ... ok
+test_reference_rewrite_roundtrip_preserves_gold (test_candidate_graph_eval.CandidateEvaluationGuards.test_reference_rewrite_roundtrip_preserves_gold) ... ok
+test_unrewritten_local_handles_cannot_masquerade_as_resolved_references (test_candidate_graph_eval.CandidateEvaluationGuards.test_unrewritten_local_handles_cannot_masquerade_as_resolved_references) ... ok
+test_catalog_precision_uses_labeled_conversations_and_reports_auxiliary_selection (test_eval.HarnessTests.test_catalog_precision_uses_labeled_conversations_and_reports_auxiliary_selection) ... ok
+test_command_help_imports_all_modes (test_eval.HarnessTests.test_command_help_imports_all_modes) ... ok
+test_cut_is_a_strict_inclusive_utc_date (test_eval.HarnessTests.test_cut_is_a_strict_inclusive_utc_date) ... ok
+test_false_certainty_counts_violating_claims_not_violation_sum (test_eval.HarnessTests.test_false_certainty_counts_violating_claims_not_violation_sum) ... ok
+test_nonzero_cli_exit_is_failure_even_with_done_json (test_eval.HarnessTests.test_nonzero_cli_exit_is_failure_even_with_done_json) ... ok
+test_operator_recall_requires_distinct_example_decisions (test_eval.HarnessTests.test_operator_recall_requires_distinct_example_decisions) ... ok
+test_retrospective_metric_is_never_named_predictive_accuracy (test_eval.HarnessTests.test_retrospective_metric_is_never_named_predictive_accuracy) ... ok
+test_synthetic_does_not_delete_the_work_argument (test_eval.HarnessTests.test_synthetic_does_not_delete_the_work_argument) ... ok
+test_wrong_or_missing_quote_counts_as_false_certainty (test_eval.HarnessTests.test_wrong_or_missing_quote_counts_as_false_certainty) ... ok
+test_excluded_keys_products_and_symlinks_are_never_read (test_eval.RepositoryTests.test_excluded_keys_products_and_symlinks_are_never_read) ... ok
+test_future_ancestor_rejects_backdated_descendant (test_eval.RepositoryTests.test_future_ancestor_rejects_backdated_descendant) ... ok
+test_future_author_date_rejects_backdated_commit (test_eval.RepositoryTests.test_future_author_date_rejects_backdated_commit) ... ok
+test_historical_blobs_not_hindsight_dates_or_worktree (test_eval.RepositoryTests.test_historical_blobs_not_hindsight_dates_or_worktree) ... ok
+test_holdout_cli_writes_honest_unavailable_result (test_eval.RepositoryTests.test_holdout_cli_writes_honest_unavailable_result) ... no verifiable snapshot on HEAD's mainline exists on or before 2026-03-06 (UTC)
+ok
+test_holdout_emits_unavailable_and_never_runs_current_pack (test_eval.RepositoryTests.test_holdout_emits_unavailable_and_never_runs_current_pack) ... ok
+test_no_old_snapshot_does_not_accept_dates_in_current_docs (test_eval.RepositoryTests.test_no_old_snapshot_does_not_accept_dates_in_current_docs) ... ok
+test_selfhost_has_isolated_sources_and_keeps_caller_work (test_eval.RepositoryTests.test_selfhost_has_isolated_sources_and_keeps_caller_work) ... ok
+test_shallow_history_is_unavailable (test_eval.RepositoryTests.test_shallow_history_is_unavailable) ... ok
+test_unmerged_branch_is_not_a_historical_source (test_eval.RepositoryTests.test_unmerged_branch_is_not_a_historical_source) ... ok
+test_binding_abstraction_cannot_collapse_distinct_source_identity (test_graph_native_eval.GraphNativeOracleTests.test_binding_abstraction_cannot_collapse_distinct_source_identity) ... ok
+test_copied_source_is_not_projected_semantic_retention (test_graph_native_eval.GraphNativeOracleTests.test_copied_source_is_not_projected_semantic_retention) ... ok
+test_direction_and_parallel_multiplicity_are_constraints (test_graph_native_eval.GraphNativeOracleTests.test_direction_and_parallel_multiplicity_are_constraints) ... ok
+test_frozen_fixture_and_authored_labels_agree_with_exhaustive_oracle (test_graph_native_eval.GraphNativeOracleTests.test_frozen_fixture_and_authored_labels_agree_with_exhaustive_oracle) ... ok
+test_identity_is_not_noninduced_containment (test_graph_native_eval.GraphNativeOracleTests.test_identity_is_not_noninduced_containment) ... ok
+test_missing_lexical_label_is_distinct_from_empty_string (test_graph_native_eval.GraphNativeOracleTests.test_missing_lexical_label_is_distinct_from_empty_string) ... ok
+test_qualifier_polarity_scope_and_nested_values_are_preserved (test_graph_native_eval.GraphNativeOracleTests.test_qualifier_polarity_scope_and_nested_values_are_preserved) ... ok
+test_ranking_accounts_for_filtered_positive_and_duplicate_ids (test_graph_native_eval.GraphNativeOracleTests.test_ranking_accounts_for_filtered_positive_and_duplicate_ids) ... ok
+test_scope_identity_needs_scope_entity_membership (test_graph_native_eval.GraphNativeOracleTests.test_scope_identity_needs_scope_entity_membership) ... ok
+test_support_identity_requires_exact_incidence_not_equal_counts (test_graph_native_eval.GraphNativeOracleTests.test_support_identity_requires_exact_incidence_not_equal_counts) ... ok
+test_unknown_semantic_fields_and_goals_are_rejected (test_graph_native_eval.GraphNativeOracleTests.test_unknown_semantic_fields_and_goals_are_rejected) ... ok
+test_witness_needs_distinct_integer_edge_indexes (test_graph_native_eval.GraphNativeOracleTests.test_witness_needs_distinct_integer_edge_indexes) ... ok
+test_ambiguous_membership_is_not_negative_philosophy (test_independent_cases.IndependentProtocolTests.test_ambiguous_membership_is_not_negative_philosophy) ... ok
+test_export_contains_source_not_gold_and_is_deterministic (test_independent_cases.IndependentProtocolTests.test_export_contains_source_not_gold_and_is_deterministic) ... ok
+test_formula_accuracy_keeps_negation_direction_and_quantifier (test_independent_cases.IndependentProtocolTests.test_formula_accuracy_keeps_negation_direction_and_quantifier) ... ok
+test_fresh_scope_probe_metadata_is_frozen (test_independent_cases.IndependentProtocolTests.test_fresh_scope_probe_metadata_is_frozen) ... ok
+test_frozen_sources_and_annotations_validate (test_independent_cases.IndependentProtocolTests.test_frozen_sources_and_annotations_validate) ... ok
+test_group_cannot_cross_split (test_independent_cases.IndependentProtocolTests.test_group_cannot_cross_split) ... ok
+test_missing_positive_prediction_does_not_inflate_recall (test_independent_cases.IndependentProtocolTests.test_missing_positive_prediction_does_not_inflate_recall) ... ok
+test_ordering_reports_ties_instead_of_threshold_tuning (test_independent_cases.IndependentProtocolTests.test_ordering_reports_ties_instead_of_threshold_tuning) ... ok
+test_source_span_must_verify_even_when_snapshot_is_refrozen (test_independent_cases.IndependentProtocolTests.test_source_span_must_verify_even_when_snapshot_is_refrozen) ... ok
+test_unavailable_alignment_is_not_zero_similarity_or_a_tie (test_independent_cases.IndependentProtocolTests.test_unavailable_alignment_is_not_zero_similarity_or_a_tie) ... ok
+test_actual_representations_present (test_jev_recipes.Recipes.test_actual_representations_present) ... ok
+test_archive_roundtrip (test_jev_recipes.Recipes.test_archive_roundtrip) ... ok
+test_children_partition_flat (test_jev_recipes.Recipes.test_children_partition_flat) ... ok
+test_cli_export (test_jev_recipes.Recipes.test_cli_export) ... ok
+test_corpus_counts (test_jev_recipes.Recipes.test_corpus_counts) ... ok
+test_detail_can_report_unavailable (test_jev_recipes.Recipes.test_detail_can_report_unavailable) ... ok
+test_duplicate_case_rejected (test_jev_recipes.Recipes.test_duplicate_case_rejected) ... ok
+test_duplicate_instruction_keys_rejected (test_jev_recipes.Recipes.test_duplicate_instruction_keys_rejected) ... ok
+test_duplicate_record (test_jev_recipes.Recipes.test_duplicate_record) ... ok
+test_every_body_valid_and_hashed (test_jev_recipes.Recipes.test_every_body_valid_and_hashed) ... ok
+test_expressed_and_inferred_are_independent (test_jev_recipes.Recipes.test_expressed_and_inferred_are_independent) ... ok
+test_freeze_and_archive_verified (test_jev_recipes.Recipes.test_freeze_and_archive_verified) ... ok
+test_freeze_tampering (test_jev_recipes.Recipes.test_freeze_tampering) ... ok
+test_gold_is_not_changed_by_build (test_jev_recipes.Recipes.test_gold_is_not_changed_by_build) ... ok
+test_invalid_root_does_not_fallback (test_jev_recipes.Recipes.test_invalid_root_does_not_fallback) ... ok
+test_nested_option_counts (test_jev_recipes.Recipes.test_nested_option_counts) ... ok
+test_no_enabled_execution_or_budget (test_jev_recipes.Recipes.test_no_enabled_execution_or_budget) ... ok
+test_no_fixture_metadata_in_body (test_jev_recipes.Recipes.test_no_fixture_metadata_in_body) ... ok
+test_no_gold_argument (test_jev_recipes.Recipes.test_no_gold_argument) ... ok
+test_no_network_modules (test_jev_recipes.Recipes.test_no_network_modules) ... ok
+test_prepared_counts (test_jev_recipes.Recipes.test_prepared_counts) ... ok
+test_reproducible_and_nonmutating (test_jev_recipes.Recipes.test_reproducible_and_nonmutating) ... ok
+test_routing_obeys_root_even_if_wrong (test_jev_recipes.Recipes.test_routing_obeys_root_even_if_wrong) ... ok
+test_subgraph_queries_are_not_exclusive (test_jev_recipes.Recipes.test_subgraph_queries_are_not_exclusive) ... ok
+test_tie_uses_declared_order (test_jev_recipes.Recipes.test_tie_uses_declared_order) ... ok
+test_unexpected_zip_member (test_jev_recipes.Recipes.test_unexpected_zip_member) ... ok
+test_unique_source_states (test_jev_recipes.Recipes.test_unique_source_states) ... ok
+test_unknown_language_rejected (test_jev_recipes.Recipes.test_unknown_language_rejected) ... ok
+test_unsafe_record_name (test_jev_recipes.Recipes.test_unsafe_record_name) ... ok
+test_variant_state_and_criteria_identical (test_jev_recipes.Recipes.test_variant_state_and_criteria_identical) ... ok
+test_actual_source_absence_reported (test_model_profiles.Profiles.test_actual_source_absence_reported) ... ok
+test_aggregate_counts_reconcile (test_model_profiles.Profiles.test_aggregate_counts_reconcile) ... ok
+test_changed_counts_rejected (test_model_profiles.Profiles.test_changed_counts_rejected) ... ok
+test_changed_native_count_rejected (test_model_profiles.Profiles.test_changed_native_count_rejected) ... ok
+test_changed_q_inventory_rejected (test_model_profiles.Profiles.test_changed_q_inventory_rejected) ... ok
+test_cli (test_model_profiles.Profiles.test_cli) ... ok
+test_compensation_not_experiment_result (test_model_profiles.Profiles.test_compensation_not_experiment_result) ... ok
+test_duplicate_profile_rejected (test_model_profiles.Profiles.test_duplicate_profile_rejected) ... ok
+test_mechanism_tests_not_model_statistics (test_model_profiles.Profiles.test_mechanism_tests_not_model_statistics) ... ok
+test_model_version_not_inherited (test_model_profiles.Profiles.test_model_version_not_inherited) ... ok
+test_native_not_58_requests (test_model_profiles.Profiles.test_native_not_58_requests) ... ok
+test_native_semantic_accuracy_unavailable (test_model_profiles.Profiles.test_native_semantic_accuracy_unavailable) ... ok
+test_no_automatic_promotion (test_model_profiles.Profiles.test_no_automatic_promotion) ... ok
+test_no_calibration_guarantee (test_model_profiles.Profiles.test_no_calibration_guarantee) ... ok
+test_no_input_mutation (test_model_profiles.Profiles.test_no_input_mutation) ... ok
+test_no_latency_division (test_model_profiles.Profiles.test_no_latency_division) ... ok
+test_no_network (test_model_profiles.Profiles.test_no_network) ... ok
+test_no_per_question_billing (test_model_profiles.Profiles.test_no_per_question_billing) ... ok
+test_nonfinite_cost_rejected (test_model_profiles.Profiles.test_nonfinite_cost_rejected) ... ok
+test_noninteger_reconstruction_rejected (test_model_profiles.Profiles.test_noninteger_reconstruction_rejected) ... ok
+test_owner_assessment_is_not_score (test_model_profiles.Profiles.test_owner_assessment_is_not_score) ... ok
+test_per_question_cost_rejected (test_model_profiles.Profiles.test_per_question_cost_rejected) ... ok
+test_per_question_not_global_reliability (test_model_profiles.Profiles.test_per_question_not_global_reliability) ... ok
+test_pooled_failures_not_assigned_to_model (test_model_profiles.Profiles.test_pooled_failures_not_assigned_to_model) ... ok
+test_population_mismatch_rejected (test_model_profiles.Profiles.test_population_mismatch_rejected) ... ok
+test_q01_preserves_weakness (test_model_profiles.Profiles.test_q01_preserves_weakness) ... ok
+test_q11_not_rounded_to_perfect (test_model_profiles.Profiles.test_q11_not_rounded_to_perfect) ... ok
+test_ratio_mismatch_rejected (test_model_profiles.Profiles.test_ratio_mismatch_rejected) ... ok
+test_reproducible (test_model_profiles.Profiles.test_reproducible) ... ok
+test_schema (test_model_profiles.Profiles.test_schema) ... ok
+test_unavailable_cannot_be_perfect (test_model_profiles.Profiles.test_unavailable_cannot_be_perfect) ... ok
+test_unknown_costs_not_free (test_model_profiles.Profiles.test_unknown_costs_not_free) ... ok
+test_unknown_evidence_rejected (test_model_profiles.Profiles.test_unknown_evidence_rejected) ... ok
+test_unknown_positive_counts_not_invented (test_model_profiles.Profiles.test_unknown_positive_counts_not_invented) ... ok
+test_wrong_source_hash_rejected (test_model_profiles.Profiles.test_wrong_source_hash_rejected) ... ok
+test_alignment_cannot_invent_candidate (test_refinement_eval.Refinement.test_alignment_cannot_invent_candidate) ... ok
+test_all_acts_are_represented (test_refinement_eval.Refinement.test_all_acts_are_represented) ... ok
+test_cli_requires_validation_optin (test_refinement_eval.Refinement.test_cli_requires_validation_optin) ... ok
+test_conflict_not_last_wins (test_refinement_eval.Refinement.test_conflict_not_last_wins) ... ok
+test_conflicting_exact_alignment_rejected (test_refinement_eval.Refinement.test_conflicting_exact_alignment_rejected) ... ok
+test_counts_languages_domains (test_refinement_eval.Refinement.test_counts_languages_domains) ... ok
+test_dislike_does_not_license_arbitrary_fix (test_refinement_eval.Refinement.test_dislike_does_not_license_arbitrary_fix) ... ok
+test_duplicate_alignment_not_double_credit (test_refinement_eval.Refinement.test_duplicate_alignment_not_double_credit) ... ok
+test_duplicate_label_rows_are_invalid (test_refinement_eval.Refinement.test_duplicate_label_rows_are_invalid) ... ok
+test_duplicate_predictions_raise (test_refinement_eval.Refinement.test_duplicate_predictions_raise) ... ok
+test_exception_scope_cannot_disappear (test_refinement_eval.Refinement.test_exception_scope_cannot_disappear) ... ok
+test_executor_only_not_product_content (test_refinement_eval.Refinement.test_executor_only_not_product_content) ... ok
+test_expanded_gold_hashes (test_refinement_eval.Refinement.test_expanded_gold_hashes) ... ok
+test_extra_label_is_false_positive (test_refinement_eval.Refinement.test_extra_label_is_false_positive) ... ok
+test_foreign_history_detected (test_refinement_eval.Refinement.test_foreign_history_detected) ... ok
+test_foreign_prediction_raise (test_refinement_eval.Refinement.test_foreign_prediction_raise) ... ok
+test_freeze_detects_change (test_refinement_eval.Refinement.test_freeze_detects_change) ... ok
+test_future_knowledge_rejected (test_refinement_eval.Refinement.test_future_knowledge_rejected) ... ok
+test_gold_contract_d01 (test_refinement_eval.Refinement.test_gold_contract_d01) ... ok
+test_gold_contract_d02 (test_refinement_eval.Refinement.test_gold_contract_d02) ... ok
+test_gold_contract_d03 (test_refinement_eval.Refinement.test_gold_contract_d03) ... ok
+test_gold_contract_d04 (test_refinement_eval.Refinement.test_gold_contract_d04) ... ok
+test_gold_contract_d05 (test_refinement_eval.Refinement.test_gold_contract_d05) ... ok
+test_gold_contract_d06 (test_refinement_eval.Refinement.test_gold_contract_d06) ... ok
+test_gold_contract_d07 (test_refinement_eval.Refinement.test_gold_contract_d07) ... ok
+test_gold_contract_d08 (test_refinement_eval.Refinement.test_gold_contract_d08) ... ok
+test_gold_contract_d09 (test_refinement_eval.Refinement.test_gold_contract_d09) ... ok
+test_gold_contract_d10 (test_refinement_eval.Refinement.test_gold_contract_d10) ... ok
+test_gold_contract_d11 (test_refinement_eval.Refinement.test_gold_contract_d11) ... ok
+test_gold_contract_d12 (test_refinement_eval.Refinement.test_gold_contract_d12) ... ok
+test_gold_contract_d13 (test_refinement_eval.Refinement.test_gold_contract_d13) ... ok
+test_gold_contract_d14 (test_refinement_eval.Refinement.test_gold_contract_d14) ... ok
+test_gold_contract_d15 (test_refinement_eval.Refinement.test_gold_contract_d15) ... ok
+test_gold_contract_d16 (test_refinement_eval.Refinement.test_gold_contract_d16) ... ok
+test_gold_contract_d17 (test_refinement_eval.Refinement.test_gold_contract_d17) ... ok
+test_gold_contract_d18 (test_refinement_eval.Refinement.test_gold_contract_d18) ... ok
+test_gold_contract_d19 (test_refinement_eval.Refinement.test_gold_contract_d19) ... ok
+test_gold_contract_d20 (test_refinement_eval.Refinement.test_gold_contract_d20) ... ok
+test_gold_contract_v01 (test_refinement_eval.Refinement.test_gold_contract_v01) ... ok
+test_gold_contract_v02 (test_refinement_eval.Refinement.test_gold_contract_v02) ... ok
+test_gold_contract_v03 (test_refinement_eval.Refinement.test_gold_contract_v03) ... ok
+test_gold_contract_v04 (test_refinement_eval.Refinement.test_gold_contract_v04) ... ok
+test_gold_contract_v05 (test_refinement_eval.Refinement.test_gold_contract_v05) ... ok
+test_gold_contract_v06 (test_refinement_eval.Refinement.test_gold_contract_v06) ... ok
+test_gold_contract_v07 (test_refinement_eval.Refinement.test_gold_contract_v07) ... ok
+test_gold_contract_v08 (test_refinement_eval.Refinement.test_gold_contract_v08) ... ok
+test_gold_contract_v09 (test_refinement_eval.Refinement.test_gold_contract_v09) ... ok
+test_gold_contract_v10 (test_refinement_eval.Refinement.test_gold_contract_v10) ... ok
+test_gold_contract_v11 (test_refinement_eval.Refinement.test_gold_contract_v11) ... ok
+test_gold_contract_v12 (test_refinement_eval.Refinement.test_gold_contract_v12) ... ok
+test_gold_contract_v13 (test_refinement_eval.Refinement.test_gold_contract_v13) ... ok
+test_gold_contract_v14 (test_refinement_eval.Refinement.test_gold_contract_v14) ... ok
+test_gold_contract_v15 (test_refinement_eval.Refinement.test_gold_contract_v15) ... ok
+test_gold_contract_v16 (test_refinement_eval.Refinement.test_gold_contract_v16) ... ok
+test_gold_contract_v17 (test_refinement_eval.Refinement.test_gold_contract_v17) ... ok
+test_gold_contract_v18 (test_refinement_eval.Refinement.test_gold_contract_v18) ... ok
+test_gold_contract_v19 (test_refinement_eval.Refinement.test_gold_contract_v19) ... ok
+test_gold_contract_v20 (test_refinement_eval.Refinement.test_gold_contract_v20) ... ok
+test_gold_does_not_leak_to_source (test_refinement_eval.Refinement.test_gold_does_not_leak_to_source) ... ok
+test_instruction_divergence_not_silently_accepted (test_refinement_eval.Refinement.test_instruction_divergence_not_silently_accepted) ... ok
+test_manifest_is_unchanged (test_refinement_eval.Refinement.test_manifest_is_unchanged) ... ok
+test_materializer_does_not_alias_fixture_labels (test_refinement_eval.Refinement.test_materializer_does_not_alias_fixture_labels) ... ok
+test_materializer_hash_frozen (test_refinement_eval.Refinement.test_materializer_hash_frozen) ... ok
+test_missing_labels_not_perfect (test_refinement_eval.Refinement.test_missing_labels_not_perfect) ... ok
+test_missing_predictions_not_excluded (test_refinement_eval.Refinement.test_missing_predictions_not_excluded) ... ok
+test_network_never_used (test_refinement_eval.Refinement.test_network_never_used) ... ok
+test_no_identifier_case_folding (test_refinement_eval.Refinement.test_no_identifier_case_folding) ... ok
+test_no_input_mutation (test_refinement_eval.Refinement.test_no_input_mutation) ... ok
+test_no_label_prediction_is_unavailable (test_refinement_eval.Refinement.test_no_label_prediction_is_unavailable) ... ok
+test_no_substring_entailment (test_refinement_eval.Refinement.test_no_substring_entailment) ... ok
+test_parallel_tasks_not_merged (test_refinement_eval.Refinement.test_parallel_tasks_not_merged) ... ok
+test_question_is_not_permission (test_refinement_eval.Refinement.test_question_is_not_permission) ... ok
+test_rejected_variant_cannot_return (test_refinement_eval.Refinement.test_rejected_variant_cannot_return) ... ok
+test_removing_exception_is_not_saving_tokens (test_refinement_eval.Refinement.test_removing_exception_is_not_saving_tokens) ... ok
+test_renamed_statement_ids_are_not_semantic_errors (test_refinement_eval.Refinement.test_renamed_statement_ids_are_not_semantic_errors) ... ok
+test_reviewed_paraphrase_alignment (test_refinement_eval.Refinement.test_reviewed_paraphrase_alignment) ... ok
+test_tampered_locator_detected (test_refinement_eval.Refinement.test_tampered_locator_detected) ... ok
+test_tampered_quote_detected (test_refinement_eval.Refinement.test_tampered_quote_detected) ... ok
+test_unique_source_blocks (test_refinement_eval.Refinement.test_unique_source_blocks) ... ok
+test_unknown_paraphrase_needs_review_not_hallucination_label (test_refinement_eval.Refinement.test_unknown_paraphrase_needs_review_not_hallucination_label) ... ok
+test_wrong_task_scope (test_refinement_eval.Refinement.test_wrong_task_scope) ... ok
+
+----------------------------------------------------------------------
+Ran 213 tests in 13.444s
+
+OK
+{
+  "stats": {
+    "conversations": 2,
+    "messages": 5,
+    "chars_active": 4800,
+    "chars_versions": 600,
+    "chars_excluded": 999,
+    "chars_unknown_status": 0,
+    "unknown_status_messages": 0,
+    "chars_by_role": {
+      "assistant": 2400,
+      "user": 2400
+    },
+    "conversation_chars": {
+      "median": 2700.0,
+      "max": 4200
+    }
+  },
+  "estimate": {
+    "assumptions": {
+      "fraction": 1.0,
+      "output_ratio": 0.4,
+      "prefix_tokens": 8000,
+      "include_versions": true,
+      "include_unknown_status": true,
+      "chars_per_token": {
+        "low": 4.0,
+        "high": 3.0
+      },
+      "prefix_cache": "all prefixes priced at cache-read; first-write and cache eligibility unverified",
+      "batch": "uniform table discount; provider/model eligibility unverified",
+      "pricing_as_of": "2026-09-25"
+    },
+    "tokens": {
+      "low": 1350,
+      "high": 1800
+    },
+    "models": {
+      "claude-fable-5-1": {
+        "low": 0.04,
+        "low_batch": 0.02,
+        "high": 0.06,
+        "high_batch": 0.03
+      },
+      "claude-opus-5-5": {
+        "low": 0.02,
+        "low_batch": 0.01,
+        "high": 0.02,
+        "high_batch": 0.01
+      },
+      "claude-sonnet-5-5": {
+        "low": 0.01,
+        "low_batch": 0.01,
+        "high": 0.01,
+        "high_batch": 0.01
+      },
+      "claude-haiku-4-5": {
+        "low": 0.01,
+        "low_batch": 0.0,
+        "high": 0.01,
+        "high_batch": 0.0
+      }
+    }
+  }
+}
+cut 2026-03-06: unavailable -> /var/tmp/tmpmxrgacyn/nested/result.json

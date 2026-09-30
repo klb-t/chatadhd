@@ -19,6 +19,7 @@ import argparse
 import json
 import math
 import sqlite3
+from statistics import median
 import sys
 from pathlib import Path
 
@@ -68,7 +69,7 @@ def archive_stats(db_path: str | Path) -> dict:
         **totals,
         "chars_by_role": dict(sorted(by_role.items())),
         "conversation_chars": {
-            "median": sizes[len(sizes) // 2] if sizes else 0,
+            "median": median(sizes) if sizes else 0,
             "max": sizes[-1] if sizes else 0,
         },
     }
