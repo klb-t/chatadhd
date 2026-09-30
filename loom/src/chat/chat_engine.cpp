@@ -21,6 +21,7 @@
 #include "loom/util/utf8.h"
 #include "stub.h"
 #include "active_task_spec.h"
+#include "active_task_acceptance.h"
 
 namespace loom {
 
@@ -97,43 +98,12 @@ Result<context::ContextRequest> chat_context_request(const Json& value) {
   return context::ContextRequest::from_json(value);
 }
 
-bool valid_retained_task(const Json& retained) {
-  if (!retained.is_object() || retained.value("schema", Json()) != "loom.chat_active_task/1" ||
-      !retained.contains("supplied_spec") || !retained.contains("compiled_spec") ||
-      !retained.contains("bindings") || !retained["bindings"].is_object() ||
-      !retained.contains("source_messages") || !retained["source_messages"].is_array()) return false;
-  auto compiled = chat::compile_active_task_spec(retained["supplied_spec"]);
-  if (!compiled || *compiled != retained["compiled_spec"]) return false;
-  const auto& events = (*compiled)["history_event_ids"];
-  const auto& bindings = retained["bindings"];
-  if (bindings.size() != events.size() || retained["source_messages"].size() != events.size()) return false;
-  std::set<std::string> event_ids;
-  std::set<std::string> message_ids;
-  std::map<std::string, std::string> source_texts;
-  for (const auto& event : events) event_ids.insert(event.get<std::string>());
-  for (const auto& source : retained["source_messages"]) {
-    if (!source.is_object() || !source.contains("event_id") || !source["event_id"].is_string() ||
-        !source.contains("message_id") || !source["message_id"].is_string() ||
-        !source.contains("text") || !source["text"].is_string() ||
-        !source.contains("text_sha256") || !source["text_sha256"].is_string()) return false;
-    const auto eid = source["event_id"].get<std::string>();
-    const auto mid = source["message_id"].get<std::string>();
-    if (!utf8::is_valid(source["text"].get_ref<const std::string&>())) return false;
-    if (event_ids.erase(eid) != 1 || mid.empty() || !message_ids.insert(mid).second) return false;
-    source_texts.emplace(eid, source["text"].get<std::string>());
-    auto binding = bindings.find(eid);
-    if (binding == bindings.end() || !binding->is_object() || binding->size() != 2 ||
-        !binding->contains("message_id") || (*binding)["message_id"] != mid ||
-        !binding->contains("text_sha256") || (*binding)["text_sha256"] != source["text_sha256"] ||
-        source["text_sha256"] != Sha256::hex(source["text"].get<std::string>())) return false;
-  }
-  for (const auto& source : (*compiled)["source_refs"]) {
-    if (source.contains("quote") &&
-        source_texts.at(source["event_id"].get<std::string>()).find(source["quote"].get<std::string>()) == std::string::npos) {
-      return false;
-    }
-  }
-  return event_ids.empty();
+Result<Json> native_request_inputs(Database& db, std::string_view conversation) {
+  auto messages = db.get_msgs(conversation, true);
+  if (!messages) return messages.error();
+  Json snapshot = Json::array();
+  for (const auto& message : *messages) snapshot.push_back(message.to_json());
+  return snapshot;
 }
 
 Result<Json> prepare_active_task(Database& db, std::string_view conv_id, const ChatOptions& opts,
@@ -200,39 +170,26 @@ Result<Json> prepare_active_task(Database& db, std::string_view conv_id, const C
     }
   }
 
-  // Revisions are retained with their originating user messages. Inspect all
-  // statuses: hiding a historical message must not silently reset a task.
-  auto messages = db.get_msgs(conv_id, true);
-  if (!messages) return messages.error();
-  // While a send is in flight, its accepted snapshot is authoritative even if
-  // a reentrant callback temporarily rewrites the originating message metadata.
-  Json retained_tasks = Json::array();
-  for (const auto& m : *messages) {
-    if (in_flight.contains(m.id) || !m.metadata.is_object()) continue;
-    auto retained = m.metadata.find("active_task");
-    if (retained != m.metadata.end()) retained_tasks.push_back(*retained);
-  }
-  for (const auto& [mid, retained] : in_flight) {
-    (void)mid;
-    if (retained["supplied_spec"]["scope"]["conversation_id"] == conv_id) retained_tasks.push_back(retained);
-  }
+  auto history = chat::read_active_task_history(db, conv_id, in_flight);
+  if (!history) return history.error();
+  const auto& retained_tasks = history->snapshots;
   const Json* latest = nullptr;
   std::map<std::string, const Json*> products;
   std::map<std::uint64_t, std::string> versions;
   for (auto retained = retained_tasks.begin(); retained != retained_tasks.end(); ++retained) {
-    if (!valid_retained_task(*retained)) {
+    if (!chat::valid_active_task_snapshot(*retained)) {
       return invalid("retained revision metadata is malformed");
     }
     auto old = retained->find("supplied_spec");
     if ((*old)["product_ref"] == spec["product_ref"] &&
-        (*old != *opts.active_task_spec || retained->value("bindings", Json()) != bindings)) {
+        (*old != *opts.active_task_spec || retained->value("bindings", Json()) != bindings ||
+         (*retained)["source_messages"] != sources)) {
       return invalid("a product identifier cannot be reused for different content or bindings");
     }
     if ((*old)["scope"] != spec["scope"]) continue;
     const auto product_id = (*old)["product_ref"]["id"].get<std::string>();
     auto [product, added] = products.emplace(product_id, &*retained);
-    if (!added && ((*product->second)["supplied_spec"] != *old ||
-        (*product->second)["bindings"] != (*retained)["bindings"])) {
+    if (!added && !chat::same_active_task_identity(*product->second, *retained)) {
       return invalid("retained product identity has conflicting content");
     }
     auto [version, first] = versions.emplace((*old)["version"].get<std::uint64_t>(), product_id);
@@ -289,8 +246,8 @@ Result<Json> prepare_active_task(Database& db, std::string_view conv_id, const C
       if (opts.include_history && opts.active_task_history == "replace_refinement") {
         auto live = db.get_msg(mid);
         if (!live) return live.error();
-        if (*live && (**live).status == msg_status::kActive &&
-            ((**live).conv_id != conv_id || source["text_sha256"] != Sha256::hex((**live).text))) {
+        if (*live && (**live).status == msg_status::kActive && (**live).conv_id == conv_id &&
+            source["text_sha256"] != Sha256::hex((**live).text)) {
           return invalid("inherited active source changed; explicitly rebind it before replacing history");
         }
         // Native edits create a new active row in the same version group.
@@ -634,6 +591,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   Conversation conv;
   {
     auto resolution_lock = db_.lock();
+    if (opts.active_task_spec && db_.conn().in_transaction()) {
+      return Error(Errc::InvalidArgument,
+        "active_task: acceptance cannot run inside an externally owned transaction");
+    }
     std::lock_guard lk(mu_);
     if (opts.conv_id) {
       auto r = db_.get_conv(*opts.conv_id);
@@ -674,35 +635,62 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     }
   } in_flight_guard{db_, active_task_in_flight_, {}};
   std::unique_lock<std::recursive_mutex> source_lock;
+  std::unique_ptr<sql::Txn> acceptance_tx;
+  chat::ActiveTaskHistory acceptance_history;
   if (opts.active_task_spec) {
     source_lock = db_.lock();
+    if (db_.conn().in_transaction()) {
+      return Error(Errc::InvalidArgument,
+        "active_task: acceptance cannot run inside an externally owned transaction");
+    }
+    auto before = native_request_inputs(db_, conv.id);
+    if (!before) return before.error();
+    const auto prepared_system = opts.system_prompt.value_or(cfg_string(cfg_, "system_prompt"));
+    const auto prepared_memory = memory_ && opts.include_memory ? memory_->get_active_context() : std::string{};
+    // Arbitrary context builders run outside SQL transactions. Their returned
+    // graph/knowledge/file context is frozen derived content, not a promise
+    // that independent stores or external files remain globally current.
     auto built = build_messages(conv.id, text, opts.attachments, opts, "", &context_trace);
     if (!built) return built.error();
-    // A custom knowledge builder can call back into this engine while the
-    // recursive database lock is held. Revalidate the prepared acceptance
-    // after that callback; do not persist a now-stale product or source set.
+    if (db_.conn().in_transaction()) {
+      return Error(Errc::InvalidArgument,
+        "active_task: context preparation left an externally owned transaction open");
+    }
+    acceptance_tx = std::make_unique<sql::Txn>(db_.conn(), true);
+    LOOM_TRY(acceptance_tx->begin_status());
+    // BEGIN IMMEDIATE serializes the final authority/source read across
+    // independent Database objects, including distinct processes.
+    auto after = native_request_inputs(db_, conv.id);
+    if (!after) return after.error();
     auto rechecked = prepare_active_task(db_, conv.id, opts, active_task_in_flight_);
     if (!rechecked) return rechecked.error();
-    if (*rechecked != context_trace["active_task"]) {
+    if (*before != *after || *rechecked != context_trace["active_task"] ||
+        prepared_system != opts.system_prompt.value_or(cfg_string(cfg_, "system_prompt")) ||
+        prepared_memory != (memory_ && opts.include_memory ? memory_->get_active_context() : std::string{})) {
       return Error(Errc::InvalidArgument,
-        "active_task: task or source snapshot changed during context preparation; request was not accepted");
+        "active_task: request inputs changed during context preparation; request was not accepted");
     }
+    auto history = chat::read_active_task_history(db_, conv.id, active_task_in_flight_);
+    if (!history) return history.error();
+    acceptance_history = std::move(*history);
     task_messages = std::move(*built);
+    accepted_active_task = context_trace["active_task"];
   } else {
     // Direct C++ callers can bypass from_json; do not accept orphan controls.
     auto checked = prepare_active_task(db_, conv.id, opts);
     if (!checked) return checked.error();
   }
 
-  // 2. Persist the user message.
+  // 2. Persist the user row and acceptance atomically. create_msg nests a
+  // savepoint; only the outer commit makes acceptance durable.
   NewMessage nm;
   nm.conv_id = conv.id;
   nm.text = std::string(text);
   nm.role = "user";
   if (opts.active_task_spec) {
-    accepted_active_task = context_trace["active_task"];
     nm.metadata = Json{{"active_task", accepted_active_task}};
-    if (!record_context) context_trace = nullptr;
+    if (record_context) nm.metadata["context_trace"] = context_trace;
+    else context_trace = nullptr;
   }
   if (!opts.attachments.empty()) {
     Json atts = Json::array();
@@ -713,8 +701,11 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   if (!umid) return umid.error();
   std::string user_mid = *umid;
   if (opts.active_task_spec) {
-    // Publish acceptance before callbacks can temporarily replace metadata.
-    // The guard removes this authority on every return and exception path.
+    LOOM_TRY(chat::append_active_task_acceptance(db_, conv.id, user_mid, accepted_active_task, acceptance_history));
+    LOOM_TRY(acceptance_tx->commit());
+    acceptance_tx.reset();
+    // Only masks temporary metadata projection divergence during callbacks;
+    // the committed EventLog is the durable ancestry authority.
     in_flight_guard.message_id = user_mid;
     active_task_in_flight_.emplace(user_mid, accepted_active_task);
   }
@@ -736,7 +727,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     if (opts.active_task_spec && (!metadata.contains("active_task") || metadata["active_task"] != accepted_active_task)) {
       // Callbacks may add arbitrary metadata or replace the entire column.
       // Retain their conflicting value as evidence, while keeping the exact
-      // accepted task authoritative independently of trace opt-out.
+      // accepted task inspectable independently of trace opt-out.
       Json recovery{{"stage", "after_message_created_callbacks_before_transport"},
                     {"previous_active_task_present", metadata.contains("active_task")}};
       if (metadata.contains("active_task")) recovery["previous_active_task"] = metadata["active_task"];

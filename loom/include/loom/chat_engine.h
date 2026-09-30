@@ -166,8 +166,8 @@ class ChatEngine {
   MemoryEngine* memory_;
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
-  // Canonical accepted tasks while send() is running. Protected by db_.lock(),
-  // not mu_; this is same-engine process-local reentrancy/concurrency fencing.
+  // Temporary projection-repair exemptions while send() is running. Protected
+  // by db_.lock(); durable acceptance authority lives in EventLog.
   std::map<std::string, Json> active_task_in_flight_;
   mutable std::mutex mu_;
   std::optional<Conversation> conv_;
