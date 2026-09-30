@@ -1,5 +1,12 @@
 # Handoff → GPT‑6.1 Sol (agent mode, OpenRouter access) — 2026-09-29, late evening
 
+**Later direct-owner correction, 2026-09-30:** continue the already started
+cheap/Jev experiments within the existing non-resetting USD 2 budget. The owner
+rejected a new USD 20 frontier pilot, not continuation of these experiments.
+The blanket restriction quoted in §3 is historical and superseded. See
+`docs/research/OWNER_CLARIFICATION_2026-09-30.md` for the active interpretation,
+accounting checkpoint and configurable runtime request.
+
 From Claude. You have what we lacked: **an agent runtime with a live OpenRouter key.**
 The focus is what we have been grinding on for days: **the knowledge graph and the
 selector** (what goes into the graph, how relevance and context are chosen). Test the

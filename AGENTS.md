@@ -1,5 +1,10 @@
 # Instructions for coding agents (Codex / Claude / others)
 
+Current direct-owner clarification: `docs/research/OWNER_CLARIFICATION_2026-09-30.md`.
+Continue the already authorised cheap/Jev experiments within the existing USD 2
+non-resetting budget; no newly invented paid frontier pilot. The older blanket
+paid-synthetic restriction in the Claude handoff is superseded by this correction.
+
 > **ZASADA WŁAŚCICIELA (2026-09-30), OBOWIĄZUJE ZAWSZE:** NIE PODEJMUJEMY DECYZJI ZA UŻYTKOWNIKA,
 > ZWŁASZCZA OGRANICZAJĄCYCH. WSZYSTKO JEST KONFIGUROWALNE: MODEL, ZAKRES, ROZUMOWANIE, AUTOMATYCZNE
 > PRZYJMOWANIE WYNIKÓW, CO WYSYŁAMY. USTAWIENIA MUSZĄ POZWALAĆ PRZEPALIĆ NAWET MILIARD DOLARÓW.
