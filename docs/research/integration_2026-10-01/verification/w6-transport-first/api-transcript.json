@@ -1,0 +1,1137 @@
+[
+  {
+    "path": "/api/healthz",
+    "request": null,
+    "response": {
+      "ok": true
+    }
+  },
+  {
+    "path": "/api/config",
+    "request": {
+      "base_url": "http://127.0.0.1:38757",
+      "semantic_model": "",
+      "semantic_analysis": false,
+      "default_model": "w6-local",
+      "system_prompt": "W6_SYSTEM_SENTINEL",
+      "stream": false
+    },
+    "response": {
+      "base_url": "http://127.0.0.1:38757",
+      "default_model": "w6-local",
+      "semantic_model": "",
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "theme": "dark",
+      "system_prompt": "W6_SYSTEM_SENTINEL",
+      "auto_title": true,
+      "stream": false,
+      "semantic_analysis": false,
+      "graph_memory_depth": 2,
+      "graph_memory_max_nodes": 20,
+      "loom_event_log_types": [
+        "conv:created",
+        "import:done",
+        "graph:changed"
+      ],
+      "loom_task_workers": 1
+    }
+  },
+  {
+    "path": "/api/memory",
+    "request": {
+      "content": "W6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly.",
+      "active": true
+    },
+    "response": {
+      "id": "d4c83e1da253",
+      "content": "W6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly.",
+      "parent_id": null,
+      "node_type": "text",
+      "active": true,
+      "depth": 0,
+      "weight": 1.0,
+      "tags": [],
+      "created": "2026-09-30T23:14:03.982235Z",
+      "metadata": {}
+    }
+  },
+  {
+    "path": "/api/knowledge/run",
+    "request": {
+      "sources": [
+        "/workspace/scratch/a371a1ca13b1/verification/integration-2026-10-01/w6-transport-first/runtime/w6-source.json"
+      ],
+      "llm": "off",
+      "out_dir": "w6-knowledge",
+      "stage_params": {
+        "catalog": {
+          "import": {
+            "mode": "full"
+          }
+        }
+      }
+    },
+    "response": {
+      "task_id": "t_71078b39a396",
+      "run": "kr_5b7c55c436d0c9c6",
+      "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+      "status": "done",
+      "error": "",
+      "stages": [
+        {
+          "stage": "catalog",
+          "task_id": "t_c429ec821a0a",
+          "input_hash": "414bcf632f3c0025fa6eb4345e91f0635bd6d18c16ab2966f6a40a2db74efc4c",
+          "output_hash": "010705945d234f14e673e920a80ed7348fc01b612d565cddb4917a60c5893d52",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "scan": {
+              "units": 1,
+              "new": 1,
+              "unchanged": 0,
+              "refreshed": 0,
+              "input_hash": "6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8",
+              "versions": 0,
+              "bytes": 428,
+              "warnings": []
+            },
+            "score": {
+              "run_id": "run_623073816fa92a1f",
+              "scoring_evidence_version": 3,
+              "legacy_combined_features": [
+                "id_hits",
+                "class_diversity",
+                "code_evidence"
+              ],
+              "identity_unavailable": 0,
+              "relevant": 0,
+              "candidate": 1,
+              "irrelevant": 0,
+              "traps": 0,
+              "expanded_terms": [],
+              "semantic": {
+                "available": false,
+                "passes": 0
+              },
+              "channels": {
+                "lexical_relevant": 0,
+                "semantic_relevant": 0,
+                "both": 0,
+                "lexical_only": 0,
+                "semantic_only": 0
+              },
+              "links": 0,
+              "link_stats": {
+                "mode": "candidates",
+                "units": 1,
+                "links": 0,
+                "project_groups_aggregated": 0,
+                "minhash_pairs_verified": 0,
+                "lsh_candidates": 0,
+                "rare_term_candidates": 0,
+                "uncorroborated_sessions": 0
+              }
+            },
+            "selected": 0,
+            "import": {
+              "imported": 1,
+              "skipped": 0,
+              "bytes": 428,
+              "conversations": [
+                "c_0b8db54c41a2"
+              ],
+              "units": [
+                "un_3a55cd8dd2f9168b"
+              ],
+              "retained_sources": [
+                {
+                  "source_id": "sha256:b77895e7d29f7141c8d91c9f2811463712dc0588ad49f57600a6c952688371aa",
+                  "blob_hash": "b77895e7d29f7141c8d91c9f2811463712dc0588ad49f57600a6c952688371aa"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "stage": "extract",
+          "task_id": "t_16ffc3135ac4",
+          "input_hash": "b0d8f719f09ebc8a5020f97f635779ecb485b6a73056f1fcdd00d3a588c666a3",
+          "output_hash": "42e786e9dc8bd9ed9f2431e7cb6d00c538b01edf68d6b161f84d61cfd946e93a",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "from": "catalog",
+            "units": 1,
+            "failed": 0,
+            "names": 0,
+            "observations": 4,
+            "entities": 1,
+            "claims": 3,
+            "areas": 0,
+            "principles": 1,
+            "decisions": 1,
+            "forks": 0,
+            "statuses": 0,
+            "semantic": {
+              "status": "off",
+              "candidate_ids": [],
+              "rejections": [],
+              "skipped": [],
+              "requests": 0,
+              "cache_hits": 0,
+              "accepted": 0,
+              "rejected": 0,
+              "failed": 0,
+              "input_bytes": 0,
+              "chunks": 0,
+              "omitted_observations": 0,
+              "failed_chunk_observations": 0,
+              "selected_chunks": [],
+              "identity": {
+                "version": "2",
+                "requested": false,
+                "limits": {
+                  "max_requests": 4,
+                  "max_observations": 16,
+                  "max_chunk_bytes": 16000,
+                  "max_input_bytes": 64000,
+                  "max_output_tokens": 1600,
+                  "max_proposals": 16,
+                  "max_response_bytes": 128000,
+                  "timeout_ms": 30000
+                },
+                "representation": "relation_v1"
+              },
+              "requests_spent": 0,
+              "input_bytes_spent": 0,
+              "retry_required": false,
+              "representation": "relation_v1",
+              "accepted_bundles": 0,
+              "entity_drafts": 0,
+              "claim_drafts": 0,
+              "abstentions": 0,
+              "response_outcomes": [],
+              "output": "497ffcd6abfb43c9ff830263cd31933c77590d2c6e0deed4d908dd9b7b3dda62"
+            }
+          }
+        },
+        {
+          "stage": "resolve",
+          "task_id": "t_2476fdbb36ea",
+          "input_hash": "5fb5f75c6696c1babe498fdf79c110738256faaa933b4da1590a192cd074209b",
+          "output_hash": "a7a308a699917f103f47a3b92964c2155dba8d9204feda1b58cbbb7ee9b6c0e4",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "entities": 1,
+            "mentions": 1,
+            "merges": 0,
+            "blocked": 0,
+            "claims": 3,
+            "lineage": []
+          }
+        },
+        {
+          "stage": "assess",
+          "task_id": "t_e3439f8bca52",
+          "input_hash": "178b4e43ff60f60a38d1764ecfb14efc9d7d27276cd32a0a207df3dba5e5886e",
+          "output_hash": "5fec45f7d2656ed46c722c83b72a7f306336e6e38865dd2dfd88679a4ab6a916",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "claims": 3,
+            "contested": 0,
+            "conflicts": 0,
+            "reversals": 0,
+            "replayed": 0
+          }
+        },
+        {
+          "stage": "generalize",
+          "task_id": "t_3d26c98f1605",
+          "input_hash": "6191642aaedbd892b655a059e3294d5d44838ed05dfd63c0de6bf4076539f49f",
+          "output_hash": "cd4d0af987f47f54b3ed8a74017645482fa3290da0eb717dfa2b42133f2d929d",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "instances": 1,
+            "absent": 1,
+            "analogies": 0,
+            "inferred": 0,
+            "extrapolated": 0,
+            "transferred": 0,
+            "principles": 1,
+            "operators": 1,
+            "models": 2,
+            "predictions": 1,
+            "predictions_holds": 0,
+            "predictions_violated": 0
+          }
+        },
+        {
+          "stage": "materialize",
+          "task_id": "t_536289f06b16",
+          "input_hash": "75b53087fdbb8d82be4ff482c5fad69c04d18eb1443acb0e99862359df49982c",
+          "output_hash": "d298fe6cc3078179ae039e1d776f6765f5b0ea118b99fc0be367074960687493",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "dossiers": 1,
+            "extrapolated_specs": 1,
+            "products": 4
+          }
+        }
+      ],
+      "summary": {
+        "run": "kr_5b7c55c436d0c9c6",
+        "counts": {
+          "observations": 4,
+          "entities": 1,
+          "aliases": 0,
+          "claims": 4,
+          "claim_support": 3,
+          "principles": 1,
+          "operators": 1,
+          "morphisms": 136,
+          "instances": 1,
+          "slot_values": 2,
+          "areas": 0,
+          "decisions": 1,
+          "forks": 0,
+          "status_records": 0,
+          "predictions": 1,
+          "models": 2,
+          "products": 4
+        }
+      }
+    }
+  },
+  {
+    "path": "/api/knowledge/query",
+    "request": {
+      "run": "kr_5b7c55c436d0c9c6",
+      "what": "entities"
+    },
+    "response": {
+      "run": "kr_5b7c55c436d0c9c6",
+      "items": [
+        {
+          "id": "e_4ba7b1e5e0af0a4b",
+          "kind": "document",
+          "canonical_key": "unit un_3a55cd8dd2f9168b",
+          "label": "Loom W6 synthetic architecture",
+          "labels": {},
+          "aliases": [],
+          "parent": "",
+          "first_seen": "2026-06-01T00:00:00Z",
+          "last_seen": "2026-06-01T00:00:00Z",
+          "evidence_class": "observed",
+          "origin": "archive",
+          "confidence": 1.0,
+          "status": "active",
+          "attrs": {
+            "units": [
+              "un_3a55cd8dd2f9168b"
+            ],
+            "observations": [
+              "ob_75e2d60a6df938b6"
+            ],
+            "method": "mined"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "Explain Loom source preservation. W6_FIRST μ 🙂",
+      "knowledge_context": {
+        "run": "kr_5b7c55c436d0c9c6",
+        "budget_tokens": 1000,
+        "detail_resolution": "full",
+        "relation_hops": 1,
+        "targets": [
+          "e_4ba7b1e5e0af0a4b"
+        ]
+      },
+      "trace_context": true,
+      "include_graph_memory": false
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144184401010_0",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_79b59d3990c9"
+      },
+      {
+        "type": "done",
+        "request_id": "req_30144184401010_0",
+        "message_id": "m_6a1ca8904071",
+        "conv_id": "c_5b04372cd7d4",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false,
+        "title": "Explain Loom source preservati...",
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "system",
+              "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+            },
+            {
+              "role": "system",
+              "content": "## Project context\n- **Loom W6 synthetic architecture decided: Decision: use a provider registry. (2026-06-01T00:00:00Z) — among: Decision: use a provider registry.\nLoom W6 synthetic architecture decides Decision: use a provider registry. (2026-06-01) — \"Decision: use a provider registry.\"**  <!-- why: decision recorded for Loom W6 synthetic architecture; one hop from 'Loom W6 synthetic architecture' via 'decides' -->\n\n\n## This goal\n- **Loom W6 synthetic architecture has_requirement Requirement: Loom must preserve original source bytes. — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'has_requirement' -->\n- **Loom W6 synthetic architecture states_principle p_0f4d1ff1112cf03e — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'states_principle' -->\n"
+            },
+            {
+              "role": "user",
+              "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+            }
+          ],
+          "messages_sha256": "219e1a57e08d8df68847638e5544cfa2bc6f8f1e16425fca49946d48ac32b2a1",
+          "history_message_ids": [],
+          "selection": {
+            "include_memory": true,
+            "include_graph_memory": false,
+            "include_history": true,
+            "context_depth": null
+          },
+          "knowledge_context_request": {
+            "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+            "targets": [
+              "e_4ba7b1e5e0af0a4b"
+            ],
+            "project": "",
+            "budget_tokens": 1000,
+            "goal_type": null,
+            "run": "kr_5b7c55c436d0c9c6",
+            "lang": "",
+            "detail_resolution": "full"
+          },
+          "knowledge_context": {
+            "goal": {
+              "id": "g_4cd483c0d17d2954",
+              "type": "answer_question",
+              "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+              "targets": [
+                "e_4ba7b1e5e0af0a4b"
+              ],
+              "project": "",
+              "confidence": 0.25,
+              "params": {
+                "confidence_basis": "heuristic_cue_margin",
+                "calibration_status": "unavailable",
+                "external_goal_typing": {
+                  "status": "offline",
+                  "requests": 0
+                },
+                "classifier": "cue",
+                "scores": {
+                  "answer_question": 0.0,
+                  "brainstorm": 0.0,
+                  "compute_deadline": 0.0,
+                  "extend_scene": 0.0,
+                  "implement_part": 0.0,
+                  "review_decision": 0.0,
+                  "verify_claim": 0.0,
+                  "write_artifact": 0.0
+                },
+                "context_controls": {
+                  "relation_hops": 1,
+                  "detail_resolution": "full"
+                },
+                "retrieval_diagnostics": {
+                  "status": "bounded",
+                  "exhaustive": false,
+                  "queries": [
+                    {
+                      "operation": "principles",
+                      "selector": {},
+                      "limit": 1000000,
+                      "returned": 1,
+                      "status": "below_cap"
+                    },
+                    {
+                      "operation": "project_instances",
+                      "selector": {
+                        "project": "e_4ba7b1e5e0af0a4b"
+                      },
+                      "limit": 1000000,
+                      "returned": 0,
+                      "status": "below_cap"
+                    },
+                    {
+                      "operation": "project_decisions",
+                      "selector": {
+                        "project": "e_4ba7b1e5e0af0a4b"
+                      },
+                      "limit": 1000000,
+                      "returned": 1,
+                      "status": "below_cap"
+                    },
+                    {
+                      "operation": "status_history",
+                      "selector": {
+                        "entity": "e_4ba7b1e5e0af0a4b"
+                      },
+                      "limit": 1000000,
+                      "returned": 0,
+                      "status": "below_cap"
+                    },
+                    {
+                      "operation": "graph",
+                      "selector": {
+                        "entity": "e_4ba7b1e5e0af0a4b",
+                        "direction": "outgoing",
+                        "hop": 1
+                      },
+                      "limit": 10000,
+                      "returned": 3,
+                      "status": "below_cap"
+                    },
+                    {
+                      "operation": "graph",
+                      "selector": {
+                        "entity": "e_4ba7b1e5e0af0a4b",
+                        "direction": "incoming",
+                        "hop": 1
+                      },
+                      "limit": 10000,
+                      "returned": 0,
+                      "status": "below_cap"
+                    }
+                  ],
+                  "lookup_issues": [],
+                  "excluded": [
+                    {
+                      "ref": "p_0f4d1ff1112cf03e",
+                      "channel": "principles",
+                      "reason": "principle_level"
+                    }
+                  ],
+                  "missing_premises": [],
+                  "query_errors": 0,
+                  "cap_hits": 0,
+                  "gathered_candidates": 4,
+                  "unique_candidates": 3,
+                  "duplicate_candidates_merged": 1,
+                  "budget": {
+                    "metric": "rendered_item_codepoints_div_4",
+                    "includes_prompt_overhead": false,
+                    "initial_band_tokens": [
+                      150,
+                      350,
+                      500
+                    ],
+                    "total_tokens": 1000,
+                    "final_band_tokens": [
+                      0,
+                      67,
+                      933
+                    ],
+                    "used_band_tokens": [
+                      0,
+                      67,
+                      73
+                    ],
+                    "used_tokens": 140
+                  },
+                  "recovered_budget_drops": []
+                }
+              }
+            },
+            "context_set": {
+              "id": "cx_bc4d17d065ed561f",
+              "goal": {
+                "id": "g_4cd483c0d17d2954",
+                "type": "answer_question",
+                "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+                "targets": [
+                  "e_4ba7b1e5e0af0a4b"
+                ],
+                "project": "",
+                "confidence": 0.25,
+                "params": {
+                  "confidence_basis": "heuristic_cue_margin",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "cue",
+                  "scores": {
+                    "answer_question": 0.0,
+                    "brainstorm": 0.0,
+                    "compute_deadline": 0.0,
+                    "extend_scene": 0.0,
+                    "implement_part": 0.0,
+                    "review_decision": 0.0,
+                    "verify_claim": 0.0,
+                    "write_artifact": 0.0
+                  },
+                  "context_controls": {
+                    "relation_hops": 1,
+                    "detail_resolution": "full"
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_4ba7b1e5e0af0a4b"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_4ba7b1e5e0af0a4b"
+                        },
+                        "limit": 1000000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_4ba7b1e5e0af0a4b"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_4ba7b1e5e0af0a4b",
+                          "direction": "outgoing",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 3,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_4ba7b1e5e0af0a4b",
+                          "direction": "incoming",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [
+                      {
+                        "ref": "p_0f4d1ff1112cf03e",
+                        "channel": "principles",
+                        "reason": "principle_level"
+                      }
+                    ],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 4,
+                    "unique_candidates": 3,
+                    "duplicate_candidates_merged": 1,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        150,
+                        350,
+                        500
+                      ],
+                      "total_tokens": 1000,
+                      "final_band_tokens": [
+                        0,
+                        67,
+                        933
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        67,
+                        73
+                      ],
+                      "used_tokens": 140
+                    },
+                    "recovered_budget_drops": []
+                  }
+                }
+              },
+              "budget_tokens": 1000,
+              "used_tokens": 140,
+              "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+              "items": [
+                {
+                  "ref_kind": "decision",
+                  "ref": "cl_a5da42dc7d8dfad0",
+                  "band": "project",
+                  "resolution": "full",
+                  "score": 0.15017142857142854,
+                  "factors": {
+                    "relevance": 0.5214285714285714,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.36,
+                    "direct_goal_candidate": true,
+                    "candidate_views": [
+                      {
+                        "ref_kind": "decision",
+                        "band": "project",
+                        "why": "decision recorded for Loom W6 synthetic architecture",
+                        "factors": {
+                          "direct_goal_candidate": true
+                        }
+                      },
+                      {
+                        "ref_kind": "claim",
+                        "band": "goal",
+                        "why": "one hop from 'Loom W6 synthetic architecture' via 'decides'",
+                        "factors": {
+                          "direct_goal_candidate": true
+                        }
+                      }
+                    ],
+                    "relation_hops": 1
+                  },
+                  "tokens": 67,
+                  "why": "decision recorded for Loom W6 synthetic architecture; one hop from 'Loom W6 synthetic architecture' via 'decides'",
+                  "required_by": [],
+                  "text": "**Loom W6 synthetic architecture decided: Decision: use a provider registry. (2026-06-01T00:00:00Z) — among: Decision: use a provider registry.\nLoom W6 synthetic architecture decides Decision: use a provider registry. (2026-06-01) — \"Decision: use a provider registry.\"**"
+                },
+                {
+                  "ref_kind": "claim",
+                  "ref": "cl_afb4827558df6d05",
+                  "band": "goal",
+                  "resolution": "full",
+                  "score": 0.135,
+                  "factors": {
+                    "relevance": 0.5357142857142857,
+                    "authority": 0.8,
+                    "freshness": 0.6,
+                    "confidence": 0.525,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 1
+                  },
+                  "tokens": 41,
+                  "why": "one hop from 'Loom W6 synthetic architecture' via 'has_requirement'",
+                  "required_by": [],
+                  "text": "**Loom W6 synthetic architecture has_requirement Requirement: Loom must preserve original source bytes. — \"Requirement: Loom must preserve original source bytes.\"**"
+                },
+                {
+                  "ref_kind": "claim",
+                  "ref": "cl_4ba123f2d7e41407",
+                  "band": "goal",
+                  "resolution": "full",
+                  "score": 0.04464,
+                  "factors": {
+                    "relevance": 0.44285714285714284,
+                    "authority": 0.8,
+                    "freshness": 0.6,
+                    "confidence": 0.21,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 1
+                  },
+                  "tokens": 32,
+                  "why": "one hop from 'Loom W6 synthetic architecture' via 'states_principle'",
+                  "required_by": [],
+                  "text": "**Loom W6 synthetic architecture states_principle p_0f4d1ff1112cf03e — \"Requirement: Loom must preserve original source bytes.\"**"
+                }
+              ],
+              "dropped": []
+            },
+            "prompt": "## Project context\n- **Loom W6 synthetic architecture decided: Decision: use a provider registry. (2026-06-01T00:00:00Z) — among: Decision: use a provider registry.\nLoom W6 synthetic architecture decides Decision: use a provider registry. (2026-06-01) — \"Decision: use a provider registry.\"**  <!-- why: decision recorded for Loom W6 synthetic architecture; one hop from 'Loom W6 synthetic architecture' via 'decides' -->\n\n\n## This goal\n- **Loom W6 synthetic architecture has_requirement Requirement: Loom must preserve original source bytes. — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'has_requirement' -->\n- **Loom W6 synthetic architecture states_principle p_0f4d1ff1112cf03e — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'states_principle' -->\n",
+            "request": {
+              "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+              "targets": [
+                "e_4ba7b1e5e0af0a4b"
+              ],
+              "project": "",
+              "budget_tokens": 1000,
+              "goal_type": null,
+              "run": "kr_5b7c55c436d0c9c6",
+              "lang": "",
+              "detail_resolution": "full"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_SECOND",
+      "conv_id": "c_5b04372cd7d4",
+      "trace_context": true,
+      "include_graph_memory": false
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144266390312_1",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_7b180f75f6c1"
+      },
+      {
+        "type": "done",
+        "request_id": "req_30144266390312_1",
+        "message_id": "m_f9177124c1a1",
+        "conv_id": "c_5b04372cd7d4",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false,
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "system",
+              "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+            },
+            {
+              "role": "user",
+              "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_SECOND"
+            }
+          ],
+          "messages_sha256": "52d8dabd925ade5bc43ca4da0436a1553c17eee10bded9bc3e646311003548f8",
+          "history_message_ids": [
+            "m_79b59d3990c9",
+            "m_6a1ca8904071"
+          ],
+          "selection": {
+            "include_memory": true,
+            "include_graph_memory": false,
+            "include_history": true,
+            "context_depth": null
+          },
+          "knowledge_context_request": null,
+          "knowledge_context": null
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_ISOLATED",
+      "conv_id": "c_5b04372cd7d4",
+      "include_memory": false,
+      "include_history": false,
+      "include_graph_memory": false,
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144299436669_2",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_52ebf3108e81"
+      },
+      {
+        "type": "done",
+        "request_id": "req_30144299436669_2",
+        "message_id": "m_fad982b28c0d",
+        "conv_id": "c_5b04372cd7d4",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false,
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "user",
+              "content": "W6_ISOLATED"
+            }
+          ],
+          "messages_sha256": "bc96447aeef9513a82ecd9f0f13580b8331b44c56a03f9cc8e53d0fea3f5a694",
+          "history_message_ids": [],
+          "selection": {
+            "include_memory": false,
+            "include_graph_memory": false,
+            "include_history": false,
+            "context_depth": null
+          },
+          "knowledge_context_request": null,
+          "knowledge_context": null
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_NO_TRACE",
+      "trace_context": false,
+      "include_history": false
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144396342452_3",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_8672700c882b"
+      },
+      {
+        "type": "done",
+        "request_id": "req_30144396342452_3",
+        "message_id": "m_78179d7ae0b9",
+        "conv_id": "c_5b04372cd7d4",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_FAIL_HTTP",
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144452247022_4",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_b542dbe136b8"
+      },
+      {
+        "type": "error",
+        "request_id": "req_30144452247022_4",
+        "code": "http",
+        "message": "API error 500: {\"error\":{\"message\":\"W6_SYNTHETIC_PROVIDER_FAILURE\"}}"
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_FAIL_AUTH",
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144530035964_5",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_7caef08ab2d5"
+      },
+      {
+        "type": "error",
+        "request_id": "req_30144530035964_5",
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_FAIL_RUN",
+      "knowledge_context": {
+        "run": "w6-nonexistent"
+      },
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144580226633_6",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_75d7f13c87b6"
+      },
+      {
+        "type": "error",
+        "request_id": "req_30144580226633_6",
+        "code": "not_found",
+        "message": "knowledge run not found: w6-nonexistent"
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_STREAM",
+      "stream": true,
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_30144597510051_7",
+        "conv_id": "c_5b04372cd7d4",
+        "user_message_id": "m_7c5422076c7b"
+      },
+      {
+        "type": "delta",
+        "text": "W6 fixed stream reply"
+      },
+      {
+        "type": "done",
+        "request_id": "req_30144597510051_7",
+        "message_id": "m_d59491159116",
+        "conv_id": "c_5b04372cd7d4",
+        "text": "W6 fixed stream reply",
+        "usage": {},
+        "model": "w6-local",
+        "cancelled": false,
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "system",
+              "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+            },
+            {
+              "role": "user",
+              "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_SECOND"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_ISOLATED"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_NO_TRACE"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_FAIL_HTTP"
+            },
+            {
+              "role": "user",
+              "content": "W6_FAIL_AUTH"
+            },
+            {
+              "role": "user",
+              "content": "W6_FAIL_RUN"
+            },
+            {
+              "role": "user",
+              "content": "W6_STREAM"
+            }
+          ],
+          "messages_sha256": "c5323abd05a45d63646fc03c33351139a1c2c298d318829106f6f451961227be",
+          "history_message_ids": [
+            "m_79b59d3990c9",
+            "m_6a1ca8904071",
+            "m_7b180f75f6c1",
+            "m_f9177124c1a1",
+            "m_52ebf3108e81",
+            "m_fad982b28c0d",
+            "m_8672700c882b",
+            "m_78179d7ae0b9",
+            "m_b542dbe136b8",
+            "m_7caef08ab2d5",
+            "m_75d7f13c87b6"
+          ],
+          "selection": {
+            "include_memory": true,
+            "include_graph_memory": true,
+            "include_history": true,
+            "context_depth": null
+          },
+          "knowledge_context_request": null,
+          "knowledge_context": null
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/healthz",
+    "request": null,
+    "response": {
+      "ok": true
+    }
+  },
+  {
+    "path": "/api/graph/reindex",
+    "request": {},
+    "response": {
+      "reindexed": 14
+    }
+  }
+]

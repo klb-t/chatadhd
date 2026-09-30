@@ -1,0 +1,100 @@
+[0/2] Re-checking globbed directories...
+[1/63] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o
+[2/63] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[3/63] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o
+[4/63] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[5/63] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[6/63] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[7/63] Building CXX object CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o
+[8/63] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o
+[9/63] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[10/63] Building CXX object CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o
+[11/63] Building CXX object CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o
+[12/63] Building CXX object CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o
+[13/63] Building CXX object CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o
+[14/63] Building CXX object CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o
+[15/63] Building CXX object CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o
+[16/63] Building CXX object CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o
+[17/63] Building CXX object CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o
+[18/63] Building CXX object CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o
+[19/63] Building CXX object CMakeFiles/loom_core.dir/src/import/exporter.cpp.o
+[20/63] Building CXX object CMakeFiles/loom_core.dir/src/import/export_common.cpp.o
+[21/63] Building CXX object CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o
+[22/63] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o
+[23/63] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o
+[24/63] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o
+[25/63] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o
+[26/63] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o
+[27/63] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o
+[28/63] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+[29/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_retention.cpp.o
+[30/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durable_audit.cpp.o
+[31/63] Linking CXX static library libloom_core.a
+[32/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durability.cpp.o
+[33/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o
+[34/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o
+[35/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_revisions.cpp.o
+[36/63] Linking CXX shared library libloom.so.0.1.0
+[37/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o
+[38/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_channel_integration.cpp.o
+[39/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o
+[40/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_retrieval_plan.cpp.o
+[41/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_diagnostics.cpp.o
+[42/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_eval.cpp.o
+[43/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_controls.cpp.o
+[44/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_counter.cpp.o
+[45/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_native_consumer.cpp.o
+[46/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_retrieval.cpp.o
+[47/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_engine.cpp.o
+[48/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_plan.cpp.o
+[49/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o
+FAILED: [code=1] CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o 
+/usr/bin/c++ -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_TEST_FIXTURES=\"/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/fixtures\" -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/a371a1ca13b1/chatadhd/loom/src -I/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests -I/workspace/scratch/a371a1ca13b1/chatadhd/loom/include -isystem /workspace/scratch/a371a1ca13b1/chatadhd/loom/third_party/doctest -isystem /workspace/scratch/a371a1ca13b1/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/a371a1ca13b1/chatadhd/loom/third_party/sqlite -g -std=c++20 -fPIE -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o -MF CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o.d -o CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o -c /workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp: In function ‘loom::Json {anonymous}::openai_conversation()’:
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:14: error: expected primary-expression before ‘{’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |              ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:14: error: expected ‘;’ before ‘{’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |              ^
+      |              ;
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:16: error: left operand of comma operator has no effect [-Werror=unused-value]
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |                ^~~~
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:41: error: expected ‘;’ before ‘}’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |                                         ^
+      |                                         ;
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:41: error: right operand of comma operator has no effect [-Werror=unused-value]
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:42: error: expected primary-expression before ‘,’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |                                          ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:44: error: expected primary-expression before ‘{’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |                                            ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:76: error: expected primary-expression before ‘,’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |                                                                            ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:78: error: expected primary-expression before ‘{’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |                                                                              ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:112:107: error: expected primary-expression before ‘,’ token
+  112 |   return Json{{"id", "conversation/~one"}, {"title", "Escaped mapping key"}, {"current_node", "node/~key"},
+      |                                                                                                           ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:113:5: error: expected primary-expression before ‘{’ token
+  113 |     {"mapping", Json{{"node/~key", Json{{"id", "node/~key"}, {"parent", nullptr}, {"children", Json::array()},
+      |     ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp: At global scope:
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:236:2: error: expected ‘}’ at end of input
+  236 | }
+      |  ^
+/workspace/scratch/a371a1ca13b1/chatadhd/loom/tests/test_import_export_fidelity.cpp:20:11: note: to match this ‘{’
+   20 | namespace {
+      |           ^
+cc1plus: all warnings being treated as errors
+[50/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_stream.cpp.o
+[51/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import.cpp.o
+[52/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_retrieval_dev.cpp.o
+[53/63] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_chat.cpp.o
+[54/63] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_exports.cpp.o
+ninja: build stopped: subcommand failed.

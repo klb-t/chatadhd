@@ -1,0 +1,2022 @@
+{
+  "schema": "loom.chat_retrieval_adapter_evidence/1",
+  "provenance": "synthetic_scripted_transport",
+  "request_body_raw": "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"System instruction.\"},{\"role\":\"system\",\"content\":\"## This goal\\n- **ENCRYPTION-REMOTE-BYTES encryption** [plan theses: [\\\"explicit\\\"]]  <!-- why: explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal) -->\\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\\\"explicit\\\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\\\"explicit\\\"]]  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\\n- **RECORDED-COUNTER-BYTES** [plan theses: [\\\"explicit\\\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\\n\\n## Retrieval plan coverage\\nCandidate coverage is structural; it does not establish support or truth.\\n- explicit: szyfrowanie\\n  [INCOMPLETE: [{\\\"reason\\\":\\\"recorded_counter_links_incomplete\\\"},{\\\"reason\\\":\\\"counter_evidence_gap\\\",\\\"for_claim\\\":\\\"cl_11999b69fa1559c6\\\",\\\"detail\\\":\\\"no_recorded_counter_links\\\"}]]\\n\"},{\"role\":\"user\",\"content\":\"CURRENT-TURN\"}],\"temperature\":0.7,\"max_tokens\":4096,\"stream\":false,\"include_reasoning\":true}",
+  "request_body": {
+    "model": "test/model",
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **ENCRYPTION-REMOTE-BYTES encryption** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal) -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"explicit\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- explicit: szyfrowanie\n  [INCOMPLETE: [{\"reason\":\"recorded_counter_links_incomplete\"},{\"reason\":\"counter_evidence_gap\",\"for_claim\":\"cl_11999b69fa1559c6\",\"detail\":\"no_recorded_counter_links\"}]]\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "temperature": 0.7,
+    "max_tokens": 4096,
+    "stream": false,
+    "include_reasoning": true
+  },
+  "context_trace": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **ENCRYPTION-REMOTE-BYTES encryption** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal) -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"explicit\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- explicit: szyfrowanie\n  [INCOMPLETE: [{\"reason\":\"recorded_counter_links_incomplete\"},{\"reason\":\"counter_evidence_gap\",\"for_claim\":\"cl_11999b69fa1559c6\",\"detail\":\"no_recorded_counter_links\"}]]\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "messages_sha256": "497ce5a1ac7a17a669dc119fa2753d8e1fcdae60b8587b87cd732805677590d9",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "CURRENT-TURN",
+      "targets": [
+        "e_e9504e924feefbfa"
+      ],
+      "project": "",
+      "budget_tokens": 100000,
+      "goal_type": "answer_question",
+      "run": "kr_0eadc529983397d0",
+      "lang": "en",
+      "relation_hops": 2,
+      "detail_resolution": "label",
+      "plan": {
+        "id": "explicit-retrieval-plan",
+        "source_ref": {
+          "kind": "product",
+          "id": "unverified-caller-reference",
+          "version": 999,
+          "note": "Żółć: declaration only"
+        },
+        "theses": [
+          {
+            "id": "explicit",
+            "text": "szyfrowanie",
+            "relation_hops": 0,
+            "detail_resolution": "raw",
+            "require_counter_evidence": true
+          }
+        ]
+      },
+      "claim_targets": [
+        "cl_3732d98ad18c925a"
+      ],
+      "include_counter_evidence": true,
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 10,
+          "min_score": 0.0
+        }
+      ],
+      "candidate_scan_limit": 20,
+      "lexical_shadow": true
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_c2c4cae3493e38bf",
+        "type": "answer_question",
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "confidence": 1.0,
+        "params": {
+          "confidence_basis": "explicit_owner_type",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "forced",
+          "plan_trace": {
+            "schema": "loom.context_plan_trace/1",
+            "plan": {
+              "id": "explicit-retrieval-plan",
+              "source_ref": {
+                "kind": "product",
+                "id": "unverified-caller-reference",
+                "version": 999,
+                "note": "Żółć: declaration only"
+              },
+              "theses": [
+                {
+                  "id": "explicit",
+                  "text": "szyfrowanie",
+                  "relation_hops": 0,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": true
+                }
+              ]
+            },
+            "run": "kr_0eadc529983397d0",
+            "budget_policy": "weighted_plan_order_unused_forward",
+            "theses": [
+              {
+                "id": "explicit",
+                "text": "szyfrowanie",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [
+                  "cl_3732d98ad18c925a"
+                ],
+                "relation_hops": 0,
+                "detail_resolution": "raw",
+                "require_counter_evidence": true,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 100000,
+                "carried_budget_tokens": 0,
+                "allocated_budget_tokens": 100000,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_11999b69fa1559c6",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_4fa49ab3c07237d8",
+                    "resolution": "raw"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "context_controls": {
+                    "relation_hops": 0,
+                    "detail_resolution": "raw"
+                  },
+                  "claim_selection": [
+                    {
+                      "ref": "cl_3732d98ad18c925a",
+                      "status": "selected"
+                    }
+                  ],
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      },
+                      {
+                        "for_claim": "cl_11999b69fa1559c6",
+                        "claims": [],
+                        "observations": [],
+                        "gaps": [
+                          "no_recorded_counter_links"
+                        ]
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": false
+                  },
+                  "candidate_retrieval": {
+                    "run": "kr_0eadc529983397d0",
+                    "scan_limit": 20,
+                    "channels": [
+                      {
+                        "method": "tfidf",
+                        "status": "ok",
+                        "reason": "",
+                        "corpus_count": 5,
+                        "scored_count": 5,
+                        "unrepresentable_count": 0,
+                        "unrepresentable_refs": [],
+                        "zero_score_count": 4,
+                        "eligible_count": 1,
+                        "truncated": false,
+                        "scores": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.7821364537391883
+                          },
+                          {
+                            "ref": "cl_34faf564507ab5be",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_3732d98ad18c925a",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_85008b41b289bb3c",
+                            "score": 0.0
+                          }
+                        ],
+                        "hits": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.7821364537391883
+                          }
+                        ],
+                        "id": "tfidf",
+                        "request": {
+                          "id": "tfidf",
+                          "limit": 10,
+                          "min_score": 0.0
+                        },
+                        "invalid_hits": [],
+                        "accepted_hits": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.7821364537391883
+                          }
+                        ]
+                      }
+                    ],
+                    "corpus_status": "ok",
+                    "possibly_truncated": false,
+                    "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                    "scanned_claims": 5,
+                    "admitted_claims": 5,
+                    "filtered_claims": 0,
+                    "entity_label_query_errors": 0,
+                    "lexical_shadow": {
+                      "method": "lexical_token_overlap",
+                      "status": "ok",
+                      "reason": "",
+                      "corpus_count": 5,
+                      "scored_count": 5,
+                      "unrepresentable_count": 0,
+                      "unrepresentable_refs": [],
+                      "zero_score_count": 5,
+                      "eligible_count": 0,
+                      "truncated": false,
+                      "scores": [
+                        {
+                          "ref": "cl_11999b69fa1559c6",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_34faf564507ab5be",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_3732d98ad18c925a",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_4fa49ab3c07237d8",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_85008b41b289bb3c",
+                          "score": 0.0
+                        }
+                      ],
+                      "hits": [],
+                      "diagnostic_gap": [],
+                      "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+                      "selection_effect": "none"
+                    }
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 3,
+                    "unique_candidates": 3,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        15000,
+                        35000,
+                        50000
+                      ],
+                      "total_tokens": 100000,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        100000
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        102
+                      ],
+                      "used_tokens": 102
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 102,
+                "counter_evidence": {
+                  "status": "linked_records_only",
+                  "entries": [
+                    {
+                      "for_claim": "cl_3732d98ad18c925a",
+                      "claims": [
+                        {
+                          "ref": "cl_4fa49ab3c07237d8",
+                          "status": "selected"
+                        }
+                      ],
+                      "observations": [],
+                      "gaps": []
+                    },
+                    {
+                      "for_claim": "cl_11999b69fa1559c6",
+                      "claims": [],
+                      "observations": [],
+                      "gaps": [
+                        "no_recorded_counter_links"
+                      ]
+                    }
+                  ],
+                  "scope": "one_recorded_counter_link_from_direct_candidates",
+                  "semantic_contradiction_search": "not_performed",
+                  "recorded_links_complete": false
+                },
+                "direct_material_candidates": 1,
+                "added_tokens_after_deduplication": 102,
+                "unused_budget_tokens_forwarded": 99898,
+                "gaps": [
+                  {
+                    "reason": "recorded_counter_links_incomplete"
+                  },
+                  {
+                    "reason": "counter_evidence_gap",
+                    "for_claim": "cl_11999b69fa1559c6",
+                    "detail": "no_recorded_counter_links"
+                  }
+                ]
+              }
+            ],
+            "limitations": [
+              "structural_retrieval_is_not_a_semantic_support_verdict",
+              "counter_coverage_is_limited_to_recorded_assessment_links",
+              "item_estimates_exclude_prompt_headers_and_trace_metadata",
+              "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+            ]
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_dd4ff4a8f0c9b6c9",
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "plan_trace": {
+              "schema": "loom.context_plan_trace/1",
+              "plan": {
+                "id": "explicit-retrieval-plan",
+                "source_ref": {
+                  "kind": "product",
+                  "id": "unverified-caller-reference",
+                  "version": 999,
+                  "note": "Żółć: declaration only"
+                },
+                "theses": [
+                  {
+                    "id": "explicit",
+                    "text": "szyfrowanie",
+                    "relation_hops": 0,
+                    "detail_resolution": "raw",
+                    "require_counter_evidence": true
+                  }
+                ]
+              },
+              "run": "kr_0eadc529983397d0",
+              "budget_policy": "weighted_plan_order_unused_forward",
+              "theses": [
+                {
+                  "id": "explicit",
+                  "text": "szyfrowanie",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "relation_hops": 0,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": true,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 100000,
+                  "carried_budget_tokens": 0,
+                  "allocated_budget_tokens": 100000,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_11999b69fa1559c6",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_4fa49ab3c07237d8",
+                      "resolution": "raw"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "context_controls": {
+                      "relation_hops": 0,
+                      "detail_resolution": "raw"
+                    },
+                    "claim_selection": [
+                      {
+                        "ref": "cl_3732d98ad18c925a",
+                        "status": "selected"
+                      }
+                    ],
+                    "counter_evidence": {
+                      "status": "linked_records_only",
+                      "entries": [
+                        {
+                          "for_claim": "cl_3732d98ad18c925a",
+                          "claims": [
+                            {
+                              "ref": "cl_4fa49ab3c07237d8",
+                              "status": "selected"
+                            }
+                          ],
+                          "observations": [],
+                          "gaps": []
+                        },
+                        {
+                          "for_claim": "cl_11999b69fa1559c6",
+                          "claims": [],
+                          "observations": [],
+                          "gaps": [
+                            "no_recorded_counter_links"
+                          ]
+                        }
+                      ],
+                      "scope": "one_recorded_counter_link_from_direct_candidates",
+                      "semantic_contradiction_search": "not_performed",
+                      "recorded_links_complete": false
+                    },
+                    "candidate_retrieval": {
+                      "run": "kr_0eadc529983397d0",
+                      "scan_limit": 20,
+                      "channels": [
+                        {
+                          "method": "tfidf",
+                          "status": "ok",
+                          "reason": "",
+                          "corpus_count": 5,
+                          "scored_count": 5,
+                          "unrepresentable_count": 0,
+                          "unrepresentable_refs": [],
+                          "zero_score_count": 4,
+                          "eligible_count": 1,
+                          "truncated": false,
+                          "scores": [
+                            {
+                              "ref": "cl_11999b69fa1559c6",
+                              "score": 0.7821364537391883
+                            },
+                            {
+                              "ref": "cl_34faf564507ab5be",
+                              "score": 0.0
+                            },
+                            {
+                              "ref": "cl_3732d98ad18c925a",
+                              "score": 0.0
+                            },
+                            {
+                              "ref": "cl_4fa49ab3c07237d8",
+                              "score": 0.0
+                            },
+                            {
+                              "ref": "cl_85008b41b289bb3c",
+                              "score": 0.0
+                            }
+                          ],
+                          "hits": [
+                            {
+                              "ref": "cl_11999b69fa1559c6",
+                              "score": 0.7821364537391883
+                            }
+                          ],
+                          "id": "tfidf",
+                          "request": {
+                            "id": "tfidf",
+                            "limit": 10,
+                            "min_score": 0.0
+                          },
+                          "invalid_hits": [],
+                          "accepted_hits": [
+                            {
+                              "ref": "cl_11999b69fa1559c6",
+                              "score": 0.7821364537391883
+                            }
+                          ]
+                        }
+                      ],
+                      "corpus_status": "ok",
+                      "possibly_truncated": false,
+                      "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                      "scanned_claims": 5,
+                      "admitted_claims": 5,
+                      "filtered_claims": 0,
+                      "entity_label_query_errors": 0,
+                      "lexical_shadow": {
+                        "method": "lexical_token_overlap",
+                        "status": "ok",
+                        "reason": "",
+                        "corpus_count": 5,
+                        "scored_count": 5,
+                        "unrepresentable_count": 0,
+                        "unrepresentable_refs": [],
+                        "zero_score_count": 5,
+                        "eligible_count": 0,
+                        "truncated": false,
+                        "scores": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_34faf564507ab5be",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_3732d98ad18c925a",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_85008b41b289bb3c",
+                            "score": 0.0
+                          }
+                        ],
+                        "hits": [],
+                        "diagnostic_gap": [],
+                        "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+                        "selection_effect": "none"
+                      }
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 3,
+                      "unique_candidates": 3,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          15000,
+                          35000,
+                          50000
+                        ],
+                        "total_tokens": 100000,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          100000
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          102
+                        ],
+                        "used_tokens": 102
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 102,
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      },
+                      {
+                        "for_claim": "cl_11999b69fa1559c6",
+                        "claims": [],
+                        "observations": [],
+                        "gaps": [
+                          "no_recorded_counter_links"
+                        ]
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": false
+                  },
+                  "direct_material_candidates": 1,
+                  "added_tokens_after_deduplication": 102,
+                  "unused_budget_tokens_forwarded": 99898,
+                  "gaps": [
+                    {
+                      "reason": "recorded_counter_links_incomplete"
+                    },
+                    {
+                      "reason": "counter_evidence_gap",
+                      "for_claim": "cl_11999b69fa1559c6",
+                      "detail": "no_recorded_counter_links"
+                    }
+                  ]
+                }
+              ],
+              "limitations": [
+                "structural_retrieval_is_not_a_semantic_support_verdict",
+                "counter_coverage_is_limited_to_recorded_assessment_links",
+                "item_estimates_exclude_prompt_headers_and_trace_metadata",
+                "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+              ]
+            }
+          }
+        },
+        "budget_tokens": 100000,
+        "used_tokens": 102,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [
+          {
+            "ref_kind": "claim",
+            "ref": "cl_11999b69fa1559c6",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "candidate_channels": {
+                "tfidf": {
+                  "method": "tfidf",
+                  "score": 0.7821364537391883,
+                  "rank": 1,
+                  "selection_relevance": 1.0,
+                  "ranking_signal": "reciprocal_channel_rank"
+                }
+              },
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "candidate_channels": {
+                      "tfidf": {
+                        "method": "tfidf",
+                        "score": 0.7821364537391883,
+                        "rank": 1,
+                        "selection_relevance": 1.0,
+                        "ranking_signal": "reciprocal_channel_rank"
+                      }
+                    }
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 9,
+            "why": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+            "required_by": [],
+            "text": "**ENCRYPTION-REMOTE-BYTES encryption**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 6,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**REQUIRED-PREMISE-BYTES**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "explicit claim or candidate instrument; explicit claim anchor",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 81,
+            "why": "explicit claim or candidate instrument; explicit claim anchor",
+            "required_by": [],
+            "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_4fa49ab3c07237d8",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "counter_for": [
+                "cl_3732d98ad18c925a"
+              ],
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "counter_for": [
+                      "cl_3732d98ad18c925a"
+                    ]
+                  },
+                  "score": 0.252,
+                  "why": "explicit claim or candidate instrument; recorded counter-evidence",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 6,
+            "why": "explicit claim or candidate instrument; recorded counter-evidence",
+            "required_by": [],
+            "text": "**RECORDED-COUNTER-BYTES**"
+          }
+        ],
+        "dropped": []
+      },
+      "prompt": "## This goal\n- **ENCRYPTION-REMOTE-BYTES encryption** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal) -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"explicit\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- explicit: szyfrowanie\n  [INCOMPLETE: [{\"reason\":\"recorded_counter_links_incomplete\"},{\"reason\":\"counter_evidence_gap\",\"for_claim\":\"cl_11999b69fa1559c6\",\"detail\":\"no_recorded_counter_links\"}]]\n",
+      "request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "relation_hops": 2,
+        "detail_resolution": "label",
+        "plan": {
+          "id": "explicit-retrieval-plan",
+          "source_ref": {
+            "kind": "product",
+            "id": "unverified-caller-reference",
+            "version": 999,
+            "note": "Żółć: declaration only"
+          },
+          "theses": [
+            {
+              "id": "explicit",
+              "text": "szyfrowanie",
+              "relation_hops": 0,
+              "detail_resolution": "raw",
+              "require_counter_evidence": true
+            }
+          ]
+        },
+        "claim_targets": [
+          "cl_3732d98ad18c925a"
+        ],
+        "include_counter_evidence": true,
+        "candidate_channels": [
+          {
+            "id": "tfidf",
+            "limit": 10,
+            "min_score": 0.0
+          }
+        ],
+        "candidate_scan_limit": 20,
+        "lexical_shadow": true
+      }
+    }
+  },
+  "stored_context_trace": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **ENCRYPTION-REMOTE-BYTES encryption** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal) -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"explicit\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- explicit: szyfrowanie\n  [INCOMPLETE: [{\"reason\":\"recorded_counter_links_incomplete\"},{\"reason\":\"counter_evidence_gap\",\"for_claim\":\"cl_11999b69fa1559c6\",\"detail\":\"no_recorded_counter_links\"}]]\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "messages_sha256": "497ce5a1ac7a17a669dc119fa2753d8e1fcdae60b8587b87cd732805677590d9",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "CURRENT-TURN",
+      "targets": [
+        "e_e9504e924feefbfa"
+      ],
+      "project": "",
+      "budget_tokens": 100000,
+      "goal_type": "answer_question",
+      "run": "kr_0eadc529983397d0",
+      "lang": "en",
+      "relation_hops": 2,
+      "detail_resolution": "label",
+      "plan": {
+        "id": "explicit-retrieval-plan",
+        "source_ref": {
+          "kind": "product",
+          "id": "unverified-caller-reference",
+          "version": 999,
+          "note": "Żółć: declaration only"
+        },
+        "theses": [
+          {
+            "id": "explicit",
+            "text": "szyfrowanie",
+            "relation_hops": 0,
+            "detail_resolution": "raw",
+            "require_counter_evidence": true
+          }
+        ]
+      },
+      "claim_targets": [
+        "cl_3732d98ad18c925a"
+      ],
+      "include_counter_evidence": true,
+      "candidate_channels": [
+        {
+          "id": "tfidf",
+          "limit": 10,
+          "min_score": 0.0
+        }
+      ],
+      "candidate_scan_limit": 20,
+      "lexical_shadow": true
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_c2c4cae3493e38bf",
+        "type": "answer_question",
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "confidence": 1.0,
+        "params": {
+          "confidence_basis": "explicit_owner_type",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "forced",
+          "plan_trace": {
+            "schema": "loom.context_plan_trace/1",
+            "plan": {
+              "id": "explicit-retrieval-plan",
+              "source_ref": {
+                "kind": "product",
+                "id": "unverified-caller-reference",
+                "version": 999,
+                "note": "Żółć: declaration only"
+              },
+              "theses": [
+                {
+                  "id": "explicit",
+                  "text": "szyfrowanie",
+                  "relation_hops": 0,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": true
+                }
+              ]
+            },
+            "run": "kr_0eadc529983397d0",
+            "budget_policy": "weighted_plan_order_unused_forward",
+            "theses": [
+              {
+                "id": "explicit",
+                "text": "szyfrowanie",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [
+                  "cl_3732d98ad18c925a"
+                ],
+                "relation_hops": 0,
+                "detail_resolution": "raw",
+                "require_counter_evidence": true,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 100000,
+                "carried_budget_tokens": 0,
+                "allocated_budget_tokens": 100000,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_11999b69fa1559c6",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_4fa49ab3c07237d8",
+                    "resolution": "raw"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "context_controls": {
+                    "relation_hops": 0,
+                    "detail_resolution": "raw"
+                  },
+                  "claim_selection": [
+                    {
+                      "ref": "cl_3732d98ad18c925a",
+                      "status": "selected"
+                    }
+                  ],
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      },
+                      {
+                        "for_claim": "cl_11999b69fa1559c6",
+                        "claims": [],
+                        "observations": [],
+                        "gaps": [
+                          "no_recorded_counter_links"
+                        ]
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": false
+                  },
+                  "candidate_retrieval": {
+                    "run": "kr_0eadc529983397d0",
+                    "scan_limit": 20,
+                    "channels": [
+                      {
+                        "method": "tfidf",
+                        "status": "ok",
+                        "reason": "",
+                        "corpus_count": 5,
+                        "scored_count": 5,
+                        "unrepresentable_count": 0,
+                        "unrepresentable_refs": [],
+                        "zero_score_count": 4,
+                        "eligible_count": 1,
+                        "truncated": false,
+                        "scores": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.7821364537391883
+                          },
+                          {
+                            "ref": "cl_34faf564507ab5be",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_3732d98ad18c925a",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_85008b41b289bb3c",
+                            "score": 0.0
+                          }
+                        ],
+                        "hits": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.7821364537391883
+                          }
+                        ],
+                        "id": "tfidf",
+                        "request": {
+                          "id": "tfidf",
+                          "limit": 10,
+                          "min_score": 0.0
+                        },
+                        "invalid_hits": [],
+                        "accepted_hits": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.7821364537391883
+                          }
+                        ]
+                      }
+                    ],
+                    "corpus_status": "ok",
+                    "possibly_truncated": false,
+                    "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                    "scanned_claims": 5,
+                    "admitted_claims": 5,
+                    "filtered_claims": 0,
+                    "entity_label_query_errors": 0,
+                    "lexical_shadow": {
+                      "method": "lexical_token_overlap",
+                      "status": "ok",
+                      "reason": "",
+                      "corpus_count": 5,
+                      "scored_count": 5,
+                      "unrepresentable_count": 0,
+                      "unrepresentable_refs": [],
+                      "zero_score_count": 5,
+                      "eligible_count": 0,
+                      "truncated": false,
+                      "scores": [
+                        {
+                          "ref": "cl_11999b69fa1559c6",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_34faf564507ab5be",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_3732d98ad18c925a",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_4fa49ab3c07237d8",
+                          "score": 0.0
+                        },
+                        {
+                          "ref": "cl_85008b41b289bb3c",
+                          "score": 0.0
+                        }
+                      ],
+                      "hits": [],
+                      "diagnostic_gap": [],
+                      "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+                      "selection_effect": "none"
+                    }
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 3,
+                    "unique_candidates": 3,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        15000,
+                        35000,
+                        50000
+                      ],
+                      "total_tokens": 100000,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        100000
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        102
+                      ],
+                      "used_tokens": 102
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 102,
+                "counter_evidence": {
+                  "status": "linked_records_only",
+                  "entries": [
+                    {
+                      "for_claim": "cl_3732d98ad18c925a",
+                      "claims": [
+                        {
+                          "ref": "cl_4fa49ab3c07237d8",
+                          "status": "selected"
+                        }
+                      ],
+                      "observations": [],
+                      "gaps": []
+                    },
+                    {
+                      "for_claim": "cl_11999b69fa1559c6",
+                      "claims": [],
+                      "observations": [],
+                      "gaps": [
+                        "no_recorded_counter_links"
+                      ]
+                    }
+                  ],
+                  "scope": "one_recorded_counter_link_from_direct_candidates",
+                  "semantic_contradiction_search": "not_performed",
+                  "recorded_links_complete": false
+                },
+                "direct_material_candidates": 1,
+                "added_tokens_after_deduplication": 102,
+                "unused_budget_tokens_forwarded": 99898,
+                "gaps": [
+                  {
+                    "reason": "recorded_counter_links_incomplete"
+                  },
+                  {
+                    "reason": "counter_evidence_gap",
+                    "for_claim": "cl_11999b69fa1559c6",
+                    "detail": "no_recorded_counter_links"
+                  }
+                ]
+              }
+            ],
+            "limitations": [
+              "structural_retrieval_is_not_a_semantic_support_verdict",
+              "counter_coverage_is_limited_to_recorded_assessment_links",
+              "item_estimates_exclude_prompt_headers_and_trace_metadata",
+              "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+            ]
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_dd4ff4a8f0c9b6c9",
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "plan_trace": {
+              "schema": "loom.context_plan_trace/1",
+              "plan": {
+                "id": "explicit-retrieval-plan",
+                "source_ref": {
+                  "kind": "product",
+                  "id": "unverified-caller-reference",
+                  "version": 999,
+                  "note": "Żółć: declaration only"
+                },
+                "theses": [
+                  {
+                    "id": "explicit",
+                    "text": "szyfrowanie",
+                    "relation_hops": 0,
+                    "detail_resolution": "raw",
+                    "require_counter_evidence": true
+                  }
+                ]
+              },
+              "run": "kr_0eadc529983397d0",
+              "budget_policy": "weighted_plan_order_unused_forward",
+              "theses": [
+                {
+                  "id": "explicit",
+                  "text": "szyfrowanie",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "relation_hops": 0,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": true,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 100000,
+                  "carried_budget_tokens": 0,
+                  "allocated_budget_tokens": 100000,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_11999b69fa1559c6",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_4fa49ab3c07237d8",
+                      "resolution": "raw"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "context_controls": {
+                      "relation_hops": 0,
+                      "detail_resolution": "raw"
+                    },
+                    "claim_selection": [
+                      {
+                        "ref": "cl_3732d98ad18c925a",
+                        "status": "selected"
+                      }
+                    ],
+                    "counter_evidence": {
+                      "status": "linked_records_only",
+                      "entries": [
+                        {
+                          "for_claim": "cl_3732d98ad18c925a",
+                          "claims": [
+                            {
+                              "ref": "cl_4fa49ab3c07237d8",
+                              "status": "selected"
+                            }
+                          ],
+                          "observations": [],
+                          "gaps": []
+                        },
+                        {
+                          "for_claim": "cl_11999b69fa1559c6",
+                          "claims": [],
+                          "observations": [],
+                          "gaps": [
+                            "no_recorded_counter_links"
+                          ]
+                        }
+                      ],
+                      "scope": "one_recorded_counter_link_from_direct_candidates",
+                      "semantic_contradiction_search": "not_performed",
+                      "recorded_links_complete": false
+                    },
+                    "candidate_retrieval": {
+                      "run": "kr_0eadc529983397d0",
+                      "scan_limit": 20,
+                      "channels": [
+                        {
+                          "method": "tfidf",
+                          "status": "ok",
+                          "reason": "",
+                          "corpus_count": 5,
+                          "scored_count": 5,
+                          "unrepresentable_count": 0,
+                          "unrepresentable_refs": [],
+                          "zero_score_count": 4,
+                          "eligible_count": 1,
+                          "truncated": false,
+                          "scores": [
+                            {
+                              "ref": "cl_11999b69fa1559c6",
+                              "score": 0.7821364537391883
+                            },
+                            {
+                              "ref": "cl_34faf564507ab5be",
+                              "score": 0.0
+                            },
+                            {
+                              "ref": "cl_3732d98ad18c925a",
+                              "score": 0.0
+                            },
+                            {
+                              "ref": "cl_4fa49ab3c07237d8",
+                              "score": 0.0
+                            },
+                            {
+                              "ref": "cl_85008b41b289bb3c",
+                              "score": 0.0
+                            }
+                          ],
+                          "hits": [
+                            {
+                              "ref": "cl_11999b69fa1559c6",
+                              "score": 0.7821364537391883
+                            }
+                          ],
+                          "id": "tfidf",
+                          "request": {
+                            "id": "tfidf",
+                            "limit": 10,
+                            "min_score": 0.0
+                          },
+                          "invalid_hits": [],
+                          "accepted_hits": [
+                            {
+                              "ref": "cl_11999b69fa1559c6",
+                              "score": 0.7821364537391883
+                            }
+                          ]
+                        }
+                      ],
+                      "corpus_status": "ok",
+                      "possibly_truncated": false,
+                      "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                      "scanned_claims": 5,
+                      "admitted_claims": 5,
+                      "filtered_claims": 0,
+                      "entity_label_query_errors": 0,
+                      "lexical_shadow": {
+                        "method": "lexical_token_overlap",
+                        "status": "ok",
+                        "reason": "",
+                        "corpus_count": 5,
+                        "scored_count": 5,
+                        "unrepresentable_count": 0,
+                        "unrepresentable_refs": [],
+                        "zero_score_count": 5,
+                        "eligible_count": 0,
+                        "truncated": false,
+                        "scores": [
+                          {
+                            "ref": "cl_11999b69fa1559c6",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_34faf564507ab5be",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_3732d98ad18c925a",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "score": 0.0
+                          },
+                          {
+                            "ref": "cl_85008b41b289bb3c",
+                            "score": 0.0
+                          }
+                        ],
+                        "hits": [],
+                        "diagnostic_gap": [],
+                        "comparison": "lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection",
+                        "selection_effect": "none"
+                      }
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 3,
+                      "unique_candidates": 3,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          15000,
+                          35000,
+                          50000
+                        ],
+                        "total_tokens": 100000,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          100000
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          102
+                        ],
+                        "used_tokens": 102
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 102,
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      },
+                      {
+                        "for_claim": "cl_11999b69fa1559c6",
+                        "claims": [],
+                        "observations": [],
+                        "gaps": [
+                          "no_recorded_counter_links"
+                        ]
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": false
+                  },
+                  "direct_material_candidates": 1,
+                  "added_tokens_after_deduplication": 102,
+                  "unused_budget_tokens_forwarded": 99898,
+                  "gaps": [
+                    {
+                      "reason": "recorded_counter_links_incomplete"
+                    },
+                    {
+                      "reason": "counter_evidence_gap",
+                      "for_claim": "cl_11999b69fa1559c6",
+                      "detail": "no_recorded_counter_links"
+                    }
+                  ]
+                }
+              ],
+              "limitations": [
+                "structural_retrieval_is_not_a_semantic_support_verdict",
+                "counter_coverage_is_limited_to_recorded_assessment_links",
+                "item_estimates_exclude_prompt_headers_and_trace_metadata",
+                "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+              ]
+            }
+          }
+        },
+        "budget_tokens": 100000,
+        "used_tokens": 102,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [
+          {
+            "ref_kind": "claim",
+            "ref": "cl_11999b69fa1559c6",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "candidate_channels": {
+                "tfidf": {
+                  "method": "tfidf",
+                  "score": 0.7821364537391883,
+                  "rank": 1,
+                  "selection_relevance": 1.0,
+                  "ranking_signal": "reciprocal_channel_rank"
+                }
+              },
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "candidate_channels": {
+                      "tfidf": {
+                        "method": "tfidf",
+                        "score": 0.7821364537391883,
+                        "rank": 1,
+                        "selection_relevance": 1.0,
+                        "ranking_signal": "reciprocal_channel_rank"
+                      }
+                    }
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 9,
+            "why": "explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)",
+            "required_by": [],
+            "text": "**ENCRYPTION-REMOTE-BYTES encryption**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 6,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**REQUIRED-PREMISE-BYTES**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "explicit claim or candidate instrument; explicit claim anchor",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 81,
+            "why": "explicit claim or candidate instrument; explicit claim anchor",
+            "required_by": [],
+            "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_4fa49ab3c07237d8",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "counter_for": [
+                "cl_3732d98ad18c925a"
+              ],
+              "thesis_ids": [
+                "explicit"
+              ],
+              "thesis_selection": {
+                "explicit": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "counter_for": [
+                      "cl_3732d98ad18c925a"
+                    ]
+                  },
+                  "score": 0.252,
+                  "why": "explicit claim or candidate instrument; recorded counter-evidence",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 6,
+            "why": "explicit claim or candidate instrument; recorded counter-evidence",
+            "required_by": [],
+            "text": "**RECORDED-COUNTER-BYTES**"
+          }
+        ],
+        "dropped": []
+      },
+      "prompt": "## This goal\n- **ENCRYPTION-REMOTE-BYTES encryption** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal) -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"explicit\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES** [plan theses: [\"explicit\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- explicit: szyfrowanie\n  [INCOMPLETE: [{\"reason\":\"recorded_counter_links_incomplete\"},{\"reason\":\"counter_evidence_gap\",\"for_claim\":\"cl_11999b69fa1559c6\",\"detail\":\"no_recorded_counter_links\"}]]\n",
+      "request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "relation_hops": 2,
+        "detail_resolution": "label",
+        "plan": {
+          "id": "explicit-retrieval-plan",
+          "source_ref": {
+            "kind": "product",
+            "id": "unverified-caller-reference",
+            "version": 999,
+            "note": "Żółć: declaration only"
+          },
+          "theses": [
+            {
+              "id": "explicit",
+              "text": "szyfrowanie",
+              "relation_hops": 0,
+              "detail_resolution": "raw",
+              "require_counter_evidence": true
+            }
+          ]
+        },
+        "claim_targets": [
+          "cl_3732d98ad18c925a"
+        ],
+        "include_counter_evidence": true,
+        "candidate_channels": [
+          {
+            "id": "tfidf",
+            "limit": 10,
+            "min_score": 0.0
+          }
+        ],
+        "candidate_scan_limit": 20,
+        "lexical_shadow": true
+      }
+    }
+  }
+}

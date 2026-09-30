@@ -1,0 +1,163 @@
+{
+  "schema": "loom.integration_verification.v1",
+  "recorded_utc": "2026-09-30T23:18:35.814508+00:00",
+  "source_pin": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+  "source_tree": "abe386316d6fc66a3fa2b0ba8aabc2b28c8df41d",
+  "configuration": {
+    "build_type": "Debug",
+    "warnings_as_errors": true,
+    "sqlite": "bundled 3.47.2",
+    "build_jobs": 6,
+    "ctest_jobs": 4,
+    "server": true,
+    "shared_library": true,
+    "TMPDIR": "/var/tmp",
+    "cmake": "4.4.3",
+    "compiler": "GNU 13.3.0"
+  },
+  "build": {
+    "first": {
+      "source_pin": "8cc5a5648ada511053d57a0f3979d96c5e0f1d36",
+      "exit_code": 1,
+      "seconds": 191.48717617599686,
+      "cause": "Missing closing brace in new test_import_export_fidelity.cpp openai_conversation Json initializer. Corrected by da77c76; first log retained."
+    },
+    "corrected": {
+      "exit_code": 0,
+      "seconds": 51.817843158998585,
+      "sources_unchanged": true
+    }
+  },
+  "binary_sha256": {
+    "loom_tests": "e5189092372091d123a022ef28de74fde3cdc4dccd12fb1616042bd852af92bb",
+    "loom_compat_tool": "1abba9a200e02e99b063d0b3bacb65c2257b9bc1821ec01ee6e8691cf48e4997",
+    "loom_candidate_graph_native_tool": "2cdba719f5245d4f4c5827b5a7f207b312630d1bc6e298eb4bffa6c87c127eb7",
+    "libloom.so.0.1.0": "f1c7a45000bee6b6efc73a5ec92cb87d519872d4214dccc85df42dced479db40",
+    "cli/loom": "007c429d8b637a0b1dca3ef263a18c00e254c4a38b92e66e80afee8bfb6a4937",
+    "server/loom-server": "52858ae162f449ae636429d3c2d4dd63e120651d1b17f3ca27939fc7ca556cc3"
+  },
+  "ctest": {
+    "entries": 94,
+    "passed": 94,
+    "failed": [],
+    "skipped": [],
+    "ctest_seconds": 111.01,
+    "runner_seconds": 111.04672064799888,
+    "source_hashes_unchanged": true
+  },
+  "new_native_suites_subset_of_ctest": {
+    "unit.test_chat_active_task_durability": {
+      "cases": 8,
+      "assertions": 106
+    },
+    "unit.test_chat_active_task_durable_audit": {
+      "cases": 6,
+      "assertions": 76
+    },
+    "unit.test_chat_retrieval_plan": {
+      "cases": 8,
+      "assertions": 259
+    },
+    "unit.test_import_export_fidelity": {
+      "cases": 5,
+      "assertions": 327
+    }
+  },
+  "research_structure_subset_of_ctest": {
+    "tests": 841,
+    "unittest_seconds": 51.553,
+    "ctest_seconds": 52.8209,
+    "passed": true
+  },
+  "catalog_dev_subset_of_ctest": {
+    "relevant_selected": 31,
+    "relevant_total": 45,
+    "selected_conversations": 31,
+    "precision": 1.0,
+    "traps_selected": 0,
+    "traps_total": 5,
+    "generic_noise_selected": 0,
+    "generic_noise_total": 15,
+    "ranking_auc": 0.965556,
+    "hits_at_45": 42
+  },
+  "w2_payloads": {
+    "count": 5,
+    "directory": "w2-evidence-first",
+    "source": "actual captured ScriptedTransport request bodies and returned/persisted trace from the included native suite; synthetic data"
+  },
+  "w6_import_v2": {
+    "passed": 24,
+    "total": 24,
+    "failed": [],
+    "actual_source_pin": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+    "actual_binary_sha256": "007c429d8b637a0b1dca3ef263a18c00e254c4a38b92e66e80afee8bfb6a4937",
+    "frozen_baseline_requested": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+    "instrument_unchanged": true
+  },
+  "w6_import_v1_overlapping_diagnostics": {
+    "passed": 54,
+    "total": 59,
+    "failed": [
+      {
+        "case": "openai",
+        "check": "member_bytes:conversations.json"
+      },
+      {
+        "case": "anthropic",
+        "check": "member_bytes:conversations.json"
+      },
+      {
+        "case": "wrapped",
+        "check": "exact_source_locator:u/~0"
+      },
+      {
+        "case": "wrapped",
+        "check": "exact_source_locator:a/rejected"
+      },
+      {
+        "case": "wrapped",
+        "check": "exact_source_locator:a/current~1"
+      }
+    ],
+    "remaining_limitations": "Two standalone-member-blob checks do not account for recoverable ZIP members; three wrapped source-locator checks resolve wrapper-root pointers against an unwrapped array. These negatives remain recorded, not waived or relabeled as passing."
+  },
+  "w6_transport": {
+    "passed": 72,
+    "total": 72,
+    "failed": [],
+    "provider_requests": 6,
+    "response_source": "local fixed fake provider",
+    "semantic_quality_evaluated": false
+  },
+  "web_agent_evidence": {
+    "status": "agent_run_pass_artifacts_verified",
+    "manifest": "web-native-manifest.json",
+    "receipt": "../WEB_PLAN_RECEIPT.md",
+    "source_commit": "9c79181efa35a824d69001835f589b3e3f508820",
+    "native_source_commit": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+    "artifact_hashes_verified": 13,
+    "chat_context_local_provider_calls": 5,
+    "chat_context_remote_provider_calls": 0,
+    "workspace_scenarios_passed": 10,
+    "workspace_scenarios_total": 10,
+    "workspace_model_calls": 0,
+    "first_attempt": {
+      "outcome": "environment_bootstrap_failure",
+      "browser": "/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome",
+      "reason": "Chromium process singleton socket() failed: Operation not permitted; browser never opened a page",
+      "screenshots": "unavailable because browser launch failed",
+      "provider_calls": 0,
+      "product_assertions_executed": false
+    },
+    "post_run_test_harness_change": "Moved existing evidence-directory collision checks before resource creation; guards verified to reject reused directories before setup without altering artifacts. Product code and browser assertions unchanged; no matrix rerun."
+  },
+  "scope_limits": [
+    "No baseline native rebuild.",
+    "No real private archives used.",
+    "No model calls or paid inference.",
+    "Do not sum overlapping CTest/native/Python/W6 denominators.",
+    "CTest XML truncates some stdout; ctest-full-output.log preserves complete CTest output.",
+    "Generated frozen ZIP inputs remain outside this evidence package; byte-identical base64 originals and manifest are already committed."
+  ]
+}

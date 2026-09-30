@@ -1,0 +1,86 @@
+[
+  {
+    "check": "oracle:extra_field",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:missing_field",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:array_vs_numeric_object",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:nested_array_vs_numeric_object",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:array_order",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:array_duplicate",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:bool_vs_integer",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:integer_vs_float",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:unicode_normalization",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:empty_container_type",
+    "pass": true,
+    "detail": {
+      "expected_equal": false
+    }
+  },
+  {
+    "check": "oracle:object_key_order_irrelevant",
+    "pass": true,
+    "detail": {
+      "expected_equal": true
+    }
+  },
+  {
+    "check": "oracle:identical_nested",
+    "pass": true,
+    "detail": {
+      "expected_equal": true
+    }
+  }
+]

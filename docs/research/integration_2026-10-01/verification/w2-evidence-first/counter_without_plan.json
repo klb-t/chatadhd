@@ -1,0 +1,1394 @@
+{
+  "disabled": {
+    "schema": "loom.chat_retrieval_adapter_evidence/1",
+    "provenance": "synthetic_scripted_transport",
+    "request_body_raw": "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"System instruction.\"},{\"role\":\"system\",\"content\":\"## This goal\\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\\n\"},{\"role\":\"user\",\"content\":\"CURRENT-TURN\"}],\"temperature\":0.7,\"max_tokens\":4096,\"stream\":false,\"include_reasoning\":true}",
+    "request_body": {
+      "model": "test/model",
+      "messages": [
+        {
+          "role": "system",
+          "content": "System instruction."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n"
+        },
+        {
+          "role": "user",
+          "content": "CURRENT-TURN"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    "context_trace": {
+      "kind": "compiled_messages",
+      "version": 1,
+      "messages": [
+        {
+          "role": "system",
+          "content": "System instruction."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n"
+        },
+        {
+          "role": "user",
+          "content": "CURRENT-TURN"
+        }
+      ],
+      "messages_sha256": "1a00456ec32cf398cb8368b8c2573b353286f1d96fd46d0f86871843b14698b9",
+      "history_message_ids": [],
+      "selection": {
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "context_depth": null
+      },
+      "knowledge_context_request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "relation_hops": 0,
+        "detail_resolution": "raw",
+        "claim_targets": [
+          "cl_3732d98ad18c925a"
+        ]
+      },
+      "knowledge_context": {
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "context_controls": {
+              "relation_hops": 0,
+              "detail_resolution": "raw"
+            },
+            "claim_selection": [
+              {
+                "ref": "cl_3732d98ad18c925a",
+                "status": "selected"
+              }
+            ],
+            "retrieval_diagnostics": {
+              "status": "bounded",
+              "exhaustive": false,
+              "queries": [
+                {
+                  "operation": "principles",
+                  "selector": {},
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_instances",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_decisions",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "status_history",
+                  "selector": {
+                    "entity": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                }
+              ],
+              "lookup_issues": [],
+              "excluded": [],
+              "missing_premises": [],
+              "query_errors": 0,
+              "cap_hits": 0,
+              "gathered_candidates": 1,
+              "unique_candidates": 1,
+              "duplicate_candidates_merged": 0,
+              "budget": {
+                "metric": "rendered_item_codepoints_div_4",
+                "includes_prompt_overhead": false,
+                "initial_band_tokens": [
+                  15000,
+                  35000,
+                  50000
+                ],
+                "total_tokens": 100000,
+                "final_band_tokens": [
+                  0,
+                  0,
+                  100000
+                ],
+                "used_band_tokens": [
+                  0,
+                  0,
+                  87
+                ],
+                "used_tokens": 87
+              },
+              "recovered_budget_drops": []
+            }
+          }
+        },
+        "context_set": {
+          "id": "cx_a20dfd47899dbf4c",
+          "goal": {
+            "id": "g_c2c4cae3493e38bf",
+            "type": "answer_question",
+            "text": "CURRENT-TURN",
+            "targets": [
+              "e_e9504e924feefbfa"
+            ],
+            "project": "",
+            "confidence": 1.0,
+            "params": {
+              "confidence_basis": "explicit_owner_type",
+              "calibration_status": "unavailable",
+              "external_goal_typing": {
+                "status": "offline",
+                "requests": 0
+              },
+              "classifier": "forced",
+              "context_controls": {
+                "relation_hops": 0,
+                "detail_resolution": "raw"
+              },
+              "claim_selection": [
+                {
+                  "ref": "cl_3732d98ad18c925a",
+                  "status": "selected"
+                }
+              ],
+              "retrieval_diagnostics": {
+                "status": "bounded",
+                "exhaustive": false,
+                "queries": [
+                  {
+                    "operation": "principles",
+                    "selector": {},
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_instances",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_decisions",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "status_history",
+                    "selector": {
+                      "entity": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  }
+                ],
+                "lookup_issues": [],
+                "excluded": [],
+                "missing_premises": [],
+                "query_errors": 0,
+                "cap_hits": 0,
+                "gathered_candidates": 1,
+                "unique_candidates": 1,
+                "duplicate_candidates_merged": 0,
+                "budget": {
+                  "metric": "rendered_item_codepoints_div_4",
+                  "includes_prompt_overhead": false,
+                  "initial_band_tokens": [
+                    15000,
+                    35000,
+                    50000
+                  ],
+                  "total_tokens": 100000,
+                  "final_band_tokens": [
+                    0,
+                    0,
+                    100000
+                  ],
+                  "used_band_tokens": [
+                    0,
+                    0,
+                    87
+                  ],
+                  "used_tokens": 87
+                },
+                "recovered_budget_drops": []
+              }
+            }
+          },
+          "budget_tokens": 100000,
+          "used_tokens": 87,
+          "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+          "items": [
+            {
+              "ref_kind": "claim",
+              "ref": "cl_34faf564507ab5be",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9
+              },
+              "tokens": 6,
+              "why": "required premise of cl_3732d98ad18c925a",
+              "required_by": [
+                "cl_3732d98ad18c925a"
+              ],
+              "text": "**REQUIRED-PREMISE-BYTES**"
+            },
+            {
+              "ref_kind": "claim",
+              "ref": "cl_3732d98ad18c925a",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9,
+                "direct_goal_candidate": true
+              },
+              "tokens": 81,
+              "why": "explicit claim or candidate instrument; explicit claim anchor",
+              "required_by": [],
+              "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+            }
+          ],
+          "dropped": []
+        },
+        "prompt": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n",
+        "request": {
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "budget_tokens": 100000,
+          "goal_type": "answer_question",
+          "run": "kr_0eadc529983397d0",
+          "lang": "en",
+          "relation_hops": 0,
+          "detail_resolution": "raw",
+          "claim_targets": [
+            "cl_3732d98ad18c925a"
+          ]
+        }
+      }
+    },
+    "stored_context_trace": {
+      "kind": "compiled_messages",
+      "version": 1,
+      "messages": [
+        {
+          "role": "system",
+          "content": "System instruction."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n"
+        },
+        {
+          "role": "user",
+          "content": "CURRENT-TURN"
+        }
+      ],
+      "messages_sha256": "1a00456ec32cf398cb8368b8c2573b353286f1d96fd46d0f86871843b14698b9",
+      "history_message_ids": [],
+      "selection": {
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "context_depth": null
+      },
+      "knowledge_context_request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "relation_hops": 0,
+        "detail_resolution": "raw",
+        "claim_targets": [
+          "cl_3732d98ad18c925a"
+        ]
+      },
+      "knowledge_context": {
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "context_controls": {
+              "relation_hops": 0,
+              "detail_resolution": "raw"
+            },
+            "claim_selection": [
+              {
+                "ref": "cl_3732d98ad18c925a",
+                "status": "selected"
+              }
+            ],
+            "retrieval_diagnostics": {
+              "status": "bounded",
+              "exhaustive": false,
+              "queries": [
+                {
+                  "operation": "principles",
+                  "selector": {},
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_instances",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_decisions",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "status_history",
+                  "selector": {
+                    "entity": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                }
+              ],
+              "lookup_issues": [],
+              "excluded": [],
+              "missing_premises": [],
+              "query_errors": 0,
+              "cap_hits": 0,
+              "gathered_candidates": 1,
+              "unique_candidates": 1,
+              "duplicate_candidates_merged": 0,
+              "budget": {
+                "metric": "rendered_item_codepoints_div_4",
+                "includes_prompt_overhead": false,
+                "initial_band_tokens": [
+                  15000,
+                  35000,
+                  50000
+                ],
+                "total_tokens": 100000,
+                "final_band_tokens": [
+                  0,
+                  0,
+                  100000
+                ],
+                "used_band_tokens": [
+                  0,
+                  0,
+                  87
+                ],
+                "used_tokens": 87
+              },
+              "recovered_budget_drops": []
+            }
+          }
+        },
+        "context_set": {
+          "id": "cx_a20dfd47899dbf4c",
+          "goal": {
+            "id": "g_c2c4cae3493e38bf",
+            "type": "answer_question",
+            "text": "CURRENT-TURN",
+            "targets": [
+              "e_e9504e924feefbfa"
+            ],
+            "project": "",
+            "confidence": 1.0,
+            "params": {
+              "confidence_basis": "explicit_owner_type",
+              "calibration_status": "unavailable",
+              "external_goal_typing": {
+                "status": "offline",
+                "requests": 0
+              },
+              "classifier": "forced",
+              "context_controls": {
+                "relation_hops": 0,
+                "detail_resolution": "raw"
+              },
+              "claim_selection": [
+                {
+                  "ref": "cl_3732d98ad18c925a",
+                  "status": "selected"
+                }
+              ],
+              "retrieval_diagnostics": {
+                "status": "bounded",
+                "exhaustive": false,
+                "queries": [
+                  {
+                    "operation": "principles",
+                    "selector": {},
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_instances",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_decisions",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "status_history",
+                    "selector": {
+                      "entity": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  }
+                ],
+                "lookup_issues": [],
+                "excluded": [],
+                "missing_premises": [],
+                "query_errors": 0,
+                "cap_hits": 0,
+                "gathered_candidates": 1,
+                "unique_candidates": 1,
+                "duplicate_candidates_merged": 0,
+                "budget": {
+                  "metric": "rendered_item_codepoints_div_4",
+                  "includes_prompt_overhead": false,
+                  "initial_band_tokens": [
+                    15000,
+                    35000,
+                    50000
+                  ],
+                  "total_tokens": 100000,
+                  "final_band_tokens": [
+                    0,
+                    0,
+                    100000
+                  ],
+                  "used_band_tokens": [
+                    0,
+                    0,
+                    87
+                  ],
+                  "used_tokens": 87
+                },
+                "recovered_budget_drops": []
+              }
+            }
+          },
+          "budget_tokens": 100000,
+          "used_tokens": 87,
+          "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+          "items": [
+            {
+              "ref_kind": "claim",
+              "ref": "cl_34faf564507ab5be",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9
+              },
+              "tokens": 6,
+              "why": "required premise of cl_3732d98ad18c925a",
+              "required_by": [
+                "cl_3732d98ad18c925a"
+              ],
+              "text": "**REQUIRED-PREMISE-BYTES**"
+            },
+            {
+              "ref_kind": "claim",
+              "ref": "cl_3732d98ad18c925a",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9,
+                "direct_goal_candidate": true
+              },
+              "tokens": 81,
+              "why": "explicit claim or candidate instrument; explicit claim anchor",
+              "required_by": [],
+              "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+            }
+          ],
+          "dropped": []
+        },
+        "prompt": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n",
+        "request": {
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "budget_tokens": 100000,
+          "goal_type": "answer_question",
+          "run": "kr_0eadc529983397d0",
+          "lang": "en",
+          "relation_hops": 0,
+          "detail_resolution": "raw",
+          "claim_targets": [
+            "cl_3732d98ad18c925a"
+          ]
+        }
+      }
+    }
+  },
+  "enabled": {
+    "schema": "loom.chat_retrieval_adapter_evidence/1",
+    "provenance": "synthetic_scripted_transport",
+    "request_body_raw": "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"System instruction.\"},{\"role\":\"system\",\"content\":\"## This goal\\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\\n- **RECORDED-COUNTER-BYTES**  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\\n\\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\\n\"},{\"role\":\"user\",\"content\":\"CURRENT-TURN\"}],\"temperature\":0.7,\"max_tokens\":4096,\"stream\":false,\"include_reasoning\":true}",
+    "request_body": {
+      "model": "test/model",
+      "messages": [
+        {
+          "role": "system",
+          "content": "System instruction."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES**  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\n"
+        },
+        {
+          "role": "user",
+          "content": "CURRENT-TURN"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    "context_trace": {
+      "kind": "compiled_messages",
+      "version": 1,
+      "messages": [
+        {
+          "role": "system",
+          "content": "System instruction."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES**  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\n"
+        },
+        {
+          "role": "user",
+          "content": "CURRENT-TURN"
+        }
+      ],
+      "messages_sha256": "a66866f8215ac56268416304a7aea6d20d74b4f1a98a0f7a1094a2da62686deb",
+      "history_message_ids": [],
+      "selection": {
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "context_depth": null
+      },
+      "knowledge_context_request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "relation_hops": 0,
+        "detail_resolution": "raw",
+        "claim_targets": [
+          "cl_3732d98ad18c925a"
+        ],
+        "include_counter_evidence": true
+      },
+      "knowledge_context": {
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "context_controls": {
+              "relation_hops": 0,
+              "detail_resolution": "raw"
+            },
+            "claim_selection": [
+              {
+                "ref": "cl_3732d98ad18c925a",
+                "status": "selected"
+              }
+            ],
+            "counter_evidence": {
+              "status": "linked_records_only",
+              "entries": [
+                {
+                  "for_claim": "cl_3732d98ad18c925a",
+                  "claims": [
+                    {
+                      "ref": "cl_4fa49ab3c07237d8",
+                      "status": "selected"
+                    }
+                  ],
+                  "observations": [],
+                  "gaps": []
+                }
+              ],
+              "scope": "one_recorded_counter_link_from_direct_candidates",
+              "semantic_contradiction_search": "not_performed",
+              "recorded_links_complete": true
+            },
+            "retrieval_diagnostics": {
+              "status": "bounded",
+              "exhaustive": false,
+              "queries": [
+                {
+                  "operation": "principles",
+                  "selector": {},
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_instances",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_decisions",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "status_history",
+                  "selector": {
+                    "entity": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                }
+              ],
+              "lookup_issues": [],
+              "excluded": [],
+              "missing_premises": [],
+              "query_errors": 0,
+              "cap_hits": 0,
+              "gathered_candidates": 2,
+              "unique_candidates": 2,
+              "duplicate_candidates_merged": 0,
+              "budget": {
+                "metric": "rendered_item_codepoints_div_4",
+                "includes_prompt_overhead": false,
+                "initial_band_tokens": [
+                  15000,
+                  35000,
+                  50000
+                ],
+                "total_tokens": 100000,
+                "final_band_tokens": [
+                  0,
+                  0,
+                  100000
+                ],
+                "used_band_tokens": [
+                  0,
+                  0,
+                  93
+                ],
+                "used_tokens": 93
+              },
+              "recovered_budget_drops": []
+            }
+          }
+        },
+        "context_set": {
+          "id": "cx_a153d6051e5cc74c",
+          "goal": {
+            "id": "g_c2c4cae3493e38bf",
+            "type": "answer_question",
+            "text": "CURRENT-TURN",
+            "targets": [
+              "e_e9504e924feefbfa"
+            ],
+            "project": "",
+            "confidence": 1.0,
+            "params": {
+              "confidence_basis": "explicit_owner_type",
+              "calibration_status": "unavailable",
+              "external_goal_typing": {
+                "status": "offline",
+                "requests": 0
+              },
+              "classifier": "forced",
+              "context_controls": {
+                "relation_hops": 0,
+                "detail_resolution": "raw"
+              },
+              "claim_selection": [
+                {
+                  "ref": "cl_3732d98ad18c925a",
+                  "status": "selected"
+                }
+              ],
+              "counter_evidence": {
+                "status": "linked_records_only",
+                "entries": [
+                  {
+                    "for_claim": "cl_3732d98ad18c925a",
+                    "claims": [
+                      {
+                        "ref": "cl_4fa49ab3c07237d8",
+                        "status": "selected"
+                      }
+                    ],
+                    "observations": [],
+                    "gaps": []
+                  }
+                ],
+                "scope": "one_recorded_counter_link_from_direct_candidates",
+                "semantic_contradiction_search": "not_performed",
+                "recorded_links_complete": true
+              },
+              "retrieval_diagnostics": {
+                "status": "bounded",
+                "exhaustive": false,
+                "queries": [
+                  {
+                    "operation": "principles",
+                    "selector": {},
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_instances",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_decisions",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "status_history",
+                    "selector": {
+                      "entity": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  }
+                ],
+                "lookup_issues": [],
+                "excluded": [],
+                "missing_premises": [],
+                "query_errors": 0,
+                "cap_hits": 0,
+                "gathered_candidates": 2,
+                "unique_candidates": 2,
+                "duplicate_candidates_merged": 0,
+                "budget": {
+                  "metric": "rendered_item_codepoints_div_4",
+                  "includes_prompt_overhead": false,
+                  "initial_band_tokens": [
+                    15000,
+                    35000,
+                    50000
+                  ],
+                  "total_tokens": 100000,
+                  "final_band_tokens": [
+                    0,
+                    0,
+                    100000
+                  ],
+                  "used_band_tokens": [
+                    0,
+                    0,
+                    93
+                  ],
+                  "used_tokens": 93
+                },
+                "recovered_budget_drops": []
+              }
+            }
+          },
+          "budget_tokens": 100000,
+          "used_tokens": 93,
+          "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+          "items": [
+            {
+              "ref_kind": "claim",
+              "ref": "cl_34faf564507ab5be",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9
+              },
+              "tokens": 6,
+              "why": "required premise of cl_3732d98ad18c925a",
+              "required_by": [
+                "cl_3732d98ad18c925a"
+              ],
+              "text": "**REQUIRED-PREMISE-BYTES**"
+            },
+            {
+              "ref_kind": "claim",
+              "ref": "cl_3732d98ad18c925a",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9,
+                "direct_goal_candidate": true
+              },
+              "tokens": 81,
+              "why": "explicit claim or candidate instrument; explicit claim anchor",
+              "required_by": [],
+              "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+            },
+            {
+              "ref_kind": "claim",
+              "ref": "cl_4fa49ab3c07237d8",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.252,
+              "factors": {
+                "relevance": 0.35,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9,
+                "counter_for": [
+                  "cl_3732d98ad18c925a"
+                ]
+              },
+              "tokens": 6,
+              "why": "explicit claim or candidate instrument; recorded counter-evidence",
+              "required_by": [],
+              "text": "**RECORDED-COUNTER-BYTES**"
+            }
+          ],
+          "dropped": []
+        },
+        "prompt": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES**  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\n",
+        "request": {
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "budget_tokens": 100000,
+          "goal_type": "answer_question",
+          "run": "kr_0eadc529983397d0",
+          "lang": "en",
+          "relation_hops": 0,
+          "detail_resolution": "raw",
+          "claim_targets": [
+            "cl_3732d98ad18c925a"
+          ],
+          "include_counter_evidence": true
+        }
+      }
+    },
+    "stored_context_trace": {
+      "kind": "compiled_messages",
+      "version": 1,
+      "messages": [
+        {
+          "role": "system",
+          "content": "System instruction."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES**  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\n"
+        },
+        {
+          "role": "user",
+          "content": "CURRENT-TURN"
+        }
+      ],
+      "messages_sha256": "a66866f8215ac56268416304a7aea6d20d74b4f1a98a0f7a1094a2da62686deb",
+      "history_message_ids": [],
+      "selection": {
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "context_depth": null
+      },
+      "knowledge_context_request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "relation_hops": 0,
+        "detail_resolution": "raw",
+        "claim_targets": [
+          "cl_3732d98ad18c925a"
+        ],
+        "include_counter_evidence": true
+      },
+      "knowledge_context": {
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "context_controls": {
+              "relation_hops": 0,
+              "detail_resolution": "raw"
+            },
+            "claim_selection": [
+              {
+                "ref": "cl_3732d98ad18c925a",
+                "status": "selected"
+              }
+            ],
+            "counter_evidence": {
+              "status": "linked_records_only",
+              "entries": [
+                {
+                  "for_claim": "cl_3732d98ad18c925a",
+                  "claims": [
+                    {
+                      "ref": "cl_4fa49ab3c07237d8",
+                      "status": "selected"
+                    }
+                  ],
+                  "observations": [],
+                  "gaps": []
+                }
+              ],
+              "scope": "one_recorded_counter_link_from_direct_candidates",
+              "semantic_contradiction_search": "not_performed",
+              "recorded_links_complete": true
+            },
+            "retrieval_diagnostics": {
+              "status": "bounded",
+              "exhaustive": false,
+              "queries": [
+                {
+                  "operation": "principles",
+                  "selector": {},
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_instances",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "project_decisions",
+                  "selector": {
+                    "project": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                },
+                {
+                  "operation": "status_history",
+                  "selector": {
+                    "entity": "e_e9504e924feefbfa"
+                  },
+                  "limit": 1000000,
+                  "returned": 0,
+                  "status": "below_cap"
+                }
+              ],
+              "lookup_issues": [],
+              "excluded": [],
+              "missing_premises": [],
+              "query_errors": 0,
+              "cap_hits": 0,
+              "gathered_candidates": 2,
+              "unique_candidates": 2,
+              "duplicate_candidates_merged": 0,
+              "budget": {
+                "metric": "rendered_item_codepoints_div_4",
+                "includes_prompt_overhead": false,
+                "initial_band_tokens": [
+                  15000,
+                  35000,
+                  50000
+                ],
+                "total_tokens": 100000,
+                "final_band_tokens": [
+                  0,
+                  0,
+                  100000
+                ],
+                "used_band_tokens": [
+                  0,
+                  0,
+                  93
+                ],
+                "used_tokens": 93
+              },
+              "recovered_budget_drops": []
+            }
+          }
+        },
+        "context_set": {
+          "id": "cx_a153d6051e5cc74c",
+          "goal": {
+            "id": "g_c2c4cae3493e38bf",
+            "type": "answer_question",
+            "text": "CURRENT-TURN",
+            "targets": [
+              "e_e9504e924feefbfa"
+            ],
+            "project": "",
+            "confidence": 1.0,
+            "params": {
+              "confidence_basis": "explicit_owner_type",
+              "calibration_status": "unavailable",
+              "external_goal_typing": {
+                "status": "offline",
+                "requests": 0
+              },
+              "classifier": "forced",
+              "context_controls": {
+                "relation_hops": 0,
+                "detail_resolution": "raw"
+              },
+              "claim_selection": [
+                {
+                  "ref": "cl_3732d98ad18c925a",
+                  "status": "selected"
+                }
+              ],
+              "counter_evidence": {
+                "status": "linked_records_only",
+                "entries": [
+                  {
+                    "for_claim": "cl_3732d98ad18c925a",
+                    "claims": [
+                      {
+                        "ref": "cl_4fa49ab3c07237d8",
+                        "status": "selected"
+                      }
+                    ],
+                    "observations": [],
+                    "gaps": []
+                  }
+                ],
+                "scope": "one_recorded_counter_link_from_direct_candidates",
+                "semantic_contradiction_search": "not_performed",
+                "recorded_links_complete": true
+              },
+              "retrieval_diagnostics": {
+                "status": "bounded",
+                "exhaustive": false,
+                "queries": [
+                  {
+                    "operation": "principles",
+                    "selector": {},
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_instances",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "project_decisions",
+                    "selector": {
+                      "project": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  },
+                  {
+                    "operation": "status_history",
+                    "selector": {
+                      "entity": "e_e9504e924feefbfa"
+                    },
+                    "limit": 1000000,
+                    "returned": 0,
+                    "status": "below_cap"
+                  }
+                ],
+                "lookup_issues": [],
+                "excluded": [],
+                "missing_premises": [],
+                "query_errors": 0,
+                "cap_hits": 0,
+                "gathered_candidates": 2,
+                "unique_candidates": 2,
+                "duplicate_candidates_merged": 0,
+                "budget": {
+                  "metric": "rendered_item_codepoints_div_4",
+                  "includes_prompt_overhead": false,
+                  "initial_band_tokens": [
+                    15000,
+                    35000,
+                    50000
+                  ],
+                  "total_tokens": 100000,
+                  "final_band_tokens": [
+                    0,
+                    0,
+                    100000
+                  ],
+                  "used_band_tokens": [
+                    0,
+                    0,
+                    93
+                  ],
+                  "used_tokens": 93
+                },
+                "recovered_budget_drops": []
+              }
+            }
+          },
+          "budget_tokens": 100000,
+          "used_tokens": 93,
+          "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+          "items": [
+            {
+              "ref_kind": "claim",
+              "ref": "cl_34faf564507ab5be",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9
+              },
+              "tokens": 6,
+              "why": "required premise of cl_3732d98ad18c925a",
+              "required_by": [
+                "cl_3732d98ad18c925a"
+              ],
+              "text": "**REQUIRED-PREMISE-BYTES**"
+            },
+            {
+              "ref_kind": "claim",
+              "ref": "cl_3732d98ad18c925a",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.7200000000000001,
+              "factors": {
+                "relevance": 1.0,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9,
+                "direct_goal_candidate": true
+              },
+              "tokens": 81,
+              "why": "explicit claim or candidate instrument; explicit claim anchor",
+              "required_by": [],
+              "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+            },
+            {
+              "ref_kind": "claim",
+              "ref": "cl_4fa49ab3c07237d8",
+              "band": "goal",
+              "resolution": "raw",
+              "score": 0.252,
+              "factors": {
+                "relevance": 0.35,
+                "authority": 0.8,
+                "freshness": 1.0,
+                "confidence": 0.9,
+                "counter_for": [
+                  "cl_3732d98ad18c925a"
+                ]
+              },
+              "tokens": 6,
+              "why": "explicit claim or candidate instrument; recorded counter-evidence",
+              "required_by": [],
+              "text": "**RECORDED-COUNTER-BYTES**"
+            }
+          ],
+          "dropped": []
+        },
+        "prompt": "## This goal\n- **REQUIRED-PREMISE-BYTES**  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**  <!-- why: explicit claim or candidate instrument; explicit claim anchor -->\n- **RECORDED-COUNTER-BYTES**  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\n",
+        "request": {
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "budget_tokens": 100000,
+          "goal_type": "answer_question",
+          "run": "kr_0eadc529983397d0",
+          "lang": "en",
+          "relation_hops": 0,
+          "detail_resolution": "raw",
+          "claim_targets": [
+            "cl_3732d98ad18c925a"
+          ],
+          "include_counter_evidence": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "merge_records": [
+    {
+      "local": "23b62baf0f8362fc023d040e7ae7d2f3e94ffb45",
+      "remote": "d0c8414f5dceefb41e15a4b8d59d9eef7f512167",
+      "tree": "13297aa6be582b692ee5c08ddca4c93eb48e89dd"
+    },
+    {
+      "local": "933742090490ba82114b3d69c99f430f38ce886e",
+      "remote": "5c49f453fc68f329ccd3f3e4c7fbade9828d95ea",
+      "tree": "543bf3cbd8a1a1450d64ea9b9db516f8c479ecc1"
+    },
+    {
+      "local": "b23674ac49f6fe767a2cab19f88a31a4c7711a7a",
+      "remote": "06e7fd65fc96efd8ff057001ea522974ea7416fc",
+      "tree": "9db04e5edadd3010a924b72dc7aeecdf92316e17"
+    },
+    {
+      "local": "fc5aac92d0e848d1d052ae8b55430b043d9b179f",
+      "remote": "6f25419beb9fd43fa17fc98433aad45b4fc85bbd",
+      "tree": "83a983cd1813df514e55f86241c1403f330cbc30"
+    },
+    {
+      "local": "3352a981c11417d6db251f257d52b4850406edf6",
+      "remote": "ca5aa8efc4ed9d3376f3edf0b4c3bd3d0f39fab3",
+      "tree": "22e7d98769bfb5cd3c0c126b5d1196b61c86b1af"
+    },
+    {
+      "local": "060208ca51ec5bb49c4199f9c546680330058556",
+      "remote": "a51ee56232d12db03021ad4f2381534d910b6fe0",
+      "tree": "c754963c2c11159e8e5bf43eb8fde563cb5b6f73"
+    },
+    {
+      "local": "9164bc21c26ca4682634d69d543b27cb441afb07",
+      "remote": "96ea1c727ee5bbba4ee056dfa15aa844d1102d22",
+      "tree": "6a2e0ce99b04ced2542e33998e5af360c1036db9"
+    }
+  ],
+  "correction_records": [
+    {
+      "scope": "web",
+      "agent_commit": "9c79181efa35a824d69001835f589b3e3f508820",
+      "integrated_local_commit": "f3b258ba5de5ecec607700d4931e33a8d1e905fa",
+      "published_commit": "b5d0e4efe5ccb2cad2c5fae53ba1293bcb922af7",
+      "tree": "903d1976d81618e6354482e6283ec31b07cd2c7a",
+      "integrated_tree_equal_published": true
+    },
+    {
+      "scope": "w2-chat",
+      "agent_commit": "1f83106f3eae825443a96a346714da13b3ffab05",
+      "integrated_local_commit": "4eb69666c3f76e11885994697ca4a8845f7fd0a2",
+      "published_commit": "6b0d79b4d83b22dc536b1c2035cb2e20a7b96447",
+      "tree": "5980d0190830ba3f24dee4c2865725063cccec46",
+      "integrated_tree_equal_published": true
+    },
+    {
+      "scope": "w1-durable",
+      "agent_commit": "4c1d7544654189fc9cbe32afe242ebbdf9aa61c9",
+      "integrated_local_commit": "77038cb99f55060a77fca846f661487f8d649c99",
+      "published_commit": "6d5bfa3be571c52876abe55e15b0233c2d901a0d",
+      "tree": "028b0c1be7ebfec8f34c088481f29eb803a119d4",
+      "integrated_tree_equal_published": true
+    },
+    {
+      "scope": "w1-independent-audit",
+      "agent_commit": "7c44e69163db85f9ef43b55bb36ad8b259b4b8d4",
+      "integrated_local_commit": "f90f6a4bcb582d098efd7bfdd0f1fbb7185d2d34",
+      "published_commit": "e807d8d64a17e57495882f68b127c2a144056130",
+      "tree": "940d38f12a5bf714691f67ada12b61428aae4719",
+      "integrated_tree_equal_published": true
+    },
+    {
+      "scope": "import",
+      "agent_commit": "0f29a689d1af06115ba16dff69f8bf877226122a",
+      "integrated_local_commit": "ee16cef40f8829e271da82a7abd097fffd467f49",
+      "published_commit": "1f06e005b528fd8175f2f51dc2745e422e7de4a9",
+      "tree": "a7b43a8bd3b1426355a760e1fd5898abd1473449",
+      "integrated_tree_equal_published": true
+    },
+    {
+      "scope": "w1-tests",
+      "agent_commit": "623d39acd69ab9726860791b5bf5e8ee8a92ce8c",
+      "integrated_local_commit": "8b8328257d57e6fd133d1244ba50686ce018be11",
+      "published_commit": "8cc5a5648ada511053d57a0f3979d96c5e0f1d36",
+      "tree": "d15238edb278c6d4cc0d876899c3d3a7f36fb591",
+      "integrated_tree_equal_published": true
+    },
+    {
+      "scope": "nested-zip",
+      "agent_commit": "2bddeb15788e8696cdeb851b6ffc1cd39aea98c4",
+      "integrated_local_commit": "ce28c8bdebfba321129dab3aafdfca7697a09600",
+      "published_commit": "523a9cfe824f9792ed855028aa77f48e257c9348",
+      "tree": "207dbc71009833b95360f897dc2a541238a9c808",
+      "integrated_tree_equal_published": true
+    },
+    {
+      "scope": "import-test-syntax",
+      "agent_commit": "d9c3a6681dd4b02fc680459d30d1eb2bd1e49ee4",
+      "integrated_local_commit": "b42b51302da1fceeedcb49fd4a30ab9164a87fb1",
+      "published_commit": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+      "tree": "abe386316d6fc66a3fa2b0ba8aabc2b28c8df41d",
+      "integrated_tree_equal_published": true
+    }
+  ],
+  "schema": "loom.integration_publication/1",
+  "repository": "klb-t/chatadhd",
+  "candidate_branch": "gpt/integration-w1-w6-2026-10-01",
+  "source_commit": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+  "source_tree": "abe386316d6fc66a3fa2b0ba8aabc2b28c8df41d",
+  "boundary": "Agent commits were cherry-picked onto the combined tree. API recreation preserves that integrated tree exactly; this does not assert that an isolated agent tree equals the combined tree. Original published W1-W6 lane heads remain ancestors."
+}

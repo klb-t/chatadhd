@@ -1,0 +1,1044 @@
+{
+  "schema": "w6.import_exact_structure.v2",
+  "freeze_sha256": "bfef310f2b1985b758c4e8aec261bcd072a9fb59aeaf56761a010e1ea5edd8cb",
+  "checks": [
+    {
+      "check": "oracle:extra_field",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:missing_field",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:array_vs_numeric_object",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:nested_array_vs_numeric_object",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:array_order",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:array_duplicate",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:bool_vs_integer",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:integer_vs_float",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:unicode_normalization",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:empty_container_type",
+      "pass": true,
+      "detail": {
+        "expected_equal": false
+      }
+    },
+    {
+      "check": "oracle:object_key_order_irrelevant",
+      "pass": true,
+      "detail": {
+        "expected_equal": true
+      }
+    },
+    {
+      "check": "oracle:identical_nested",
+      "pass": true,
+      "detail": {
+        "expected_equal": true
+      }
+    },
+    {
+      "check": "openai:exact_structural_reconstruction",
+      "pass": true,
+      "detail": {
+        "expected": {
+          "id": "oa-independent",
+          "title": "W6 źródło",
+          "current_node": "a/current~1",
+          "create_time": 1700000000,
+          "future": {
+            "tilde~/key": [
+              false,
+              0,
+              null,
+              {},
+              [],
+              "Zażółć 🧪 é é \u0000 końcówka"
+            ]
+          },
+          "mapping": {
+            "root": {
+              "id": "root",
+              "parent": null,
+              "children": [
+                "u/~0"
+              ],
+              "message": null,
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            },
+            "u/~0": {
+              "id": "u/~0",
+              "parent": "root",
+              "children": [
+                "a/rejected",
+                "a/current~1"
+              ],
+              "message": {
+                "id": "mu",
+                "author": {
+                  "role": "user"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "Nie przyjmuj odrzuconego wariantu."
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {
+                  "attachments": [
+                    {
+                      "id": "file-W6audit",
+                      "name": "dane.bin",
+                      "mime_type": "application/octet-stream"
+                    }
+                  ]
+                },
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/rejected": {
+              "id": "a/rejected",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mr",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "ODRZUCONY"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/current~1": {
+              "id": "a/current~1",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mc",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "AKTUALNY 🧪"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "actual": {
+          "id": "oa-independent",
+          "title": "W6 źródło",
+          "current_node": "a/current~1",
+          "create_time": 1700000000,
+          "future": {
+            "tilde~/key": [
+              false,
+              0,
+              null,
+              {},
+              [],
+              "Zażółć 🧪 é é \u0000 końcówka"
+            ]
+          },
+          "mapping": {
+            "u/~0": {
+              "id": "u/~0",
+              "parent": "root",
+              "children": [
+                "a/rejected",
+                "a/current~1"
+              ],
+              "message": {
+                "id": "mu",
+                "author": {
+                  "role": "user"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "Nie przyjmuj odrzuconego wariantu."
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {
+                  "attachments": [
+                    {
+                      "id": "file-W6audit",
+                      "name": "dane.bin",
+                      "mime_type": "application/octet-stream"
+                    }
+                  ]
+                },
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/rejected": {
+              "id": "a/rejected",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mr",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "ODRZUCONY"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/current~1": {
+              "id": "a/current~1",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mc",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "AKTUALNY 🧪"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "root": {
+              "id": "root",
+              "parent": null,
+              "children": [
+                "u/~0"
+              ],
+              "message": null,
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "check": "openai:exact_raw_message:u/~0",
+      "pass": true,
+      "detail": "u/~0"
+    },
+    {
+      "check": "openai:exact_raw_message:a/rejected",
+      "pass": true,
+      "detail": "a/rejected"
+    },
+    {
+      "check": "openai:exact_raw_message:a/current~1",
+      "pass": true,
+      "detail": "a/current~1"
+    },
+    {
+      "check": "anthropic:exact_structural_reconstruction",
+      "pass": true,
+      "detail": {
+        "expected": {
+          "uuid": "an-independent",
+          "name": "W6 kolejność",
+          "current_leaf_message_uuid": "child/~current",
+          "future": {
+            "tilde~/key": [
+              false,
+              0,
+              null,
+              {},
+              [],
+              "Zażółć 🧪 é é \u0000 końcówka"
+            ]
+          },
+          "chat_messages": [
+            {
+              "uuid": "child/~current",
+              "parent_message_uuid": "parent",
+              "sender": "assistant",
+              "text": "Nowa decyzja",
+              "created_at": "2026-09-30T12:00:00Z",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Nowa decyzja"
+                },
+                {
+                  "type": "future_widget",
+                  "payload": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "attachments": [
+                {
+                  "file_name": "notatki.txt",
+                  "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                  "future": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            },
+            {
+              "uuid": "parent",
+              "parent_message_uuid": null,
+              "sender": "human",
+              "text": "Wyjątek: tylko syntetyczne dane.",
+              "created_at": "2026-09-30T12:00:00Z",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Wyjątek: tylko syntetyczne dane."
+                },
+                {
+                  "type": "future_widget",
+                  "payload": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "attachments": [
+                {
+                  "file_name": "notatki.txt",
+                  "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                  "future": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            },
+            {
+              "uuid": "child/rejected",
+              "parent_message_uuid": "parent",
+              "sender": "assistant",
+              "text": "Poprzednia propozycja",
+              "created_at": "2026-09-30T12:00:00Z",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Poprzednia propozycja"
+                },
+                {
+                  "type": "future_widget",
+                  "payload": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "attachments": [
+                {
+                  "file_name": "notatki.txt",
+                  "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                  "future": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            }
+          ]
+        },
+        "actual": {
+          "uuid": "an-independent",
+          "name": "W6 kolejność",
+          "current_leaf_message_uuid": "child/~current",
+          "future": {
+            "tilde~/key": [
+              false,
+              0,
+              null,
+              {},
+              [],
+              "Zażółć 🧪 é é \u0000 końcówka"
+            ]
+          },
+          "chat_messages": [
+            {
+              "uuid": "child/~current",
+              "parent_message_uuid": "parent",
+              "sender": "assistant",
+              "text": "Nowa decyzja",
+              "created_at": "2026-09-30T12:00:00Z",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Nowa decyzja"
+                },
+                {
+                  "type": "future_widget",
+                  "payload": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "attachments": [
+                {
+                  "file_name": "notatki.txt",
+                  "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                  "future": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            },
+            {
+              "uuid": "parent",
+              "parent_message_uuid": null,
+              "sender": "human",
+              "text": "Wyjątek: tylko syntetyczne dane.",
+              "created_at": "2026-09-30T12:00:00Z",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Wyjątek: tylko syntetyczne dane."
+                },
+                {
+                  "type": "future_widget",
+                  "payload": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "attachments": [
+                {
+                  "file_name": "notatki.txt",
+                  "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                  "future": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            },
+            {
+              "uuid": "child/rejected",
+              "parent_message_uuid": "parent",
+              "sender": "assistant",
+              "text": "Poprzednia propozycja",
+              "created_at": "2026-09-30T12:00:00Z",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Poprzednia propozycja"
+                },
+                {
+                  "type": "future_widget",
+                  "payload": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "attachments": [
+                {
+                  "file_name": "notatki.txt",
+                  "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                  "future": {
+                    "tilde~/key": [
+                      false,
+                      0,
+                      null,
+                      {},
+                      [],
+                      "Zażółć 🧪 é é \u0000 końcówka"
+                    ]
+                  }
+                }
+              ],
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "check": "anthropic:exact_raw_message:child/~current",
+      "pass": true,
+      "detail": "child/~current"
+    },
+    {
+      "check": "anthropic:exact_raw_message:parent",
+      "pass": true,
+      "detail": "parent"
+    },
+    {
+      "check": "anthropic:exact_raw_message:child/rejected",
+      "pass": true,
+      "detail": "child/rejected"
+    },
+    {
+      "check": "wrapped:exact_structural_reconstruction",
+      "pass": true,
+      "detail": {
+        "expected": {
+          "id": "oa-independent",
+          "title": "W6 źródło",
+          "current_node": "a/current~1",
+          "create_time": 1700000000,
+          "future": {
+            "tilde~/key": [
+              false,
+              0,
+              null,
+              {},
+              [],
+              "Zażółć 🧪 é é \u0000 końcówka"
+            ]
+          },
+          "mapping": {
+            "root": {
+              "id": "root",
+              "parent": null,
+              "children": [
+                "u/~0"
+              ],
+              "message": null,
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            },
+            "u/~0": {
+              "id": "u/~0",
+              "parent": "root",
+              "children": [
+                "a/rejected",
+                "a/current~1"
+              ],
+              "message": {
+                "id": "mu",
+                "author": {
+                  "role": "user"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "Nie przyjmuj odrzuconego wariantu."
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {
+                  "attachments": [
+                    {
+                      "id": "file-W6audit",
+                      "name": "dane.bin",
+                      "mime_type": "application/octet-stream"
+                    }
+                  ]
+                },
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/rejected": {
+              "id": "a/rejected",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mr",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "ODRZUCONY"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/current~1": {
+              "id": "a/current~1",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mc",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "AKTUALNY 🧪"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "actual": {
+          "id": "oa-independent",
+          "title": "W6 źródło",
+          "current_node": "a/current~1",
+          "create_time": 1700000000,
+          "future": {
+            "tilde~/key": [
+              false,
+              0,
+              null,
+              {},
+              [],
+              "Zażółć 🧪 é é \u0000 końcówka"
+            ]
+          },
+          "mapping": {
+            "u/~0": {
+              "id": "u/~0",
+              "parent": "root",
+              "children": [
+                "a/rejected",
+                "a/current~1"
+              ],
+              "message": {
+                "id": "mu",
+                "author": {
+                  "role": "user"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "Nie przyjmuj odrzuconego wariantu."
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {
+                  "attachments": [
+                    {
+                      "id": "file-W6audit",
+                      "name": "dane.bin",
+                      "mime_type": "application/octet-stream"
+                    }
+                  ]
+                },
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/rejected": {
+              "id": "a/rejected",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mr",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "ODRZUCONY"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "a/current~1": {
+              "id": "a/current~1",
+              "parent": "u/~0",
+              "children": [],
+              "message": {
+                "id": "mc",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "AKTUALNY 🧪"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            },
+            "root": {
+              "id": "root",
+              "parent": null,
+              "children": [
+                "u/~0"
+              ],
+              "message": null,
+              "future": {
+                "tilde~/key": [
+                  false,
+                  0,
+                  null,
+                  {},
+                  [],
+                  "Zażółć 🧪 é é \u0000 końcówka"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "check": "wrapped:exact_raw_message:u/~0",
+      "pass": true,
+      "detail": "u/~0"
+    },
+    {
+      "check": "wrapped:exact_raw_message:a/rejected",
+      "pass": true,
+      "detail": "a/rejected"
+    },
+    {
+      "check": "wrapped:exact_raw_message:a/current~1",
+      "pass": true,
+      "detail": "a/current~1"
+    }
+  ],
+  "passed": 24,
+  "total": 24,
+  "binary_sha256": "007c429d8b637a0b1dca3ef263a18c00e254c4a38b92e66e80afee8bfb6a4937",
+  "baseline_requested": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "limitations": [
+    "Same synthetic corpus as V1; amendment after cross-review, not blind",
+    "No aggregate claim combining V1/V2 checks",
+    "Exact JSON value fidelity, not lexical number spelling"
+  ]
+}

@@ -1,0 +1,1854 @@
+{
+  "schema": "w6.independent_import.v1",
+  "baseline_requested": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "binary": "/workspace/scratch/a371a1ca13b1/verification/native-dev/cli/loom",
+  "binary_sha256": "007c429d8b637a0b1dca3ef263a18c00e254c4a38b92e66e80afee8bfb6a4937",
+  "manifest_sha256": "c45ea8da69422985a99c3c75981756809889cd50b5fd7d7d35fd047d00847337",
+  "checks": [
+    {
+      "case": "oracle",
+      "check": "changed_scalar_detected",
+      "pass": true,
+      "evidence": "bool != integer"
+    },
+    {
+      "case": "oracle",
+      "check": "changed_byte_detected",
+      "pass": true,
+      "evidence": "single-byte mutation"
+    },
+    {
+      "case": "openai",
+      "check": "native_exit",
+      "pass": true,
+      "evidence": 0
+    },
+    {
+      "case": "openai",
+      "check": "conversation_count",
+      "pass": true,
+      "evidence": 1
+    },
+    {
+      "case": "openai",
+      "check": "message_count",
+      "pass": true,
+      "evidence": 3
+    },
+    {
+      "case": "openai",
+      "check": "structured_leaf_positions",
+      "pass": true,
+      "evidence": {
+        "scalar_preserved": 54,
+        "scalar_total": 54,
+        "empty_preserved": 14,
+        "empty_total": 14,
+        "missing_or_changed": []
+      }
+    },
+    {
+      "case": "openai",
+      "check": "status:u/~0",
+      "pass": true,
+      "evidence": "active"
+    },
+    {
+      "case": "openai",
+      "check": "status:a/rejected",
+      "pass": true,
+      "evidence": "version"
+    },
+    {
+      "case": "openai",
+      "check": "status:a/current~1",
+      "pass": true,
+      "evidence": "active"
+    },
+    {
+      "case": "openai",
+      "check": "parent:a/rejected",
+      "pass": true,
+      "evidence": "m_31dee0181cbc"
+    },
+    {
+      "case": "openai",
+      "check": "parent:a/current~1",
+      "pass": true,
+      "evidence": "m_31dee0181cbc"
+    },
+    {
+      "case": "openai",
+      "check": "raw_message:u/~0",
+      "pass": true,
+      "evidence": "u/~0"
+    },
+    {
+      "case": "openai",
+      "check": "raw_message:a/rejected",
+      "pass": true,
+      "evidence": "a/rejected"
+    },
+    {
+      "case": "openai",
+      "check": "raw_message:a/current~1",
+      "pass": true,
+      "evidence": "a/current~1"
+    },
+    {
+      "case": "openai",
+      "check": "complete_source_bytes",
+      "pass": true,
+      "evidence": {
+        "bytes": 3817,
+        "sha256": "ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247"
+      }
+    },
+    {
+      "case": "openai",
+      "check": "member_bytes:conversations.json",
+      "pass": false,
+      "evidence": {
+        "bytes": 2927,
+        "sha256": "71a7382c50253a498c28dda1ee7b0bd3ebc63c122b46b695fc77d6a6c51570d5"
+      }
+    },
+    {
+      "case": "openai",
+      "check": "member_bytes:file-W6audit-dane.bin",
+      "pass": true,
+      "evidence": {
+        "bytes": 260,
+        "sha256": "498d18d2a7fad5338d9f751ffe0b06b81e387f6d9961f2db531c1c9cb35acb63"
+      }
+    },
+    {
+      "case": "openai",
+      "check": "member_bytes:file-W6orphan.bin",
+      "pass": true,
+      "evidence": {
+        "bytes": 8,
+        "sha256": "a6625992f5488de770042ef6864481a8b1f3d815d13dd52be0ec527073f82c68"
+      }
+    },
+    {
+      "case": "openai",
+      "check": "member_bytes:future-unknown.json",
+      "pass": true,
+      "evidence": {
+        "bytes": 146,
+        "sha256": "f6996f61a9e24eaad6ae503c05c372b95fb1a80347f99adc574ea0cb4da52e45"
+      }
+    },
+    {
+      "case": "openai",
+      "check": "attachment_readable_bytes",
+      "pass": true,
+      "evidence": [
+        "/workspace/scratch/a371a1ca13b1/verification/integration-2026-10-01/w6-import-v2-first/native/openai/blobs/49/8d/498d18d2a7fad5338d9f751ffe0b06b81e387f6d9961f2db531c1c9cb35acb63"
+      ]
+    },
+    {
+      "case": "openai",
+      "check": "exact_source_locator:u/~0",
+      "pass": true,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "zip_member": "conversations.json",
+          "source": "sha256:ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247",
+          "member": "conversations.json",
+          "json_pointer": "/0/mapping/u~1~00/message",
+          "json_path": "/0/mapping/u~1~00/message",
+          "source_conversation_index": 0,
+          "view_message_index": 0,
+          "source_key": "u/~0",
+          "traversal_index": 0
+        }
+      ]
+    },
+    {
+      "case": "openai",
+      "check": "exact_source_locator:a/rejected",
+      "pass": true,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "zip_member": "conversations.json",
+          "source": "sha256:ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247",
+          "member": "conversations.json",
+          "json_pointer": "/0/mapping/a~1rejected/message",
+          "json_path": "/0/mapping/a~1rejected/message",
+          "source_conversation_index": 0,
+          "view_message_index": 1,
+          "source_key": "a/rejected",
+          "traversal_index": 1
+        }
+      ]
+    },
+    {
+      "case": "openai",
+      "check": "exact_source_locator:a/current~1",
+      "pass": true,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "zip_member": "conversations.json",
+          "source": "sha256:ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247",
+          "member": "conversations.json",
+          "json_pointer": "/0/mapping/a~1current~01/message",
+          "json_path": "/0/mapping/a~1current~01/message",
+          "source_conversation_index": 0,
+          "view_message_index": 2,
+          "source_key": "a/current~1",
+          "traversal_index": 2
+        }
+      ]
+    },
+    {
+      "case": "anthropic",
+      "check": "native_exit",
+      "pass": true,
+      "evidence": 0
+    },
+    {
+      "case": "anthropic",
+      "check": "conversation_count",
+      "pass": true,
+      "evidence": 1
+    },
+    {
+      "case": "anthropic",
+      "check": "message_count",
+      "pass": true,
+      "evidence": 3
+    },
+    {
+      "case": "anthropic",
+      "check": "structured_leaf_positions",
+      "pass": true,
+      "evidence": {
+        "scalar_preserved": 73,
+        "scalar_total": 73,
+        "empty_preserved": 20,
+        "empty_total": 20,
+        "missing_or_changed": []
+      }
+    },
+    {
+      "case": "anthropic",
+      "check": "status:parent",
+      "pass": true,
+      "evidence": "active"
+    },
+    {
+      "case": "anthropic",
+      "check": "status:child/rejected",
+      "pass": true,
+      "evidence": "version"
+    },
+    {
+      "case": "anthropic",
+      "check": "status:child/~current",
+      "pass": true,
+      "evidence": "active"
+    },
+    {
+      "case": "anthropic",
+      "check": "parent:child/~current",
+      "pass": true,
+      "evidence": "m_14bb8aaaf4eb"
+    },
+    {
+      "case": "anthropic",
+      "check": "parent:child/rejected",
+      "pass": true,
+      "evidence": "m_14bb8aaaf4eb"
+    },
+    {
+      "case": "anthropic",
+      "check": "raw_message:child/~current",
+      "pass": true,
+      "evidence": "child/~current"
+    },
+    {
+      "case": "anthropic",
+      "check": "raw_message:parent",
+      "pass": true,
+      "evidence": "parent"
+    },
+    {
+      "case": "anthropic",
+      "check": "raw_message:child/rejected",
+      "pass": true,
+      "evidence": "child/rejected"
+    },
+    {
+      "case": "anthropic",
+      "check": "complete_source_bytes",
+      "pass": true,
+      "evidence": {
+        "bytes": 4647,
+        "sha256": "eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca"
+      }
+    },
+    {
+      "case": "anthropic",
+      "check": "member_bytes:conversations.json",
+      "pass": false,
+      "evidence": {
+        "bytes": 4131,
+        "sha256": "1e9112c0d9553f0038ccb86033012141631cc48a4cc49d9664a0eb480cd4fe9a"
+      }
+    },
+    {
+      "case": "anthropic",
+      "check": "member_bytes:unknown-member.bin",
+      "pass": true,
+      "evidence": {
+        "bytes": 10,
+        "sha256": "37fa384ab99cf644e5907ffcd3e1e276e5b21c8a6e985d014b3639cbe12952ff"
+      }
+    },
+    {
+      "case": "anthropic",
+      "check": "member_bytes:future-unknown.json",
+      "pass": true,
+      "evidence": {
+        "bytes": 146,
+        "sha256": "f6996f61a9e24eaad6ae503c05c372b95fb1a80347f99adc574ea0cb4da52e45"
+      }
+    },
+    {
+      "case": "anthropic",
+      "check": "exact_source_locator:child/~current",
+      "pass": true,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "zip_member": "conversations.json",
+          "source": "sha256:eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca",
+          "member": "conversations.json",
+          "json_pointer": "/0/chat_messages/0",
+          "json_path": "/0/chat_messages/0",
+          "source_conversation_index": 0,
+          "view_message_index": 0,
+          "message_index": 0,
+          "traversal_index": 1
+        }
+      ]
+    },
+    {
+      "case": "anthropic",
+      "check": "exact_source_locator:parent",
+      "pass": true,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "zip_member": "conversations.json",
+          "source": "sha256:eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca",
+          "member": "conversations.json",
+          "json_pointer": "/0/chat_messages/1",
+          "json_path": "/0/chat_messages/1",
+          "source_conversation_index": 0,
+          "view_message_index": 1,
+          "message_index": 1,
+          "traversal_index": 0
+        }
+      ]
+    },
+    {
+      "case": "anthropic",
+      "check": "exact_source_locator:child/rejected",
+      "pass": true,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "zip_member": "conversations.json",
+          "source": "sha256:eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca",
+          "member": "conversations.json",
+          "json_pointer": "/0/chat_messages/2",
+          "json_path": "/0/chat_messages/2",
+          "source_conversation_index": 0,
+          "view_message_index": 2,
+          "message_index": 2,
+          "traversal_index": 2
+        }
+      ]
+    },
+    {
+      "case": "wrapped",
+      "check": "native_exit",
+      "pass": true,
+      "evidence": 0
+    },
+    {
+      "case": "wrapped",
+      "check": "conversation_count",
+      "pass": true,
+      "evidence": 1
+    },
+    {
+      "case": "wrapped",
+      "check": "message_count",
+      "pass": true,
+      "evidence": 3
+    },
+    {
+      "case": "wrapped",
+      "check": "structured_leaf_positions",
+      "pass": true,
+      "evidence": {
+        "scalar_preserved": 54,
+        "scalar_total": 54,
+        "empty_preserved": 14,
+        "empty_total": 14,
+        "missing_or_changed": []
+      }
+    },
+    {
+      "case": "wrapped",
+      "check": "status:u/~0",
+      "pass": true,
+      "evidence": "active"
+    },
+    {
+      "case": "wrapped",
+      "check": "status:a/rejected",
+      "pass": true,
+      "evidence": "version"
+    },
+    {
+      "case": "wrapped",
+      "check": "status:a/current~1",
+      "pass": true,
+      "evidence": "active"
+    },
+    {
+      "case": "wrapped",
+      "check": "parent:a/rejected",
+      "pass": true,
+      "evidence": "m_c7fd7986722d"
+    },
+    {
+      "case": "wrapped",
+      "check": "parent:a/current~1",
+      "pass": true,
+      "evidence": "m_c7fd7986722d"
+    },
+    {
+      "case": "wrapped",
+      "check": "raw_message:u/~0",
+      "pass": true,
+      "evidence": "u/~0"
+    },
+    {
+      "case": "wrapped",
+      "check": "raw_message:a/rejected",
+      "pass": true,
+      "evidence": "a/rejected"
+    },
+    {
+      "case": "wrapped",
+      "check": "raw_message:a/current~1",
+      "pass": true,
+      "evidence": "a/current~1"
+    },
+    {
+      "case": "wrapped",
+      "check": "complete_source_bytes",
+      "pass": true,
+      "evidence": {
+        "bytes": 3377,
+        "sha256": "a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737"
+      }
+    },
+    {
+      "case": "wrapped",
+      "check": "exact_source_locator:u/~0",
+      "pass": false,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "source": "sha256:a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737",
+          "json_pointer": "/conversations/0/mapping/u~1~00/message",
+          "json_path": "/conversations/0/mapping/u~1~00/message",
+          "source_conversation_index": 0,
+          "view_message_index": 0,
+          "source_key": "u/~0",
+          "traversal_index": 0
+        }
+      ]
+    },
+    {
+      "case": "wrapped",
+      "check": "exact_source_locator:a/rejected",
+      "pass": false,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "source": "sha256:a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737",
+          "json_pointer": "/conversations/0/mapping/a~1rejected/message",
+          "json_path": "/conversations/0/mapping/a~1rejected/message",
+          "source_conversation_index": 0,
+          "view_message_index": 1,
+          "source_key": "a/rejected",
+          "traversal_index": 1
+        }
+      ]
+    },
+    {
+      "case": "wrapped",
+      "check": "exact_source_locator:a/current~1",
+      "pass": false,
+      "evidence": [
+        {
+          "conversation_index": 0,
+          "source": "sha256:a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737",
+          "json_pointer": "/conversations/0/mapping/a~1current~01/message",
+          "json_path": "/conversations/0/mapping/a~1current~01/message",
+          "source_conversation_index": 0,
+          "view_message_index": 2,
+          "source_key": "a/current~1",
+          "traversal_index": 2
+        }
+      ]
+    },
+    {
+      "case": "wrapped",
+      "check": "wrapper_structured_field",
+      "pass": true,
+      "evidence": "unknown_wrapper key in persisted metadata"
+    }
+  ],
+  "passed": 54,
+  "total": 59,
+  "observations": [
+    {
+      "case": "openai",
+      "command": [
+        "/workspace/scratch/a371a1ca13b1/verification/native-dev/cli/loom",
+        "--data-dir",
+        "/workspace/scratch/a371a1ca13b1/verification/integration-2026-10-01/w6-import-v2-first/native/openai",
+        "--json",
+        "import",
+        "/workspace/scratch/a371a1ca13b1/chatadhd/docs/research/w6_evidence_2026-09-30/import_fixtures/openai.zip",
+        "--export-mode",
+        "on"
+      ],
+      "source_sha256": "ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247",
+      "importer_report_not_oracle": {
+        "schema": "loom.export_report.v1",
+        "provider": "openai",
+        "counts": {
+          "account": 0,
+          "artifact": 0,
+          "attachment": 1,
+          "block": 3,
+          "block_kind": {
+            "text": 3
+          },
+          "branch": 2,
+          "citation": 0,
+          "citation_group": 0,
+          "conversation": 1,
+          "current_path_messages": 2,
+          "custom_instruction": 0,
+          "feedback": 0,
+          "fork_points": 1,
+          "memory": 0,
+          "message": 3,
+          "project": 0,
+          "project_doc": 0,
+          "record": 0,
+          "shared_link": 0
+        },
+        "members": [
+          {
+            "wrapper": false,
+            "name": "conversations.json",
+            "size": 2927,
+            "disposition": "conversations"
+          },
+          {
+            "name": "file-W6audit-dane.bin",
+            "size": 260,
+            "disposition": "asset"
+          },
+          {
+            "name": "file-W6orphan.bin",
+            "size": 8,
+            "disposition": "asset"
+          },
+          {
+            "name": "future-unknown.json",
+            "size": 146,
+            "disposition": "unknown"
+          }
+        ],
+        "member_count": 4,
+        "errors": [],
+        "warnings": [],
+        "partial": false,
+        "inferred": false,
+        "repairs": {},
+        "json_leaves": 68,
+        "leaves_preserved": 68,
+        "asset_members": [
+          "file-W6audit-dane.bin",
+          "file-W6orphan.bin"
+        ],
+        "unreferenced_members": [
+          "file-W6orphan.bin"
+        ],
+        "unresolved_keys": [],
+        "pointer_links": {
+          "file-W6audit": [
+            "file-W6audit-dane.bin",
+            "id_prefix"
+          ]
+        },
+        "duplicate_groups": [],
+        "unknown_members": [
+          "future-unknown.json"
+        ],
+        "parts": []
+      },
+      "message_rows": [
+        {
+          "rowid": 1,
+          "id": "m_31dee0181cbc",
+          "conv_id": "c_a7e76c171876",
+          "parent_id": null,
+          "role": "user",
+          "text": "Nie przyjmuj odrzuconego wariantu.",
+          "model": null,
+          "status": "active",
+          "version_group_id": "vg_42e93131df22",
+          "version_num": 1,
+          "weight": 1.0,
+          "attachments": [
+            "/workspace/scratch/a371a1ca13b1/verification/integration-2026-10-01/w6-import-v2-first/native/openai/blobs/49/8d/498d18d2a7fad5338d9f751ffe0b06b81e387f6d9961f2db531c1c9cb35acb63"
+          ],
+          "metadata": {
+            "export": {
+              "role_raw": "user",
+              "author_name": null,
+              "recipient": null,
+              "channel": null,
+              "content_type": "text",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "part": 0,
+                  "chars": 34
+                }
+              ],
+              "attachments": [
+                {
+                  "source": "metadata.attachments",
+                  "path": "/metadata/attachments/0",
+                  "id": "file-W6audit",
+                  "name": "dane.bin",
+                  "mime": "application/octet-stream",
+                  "key": "file-W6audit",
+                  "resolved": true,
+                  "member": "file-W6audit-dane.bin",
+                  "method": "id_prefix",
+                  "blob_hash": "498d18d2a7fad5338d9f751ffe0b06b81e387f6d9961f2db531c1c9cb35acb63"
+                }
+              ],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "artifact": null,
+              "provider": "openai",
+              "kind": "message",
+              "key": "u/~0",
+              "message_id": "mu",
+              "node": {
+                "id": "u/~0",
+                "parent": "root",
+                "children": [
+                  "a/rejected",
+                  "a/current~1"
+                ]
+              },
+              "node_index": 1,
+              "raw": {
+                "id": "mu",
+                "author": {
+                  "role": "user"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "Nie przyjmuj odrzuconego wariantu."
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {
+                  "attachments": [
+                    {
+                      "id": "file-W6audit",
+                      "name": "dane.bin",
+                      "mime_type": "application/octet-stream"
+                    }
+                  ]
+                },
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "hidden": false,
+              "hidden_reasons": [],
+              "on_current_path": true,
+              "on_active_path": true,
+              "reachable": true,
+              "leaf": false,
+              "fork": true,
+              "sibling_index": 0,
+              "sibling_count": 1,
+              "created_inferred": false,
+              "member": "conversations.json",
+              "source_conversation_index": 0,
+              "source_key": "u/~0",
+              "traversal_index": 0,
+              "json_pointer": "/0/mapping/u~1~00/message"
+            }
+          },
+          "created": "2023-11-14T22:13:20Z",
+          "semantic_status": "pending"
+        },
+        {
+          "rowid": 2,
+          "id": "m_48fda2e48e54",
+          "conv_id": "c_a7e76c171876",
+          "parent_id": "m_31dee0181cbc",
+          "role": "assistant",
+          "text": "ODRZUCONY",
+          "model": null,
+          "status": "version",
+          "version_group_id": "vg_eaa8a69b7b91",
+          "version_num": 1,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "role_raw": "assistant",
+              "author_name": null,
+              "recipient": null,
+              "channel": null,
+              "content_type": "text",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "part": 0,
+                  "chars": 9
+                }
+              ],
+              "attachments": [],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "artifact": null,
+              "provider": "openai",
+              "kind": "message",
+              "key": "a/rejected",
+              "message_id": "mr",
+              "node": {
+                "id": "a/rejected",
+                "parent": "u/~0",
+                "children": []
+              },
+              "node_index": 2,
+              "raw": {
+                "id": "mr",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "ODRZUCONY"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "hidden": false,
+              "hidden_reasons": [],
+              "on_current_path": false,
+              "on_active_path": false,
+              "reachable": true,
+              "leaf": true,
+              "fork": false,
+              "sibling_index": 0,
+              "sibling_count": 2,
+              "created_inferred": false,
+              "member": "conversations.json",
+              "source_conversation_index": 0,
+              "source_key": "a/rejected",
+              "traversal_index": 1,
+              "json_pointer": "/0/mapping/a~1rejected/message"
+            }
+          },
+          "created": "2023-11-14T22:13:20Z",
+          "semantic_status": "pending"
+        },
+        {
+          "rowid": 3,
+          "id": "m_4f72db70af30",
+          "conv_id": "c_a7e76c171876",
+          "parent_id": "m_31dee0181cbc",
+          "role": "assistant",
+          "text": "AKTUALNY 🧪",
+          "model": null,
+          "status": "active",
+          "version_group_id": "vg_eaa8a69b7b91",
+          "version_num": 2,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "role_raw": "assistant",
+              "author_name": null,
+              "recipient": null,
+              "channel": null,
+              "content_type": "text",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "part": 0,
+                  "chars": 10
+                }
+              ],
+              "attachments": [],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "artifact": null,
+              "provider": "openai",
+              "kind": "message",
+              "key": "a/current~1",
+              "message_id": "mc",
+              "node": {
+                "id": "a/current~1",
+                "parent": "u/~0",
+                "children": []
+              },
+              "node_index": 3,
+              "raw": {
+                "id": "mc",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "AKTUALNY 🧪"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "hidden": false,
+              "hidden_reasons": [],
+              "on_current_path": true,
+              "on_active_path": true,
+              "reachable": true,
+              "leaf": true,
+              "fork": false,
+              "sibling_index": 1,
+              "sibling_count": 2,
+              "created_inferred": false,
+              "member": "conversations.json",
+              "source_conversation_index": 0,
+              "source_key": "a/current~1",
+              "traversal_index": 2,
+              "json_pointer": "/0/mapping/a~1current~01/message"
+            }
+          },
+          "created": "2023-11-14T22:13:20Z",
+          "semantic_status": "pending"
+        }
+      ],
+      "provenance": [
+        {
+          "id": "pv_1549721353fc",
+          "subject_id": "c_a7e76c171876",
+          "subject_kind": "conversation",
+          "source_id": "src_b07d68e9eb32",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247\", \"member\": \"conversations.json\", \"json_pointer\": \"/0\", \"json_path\": \"/0\", \"source_conversation_index\": 0}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.183616Z"
+        },
+        {
+          "id": "pv_d7438ee4d0be",
+          "subject_id": "m_31dee0181cbc",
+          "subject_kind": "message",
+          "source_id": "src_b07d68e9eb32",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247\", \"member\": \"conversations.json\", \"json_pointer\": \"/0/mapping/u~1~00/message\", \"json_path\": \"/0/mapping/u~1~00/message\", \"source_conversation_index\": 0, \"view_message_index\": 0, \"source_key\": \"u/~0\", \"traversal_index\": 0}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.192425Z"
+        },
+        {
+          "id": "pv_56b9168b7870",
+          "subject_id": "m_48fda2e48e54",
+          "subject_kind": "message",
+          "source_id": "src_b07d68e9eb32",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247\", \"member\": \"conversations.json\", \"json_pointer\": \"/0/mapping/a~1rejected/message\", \"json_path\": \"/0/mapping/a~1rejected/message\", \"source_conversation_index\": 0, \"view_message_index\": 1, \"source_key\": \"a/rejected\", \"traversal_index\": 1}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.192520Z"
+        },
+        {
+          "id": "pv_ad2a68e4c096",
+          "subject_id": "m_4f72db70af30",
+          "subject_kind": "message",
+          "source_id": "src_b07d68e9eb32",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247\", \"member\": \"conversations.json\", \"json_pointer\": \"/0/mapping/a~1current~01/message\", \"json_path\": \"/0/mapping/a~1current~01/message\", \"source_conversation_index\": 0, \"view_message_index\": 2, \"source_key\": \"a/current~1\", \"traversal_index\": 2}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.192575Z"
+        }
+      ]
+    },
+    {
+      "case": "anthropic",
+      "command": [
+        "/workspace/scratch/a371a1ca13b1/verification/native-dev/cli/loom",
+        "--data-dir",
+        "/workspace/scratch/a371a1ca13b1/verification/integration-2026-10-01/w6-import-v2-first/native/anthropic",
+        "--json",
+        "import",
+        "/workspace/scratch/a371a1ca13b1/chatadhd/docs/research/w6_evidence_2026-09-30/import_fixtures/anthropic.zip",
+        "--export-mode",
+        "on"
+      ],
+      "source_sha256": "eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca",
+      "importer_report_not_oracle": {
+        "schema": "loom.export_report.v1",
+        "provider": "anthropic",
+        "counts": {
+          "account": 0,
+          "artifact": 0,
+          "attachment": 3,
+          "block": 6,
+          "block_kind": {
+            "text": 3,
+            "unknown": 3
+          },
+          "branch": 2,
+          "citation": 0,
+          "citation_group": 0,
+          "conversation": 1,
+          "current_path_messages": 2,
+          "custom_instruction": 0,
+          "feedback": 0,
+          "fork_points": 1,
+          "memory": 0,
+          "message": 3,
+          "project": 0,
+          "project_doc": 0,
+          "record": 0,
+          "shared_link": 0
+        },
+        "members": [
+          {
+            "wrapper": false,
+            "name": "conversations.json",
+            "size": 4131,
+            "disposition": "conversations"
+          },
+          {
+            "name": "future-unknown.json",
+            "size": 146,
+            "disposition": "unknown"
+          },
+          {
+            "name": "unknown-member.bin",
+            "size": 10,
+            "disposition": "unknown"
+          }
+        ],
+        "member_count": 3,
+        "errors": [],
+        "warnings": [],
+        "partial": false,
+        "inferred": false,
+        "repairs": {},
+        "json_leaves": 93,
+        "leaves_preserved": 93,
+        "asset_members": [],
+        "unreferenced_members": [],
+        "unresolved_keys": [],
+        "pointer_links": {},
+        "duplicate_groups": [],
+        "unknown_members": [
+          "future-unknown.json",
+          "unknown-member.bin"
+        ],
+        "parts": []
+      },
+      "message_rows": [
+        {
+          "rowid": 1,
+          "id": "m_cb92467b4502",
+          "conv_id": "c_6d40414899ea",
+          "parent_id": "m_14bb8aaaf4eb",
+          "role": "assistant",
+          "text": "Nowa decyzja",
+          "model": null,
+          "status": "active",
+          "version_group_id": "vg_9a439ae9b44a",
+          "version_num": 1,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "provider": "anthropic",
+              "kind": "message",
+              "key": "child/~current",
+              "source_index": 0,
+              "traversal_index": 1,
+              "raw": {
+                "uuid": "child/~current",
+                "parent_message_uuid": "parent",
+                "sender": "assistant",
+                "text": "Nowa decyzja",
+                "created_at": "2026-09-30T12:00:00Z",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Nowa decyzja"
+                  },
+                  {
+                    "type": "future_widget",
+                    "payload": {
+                      "tilde~/key": [
+                        false,
+                        0,
+                        null,
+                        {},
+                        [],
+                        "Zażółć 🧪 é é \u0000 końcówka"
+                      ]
+                    }
+                  }
+                ],
+                "attachments": [
+                  {
+                    "file_name": "notatki.txt",
+                    "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                    "future": {
+                      "tilde~/key": [
+                        false,
+                        0,
+                        null,
+                        {},
+                        [],
+                        "Zażółć 🧪 é é \u0000 końcówka"
+                      ]
+                    }
+                  }
+                ],
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "role_raw": "assistant",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "index": 0,
+                  "chars": 12
+                },
+                {
+                  "kind": "unknown",
+                  "type": "future_widget",
+                  "index": 1
+                }
+              ],
+              "attachments": [
+                {
+                  "source": "attachments",
+                  "path": "/attachments/0",
+                  "id": "",
+                  "name": "notatki.txt",
+                  "mime": "",
+                  "has_extracted_content": true,
+                  "resolved": false
+                }
+              ],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "artifacts": [],
+              "artifact_tags": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "hidden": false,
+              "hidden_reasons": [],
+              "parent_key": "parent",
+              "parent_inferred": false,
+              "on_current_path": true,
+              "on_active_path": true,
+              "reachable": true,
+              "leaf": true,
+              "fork": false,
+              "sibling_index": 0,
+              "sibling_count": 2,
+              "created_inferred": false,
+              "model_inferred": false,
+              "member": "conversations.json",
+              "source_conversation_index": 0,
+              "json_pointer": "/0/chat_messages/0"
+            }
+          },
+          "created": "2026-09-30T12:00:00Z",
+          "semantic_status": "pending"
+        },
+        {
+          "rowid": 2,
+          "id": "m_14bb8aaaf4eb",
+          "conv_id": "c_6d40414899ea",
+          "parent_id": null,
+          "role": "user",
+          "text": "Wyjątek: tylko syntetyczne dane.",
+          "model": null,
+          "status": "active",
+          "version_group_id": "vg_5cf10d2c153b",
+          "version_num": 1,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "provider": "anthropic",
+              "kind": "message",
+              "key": "parent",
+              "source_index": 1,
+              "traversal_index": 0,
+              "raw": {
+                "uuid": "parent",
+                "parent_message_uuid": null,
+                "sender": "human",
+                "text": "Wyjątek: tylko syntetyczne dane.",
+                "created_at": "2026-09-30T12:00:00Z",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Wyjątek: tylko syntetyczne dane."
+                  },
+                  {
+                    "type": "future_widget",
+                    "payload": {
+                      "tilde~/key": [
+                        false,
+                        0,
+                        null,
+                        {},
+                        [],
+                        "Zażółć 🧪 é é \u0000 końcówka"
+                      ]
+                    }
+                  }
+                ],
+                "attachments": [
+                  {
+                    "file_name": "notatki.txt",
+                    "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                    "future": {
+                      "tilde~/key": [
+                        false,
+                        0,
+                        null,
+                        {},
+                        [],
+                        "Zażółć 🧪 é é \u0000 końcówka"
+                      ]
+                    }
+                  }
+                ],
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "role_raw": "human",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "index": 0,
+                  "chars": 32
+                },
+                {
+                  "kind": "unknown",
+                  "type": "future_widget",
+                  "index": 1
+                }
+              ],
+              "attachments": [
+                {
+                  "source": "attachments",
+                  "path": "/attachments/0",
+                  "id": "",
+                  "name": "notatki.txt",
+                  "mime": "",
+                  "has_extracted_content": true,
+                  "resolved": false
+                }
+              ],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "artifacts": [],
+              "artifact_tags": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "hidden": false,
+              "hidden_reasons": [],
+              "parent_key": null,
+              "parent_inferred": false,
+              "on_current_path": true,
+              "on_active_path": true,
+              "reachable": true,
+              "leaf": false,
+              "fork": true,
+              "sibling_index": 0,
+              "sibling_count": 1,
+              "created_inferred": false,
+              "model_inferred": false,
+              "member": "conversations.json",
+              "source_conversation_index": 0,
+              "json_pointer": "/0/chat_messages/1"
+            }
+          },
+          "created": "2026-09-30T12:00:00Z",
+          "semantic_status": "pending"
+        },
+        {
+          "rowid": 3,
+          "id": "m_a809330ae40f",
+          "conv_id": "c_6d40414899ea",
+          "parent_id": "m_14bb8aaaf4eb",
+          "role": "assistant",
+          "text": "Poprzednia propozycja",
+          "model": null,
+          "status": "version",
+          "version_group_id": "vg_9a439ae9b44a",
+          "version_num": 2,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "provider": "anthropic",
+              "kind": "message",
+              "key": "child/rejected",
+              "source_index": 2,
+              "traversal_index": 2,
+              "raw": {
+                "uuid": "child/rejected",
+                "parent_message_uuid": "parent",
+                "sender": "assistant",
+                "text": "Poprzednia propozycja",
+                "created_at": "2026-09-30T12:00:00Z",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Poprzednia propozycja"
+                  },
+                  {
+                    "type": "future_widget",
+                    "payload": {
+                      "tilde~/key": [
+                        false,
+                        0,
+                        null,
+                        {},
+                        [],
+                        "Zażółć 🧪 é é \u0000 końcówka"
+                      ]
+                    }
+                  }
+                ],
+                "attachments": [
+                  {
+                    "file_name": "notatki.txt",
+                    "extracted_content": "Cytat nie jest stanowiskiem autora.",
+                    "future": {
+                      "tilde~/key": [
+                        false,
+                        0,
+                        null,
+                        {},
+                        [],
+                        "Zażółć 🧪 é é \u0000 końcówka"
+                      ]
+                    }
+                  }
+                ],
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "role_raw": "assistant",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "index": 0,
+                  "chars": 21
+                },
+                {
+                  "kind": "unknown",
+                  "type": "future_widget",
+                  "index": 1
+                }
+              ],
+              "attachments": [
+                {
+                  "source": "attachments",
+                  "path": "/attachments/0",
+                  "id": "",
+                  "name": "notatki.txt",
+                  "mime": "",
+                  "has_extracted_content": true,
+                  "resolved": false
+                }
+              ],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "artifacts": [],
+              "artifact_tags": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "hidden": false,
+              "hidden_reasons": [],
+              "parent_key": "parent",
+              "parent_inferred": false,
+              "on_current_path": false,
+              "on_active_path": false,
+              "reachable": true,
+              "leaf": true,
+              "fork": false,
+              "sibling_index": 1,
+              "sibling_count": 2,
+              "created_inferred": false,
+              "model_inferred": false,
+              "member": "conversations.json",
+              "source_conversation_index": 0,
+              "json_pointer": "/0/chat_messages/2"
+            }
+          },
+          "created": "2026-09-30T12:00:00Z",
+          "semantic_status": "pending"
+        }
+      ],
+      "provenance": [
+        {
+          "id": "pv_45d4b1a13e7b",
+          "subject_id": "c_6d40414899ea",
+          "subject_kind": "conversation",
+          "source_id": "src_317064e7f58a",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca\", \"member\": \"conversations.json\", \"json_pointer\": \"/0\", \"json_path\": \"/0\", \"source_conversation_index\": 0}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.356661Z"
+        },
+        {
+          "id": "pv_6ce8507bf148",
+          "subject_id": "m_cb92467b4502",
+          "subject_kind": "message",
+          "source_id": "src_317064e7f58a",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca\", \"member\": \"conversations.json\", \"json_pointer\": \"/0/chat_messages/0\", \"json_path\": \"/0/chat_messages/0\", \"source_conversation_index\": 0, \"view_message_index\": 0, \"message_index\": 0, \"traversal_index\": 1}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.387526Z"
+        },
+        {
+          "id": "pv_7e5e3ebc8167",
+          "subject_id": "m_14bb8aaaf4eb",
+          "subject_kind": "message",
+          "source_id": "src_317064e7f58a",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca\", \"member\": \"conversations.json\", \"json_pointer\": \"/0/chat_messages/1\", \"json_path\": \"/0/chat_messages/1\", \"source_conversation_index\": 0, \"view_message_index\": 1, \"message_index\": 1, \"traversal_index\": 0}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.387587Z"
+        },
+        {
+          "id": "pv_6406079e4459",
+          "subject_id": "m_a809330ae40f",
+          "subject_kind": "message",
+          "source_id": "src_317064e7f58a",
+          "locator": "{\"conversation_index\": 0, \"zip_member\": \"conversations.json\", \"source\": \"sha256:eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca\", \"member\": \"conversations.json\", \"json_pointer\": \"/0/chat_messages/2\", \"json_path\": \"/0/chat_messages/2\", \"source_conversation_index\": 0, \"view_message_index\": 2, \"message_index\": 2, \"traversal_index\": 2}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.387624Z"
+        }
+      ]
+    },
+    {
+      "case": "wrapped",
+      "command": [
+        "/workspace/scratch/a371a1ca13b1/verification/native-dev/cli/loom",
+        "--data-dir",
+        "/workspace/scratch/a371a1ca13b1/verification/integration-2026-10-01/w6-import-v2-first/native/wrapped",
+        "--json",
+        "import",
+        "/workspace/scratch/a371a1ca13b1/chatadhd/docs/research/w6_evidence_2026-09-30/import_fixtures/wrapped.json",
+        "--export-mode",
+        "on"
+      ],
+      "source_sha256": "a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737",
+      "importer_report_not_oracle": {
+        "schema": "loom.export_report.v1",
+        "provider": "openai",
+        "counts": {
+          "account": 0,
+          "artifact": 0,
+          "attachment": 1,
+          "block": 3,
+          "block_kind": {
+            "text": 3
+          },
+          "branch": 2,
+          "citation": 0,
+          "citation_group": 0,
+          "conversation": 1,
+          "current_path_messages": 2,
+          "custom_instruction": 0,
+          "feedback": 0,
+          "fork_points": 1,
+          "memory": 0,
+          "message": 3,
+          "project": 0,
+          "project_doc": 0,
+          "record": 0,
+          "shared_link": 0
+        },
+        "members": [
+          {
+            "wrapper": true,
+            "name": "wrapped.json",
+            "size": 0,
+            "disposition": "conversations"
+          }
+        ],
+        "member_count": 1,
+        "errors": [],
+        "warnings": [],
+        "partial": false,
+        "inferred": false,
+        "repairs": {},
+        "json_leaves": 68,
+        "leaves_preserved": 68,
+        "asset_members": [],
+        "unreferenced_members": [],
+        "unresolved_keys": [],
+        "pointer_links": {},
+        "duplicate_groups": [],
+        "unknown_members": [],
+        "parts": []
+      },
+      "message_rows": [
+        {
+          "rowid": 1,
+          "id": "m_c7fd7986722d",
+          "conv_id": "c_2484cc4be5fd",
+          "parent_id": null,
+          "role": "user",
+          "text": "Nie przyjmuj odrzuconego wariantu.",
+          "model": null,
+          "status": "active",
+          "version_group_id": "vg_7902880653c6",
+          "version_num": 1,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "role_raw": "user",
+              "author_name": null,
+              "recipient": null,
+              "channel": null,
+              "content_type": "text",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "part": 0,
+                  "chars": 34
+                }
+              ],
+              "attachments": [
+                {
+                  "source": "metadata.attachments",
+                  "path": "/metadata/attachments/0",
+                  "id": "file-W6audit",
+                  "name": "dane.bin",
+                  "mime": "application/octet-stream",
+                  "key": "file-W6audit"
+                }
+              ],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "artifact": null,
+              "provider": "openai",
+              "kind": "message",
+              "key": "u/~0",
+              "message_id": "mu",
+              "node": {
+                "id": "u/~0",
+                "parent": "root",
+                "children": [
+                  "a/rejected",
+                  "a/current~1"
+                ]
+              },
+              "node_index": 1,
+              "raw": {
+                "id": "mu",
+                "author": {
+                  "role": "user"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "Nie przyjmuj odrzuconego wariantu."
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {
+                  "attachments": [
+                    {
+                      "id": "file-W6audit",
+                      "name": "dane.bin",
+                      "mime_type": "application/octet-stream"
+                    }
+                  ]
+                },
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "hidden": false,
+              "hidden_reasons": [],
+              "on_current_path": true,
+              "on_active_path": true,
+              "reachable": true,
+              "leaf": false,
+              "fork": true,
+              "sibling_index": 0,
+              "sibling_count": 1,
+              "created_inferred": false,
+              "member": "wrapped.json",
+              "source_conversation_index": 0,
+              "source_key": "u/~0",
+              "traversal_index": 0,
+              "json_pointer": "/conversations/0/mapping/u~1~00/message"
+            }
+          },
+          "created": "2023-11-14T22:13:20Z",
+          "semantic_status": "pending"
+        },
+        {
+          "rowid": 2,
+          "id": "m_66446aa5e733",
+          "conv_id": "c_2484cc4be5fd",
+          "parent_id": "m_c7fd7986722d",
+          "role": "assistant",
+          "text": "ODRZUCONY",
+          "model": null,
+          "status": "version",
+          "version_group_id": "vg_a103d2790f60",
+          "version_num": 1,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "role_raw": "assistant",
+              "author_name": null,
+              "recipient": null,
+              "channel": null,
+              "content_type": "text",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "part": 0,
+                  "chars": 9
+                }
+              ],
+              "attachments": [],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "artifact": null,
+              "provider": "openai",
+              "kind": "message",
+              "key": "a/rejected",
+              "message_id": "mr",
+              "node": {
+                "id": "a/rejected",
+                "parent": "u/~0",
+                "children": []
+              },
+              "node_index": 2,
+              "raw": {
+                "id": "mr",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "ODRZUCONY"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "hidden": false,
+              "hidden_reasons": [],
+              "on_current_path": false,
+              "on_active_path": false,
+              "reachable": true,
+              "leaf": true,
+              "fork": false,
+              "sibling_index": 0,
+              "sibling_count": 2,
+              "created_inferred": false,
+              "member": "wrapped.json",
+              "source_conversation_index": 0,
+              "source_key": "a/rejected",
+              "traversal_index": 1,
+              "json_pointer": "/conversations/0/mapping/a~1rejected/message"
+            }
+          },
+          "created": "2023-11-14T22:13:20Z",
+          "semantic_status": "pending"
+        },
+        {
+          "rowid": 3,
+          "id": "m_bc22dc967a07",
+          "conv_id": "c_2484cc4be5fd",
+          "parent_id": "m_c7fd7986722d",
+          "role": "assistant",
+          "text": "AKTUALNY 🧪",
+          "model": null,
+          "status": "active",
+          "version_group_id": "vg_a103d2790f60",
+          "version_num": 2,
+          "weight": 1.0,
+          "attachments": [],
+          "metadata": {
+            "export": {
+              "role_raw": "assistant",
+              "author_name": null,
+              "recipient": null,
+              "channel": null,
+              "content_type": "text",
+              "blocks": [
+                {
+                  "kind": "text",
+                  "type": "text",
+                  "part": 0,
+                  "chars": 10
+                }
+              ],
+              "attachments": [],
+              "pointers": [],
+              "citations": [],
+              "citation_groups": [],
+              "custom_instruction": 0,
+              "memory": false,
+              "artifact": null,
+              "provider": "openai",
+              "kind": "message",
+              "key": "a/current~1",
+              "message_id": "mc",
+              "node": {
+                "id": "a/current~1",
+                "parent": "u/~0",
+                "children": []
+              },
+              "node_index": 3,
+              "raw": {
+                "id": "mc",
+                "author": {
+                  "role": "assistant"
+                },
+                "content": {
+                  "content_type": "text",
+                  "parts": [
+                    "AKTUALNY 🧪"
+                  ]
+                },
+                "create_time": 1700000000,
+                "metadata": {},
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              },
+              "hidden": false,
+              "hidden_reasons": [],
+              "on_current_path": true,
+              "on_active_path": true,
+              "reachable": true,
+              "leaf": true,
+              "fork": false,
+              "sibling_index": 1,
+              "sibling_count": 2,
+              "created_inferred": false,
+              "member": "wrapped.json",
+              "source_conversation_index": 0,
+              "source_key": "a/current~1",
+              "traversal_index": 2,
+              "json_pointer": "/conversations/0/mapping/a~1current~01/message"
+            }
+          },
+          "created": "2023-11-14T22:13:20Z",
+          "semantic_status": "pending"
+        }
+      ],
+      "provenance": [
+        {
+          "id": "pv_6c30065e1fdf",
+          "subject_id": "c_2484cc4be5fd",
+          "subject_kind": "conversation",
+          "source_id": "src_e20afab52a7e",
+          "locator": "{\"conversation_index\": 0, \"source\": \"sha256:a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737\", \"json_pointer\": \"/conversations/0\", \"json_path\": \"/conversations/0\", \"source_conversation_index\": 0}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.484452Z"
+        },
+        {
+          "id": "pv_13412d8e6d9d",
+          "subject_id": "m_c7fd7986722d",
+          "subject_kind": "message",
+          "source_id": "src_e20afab52a7e",
+          "locator": "{\"conversation_index\": 0, \"source\": \"sha256:a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737\", \"json_pointer\": \"/conversations/0/mapping/u~1~00/message\", \"json_path\": \"/conversations/0/mapping/u~1~00/message\", \"source_conversation_index\": 0, \"view_message_index\": 0, \"source_key\": \"u/~0\", \"traversal_index\": 0}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.485966Z"
+        },
+        {
+          "id": "pv_8476fdbcb60f",
+          "subject_id": "m_66446aa5e733",
+          "subject_kind": "message",
+          "source_id": "src_e20afab52a7e",
+          "locator": "{\"conversation_index\": 0, \"source\": \"sha256:a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737\", \"json_pointer\": \"/conversations/0/mapping/a~1rejected/message\", \"json_path\": \"/conversations/0/mapping/a~1rejected/message\", \"source_conversation_index\": 0, \"view_message_index\": 1, \"source_key\": \"a/rejected\", \"traversal_index\": 1}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.486167Z"
+        },
+        {
+          "id": "pv_971fde9de072",
+          "subject_id": "m_bc22dc967a07",
+          "subject_kind": "message",
+          "source_id": "src_e20afab52a7e",
+          "locator": "{\"conversation_index\": 0, \"source\": \"sha256:a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737\", \"json_pointer\": \"/conversations/0/mapping/a~1current~01/message\", \"json_path\": \"/conversations/0/mapping/a~1current~01/message\", \"source_conversation_index\": 0, \"view_message_index\": 2, \"source_key\": \"a/current~1\", \"traversal_index\": 2}",
+          "transform": "import.export@export-2",
+          "confidence": 1.0,
+          "created": "2026-09-30T23:14:01.486228Z"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Synthetic only",
+    "Binary provenance supplied by integrator; binary hash identifies execution",
+    "Array-order failure cannot be rescued by raw-byte success",
+    "No model understanding measured"
+  ]
+}

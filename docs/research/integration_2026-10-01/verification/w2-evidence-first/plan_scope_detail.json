@@ -1,0 +1,2074 @@
+{
+  "schema": "loom.chat_retrieval_adapter_evidence/1",
+  "provenance": "synthetic_scripted_transport",
+  "request_body_raw": "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"System instruction.\"},{\"role\":\"system\",\"content\":\"## This goal\\n- **remote endpoint depends_on remote premise** [plan theses: [\\\"near-label\\\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\\\"wide-raw\\\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\\n- **anchor alpha depends_on anchor beta** [plan theses: [\\\"near-label\\\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\\\"wide-raw\\\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\\n- **SECOND-HOP-ONLY** [plan theses: [\\\"wide-raw\\\"]]  <!-- why: within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on' -->\\n\\n## Retrieval plan coverage\\nCandidate coverage is structural; it does not establish support or truth.\\n- near-label: Inspect the first relation\\n- wide-raw: Inspect both relations\\n\"},{\"role\":\"user\",\"content\":\"CURRENT-TURN\"}],\"temperature\":0.7,\"max_tokens\":4096,\"stream\":false,\"include_reasoning\":true}",
+  "request_body": {
+    "model": "test/model",
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"near-label\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"wide-raw\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"near-label\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"wide-raw\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **SECOND-HOP-ONLY** [plan theses: [\"wide-raw\"]]  <!-- why: within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- near-label: Inspect the first relation\n- wide-raw: Inspect both relations\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "temperature": 0.7,
+    "max_tokens": 4096,
+    "stream": false,
+    "include_reasoning": true
+  },
+  "context_trace": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"near-label\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"wide-raw\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"near-label\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"wide-raw\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **SECOND-HOP-ONLY** [plan theses: [\"wide-raw\"]]  <!-- why: within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- near-label: Inspect the first relation\n- wide-raw: Inspect both relations\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "messages_sha256": "8355c0ba3a207b76e221bc45600dd70773eecbcbf1b7469f410e037c34474cf4",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "CURRENT-TURN",
+      "targets": [
+        "e_e9504e924feefbfa"
+      ],
+      "project": "",
+      "budget_tokens": 100000,
+      "goal_type": "answer_question",
+      "run": "kr_0eadc529983397d0",
+      "lang": "en",
+      "plan": {
+        "id": "explicit-retrieval-plan",
+        "source_ref": {
+          "kind": "product",
+          "id": "unverified-caller-reference",
+          "version": 999,
+          "note": "Żółć: declaration only"
+        },
+        "theses": [
+          {
+            "id": "near-label",
+            "text": "Inspect the first relation",
+            "relation_hops": 1,
+            "detail_resolution": "label",
+            "require_counter_evidence": false
+          },
+          {
+            "id": "wide-raw",
+            "text": "Inspect both relations",
+            "relation_hops": 2,
+            "detail_resolution": "raw",
+            "require_counter_evidence": false
+          }
+        ]
+      }
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_c2c4cae3493e38bf",
+        "type": "answer_question",
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "confidence": 1.0,
+        "params": {
+          "confidence_basis": "explicit_owner_type",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "forced",
+          "plan_trace": {
+            "schema": "loom.context_plan_trace/1",
+            "plan": {
+              "id": "explicit-retrieval-plan",
+              "source_ref": {
+                "kind": "product",
+                "id": "unverified-caller-reference",
+                "version": 999,
+                "note": "Żółć: declaration only"
+              },
+              "theses": [
+                {
+                  "id": "near-label",
+                  "text": "Inspect the first relation",
+                  "relation_hops": 1,
+                  "detail_resolution": "label",
+                  "require_counter_evidence": false
+                },
+                {
+                  "id": "wide-raw",
+                  "text": "Inspect both relations",
+                  "relation_hops": 2,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": false
+                }
+              ]
+            },
+            "run": "kr_0eadc529983397d0",
+            "budget_policy": "weighted_plan_order_unused_forward",
+            "theses": [
+              {
+                "id": "near-label",
+                "text": "Inspect the first relation",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [],
+                "relation_hops": 1,
+                "detail_resolution": "label",
+                "require_counter_evidence": false,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 50000,
+                "carried_budget_tokens": 0,
+                "allocated_budget_tokens": 50000,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "label"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "label"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "context_controls": {
+                    "relation_hops": 1,
+                    "detail_resolution": "label"
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "outgoing",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "incoming",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 1,
+                    "unique_candidates": 1,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        7500,
+                        17500,
+                        25000
+                      ],
+                      "total_tokens": 50000,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        50000
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        20
+                      ],
+                      "used_tokens": 20
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 20,
+                "direct_material_candidates": 1,
+                "added_tokens_after_deduplication": 20,
+                "unused_budget_tokens_forwarded": 49980,
+                "gaps": []
+              },
+              {
+                "id": "wide-raw",
+                "text": "Inspect both relations",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [],
+                "relation_hops": 2,
+                "detail_resolution": "raw",
+                "require_counter_evidence": false,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 50000,
+                "carried_budget_tokens": 49980,
+                "allocated_budget_tokens": 99980,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_85008b41b289bb3c",
+                    "resolution": "raw"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "context_controls": {
+                    "relation_hops": 2,
+                    "detail_resolution": "raw"
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "outgoing",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "incoming",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_1e90278bd7cc2a5c",
+                          "direction": "outgoing",
+                          "hop": 2
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_1e90278bd7cc2a5c",
+                          "direction": "incoming",
+                          "hop": 2
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 2,
+                    "unique_candidates": 2,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        14997,
+                        34993,
+                        49990
+                      ],
+                      "total_tokens": 99980,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        99980
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        91
+                      ],
+                      "used_tokens": 91
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 91,
+                "direct_material_candidates": 2,
+                "added_tokens_after_deduplication": 91,
+                "unused_budget_tokens_forwarded": 99889,
+                "gaps": []
+              }
+            ],
+            "limitations": [
+              "structural_retrieval_is_not_a_semantic_support_verdict",
+              "counter_coverage_is_limited_to_recorded_assessment_links",
+              "item_estimates_exclude_prompt_headers_and_trace_metadata",
+              "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+            ]
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_6acfc6b2da1ab1d4",
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "plan_trace": {
+              "schema": "loom.context_plan_trace/1",
+              "plan": {
+                "id": "explicit-retrieval-plan",
+                "source_ref": {
+                  "kind": "product",
+                  "id": "unverified-caller-reference",
+                  "version": 999,
+                  "note": "Żółć: declaration only"
+                },
+                "theses": [
+                  {
+                    "id": "near-label",
+                    "text": "Inspect the first relation",
+                    "relation_hops": 1,
+                    "detail_resolution": "label",
+                    "require_counter_evidence": false
+                  },
+                  {
+                    "id": "wide-raw",
+                    "text": "Inspect both relations",
+                    "relation_hops": 2,
+                    "detail_resolution": "raw",
+                    "require_counter_evidence": false
+                  }
+                ]
+              },
+              "run": "kr_0eadc529983397d0",
+              "budget_policy": "weighted_plan_order_unused_forward",
+              "theses": [
+                {
+                  "id": "near-label",
+                  "text": "Inspect the first relation",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [],
+                  "relation_hops": 1,
+                  "detail_resolution": "label",
+                  "require_counter_evidence": false,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 50000,
+                  "carried_budget_tokens": 0,
+                  "allocated_budget_tokens": 50000,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "label"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "label"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "context_controls": {
+                      "relation_hops": 1,
+                      "detail_resolution": "label"
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "outgoing",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "incoming",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 1,
+                      "unique_candidates": 1,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          7500,
+                          17500,
+                          25000
+                        ],
+                        "total_tokens": 50000,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          50000
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          20
+                        ],
+                        "used_tokens": 20
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 20,
+                  "direct_material_candidates": 1,
+                  "added_tokens_after_deduplication": 20,
+                  "unused_budget_tokens_forwarded": 49980,
+                  "gaps": []
+                },
+                {
+                  "id": "wide-raw",
+                  "text": "Inspect both relations",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [],
+                  "relation_hops": 2,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": false,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 50000,
+                  "carried_budget_tokens": 49980,
+                  "allocated_budget_tokens": 99980,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_85008b41b289bb3c",
+                      "resolution": "raw"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "context_controls": {
+                      "relation_hops": 2,
+                      "detail_resolution": "raw"
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "outgoing",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "incoming",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_1e90278bd7cc2a5c",
+                            "direction": "outgoing",
+                            "hop": 2
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_1e90278bd7cc2a5c",
+                            "direction": "incoming",
+                            "hop": 2
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 2,
+                      "unique_candidates": 2,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          14997,
+                          34993,
+                          49990
+                        ],
+                        "total_tokens": 99980,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          99980
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          91
+                        ],
+                        "used_tokens": 91
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 91,
+                  "direct_material_candidates": 2,
+                  "added_tokens_after_deduplication": 91,
+                  "unused_budget_tokens_forwarded": 99889,
+                  "gaps": []
+                }
+              ],
+              "limitations": [
+                "structural_retrieval_is_not_a_semantic_support_verdict",
+                "counter_coverage_is_limited_to_recorded_assessment_links",
+                "item_estimates_exclude_prompt_headers_and_trace_metadata",
+                "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+              ]
+            }
+          }
+        },
+        "budget_tokens": 100000,
+        "used_tokens": 111,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "near-label"
+              ],
+              "thesis_selection": {
+                "near-label": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 11,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**remote endpoint depends_on remote premise**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "wide-raw"
+              ],
+              "thesis_selection": {
+                "wide-raw": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 6,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**REQUIRED-PREMISE-BYTES**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "relation_hops": 1,
+              "thesis_ids": [
+                "near-label"
+              ],
+              "thesis_selection": {
+                "near-label": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 1
+                  },
+                  "score": 0.252,
+                  "why": "one hop from 'anchor alpha' via 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 9,
+            "why": "one hop from 'anchor alpha' via 'depends_on'",
+            "required_by": [],
+            "text": "**anchor alpha depends_on anchor beta**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "relation_hops": 1,
+              "thesis_ids": [
+                "wide-raw"
+              ],
+              "thesis_selection": {
+                "wide-raw": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 1
+                  },
+                  "score": 0.252,
+                  "why": "one hop from 'anchor alpha' via 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 81,
+            "why": "one hop from 'anchor alpha' via 'depends_on'",
+            "required_by": [],
+            "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_85008b41b289bb3c",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "relation_hops": 2,
+              "thesis_ids": [
+                "wide-raw"
+              ],
+              "thesis_selection": {
+                "wide-raw": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 2
+                  },
+                  "score": 0.252,
+                  "why": "within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 4,
+            "why": "within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on'",
+            "required_by": [],
+            "text": "**SECOND-HOP-ONLY**"
+          }
+        ],
+        "dropped": []
+      },
+      "prompt": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"near-label\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"wide-raw\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"near-label\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"wide-raw\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **SECOND-HOP-ONLY** [plan theses: [\"wide-raw\"]]  <!-- why: within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- near-label: Inspect the first relation\n- wide-raw: Inspect both relations\n",
+      "request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "plan": {
+          "id": "explicit-retrieval-plan",
+          "source_ref": {
+            "kind": "product",
+            "id": "unverified-caller-reference",
+            "version": 999,
+            "note": "Żółć: declaration only"
+          },
+          "theses": [
+            {
+              "id": "near-label",
+              "text": "Inspect the first relation",
+              "relation_hops": 1,
+              "detail_resolution": "label",
+              "require_counter_evidence": false
+            },
+            {
+              "id": "wide-raw",
+              "text": "Inspect both relations",
+              "relation_hops": 2,
+              "detail_resolution": "raw",
+              "require_counter_evidence": false
+            }
+          ]
+        }
+      }
+    }
+  },
+  "stored_context_trace": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"near-label\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"wide-raw\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"near-label\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"wide-raw\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **SECOND-HOP-ONLY** [plan theses: [\"wide-raw\"]]  <!-- why: within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- near-label: Inspect the first relation\n- wide-raw: Inspect both relations\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "messages_sha256": "8355c0ba3a207b76e221bc45600dd70773eecbcbf1b7469f410e037c34474cf4",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "CURRENT-TURN",
+      "targets": [
+        "e_e9504e924feefbfa"
+      ],
+      "project": "",
+      "budget_tokens": 100000,
+      "goal_type": "answer_question",
+      "run": "kr_0eadc529983397d0",
+      "lang": "en",
+      "plan": {
+        "id": "explicit-retrieval-plan",
+        "source_ref": {
+          "kind": "product",
+          "id": "unverified-caller-reference",
+          "version": 999,
+          "note": "Żółć: declaration only"
+        },
+        "theses": [
+          {
+            "id": "near-label",
+            "text": "Inspect the first relation",
+            "relation_hops": 1,
+            "detail_resolution": "label",
+            "require_counter_evidence": false
+          },
+          {
+            "id": "wide-raw",
+            "text": "Inspect both relations",
+            "relation_hops": 2,
+            "detail_resolution": "raw",
+            "require_counter_evidence": false
+          }
+        ]
+      }
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_c2c4cae3493e38bf",
+        "type": "answer_question",
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "confidence": 1.0,
+        "params": {
+          "confidence_basis": "explicit_owner_type",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "forced",
+          "plan_trace": {
+            "schema": "loom.context_plan_trace/1",
+            "plan": {
+              "id": "explicit-retrieval-plan",
+              "source_ref": {
+                "kind": "product",
+                "id": "unverified-caller-reference",
+                "version": 999,
+                "note": "Żółć: declaration only"
+              },
+              "theses": [
+                {
+                  "id": "near-label",
+                  "text": "Inspect the first relation",
+                  "relation_hops": 1,
+                  "detail_resolution": "label",
+                  "require_counter_evidence": false
+                },
+                {
+                  "id": "wide-raw",
+                  "text": "Inspect both relations",
+                  "relation_hops": 2,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": false
+                }
+              ]
+            },
+            "run": "kr_0eadc529983397d0",
+            "budget_policy": "weighted_plan_order_unused_forward",
+            "theses": [
+              {
+                "id": "near-label",
+                "text": "Inspect the first relation",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [],
+                "relation_hops": 1,
+                "detail_resolution": "label",
+                "require_counter_evidence": false,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 50000,
+                "carried_budget_tokens": 0,
+                "allocated_budget_tokens": 50000,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "label"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "label"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "context_controls": {
+                    "relation_hops": 1,
+                    "detail_resolution": "label"
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "outgoing",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "incoming",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 1,
+                    "unique_candidates": 1,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        7500,
+                        17500,
+                        25000
+                      ],
+                      "total_tokens": 50000,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        50000
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        20
+                      ],
+                      "used_tokens": 20
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 20,
+                "direct_material_candidates": 1,
+                "added_tokens_after_deduplication": 20,
+                "unused_budget_tokens_forwarded": 49980,
+                "gaps": []
+              },
+              {
+                "id": "wide-raw",
+                "text": "Inspect both relations",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [],
+                "relation_hops": 2,
+                "detail_resolution": "raw",
+                "require_counter_evidence": false,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 50000,
+                "carried_budget_tokens": 49980,
+                "allocated_budget_tokens": 99980,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "raw"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_85008b41b289bb3c",
+                    "resolution": "raw"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "context_controls": {
+                    "relation_hops": 2,
+                    "detail_resolution": "raw"
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "outgoing",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "incoming",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_1e90278bd7cc2a5c",
+                          "direction": "outgoing",
+                          "hop": 2
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_1e90278bd7cc2a5c",
+                          "direction": "incoming",
+                          "hop": 2
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 2,
+                    "unique_candidates": 2,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        14997,
+                        34993,
+                        49990
+                      ],
+                      "total_tokens": 99980,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        99980
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        91
+                      ],
+                      "used_tokens": 91
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 91,
+                "direct_material_candidates": 2,
+                "added_tokens_after_deduplication": 91,
+                "unused_budget_tokens_forwarded": 99889,
+                "gaps": []
+              }
+            ],
+            "limitations": [
+              "structural_retrieval_is_not_a_semantic_support_verdict",
+              "counter_coverage_is_limited_to_recorded_assessment_links",
+              "item_estimates_exclude_prompt_headers_and_trace_metadata",
+              "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+            ]
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_6acfc6b2da1ab1d4",
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "plan_trace": {
+              "schema": "loom.context_plan_trace/1",
+              "plan": {
+                "id": "explicit-retrieval-plan",
+                "source_ref": {
+                  "kind": "product",
+                  "id": "unverified-caller-reference",
+                  "version": 999,
+                  "note": "Żółć: declaration only"
+                },
+                "theses": [
+                  {
+                    "id": "near-label",
+                    "text": "Inspect the first relation",
+                    "relation_hops": 1,
+                    "detail_resolution": "label",
+                    "require_counter_evidence": false
+                  },
+                  {
+                    "id": "wide-raw",
+                    "text": "Inspect both relations",
+                    "relation_hops": 2,
+                    "detail_resolution": "raw",
+                    "require_counter_evidence": false
+                  }
+                ]
+              },
+              "run": "kr_0eadc529983397d0",
+              "budget_policy": "weighted_plan_order_unused_forward",
+              "theses": [
+                {
+                  "id": "near-label",
+                  "text": "Inspect the first relation",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [],
+                  "relation_hops": 1,
+                  "detail_resolution": "label",
+                  "require_counter_evidence": false,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 50000,
+                  "carried_budget_tokens": 0,
+                  "allocated_budget_tokens": 50000,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "label"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "label"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "context_controls": {
+                      "relation_hops": 1,
+                      "detail_resolution": "label"
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "outgoing",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "incoming",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 1,
+                      "unique_candidates": 1,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          7500,
+                          17500,
+                          25000
+                        ],
+                        "total_tokens": 50000,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          50000
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          20
+                        ],
+                        "used_tokens": 20
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 20,
+                  "direct_material_candidates": 1,
+                  "added_tokens_after_deduplication": 20,
+                  "unused_budget_tokens_forwarded": 49980,
+                  "gaps": []
+                },
+                {
+                  "id": "wide-raw",
+                  "text": "Inspect both relations",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [],
+                  "relation_hops": 2,
+                  "detail_resolution": "raw",
+                  "require_counter_evidence": false,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 50000,
+                  "carried_budget_tokens": 49980,
+                  "allocated_budget_tokens": 99980,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "raw"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_85008b41b289bb3c",
+                      "resolution": "raw"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "context_controls": {
+                      "relation_hops": 2,
+                      "detail_resolution": "raw"
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "outgoing",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "incoming",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_1e90278bd7cc2a5c",
+                            "direction": "outgoing",
+                            "hop": 2
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_1e90278bd7cc2a5c",
+                            "direction": "incoming",
+                            "hop": 2
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 2,
+                      "unique_candidates": 2,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          14997,
+                          34993,
+                          49990
+                        ],
+                        "total_tokens": 99980,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          99980
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          91
+                        ],
+                        "used_tokens": 91
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 91,
+                  "direct_material_candidates": 2,
+                  "added_tokens_after_deduplication": 91,
+                  "unused_budget_tokens_forwarded": 99889,
+                  "gaps": []
+                }
+              ],
+              "limitations": [
+                "structural_retrieval_is_not_a_semantic_support_verdict",
+                "counter_coverage_is_limited_to_recorded_assessment_links",
+                "item_estimates_exclude_prompt_headers_and_trace_metadata",
+                "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+              ]
+            }
+          }
+        },
+        "budget_tokens": 100000,
+        "used_tokens": 111,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "near-label"
+              ],
+              "thesis_selection": {
+                "near-label": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 11,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**remote endpoint depends_on remote premise**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "wide-raw"
+              ],
+              "thesis_selection": {
+                "wide-raw": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 6,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**REQUIRED-PREMISE-BYTES**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "relation_hops": 1,
+              "thesis_ids": [
+                "near-label"
+              ],
+              "thesis_selection": {
+                "near-label": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 1
+                  },
+                  "score": 0.252,
+                  "why": "one hop from 'anchor alpha' via 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 9,
+            "why": "one hop from 'anchor alpha' via 'depends_on'",
+            "required_by": [],
+            "text": "**anchor alpha depends_on anchor beta**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "relation_hops": 1,
+              "thesis_ids": [
+                "wide-raw"
+              ],
+              "thesis_selection": {
+                "wide-raw": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 1
+                  },
+                  "score": 0.252,
+                  "why": "one hop from 'anchor alpha' via 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 81,
+            "why": "one hop from 'anchor alpha' via 'depends_on'",
+            "required_by": [],
+            "text": "**RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_85008b41b289bb3c",
+            "band": "goal",
+            "resolution": "raw",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "relation_hops": 2,
+              "thesis_ids": [
+                "wide-raw"
+              ],
+              "thesis_selection": {
+                "wide-raw": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true,
+                    "relation_hops": 2
+                  },
+                  "score": 0.252,
+                  "why": "within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 4,
+            "why": "within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on'",
+            "required_by": [],
+            "text": "**SECOND-HOP-ONLY**"
+          }
+        ],
+        "dropped": []
+      },
+      "prompt": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"near-label\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **REQUIRED-PREMISE-BYTES** [plan theses: [\"wide-raw\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"near-label\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **RAW-ALPHA aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END-ALPHA** [plan theses: [\"wide-raw\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n- **SECOND-HOP-ONLY** [plan theses: [\"wide-raw\"]]  <!-- why: within 2 relation hops of a target/project seed, via 'anchor beta' and 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- near-label: Inspect the first relation\n- wide-raw: Inspect both relations\n",
+      "request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "plan": {
+          "id": "explicit-retrieval-plan",
+          "source_ref": {
+            "kind": "product",
+            "id": "unverified-caller-reference",
+            "version": 999,
+            "note": "Żółć: declaration only"
+          },
+          "theses": [
+            {
+              "id": "near-label",
+              "text": "Inspect the first relation",
+              "relation_hops": 1,
+              "detail_resolution": "label",
+              "require_counter_evidence": false
+            },
+            {
+              "id": "wide-raw",
+              "text": "Inspect both relations",
+              "relation_hops": 2,
+              "detail_resolution": "raw",
+              "require_counter_evidence": false
+            }
+          ]
+        }
+      }
+    }
+  }
+}

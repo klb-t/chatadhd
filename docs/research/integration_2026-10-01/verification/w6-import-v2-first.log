@@ -1,0 +1,4 @@
+{"passed": 54, "total": 59, "binary_sha256": "007c429d8b637a0b1dca3ef263a18c00e254c4a38b92e66e80afee8bfb6a4937", "manifest_sha256": "c45ea8da69422985a99c3c75981756809889cd50b5fd7d7d35fd047d00847337"}
+[{"case": "openai", "check": "member_bytes:conversations.json"}, {"case": "anthropic", "check": "member_bytes:conversations.json"}, {"case": "wrapped", "check": "exact_source_locator:u/~0"}, {"case": "wrapped", "check": "exact_source_locator:a/rejected"}, {"case": "wrapped", "check": "exact_source_locator:a/current~1"}]
+{"passed": 24, "total": 24, "freeze_sha256": "bfef310f2b1985b758c4e8aec261bcd072a9fb59aeaf56761a010e1ea5edd8cb"}
+[]

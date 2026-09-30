@@ -1,0 +1,19 @@
+{
+  "harness_checkout_sha": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+  "native_source_checkout_sha": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+  "native_source_status": "?? docs/research/w6_evidence_2026-09-30/import_fixtures/anthropic.zip\n?? docs/research/w6_evidence_2026-09-30/import_fixtures/openai.zip\n",
+  "server_sha256": "52858ae162f449ae636429d3c2d4dd63e120651d1b17f3ca27939fc7ca556cc3",
+  "library_sha256": "f1c7a45000bee6b6efc73a5ec92cb87d519872d4214dccc85df42dced479db40",
+  "harness_sha256": "2e56efc5ef2cc1f2f896fa5113a4593671cc30cc0cae931d90d7d0fbf4c312aa",
+  "command": [
+    "/workspace/scratch/a371a1ca13b1/verification/native-dev/server/loom-server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "33395",
+    "--data-dir",
+    "/workspace/scratch/a371a1ca13b1/verification/integration-2026-10-01/w6-transport-first/runtime"
+  ],
+  "python_version": "Python 3.12.14",
+  "provenance": "new synthetic fixture; local fake provider; no owner data"
+}

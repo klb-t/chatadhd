@@ -1,0 +1,30 @@
+{
+  "loom_tests": {
+    "bytes": 226850344,
+    "sha256": "b960b0c39895b30b72286fce5874a38378dd5e35a626c0e763a91b1aeced4618"
+  },
+  "loom_compat_tool": {
+    "bytes": 150785720,
+    "sha256": "17a4d9d1ed747af05268a95664adfae3715e5905f902bcf7d10df0f47b347738"
+  },
+  "loom_candidate_graph_native_tool": {
+    "bytes": 7652312,
+    "sha256": "2cdba719f5245d4f4c5827b5a7f207b312630d1bc6e298eb4bffa6c87c127eb7"
+  },
+  "libloom.so.0.1.0": {
+    "bytes": 160604344,
+    "sha256": "0c11f60a09f91c808d104ab428c624258ed2aa81c3fe514d3160d47d027aae23"
+  },
+  "cli/loom": {
+    "bytes": 147269384,
+    "sha256": "c08e869e687a757ba05ca6fd80e51e16d8d3282ba575294e4c5fb34ee0ce52fc"
+  },
+  "server/loom-server": {
+    "bytes": 161797016,
+    "sha256": "3fc10a60b7aa4e5336cf98e38a8b88d175d27b4ce0b351b4a43b823ff3262bd6"
+  },
+  "CMakeCache.txt": {
+    "bytes": 18626,
+    "sha256": "52c7a98e53a9a1ec6275c658fd28b2fc2beaa2381106ad1da4f08e96ec9dea5b"
+  }
+}

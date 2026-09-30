@@ -1,0 +1,248 @@
+[
+  {
+    "path": "/chat/completions",
+    "body": {
+      "model": "w6-local",
+      "messages": [
+        {
+          "role": "system",
+          "content": "W6_SYSTEM_SENTINEL"
+        },
+        {
+          "role": "system",
+          "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+        },
+        {
+          "role": "system",
+          "content": "## Project context\n- **Loom W6 synthetic architecture decided: Decision: use a provider registry. (2026-06-01T00:00:00Z) — among: Decision: use a provider registry.\nLoom W6 synthetic architecture decides Decision: use a provider registry. (2026-06-01) — \"Decision: use a provider registry.\"**  <!-- why: decision recorded for Loom W6 synthetic architecture; one hop from 'Loom W6 synthetic architecture' via 'decides' -->\n\n\n## This goal\n- **Loom W6 synthetic architecture has_requirement Requirement: Loom must preserve original source bytes. — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'has_requirement' -->\n- **Loom W6 synthetic architecture states_principle p_0f4d1ff1112cf03e — \"Requirement: Loom must preserve original source bytes.\"**  <!-- why: one hop from 'Loom W6 synthetic architecture' via 'states_principle' -->\n"
+        },
+        {
+          "role": "user",
+          "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    "body_sha256": "c8ee464c31834aa90e7551d5a8a7955bb3c6f4e84827446fa90b03edccc273f4",
+    "body_bytes_base64": "eyJtb2RlbCI6Inc2LWxvY2FsIiwibWVzc2FnZXMiOlt7InJvbGUiOiJzeXN0ZW0iLCJjb250ZW50IjoiVzZfU1lTVEVNX1NFTlRJTkVMIn0seyJyb2xlIjoic3lzdGVtIiwiY29udGVudCI6IlVzZXIncyBtZW1vcnkvY29udGV4dDpcblc2X01FTU9SWV9TRU5USU5FTDogUHJlc2VydmUgzrwgYW5kIPCfmYIgZXhhY3RseS4ifSx7InJvbGUiOiJzeXN0ZW0iLCJjb250ZW50IjoiIyMgUHJvamVjdCBjb250ZXh0XG4tICoqTG9vbSBXNiBzeW50aGV0aWMgYXJjaGl0ZWN0dXJlIGRlY2lkZWQ6IERlY2lzaW9uOiB1c2UgYSBwcm92aWRlciByZWdpc3RyeS4gKDIwMjYtMDYtMDFUMDA6MDA6MDBaKSDigJQgYW1vbmc6IERlY2lzaW9uOiB1c2UgYSBwcm92aWRlciByZWdpc3RyeS5cbkxvb20gVzYgc3ludGhldGljIGFyY2hpdGVjdHVyZSBkZWNpZGVzIERlY2lzaW9uOiB1c2UgYSBwcm92aWRlciByZWdpc3RyeS4gKDIwMjYtMDYtMDEpIOKAlCBcIkRlY2lzaW9uOiB1c2UgYSBwcm92aWRlciByZWdpc3RyeS5cIioqICA8IS0tIHdoeTogZGVjaXNpb24gcmVjb3JkZWQgZm9yIExvb20gVzYgc3ludGhldGljIGFyY2hpdGVjdHVyZTsgb25lIGhvcCBmcm9tICdMb29tIFc2IHN5bnRoZXRpYyBhcmNoaXRlY3R1cmUnIHZpYSAnZGVjaWRlcycgLS0+XG5cblxuIyMgVGhpcyBnb2FsXG4tICoqTG9vbSBXNiBzeW50aGV0aWMgYXJjaGl0ZWN0dXJlIGhhc19yZXF1aXJlbWVudCBSZXF1aXJlbWVudDogTG9vbSBtdXN0IHByZXNlcnZlIG9yaWdpbmFsIHNvdXJjZSBieXRlcy4g4oCUIFwiUmVxdWlyZW1lbnQ6IExvb20gbXVzdCBwcmVzZXJ2ZSBvcmlnaW5hbCBzb3VyY2UgYnl0ZXMuXCIqKiAgPCEtLSB3aHk6IG9uZSBob3AgZnJvbSAnTG9vbSBXNiBzeW50aGV0aWMgYXJjaGl0ZWN0dXJlJyB2aWEgJ2hhc19yZXF1aXJlbWVudCcgLS0+XG4tICoqTG9vbSBXNiBzeW50aGV0aWMgYXJjaGl0ZWN0dXJlIHN0YXRlc19wcmluY2lwbGUgcF8wZjRkMWZmMTExMmNmMDNlIOKAlCBcIlJlcXVpcmVtZW50OiBMb29tIG11c3QgcHJlc2VydmUgb3JpZ2luYWwgc291cmNlIGJ5dGVzLlwiKiogIDwhLS0gd2h5OiBvbmUgaG9wIGZyb20gJ0xvb20gVzYgc3ludGhldGljIGFyY2hpdGVjdHVyZScgdmlhICdzdGF0ZXNfcHJpbmNpcGxlJyAtLT5cbiJ9LHsicm9sZSI6InVzZXIiLCJjb250ZW50IjoiRXhwbGFpbiBMb29tIHNvdXJjZSBwcmVzZXJ2YXRpb24uIFc2X0ZJUlNUIM68IPCfmYIifV0sInRlbXBlcmF0dXJlIjowLjcsIm1heF90b2tlbnMiOjQwOTYsInN0cmVhbSI6ZmFsc2UsImluY2x1ZGVfcmVhc29uaW5nIjp0cnVlfQ==",
+    "response_status": 200
+  },
+  {
+    "path": "/chat/completions",
+    "body": {
+      "model": "w6-local",
+      "messages": [
+        {
+          "role": "system",
+          "content": "W6_SYSTEM_SENTINEL"
+        },
+        {
+          "role": "system",
+          "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+        },
+        {
+          "role": "user",
+          "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_SECOND"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    "body_sha256": "cd37e2035f0e21e4f0d7ea9fdcf349c45cec2f8c7d0f98c2c8dad3f1c963e5c1",
+    "body_bytes_base64": "eyJtb2RlbCI6Inc2LWxvY2FsIiwibWVzc2FnZXMiOlt7InJvbGUiOiJzeXN0ZW0iLCJjb250ZW50IjoiVzZfU1lTVEVNX1NFTlRJTkVMIn0seyJyb2xlIjoic3lzdGVtIiwiY29udGVudCI6IlVzZXIncyBtZW1vcnkvY29udGV4dDpcblc2X01FTU9SWV9TRU5USU5FTDogUHJlc2VydmUgzrwgYW5kIPCfmYIgZXhhY3RseS4ifSx7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkV4cGxhaW4gTG9vbSBzb3VyY2UgcHJlc2VydmF0aW9uLiBXNl9GSVJTVCDOvCDwn5mCIn0seyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6Ilc2IGZpeGVkIHJlcGx5In0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9TRUNPTkQifV0sInRlbXBlcmF0dXJlIjowLjcsIm1heF90b2tlbnMiOjQwOTYsInN0cmVhbSI6ZmFsc2UsImluY2x1ZGVfcmVhc29uaW5nIjp0cnVlfQ==",
+    "response_status": 200
+  },
+  {
+    "path": "/chat/completions",
+    "body": {
+      "model": "w6-local",
+      "messages": [
+        {
+          "role": "system",
+          "content": "W6_SYSTEM_SENTINEL"
+        },
+        {
+          "role": "user",
+          "content": "W6_ISOLATED"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    "body_sha256": "b0461fb6ebf1dfcfb558b0cebb74733fcfa7506a468a37f43e97dc1bd455127b",
+    "body_bytes_base64": "eyJtb2RlbCI6Inc2LWxvY2FsIiwibWVzc2FnZXMiOlt7InJvbGUiOiJzeXN0ZW0iLCJjb250ZW50IjoiVzZfU1lTVEVNX1NFTlRJTkVMIn0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9JU09MQVRFRCJ9XSwidGVtcGVyYXR1cmUiOjAuNywibWF4X3Rva2VucyI6NDA5Niwic3RyZWFtIjpmYWxzZSwiaW5jbHVkZV9yZWFzb25pbmciOnRydWV9",
+    "response_status": 200
+  },
+  {
+    "path": "/chat/completions",
+    "body": {
+      "model": "w6-local",
+      "messages": [
+        {
+          "role": "system",
+          "content": "W6_SYSTEM_SENTINEL"
+        },
+        {
+          "role": "system",
+          "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+        },
+        {
+          "role": "user",
+          "content": "W6_NO_TRACE"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    "body_sha256": "353a80bc7a7fb5c4aaa8422e479bfd002f9e6f758f144885e03f0c4670723d84",
+    "body_bytes_base64": "eyJtb2RlbCI6Inc2LWxvY2FsIiwibWVzc2FnZXMiOlt7InJvbGUiOiJzeXN0ZW0iLCJjb250ZW50IjoiVzZfU1lTVEVNX1NFTlRJTkVMIn0seyJyb2xlIjoic3lzdGVtIiwiY29udGVudCI6IlVzZXIncyBtZW1vcnkvY29udGV4dDpcblc2X01FTU9SWV9TRU5USU5FTDogUHJlc2VydmUgzrwgYW5kIPCfmYIgZXhhY3RseS4ifSx7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6Ilc2X05PX1RSQUNFIn1dLCJ0ZW1wZXJhdHVyZSI6MC43LCJtYXhfdG9rZW5zIjo0MDk2LCJzdHJlYW0iOmZhbHNlLCJpbmNsdWRlX3JlYXNvbmluZyI6dHJ1ZX0=",
+    "response_status": 200
+  },
+  {
+    "path": "/chat/completions",
+    "body": {
+      "model": "w6-local",
+      "messages": [
+        {
+          "role": "system",
+          "content": "W6_SYSTEM_SENTINEL"
+        },
+        {
+          "role": "system",
+          "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+        },
+        {
+          "role": "user",
+          "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_SECOND"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_ISOLATED"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_NO_TRACE"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_FAIL_HTTP"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    "body_sha256": "8ad35884c5c3581730cf1fed4482c0c8fd75ed688df4ee6fd622387c0687026f",
+    "body_bytes_base64": "eyJtb2RlbCI6Inc2LWxvY2FsIiwibWVzc2FnZXMiOlt7InJvbGUiOiJzeXN0ZW0iLCJjb250ZW50IjoiVzZfU1lTVEVNX1NFTlRJTkVMIn0seyJyb2xlIjoic3lzdGVtIiwiY29udGVudCI6IlVzZXIncyBtZW1vcnkvY29udGV4dDpcblc2X01FTU9SWV9TRU5USU5FTDogUHJlc2VydmUgzrwgYW5kIPCfmYIgZXhhY3RseS4ifSx7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkV4cGxhaW4gTG9vbSBzb3VyY2UgcHJlc2VydmF0aW9uLiBXNl9GSVJTVCDOvCDwn5mCIn0seyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6Ilc2IGZpeGVkIHJlcGx5In0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9TRUNPTkQifSx7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiVzYgZml4ZWQgcmVwbHkifSx7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6Ilc2X0lTT0xBVEVEIn0seyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6Ilc2IGZpeGVkIHJlcGx5In0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9OT19UUkFDRSJ9LHsicm9sZSI6ImFzc2lzdGFudCIsImNvbnRlbnQiOiJXNiBmaXhlZCByZXBseSJ9LHsicm9sZSI6InVzZXIiLCJjb250ZW50IjoiVzZfRkFJTF9IVFRQIn1dLCJ0ZW1wZXJhdHVyZSI6MC43LCJtYXhfdG9rZW5zIjo0MDk2LCJzdHJlYW0iOmZhbHNlLCJpbmNsdWRlX3JlYXNvbmluZyI6dHJ1ZX0=",
+    "response_status": 500
+  },
+  {
+    "path": "/chat/completions",
+    "body": {
+      "model": "w6-local",
+      "messages": [
+        {
+          "role": "system",
+          "content": "W6_SYSTEM_SENTINEL"
+        },
+        {
+          "role": "system",
+          "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+        },
+        {
+          "role": "user",
+          "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_SECOND"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_ISOLATED"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_NO_TRACE"
+        },
+        {
+          "role": "assistant",
+          "content": "W6 fixed reply"
+        },
+        {
+          "role": "user",
+          "content": "W6_FAIL_HTTP"
+        },
+        {
+          "role": "user",
+          "content": "W6_FAIL_AUTH"
+        },
+        {
+          "role": "user",
+          "content": "W6_FAIL_RUN"
+        },
+        {
+          "role": "user",
+          "content": "W6_STREAM"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    "body_sha256": "1cd558e7542b01c5db57452b1b8d62795bf586393bf98aa040931a526cbc8030",
+    "body_bytes_base64": "eyJtb2RlbCI6Inc2LWxvY2FsIiwibWVzc2FnZXMiOlt7InJvbGUiOiJzeXN0ZW0iLCJjb250ZW50IjoiVzZfU1lTVEVNX1NFTlRJTkVMIn0seyJyb2xlIjoic3lzdGVtIiwiY29udGVudCI6IlVzZXIncyBtZW1vcnkvY29udGV4dDpcblc2X01FTU9SWV9TRU5USU5FTDogUHJlc2VydmUgzrwgYW5kIPCfmYIgZXhhY3RseS4ifSx7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkV4cGxhaW4gTG9vbSBzb3VyY2UgcHJlc2VydmF0aW9uLiBXNl9GSVJTVCDOvCDwn5mCIn0seyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6Ilc2IGZpeGVkIHJlcGx5In0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9TRUNPTkQifSx7InJvbGUiOiJhc3Npc3RhbnQiLCJjb250ZW50IjoiVzYgZml4ZWQgcmVwbHkifSx7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6Ilc2X0lTT0xBVEVEIn0seyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6Ilc2IGZpeGVkIHJlcGx5In0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9OT19UUkFDRSJ9LHsicm9sZSI6ImFzc2lzdGFudCIsImNvbnRlbnQiOiJXNiBmaXhlZCByZXBseSJ9LHsicm9sZSI6InVzZXIiLCJjb250ZW50IjoiVzZfRkFJTF9IVFRQIn0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9GQUlMX0FVVEgifSx7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6Ilc2X0ZBSUxfUlVOIn0seyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJXNl9TVFJFQU0ifV0sInRlbXBlcmF0dXJlIjowLjcsIm1heF90b2tlbnMiOjQwOTYsInN0cmVhbSI6dHJ1ZSwiaW5jbHVkZV9yZWFzb25pbmciOnRydWV9",
+    "response_status": 200
+  }
+]

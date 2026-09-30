@@ -1,0 +1,1526 @@
+{
+  "schema": "loom.chat_retrieval_adapter_evidence/1",
+  "provenance": "synthetic_scripted_transport",
+  "request_body_raw": "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"System instruction.\"},{\"role\":\"system\",\"content\":\"## This goal\\n- **remote endpoint depends_on remote premise** [plan theses: [\\\"missing-capability\\\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\\n- **remote counter depends_on remote endpoint** [plan theses: [\\\"missing-capability\\\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\\n- **anchor alpha depends_on anchor beta** [plan theses: [\\\"missing-capability\\\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\\n\\n## Retrieval plan coverage\\nCandidate coverage is structural; it does not establish support or truth.\\n- missing-capability: Explicit remote instrument request\\n  [INCOMPLETE: [{\\\"reason\\\":\\\"candidate_channel_unavailable\\\",\\\"channel\\\":\\\"embedding:not-installed\\\",\\\"detail\\\":\\\"candidate instrument is not installed\\\"}]]\\n\"},{\"role\":\"user\",\"content\":\"CURRENT-TURN\"}],\"temperature\":0.7,\"max_tokens\":4096,\"stream\":false,\"include_reasoning\":true}",
+  "request_body": {
+    "model": "test/model",
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"missing-capability\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **remote counter depends_on remote endpoint** [plan theses: [\"missing-capability\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"missing-capability\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- missing-capability: Explicit remote instrument request\n  [INCOMPLETE: [{\"reason\":\"candidate_channel_unavailable\",\"channel\":\"embedding:not-installed\",\"detail\":\"candidate instrument is not installed\"}]]\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "temperature": 0.7,
+    "max_tokens": 4096,
+    "stream": false,
+    "include_reasoning": true
+  },
+  "context_trace": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"missing-capability\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **remote counter depends_on remote endpoint** [plan theses: [\"missing-capability\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"missing-capability\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- missing-capability: Explicit remote instrument request\n  [INCOMPLETE: [{\"reason\":\"candidate_channel_unavailable\",\"channel\":\"embedding:not-installed\",\"detail\":\"candidate instrument is not installed\"}]]\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "messages_sha256": "c00f845f6d890bf6e1bd7e190ea273cfbacbca732ff61fbc3212c986956e2aee",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "CURRENT-TURN",
+      "targets": [
+        "e_e9504e924feefbfa"
+      ],
+      "project": "",
+      "budget_tokens": 100000,
+      "goal_type": "answer_question",
+      "run": "kr_0eadc529983397d0",
+      "lang": "en",
+      "plan": {
+        "id": "explicit-retrieval-plan",
+        "source_ref": {
+          "kind": "product",
+          "id": "unverified-caller-reference",
+          "version": 999,
+          "note": "Żółć: declaration only"
+        },
+        "theses": [
+          {
+            "id": "missing-capability",
+            "text": "Explicit remote instrument request"
+          }
+        ]
+      },
+      "candidate_channels": [
+        {
+          "id": "embedding:not-installed",
+          "limit": 50,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_c2c4cae3493e38bf",
+        "type": "answer_question",
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "confidence": 1.0,
+        "params": {
+          "confidence_basis": "explicit_owner_type",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "forced",
+          "plan_trace": {
+            "schema": "loom.context_plan_trace/1",
+            "plan": {
+              "id": "explicit-retrieval-plan",
+              "source_ref": {
+                "kind": "product",
+                "id": "unverified-caller-reference",
+                "version": 999,
+                "note": "Żółć: declaration only"
+              },
+              "theses": [
+                {
+                  "id": "missing-capability",
+                  "text": "Explicit remote instrument request"
+                }
+              ]
+            },
+            "run": "kr_0eadc529983397d0",
+            "budget_policy": "weighted_plan_order_unused_forward",
+            "theses": [
+              {
+                "id": "missing-capability",
+                "text": "Explicit remote instrument request",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [],
+                "relation_hops": 1,
+                "detail_resolution": null,
+                "require_counter_evidence": true,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 100000,
+                "carried_budget_tokens": 0,
+                "allocated_budget_tokens": 100000,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "label"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_4fa49ab3c07237d8",
+                    "resolution": "label"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "label"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": true
+                  },
+                  "candidate_retrieval": {
+                    "run": "kr_0eadc529983397d0",
+                    "scan_limit": 10000,
+                    "channels": [
+                      {
+                        "method": "embedding:not-installed",
+                        "status": "unavailable",
+                        "reason": "candidate instrument is not installed",
+                        "corpus_count": 5,
+                        "scored_count": 0,
+                        "unrepresentable_count": 0,
+                        "unrepresentable_refs": [],
+                        "zero_score_count": 0,
+                        "eligible_count": 0,
+                        "truncated": false,
+                        "scores": [],
+                        "hits": [],
+                        "id": "embedding:not-installed",
+                        "request": {
+                          "id": "embedding:not-installed",
+                          "limit": 50,
+                          "min_score": 0.0
+                        },
+                        "invalid_hits": [],
+                        "accepted_hits": []
+                      }
+                    ],
+                    "corpus_status": "ok",
+                    "possibly_truncated": false,
+                    "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                    "scanned_claims": 5,
+                    "admitted_claims": 5,
+                    "filtered_claims": 0,
+                    "entity_label_query_errors": 0
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "outgoing",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "incoming",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 2,
+                    "unique_candidates": 2,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        15000,
+                        35000,
+                        50000
+                      ],
+                      "total_tokens": 100000,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        100000
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        31
+                      ],
+                      "used_tokens": 31
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 31,
+                "counter_evidence": {
+                  "status": "linked_records_only",
+                  "entries": [
+                    {
+                      "for_claim": "cl_3732d98ad18c925a",
+                      "claims": [
+                        {
+                          "ref": "cl_4fa49ab3c07237d8",
+                          "status": "selected"
+                        }
+                      ],
+                      "observations": [],
+                      "gaps": []
+                    }
+                  ],
+                  "scope": "one_recorded_counter_link_from_direct_candidates",
+                  "semantic_contradiction_search": "not_performed",
+                  "recorded_links_complete": true
+                },
+                "direct_material_candidates": 1,
+                "added_tokens_after_deduplication": 31,
+                "unused_budget_tokens_forwarded": 99969,
+                "gaps": [
+                  {
+                    "reason": "candidate_channel_unavailable",
+                    "channel": "embedding:not-installed",
+                    "detail": "candidate instrument is not installed"
+                  }
+                ]
+              }
+            ],
+            "limitations": [
+              "structural_retrieval_is_not_a_semantic_support_verdict",
+              "counter_coverage_is_limited_to_recorded_assessment_links",
+              "item_estimates_exclude_prompt_headers_and_trace_metadata",
+              "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+            ]
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_04224cc2b587b55f",
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "plan_trace": {
+              "schema": "loom.context_plan_trace/1",
+              "plan": {
+                "id": "explicit-retrieval-plan",
+                "source_ref": {
+                  "kind": "product",
+                  "id": "unverified-caller-reference",
+                  "version": 999,
+                  "note": "Żółć: declaration only"
+                },
+                "theses": [
+                  {
+                    "id": "missing-capability",
+                    "text": "Explicit remote instrument request"
+                  }
+                ]
+              },
+              "run": "kr_0eadc529983397d0",
+              "budget_policy": "weighted_plan_order_unused_forward",
+              "theses": [
+                {
+                  "id": "missing-capability",
+                  "text": "Explicit remote instrument request",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [],
+                  "relation_hops": 1,
+                  "detail_resolution": null,
+                  "require_counter_evidence": true,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 100000,
+                  "carried_budget_tokens": 0,
+                  "allocated_budget_tokens": 100000,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "label"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_4fa49ab3c07237d8",
+                      "resolution": "label"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "label"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "counter_evidence": {
+                      "status": "linked_records_only",
+                      "entries": [
+                        {
+                          "for_claim": "cl_3732d98ad18c925a",
+                          "claims": [
+                            {
+                              "ref": "cl_4fa49ab3c07237d8",
+                              "status": "selected"
+                            }
+                          ],
+                          "observations": [],
+                          "gaps": []
+                        }
+                      ],
+                      "scope": "one_recorded_counter_link_from_direct_candidates",
+                      "semantic_contradiction_search": "not_performed",
+                      "recorded_links_complete": true
+                    },
+                    "candidate_retrieval": {
+                      "run": "kr_0eadc529983397d0",
+                      "scan_limit": 10000,
+                      "channels": [
+                        {
+                          "method": "embedding:not-installed",
+                          "status": "unavailable",
+                          "reason": "candidate instrument is not installed",
+                          "corpus_count": 5,
+                          "scored_count": 0,
+                          "unrepresentable_count": 0,
+                          "unrepresentable_refs": [],
+                          "zero_score_count": 0,
+                          "eligible_count": 0,
+                          "truncated": false,
+                          "scores": [],
+                          "hits": [],
+                          "id": "embedding:not-installed",
+                          "request": {
+                            "id": "embedding:not-installed",
+                            "limit": 50,
+                            "min_score": 0.0
+                          },
+                          "invalid_hits": [],
+                          "accepted_hits": []
+                        }
+                      ],
+                      "corpus_status": "ok",
+                      "possibly_truncated": false,
+                      "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                      "scanned_claims": 5,
+                      "admitted_claims": 5,
+                      "filtered_claims": 0,
+                      "entity_label_query_errors": 0
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "outgoing",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "incoming",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 2,
+                      "unique_candidates": 2,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          15000,
+                          35000,
+                          50000
+                        ],
+                        "total_tokens": 100000,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          100000
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          31
+                        ],
+                        "used_tokens": 31
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 31,
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": true
+                  },
+                  "direct_material_candidates": 1,
+                  "added_tokens_after_deduplication": 31,
+                  "unused_budget_tokens_forwarded": 99969,
+                  "gaps": [
+                    {
+                      "reason": "candidate_channel_unavailable",
+                      "channel": "embedding:not-installed",
+                      "detail": "candidate instrument is not installed"
+                    }
+                  ]
+                }
+              ],
+              "limitations": [
+                "structural_retrieval_is_not_a_semantic_support_verdict",
+                "counter_coverage_is_limited_to_recorded_assessment_links",
+                "item_estimates_exclude_prompt_headers_and_trace_metadata",
+                "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+              ]
+            }
+          }
+        },
+        "budget_tokens": 100000,
+        "used_tokens": 31,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "missing-capability"
+              ],
+              "thesis_selection": {
+                "missing-capability": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 11,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**remote endpoint depends_on remote premise**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_4fa49ab3c07237d8",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.369,
+            "factors": {
+              "relevance": 0.5125,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "counter_for": [
+                "cl_3732d98ad18c925a"
+              ],
+              "thesis_ids": [
+                "missing-capability"
+              ],
+              "thesis_selection": {
+                "missing-capability": {
+                  "factors": {
+                    "relevance": 0.5125,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "counter_for": [
+                      "cl_3732d98ad18c925a"
+                    ]
+                  },
+                  "score": 0.369,
+                  "why": "explicit claim or candidate instrument; recorded counter-evidence",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 11,
+            "why": "explicit claim or candidate instrument; recorded counter-evidence",
+            "required_by": [],
+            "text": "**remote counter depends_on remote endpoint**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "thesis_ids": [
+                "missing-capability"
+              ],
+              "thesis_selection": {
+                "missing-capability": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true
+                  },
+                  "score": 0.252,
+                  "why": "one hop from 'anchor alpha' via 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 9,
+            "why": "one hop from 'anchor alpha' via 'depends_on'",
+            "required_by": [],
+            "text": "**anchor alpha depends_on anchor beta**"
+          }
+        ],
+        "dropped": []
+      },
+      "prompt": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"missing-capability\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **remote counter depends_on remote endpoint** [plan theses: [\"missing-capability\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"missing-capability\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- missing-capability: Explicit remote instrument request\n  [INCOMPLETE: [{\"reason\":\"candidate_channel_unavailable\",\"channel\":\"embedding:not-installed\",\"detail\":\"candidate instrument is not installed\"}]]\n",
+      "request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "plan": {
+          "id": "explicit-retrieval-plan",
+          "source_ref": {
+            "kind": "product",
+            "id": "unverified-caller-reference",
+            "version": 999,
+            "note": "Żółć: declaration only"
+          },
+          "theses": [
+            {
+              "id": "missing-capability",
+              "text": "Explicit remote instrument request"
+            }
+          ]
+        },
+        "candidate_channels": [
+          {
+            "id": "embedding:not-installed",
+            "limit": 50,
+            "min_score": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "stored_context_trace": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "System instruction."
+      },
+      {
+        "role": "system",
+        "content": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"missing-capability\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **remote counter depends_on remote endpoint** [plan theses: [\"missing-capability\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"missing-capability\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- missing-capability: Explicit remote instrument request\n  [INCOMPLETE: [{\"reason\":\"candidate_channel_unavailable\",\"channel\":\"embedding:not-installed\",\"detail\":\"candidate instrument is not installed\"}]]\n"
+      },
+      {
+        "role": "user",
+        "content": "CURRENT-TURN"
+      }
+    ],
+    "messages_sha256": "c00f845f6d890bf6e1bd7e190ea273cfbacbca732ff61fbc3212c986956e2aee",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "CURRENT-TURN",
+      "targets": [
+        "e_e9504e924feefbfa"
+      ],
+      "project": "",
+      "budget_tokens": 100000,
+      "goal_type": "answer_question",
+      "run": "kr_0eadc529983397d0",
+      "lang": "en",
+      "plan": {
+        "id": "explicit-retrieval-plan",
+        "source_ref": {
+          "kind": "product",
+          "id": "unverified-caller-reference",
+          "version": 999,
+          "note": "Żółć: declaration only"
+        },
+        "theses": [
+          {
+            "id": "missing-capability",
+            "text": "Explicit remote instrument request"
+          }
+        ]
+      },
+      "candidate_channels": [
+        {
+          "id": "embedding:not-installed",
+          "limit": 50,
+          "min_score": 0.0
+        }
+      ]
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_c2c4cae3493e38bf",
+        "type": "answer_question",
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "confidence": 1.0,
+        "params": {
+          "confidence_basis": "explicit_owner_type",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "forced",
+          "plan_trace": {
+            "schema": "loom.context_plan_trace/1",
+            "plan": {
+              "id": "explicit-retrieval-plan",
+              "source_ref": {
+                "kind": "product",
+                "id": "unverified-caller-reference",
+                "version": 999,
+                "note": "Żółć: declaration only"
+              },
+              "theses": [
+                {
+                  "id": "missing-capability",
+                  "text": "Explicit remote instrument request"
+                }
+              ]
+            },
+            "run": "kr_0eadc529983397d0",
+            "budget_policy": "weighted_plan_order_unused_forward",
+            "theses": [
+              {
+                "id": "missing-capability",
+                "text": "Explicit remote instrument request",
+                "targets": [
+                  "e_e9504e924feefbfa"
+                ],
+                "claims": [],
+                "relation_hops": 1,
+                "detail_resolution": null,
+                "require_counter_evidence": true,
+                "budget_weight": 1.0,
+                "base_budget_tokens": 100000,
+                "carried_budget_tokens": 0,
+                "allocated_budget_tokens": 100000,
+                "selected_refs": [
+                  {
+                    "kind": "claim",
+                    "id": "cl_34faf564507ab5be",
+                    "resolution": "label"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_4fa49ab3c07237d8",
+                    "resolution": "label"
+                  },
+                  {
+                    "kind": "claim",
+                    "id": "cl_3732d98ad18c925a",
+                    "resolution": "label"
+                  }
+                ],
+                "dropped": [],
+                "selection_params": {
+                  "confidence_basis": "explicit_owner_type",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "forced",
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": true
+                  },
+                  "candidate_retrieval": {
+                    "run": "kr_0eadc529983397d0",
+                    "scan_limit": 10000,
+                    "channels": [
+                      {
+                        "method": "embedding:not-installed",
+                        "status": "unavailable",
+                        "reason": "candidate instrument is not installed",
+                        "corpus_count": 5,
+                        "scored_count": 0,
+                        "unrepresentable_count": 0,
+                        "unrepresentable_refs": [],
+                        "zero_score_count": 0,
+                        "eligible_count": 0,
+                        "truncated": false,
+                        "scores": [],
+                        "hits": [],
+                        "id": "embedding:not-installed",
+                        "request": {
+                          "id": "embedding:not-installed",
+                          "limit": 50,
+                          "min_score": 0.0
+                        },
+                        "invalid_hits": [],
+                        "accepted_hits": []
+                      }
+                    ],
+                    "corpus_status": "ok",
+                    "possibly_truncated": false,
+                    "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                    "scanned_claims": 5,
+                    "admitted_claims": 5,
+                    "filtered_claims": 0,
+                    "entity_label_query_errors": 0
+                  },
+                  "retrieval_diagnostics": {
+                    "status": "bounded",
+                    "exhaustive": false,
+                    "queries": [
+                      {
+                        "operation": "principles",
+                        "selector": {},
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_instances",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "project_decisions",
+                        "selector": {
+                          "project": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "status_history",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa"
+                        },
+                        "limit": 1000000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "outgoing",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 1,
+                        "status": "below_cap"
+                      },
+                      {
+                        "operation": "graph",
+                        "selector": {
+                          "entity": "e_e9504e924feefbfa",
+                          "direction": "incoming",
+                          "hop": 1
+                        },
+                        "limit": 10000,
+                        "returned": 0,
+                        "status": "below_cap"
+                      }
+                    ],
+                    "lookup_issues": [],
+                    "excluded": [],
+                    "missing_premises": [],
+                    "query_errors": 0,
+                    "cap_hits": 0,
+                    "gathered_candidates": 2,
+                    "unique_candidates": 2,
+                    "duplicate_candidates_merged": 0,
+                    "budget": {
+                      "metric": "rendered_item_codepoints_div_4",
+                      "includes_prompt_overhead": false,
+                      "initial_band_tokens": [
+                        15000,
+                        35000,
+                        50000
+                      ],
+                      "total_tokens": 100000,
+                      "final_band_tokens": [
+                        0,
+                        0,
+                        100000
+                      ],
+                      "used_band_tokens": [
+                        0,
+                        0,
+                        31
+                      ],
+                      "used_tokens": 31
+                    },
+                    "recovered_budget_drops": []
+                  }
+                },
+                "selection_status": "evaluated",
+                "selected_tokens_before_deduplication": 31,
+                "counter_evidence": {
+                  "status": "linked_records_only",
+                  "entries": [
+                    {
+                      "for_claim": "cl_3732d98ad18c925a",
+                      "claims": [
+                        {
+                          "ref": "cl_4fa49ab3c07237d8",
+                          "status": "selected"
+                        }
+                      ],
+                      "observations": [],
+                      "gaps": []
+                    }
+                  ],
+                  "scope": "one_recorded_counter_link_from_direct_candidates",
+                  "semantic_contradiction_search": "not_performed",
+                  "recorded_links_complete": true
+                },
+                "direct_material_candidates": 1,
+                "added_tokens_after_deduplication": 31,
+                "unused_budget_tokens_forwarded": 99969,
+                "gaps": [
+                  {
+                    "reason": "candidate_channel_unavailable",
+                    "channel": "embedding:not-installed",
+                    "detail": "candidate instrument is not installed"
+                  }
+                ]
+              }
+            ],
+            "limitations": [
+              "structural_retrieval_is_not_a_semantic_support_verdict",
+              "counter_coverage_is_limited_to_recorded_assessment_links",
+              "item_estimates_exclude_prompt_headers_and_trace_metadata",
+              "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+            ]
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_04224cc2b587b55f",
+        "goal": {
+          "id": "g_c2c4cae3493e38bf",
+          "type": "answer_question",
+          "text": "CURRENT-TURN",
+          "targets": [
+            "e_e9504e924feefbfa"
+          ],
+          "project": "",
+          "confidence": 1.0,
+          "params": {
+            "confidence_basis": "explicit_owner_type",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "forced",
+            "plan_trace": {
+              "schema": "loom.context_plan_trace/1",
+              "plan": {
+                "id": "explicit-retrieval-plan",
+                "source_ref": {
+                  "kind": "product",
+                  "id": "unverified-caller-reference",
+                  "version": 999,
+                  "note": "Żółć: declaration only"
+                },
+                "theses": [
+                  {
+                    "id": "missing-capability",
+                    "text": "Explicit remote instrument request"
+                  }
+                ]
+              },
+              "run": "kr_0eadc529983397d0",
+              "budget_policy": "weighted_plan_order_unused_forward",
+              "theses": [
+                {
+                  "id": "missing-capability",
+                  "text": "Explicit remote instrument request",
+                  "targets": [
+                    "e_e9504e924feefbfa"
+                  ],
+                  "claims": [],
+                  "relation_hops": 1,
+                  "detail_resolution": null,
+                  "require_counter_evidence": true,
+                  "budget_weight": 1.0,
+                  "base_budget_tokens": 100000,
+                  "carried_budget_tokens": 0,
+                  "allocated_budget_tokens": 100000,
+                  "selected_refs": [
+                    {
+                      "kind": "claim",
+                      "id": "cl_34faf564507ab5be",
+                      "resolution": "label"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_4fa49ab3c07237d8",
+                      "resolution": "label"
+                    },
+                    {
+                      "kind": "claim",
+                      "id": "cl_3732d98ad18c925a",
+                      "resolution": "label"
+                    }
+                  ],
+                  "dropped": [],
+                  "selection_params": {
+                    "confidence_basis": "explicit_owner_type",
+                    "calibration_status": "unavailable",
+                    "external_goal_typing": {
+                      "status": "offline",
+                      "requests": 0
+                    },
+                    "classifier": "forced",
+                    "counter_evidence": {
+                      "status": "linked_records_only",
+                      "entries": [
+                        {
+                          "for_claim": "cl_3732d98ad18c925a",
+                          "claims": [
+                            {
+                              "ref": "cl_4fa49ab3c07237d8",
+                              "status": "selected"
+                            }
+                          ],
+                          "observations": [],
+                          "gaps": []
+                        }
+                      ],
+                      "scope": "one_recorded_counter_link_from_direct_candidates",
+                      "semantic_contradiction_search": "not_performed",
+                      "recorded_links_complete": true
+                    },
+                    "candidate_retrieval": {
+                      "run": "kr_0eadc529983397d0",
+                      "scan_limit": 10000,
+                      "channels": [
+                        {
+                          "method": "embedding:not-installed",
+                          "status": "unavailable",
+                          "reason": "candidate instrument is not installed",
+                          "corpus_count": 5,
+                          "scored_count": 0,
+                          "unrepresentable_count": 0,
+                          "unrepresentable_refs": [],
+                          "zero_score_count": 0,
+                          "eligible_count": 0,
+                          "truncated": false,
+                          "scores": [],
+                          "hits": [],
+                          "id": "embedding:not-installed",
+                          "request": {
+                            "id": "embedding:not-installed",
+                            "limit": 50,
+                            "min_score": 0.0
+                          },
+                          "invalid_hits": [],
+                          "accepted_hits": []
+                        }
+                      ],
+                      "corpus_status": "ok",
+                      "possibly_truncated": false,
+                      "evidence_boundary": "candidate_similarity_is_not_support_truth_or_identity",
+                      "scanned_claims": 5,
+                      "admitted_claims": 5,
+                      "filtered_claims": 0,
+                      "entity_label_query_errors": 0
+                    },
+                    "retrieval_diagnostics": {
+                      "status": "bounded",
+                      "exhaustive": false,
+                      "queries": [
+                        {
+                          "operation": "principles",
+                          "selector": {},
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_instances",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "project_decisions",
+                          "selector": {
+                            "project": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "status_history",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa"
+                          },
+                          "limit": 1000000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "outgoing",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 1,
+                          "status": "below_cap"
+                        },
+                        {
+                          "operation": "graph",
+                          "selector": {
+                            "entity": "e_e9504e924feefbfa",
+                            "direction": "incoming",
+                            "hop": 1
+                          },
+                          "limit": 10000,
+                          "returned": 0,
+                          "status": "below_cap"
+                        }
+                      ],
+                      "lookup_issues": [],
+                      "excluded": [],
+                      "missing_premises": [],
+                      "query_errors": 0,
+                      "cap_hits": 0,
+                      "gathered_candidates": 2,
+                      "unique_candidates": 2,
+                      "duplicate_candidates_merged": 0,
+                      "budget": {
+                        "metric": "rendered_item_codepoints_div_4",
+                        "includes_prompt_overhead": false,
+                        "initial_band_tokens": [
+                          15000,
+                          35000,
+                          50000
+                        ],
+                        "total_tokens": 100000,
+                        "final_band_tokens": [
+                          0,
+                          0,
+                          100000
+                        ],
+                        "used_band_tokens": [
+                          0,
+                          0,
+                          31
+                        ],
+                        "used_tokens": 31
+                      },
+                      "recovered_budget_drops": []
+                    }
+                  },
+                  "selection_status": "evaluated",
+                  "selected_tokens_before_deduplication": 31,
+                  "counter_evidence": {
+                    "status": "linked_records_only",
+                    "entries": [
+                      {
+                        "for_claim": "cl_3732d98ad18c925a",
+                        "claims": [
+                          {
+                            "ref": "cl_4fa49ab3c07237d8",
+                            "status": "selected"
+                          }
+                        ],
+                        "observations": [],
+                        "gaps": []
+                      }
+                    ],
+                    "scope": "one_recorded_counter_link_from_direct_candidates",
+                    "semantic_contradiction_search": "not_performed",
+                    "recorded_links_complete": true
+                  },
+                  "direct_material_candidates": 1,
+                  "added_tokens_after_deduplication": 31,
+                  "unused_budget_tokens_forwarded": 99969,
+                  "gaps": [
+                    {
+                      "reason": "candidate_channel_unavailable",
+                      "channel": "embedding:not-installed",
+                      "detail": "candidate instrument is not installed"
+                    }
+                  ]
+                }
+              ],
+              "limitations": [
+                "structural_retrieval_is_not_a_semantic_support_verdict",
+                "counter_coverage_is_limited_to_recorded_assessment_links",
+                "item_estimates_exclude_prompt_headers_and_trace_metadata",
+                "unused_budget_is_forwarded_only_not_retried_for_earlier_theses"
+              ]
+            }
+          }
+        },
+        "budget_tokens": 100000,
+        "used_tokens": 31,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [
+          {
+            "ref_kind": "claim",
+            "ref": "cl_34faf564507ab5be",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.7200000000000001,
+            "factors": {
+              "relevance": 1.0,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "thesis_ids": [
+                "missing-capability"
+              ],
+              "thesis_selection": {
+                "missing-capability": {
+                  "factors": {
+                    "relevance": 1.0,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9
+                  },
+                  "score": 0.7200000000000001,
+                  "why": "required premise of cl_3732d98ad18c925a",
+                  "required_by": [
+                    "cl_3732d98ad18c925a"
+                  ],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 11,
+            "why": "required premise of cl_3732d98ad18c925a",
+            "required_by": [
+              "cl_3732d98ad18c925a"
+            ],
+            "text": "**remote endpoint depends_on remote premise**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_4fa49ab3c07237d8",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.369,
+            "factors": {
+              "relevance": 0.5125,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "counter_for": [
+                "cl_3732d98ad18c925a"
+              ],
+              "thesis_ids": [
+                "missing-capability"
+              ],
+              "thesis_selection": {
+                "missing-capability": {
+                  "factors": {
+                    "relevance": 0.5125,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "counter_for": [
+                      "cl_3732d98ad18c925a"
+                    ]
+                  },
+                  "score": 0.369,
+                  "why": "explicit claim or candidate instrument; recorded counter-evidence",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 11,
+            "why": "explicit claim or candidate instrument; recorded counter-evidence",
+            "required_by": [],
+            "text": "**remote counter depends_on remote endpoint**"
+          },
+          {
+            "ref_kind": "claim",
+            "ref": "cl_3732d98ad18c925a",
+            "band": "goal",
+            "resolution": "label",
+            "score": 0.252,
+            "factors": {
+              "relevance": 0.35,
+              "authority": 0.8,
+              "freshness": 1.0,
+              "confidence": 0.9,
+              "direct_goal_candidate": true,
+              "thesis_ids": [
+                "missing-capability"
+              ],
+              "thesis_selection": {
+                "missing-capability": {
+                  "factors": {
+                    "relevance": 0.35,
+                    "authority": 0.8,
+                    "freshness": 1.0,
+                    "confidence": 0.9,
+                    "direct_goal_candidate": true
+                  },
+                  "score": 0.252,
+                  "why": "one hop from 'anchor alpha' via 'depends_on'",
+                  "required_by": [],
+                  "missing_premises": []
+                }
+              }
+            },
+            "tokens": 9,
+            "why": "one hop from 'anchor alpha' via 'depends_on'",
+            "required_by": [],
+            "text": "**anchor alpha depends_on anchor beta**"
+          }
+        ],
+        "dropped": []
+      },
+      "prompt": "## This goal\n- **remote endpoint depends_on remote premise** [plan theses: [\"missing-capability\"]]  <!-- why: required premise of cl_3732d98ad18c925a -->\n- **remote counter depends_on remote endpoint** [plan theses: [\"missing-capability\"]]  <!-- why: explicit claim or candidate instrument; recorded counter-evidence -->\n- **anchor alpha depends_on anchor beta** [plan theses: [\"missing-capability\"]]  <!-- why: one hop from 'anchor alpha' via 'depends_on' -->\n\n## Retrieval plan coverage\nCandidate coverage is structural; it does not establish support or truth.\n- missing-capability: Explicit remote instrument request\n  [INCOMPLETE: [{\"reason\":\"candidate_channel_unavailable\",\"channel\":\"embedding:not-installed\",\"detail\":\"candidate instrument is not installed\"}]]\n",
+      "request": {
+        "text": "CURRENT-TURN",
+        "targets": [
+          "e_e9504e924feefbfa"
+        ],
+        "project": "",
+        "budget_tokens": 100000,
+        "goal_type": "answer_question",
+        "run": "kr_0eadc529983397d0",
+        "lang": "en",
+        "plan": {
+          "id": "explicit-retrieval-plan",
+          "source_ref": {
+            "kind": "product",
+            "id": "unverified-caller-reference",
+            "version": 999,
+            "note": "Żółć: declaration only"
+          },
+          "theses": [
+            {
+              "id": "missing-capability",
+              "text": "Explicit remote instrument request"
+            }
+          ]
+        },
+        "candidate_channels": [
+          {
+            "id": "embedding:not-installed",
+            "limit": 50,
+            "min_score": 0.0
+          }
+        ]
+      }
+    }
+  }
+}
