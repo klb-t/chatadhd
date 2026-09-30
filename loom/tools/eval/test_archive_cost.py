@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 import sqlite3
 import tempfile
 import unittest
@@ -61,6 +62,77 @@ class ArchiveCostTest(unittest.TestCase):
         before = self.db.read_bytes()
         archive_cost.main(["--db", str(self.db), "--json"])
         self.assertEqual(self.db.read_bytes(), before)
+
+    def test_reserved_uri_characters_open_exact_file_without_creating_sibling(self):
+        for name in ("literal?archive.db", "literal#archive.db", "percent%20 space.db"):
+            with self.subTest(name=name):
+                path = Path(self.tmp.name) / name
+                make_db(path)
+                before = path.read_bytes()
+                names = {p.name for p in path.parent.iterdir()}
+                self.assertEqual(archive_cost.archive_stats(path)["chars_active"], 4800)
+                self.assertEqual(path.read_bytes(), before)
+                self.assertEqual({p.name for p in path.parent.iterdir()}, names)
+
+    def test_missing_database_is_not_created(self):
+        path = Path(self.tmp.name) / "absent?new.db"
+        names = {p.name for p in path.parent.iterdir()}
+        with self.assertRaises(sqlite3.OperationalError):
+            archive_cost.archive_stats(path)
+        self.assertEqual({p.name for p in path.parent.iterdir()}, names)
+
+    def test_unknown_status_counted_explicitly_and_configurable(self):
+        with sqlite3.connect(self.db) as con:
+            con.executemany("INSERT INTO messages VALUES (?,?,?,?,?)", [
+                ("null", "c3", "user", "a"*60, None),
+                ("future", "c3", "assistant", "b"*60, "future_status"),
+            ])
+        stats = archive_cost.archive_stats(self.db)
+        self.assertEqual(stats["messages"], 7)
+        self.assertEqual(stats["conversations"], 3)
+        self.assertEqual(stats["chars_active"], 4800)
+        self.assertEqual(stats["unknown_status_messages"], 2)
+        self.assertEqual(stats["chars_unknown_status"], 120)
+        self.assertEqual(archive_cost.estimate(stats,self.pricing)["tokens"]["high"],1840)
+        self.assertEqual(archive_cost.estimate(stats,self.pricing,include_unknown_status=False)["tokens"]["high"],1800)
+
+    def test_invalid_parameters_rejected_before_cost(self):
+        stats=archive_cost.archive_stats(self.db)
+        for field in ("output_ratio", "prefix_tokens", "fraction"):
+            for value in (-1, float("nan"), float("inf"), float("-inf"), True, "1"):
+                with self.subTest(field=field,value=value), self.assertRaises(ValueError):
+                    archive_cost.estimate(stats,self.pricing,**{field:value})
+        for field in ("include_versions","include_unknown_status"):
+            with self.subTest(field=field),self.assertRaises(ValueError):
+                archive_cost.estimate(stats,self.pricing,**{field:1})
+
+    def test_invalid_counts_and_prices_rejected(self):
+        stats=archive_cost.archive_stats(self.db)
+        for field in ("chars_active","chars_versions","conversations","chars_unknown_status"):
+            for value in (-1, True, 1.5, float("nan")):
+                bad={**stats,field:value}
+                with self.subTest(field=field,value=value),self.assertRaises(ValueError):
+                    archive_cost.estimate(bad,self.pricing)
+        for field in ("input","output","cache_read"):
+            for value in (-1,True,float("nan"),float("inf")):
+                bad=deepcopy(self.pricing)
+                next(iter(bad["models"].values()))[field]=value
+                with self.subTest(field=field,value=value),self.assertRaises(ValueError):
+                    archive_cost.estimate(stats,bad)
+        for value in (-1,True,float("nan"),float("inf")):
+            with self.subTest(discount=value),self.assertRaises(ValueError):
+                archive_cost.estimate(stats,{**self.pricing,"batch_discount":value})
+
+    def test_large_finite_budget_supported_overflow_rejected(self):
+        stats={"chars_active":10**12,"chars_versions":0,"conversations":10**9}
+        pricing={"models":{"expensive":{"input":10**6,"output":10**6,"cache_read":10**6}}}
+        out=archive_cost.estimate(stats,pricing,output_ratio=10,prefix_tokens=10**9)
+        self.assertGreater(out["models"]["expensive"]["high"],10**9)
+        huge={"chars_active":10**300,"chars_versions":0,"conversations":1}
+        with self.assertRaises(ValueError):
+            archive_cost.estimate(huge,pricing,output_ratio=1e300)
+        for key in ("prefix_cache","batch"):
+            self.assertIn("unverified",out["assumptions"][key])
 
 
 if __name__ == "__main__":

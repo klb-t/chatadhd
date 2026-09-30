@@ -1,0 +1,213 @@
+test_db_opened_read_only (test_archive_cost.ArchiveCostTest.test_db_opened_read_only) ... ok
+test_estimate_arithmetic (test_archive_cost.ArchiveCostTest.test_estimate_arithmetic) ... ok
+test_fraction_and_versions (test_archive_cost.ArchiveCostTest.test_fraction_and_versions) ... ok
+test_invalid_counts_and_prices_rejected (test_archive_cost.ArchiveCostTest.test_invalid_counts_and_prices_rejected) ... ok
+test_invalid_parameters_rejected_before_cost (test_archive_cost.ArchiveCostTest.test_invalid_parameters_rejected_before_cost) ... ok
+test_large_finite_budget_supported_overflow_rejected (test_archive_cost.ArchiveCostTest.test_large_finite_budget_supported_overflow_rejected) ... ok
+test_missing_database_is_not_created (test_archive_cost.ArchiveCostTest.test_missing_database_is_not_created) ... ok
+test_reserved_uri_characters_open_exact_file_without_creating_sibling (test_archive_cost.ArchiveCostTest.test_reserved_uri_characters_open_exact_file_without_creating_sibling) ... ok
+test_stats_split_by_status (test_archive_cost.ArchiveCostTest.test_stats_split_by_status) ... ok
+test_unknown_status_counted_explicitly_and_configurable (test_archive_cost.ArchiveCostTest.test_unknown_status_counted_explicitly_and_configurable) ... ok
+test_added_provenance_is_checked_even_when_original_quote_matches (test_candidate_graph_eval.CandidateEvaluationGuards.test_added_provenance_is_checked_even_when_original_quote_matches) ... ok
+test_both_frozen_splits_have_source_integrity_and_equivalent_authored_encodings (test_candidate_graph_eval.CandidateEvaluationGuards.test_both_frozen_splits_have_source_integrity_and_equivalent_authored_encodings) ... ok
+test_changed_source_packet_invalidates_anchor_hash (test_candidate_graph_eval.CandidateEvaluationGuards.test_changed_source_packet_invalidates_anchor_hash) ... ok
+test_character_offsets_cannot_replace_utf8_byte_offsets (test_candidate_graph_eval.CandidateEvaluationGuards.test_character_offsets_cannot_replace_utf8_byte_offsets) ... ok
+test_copied_drafts_cannot_pass_an_empty_comparison_graph (test_candidate_graph_eval.CandidateEvaluationGuards.test_copied_drafts_cannot_pass_an_empty_comparison_graph) ... ok
+test_copied_input_cannot_pass_empty_compiled_drafts (test_candidate_graph_eval.CandidateEvaluationGuards.test_copied_input_cannot_pass_empty_compiled_drafts) ... ok
+test_declared_root_loss_is_detected (test_candidate_graph_eval.CandidateEvaluationGuards.test_declared_root_loss_is_detected) ... ok
+test_development_source_bytes_and_anchor_hashes_are_independently_valid (test_candidate_graph_eval.CandidateEvaluationGuards.test_development_source_bytes_and_anchor_hashes_are_independently_valid) ... ok
+test_empty_abstention_requires_its_located_unknown (test_candidate_graph_eval.CandidateEvaluationGuards.test_empty_abstention_requires_its_located_unknown) ... ok
+test_fabricated_assessment_is_not_allowed (test_candidate_graph_eval.CandidateEvaluationGuards.test_fabricated_assessment_is_not_allowed) ... ok
+test_graph_port_order_loss_is_detected_even_when_drafts_remain (test_candidate_graph_eval.CandidateEvaluationGuards.test_graph_port_order_loss_is_detected_even_when_drafts_remain) ... ok
+test_missing_eligibility_flags_are_not_closed_gates (test_candidate_graph_eval.CandidateEvaluationGuards.test_missing_eligibility_flags_are_not_closed_gates) ... ok
+test_port_order_loss_is_detected (test_candidate_graph_eval.CandidateEvaluationGuards.test_port_order_loss_is_detected) ... ok
+test_reference_rewrite_roundtrip_preserves_gold (test_candidate_graph_eval.CandidateEvaluationGuards.test_reference_rewrite_roundtrip_preserves_gold) ... ok
+test_unrewritten_local_handles_cannot_masquerade_as_resolved_references (test_candidate_graph_eval.CandidateEvaluationGuards.test_unrewritten_local_handles_cannot_masquerade_as_resolved_references) ... ok
+test_catalog_precision_uses_labeled_conversations_and_reports_auxiliary_selection (test_eval.HarnessTests.test_catalog_precision_uses_labeled_conversations_and_reports_auxiliary_selection) ... ok
+test_command_help_imports_all_modes (test_eval.HarnessTests.test_command_help_imports_all_modes) ... ok
+test_cut_is_a_strict_inclusive_utc_date (test_eval.HarnessTests.test_cut_is_a_strict_inclusive_utc_date) ... ok
+test_false_certainty_counts_violating_claims_not_violation_sum (test_eval.HarnessTests.test_false_certainty_counts_violating_claims_not_violation_sum) ... ok
+test_nonzero_cli_exit_is_failure_even_with_done_json (test_eval.HarnessTests.test_nonzero_cli_exit_is_failure_even_with_done_json) ... ok
+test_operator_recall_requires_distinct_example_decisions (test_eval.HarnessTests.test_operator_recall_requires_distinct_example_decisions) ... ok
+test_retrospective_metric_is_never_named_predictive_accuracy (test_eval.HarnessTests.test_retrospective_metric_is_never_named_predictive_accuracy) ... ok
+test_synthetic_does_not_delete_the_work_argument (test_eval.HarnessTests.test_synthetic_does_not_delete_the_work_argument) ... ok
+test_wrong_or_missing_quote_counts_as_false_certainty (test_eval.HarnessTests.test_wrong_or_missing_quote_counts_as_false_certainty) ... ok
+test_excluded_keys_products_and_symlinks_are_never_read (test_eval.RepositoryTests.test_excluded_keys_products_and_symlinks_are_never_read) ... ok
+test_future_ancestor_rejects_backdated_descendant (test_eval.RepositoryTests.test_future_ancestor_rejects_backdated_descendant) ... ok
+test_future_author_date_rejects_backdated_commit (test_eval.RepositoryTests.test_future_author_date_rejects_backdated_commit) ... ok
+test_historical_blobs_not_hindsight_dates_or_worktree (test_eval.RepositoryTests.test_historical_blobs_not_hindsight_dates_or_worktree) ... ok
+test_holdout_cli_writes_honest_unavailable_result (test_eval.RepositoryTests.test_holdout_cli_writes_honest_unavailable_result) ... no verifiable snapshot on HEAD's mainline exists on or before 2026-03-06 (UTC)
+ok
+test_holdout_emits_unavailable_and_never_runs_current_pack (test_eval.RepositoryTests.test_holdout_emits_unavailable_and_never_runs_current_pack) ... ok
+test_no_old_snapshot_does_not_accept_dates_in_current_docs (test_eval.RepositoryTests.test_no_old_snapshot_does_not_accept_dates_in_current_docs) ... ok
+test_selfhost_has_isolated_sources_and_keeps_caller_work (test_eval.RepositoryTests.test_selfhost_has_isolated_sources_and_keeps_caller_work) ... ok
+test_shallow_history_is_unavailable (test_eval.RepositoryTests.test_shallow_history_is_unavailable) ... ok
+test_unmerged_branch_is_not_a_historical_source (test_eval.RepositoryTests.test_unmerged_branch_is_not_a_historical_source) ... ok
+test_binding_abstraction_cannot_collapse_distinct_source_identity (test_graph_native_eval.GraphNativeOracleTests.test_binding_abstraction_cannot_collapse_distinct_source_identity) ... ok
+test_copied_source_is_not_projected_semantic_retention (test_graph_native_eval.GraphNativeOracleTests.test_copied_source_is_not_projected_semantic_retention) ... ok
+test_direction_and_parallel_multiplicity_are_constraints (test_graph_native_eval.GraphNativeOracleTests.test_direction_and_parallel_multiplicity_are_constraints) ... ok
+test_frozen_fixture_and_authored_labels_agree_with_exhaustive_oracle (test_graph_native_eval.GraphNativeOracleTests.test_frozen_fixture_and_authored_labels_agree_with_exhaustive_oracle) ... ok
+test_identity_is_not_noninduced_containment (test_graph_native_eval.GraphNativeOracleTests.test_identity_is_not_noninduced_containment) ... ok
+test_missing_lexical_label_is_distinct_from_empty_string (test_graph_native_eval.GraphNativeOracleTests.test_missing_lexical_label_is_distinct_from_empty_string) ... ok
+test_qualifier_polarity_scope_and_nested_values_are_preserved (test_graph_native_eval.GraphNativeOracleTests.test_qualifier_polarity_scope_and_nested_values_are_preserved) ... ok
+test_ranking_accounts_for_filtered_positive_and_duplicate_ids (test_graph_native_eval.GraphNativeOracleTests.test_ranking_accounts_for_filtered_positive_and_duplicate_ids) ... ok
+test_scope_identity_needs_scope_entity_membership (test_graph_native_eval.GraphNativeOracleTests.test_scope_identity_needs_scope_entity_membership) ... ok
+test_support_identity_requires_exact_incidence_not_equal_counts (test_graph_native_eval.GraphNativeOracleTests.test_support_identity_requires_exact_incidence_not_equal_counts) ... ok
+test_unknown_semantic_fields_and_goals_are_rejected (test_graph_native_eval.GraphNativeOracleTests.test_unknown_semantic_fields_and_goals_are_rejected) ... ok
+test_witness_needs_distinct_integer_edge_indexes (test_graph_native_eval.GraphNativeOracleTests.test_witness_needs_distinct_integer_edge_indexes) ... ok
+test_ambiguous_membership_is_not_negative_philosophy (test_independent_cases.IndependentProtocolTests.test_ambiguous_membership_is_not_negative_philosophy) ... ok
+test_export_contains_source_not_gold_and_is_deterministic (test_independent_cases.IndependentProtocolTests.test_export_contains_source_not_gold_and_is_deterministic) ... ok
+test_formula_accuracy_keeps_negation_direction_and_quantifier (test_independent_cases.IndependentProtocolTests.test_formula_accuracy_keeps_negation_direction_and_quantifier) ... ok
+test_fresh_scope_probe_metadata_is_frozen (test_independent_cases.IndependentProtocolTests.test_fresh_scope_probe_metadata_is_frozen) ... ok
+test_frozen_sources_and_annotations_validate (test_independent_cases.IndependentProtocolTests.test_frozen_sources_and_annotations_validate) ... ok
+test_group_cannot_cross_split (test_independent_cases.IndependentProtocolTests.test_group_cannot_cross_split) ... ok
+test_missing_positive_prediction_does_not_inflate_recall (test_independent_cases.IndependentProtocolTests.test_missing_positive_prediction_does_not_inflate_recall) ... ok
+test_ordering_reports_ties_instead_of_threshold_tuning (test_independent_cases.IndependentProtocolTests.test_ordering_reports_ties_instead_of_threshold_tuning) ... ok
+test_source_span_must_verify_even_when_snapshot_is_refrozen (test_independent_cases.IndependentProtocolTests.test_source_span_must_verify_even_when_snapshot_is_refrozen) ... ok
+test_unavailable_alignment_is_not_zero_similarity_or_a_tie (test_independent_cases.IndependentProtocolTests.test_unavailable_alignment_is_not_zero_similarity_or_a_tie) ... ok
+test_actual_representations_present (test_jev_recipes.Recipes.test_actual_representations_present) ... ok
+test_archive_roundtrip (test_jev_recipes.Recipes.test_archive_roundtrip) ... ok
+test_children_partition_flat (test_jev_recipes.Recipes.test_children_partition_flat) ... ok
+test_cli_export (test_jev_recipes.Recipes.test_cli_export) ... ok
+test_corpus_counts (test_jev_recipes.Recipes.test_corpus_counts) ... ok
+test_detail_can_report_unavailable (test_jev_recipes.Recipes.test_detail_can_report_unavailable) ... ok
+test_duplicate_case_rejected (test_jev_recipes.Recipes.test_duplicate_case_rejected) ... ok
+test_duplicate_instruction_keys_rejected (test_jev_recipes.Recipes.test_duplicate_instruction_keys_rejected) ... ok
+test_duplicate_record (test_jev_recipes.Recipes.test_duplicate_record) ... ok
+test_every_body_valid_and_hashed (test_jev_recipes.Recipes.test_every_body_valid_and_hashed) ... ok
+test_expressed_and_inferred_are_independent (test_jev_recipes.Recipes.test_expressed_and_inferred_are_independent) ... ok
+test_freeze_and_archive_verified (test_jev_recipes.Recipes.test_freeze_and_archive_verified) ... ok
+test_freeze_tampering (test_jev_recipes.Recipes.test_freeze_tampering) ... ok
+test_gold_is_not_changed_by_build (test_jev_recipes.Recipes.test_gold_is_not_changed_by_build) ... ok
+test_invalid_root_does_not_fallback (test_jev_recipes.Recipes.test_invalid_root_does_not_fallback) ... ok
+test_nested_option_counts (test_jev_recipes.Recipes.test_nested_option_counts) ... ok
+test_no_enabled_execution_or_budget (test_jev_recipes.Recipes.test_no_enabled_execution_or_budget) ... ok
+test_no_fixture_metadata_in_body (test_jev_recipes.Recipes.test_no_fixture_metadata_in_body) ... ok
+test_no_gold_argument (test_jev_recipes.Recipes.test_no_gold_argument) ... ok
+test_no_network_modules (test_jev_recipes.Recipes.test_no_network_modules) ... ok
+test_prepared_counts (test_jev_recipes.Recipes.test_prepared_counts) ... ok
+test_reproducible_and_nonmutating (test_jev_recipes.Recipes.test_reproducible_and_nonmutating) ... ok
+test_routing_obeys_root_even_if_wrong (test_jev_recipes.Recipes.test_routing_obeys_root_even_if_wrong) ... ok
+test_subgraph_queries_are_not_exclusive (test_jev_recipes.Recipes.test_subgraph_queries_are_not_exclusive) ... ok
+test_tie_uses_declared_order (test_jev_recipes.Recipes.test_tie_uses_declared_order) ... ok
+test_unexpected_zip_member (test_jev_recipes.Recipes.test_unexpected_zip_member) ... ok
+test_unique_source_states (test_jev_recipes.Recipes.test_unique_source_states) ... ok
+test_unknown_language_rejected (test_jev_recipes.Recipes.test_unknown_language_rejected) ... ok
+test_unsafe_record_name (test_jev_recipes.Recipes.test_unsafe_record_name) ... ok
+test_variant_state_and_criteria_identical (test_jev_recipes.Recipes.test_variant_state_and_criteria_identical) ... ok
+test_model_profiles (unittest.loader._FailedTest.test_model_profiles) ... ERROR
+test_refinement_eval (unittest.loader._FailedTest.test_refinement_eval) ... ERROR
+
+======================================================================
+ERROR: test_model_profiles (unittest.loader._FailedTest.test_model_profiles)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_model_profiles
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_model_profiles.py", line 12, in <module>
+    import model_profiles as m
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/model_profiles.py", line 13, in <module>
+    from jsonschema import Draft202012Validator, FormatChecker
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+======================================================================
+ERROR: test_refinement_eval (unittest.loader._FailedTest.test_refinement_eval)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_refinement_eval
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/contracts/validate.py", line 17, in <module>
+    from jsonschema import Draft202012Validator, FormatChecker
+ModuleNotFoundError: No module named 'jsonschema'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_refinement_eval.py", line 14, in <module>
+    from refinement_fixture import (clean_source, load_cases, materialize_case, render_statements,
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/refinement_fixture.py", line 15, in <module>
+    from validate import ContractValidator, canonical_bytes
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/contracts/validate.py", line 21, in <module>
+    raise SystemExit('Missing local dependency: install loom/tools/contracts/requirements.txt before offline use.') from exc
+SystemExit: Missing local dependency: install loom/tools/contracts/requirements.txt before offline use.
+
+
+----------------------------------------------------------------------
+Ran 98 tests in 1.623s
+
+FAILED (errors=2)
+{
+  "stats": {
+    "conversations": 2,
+    "messages": 5,
+    "chars_active": 4800,
+    "chars_versions": 600,
+    "chars_excluded": 999,
+    "chars_unknown_status": 0,
+    "unknown_status_messages": 0,
+    "chars_by_role": {
+      "assistant": 2400,
+      "user": 2400
+    },
+    "conversation_chars": {
+      "median": 4200,
+      "max": 4200
+    }
+  },
+  "estimate": {
+    "assumptions": {
+      "fraction": 1.0,
+      "output_ratio": 0.4,
+      "prefix_tokens": 8000,
+      "include_versions": true,
+      "include_unknown_status": true,
+      "chars_per_token": {
+        "low": 4.0,
+        "high": 3.0
+      },
+      "prefix_cache": "all prefixes priced at cache-read; first-write and cache eligibility unverified",
+      "batch": "uniform table discount; provider/model eligibility unverified",
+      "pricing_as_of": "2026-09-25"
+    },
+    "tokens": {
+      "low": 1350,
+      "high": 1800
+    },
+    "models": {
+      "claude-fable-5-1": {
+        "low": 0.04,
+        "low_batch": 0.02,
+        "high": 0.06,
+        "high_batch": 0.03
+      },
+      "claude-opus-5-5": {
+        "low": 0.02,
+        "low_batch": 0.01,
+        "high": 0.02,
+        "high_batch": 0.01
+      },
+      "claude-sonnet-5-5": {
+        "low": 0.01,
+        "low_batch": 0.01,
+        "high": 0.01,
+        "high_batch": 0.01
+      },
+      "claude-haiku-4-5": {
+        "low": 0.01,
+        "low_batch": 0.0,
+        "high": 0.01,
+        "high_batch": 0.0
+      }
+    }
+  }
+}
+cut 2026-03-06: unavailable -> /var/tmp/tmpanzg_l57/nested/result.json
