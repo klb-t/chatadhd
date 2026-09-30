@@ -1,0 +1,75 @@
+{
+  "schema": "loom.paid_resume_allocation/1",
+  "created_at": "2026-09-30T14:27:00Z",
+  "repository": "klb-t/chatadhd",
+  "branch": "gpt/research-2026-09-30",
+  "authority": "direct owner existing cheap/Jev programme, non-resetting USD2; root-coordinated delegated execution",
+  "credential_binding": "owner encrypted handoff session 70d6b71ccade72e2847a44a72614fd07",
+  "credentials_in_record": false,
+  "provider_key_metadata": {
+    "checked_at": "2026-09-30T14:24:07.173647Z",
+    "http_status": 200,
+    "limit_usd": "2",
+    "limit_reset": null,
+    "usage_usd": "1.23206716",
+    "remaining_usd_conservative": "0.76793284",
+    "byok_usage_usd": "0",
+    "invoice_independently_verified": false
+  },
+  "saved_campaign_accounting": {
+    "actual_attempts": 497,
+    "known_incremental_usd": "0.089848266",
+    "prior_key_usage_usd": "0.044083172",
+    "known_accumulated_usd": "0.133931438",
+    "retained_unknown_reservation_usd": "0.001366"
+  },
+  "unreconciled_usage": {
+    "difference_usd": "1.098135722",
+    "attribution": "unassigned; do not attribute to this lane or add it again to provider key usage",
+    "same_key_identity_against_lost_credential": "not independently reverified; budget continuity retained irrespective"
+  },
+  "allocations": [
+    {
+      "id": "free_schema_hint_v2",
+      "owner": "recipe_experiments",
+      "requests": 24,
+      "reservation_usd": "0.1252768",
+      "manifest_root": "docs/research/free_schema_hint_v2/prepared"
+    },
+    {
+      "id": "free_semantic_axes_v3",
+      "owner": "recipe_experiments",
+      "requests": 24,
+      "reservation_usd": "0.1367008",
+      "manifest_root": "docs/research/recipe_experiments_2026-09-30/semantic_axes_v3/prepared"
+    },
+    {
+      "id": "source_view_roles_v1",
+      "owner": "recipe_experiments",
+      "requests": 48,
+      "reservation_usd": "0.048",
+      "manifest_root": "docs/research/recipe_experiments_2026-09-30/role_explicit_v1"
+    },
+    {
+      "id": "source_only_review_gpt41mini",
+      "owner": "agentic_graph",
+      "requests": 11,
+      "reservation_usd": "0.0923928",
+      "manifest_root": "docs/research/agentic_graph_v1/prepared_review_gpt41mini/batch01/prepared"
+    }
+  ],
+  "planned_requests": 107,
+  "reserved_usd": "0.4023704",
+  "provider_usage_plus_retained_unknown_plus_reservations_usd": "1.63580356",
+  "unallocated_under_usd2": "0.36419644",
+  "conditions": [
+    "First raw responses and durable write-ahead journals retained; no paid retries.",
+    "Current key and endpoint gates before each frozen batch; no budget reset.",
+    "Exact frozen request/protocol/prompt pins required; narrow CWD-only test amendment explicitly recorded before review execution.",
+    "No new frontier pilot; sealed validation and older blind holdouts unopened.",
+    "Only these four isolated allocations; further paid allocations require recomputation against current provider usage and remaining reservations.",
+    "Other consumers of the key are not controlled by this local receipt; key cap/current preflight remain necessary."
+  ],
+  "status": "authorised_to_launch_on_exact_pins",
+  "actual_resume_attempts_at_creation": 0
+}
