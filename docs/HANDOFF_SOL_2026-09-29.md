@@ -114,26 +114,46 @@ split into development vs untouched validation. The OpenRouter key must never en
    tokens and quality separately. Wiring the ContextEngine into the chat request path
    (acceptance test #1) is a good native task if you want one.
 
-7. **Frontier reader pilot** (owner idea, 2026-09-30). The idea: a frontier model reads any selected
-   conversation, with deep reasoning when needed. It completes the graph and names new, unnamed
-   structures. It sees the graph's own definitions (predefined in `loom/data/**`, discovered, and
-   user-defined) as a stable, cached prompt prefix. Its output is candidates only: exact quote,
-   model, prompt version and date. The owner can edit everything by hand.
-   - **Pilot:** 10–20 conversations from `synthetic_dev` through `propose_semantics`, using Fable 5.1,
-     Opus 5.5 and Sonnet 5.5 (plus a GPT model if you want).
-   - **Measure** against the regex baseline:
-     - decision, principle and structure recall;
-     - admissibility of the candidates;
-     - genuinely new structures;
-     - real tokens and USD per conversation from `usage`.
-   - **Cap:** USD 20. Record the results in ModelProfiles.
-   - **Planning numbers** come from `python3 loom/tools/eval/archive_cost.py --db <data_dir>/chatadhd.db`.
-     It is offline and read-only, estimates tokens from characters and prices from
-     `loom/tools/eval/pricing_2026-09-25.json`. Compare its estimate with measured `usage`, then
-     correct `output_ratio`/`prefix_tokens`.
-   - **Design target** (spec only, code after the pilot): annotations of messages as links
-     message → graph node, carrying a character span and origin `recorded | model | user`. Live
-     ChatADHD chats, imports and manual edits all share this one layer.
+7. **Proposal: frontier-model methods as first-class methods** (owner, 2026-09-30). You lead now;
+   take, change or drop any of this.
+   - **Owner principle** (also at the top of `AGENTS.md`): everything is user-configurable. That
+     covers the model, scope, reasoning depth, auto-acceptance of model output, and what is sent
+     where, up to "burn a billion dollars". The one exception: an expected ≥10× jump in usage
+     needs the user's confirmation. Defaults are presets, not rules. My earlier "conditions"
+     (frontier only on a selected part, model output never auto-promoted) were exactly such
+     presets and must not be read as limits.
+   - **In the abstraction of analysis methods**, consider methods that use the internal complexity
+     and abilities of advanced models, next to regex, TF-IDF, embeddings and Jev. Examples:
+     - give the model the graph plus a conversation and ask it to complete the graph from the
+       new data;
+     - look for new, unnamed patterns and structures;
+     - propose type/structure definitions;
+     - merge or split entities, or reorganise the graph;
+     - critique the existing graph;
+     - ask about gaps;
+     - reason at length over a whole archive when the user wants that.
+   - **Possible pilot:** a few `synthetic_dev` conversations on several models; measure what each
+     method finds and what it really costs (`usage`). For planning numbers, the offline
+     `python3 loom/tools/eval/archive_cost.py --db <data_dir>/chatadhd.db` estimates the cost of a
+     reading pass (prices in `loom/tools/eval/pricing_2026-09-25.json`).
+   - **Proposal: one graph exchange form, `loom.graph_packet/1`.** The same shape would serve as
+     model input and output, export, preview and manual editing, so every method gets the graph
+     identically:
+     - `definitions`: types, predicates, roles, paradigms, operators and user-defined or
+       discovered structures, each with a description, examples and origin, so a model sees what
+       they mean;
+     - `entities`: the nodes;
+     - `claims`: the rich edges, exactly `Claim.to_json()` from `loom/include/loom/model.h`
+       (subject, predicate, object or value, qualifiers, assessment, support quotes with
+       locators, derivation, premises, alternatives, consequences, open questions);
+     - `sources`: observations and messages with locators;
+     - `task`.
+
+     A model's answer would come back as a diff in the same shape. The existing
+     `loom.candidate_graph/1` (`relation_v1` / `occurrence_graph_v1` in
+     `loom/src/extract/semantic.cpp`) is a narrower, extraction-only form that could become a
+     profile of this one. Message annotations (message → node, span, origin
+     `recorded | model | user`) would fit the same packet.
 
 ## 4. Data and integrity rules (non‑negotiable)
 
