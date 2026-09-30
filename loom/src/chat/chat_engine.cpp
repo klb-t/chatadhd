@@ -84,6 +84,13 @@ Result<context::ContextRequest> chat_context_request(const Json& value) {
       valid = v.is_number_integer() && v >= 0 && v <= std::numeric_limits<int>::max();
     } else if (k == "detail_resolution") {
       valid = v.is_null() || v == "label" || v == "summary" || v == "full" || v == "raw";
+    } else if (k == "plan" || k == "claim_targets" || k == "include_counter_evidence" ||
+               k == "candidate_channels" || k == "candidate_scan_limit" || k == "lexical_shadow") {
+      // These extensions have strict nested validators in ContextRequest.
+      // Keep one schema: permit only their names here, then delegate below.
+      // In particular plan.source_ref is caller-declared provenance, not an
+      // ActiveTaskSpec binding or permission to compile/infer task statements.
+      valid = true;
     }
     if (!valid) return Error(Errc::InvalidArgument, "invalid knowledge_context option: " + k);
   }
