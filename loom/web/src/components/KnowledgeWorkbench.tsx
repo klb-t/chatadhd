@@ -57,6 +57,7 @@ export default function KnowledgeWorkbench({ onClose, onDataChanged }: { onClose
   const currentInspection = inspection && inspectedPane && inspection.run === inspectedPane.parameters.run &&
     inspection.limit === inspectedPane.parameters.limit && inspection.refresh === refresh &&
     inspection.selection.kind === inspectedPane.parameters.selection?.kind &&
+    (inspection.selection.kind === "catalog" || inspectedPane.parameters.selection?.run === inspection.run) &&
     idOf(inspection.selection.record) === inspectedPane.parameters.selection?.id ? inspection : null;
   useEffect(() => {
     if (storageError) return;

@@ -64,7 +64,7 @@ try {
     else if (url.pathname === "/api/knowledge/runs") result = runs;
     else if (url.pathname === "/api/knowledge/query") {
       if (body.what === "candidates") {
-        const source = body.run === "kr_graph" ? [graphCandidate] : candidates;
+        const source = ["kr_graph", "kr_same_id_other"].includes(body.run) ? [graphCandidate] : candidates;
         const items = source.slice(body.offset, body.offset + body.limit);
         result = { run: body.run, items, total: source.length, limit: body.limit, offset: body.offset,
           has_more: body.offset + items.length < source.length, interpretation: "unpromoted_candidates_not_canonical_claims" };
@@ -169,6 +169,25 @@ try {
   assert.equal(await workbench.getByTestId("kb-pane-claims").count(), 1);
   assert.equal(await workbench.getByTestId("kb-pane-graph").count(), 1);
   assert.equal(calls.filter((call) => /judge|promot|chat/.test(call.path)).length, 0);
+  // A live link changing only the run must also invalidate an already open
+  // inspector, even when the other run reuses the same candidate ID.
+  runs.push({ id: "kr_same_id_other", status: "done" });
+  await workbench.getByRole("button", { name: "Refresh", exact: true }).click();
+  await pane.getByRole("button", { name: "Duplicate Candidate proposals view", exact: true }).click();
+  const original = workbench.getByTestId("kb-pane-candidates").first();
+  const other = workbench.getByTestId("kb-pane-candidates").last();
+  await other.locator(".kb-view-settings > summary").click();
+  await other.getByLabel("View data run", { exact: true }).selectOption("kr_same_id_other");
+  await other.getByText("1 shown · 1 matching candidates", { exact: true }).waitFor();
+  await other.locator(".kb-record").first().click();
+  await original.locator(".kb-record").first().click();
+  await inspector.getByTestId("kb-candidate-structure").waitFor();
+  await original.locator(".kb-view-settings > summary").click();
+  await original.getByLabel("Link source view").selectOption(await other.getAttribute("data-view-id"));
+  await original.getByRole("button", { name: "Link parameter", exact: true }).click();
+  assert.equal(await inspector.getByTestId("kb-candidate-structure").count(), 0, "live cross-run ID reuse invalidates prior inspection");
+  await original.locator(".kb-record").first().click();
+  await other.getByRole("button", { name: "Close Candidate proposals view", exact: true }).click();
   // W5 persistence resolves the saved ID against loaded candidate rows. The
   // inspector must never relabel a selection from another run as this run's data.
   await page.reload();
