@@ -1,0 +1,25 @@
+test_ambiguous_ids_and_unknown_endpoints_rejected (loom.tools.structure.w3_directed_commitment_v1.test_experiment.RecipeTests.test_ambiguous_ids_and_unknown_endpoints_rejected) ... ok
+test_duplicate_keys_not_salvaged (loom.tools.structure.w3_directed_commitment_v1.test_experiment.RecipeTests.test_duplicate_keys_not_salvaged) ... ok
+test_duplicate_query_rejected (loom.tools.structure.w3_directed_commitment_v1.test_experiment.RecipeTests.test_duplicate_query_rejected) ... ok
+test_future_source_not_in_request (loom.tools.structure.w3_directed_commitment_v1.test_experiment.RecipeTests.test_future_source_not_in_request) ... ok
+test_gold_input_identity_and_full_denominator (loom.tools.structure.w3_directed_commitment_v1.test_experiment.RecipeTests.test_gold_input_identity_and_full_denominator) ... ok
+test_only_one_criterion_changes_over_all_controls (loom.tools.structure.w3_directed_commitment_v1.test_experiment.RecipeTests.test_only_one_criterion_changes_over_all_controls) ... ok
+test_threshold_unknown_conflict_and_missing_separated (loom.tools.structure.w3_directed_commitment_v1.test_experiment.RecipeTests.test_threshold_unknown_conflict_and_missing_separated) ... ok
+test_actual_first_bytes_and_saved_outputs_match (loom.tools.structure.w3_directed_commitment_v1.test_experiment.ReplayTests.test_actual_first_bytes_and_saved_outputs_match) ... ok
+test_prepare_and_verify_offline_and_no_overwrite (loom.tools.structure.w3_directed_commitment_v1.test_experiment.ReplayTests.test_prepare_and_verify_offline_and_no_overwrite) ... ok
+test_profiles_pass_existing_consumer_and_exact_counts (loom.tools.structure.w3_directed_commitment_v1.test_experiment.ReplayTests.test_profiles_pass_existing_consumer_and_exact_counts) ... ok
+test_recipe_identity_blocks_old_responses (loom.tools.structure.w3_directed_commitment_v1.test_experiment.ReplayTests.test_recipe_identity_blocks_old_responses) ... ok
+test_actual_archive_replay_preserves_both_original_first_outputs (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_actual_archive_replay_preserves_both_original_first_outputs) ... ok
+test_actual_profile_artifact_has_no_measured_v3_profile (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_actual_profile_artifact_has_no_measured_v3_profile) ... ok
+test_actual_v2_request_cannot_be_relabelled_v3 (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_actual_v2_request_cannot_be_relabelled_v3) ... ok
+test_archive_container_tamper_rejected_before_writes (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_archive_container_tamper_rejected_before_writes) ... ok
+test_archive_member_tamper_rejected_despite_matching_container_hash (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_archive_member_tamper_rejected_despite_matching_container_hash) ... ok
+test_archive_restore_preserves_exact_payload_bytes (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_archive_restore_preserves_exact_payload_bytes) ... ok
+test_empty_ledger_preserves_entire_planned_denominator (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_empty_ledger_preserves_entire_planned_denominator) ... ok
+test_gold_is_byte_frozen_without_loading_labels (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_gold_is_byte_frozen_without_loading_labels) ... ok
+test_incomplete_freeze_inventory_is_rejected (loom.tools.structure.w3_directed_commitment_v1.test_independent.IndependentIntegrityTests.test_incomplete_freeze_inventory_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.897s
+
+OK
