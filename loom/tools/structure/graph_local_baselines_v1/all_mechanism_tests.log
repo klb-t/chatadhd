@@ -1,0 +1,18 @@
+test_future_withdrawal_cannot_enter_earlier_support_view (test_evaluate_dev.EvidenceMechanisms.test_future_withdrawal_cannot_enter_earlier_support_view) ... ok
+test_matched_cardinality_reports_actual_cost_and_relevant_denominators (test_evaluate_dev.EvidenceMechanisms.test_matched_cardinality_reports_actual_cost_and_relevant_denominators) ... ok
+test_missing_evidence_is_unknown_not_explicit_denial (test_evaluate_dev.EvidenceMechanisms.test_missing_evidence_is_unknown_not_explicit_denial) ... ok
+test_narrow_duplicate_annotation_does_not_inflate_unique_span_denominator (test_evaluate_dev.EvidenceMechanisms.test_narrow_duplicate_annotation_does_not_inflate_unique_span_denominator) ... ok
+test_withdrawal_refutation_targets_event_not_old_support (test_evaluate_dev.EvidenceMechanisms.test_withdrawal_refutation_targets_event_not_old_support) ... ok
+test_character_frequency_is_not_corpus_fitted (test_local_baselines.LocalBaselineMechanisms.test_character_frequency_is_not_corpus_fitted) ... ok
+test_missing_vector_is_not_a_negative_relation (test_local_baselines.LocalBaselineMechanisms.test_missing_vector_is_not_a_negative_relation) ... ok
+test_representation_uses_only_requested_inventory_endpoints_and_attribution (test_local_baselines.LocalBaselineMechanisms.test_representation_uses_only_requested_inventory_endpoints_and_attribution) ... ok
+test_ties_use_original_eligible_order_not_truth_or_recency (test_local_baselines.LocalBaselineMechanisms.test_ties_use_original_eligible_order_not_truth_or_recency) ... ok
+test_time_cutoff_physically_excludes_future_candidate (test_local_baselines.LocalBaselineMechanisms.test_time_cutoff_physically_excludes_future_candidate) ... ok
+test_token_cosine_cannot_prove_implication_direction (test_local_baselines.LocalBaselineMechanisms.test_token_cosine_cannot_prove_implication_direction) ... ok
+test_unicode_spans_source_identity_and_original_order_survive (test_local_baselines.LocalBaselineMechanisms.test_unicode_spans_source_identity_and_original_order_survive) ... ok
+test_union_has_no_negative_or_unknown_veto (test_local_baselines.LocalBaselineMechanisms.test_union_has_no_negative_or_unknown_veto) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.001s
+
+OK

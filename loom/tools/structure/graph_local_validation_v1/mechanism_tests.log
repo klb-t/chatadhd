@@ -1,0 +1,12 @@
+test_all_dev_prefixes_and_scores_exact_transport_equivalence (test_wrapper.GenericWrapperMechanismTests.test_all_dev_prefixes_and_scores_exact_transport_equivalence) ... ok
+test_duplicate_inventory_refused (test_wrapper.GenericWrapperMechanismTests.test_duplicate_inventory_refused) ... ok
+test_embedding_wrong_prefix_and_inventory_refused (test_wrapper.GenericWrapperMechanismTests.test_embedding_wrong_prefix_and_inventory_refused) ... ok
+test_formal_scope_explicitly_excluded (test_wrapper.GenericWrapperMechanismTests.test_formal_scope_explicitly_excluded) ... ok
+test_physical_prefix_and_null_semantics (test_wrapper.GenericWrapperMechanismTests.test_physical_prefix_and_null_semantics) ... ok
+test_unavailable_learned_channel_cannot_veto_lexical (test_wrapper.GenericWrapperMechanismTests.test_unavailable_learned_channel_cannot_veto_lexical) ... ok
+test_wrong_expected_release_refused (test_wrapper.GenericWrapperMechanismTests.test_wrong_expected_release_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.049s
+
+OK

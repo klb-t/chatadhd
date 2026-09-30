@@ -1,0 +1,20 @@
+{
+  "schema": "loom.research.graph_local_baselines_policy/1",
+  "split": "dev",
+  "input_sha256": "1c8183d17d4f648b9012cd9f0eb8f8ee047bf0111ca2f718c86d56a753c8097c",
+  "query_representation": "attribution: {attributed_to}\nrelation: {relation}\nsource: {source_text}\ntarget: {target_text}",
+  "candidate_representation": "speaker: {speaker}\ntext: {text}",
+  "candidate_unit": "full_turn",
+  "candidate_eligibility": "unchanged_adapter_query_payload_known_at_lte_as_of",
+  "character_ngram_range": [3, 5],
+  "global_idf": false,
+  "tie_policy": "descending_score_then_original_eligible_turn_order_then_turn_id",
+  "thresholds": [0.25, 0.5, 0.75, 0.9],
+  "primary_descriptive_threshold": 0.5,
+  "ranking_k": [1, 3, 5],
+  "union_policy": "maximum_available_candidate_score_no_veto",
+  "source_judgment_available": false,
+  "naive_diagnostic": "max_score_gte_threshold_supported_else_unknown_never_refuted",
+  "no_graph_promotion": true,
+  "validation_access": "sealed_until_explicit_root_release"
+}
