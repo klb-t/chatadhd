@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/docs/research/empirical_profiles_v1/build_profiles.py", line 22, in <module>
+    from jsonschema import Draft202012Validator, FormatChecker
+ModuleNotFoundError: No module named 'jsonschema'

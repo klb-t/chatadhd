@@ -1,0 +1,14 @@
+{
+  "all12_profile_metrics_unchanged": true,
+  "all_profile_details_unchanged": true,
+  "all_source_provenance_rows_unchanged": true,
+  "filesystem_bytes_modified_for_probe": false,
+  "first_projection_preserved_exactly": true,
+  "fixed_builder_rejects_same_counterexample": true,
+  "new_model_calls": 0,
+  "only_failed_v1_returned_identifier_label_changed": true,
+  "original_builder_silently_preserved_stale_container_sha": true,
+  "original_exact_hash_builder_accepted_same_member_changed_container": true,
+  "same_zip_member_changed_container_rejected": true,
+  "schema": "loom.research.empirical_profiles_provenance_repair_check/1"
+}

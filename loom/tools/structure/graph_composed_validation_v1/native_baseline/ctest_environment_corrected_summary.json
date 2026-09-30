@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 42.43784732499989,
+  "changes_since_first": [
+    "declared_requests_dependency_in_isolated_userbase",
+    "repository_root_on_PYTHONPATH",
+    "concurrent_agentic_module_discovery_import_fallback"
+  ],
+  "native_code_modified_by_auditor": false
+}

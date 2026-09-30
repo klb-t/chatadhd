@@ -1,0 +1,43 @@
+{
+  "selection": {
+    "recall_numerator": 31,
+    "recall_denominator": 45,
+    "precision_numerator": 31,
+    "precision_denominator": 31,
+    "trap_fp": 0,
+    "trap_denominator": 5,
+    "generic_noise_selected": 0,
+    "generic_noise_denominator": 15
+  },
+  "ranking": {
+    "auc_final_printed": 0.965556,
+    "auc_lexical_printed": 0.777222,
+    "auc_semantic_printed": 0.981111,
+    "hit_at20": 20,
+    "planned_at20": 20,
+    "hit_at45": 42,
+    "planned_at45": 45,
+    "lexical_hit_at45": 36,
+    "semantic_hit_at45": 43
+  },
+  "shadow": {
+    "lexical_candidates": 10,
+    "semantic_candidates": 5,
+    "lexical_only_relevant": 5,
+    "lexical_only_noise": 0,
+    "lexical_only_auxiliary_unlabeled": 2,
+    "semantic_only_relevant": 2,
+    "semantic_only_noise": 0
+  },
+  "thresholds_unchanged": {
+    "recall_min": 0.55,
+    "precision_min": 0.75,
+    "trap_fpr_max": 0.05
+  },
+  "dataset": "synthetic_dev",
+  "model_quality_measurement": false,
+  "scope": "native_configured_selector_development_population",
+  "native_source_aggregate_sha256": "7549cbd40f54c9f894792016bc9208af030a0ad00dc466511607434b82d14882",
+  "ground_truth_read_only_development": true,
+  "real_holdout_read": false
+}

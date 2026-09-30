@@ -1,0 +1,40 @@
+test_actual_source_absence_reported (test_model_profiles.Profiles.test_actual_source_absence_reported) ... ok
+test_aggregate_counts_reconcile (test_model_profiles.Profiles.test_aggregate_counts_reconcile) ... ok
+test_changed_counts_rejected (test_model_profiles.Profiles.test_changed_counts_rejected) ... ok
+test_changed_native_count_rejected (test_model_profiles.Profiles.test_changed_native_count_rejected) ... ok
+test_changed_q_inventory_rejected (test_model_profiles.Profiles.test_changed_q_inventory_rejected) ... ok
+test_cli (test_model_profiles.Profiles.test_cli) ... ok
+test_compensation_not_experiment_result (test_model_profiles.Profiles.test_compensation_not_experiment_result) ... ok
+test_duplicate_profile_rejected (test_model_profiles.Profiles.test_duplicate_profile_rejected) ... ok
+test_mechanism_tests_not_model_statistics (test_model_profiles.Profiles.test_mechanism_tests_not_model_statistics) ... ok
+test_model_version_not_inherited (test_model_profiles.Profiles.test_model_version_not_inherited) ... ok
+test_native_not_58_requests (test_model_profiles.Profiles.test_native_not_58_requests) ... ok
+test_native_semantic_accuracy_unavailable (test_model_profiles.Profiles.test_native_semantic_accuracy_unavailable) ... ok
+test_no_automatic_promotion (test_model_profiles.Profiles.test_no_automatic_promotion) ... ok
+test_no_calibration_guarantee (test_model_profiles.Profiles.test_no_calibration_guarantee) ... ok
+test_no_input_mutation (test_model_profiles.Profiles.test_no_input_mutation) ... ok
+test_no_latency_division (test_model_profiles.Profiles.test_no_latency_division) ... ok
+test_no_network (test_model_profiles.Profiles.test_no_network) ... ok
+test_no_per_question_billing (test_model_profiles.Profiles.test_no_per_question_billing) ... ok
+test_nonfinite_cost_rejected (test_model_profiles.Profiles.test_nonfinite_cost_rejected) ... ok
+test_noninteger_reconstruction_rejected (test_model_profiles.Profiles.test_noninteger_reconstruction_rejected) ... ok
+test_owner_assessment_is_not_score (test_model_profiles.Profiles.test_owner_assessment_is_not_score) ... ok
+test_per_question_cost_rejected (test_model_profiles.Profiles.test_per_question_cost_rejected) ... ok
+test_per_question_not_global_reliability (test_model_profiles.Profiles.test_per_question_not_global_reliability) ... ok
+test_pooled_failures_not_assigned_to_model (test_model_profiles.Profiles.test_pooled_failures_not_assigned_to_model) ... ok
+test_population_mismatch_rejected (test_model_profiles.Profiles.test_population_mismatch_rejected) ... ok
+test_q01_preserves_weakness (test_model_profiles.Profiles.test_q01_preserves_weakness) ... ok
+test_q11_not_rounded_to_perfect (test_model_profiles.Profiles.test_q11_not_rounded_to_perfect) ... ok
+test_ratio_mismatch_rejected (test_model_profiles.Profiles.test_ratio_mismatch_rejected) ... ok
+test_reproducible (test_model_profiles.Profiles.test_reproducible) ... ok
+test_schema (test_model_profiles.Profiles.test_schema) ... ok
+test_unavailable_cannot_be_perfect (test_model_profiles.Profiles.test_unavailable_cannot_be_perfect) ... ok
+test_unknown_costs_not_free (test_model_profiles.Profiles.test_unknown_costs_not_free) ... ok
+test_unknown_evidence_rejected (test_model_profiles.Profiles.test_unknown_evidence_rejected) ... ok
+test_unknown_positive_counts_not_invented (test_model_profiles.Profiles.test_unknown_positive_counts_not_invented) ... ok
+test_wrong_source_hash_rejected (test_model_profiles.Profiles.test_wrong_source_hash_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.401s
+
+OK

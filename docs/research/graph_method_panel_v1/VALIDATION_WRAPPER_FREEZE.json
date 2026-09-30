@@ -1,0 +1,28 @@
+{
+  "schema": "loom.graph_panel_validation_wrapper_freeze/1",
+  "frozen_at_utc": "2026-09-30T03:16:54.905344+00:00",
+  "validation_inputs_read_by_wrapper_author_during_implementation": false,
+  "validation_gold_read_by_wrapper_author_during_implementation": false,
+  "author_previously_authored_fixture": true,
+  "before_root_validation_release": true,
+  "primary_methods_unchanged": true,
+  "api_calls_by_author": 0,
+  "tests": {
+    "synthetic_validation_wrapper_checks_passed": 17,
+    "combined_wrapper_primary_integrity_checks_passed": 49,
+    "quality_claim": null
+  },
+  "fixture_manifest_sha256": "cf564f652647dd93e3d5f66acd2741eb69d3e39e3070ec69884c8023dc0a0569",
+  "files_sha256": {
+    "loom/tools/structure/graph_panel_validation.py": "cc97625fa66e938ce0ade6c17cf933184d75b22a091ac69fc97f017a71666edb",
+    "loom/tools/structure/test_graph_panel_validation.py": "766a687a276199dda221d72dcb6e37990589bf53b4030f3d4fed9cf0e4345b52",
+    "docs/research/graph_method_panel_v1/VALIDATION_WRAPPER_PROTOCOL.md": "84be6b4091e1e6a58b412dacddf8da569368c43cbd9df25f539a1e39ffa836b1",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/graph_panel_score_run.py": "2e29dd9f4c4af0bbb9760996af6ad63ee6fcc133ff8a0d348518c1d57a295018",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "loom/tools/structure/jev_live_pilot.py": "a3036e372d30f93659e1933a956b61972a50a50a216ba0340dee1b38d191e805",
+    "docs/research/graph_method_panel_v1/SCORER_DRIVER_FREEZE4.json": "d69ae5cffe99fed58cf655d35443c2adb60ff48dbee3aeb1671ec84c386ab279",
+    "docs/research/graph_method_panel_v1/gpt_judge_v2_recipe.json": "369e152f24d01cdb67fbe95a70692e2cddfd86c0c8a50cee0c2643bbc7ea6d19",
+    "loom/tests/fixtures/research/graph_methods_panel_v1/manifest.json": "cf564f652647dd93e3d5f66acd2741eb69d3e39e3070ec69884c8023dc0a0569"
+  }
+}

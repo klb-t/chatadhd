@@ -1,0 +1,64 @@
+{
+  "schema": "loom.native_baseline_artifact_inventory/1",
+  "files": {
+    "REPORT.md": {
+      "sha256": "783ee74bd9332b4be2dae0292396598c4adec425e7c435f6c1b9c7ae2b537328",
+      "bytes": 4793
+    },
+    "build_first.log": {
+      "sha256": "28306c06d5f7fd21a5d55492fcd23808db530827934c4bf0f681b4261fd7dc30",
+      "bytes": 16424
+    },
+    "build_first_summary.json": {
+      "sha256": "b2023ecedfb056e058c06e2d6748c2745e0883f28994893af88dcb29771d29d3",
+      "bytes": 62
+    },
+    "catalog_metric_first.json": {
+      "sha256": "2d70219e7fb8c438acbc4dd709e09bfc2f2895d74fe1952a269f2c71ed731549",
+      "bytes": 1201
+    },
+    "catalog_metric_first.log": {
+      "sha256": "261752ef2eabc6dc7ab0e5842055df793fa297fd81af7e7c81294d2ac797c20b",
+      "bytes": 16498
+    },
+    "ctest_environment_corrected.log": {
+      "sha256": "b92703f25b43f8db073cdc1f9f6068da6f1a60415bc88e85716219766f723d63",
+      "bytes": 8667
+    },
+    "ctest_environment_corrected.xml": {
+      "sha256": "fdc0ba78b8ebf255d9af801d6fe87686cf12f4bdae6a14e923843e51d11743c3",
+      "bytes": 42504
+    },
+    "ctest_environment_corrected_summary.json": {
+      "sha256": "d9efa18d502fdcc9c5e26a3f9459e0df9770047f18bd9465c40da07dc63800a1",
+      "bytes": 289
+    },
+    "ctest_first.log": {
+      "sha256": "b668f33badef39102d96558218858fed2bb586132d352192b2255795544ad7cb",
+      "bytes": 15899
+    },
+    "ctest_first.xml": {
+      "sha256": "ed00dedd4e6cdd16e38c8ba8fbfab0bf7e9cc0c9db55d9098f3af29445de0502",
+      "bytes": 45146
+    },
+    "ctest_first_summary.json": {
+      "sha256": "e5d48323feca3eade2c266bdd1b15f30cb56a138931dc88a8fa3c884e98b7acf",
+      "bytes": 178
+    },
+    "environment_before_build.json": {
+      "sha256": "4f373522fef76ad67cc58c968643a91a5c64e66ba689d217a89a78756ae47a08",
+      "bytes": 26908
+    },
+    "python_sources_before_second_ctest.json": {
+      "sha256": "d8620cc26c21cfadc6a349297948fd7b276388ac6f765db13322d468c8eb58a9",
+      "bytes": 520289
+    },
+    "research_structure_second.log": {
+      "sha256": "0429e625964334c8981ef80c8e53d068ee5e17af0f64d9754d804b1ce23fb4c2",
+      "bytes": 1744
+    }
+  },
+  "native_code_modified": false,
+  "model_calls": 0,
+  "validation_opened": false
+}

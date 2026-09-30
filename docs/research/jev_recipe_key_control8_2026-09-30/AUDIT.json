@@ -1,0 +1,814 @@
+{
+  "schema": "loom.jev_recipe_key_control_independent_audit/1",
+  "reviewed_at": "2026-09-30T03:45:07.389360+00:00",
+  "no_api_calls": true,
+  "no_validation_read": true,
+  "no_secret_file_read": true,
+  "no_original_artifact_edits": true,
+  "offline_archive_replay_byte_equal": true,
+  "archive_payload_hashes_verified": 43,
+  "archive_total_members": 44,
+  "first_score_sha256": "c9bdb0f9a4f582b5752376cbb1c0018ac74f0707fc6ab684caf56aca603c27fe",
+  "replayed_score_sha256": "c9bdb0f9a4f582b5752376cbb1c0018ac74f0707fc6ab684caf56aca603c27fe",
+  "evidence_archive_sha256": "0026c7dac719cc07b8a9844d00054d1d97d38cb1622164748ef4aa67ad0a3c32",
+  "status": {
+    "attempted_calls": 8,
+    "completed_calls": 8,
+    "planned_calls": 8,
+    "reported_cost_usd": "0.000249312",
+    "stopped_reason": null
+  },
+  "raw_cost_total_usd": "0.000249312",
+  "all_eight_receipt_reviews": [
+    {
+      "request_id": "r06.object_neutral",
+      "response_sha256": "1baa9367d0c0bf4dd25ba58c5bd26f8da9221d151913bbd41e6050cb633a18e3",
+      "reported_cost_usd": "0.000026544",
+      "probabilities": {
+        "expressed": 0.06,
+        "inferred": 0.31
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 632,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    },
+    {
+      "request_id": "r06.object_nonsense",
+      "response_sha256": "591a0286f9066c337544473406cd388ffe149134195bb113ea355f895efde26b",
+      "reported_cost_usd": "0.000026796",
+      "probabilities": {
+        "expressed": 0.06,
+        "inferred": 0.31
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 638,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    },
+    {
+      "request_id": "r13.object_neutral",
+      "response_sha256": "c6ea5609912e0d2d32b383a95d8a355ec0d85ad11f0dd9ad4e185479b7c3fa50",
+      "reported_cost_usd": "0.000035994",
+      "probabilities": {
+        "expressed": 0.47,
+        "inferred": 0.86
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 857,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    },
+    {
+      "request_id": "r13.object_nonsense",
+      "response_sha256": "c13ac3b004b194534c5be669bd42a7fe33659f3b8abfc45ae864e8aa5f1501d4",
+      "reported_cost_usd": "0.000036246",
+      "probabilities": {
+        "expressed": 0.37,
+        "inferred": 0.84
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 863,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    },
+    {
+      "request_id": "r15.object_neutral",
+      "response_sha256": "d437d96da98691dc71b855a5947a6923bded56e06bc0f09d33632c459b44ba6f",
+      "reported_cost_usd": "0.00003507",
+      "probabilities": {
+        "expressed": 0.28,
+        "inferred": 0.33
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 835,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    },
+    {
+      "request_id": "r15.object_nonsense",
+      "response_sha256": "b87f7cbd7d35b9b4e6ca4634dc2bfad7ae624b5ea59e95e127cda806d1dabb4c",
+      "reported_cost_usd": "0.000035322",
+      "probabilities": {
+        "expressed": 0.37,
+        "inferred": 0.35
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 841,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    },
+    {
+      "request_id": "r16.object_neutral",
+      "response_sha256": "0fbfdc7648431c89fc7388e6bb4e0fff127c69f3e917b6e6348c9536f57e4bab",
+      "reported_cost_usd": "0.000026544",
+      "probabilities": {
+        "expressed": 0.23,
+        "inferred": 0.9
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 632,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    },
+    {
+      "request_id": "r16.object_nonsense",
+      "response_sha256": "375b820d5832e4acd6703c623645db209fbf68aabaf359979bc6c1b024b203cc",
+      "reported_cost_usd": "0.000026796",
+      "probabilities": {
+        "expressed": 0.24,
+        "inferred": 0.88
+      },
+      "model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "input_tokens": 638,
+      "output_tokens": 39,
+      "generation_billing": {
+        "audit_status": "unavailable",
+        "http_status": 404
+      }
+    }
+  ],
+  "new_decisions_recount": {
+    "accuracy_observed": 1.0,
+    "accuracy_planned": 1.0,
+    "baselines_planned": {
+      "all_negative_accuracy": 0.75,
+      "all_negative_correct": 12,
+      "all_positive_accuracy": 0.25,
+      "all_positive_correct": 4
+    },
+    "brier_observed": 0.074,
+    "coverage": 1.0,
+    "ece_bins": [
+      {
+        "count": 2,
+        "index": 0,
+        "mean_probability": 0.06,
+        "positive_fraction": 0.0
+      },
+      {
+        "count": 9,
+        "index": 1,
+        "mean_probability": 0.31,
+        "positive_fraction": 0.0
+      },
+      {
+        "count": 1,
+        "index": 2,
+        "mean_probability": 0.47,
+        "positive_fraction": 0.0
+      },
+      {
+        "count": 0,
+        "index": 3,
+        "mean_probability": null,
+        "positive_fraction": null
+      },
+      {
+        "count": 4,
+        "index": 4,
+        "mean_probability": 0.87,
+        "positive_fraction": 1.0
+      }
+    ],
+    "ece_observed": 0.24375,
+    "fn": 0,
+    "fp": 0,
+    "gold_positive_observed": 4,
+    "logloss_observed": 0.2924227303369864,
+    "missing": 0,
+    "missing_negative": 0,
+    "missing_positive": 0,
+    "observed": 16,
+    "planned": 16,
+    "planned_negative": 12,
+    "planned_positive": 4,
+    "precision_observed": 1.0,
+    "predicted_positive_observed": 4,
+    "recall_observed": 1.0,
+    "recall_planned": 1.0,
+    "selective_coverage_planned": 0.375,
+    "selective_error": 0.0,
+    "selective_observed": 6,
+    "tn": 12,
+    "tp": 4
+  },
+  "same_four_case_task_arm_recounts": {
+    "expressed": {
+      "object_meaningful": {
+        "tp": 0,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 0,
+        "predicted_positive": 0,
+        "count": 4,
+        "brier": "0.09925"
+      },
+      "string": {
+        "tp": 0,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 0,
+        "predicted_positive": 0,
+        "count": 4,
+        "brier": "0.123525"
+      },
+      "object_neutral": {
+        "tp": 0,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 0,
+        "predicted_positive": 0,
+        "count": 4,
+        "brier": "0.08895"
+      },
+      "object_nonsense": {
+        "tp": 0,
+        "tn": 4,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 0,
+        "predicted_positive": 0,
+        "count": 4,
+        "brier": "0.08375"
+      }
+    },
+    "inferred": {
+      "object_meaningful": {
+        "tp": 2,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 2,
+        "predicted_positive": 2,
+        "count": 4,
+        "brier": "0.099375"
+      },
+      "string": {
+        "tp": 2,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 2,
+        "predicted_positive": 2,
+        "count": 4,
+        "brier": "0.05985"
+      },
+      "object_neutral": {
+        "tp": 2,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 2,
+        "predicted_positive": 2,
+        "count": 4,
+        "brier": "0.05865"
+      },
+      "object_nonsense": {
+        "tp": 2,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "gold_positive": 2,
+        "predicted_positive": 2,
+        "count": 4,
+        "brier": "0.06465"
+      }
+    }
+  },
+  "first32_comparator_rows_equal": true,
+  "immutable_first32_comparator_sha256": "28a297a834749d369334a189d0aacc4a8cb7786b861ddd64f5387452c72bcfa4",
+  "object_key_only_control_checks": [
+    {
+      "case_id": "r06",
+      "object_arm_state_and_criteria_equal": true,
+      "instruction_value_sequence_equal": true,
+      "meaningful_keys": [
+        "task",
+        "criterion",
+        "boundary"
+      ],
+      "neutral_keys": [
+        "field_1",
+        "field_2",
+        "field_3"
+      ],
+      "nonsense_keys": [
+        "zxq_1",
+        "vkp_2",
+        "mjr_3"
+      ],
+      "source_state": {
+        "conversation_history": [],
+        "target_turn": "The checkout screen and the parcel screen display dates in the same order.",
+        "candidate_relation": "The two screens call the same date-formatting module."
+      }
+    },
+    {
+      "case_id": "r13",
+      "object_arm_state_and_criteria_equal": true,
+      "instruction_value_sequence_equal": true,
+      "meaningful_keys": [
+        "task",
+        "criterion",
+        "boundary"
+      ],
+      "neutral_keys": [
+        "field_1",
+        "field_2",
+        "field_3"
+      ],
+      "nonsense_keys": [
+        "zxq_1",
+        "vkp_2",
+        "mjr_3"
+      ],
+      "source_state": {
+        "conversation_history": [],
+        "target_turn": "W tej serii raportów najpierw zachowujemy konkurencyjne wyjaśnienia, a dopiero nowy test rozstrzyga między nimi.",
+        "candidate_relation": "Hipoteza o strategii autora w tej serii: chronić możliwość wyboru do czasu pojawienia się testu rozróżniającego."
+      }
+    },
+    {
+      "case_id": "r15",
+      "object_arm_state_and_criteria_equal": true,
+      "instruction_value_sequence_equal": true,
+      "meaningful_keys": [
+        "task",
+        "criterion",
+        "boundary"
+      ],
+      "neutral_keys": [
+        "field_1",
+        "field_2",
+        "field_3"
+      ],
+      "nonsense_keys": [
+        "zxq_1",
+        "vkp_2",
+        "mjr_3"
+      ],
+      "source_state": {
+        "conversation_history": [],
+        "target_turn": "W notatce słowo „fala” oznacza kampanię próbek, a w nazwie wave_buf oznacza bufor dźwięku.",
+        "candidate_relation": "„fala” i wave_buf wskazują tę samą encję."
+      }
+    },
+    {
+      "case_id": "r16",
+      "object_arm_state_and_criteria_equal": true,
+      "instruction_value_sequence_equal": true,
+      "meaningful_keys": [
+        "task",
+        "criterion",
+        "boundary"
+      ],
+      "neutral_keys": [
+        "field_1",
+        "field_2",
+        "field_3"
+      ],
+      "nonsense_keys": [
+        "zxq_1",
+        "vkp_2",
+        "mjr_3"
+      ],
+      "source_state": {
+        "conversation_history": [],
+        "target_turn": "We rebuilt two adapters while leaving their common interface unchanged.",
+        "candidate_relation": "Candidate strategy suggested by these replacements: put replaceable implementations behind stable interfaces."
+      }
+    }
+  ],
+  "all_raw_new_rows": [
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r06",
+      "label": 0,
+      "language": "en",
+      "probability": 0.06,
+      "question": "expressed",
+      "request_id": "r06.object_neutral"
+    },
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r06",
+      "label": 0,
+      "language": "en",
+      "probability": 0.31,
+      "question": "inferred",
+      "request_id": "r06.object_neutral"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r06",
+      "label": 0,
+      "language": "en",
+      "probability": 0.06,
+      "question": "expressed",
+      "request_id": "r06.object_nonsense"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r06",
+      "label": 0,
+      "language": "en",
+      "probability": 0.31,
+      "question": "inferred",
+      "request_id": "r06.object_nonsense"
+    },
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r13",
+      "label": 0,
+      "language": "pl",
+      "probability": 0.47,
+      "question": "expressed",
+      "request_id": "r13.object_neutral"
+    },
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r13",
+      "label": 1,
+      "language": "pl",
+      "probability": 0.86,
+      "question": "inferred",
+      "request_id": "r13.object_neutral"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r13",
+      "label": 0,
+      "language": "pl",
+      "probability": 0.37,
+      "question": "expressed",
+      "request_id": "r13.object_nonsense"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r13",
+      "label": 1,
+      "language": "pl",
+      "probability": 0.84,
+      "question": "inferred",
+      "request_id": "r13.object_nonsense"
+    },
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r15",
+      "label": 0,
+      "language": "pl",
+      "probability": 0.28,
+      "question": "expressed",
+      "request_id": "r15.object_neutral"
+    },
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r15",
+      "label": 0,
+      "language": "pl",
+      "probability": 0.33,
+      "question": "inferred",
+      "request_id": "r15.object_neutral"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r15",
+      "label": 0,
+      "language": "pl",
+      "probability": 0.37,
+      "question": "expressed",
+      "request_id": "r15.object_nonsense"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r15",
+      "label": 0,
+      "language": "pl",
+      "probability": 0.35,
+      "question": "inferred",
+      "request_id": "r15.object_nonsense"
+    },
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r16",
+      "label": 0,
+      "language": "en",
+      "probability": 0.23,
+      "question": "expressed",
+      "request_id": "r16.object_neutral"
+    },
+    {
+      "arm": "object_neutral",
+      "attempt_state": "completed",
+      "case_id": "r16",
+      "label": 1,
+      "language": "en",
+      "probability": 0.9,
+      "question": "inferred",
+      "request_id": "r16.object_neutral"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r16",
+      "label": 0,
+      "language": "en",
+      "probability": 0.24,
+      "question": "expressed",
+      "request_id": "r16.object_nonsense"
+    },
+    {
+      "arm": "object_nonsense",
+      "attempt_state": "completed",
+      "case_id": "r16",
+      "label": 1,
+      "language": "en",
+      "probability": 0.88,
+      "question": "inferred",
+      "request_id": "r16.object_nonsense"
+    }
+  ],
+  "all_32_contrasts_preserved": [
+    {
+      "case_id": "r06",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": 0.009999999999999995,
+      "question": "expressed",
+      "squared_error_delta": 0.0010999999999999994
+    },
+    {
+      "case_id": "r06",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": 0.009999999999999995,
+      "question": "expressed",
+      "squared_error_delta": 0.0010999999999999994
+    },
+    {
+      "case_id": "r06",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": 0.0,
+      "question": "expressed",
+      "squared_error_delta": 0.0
+    },
+    {
+      "case_id": "r06",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": 0.0,
+      "question": "expressed",
+      "squared_error_delta": 0.0
+    },
+    {
+      "case_id": "r06",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": -0.09999999999999998,
+      "question": "inferred",
+      "squared_error_delta": -0.07199999999999997
+    },
+    {
+      "case_id": "r06",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": -0.09999999999999998,
+      "question": "inferred",
+      "squared_error_delta": -0.07199999999999997
+    },
+    {
+      "case_id": "r06",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": 0.0,
+      "question": "inferred",
+      "squared_error_delta": 0.0
+    },
+    {
+      "case_id": "r06",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": -0.03999999999999998,
+      "question": "inferred",
+      "squared_error_delta": -0.031199999999999978
+    },
+    {
+      "case_id": "r13",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": 0.02999999999999997,
+      "question": "expressed",
+      "squared_error_delta": 0.02729999999999999
+    },
+    {
+      "case_id": "r13",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": -0.07,
+      "question": "expressed",
+      "squared_error_delta": -0.0567
+    },
+    {
+      "case_id": "r13",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": 0.09999999999999998,
+      "question": "expressed",
+      "squared_error_delta": 0.08399999999999999
+    },
+    {
+      "case_id": "r13",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": 0.0,
+      "question": "expressed",
+      "squared_error_delta": 0.0
+    },
+    {
+      "case_id": "r13",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": -0.010000000000000009,
+      "question": "inferred",
+      "squared_error_delta": 0.002700000000000001
+    },
+    {
+      "case_id": "r13",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": -0.030000000000000027,
+      "question": "inferred",
+      "squared_error_delta": 0.00870000000000001
+    },
+    {
+      "case_id": "r13",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": 0.020000000000000018,
+      "question": "inferred",
+      "squared_error_delta": -0.006000000000000009
+    },
+    {
+      "case_id": "r13",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": -0.010000000000000009,
+      "question": "inferred",
+      "squared_error_delta": 0.002700000000000001
+    },
+    {
+      "case_id": "r15",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": -0.06999999999999995,
+      "question": "expressed",
+      "squared_error_delta": -0.04409999999999997
+    },
+    {
+      "case_id": "r15",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": 0.020000000000000018,
+      "question": "expressed",
+      "squared_error_delta": 0.01440000000000001
+    },
+    {
+      "case_id": "r15",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": -0.08999999999999997,
+      "question": "expressed",
+      "squared_error_delta": -0.05849999999999998
+    },
+    {
+      "case_id": "r15",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": 0.13,
+      "question": "expressed",
+      "squared_error_delta": 0.10790000000000001
+    },
+    {
+      "case_id": "r15",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": -0.12,
+      "question": "inferred",
+      "squared_error_delta": -0.0936
+    },
+    {
+      "case_id": "r15",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": -0.10000000000000003,
+      "question": "inferred",
+      "squared_error_delta": -0.08000000000000003
+    },
+    {
+      "case_id": "r15",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": -0.019999999999999962,
+      "question": "inferred",
+      "squared_error_delta": -0.013599999999999973
+    },
+    {
+      "case_id": "r15",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": -0.18,
+      "question": "inferred",
+      "squared_error_delta": -0.1296
+    },
+    {
+      "case_id": "r16",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": -0.05000000000000002,
+      "question": "expressed",
+      "squared_error_delta": -0.02550000000000001
+    },
+    {
+      "case_id": "r16",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": -0.040000000000000036,
+      "question": "expressed",
+      "squared_error_delta": -0.020800000000000013
+    },
+    {
+      "case_id": "r16",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": -0.009999999999999981,
+      "question": "expressed",
+      "squared_error_delta": -0.004699999999999996
+    },
+    {
+      "case_id": "r16",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": -0.020000000000000018,
+      "question": "expressed",
+      "squared_error_delta": -0.010800000000000004
+    },
+    {
+      "case_id": "r16",
+      "contrast": "object_neutral_minus_object_meaningful",
+      "probability_delta": 0.0,
+      "question": "inferred",
+      "squared_error_delta": 0.0
+    },
+    {
+      "case_id": "r16",
+      "contrast": "object_nonsense_minus_object_meaningful",
+      "probability_delta": -0.020000000000000018,
+      "question": "inferred",
+      "squared_error_delta": 0.004400000000000005
+    },
+    {
+      "case_id": "r16",
+      "contrast": "object_neutral_minus_object_nonsense",
+      "probability_delta": 0.020000000000000018,
+      "question": "inferred",
+      "squared_error_delta": -0.004400000000000005
+    },
+    {
+      "case_id": "r16",
+      "contrast": "string_minus_object_meaningful",
+      "probability_delta": 0.0,
+      "question": "inferred",
+      "squared_error_delta": 0.0
+    }
+  ],
+  "declared_threshold": ">=0.5 (original T3 scorer; not graph ternary >0.5)",
+  "limits": [
+    "Four cases selected after first32 outputs are targeted development, not independent validation.",
+    "All four expressed gold labels are negative in every arm; expressed positive recall and precision have no denominator. All-negative baseline already 4/4 with Brier0.",
+    "Inferred has 2 positive and 2 negative per arm, all methods 4/4; small Brier differences do not identify a general winning recipe.",
+    "Only instruction keys differ among the three object arms after checking original value sequence/state/criteria. The old string arm is contextual, not a key-only control.",
+    "The three object recipes each have one physical response per selected case; method/time variation is not separated by a repeated-call experiment.",
+    "An inferred yes is a scoped candidate interpretation, not a fact or verified author intent. Source content truth and raw observations remain distinct.",
+    "Optional generation lookup audits remain outside the raw receipt reconciliation; no external invoice accuracy claim is made.",
+    "HANDOFF.md is a preserved pre-run document still headed executable-not-run. Current first_score and this audit establish actual 8 completed calls and 16 decisions."
+  ]
+}
