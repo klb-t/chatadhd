@@ -119,7 +119,8 @@ Captured in the earlier continuation run, before W1–W6 integration:
 Build environment uses bundled SQLite because system development headers were
 unavailable. Credential-handoff tests use `TMPDIR=/var/tmp`, outside the enclosing
 workspace Git tree; earlier environmental failures remain in the receipt.
-No baseline native pass is claimed from its deliberately stopped build.
+No native pass is claimed for the deliberately stopped recovered-`fafc77f`
+build; it is distinct from the completed `a798628` run above.
 
 The older [continuation handoff](HANDOFF_CONTINUATION_2026-09-30.md) is historical;
 this file and the publication map supersede its implementation queue.

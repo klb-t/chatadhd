@@ -54,7 +54,7 @@ Native verification uses one frozen source/build owner to avoid mixed objects.
 
 | Lane | Evidence checked in this publication audit |
 |---|---|
-| W1 | Stored full CTest **83/83**, 0 failures/skips; source/artifact hashes match. Separately documented negative examples still expose the durable-acceptance gap. |
+| W1 | Stored full CTest **83/83**, 0 failures/skips; source/artifact hashes match. Separately documented negative examples exposed the pre-integration durable-acceptance gap and remain as historical evidence. |
 | W2 | Stored full CTest **84/84**, 0 failures/skips; 24 source hashes match. DEV ranking failures are retained. |
 | W3 | **20/20** included in **841/841** structure tests; separate profile suite **35/35**. Replay evidence is not a fresh model-quality experiment. |
 | W4 | **50/50** coordination, **185/185** contracts, **27/27** graph tests. `structure-incomplete.log` is incomplete and does not establish a full structure pass. |

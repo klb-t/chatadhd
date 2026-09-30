@@ -12,7 +12,9 @@ Stan organizacyjny: 2026-09-30. Integrator: ROOT w nowym wątku kontynuacji.
 Punkt odzyskania: `fafc77f8eeebdff4c32897b5e8ef94dd26d4ec38`.
 Scalono także historię gałęzi Claude'a do `46066308ac6306a1b30f65b98e19a40da6df7e9c`;
 zachowano nowsze poprawki badawcze i aktualne wyjaśnienie właściciela.
-Gałąź integracyjna: `gpt/research-2026-09-30`. Nie jest to wdrożenie ani scalenie PR6.
+Dotychczasowa gałąź integracyjna: `gpt/research-2026-09-30`; bieżący kandydat
+i jego wynik są wskazane na początku tego pliku i w STATE.
+Nie jest to wdrożenie ani scalenie PR6.
 
 ## Cel i źródła decyzji
 
@@ -27,7 +29,7 @@ oczekiwania, nie długością odpowiedzi. Nie obiecujemy liniowego przyspieszeni
 `../architecture/OWNER_REQUIREMENTS_2026-09-26.md` oraz bieżący kod.
 Podział poniżej jest decyzją wykonawczą ROOT, nie cytatem właściciela.
 
-## Co działa równolegle w tym przebiegu
+## Historyczny podział pierwszego przyrostu — 2026-09-30
 
 | Tor | Konkretny przyrost | Własność |
 |---|---|---|
@@ -61,8 +63,9 @@ wątek może użyć własnych agentów po sprawdzeniu faktycznych limitów środ
 Krótki prompt startowy do nowej rozmowy:
 
 > Przejmij pakiet WN z docs/coordination w repo klb-t/chatadhd,
-> gałąź gpt/research-2026-09-30. Najpierw przeczytaj AGENTS.md, bieżący
-> docs/STATE.md i pakiet. Sprawdź aktualny zdalny HEAD i już wykonane zmiany,
+> na aktualnym wspólnym HEAD wskazanym w docs/STATE.md i potwierdzonym przez ROOT.
+> Najpierw przeczytaj AGENTS.md, bieżący docs/STATE.md i pakiet.
+> Sprawdź aktualny zdalny HEAD i już wykonane zmiany,
 > aby ich nie powtarzać. Pracuj autonomicznie na własnej gałęzi w zakresie
 > pakietu; użyj agentów do niezależnych zadań i przeglądu. Publikuj małe
 > sprawdzone commity i receipt z dokładnymi SHA. Nie edytuj wspólnego STATE
