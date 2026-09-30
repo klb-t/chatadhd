@@ -1,0 +1,48 @@
+{
+  "observed_at_utc": "2026-09-30T12:50:40.439039+00:00",
+  "upstream_development_commit": "a32dbdcd6d91ba3370367af76d566a38371fa0f3",
+  "prior_development_baseline": "5816b557f9a02fba50a5e4f905aac6c63390be39",
+  "upstream_delta_commits": [
+    "15a424fa0b419c67534b657f069ad81ee119b695",
+    "1aa1ad952e70297a38ca4d1dab7eede07c9cc96f",
+    "a32dbdcd6d91ba3370367af76d566a38371fa0f3"
+  ],
+  "applied_paths_sha256": {
+    "AGENTS.md": "f757bc53ac63961c31084b564a80c60c12ada585eeae06d304ddede7c999f1e0",
+    "CLAUDE.md": "abcfe797520d136644e7515aa84cc8e589454c4bcfed5f8ed7be9432d8469101",
+    "docs/HANDOFF_SOL_2026-09-29.md": "eea8a156aba70b9e24611218f82a41e8f69e5a1ad085a5cdac56ef40aa8332a4",
+    "loom/tools/eval/README.md": "dfcd5eb02c51ae9899f919f45553c50ff27e0d770834e63b5bcfbb0e411d7e9a",
+    "loom/tools/eval/archive_cost.py": "6254ce78ab5963e57d458c5703b41f802b20d996b7e4377a0281f21e5769fa40",
+    "loom/tools/eval/pricing_2026-09-25.json": "046b7d458df78f73dc82ca1154ab5475940769d82ce98886c2890ec58118abfa",
+    "loom/tools/eval/test_archive_cost.py": "7e26c33186e60613e931403b2213a0385ecaafd8af8e35e5a6de56c738fb3c1f"
+  },
+  "policy": {
+    "new_paid_synthetic_runs": false,
+    "paid_frontier_pilot": false,
+    "new_model_methods": "implement_configure_verify_offline",
+    "user_options": [
+      "model",
+      "scope",
+      "reasoning",
+      "auto_accept",
+      "data_sent"
+    ],
+    "presets_are_not_restrictions": true,
+    "order_of_magnitude_usage_increase_requires_confirmation": true
+  },
+  "existing_first_paid_outcomes_retained": true,
+  "sealed_validation_read": false,
+  "archive_cost_tests": {
+    "command": "python3 -m unittest discover -s loom/tools/eval -p test_archive_cost.py -v",
+    "passed": 4,
+    "planned": 4
+  },
+  "first_wrong_invocation_preserved": {
+    "command": "python3 -m unittest loom.tools.eval.test_archive_cost -v",
+    "error": "ModuleNotFoundError: No module named archive_cost",
+    "cause": "test imports a bare sibling; established discovery command provides module path",
+    "source_changes_for_failure": false
+  },
+  "native_source_delta": false,
+  "native_build_rerun": false
+}
