@@ -152,6 +152,25 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
     LOOM_TRY_ASSIGN(auto sources, prov_->find_sources_by_hash(blob.hash));
     for (const auto& s : sources) {
       if (s.parser_version != parser_version) continue;
+      if (parser_version == kExportParserVersion) {
+        // export-3 records completion explicitly. A crash, cancellation or
+        // partial representation must never become a successful cache hit.
+        if (s.parser != "loom.importer." + std::string(fmt) + std::string(parser_suffix) ||
+            json::get_string(s.metadata, "import_status") != "complete") continue;
+        const Json* ids = json::find(s.metadata, "conversation_ids");
+        if (!ids || !ids->is_array()) continue;
+        std::vector<Conversation> convs;
+        bool intact = true;
+        for (const auto& id : *ids) {
+          if (!id.is_string()) { intact = false; break; }
+          auto c = db_.get_conv(id.get<std::string>());
+          if (!c || !*c) { intact = false; break; }
+          convs.push_back(**c);
+        }
+        if (!intact) continue;
+        ctx.source_id = s.id;
+        return std::optional<std::vector<Conversation>>(std::move(convs));
+      }
       auto recs = prov_->for_source(s.id, 1'000'000);
       if (!recs) continue;  // best-effort: fall through and re-register instead of failing the import
       std::vector<Conversation> convs;
@@ -160,7 +179,10 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
         auto c = db_.get_conv(r.subject_id);
         if (c && *c) convs.push_back(**c);
       }
-      if (!convs.empty()) return std::optional<std::vector<Conversation>>(std::move(convs));
+      if (!convs.empty()) {
+        ctx.source_id = s.id;
+        return std::optional<std::vector<Conversation>>(std::move(convs));
+      }
     }
   }
 
@@ -173,8 +195,54 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   rec.parser = "loom.importer." + std::string(fmt) + std::string(parser_suffix);
   rec.parser_version = std::string(parser_version);
   if (opts.title) rec.title = *opts.title;
+  if (kind == "zip_member" && current_source_ && ctx.zip_member) {
+    rec.metadata["parent_source_id"] = current_source_->source_id;
+    rec.metadata["locator"] = Json{{"source", "sha256:" + current_source_->blob_hash}, {"member", *ctx.zip_member}};
+    if (ctx.archive_index) rec.metadata["locator"]["archive_index"] = *ctx.archive_index;
+  }
+  if (parser_version == kExportParserVersion) rec.metadata["import_status"] = "pending";
   LOOM_TRY_ASSIGN(ctx.source_id, prov_->add_source(std::move(rec)));
   return std::optional<std::vector<Conversation>>{};
+}
+
+Result<Json> ConversationImporter::materialize_zip_member(const fs::path& path, const ImportOptions& opts,
+                                                            std::string_view member, std::int64_t archive_index) {
+  if (!opts.record_provenance || !blobs_ || !prov_ || !current_source_) return Json::object();
+  const auto& parent = *current_source_;
+  LOOM_TRY_ASSIGN(auto blob, blobs_->put_file(path, idt::mime_for_format(detect_format(path))));
+  Json locator{{"source", "sha256:" + parent.blob_hash}, {"member", member}, {"archive_index", archive_index}};
+  SourceRecord source;
+  source.kind = "zip_member";
+  source.uri = "sha256:" + parent.blob_hash + "!" + std::string(member);
+  source.blob_hash = blob.hash;
+  source.size = blob.size;
+  source.format = detect_format(path);
+  source.parser = "loom.importer.zip.member";
+  source.parser_version = std::string(kExportParserVersion);
+  source.metadata = Json{{"parent_source_id", parent.source_id}, {"locator", locator}};
+  LOOM_TRY_ASSIGN(auto id, prov_->add_source(std::move(source)));
+  ProvenanceRecord provenance;
+  provenance.subject_id = id;
+  provenance.subject_kind = "source";
+  provenance.source_id = parent.source_id;
+  provenance.locator = locator;
+  provenance.transform = "extract.zip@" + std::string(kExportParserVersion);
+  LOOM_TRY(prov_->add(std::move(provenance)));
+  return Json{{"source_id", id}, {"blob_hash", blob.hash}, {"locator", locator}};
+}
+
+Status ConversationImporter::set_source_outcome(const SourceCtx& ctx, std::string_view status,
+                                               const std::vector<Conversation>& conversations, const Json& report) {
+  if (!prov_ || ctx.source_id.empty()) return {};
+  LOOM_TRY_ASSIGN(auto source, prov_->get_source(ctx.source_id));
+  if (!source) return Error(Errc::NotFound, "import source disappeared: " + ctx.source_id);
+  Json metadata = source->metadata;
+  metadata["import_status"] = status;
+  metadata["conversation_ids"] = Json::array();
+  for (const auto& conversation : conversations) metadata["conversation_ids"].push_back(conversation.id);
+  if (!report.is_null()) metadata["export_report"] = report;
+  auto lock = db_.lock();
+  return db_.conn().run("UPDATE loom_sources SET metadata=? WHERE id=?", json::py_dumps(metadata), ctx.source_id);
 }
 
 Result<std::vector<Conversation>> ConversationImporter::with_source(
@@ -198,6 +266,7 @@ void ConversationImporter::record_provenance(const Conversation& conv, std::stri
   if (provider_export) {
     if (!ctx.blob_hash.empty()) loc["source"] = "sha256:" + ctx.blob_hash;
     if (const Json* metadata = json::find(conv.metadata, "export"); metadata && metadata->is_object()) {
+      if (const Json* index = json::find(*metadata, "archive_index")) loc["archive_index"] = *index;
       // source identifies the innermost archive blob. Its member name is
       // local; legacy zip_member may include the containing archive chain.
       if (ctx.zip_member) {
@@ -262,7 +331,8 @@ void ConversationImporter::record_provenance(const Conversation& conv, std::stri
 // ── import_file(): dispatch + aggregate result ──────────────────────
 Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, const ImportOptions& opts,
                                                            std::string_view source_kind,
-                                                           std::optional<std::string> zip_member_rel) {
+                                                           std::optional<std::string> zip_member_rel,
+                                                           std::optional<std::int64_t> archive_index) {
   std::string fmt = detect_format(path);
   ImportResult result;
   result.format = fmt;
@@ -276,6 +346,7 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
 
   SourceCtx ctx;
   ctx.zip_member = std::move(zip_member_rel);
+  ctx.archive_index = archive_index;
   LOOM_TRY_ASSIGN(auto dup, use_export ? prepare_source(path, fmt, opts, source_kind, ctx, kExportParserVersion, ".export")
                                        : prepare_source(path, fmt, opts, source_kind, ctx));
   result.source_id = ctx.source_id;
@@ -285,6 +356,12 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
     result.conversations = std::move(*dup);
     result.already_imported = true;
     result.warnings.push_back("already imported (source " + result.source_id + ")");
+    if (use_export && prov_) {
+      auto source = prov_->get_source(result.source_id);
+      if (source && *source) {
+        if (const Json* report = json::find((**source).metadata, "export_report")) result.export_report = *report;
+      }
+    }
     for (const auto& c : result.conversations) {
       if (auto msgs = db_.get_msgs(c.id, true); msgs) result.messages += static_cast<std::int64_t>(msgs->size());
     }
@@ -312,7 +389,13 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
     if (fmt == "text") return text_body(path, opts);
     return Error(Errc::Unsupported, "Unknown format: " + path.string());
   }();
-  if (!convs) return convs.error();
+  if (!convs) {
+    if (use_export) {
+      auto recorded = set_source_outcome(ctx, "failed", {}, export_report);
+      if (!recorded) log::warn(kLog, "could not record failed source outcome: {}", recorded.error().message);
+    }
+    return convs.error();
+  }
 
   result.conversations = std::move(*convs);
   if (!export_report.is_null()) {
@@ -327,6 +410,11 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
     if (auto msgs = db_.get_msgs(c.id, true); msgs) result.messages += static_cast<std::int64_t>(msgs->size());
   }
   result.cancelled = cancelled(opts);
+  if (use_export) {
+    const bool partial = export_report.is_object() && export_report.value("partial", false);
+    LOOM_TRY(set_source_outcome(ctx, result.cancelled ? "cancelled" : partial ? "partial" : "complete",
+                               result.conversations, export_report));
+  }
 
   if (!result.conversations.empty()) {
     bus_.emit(events::kImportDone, Json{{"count", static_cast<std::int64_t>(result.conversations.size())},

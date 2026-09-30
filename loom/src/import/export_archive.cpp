@@ -26,6 +26,8 @@ struct Member {
   std::string rel;
   fs::path abs;
   std::int64_t size = 0;
+  std::int64_t archive_index = 0;
+  Json materialization = Json::object();
 };
 
 bool safe_relpath(const fs::path& rel) {
@@ -123,6 +125,7 @@ struct Run {
     cm.export_meta["source_index"] = idx;
     cm.export_meta["source_container"] = loader.wrapper ? "conversations_wrapper" : loader.top_is_array ? "array" : "object";
     cm.export_meta["json_pointer"] = conversation_pointer;
+    if (loader.archive_index) cm.export_meta["archive_index"] = *loader.archive_index;
     if (loader.wrapper) cm.export_meta["wrapper_fields"] = loader.wrapper_fields;
     for (std::size_t message_index = 0; message_index < cm.msgs.size(); ++message_index) {
       auto& message = cm.msgs[message_index];
@@ -225,18 +228,25 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
   std::vector<Member> entries;
   mz_uint n = mz_zip_reader_get_num_files(&zip);
   for (mz_uint i = 0; i < n; ++i) {
+    if (run.env.cancelled()) { rep.partial = true; break; }
     if (mz_zip_reader_is_file_a_directory(&zip, i)) continue;
     mz_zip_archive_file_stat st;
-    if (!mz_zip_reader_file_stat(&zip, i, &st)) continue;
+    if (!mz_zip_reader_file_stat(&zip, i, &st)) {
+      rep.errors.push_back(Json{{"archive_index", i}, {"code", "member_stat_failed"}, {"message", "could not read archive entry metadata"}});
+      rep.partial = true;
+      continue;
+    }
     std::string name = st.m_filename;
     fs::path relp(name);
     if (!safe_relpath(relp)) {
       log::warn(kLog, "zip: skipping unsafe entry path {}", name);
       rep.members.push_back(member_json(name, static_cast<std::int64_t>(st.m_uncomp_size), "skipped_unsafe_path"));
       rep.warnings.push_back("skipped unsafe archive path: " + name);
+      rep.partial = true;
       continue;
     }
-    fs::path dest = td.path() / relp;
+    // Each archive entry owns its extracted bytes, including duplicate paths.
+    fs::path dest = td.path() / std::to_string(i) / relp;
     std::error_code ec;
     fs::create_directories(dest.parent_path(), ec);
     if (!mz_zip_reader_extract_to_file(&zip, i, dest.string().c_str(), 0)) {
@@ -245,10 +255,20 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
       rep.partial = true;
       continue;
     }
-    entries.push_back(Member{relp.generic_string(), dest, static_cast<std::int64_t>(st.m_uncomp_size)});
+    auto materialized = materialize_zip_member(dest, opts, name, i);
+    Json identity = Json::object();
+    if (materialized) identity = *materialized;
+    else {
+      rep.errors.push_back(Json{{"member", name}, {"archive_index", i}, {"code", "materialization_failed"},
+                                {"message", materialized.error().message}});
+      rep.partial = true;
+      identity["materialization_error"] = materialized.error().message;
+    }
+    entries.push_back(Member{name, dest, static_cast<std::int64_t>(st.m_uncomp_size), i, std::move(identity)});
+    if (opts.progress) opts.progress(i + 1, n, "zip.materialize");
   }
   mz_zip_reader_end(&zip);
-  std::sort(entries.begin(), entries.end(), [](const Member& a, const Member& b) { return a.rel < b.rel; });
+  std::stable_sort(entries.begin(), entries.end(), [](const Member& a, const Member& b) { return a.rel < b.rel; });
 
   // conversation files: shallowest directory that has any
   std::string prefix;
@@ -267,6 +287,8 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
   }
 
   auto disp = [&](const Member& m, std::string_view d, Json extra = Json::object()) {
+    extra.update(m.materialization);
+    extra["archive_index"] = m.archive_index;
     rep.members.push_back(member_json(m.rel, m.size, d, std::move(extra)));
   };
 
@@ -280,6 +302,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
     // peek at the first element of the first readable file to pick the provider
     for (const Member* f : conv_files) {
       Loader L;
+      L.cancelled = [&] { return run.env.cancelled(); };
       L.element = [&](Json&& el, std::int64_t) {
         if (el.is_object()) {
           if (json::find(el, "mapping")) provider = "openai";
@@ -313,6 +336,8 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
       if (dir_of(e.rel) != prefix || !is_conversation_file(base_of(e.rel))) continue;
       if (run.env.cancelled()) break;
       Loader L;
+      L.cancelled = [&] { return run.env.cancelled(); };
+      L.archive_index = e.archive_index;
       const std::string member = e.rel;
       L.element = [&](Json&& el, std::int64_t idx) { return run.element(std::move(el), member, idx, provider, L); };
       L.bad_element = [&](std::int64_t idx, const std::string& why) {
@@ -337,6 +362,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
     }
     std::vector<Json> nested_parts;
     for (const Member* m : rest) {
+      if (run.env.cancelled()) break;
       const std::string sub = m->rel.rfind(prefix, 0) == 0 ? m->rel.substr(prefix.size()) : m->rel;
       if (provider == "openai" && m->rel.rfind(prefix, 0) == 0 && AssetIndex::is_asset(sub)) {
         disp(*m, "asset");
@@ -359,7 +385,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         ImportOptions mo = opts;
         mo.title = std::nullopt;
         mo.progress = nullptr;
-        auto r = import_file_as(m->abs, mo, "zip_member", m->rel);
+        auto r = import_file_as(m->abs, mo, "zip_member", m->rel, m->archive_index);
         if (r) {
           for (auto& c : r->conversations) run.convs.push_back(std::move(c));
           run.rep.parts.push_back(Json{{"member", m->rel}, {"report", r->export_report}});
@@ -388,11 +414,12 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
     bool any_provider_part = false;
     std::vector<const Member*> others;
     for (const auto& e : entries) {
+      if (run.env.cancelled()) break;
       if (ends_with(e.rel, ".zip") && detect_format(e.abs) == "zip") {
         ImportOptions mo = opts;
         mo.title = opts.title.has_value() ? opts.title : std::optional<std::string>(e.rel);
         mo.progress = nullptr;
-        auto r = import_file_as(e.abs, mo, "zip_member", e.rel);
+        auto r = import_file_as(e.abs, mo, "zip_member", e.rel, e.archive_index);
         if (!r) {
           log::warn(kLog, "Failed to import {} from ZIP: {}", e.rel, r.error().message);
           disp(e, "nested_archive_failed");
@@ -455,7 +482,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         ImportOptions mo = opts;
         mo.title = opts.title.has_value() ? opts.title : std::optional<std::string>(m->rel);
         mo.progress = nullptr;
-        auto r = import_file_as(m->abs, mo, "zip_member", m->rel);
+        auto r = import_file_as(m->abs, mo, "zip_member", m->rel, m->archive_index);
         if (!r) {
           log::warn(kLog, "Failed to import {} from ZIP: {}", m->rel, r.error().message);
           disp(*m, "import_failed", Json{{"message", r.error().message}});
@@ -501,6 +528,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
   for (const auto& p : rep.parts) {
     const Json& r = p["report"];
     if (!r.is_object()) continue;
+    if (r.value("partial", false)) rep.partial = true;
     if (const Json* c = json::find(r, "counts"); c && c->is_object()) {
       Counts pc;
       auto gi = [&](const char* k) { return json::get_int(*c, k, 0); };
@@ -530,6 +558,13 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
   }
 
   (void)db_.fts_sync();
+  if (run.env.cancelled()) rep.partial = true;
+  std::set<std::int64_t> reported_indices;
+  for (const auto& member : rep.members) reported_indices.insert(json::get_int(member, "archive_index", -1));
+  for (const auto& entry : entries) {
+    if (!reported_indices.count(entry.archive_index))
+      disp(entry, run.env.cancelled() ? "not_interpreted_cancelled" : "not_interpreted");
+  }
   report_out = rep.to_json();
   return std::move(run.convs);
 }
@@ -548,6 +583,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
   const std::string member = path.filename().string();
 
   Loader L;
+  L.cancelled = [&] { return run.env.cancelled(); };
   L.element = [&](Json&& el, std::int64_t idx) {
     if (provider.empty()) {
       if (el.is_object() && json::find(el, "mapping")) provider = "openai";
@@ -561,11 +597,18 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
     return run.element(std::move(el), member, idx, provider, L);
   };
   L.bad_element = [&](std::int64_t idx, const std::string& why) {
-    if (provider.empty()) return;
+    // Recognition may happen after a malformed array element. Retain earlier
+    // errors if a later element establishes this as a provider export; the
+    // report is still discarded when the whole path falls back to legacy.
     run.rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "invalid_element"}, {"message", why}});
     run.rep.partial = true;
   };
   LoadStats st = load_json_file(path, L);
+  if (st.cancelled) {
+    run.rep.partial = true;
+    report_out = run.rep.to_json();
+    return std::optional<std::vector<Conversation>>(std::move(run.convs));
+  }
   if (!recognized || provider.empty()) {
     // Not a provider export: undo nothing (nothing was written before recognition).
     return std::optional<std::vector<Conversation>>{};

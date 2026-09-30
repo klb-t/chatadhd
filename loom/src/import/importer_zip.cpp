@@ -41,10 +41,12 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
   struct Entry {
     std::string rel;  // POSIX-style relative path inside the archive
     fs::path abs;      // extracted location on disk
+    std::int64_t archive_index;
   };
   std::vector<Entry> entries;
   mz_uint n = mz_zip_reader_get_num_files(&zip);
   for (mz_uint i = 0; i < n; ++i) {
+    if (cancelled(opts)) break;
     if (mz_zip_reader_is_file_a_directory(&zip, i)) continue;
     mz_zip_archive_file_stat st;
     if (!mz_zip_reader_file_stat(&zip, i, &st)) continue;
@@ -54,18 +56,20 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
       log::warn(kLog, "zip: skipping unsafe entry path {}", name);
       continue;
     }
-    fs::path dest = td.path() / relp;
+    fs::path dest = td.path() / std::to_string(i) / relp;
     std::error_code ec;
     fs::create_directories(dest.parent_path(), ec);
     if (!mz_zip_reader_extract_to_file(&zip, i, dest.string().c_str(), 0)) {
       log::warn(kLog, "zip: failed to extract {}", name);
       continue;
     }
-    entries.push_back(Entry{relp.generic_string(), dest});
+    auto materialized = materialize_zip_member(dest, opts, name, i);
+    if (!materialized) { mz_zip_reader_end(&zip); return materialized.error(); }
+    entries.push_back(Entry{name, dest, i});
   }
   mz_zip_reader_end(&zip);
 
-  std::sort(entries.begin(), entries.end(), [](const Entry& a, const Entry& b) { return a.rel < b.rel; });
+  std::stable_sort(entries.begin(), entries.end(), [](const Entry& a, const Entry& b) { return a.rel < b.rel; });
 
   std::vector<std::string> importable_rels;
   for (const auto& e : entries) {
@@ -87,7 +91,7 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
     member_opts.force = opts.force;
     member_opts.stream_threshold_bytes = opts.stream_threshold_bytes;
 
-    auto r = import_file_as(e.abs, member_opts, "zip_member", e.rel);
+    auto r = import_file_as(e.abs, member_opts, "zip_member", e.rel, e.archive_index);
     ++done;
     if (opts.progress) opts.progress(done, static_cast<std::int64_t>(importable_rels.size()), "zip");
     if (!r) {

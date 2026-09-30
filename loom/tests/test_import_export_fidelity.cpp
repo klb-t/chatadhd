@@ -61,7 +61,7 @@ struct FidelityFixture {
                       const std::string& base, const std::string& member = "") {
     auto receipts = unwrap(provenance.for_subject(conversation.id));
     REQUIRE(receipts.size() == 1);
-    CHECK(receipts[0].transform == "import.export@export-2");
+    CHECK(receipts[0].transform == "import.export@" + std::string(kExportParserVersion));
     CHECK(receipts[0].locator["json_pointer"] == base);
     CHECK(receipts[0].locator["source"] == "sha256:" + imported.blob_hash);
     if (!member.empty()) CHECK(receipts[0].locator["member"] == member);

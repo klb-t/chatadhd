@@ -73,7 +73,7 @@ class ProvenanceStore;
 class MediaProviders;
 
 inline constexpr std::string_view kImporterParserVersion = "1";
-inline constexpr std::string_view kExportParserVersion = "export-2";
+inline constexpr std::string_view kExportParserVersion = "export-3";
 
 // (current, total, status). Units: conversations when the total is known,
 // otherwise bytes read; total = -1 when unknown.
@@ -202,6 +202,7 @@ class ConversationImporter {
     int conv_index = 0;
     std::optional<std::string> zip_member;
     std::optional<std::string> json_path;
+    std::optional<std::int64_t> archive_index;
   };
   class SourceCtxGuard {
    public:
@@ -227,6 +228,12 @@ class ConversationImporter {
                                                                    std::string_view kind, SourceCtx& ctx,
                                                                    std::string_view parser_version = kImporterParserVersion,
                                                                    std::string_view parser_suffix = "");
+  // Materializes one extracted ZIP entry in the existing source/blob model.
+  // Its locator addresses the containing archive, including duplicate-name index.
+  Result<Json> materialize_zip_member(const std::filesystem::path& path, const ImportOptions& opts,
+                                      std::string_view member, std::int64_t archive_index);
+  Status set_source_outcome(const SourceCtx& ctx, std::string_view status,
+                            const std::vector<Conversation>& conversations, const Json& report);
   // Wraps a *_body() call with prepare_source()/SourceCtxGuard for the
   // public per-format entry points (import_zip, import_json, ...), which are
   // independently testable/callable and so each self-registers its source.
@@ -237,7 +244,8 @@ class ConversationImporter {
   // annotate their provenance locator with the member's path inside the zip.
   Result<ImportResult> import_file_as(const std::filesystem::path& path, const ImportOptions& opts,
                                       std::string_view source_kind,
-                                      std::optional<std::string> zip_member_rel = std::nullopt);
+                                      std::optional<std::string> zip_member_rel = std::nullopt,
+                                      std::optional<std::int64_t> archive_index = std::nullopt);
   // Pure parse+insert bodies (no source/blob bookkeeping of their own; the
   // public import_<format>() wrappers and import_file_as() set up SourceCtx
   // around a call to these).

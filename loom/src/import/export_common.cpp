@@ -291,31 +291,45 @@ LoadStats load_json_file(const fs::path& path, Loader& L) {
     return st;
   }
   std::string chunk(1 << 16, '\0');
-  f.read(chunk.data(), static_cast<std::streamsize>(chunk.size()));
-  auto n = f.gcount();
+  std::streamsize n = 0;
   std::size_t first = 0;
-  while (first < static_cast<std::size_t>(n) && std::isspace(static_cast<unsigned char>(chunk[first]))) ++first;
-  // Skip a UTF-8 BOM.
-  if (static_cast<std::size_t>(n) >= first + 3 && chunk.compare(first, 3, "\xEF\xBB\xBF") == 0) first += 3;
-  if (first >= static_cast<std::size_t>(n)) {
-    // whitespace-only chunk: may still hold data further on
-    std::string rest = chunk.substr(0, static_cast<std::size_t>(n));
-    std::string more((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
-    rest += more;
-    if (utf8::is_blank(rest)) {
-      st.empty = true;
-      st.message = "empty file";
-      return st;
+  bool skipped_bom = false;
+  // Discard whitespace a chunk at a time. Root dispatch must not depend on
+  // how much whitespace preceded it, nor materialize a large array just to
+  // discover its root. Objects/wrappers retain their documented DOM path.
+  for (;;) {
+    if (L.cancelled && L.cancelled()) { st.cancelled = true; return st; }
+    if (first == static_cast<std::size_t>(n)) {
+      f.read(chunk.data(), static_cast<std::streamsize>(chunk.size()));
+      n = f.gcount();
+      first = 0;
+      if (n <= 0) {
+        st.empty = !f.bad();
+        st.invalid = f.bad();
+        st.message = f.bad() ? "cannot read file" : "empty file";
+        return st;
+      }
     }
-    Json doc;
-    std::string why;
-    if (!parse_tolerant(rest, st, doc, why)) {
-      st.invalid = true;
-      st.message = why;
-      return st;
+    auto whitespace = [](char c) { return c == ' ' || c == '\t' || c == '\r' || c == '\n'; };
+    while (first < static_cast<std::size_t>(n) && whitespace(chunk[first])) ++first;
+    if (first == static_cast<std::size_t>(n)) continue;
+    if (!skipped_bom && static_cast<unsigned char>(chunk[first]) == 0xEF) {
+      // A BOM can straddle the scanner's chunk boundary. Keep only its
+      // candidate bytes and refill; malformed prefixes still reach JSON validation.
+      if (static_cast<std::size_t>(n) - first < 3 && !f.eof()) {
+        const auto kept = static_cast<std::size_t>(n) - first;
+        chunk.replace(0, kept, chunk.substr(first, kept));
+        f.read(chunk.data() + kept, static_cast<std::streamsize>(chunk.size() - kept));
+        n = static_cast<std::streamsize>(kept) + f.gcount();
+        first = 0;
+      }
+      if (static_cast<std::size_t>(n) - first >= 3 && chunk.compare(first, 3, "\xEF\xBB\xBF") == 0) {
+        first += 3;
+        skipped_bom = true;
+        continue;
+      }
     }
-    L.element(std::move(doc), 0);
-    return st;
+    break;
   }
 
   if (chunk[first] == '[') {
@@ -325,6 +339,7 @@ LoadStats load_json_file(const fs::path& path, Loader& L) {
     bool stop = false;
     auto on_element = [&](std::string_view raw) {
       if (stop) return;
+      if (L.cancelled && L.cancelled()) { st.cancelled = true; stop = true; return; }
       Json el;
       std::string why;
       if (!parse_tolerant(raw, st, el, why)) {
@@ -337,6 +352,7 @@ LoadStats load_json_file(const fs::path& path, Loader& L) {
     std::string_view head(chunk.data() + first, static_cast<std::size_t>(n) - first);
     bool ok = streamer.feed(head, on_element);
     while (ok && !streamer.finished() && !stop && f) {
+      if (L.cancelled && L.cancelled()) { st.cancelled = true; stop = true; break; }
       f.read(chunk.data(), static_cast<std::streamsize>(chunk.size()));
       auto m = f.gcount();
       if (m <= 0) break;
@@ -472,6 +488,8 @@ void AssetIndex::add(const std::string& rel, const fs::path& abs, std::int64_t s
   f.size = size;
   auto slash = rel.find('/');
   f.tier = slash == std::string::npos ? 0 : (rel.substr(0, slash) == "dalle-generations" ? 1 : 2);
+  if (std::any_of(files_.begin(), files_.end(), [&](const File& prior) { return prior.rel == rel; }))
+    ambiguous_members_.insert(rel);
   files_.push_back(std::move(f));
   std::sort(files_.begin(), files_.end(), [](const File& a, const File& b) {
     return a.tier != b.tier ? a.tier < b.tier : a.rel < b.rel;
@@ -515,6 +533,7 @@ std::optional<AssetIndex::Hit> AssetIndex::resolve(const std::string& key, const
     }
     if (cands.size() == 1) hit = Hit{cands[0]->rel, "name"};
   }
+  if (hit && ambiguous_members_.count(hit->member)) hit.reset();
   if (hit) {
     links[key] = {hit->member, hit->method};
     referenced_.insert(hit->member);
@@ -526,7 +545,7 @@ std::optional<AssetIndex::Hit> AssetIndex::resolve(const std::string& key, const
 }
 
 std::string AssetIndex::blob_hash(Env& env, const std::string& member) {
-  if (!env.blobs) return "";
+  if (!env.blobs || ambiguous_members_.count(member)) return "";
   if (auto it = hash_cache_.find(member); it != hash_cache_.end()) return it->second;
   for (const auto& f : files_) {
     if (f.rel != member) continue;
@@ -546,8 +565,14 @@ std::string AssetIndex::readable_path(Env& env, const std::string& member) {
 }
 
 void AssetIndex::finish(Env& env, Report& rep) {
+  for (const auto& member : ambiguous_members_) {
+    rep.errors.push_back(Json{{"member", member}, {"code", "ambiguous_asset_member"},
+                              {"message", "multiple archive entries share this asset path; no unique attachment binding"}});
+    rep.partial = true;
+  }
   std::map<std::string, std::vector<std::string>> by_hash;
   for (const auto& f : files_) {
+    if (env.cancelled()) { rep.partial = true; break; }
     rep.asset_members.push_back(f.rel);
     if (!referenced_.count(f.rel)) rep.unreferenced_members.push_back(f.rel);
     if (auto h = sha256_file_hex(f.abs); h) by_hash[*h].push_back(f.rel);

@@ -17,6 +17,8 @@
 //                          traversal_index is the parser's graph walk; source_key addresses OpenAI mapping.
 //                          json_pointer is RFC 6901 relative to the complete JSON member/file;
 //                          wrapper_fields keeps siblings of a wrapper's conversations array.
+//   export-3 additions     ZIP entries have separate BlobStore/source records and archive_index;
+//                          source metadata records observed import completion for cache reuse.
 //   nodes/links            non-conversation entities (kinds "export:account", "export:feedback",
 //                            "export:shared_link", "export:project", "export:project_doc", "export:memory",
 //                            "export:artifact", "export:member") with the verbatim record in metadata.
@@ -127,6 +129,7 @@ struct LoadStats {
   bool invalid_utf8 = false;
   std::int64_t lone_surrogates = 0;
   bool empty = false;
+  bool cancelled = false;
   bool too_deep = false;
   bool truncated = false;               // last array element never closed
   std::int64_t truncated_bytes = 0;
@@ -141,8 +144,10 @@ struct LoadStats {
 struct Loader {
   std::function<bool(Json&& element, std::int64_t index)> element;
   std::function<void(std::int64_t index, const std::string& why)> bad_element;
+  std::function<bool()> cancelled;  // cooperative stop while scanning/streaming
   bool wrapper = false;
   bool top_is_array = false;
+  std::optional<std::int64_t> archive_index;
   Json wrapper_fields = Json::object();  // every sibling of the conversations array, verbatim
 };
 LoadStats load_json_file(const fs::path& path, Loader& loader);
@@ -182,6 +187,7 @@ class AssetIndex {
   };
   std::vector<File> files_;
   std::set<std::string> referenced_;
+  std::set<std::string> ambiguous_members_;
   std::map<std::string, std::string> hash_cache_;
 };
 
