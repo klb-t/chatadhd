@@ -1,0 +1,43 @@
+[e2e] data dir: /tmp/loom-e2e-data-bVKD1K
+[e2e] mock LLM: http://127.0.0.1:42409  loom-server: http://127.0.0.1:34581
+[loom-server] 23:58:17 [INFO ] loom.config: config.json not found - using defaults
+23:58:17 [INFO ] loom.config: secrets.json not found - using defaults
+[loom-server] 23:58:17 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:58:17 [INFO ] loom.db: Database opened: /tmp/loom-e2e-data-bVKD1K/chatadhd.db
+[loom-server] 23:58:17 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+[loom-server] 23:58:17 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-e2e-data-bVKD1K)
+[loom-server] loom-server: listening on 127.0.0.1:34581 (static: /workspace/scratch/310a8f8399f0/chatadhd-w5/loom/web/dist)
+[e2e] loom-server is up
+[e2e] PASS  load app
+[e2e] PASS  configure model + API key via Settings panel
+[e2e] PASS  create a new conversation
+[e2e] PASS  send a message and see streamed reply + reasoning
+[e2e] PASS  edit a message and switch versions
+[e2e] PASS  markdown XSS payloads are sanitized, not executed
+[loom-server] 23:58:26 [INFO ] loom.db: Batch inserted 4 messages into c_05bab8c78c8f
+[loom-server] 23:58:26 [INFO ] loom.import: Imported 4 messages into 'req_25604389655261_3'
+[loom-server] 23:58:26 [INFO ] loom.semantic_worker: Semantic: 3 done (regex, 300.0/s, 2 left)
+[e2e] PASS  import a fixture and see it complete
+[e2e] graph counts: 11 nodes · 5 edges
+[e2e] PASS  graph renders nodes for the active conversation
+[e2e] PASS  context slider shows a live preview
+[e2e] PASS  toggle semantic pause/resume
+[e2e] PASS  change a setting (theme) and confirm it persists across reload
+[e2e] PASS  knowledge analysis runs from UI and exposes actual claims with provenance
+[e2e] PASS  coordinated graph views remain open together with independent filters
+[e2e] FAIL  knowledge context preview explains inclusion and flags stale inputs
+locator.innerText: Error: strict mode violation: locator('[data-testid="knowledge-workbench"]').getByTestId('kb-pane-context').locator('.kb-count') resolved to 2 elements:
+    1) <p role="status" class="kb-count">Run: kr_c979982616dc2f98 · done</p> aka getByTestId('kb-pane-context').getByText('Run: kr_c979982616dc2f98 ·')
+    2) <p class="kb-count">…</p> aka getByText('272 / 1,000 estimated tokens')
+
+Call log:
+[2m  - waiting for locator('[data-testid="knowledge-workbench"]').getByTestId('kb-pane-context').locator('.kb-count')[22m
+
+    at /workspace/scratch/310a8f8399f0/chatadhd-w5/loom/web/e2e/run.mjs:400:57
+    at async step (/workspace/scratch/310a8f8399f0/chatadhd-w5/loom/web/e2e/run.mjs:45:5)
+    at async main (/workspace/scratch/310a8f8399f0/chatadhd-w5/loom/web/e2e/run.mjs:391:5)
+[e2e] PASS  catalog displays real source units and requires a reviewed import
+[e2e] PASS  phone layout renders and is navigable
+[loom-server] loom-server: stopped
+[loom-server] 23:58:37 [INFO ] loom.db: Database closed
+23:58:37 [INFO ] loom.runtime: Loom runtime shut down

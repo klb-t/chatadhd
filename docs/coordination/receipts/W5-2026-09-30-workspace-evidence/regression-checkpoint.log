@@ -1,0 +1,36 @@
+[e2e] data dir: /tmp/loom-e2e-data-TZ2onW
+[e2e] mock LLM: http://127.0.0.1:41319  loom-server: http://127.0.0.1:35013
+[loom-server] 00:01:00 [INFO ] loom.config: config.json not found - using defaults
+00:01:00 [INFO ] loom.config: secrets.json not found - using defaults
+00:01:00 [INFO ] loom.db: Schema upgraded: v0 -> v4
+[loom-server] 00:01:00 [INFO ] loom.db: Database opened: /tmp/loom-e2e-data-TZ2onW/chatadhd.db
+[loom-server] 00:01:00 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+[loom-server] 00:01:00 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-e2e-data-TZ2onW)
+[loom-server] loom-server: listening on [loom-server] 127.0.0.1:35013 (static: /workspace/scratch/310a8f8399f0/chatadhd-w5/loom/web/dist)
+[e2e] loom-server is up
+[e2e] PASS  load app
+[e2e] PASS  configure model + API key via Settings panel
+[e2e] PASS  create a new conversation
+[e2e] PASS  send a message and see streamed reply + reasoning
+[e2e] PASS  edit a message and switch versions
+[e2e] PASS  markdown XSS payloads are sanitized, not executed
+[loom-server] 00:01:09 [INFO ] loom.db: Batch inserted 4 messages into c_783696ff1449
+[loom-server] 00:01:09 [INFO ] loom.import: Imported 4 messages into 'req_25767701455236_3'
+[loom-server] 00:01:09 [INFO ] loom.semantic_worker: Semantic: 3 done (regex, 300.0/s, 2 left)
+[e2e] PASS  import a fixture and see it complete
+[e2e] graph counts: 11 nodes · 5 edges
+[e2e] PASS  graph renders nodes for the active conversation
+[e2e] PASS  context slider shows a live preview
+[e2e] PASS  toggle semantic pause/resume
+[e2e] PASS  change a setting (theme) and confirm it persists across reload
+[e2e] PASS  knowledge analysis runs from UI and exposes actual claims with provenance
+[e2e] PASS  coordinated graph views remain open together with independent filters
+[e2e] PASS  knowledge context preview explains inclusion and flags stale inputs
+[e2e] PASS  catalog displays real source units and requires a reviewed import
+[e2e] PASS  phone layout renders and is navigable
+[loom-server] loom-server: stopped
+[loom-server] 00:01:21 [INFO ] loom.db: Database closed
+00:01:21 [INFO ] loom.runtime: Loom runtime shut down
+
+[e2e] 16/16 steps passed
+[e2e] all steps passed; screenshots in /workspace/scratch/310a8f8399f0/chatadhd-w5/loom/web/e2e/screenshots
