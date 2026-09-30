@@ -1,0 +1,13 @@
+{
+  "source": "CTest Testing/Temporary/LastTest.log after isolated follow-up",
+  "saved_as": "structure_followup_test_output.log",
+  "sha256": "05f08f89e7f6b7f47a7c1de8f9bd4c391dd4e79b247b06c50b2f86dfcdb49f23",
+  "bytes": 2225,
+  "unittest_counts": [
+    851
+  ],
+  "unittest_outcome": "OK",
+  "junit_success_stdout_truncated_at_1024_bytes": true,
+  "original_followup_summary_preserved": true,
+  "no_additional_tests_run": true
+}

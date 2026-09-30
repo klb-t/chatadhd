@@ -1,0 +1,93 @@
+{
+  "actual_model_tool_api_calls": 0,
+  "corrected_followup": {
+    "ctest_passed": 1,
+    "ctest_total": 1,
+    "structure_passed": 851,
+    "structure_total": 851
+  },
+  "files": [
+    {
+      "bytes": 1411,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/NATIVE_PROTOCOL.md",
+      "sha256": "d2b25ddf37b1319c04ac7beda766e4bc0c24c041217661399689fcec532ef441"
+    },
+    {
+      "bytes": 3546,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/NATIVE_REPORT.md",
+      "sha256": "971c1730f35db702aaa33e7a3dca071f939085e1748d8ea5867603dea22211c8"
+    },
+    {
+      "bytes": 4605,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/run_final_native_ctest.py",
+      "sha256": "102dc098d9a8d058ca0c8a3ca08091b911c0fd444671f96d90b36688b259de9d"
+    },
+    {
+      "bytes": 3523,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/run_structure_followup.py",
+      "sha256": "3cbfd684d8579b8371d8bbe9c22a5bfe9d6437466c3caa4f4e816fc96ab0bb33"
+    },
+    {
+      "bytes": 560955,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest_environment.json",
+      "sha256": "bb9adb067790e988c69d894b88e6c4047504bff4ba1b5a02a5be4c92d6c690b2"
+    },
+    {
+      "bytes": 11788,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest.log",
+      "sha256": "e19f9fef2cfc0aff07adfdadd0ad3fa1adadb570095d908fad02b8d3a1441afd"
+    },
+    {
+      "bytes": 44438,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest.xml",
+      "sha256": "cffe4d8721cad27bfbc08f6aa61b9f2066e65f420e1e899a725c3932cc74dbdf"
+    },
+    {
+      "bytes": 251,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest_summary.json",
+      "sha256": "529204eee8ce285345be20106e5605b6dc21a1c131da9bcea7de72d445bf55a6"
+    },
+    {
+      "bytes": 534312,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/structure_followup_environment.json",
+      "sha256": "587e56eb7a0bad765b31ce3d74e8c039620752d837825c2c5cf8d81b6dbc46ea"
+    },
+    {
+      "bytes": 237,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/structure_followup.log",
+      "sha256": "68d3729a9ec32c1be34d83da818e941c526c875408a4bb721c51d40e8a10c27d"
+    },
+    {
+      "bytes": 1461,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/structure_followup.xml",
+      "sha256": "0fa32e749bea5ac0a45bc91180fb2ee7e73676a1b51c72a2ccc37b18c64aa2c1"
+    },
+    {
+      "bytes": 234,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/structure_followup_summary.json",
+      "sha256": "c2b3c5b58c6197c55fb6270da696c73901807a57e2b1d25bbfe36e955640e0c9"
+    },
+    {
+      "bytes": 2225,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/structure_followup_test_output.log",
+      "sha256": "05f08f89e7f6b7f47a7c1de8f9bd4c391dd4e79b247b06c50b2f86dfcdb49f23"
+    },
+    {
+      "bytes": 431,
+      "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/structure_followup_output_receipt.json",
+      "sha256": "35e84d6e49da3bd0c8d97197e08634eb5e91afd485397961665c4bf870a903d5"
+    }
+  ],
+  "full_native_first": {
+    "ctest_passed": 73,
+    "ctest_total": 74,
+    "first_failure": "cwd-dependent test_relative_model_config_cli_freeze_resolves_without_reading_gold",
+    "first_structure_discovered": 851
+  },
+  "inventory_scope": "native auditor owned 14 payloads; ROOT-owned final_python_regression/final_contracts/final_eval excluded",
+  "native_source_and_binaries_unchanged": true,
+  "paid_usd": "0",
+  "schema": "loom.final_native_verification_artifacts/1",
+  "sealed_validation_opened": false,
+  "single_latest_clean74_run_claimed": false
+}

@@ -1,0 +1,20 @@
+{
+  "source_head": "065673e35aa401c808dbb7390ca35fca4783227e",
+  "scope": "two missing full Python suites; separate overlapping native checks not added to these denominators",
+  "results": [
+    {
+      "suite": "contracts",
+      "exit_code": 0,
+      "methods": 185,
+      "seconds": "13.788",
+      "log_sha256": "2d8c442846dae3a365efd3a3fb3823ada53a0d7975ad47fa62414df023f4d924"
+    },
+    {
+      "suite": "eval",
+      "exit_code": 0,
+      "methods": 213,
+      "seconds": "13.080",
+      "log_sha256": "e089d0424617ab4ede8d5552dbdef2f7b7f823ee5a556a5c9aef2a4018cff4b0"
+    }
+  ]
+}

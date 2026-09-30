@@ -1,0 +1,11 @@
+{
+  "elapsed_seconds": 177.53046605099917,
+  "existing_gates_preserved": true,
+  "exit_code": 8,
+  "failed": 1,
+  "native_code_unchanged": true,
+  "python_source_pins_unchanged": true,
+  "skipped": 0,
+  "structure_included": true,
+  "testcases": 74
+}

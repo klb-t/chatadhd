@@ -1,0 +1,68 @@
+{
+  "schema": "loom.agentic_graph_method_freeze_amendment/1",
+  "amended_at_utc": "2026-09-30T14:28:09.693956+00:00",
+  "before_actual_review_calls": true,
+  "actual_review_requests_by_this_agent": 0,
+  "root_authorized_scope": "CWD-neutral test fixture only",
+  "original_method_freeze_sha256": "4f42f728141c81d51553f1d347046b944ff71b96122cf05e90a42d2776a80a4a",
+  "original_freeze_file_unchanged": true,
+  "changed_file": "loom/tools/structure/agentic_graph_v1/test_experiment.py",
+  "original_test_sha256": "8c9255419efc05ef766e715a50af86b932ece673162faa4c0de3991316491042",
+  "new_test_sha256": "44d84a5ff01e8810b78a43b4895c8f8333564706e69cf619e9a500ea7157f23b",
+  "archived_original_test": "docs/research/agentic_graph_v1/test_experiment_before_ctest_cwd_fix.py",
+  "archived_original_test_sha256": "8c9255419efc05ef766e715a50af86b932ece673162faa4c0de3991316491042",
+  "change": "derive a relative config fixture via os.path.relpath(ROOT config,current caller cwd); preserve canonical ROOT-relative freeze key; no globalchdir",
+  "first_failure": {
+    "native_passed": 73,
+    "native_total": 74,
+    "structure_passed": 850,
+    "structure_total": 851,
+    "artifact_records": [
+      {
+        "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest.log",
+        "sha256": "e19f9fef2cfc0aff07adfdadd0ad3fa1adadb570095d908fad02b8d3a1441afd"
+      },
+      {
+        "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest.xml",
+        "sha256": "cffe4d8721cad27bfbc08f6aa61b9f2066e65f420e1e899a725c3932cc74dbdf"
+      },
+      {
+        "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest_environment.json",
+        "sha256": "bb9adb067790e988c69d894b88e6c4047504bff4ba1b5a02a5be4c92d6c690b2"
+      },
+      {
+        "path": "docs/research/SESSION_HANDOFF_2026-09-30_resume/verification/final_native_ctest_summary.json",
+        "sha256": "529204eee8ce285345be20106e5605b6dc21a1c131da9bcea7de72d445bf55a6"
+      }
+    ]
+  },
+  "repo_cwd_target_test": {
+    "passed": 1,
+    "log": "docs/research/agentic_graph_v1/CTEST_CWD_FIX_REPO_TEST.txt"
+  },
+  "build_cwd_target_test": {
+    "passed": 1,
+    "log": "docs/research/agentic_graph_v1/CTEST_CWD_FIX_BUILD_TEST.txt"
+  },
+  "remaining_frozen_source_pins_match": {
+    "docs/research/agentic_graph_v1/PROTOCOL.md": true,
+    "docs/research/agentic_graph_v1/gpt41mini.json": true,
+    "docs/research/agentic_graph_v1/selection.json": true,
+    "docs/research/free_schema_hint_v2/FREEZE.json": true,
+    "docs/research/model_method_panel_v1/public_preflight/gpt41mini_endpoints.json": true,
+    "loom/tests/fixtures/research/graph_methods_panel_v1/inputs_dev.json": true,
+    "loom/tests/fixtures/research/graph_methods_panel_v1/manifest.json": true,
+    "loom/tools/structure/agentic_graph_v1/experiment.py": true,
+    "loom/tools/structure/graph_free_extraction.py": true,
+    "loom/tools/structure/graph_free_schema_hint_v2.py": true,
+    "loom/tools/structure/graph_panel_live.py": true,
+    "loom/tools/structure/graph_panel_score_run.py": true,
+    "loom/tools/structure/openrouter_runner.py": true
+  },
+  "manifest_file_sha256": "f7d007160ef7e8d5eb5c96657b5aa071f372f31f8eedae231c581c0e76e378d4",
+  "review_system_sha256": "2d46dffb0b4f8b2d36c5cbc6b8fd7a2b59e2a21ba2c73fc1e64ed4677ecd4a09",
+  "prompt_wire_compiler_production_changes": false,
+  "gold_read": false,
+  "holdout_read": false,
+  "threshold_or_ratchet_lowered": false
+}

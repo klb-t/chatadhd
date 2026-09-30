@@ -3,7 +3,6 @@ from copy import deepcopy
 from decimal import Decimal
 import hashlib
 from pathlib import Path
-import os
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -148,13 +147,11 @@ class ExperimentTests(unittest.TestCase):
         with self.assertRaises(ValueError): exp.batch_rows([{'reservation_usd': '.11'}])
 
     def test_relative_model_config_cli_freeze_resolves_without_reading_gold(self):
-        absolute = exp.ROOT / 'docs/research/agentic_graph_v1/gpt41mini.json'
-        path = Path(os.path.relpath(absolute, Path.cwd()))
-        recorded = str(absolute.relative_to(exp.ROOT))
+        path = Path('docs/research/agentic_graph_v1/gpt41mini.json')
         with patch.object(exp.panel, 'load_dev_gold', side_effect=AssertionError('gold read')):
             frozen = exp.freeze_method([path])
-        self.assertIn(recorded, frozen['files_sha256'])
-        self.assertEqual(frozen['files_sha256'][recorded], exp.panel.digest_file(path))
+        self.assertIn(str(path), frozen['files_sha256'])
+        self.assertEqual(frozen['files_sha256'][str(path)], exp.panel.digest_file(path))
         self.assertFalse(frozen['validation_read'])
 
 

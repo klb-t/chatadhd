@@ -1,0 +1,72 @@
+.......................................no verifiable snapshot on HEAD's mainline exists on or before 2026-03-06 (UTC)
+..............................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 213 tests in 13.080s
+
+OK
+{
+  "stats": {
+    "conversations": 2,
+    "messages": 5,
+    "chars_active": 4800,
+    "chars_versions": 600,
+    "chars_excluded": 999,
+    "chars_unknown_status": 0,
+    "unknown_status_messages": 0,
+    "chars_by_role": {
+      "assistant": 2400,
+      "user": 2400
+    },
+    "conversation_chars": {
+      "median": 2700.0,
+      "max": 4200
+    }
+  },
+  "estimate": {
+    "assumptions": {
+      "fraction": 1.0,
+      "output_ratio": 0.4,
+      "prefix_tokens": 8000,
+      "include_versions": true,
+      "include_unknown_status": true,
+      "chars_per_token": {
+        "low": 4.0,
+        "high": 3.0
+      },
+      "prefix_cache": "all prefixes priced at cache-read; first-write and cache eligibility unverified",
+      "batch": "uniform table discount; provider/model eligibility unverified",
+      "pricing_as_of": "2026-09-25"
+    },
+    "tokens": {
+      "low": 1350,
+      "high": 1800
+    },
+    "models": {
+      "claude-fable-5-1": {
+        "low": 0.04,
+        "low_batch": 0.02,
+        "high": 0.06,
+        "high_batch": 0.03
+      },
+      "claude-opus-5-5": {
+        "low": 0.02,
+        "low_batch": 0.01,
+        "high": 0.02,
+        "high_batch": 0.01
+      },
+      "claude-sonnet-5-5": {
+        "low": 0.01,
+        "low_batch": 0.01,
+        "high": 0.01,
+        "high_batch": 0.01
+      },
+      "claude-haiku-4-5": {
+        "low": 0.01,
+        "low_batch": 0.0,
+        "high": 0.01,
+        "high_batch": 0.0
+      }
+    }
+  }
+}
+cut 2026-03-06: unavailable -> /var/tmp/tmprjwof2ea/nested/result.json

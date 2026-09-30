@@ -1,0 +1,191 @@
+Test project /workspace/scratch/34e008d7a951/chatadhd/loom/build/dev
+      Start  1: unit.test_archive
+ 1/74 Test  #1: unit.test_archive .....................   Passed    1.08 sec
+      Start  2: unit.test_batch_api
+ 2/74 Test  #2: unit.test_batch_api ...................   Passed    0.05 sec
+      Start  3: unit.test_capi
+ 3/74 Test  #3: unit.test_capi ........................   Passed    2.31 sec
+      Start  4: unit.test_capi_knowledge
+ 4/74 Test  #4: unit.test_capi_knowledge ..............   Passed    0.35 sec
+      Start  5: unit.test_catalog
+ 5/74 Test  #5: unit.test_catalog .....................   Passed    1.82 sec
+      Start  6: unit.test_catalog_context
+ 6/74 Test  #6: unit.test_catalog_context .............   Passed    1.78 sec
+      Start  7: unit.test_catalog_eval
+ 7/74 Test  #7: unit.test_catalog_eval ................   Passed    1.01 sec
+      Start  8: unit.test_catalog_links
+ 8/74 Test  #8: unit.test_catalog_links ...............   Passed    6.35 sec
+      Start  9: unit.test_catalog_retention
+ 9/74 Test  #9: unit.test_catalog_retention ...........   Passed    1.45 sec
+      Start 10: unit.test_catalog_scale
+10/74 Test #10: unit.test_catalog_scale ...............   Passed    0.00 sec
+      Start 11: unit.test_chat_engine
+11/74 Test #11: unit.test_chat_engine .................   Passed    0.06 sec
+      Start 12: unit.test_config
+12/74 Test #12: unit.test_config ......................   Passed    0.01 sec
+      Start 13: unit.test_context_engine
+13/74 Test #13: unit.test_context_engine ..............   Passed   10.04 sec
+      Start 14: unit.test_context_eval
+14/74 Test #14: unit.test_context_eval ................   Passed    0.95 sec
+      Start 15: unit.test_crypto
+15/74 Test #15: unit.test_crypto ......................   Passed    3.69 sec
+      Start 16: unit.test_db
+16/74 Test #16: unit.test_db ..........................   Passed    0.27 sec
+      Start 17: unit.test_event_bus
+17/74 Test #17: unit.test_event_bus ...................   Passed    0.03 sec
+      Start 18: unit.test_extract
+18/74 Test #18: unit.test_extract .....................   Passed    2.77 sec
+      Start 19: unit.test_extract_eval
+19/74 Test #19: unit.test_extract_eval ................   Passed    2.50 sec
+      Start 20: unit.test_fts
+20/74 Test #20: unit.test_fts .........................   Passed    0.05 sec
+      Start 21: unit.test_generalize
+21/74 Test #21: unit.test_generalize ..................   Passed    2.79 sec
+      Start 22: unit.test_generalize_eval
+22/74 Test #22: unit.test_generalize_eval .............   Passed    1.32 sec
+      Start 23: unit.test_github
+23/74 Test #23: unit.test_github ......................   Passed    0.02 sec
+      Start 24: unit.test_graph
+24/74 Test #24: unit.test_graph .......................   Passed    0.05 sec
+      Start 25: unit.test_import
+25/74 Test #25: unit.test_import ......................   Passed    0.12 sec
+      Start 26: unit.test_import_exports
+26/74 Test #26: unit.test_import_exports ..............   Passed    1.19 sec
+      Start 27: unit.test_import_stream
+27/74 Test #27: unit.test_import_stream ...............   Passed   31.61 sec
+      Start 28: unit.test_kb_pack
+28/74 Test #28: unit.test_kb_pack .....................   Passed    7.59 sec
+      Start 29: unit.test_knowledge
+29/74 Test #29: unit.test_knowledge ...................   Passed    6.71 sec
+      Start 30: unit.test_knowledge_candidate_graph
+30/74 Test #30: unit.test_knowledge_candidate_graph ...   Passed    0.22 sec
+      Start 31: unit.test_knowledge_candidates
+31/74 Test #31: unit.test_knowledge_candidates ........   Passed    0.02 sec
+      Start 32: unit.test_knowledge_flow
+32/74 Test #32: unit.test_knowledge_flow ..............   Passed    1.41 sec
+      Start 33: unit.test_knowledge_semantic
+33/74 Test #33: unit.test_knowledge_semantic ..........   Passed    2.94 sec
+      Start 34: unit.test_knowledge_semantic_graph
+34/74 Test #34: unit.test_knowledge_semantic_graph ....   Passed    3.52 sec
+      Start 35: unit.test_knowledge_store
+35/74 Test #35: unit.test_knowledge_store .............   Passed    0.13 sec
+      Start 36: unit.test_materialize
+36/74 Test #36: unit.test_materialize .................   Passed    1.23 sec
+      Start 37: unit.test_media
+37/74 Test #37: unit.test_media .......................   Passed    0.01 sec
+      Start 38: unit.test_memory
+38/74 Test #38: unit.test_memory ......................   Passed    0.02 sec
+      Start 39: unit.test_model
+39/74 Test #39: unit.test_model .......................   Passed    0.02 sec
+      Start 40: unit.test_net_sse
+40/74 Test #40: unit.test_net_sse .....................   Passed    0.01 sec
+      Start 41: unit.test_pack_model
+41/74 Test #41: unit.test_pack_model ..................   Passed    1.19 sec
+      Start 42: unit.test_provenance
+42/74 Test #42: unit.test_provenance ..................   Passed    0.05 sec
+      Start 43: unit.test_providers
+43/74 Test #43: unit.test_providers ...................   Passed    0.01 sec
+      Start 44: unit.test_regex
+44/74 Test #44: unit.test_regex .......................   Passed    0.01 sec
+      Start 45: unit.test_relations
+45/74 Test #45: unit.test_relations ...................   Passed    0.01 sec
+      Start 46: unit.test_resolve
+46/74 Test #46: unit.test_resolve .....................   Passed    0.27 sec
+      Start 47: unit.test_resolve_attribution
+47/74 Test #47: unit.test_resolve_attribution .........   Passed    4.50 sec
+      Start 48: unit.test_resolve_lineage
+48/74 Test #48: unit.test_resolve_lineage .............   Passed    0.01 sec
+      Start 49: unit.test_runtime
+49/74 Test #49: unit.test_runtime .....................   Passed    0.04 sec
+      Start 50: unit.test_selector
+50/74 Test #50: unit.test_selector ....................   Passed    0.01 sec
+      Start 51: unit.test_semantic_llm
+51/74 Test #51: unit.test_semantic_llm ................   Passed    0.05 sec
+      Start 52: unit.test_semantic_worker
+52/74 Test #52: unit.test_semantic_worker .............   Passed    0.25 sec
+      Start 53: unit.test_tasks
+53/74 Test #53: unit.test_tasks .......................   Passed    0.11 sec
+      Start 54: unit.test_util
+54/74 Test #54: unit.test_util ........................   Passed    0.04 sec
+      Start 55: compat.test_abi_compat
+55/74 Test #55: compat.test_abi_compat ................   Passed    0.34 sec
+      Start 56: compat.test_candidate_graph_native
+56/74 Test #56: compat.test_candidate_graph_native ....   Passed    0.89 sec
+      Start 57: compat.test_chat_compat
+57/74 Test #57: compat.test_chat_compat ...............   Passed    3.31 sec
+      Start 58: compat.test_config_compat
+58/74 Test #58: compat.test_config_compat .............   Passed    0.16 sec
+      Start 59: compat.test_crypto_compat
+59/74 Test #59: compat.test_crypto_compat .............   Passed    8.88 sec
+      Start 60: compat.test_db_compat
+60/74 Test #60: compat.test_db_compat .................   Passed    0.83 sec
+      Start 61: compat.test_graph_compat
+61/74 Test #61: compat.test_graph_compat ..............   Passed    2.20 sec
+      Start 62: compat.test_import_compat
+62/74 Test #62: compat.test_import_compat .............   Passed    0.60 sec
+      Start 63: compat.test_memory_compat
+63/74 Test #63: compat.test_memory_compat .............   Passed    2.07 sec
+      Start 64: compat.test_selector_compat
+64/74 Test #64: compat.test_selector_compat ...........   Passed    0.07 sec
+      Start 65: compat.test_semantic_compat
+65/74 Test #65: compat.test_semantic_compat ...........   Passed    4.66 sec
+      Start 66: compat.test_semantic_recovery
+66/74 Test #66: compat.test_semantic_recovery .........   Passed    2.23 sec
+      Start 67: compat.test_util_compat
+67/74 Test #67: compat.test_util_compat ...............   Passed    2.31 sec
+      Start 68: research.structure
+68/74 Test #68: research.structure ....................***Failed   38.58 sec
+...........................E...................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a pre-existing freeze; cannot create it in the same invocation
+....................................................................................................................................
+======================================================================
+ERROR: test_relative_model_config_cli_freeze_resolves_without_reading_gold (agentic_graph_v1.test_experiment.ExperimentTests.test_relative_model_config_cli_freeze_resolves_without_reading_gold)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/structure/agentic_graph_v1/test_experiment.py", line 152, in test_relative_model_config_cli_freeze_resolves_without_reading_gold
+    frozen = exp.freeze_method([path])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/structure/agentic_graph_v1/experiment.py", line 514, in freeze_method
+    config = read(path); validate_model(config)
+             ^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/structure/agentic_graph_v1/experiment.py", line 66, in read
+    return safe.parse_json(Path(path).read_bytes())
+                           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'docs/research/agentic_graph_v1/gpt41mini.json'
+
+----------------------------------------------------------------------
+Ran 851 tests in 38.298s
+
+FAILED (errors=1)
+{"attempts": 1, "stopped_reason": "fixture-stop"}
+
+      Start 69: research.independent_protocol
+69/74 Test #69: research.independent_protocol .........   Passed    0.09 sec
+      Start 70: research.graph_native_protocol
+70/74 Test #70: research.graph_native_protocol ........   Passed    0.44 sec
+      Start 71: research.candidate_graph_protocol
+71/74 Test #71: research.candidate_graph_protocol .....   Passed    0.65 sec
+      Start 72: server.smoke
+72/74 Test #72: server.smoke ..........................   Passed    2.12 sec
+      Start 73: cli.smoke
+73/74 Test #73: cli.smoke .............................   Passed    2.47 sec
+      Start 74: eval.harness
+74/74 Test #74: eval.harness ..........................   Passed    0.57 sec
+
+99% tests passed, 1 tests failed out of 74
+
+Total Test time (real) = 177.52 sec
+
+The following tests FAILED:
+	 68 - research.structure (Failed)
+Errors while running CTest
