@@ -1,0 +1,76 @@
+{
+  "schema": "loom.web_integration_receipt/1",
+  "recorded_at": "2026-09-30T23:17:12.639197+00:00",
+  "native_source_commit": "da77c769d3e020c396db5bef6a3a3755314d75c0",
+  "native_source_tree": "abe386316d6fc66a3fa2b0ba8aabc2b28c8df41d",
+  "web_source_commit": "9c79181efa35a824d69001835f589b3e3f508820",
+  "web_source_tree": "07d863044f992afd47ecebe40fd73a1e3b35e0e0",
+  "web_src_tree": "4fe28f6924b3a4f0bffca1256c6b5c6c3fa1e2a3",
+  "root_web_tree_before_tests": "07d863044f992afd47ecebe40fd73a1e3b35e0e0",
+  "production_changes_after_freeze": [],
+  "executables": {
+    "server": {
+      "path": "/workspace/scratch/a371a1ca13b1/verification/native-dev/server/loom-server",
+      "sha256": "52858ae162f449ae636429d3c2d4dd63e120651d1b17f3ca27939fc7ca556cc3"
+    },
+    "libloom": {
+      "path": "/workspace/scratch/a371a1ca13b1/verification/native-dev/libloom.so",
+      "sha256": "f1c7a45000bee6b6efc73a5ec92cb87d519872d4214dccc85df42dced479db40"
+    },
+    "browser": {
+      "path": "/root/.cache/ms-playwright/chromium_headless_shell-1194/chrome-linux/headless_shell",
+      "sha256": "6c82af1bb96955970f0ff50884bcbd75f200222414dc136076ada667bf4628d1"
+    }
+  },
+  "production_assets": {
+    "loom/web/dist/assets/index-VJb9_RZK.css": "ef3f56d990dd66cf4b83321e78010d2f8db95378d9f3437b2a2a258a4356e1f9",
+    "loom/web/dist/assets/index-iKtLGOT_.js": "acd634d4b257a082436835693dc5fd59955f1e80713c98123176d6d77fbd96fc",
+    "loom/web/dist/assets/index-iKtLGOT_.js.map": "70e9453e4739fbdb5af96ae36b2afaa376b9111612deda784011fcac7473cc44",
+    "loom/web/dist/index.html": "e01a47fc1825e09445138df5ad0861dba5b58966fd15dd803db1c2ffcb8040af"
+  },
+  "first_attempt": {
+    "outcome": "environment_bootstrap_failure",
+    "browser": "/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome",
+    "reason": "Chromium process singleton socket() failed: Operation not permitted; browser never opened a page",
+    "screenshots": "unavailable because browser launch failed",
+    "provider_calls": 0,
+    "product_assertions_executed": false
+  },
+  "completed_attempt": {
+    "browser": "/root/.cache/ms-playwright/chromium_headless_shell-1194/chrome-linux/headless_shell",
+    "chat_context": "PASS",
+    "local_fake_provider_requests": 5,
+    "remote_provider_requests": 0,
+    "workspace_scenarios_passed": 10,
+    "workspace_model_requests": 0,
+    "screenshots": "none required on success"
+  },
+  "commands": [
+    "LOOM_SERVER_BIN=/workspace/scratch/a371a1ca13b1/verification/native-dev/server/loom-server PLAYWRIGHT_CHROMIUM_EXECUTABLE=/root/.cache/ms-playwright/chromium_headless_shell-1194/chrome-linux/headless_shell CHAT_CONTEXT_EVIDENCE_DIR=/workspace/scratch/a371a1ca13b1/night-web/docs/research/integration_2026-10-01/verification/web-chat-context-headless node loom/web/e2e/chat-context.mjs",
+    "LOOM_SERVER_BIN=/workspace/scratch/a371a1ca13b1/verification/native-dev/server/loom-server PLAYWRIGHT_CHROMIUM_EXECUTABLE=/root/.cache/ms-playwright/chromium_headless_shell-1194/chrome-linux/headless_shell WORKSPACE_EVIDENCE_DIR=/workspace/scratch/a371a1ca13b1/night-web/docs/research/integration_2026-10-01/verification/web-workspace-headless node loom/web/e2e/workspace.mjs"
+  ],
+  "artifacts": {
+    "web-build-first.log": "5a38c70456b7bdde00acfcd8e60cbb0e7f1123aa1e522dd441c5c585b308ccb6",
+    "web-chat-context-first/chat-context-payloads.json": "bee872c005b112cfac04caa6905eb37432d59346f8386b592295d7c18cb4879d",
+    "web-chat-context-first.log": "57f6a4aa285b0359fd81ae3da059ba0cc815f426220a5ce091b58fe958a3a3b0",
+    "web-chat-context-headless/chat-context-payloads.json": "49b65e83291f99746f844756c47b71d20cecb02cbabca2d37ba9486123060a10",
+    "web-chat-context-headless.log": "f53d319e28e57f8a4eb214394cc081163ddf486ed14f2c44d9bec07057ad8419",
+    "web-plan-state-first.log": "4643e96bb94504eec6c7cda7a0cb0fbaadc706b225e322bac410649f000addac",
+    "web-transport-first.log": "d409b26b97e75056499e9f108c241eb4b910b1b768c64d60ed73edf33efa104c",
+    "web-workspace-first/workspace-perspective.json": "a33c1dde19f815e849799b60dc084f6dd7d10c669cd081f817840924fe31749c",
+    "web-workspace-first.log": "08424c0c3b64689ca956265bda742fde8c3b81042f8a3ae54a34ab0e486c3989",
+    "web-workspace-headless/workspace-perspective.json": "adefca32cf1c142e0dee22ceb43a4bc61b6fdaaf4271a158b957cd783ffd0dab",
+    "web-workspace-headless.log": "4aff233a0db4cc8a0cf886abc32af00db732a5a1bea64d037e5ce2c5c9299c82",
+    "web-workspace-state-first.log": "b94fc62cc586cfd8129f46b2ffee22566faa33c8fee8ed752f8b415ef7b96ff0",
+    "web-evidence-guard.log": "eb9b7fd3e9e660d2d24d293967075b1e319895735cd03b4468274925af94a758"
+  },
+  "executed_test_scripts": {
+    "loom/web/e2e/chat-context.mjs": "6efe1988f95529b0f754e5df002de9b0948851acbaa2e596bc2b481bb077b6f5",
+    "loom/web/e2e/workspace.mjs": "c0a1f369af1a932ac21f0ef3e8d0cc219aaecee98f72b1b3c7f5fa5f0b8aa427"
+  },
+  "final_test_scripts": {
+    "loom/web/e2e/chat-context.mjs": "13e924d407687e5be7cf47adc26ea0e7e4abb81c84a445425772f4f5036c7a33",
+    "loom/web/e2e/workspace.mjs": "fa17548390bff8a41dc5b318981dc2f81090d80c0fe187587fcfb185f600d96e"
+  },
+  "post_run_test_harness_change": "Moved existing evidence-directory collision checks before resource creation; guards verified to reject reused directories before setup without altering artifacts. Product code and browser assertions unchanged; no matrix rerun."
+}

@@ -6,7 +6,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,8 +17,14 @@ const loomRoot = path.resolve(webRoot, "..");
 const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/server/loom-server");
 assert.ok(existsSync(serverBin), `Build loom-server first: ${serverBin}`);
 assert.ok(existsSync(path.join(webRoot, "dist/index.html")), "Run npm run build first");
+const captures = [], chatRequests = [];
+const evidenceDir = process.env.CHAT_CONTEXT_EVIDENCE_DIR;
+if (evidenceDir) {
+  mkdirSync(evidenceDir, { recursive: true });
+  assert.ok(!existsSync(path.join(evidenceDir, "chat-context-payloads.json")), "Use a fresh evidence directory; previous payloads are retained.");
+}
 const dataDir = mkdtempSync(path.join(tmpdir(), "loom-chat-context-"));
-const captures = [];
+let recordedTrace, savedMessages, page;
 const provider = createServer(async (req, res) => {
   if (req.method !== "POST") { res.writeHead(404).end(); return; }
   const chunks = [];
@@ -85,8 +91,8 @@ try {
   assert.equal(captures.length, 0, "knowledge preparation performs no model requests");
 
   browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE } : {}) });
-  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-  const errors = [], unexpected = [], chatRequests = [];
+  page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  const errors = [], unexpected = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.route("**/*", async (route) => {
     const req = route.request();
@@ -185,6 +191,7 @@ try {
   const messages = await api("GET", `/api/conversations/${convId}/messages`);
   const user = messages.find((m) => m.text === "CURRENT_TURN_5128");
   const trace = user.metadata.context_trace;
+  recordedTrace = trace;
   assert.equal(trace.kind, "compiled_messages");
   assert.equal(trace.knowledge_context_request.text, "CURRENT_TURN_5128", "empty selection query resolves to current message");
   assert.equal(trace.knowledge_context_request.run, run.run);
@@ -256,11 +263,13 @@ try {
   await page.getByTestId("use-context-plan").check();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, "mobile controls do not overflow page");
   assert.equal(captures.length, 5, "inspection/options/reload make no provider calls");
+  savedMessages = await api("GET", `/api/conversations/${convId}/messages`);
   assert.deepEqual(errors, []);
   assert.deepEqual(unexpected, []);
   console.log("[chat-context] PASS: default path, native authored multi-thesis plan, independent sources, validation, exact provider trace, W5 perspective coexistence, recording opt-out, failure inspection, persisted inspection, and mobile layout; 5 local fake-provider calls, 0 remote calls");
 } catch (error) {
   console.error(serverLog);
+  if (evidenceDir && page) await page.screenshot({ path: path.join(evidenceDir, "chat-context-failure.png"), fullPage: true }).catch(() => {});
   throw error;
 } finally {
   if (browser) await browser.close();
@@ -268,4 +277,8 @@ try {
   await new Promise((resolve) => { if (server.exitCode !== null) resolve(); else server.once("exit", resolve); });
   await new Promise((resolve) => provider.close(resolve));
   rmSync(dataDir, { recursive: true, force: true });
+  if (evidenceDir) {
+    const evidence = { fixture: "synthetic_dev/chatgpt_export.zip", provider: "local fake only", browser_chat_requests: chatRequests, captured_provider_requests: captures, recorded_plan_trace: recordedTrace, persisted_messages: savedMessages };
+    writeFileSync(path.join(evidenceDir, "chat-context-payloads.json"), JSON.stringify(evidence, null, 2) + "\n", { flag: "wx" });
+  }
 }

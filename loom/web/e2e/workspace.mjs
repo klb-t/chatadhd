@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer } from "node:http";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,12 +13,14 @@ const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const loom = path.resolve(web,"..");
 const binary = process.env.LOOM_SERVER_BIN || path.join(loom,"build/dev/server/loom-server");
 assert.ok(existsSync(binary), "Build native server first or set LOOM_SERVER_BIN");
+const evidenceDir=process.env.WORKSPACE_EVIDENCE_DIR;
+if(evidenceDir){mkdirSync(evidenceDir,{recursive:true});assert.ok(!existsSync(path.join(evidenceDir,"workspace-perspective.json")),"Use a fresh evidence directory; previous results are retained.");}
 const dir=mkdtempSync(path.join(tmpdir(),"loom-workspace-"));
 const probe=createServer(); await new Promise(r=>probe.listen(0,"127.0.0.1",r));
 const port=probe.address().port; await new Promise(r=>probe.close(r));
 const base=`http://127.0.0.1:${port}`;
 const server=spawn(binary,["--host","127.0.0.1","--port",String(port),"--data-dir",dir,"--static-dir",path.join(web,"dist")],{cwd:loom,stdio:["ignore","pipe","pipe"]});
-let log="", browser; for(const s of [server.stdout,server.stderr])s.on("data",d=>log+=d);
+let log="", browser, page, savedPerspective; for(const s of [server.stdout,server.stderr])s.on("data",d=>log+=d);
 async function api(method,url,body){const r=await fetch(base+url,{method,headers:{"Content-Type":"application/json"},...(body===undefined?{}:{body:JSON.stringify(body)})});const result=await r.json();assert.ok(r.ok,JSON.stringify(result));return result;}
 const key="loom.knowledge.workspace.v2";
 let passed=0;
@@ -32,7 +34,7 @@ try {
   assert.equal(run.status,"done");
   const configBefore=await api("GET","/api/config");
   browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{})});
-  const page=await browser.newPage({viewport:{width:1440,height:1000}});
+  page=await browser.newPage({viewport:{width:1440,height:1000}});
   const errors=[], requests=[], external=[];
   page.on("pageerror",e=>errors.push(e.message));
   await page.route("**/*",async route=>{const req=route.request();if(new URL(req.url()).origin!==base){external.push(req.url());await route.abort();return;}requests.push({method:req.method(),path:new URL(req.url()).pathname});await route.continue();});
@@ -76,7 +78,7 @@ try {
   await step("saved perspective, profile isolation and exact reload restoration",async()=>{
     await page.getByLabel("View profile",{exact:true}).selectOption("compact");
     await page.getByRole("button",{name:"Save perspective",exact:true}).click();
-    saved=await snapshot();
+    saved=await snapshot(); savedPerspective=saved;
     await graph().first().getByLabel("Graph focus depth").fill("1");
     await page.getByLabel("View profile",{exact:true}).selectOption("stacked");
     await page.getByRole("button",{name:"Restore perspective",exact:true}).click();
@@ -173,6 +175,11 @@ try {
   assert.deepEqual(errors,[]); assert.deepEqual(external,[]);
   assert.equal(requests.some(r=>r.path==="/api/chat"),false);
   console.log(`[workspace] ${passed}/${passed} scenarios passed; real native API, authored synthetic DEV fixture, zero model calls`);
-} catch(error){console.error(log);throw error;}finally{
+} catch(error){
+  console.error(log);
+  if(evidenceDir&&page)await page.screenshot({path:path.join(evidenceDir,"workspace-failure.png"),fullPage:true}).catch(()=>{});
+  throw error;
+}finally{
   if(browser)await browser.close(); server.kill("SIGTERM");await new Promise(r=>server.exitCode!==null?r():server.once("exit",r));rmSync(dir,{recursive:true,force:true});
+  if(evidenceDir)writeFileSync(path.join(evidenceDir,"workspace-perspective.json"),JSON.stringify({fixture:"synthetic_dev/chatgpt_export.zip",passed,savedPerspective},null,2)+"\n",{flag:"wx"});
 }

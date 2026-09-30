@@ -1,0 +1,6 @@
+{
+  "fixture": "synthetic_dev/chatgpt_export.zip",
+  "provider": "local fake only",
+  "browser_chat_requests": [],
+  "captured_provider_requests": []
+}

@@ -1,0 +1,2 @@
+PASS chat-context: reused evidence directory rejected before setup; existing evidence SHA-256 unchanged; exit 1
+PASS workspace: reused evidence directory rejected before setup; existing evidence SHA-256 unchanged; exit 1
