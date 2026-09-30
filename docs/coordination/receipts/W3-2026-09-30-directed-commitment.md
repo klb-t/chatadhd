@@ -5,7 +5,10 @@
 - head_sha (verified implementation): `6d7861e9394769748005b791c06537d6945c46b1`
 - branch: `gpt/w3-model-recipes-2026-09-30`
 - integration: not performed; ROOT owns integration and STATE
-- publication: blocked by automatic approval review; no remote W3 branch exists
+- publication: published after owner continuation authorization at 23:52 Europe/Amsterdam
+- published_implementation_sha: `729699fe8dab6dd696b133bd277d3717c3bbd055`
+- verified_tree_sha: `cda488ba218a6ee8e07da3a5debf6c615d671fd5`
+- publication method: connected GitHub; exact tree matches all three local checkpoints
 - ready for review: 2026-09-30; exact start/integration time not measured
 
 ## Goal and result
@@ -67,14 +70,22 @@ checks current key, spending, uncertain charges and authorization. They were
 not executed. The first preparation remains for provenance and fails the
 current code freeze; never use it to initiate calls.
 
-Next: approve scoped public branch publication, ROOT reviews/integrates these
-commits, then selects the next authorized model comparison. Preserve all first
+Next: ROOT reviews/integrates the published W3 branch, then selects the next
+authorized model comparison. Preserve all first
 results and report paired errors/regressions before deciding whether v3 helps.
 
-## Publication blocker
+## Historical publication blocker and resolution
 
 The first `git push -u origin gpt/w3-model-recipes-2026-09-30` was rejected by
 automatic approval review: public disclosure of the protocol was considered
 not explicitly authorized. No alternate connector/API push was attempted.
 The remote integration head was checked again and stayed at base_sha. A local
 transfer package retains commits and evidence; it is not a remote integration.
+
+After the owner explicitly renewed autonomy in response to the publication
+question, terminal push passed approval but failed because terminal Git had no
+credentials. The connected GitHub published the exact verified tree as one
+commit. A subsequent git fetch confirmed the remote SHA and an empty diff
+against local `bdf86d10543c2487b59fc729ee0099341ecd4dab`. The three original
+local checkpoints remain preserved; the remote commit has the same tree but
+a different commit identity. No force push or integration was performed.

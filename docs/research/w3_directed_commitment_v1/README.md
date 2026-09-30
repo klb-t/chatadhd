@@ -95,9 +95,16 @@ the committed receipt is the external checkpoint.
 
 ## Publication status
 
-The automatic approval reviewer rejected the first protocol commit's Git push,
-stating that public remote publication needed separate authorization. No retry,
-API workaround, PR or force push was attempted. Work continued locally. The
-scoped transfer package carries commits and evidence for review; only ROOT may
-integrate. Model-quality live execution and public branch publication remain
-separate outstanding actions.
+Published on `gpt/w3-model-recipes-2026-09-30` at implementation commit
+`729699fe8dab6dd696b133bd277d3717c3bbd055`. Its tree
+`cda488ba218a6ee8e07da3a5debf6c615d671fd5` matches the tested local checkpoints
+exactly. Remote fetch plus an empty diff verified publication.
+
+The initial automatic approval rejection and subsequent terminal credential
+failure are historical. The owner renewed authorization; the connected GitHub
+then published the same files as one commit. Local checkpoint SHAs in the
+receipt remain provenance, not claims that those commits exist remotely.
+The separate follow-up documentation commit records this resolution.
+
+ROOT alone reviews/integrates. New-recipe quality is still unmeasured; live
+execution awaits ROOT coordination and current shared-budget accounting.
