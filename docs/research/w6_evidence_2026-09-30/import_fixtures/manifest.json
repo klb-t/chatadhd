@@ -1,0 +1,26 @@
+{
+  "baseline": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "files": {
+    "docs/research/w6_evidence_2026-09-30/import_protocol.md": "b8a4f024ec1a1f73b973aa7707cd9dcb124bbbd2b26ad270605a2fbd2bdb9796",
+    "loom/tools/w6_evidence/import_audit.py": "fccaf0d301fc0ac95bca9f9a6fd872a1d733afa0822fbe78287c3871ae8254fd",
+    "docs/research/w6_evidence_2026-09-30/import_fixtures/anthropic.json": "1e9112c0d9553f0038ccb86033012141631cc48a4cc49d9664a0eb480cd4fe9a",
+    "docs/research/w6_evidence_2026-09-30/import_fixtures/anthropic.zip": "eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca",
+    "docs/research/w6_evidence_2026-09-30/import_fixtures/openai.json": "71a7382c50253a498c28dda1ee7b0bd3ebc63c122b46b695fc77d6a6c51570d5",
+    "docs/research/w6_evidence_2026-09-30/import_fixtures/openai.zip": "ec1bd7edd3ab2bf5be81083619c3c24b7db3f6ea4624c0714f79f9c40b84a247",
+    "docs/research/w6_evidence_2026-09-30/import_fixtures/wrapped.json": "a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737"
+  },
+  "expectations": {
+    "openai_messages": 3,
+    "anthropic_messages": 3,
+    "openai_statuses": {
+      "u/~0": "active",
+      "a/rejected": "version",
+      "a/current~1": "active"
+    },
+    "anthropic_statuses": {
+      "parent": "active",
+      "child/rejected": "version",
+      "child/~current": "active"
+    }
+  }
+}

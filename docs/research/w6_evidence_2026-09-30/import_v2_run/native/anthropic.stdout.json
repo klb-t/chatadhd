@@ -1,0 +1,122 @@
+{
+  "conversations": [
+    {
+      "id": "c_e476cc9d2989",
+      "title": "W6 kolejność",
+      "created": "2026-09-30T12:00:00Z",
+      "updated": "2026-09-30T12:00:00Z",
+      "source": "import:anthropic",
+      "metadata": {
+        "export": {
+          "provider": "anthropic",
+          "schema": "loom.export.v1",
+          "member": "conversations.json",
+          "index": 0,
+          "key": "an-independent",
+          "title_original": "W6 kolejność",
+          "title_source": "export",
+          "current_node": "child/~current",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "uuid": "an-independent",
+            "name": "W6 kolejność",
+            "current_leaf_message_uuid": "child/~current",
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          },
+          "null_nodes": [],
+          "graph": {
+            "messages": 3,
+            "fork_points": 1,
+            "leaves": 2,
+            "roots": 1,
+            "current_path_messages": 2,
+            "has_parent_links": true,
+            "version_groups": 1
+          }
+        }
+      }
+    }
+  ],
+  "format": "zip",
+  "source_id": "src_9924ad19990b",
+  "blob_hash": "eb95db149db772b4cadd91860a8255130e34e501227b3cf3840eebeb18cdbcca",
+  "messages": 3,
+  "cancelled": false,
+  "already_imported": false,
+  "warnings": [],
+  "export_report": {
+    "schema": "loom.export_report.v1",
+    "provider": "anthropic",
+    "counts": {
+      "account": 0,
+      "artifact": 0,
+      "attachment": 3,
+      "block": 6,
+      "block_kind": {
+        "text": 3,
+        "unknown": 3
+      },
+      "branch": 2,
+      "citation": 0,
+      "citation_group": 0,
+      "conversation": 1,
+      "current_path_messages": 2,
+      "custom_instruction": 0,
+      "feedback": 0,
+      "fork_points": 1,
+      "memory": 0,
+      "message": 3,
+      "project": 0,
+      "project_doc": 0,
+      "record": 0,
+      "shared_link": 0
+    },
+    "members": [
+      {
+        "wrapper": false,
+        "name": "conversations.json",
+        "size": 4131,
+        "disposition": "conversations"
+      },
+      {
+        "name": "future-unknown.json",
+        "size": 146,
+        "disposition": "unknown"
+      },
+      {
+        "name": "unknown-member.bin",
+        "size": 10,
+        "disposition": "unknown"
+      }
+    ],
+    "member_count": 3,
+    "errors": [],
+    "warnings": [],
+    "partial": false,
+    "inferred": false,
+    "repairs": {},
+    "json_leaves": 93,
+    "leaves_preserved": 93,
+    "asset_members": [],
+    "unreferenced_members": [],
+    "unresolved_keys": [],
+    "pointer_links": {},
+    "duplicate_groups": [],
+    "unknown_members": [
+      "future-unknown.json",
+      "unknown-member.bin"
+    ],
+    "parts": []
+  }
+}

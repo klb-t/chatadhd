@@ -1,0 +1,365 @@
+[
+  {
+    "check": "offline knowledge completes",
+    "pass": true,
+    "detail": "done"
+  },
+  {
+    "check": "offline knowledge zero provider calls",
+    "pass": true,
+    "detail": 0
+  },
+  {
+    "check": "knowledge: terminal event",
+    "pass": true,
+    "detail": "done"
+  },
+  {
+    "check": "knowledge: provider count",
+    "pass": true,
+    "detail": 1
+  },
+  {
+    "check": "knowledge: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge: exact array equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge: compact array digest",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge: captured provider path",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge: returned trace equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge resolved run",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge section present",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge selected items nonempty",
+    "pass": true,
+    "detail": 4
+  },
+  {
+    "check": "knowledge prompt nonempty",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge exact source requirement included",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "knowledge prompt exactly dispatched",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "memory section present",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "history: terminal event",
+    "pass": true,
+    "detail": "done"
+  },
+  {
+    "check": "history: provider count",
+    "pass": true,
+    "detail": 1
+  },
+  {
+    "check": "history: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "history: exact array equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "history: compact array digest",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "history: captured provider path",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "history: returned trace equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "history prior IDs exactly two",
+    "pass": true,
+    "detail": [
+      "m_48d8bbd11b23",
+      "m_399e6d18522c"
+    ]
+  },
+  {
+    "check": "history first user once",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "isolated: terminal event",
+    "pass": true,
+    "detail": "done"
+  },
+  {
+    "check": "isolated: provider count",
+    "pass": true,
+    "detail": 1
+  },
+  {
+    "check": "isolated: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "isolated: exact array equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "isolated: compact array digest",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "isolated: captured provider path",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "isolated: returned trace equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "isolated no historical IDs",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "isolated memory absent",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "optout: terminal event",
+    "pass": true,
+    "detail": "done"
+  },
+  {
+    "check": "optout: provider count",
+    "pass": true,
+    "detail": 1
+  },
+  {
+    "check": "optout: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "optout: returned trace absent",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "provider500: terminal event",
+    "pass": true,
+    "detail": "error"
+  },
+  {
+    "check": "provider500: provider count",
+    "pass": true,
+    "detail": 1
+  },
+  {
+    "check": "provider500: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "provider500: exact array equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "provider500: compact array digest",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "provider500: captured provider path",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "missing_key: terminal event",
+    "pass": true,
+    "detail": "error"
+  },
+  {
+    "check": "missing_key: provider count",
+    "pass": true,
+    "detail": 0
+  },
+  {
+    "check": "missing_key: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "missing_run: terminal event",
+    "pass": true,
+    "detail": "error"
+  },
+  {
+    "check": "missing_run: provider count",
+    "pass": true,
+    "detail": 0
+  },
+  {
+    "check": "missing_run: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "stream: terminal event",
+    "pass": true,
+    "detail": "done"
+  },
+  {
+    "check": "stream: provider count",
+    "pass": true,
+    "detail": 1
+  },
+  {
+    "check": "stream: trace retention",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "stream: exact array equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "stream: compact array digest",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "stream: captured provider path",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "stream: returned trace equality",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "provider stream explicitly enabled",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "stream fixed answer delivered",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reopen m_48d8bbd11b23",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reopen m_1f8d106effb7",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reopen m_e6f20b5906eb",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reopen m_bcccefeb5ef0",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reopen m_1ae75812fea9",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reopen m_89783b62a99f",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reindex m_48d8bbd11b23",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reindex m_1f8d106effb7",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reindex m_e6f20b5906eb",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reindex m_bcccefeb5ef0",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reindex m_1ae75812fea9",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reindex m_89783b62a99f",
+    "pass": true,
+    "detail": null
+  },
+  {
+    "check": "reindex no provider requests",
+    "pass": true,
+    "detail": null
+  }
+]

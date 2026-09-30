@@ -1,0 +1,133 @@
+{
+  "conversations": [
+    {
+      "id": "c_24232283c695",
+      "title": "W6 źródło",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:20Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "wrapped.json",
+          "index": 0,
+          "key": "oa-independent",
+          "title_original": "W6 źródło",
+          "title_source": "export",
+          "current_node": "a/current~1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "oa-independent",
+            "title": "W6 źródło",
+            "current_node": "a/current~1",
+            "create_time": 1700000000,
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          },
+          "null_nodes": [
+            {
+              "i": 0,
+              "id": "root",
+              "node": {
+                "id": "root",
+                "parent": null,
+                "children": [
+                  "u/~0"
+                ],
+                "message": null,
+                "future": {
+                  "tilde~/key": [
+                    false,
+                    0,
+                    null,
+                    {},
+                    [],
+                    "Zażółć 🧪 é é \u0000 końcówka"
+                  ]
+                }
+              }
+            }
+          ],
+          "graph": {
+            "nodes": 4,
+            "messages": 3,
+            "fork_points": 1,
+            "leaves": 2,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 1
+          }
+        }
+      }
+    }
+  ],
+  "format": "json",
+  "source_id": "src_74c57752e8a4",
+  "blob_hash": "a4ca921a838680ab97a4c14849a597e4071c14efdf26698f37a6111122e9d737",
+  "messages": 3,
+  "cancelled": false,
+  "already_imported": false,
+  "warnings": [],
+  "export_report": {
+    "schema": "loom.export_report.v1",
+    "provider": "openai",
+    "counts": {
+      "account": 0,
+      "artifact": 0,
+      "attachment": 1,
+      "block": 3,
+      "block_kind": {
+        "text": 3
+      },
+      "branch": 2,
+      "citation": 0,
+      "citation_group": 0,
+      "conversation": 1,
+      "current_path_messages": 2,
+      "custom_instruction": 0,
+      "feedback": 0,
+      "fork_points": 1,
+      "memory": 0,
+      "message": 3,
+      "project": 0,
+      "project_doc": 0,
+      "record": 0,
+      "shared_link": 0
+    },
+    "members": [
+      {
+        "wrapper": true,
+        "name": "wrapped.json",
+        "size": 0,
+        "disposition": "conversations"
+      }
+    ],
+    "member_count": 1,
+    "errors": [],
+    "warnings": [],
+    "partial": false,
+    "inferred": false,
+    "repairs": {},
+    "json_leaves": 68,
+    "leaves_preserved": 68,
+    "asset_members": [],
+    "unreferenced_members": [],
+    "unresolved_keys": [],
+    "pointer_links": {},
+    "duplicate_groups": [],
+    "unknown_members": [],
+    "parts": []
+  }
+}

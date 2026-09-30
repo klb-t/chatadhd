@@ -1,0 +1,60 @@
+{
+  "review_target": "loom/tools/w6_evidence/real_export_audit.py",
+  "controls": [
+    {
+      "check": "bool differs from int",
+      "pass": true
+    },
+    {
+      "check": "int differs from float",
+      "pass": true
+    },
+    {
+      "check": "empty dict differs from empty list",
+      "pass": true
+    },
+    {
+      "check": "dictionary insertion order invariant",
+      "pass": true
+    },
+    {
+      "check": "list order significant",
+      "pass": true
+    },
+    {
+      "check": "empty children preserved",
+      "pass": true
+    },
+    {
+      "check": "escaped slash tilde empty key pointer",
+      "pass": true
+    },
+    {
+      "check": "root pointer",
+      "pass": true
+    },
+    {
+      "check": "reject noncanonical array index /-1",
+      "pass": true,
+      "classification": "oracle strictness limitation; not observed production locator failure"
+    },
+    {
+      "check": "reject noncanonical array index /01",
+      "pass": true,
+      "classification": "oracle strictness limitation; not observed production locator failure"
+    },
+    {
+      "check": "reject noncanonical array index /+1",
+      "pass": true,
+      "classification": "oracle strictness limitation; not observed production locator failure"
+    },
+    {
+      "check": "existing output refused before runtime creation",
+      "pass": true
+    },
+    {
+      "check": "existing evidence bytes unchanged",
+      "pass": true
+    }
+  ]
+}

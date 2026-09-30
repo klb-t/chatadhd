@@ -1,0 +1,148 @@
+{
+  "conversations": [
+    {
+      "id": "oa-independent",
+      "title": "W6 źródło",
+      "current_node": "a/current~1",
+      "create_time": 1700000000,
+      "future": {
+        "tilde~/key": [
+          false,
+          0,
+          null,
+          {},
+          [],
+          "Zażółć 🧪 é é \u0000 końcówka"
+        ]
+      },
+      "mapping": {
+        "root": {
+          "id": "root",
+          "parent": null,
+          "children": [
+            "u/~0"
+          ],
+          "message": null,
+          "future": {
+            "tilde~/key": [
+              false,
+              0,
+              null,
+              {},
+              [],
+              "Zażółć 🧪 é é \u0000 końcówka"
+            ]
+          }
+        },
+        "u/~0": {
+          "id": "u/~0",
+          "parent": "root",
+          "children": [
+            "a/rejected",
+            "a/current~1"
+          ],
+          "message": {
+            "id": "mu",
+            "author": {
+              "role": "user"
+            },
+            "content": {
+              "content_type": "text",
+              "parts": [
+                "Nie przyjmuj odrzuconego wariantu."
+              ]
+            },
+            "create_time": 1700000000,
+            "metadata": {
+              "attachments": [
+                {
+                  "id": "file-W6audit",
+                  "name": "dane.bin",
+                  "mime_type": "application/octet-stream"
+                }
+              ]
+            },
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        },
+        "a/rejected": {
+          "id": "a/rejected",
+          "parent": "u/~0",
+          "children": [],
+          "message": {
+            "id": "mr",
+            "author": {
+              "role": "assistant"
+            },
+            "content": {
+              "content_type": "text",
+              "parts": [
+                "ODRZUCONY"
+              ]
+            },
+            "create_time": 1700000000,
+            "metadata": {},
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        },
+        "a/current~1": {
+          "id": "a/current~1",
+          "parent": "u/~0",
+          "children": [],
+          "message": {
+            "id": "mc",
+            "author": {
+              "role": "assistant"
+            },
+            "content": {
+              "content_type": "text",
+              "parts": [
+                "AKTUALNY 🧪"
+              ]
+            },
+            "create_time": 1700000000,
+            "metadata": {},
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "unknown_wrapper": {
+    "tilde~/key": [
+      false,
+      0,
+      null,
+      {},
+      [],
+      "Zażółć 🧪 é é \u0000 końcówka"
+    ]
+  }
+}

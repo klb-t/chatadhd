@@ -1,0 +1,17 @@
+{
+  "base_sha": "62639f7e7b5fcfabffbd56ed74a80bcf759b9800",
+  "server_sha256": "3fc10a60b7aa4e5336cf98e38a8b88d175d27b4ce0b351b4a43b823ff3262bd6",
+  "library_sha256": "0c11f60a09f91c808d104ab428c624258ed2aa81c3fe514d3160d47d027aae23",
+  "harness_sha256": "251d5167613cce7b9af3e0a67f5a0dbbad9ba207b34c1525ccaba4a4cc5489d3",
+  "command": [
+    "/workspace/scratch/a371a1ca13b1/verification/native-dev/server/loom-server",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "39519",
+    "--data-dir",
+    "/workspace/scratch/a22a9f93cf94/w6-transport-attempt-01/runtime"
+  ],
+  "python_version": "Python 3.12.14",
+  "provenance": "new synthetic fixture; local fake provider; no owner data"
+}

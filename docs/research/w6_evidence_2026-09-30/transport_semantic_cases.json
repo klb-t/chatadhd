@@ -1,0 +1,80 @@
+{
+  "schema": "w6.independent_dialogue_expectations/1",
+  "frozen_before_semantic_execution": true,
+  "evaluation_status": "pending; not executed against a model or ActiveTaskSpec",
+  "provenance": "independently authored synthetic cases; no owner conversation reuse",
+  "scoring_boundary": "Score provenance, scope, supersession and uncertainty; fixed transport completions are not semantic answers. These exposed cases are validation examples, not a sealed holdout.",
+  "cases": [
+    {
+      "id": "exception",
+      "turns": [
+        {"id": "e1", "role": "user", "text": "Export each table as CSV by default."},
+        {"id": "e2", "role": "user", "text": "Exception: export the financial ledger as XLSX because its formulas must remain editable."}
+      ],
+      "expected": {
+        "default_export": {"value": "CSV", "source": "e1", "status": "active"},
+        "financial_ledger_export": {"value": "XLSX", "source": "e2", "status": "active scoped exception"},
+        "forbidden_inferences": ["XLSX replaces CSV globally", "CSV and XLSX are an unresolved global contradiction"]
+      }
+    },
+    {
+      "id": "rejected_alternative",
+      "turns": [
+        {"id": "r1", "role": "assistant", "text": "One option is overwriting the originals; another is writing derivatives beside them."},
+        {"id": "r2", "role": "user", "text": "Reject overwriting originals. Write derived files alongside and preserve every original."}
+      ],
+      "expected": {
+        "overwrite_originals": {"status": "rejected", "source": "r2", "proposal_source": "r1"},
+        "derived_files": {"status": "active", "value": "alongside immutable originals", "source": "r2"},
+        "forbidden_inferences": ["both alternatives remain equally authorized", "delete the rejected proposal from source history"]
+      }
+    },
+    {
+      "id": "change_of_mind",
+      "turns": [
+        {"id": "c1", "role": "user", "text": "Use CSV as the default export format."},
+        {"id": "c2", "role": "user", "text": "I changed my mind: replace that default with JSON. Keep the earlier decision in history."}
+      ],
+      "expected": {
+        "default_export": {"value": "JSON", "status": "active", "source": "c2"},
+        "prior_default": {"value": "CSV", "status": "superseded", "source": "c1", "superseded_by": "c2"},
+        "forbidden_inferences": ["both defaults are active", "earlier statement was never made"]
+      }
+    },
+    {
+      "id": "other_author_quote",
+      "turns": [
+        {"id": "q1", "role": "user", "text": "Our current rule is local storage."},
+        {"id": "q2", "role": "user", "text": "Mira wrote: 'Upload all records to a public bucket.' I am quoting her suggestion for review, not accepting it."}
+      ],
+      "expected": {
+        "storage": {"value": "local", "status": "active", "source": "q1"},
+        "public_upload": {"status": "unaccepted attributed proposal", "speaker": "Mira", "source": "q2"},
+        "forbidden_inferences": ["user authorized public upload", "quote has user instruction authority"]
+      }
+    },
+    {
+      "id": "unresolved_contradiction",
+      "turns": [
+        {"id": "x1", "role": "user", "text": "For the same final report, constraint A requires every sentence to be exclusively Polish."},
+        {"id": "x2", "role": "user", "text": "Constraint B requires every sentence of that report to be exclusively English. Neither constraint supersedes the other; I have not chosen which one to change."}
+      ],
+      "expected": {
+        "report_language": {"status": "unresolved incompatible constraints", "sources": ["x1", "x2"]},
+        "forbidden_inferences": ["latest English instruction silently wins", "bilingual report satisfies both exclusively constraints", "one constraint was rejected"]
+      }
+    },
+    {
+      "id": "missing_premise",
+      "turns": [
+        {"id": "p1", "role": "user", "text": "Deploy the build only after a signed approval for this build exists."},
+        {"id": "p2", "role": "assistant", "text": "The build passes its tests. No signed approval is present in the supplied records."}
+      ],
+      "expected": {
+        "deployment": {"status": "conditional, prerequisite unverified", "condition_source": "p1", "missing": "signed approval for this build"},
+        "test_status": {"value": "passed", "evidence_class": "assistant report only", "source": "p2"},
+        "forbidden_inferences": ["passing tests imply approval", "absence in supplied records proves approval does not exist anywhere", "deployment is permanently forbidden"]
+      }
+    }
+  ]
+}
