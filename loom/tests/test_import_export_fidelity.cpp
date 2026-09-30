@@ -18,6 +18,15 @@ using loom::test::open_db;
 using loom::test::unwrap;
 
 namespace {
+void write_zip(const std::filesystem::path& path, const std::map<std::string, std::string>& members) {
+  mz_zip_archive archive{};
+  REQUIRE(mz_zip_writer_init_file(&archive, path.string().c_str(), 0));
+  for (const auto& [name, bytes] : members)
+    REQUIRE(mz_zip_writer_add_mem(&archive, name.c_str(), bytes.data(), bytes.size(), MZ_DEFAULT_COMPRESSION));
+  REQUIRE(mz_zip_writer_finalize_archive(&archive));
+  REQUIRE(mz_zip_writer_end(&archive));
+}
+
 struct FidelityFixture {
   fsutil::TempDir temporary;
   std::unique_ptr<Database> db = open_db(temporary.path() / "source.db");
@@ -35,15 +44,14 @@ struct FidelityFixture {
   }
 
   ImportResult run_zip(const std::map<std::string, Json>& members) {
+    std::map<std::string, std::string> bytes;
+    for (const auto& [name, source] : members) bytes[name] = source.dump();
+    return run_zip_bytes(bytes);
+  }
+
+  ImportResult run_zip_bytes(const std::map<std::string, std::string>& members) {
     const auto path = temporary.path() / "source.zip";
-    mz_zip_archive archive{};
-    REQUIRE(mz_zip_writer_init_file(&archive, path.string().c_str(), 0));
-    for (const auto& [name, source] : members) {
-      const auto bytes = source.dump();
-      REQUIRE(mz_zip_writer_add_mem(&archive, name.c_str(), bytes.data(), bytes.size(), MZ_DEFAULT_COMPRESSION));
-    }
-    REQUIRE(mz_zip_writer_finalize_archive(&archive));
-    REQUIRE(mz_zip_writer_end(&archive));
+    write_zip(path, members);
     ImportOptions options;
     options.export_mode = ExportMode::On;
     return unwrap(importer.import_file(path, options));
@@ -232,5 +240,27 @@ TEST_SUITE("import_export_fidelity") {
     }
     const auto original = unwrap(fsutil::read_file(fixture.temporary.path() / "source.zip"));
     CHECK(unwrap(fixture.blobs.read(imported.blob_hash)) == original);
+  }
+
+  TEST_CASE("nested ZIP locator pairs innermost source hash with its local member name") {
+    FidelityFixture fixture;
+    const auto inner_path = fixture.temporary.path() / "inner.zip";
+    const Json source = Json::array({anthropic_conversation()});
+    write_zip(inner_path, {{"conversations.json", source.dump()}});
+    const auto inner_bytes = unwrap(fsutil::read_file(inner_path));
+    const auto imported = fixture.run_zip_bytes({{"nested/inner.zip", inner_bytes}});
+    REQUIRE(imported.conversations.size() == 1);
+    const auto receipts = unwrap(fixture.provenance.for_subject(imported.conversations[0].id));
+    REQUIRE(receipts.size() == 1);
+    const auto source_record = unwrap(fixture.provenance.get_source(receipts[0].source_id));
+    REQUIRE(source_record.has_value());
+    CHECK(source_record->blob_hash != imported.blob_hash);
+    CHECK(unwrap(fixture.blobs.read(source_record->blob_hash)) == inner_bytes);
+    CHECK(receipts[0].locator["zip_member"] == "nested/inner.zip!conversations.json");
+    auto inner_result = imported;
+    inner_result.blob_hash = source_record->blob_hash;
+    fixture.check_locators(imported.conversations[0], source, inner_result, "/0", "conversations.json");
+    CHECK(unwrap(fixture.blobs.read(imported.blob_hash)) ==
+          unwrap(fsutil::read_file(fixture.temporary.path() / "source.zip")));
   }
 }

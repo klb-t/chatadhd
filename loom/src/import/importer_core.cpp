@@ -197,8 +197,12 @@ void ConversationImporter::record_provenance(const Conversation& conv, std::stri
   const bool provider_export = handler == "export";
   if (provider_export) {
     if (!ctx.blob_hash.empty()) loc["source"] = "sha256:" + ctx.blob_hash;
-    if (ctx.zip_member) loc["member"] = *ctx.zip_member;
     if (const Json* metadata = json::find(conv.metadata, "export"); metadata && metadata->is_object()) {
+      // source identifies the innermost archive blob. Its member name is
+      // local; legacy zip_member may include the containing archive chain.
+      if (ctx.zip_member) {
+        if (const Json* member = json::find(*metadata, "member"); member && member->is_string()) loc["member"] = *member;
+      }
       if (const Json* pointer = json::find(*metadata, "json_pointer"); pointer && pointer->is_string()) {
         loc["json_pointer"] = *pointer;
         loc["json_path"] = *pointer;  // existing provenance consumer spelling
