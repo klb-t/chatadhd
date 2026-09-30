@@ -1,0 +1,324 @@
+{
+  "schema": "loom.analysis_plan/1",
+  "id": "mechanism",
+  "resource_budget_ref": "shared",
+  "semantic_contract": {
+    "id": "domain:graph-review",
+    "version": "1",
+    "config": {}
+  },
+  "sources": [
+    {
+      "id": "source",
+      "ref": "fixture:raw",
+      "provenance": {
+        "known_at": null
+      },
+      "binding": {
+        "mode": "pinned_snapshot",
+        "snapshot_id": "550552c712df8065d139c3ef509c98d78c1a603bddc73f00af6569d1ffb11cbc"
+      }
+    }
+  ],
+  "variant_axes": {},
+  "selection": {
+    "mode": "all"
+  },
+  "methods": [
+    {
+      "id": "one",
+      "method": "graph:apply_diff",
+      "runtime": {
+        "id": "local:graph_packet",
+        "config": {}
+      },
+      "depends_on": [],
+      "source_refs": [
+        "source"
+      ],
+      "variant_axes": [],
+      "required_capabilities": [
+        "local"
+      ],
+      "scope": {
+        "full_source": true
+      },
+      "roles": [
+        {
+          "id": "review",
+          "role": "critique",
+          "cardinality": 1,
+          "config": {}
+        }
+      ],
+      "tools": [],
+      "reasoning": {
+        "depth": "user-configured"
+      },
+      "acceptance_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "preview",
+        "allow_source_tombstones": false
+      },
+      "evaluation_policy": {
+        "retain_all": true
+      },
+      "reservation": {
+        "money_usd": "1",
+        "cpu_seconds": "1",
+        "gpu_seconds": "1",
+        "input_tokens": "1",
+        "output_tokens": "1",
+        "calls": "1",
+        "agents": "1",
+        "wall_seconds": "1",
+        "memory_bytes": "1",
+        "storage_bytes": "1"
+      },
+      "config": {
+        "diff": {
+          "schema": "loom.graph_packet_diff/1",
+          "base_packet_sha256": "550552c712df8065d139c3ef509c98d78c1a603bddc73f00af6569d1ffb11cbc",
+          "proposal_id": "local-review",
+          "origin": {
+            "kind": "model",
+            "actor": "reviewer",
+            "model": "synthetic-scripted",
+            "recipe_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "response_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "known_at": null,
+          "definitions": {
+            "add": [],
+            "update": [],
+            "remove": []
+          },
+          "entities": {
+            "add": [],
+            "update": [],
+            "remove": []
+          },
+          "claims": {
+            "add": [],
+            "update": [
+              {
+                "id": "cl_test",
+                "before_sha256": "7cfb3c6671cabcb8744bb4e50fe2f795a0486eb9734d99b4abbed57c554d8c8c",
+                "after": {
+                  "id": "cl_test",
+                  "subject": "e_test_a",
+                  "predicate": "implies",
+                  "object": "e_test_b",
+                  "value": null,
+                  "qualifiers": {
+                    "valid_from": "",
+                    "valid_to": "",
+                    "version": "",
+                    "branch": "",
+                    "scope": "individual-source",
+                    "lang": "pl",
+                    "extra": {
+                      "attributed_to": "frog",
+                      "content_truth": "unverified"
+                    }
+                  },
+                  "assessment": {
+                    "basis": {
+                      "support": [
+                        {
+                          "observation": "ob_test",
+                          "locator": {
+                            "source": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                            "member": "messages.json",
+                            "json_pointer": "/0/text",
+                            "byte_start": 30,
+                            "byte_len": 37,
+                            "time_start": null,
+                            "time_end": null,
+                            "line": 1
+                          },
+                          "quote": "Żaba: jeśli lampa zgaśnie, czekam.",
+                          "extractor": "scripted.test@1",
+                          "quality": 1
+                        }
+                      ],
+                      "derivation": null
+                    },
+                    "evidence_class": "observed",
+                    "origin": "archive",
+                    "confidence": 0.4,
+                    "premises": {
+                      "claims": [],
+                      "principles": [],
+                      "assumptions": []
+                    },
+                    "counter": {
+                      "observations": [],
+                      "claims": []
+                    },
+                    "status": "contested",
+                    "consequences": {
+                      "claims": [],
+                      "predictions": [],
+                      "checks": []
+                    },
+                    "open": {
+                      "slots": [],
+                      "questions": [
+                        "Czy to prawda?"
+                      ],
+                      "fill_query": null
+                    },
+                    "expected_property": null,
+                    "check_state": "n/a",
+                    "alternatives": [
+                      {
+                        "object": "",
+                        "value": "unknown",
+                        "score": 0.1
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "remove": []
+          },
+          "sources": {
+            "add": [],
+            "update": [],
+            "remove": []
+          },
+          "task": null,
+          "annotations": {
+            "critique": [],
+            "questions": [],
+            "operations": []
+          }
+        },
+        "policy": {
+          "schema": "loom.graph_packet_apply_policy/1",
+          "acceptance": "preview",
+          "allow_source_tombstones": false
+        }
+      }
+    }
+  ],
+  "resource_limits": {
+    "money_usd": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "cpu_seconds": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "gpu_seconds": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "input_tokens": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "output_tokens": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "calls": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "agents": {
+      "limit": "100",
+      "accounting": "peak",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "wall_seconds": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "memory_bytes": {
+      "limit": "100",
+      "accounting": "peak",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "storage_bytes": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    }
+  },
+  "presets": {
+    "model": "future:frontier",
+    "agents": 1000000000
+  },
+  "extensions": {}
+}
