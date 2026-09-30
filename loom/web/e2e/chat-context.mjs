@@ -78,6 +78,10 @@ try {
   const entities = await api("POST", "/api/knowledge/query", { what: "entities", run: run.run, limit: 1000 });
   const target = entities.items.find((item) => item.kind === "project") || entities.items[0];
   assert.ok(target?.id, "synthetic run contains a selectable entity");
+  const claims = await api("POST", "/api/knowledge/query", { what: "claims", run: run.run, limit: 1000 });
+  assert.ok(claims.items[0]?.id, "synthetic run contains an explicit claim anchor");
+  const claimId = claims.items[0].id;
+  const configBefore = await api("GET", "/api/config");
   assert.equal(captures.length, 0, "knowledge preparation performs no model requests");
 
   browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE } : {}) });
@@ -107,7 +111,7 @@ try {
   assert.equal(chatRequests[0].include_history, undefined);
   assert.equal(await page.getByTestId("context-trace").count(), 0, "default does not create an invented trace");
 
-  await page.getByTestId("chat-context-controls").locator("summary").click();
+  await page.getByTestId("chat-context-controls").locator(":scope > summary").click();
   for (const id of ["include-memory", "include-graph-memory", "include-history"]) await page.getByTestId(id).uncheck();
   await page.getByTestId("use-knowledge-context").check();
   await page.getByTestId("context-project").fill(target.id);
@@ -123,9 +127,58 @@ try {
   assert.equal(captures.length, 1, "invalid budget is rejected before sending");
   assert.equal(await page.getByTestId("chat-input").inputValue(), "CURRENT_TURN_5128", "invalid options preserve draft");
   await page.getByTestId("context-budget").fill("1200");
+  await page.getByTestId("use-context-plan").check();
+  await page.getByTestId("context-plan-id").fill("authored-browser-plan");
+  await page.getByTestId("context-plan-source").fill('{"note":"synthetic browser outline","verified":false}');
+  const thesis = (index) => page.getByTestId("context-plan-thesis").nth(index);
+  await thesis(0).getByTestId("thesis-text").fill("Implement the project preserving its stated constraints");
+  await thesis(0).locator("summary").click();
+  await thesis(0).getByTestId("thesis-claims-mode").selectOption("custom");
+  await thesis(0).getByTestId("thesis-claims").fill(claimId);
+  await thesis(0).getByTestId("thesis-weight").fill("2");
+  await page.getByTestId("add-context-thesis").click();
+  await thesis(1).getByTestId("thesis-text").fill("  Inspect recorded alternatives, not inferred contradictions.  ");
+  await thesis(1).locator("summary").click();
+  await thesis(1).getByTestId("thesis-targets-mode").selectOption("custom");
+  await thesis(1).getByTestId("thesis-hops").fill("0");
+  await thesis(1).getByTestId("thesis-detail").selectOption("summary");
+  await thesis(1).getByTestId("thesis-counter").uncheck();
+  await thesis(1).getByTestId("thesis-id").fill("thesis-1");
+  await page.getByTestId("send-chat").click();
+  assert.match(await page.getByTestId("chat-error").innerText(), /duplicate thesis ID/);
+  assert.equal(chatRequests.length, 1, "invalid authored plan is rejected before native request");
+  assert.equal(await page.getByTestId("chat-input").inputValue(), "CURRENT_TURN_5128");
+  await thesis(1).getByTestId("thesis-id").fill("thesis-2");
+  const plan = { id: "authored-browser-plan", source_ref: { note: "synthetic browser outline", verified: false }, theses: [
+    { id: "thesis-1", text: "Implement the project preserving its stated constraints", claims: [claimId], require_counter_evidence: true, budget_weight: 2 },
+    { id: "thesis-2", text: "  Inspect recorded alternatives, not inferred contradictions.  ", targets: [], relation_hops: 0, detail_resolution: "summary", require_counter_evidence: false, budget_weight: 1 },
+  ] };
+
+  // Keep W5 visible with the chat. A saved independent reference and profile
+  // remain presentation state; they must never become chat request options.
+  await page.getByTestId("nav-knowledge").click();
+  const graph = () => page.getByTestId("kb-pane-graph");
+  await graph().first().locator(".kb-node").first().waitFor();
+  await graph().first().getByLabel("Graph focus depth").fill("3");
+  await graph().first().getByRole("button", { name: "Duplicate Knowledge graph view", exact: true }).click();
+  await graph().last().locator(".kb-node").first().waitFor();
+  const referenceId = await graph().last().getAttribute("data-view-id");
+  await page.getByLabel("View profile", { exact: true }).selectOption("compact");
+  await page.getByRole("button", { name: "Save perspective", exact: true }).click();
+  const workspace = () => page.evaluate(() => JSON.parse(localStorage.getItem("loom.knowledge.workspace.v2")));
+  const savedWorkspace = await workspace();
+  assert.equal(savedWorkspace.panes.find((p) => p.id === referenceId).followRun, false);
+  await graph().first().getByLabel("Graph focus depth").fill("1");
+  await page.getByRole("button", { name: "Restore perspective", exact: true }).click();
+  await graph().first().locator(".kb-node").first().waitFor();
+  assert.deepEqual(await workspace(), savedWorkspace);
+  assert.ok(await page.getByTestId("chat-input").isVisible(), "chat coexists with workbench");
+  assert.equal(await thesis(1).getByTestId("thesis-detail").inputValue(), "summary", "perspective restore does not alter plan draft");
+  assert.deepEqual(await api("GET", "/api/config"), configBefore);
+  assert.equal(captures.length, 1, "editing plan and perspective makes no provider requests");
   await send("CURRENT_TURN_5128", 2);
   assert.equal(captures.length, 2, "one local provider call per submitted turn");
-  assert.deepEqual(chatRequests[1].knowledge_context, { project: target.id, targets: [target.id, target.id], budget_tokens: 1200, run: run.run, lang: "en", relation_hops: 2, detail_resolution: "full" });
+  assert.deepEqual(chatRequests[1].knowledge_context, { project: target.id, targets: [target.id, target.id], budget_tokens: 1200, run: run.run, lang: "en", relation_hops: 2, detail_resolution: "full", plan });
   for (const key of ["include_memory", "include_graph_memory", "include_history"]) assert.equal(chatRequests[1][key], false);
   const activeConv = await api("GET", "/api/conversations?limit=1");
   const convId = activeConv[0].id;
@@ -137,6 +190,20 @@ try {
   assert.equal(trace.knowledge_context_request.run, run.run);
   assert.equal(trace.knowledge_context_request.relation_hops, 2);
   assert.equal(trace.knowledge_context_request.detail_resolution, "full");
+  assert.deepEqual(trace.knowledge_context_request.plan, plan, "caller-authored plan retained without hidden task inference");
+  const planTrace = trace.knowledge_context.context_set.goal.params.plan_trace;
+  assert.equal(planTrace.schema, "loom.context_plan_trace/1");
+  assert.equal(planTrace.run, run.run);
+  assert.deepEqual(planTrace.plan, plan);
+  assert.equal(planTrace.theses.length, 2);
+  assert.equal(planTrace.theses[0].relation_hops, 2, "omitted per-thesis reach inherits request");
+  assert.equal(planTrace.theses[0].detail_resolution, "full");
+  assert.deepEqual(planTrace.theses[0].claims, [claimId]);
+  assert.deepEqual(planTrace.theses[1].targets, [], "explicit empty clears inherited entity anchors");
+  assert.equal(planTrace.theses[1].relation_hops, 0);
+  assert.equal(planTrace.theses[1].detail_resolution, "summary");
+  assert.equal(planTrace.theses[1].require_counter_evidence, false);
+  assert.deepEqual(await workspace(), savedWorkspace, "sending does not alter saved workspace");
   assert.deepEqual(trace.messages, captures[1].messages, "persisted trace equals actual provider messages");
   assert.equal(trace.selection.include_memory, false);
   assert.equal(trace.selection.include_graph_memory, false);
@@ -177,15 +244,21 @@ try {
   await page.getByTestId("conv-item").first().click();
   await page.getByTestId("context-trace").nth(2).waitFor();
   assert.equal(await page.getByTestId("context-trace").count(), 3, "successful and failed request traces survive reload through native metadata");
+  await page.getByTestId("nav-knowledge").click();
+  await graph().first().locator(".kb-node").first().waitFor();
+  assert.deepEqual(await workspace(), savedWorkspace, "native turns and reload preserve perspective identities and settings");
+  assert.equal(await graph().last().getAttribute("data-view-id"), referenceId);
   await page.setViewportSize({ width: 390, height: 844 });
   if (!(await page.getByTestId("sidebar").getAttribute("class")).includes("collapsed")) await page.getByTestId("toggle-sidebar").click();
-  await page.getByTestId("chat-context-controls").locator("summary").click();
+  await page.getByTestId("chat-context-controls").locator(":scope > summary").click();
   await page.getByTestId("use-knowledge-context").check();
+  assert.equal(await page.getByTestId("use-context-plan").isChecked(), false, "workspace restore does not silently enable a plan after reload");
+  await page.getByTestId("use-context-plan").check();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, "mobile controls do not overflow page");
   assert.equal(captures.length, 5, "inspection/options/reload make no provider calls");
   assert.deepEqual(errors, []);
   assert.deepEqual(unexpected, []);
-  console.log("[chat-context] PASS: default path, native knowledge opt-in, independent sources, validation, exact provider trace, recording opt-out, failure inspection, persisted inspection, and mobile layout; 5 local fake-provider calls, 0 remote calls");
+  console.log("[chat-context] PASS: default path, native authored multi-thesis plan, independent sources, validation, exact provider trace, W5 perspective coexistence, recording opt-out, failure inspection, persisted inspection, and mobile layout; 5 local fake-provider calls, 0 remote calls");
 } catch (error) {
   console.error(serverLog);
   throw error;

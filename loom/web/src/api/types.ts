@@ -77,6 +77,25 @@ export interface ChatKnowledgeContextRequest {
   lang?: string;
   relation_hops?: number;
   detail_resolution?: "label" | "summary" | "full" | "raw" | null;
+  plan?: ChatContextPlan | null;
+}
+
+// Explicit retrieval instructions supplied by the caller, not inferred tasks.
+export interface ChatContextPlan {
+  id: string;
+  source_ref?: unknown;
+  theses: ChatContextThesis[];
+}
+
+export interface ChatContextThesis {
+  id: string;
+  text: string;
+  targets?: string[];
+  claims?: string[];
+  relation_hops?: number;
+  detail_resolution?: ChatKnowledgeContextRequest["detail_resolution"];
+  require_counter_evidence?: boolean;
+  budget_weight?: number;
 }
 
 // This records compiled messages, not a complete provider request or a receipt

@@ -4,6 +4,8 @@ import DOMPurify from "dompurify";
 import { api } from "../api";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import "./chat-context.css";
+import ContextPlanEditor from "./ContextPlanEditor";
+import { buildRetrievalPlan, newPlan } from "../context/retrieval-plan";
 
 marked.setOptions({ breaks: true });
 
@@ -82,6 +84,8 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
   const [contextBudget, setContextBudget] = useState("4000");
   const [contextHops, setContextHops] = useState("1");
   const [contextDetail, setContextDetail] = useState<NonNullable<ChatKnowledgeContextRequest["detail_resolution"]> | "auto">("auto");
+  const [usePlan, setUsePlan] = useState(false);
+  const [planDraft, setPlanDraft] = useState(newPlan);
   const [includeMemory, setIncludeMemory] = useState(true);
   const [includeGraphMemory, setIncludeGraphMemory] = useState(true);
   const [includeHistory, setIncludeHistory] = useState(true);
@@ -132,6 +136,11 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
       setError("Graph reach must be a non-negative whole number within the supported integer range.");
       return;
     }
+    let plan: ChatKnowledgeContextRequest["plan"];
+    if (useKnowledge && usePlan) {
+      try { plan = buildRetrievalPlan(planDraft); }
+      catch (err) { setError(err instanceof Error ? err.message : String(err)); return; }
+    }
     const request: ChatRequest = {
       message: text, conv_id: convId ?? undefined, model: model || undefined,
       // Omit unchanged options so the existing default request stays intact.
@@ -148,6 +157,7 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
         lang: contextLanguage.trim() || undefined,
         ...(hops !== 1 && { relation_hops: hops }),
         ...(contextDetail !== "auto" && { detail_resolution: contextDetail }),
+        ...(plan && { plan }),
       } }),
     };
     setInput("");
@@ -193,7 +203,7 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
     unsubRef.current = unsub;
   }, [input, stream, convId, model, onConversationCreated, refreshMessages,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
-    contextLanguage, contextBudget, contextHops, contextDetail, includeMemory, includeGraphMemory, includeHistory, traceContext]);
+    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext]);
 
   const cancelStreaming = useCallback(() => {
     if (stream?.requestId) api.cancelChat(stream.requestId).catch(() => {});
@@ -381,6 +391,7 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
               <label>Rendering language<input type="text" value={contextLanguage} onChange={(e) => setContextLanguage(e.target.value)} placeholder="Use message language" data-testid="context-language" /></label>
             </div>
           )}
+          {useKnowledge && <ContextPlanEditor enabled={usePlan} onEnabled={setUsePlan} draft={planDraft} onChange={setPlanDraft} />}
           <label className="chat-context-record">Context recording
             <select value={traceContext} onChange={(e) => setTraceContext(e.target.value as "auto" | "on" | "off")} data-testid="record-context">
               <option value="auto">Auto · record custom context</option>

@@ -52,3 +52,7 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+.chat-context-plan { border-top: 1px solid var(--border); margin: 12px 0; }
+.chat-plan-thesis > button { margin: 10px 0; }
+.chat-context-plan > button { margin-top: 10px; }
+.chat-context-plan textarea { resize: vertical; min-height: 48px; }
