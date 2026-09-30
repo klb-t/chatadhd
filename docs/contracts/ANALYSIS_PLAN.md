@@ -88,7 +88,43 @@ estimated. `resource_usage` is labeled policy accounting, not actual measured
 consumption. Actual overruns remain recorded and block further admission under
 the original limit; limits never expand to conceal a failure. Peak admission
 sums outstanding/held reservations and reuses capacity after completed admitted
-amounts, retaining the greatest accounted peak. Uncertain callbacks hold capacity.
+amounts, retaining the greatest admitted single-callback quantity. This current
+admission value is not the historical maximum of overlapping reservations.
+Uncertain callbacks hold capacity.
+
+`ResourceLedger.accounting()` and the additive execution receipt field
+`resource_accounting` expose a single locked accounting snapshot:
+
+| Field | Meaning |
+| --- | --- |
+| `current_admission_load` | Existing policy quantities from `usage()` / `resource_usage`; used for limits. |
+| `current_reserved_load` | Original reservations still held, including opening unknown balances; estimates that exceed an original reservation do not rewrite it. |
+| `historical_reserved_peak.amounts` | Per-dimension maximum original reserved load at recorded reservation boundaries; evidence class `reservation_accounting_not_usage_measurement`. |
+| `actual_instrumented_peak.amounts` | Unavailable (`null`): this runtime has no simultaneous whole-ledger instrument. |
+| `maximum_callback_quantity_by_status` | Largest completed callback quantity for each dimension and claimed provenance status; neither a sum nor a global peak measurement. |
+
+For example, two overlapping reservations of 10 followed by two scripted
+callback quantities of 7 leave peak admission at 7, original held load at 0,
+and historical reserved peak at 20. They do not establish an actual peak of 14.
+Callback provenance remains `caller_supplied_not_independently_verified`.
+
+New `loom.analysis_attempt_reservation/2` records embed a versioned observation
+of original held load before/after admission, bound to the ledger header and
+reservation content. The observation is written/fsynced with the reservation
+under the same lock, before loading or invoking callbacks. Rejection writes
+neither an attempt nor an observation; replay creates no new observation.
+Arithmetic and content binding are checked on read. Historical peaks survive
+completion, capacity reuse, reopen and replay without tightening admission limits.
+
+The ledger header remains version 1; existing files are never migrated in place.
+Version 1 reservations remain readable for admission and replay. They have no
+historical observations, so `legacy_reservations_without_observation` reports
+the gap and `complete_for_retained_attempts` is false while any are retained.
+With no observations, historical amounts are `null`, including for an empty
+ledger. A new observation can include older still-held reservations at that
+boundary, but does not reconstruct earlier overlap. External history before
+opening balances is explicitly `not_reconstructed`. These counts describe
+retained local records, not proof that nobody deleted earlier files.
 
 One `ResourceLedger(directory, limits, budget_id=...)` is shared by all methods
 and plans using that budget. Reopening cannot change limits or reset history.

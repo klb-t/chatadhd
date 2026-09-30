@@ -219,8 +219,8 @@ def _read(path):
 class ResourceLedger:
     """Cross-process locked, append-only attempts; unknown quantities remain held.
 
-    `peak` admission accounts for held reservations concurrently plus the greatest
-    completed measurement. This is conservative after an uncertain callback.
+    `usage()` is policy admission accounting, not a historical/global measurement.
+    `accounting()` separately reports durable reservation-boundary observations.
     """
     def __init__(self, directory, limits, *, budget_id, opening_balances=None):
         validate_limits(limits)
@@ -245,6 +245,7 @@ class ResourceLedger:
             self.opening_balances = deepcopy(balances)
             header = {'schema': 'loom.analysis_resource_ledger/1', 'budget_id': budget_id,
                 'resource_limits': limits, 'opening_balances': balances}
+            self.header_sha256 = digest(header)
             if path.exists():
                 if existing != header: raise PlanError('shared_budget_identity_or_limits_changed')
             else: _write_new(path, header)
@@ -257,33 +258,118 @@ class ResourceLedger:
                 try: yield
                 finally: fcntl.flock(handle, fcntl.LOCK_UN)
 
-    def _usage(self, additional=None):
+    def _reservation(self, folder):
+        record = _read(folder / 'reservation.json')
+        fields = {'schema', 'attempt_id', 'reservation', 'context', 'state'}
+        if (type(record) is not dict or record.get('schema') not in (
+                'loom.analysis_attempt_reservation/1', 'loom.analysis_attempt_reservation/2')
+                or record.get('attempt_id') != folder.name[8:]
+                or record.get('state') != 'reserved_before_callback'):
+            raise PlanError('attempt_reservation_contract')
+        modern = record['schema'] == 'loom.analysis_attempt_reservation/2'
+        if set(record) != fields | ({'reservation_observation'} if modern else set()):
+            raise PlanError('attempt_reservation_contract')
+        amounts = record['reservation']
+        if type(amounts) is not dict or set(amounts) != set(DIMENSIONS):
+            raise PlanError('all_reservation_dimensions_required')
+        for amount in amounts.values(): quantity(amount)
+        if modern:
+            observation = record['reservation_observation']
+            if (type(observation) is not dict or set(observation) != {
+                    'schema', 'kind', 'ledger_sha256', 'reservation_sha256', 'held_before', 'held_after'}
+                    or observation['schema'] != 'loom.analysis_reservation_observation/1'
+                    or observation['kind'] != 'reservation_accounting_not_usage_measurement'
+                    or observation['ledger_sha256'] != self.header_sha256
+                    or observation['reservation_sha256'] != digest({key: record[key] for key in fields})):
+                raise PlanError('reservation_observation_binding')
+            for key in ('held_before', 'held_after'):
+                if type(observation[key]) is not dict or set(observation[key]) != set(DIMENSIONS):
+                    raise PlanError('reservation_observation_dimensions')
+                for amount in observation[key].values(): quantity(amount)
+            for d in DIMENSIONS:
+                if quantity(observation['held_after'][d]) != exact_sum(
+                        quantity(observation['held_before'][d]), quantity(amounts[d])):
+                    raise PlanError('reservation_observation_arithmetic')
+        return record
+
+    def _accounting_state(self):
         cumulative = {d: quantity(self.opening_balances[d]['measured']) for d in DIMENSIONS}
         peaks = dict(cumulative)
         held = {d: quantity(self.opening_balances[d]['reserved_unknown']) for d in DIMENSIONS}
+        reserved_load = dict(held)
+        reserved_peak = {d: None for d in DIMENSIONS}
+        callback_maxima = {status: {d: None for d in DIMENSIONS} for status in MEASUREMENT_STATUSES}
+        recorded = legacy = 0
         for folder in sorted(self.directory.glob('attempt-*')):
-            reservation = _read(folder / 'reservation.json')
-            if reservation['attempt_id'] != folder.name[8:]: raise PlanError('attempt_directory_identity')
+            reservation = self._reservation(folder)
+            observation = reservation.get('reservation_observation')
+            if observation is None:
+                legacy += 1
+            else:
+                recorded += 1
+                for d in DIMENSIONS:
+                    amount = quantity(observation['held_after'][d])
+                    reserved_peak[d] = amount if reserved_peak[d] is None else max(reserved_peak[d], amount)
             completion = _read(folder / 'completion.json') if (folder / 'completion.json').exists() else None
             if completion is not None:
                 result = self._completed(folder, reservation)
             for d in DIMENSIONS:
+                reserved = quantity(reservation['reservation'][d])
                 amount = result['measurements'].get(d) if completion else None
                 if amount is None:
-                    held[d] = exact_sum(held[d], quantity(reservation['reservation'][d]))
+                    held[d] = exact_sum(held[d], reserved)
+                    reserved_load[d] = exact_sum(reserved_load[d], reserved)
                 else:
                     status = result['measurement_provenance'][d]['status']
                     treatment = self.limits[d]['measurement_policy'][status]
-                    reserved = quantity(reservation['reservation'][d]); q = quantity(amount)
-                    if treatment == 'retain_reservation': held[d] = exact_sum(held[d], reserved)
-                    elif treatment == 'max_reservation_amount': held[d] = exact_sum(held[d], max(reserved, q))
+                    q = quantity(amount)
+                    old = callback_maxima[status][d]
+                    callback_maxima[status][d] = q if old is None else max(old, q)
+                    if treatment == 'retain_reservation':
+                        held[d] = exact_sum(held[d], reserved)
+                        reserved_load[d] = exact_sum(reserved_load[d], reserved)
+                    elif treatment == 'max_reservation_amount':
+                        held[d] = exact_sum(held[d], max(reserved, q))
+                        reserved_load[d] = exact_sum(reserved_load[d], reserved)
                     else: cumulative[d] = exact_sum(cumulative[d], q); peaks[d] = max(peaks[d], q)
+        return {'cumulative': cumulative, 'peaks': peaks, 'held': held,
+            'reserved_load': reserved_load, 'reserved_peak': reserved_peak,
+            'callback_maxima': callback_maxima, 'recorded': recorded, 'legacy': legacy}
+
+    def _admission(self, state, additional=None):
         extra = {d: quantity(additional[d]) if additional else Decimal(0) for d in DIMENSIONS}
-        return {d: exact_sum(cumulative[d], held[d], extra[d]) if self.limits[d]['accounting'] == 'cumulative'
-            else max(peaks[d], exact_sum(held[d], extra[d])) for d in DIMENSIONS}
+        return {d: exact_sum(state['cumulative'][d], state['held'][d], extra[d])
+            if self.limits[d]['accounting'] == 'cumulative'
+            else max(state['peaks'][d], exact_sum(state['held'][d], extra[d])) for d in DIMENSIONS}
+
+    def _usage(self, additional=None):
+        return self._admission(self._accounting_state(), additional)
 
     def usage(self):
         with self.locked(): return {d: str(v) for d, v in self._usage().items()}
+
+    def accounting(self):
+        """One locked view; observations never stand in for global instrumentation."""
+        def amounts(values): return {d: None if value is None else str(value) for d, value in values.items()}
+        with self.locked():
+            state = self._accounting_state()
+            return {'schema': 'loom.analysis_resource_accounting/1',
+                'current_admission_load': amounts(self._admission(state)),
+                'current_reserved_load': amounts(state['reserved_load']),
+                'historical_reserved_peak': {
+                    'amounts': amounts(state['reserved_peak']),
+                    'evidence_class': 'reservation_accounting_not_usage_measurement',
+                    'scope': 'recorded_reservation_boundaries_in_this_ledger',
+                    'observed_reservations': state['recorded'],
+                    'legacy_reservations_without_observation': state['legacy'],
+                    'complete_for_retained_attempts': state['legacy'] == 0,
+                    'external_history_before_opening_balances': 'not_reconstructed'},
+                'actual_instrumented_peak': {'amounts': {d: None for d in DIMENSIONS},
+                    'evidence_class': 'unavailable', 'scope': 'simultaneous_whole_ledger',
+                    'reason': 'callback_quantities_are_not_a_global_peak_instrument'},
+                'maximum_callback_quantity_by_status': {
+                    status: amounts(values) for status, values in state['callback_maxima'].items()},
+                'callback_provenance_verification': 'caller_supplied_not_independently_verified'}
 
     def _completed(self, folder, reservation):
         """Bind accounting metadata to both preserved first return and result."""
@@ -308,14 +394,24 @@ class ResourceLedger:
         with self.locked():
             folder = self.directory / ('attempt-' + attempt_id)
             if folder.exists(): raise PlanError('attempt_already_exists_no_retry')
-            proposed = self._usage(additional=reservation)
+            if type(reservation) is not dict or set(reservation) != set(DIMENSIONS):
+                raise PlanError('all_reservation_dimensions_required')
+            state = self._accounting_state()
+            proposed = self._admission(state, additional=reservation)
             for d in DIMENSIONS:
                 limit = self.limits[d]['limit']
                 if limit is not None and proposed[d] > quantity(limit): raise PlanError('resource_limit_exceeded_' + d)
-            folder.mkdir()
-            _write_new(folder / 'reservation.json', {'schema': 'loom.analysis_attempt_reservation/1',
+            record = {'schema': 'loom.analysis_attempt_reservation/2',
                 'attempt_id': attempt_id, 'reservation': reservation, 'context': context,
-                'state': 'reserved_before_callback'})
+                'state': 'reserved_before_callback'}
+            observation = {'schema': 'loom.analysis_reservation_observation/1',
+                'kind': 'reservation_accounting_not_usage_measurement',
+                'ledger_sha256': self.header_sha256, 'reservation_sha256': digest(record),
+                'held_before': {d: str(state['reserved_load'][d]) for d in DIMENSIONS},
+                'held_after': {d: str(exact_sum(state['reserved_load'][d], quantity(reservation[d]))) for d in DIMENSIONS}}
+            record['reservation_observation'] = observation
+            folder.mkdir()
+            _write_new(folder / 'reservation.json', record)
             descriptor = os.open(self.directory, os.O_RDONLY)
             try: os.fsync(descriptor)
             finally: os.close(descriptor)
@@ -325,8 +421,7 @@ class ResourceLedger:
         with self.locked():
             folder = self.directory / ('attempt-' + attempt_id)
             if not folder.exists(): return None
-            reservation = _read(folder / 'reservation.json')
-            if reservation['attempt_id'] != attempt_id: raise PlanError('attempt_directory_identity')
+            reservation = self._reservation(folder)
             bindings = source_bindings(reservation['context'])
             if (folder / 'completion.json').exists():
                 result = self._completed(folder, reservation)
@@ -422,8 +517,10 @@ def execute_variant(plan, index, ledger, callbacks, *, capabilities, packet_load
                 outputs[method['id']]['loaded_packet_sha256'] = digest(_read(folder / 'loaded_packet_first.json'))
             if (folder / 'returned_first.json').exists():
                 outputs[method['id']]['returned_first'] = _read(folder / 'returned_first.json')
+    accounting = ledger.accounting()
     result = {'plan_id': plan['id'], 'variant_index': index, 'variant': variant,
-        'results': outputs, 'resource_usage': ledger.usage(), 'canonical_graph_writes': 0,
+        'results': outputs, 'resource_usage': accounting['current_admission_load'],
+        'resource_accounting': accounting, 'canonical_graph_writes': 0,
         'resource_usage_kind': 'policy_accounting_not_actual_measurement',
         'acceptance_policy_executed': False}
     with ledger.locked():
