@@ -1,0 +1,36 @@
+{
+  "schema": "loom.frontier_mechanism_test_receipt/1",
+  "finished_at_utc": "2026-09-30T13:17:12.734039+00:00",
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "loom.tools.structure.test_frontier_panel_v1",
+    "loom.tools.structure.test_frontier_runtime_v1",
+    "-v"
+  ],
+  "exit_code": 0,
+  "test_count": 55,
+  "core_test_count": 32,
+  "runtime_test_count": 23,
+  "source_sha256": {
+    "loom/tools/structure/frontier_panel_v1/adapter.py": "11e4ab913d04db43d29762fec23a55a06cec4794354c48c663d8ebe5842573a3",
+    "loom/tools/structure/frontier_panel_v1/bounded_runner.py": "417a023bae0798b1b21c7eec3ebea341fa3589744d143b4ecf4b4aac3bf9a9aa",
+    "loom/tools/structure/frontier_panel_v1/runtime.py": "4f960d829bf3e92ca5d436f1c1a758ec7e9b1c01f6c0cb7d21ad3870e92ecf8f",
+    "loom/tools/structure/test_frontier_panel_v1.py": "d1dd6dba1091bc1c9efd780d6f9c0f4dc47ea88239edbdedb0024914160f6817",
+    "loom/tools/structure/test_frontier_runtime_v1.py": "07ff3684ef02b7c196a0aedc090b390bc77df5c10a98691e64e5b58bbe0963b6",
+    "loom/tools/structure/agentic_graph_v1/packet.py": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+    "ECOSYSTEM.md": "abd3b2eb21e8dc351c50f4ba773dc26a32ccfaf7eabe356973268b96ee6b2b0d",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/graph_panel_score_run.py": "2e29dd9f4c4af0bbb9760996af6ad63ee6fcc133ff8a0d348518c1d57a295018",
+    "loom/tools/structure/graph_free_extraction.py": "5ccb81d038d80343a0407630fc4ce806b549e9f3c1a2c5798971092f5a70d91d"
+  },
+  "log_sha256": "aded79b9ea804ef979214c741ee26cd356ca96923e952a7cbae9bf8d63c6396f",
+  "actual_paid_requests": 0,
+  "actual_paid_cost_usd": "0",
+  "quality_measurement": false,
+  "account_availability_verified": false,
+  "independent_runtime_retest": "docs/research/philosophy_watch_2026-09-30/RUNTIME_FIRST_RESULTS_13.json",
+  "independent_runner_retest": "docs/research/philosophy_watch_2026-09-30/FRONTIER_FIRST_RESULTS_05.json"
+}

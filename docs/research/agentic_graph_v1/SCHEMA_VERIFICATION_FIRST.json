@@ -1,0 +1,14 @@
+{
+  "schema": "loom.agentic_graph_schema_verification/1",
+  "packet_instances": 8,
+  "diff_instances": 6,
+  "all_valid": true,
+  "draft": "2020-12",
+  "model_quality_measured": false,
+  "api_calls": 0,
+  "paid_cost_usd": 0,
+  "schema_files_sha256": {
+    "graph_packet.schema.json": "7a5e58b68b2f4d6de90c6f7d25072a9634de594a83a05491c89dfddffa404431",
+    "graph_packet_diff.schema.json": "5224a657a4fdd1fdaeb5096de562e9bd1b272913becdfe80354e16a17eb1056c"
+  }
+}

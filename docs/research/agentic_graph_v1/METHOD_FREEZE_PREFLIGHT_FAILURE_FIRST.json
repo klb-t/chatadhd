@@ -1,0 +1,9 @@
+{
+  "state": "preflight_failed_before_any_calls",
+  "error_class": "ValueError",
+  "reason": "relative_model_config_path_not_resolved_before_freeze_relative_to",
+  "paid_calls": 0,
+  "correction": "resolve_configuration_path_and_preserve_external_absolute_references_if_needed",
+  "regression_test": "ExperimentTests.test_relative_model_config_cli_freeze_resolves_without_reading_gold",
+  "first_empty_stdout_artifact": "method_freeze_first_output.txt"
+}

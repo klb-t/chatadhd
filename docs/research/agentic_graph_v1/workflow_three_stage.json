@@ -1,0 +1,55 @@
+{
+  "schema": "loom.graph_packet_workflow/1",
+  "id": "scripted-test",
+  "stages": [
+    {
+      "id": "stage-1",
+      "operation": "complete_graph",
+      "model": "scripted.test",
+      "recipe": "source-review-v1",
+      "apply_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "auto",
+        "allow_source_tombstones": false
+      },
+      "on_failure": "stop",
+      "context": "current"
+    },
+    {
+      "id": "stage-2",
+      "operation": "critique_graph",
+      "model": "scripted.test",
+      "recipe": "source-review-v1",
+      "apply_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "auto",
+        "allow_source_tombstones": false
+      },
+      "on_failure": "stop",
+      "context": "current"
+    },
+    {
+      "id": "stage-3",
+      "operation": "critique_graph",
+      "model": "scripted.test",
+      "recipe": "source-review-v1",
+      "apply_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "auto",
+        "allow_source_tombstones": false
+      },
+      "on_failure": "stop",
+      "context": "current"
+    }
+  ],
+  "authorization": {
+    "paid_live": false,
+    "usage_jump_confirmed": false,
+    "reason": "offline scripted mechanism"
+  },
+  "resources": {
+    "expected_usage_multiplier": 1,
+    "confirmation_multiplier": 10,
+    "packet_limits": null
+  }
+}

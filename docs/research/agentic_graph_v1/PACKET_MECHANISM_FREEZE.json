@@ -1,0 +1,37 @@
+{
+  "schema": "loom.agentic_graph_packet_mechanism_freeze/1",
+  "frozen_at_utc": "2026-09-30T13:08:45.261537+00:00",
+  "native_core_edited": false,
+  "schema_status": "research_exchange_adapter_proposal",
+  "canonical_store_written": false,
+  "all_calls_scripted_or_previous_saved_response_replay": true,
+  "new_paid_calls": 0,
+  "model_quality_measured": false,
+  "validation_opened": false,
+  "full_archive_or_swarm_quality_not_verified": true,
+  "targeted_tests": {
+    "passed": 38,
+    "planned": 38
+  },
+  "first_scripted_three_stage_transcript": "docs/research/agentic_graph_v1/scripted_three_stage_first",
+  "files_sha256": {
+    "loom/tools/structure/agentic_graph_v1/__init__.py": "d364d23ee3a5a62b9175f545df01faa78f2ca8045b9e967e613882781809307a",
+    "loom/tools/structure/agentic_graph_v1/build_schemas.py": "f54b0588717ca85e4b3851fd4c525106e282b673c0076978599d5e75320455b6",
+    "loom/tools/structure/agentic_graph_v1/graph_packet.schema.json": "7a5e58b68b2f4d6de90c6f7d25072a9634de594a83a05491c89dfddffa404431",
+    "loom/tools/structure/agentic_graph_v1/test_workflow.py": "cd734e078cc9d57ca0874107bc4fc6192dc5c5cfdf6e1c22f1b4c74e61722d5c",
+    "loom/tools/structure/agentic_graph_v1/test_experiment.py": "8c9255419efc05ef766e715a50af86b932ece673162faa4c0de3991316491042",
+    "loom/tools/structure/agentic_graph_v1/test_packet.py": "abf69624a20638ac54f221c1f1a99e329f54c2d16f4d26286925e99d4ca39ce2",
+    "loom/tools/structure/agentic_graph_v1/packet.py": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+    "loom/tools/structure/agentic_graph_v1/workflow.py": "2f85e20f70f59ffb3fa6a0b6812af375918eef91e47d1233b8e96f119912954a",
+    "loom/tools/structure/agentic_graph_v1/graph_packet_diff.schema.json": "5224a657a4fdd1fdaeb5096de562e9bd1b272913becdfe80354e16a17eb1056c",
+    "loom/tools/structure/agentic_graph_v1/experiment.py": "574f652c4f3b1b7f69a8f2be3bbb9fdf751966e659edeb5b21a270b3cc349804",
+    "docs/research/agentic_graph_v1/PROTOCOL.md": "587b83a240bdbcb85ca0127e526df136aedb45959d8dc79a8f5f82e5edcc97cc",
+    "docs/research/agentic_graph_v1/workflow_two_stage.json": "5728655e976038529b699102d816637a0a61fc8eab74b3187d1fe0afd5ea93f8",
+    "docs/research/agentic_graph_v1/workflow_three_stage.json": "d0218722aad6380cabd8239f51fa746eb54030c0c6c1db679e3716c942bf5aa6",
+    "docs/research/agentic_graph_v1/packet_scripted_fixture.json": "a176a50c2f0510c78a8a5e579ad8f22747951f813156e2cbb44bae2a6777e177",
+    "loom/include/loom/model.h": "cbf8dfda1bbbdf9cca0ad6ac92a07e48049938551cf9777e327665a89e192dce",
+    "loom/src/model/model_core.cpp": "471064f6a047d6efa008e19c5e9fb35add09f8008108eb1961e1542933a3ee2e",
+    "loom/src/kb/evidence.cpp": "df1161f1cdc3e68eb760ccd9973e74e6b945170bc05d48d7e22a423a025deab1",
+    "ECOSYSTEM.md": "abd3b2eb21e8dc351c50f4ba773dc26a32ccfaf7eabe356973268b96ee6b2b0d"
+  }
+}

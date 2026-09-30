@@ -1,0 +1,9 @@
+{
+  "occurred_before_outcomes": true,
+  "paid_calls": 0,
+  "hypothesis": "every archived provider pricing field fits legacy18-place currency precision",
+  "result": "revert hypothesis",
+  "failure": "RunnerError invalid_money on Google input_cache_write price using >18 decimal places",
+  "correction": "finite Decimal accounting accepts provider precision without a financial ceiling; instrument-specific prices remain exact strings",
+  "recorded_at": "2026-09-30T13:06:13.402558+00:00"
+}

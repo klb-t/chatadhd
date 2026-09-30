@@ -1,0 +1,249 @@
+{
+  "schema": "loom.agentic_packet_cpu_measurement/1",
+  "protocol": {
+    "schema": "loom.agentic_packet_cpu_protocol/1",
+    "hypothesis": "Keeping full reversible history has measurable growth in codec validation cost as accepted stage count grows, even with unchanged semantic graph records.",
+    "variable": "history events at 0,5,20,50 with the same two Entity records, one Claim and one Observation",
+    "baseline": "JSON encode/decode of exact same packet; baseline checks syntax only and is not an equivalent provenance/history integrity operation",
+    "replicates_per_history": 3,
+    "order": "alternate baseline/codec order by replicate",
+    "metrics": [
+      "wall seconds",
+      "process CPU seconds",
+      "canonical bytes",
+      "history events",
+      "construction wall seconds"
+    ],
+    "decisions": "measure and investigate only; no source/scorer/policy edit after outcomes",
+    "first_exploratory_20_event_probe": {
+      "construction_seconds": 0.8661548479994963,
+      "validation_seconds": 0.033066208000491315,
+      "not_preregistered": true
+    },
+    "no_model_quality_measure": true,
+    "no_paid_calls": true,
+    "source_sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4"
+  },
+  "results": [
+    {
+      "history_events": 0,
+      "packet_canonical_bytes": 3366,
+      "replicate": 1,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.0001837070003603003,
+      "process_cpu_seconds": 0.00017457999999999363,
+      "cumulative_construction_wall_seconds": 0.0007054819998302264
+    },
+    {
+      "history_events": 0,
+      "packet_canonical_bytes": 3366,
+      "replicate": 1,
+      "method": "codec_validation",
+      "wall_seconds": 0.0004207740003039362,
+      "process_cpu_seconds": 0.00042119699999999816,
+      "cumulative_construction_wall_seconds": 0.0007054819998302264
+    },
+    {
+      "history_events": 0,
+      "packet_canonical_bytes": 3366,
+      "replicate": 2,
+      "method": "codec_validation",
+      "wall_seconds": 0.0003736019998541451,
+      "process_cpu_seconds": 0.00037415799999999944,
+      "cumulative_construction_wall_seconds": 0.0007054819998302264
+    },
+    {
+      "history_events": 0,
+      "packet_canonical_bytes": 3366,
+      "replicate": 2,
+      "method": "json_roundtrip",
+      "wall_seconds": 8.193299981940072e-05,
+      "process_cpu_seconds": 8.213299999999812e-05,
+      "cumulative_construction_wall_seconds": 0.0007054819998302264
+    },
+    {
+      "history_events": 0,
+      "packet_canonical_bytes": 3366,
+      "replicate": 3,
+      "method": "json_roundtrip",
+      "wall_seconds": 6.812199990235968e-05,
+      "process_cpu_seconds": 6.823100000000193e-05,
+      "cumulative_construction_wall_seconds": 0.0007054819998302264
+    },
+    {
+      "history_events": 0,
+      "packet_canonical_bytes": 3366,
+      "replicate": 3,
+      "method": "codec_validation",
+      "wall_seconds": 0.00039339199975074735,
+      "process_cpu_seconds": 0.00039389700000000416,
+      "cumulative_construction_wall_seconds": 0.0007054819998302264
+    },
+    {
+      "history_events": 5,
+      "packet_canonical_bytes": 9680,
+      "replicate": 1,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.0001840270006141509,
+      "process_cpu_seconds": 0.0001798679999999997,
+      "cumulative_construction_wall_seconds": 0.05860583499998029
+    },
+    {
+      "history_events": 5,
+      "packet_canonical_bytes": 9680,
+      "replicate": 1,
+      "method": "codec_validation",
+      "wall_seconds": 0.006026046999977552,
+      "process_cpu_seconds": 0.006028129000000021,
+      "cumulative_construction_wall_seconds": 0.05860583499998029
+    },
+    {
+      "history_events": 5,
+      "packet_canonical_bytes": 9680,
+      "replicate": 2,
+      "method": "codec_validation",
+      "wall_seconds": 0.005767526999989059,
+      "process_cpu_seconds": 0.005769875000000008,
+      "cumulative_construction_wall_seconds": 0.05860583499998029
+    },
+    {
+      "history_events": 5,
+      "packet_canonical_bytes": 9680,
+      "replicate": 2,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.00019840799996018177,
+      "process_cpu_seconds": 0.00019853499999999968,
+      "cumulative_construction_wall_seconds": 0.05860583499998029
+    },
+    {
+      "history_events": 5,
+      "packet_canonical_bytes": 9680,
+      "replicate": 3,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.00015782800073793624,
+      "process_cpu_seconds": 0.00015790499999998597,
+      "cumulative_construction_wall_seconds": 0.05860583499998029
+    },
+    {
+      "history_events": 5,
+      "packet_canonical_bytes": 9680,
+      "replicate": 3,
+      "method": "codec_validation",
+      "wall_seconds": 0.005711273000088113,
+      "process_cpu_seconds": 0.0057138420000000245,
+      "cumulative_construction_wall_seconds": 0.05860583499998029
+    },
+    {
+      "history_events": 20,
+      "packet_canonical_bytes": 28635,
+      "replicate": 1,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.0004481050000322284,
+      "process_cpu_seconds": 0.0004453129999999472,
+      "cumulative_construction_wall_seconds": 1.0313435889993343
+    },
+    {
+      "history_events": 20,
+      "packet_canonical_bytes": 28635,
+      "replicate": 1,
+      "method": "codec_validation",
+      "wall_seconds": 0.04071324500000628,
+      "process_cpu_seconds": 0.04071634099999999,
+      "cumulative_construction_wall_seconds": 1.0313435889993343
+    },
+    {
+      "history_events": 20,
+      "packet_canonical_bytes": 28635,
+      "replicate": 2,
+      "method": "codec_validation",
+      "wall_seconds": 0.039811225999983435,
+      "process_cpu_seconds": 0.039813867000000114,
+      "cumulative_construction_wall_seconds": 1.0313435889993343
+    },
+    {
+      "history_events": 20,
+      "packet_canonical_bytes": 28635,
+      "replicate": 2,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.0007882270001573488,
+      "process_cpu_seconds": 0.0008102669999998646,
+      "cumulative_construction_wall_seconds": 1.0313435889993343
+    },
+    {
+      "history_events": 20,
+      "packet_canonical_bytes": 28635,
+      "replicate": 3,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.0004434080001374241,
+      "process_cpu_seconds": 0.0004437310000000583,
+      "cumulative_construction_wall_seconds": 1.0313435889993343
+    },
+    {
+      "history_events": 20,
+      "packet_canonical_bytes": 28635,
+      "replicate": 3,
+      "method": "codec_validation",
+      "wall_seconds": 0.03914856800020061,
+      "process_cpu_seconds": 0.03915238199999993,
+      "cumulative_construction_wall_seconds": 1.0313435889993343
+    },
+    {
+      "history_events": 50,
+      "packet_canonical_bytes": 66555,
+      "replicate": 1,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.0012578740006574662,
+      "process_cpu_seconds": 0.0012562109999993964,
+      "cumulative_construction_wall_seconds": 9.571382870999514
+    },
+    {
+      "history_events": 50,
+      "packet_canonical_bytes": 66555,
+      "replicate": 1,
+      "method": "codec_validation",
+      "wall_seconds": 0.156106606999856,
+      "process_cpu_seconds": 0.1553335570000005,
+      "cumulative_construction_wall_seconds": 9.571382870999514
+    },
+    {
+      "history_events": 50,
+      "packet_canonical_bytes": 66555,
+      "replicate": 2,
+      "method": "codec_validation",
+      "wall_seconds": 0.14767048199973942,
+      "process_cpu_seconds": 0.14767320599999856,
+      "cumulative_construction_wall_seconds": 9.571382870999514
+    },
+    {
+      "history_events": 50,
+      "packet_canonical_bytes": 66555,
+      "replicate": 2,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.0013208390000727377,
+      "process_cpu_seconds": 0.0013219590000002057,
+      "cumulative_construction_wall_seconds": 9.571382870999514
+    },
+    {
+      "history_events": 50,
+      "packet_canonical_bytes": 66555,
+      "replicate": 3,
+      "method": "json_roundtrip",
+      "wall_seconds": 0.001016930999867327,
+      "process_cpu_seconds": 0.0010177359999996582,
+      "cumulative_construction_wall_seconds": 9.571382870999514
+    },
+    {
+      "history_events": 50,
+      "packet_canonical_bytes": 66555,
+      "replicate": 3,
+      "method": "codec_validation",
+      "wall_seconds": 0.15568124699984764,
+      "process_cpu_seconds": 0.15568234699999906,
+      "cumulative_construction_wall_seconds": 9.571382870999514
+    }
+  ],
+  "decision": "investigate_scaling_not_rewrite_after_measurement",
+  "paid_cost_usd": 0,
+  "model_quality_measured": false,
+  "code_modified": false
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "loom.agentic_graph_selection/1",
+  "selected_before_free_v2_outcomes": true,
+  "selection_policy": "Three cases in each of four inherited DEV design blocks; alternate two EN/one PL and one EN/two PL, take lowest IDs in each language",
+  "selected_case_ids": [
+    "gpv1_dev_001",
+    "gpv1_dev_002",
+    "gpv1_dev_004",
+    "gpv1_dev_007",
+    "gpv1_dev_010",
+    "gpv1_dev_011",
+    "gpv1_dev_013",
+    "gpv1_dev_014",
+    "gpv1_dev_016",
+    "gpv1_dev_019",
+    "gpv1_dev_022",
+    "gpv1_dev_023"
+  ],
+  "declared_design_blocks": [
+    "attribution",
+    "negation_unknown",
+    "correction_known_at",
+    "paraphrase"
+  ],
+  "cases": 12,
+  "en": 6,
+  "pl": 6,
+  "author_api_calls": 0,
+  "validation_read": false
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "manifest": "/workspace/scratch/34e008d7a951/chatadhd/docs/research/graph_free_extraction_v1/prepared/batch01/prepared/manifest.json",
+    "run_dir": "/workspace/scratch/34e008d7a951/chatadhd/docs/research/graph_free_extraction_v1/prepared/batch01/run",
+    "variant": "free_source_v1"
+  },
+  {
+    "manifest": "/workspace/scratch/34e008d7a951/chatadhd/docs/research/graph_free_extraction_v1/prepared/batch02/prepared/manifest.json",
+    "run_dir": "/workspace/scratch/34e008d7a951/chatadhd/docs/research/graph_free_extraction_v1/prepared/batch02/run",
+    "variant": "free_source_v1"
+  }
+]

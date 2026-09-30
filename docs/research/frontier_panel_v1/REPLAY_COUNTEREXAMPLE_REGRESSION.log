@@ -1,0 +1,12 @@
+======================================================================
+FAIL: test_configured_large_response_is_replayable (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_configured_large_response_is_replayable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/structure/test_frontier_panel_v1.py", line 280, in test_configured_large_response_is_replayable
+    self.assertEqual(summary['compiled_complete'],1)
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 29 tests in 1.689s
+
+FAILED (failures=1)

@@ -1,0 +1,47 @@
+{
+  "rows": 24,
+  "replicates_per_condition": 3,
+  "summary": [
+    {
+      "history_events": 0,
+      "canonical_bytes": 3366,
+      "construction_wall_seconds": 0.0007054819998302264,
+      "json_roundtrip_wall_median_seconds": 8.193299981940072e-05,
+      "json_roundtrip_cpu_median_seconds": 8.213299999999812e-05,
+      "codec_validation_wall_median_seconds": 0.00039339199975074735,
+      "codec_validation_cpu_median_seconds": 0.00039389700000000416
+    },
+    {
+      "history_events": 5,
+      "canonical_bytes": 9680,
+      "construction_wall_seconds": 0.05860583499998029,
+      "json_roundtrip_wall_median_seconds": 0.0001840270006141509,
+      "json_roundtrip_cpu_median_seconds": 0.0001798679999999997,
+      "codec_validation_wall_median_seconds": 0.005767526999989059,
+      "codec_validation_cpu_median_seconds": 0.005769875000000008
+    },
+    {
+      "history_events": 20,
+      "canonical_bytes": 28635,
+      "construction_wall_seconds": 1.0313435889993343,
+      "json_roundtrip_wall_median_seconds": 0.0004481050000322284,
+      "json_roundtrip_cpu_median_seconds": 0.0004453129999999472,
+      "codec_validation_wall_median_seconds": 0.039811225999983435,
+      "codec_validation_cpu_median_seconds": 0.039813867000000114
+    },
+    {
+      "history_events": 50,
+      "canonical_bytes": 66555,
+      "construction_wall_seconds": 9.571382870999514,
+      "json_roundtrip_wall_median_seconds": 0.0012578740006574662,
+      "json_roundtrip_cpu_median_seconds": 0.0012562109999993964,
+      "codec_validation_wall_median_seconds": 0.15568124699984764,
+      "codec_validation_cpu_median_seconds": 0.1553335570000005
+    }
+  ],
+  "model_quality_measured": false,
+  "equivalent_baseline_contract": false,
+  "interpretation": "Full source/provenance/history verification is more expensive than syntax-only JSON roundtrip; growth is a resource-planning signal, not a semantic method ranking.",
+  "decision": "investigate journal replay/cache/snapshot strategies as new separately measured recipes; frozen source unchanged",
+  "paid_cost_usd": 0
+}

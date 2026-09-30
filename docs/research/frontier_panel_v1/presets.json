@@ -1,0 +1,165 @@
+{
+  "schema": "loom.frontier_panel_presets/1",
+  "retrieved_catalog_sha256": "f694031661946b267a97265e32b308286171054902ec52e7024b90bef6ebac16",
+  "catalog_file": "public_preflight/models.json",
+  "live_policy": "deferred_until_owner_archive_import_and_explicit_run_budget",
+  "models": [
+    {
+      "key": "gpt61_sol",
+      "model": "openai/gpt-6.1-sol",
+      "provider": "openai",
+      "role": "primary_frontier_family",
+      "endpoint_file": "public_preflight/openai__gpt-6.1-sol.json",
+      "endpoint_sha256": "7153354ea5d0517c3f6ab1787368949c9f50f5610277bce87f3a66124e5d0ae0",
+      "retrieved_at": "2026-09-30T12:42:35.192703+00:00",
+      "reasoning": {
+        "effort": "low",
+        "exclude": false
+      },
+      "max_tokens": {
+        "assisted_extraction": 4096,
+        "free_source_extraction": 4096,
+        "supplied_edge_judgment": 1536,
+        "graph_packet": 8192
+      },
+      "completion_reservation_multiplier": "1",
+      "prompt_reservation_policy": "maximum_prompt_or_cache_write_rate",
+      "notes": "Price/effort/model is a configurable experiment preset; not an application ceiling."
+    },
+    {
+      "key": "sonnet55",
+      "model": "anthropic/claude-sonnet-5.5",
+      "provider": "anthropic",
+      "role": "primary_frontier_family",
+      "endpoint_file": "public_preflight/anthropic__claude-sonnet-5.5.json",
+      "endpoint_sha256": "c88b6d014a658462023a45d2bce51789dc4ce0a629c94d97c9af38aea76c3a4b",
+      "retrieved_at": "2026-09-30T12:42:35.123139+00:00",
+      "reasoning": {
+        "effort": "low",
+        "exclude": false
+      },
+      "max_tokens": {
+        "assisted_extraction": 4096,
+        "free_source_extraction": 4096,
+        "supplied_edge_judgment": 1536,
+        "graph_packet": 8192
+      },
+      "completion_reservation_multiplier": "1",
+      "prompt_reservation_policy": "maximum_prompt_or_cache_write_rate",
+      "notes": "Price/effort/model is a configurable experiment preset; not an application ceiling."
+    },
+    {
+      "key": "gemini31_pro",
+      "model": "google/gemini-3.1-pro-preview",
+      "provider": "google-ai-studio",
+      "role": "primary_frontier_family",
+      "endpoint_file": "public_preflight/google__gemini-3.1-pro-preview.json",
+      "endpoint_sha256": "a656510eeedb7daa28cf89fac87a873d9dc1d08b06cacd3557edf1648f31c619",
+      "retrieved_at": "2026-09-30T12:42:35.169944+00:00",
+      "reasoning": {
+        "effort": "low",
+        "exclude": false
+      },
+      "max_tokens": {
+        "assisted_extraction": 4096,
+        "free_source_extraction": 4096,
+        "supplied_edge_judgment": 1536,
+        "graph_packet": 8192
+      },
+      "completion_reservation_multiplier": "2",
+      "prompt_reservation_policy": "maximum_prompt_or_cache_write_rate",
+      "notes": "Price/effort/model is a configurable experiment preset; not an application ceiling."
+    },
+    {
+      "key": "gemini38_flash",
+      "model": "google/gemini-3.8-flash",
+      "provider": "google-ai-studio",
+      "role": "lower_cost_current_family_variant",
+      "endpoint_file": "public_preflight/google__gemini-3.8-flash.json",
+      "endpoint_sha256": "68000e4b662b7b0869880031795fe64ef30b76c0439eb2ed7a681a9126c95e88",
+      "retrieved_at": "2026-09-30T12:42:35.179255+00:00",
+      "reasoning": {
+        "effort": "low",
+        "exclude": false
+      },
+      "max_tokens": {
+        "assisted_extraction": 4096,
+        "free_source_extraction": 4096,
+        "supplied_edge_judgment": 1536,
+        "graph_packet": 8192
+      },
+      "completion_reservation_multiplier": "2",
+      "prompt_reservation_policy": "maximum_prompt_or_cache_write_rate",
+      "notes": "Price/effort/model is a configurable experiment preset; not an application ceiling."
+    },
+    {
+      "key": "gpt6_luna",
+      "model": "openai/gpt-6-luna",
+      "provider": "openai",
+      "role": "lower_cost_current_family_variant",
+      "endpoint_file": "public_preflight/openai__gpt-6-luna.json",
+      "endpoint_sha256": "c0f5a5b565b29f2100f16a01b2eeb9df04abe20947bbd0fa9bed2dc237897534",
+      "retrieved_at": "2026-09-30T12:42:37.269103+00:00",
+      "reasoning": {
+        "effort": "low",
+        "exclude": false
+      },
+      "max_tokens": {
+        "assisted_extraction": 4096,
+        "free_source_extraction": 4096,
+        "supplied_edge_judgment": 1536,
+        "graph_packet": 8192
+      },
+      "completion_reservation_multiplier": "1",
+      "prompt_reservation_policy": "maximum_prompt_or_cache_write_rate",
+      "notes": "Price/effort/model is a configurable experiment preset; not an application ceiling."
+    }
+  ],
+  "default_execution": {
+    "budget_usd": "2",
+    "batch_reservation_cap_usd": ".1",
+    "max_requests_per_batch": 48,
+    "limits": {
+      "max_input_bytes": 16777216,
+      "max_body_bytes": 8388608,
+      "max_response_bytes": 8388608,
+      "timeout_seconds": 60
+    }
+  },
+  "selection_presets": {
+    "screen6": [
+      "gpv1_dev_001",
+      "gpv1_dev_004",
+      "gpv1_dev_007",
+      "gpv1_dev_010",
+      "gpv1_dev_013",
+      "gpv1_dev_022"
+    ],
+    "balanced8": [
+      "gpv1_dev_001",
+      "gpv1_dev_004",
+      "gpv1_dev_007",
+      "gpv1_dev_010",
+      "gpv1_dev_013",
+      "gpv1_dev_016",
+      "gpv1_dev_019",
+      "gpv1_dev_022"
+    ],
+    "balanced12": [
+      "gpv1_dev_001",
+      "gpv1_dev_002",
+      "gpv1_dev_004",
+      "gpv1_dev_007",
+      "gpv1_dev_010",
+      "gpv1_dev_011",
+      "gpv1_dev_013",
+      "gpv1_dev_014",
+      "gpv1_dev_016",
+      "gpv1_dev_019",
+      "gpv1_dev_022",
+      "gpv1_dev_023"
+    ],
+    "all24": "all"
+  },
+  "no_canonical_graph_write": true
+}

@@ -1,0 +1,32 @@
+test_accounting_rejects_negative_nan_or_infinite_money (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_accounting_rejects_negative_nan_or_infinite_money) ... ok
+test_batch_cap_is_configurable_not_global_reset (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_batch_cap_is_configurable_not_global_reset) ... ok
+test_billion_dollar_budget_configuration_and_key_gate (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_billion_dollar_budget_configuration_and_key_gate) ... ok
+test_byok_tripwire_and_cost_overrun_stop (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_byok_tripwire_and_cost_overrun_stop) ... ok
+test_every_declared_recipe_matches_own_hash (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_every_declared_recipe_matches_own_hash) ... ok
+test_free_payload_is_source_only (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_free_payload_is_source_only) ... ok
+test_high_reasoning_is_configurable (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_high_reasoning_is_configurable) ... ok
+test_judge_physically_excludes_future_turns (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_judge_physically_excludes_future_turns) ... ok
+test_mandatory_reasoning_is_model_conditioned (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_mandatory_reasoning_is_model_conditioned) ... ok
+test_missing_cost_stops_without_reissuing_http_error (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_missing_cost_stops_without_reissuing_http_error) ... ok
+test_no_fake_precise_gemini_reasoning_cap (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_no_fake_precise_gemini_reasoning_cap) ... ok
+test_original_runner_still_rejects_enabled_reasoning (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_original_runner_still_rejects_enabled_reasoning) ... ok
+test_packet_response_preview_binds_instrument_time_not_source_time (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_packet_response_preview_binds_instrument_time_not_source_time) ... ok
+test_packet_response_rejects_unmeasured_timestamp_and_stale_diff (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_packet_response_rejects_unmeasured_timestamp_and_stale_diff) ... ok
+test_plan_keeps_actual_wire_hash_reasoning_and_reservation (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_plan_keeps_actual_wire_hash_reasoning_and_reservation) ... ok
+test_prepare_does_not_read_gold_or_validation (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_prepare_does_not_read_gold_or_validation) ... ok
+test_provider_snapshot_and_manifest_alias_claims_cannot_be_forged (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_provider_snapshot_and_manifest_alias_claims_cannot_be_forged) ... ok
+test_public_snapshots_have_exact_provider_and_date_aliases (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_public_snapshots_have_exact_provider_and_date_aliases) ... ok
+test_raw_ledger_cost_mismatch_is_hard_error (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_raw_ledger_cost_mismatch_is_hard_error) ... ok
+test_replay_missing_results_retains_all_planned_queries (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_replay_missing_results_retains_all_planned_queries) ... ok
+test_resource_limits_bound_private_transport_scope_only (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_resource_limits_bound_private_transport_scope_only) ... ok
+test_rich_payload_is_not_reduced_by_generic_body_builder (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_rich_payload_is_not_reduced_by_generic_body_builder) ... ok
+test_scripted_transport_preserves_exact_reasoning_body_and_first_response (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_scripted_transport_preserves_exact_reasoning_body_and_first_response) ... ok
+test_selection_balance_and_complete_denominators (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_selection_balance_and_complete_denominators) ... ok
+test_underreservation_rejected (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_underreservation_rejected) ... ok
+test_unobserved_reasoning_effort_rejected (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_unobserved_reasoning_effort_rejected) ... ok
+test_wrong_response_model_or_provider_is_hard_error (loom.tools.structure.test_frontier_panel_v1.FrontierTests.test_wrong_response_model_or_provider_is_hard_error) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.871s
+
+OK
