@@ -4,11 +4,13 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <map>
 #include <set>
 
 #include "loom/config.h"
 #include "loom/net/http.h"
+#include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "loom/semantic_llm.h"
 #include "loom/util/utf8.h"
@@ -261,18 +263,43 @@ Result<model::GoalType> find_goal_type_checked(const kb::Pack& pack, std::string
 }  // namespace
 
 Result<model::Goal> ContextEngine::type_goal(const ContextRequest& req) {
+  return type_goal_impl(req, nullptr);
+}
+
+Result<model::Goal> ContextEngine::type_goal_with_model(const ContextRequest& req, const GoalTypingBudget& budget) {
+  if (budget.max_requests < 0 || budget.max_requests > 1 || budget.max_input_bytes > 256000 || budget.max_response_bytes > 256000 ||
+      budget.max_output_tokens < 0 || budget.max_output_tokens > 4096 || budget.timeout_ms < 0 || budget.timeout_ms > 60000 ||
+      (budget.max_requests > 0 && (budget.max_input_bytes == 0 || budget.max_output_tokens == 0 || budget.timeout_ms == 0 || budget.max_response_bytes == 0))) {
+    return Error(Errc::InvalidArgument, "goal typing requires an explicit bounded request/input/output/timeout/response budget");
+  }
+  return type_goal_impl(req, &budget);
+}
+
+Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, const GoalTypingBudget* budget) {
   LOOM_TRY_ASSIGN(auto all_types, ctx::list_goal_types(*pack_));
   kb::Normalizer norm(*pack_);
 
   std::string chosen_type;
   double confidence = 0.0;
   Json params = Json::object();
+  params["confidence_basis"] = "heuristic_cue_margin";
+  params["calibration_status"] = "unavailable";
+  params["external_goal_typing"] = Json{{"status", budget ? "not_needed" : "offline"}, {"requests", 0}};
+  if (budget) {
+    params["external_goal_typing"]["budget"] = Json{{"max_requests", budget->max_requests},
+                                                   {"max_input_bytes", budget->max_input_bytes},
+                                                   {"max_output_tokens", budget->max_output_tokens},
+                                                   {"timeout_ms", budget->timeout_ms},
+                                                   {"max_response_bytes", budget->max_response_bytes}};
+    if (budget->max_requests == 0) params["external_goal_typing"]["status"] = "budget_disabled";
+  }
 
   if (req.goal_type && !req.goal_type->empty()) {
     LOOM_TRY_ASSIGN(auto gt, find_goal_type_checked(*pack_, *req.goal_type, all_types));
     chosen_type = gt.id;
     confidence = 1.0;
     params["classifier"] = "forced";
+    params["confidence_basis"] = "explicit_owner_type";
   } else {
     auto cls = classify_by_cues(all_types, norm, req.text);
     chosen_type = cls.type;
@@ -280,11 +307,12 @@ Result<model::Goal> ContextEngine::type_goal(const ContextRequest& req) {
     params["classifier"] = "cue";
     params["scores"] = cls.scores;
 
-    // Optional LLM classifier (only when a semantic model + API key are
-    // configured, mirroring SemanticLLM::enabled(); never required, never
-    // called in the common offline/test configuration, so determinism is
-    // unaffected by default).
-    if (confidence < 0.55) {
+    // Preview/select/build always use offline typing. A separate native caller
+    // can authorize a bounded optional instrument; model/key presence is only
+    // a capability check, never permission to spend or send prompt contents.
+    if (budget && budget->max_requests > 0 && confidence < 0.55) {
+      auto& attempt = params["external_goal_typing"];
+      attempt["status"] = "unavailable";
       std::string model = rt_.config().get("semantic_model", "").is_string()
                               ? rt_.config().get("semantic_model", "").get<std::string>()
                               : "";
@@ -300,42 +328,118 @@ Result<model::Goal> ContextEngine::type_goal(const ContextRequest& req) {
         }
         prompt += "\nPrompt:\n" + req.text;
 
-        net::HttpRequest hreq;
-        hreq.method = "POST";
-        hreq.url = base_url + "/chat/completions";
-        hreq.headers = {{"Authorization", "Bearer " + api_key},
-                        {"Content-Type", "application/json"},
-                        {"HTTP-Referer", "https://github.com/chatadhd"},
-                        {"X-Title", "ChatADHD-Context"}};
-        hreq.body = json::dump(Json{{"model", model},
-                                    {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})},
-                                    {"temperature", 0.0},
-                                    {"max_tokens", 100}});
-        hreq.timeout_ms = 15000;
-        auto resp = rt_.http().send(hreq);
-        if (resp && resp->ok()) {
-          auto body = resp->json();
-          if (body) {
-            std::string content;
-            if (const Json* choices = json::find(*body, "choices"); choices && choices->is_array() && !choices->empty()) {
-              if (const Json* msg = json::find((*choices)[0], "message"); msg) content = json::get_string(*msg, "content");
+        if (prompt.size() > budget->max_input_bytes) {
+          attempt["status"] = "input_limit";
+          attempt["input_bytes"] = prompt.size();
+        } else {
+          net::HttpRequest hreq;
+          hreq.method = "POST";
+          hreq.url = base_url + "/chat/completions";
+          hreq.headers = {{"Authorization", "Bearer " + api_key},
+                          {"Content-Type", "application/json"},
+                          {"HTTP-Referer", "https://github.com/chatadhd"},
+                          {"X-Title", "ChatADHD-Context"}};
+          hreq.body = json::dump(Json{{"model", model},
+                                      {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})},
+                                      {"temperature", 0.0},
+                                      {"max_tokens", budget->max_output_tokens}});
+          hreq.timeout_ms = budget->timeout_ms;
+          attempt["status"] = "failed";
+          attempt["requests"] = 1;
+          attempt["retry_authorized"] = false;
+          attempt["model"] = model;
+          attempt["input_bytes"] = prompt.size();
+          std::string response_bytes;
+          bool response_limited = false, received_headers = false;
+          int response_status = 0;
+          net::StreamSink sink;
+          sink.on_headers = [&](int status, const net::Headers&) {
+            received_headers = true;
+            response_status = status;
+            return true;
+          };
+          sink.on_data = [&](std::string_view part) {
+            const auto room = budget->max_response_bytes - response_bytes.size();
+            response_bytes.append(part.substr(0, room));
+            if (part.size() > room) {
+              response_limited = true;
+              return false;
             }
-            if (auto parsed = SemanticLLM::parse_response_json(content)) {
-              std::string llm_type = json::get_string(*parsed, "goal_type");
-              double llm_conf = json::get_number(*parsed, "confidence", 0.6);
-              bool valid = false;
-              for (const auto& gt : all_types) valid = valid || gt.id == llm_type;
-              if (valid) {
-                chosen_type = llm_type;
-                confidence = std::clamp(llm_conf, 0.0, 1.0);
-                params["classifier"] = "llm";
+            return true;
+          };
+          auto resp = rt_.http().send(hreq, &sink);
+          if (resp) response_status = resp->status;
+          else attempt["transport_error"] = std::string(errc_name(resp.error().code));
+          // The provider may echo private prompt contents or credentials. Keep
+          // the actual bytes in the canonical raw-source store; a loggable goal
+          // trace carries references only. Oversized replies retain an explicitly
+          // incomplete prefix and are never interpreted or automatically retried.
+          bool response_recorded = false;
+          if (received_headers || resp || !response_bytes.empty()) {
+            auto blob = rt_.blobs().put(response_bytes, "application/json");
+            if (!blob) {
+              attempt["status"] = "storage_failure";
+              attempt["storage_error"] = std::string(errc_name(blob.error().code));
+              attempt["response"] = Json{{"status", response_status}, {"source_status", "unavailable"},
+                                          {"complete", resp.has_value() && !response_limited}};
+            } else {
+              SourceRecord source;
+              source.kind = "api";
+              source.blob_hash = blob->hash;
+              source.size = blob->size;
+              source.mime = "application/json";
+              source.title = "Goal typing first response";
+              source.parser = "loom.context.goal_typing";
+              source.parser_version = "1";
+              source.metadata = Json{{"model", model}, {"status", response_status},
+                                     {"complete", resp.has_value() && !response_limited},
+                                     {"response_limit", response_limited}};
+              attempt["response"] = Json{{"blob_hash", blob->hash}, {"bytes", blob->size},
+                                          {"status", response_status}, {"complete", resp.has_value() && !response_limited}};
+              auto source_id = rt_.provenance().add_source(std::move(source));
+              if (!source_id) {
+                attempt["status"] = "storage_failure";
+                attempt["storage_error"] = std::string(errc_name(source_id.error().code));
+                attempt["response"]["source_status"] = "unavailable";
+              } else {
+                attempt["response"]["source_id"] = *source_id;
+                attempt["response"]["source_status"] = "recorded";
+                response_recorded = true;
               }
             }
           }
+          if (response_limited && attempt["status"] != "storage_failure") attempt["status"] = "response_limit";
+          if (resp && resp->ok() && !response_limited && response_recorded) {
+            auto body = json::parse(response_bytes);
+            if (body) {
+              std::string content;
+              if (const Json* choices = json::find(*body, "choices"); choices && choices->is_array() && !choices->empty()) {
+                if (const Json* msg = json::find((*choices)[0], "message"); msg) content = json::get_string(*msg, "content");
+              }
+              if (auto parsed = SemanticLLM::parse_response_json(content)) {
+                std::string llm_type = json::get_string(*parsed, "goal_type");
+                const Json* reported_confidence = json::find(*parsed, "confidence");
+                bool valid = false;
+                for (const auto& gt : all_types) valid = valid || gt.id == llm_type;
+                const double llm_conf = reported_confidence && reported_confidence->is_number()
+                                            ? reported_confidence->get<double>()
+                                            : std::numeric_limits<double>::quiet_NaN();
+                if (valid && std::isfinite(llm_conf) && llm_conf >= 0.0 && llm_conf <= 1.0) {
+                  chosen_type = llm_type;
+                  confidence = llm_conf;
+                  params["classifier"] = "llm";
+                  params["confidence_basis"] = "provider_self_report";
+                  params["reported_confidence"] = llm_conf;
+                  attempt["confidence_basis"] = "provider_self_report";
+                  attempt["calibration_status"] = "unavailable";
+                  attempt["reported_confidence"] = llm_conf;
+                  attempt["status"] = "accepted";
+                }
+              }
+            }
+          }
+          // Any failed attempt retains the cue result and its labelled trace.
         }
-        // Any failure (network, non-200, unparseable JSON, unknown id) is
-        // silently ignored: the cue-based result already computed above
-        // stays in effect, exactly like SemanticLLM's regex fallback.
       }
     }
   }
@@ -706,7 +810,9 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
 
   // ── dependency closure: premises of accepted items are pulled in too ──
   std::set<std::string> expanded;
-  for (int round = 0; round < 3; ++round) {
+  // Every accepted reference is expanded once. Newly accepted premises come
+  // from the finite run/pack, so cycles terminate without a depth-policy cap.
+  while (true) {
     std::vector<std::pair<std::string, std::string>> to_pull;  // (premise ref, puller ref)
     for (auto& [ref, idx] : accepted_index) {
       if (!expanded.insert(ref).second) continue;
@@ -762,6 +868,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
           c.content.label = stmt;
           c.content.summary = stmt + " " + ctx::principle_badge(p.validation, p.level, p.form);
           c.content.full = c.content.summary;
+          c.premise_principles = p.derived_from;
           ok = true;
         }
       }

@@ -1,0 +1,50 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:227:
+TEST SUITE: context_engine
+TEST CASE:  preview: configured models and credentials never authorize a transport request
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:239: ERROR: CHECK( scripted->requests().empty() ) is NOT correct!
+  values: CHECK( false )
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:242: ERROR: CHECK( scripted->requests().empty() ) is NOT correct!
+  values: CHECK( false )
+
+===============================================================================
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:245:
+TEST SUITE: context_engine
+TEST CASE:  select: dependency closure reaches long claim and principle chains
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:278: ERROR: CHECK( included(c.id) != set.items.end() ) is NOT correct!
+  values: CHECK( {?} != {?} )
+  logged: claim cl_0512f8c44a47a8ae
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:278: ERROR: CHECK( included(c.id) != set.items.end() ) is NOT correct!
+  values: CHECK( {?} != {?} )
+  logged: claim cl_8ce0fc75c7ab06a2
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:282: ERROR: CHECK( included(p.id) != set.items.end() ) is NOT correct!
+  values: CHECK( {?} != {?} )
+  logged: principle p.hidden_chain_0
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:282: ERROR: CHECK( included(p.id) != set.items.end() ) is NOT correct!
+  values: CHECK( {?} != {?} )
+  logged: principle p.hidden_chain_1
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:282: ERROR: CHECK( included(p.id) != set.items.end() ) is NOT correct!
+  values: CHECK( {?} != {?} )
+  logged: principle p.hidden_chain_2
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:282: ERROR: CHECK( included(p.id) != set.items.end() ) is NOT correct!
+  values: CHECK( {?} != {?} )
+  logged: principle p.hidden_chain_3
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_context_engine.cpp:282: ERROR: CHECK( included(p.id) != set.items.end() ) is NOT correct!
+  values: CHECK( {?} != {?} )
+  logged: principle p.hidden_chain_4
+
+===============================================================================
+[doctest] test cases:  2 |  0 passed | 2 failed | 449 skipped
+[doctest] assertions: 42 | 33 passed | 9 failed |
+[doctest] Status: FAILURE!

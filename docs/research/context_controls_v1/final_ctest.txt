@@ -1,0 +1,263 @@
+Test project /workspace/scratch/34e008d7a951/chatadhd/loom/build/dev
+      Start 27: unit.test_import_stream
+      Start 59: compat.test_crypto_compat
+      Start 68: research.structure
+      Start 28: unit.test_kb_pack
+ 1/74 Test #28: unit.test_kb_pack .....................   Passed    7.28 sec
+      Start 29: unit.test_knowledge
+ 2/74 Test #68: research.structure ....................   Passed    7.92 sec
+      Start  8: unit.test_catalog_links
+ 3/74 Test #59: compat.test_crypto_compat .............   Passed    9.12 sec
+      Start 65: compat.test_semantic_compat
+ 4/74 Test #29: unit.test_knowledge ...................   Passed    6.31 sec
+      Start 47: unit.test_resolve_attribution
+ 5/74 Test #65: compat.test_semantic_compat ...........   Passed    4.70 sec
+      Start 15: unit.test_crypto
+ 6/74 Test  #8: unit.test_catalog_links ...............   Passed    6.49 sec
+      Start 13: unit.test_context_engine
+ 7/74 Test #15: unit.test_crypto ......................   Passed    3.92 sec
+      Start 34: unit.test_knowledge_semantic_graph
+ 8/74 Test #47: unit.test_resolve_attribution .........   Passed    4.55 sec
+      Start 57: compat.test_chat_compat
+ 9/74 Test #34: unit.test_knowledge_semantic_graph ....   Passed    3.34 sec
+      Start 33: unit.test_knowledge_semantic
+10/74 Test #57: compat.test_chat_compat ...............   Passed    2.96 sec
+      Start 18: unit.test_extract
+11/74 Test #18: unit.test_extract .....................   Passed    2.57 sec
+      Start 21: unit.test_generalize
+12/74 Test #33: unit.test_knowledge_semantic ..........   Passed    2.79 sec
+      Start 19: unit.test_extract_eval
+13/74 Test #13: unit.test_context_engine ..............   Passed   10.02 sec
+      Start 67: compat.test_util_compat
+14/74 Test #21: unit.test_generalize ..................   Passed    2.90 sec
+      Start 61: compat.test_graph_compat
+15/74 Test #67: compat.test_util_compat ...............   Passed    2.19 sec
+      Start 66: compat.test_semantic_recovery
+16/74 Test #19: unit.test_extract_eval ................   Passed    2.80 sec
+      Start 63: compat.test_memory_compat
+17/74 Test #61: compat.test_graph_compat ..............   Passed    2.15 sec
+      Start 73: cli.smoke
+18/74 Test #63: compat.test_memory_compat .............   Passed    2.10 sec
+      Start  5: unit.test_catalog
+19/74 Test #66: compat.test_semantic_recovery .........   Passed    2.35 sec
+      Start  9: unit.test_catalog_retention
+20/74 Test  #9: unit.test_catalog_retention ...........   Passed    1.52 sec
+      Start 72: server.smoke
+21/74 Test  #5: unit.test_catalog .....................   Passed    1.88 sec
+      Start 22: unit.test_generalize_eval
+22/74 Test #73: cli.smoke .............................   Passed    2.09 sec
+      Start 32: unit.test_knowledge_flow
+23/74 Test #27: unit.test_import_stream ...............   Passed   31.52 sec
+      Start 36: unit.test_materialize
+24/74 Test #22: unit.test_generalize_eval .............   Passed    1.39 sec
+      Start 41: unit.test_pack_model
+25/74 Test #32: unit.test_knowledge_flow ..............   Passed    1.34 sec
+      Start  3: unit.test_capi
+26/74 Test #72: server.smoke ..........................   Passed    1.70 sec
+      Start  6: unit.test_catalog_context
+27/74 Test #36: unit.test_materialize .................   Passed    1.28 sec
+      Start 26: unit.test_import_exports
+28/74 Test #41: unit.test_pack_model ..................   Passed    1.10 sec
+      Start  1: unit.test_archive
+29/74 Test #26: unit.test_import_exports ..............   Passed    1.02 sec
+      Start  7: unit.test_catalog_eval
+30/74 Test  #6: unit.test_catalog_context .............   Passed    1.85 sec
+      Start 60: compat.test_db_compat
+31/74 Test  #1: unit.test_archive .....................   Passed    1.02 sec
+      Start 62: compat.test_import_compat
+32/74 Test #62: compat.test_import_compat .............   Passed    0.49 sec
+      Start 74: eval.harness
+33/74 Test  #3: unit.test_capi ........................   Passed    2.60 sec
+      Start 14: unit.test_context_eval
+34/74 Test  #7: unit.test_catalog_eval ................   Passed    0.96 sec
+      Start 70: research.graph_native_protocol
+35/74 Test #60: compat.test_db_compat .................   Passed    0.88 sec
+      Start 46: unit.test_resolve
+36/74 Test #74: eval.harness ..........................   Passed    0.53 sec
+      Start 30: unit.test_knowledge_candidate_graph
+37/74 Test #70: research.graph_native_protocol ........   Passed    0.43 sec
+      Start  4: unit.test_capi_knowledge
+38/74 Test #46: unit.test_resolve .....................   Passed    0.32 sec
+      Start 52: unit.test_semantic_worker
+39/74 Test #30: unit.test_knowledge_candidate_graph ...   Passed    0.30 sec
+      Start 16: unit.test_db
+40/74 Test #52: unit.test_semantic_worker .............   Passed    0.24 sec
+      Start 55: compat.test_abi_compat
+41/74 Test  #4: unit.test_capi_knowledge ..............   Passed    0.42 sec
+      Start 58: compat.test_config_compat
+42/74 Test #16: unit.test_db ..........................   Passed    0.18 sec
+      Start 35: unit.test_knowledge_store
+43/74 Test #14: unit.test_context_eval ................   Passed    0.99 sec
+      Start 69: research.independent_protocol
+44/74 Test #55: compat.test_abi_compat ................   Passed    0.27 sec
+      Start 25: unit.test_import
+45/74 Test #35: unit.test_knowledge_store .............   Passed    0.10 sec
+      Start 64: compat.test_selector_compat
+46/74 Test #58: compat.test_config_compat .............   Passed    0.14 sec
+      Start 51: unit.test_semantic_llm
+47/74 Test #69: research.independent_protocol .........   Passed    0.09 sec
+      Start 11: unit.test_chat_engine
+48/74 Test #51: unit.test_semantic_llm ................   Passed    0.05 sec
+      Start  2: unit.test_batch_api
+49/74 Test #64: compat.test_selector_compat ...........   Passed    0.07 sec
+      Start 42: unit.test_provenance
+50/74 Test #11: unit.test_chat_engine .................   Passed    0.05 sec
+      Start 54: unit.test_util
+51/74 Test #25: unit.test_import ......................   Passed    0.11 sec
+      Start 20: unit.test_fts
+52/74 Test  #2: unit.test_batch_api ...................   Passed    0.05 sec
+      Start 24: unit.test_graph
+53/74 Test #42: unit.test_provenance ..................   Passed    0.04 sec
+      Start 49: unit.test_runtime
+54/74 Test #49: unit.test_runtime .....................   Passed    0.03 sec
+      Start 17: unit.test_event_bus
+55/74 Test #54: unit.test_util ........................   Passed    0.04 sec
+      Start 23: unit.test_github
+56/74 Test #20: unit.test_fts .........................   Passed    0.05 sec
+      Start 31: unit.test_knowledge_candidates
+57/74 Test #24: unit.test_graph .......................   Passed    0.05 sec
+      Start 39: unit.test_model
+58/74 Test #23: unit.test_github ......................   Passed    0.02 sec
+      Start 38: unit.test_memory
+59/74 Test #17: unit.test_event_bus ...................   Passed    0.03 sec
+      Start 43: unit.test_providers
+60/74 Test #31: unit.test_knowledge_candidates ........   Passed    0.02 sec
+      Start 45: unit.test_relations
+61/74 Test #39: unit.test_model .......................   Passed    0.02 sec
+      Start 12: unit.test_config
+62/74 Test #45: unit.test_relations ...................   Passed    0.01 sec
+      Start 37: unit.test_media
+63/74 Test #38: unit.test_memory ......................   Passed    0.02 sec
+      Start 44: unit.test_regex
+64/74 Test #43: unit.test_providers ...................   Passed    0.01 sec
+      Start 50: unit.test_selector
+65/74 Test #12: unit.test_config ......................   Passed    0.01 sec
+      Start 48: unit.test_resolve_lineage
+66/74 Test #37: unit.test_media .......................   Passed    0.01 sec
+      Start 53: unit.test_tasks
+67/74 Test #50: unit.test_selector ....................   Passed    0.01 sec
+      Start 10: unit.test_catalog_scale
+68/74 Test #44: unit.test_regex .......................   Passed    0.01 sec
+      Start 40: unit.test_net_sse
+69/74 Test #48: unit.test_resolve_lineage .............   Passed    0.01 sec
+      Start 56: compat.test_candidate_graph_native
+70/74 Test #53: unit.test_tasks .......................   Passed    0.00 sec
+      Start 71: research.candidate_graph_protocol
+71/74 Test #10: unit.test_catalog_scale ...............   Passed    0.00 sec
+72/74 Test #40: unit.test_net_sse .....................   Passed    0.01 sec
+73/74 Test #56: compat.test_candidate_graph_native ....***Failed    0.08 sec
+E
+======================================================================
+ERROR: setUpClass (__main__.CandidateGraphNativeParity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tests/compat/test_candidate_graph_native.py", line 248, in setUpClass
+    cls.report = evaluate()
+                 ^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tests/compat/test_candidate_graph_native.py", line 164, in evaluate
+    if file_hash(python_report_path) != PYTHON_REPORT_SHA256:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tests/compat/test_candidate_graph_native.py", line 46, in file_hash
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/34e008d7a951/chatadhd/loom/tests/fixtures/eval/independent_candidate_graph_v1/initial_report.json'
+
+----------------------------------------------------------------------
+Ran 0 tests in 0.024s
+
+FAILED (errors=1)
+
+74/74 Test #71: research.candidate_graph_protocol .....***Failed    0.11 sec
+....E.E.E.E....
+======================================================================
+ERROR: test_copied_drafts_cannot_pass_an_empty_comparison_graph (test_candidate_graph_eval.CandidateEvaluationGuards.test_copied_drafts_cannot_pass_an_empty_comparison_graph)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 125, in test_copied_drafts_cannot_pass_an_empty_comparison_graph
+    case, compiled = self.measured_pair('dev_order_forward')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 119, in measured_pair
+    report = json.loads((evaluation.FIXTURES / 'initial_report.json').read_text())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/34e008d7a951/chatadhd/loom/tests/fixtures/eval/independent_candidate_graph_v1/initial_report.json'
+
+======================================================================
+ERROR: test_declared_root_loss_is_detected (test_candidate_graph_eval.CandidateEvaluationGuards.test_declared_root_loss_is_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 145, in test_declared_root_loss_is_detected
+    case, compiled = self.measured_pair('dev_order_forward')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 119, in measured_pair
+    report = json.loads((evaluation.FIXTURES / 'initial_report.json').read_text())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/34e008d7a951/chatadhd/loom/tests/fixtures/eval/independent_candidate_graph_v1/initial_report.json'
+
+======================================================================
+ERROR: test_empty_abstention_requires_its_located_unknown (test_candidate_graph_eval.CandidateEvaluationGuards.test_empty_abstention_requires_its_located_unknown)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 139, in test_empty_abstention_requires_its_located_unknown
+    case, compiled = self.measured_pair('dev_ambiguous')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 119, in measured_pair
+    report = json.loads((evaluation.FIXTURES / 'initial_report.json').read_text())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/34e008d7a951/chatadhd/loom/tests/fixtures/eval/independent_candidate_graph_v1/initial_report.json'
+
+======================================================================
+ERROR: test_graph_port_order_loss_is_detected_even_when_drafts_remain (test_candidate_graph_eval.CandidateEvaluationGuards.test_graph_port_order_loss_is_detected_even_when_drafts_remain)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 132, in test_graph_port_order_loss_is_detected_even_when_drafts_remain
+    case, compiled = self.measured_pair('dev_order_forward')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/eval/test_candidate_graph_eval.py", line 119, in measured_pair
+    report = json.loads((evaluation.FIXTURES / 'initial_report.json').read_text())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/34e008d7a951/chatadhd/loom/tests/fixtures/eval/independent_candidate_graph_v1/initial_report.json'
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.066s
+
+FAILED (errors=4)
+
+
+97% tests passed, 2 tests failed out of 74
+
+Total Test time (real) =  36.08 sec
+
+The following tests FAILED:
+	 56 - compat.test_candidate_graph_native (Failed)
+	 71 - research.candidate_graph_protocol (Failed)
+Errors while running CTest

@@ -1,11 +1,15 @@
 // context_engine.h: goal typing (deterministic PL/EN cue classifier + an
-// optional, config-gated LLM fallback), the ContextSet builder (score,
+// optional, explicitly budgeted native LLM fallback), the ContextSet builder (score,
 // diversity, dependency closure, three-band token budget) and the renderer.
 #include <doctest/doctest.h>
 
+#include <algorithm>
+
 #include "loom/context_engine.h"
+#include "loom/db.h"
 #include "loom/knowledge.h"
 #include "loom/net/http.h"
+#include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "test_helpers.h"
 
@@ -200,7 +204,7 @@ TEST_SUITE("context_engine") {
     CHECK(g4.confidence < 0.5);
   }
 
-  TEST_CASE("type_goal: an LLM classifier is used only when configured, and never touches the network otherwise") {
+  TEST_CASE("type_goal: model classification needs separate native authorization and explicit limits") {
     Fixture f;
     auto scripted = std::make_shared<net::ScriptedTransport>();
     scripted->set_fallback(net::ScriptedTransport::Reply::fail(Errc::Network, "should not be called"));
@@ -210,18 +214,288 @@ TEST_SUITE("context_engine") {
     req.text = "asdkjhasd random text matching no cue at all";
     auto goal = unwrap(engine.type_goal(req));
     CHECK(goal.params["classifier"] == "cue");
-    CHECK(scripted->requests().empty());  // no api_key/semantic_model configured: never called
+    CHECK(scripted->requests().empty());  // default typing is always offline
 
     f.rt->config().set("semantic_model", "test-model");
     f.rt->secrets().set("api_key", "sk-test");
+    auto offline = unwrap(engine.type_goal(req));
+    CHECK(offline.params["classifier"] == "cue");
+    CHECK(scripted->requests().empty());
     scripted->expect(
         "POST", "https://openrouter.ai/api/v1",
         net::ScriptedTransport::Reply::json(
             200, Json{{"choices", Json::array({Json{{"message", Json{{"content", "{\"goal_type\": \"verify_claim\", \"confidence\": 0.9}"}}}}})}}));
-    auto goal2 = unwrap(engine.type_goal(req));
+    context::GoalTypingBudget budget{1, 10000, 32, 2000, 4096};
+    auto goal2 = unwrap(engine.type_goal_with_model(req, budget));
     CHECK(goal2.type == "verify_claim");
     CHECK(goal2.params["classifier"] == "llm");
+    CHECK(goal2.params["confidence_basis"] == "provider_self_report");
+    CHECK(goal2.params["reported_confidence"] == 0.9);
+    CHECK(goal2.params["calibration_status"] == "unavailable");
+    CHECK(goal2.params["external_goal_typing"]["status"] == "accepted");
+    CHECK(goal2.params["external_goal_typing"]["requests"] == 1);
+    CHECK(goal2.params["external_goal_typing"]["response"]["status"] == 200);
+    const auto& response = goal2.params["external_goal_typing"]["response"];
+    CHECK(response["complete"] == true);
+    auto raw = unwrap(f.rt->blobs().read(response["blob_hash"].get<std::string>()));
+    CHECK(raw.find("verify_claim") != std::string::npos);
+    auto source = unwrap(f.rt->provenance().get_source(response["source_id"].get<std::string>()));
+    REQUIRE(source.has_value());
+    CHECK(source->blob_hash == response["blob_hash"].get<std::string>());
+    REQUIRE(scripted->requests().size() == 1);
+    const auto sent = scripted->requests().front();
+    CHECK(sent.timeout_ms == 2000);
+    CHECK(unwrap(json::parse(sent.body))["max_tokens"] == 32);
+    CHECK(goal2.params.dump().find("sk-test") == std::string::npos);
+  }
+
+  TEST_CASE("native goal typing: exhausted and invalid budgets never call the transport") {
+    Fixture f;
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    f.rt->set_http_transport(scripted);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    context::ContextRequest req;
+    req.text = "asdkjhasd";
+    auto disabled = unwrap(engine.type_goal_with_model(req, {}));
+    CHECK(disabled.params["classifier"] == "cue");
+    CHECK(disabled.params["external_goal_typing"]["status"] == "budget_disabled");
+    for (const auto& invalid : std::vector<context::GoalTypingBudget>{
+             {2, 10000, 32, 2000, 4096}, {-1, 10000, 32, 2000, 4096}, {1, 0, 32, 2000, 4096},
+             {1, 10000, 0, 2000, 4096}, {1, 10000, 32, 0, 4096}, {1, 256001, 32, 2000, 4096},
+             {1, 10000, 4097, 2000, 4096}, {1, 10000, 32, 60001, 4096},
+             {1, 10000, 32, 2000, 0}, {1, 10000, 32, 2000, 256001}}) {
+      auto result = engine.type_goal_with_model(req, invalid);
+      REQUIRE(!result);
+      CHECK(result.error().code == Errc::InvalidArgument);
+    }
+    auto input_limited = unwrap(engine.type_goal_with_model(req, {1, 1, 32, 2000, 4096}));
+    CHECK(input_limited.params["classifier"] == "cue");
+    CHECK(input_limited.params["external_goal_typing"]["status"] == "input_limit");
+    req.goal_type = "implement_part";
+    CHECK(unwrap(engine.type_goal_with_model(req, {1, 10000, 32, 2000, 4096})).params["classifier"] == "forced");
+    req.goal_type.reset();
+    f.rt->config().set("semantic_model", "");
+    const auto unavailable = unwrap(engine.type_goal_with_model(req, {1, 10000, 32, 2000, 4096}));
+    CHECK(unavailable.params["external_goal_typing"]["status"] == "unavailable");
+    CHECK(scripted->requests().empty());
+  }
+
+  TEST_CASE("native goal typing: failed instrument keeps cue result and records the first response") {
+    Fixture f;
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    const std::string echoed = "rate limit (credential echoed: sk-test)";
+    scripted->set_fallback(net::ScriptedTransport::Reply::text(429, echoed));
+    f.rt->set_http_transport(scripted);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    context::ContextRequest req;
+    req.text = "asdkjhasd";
+    const auto baseline = unwrap(engine.type_goal(req));
+    const auto result = unwrap(engine.type_goal_with_model(req, {1, 10000, 32, 2000, 4096}));
+    CHECK(result.type == baseline.type);
+    CHECK(result.confidence == baseline.confidence);
+    CHECK(result.params["classifier"] == "cue");
+    CHECK(result.params["external_goal_typing"]["status"] == "failed");
+    const auto& response = result.params["external_goal_typing"]["response"];
+    CHECK(unwrap(f.rt->blobs().read(response["blob_hash"].get<std::string>())) == echoed);
+    CHECK(result.params.dump().find("sk-test") == std::string::npos);
     CHECK(scripted->requests().size() == 1);
+  }
+
+  TEST_CASE("native goal typing: response overflow preserves a partial source and never promotes it") {
+    Fixture f;
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    const std::string payload = "{\"choices\":[{\"message\":{\"content\":\"{\\\"goal_type\\\":\\\"verify_claim\\\",\\\"confidence\\\":1}\"}}]}";
+    scripted->set_fallback(net::ScriptedTransport::Reply::text(200, payload));
+    f.rt->set_http_transport(scripted);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    context::ContextRequest req;
+    req.text = "asdkjhasd";
+    const auto baseline = unwrap(engine.type_goal(req));
+    const auto result = unwrap(engine.type_goal_with_model(req, {1, 10000, 32, 2000, 8}));
+    CHECK(result.type == baseline.type);
+    CHECK(result.params["classifier"] == "cue");
+    CHECK(result.params["external_goal_typing"]["status"] == "response_limit");
+    const auto& response = result.params["external_goal_typing"]["response"];
+    CHECK(response["complete"] == false);
+    CHECK(response["bytes"] == 8);
+    CHECK(response["status"] == 200);
+    CHECK(unwrap(f.rt->blobs().read(response["blob_hash"].get<std::string>())) == payload.substr(0, 8));
+    CHECK(scripted->requests().size() == 1);
+  }
+
+  TEST_CASE("native goal typing: invalid first responses remain raw evidence without retry") {
+    Fixture f;
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    f.rt->set_http_transport(scripted);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    context::ContextRequest req;
+    req.text = "asdkjhasd";
+    const auto baseline = unwrap(engine.type_goal(req));
+    std::size_t calls = 0;
+    for (const auto& body : std::vector<std::string>{
+             "not JSON", "{\"choices\":[]}",
+             "{\"choices\":[{\"message\":{\"content\":\"{\\\"goal_type\\\":\\\"unknown_type\\\",\\\"confidence\\\":1}\"}}]}",
+             "{\"choices\":[{\"message\":{\"content\":\"{\\\"goal_type\\\":\\\"verify_claim\\\"}\"}}]}",
+             "{\"choices\":[{\"message\":{\"content\":\"{\\\"goal_type\\\":\\\"verify_claim\\\",\\\"confidence\\\":\\\"high\\\"}\"}}]}",
+             "{\"choices\":[{\"message\":{\"content\":\"{\\\"goal_type\\\":\\\"verify_claim\\\",\\\"confidence\\\":true}\"}}]}",
+             "{\"choices\":[{\"message\":{\"content\":\"{\\\"goal_type\\\":\\\"verify_claim\\\",\\\"confidence\\\":-0.1}\"}}]}",
+             "{\"choices\":[{\"message\":{\"content\":\"{\\\"goal_type\\\":\\\"verify_claim\\\",\\\"confidence\\\":1.1}\"}}]}"}) {
+      scripted->set_fallback(net::ScriptedTransport::Reply::text(200, body));
+      const auto result = unwrap(engine.type_goal_with_model(req, {1, 10000, 32, 2000, body.size()}));
+      CHECK(result.type == baseline.type);
+      CHECK(result.params["classifier"] == "cue");
+      CHECK(result.confidence == baseline.confidence);
+      CHECK(result.params["confidence_basis"] == "heuristic_cue_margin");
+      CHECK(!result.params.contains("reported_confidence"));
+      CHECK(result.params["external_goal_typing"]["status"] == "failed");
+      CHECK(!result.params["external_goal_typing"].contains("reported_confidence"));
+      const auto& response = result.params["external_goal_typing"]["response"];
+      CHECK(response["status"] == 200);
+      CHECK(response["complete"] == true);  // byte boundary is inclusive, malformed != partial
+      CHECK(unwrap(f.rt->blobs().read(response["blob_hash"].get<std::string>())) == body);
+      CHECK(scripted->requests().size() == ++calls);
+    }
+  }
+
+  TEST_CASE("native goal typing: persistence failure preserves spent attempt and never asks caller to retry implicitly") {
+    for (bool break_blob_storage : {false, true}) {
+      Fixture f;
+      auto scripted = std::make_shared<net::ScriptedTransport>();
+      const auto reply = net::ScriptedTransport::Reply::json(
+          200, Json{{"choices", Json::array({Json{{"message", Json{{"content", "{\"goal_type\":\"verify_claim\",\"confidence\":0.9}"}}}}})}});
+      scripted->set_fallback(reply);
+      f.rt->set_http_transport(scripted);
+      f.rt->config().set("semantic_model", "test-model");
+      f.rt->secrets().set("api_key", "sk-test");
+      if (break_blob_storage) {
+        const auto root = f.rt->blobs().root();
+        std::filesystem::remove_all(root);
+        LOOM_REQUIRE_OK(fsutil::write_file(root, "not a directory"));
+      } else {
+        LOOM_REQUIRE_OK(f.rt->db().conn().run("DROP TABLE loom_sources"));
+      }
+      context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+      context::ContextRequest req;
+      req.text = "asdkjhasd";
+      const auto baseline = unwrap(engine.type_goal(req));
+      const auto result = unwrap(engine.type_goal_with_model(req, {1, 10000, 32, 2000, 4096}));
+      CHECK(result.type == baseline.type);
+      CHECK(result.params["classifier"] == "cue");
+      CHECK(result.params["confidence_basis"] == "heuristic_cue_margin");
+      const auto& attempt = result.params["external_goal_typing"];
+      CHECK(attempt["status"] == "storage_failure");
+      CHECK(attempt["requests"] == 1);
+      CHECK(attempt["retry_authorized"] == false);
+      CHECK(attempt["response"]["source_status"] == "unavailable");
+      if (!break_blob_storage) {
+        const auto raw = unwrap(f.rt->blobs().read(attempt["response"]["blob_hash"].get<std::string>()));
+        CHECK(raw == reply.chunks.front());
+      }
+      CHECK(scripted->requests().size() == 1);
+    }
+  }
+
+  TEST_CASE("preview: configured models and credentials never authorize a transport request") {
+    Fixture f;
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    scripted->set_fallback(net::ScriptedTransport::Reply::fail(Errc::Network, "preview must be offline"));
+    f.rt->set_http_transport(scripted);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    auto req = unwrap(context::ContextRequest::from_json(
+        Json{{"text", "asdkjhasd"}, {"targets", Json::array({f.feat.id})}, {"run", f.run},
+             {"llm", "auto"}, {"max_requests", 1}}));  // preview JSON cannot authorize the native instrument
+    auto selected = unwrap(engine.select(req));
+    CHECK(selected.goal.params["classifier"] == "cue");
+    CHECK(selected.goal.params["external_goal_typing"]["status"] == "offline");
+    CHECK(scripted->requests().empty());
+    auto built = unwrap(engine.build(req));
+    CHECK(built["goal"]["params"]["classifier"] == "cue");
+    CHECK(built["goal"]["params"]["external_goal_typing"]["status"] == "offline");
+    CHECK(scripted->requests().empty());
+  }
+
+  TEST_CASE("select: dependency closure reaches long claim and principle chains") {
+    Fixture f;
+    std::vector<Claim> chain;
+    for (int i = 0; i < 6; ++i) {
+      chain.push_back(claim(i == 0 ? f.feat.id : "isolated_" + std::to_string(i),
+                            "depends_on", "hidden_" + std::to_string(i),
+                            EvidenceClass::Observed, 0.9, "2025-05-10"));
+    }
+    for (std::size_t i = 0; i + 1 < chain.size(); ++i) chain[i].assessment.premises.claims = {chain[i + 1].id};
+
+    std::vector<Principle> principles;
+    for (int i = 0; i < 5; ++i) {
+      auto p = project_principle("p.hidden_chain_" + std::to_string(i));
+      p.level = PrincipleLevel::Value;  // not gathered by implement_part's strategy/epistemic levels
+      principles.push_back(std::move(p));
+    }
+    for (std::size_t i = 0; i + 1 < principles.size(); ++i) principles[i].derived_from = {principles[i + 1].id};
+    chain.back().assessment.premises.principles = {principles.front().id};
+    LOOM_REQUIRE_OK(f.ks->put_claims(f.run, chain));
+    LOOM_REQUIRE_OK(f.ks->put_principles(f.run, principles));
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    context::ContextRequest req;
+    req.text = "implement dependency chain";
+    req.targets = {f.feat.id};
+    req.project = f.proj.id;
+    req.goal_type = "implement_part";
+    req.budget_tokens = 10000;
+    auto set = unwrap(engine.select(req));
+    auto included = [&](const std::string& ref) {
+      return std::find_if(set.items.begin(), set.items.end(), [&](const auto& item) { return item.ref == ref; });
+    };
+    for (const auto& c : chain) {
+      INFO("claim ", c.id);
+      CHECK(included(c.id) != set.items.end());
+    }
+    for (const auto& p : principles) {
+      INFO("principle ", p.id);
+      CHECK(included(p.id) != set.items.end());
+    }
+    for (const auto& item : set.items) CHECK(item.missing_premises.empty());
+    CHECK(set.used_tokens <= set.budget_tokens);
+  }
+
+  TEST_CASE("select: cyclic dependencies terminate and unresolved references stay visible") {
+    Fixture f;
+    auto root = claim(f.feat.id, "has_cycle", "cycle_root", EvidenceClass::Observed, 0.9, "2025-05-10");
+    auto child = claim("isolated_cycle", "requires", "cycle_child", EvidenceClass::Observed, 0.9, "2025-05-10");
+    root.assessment.premises.claims = {child.id};
+    child.assessment.premises.claims = {root.id, "cl_missing_cycle_premise"};
+    LOOM_REQUIRE_OK(f.ks->put_claims(f.run, {root, child}));
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    context::ContextRequest req;
+    req.goal_type = "implement_part";
+    req.targets = {f.feat.id};
+    req.project = f.proj.id;
+    req.budget_tokens = 10000;
+    auto selected = unwrap(engine.select(req));
+    int roots = 0, children = 0;
+    for (const auto& item : selected.items) {
+      if (item.ref == root.id) {
+        ++roots;
+        CHECK(item.missing_premises.empty());
+      }
+      if (item.ref == child.id) {
+        ++children;
+        CHECK(item.missing_premises == std::vector<std::string>{"cl_missing_cycle_premise"});
+        CHECK(item.required_by == std::vector<std::string>{root.id});
+      }
+    }
+    CHECK(roots == 1);
+    CHECK(children == 1);
+    CHECK(unwrap(engine.render(selected)).find("cl_missing_cycle_premise") != std::string::npos);
   }
 
   TEST_CASE("select: three bands, evidence markers, dependency closure, budget respected") {

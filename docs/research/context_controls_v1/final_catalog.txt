@@ -1,0 +1,340 @@
+===============================================================================
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:118:
+TEST SUITE: catalog_eval
+TEST CASE:  synthetic_dev: recall/precision/noise-trap FP
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:127: SUCCESS: REQUIRE( json::get_int(scan_stats, "units") == 68 ) is correct!
+  values: REQUIRE( 68 == 68 )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:151: SUCCESS: REQUIRE( has.has_value() ) is correct!
+  values: REQUIRE( true )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:249: MESSAGE: ranking AUC final=0.965556 lexical=0.777222 semantic=0.981111
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:250: MESSAGE: ranking hits@20=20/20 hits@45=42/45 (lexical hits@45=36, semantic hits@45=43)
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:253: MESSAGE: shadow: |C_lexical|=10 |C_semantic|=5 gap(lex-sem): rescue=5 noise=0 undecided=2 [cx-04-venting mu-01-kickoff rt-02-storyboard rt-05-clips-gate rt-07-stalled ] semantic-only: relevant=2 noise=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:258: MESSAGE: relevant: 31/45 recall=0.688889
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:259: MESSAGE: traps: 0/5 trap_fpr=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:260: MESSAGE: noise_generic selected: 0/15
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:261: MESSAGE: selected conversations: 31 precision=1
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:263: MESSAGE: selected auxiliary documents (outside conversation labels): 3
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:264: MESSAGE: selector stats: {"run_id":"run_56ed9f716a7945b4","scoring_evidence_version":3,"legacy_combined_features":["id_hits","class_diversity","code_evidence"],"identity_unavailable":0,"relevant":34,"candidate":7,"irrelevant":27,"traps":4,"expanded_terms":[{"term":"zero","pass":1,"lift":3.4,"df_relevant":3,"df_corpus":6,"evidence":["un_3d70b7a34635f5fe","un_9e8228809931d5d0","un_e7c579ba8fc08dd1"],"reason":"lift >= 3.000000 against the verified-relevant set (vocabulary expansion)"}],"semantic":{"available":true,"passes":1,"seeds":40,"method":"tfidf_cosine(word_stems)+tfidf_cosine(char_4grams)","floor_word":0.0283,"ref_word":0.1362,"floor_gram":0.0865,"ref_gram":0.2412,"word_vocabulary":1267,"gram_vocabulary":4074},"channels":{"lexical_relevant":10,"semantic_relevant":5,"both":3,"lexical_only":7,"semantic_only":2},"links":56,"link_stats":{"mode":"candidates","units":68,"links":56,"project_groups_aggregated":0,"minhash_pairs_verified":1,"lsh_candidates":1,"rare_term_candidates":653,"uncorroborated_sessions":0}}
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:268: SUCCESS: CHECK( json::get_string(score_stats["link_stats"], "mode") == "candidates" ) is correct!
+  values: CHECK( candidates == candidates )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:269: SUCCESS: CHECK( json::get_int(score_stats["link_stats"], "links") == 56 ) is correct!
+  values: CHECK( 56 == 56 )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:274: SUCCESS: CHECK( m.trap_fpr() <= 0.05 ) is correct!
+  values: CHECK( 0 <= 0.05 )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:275: SUCCESS: CHECK( m.precision() >= 0.75 ) is correct!
+  values: CHECK( 1 >= 0.75 )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:277: SUCCESS: CHECK( m.recall() >= 0.55 ) is correct!
+  values: CHECK( 0.688889 >= 0.55 )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/34e008d7a951/chatadhd/loom/tests/test_catalog_eval.cpp:278: SUCCESS: CHECK( m.generic_selected <= m.generic_total / 3 ) is correct!
+  values: CHECK( 0 <= 5 )
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 456 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!

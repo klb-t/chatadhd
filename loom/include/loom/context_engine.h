@@ -28,6 +28,7 @@
 //    Summaries are extractive by default (derived, with provenance).
 #pragma once
 
+#include <cstddef>
 #include <memory>
 #include <optional>
 #include <string>
@@ -59,11 +60,36 @@ struct ContextRequest {
   Json to_json() const;
 };
 
+// A separate native caller may authorize ONE goal-typing model attempt.
+// Installed credentials/model settings do not authorize it. All limits are
+// explicit; zero requests keeps the call offline. The caller owns the wider
+// session/monetary budget and must retain the returned goal's model-attempt
+// trace. First-response bytes are raw sources in the owner's existing source /
+// blob store (may contain sensitive provider echoes); diagnostic traces carry
+// references, never response text or request headers. This capability is not
+// parsed from ContextRequest JSON and is never used by select(), build(), or the
+// context-preview C ABI/HTTP API.
+struct GoalTypingBudget {
+  int max_requests = 0;                 // 0 (offline) or 1
+  std::size_t max_input_bytes = 0;      // complete classification prompt, <= 256000
+  int max_output_tokens = 0;           // <= 4096
+  int timeout_ms = 0;                  // <= 60000
+  std::size_t max_response_bytes = 0;  // received body, <= 256000; overflow aborts
+};
+
 class ContextEngine {
  public:
   ContextEngine(Runtime& rt, kb::KnowledgeStore& store, std::shared_ptr<const kb::Pack> pack);
 
+  // Read-only/offline typing: cue classifier or an explicitly forced type.
   Result<model::Goal> type_goal(const ContextRequest& req);
+  // Optional model instrument, requiring separate native authorization/limits.
+  // Low-confidence cue typing may use at most one request; failures retain the
+  // cue result and explain the fallback in goal.params.external_goal_typing.
+  // Confidence is heuristic or provider-self-reported, not calibrated accuracy.
+  // Persistence failure preserves the cue + attempted/spent trace, never an
+  // implicit retry or a model result whose first response cannot be verified.
+  Result<model::Goal> type_goal_with_model(const ContextRequest& req, const GoalTypingBudget& budget);
   Result<model::ContextSet> select(const ContextRequest& req);
   // Prompt text in band order with evidence/origin markers.
   Result<std::string> render(const model::ContextSet& set);
@@ -85,6 +111,7 @@ class ContextEngine {
   static int estimate_tokens(std::string_view text) noexcept;
 
  private:
+  Result<model::Goal> type_goal_impl(const ContextRequest& req, const GoalTypingBudget* budget);
   Runtime& rt_;
   kb::KnowledgeStore& store_;
   std::shared_ptr<const kb::Pack> pack_;
