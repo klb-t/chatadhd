@@ -194,3 +194,46 @@ Disk: each build dir is 4–6 GB; delete stale ones.
 Commit small verified increments with `[skip ci]`, push to the development branch (or a
 `gpt/*` branch if you prefer review), and **update `docs/STATE.md`** (date, commit, test
 counts, measured numbers). Leave a short handoff for the next agent in the same style.
+
+## 8. Proposal: parallel threads (up to 6 helper agents each) — owner, 2026-09-30
+
+A proposal only; you lead and decide. Each thread owns a disjoint set of files so nothing
+overwrites anything. Each thread works on its own `gpt/<thread>` branch and merges into the
+development line only after a green `ctest` (ratchet D2). Commit small increments with
+`[skip ci]` and push them. At the end of a thread, add a line to `docs/STATE.md`.
+All tests stay offline (no paid calls). The owner principle at the top of `AGENTS.md` applies.
+
+1. **Knowledge precision** — `loom/src/{extract,resolve,generalize}`, `loom/data/rules|policy`.
+   - Verify and merge `wip/precision`: build, ctest, knowledge_eval synthetic + selfhost before
+     and after.
+   - Then the remaining error classes:
+     - code fragments recognised as projects;
+     - paradigm matches across unrelated domains;
+     - wrong computed versions;
+     - claim volume (8,928 claims for 283 files).
+   - Agents: one per error class, plus one for measurement.
+2. **`loom.graph_packet/1` + frontier-model methods** — new `loom/src/packet/`, `docs/contracts/`.
+   - Schema, and serialization from `Claim`/`Entity` with definitions included.
+   - Model answers come back as diffs in the same shape.
+   - Methods, all configurable and tested on ScriptedTransport:
+     - complete the graph;
+     - find new patterns;
+     - critique the graph;
+     - ask about gaps.
+3. **Context in chat + user controls** — `loom/src/{context,chat,config}`.
+   - Wire ContextEngine into the chat path (acceptance #1: history ≠ request).
+   - Scope and detail as separate settings (#3).
+   - A ×10 usage guard that asks for confirmation, with no hard ceilings.
+4. **Catalog / selector, offline** — `loom/src/catalog`, `loom/data/policy`.
+   - Embedding channel via `ProviderRegistry.embed`, cached, with a fake provider in tests.
+   - Semantic seam before selection.
+   - Lexical-shadow regression cases (#11).
+   - Do not touch the blind corpus yet.
+5. **Message annotations + real-archive readiness** — `loom/src/import`, `loom/src/db`,
+   `loom/tools/eval`.
+   - Link message → node, with span and origin (`recorded|model|user`).
+   - Streaming performance on multi-GB exports; `import --audit` + `archive_cost.py`.
+6. **Workbench UI** — `loom/web`, `loom/server`.
+   - Free composition of several graphs, tables, cards and a detached reference panel (#5, #13).
+   - UI profiles detachable from selector and model (#6).
+   - UI for the settings from thread 3.
