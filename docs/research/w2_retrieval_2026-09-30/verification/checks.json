@@ -1,0 +1,22 @@
+{
+  "full_ctest": {
+    "entries": 84,
+    "failures": 0,
+    "skipped": 0,
+    "disabled": 0,
+    "seconds_junit": 133,
+    "process_exit_code": 0
+  },
+  "targeted_regex_inventory_entries": 20,
+  "source_files_verified": 24,
+  "all_source_hashes_match": true,
+  "dev_first_vs_corrected": {
+    "case_mode_rows": 24,
+    "candidate_metrics_equal": true,
+    "selection_metrics_equal": true,
+    "candidate_rank_ids_scores_equal": true,
+    "selection_rank_ids_scores_equal": true
+  },
+  "full_stdout_progress_log_complete": false,
+  "complete_full_receipt": "full-corrected.xml"
+}

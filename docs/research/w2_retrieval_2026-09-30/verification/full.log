@@ -1,0 +1,286 @@
+Test project /workspace/scratch/6a857f5e4336/build-w2
+      Start 17: unit.test_context_diagnostics
+      Start 18: unit.test_context_engine
+      Start 56: unit.test_resolve_attribution
+ 1/84 Test #56: unit.test_resolve_attribution ...........   Passed    5.62 sec
+      Start 21: unit.test_context_plan
+ 2/84 Test #21: unit.test_context_plan ..................   Passed    4.28 sec
+      Start 12: unit.test_chat_knowledge_context
+ 3/84 Test #18: unit.test_context_engine ................   Passed   11.79 sec
+      Start  3: unit.test_capi
+ 4/84 Test #12: unit.test_chat_knowledge_context ........   Passed    3.28 sec
+      Start 57: unit.test_resolve_lineage
+ 5/84 Test  #3: unit.test_capi ..........................   Passed    2.84 sec
+      Start 15: unit.test_context_controls
+ 6/84 Test #17: unit.test_context_diagnostics ...........   Passed   14.88 sec
+      Start  6: unit.test_catalog_context
+ 7/84 Test #57: unit.test_resolve_lineage ...............   Passed    3.37 sec
+      Start 20: unit.test_context_native_consumer
+ 8/84 Test  #6: unit.test_catalog_context ...............   Passed    2.47 sec
+      Start 23: unit.test_context_retrieval_dev
+ 9/84 Test #15: unit.test_context_controls ..............   Passed    4.16 sec
+      Start 19: unit.test_context_eval
+10/84 Test #23: unit.test_context_retrieval_dev .........   Passed    1.72 sec
+      Start 14: unit.test_context_channel_integration
+11/84 Test #20: unit.test_context_native_consumer .......   Passed    3.28 sec
+      Start 45: unit.test_materialize
+12/84 Test #19: unit.test_context_eval ..................   Passed    1.66 sec
+      Start 22: unit.test_context_retrieval
+13/84 Test #14: unit.test_context_channel_integration ...   Passed    1.86 sec
+      Start 16: unit.test_context_counter
+14/84 Test #45: unit.test_materialize ...................   Passed    1.52 sec
+      Start  4: unit.test_capi_knowledge
+15/84 Test #22: unit.test_context_retrieval .............   Passed    1.11 sec
+      Start 64: compat.test_abi_compat
+16/84 Test #64: compat.test_abi_compat ..................   Passed    0.39 sec
+      Start 55: unit.test_resolve
+17/84 Test #16: unit.test_context_counter ...............   Passed    1.12 sec
+      Start 11: unit.test_chat_engine
+18/84 Test  #4: unit.test_capi_knowledge ................   Passed    0.70 sec
+      Start  1: unit.test_archive
+19/84 Test #11: unit.test_chat_engine ...................   Passed    0.10 sec
+      Start  2: unit.test_batch_api
+20/84 Test  #2: unit.test_batch_api .....................   Passed    0.08 sec
+      Start  5: unit.test_catalog
+21/84 Test #55: unit.test_resolve .......................   Passed    0.49 sec
+      Start  7: unit.test_catalog_eval
+22/84 Test  #1: unit.test_archive .......................   Passed    1.55 sec
+      Start  8: unit.test_catalog_links
+23/84 Test  #7: unit.test_catalog_eval ..................   Passed    1.77 sec
+      Start  9: unit.test_catalog_retention
+24/84 Test  #5: unit.test_catalog .......................   Passed    3.35 sec
+      Start 10: unit.test_catalog_scale
+25/84 Test #10: unit.test_catalog_scale .................   Passed    0.01 sec
+      Start 13: unit.test_config
+26/84 Test #13: unit.test_config ........................   Passed    0.03 sec
+      Start 24: unit.test_crypto
+27/84 Test  #9: unit.test_catalog_retention .............   Passed    2.24 sec
+      Start 25: unit.test_db
+28/84 Test #25: unit.test_db ............................   Passed    0.37 sec
+      Start 26: unit.test_event_bus
+29/84 Test #26: unit.test_event_bus .....................   Passed    0.07 sec
+      Start 27: unit.test_extract
+30/84 Test #27: unit.test_extract .......................   Passed    3.90 sec
+      Start 28: unit.test_extract_eval
+31/84 Test #24: unit.test_crypto ........................   Passed    6.96 sec
+      Start 29: unit.test_fts
+32/84 Test #29: unit.test_fts ...........................   Passed    0.14 sec
+      Start 30: unit.test_generalize
+33/84 Test  #8: unit.test_catalog_links .................   Passed    9.65 sec
+      Start 31: unit.test_generalize_eval
+34/84 Test #31: unit.test_generalize_eval ...............   Passed    1.74 sec
+      Start 32: unit.test_github
+35/84 Test #32: unit.test_github ........................   Passed    0.08 sec
+      Start 33: unit.test_graph
+36/84 Test #33: unit.test_graph .........................   Passed    0.12 sec
+      Start 34: unit.test_import
+37/84 Test #28: unit.test_extract_eval ..................   Passed    4.44 sec
+      Start 35: unit.test_import_exports
+38/84 Test #34: unit.test_import ........................   Passed    0.51 sec
+      Start 36: unit.test_import_stream
+39/84 Test #35: unit.test_import_exports ................   Passed    3.41 sec
+      Start 37: unit.test_kb_pack
+40/84 Test #30: unit.test_generalize ....................   Passed    5.93 sec
+      Start 38: unit.test_knowledge
+41/84 Test #38: unit.test_knowledge .....................   Passed    8.40 sec
+      Start 39: unit.test_knowledge_candidate_graph
+42/84 Test #39: unit.test_knowledge_candidate_graph .....   Passed    0.27 sec
+      Start 40: unit.test_knowledge_candidates
+43/84 Test #40: unit.test_knowledge_candidates ..........   Passed    0.03 sec
+      Start 41: unit.test_knowledge_flow
+44/84 Test #41: unit.test_knowledge_flow ................   Passed    2.07 sec
+      Start 42: unit.test_knowledge_semantic
+45/84 Test #37: unit.test_kb_pack .......................   Passed   15.39 sec
+      Start 43: unit.test_knowledge_semantic_graph
+46/84 Test #42: unit.test_knowledge_semantic ............   Passed    6.09 sec
+      Start 44: unit.test_knowledge_store
+47/84 Test #44: unit.test_knowledge_store ...............   Passed    0.39 sec
+      Start 46: unit.test_media
+48/84 Test #46: unit.test_media .........................   Passed    0.02 sec
+      Start 47: unit.test_memory
+49/84 Test #47: unit.test_memory ........................   Passed    0.03 sec
+      Start 48: unit.test_model
+50/84 Test #48: unit.test_model .........................   Passed    0.09 sec
+      Start 49: unit.test_net_sse
+51/84 Test #49: unit.test_net_sse .......................   Passed    0.01 sec
+      Start 50: unit.test_pack_model
+52/84 Test #50: unit.test_pack_model ....................   Passed    2.15 sec
+      Start 51: unit.test_provenance
+53/84 Test #51: unit.test_provenance ....................   Passed    0.09 sec
+      Start 52: unit.test_providers
+54/84 Test #52: unit.test_providers .....................   Passed    0.02 sec
+      Start 53: unit.test_regex
+55/84 Test #53: unit.test_regex .........................   Passed    0.01 sec
+      Start 54: unit.test_relations
+56/84 Test #54: unit.test_relations .....................   Passed    0.02 sec
+      Start 58: unit.test_runtime
+57/84 Test #58: unit.test_runtime .......................   Passed    0.05 sec
+      Start 59: unit.test_selector
+58/84 Test #59: unit.test_selector ......................   Passed    0.01 sec
+      Start 60: unit.test_semantic_llm
+59/84 Test #60: unit.test_semantic_llm ..................   Passed    0.07 sec
+      Start 61: unit.test_semantic_worker
+60/84 Test #61: unit.test_semantic_worker ...............   Passed    0.30 sec
+      Start 62: unit.test_tasks
+61/84 Test #62: unit.test_tasks .........................   Passed    0.10 sec
+      Start 63: unit.test_util
+62/84 Test #63: unit.test_util ..........................   Passed    0.07 sec
+      Start 65: compat.test_candidate_graph_native
+63/84 Test #65: compat.test_candidate_graph_native ......   Passed    1.58 sec
+      Start 66: compat.test_chat_compat
+64/84 Test #66: compat.test_chat_compat .................***Failed    0.14 sec
+Traceback (most recent call last):
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/compat/test_chat_compat.py", line 18, in <module>
+    from engine.chat_engine import ChatEngine
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/engine/chat_engine.py", line 20, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
+
+      Start 67: compat.test_config_compat
+65/84 Test #43: unit.test_knowledge_semantic_graph ......   Passed    6.65 sec
+      Start 68: compat.test_crypto_compat
+66/84 Test #67: compat.test_config_compat ...............   Passed    0.39 sec
+      Start 69: compat.test_db_compat
+67/84 Test #69: compat.test_db_compat ...................   Passed    2.32 sec
+      Start 70: compat.test_github_sync_defaults
+68/84 Test #70: compat.test_github_sync_defaults ........***Failed    0.10 sec
+Traceback (most recent call last):
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/compat/test_github_sync_defaults.py", line 14, in <module>
+    from engine.github_sync import GitHubSync, SyncConfig
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/engine/github_sync.py", line 9, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
+
+      Start 71: compat.test_graph_compat
+69/84 Test #71: compat.test_graph_compat ................   Passed    5.85 sec
+      Start 72: compat.test_import_compat
+70/84 Test #72: compat.test_import_compat ...............   Passed    1.23 sec
+      Start 73: compat.test_memory_compat
+71/84 Test #73: compat.test_memory_compat ...............   Passed    3.26 sec
+      Start 74: compat.test_selector_compat
+72/84 Test #74: compat.test_selector_compat .............   Passed    0.19 sec
+      Start 75: compat.test_semantic_compat
+73/84 Test #68: compat.test_crypto_compat ...............   Passed   18.26 sec
+      Start 76: compat.test_semantic_recovery
+74/84 Test #76: compat.test_semantic_recovery ...........***Failed    0.18 sec
+Traceback (most recent call last):
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/compat/test_semantic_recovery.py", line 16, in <module>
+    from engine.semantic_llm import SemanticLLM
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/engine/semantic_llm.py", line 23, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
+
+      Start 77: compat.test_util_compat
+75/84 Test #75: compat.test_semantic_compat .............   Passed    7.83 sec
+      Start 78: research.structure
+76/84 Test #77: compat.test_util_compat .................***Failed    5.20 sec
+test_embedded_contract_data_matches_python_sources (__main__.UtilCompatTest.test_embedded_contract_data_matches_python_sources) ... ERROR
+test_float_repr (__main__.UtilCompatTest.test_float_repr) ... ok
+test_generated_ids_have_python_shape (__main__.UtilCompatTest.test_generated_ids_have_python_shape) ... ok
+test_json_dumps_is_byte_identical (__main__.UtilCompatTest.test_json_dumps_is_byte_identical) ... ok
+test_timestamps_match_utcnow_isoformat (__main__.UtilCompatTest.test_timestamps_match_utcnow_isoformat) ... /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/compat/test_util_compat.py:94: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.assertLess(abs((datetime.datetime.utcnow() - now).total_seconds()), 60)
+ok
+test_utf8_semantics_match_python_str (__main__.UtilCompatTest.test_utf8_semantics_match_python_str) ... ok
+
+======================================================================
+ERROR: test_embedded_contract_data_matches_python_sources (__main__.UtilCompatTest.test_embedded_contract_data_matches_python_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/compat/test_util_compat.py", line 105, in test_embedded_contract_data_matches_python_sources
+    from engine import batch_api, config, semantic_llm
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/engine/batch_api.py", line 29, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
+
+----------------------------------------------------------------------
+Ran 6 tests in 4.741s
+
+FAILED (errors=1)
+
+      Start 79: research.independent_protocol
+77/84 Test #79: research.independent_protocol ...........   Passed    0.24 sec
+      Start 80: research.graph_native_protocol
+78/84 Test #80: research.graph_native_protocol ..........   Passed    0.94 sec
+      Start 81: research.candidate_graph_protocol
+79/84 Test #81: research.candidate_graph_protocol .......   Passed    0.61 sec
+      Start 82: server.smoke
+80/84 Test #36: unit.test_import_stream .................   Passed   51.88 sec
+      Start 83: cli.smoke
+81/84 Test #82: server.smoke ............................   Passed    2.78 sec
+      Start 84: eval.harness
+82/84 Test #84: eval.harness ............................   Passed    1.47 sec
+83/84 Test #83: cli.smoke ...............................   Passed    3.04 sec
+84/84 Test #78: research.structure ......................***Failed   41.56 sec
+.........................................................................................................................................................................................................................EE.............................................................................................................................................................................................................................................................................................................................................................................................................E..................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a pre-existing freeze; cannot create it in the same invocation
+....................................................................................................................................
+======================================================================
+ERROR: test_frontier_panel_v1 (unittest.loader._FailedTest.test_frontier_panel_v1)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_frontier_panel_v1
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tools/structure/test_frontier_panel_v1.py", line 11, in <module>
+    from loom.tools.structure.frontier_panel_v1 import adapter as a, bounded_runner as client
+ModuleNotFoundError: No module named 'loom'
+
+
+======================================================================
+ERROR: test_frontier_runtime_v1 (unittest.loader._FailedTest.test_frontier_runtime_v1)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_frontier_runtime_v1
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tools/structure/test_frontier_runtime_v1.py", line 7, in <module>
+    from loom.tools.structure.frontier_panel_v1 import adapter as a, runtime as rt
+ModuleNotFoundError: No module named 'loom'
+
+
+======================================================================
+ERROR: test_recipe_scripted_transport (unittest.loader._FailedTest.test_recipe_scripted_transport)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_recipe_scripted_transport
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tools/structure/test_recipe_scripted_transport.py", line 15, in <module>
+    SPEC.loader.exec_module(scripted)
+  File "/workspace/scratch/6a857f5e4336/chatadhd-w2/docs/research/recipe_experiments_2026-09-30/scripted_transport_v1.py", line 12, in <module>
+    from loom.tools.structure import source_view_roles_v1 as roles
+ModuleNotFoundError: No module named 'loom'
+
+
+----------------------------------------------------------------------
+Ran 767 tests in 40.415s
+
+FAILED (errors=3)
+{"attempts": 1, "stopped_reason": "fixture-stop"}
+
+
+94% tests passed, 5 tests failed out of 84
+
+Total Test time (real) = 123.43 sec
+
+The following tests FAILED:
+	 66 - compat.test_chat_compat (Failed)
+	 70 - compat.test_github_sync_defaults (Failed)
+	 76 - compat.test_semantic_recovery (Failed)
+	 77 - compat.test_util_compat (Failed)
+	 78 - research.structure (Failed)
+Errors while running CTest

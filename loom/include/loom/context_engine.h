@@ -30,12 +30,14 @@
 
 #include <cstddef>
 #include <memory>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
 #include "loom/kb.h"
+#include "loom/context_retrieval.h"
 #include "loom/knowledge_store.h"
 #include "loom/model.h"
 #include "loom/result.h"
@@ -64,6 +66,20 @@ struct ContextRequest {
   // No override => the goal type's per-role policy. More detail may fit fewer
   // items under the same budget; it never changes the graph candidate radius.
   std::optional<model::Resolution> detail_resolution;
+  // Caller-supplied retrieval projection of an existing product plan. This
+  // does not compile instructions or infer the current ActiveTaskSpec.
+  Json plan = nullptr;
+  // Explicit claim anchors are independent of the exploratory entity radius.
+  std::vector<std::string> claim_targets;
+  // Follow recorded counter links and report absent/unavailable/budgeted
+  // counter-evidence. A missing link never proves there is no contradiction.
+  bool include_counter_evidence = false;
+  // Additional candidate instruments operate before selection, independently
+  // of graph reach and display detail. Built-in tfidf/lexical are offline;
+  // unknown capabilities are reported unavailable, never silently scored zero.
+  std::vector<CandidateChannelRequest> candidate_channels;
+  int candidate_scan_limit = 10000;
+  bool lexical_shadow = false;
   static Result<ContextRequest> from_json(const Json& j);
   Json to_json() const;
 };
@@ -88,6 +104,12 @@ struct GoalTypingBudget {
 class ContextEngine {
  public:
   ContextEngine(Runtime& rt, kb::KnowledgeStore& store, std::shared_ptr<const kb::Pack> pack);
+  // An explicit native capability injection. The native caller is responsible
+  // for authorization/resource limits of external implementations. Request JSON
+  // cannot create a provider, discover credentials or authorize network calls.
+  void set_candidate_channel(std::string id, std::shared_ptr<CandidateChannel> channel) {
+    candidate_channels_[std::move(id)] = std::move(channel);
+  }
 
   // Read-only/offline typing: cue classifier or an explicitly forced type.
   Result<model::Goal> type_goal(const ContextRequest& req);
@@ -123,6 +145,7 @@ class ContextEngine {
   Runtime& rt_;
   kb::KnowledgeStore& store_;
   std::shared_ptr<const kb::Pack> pack_;
+  std::map<std::string, std::shared_ptr<CandidateChannel>> candidate_channels_;
 };
 
 }  // namespace context

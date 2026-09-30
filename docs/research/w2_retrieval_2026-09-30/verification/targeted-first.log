@@ -1,0 +1,305 @@
+UpdateCTestConfiguration  from :/workspace/scratch/6a857f5e4336/build-w2/DartConfiguration.tcl
+Test project /workspace/scratch/6a857f5e4336/build-w2
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 3
+      Start  3: unit.test_capi
+
+3: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_capi.cpp" "--no-intro=true"
+3: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+3: Test timeout computed to be: 10000000
+test 4
+      Start  4: unit.test_capi_knowledge
+
+4: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_capi_knowledge.cpp" "--no-intro=true"
+4: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+4: Test timeout computed to be: 10000000
+test 6
+      Start  6: unit.test_catalog_context
+
+6: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_catalog_context.cpp" "--no-intro=true"
+6: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+6: Test timeout computed to be: 10000000
+4: ===============================================================================
+4: [doctest] test cases:  1 |  1 passed | 0 failed | 540 skipped
+4: [doctest] assertions: 55 | 55 passed | 0 failed |
+4: [doctest] Status: SUCCESS!
+ 1/19 Test  #4: unit.test_capi_knowledge ................   Passed    0.69 sec
+test 11
+      Start 11: unit.test_chat_engine
+
+11: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_chat_engine.cpp" "--no-intro=true"
+11: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+11: Test timeout computed to be: 10000000
+11: ===============================================================================
+11: [doctest] test cases: 15 | 15 passed | 0 failed | 526 skipped
+11: [doctest] assertions: 67 | 67 passed | 0 failed |
+11: [doctest] Status: SUCCESS!
+ 2/19 Test #11: unit.test_chat_engine ...................   Passed    0.22 sec
+test 12
+      Start 12: unit.test_chat_knowledge_context
+
+12: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_chat_knowledge_context.cpp" "--no-intro=true"
+12: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+12: Test timeout computed to be: 10000000
+3: ===============================================================================
+3: [doctest] test cases:  10 |  10 passed | 0 failed | 531 skipped
+3: [doctest] assertions: 580 | 580 passed | 0 failed |
+3: [doctest] Status: SUCCESS!
+ 3/19 Test  #3: unit.test_capi ..........................   Passed    3.15 sec
+test 14
+      Start 14: unit.test_context_channel_integration
+
+14: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_channel_integration.cpp" "--no-intro=true"
+14: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+14: Test timeout computed to be: 10000000
+6: ===============================================================================
+6: [doctest] test cases:  7 |  7 passed | 0 failed | 534 skipped
+6: [doctest] assertions: 81 | 81 passed | 0 failed |
+6: [doctest] Status: SUCCESS!
+ 4/19 Test  #6: unit.test_catalog_context ...............   Passed    3.22 sec
+test 15
+      Start 15: unit.test_context_controls
+
+15: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_controls.cpp" "--no-intro=true"
+15: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+15: Test timeout computed to be: 10000000
+14: ===============================================================================
+14: [doctest] test cases:  5 |  5 passed | 0 failed | 536 skipped
+14: [doctest] assertions: 63 | 63 passed | 0 failed |
+14: [doctest] Status: SUCCESS!
+ 5/19 Test #14: unit.test_context_channel_integration ...   Passed    1.31 sec
+test 16
+      Start 16: unit.test_context_counter
+
+16: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_counter.cpp" "--no-intro=true"
+16: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+16: Test timeout computed to be: 10000000
+12: ===============================================================================
+12: [doctest] test cases:  15 |  15 passed | 0 failed | 526 skipped
+12: [doctest] assertions: 212 | 212 passed | 0 failed |
+12: [doctest] Status: SUCCESS!
+ 6/19 Test #12: unit.test_chat_knowledge_context ........   Passed    4.12 sec
+test 17
+      Start 17: unit.test_context_diagnostics
+
+17: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_diagnostics.cpp" "--no-intro=true"
+17: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+17: Test timeout computed to be: 10000000
+16: ===============================================================================
+16: [doctest] test cases:  4 |  4 passed | 0 failed | 537 skipped
+16: [doctest] assertions: 38 | 38 passed | 0 failed |
+16: [doctest] Status: SUCCESS!
+ 7/19 Test #16: unit.test_context_counter ...............   Passed    0.81 sec
+test 18
+      Start 18: unit.test_context_engine
+
+18: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_engine.cpp" "--no-intro=true"
+18: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+18: Test timeout computed to be: 10000000
+15: ===============================================================================
+15: [doctest] test cases:   9 |   9 passed | 0 failed | 532 skipped
+15: [doctest] assertions: 153 | 153 passed | 0 failed |
+15: [doctest] Status: SUCCESS!
+ 8/19 Test #15: unit.test_context_controls ..............   Passed    3.04 sec
+test 19
+      Start 19: unit.test_context_eval
+
+19: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_eval.cpp" "--no-intro=true"
+19: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+19: Test timeout computed to be: 10000000
+19: ===============================================================================
+19: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_eval.cpp:346:
+19: TEST SUITE: context_eval
+19: TEST CASE:  context efficiency vs naive full-history and flat-retrieval, coverage@budget, determinism
+19: 
+19: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=1/1 selected=551
+19:   logged: scenario: implement checklist feature (PL)
+19: 
+19: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=2/2 selected=667
+19:   logged: scenario: verify encryption claim
+19: 
+19: ===============================================================================
+19: [doctest] test cases:   2 |   2 passed | 0 failed | 539 skipped
+19: [doctest] assertions: 268 | 268 passed | 0 failed |
+19: [doctest] Status: SUCCESS!
+ 9/19 Test #19: unit.test_context_eval ..................   Passed    1.90 sec
+test 20
+      Start 20: unit.test_context_native_consumer
+
+20: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_native_consumer.cpp" "--no-intro=true"
+20: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+20: Test timeout computed to be: 10000000
+20: ===============================================================================
+20: [doctest] test cases:   6 |   6 passed | 0 failed | 535 skipped
+20: [doctest] assertions: 105 | 105 passed | 0 failed |
+20: [doctest] Status: SUCCESS!
+10/19 Test #20: unit.test_context_native_consumer .......   Passed    1.70 sec
+test 21
+      Start 21: unit.test_context_plan
+
+21: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_plan.cpp" "--no-intro=true"
+21: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+21: Test timeout computed to be: 10000000
+21: ===============================================================================
+21: [doctest] test cases:  15 |  15 passed | 0 failed | 526 skipped
+21: [doctest] assertions: 159 | 159 passed | 0 failed |
+21: [doctest] Status: SUCCESS!
+11/19 Test #21: unit.test_context_plan ..................   Passed    4.24 sec
+test 22
+      Start 22: unit.test_context_retrieval
+
+22: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_context_retrieval.cpp" "--no-intro=true"
+22: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+22: Test timeout computed to be: 10000000
+22: ===============================================================================
+22: [doctest] test cases:  13 |  13 passed | 0 failed | 528 skipped
+22: [doctest] assertions: 130 | 130 passed | 0 failed |
+22: [doctest] Status: SUCCESS!
+12/19 Test #22: unit.test_context_retrieval .............   Passed    1.65 sec
+test 45
+      Start 45: unit.test_materialize
+
+45: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_materialize.cpp" "--no-intro=true"
+45: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+45: Test timeout computed to be: 10000000
+45: ===============================================================================
+45: [doctest] test cases:  6 |  6 passed | 0 failed | 535 skipped
+45: [doctest] assertions: 67 | 67 passed | 0 failed |
+45: [doctest] Status: SUCCESS!
+13/19 Test #45: unit.test_materialize ...................   Passed    1.91 sec
+test 55
+      Start 55: unit.test_resolve
+
+55: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_resolve.cpp" "--no-intro=true"
+55: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+55: Test timeout computed to be: 10000000
+55: ===============================================================================
+55: [doctest] test cases:  8 |  8 passed | 0 failed | 533 skipped
+55: [doctest] assertions: 71 | 71 passed | 0 failed |
+55: [doctest] Status: SUCCESS!
+14/19 Test #55: unit.test_resolve .......................   Passed    0.30 sec
+test 56
+      Start 56: unit.test_resolve_attribution
+
+56: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_resolve_attribution.cpp" "--no-intro=true"
+56: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+56: Test timeout computed to be: 10000000
+18: ===============================================================================
+18: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_engine.cpp:571:
+18: TEST SUITE: context_engine
+18: TEST CASE:  select: a premise the budget cannot hold is flagged, never silently dropped
+18: 
+18: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_engine.cpp:609: ERROR: CHECK( incomplete_seen > 0 ) is NOT correct!
+18:   values: CHECK( 0 >  0 )
+18: 
+18: ===============================================================================
+18: [doctest] test cases:   18 |   17 passed | 1 failed | 523 skipped
+18: [doctest] assertions: 1033 | 1032 passed | 1 failed |
+18: [doctest] Status: FAILURE!
+15/19 Test #18: unit.test_context_engine ................***Failed   14.71 sec
+test 57
+      Start 57: unit.test_resolve_lineage
+
+57: Test command: /workspace/scratch/6a857f5e4336/build-w2/loom_tests "--source-file=*/test_resolve_lineage.cpp" "--no-intro=true"
+57: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+57: Test timeout computed to be: 10000000
+17: ===============================================================================
+17: [doctest] test cases:   9 |   9 passed | 0 failed | 532 skipped
+17: [doctest] assertions: 335 | 335 passed | 0 failed |
+17: [doctest] Status: SUCCESS!
+16/19 Test #17: unit.test_context_diagnostics ...........   Passed   15.50 sec
+test 64
+      Start 64: compat.test_abi_compat
+
+64: Test command: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12 "/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/compat/test_abi_compat.py"
+64: Working Directory: /workspace/scratch/6a857f5e4336/build-w2
+64: Environment variables: 
+64:  LOOM_COMPAT_TOOL=/workspace/scratch/6a857f5e4336/build-w2/loom_compat_tool
+64:  LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/6a857f5e4336/build-w2/loom_candidate_graph_native_tool
+64:  PYTHONPATH=/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/..
+64:  PYTHONDONTWRITEBYTECODE=1
+64:  LOOM_LIBRARY=/workspace/scratch/6a857f5e4336/build-w2/libloom.so.0.1.0
+64: Test timeout computed to be: 600
+64: test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+64: test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+64: test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+64: 
+64: ----------------------------------------------------------------------
+64: Ran 3 tests in 0.414s
+64: 
+64: OK
+17/19 Test #64: compat.test_abi_compat ..................   Passed    0.60 sec
+57: ===============================================================================
+57: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_lineage.cpp:42:
+57: TEST SUITE: resolve_lineage
+57: TEST CASE:  history/chatadhd_v0.8.3 forked from 0.7.9 (46d0ba7)
+57: 
+57: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_lineage.cpp:49: MESSAGE: 0.8.3 base 46d0ba7 confidence 1 votes {"revision":"46d0ba7474a2ea3edae8f402ce57f51934b94d73","label":"0.7.9","date":"2026-02-11T20:11:51Z","files":34,"weight":13860.98,"similarity":0.8825} / {"revision":"1e3fa2b6ed746a2252cd83182c47b5d7ae257505","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":31,"weight":13625.175,"similarity":0.8712}
+57: 
+57: ===============================================================================
+57: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_lineage.cpp:66:
+57: TEST SUITE: resolve_lineage
+57: TEST CASE:  history/chatadhd_v0.9.0 forked from 0.7.10 (1e3fa2b), before the abspath fix
+57: 
+57: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_lineage.cpp:72: MESSAGE: 0.9.0 base 1e3fa2b confidence 0.9672 votes {"revision":"1e3fa2b6ed746a2252cd83182c47b5d7ae257505","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":50,"weight":16845.765,"similarity":0.4565} / {"revision":"6ab43662d64a20808742a6e9c2ea818bae0cdff1","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":50,"weight":16845.765,"similarity":0.4565}
+57: 
+57: ===============================================================================
+57: [doctest] test cases:  2 |  2 passed | 0 failed | 539 skipped
+57: [doctest] assertions: 15 | 15 passed | 0 failed |
+57: [doctest] Status: SUCCESS!
+18/19 Test #57: unit.test_resolve_lineage ...............   Passed    3.53 sec
+56: ===============================================================================
+56: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:327:
+56: TEST SUITE: resolve_attribution
+56: TEST CASE:  synthetic_dev: attribution of units that never name their project, before vs after
+56: 
+56: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:413: MESSAGE: noise conversations attributed to a project: 1/20
+56: 
+56: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:417: MESSAGE: method tfidf, stats {"method":"tfidf","units":68,"unattributed":56,"attributed":35,"ambiguous":2,"passes":17,"foundations":0,"inferred_aliases":0,"resubjected":91,"members":{"notatnik":["gdzie to trzymac@1","un_d92a70c431c9bf2b","notatki@2","un_f9cf3aaf24f1bdc9"],"Stroz":["un_4e5a46a0e672b6d3","watcher + restart dziala@4","ile razy w tym tygodniu recznie zabijalam zawieszony proces@1","podsumowania po restarcie@5","un_7b368a1dfb7f5866","buduje stroza@2","un_e9efb004cac9f0e7","powiadomienia na pulpit@3"],"plyta":["rozne@1"],"sprawa z Kwiatowej":["olal pismo, idziemy do sadu@3","zbieram dowody - Kwiatowa@1","strategia: pismo czy od razu sad@4","un_88da9b32fddd0402","Zenon sie wypiera, ale mam maila ze stycznia@2"],"NoteFlow":["czemu ciagle zmieniam zdanie@10","notatki 0.2 i co z szyfrowaniem@6","przeglad u dentysty@3","porzucam Slow Fracture (na razie)@15","un_51a74c052f244b55","nowa synchronizacja i graf wiedzy v2@1","transkrypcja wrocila + offline fallback@4","rozjazd: python czy c++@9","riffy i pomysly na EP@16","d-moll wygrywa@13","molowy czy inny - jeszcze nie wiem@14","szyfrowanie w koncu + zgubione checklisty (znowu)@8","wygrywa c++@11","notatki glosowe dzialaja@5","zmieniam polling na inotify@12","synchronizacja pierwsza wersja@2","rozne@7"],"generator reelsow":["storyboard z tekstu dziala@2","klipy beda drogie, trzeba to ogarnac@4","pomysl na generator reelsow@1","compose dalej czeka@3"]},"alias_probe":{"notatnik":{"best":"NoteFlow","cosine":0.151,"second":0.084},"plyta":{"best":"NoteFlow","cosine":0.106,"second":0.013},"sprawa z Kwiatowej":{"best":"Stroz","cosine":0.06,"second":0.019},"NoteFlow":{"best":"Stroz","cosine":0.014,"second":0.0},"generator reelsow":{"best":"NoteFlow","cosine":0.036,"second":0.035},"Stroz":{"best":"NoteFlow","cosine":0.066,"second":0.0}}}
+56: 
+56: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:418: MESSAGE: unnamed relevant units = 33: attribution accuracy before 0 -> after 0.727273 (top-1), 0.757576 (GT among chosen), ambiguous 2
+56: 
+56: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:420: MESSAGE: alias recall before 0.230769 -> after 0.230769 (precision 0.545455 -> 0.545455, F1 0.324324 -> 0.324324)
+56: 
+56: /workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:423: MESSAGE: claims attached to a project: before 0.0920245 -> after 0.595092  (163 claims of relevant units)
+56: 
+56: ===============================================================================
+56: [doctest] test cases:   7 |   7 passed | 0 failed | 534 skipped
+56: [doctest] assertions: 420 | 420 passed | 0 failed |
+56: [doctest] Status: SUCCESS!
+19/19 Test #56: unit.test_resolve_attribution ...........   Passed    5.91 sec
+
+The following tests passed:
+	unit.test_capi_knowledge
+	unit.test_chat_engine
+	unit.test_capi
+	unit.test_catalog_context
+	unit.test_context_channel_integration
+	unit.test_chat_knowledge_context
+	unit.test_context_counter
+	unit.test_context_controls
+	unit.test_context_eval
+	unit.test_context_native_consumer
+	unit.test_context_plan
+	unit.test_context_retrieval
+	unit.test_materialize
+	unit.test_resolve
+	unit.test_context_diagnostics
+	compat.test_abi_compat
+	unit.test_resolve_lineage
+	unit.test_resolve_attribution
+
+95% tests passed, 1 tests failed out of 19
+
+Total Test time (real) =  23.87 sec
+
+The following tests FAILED:
+	 18 - unit.test_context_engine (Failed)
+Errors while running CTest
+Output from these tests are in: /workspace/scratch/6a857f5e4336/build-w2/Testing/Temporary/LastTest.log
+Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.

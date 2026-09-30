@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="19"
+	failures="1"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="23"
+	timestamp="2026-09-30T23:32:15"
+	>
+	<testcase name="unit.test_capi" classname="unit.test_capi" time="3.15098" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 531 skipped
+[doctest] assertions: 580 | 580 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge" classname="unit.test_capi_knowledge" time="0.688754" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 540 skipped
+[doctest] assertions: 55 | 55 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_context" classname="unit.test_catalog_context" time="3.2194" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 534 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_engine" classname="unit.test_chat_engine" time="0.220456" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 526 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_knowledge_context" classname="unit.test_chat_knowledge_context" time="4.11796" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 526 skipped
+[doctest] assertions: 212 | 212 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_channel_integration" classname="unit.test_context_channel_integration" time="1.30901" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 536 skipped
+[doctest] assertions: 63 | 63 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_controls" classname="unit.test_context_controls" time="3.03594" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 532 skipped
+[doctest] assertions: 153 | 153 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_counter" classname="unit.test_context_counter" time="0.809011" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 537 skipped
+[doctest] assertions: 38 | 38 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_diagnostics" classname="unit.test_context_diagnostics" time="15.5032" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 532 skipped
+[doctest] assertions: 335 | 335 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_engine" classname="unit.test_context_engine" time="14.7064" status="fail">
+		<failure message="Failed"/>
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_engine.cpp:571:
+TEST SUITE: context_engine
+TEST CASE:  select: a premise the budget cannot hold is flagged, never silently dropped
+
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_engine.cpp:609: ERROR: CHECK( incomplete_seen &gt; 0 ) is NOT correct!
+  values: CHECK( 0 &gt;  0 )
+
+===============================================================================
+[doctest] test cases:   18 |   17 passed | 1 failed | 523 skipped
+[doctest] assertions: 1033 | 1032 passed | 1 failed |
+[doctest] Status: FAILURE!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_eval" classname="unit.test_context_eval" time="1.89512" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_eval.cpp:346:
+TEST SUITE: context_eval
+TEST CASE:  context efficiency vs naive full-history and flat-retrieval, coverage@budget, determinism
+
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=1/1 selected=551
+  logged: scenario: implement checklist feature (PL)
+
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=2/2 selected=667
+  logged: scenario: verify encryption claim
+
+===============================================================================
+[doctest] test cases:   2 |   2 passed | 0 failed | 539 skipped
+[doctest] assertions: 268 | 268 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_native_consumer" classname="unit.test_context_native_consumer" time="1.69563" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 535 skipped
+[doctest] assertions: 105 | 105 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_plan" classname="unit.test_context_plan" time="4.24173" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 526 skipped
+[doctest] assertions: 159 | 159 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval" classname="unit.test_context_retrieval" time="1.6544" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 528 skipped
+[doctest] assertions: 130 | 130 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_materialize" classname="unit.test_materialize" time="1.90728" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 535 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve" classname="unit.test_resolve" time="0.297874" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 533 skipped
+[doctest] assertions: 71 | 71 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_attribution" classname="unit.test_resolve_attribution" time="5.91432" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:327:
+TEST SUITE: resolve_attribution
+TEST CASE:  synthetic_dev: attribution of units that never name their project, before vs after
+
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:413: MESSAGE: noise conversations attributed to a project: 1/20
+
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_attribution.cpp:417: MESSAGE: method tfidf, stats {"method":"tfidf","units":68,"unattributed":56,"attributed":35,"ambiguous":2,"passes":17,"foundations":0,"inferred_aliases":0,"resubjected":91,"members":{"notatnik":["gdzie to trzymac@1","un_d92a70c431c9bf2b","notatki@2","un_f9cf3aaf24f1bdc9"],"Stroz":["un_4e5a46a0e672b6d3","watcher + restart dziala@4","ile razy w tym tygodniu recznie zabijalam zawieszony proces@1","podsumowania po restarcie@5","un_7b368a1dfb7f5866","buduje stroza@2","un_e9efb004cac9f0e7",...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_lineage" classname="unit.test_resolve_lineage" time="3.52817" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_lineage.cpp:42:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.8.3 forked from 0.7.9 (46d0ba7)
+
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_lineage.cpp:49: MESSAGE: 0.8.3 base 46d0ba7 confidence 1 votes {"revision":"46d0ba7474a2ea3edae8f402ce57f51934b94d73","label":"0.7.9","date":"2026-02-11T20:11:51Z","files":34,"weight":13860.98,"similarity":0.8825} / {"revision":"1e3fa2b6ed746a2252cd83182c47b5d7ae257505","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":31,"weight":13625.175,"similarity":0.8712}
+
+===============================================================================
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_resolve_lineage.cpp:66:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.9.0 forked from 0.7.10 (1e3fa2b), before the abspath fix
+
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loo...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_abi_compat" classname="compat.test_abi_compat" time="0.599819" status="run">
+		<properties/>
+		<system-out>test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.414s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>

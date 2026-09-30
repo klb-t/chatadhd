@@ -1,0 +1,20 @@
+# Configured/reconfigured at the preserved logical build path:
+PYTHONPATH=/workspace/scratch/a371a1ca13b1/verification/deps PATH=/workspace/scratch/a371a1ca13b1/verification/deps/bin:$PATH /workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/cmake -S /workspace/scratch/6a857f5e4336/chatadhd-w2/loom -B /workspace/scratch/6a857f5e4336/build-w2 -G Ninja -DCMAKE_BUILD_TYPE=Debug -DLOOM_WERROR=ON -DLOOM_SHARED=ON -DLOOM_USE_SYSTEM_SQLITE=OFF -DLOOM_BUILD_CLI=ON -DLOOM_BUILD_SERVER=ON
+
+# All-target builds/rebuilds; separate log files retain successive attempts:
+PYTHONPATH=/workspace/scratch/a371a1ca13b1/verification/deps PATH=/workspace/scratch/a371a1ca13b1/verification/deps/bin:$PATH /workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/cmake --build /workspace/scratch/6a857f5e4336/build-w2 -j 6
+
+# First targeted run excluded the preregistered DEV measurement:
+TMPDIR=/var/tmp PYTHONPATH=/workspace/scratch/a371a1ca13b1/verification/deps PATH=/workspace/scratch/a371a1ca13b1/verification/deps/bin:$PATH /workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/ctest --test-dir /workspace/scratch/6a857f5e4336/build-w2 -j 3 -V -R '^(unit\.test_(context_|chat|capi|materialize|resolve|catalog_context)|compat\.test_abi_compat)' -E 'context_retrieval_dev' --output-junit /workspace/scratch/6a857f5e4336/w2-targeted-first.xml
+
+# First DEV execution, before reading its measurements:
+TMPDIR=/var/tmp /workspace/scratch/6a857f5e4336/build-w2/loom_tests '--source-file=*/test_context_retrieval_dev.cpp' --no-intro=true
+
+# Corrected targeted run, including the unchanged DEV instrument:
+TMPDIR=/var/tmp PYTHONPATH=/workspace/scratch/a371a1ca13b1/verification/deps PATH=/workspace/scratch/a371a1ca13b1/verification/deps/bin:$PATH /workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/ctest --test-dir /workspace/scratch/6a857f5e4336/build-w2 -j 3 -V -R '^(unit\.test_(context_|chat|capi|materialize|resolve|catalog_context)|compat\.test_abi_compat)' --output-junit /workspace/scratch/6a857f5e4336/w2-targeted-corrected.xml
+
+# First full run, whose five environment import failures are retained:
+TMPDIR=/var/tmp PYTHONPATH=/workspace/scratch/a371a1ca13b1/verification/deps PATH=/workspace/scratch/a371a1ca13b1/verification/deps/bin:$PATH /workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/ctest --test-dir /workspace/scratch/6a857f5e4336/build-w2 -j 3 --output-on-failure --output-junit /workspace/scratch/6a857f5e4336/w2-full.xml
+
+# Corrected full environment; source/binaries unchanged:
+TMPDIR=/var/tmp PYTHONUSERBASE=/var/tmp/chatadhd-w2-python-6a857f5e4336 PYTHONPATH=/workspace/scratch/6a857f5e4336/chatadhd-w2:/workspace/scratch/a371a1ca13b1/verification/deps PATH=/workspace/scratch/a371a1ca13b1/verification/deps/bin:$PATH /workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/ctest --test-dir /workspace/scratch/6a857f5e4336/build-w2 -j 3 --output-on-failure --output-junit /workspace/scratch/6a857f5e4336/w2-full-corrected.xml

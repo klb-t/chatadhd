@@ -1,0 +1,11 @@
+[0/2] Re-checking globbed directories...
+[1/205] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/third_party/miniz/miniz.c:3185:9: note: ‘#pragma message: Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.’
+ 3185 | #pragma message("Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.")
+      |         ^~~~~~~
+[2/205] Linking C static library libloom_miniz.a
+[3/205] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[4/205] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+[5/205] Linking C static library libloom_sqlite3_amalgamation.a
+[6/205] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[7/205] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o

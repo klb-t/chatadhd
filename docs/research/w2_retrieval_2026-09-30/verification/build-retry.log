@@ -1,0 +1,128 @@
+[0/2] Re-checking globbed directories...
+-- GLOB mismatch!
+The following files were added:
+  +/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_diagnostics.cpp
+  +/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/tests/test_context_retrieval.cpp
+-- GLOB mismatch!
+The following files were added:
+  +/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/src/context/context_candidates.cpp
+  +/workspace/scratch/6a857f5e4336/chatadhd-w2/loom/src/context/context_request_ext.cpp
+[1/2] Re-running CMake...
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/scratch/6a857f5e4336/build-w2
+[0/4] Re-checking globbed directories...
+[1/178] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[2/178] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[3/178] Building CXX object CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o
+[4/178] Building CXX object CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o
+[5/178] Building CXX object CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o
+[6/178] Building CXX object CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o
+[7/178] Building CXX object CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o
+[8/178] Building CXX object CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o
+[9/178] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[10/178] Building CXX object CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o
+[11/178] Building CXX object CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o
+[12/178] Building CXX object CMakeFiles/loom_core.dir/src/core/config.cpp.o
+[13/178] Building CXX object CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o
+[14/178] Building CXX object CMakeFiles/loom_core.dir/src/core/relations.cpp.o
+[15/178] Building CXX object CMakeFiles/loom_core.dir/src/core/provenance.cpp.o
+[16/178] Building CXX object CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o
+[17/178] Building CXX object CMakeFiles/loom_core.dir/src/core/tasks.cpp.o
+[18/178] Building CXX object CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o
+[19/178] Building CXX object CMakeFiles/loom_core.dir/src/db/fts.cpp.o
+[20/178] Building CXX object CMakeFiles/loom_core.dir/src/db/db.cpp.o
+[21/178] Building CXX object CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o
+[22/178] Building CXX object CMakeFiles/loom_core.dir/src/extract/extract.cpp.o
+[23/178] Building CXX object CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o
+[24/178] Building CXX object CMakeFiles/loom_core.dir/src/extract/sources.cpp.o
+[25/178] Building CXX object CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o
+[26/178] Building CXX object CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o
+[27/178] Building CXX object CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o
+[28/178] Building CXX object CMakeFiles/loom_core.dir/src/extract/stage.cpp.o
+[29/178] Building CXX object CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o
+[30/178] Building CXX object CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o
+[31/178] Building CXX object CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o
+[32/178] Building CXX object CMakeFiles/loom_core.dir/src/generalize/match.cpp.o
+[33/178] Building CXX object CMakeFiles/loom_core.dir/src/generalize/common.cpp.o
+[34/178] Building CXX object CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o
+[35/178] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o
+[36/178] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o
+[37/178] Building CXX object CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o
+[38/178] Building CXX object CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o
+[39/178] Building CXX object CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o
+[40/178] Building CXX object CMakeFiles/loom_core.dir/src/import/export_common.cpp.o
+[41/178] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o
+[42/178] Building CXX object CMakeFiles/loom_core.dir/src/import/exporter.cpp.o
+[43/178] Building CXX object CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o
+[44/178] Building CXX object CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o
+[45/178] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o
+[46/178] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o
+[47/178] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o
+[48/178] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o
+[49/178] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o
+[50/178] Building CXX object CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o
+[51/178] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o
+[52/178] Building CXX object CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o
+[53/178] Building CXX object CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o
+[54/178] Building CXX object CMakeFiles/loom_core.dir/src/kb/schema.cpp.o
+[55/178] Building CXX object CMakeFiles/loom_core.dir/src/kb/pack.cpp.o
+[56/178] Building CXX object CMakeFiles/loom_core.dir/src/media/media_providers.cpp.o
+[57/178] Building CXX object CMakeFiles/loom_core.dir/src/memory/memory_engine.cpp.o
+[58/178] Building CXX object CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o
+[59/178] Building CXX object CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o
+[60/178] Building CXX object CMakeFiles/loom_core.dir/src/model/model_action.cpp.o
+[61/178] Building CXX object CMakeFiles/loom_core.dir/src/kb/store.cpp.o
+[62/178] Building CXX object CMakeFiles/loom_core.dir/src/net/sse.cpp.o
+[63/178] Building CXX object CMakeFiles/loom_core.dir/src/model/model_pack.cpp.o
+[64/178] Building CXX object CMakeFiles/loom_core.dir/src/net/http_common.cpp.o
+[65/178] Building CXX object CMakeFiles/loom_core.dir/src/model/model_core.cpp.o
+[66/178] Building CXX object CMakeFiles/loom_core.dir/src/re/regex.cpp.o
+[67/178] Building CXX object CMakeFiles/loom_core.dir/src/model/model_general.cpp.o
+[68/178] Building CXX object CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o
+[69/178] Building CXX object CMakeFiles/loom_core.dir/src/providers/providers.cpp.o
+[70/178] Building CXX object CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o
+[71/178] Building CXX object CMakeFiles/loom_core.dir/src/net/http_default.cpp.o
+[72/178] Building CXX object CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o
+[73/178] Building CXX object CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o
+[74/178] Building CXX object CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o
+[75/178] Building CXX object CMakeFiles/loom_core.dir/src/util/base64.cpp.o
+[76/178] Building CXX object CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o
+[77/178] Building CXX object CMakeFiles/loom_core.dir/src/util/fs.cpp.o
+[78/178] Building CXX object CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o
+[79/178] Building CXX object CMakeFiles/loom_core.dir/src/search/selector.cpp.o
+[80/178] Building CXX object CMakeFiles/loom_core.dir/src/util/json.cpp.o
+[81/178] Building CXX object CMakeFiles/loom_core.dir/src/util/log.cpp.o
+[82/178] Building CXX object CMakeFiles/loom_core.dir/src/util/result.cpp.o
+[83/178] Building CXX object CMakeFiles/loom_core.dir/src/util/unicode.cpp.o
+[84/178] Building CXX object CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o
+[85/178] Building C object CMakeFiles/loom.dir/src/capi/shared_anchor.c.o
+[86/178] Building CXX object CMakeFiles/loom_core.dir/src/util/utf8.cpp.o
+[87/178] Building CXX object CMakeFiles/loom_core.dir/src/util/sha256.cpp.o
+[88/178] Building CXX object CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o
+[89/178] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+[90/178] Building CXX object CMakeFiles/loom_tests.dir/tests/main.cpp.o
+[91/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o
+[92/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o
+[93/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o
+[94/178] Building CXX object CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o
+[95/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o
+[96/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o
+[97/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o
+[98/178] Linking CXX static library libloom_core.a
+[99/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_scale.cpp.o
+[100/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_links.cpp.o
+[101/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o
+[102/178] Linking CXX shared library libloom.so.0.1.0
+FAILED: [code=1] libloom.so.0.1.0 
+: && /usr/bin/c++ -fPIC -g  -shared -Wl,--no-undefined -Wl,--dependency-file=CMakeFiles/loom.dir/link.d -Wl,-soname,libloom.so.0 -o libloom.so.0.1.0 CMakeFiles/loom.dir/src/capi/shared_anchor.c.o  -Wl,--push-state,--whole-archive  libloom_core.a  -Wl,--pop-state  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so && :
+/usr/bin/ld: libloom_core.a: member libloom_core.a(graph_memory.cpp.o) in archive is not an object
+collect2: error: ld returned 1 exit status
+[103/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_retention.cpp.o
+[104/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o
+[105/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_config.cpp.o
+[106/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_controls.cpp.o
+[107/178] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o
+ninja: build stopped: subcommand failed.
