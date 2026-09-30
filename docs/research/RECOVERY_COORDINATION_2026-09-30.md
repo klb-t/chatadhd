@@ -1,0 +1,19 @@
+# Recovery and coordination — 2026-09-30 17:30 UTC
+
+[U] The owner delegates programme decisions to ROOT, requests six or more coordinated ChatGPT threads for the most important project, and explicitly requires protection against thread/runtime resets: important decisions and results must not remain only local.
+
+[O] A new runtime reset was detected: the local checkout returned to 6269f26 and all six earlier helper processes and private resumed-key file disappeared. GitHub research ref was independently verified at 5ca414fa7206098a94fe61e1a79a73c2c729160d, tree b917a6b7393e26ffd0f99ca39a62ecf4e02dbb85. Twenty-three published checkpoints remain durable. ROOT is recovering this exact tree before changing it.
+
+[O] Development ref is now 46066308ac6306a1b30f65b98e19a40da6df7e9c. The full current HANDOFF_SOL_2026-09-29.md was read. Its six-thread proposal is useful, but must be reconciled with already published GraphPacket, AnalysisPlan, source-actor projections, cache, T5 and measured DEV experiments. Its historical 24-miss statement conflicts with 31/45 (14 misses). Configurable acceptance never erases inference provenance. No new frontier spending is authorized by the note.
+
+[O] Unpublished shared-lease local c26c525/tree f460c2886faec628f63e1e2c0a50f48fa8443cba was lost before the branch update. A metadata fetch finds no remotely accessible object at that tree SHA. Some blobs may have uploaded, but complete reconstruction is not established. Historical published native851 evidence includes30 tests from these unpublished files; that run is preserved, but the restored checkout cannot claim the lost source has been recovered or that851 tests have been re-run here.
+
+[O] Published first native result73/74 and corrected structure851/851, plus full contracts185/185 and eval213/213 with exact logs, survived. They are distinct measurements, not a single fresh clean74 run or summed denominator. The strict new graph VAL and older forbidden holdouts remain unopened.
+
+[D] Restart six helper lanes: philosophy watch, programme/coordination, independent verification, deterministic/retrieval methods, cheap/Jev recipes, and graph/agentic methods. Larger role sets run in waves. This runtime has seven concurrent agents including ROOT; Loom's configurable symbolic plans are not limited to seven. No API for creating additional ChatGPT conversation threads is exposed, so ROOT will provide repository-backed independent work packages without pretending that external threads are already running.
+
+[D] One integration owner (ROOT), disjoint scopes, exact base/head and claim receipts, no force push. Other threads publish small verified increments on dedicated branches and hand off their exact commits; they do not concurrently edit STATE.md or merge to the development line. Important owner clarifications/protocols/first results are published before dependent work. Use [skip ci] until Actions quota reset. Raw evidence archives must be checkpointed independently of large later integration batches.
+
+[O] The existing paid programme remains within the dedicated non-resetting USD2 cap; no invented USD20 frontier pilot. Historical provider metadata1.23206716 and107-request allocation .4023704 are preserved in PAID_RESUME_ALLOCATION_2026-09-30.json, not a fresh current balance. Key absence and any prior auto-review obstruction do not authorize a workaround or budget reset. Re-admission requires restored frozen payloads, exact public authored synthetic DEV provenance, current budget and explicit original owner authorization. No resumed inference is claimed from lost launch receipts.
+
+Next: recover published content and exact pins; reconcile only current upstream changes; publish the adopted six-thread programme and fresh measurements. Save recovery boundaries, negative results and unresolved evidence separately from model-quality claims.
