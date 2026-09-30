@@ -1,3 +1,11 @@
+> Publication update — 2026-10-01: the W5 source bundle has now been recovered
+> and published on `gpt/w5-workspace-2026-09-30`. Each published payload tree
+> matches its original source tree exactly. See
+> [the publication receipt](W5-2026-10-01-publication.json) for original → published
+> commit mapping. The original report below preserves its earlier **not pushed**
+> status as historical evidence; that publication blocker is now resolved.
+> Integration with the other W packages remains pending.
+
 # W5 — durable coupled workspace
 
 - `base_sha`: `b118c80e981c08ec6d7f9ab6aacc177979186cf2`
