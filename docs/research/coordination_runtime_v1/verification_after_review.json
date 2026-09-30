@@ -1,0 +1,67 @@
+{
+  "schema": "loom.coordination_verification/1",
+  "measured_at_utc": "2026-09-30T19:16:02.589962+00:00",
+  "inspected_base_commit": "fafc77f8eeebdff4c32897b5e8ef94dd26d4ec38",
+  "head_at_verification": "e466c6a93fcaf825024a9c8e6286044a6671b08f",
+  "command": "python3 -m unittest discover -s loom/tools/coordination -p 'test_*.py' -v",
+  "tests_run": 22,
+  "elapsed_seconds": 2.22,
+  "passed": true,
+  "scope": "new coordination mechanism and existing graph workflow adapter; synthetic offline fixtures",
+  "model_quality_measured": false,
+  "paid_calls": 0,
+  "native_store_writes": 0,
+  "sources": [
+    {
+      "path": "loom/tools/coordination/__init__.py",
+      "sha256": "7b0ce2e7e8dcc51c800d5212a0e931cf6d3fd13be71c312d95f46ce8ba9f189e"
+    },
+    {
+      "path": "loom/tools/coordination/graph_workflow.py",
+      "sha256": "cc92315c03d10c6af4e207db1a4f97488ff10f2878bdb3d3f0d4416cabaddfac"
+    },
+    {
+      "path": "loom/tools/coordination/leases.py",
+      "sha256": "f3621c1fe5e61c3621908ff17fd69e53bad7a07de9d560fbe1fc6f8164c096eb"
+    },
+    {
+      "path": "loom/tools/coordination/test_graph_workflow.py",
+      "sha256": "f99895de735fc263567b22512053b11d8e6b1e8415f49de1f52ab725202f1ec5"
+    },
+    {
+      "path": "loom/tools/coordination/test_leases.py",
+      "sha256": "46408d197c81ae69b1452d4c8ba6be84bc0cc06b9ebd62c502d8f420ae80c2c9"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_v1/workflow.py",
+      "sha256": "2f85e20f70f59ffb3fa6a0b6812af375918eef91e47d1233b8e96f119912954a"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_v1/packet.py",
+      "sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_v1/test_packet.py",
+      "sha256": "abf69624a20638ac54f221c1f1a99e329f54c2d16f4d26286925e99d4ca39ce2"
+    },
+    {
+      "path": "loom/tools/structure/agentic_graph_v1/test_workflow.py",
+      "sha256": "cd734e078cc9d57ca0874107bc4fc6192dc5c5cfdf6e1c22f1b4c74e61722d5c"
+    },
+    {
+      "path": "loom/tools/structure/openrouter_runner.py",
+      "sha256": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635"
+    }
+  ],
+  "test_log": {
+    "path": "docs/research/coordination_runtime_v1/verification_after_review.txt",
+    "sha256": "8a2bdc9125da2ffd4a05faf2bee10de6f7785e17d886444403c6a6d92e6b0ab3"
+  },
+  "limits": [
+    "Local SQLite filesystem only; no multi-host consensus guarantee.",
+    "No exactly-once external effect claim.",
+    "Historical lost shared-lease source and 30 tests are not recovered.",
+    "Current new module is opt-in; existing entry points are unchanged."
+  ],
+  "review_correction": "Inspect inputs before begin; never invoke callback after input inspection observed lease expiry."
+}
