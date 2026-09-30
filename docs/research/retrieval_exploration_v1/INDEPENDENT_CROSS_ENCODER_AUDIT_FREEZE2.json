@@ -1,0 +1,22 @@
+{
+  "schema": "loom.independent_crossencoder_audit_freeze/1",
+  "created_at_utc": "2026-09-30T13:23:06.327475+00:00",
+  "files_sha256": {
+    "docs/research/retrieval_exploration_v1/independent_cross_encoder_audit.py": "867f5ffd7634026ab67951ad6ac93b1cc7272896132a7c85055b07c696369c5b",
+    "docs/research/retrieval_exploration_v1/INDEPENDENT_CROSS_ENCODER_AUDIT_PROTOCOL.md": "9bdfb01830480523282d66aee9808b7c0cda7e72934cbf078e098844402352e2",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/first_evidence.zip": "685784b964606a672e988d31b2a3e7614ab7ec7d2032c4ffc9b7384472d12c5a",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/FIRST_ARCHIVE.json": "da52bd83fcf86295fd248b6a47c0e10263fba7be9f2144fc0f0670c34892352e",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/freeze_before_scores.json": "126e7d49bb9d3060280837cc788a30816f47e37994c2163e94b80b2dee84367d",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/freeze_before_gold.json": "80c9a6c40ed08863f7b37a7c3ecff7a3d9d5a0b51b1563c8e6169595bd40126d",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/model_manifest.json": "51aa8a21ad84eeb123e8e2baaea8091be00fec303c54db14c1a9343c77b73901",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/policy.json": "0eca1fbe3d4b63a3c27fd5fb4b6ce4adc8d3d2cc09d2287e4bae0a4edea95538",
+    "loom/tools/structure/retrieval_exploration_v1/first_results.json": "e4f561bf44e98014d2afb8e37ae4560f854dc59d9b32af1773c23c3347e47c90",
+    "loom/tools/structure/retrieval_exploration_v1/byte_budget_results.json": "2e31bb274d6f68d041aba07929988dd0f5a1ed819d7ea75a66551ae30c5fb164",
+    "loom/tools/structure/retrieval_exploration_v1/representation_templates_v2.json": "20b7b9949ddd9fc774e0f6567b033488364b3a29b25d7e32e0dfec1515b8abc4",
+    "loom/tests/fixtures/research/graph_methods_panel_v1/inputs_dev.json": "1c8183d17d4f648b9012cd9f0eb8f8ee047bf0111ca2f718c86d56a753c8097c",
+    "loom/tests/fixtures/research/graph_methods_panel_v1/gold_dev.json": "0bc9ac4b791fd24fdcd4b0e844b350e19bd1a405c9d04ee11d3d650e7b472c23",
+    "loom/tools/structure/graph_local_baselines_v1/prepared_inputs.json": "c5c39329ffbedd1abffb5adaeb8328c545c6b0dafe39afbbebe7564b871a06b3"
+  },
+  "logit_tolerance": 1e-06,
+  "result_file": "docs/research/retrieval_exploration_v1/INDEPENDENT_CROSS_ENCODER_AUDIT2.json"
+}

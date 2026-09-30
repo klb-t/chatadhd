@@ -1,0 +1,12 @@
+{
+  "schema": "loom.research.retrieval_exploration_first_failure/1",
+  "stage": "render_variants_before_encoding",
+  "exception": "ValueError: unregistered_relation",
+  "root_cause": "renderer registered implies only; 24 supplied DEV input queries use causes",
+  "encoded_texts": 0,
+  "score_rows": 0,
+  "gold_access_for_failure_diagnosis": false,
+  "first_freeze_preserved": "freeze_before_scores.json",
+  "corrected_freeze": "freeze_before_scores2.json",
+  "decision": "register both supplied relation types before first outcomes"
+}

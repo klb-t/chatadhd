@@ -1,0 +1,13 @@
+{
+  "created_at": "2026-09-30T12:52:25.903339+00:00",
+  "files_sha256": {
+    "docs/research/retrieval_exploration_v1/BYTE_BUDGET_PROTOCOL.md": "c6efb60b49e86abc07dbc3796a8b2ccdf3dc443a277ba6afdd9465fce79019ae",
+    "loom/tools/structure/retrieval_exploration_v1/byte_budget.py": "ae67759cf7421b1708e32e0b52461c20f44e1c4a35fc6b97e78ce8884ab5cb1e",
+    "loom/tools/structure/retrieval_exploration_v1/evaluate.py": "5686f9ecd1622d84d5ab4d6b96e8ca753b978077c3584bcf7541f174c1a23246",
+    "loom/tools/structure/retrieval_exploration_v1/first_results.json": "e4f561bf44e98014d2afb8e37ae4560f854dc59d9b32af1773c23c3347e47c90",
+    "loom/tools/structure/retrieval_exploration_v1/first_scores.json": "e8d5af75b8cb6908f186522d37c91c042bf9c3272ab7fa83c7787ddc962afd81",
+    "loom/tools/structure/retrieval_exploration_v1/test_byte_budget.py": "71773fdb244b7b0f716b051f48dd2c0284fe15cd9f89e5b3aa2ccac9fd9640be"
+  },
+  "prior_dev_outcomes_seen": true,
+  "validation_accessed": false
+}

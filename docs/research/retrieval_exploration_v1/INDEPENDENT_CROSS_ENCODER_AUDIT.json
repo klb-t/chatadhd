@@ -1,0 +1,8 @@
+{
+  "schema": "loom.independent_crossencoder_audit/1",
+  "result": "FAIL",
+  "failure_class": "AssertionError",
+  "reason": "archive members",
+  "actual_paid_requests": 0,
+  "actual_paid_cost_usd": "0"
+}

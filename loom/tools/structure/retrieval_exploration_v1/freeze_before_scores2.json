@@ -1,0 +1,19 @@
+{
+  "created_at": "2026-09-30T12:49:23.606801+00:00",
+  "files_sha256": {
+    "docs/research/retrieval_exploration_v1/PROTOCOL.md": "84f9abfbf2859be2ab9aa92825ab003d8e8abade139e5aff727d9d5534ef2e22",
+    "loom/tools/structure/graph_local_baselines_v1/evaluate_dev.py": "6739e931e2a2f5c078dee56ad1bb07d52670b4143314bfd0ba83774cee714ae3",
+    "loom/tools/structure/graph_local_baselines_v1/first_scores.json": "68249c44ac2d91631c2226585899a424aed14a9a57c994de9a05a8396f3c6632",
+    "loom/tools/structure/graph_local_baselines_v1/prepared_inputs.json": "c5c39329ffbedd1abffb5adaeb8328c545c6b0dafe39afbbebe7564b871a06b3",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/local_embedding_panel.py": "d52a2708a90358fb5d696b4e7b5839eb3bcbccc08f0cc38714bc038f9f315614",
+    "loom/tools/structure/local_embedding_panel_v1/model_manifest.json": "0c6d998b882dfb0773f165efe1d8339d63a8888b5d9c1f3fd4390382a0b6856d",
+    "loom/tools/structure/retrieval_exploration_v1/evaluate.py": "5686f9ecd1622d84d5ab4d6b96e8ca753b978077c3584bcf7541f174c1a23246",
+    "loom/tools/structure/retrieval_exploration_v1/explore.py": "41f57d3d209e84550b0da00062af8bc81876e98d38388738386f326743badfb4",
+    "loom/tools/structure/retrieval_exploration_v1/policy.json": "0a22247324f3f0d87d3fafc902a42f609f9e3dd612efb3150f46e82ab8147deb",
+    "loom/tools/structure/retrieval_exploration_v1/test_explore.py": "67285cc70d0bcc62a5d4a2dfaa3d04f66a04a174e13102e840215b4bbf8be511"
+  },
+  "gold_access": "existing_dev_outcomes_seen_but_no_new_gold_feature_inputs",
+  "schema": "loom.research.retrieval_exploration_freeze/1",
+  "validation_accessed": false
+}

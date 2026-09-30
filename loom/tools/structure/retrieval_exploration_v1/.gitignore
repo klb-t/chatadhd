@@ -1,0 +1,5 @@
+# Exact immutable raw measurement bytes are preserved in first_evidence.zip.
+/first_scores.json
+/first_results.json
+/byte_budget_results.json
+/first_embedding/

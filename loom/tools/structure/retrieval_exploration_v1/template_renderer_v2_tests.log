@@ -1,0 +1,10 @@
+test_exact_primary_rendering (loom.tools.structure.retrieval_exploration_v1.test_template_renderer_v2.DataRendererTests.test_exact_primary_rendering) ... ok
+test_negation_and_aliases_preserved (loom.tools.structure.retrieval_exploration_v1.test_template_renderer_v2.DataRendererTests.test_negation_and_aliases_preserved) ... ok
+test_policy_extension_needs_no_code_change (loom.tools.structure.retrieval_exploration_v1.test_template_renderer_v2.DataRendererTests.test_policy_extension_needs_no_code_change) ... ok
+test_unknown_language_rejected (loom.tools.structure.retrieval_exploration_v1.test_template_renderer_v2.DataRendererTests.test_unknown_language_rejected) ... ok
+test_unknown_operation_rejected (loom.tools.structure.retrieval_exploration_v1.test_template_renderer_v2.DataRendererTests.test_unknown_operation_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+OK

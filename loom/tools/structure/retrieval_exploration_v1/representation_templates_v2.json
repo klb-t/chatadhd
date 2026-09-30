@@ -1,0 +1,39 @@
+{
+  "schema": "loom.research.retrieval_representation_templates/2",
+  "variants": {
+    "structured": {"template": "{query_text}"},
+    "endpoints": {"template": "{source_text}\n{target_text}"},
+    "typed": {"template": "actor: {actor}\nrelation: {relation}\nantecedent: {source_text}\nconsequent: {target_text}"},
+    "aliases": {"join": ["actor", "relation", "source_text", "source_aliases", "target_text", "target_aliases"], "separator": " "}
+  },
+  "language_relation_templates": {
+    "en": {
+      "implies": {
+        "forward": "According to {actor}: if {source_text}, then {target_text}.",
+        "question": "According to {actor}, does “{source_text}” imply “{target_text}”?",
+        "denial": "Does {actor} deny that “{source_text}” implies “{target_text}”?",
+        "reverse": "According to {actor}, does “{target_text}” imply “{source_text}”?"
+      },
+      "causes": {
+        "forward": "According to {actor}: “{source_text}” causes “{target_text}”.",
+        "question": "According to {actor}, does “{source_text}” cause “{target_text}”?",
+        "denial": "Does {actor} deny that “{source_text}” causes “{target_text}”?",
+        "reverse": "According to {actor}, does “{target_text}” cause “{source_text}”?"
+      }
+    },
+    "pl": {
+      "implies": {
+        "forward": "Według {actor}: jeżeli {source_text}, to {target_text}.",
+        "question": "Czy według {actor} „{source_text}” implikuje „{target_text}”?",
+        "denial": "Czy {actor} zaprzecza temu, że „{source_text}” implikuje „{target_text}”?",
+        "reverse": "Czy według {actor} „{target_text}” implikuje „{source_text}”?"
+      },
+      "causes": {
+        "forward": "Według {actor}: „{source_text}” powoduje „{target_text}”.",
+        "question": "Czy według {actor} „{source_text}” powoduje „{target_text}”?",
+        "denial": "Czy {actor} zaprzecza temu, że „{source_text}” powoduje „{target_text}”?",
+        "reverse": "Czy według {actor} „{target_text}” powoduje „{source_text}”?"
+      }
+    }
+  }
+}

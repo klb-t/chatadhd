@@ -1,0 +1,21 @@
+{
+  "created_at": "2026-09-30T13:03:38.967661+00:00",
+  "files_sha256": {
+    "docs/research/retrieval_exploration_v1/CROSS_ENCODER_PROTOCOL.md": "bdc700972b5dfc0d4a8147a6ee96235293886d7afe951b3d0ba25dec0d192ae7",
+    "loom/tools/structure/retrieval_exploration_v1/byte_budget.py": "ae67759cf7421b1708e32e0b52461c20f44e1c4a35fc6b97e78ce8884ab5cb1e",
+    "loom/tools/structure/retrieval_exploration_v1/byte_budget_results.json": "2e31bb274d6f68d041aba07929988dd0f5a1ed819d7ea75a66551ae30c5fb164",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/cross_encoder.py": "87ec47e8940bf0e78f764511639db3229270d4ffac1711e2ea5f8f23b37a3632",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/evaluate_cross.py": "2fe796d91ba55c6dae8c5f7118a05c8122fcbd5e5aefffd008c6126f683c85cc",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/model_manifest.json": "51aa8a21ad84eeb123e8e2baaea8091be00fec303c54db14c1a9343c77b73901",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/policy.json": "0eca1fbe3d4b63a3c27fd5fb4b6ce4adc8d3d2cc09d2287e4bae0a4edea95538",
+    "loom/tools/structure/retrieval_exploration_v1/cross_encoder_v1/test_cross_encoder.py": "6812c986307d7e79ddf67e3fcff16b33f62e6063c44659b21f0ee0704c1f65cd",
+    "loom/tools/structure/retrieval_exploration_v1/evaluate.py": "5686f9ecd1622d84d5ab4d6b96e8ca753b978077c3584bcf7541f174c1a23246",
+    "loom/tools/structure/retrieval_exploration_v1/first_results.json": "e4f561bf44e98014d2afb8e37ae4560f854dc59d9b32af1773c23c3347e47c90",
+    "loom/tools/structure/retrieval_exploration_v1/first_scores.json": "e8d5af75b8cb6908f186522d37c91c042bf9c3272ab7fa83c7787ddc962afd81",
+    "loom/tools/structure/retrieval_exploration_v1/representation_templates_v2.json": "20b7b9949ddd9fc774e0f6567b033488364b3a29b25d7e32e0dfec1515b8abc4",
+    "loom/tools/structure/retrieval_exploration_v1/template_renderer_v2.py": "dd112d8e3e646e655335b58b79860a9e09b95cbcf4ae8db792ee7f4565e98a4a"
+  },
+  "paid_calls": 0,
+  "prior_dev_results_seen": true,
+  "validation_accessed": false
+}

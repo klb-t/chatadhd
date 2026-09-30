@@ -1,0 +1,28 @@
+test_empty_pool (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_empty_pool) ... ok
+test_invalid_parameters (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_invalid_parameters) ... ok
+test_length_normalization_control (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_length_normalization_control) ... ok
+test_no_shared_vocabulary_keeps_zero_score_available (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_no_shared_vocabulary_keeps_zero_score_available) ... ok
+test_prefix_statistics_are_local_and_repeatable (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_prefix_statistics_are_local_and_repeatable) ... ok
+test_query_frequency_counts (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_query_frequency_counts) ... ok
+test_single_term_hand_calculation (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_single_term_hand_calculation) ... ok
+test_unicode_and_negation_retained (loom.tools.structure.retrieval_exploration_v1.test_explore.BM25Tests.test_unicode_and_negation_retained) ... ok
+test_empty_pool_rank_abstains (loom.tools.structure.retrieval_exploration_v1.test_explore.FusionTests.test_empty_pool_rank_abstains) ... ok
+test_rrf_duplicate_rejected (loom.tools.structure.retrieval_exploration_v1.test_explore.FusionTests.test_rrf_duplicate_rejected) ... ok
+test_rrf_formula (loom.tools.structure.retrieval_exploration_v1.test_explore.FusionTests.test_rrf_formula) ... ok
+test_rrf_no_channel_veto (loom.tools.structure.retrieval_exploration_v1.test_explore.FusionTests.test_rrf_no_channel_veto) ... ok
+test_rrf_unknown_identity_rejected (loom.tools.structure.retrieval_exploration_v1.test_explore.FusionTests.test_rrf_unknown_identity_rejected) ... ok
+test_ties_preserve_original_order_and_zero_availability (loom.tools.structure.retrieval_exploration_v1.test_explore.FusionTests.test_ties_preserve_original_order_and_zero_availability) ... ok
+test_auc_ties_and_query_denominators (loom.tools.structure.retrieval_exploration_v1.test_explore.MetricTests.test_auc_ties_and_query_denominators) ... ok
+test_empty_relevance_has_undefined_recall (loom.tools.structure.retrieval_exploration_v1.test_explore.MetricTests.test_empty_relevance_has_undefined_recall) ... ok
+test_aliases_are_supplied_not_learned (loom.tools.structure.retrieval_exploration_v1.test_explore.RepresentationTests.test_aliases_are_supplied_not_learned) ... ok
+test_case_insensitive_speaker_softness_keeps_other_sources (loom.tools.structure.retrieval_exploration_v1.test_explore.RepresentationTests.test_case_insensitive_speaker_softness_keeps_other_sources) ... ok
+test_causes_relation_is_not_rendered_as_implication (loom.tools.structure.retrieval_exploration_v1.test_explore.RepresentationTests.test_causes_relation_is_not_rendered_as_implication) ... ok
+test_empty_endpoint_does_not_create_direction (loom.tools.structure.retrieval_exploration_v1.test_explore.RepresentationTests.test_empty_endpoint_does_not_create_direction) ... ok
+test_forward_reverse_preserve_direction (loom.tools.structure.retrieval_exploration_v1.test_explore.RepresentationTests.test_forward_reverse_preserve_direction) ... ok
+test_operator_direction_bonus_only_contiguous_forward (loom.tools.structure.retrieval_exploration_v1.test_explore.RepresentationTests.test_operator_direction_bonus_only_contiguous_forward) ... ok
+test_polish_negation_retained (loom.tools.structure.retrieval_exploration_v1.test_explore.RepresentationTests.test_polish_negation_retained) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.001s
+
+OK

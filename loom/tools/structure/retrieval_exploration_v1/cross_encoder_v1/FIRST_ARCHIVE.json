@@ -1,0 +1,26 @@
+{
+  "archive_bytes": 559535,
+  "archive_sha256": "685784b964606a672e988d31b2a3e7614ab7ec7d2032c4ffc9b7384472d12c5a",
+  "credentials_included": false,
+  "entries": [
+    {
+      "bytes": 1630495,
+      "path": "first_outputs.json",
+      "sha256": "a49d6f632080800815c621ed73814a236c01fb5c8b0ea9645060a639ad959ab7"
+    },
+    {
+      "bytes": 1231839,
+      "path": "first_scores.json",
+      "sha256": "ea2448691a5f2c3a5778f052e3e4365710617cd66b630604232ee7eb41e66a34"
+    },
+    {
+      "bytes": 3253653,
+      "path": "first_results.json",
+      "sha256": "b546bba09b7e33195b293f47eb4884d282b4180d6144b74590bf9ad486ce2b16"
+    }
+  ],
+  "raw_bytes": 6115987,
+  "schema": "loom.research.crossencoder_first_archive/1",
+  "validation_included": false,
+  "weights_included": false
+}
