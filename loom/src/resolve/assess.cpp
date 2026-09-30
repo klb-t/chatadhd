@@ -4,7 +4,9 @@
 //   r(extractor) * quality (evidence from one conversation / file counts
 //   once, its best support), r = Beta mean from policy/calibration.json;
 //   derived/inferred/extrapolated keep their producer's raw confidence;
-//   then the isotonic map of the evidence class. user -> 1, absent -> 0.
+//   then the isotonic map of the evidence class. User claims retain their
+//   producer's confidence: owner authority is not empirical certainty.
+//   absent -> 0.
 // detect_conflicts(): two or more active, supported, incompatible values of a
 //   single-valued (subject, predicate, qualifiers) -> every value stays and is
 //   marked contested; the conflict records the candidate resolution: user,
@@ -100,7 +102,8 @@ Status calibrate(const kb::Pack& pack, std::vector<model::Claim>& claims) {
     double raw = a.confidence;
     switch (a.evidence) {
       case model::EvidenceClass::User:
-        a.confidence = 1.0;
+        // Conflict resolution handles owner authority independently. Neither
+        // asserting nor confirming a claim supplies a calibration measurement.
         continue;
       case model::EvidenceClass::Absent:
         a.confidence = 0.0;

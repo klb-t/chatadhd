@@ -176,15 +176,19 @@ Result<std::optional<KnowledgeRun>> KnowledgeStore::get_run(std::string_view run
   return std::optional<KnowledgeRun>(std::move(r));
 }
 
-Result<std::vector<KnowledgeRun>> KnowledgeStore::list_runs(int limit) {
+Result<std::vector<KnowledgeRun>> KnowledgeStore::list_runs(int limit, std::string_view status) {
   std::vector<KnowledgeRun> out;
   if (!has_schema()) return out;
   std::vector<std::string> ids;
   {
     auto lk = db_.lock();
-    LOOM_TRY_ASSIGN(sql::Stmt st,
-                    db_.conn().prepare("SELECT run_id FROM loom_kb_runs ORDER BY created DESC, run_id LIMIT ?"));
-    st.bind(1, static_cast<std::int64_t>(limit <= 0 ? 50 : limit));
+    std::string query = "SELECT run_id FROM loom_kb_runs";
+    if (!status.empty()) query += " WHERE status = ?";
+    query += " ORDER BY created DESC, run_id LIMIT ?";
+    LOOM_TRY_ASSIGN(sql::Stmt st, db_.conn().prepare(query));
+    int index = 1;
+    if (!status.empty()) st.bind(index++, status);
+    st.bind(index, static_cast<std::int64_t>(limit <= 0 ? 50 : limit));
     while (true) {
       LOOM_TRY_ASSIGN(bool row, st.step());
       if (!row) break;

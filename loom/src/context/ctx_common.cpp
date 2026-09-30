@@ -8,7 +8,7 @@ namespace loom::ctx {
 
 Result<std::string> resolve_run(kb::KnowledgeStore& store, std::string_view run) {
   if (!run.empty()) return std::string(run);
-  LOOM_TRY_ASSIGN(auto runs, store.list_runs(50));
+  LOOM_TRY_ASSIGN(auto runs, store.list_runs(1, "done"));
   for (const auto& r : runs) {
     if (r.status == "done") return r.id;
   }

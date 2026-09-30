@@ -154,6 +154,53 @@ class CliTests(unittest.TestCase):
         self.assertEqual(failure["evidence"]["failure_class"], "TimeoutError")
         self.assertFalse(self.database.exists())
 
+    def test_bool_and_float_ordinals_are_not_integer_stage_identities(self):
+        recorded = self.copy_recorded()
+        path = recorded / "0001.request.json"
+        request = json.loads(path.read_text())
+        for ordinal in (True, 1.0):
+            with self.subTest(ordinal=repr(ordinal)):
+                request["ordinal"] = ordinal
+                path.write_text(json.dumps(request))
+                failure = self.command(*self.replay_args(recorded), success=False)
+                self.assertEqual(failure["reason"], "saved_workflow_stage_identity_mismatch")
+                self.assertFalse(self.database.exists())
+                self.assertFalse((self.folder / "outputs").exists())
+
+    def test_nested_boolean_and_float_request_values_do_not_match_integer(self):
+        recorded = self.copy_recorded()
+        path = recorded / "0001.request.json"
+        request = json.loads(path.read_text())
+        for value in (True, 1.0):
+            with self.subTest(value=repr(value)):
+                request["packet"]["entities"][0]["attrs"]["custom_type_detail"][0] = value
+                path.write_text(json.dumps(request))
+                failure = self.command(*self.replay_args(recorded), success=False)
+                self.assertEqual(failure["reason"], "saved_workflow_replay_not_exact")
+                first = failure["evidence"]["failures"][0]
+                self.assertNotEqual(first["expected_sha256"], first["actual_sha256"])
+                self.assertFalse(self.database.exists())
+
+    def test_packet_and_method_input_equality_preserves_json_scalar_types(self):
+        recorded = self.copy_recorded()
+        packet = json.loads((recorded / "input_packet.json").read_text())
+        packet["entities"][0]["attrs"]["custom_type_detail"][0] = True
+        packet_path = self.folder / "different-packet.json"
+        packet_path.write_text(json.dumps(packet))
+        arguments = list(self.replay_args(recorded))
+        arguments[arguments.index("--packet") + 1] = packet_path
+        failure = self.command(*arguments, success=False)
+        self.assertEqual(failure["reason"], "saved_workflow_packet_mismatch")
+        method = json.loads((recorded / "method.json").read_text())
+        method["resources"]["expected_usage_multiplier"] = 1.0
+        method_path = self.folder / "different-method.json"
+        method_path.write_text(json.dumps(method))
+        arguments = list(self.replay_args(recorded))
+        arguments[arguments.index("--method") + 1] = method_path
+        failure = self.command(*arguments, success=False)
+        self.assertEqual(failure["reason"], "saved_workflow_method_mismatch")
+        self.assertFalse(self.database.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

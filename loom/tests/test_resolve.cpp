@@ -155,11 +155,33 @@ TEST_SUITE("resolve") {
     CHECK(v[0].assessment.confidence == doctest::Approx(0.6));   // extractor.item Beta(6,4)
     CHECK(v[1].assessment.confidence == doctest::Approx(0.6));   // same unit: counted once
     CHECK(v[2].assessment.confidence == doctest::Approx(0.84));  // 1 - 0.4 * 0.4
-    model::Claim u = a;
-    u.assessment.evidence = model::EvidenceClass::User;
-    std::vector<model::Claim> w{u};
-    LOOM_REQUIRE_OK(resolve::calibrate(*pack(), w));
-    CHECK(w[0].assessment.confidence == 1.0);
+  }
+
+  TEST_CASE("calibrate: owner authority preserves supplied confidence and source assessment") {
+    for (double confidence : {0.0, 0.35, 1.0}) {
+      CAPTURE(confidence);
+      auto observed_claim = observed("e_1", "has_status", "implemented", "o1");
+      auto owner_claim = observed("e_1", "has_status", "planned", "o2");
+      owner_claim.assessment.evidence = model::EvidenceClass::User;
+      owner_claim.assessment.origin = model::Origin::User;
+      owner_claim.assessment.confidence = confidence;
+      const auto original_owner = owner_claim.to_json();
+      std::vector<model::Claim> claims{observed_claim, owner_claim};
+
+      LOOM_REQUIRE_OK(resolve::calibrate(*pack(), claims));
+      CHECK(claims[0].assessment.confidence == doctest::Approx(0.6));
+      CHECK(claims[1].assessment.confidence == confidence);
+      // Confidence, support, source origin and all other assessment data survive.
+      CHECK(claims[1].to_json() == original_owner);
+
+      auto conflicts = unwrap(resolve::detect_conflicts(claims));
+      REQUIRE(conflicts.size() == 1);
+      CHECK(conflicts[0].resolution == "user");
+      CHECK(conflicts[0].winner == owner_claim.id);
+      CHECK(claims[1].assessment.confidence == confidence);
+      CHECK(claims[0].assessment.status == model::ClaimStatus::Contested);
+      CHECK(claims[1].assessment.status == model::ClaimStatus::Contested);
+    }
   }
 
   TEST_CASE("detect_conflicts: incompatible values stay, contested, with a candidate resolution") {

@@ -55,6 +55,7 @@
 #include <vector>
 
 #include "loom/db.h"
+#include "loom/context_engine.h"
 #include "loom/result.h"
 #include "loom/util/cancel.h"
 #include "loom/util/json.h"
@@ -82,11 +83,18 @@ struct ChatOptions {
   std::optional<int> max_tokens;
   std::optional<std::string> system_prompt;    // replaces config.system_prompt
   std::optional<int> context_depth;            // graph memory depth (0 = disable graph context)
-  bool stream = true;                          // streamed iff stream && on_chunk set (Python: on_chunk given)
+  std::optional<bool> stream;                  // unset: config.stream; requires on_chunk
+  // Independent composition controls. Existing callers keep the legacy recipe.
+  bool include_memory = true;
+  bool include_graph_memory = true;
+  bool include_history = true;
+  std::optional<context::ContextRequest> knowledge_context;  // explicitly opt in; offline selection
+  std::optional<bool> trace_context;           // unset: automatic for knowledge / changed recipe; false opts out
 
   // {"conv_id","model","attachments":[...],"web_search","deep_research",
   //  "reasoning_effort","temperature","max_tokens","system_prompt",
-  //  "context_depth","stream"} — the loom_chat_ex request (plus "message").
+  //  "context_depth","stream","include_memory","include_graph_memory",
+  //  "include_history","knowledge_context","trace_context"} — loom_chat_ex.
   static Result<ChatOptions> from_json(const Json& j);
 };
 
@@ -108,6 +116,7 @@ struct ChatResult {
   Json usage = Json::object();
   std::optional<std::string> new_title;  // set when auto-title ran
   bool cancelled = false;
+  Json context_trace;  // compiled messages/selection, not evidence of provider receipt
   Json to_json() const;
 };
 
@@ -126,10 +135,15 @@ class ChatEngine {
   Result<ChatResult> send(std::string_view text, const ChatOptions& opts = {}, const ChatCallbacks& cb = {},
                           const CancelToken* cancel = nullptr);
 
+  using KnowledgeContextBuilder = std::function<Result<Json>(const context::ContextRequest&)>;
+  // Runtime installs its offline ContextEngine adapter. Standalone callers may
+  // install the same capability; an absent adapter is an explicit error on opt-in.
+  void set_knowledge_context_builder(KnowledgeContextBuilder builder);
+
   // Exposed for tests and for wave-3 tooling (prompt inspection).
   Result<Json> build_messages(std::string_view conv_id, std::string_view current_text,
                               const std::vector<std::string>& attachments, const ChatOptions& opts = {},
-                              std::string_view exclude_message_id = "");
+                              std::string_view exclude_message_id = "", Json* context_trace = nullptr);
   Json build_content(std::string_view text, const std::vector<std::string>& attachments) const;
   static void configure_reasoning(Json& payload, std::string_view model, const std::optional<std::string>& effort);
 
@@ -144,6 +158,7 @@ class ChatEngine {
   const SemanticAnalyzer& analyzer_;
   MemoryEngine* memory_;
   GraphMemorySelector* graph_memory_;
+  KnowledgeContextBuilder knowledge_context_builder_;
   mutable std::mutex mu_;
   std::optional<Conversation> conv_;
   std::optional<std::string> last_reasoning_;

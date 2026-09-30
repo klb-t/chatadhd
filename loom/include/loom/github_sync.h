@@ -70,7 +70,8 @@ struct SyncConfig {
   std::string sync_direction = "bidirectional";  // bidirectional | push_only | pull_only
   bool auto_sync = false;
   std::vector<std::string> include_patterns{"*.py", "*.md", "*.json", "*.txt"};
-  std::vector<std::string> exclude_patterns{"__pycache__/*", ".git/*", "*.pyc"};
+  // Default preset only; callers may replace it, including with an empty list.
+  std::vector<std::string> exclude_patterns{"__pycache__/*", ".git/*", "*.pyc", "secrets.json", "*/secrets.json"};
   Json to_json() const;  // without token
   static Result<SyncConfig> from_json(const Json& j);
 };

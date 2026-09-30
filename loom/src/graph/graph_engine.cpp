@@ -128,16 +128,30 @@ void GraphEngine::on_message(const Json& data) {
     if (const Json* e = json::find(analysis, "entities"); e) entity_count = json::py_len(*e);
     if (const Json* t = json::find(analysis, "topics"); t) topic_count = json::py_len(*t);
 
-    MsgPatch patch;
-    patch.metadata = Json{{"semantic", Json{{"source", json::get_string(analysis, "source", "unknown")},
-                                            {"summary", json::get_string(analysis, "summary", "")},
-                                            {"sentiment", json::get_string(analysis, "sentiment", "")},
-                                            {"entity_count", entity_count},
-                                            {"topic_count", topic_count}}}};
-    if (auto st = db_.update_msg(mid, patch); !st) {
-      log::debug(kLog, "update_msg failed for {}: {}", mid, st.error().message);
-    } else if (auto st2 = db_.mark_analysed(mid, analysis); !st2) {
-      log::debug(kLog, "mark_analysed failed for {}: {}", mid, st2.error().message);
+    {
+      // Reindexing enriches a message; it must not discard its import provenance,
+      // request compilation trace, or independently written metadata.
+      auto lock = db_.lock();
+      auto message = db_.get_msg(mid);
+      if (!message) {
+        log::debug(kLog, "get_msg failed for {}: {}", mid, message.error().message);
+        return;
+      }
+      if (!*message) return;
+      Json metadata = (**message).metadata;
+      if (!metadata.is_object()) metadata = Json{{"loom_preserved_metadata", metadata}};
+      metadata["semantic"] = Json{{"source", json::get_string(analysis, "source", "unknown")},
+                                  {"summary", json::get_string(analysis, "summary", "")},
+                                  {"sentiment", json::get_string(analysis, "sentiment", "")},
+                                  {"entity_count", entity_count},
+                                  {"topic_count", topic_count}};
+      MsgPatch patch;
+      patch.metadata = std::move(metadata);
+      if (auto st = db_.update_msg(mid, patch); !st) {
+        log::debug(kLog, "update_msg failed for {}: {}", mid, st.error().message);
+      } else if (auto st2 = db_.mark_analysed(mid, analysis); !st2) {
+        log::debug(kLog, "mark_analysed failed for {}: {}", mid, st2.error().message);
+      }
     }
 
     if (changed) bus_.emit(events::kGraphChanged, Json{{"conv_id", conv_id}, {"trigger", mid}});

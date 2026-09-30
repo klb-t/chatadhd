@@ -42,7 +42,7 @@ własnych agentów, ale najpierw sprawdza faktyczne limity swojego środowiska.
 | Pakiet | Następny rezultat | Zależność |
 |---|---|---|
 | [W1 — Kompilator instrukcji](W1_REQUEST.md) | ActiveTaskSpec z historią pochodzenia trafia do rzeczywistego requestu | obecne wpięcie ContextEngine |
-| [W2 — Wyszukiwanie i kontekst](W2_RETRIEVAL.md) | niezależne zakres/szczegółowość, kanały semantyczne i shadow pipeline | stabilny ContextRequest |
+| [W2 — Wyszukiwanie i kontekst](W2_RETRIEVAL.md) | zakres/szczegółowość per teza planu, kanały semantyczne i shadow pipeline | podstawowe osie ContextRequest już wdrożone |
 | [W3 — Modele i receptury](W3_MODELS.md) | poprawa na zidentyfikowanych błędach i profile instrumentów | zapisane odpowiedzi; live tylko po sprawdzeniu budżetu |
 | [W4 — Graf i wykonanie](W4_GRAPH_RUNTIME.md) | użyteczne wykonanie transformacji grafu z recovery i śladem | GraphPacket, AnalysisPlan, koordynacja |
 | [W5 — Przestrzeń pracy](W5_WORKSPACE.md) | trwałe niezależne i sprzężone widoki nad rzeczywistymi danymi | natywne API; bez czekania na jakość modeli |

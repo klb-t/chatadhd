@@ -228,6 +228,28 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   // Registers the archive.* task handlers (resumable by the task workers).
   rt->impl_->archive = std::make_unique<archive::ArchiveIntelligence>(*rt);
   rt->impl_->knowledge = std::make_unique<knowledge::KnowledgeEngine>(*rt);
+  rt->chat().set_knowledge_context_builder([runtime = rt.get()](const context::ContextRequest& request) -> Result<Json> {
+    auto pack = runtime->knowledge().pack();
+    if (!pack) return pack.error();
+    auto& store = runtime->knowledge().store();
+    auto resolved = request;
+    if (resolved.run.empty()) {
+      auto runs = store.list_runs(1, "done");
+      if (!runs) return runs.error();
+      for (const auto& run : *runs) {
+        if (run.status == "done") { resolved.run = run.id; break; }
+      }
+      if (resolved.run.empty()) return Error(Errc::NotFound, "no finished knowledge run");
+    }
+    auto run = store.get_run(resolved.run);
+    if (!run) return run.error();
+    if (!*run) return Error(Errc::NotFound, "knowledge run not found: " + resolved.run);
+    context::ContextEngine engine(*runtime, store, *pack);
+    auto compiled = engine.build(resolved);  // offline; no model permission inferred
+    if (!compiled) return compiled.error();
+    (*compiled)["request"] = resolved.to_json();
+    return *compiled;
+  });
   return rt;
 }
 

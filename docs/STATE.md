@@ -1,219 +1,135 @@
-# STATE — ChatADHD / Loom (canonical, current)
+# STATE — ChatADHD / Loom
 
-Last verified: **2026-09-29** (build + full `ctest` run by Claude on the head
-of `claude/chataddhd-cpp-loom-core-IRGRN`). This is the ONE document that
-says where the project stands. Older status logs are history (see §9); if one
-contradicts this file, this file wins. Update it at the end of every work
-session — including test counts, with the date and commit.
+Updated 2026-09-30 by the continuation integrator. This replaces the internally
+contradictory 2026-09-29 status summary. Historical measurements remain in their
+original reports and Git revisions; they are not current verification claims.
 
-> **Podsumowanie dla właściciela (PL).** Loom (rdzeń C++20) buduje się i przechodzi
-> **71 z 72 testów**; jedyna czerwona bramka to jakość selektywnego katalogu
-> (recall **13/45 = 29 %**, wymagane ≥ 55 %, cel projektowy 90 %). Cały
-> sześcioetapowy potok wiedzy działa od początku do końca na korpusie
-> syntetycznym i na tekstach repozytorium, ale **nigdy nie widział Twoich
-> prawdziwych eksportów** — to największa luka. GPT dodał dużo badań (struktury
-> myśli, Jev), naprawił kilka realnych błędów i uczciwie obniżył zawyżone wyniki.
-> Do rozwiązania są: recall katalogu, kompletna interpretacja eksportów
-> OpenAI/Anthropic, precyzja/wydajność rozwiązywania encji i uogólniania,
-> uczciwy test predykcji w czasie, dalej UI i Android.
+## Current checkout and coordination
 
-## 1. What this is
+- Repository: `klb-t/chatadhd`. GitHub metadata checked in this session reports
+  **public** visibility, contrary to the older private-repository description.
+  No visibility change was performed. Do not publish private source archives or credentials.
+- Integration line: `gpt/research-2026-09-30`.
+- Recovered source: `fafc77f8eeebdff4c32897b5e8ef94dd26d4ec38`.
+- Current Claude development history through `46066308ac6306a1b30f65b98e19a40da6df7e9c`
+  was merged while preserving the newer research fixes and owner clarification.
+- PR6 remains a draft from the older Codex branch into `main`. It has not been
+  merged or silently repointed; `main` remains a separate historical line.
+- Six current agent lanes and six ready-to-start independent conversation
+  packages: [coordination/README.md](coordination/README.md). ROOT is the sole
+  integration/STATE writer. Other conversations use scoped branches and receipts.
+- Builds/tests run locally. Commits retain `[skip ci]`; no paid inference was
+  performed in this continuation session.
 
-ChatADHD = Python/Kivy app (v0.7.10, `engine/ core/ gui/`, legacy, still
-supported). **Loom** = its C++20 successor kernel in `loom/`: C ABI (`loom.h`),
-CLI, `loom-server` (REST/SSE), React web workbench, Android shell (JNI), plus
-a *knowledge layer* that turns sources (conversations, documents, code, git
-history) into assessed claims → principles/operators → predictions → context
-sets and products. Owner's philosophy and requirements: `docs/architecture/`.
+## What this system is
 
-## 2. Repository map
+Loom is the C++20 kernel, C ABI, CLI, HTTP/SSE server, React workbench and Android
+bridge in `loom/`. ChatADHD is the interaction/workspace layer. The older Python
+app remains available. The knowledge pipeline is catalog → extract → resolve →
+assess → generalize → materialize. Research prototypes and native runtime are
+separate evidence levels; implementing a mechanism does not prove model quality.
 
-| Ref | Meaning |
+Read `AGENTS.md`, `architecture/OWNER_REQUIREMENTS_2026-09-26.md`,
+`architecture/LOOM_CONCEPTUAL_MODEL.md`, `CLAUDE.md`, `../loom/README.md`, and
+`research/OWNER_CLARIFICATION_2026-09-30.md`. The ecosystem note in
+`../ECOSYSTEM.md` is a conceptual direction, not a mandate to build every integration.
+
+## Current continuation — implemented, final verification in progress
+
+| Area | Change and boundary |
 |---|---|
-| `claude/chataddhd-cpp-loom-core-IRGRN` | **Development line** (assigned branch). = Codex head `8164067` + Claude docs on top. |
-| `codex/loom-handoff-2026-09-28` | GPT/Codex line; **draft PR #6 → `main`** (180 commits, 815 files). Fully contained in the line above. |
-| `main` | Old Python-only 0.7.10 line. Merging PR #6 is the owner's decision. |
-| `eval/real-holdout-key` | **Secret answer key** for the temporal-holdout benchmark. Never read or tune against it during development. |
-| `wip/*` | Safety snapshots of interrupted agent work (content already merged). |
+| Chat context | Explicit `knowledge_context` connects native ContextEngine to actual `loom_chat_ex` / HTTP chat. Memory tree, legacy graph and history are independently selectable. Existing composition remains default. |
+| Scope and detail | `relation_hops` controls exploratory goal-edge reach; `detail_resolution` selects label/summary/full/raw independently of item budget. Required premises remain tracked. This is not yet per-thesis plan selection. |
+| Inspectability | Optional auto/on/off trace records the exact compiled message array, selected run and native context. A compilation trace is not proof of provider delivery. |
+| Persistence | Semantic reindex merges metadata instead of discarding source provenance/context traces; non-object metadata is preserved. |
+| Configuration | Explicit stream option overrides config; unset respects config. Latest completed knowledge run is found even after many newer unfinished runs. |
+| Confidence | Calibration preserves supplied User confidence instead of forcing 1.0; owner priority in conflict resolution remains independent. Explicit confirmation elsewhere retains its older semantics. |
+| Source projection | Active strict adapter/CLI checks source hash, UTF-8 boundaries, JSON Pointer and ambiguous metadata, without modifying frozen research instruments. |
+| Coordination | Local SQLite task leases/fencing, durable receipts, explicit unknown outcome handling, backup and exact saved graph-workflow replay CLI. No claim of distributed consensus or exactly-once external effects. |
+| GitHub sync | New default profiles exclude root/nested `secrets.json`. Existing user profiles and explicit overrides are preserved. This is a default, not a complete data-loss-prevention system. |
 
-The GitHub repo is **private**. Actions minutes are exhausted until
-**2026-10-01**: end commit messages with `[skip ci]`; verify locally.
+Detailed contracts: [chat](research/CHAT_KNOWLEDGE_CONTEXT_2026-09-30.md),
+[scope/detail](research/CONTEXT_SCOPE_DETAIL_2026-09-30.md),
+[source projection](research/retrieval_exploration_v1/SOURCE_PROJECTION_CONTRACT_2026-09-30.md),
+[coordination](research/coordination_runtime_v1/README.md),
+[data flows](research/THREAT_MODEL_2026-09-30.md).
 
-## 3. Read in this order
+## Verification ledger
 
-1. `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` — R1–R38 + D1/D2, owner's words.
-2. `docs/architecture/LOOM_CONCEPTUAL_MODEL.md` — the binding vocabulary/invariants.
-3. `docs/architecture/NOTATKA_GPT_2026-09-26.md`, `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md`
-   (interaction compiler, five layers, model-of-models; marks owner [U] vs proposal [P] vs hypothesis [H]),
-   `ACCEPTANCE_TESTS_2026-09-29.md`, `MEGA_MASTER_2026-09-16.md`.
-4. This file, then `docs/research/PROGRAMME_2026-09-28.md` + `RESULTS_2026-09-28.md`
-   (thought-structure research), `docs/CATALOG_QUALITY_2026-09-28.md`,
-   `docs/research/CATALOG_SEMANTIC_GAP_2026-09-28.md`, `docs/selfhost/v2/README.md`.
-5. `CLAUDE.md` (conventions, Python↔C++ compat invariant), `loom/README.md`.
+Final current-candidate results will be recorded here after the shared build and
+real-server browser test complete. Do not infer native success from the table above.
 
-## 4. Verified today (2026-09-29, head `8164067`+docs)
+Already captured in this session:
 
-| Check | Result |
-|---|---|
-| `cmake --preset dev` + full build (112 targets) | OK |
-| `ctest --preset dev` | **73/74** (2026-09-29 evening, after merges); sole failure `unit.test_catalog_eval` (recall gate) |
-| Catalog eval on `synthetic_dev` | recall **31/45 = 0.689** after round 3 (gate ≥ 0.55 **passes**; was 13 → 21 → 31), precision 31/31 — consensus weights tuned on dev only, validate on the blind corpus, traps 0/5, generic noise 0/15 |
-| Test count consistency | 60 / 63 / 72 registrations match the 59/60, 62/63, 71/72 claims in the older docs |
-| Quality gates weakened? | No: thresholds 0.55 / 0.75 / 0.05 unchanged; the failing gate stays red |
-| Secrets in Git | Pattern scan of the whole Codex branch found none (API keys, tokens, private keys) |
-| Actions/model switches | Both OpenRouter request switches disabled; no automatic spending |
+- Exact recovered baseline `fafc77f`: Python contracts **185/185**, eval
+  **213/213**, seeding **36/36**. Separate suites; do not add overlapping counts.
+- Active source projection: **56/56** new boundary tests; combined selected
+  retrieval/actor suites **145/145**. Historical object parity **84/84** native
+  projections plus **12/12** controls. Synthetic/repository-derived evidence.
+- Coordination with CLI: **31/31**, including actual subprocesses, competing
+  processes, killed workers, unknown effects, backup and saved transcript replay.
+  Earlier 19/21/22-test runs are historical stages, not additional tests.
+- Python GitHub defaults: **2/2**; legacy-preset negative control fails as expected.
+- Web TypeScript/Vite build passes; complete current native/browser gate pending.
 
-Not re-run today: ASan/TSan presets, Chromium e2e (16/16 claimed), Python
-research suites (387/387 claimed), host JNI smoke (claimed passing).
+Build environment uses bundled SQLite because system development headers were
+unavailable. This difference must remain visible in final native evidence.
 
-## 5. Measured quality (honest numbers; always read the caveats)
+## Historical research measurements and limits
 
-- **Catalog (selective import)** — 13/45 recall. The earlier 0.62–0.67 was
-  **inflated** by substring alias matching (`EP`, `LEM` inside ordinary words);
-  strict word boundaries exposed the real value. Diagnosis: all 32 misses are
-  scored but stay in the *irrelevant* band; evidence is purely lexical
-  (`sigmoid(-3 + 1.4·bm25_self + bm25_phil + link)`); `ScoreConfig.llm` and
-  `verify_max_units` are parsed but **never used**. Details: `CATALOG_SEMANTIC_GAP`.
-- **Knowledge pipeline** (`docs/selfhost/v2/README.md`), synthetic dev corpus:
-  selective vs full import — decision recall 9.5 % vs 57 %, principle recall
-  31 % vs 85 %, operator recall 0 % vs 17 %, alias recall 24 %, fork recall
-  0 % vs 100 %. Structural evidence violations 0 (structural check, not truth).
-  Numbers were measured at pipeline 4 / scanner 3; head is newer — re-measure.
-- **Repository run** (283 files, older binary): 355 s, of which `generalize`
-  264 s; 504 products; visible noise: code fragments (`const Json& d`) as
-  projects, a software project matched to a *music* paradigm, wrong computed
-  version.
-- **Thought-structure research** (`loom/tools/structure`, offline prototypes):
-  works on *supplied* graphs (WL/alignment 11/11 orderings), fails on raw text
-  (0 structures recognised in three real repo documents; parser catches 36/51
-  formulas on the broad set). Premise-binding composition 2/6 → 6/6 on 21
-  fresh scoped cases (simple syntax only). Nothing here is production.
-- **Jev** (TypeSafe AI `jev-1.13`, via OpenRouter; typed yes/no judgments):
-  64 requests/768 decisions for USD 0.0053; accuracy 96.6 % but positive
-  precision 71.7 %, complete 12-bit vectors 39/64; "always no" scores 91.4 %.
-  Follow-up 48 pair questions 47/48 (exploratory, reused texts). Useful as a
-  cheap *judge of supplied hypotheses*, not as an extractor.
-- **Jev offline policy audit** (`docs/research/JEV_OFFLINE_POLICY_AUDIT_2026-09-29.md`,
-  no new inference, cost 0): threshold 0.5 → 26/768 errors; keep only p≤0.2/p≥0.8
-  → 5/673 errors, 87.6 % coverage; a *post hoc* rule "send all q01 to
-  verification" → 0/627 (not validated, chosen after seeing errors; all 5 errors
-  are in the development half). Per-question profiles differ strongly (q01
-  positive precision 30 %, q07 70 %, q11 ≈55 %): the instrument needs a
-  per-task profile (R37), not one accuracy number. Stability of paired
-  answers ≠ correctness (paraphrase pairs: 8/12 identical vectors both correct).
-- **Temporal holdout**: strict predictive accuracy is **unavailable** — the
-  data pack contains later knowledge (contaminated); runs with priors cut are
-  only "retrospective consistency". Needs a neutral pack (`priors=none`) and
-  post-cutoff scoring.
+- Catalog synthetic DEV: **31/45 recall**, **31/31 precision**, traps **0/5**,
+  generic noise **0/15**, after round 3. Thus 14 misses, not 24. The earlier 13/45
+  was a previous checkpoint. The thresholds were not weakened; DEV tuning does
+  not establish blind/generalization performance.
+- Export fidelity: six synthetic OpenAI/Anthropic fixtures, **1604/1604 JSON
+  leaves** preserved; additional stress cases. This is not validation of the
+  owner's full real exports. Provider wrappers, assets and semantic interpretation
+  still require real-data checks. Import history is not a recorded model request.
+- Recovery report retained native **73/74**, corrected structure **851/851**,
+  contracts **185/185**, eval **213/213** from distinct runs. The 851-test result
+  includes 30 tests whose unpublished source was lost. Do not claim those sources
+  recovered or combine the runs into a fresh 74/74 measurement.
+- Jev/model studies have task-dependent error rates; supplied graph accuracy,
+  parser validity, agreement and actual extraction quality are different metrics.
+  First responses, failed attempts and negative results remain in `research/`.
+- Temporal prediction is not established: the older temporal package leaks
+  later knowledge. Retrospective consistency is not predictive accuracy.
 
-### Export fidelity (OpenAI / Anthropic data exports, synthetic fixtures only)
+## Next work by priority
 
-- 6 deterministic fixtures (OpenAI legacy, 2026 sharded, single JSON; Anthropic legacy, 2026 full, single JSON) plus 3 stress
-  fixtures (nested container, unknown provider, malformed). `unit.test_import_exports`: 18 cases green against the independent oracle.
-- Completeness (independent recount): 15 conversations, **1604/1604 JSON leaves** rebuilt from stored data equal to the source;
-  attachment pointers resolved to archive members (10 links in the sharded OpenAI fixture, 2 unresolved and reported).
-  One documented lossy step: lone surrogate escapes become U+FFFD (reported).
-- `loom import <zip> --audit` prints the readable summary. History is not a request: `request_provenance` stays `unknown`.
-- Only real exports can settle: actual member lists, field sets of account/feedback/memory/project files, wrapper/shard use,
-  timestamp forms, whether Claude ships file bytes. Fixtures are built from public format knowledge, not from real data.
-  Remaining list: `docs/exports/OPENAI_ANTHROPIC_EXPORT_FORMATS.md` section 7.
+1. **ActiveTaskSpec in actual requests (W1):** retain source history while compiling
+   refinements, exceptions, rejections and unresolved corrections into a current
+   instruction. Current chat context integration does not implement this compiler.
+2. **Retrieval quality (W2/W3):** real semantic candidate channels before selection,
+   plan/thesis-level scope/detail, counter-evidence and omission diagnostics.
+   Whole-request budgets remain separate from ContextEngine's item estimate.
+3. **Independent source validation (W6):** verify actual authorized owner export
+   slices locally; do not conflate availability of archives with permission for
+   external model submission. No new request for files is justified until existing
+   connected artifacts have been checked.
+4. **Graph execution (W4):** connect existing graph operations to additional real
+   callers; retain accounting and provenance. SQLite leases require one shared
+   local database and are not a cross-conversation distributed lock.
+5. **Workspace (W5):** integrate durable per-view couplings/profiles with the
+   existing simultaneous views; no arbitrary five-view limit.
+6. **Known inherited limits:** per-query candidate caps, query-error visibility,
+   real export scale/Android device tests, model calibration, native precision
+   follow-up. Default secret exclusions do not repair existing custom profiles.
+7. **Resource accounting:** concurrent reservations are checked, but historical
+   overlapping memory peak is not retained as advertised. See
+   [reproduction](research/RESOURCE_PEAK_LIMITATION_2026-09-30.md).
 
-## 6. Bugs found and fixed (Codex work, mirrored in Python and C++)
+## Non-resetting constraints
 
-- `Config.auto_upgrade` reset any `semantic_model` containing `claude-haiku-4`
-  (incl. the recommended `anthropic/claude-haiku-4-5`) to `""` → **the owner's
-  cheap semantic model was silently disabled** in Python 0.7.10. Fixed in both
-  languages; compat test updated.
-- `SemanticLLM` (Python) made thread-safe with config-identity tracking.
-- Alias substring matching; self-reinforcing project attribution; full import
-  extracting only selected units; catalog raw-source retention; JSON locators
-  not matching hashes; Android callbacks on early errors; a research test that
-  called the live GitHub API.
-
-## 6b. Code defects confirmed on 2026-09-29 (from the GPT interaction note §17)
-
-1. `ContextEngine` is not on the chat request path (`loom_context_build` only).
-2. ~~Context dependency closure silently drops a premise~~ **fixed 2026-09-29**:
-   `ContextItem.missing_premises` + `[INCOMPLETE …]` marker in render/trace; budget-sweep test.
-3. `resolve/assess.cpp`: every `User` claim gets `confidence = 1.0` (conflates
-   reading fidelity, content credibility, authority to decide).
-4. Catalog link building is O(N²) over unit pairs (`catalog/score.cpp`).
-5. (reported) default calibration has hand-set priors.
-Details and the linked acceptance criteria: `docs/architecture/ACCEPTANCE_TESTS_2026-09-29.md`.
-
-## 6c. Work in flight (unmerged, backed up on remote `wip/*` branches, 2026-09-29 13:40 UTC)
-
-Interrupted by the session limit; resume or merge next session, verifying the ratchet.
-| Branch | Stream | Size |
-|---|---|---|
-| `wip/catalog-finish` | catalog recall round 2 — **merged 2026-09-29** (21/45) | done |
-| `wip/worktree-agent-a06d7260ba8b658cc` | lossless OpenAI/Anthropic export interpretation | 2 commits |
-| `wip/worktree-agent-a436abbcd1b794a18` | resolve/generalize performance + precision | 1 commit + WIP |
-| `wip/worktree-agent-a342fccb481c4116c` | blind validation corpus v2 (**do not read** before final catalog eval) | 3 commits + WIP |
-Offline tasks handed to ChatGPT: `docs/GPT_OFFLINE_TASKS_2026-09-29.md`.
-
-
-## 6d. Merged on 2026-09-29 (evening)
-- Catalog recall round 2: 13/45 → **21/45** (precision 21/21, traps 0/5, noise 0/15).
-- Lossless export import: 1604/1604 JSON leaves preserved on 6 synthetic exports; `loom import --audit`.
-- Resolve/generalize performance: ~6× faster (repo run 1064 s → 177 s at -O0); identical outputs on synthetic_dev.
-- GPT offline T1–T4 (contracts, refinement corpus, Jev recipes, ModelProfile): 220/220 Python tests.
-- Open: extract nondeterminism at repository scale (in progress), precision issues (code fragments as projects,
-  cross-domain paradigm matches, wrong versions), catalog gate ≥ 0.55, blind corpus eval (`wip/worktree-agent-a342fccb481c4116c`, keep unread).
-
-## 7. Open work, by priority
-
-1. **Real exports** (blocked on owner data): everything is measured on
-   fictional/synthetic material. Meanwhile make the OpenAI/Anthropic export
-   handling *complete and lossless* from public format knowledge (R21).
-   *Done for the synthetic fixtures (2026-09-29):* lossless import in
-   `loom/src/import/export_*.cpp`, checked against `EXPECTED.json` by
-   `unit.test_import_exports`; see `loom/README.md` (Provider exports) for what is
-   stored and what remains lossy.
-2. **Catalog recall**: semantic evidence beyond lexical (morphology-aware
-   whole-token aliases, profile-vector cosine incl. shared foundations,
-   optional embeddings, coverage-first LLM triage); rank and select measured
-   separately; validate on independent data.
-3. **Precision/perf of resolve+generalize** on repository-scale input.
-4. **Honest temporal benchmark** (neutral pack, post-cutoff scoring).
-5. Native use of the cheap semantic model and Jev-style judges for structure
-   (usage rules in `JEV_USAGE_RULES`), all behind explicit budgets and caches.
-6. UI: multiple coordinated simultaneous views, layout persistence/free
-   docking, judgement editing, provider-inspired interface profiles (R16/R17/R21).
-7. Interaction compiler (R26–R34): five layers made explicit in the request
-   path, scope/detail controls, refinement consolidation into an active task
-   specification, composable workspace with coupled views, detachable provider
-   profiles, experiment triggers under budget — order to be decided; start with
-   defects 1–3 in §6b.
-8. Model-of-models profiles (R37), graph seeding / structural-transfer hypotheses
-   with predict-before-observe genealogy (R36), latent space of reasoning models
-   (R32, research).
-9. Android device validation; privacy/threat-model layer (R19); legal-case
-   kind (R9).
-
-## 8. Needed from the owner (only when convenient)
-
-- Real ChatGPT and Claude export ZIPs (or a slice) — the one thing no amount
-  of synthetic work replaces. The ChatGPT *data export* (no scrolling) also
-  contains conversations like the GPT session, unlike a saved page (`.mht`
-  keeps only the ~9 rendered turns of a virtualized list).
-- An OpenRouter key with a small cap (for live semantic/Jev runs), delivered
-  outside Git (environment secret), if live measurements are wanted.
-- Optional: the Jev Lab files produced in the GPT conversation
-  (`JevLab_Pydroid.py`, `JevLab_sources.zip`, `README_PL.md`, its test report)
-  and the Gemini document "Wydajność i optymalizacja zapytań dla modelu
-  klasyfikacyjnego jev.docx" are **not in the repo** (R38).
-- Nothing else is blocking; the docs above are sufficient to continue.
-
-## 8b. Working rules decided by the owner (2026-09-29)
-
-- Python compatibility no longer required (D1); compat tests remain sentinels.
-- Linear development, ratchet: never worsen a tracked test or metric (D2).
-- Search by every method; keywords/regex are complementary, no channel vetoes (R25).
-- Owner decisions and verbatim requirements: `OWNER_REQUIREMENTS_2026-09-26.md`.
-
-## 9. History (superseded status logs — keep, do not extend)
-
-`AGENTS.md` (old accreted log → `docs/research/AGENTS_STATUS_LOG_2026-09-28.md`),
-`docs/WORK_STATUS_2026-09-28.md`, `docs/CODEX_HANDOFF_2026-09-28.md`,
-`docs/HANDOFF_2026-09-28.md` (Claude → GPT), `docs/WORK_RECOVERY_2026-09-28.md`.
+- Owner decisions and current instructions outrank older proposals. Defaults are
+  configurable presets; acceptance policy never rewrites inference as observation.
+- Python parity is no longer a product constraint; existing compatibility tests
+  remain regression sentinels until an explicit migration. No schema migration or
+  public ABI symbol addition is part of this continuation.
+- Do not read/tune against `eval/real-holdout-key`, the sealed catalog corpus or
+  sealed graph validation during development. Preserve first evaluation results.
+- The existing dedicated-key USD 2 programme does not reset with a runtime or
+  conversation. Historical key balance is not current balance; no new frontier
+  spending is authorized by a larger ChatGPT token allocation.
+- Small verified commits and evidence go to the integration branch. Only ROOT
+  merges lanes and updates this document; no force pushes and no implicit PR6 merge.

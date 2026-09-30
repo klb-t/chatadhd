@@ -201,3 +201,11 @@ backup, existing three-stage transcript replay, duplicate refusal, ambiguity,
 missing/mismatched saved stages, changed response bytes, unknown state and
 historical transport errors). `verification_cli.*` captures the combined suite;
 it is separate from the earlier 21- and 22-test snapshots.
+
+Independent CLI review found Python's recursive equality had conflated boolean
+`true`, integer `1` and floating-point `1.0` in saved requests. Replay now compares
+the canonical JSON digests of packet, method, stage and full request, preserving
+scalar type semantics, and explicitly requires an integer stage ordinal. Three
+additional subprocess regressions exercise these distinctions before any task
+or output is created. `verification_cli_type_fix.*` records the corrected suite;
+the earlier 31-test capture remains historical evidence, not proof of this fix.

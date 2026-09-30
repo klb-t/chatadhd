@@ -57,7 +57,39 @@ export interface ChatRequest {
   max_tokens?: number;
   system_prompt?: string;
   context_depth?: number;
+  knowledge_context?: ChatKnowledgeContextRequest;
+  include_memory?: boolean;
+  include_graph_memory?: boolean;
+  include_history?: boolean;
+  trace_context?: boolean;
   stream?: boolean;
+}
+
+// Only fields supported by the native ContextRequest. Omitting text uses the
+// current message. Graph reach and representation detail are independent.
+export interface ChatKnowledgeContextRequest {
+  text?: string;
+  targets?: string[];
+  project?: string;
+  budget_tokens?: number;
+  goal_type?: string | null;
+  run?: string;
+  lang?: string;
+  relation_hops?: number;
+  detail_resolution?: "label" | "summary" | "full" | "raw" | null;
+}
+
+// This records compiled messages, not a complete provider request or a receipt
+// proving delivery. Keep additional native fields available to the inspector.
+export interface ChatContextTrace extends Record<string, unknown> {
+  kind: "compiled_messages";
+  version: number;
+  messages: { role: string; content: unknown }[];
+  messages_sha256?: string;
+  history_message_ids?: string[];
+  selection?: Record<string, unknown>;
+  knowledge_context_request?: ChatKnowledgeContextRequest | null;
+  knowledge_context?: Record<string, unknown> | null;
 }
 
 export type ChatChunk =
@@ -74,6 +106,7 @@ export type ChatChunk =
       title?: string;
       request_id?: string;
       cancelled?: boolean;
+      context_trace?: ChatContextTrace;
     }
   | { type: "error"; code: string; message: string };
 

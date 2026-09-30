@@ -52,6 +52,13 @@ Reported in the note's initial repo review (§17) and re-checked in code today:
    `User`-class claim: it conflates fidelity of reading the utterance,
    credibility of its content and the owner's right to decide. Separate the
    three. (→ #16)
+   **Partial correction, 2026-09-30:** calibration now preserves the producer's
+   confidence for `User` claims, including 0, 0.35 and 1. Owner priority in
+   conflict resolution remains independent and unchanged. This removes the
+   calibration override without adding an ABI or schema field; it does not
+   establish empirical calibration or complete the separation of those three
+   dimensions. Explicit `KnowledgeStore` confirmation/edit replay still sets
+   confidence to 1 under its existing contract and needs a separate migration.
 4. **Confirmed** — catalog link building compares all unit pairs
    (`src/catalog/score.cpp`, nested `for i<j` with MinHash Jaccard and per-pair
    set construction): O(N²), ≈ 2.5·10⁹ pairs at 50 000 units. Needs candidate

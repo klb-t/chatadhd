@@ -78,6 +78,7 @@ struct Candidate {
   std::string why;
   double base_relevance = 0.5;
   double score = 0.0;  // filled by score_all()
+  std::optional<int> relation_hops;
 
   // Filled once accepted.
   int tokens = 0;
@@ -155,19 +156,44 @@ Result<ContextRequest> ContextRequest::from_json(const Json& j) {
   r.goal_type = json::get_opt_string(j, "goal_type");
   r.run = json::get_string(j, "run");
   r.lang = json::get_string(j, "lang");
+  if (const Json* hops = json::find(j, "relation_hops")) {
+    if (!hops->is_number_integer()) return Error(Errc::InvalidArgument, "relation_hops must be a non-negative integer");
+    if (hops->is_number_unsigned()) {
+      auto value = hops->get<std::uint64_t>();
+      if (value > static_cast<std::uint64_t>(std::numeric_limits<int>::max())) {
+        return Error(Errc::InvalidArgument, "relation_hops exceeds the supported integer range");
+      }
+      r.relation_hops = static_cast<int>(value);
+    } else {
+      auto value = hops->get<std::int64_t>();
+      if (value < 0 || value > std::numeric_limits<int>::max()) {
+        return Error(Errc::InvalidArgument, "relation_hops must be a non-negative supported integer");
+      }
+      r.relation_hops = static_cast<int>(value);
+    }
+  }
+  if (const Json* detail = json::find(j, "detail_resolution"); detail && !detail->is_null()) {
+    if (!detail->is_string()) return Error(Errc::InvalidArgument, "detail_resolution must be a resolution name or null");
+    LOOM_TRY_ASSIGN(auto value, model::parse<Resolution>(detail->get<std::string>(), "detail_resolution"));
+    r.detail_resolution = value;
+  }
   return r;
 }
 
 Json ContextRequest::to_json() const {
   Json targets_j = Json::array();
   for (const auto& t : targets) targets_j.push_back(t);
-  return Json{{"text", text},
+  Json result{{"text", text},
               {"targets", targets_j},
               {"project", project},
               {"budget_tokens", budget_tokens},
               {"goal_type", goal_type ? Json(*goal_type) : Json(nullptr)},
               {"run", run},
               {"lang", lang}};
+  // Keep the historical serialized defaults unchanged.
+  if (relation_hops != 1) result["relation_hops"] = relation_hops;
+  if (detail_resolution) result["detail_resolution"] = std::string(model::to_string(*detail_resolution));
+  return result;
 }
 
 ContextEngine::ContextEngine(Runtime& rt, kb::KnowledgeStore& store, std::shared_ptr<const kb::Pack> pack)
@@ -458,10 +484,19 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
 // ── selection ────────────────────────────────────────────────────────
 
 Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
+  if (req.relation_hops < 0) return Error(Errc::InvalidArgument, "relation_hops must be non-negative");
+  if (req.detail_resolution && !model::from_string<Resolution>(model::to_string(*req.detail_resolution))) {
+    return Error(Errc::InvalidArgument, "invalid detail_resolution");
+  }
   LOOM_TRY_ASSIGN(model::Goal goal, type_goal(req));
   LOOM_TRY_ASSIGN(std::string run, ctx::resolve_run(store_, req.run));
   LOOM_TRY_ASSIGN(auto all_types, ctx::list_goal_types(*pack_));
   LOOM_TRY_ASSIGN(model::GoalType gt, find_goal_type_checked(*pack_, goal.type, all_types));
+  const bool explicit_controls = req.relation_hops != 1 || req.detail_resolution.has_value();
+  if (explicit_controls) {
+    goal.params["context_controls"] = Json{{"relation_hops", req.relation_hops},
+        {"detail_resolution", req.detail_resolution ? Json(std::string(model::to_string(*req.detail_resolution))) : Json(nullptr)}};
+  }
 
   int total_budget = req.budget_tokens > 0 ? req.budget_tokens : 4000;
   std::string lang = req.lang;
@@ -674,9 +709,9 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     }
   }
 
-  // ── goal band: claims one hop from every seed, either direction ─────
+  // ── goal band: explicit graph radius, either direction ─────────────
   std::set<std::string> seen_claims;
-  auto add_goal_claim = [&](const model::Claim& claim, const std::string& via_entity) {
+  auto add_goal_claim = [&](const model::Claim& claim, const std::string& via_entity, int hops) {
     if (!seen_claims.insert(claim.id).second) return;
     if (!contains_evidence(gt.evidence, claim.assessment.evidence)) return;
     note_date(claim.qualifiers.valid_from);
@@ -705,23 +740,42 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     c.content.raw = raw.empty() ? full : raw;
     c.premise_claims = claim.assessment.premises.claims;
     c.premise_principles = claim.assessment.premises.principles;
-    c.why = "one hop from '" + label_of(via_entity) + "' via '" + claim.predicate + "'";
+    c.relation_hops = hops;
+    c.why = hops == 1 ? "one hop from '" + label_of(via_entity) + "' via '" + claim.predicate + "'"
+        : "within " + std::to_string(hops) + " relation hops of a target/project seed, via '" + label_of(via_entity) + "' and '" + claim.predicate + "'";
     double lex = lexical_overlap(c.content);
     c.base_relevance = std::clamp(0.35 + 0.65 * lex, 0.0, 1.0);
     goal_b.push_back(std::move(c));
   };
 
-  for (const auto& e : seeds) {
-    kb::ClaimQuery qs;
-    qs.subject = e;
-    if (auto r = store_.query_claims(run, qs)) {
-      for (auto& cl : *r) add_goal_claim(cl, e);
+  std::vector<std::string> frontier;
+  std::set<std::string> visited_entities;
+  for (const auto& seed : seeds) {
+    if (!seed.empty() && visited_entities.insert(seed).second) frontier.push_back(seed);
+  }
+  for (int hop = 0; hop < req.relation_hops && !frontier.empty(); ++hop) {
+    std::vector<std::string> next;
+    for (const auto& e : frontier) {
+      auto visit = [&](const model::Claim& claim) {
+        // A filtered claim cannot become an invisible bridge to other data.
+        if (!contains_evidence(gt.evidence, claim.assessment.evidence)) return;
+        add_goal_claim(claim, e, hop + 1);
+        for (const auto& endpoint : {claim.subject, claim.object}) {
+          if (!endpoint.empty() && visited_entities.insert(endpoint).second) next.push_back(endpoint);
+        }
+      };
+      kb::ClaimQuery qs;
+      qs.subject = e;
+      if (auto r = store_.query_claims(run, qs)) {
+        for (const auto& claim : *r) visit(claim);
+      }
+      kb::ClaimQuery qo;
+      qo.object = e;
+      if (auto r = store_.query_claims(run, qo)) {
+        for (const auto& claim : *r) visit(claim);
+      }
     }
-    kb::ClaimQuery qo;
-    qo.object = e;
-    if (auto r = store_.query_claims(run, qo)) {
-      for (auto& cl : *r) add_goal_claim(cl, e);
-    }
+    frontier = std::move(next);
   }
 
   // ── score, diversify, budget (cascading leftover forward) ───────────
@@ -753,7 +807,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   };
 
   auto try_accept = [&](Candidate c) {
-    Resolution res = resolution_for(gt, c.role);
+    Resolution res = req.detail_resolution.value_or(resolution_for(gt, c.role));
     finalize_text(c, res);
     int bi = static_cast<int>(c.band);
     for (int j = bi; j < 3; ++j) {
@@ -768,6 +822,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         item.score = c.score;
         item.factors = Json{{"relevance", c.base_relevance}, {"authority", ctx::authority_score(c.origin)},
                             {"freshness", ctx::freshness_score(c.date, anchor_date)}, {"confidence", c.confidence}};
+        if (explicit_controls && c.relation_hops) item.factors["relation_hops"] = *c.relation_hops;
         item.tokens = c.tokens;
         item.why = c.why;
         item.text = c.rendered_text;
@@ -850,6 +905,16 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         c.content.label = subj_label + " " + claim.predicate + " " + obj_label;
         c.content.summary = c.content.label;
         c.content.full = c.content.summary;
+        if (req.detail_resolution) {
+          if (!claim.qualifiers.valid_from.empty()) c.content.summary += " (" + claim.qualifiers.valid_from + ")";
+          c.content.full = c.content.summary;
+          if (!claim.assessment.support.empty()) c.content.full += " — \"" + std::string(utf8::prefix(claim.assessment.support.front().quote, 160)) + "\"";
+          if (claim.assessment.status == model::ClaimStatus::Contested) c.content.full += " [contested]";
+          for (const auto& support : claim.assessment.support) c.content.raw += (c.content.raw.empty() ? "" : " / ") + support.quote;
+          if (c.content.raw.empty()) c.content.raw = c.content.full;
+          if (claim.assessment.derivation) c.basis = claim.assessment.derivation->op;
+          c.fill_query = claim.assessment.open.fill_query;
+        }
         c.premise_claims = claim.assessment.premises.claims;
         c.premise_principles = claim.assessment.premises.principles;
         ok = true;
@@ -868,6 +933,11 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
           c.content.label = stmt;
           c.content.summary = stmt + " " + ctx::principle_badge(p.validation, p.level, p.form);
           c.content.full = c.content.summary;
+          if (req.detail_resolution) {
+            if (!p.protects.empty()) c.content.full += " (protects: " + join(p.protects, ", ") + ")";
+            if (!p.exceptions.empty()) c.content.full += " (exceptions: " + join(p.exceptions, "; ") + ")";
+            c.content.raw = json::dump(p.to_json());
+          }
           c.premise_principles = p.derived_from;
           ok = true;
         }
@@ -910,6 +980,10 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   for (auto& it : accepted) set.used_tokens += it.tokens;
   set.pack_hash = pack_->hash();
   set.id = model::ContextSet::make_id(goal.id, total_budget, set.pack_hash);
+  if (explicit_controls) {
+    set.id = kb::stable_id("cx_", json::dump(Json{{"base_context_id", set.id},
+        {"context_controls", goal.params["context_controls"]}}));
+  }
   set.items = std::move(accepted);
   set.dropped = std::move(dropped);
   return set;

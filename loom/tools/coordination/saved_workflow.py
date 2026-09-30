@@ -60,7 +60,7 @@ class SavedWorkflow:
         original_method = load("method.json")
         for kind, expected, actual in (("packet", original_packet, packet),
                                        ("method", original_method, method)):
-            if expected != actual:
+            if digest(expected) != digest(actual):
                 raise ReplayValidationError("saved_workflow_" + kind + "_mismatch",
                     {"expected_sha256": digest(expected), "actual_sha256": digest(actual),
                      "network_calls": 0})
@@ -71,8 +71,9 @@ class SavedWorkflow:
                 raise ReplayValidationError("saved_transport_failure_is_not_a_response",
                     {"ordinal": ordinal, "failure_class": response["transport_failure_class"],
                      "network_calls": 0})
-            if (not isinstance(request, dict) or request.get("ordinal") != ordinal
-                    or request.get("stage") != stage):
+            if (not isinstance(request, dict) or type(request.get("ordinal")) is not int
+                    or request["ordinal"] != ordinal
+                    or digest(request.get("stage")) != digest(stage)):
                 raise ReplayValidationError("saved_workflow_stage_identity_mismatch",
                                             {"ordinal": ordinal, "network_calls": 0})
             self.rows.append((request, response))
@@ -84,7 +85,10 @@ class SavedWorkflow:
             failure = {"reason": "unexpected_extra_request", "ordinal": ordinal}
         else:
             expected, response = self.rows[self.consumed]
-            if request == expected:
+            # Python equality conflates True, 1 and 1.0 recursively. Our JSON
+            # contract preserves those values/types; only object key order is
+            # canonicalized, with no numeric or boolean normalization.
+            if digest(request) == digest(expected):
                 self.consumed += 1
                 return deepcopy(response)
             failure = {"reason": "saved_request_mismatch", "ordinal": ordinal,

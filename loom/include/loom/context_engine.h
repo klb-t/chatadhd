@@ -56,6 +56,14 @@ struct ContextRequest {
   std::optional<std::string> goal_type;  // force a goal type
   std::string run;                       // knowledge run ("" = latest done run)
   std::string lang;                      // rendering language ("" = the prompt's)
+  // Independent R28 controls. Radius follows existing subject/object claim
+  // links in either direction; it neither merges entities nor infers relevance.
+  // Zero disables exploratory goal-edge retrieval. Stable/project candidates
+  // and required-premise closure are independent of this radius.
+  int relation_hops = 1;
+  // No override => the goal type's per-role policy. More detail may fit fewer
+  // items under the same budget; it never changes the graph candidate radius.
+  std::optional<model::Resolution> detail_resolution;
   static Result<ContextRequest> from_json(const Json& j);
   Json to_json() const;
 };

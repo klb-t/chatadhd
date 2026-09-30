@@ -186,6 +186,62 @@ TEST_SUITE("github_sync") {
     CHECK(sync.list_local_files().empty());
   }
 
+  TEST_CASE("default push omits root and nested secrets; explicit patterns remain authoritative") {
+    fsutil::TempDir td;
+    const std::string root_secret = R"({"api_key":"fixture-root-only"})";
+    const std::string nested_secret = R"({"api_key":"fixture-nested-only"})";
+    const std::string notes = R"({"note":"shareable fixture"})";
+    write_file(td.path() / "secrets.json", root_secret);
+    write_file(td.path() / "nested" / "deeper" / "secrets.json", nested_secret);
+    write_file(td.path() / "notes.json", notes);
+
+    for (bool explicit_override : {false, true}) {
+      CAPTURE(explicit_override);
+      Json settings{{"repo", "o/r"}, {"local_path", td.path().string()}};
+      if (explicit_override) settings["exclude_patterns"] = Json::array();
+      // Missing patterns use the new preset; persisted explicit patterns do not.
+      auto cfg = unwrap(SyncConfig::from_json(settings));
+      cfg = unwrap(SyncConfig::from_json(cfg.to_json()));
+      net::ScriptedTransport http;
+      http.expect("GET", "https://api.github.com/repos/o/r/contents/",
+                  net::ScriptedTransport::Reply::json(200, Json::array()));
+      http.expect("PUT", "https://api.github.com/repos/o/r/contents/notes.json",
+                  net::ScriptedTransport::Reply::json(201, Json{{"ok", true}}));
+      if (explicit_override) {
+        http.expect("PUT", "https://api.github.com/repos/o/r/contents/secrets.json",
+                    net::ScriptedTransport::Reply::json(201, Json{{"ok", true}}));
+        http.expect("PUT", "https://api.github.com/repos/o/r/contents/nested/deeper/secrets.json",
+                    net::ScriptedTransport::Reply::json(201, Json{{"ok", true}}));
+      }
+      GitHubSync sync(cfg, http);
+      auto outcome = unwrap(sync.push_all());
+      CHECK(outcome["success"] == (explicit_override ? 3 : 1));
+      CHECK(outcome["failed"] == 0);
+      auto requests = http.requests();
+      REQUIRE(requests.size() == (explicit_override ? 4 : 2));
+      std::map<std::string, std::string> uploaded;
+      for (const auto& request : requests) {
+        if (request.method != "PUT") continue;
+        auto body = unwrap(json::parse(request.body));
+        uploaded[request.url] = unwrap(base64::decode(body["content"].get<std::string>()));
+      }
+      CHECK(uploaded.at("https://api.github.com/repos/o/r/contents/notes.json") == notes);
+      if (explicit_override) {
+        CHECK(uploaded.at("https://api.github.com/repos/o/r/contents/secrets.json") == root_secret);
+        CHECK(uploaded.at("https://api.github.com/repos/o/r/contents/nested/deeper/secrets.json") == nested_secret);
+      } else {
+        for (const auto& [url, content] : uploaded) {
+          CHECK(url.find("secrets.json") == std::string::npos);
+          CHECK(content.find("fixture-root-only") == std::string::npos);
+          CHECK(content.find("fixture-nested-only") == std::string::npos);
+        }
+      }
+      // Selection never edits the original credential files.
+      CHECK(unwrap(fsutil::read_file(td.path() / "secrets.json")) == root_secret);
+      CHECK(unwrap(fsutil::read_file(td.path() / "nested" / "deeper" / "secrets.json")) == nested_secret);
+    }
+  }
+
   TEST_CASE("get_sync_status: synced / modified / new_remote / new_local") {
     fsutil::TempDir td;
     write_file(td.path() / "same.py", "1234567890");         // 10 bytes, matches remote size

@@ -155,7 +155,8 @@ struct Conflict {
   Json to_json() const;
 };
 
-// Calibrated confidence for every claim (in place, deterministic).
+// Calibrates claims in place, deterministically. User claims retain their
+// producer's confidence; owner priority in detect_conflicts is independent.
 Status calibrate(const kb::Pack& pack, std::vector<model::Claim>& claims);
 // Marks contested claims (status) and returns the conflicts.
 Result<std::vector<Conflict>> detect_conflicts(std::vector<model::Claim>& claims);
@@ -323,4 +324,3 @@ Result<Json> run_assess_stage(knowledge::StageContext& ctx);
 
 }  // namespace resolve
 }  // namespace loom
-

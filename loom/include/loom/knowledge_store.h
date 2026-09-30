@@ -164,7 +164,8 @@ class KnowledgeStore {
   Result<KnowledgeRun> begin_run(std::string_view pack_hash, const Json& inputs, std::string_view archive_run_id = "");
   Status finish_run(std::string_view run_id, std::string_view status, const Json& summary);
   Result<std::optional<KnowledgeRun>> get_run(std::string_view run_id);
-  Result<std::vector<KnowledgeRun>> list_runs(int limit = 50);  // newest first (created, then id)
+  // Newest first (created, then id); a nonempty status filters before LIMIT.
+  Result<std::vector<KnowledgeRun>> list_runs(int limit = 50, std::string_view status = "");
   // Deletes every derived row of the run (not the run row, not judgements).
   Status clear_run(std::string_view run_id);
 

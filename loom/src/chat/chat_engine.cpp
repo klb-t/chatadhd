@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cctype>
 #include <map>
+#include <limits>
 
 #include "loom/config.h"
 #include "loom/event_bus.h"
@@ -15,6 +16,7 @@
 #include "loom/semantic_analyzer.h"
 #include "loom/util/base64.h"
 #include "loom/util/fs.h"
+#include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
 
@@ -64,6 +66,28 @@ bool contains(const std::vector<std::string>& v, const std::string& s) {
   return std::find(v.begin(), v.end(), s) != v.end();
 }
 
+Result<context::ContextRequest> chat_context_request(const Json& value) {
+  if (!value.is_object()) return Error(Errc::InvalidArgument, "knowledge_context must be an object");
+  for (auto it = value.begin(); it != value.end(); ++it) {
+    const auto& k = it.key();
+    const auto& v = it.value();
+    bool valid = false;
+    if (k == "text" || k == "project" || k == "run" || k == "lang") valid = v.is_string();
+    else if (k == "goal_type") valid = v.is_string() || v.is_null();
+    else if (k == "targets") {
+      valid = v.is_array() && std::all_of(v.begin(), v.end(), [](const Json& e) { return e.is_string(); });
+    } else if (k == "budget_tokens") {
+      valid = v.is_number_integer() && v > 0 && v <= std::numeric_limits<int>::max();
+    } else if (k == "relation_hops") {
+      valid = v.is_number_integer() && v >= 0 && v <= std::numeric_limits<int>::max();
+    } else if (k == "detail_resolution") {
+      valid = v.is_null() || v == "label" || v == "summary" || v == "full" || v == "raw";
+    }
+    if (!valid) return Error(Errc::InvalidArgument, "invalid knowledge_context option: " + k);
+  }
+  return context::ContextRequest::from_json(value);
+}
+
 }  // namespace
 
 Result<ChatOptions> ChatOptions::from_json(const Json& j) {
@@ -87,11 +111,20 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
         if (!a.is_string()) return bad();
         o.attachments.push_back(a.get<std::string>());
       }
-    } else if (k == "web_search" || k == "deep_research" || k == "stream") {
+    } else if (k == "web_search" || k == "deep_research" || k == "stream" ||
+               k == "include_memory" || k == "include_graph_memory" || k == "include_history" || k == "trace_context") {
       if (!v.is_boolean()) return bad();
       if (k == "web_search") o.web_search = v.get<bool>();
       if (k == "deep_research") o.deep_research = v.get<bool>();
       if (k == "stream") o.stream = v.get<bool>();
+      if (k == "include_memory") o.include_memory = v.get<bool>();
+      if (k == "include_graph_memory") o.include_graph_memory = v.get<bool>();
+      if (k == "include_history") o.include_history = v.get<bool>();
+      if (k == "trace_context") o.trace_context = v.get<bool>();
+    } else if (k == "knowledge_context") {
+      auto context = chat_context_request(v);
+      if (!context) return context.error();
+      o.knowledge_context = *context;
     } else if (k == "temperature") {
       if (!v.is_number()) return bad();
       o.temperature = v.get<double>();
@@ -107,7 +140,7 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
 }
 
 Json ChatResult::to_json() const {
-  return Json{{"conv_id", conv_id},
+  Json out{{"conv_id", conv_id},
               {"user_message_id", user_message_id},
               {"assistant_message_id", assistant_message_id},
               {"text", text},
@@ -116,6 +149,8 @@ Json ChatResult::to_json() const {
               {"usage", usage},
               {"title", new_title ? Json(*new_title) : Json(nullptr)},
               {"cancelled", cancelled}};
+  if (!context_trace.is_null()) out["context_trace"] = context_trace;
+  return out;
 }
 
 ChatEngine::ChatEngine(const Config& cfg, const Secrets& secrets, Database& db, EventBus& bus,
@@ -129,6 +164,11 @@ ChatEngine::ChatEngine(const Config& cfg, const Secrets& secrets, Database& db, 
       analyzer_(analyzer),
       memory_(memory),
       graph_memory_(graph_memory) {}
+
+void ChatEngine::set_knowledge_context_builder(KnowledgeContextBuilder builder) {
+  std::lock_guard lk(mu_);
+  knowledge_context_builder_ = std::move(builder);
+}
 
 Status ChatEngine::resume_last() {
   auto r = db_.list_convs(1);
@@ -201,13 +241,16 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
 
 Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_view current_text,
                                         const std::vector<std::string>& attachments, const ChatOptions& opts,
-                                        std::string_view exclude_message_id) {
+                                        std::string_view exclude_message_id, Json* context_trace) {
   Json messages = Json::array();
+  Json compiled_context;
+  Json resolved_context_request;
+  Json history_ids = Json::array();
 
   std::string sys_prompt = opts.system_prompt ? *opts.system_prompt : cfg_string(cfg_, "system_prompt");
   if (!sys_prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
 
-  if (memory_) {
+  if (memory_ && opts.include_memory) {
     std::string mem_ctx = memory_->get_active_context();
     if (!mem_ctx.empty()) {
       messages.push_back(Json{{"role", "system"}, {"content", "User's memory/context:\n" + mem_ctx}});
@@ -215,7 +258,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   }
 
   bool graph_disabled = opts.context_depth.has_value() && *opts.context_depth == 0;
-  if (graph_memory_ && !graph_disabled) {
+  if (graph_memory_ && opts.include_graph_memory && !graph_disabled) {
     try {
       GraphSelectOptions gopts;
       if (opts.context_depth && *opts.context_depth > 0) gopts.depth = *opts.context_depth;
@@ -227,7 +270,29 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     }
   }
 
-  if (!conv_id.empty()) {
+  if (opts.knowledge_context) {
+    auto request = *opts.knowledge_context;
+    if (request.budget_tokens <= 0) return Error(Errc::InvalidArgument, "knowledge_context budget_tokens must be positive");
+    if (request.text.empty()) request.text = current_text;
+    KnowledgeContextBuilder builder;
+    {
+      std::lock_guard lk(mu_);
+      builder = knowledge_context_builder_;
+    }
+    if (!builder) return Error(Errc::NotImplemented, "knowledge context is unavailable on this ChatEngine");
+    auto compiled = builder(request);
+    if (!compiled) return compiled.error();
+    if (!compiled->is_object() || !compiled->contains("prompt") || !(*compiled)["prompt"].is_string() ||
+        !compiled->contains("context_set") || !(*compiled)["context_set"].is_object()) {
+      return Error(Errc::Internal, "knowledge context builder returned an invalid result");
+    }
+    compiled_context = *compiled;
+    resolved_context_request = compiled->value("request", request.to_json());
+    const auto prompt = (*compiled)["prompt"].get<std::string>();
+    if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+  }
+
+  if (!conv_id.empty() && opts.include_history) {
     auto msgs = db_.get_msgs(conv_id);
     if (!msgs) return msgs.error();
     for (const auto& m : *msgs) {
@@ -240,10 +305,22 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
         content = "[low priority] " + content;
       }
       messages.push_back(Json{{"role", m.role}, {"content", content}});
+      history_ids.push_back(m.id);
     }
   }
 
   messages.push_back(Json{{"role", "user"}, {"content", build_content(current_text, attachments)}});
+  if (context_trace) {
+    *context_trace = Json{{"kind", "compiled_messages"}, {"version", 1},
+                         {"messages", messages}, {"messages_sha256", Sha256::hex(json::dump(messages))},
+                         {"history_message_ids", history_ids},
+                         {"selection", {{"include_memory", opts.include_memory},
+                                        {"include_graph_memory", opts.include_graph_memory && !graph_disabled},
+                                        {"include_history", opts.include_history},
+                                        {"context_depth", opts.context_depth ? Json(*opts.context_depth) : Json(nullptr)}}},
+                         {"knowledge_context_request", resolved_context_request},
+                         {"knowledge_context", compiled_context}};
+  }
   return messages;
 }
 
@@ -320,8 +397,27 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   if (cb.on_start) cb.on_start(conv.id, user_mid);
 
   // 3. Build the message array (history excludes the message just persisted).
-  auto msgs_json = build_messages(conv.id, text, opts.attachments, opts, user_mid);
+  Json context_trace;
+  bool record_context = opts.trace_context.value_or(opts.knowledge_context.has_value() ||
+                        !opts.include_memory || !opts.include_graph_memory || !opts.include_history);
+  auto msgs_json = build_messages(conv.id, text, opts.attachments, opts, user_mid,
+                                 record_context ? &context_trace : nullptr);
   if (!msgs_json) return msgs_json.error();
+  if (record_context) {
+    // Retain compilation even if the provider later fails. This is deliberately
+    // not a RequestSnapshot or a claim that a provider received these messages.
+    auto db_lock = db_.lock();
+    auto user_message = db_.get_msg(user_mid);
+    if (!user_message) return user_message.error();
+    if (!*user_message) return Error(Errc::NotFound, "user message removed before context was recorded");
+    Json metadata = (**user_message).metadata;
+    if (!metadata.is_object()) metadata = Json{{"loom_preserved_metadata", metadata}};
+    metadata["context_trace"] = context_trace;
+    MsgPatch patch;
+    patch.metadata = std::move(metadata);
+    auto saved = db_.update_msg(user_mid, patch);
+    if (!saved) return saved.error();
+  }
 
   std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
 
@@ -330,7 +426,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   if (key.empty()) return Error(Errc::Auth, "No API key configured - open Settings");
 
   std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
-  bool stream = opts.stream && static_cast<bool>(cb.on_chunk);
+  bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true)) && static_cast<bool>(cb.on_chunk);
 
   double temperature = opts.temperature.value_or(cfg_number(cfg_, "temperature", 0.7));
   int max_tokens = opts.max_tokens.value_or(static_cast<int>(cfg_number(cfg_, "max_tokens", 4096)));
@@ -487,6 +583,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   result.model = model;
   result.usage = usage;
   result.cancelled = cancelled;
+  result.context_trace = std::move(context_trace);
 
   // 8. Auto-title from the first exchange.
   auto all_msgs = db_.get_msgs(conv.id);

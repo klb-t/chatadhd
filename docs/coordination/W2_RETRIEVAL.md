@@ -7,18 +7,33 @@ Własność: `loom/src/context/`, dedykowane testy kontekstu, własne receipts.
 `context_engine.h` oraz konieczne zmiany katalogu/danych rezerwuj u ROOT.
 Nie edytuj `src/chat`, modelowego ledgeru ani interfejsu web.
 
-Cel: niezależne regulowanie zasięgu wyszukania materiału i reprezentacji każdej
-wybranej informacji w faktycznym ContextSet konsumowanym przez czat.
+Już zaimplementowane w bieżącym przyroście: `ContextRequest.relation_hops`
+(domyślnie 1, również 0) oraz `detail_resolution`
+(`null`/`label`/`summary`/`full`/`raw`). Działają niezależnie od budżetu;
+rozszerzanie grafu nie wyłącza domknięcia wymaganych przesłanek. Kod ma
+dedykowany `test_context_controls.cpp`; stan wykonania testów sprawdź w
+bieżącym receipt i STATE, nie wywnioskuj go z obecności pliku. Kontrakt:
+`../research/CONTEXT_SCOPE_DETAIL_2026-09-30.md`. Nie implementuj tych pól ponownie.
 
-1. Ustal obecną reprezentację celu, targetów, role map i resolutions.
-2. Dodaj minimalne rozszerzenie pozwalające przy tym samym zakresie zmieniać
-   szczegółowość oraz przy tej samej szczegółowości rozszerzać zakres.
+Następny cel: wybór materiału według planu i jego poszczególnych tez,
+uzupełniające kanały wyszukiwania i pomiar rzeczywistej jakości selekcji.
+
+1. Sprawdź aktualny konsument czatu, controls oraz trace i potwierdź ich testy.
+2. Rozszerz istniejący model zapytania o plan/tezy z osobnymi zakresami i
+   szczegółowością, wymaganym kontrdowodem i jawnymi brakami. Uzgodnij kontrakt
+   z W1; nie twórz drugiego ActiveTaskSpec ani nowej równoległej ontologii.
 3. Zapisuj dlaczego źródło weszło/odpadło, brakujące przesłanki i wpływ budżetu.
+   Rozważ stronicowanie zapytań sąsiedztwa oraz jawny ślad obcięcia/błędu;
+   obecny limit 10 000 wyników na endpoint nie dowodzi pełnego pokrycia grafu.
 4. W osobnym przyroście podłącz istniejący kanał semantyczny, wektorowy lub
    ocenę modelu przez jawny interfejs; brak zdolności nie może udawać oceny zero.
-5. Porównaj kanały na jawnych DEV: coverage, ranking i precyzja osobno;
-   lexical shadow wskazuje pominięcia, nie blokuje innych metod.
+5. Porównaj kanały i ich połączenia na jawnych DEV, a po uzgodnieniu źródeł
+   również na rzeczywistych danych: pokrycie, ranking i precyzja osobno.
+   Lexical shadow wskazuje pominięcia, nie blokuje innych metod. Utrzymuj
+   osobne miary odzyskania dowodu, jego trafności i poprawności odpowiedzi.
 
 Kryteria: działający konsument native; zależności zachowane/oznaczone incomplete;
-rozłączne działanie obu osi; istniejące testy i progi bez osłabienia.
+rozłączne działanie obu osi, również per teza; istniejące testy i progi bez
+osłabienia. Sukces deterministycznych testów controls nie jest pomiarem jakości
+semantycznego wyszukiwania ani dowodem pełnej realizacji R28.
 Nie odpieczętowuj walidacji katalogu/grafu. Nie stroimy po wyniku holdoutu.
