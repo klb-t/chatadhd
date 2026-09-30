@@ -1,0 +1,136 @@
+{
+  "all_evidence_preserved": true,
+  "canonical_complete_archive_sha256": "6632ab8dbf4d906ebf0a821c428f000540d0bf01dcc861a60d69c5e3faeba1a9",
+  "files": [
+    {
+      "bytes": 5565,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/AUDIT.md",
+      "sha256": "c13dea66bb019204e25c6f9b28f4c4b39d7ced0374a13631e984b02516b88cd7"
+    },
+    {
+      "bytes": 1541,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/PROTOCOL.md",
+      "sha256": "d5a444e3eeb04bcda29c0ec598e3fc6526f674ebaeb05172fdc1544e89dc6b9c"
+    },
+    {
+      "bytes": 821,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/ARITHMETIC_PROTOCOL.md",
+      "sha256": "5b1d6cc6def0f63eb663f6f7bdfa408187902bf061ca3ba0b297d32af304157f"
+    },
+    {
+      "bytes": 513340,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/MECHANISM_EVIDENCE.zip",
+      "sha256": "6632ab8dbf4d906ebf0a821c428f000540d0bf01dcc861a60d69c5e3faeba1a9"
+    },
+    {
+      "bytes": 117321,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/MECHANISM_ARCHIVE.json",
+      "sha256": "0a786bc902b4e0bbaa6b1f61bb4ae83bd101f5151d3e0893ccd46dd2b66dbdcb"
+    },
+    {
+      "bytes": 1251,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/MECHANISM_ARCHIVE.md",
+      "sha256": "bc2e7a83d7c346a274838cfb1fe7a733d4cfd072ae0107a97f6d034208c08660"
+    },
+    {
+      "bytes": 5960,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/probe.py",
+      "sha256": "f64da9b3db309d3bc00975344f47c9463fd83e8dc9fab8176961d329b792137d"
+    },
+    {
+      "bytes": 3736,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/process_controls.py",
+      "sha256": "78286f1820b6d2aa266afd6e60839afc17fe7defa589f7571963eb042437f4a0"
+    },
+    {
+      "bytes": 3969,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/receipt_controls.py",
+      "sha256": "d194489a87095dc5cf2d40d1bdc8aeaa617aa19e1a28a5c7e97f7af7a76b23a4"
+    },
+    {
+      "bytes": 1879,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/arithmetic_controls.py",
+      "sha256": "973c4b6ef2cdb9b84d428c257d3afaa9cdc98b003fe1071cf7dfa79ed99603da"
+    },
+    {
+      "bytes": 5075,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/final_reprobe.py",
+      "sha256": "9c4d652a8e7ce78107aabb2cec3052e3540a8592061a4c158f34129f6afe980e"
+    },
+    {
+      "bytes": 440,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/FIRST_COMPLETION_MUTATION.json",
+      "sha256": "21a7a57e72bbb1df69d6dfc783d48755d78e1d9f0266d41da5bafb0e011430c9"
+    },
+    {
+      "bytes": 479,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/FIRST_INVALID_MEASUREMENT.json",
+      "sha256": "93c3786961e3e470b329edce35b819defed52be56dae2cad195dfc0c901d20e1"
+    },
+    {
+      "bytes": 371,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/selection_first/FIRST_RESULT.json",
+      "sha256": "1f00aceaf9158542e176d357a101e3286f1c36ecf816d331b9b8582a109038b1"
+    },
+    {
+      "bytes": 1165,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/repair3/FINAL_RESULT.json",
+      "sha256": "34acf7269602280890e18985c9a2df29b277511fd11dd5363067ba31d36f7fd9"
+    },
+    {
+      "bytes": 159,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/repair3/SELECTION_REPAIR.json",
+      "sha256": "82b30463608bc1e4f4647d152cc0f74f7c8d4cee82dadf167c8b6441d1c63215"
+    },
+    {
+      "bytes": 313,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/repair3/PACKET_RECEIPT_REPAIR.json",
+      "sha256": "b309855f1939c17c7d93cae6414e68cffef4aee4578ee0edd70494fb2a96be91"
+    },
+    {
+      "bytes": 352,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/repair3/ORCHESTRATION_SOURCE_BEFORE.json",
+      "sha256": "a26ad0fc7efbaa17f40eb914fe2b66f88b497e78f67dcc7149d9361c5abaf65d"
+    },
+    {
+      "bytes": 352,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/repair3/ORCHESTRATION_SOURCE_AFTER.json",
+      "sha256": "a26ad0fc7efbaa17f40eb914fe2b66f88b497e78f67dcc7149d9361c5abaf65d"
+    },
+    {
+      "bytes": 230,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/FINAL_SOURCE_RESTORE_REPLAY.json",
+      "sha256": "583041719dae4897a0954bf1f719e2208201ef9f1dc647ce20ebd94d9040f90c"
+    },
+    {
+      "bytes": 789,
+      "force_add": false,
+      "path": "docs/research/analysis_plan_independent_audit_v1/ORIGINAL_SOURCE_RESTORE_REPLAY.json",
+      "sha256": "12f64421576c2dfc0d4f955e9e8b85620c9619c006d73191405947ee9fbc3319"
+    }
+  ],
+  "no_actual_validation_reads": true,
+  "no_git_index_writes": true,
+  "schema": "loom.analysis_plan_independent_stage_manifest/1",
+  "total_bytes": 665108
+}

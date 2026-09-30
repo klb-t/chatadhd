@@ -1,0 +1,14 @@
+{
+  "observations": [
+    {
+      "hash_matches_context": true,
+      "persisted_before_callback": true
+    }
+  ],
+  "original_packet_unchanged": true,
+  "source_binding_verification": "caller_declared_not_verified",
+  "tamper_rejections": [
+    "result_receipt_hash_drift",
+    "result_receipt_hash_drift"
+  ]
+}

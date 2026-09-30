@@ -1,0 +1,17 @@
+{
+  "source_sha256": "21da9306e336d35547b5e8cc0ef8dcdfe3f4cc5f5f40e29c707ddcbb73dee8da",
+  "declared_selection": {
+    "mode": "indices",
+    "indices": [
+      0
+    ]
+  },
+  "requested_index": 1,
+  "callback_count": 1,
+  "state": "completed",
+  "resolved_variant": {
+    "prompt": "B"
+  },
+  "classification": "investigate_selection_contract",
+  "no_api_calls": true
+}

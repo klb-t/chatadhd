@@ -1,0 +1,5 @@
+{
+  "docs/contracts/analysis_plan.schema.json": "3f70b5db565c191e72af4200a6348c342e7210dfac4a96c2d217da78725e3776",
+  "loom/tools/contracts/analysis_plan_ref.py": "2dfc9c3c67fb7135477b91e5599bbc30c96e006ab301b55b4a1d0f142f442372",
+  "loom/tools/contracts/test_analysis_plan_ref.py": "a5e4fa15178e0dd0f39f28515137aefc849b6eeff60a7d4182654a980cc10f60"
+}

@@ -1,0 +1,21 @@
+{
+  "attempt_files": [
+    "failure.json",
+    "reservation.json"
+  ],
+  "expected": "uncertain + retained reservation + preserved returned first response",
+  "returned_output_saved_by_executor": false,
+  "state": "uncertain",
+  "usage": {
+    "agents": "1",
+    "calls": "1",
+    "cpu_seconds": "1",
+    "gpu_seconds": "1",
+    "input_tokens": "1",
+    "memory_bytes": "1",
+    "money_usd": "1",
+    "output_tokens": "1",
+    "storage_bytes": "1",
+    "wall_seconds": "1"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "loom.analysis_plan_original_review_replay/1",
+  "restored_original_code_from_verified_zip": true,
+  "results": [
+    {
+      "script": "probe.py",
+      "exit_code": 0,
+      "stdout": "First independent probes preserved\n",
+      "stderr": ""
+    },
+    {
+      "script": "process_controls.py",
+      "exit_code": 0,
+      "stdout": "Process/dimension controls preserved\n",
+      "stderr": ""
+    }
+  ],
+  "first_invariant_results_match": {
+    "FIRST_COMPLETION_MUTATION.json": true,
+    "FIRST_INVALID_MEASUREMENT.json": true,
+    "FIRST_COMPLETION_WRITE_FAILURE.json": true,
+    "FIRST_CONCURRENT_DISTINCT.json": true,
+    "FIRST_VARIANT_PRODUCT.json": true,
+    "FIRST_PROCESS_EXIT.json": true,
+    "FIRST_DIMENSION_ADMISSION.json": true
+  },
+  "no_api_calls": true
+}

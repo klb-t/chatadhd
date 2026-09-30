@@ -1,0 +1,300 @@
+{
+  "schema": "loom.analysis_plan/1",
+  "id": "scripted_graph_packet_demo",
+  "resource_budget_ref": "offline-demo-zero-money",
+  "semantic_contract": {
+    "id": "loom.graph_packet/1",
+    "version": "1",
+    "config": {
+      "candidate_output": true,
+      "observation_not_world_truth": true
+    }
+  },
+  "sources": [
+    {
+      "id": "demo_packet",
+      "ref": "callback:packet-loader",
+      "provenance": {
+        "kind": "scripted_fixture",
+        "known_at": null
+      },
+      "binding": {
+        "mode": "pinned_snapshot",
+        "snapshot_id": "scripted_empty_graph_packet_v1"
+      }
+    }
+  ],
+  "variant_axes": {
+    "representation": {
+      "values": [
+        "full_packet",
+        "summary_request"
+      ]
+    },
+    "prompt": {
+      "values": [
+        "gaps",
+        "critique"
+      ]
+    }
+  },
+  "selection": {
+    "mode": "indices",
+    "indices": [
+      0,
+      3
+    ]
+  },
+  "methods": [
+    {
+      "id": "analyse",
+      "method": "analysis:inspect_packet",
+      "runtime": {
+        "id": "python:scripted",
+        "config": {
+          "host": "caller-owned"
+        }
+      },
+      "depends_on": [],
+      "source_refs": [
+        "demo_packet"
+      ],
+      "variant_axes": [
+        "representation"
+      ],
+      "required_capabilities": [
+        "scripted"
+      ],
+      "scope": {
+        "source": "explicit_ref",
+        "detail": "configured_by_axis"
+      },
+      "roles": [
+        {
+          "id": "reviewer",
+          "role": "inspect",
+          "cardinality": 1000000000,
+          "config": {
+            "allocation": "symbolic_only"
+          }
+        }
+      ],
+      "tools": [],
+      "reasoning": {
+        "recipe": "configured_data",
+        "depth": "user_selected"
+      },
+      "acceptance_policy": {
+        "mode": "caller_decides",
+        "automatic": false
+      },
+      "evaluation_policy": {
+        "preserve_first": true,
+        "quality_measured": false
+      },
+      "reservation": {
+        "money_usd": "0",
+        "cpu_seconds": "0.01",
+        "gpu_seconds": "0",
+        "input_tokens": "0",
+        "output_tokens": "0",
+        "calls": "1",
+        "agents": "0",
+        "wall_seconds": "0",
+        "memory_bytes": "4096",
+        "storage_bytes": "1024"
+      },
+      "config": {
+        "model": "future:user_selected",
+        "no_model_call_in_example": true
+      }
+    },
+    {
+      "id": "critique",
+      "method": "analysis:propose_diff",
+      "runtime": {
+        "id": "python:scripted",
+        "config": {
+          "host": "caller-owned"
+        }
+      },
+      "depends_on": [
+        "analyse"
+      ],
+      "source_refs": [
+        "demo_packet"
+      ],
+      "variant_axes": [
+        "representation"
+      ],
+      "required_capabilities": [
+        "scripted"
+      ],
+      "scope": {
+        "source": "explicit_ref",
+        "detail": "configured_by_axis"
+      },
+      "roles": [
+        {
+          "id": "reviewer",
+          "role": "inspect",
+          "cardinality": 1000000000,
+          "config": {
+            "allocation": "symbolic_only"
+          }
+        }
+      ],
+      "tools": [],
+      "reasoning": {
+        "recipe": "configured_data",
+        "depth": "user_selected"
+      },
+      "acceptance_policy": {
+        "mode": "caller_decides",
+        "automatic": false
+      },
+      "evaluation_policy": {
+        "preserve_first": true,
+        "quality_measured": false
+      },
+      "reservation": {
+        "money_usd": "0",
+        "cpu_seconds": "0.01",
+        "gpu_seconds": "0",
+        "input_tokens": "0",
+        "output_tokens": "0",
+        "calls": "1",
+        "agents": "0",
+        "wall_seconds": "0",
+        "memory_bytes": "4096",
+        "storage_bytes": "1024"
+      },
+      "config": {
+        "model": "future:user_selected",
+        "no_model_call_in_example": true
+      }
+    }
+  ],
+  "resource_limits": {
+    "money_usd": {
+      "limit": "0",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "cpu_seconds": {
+      "limit": "100",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "gpu_seconds": {
+      "limit": "1000",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "input_tokens": {
+      "limit": "1000",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "output_tokens": {
+      "limit": "1000",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "calls": {
+      "limit": "1000",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "agents": {
+      "limit": "1000",
+      "accounting": "peak",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "wall_seconds": {
+      "limit": "1000",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "memory_bytes": {
+      "limit": "1048576",
+      "accounting": "peak",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    },
+    "storage_bytes": {
+      "limit": "1048576",
+      "accounting": "cumulative",
+      "measurement_policy": {
+        "instrument_measured": "use_declared_amount",
+        "provider_reported": "use_declared_amount",
+        "estimated": "max_reservation_amount",
+        "unknown": "max_reservation_amount",
+        "declared": "max_reservation_amount"
+      }
+    }
+  },
+  "presets": {
+    "scope": "full",
+    "model": "frontier:user-selected-later",
+    "reasoning": "extensive",
+    "agents": 1000000000
+  },
+  "extensions": {
+    "example_execution_kind": "scripted_not_model",
+    "real_api_calls": 0
+  }
+}

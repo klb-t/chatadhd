@@ -1,0 +1,8 @@
+{
+  "schema": "loom.analysis_plan_final_source_restore_replay/1",
+  "restore_exit_code": 0,
+  "standalone_final_review_exit_code": 0,
+  "no_production_source_fallback": true,
+  "no_api_calls": true,
+  "validation_access": false
+}
