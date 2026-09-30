@@ -1,0 +1,54 @@
+[0/2] Re-checking globbed directories...
+-- GLOB mismatch!
+The following files were added:
+  +/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_chat_active_task.cpp
+[1/2] Re-running CMake...
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (0.8s)
+-- Generating done (0.1s)
+-- Build files have been written to: /workspace/scratch/23947acf329f/verification/build
+[0/4] Re-checking globbed directories...
+[1/111] Building CXX object CMakeFiles/loom_core.dir/src/net/http_common.cpp.o
+[2/111] Building CXX object CMakeFiles/loom_core.dir/src/net/sse.cpp.o
+[3/111] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[4/111] Building CXX object CMakeFiles/loom_core.dir/src/model/model_general.cpp.o
+[5/111] Building CXX object CMakeFiles/loom_core.dir/src/re/regex.cpp.o
+[6/111] Building CXX object CMakeFiles/loom_core.dir/src/providers/providers.cpp.o
+[7/111] Building CXX object CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o
+[8/111] Building CXX object CMakeFiles/loom_core.dir/src/net/http_default.cpp.o
+[9/111] Building CXX object CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o
+[10/111] Building CXX object CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o
+[11/111] Building CXX object CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o
+[12/111] Building CXX object CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o
+[13/111] Building CXX object CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o
+[14/111] Building CXX object CMakeFiles/loom_core.dir/src/search/selector.cpp.o
+[15/111] Building CXX object CMakeFiles/loom_core.dir/src/util/base64.cpp.o
+[16/111] Building CXX object CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o
+[17/111] Building CXX object CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o
+[18/111] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+[19/111] Building CXX object CMakeFiles/loom_core.dir/src/util/fs.cpp.o
+[20/111] Building CXX object CMakeFiles/loom_core.dir/src/util/result.cpp.o
+[21/111] Building CXX object CMakeFiles/loom_core.dir/src/util/log.cpp.o
+[22/111] Building CXX object CMakeFiles/loom_core.dir/src/util/unicode.cpp.o
+[23/111] Building CXX object CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o
+[24/111] Building CXX object CMakeFiles/loom_core.dir/src/util/sha256.cpp.o
+[25/111] Building CXX object CMakeFiles/loom_core.dir/src/util/utf8.cpp.o
+[26/111] Building C object CMakeFiles/loom.dir/src/capi/shared_anchor.c.o
+[27/111] Building CXX object CMakeFiles/loom_core.dir/src/util/json.cpp.o
+[28/111] Building CXX object CMakeFiles/loom_tests.dir/tests/main.cpp.o
+[29/111] Building CXX object CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o
+[30/111] Building CXX object CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o
+[31/111] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o
+[32/111] Building CXX object CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o
+[33/111] Linking CXX static library libloom_core.a
+[34/111] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o
+[35/111] Linking CXX shared library libloom.so.0.1.0
+FAILED: [code=1] libloom.so.0.1.0 
+: && /usr/bin/c++ -fPIC -g  -shared -Wl,--no-undefined -Wl,--dependency-file=CMakeFiles/loom.dir/link.d -Wl,-soname,libloom.so.0 -o libloom.so.0.1.0 CMakeFiles/loom.dir/src/capi/shared_anchor.c.o  -Wl,--push-state,--whole-archive  libloom_core.a  -Wl,--pop-state  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so && :
+/usr/bin/ld: libloom_core.a: member libloom_core.a(analyzer.cpp.o) in archive is not an object
+collect2: error: ld returned 1 exit status
+[36/111] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o
+[37/111] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o
+[38/111] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o
+ninja: build stopped: subcommand failed.

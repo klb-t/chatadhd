@@ -90,11 +90,17 @@ struct ChatOptions {
   bool include_history = true;
   std::optional<context::ContextRequest> knowledge_context;  // explicitly opt in; offline selection
   std::optional<bool> trace_context;           // unset: automatic for knowledge / changed recipe; false opts out
+  // Explicit caller-supplied derived instruction over existing native messages.
+  // The internal compiler rebuilds its text; arbitrary summaries are not inferred.
+  std::optional<Json> active_task_spec;
+  Json active_task_bindings = Json::object(); // event_id -> {message_id, text_sha256}
+  std::string active_task_history = "replace_refinement"; // or "append"
 
   // {"conv_id","model","attachments":[...],"web_search","deep_research",
   //  "reasoning_effort","temperature","max_tokens","system_prompt",
   //  "context_depth","stream","include_memory","include_graph_memory",
-  //  "include_history","knowledge_context","trace_context"} — loom_chat_ex.
+  //  "include_history","knowledge_context","trace_context","active_task_spec",
+  //  "active_task_bindings","active_task_history"} — loom_chat_ex.
   static Result<ChatOptions> from_json(const Json& j);
 };
 

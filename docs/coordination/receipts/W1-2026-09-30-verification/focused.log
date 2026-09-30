@@ -1,0 +1,15 @@
+Test project /workspace/scratch/23947acf329f/verification/build
+    Start 11: unit.test_chat_active_task
+1/5 Test #11: unit.test_chat_active_task ..........   Passed    1.21 sec
+    Start 12: unit.test_chat_engine
+2/5 Test #12: unit.test_chat_engine ...............   Passed    0.23 sec
+    Start 13: unit.test_chat_knowledge_context
+3/5 Test #13: unit.test_chat_knowledge_context ....   Passed    4.73 sec
+    Start 58: compat.test_abi_compat
+4/5 Test #58: compat.test_abi_compat ..............   Passed    0.58 sec
+    Start 60: compat.test_chat_active_task_http
+5/5 Test #60: compat.test_chat_active_task_http ...   Passed    0.90 sec
+
+100% tests passed out of 5
+
+Total Test time (real) =   7.67 sec

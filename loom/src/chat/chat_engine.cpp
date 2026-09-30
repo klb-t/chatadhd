@@ -5,6 +5,7 @@
 #include <cctype>
 #include <map>
 #include <limits>
+#include <set>
 
 #include "loom/config.h"
 #include "loom/event_bus.h"
@@ -19,6 +20,7 @@
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
+#include "active_task_spec.h"
 
 namespace loom {
 
@@ -88,6 +90,112 @@ Result<context::ContextRequest> chat_context_request(const Json& value) {
   return context::ContextRequest::from_json(value);
 }
 
+Result<Json> prepare_active_task(Database& db, std::string_view conv_id, const ChatOptions& opts) {
+  auto invalid = [](std::string_view reason) -> Result<Json> {
+    return Error(Errc::InvalidArgument, "active_task: " + std::string(reason));
+  };
+  if (!opts.active_task_spec) {
+    if (!opts.active_task_bindings.is_object() || !opts.active_task_bindings.empty() ||
+        opts.active_task_history != "replace_refinement") {
+      return invalid("bindings and history mode require a specification");
+    }
+    return Json(nullptr);
+  }
+  if (opts.active_task_history != "replace_refinement" && opts.active_task_history != "append") {
+    return invalid("unknown history mode");
+  }
+  auto compiled = chat::compile_active_task_spec(*opts.active_task_spec);
+  if (!compiled) return compiled.error();
+  const auto& spec = *compiled;
+  if (conv_id.empty() || spec["scope"]["conversation_id"] != conv_id) {
+    return invalid("specification must name the current existing conversation");
+  }
+  if (spec["scope"]["branch_id"] != "native:active") {
+    return invalid("only the native:active source selection is supported");
+  }
+  const auto& bindings = opts.active_task_bindings;
+  if (!bindings.is_object() || bindings.size() != spec["history_event_ids"].size()) {
+    return invalid("bindings must cover exactly the declared history events");
+  }
+  Json sources = Json::array();
+  std::set<std::string> message_ids;
+  std::map<std::string, std::string> source_texts;
+  for (const auto& event : spec["history_event_ids"]) {
+    const auto id = event.get<std::string>();
+    auto bound = bindings.find(id);
+    if (bound == bindings.end() || !bound->is_object() || bound->size() != 2 ||
+        !bound->contains("message_id") || !(*bound)["message_id"].is_string() ||
+        !bound->contains("text_sha256") || !(*bound)["text_sha256"].is_string()) {
+      return invalid("each event needs a message_id and text_sha256 binding");
+    }
+    const auto mid = (*bound)["message_id"].get<std::string>();
+    if (mid.empty() || !message_ids.insert(mid).second) return invalid("message bindings must be nonempty and unique");
+    auto message = db.get_msg(mid);
+    if (!message) return message.error();
+    if (!*message || (**message).conv_id != conv_id || (**message).status != msg_status::kActive) {
+      return invalid("bound message is absent or outside the active conversation selection");
+    }
+    const auto& m = **message;
+    const auto digest = Sha256::hex(m.text);
+    if ((*bound)["text_sha256"] != digest) return invalid("bound source text changed");
+    source_texts.emplace(id, m.text);
+    sources.push_back(Json{{"event_id", id}, {"message_id", mid}, {"role", m.role}, {"text", m.text},
+                           {"text_sha256", digest}, {"status", m.status},
+                           {"created", m.created}, {"attachments", m.attachments},
+                           {"version_group_id", m.version_group_id ? Json(*m.version_group_id) : Json(nullptr)},
+                           {"version_num", m.version_num}});
+  }
+  for (const auto& source : spec["source_refs"]) {
+    if (source.contains("quote") &&
+        source_texts.at(source["event_id"].get<std::string>()).find(source["quote"].get<std::string>()) == std::string::npos) {
+      return invalid("source quote does not occur in the bound native message");
+    }
+  }
+
+  // Revisions are retained with their originating user messages. Inspect all
+  // statuses: hiding a historical message must not silently reset a task.
+  auto messages = db.get_msgs(conv_id, true);
+  if (!messages) return messages.error();
+  const Json* latest = nullptr;
+  for (const auto& m : *messages) {
+    if (!m.metadata.is_object()) continue;
+    auto retained = m.metadata.find("active_task");
+    if (retained == m.metadata.end() || !retained->is_object() ||
+        retained->value("schema", Json()) != "loom.chat_active_task/1") continue;
+    auto old = retained->find("supplied_spec");
+    if (old == retained->end() || !chat::compile_active_task_spec(*old) ||
+        !retained->contains("bindings") || !(*retained)["bindings"].is_object()) {
+      return invalid("retained revision metadata is malformed");
+    }
+    if ((*old)["product_ref"] == spec["product_ref"] &&
+        (*old != *opts.active_task_spec || retained->value("bindings", Json()) != bindings)) {
+      return invalid("a product identifier cannot be reused for different content or bindings");
+    }
+    if ((*old)["scope"] != spec["scope"]) continue;
+    if (!latest || (*old)["version"] > (*latest)["supplied_spec"]["version"]) latest = &*retained;
+  }
+  if (latest) {
+    const auto& old = (*latest)["supplied_spec"];
+    const bool replay = old["product_ref"] == spec["product_ref"] && old == *opts.active_task_spec &&
+                        (*latest)["bindings"] == bindings;
+    const auto previous_version = old["version"].get<std::uint64_t>();
+    if (!replay && (spec["previous_product_ref"] != old["product_ref"] ||
+                   previous_version == std::numeric_limits<std::uint64_t>::max() ||
+                   spec["version"].get<std::uint64_t>() != previous_version + 1 ||
+                   spec["goal_id"] != old["goal_id"])) {
+      return invalid("revision must extend the latest retained product of this task and goal");
+    }
+  } else if (spec["version"] != 1 || !spec["previous_product_ref"].is_null()) {
+    return invalid("a new task must start with version 1 and no predecessor");
+  }
+  return Json{{"schema", "loom.chat_active_task/1"}, {"supplied_spec", *opts.active_task_spec},
+              {"compiled_spec", *compiled}, {"bindings", bindings}, {"source_messages", sources},
+              {"history_mode", opts.active_task_history}, {"acceptance", "explicit_caller_supplied"},
+              {"compiler", {{"id", "loom.active_task_renderer"}, {"version", "1"}}},
+              {"binding_verification", "native_message_text_sha256_and_optional_quote"},
+              {"source_selection", "native:active"}};
+}
+
 }  // namespace
 
 Result<ChatOptions> ChatOptions::from_json(const Json& j) {
@@ -125,6 +233,16 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
       auto context = chat_context_request(v);
       if (!context) return context.error();
       o.knowledge_context = *context;
+    } else if (k == "active_task_spec") {
+      auto compiled = chat::compile_active_task_spec(v);
+      if (!compiled) return compiled.error();
+      o.active_task_spec = v;
+    } else if (k == "active_task_bindings") {
+      if (!v.is_object()) return bad();
+      o.active_task_bindings = v;
+    } else if (k == "active_task_history") {
+      if (!v.is_string() || (v != "replace_refinement" && v != "append")) return bad();
+      o.active_task_history = v.get<std::string>();
     } else if (k == "temperature") {
       if (!v.is_number()) return bad();
       o.temperature = v.get<double>();
@@ -135,6 +253,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
     } else {
       return Error(Errc::InvalidArgument, "unknown chat option: " + k);
     }
+  }
+  if (!o.active_task_spec && (j.contains("active_task_bindings") || j.contains("active_task_history"))) {
+    return Error(Errc::InvalidArgument, "active_task options require active_task_spec");
   }
   return o;
 }
@@ -242,10 +363,21 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
 Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_view current_text,
                                         const std::vector<std::string>& attachments, const ChatOptions& opts,
                                         std::string_view exclude_message_id, Json* context_trace) {
+  std::unique_lock<std::recursive_mutex> source_lock;
+  if (opts.active_task_spec) source_lock = db_.lock();
+  auto active_task = prepare_active_task(db_, conv_id, opts);
+  if (!active_task) return active_task.error();
   Json messages = Json::array();
   Json compiled_context;
   Json resolved_context_request;
   Json history_ids = Json::array();
+  Json replaced_ids = Json::array();
+  std::set<std::string> refinement_ids;
+  if (opts.active_task_spec && opts.active_task_history == "replace_refinement") {
+    for (const auto& source : (*active_task)["source_messages"]) {
+      refinement_ids.insert(source["message_id"].get<std::string>());
+    }
+  }
 
   std::string sys_prompt = opts.system_prompt ? *opts.system_prompt : cfg_string(cfg_, "system_prompt");
   if (!sys_prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
@@ -298,6 +430,10 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     for (const auto& m : *msgs) {
       if (m.status != msg_status::kActive) continue;
       if (!exclude_message_id.empty() && m.id == exclude_message_id) continue;
+      if (refinement_ids.count(m.id)) {
+        replaced_ids.push_back(m.id);
+        continue;
+      }
       std::string content = m.text;
       if (m.weight > 1.5) {
         content = "[IMPORTANT] " + content;
@@ -309,6 +445,11 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     }
   }
 
+  if (opts.active_task_spec) {
+    messages.push_back(Json{{"role", "user"},
+      {"content", "[Active task specification; derived from the selected source messages]\n" +
+        (*active_task)["compiled_spec"]["compiled_instruction"]["text"].get<std::string>()}});
+  }
   messages.push_back(Json{{"role", "user"}, {"content", build_content(current_text, attachments)}});
   if (context_trace) {
     *context_trace = Json{{"kind", "compiled_messages"}, {"version", 1},
@@ -320,6 +461,10 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
                                         {"context_depth", opts.context_depth ? Json(*opts.context_depth) : Json(nullptr)}}},
                          {"knowledge_context_request", resolved_context_request},
                          {"knowledge_context", compiled_context}};
+    if (opts.active_task_spec) {
+      (*context_trace)["active_task"] = *active_task;
+      (*context_trace)["replaced_history_message_ids"] = replaced_ids;
+    }
   }
   return messages;
 }
@@ -359,9 +504,12 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
 
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
-  // 1. Resolve the conversation.
+  // 1. Resolve the conversation. Keep one lock order (database -> mu_)
+  // shared with task compilation, and serialize implicit first-conversation
+  // creation so concurrent sends do not unexpectedly create separate chats.
   Conversation conv;
   {
+    auto resolution_lock = db_.lock();
     std::lock_guard lk(mu_);
     if (opts.conv_id) {
       auto r = db_.get_conv(*opts.conv_id);
@@ -371,6 +519,9 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     } else if (conv_) {
       conv = *conv_;
     } else {
+      if (opts.active_task_spec) {
+        return Error(Errc::InvalidArgument, "active_task requires an existing conversation");
+      }
       auto r = db_.create_conv("New Chat");
       if (!r) return r.error();
       conv = *r;
@@ -378,11 +529,35 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     conv_ = conv;
   }
 
+  // Compile a task against a stable native source selection before accepting
+  // the current turn. The same snapshot becomes both the request and its
+  // retained provenance; callbacks cannot change it between those operations.
+  const bool record_context = opts.trace_context.value_or(opts.active_task_spec.has_value() ||
+      opts.knowledge_context.has_value() || !opts.include_memory ||
+      !opts.include_graph_memory || !opts.include_history);
+  Json context_trace;
+  Json task_messages;
+  std::unique_lock<std::recursive_mutex> source_lock;
+  if (opts.active_task_spec) {
+    source_lock = db_.lock();
+    auto built = build_messages(conv.id, text, opts.attachments, opts, "", &context_trace);
+    if (!built) return built.error();
+    task_messages = std::move(*built);
+  } else {
+    // Direct C++ callers can bypass from_json; do not accept orphan controls.
+    auto checked = prepare_active_task(db_, conv.id, opts);
+    if (!checked) return checked.error();
+  }
+
   // 2. Persist the user message.
   NewMessage nm;
   nm.conv_id = conv.id;
   nm.text = std::string(text);
   nm.role = "user";
+  if (opts.active_task_spec) {
+    nm.metadata = Json{{"active_task", context_trace["active_task"]}};
+    if (!record_context) context_trace = nullptr;
+  }
   if (!opts.attachments.empty()) {
     Json atts = Json::array();
     for (const auto& a : opts.attachments) atts.push_back(a);
@@ -391,17 +566,16 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   auto umid = db_.create_msg(nm);
   if (!umid) return umid.error();
   std::string user_mid = *umid;
+  if (source_lock.owns_lock()) source_lock.unlock();
 
   bus_.emit(events::kMsgCreated,
            Json{{"id", user_mid}, {"text", std::string(text)}, {"conv_id", conv.id}, {"role", "user"}});
   if (cb.on_start) cb.on_start(conv.id, user_mid);
 
   // 3. Build the message array (history excludes the message just persisted).
-  Json context_trace;
-  bool record_context = opts.trace_context.value_or(opts.knowledge_context.has_value() ||
-                        !opts.include_memory || !opts.include_graph_memory || !opts.include_history);
-  auto msgs_json = build_messages(conv.id, text, opts.attachments, opts, user_mid,
-                                 record_context ? &context_trace : nullptr);
+  auto msgs_json = opts.active_task_spec ? Result<Json>(std::move(task_messages)) :
+      build_messages(conv.id, text, opts.attachments, opts, user_mid,
+                     record_context ? &context_trace : nullptr);
   if (!msgs_json) return msgs_json.error();
   if (record_context) {
     // Retain compilation even if the provider later fails. This is deliberately
