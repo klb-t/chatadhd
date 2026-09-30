@@ -329,18 +329,20 @@ TEST_SUITE("chat_active_task_retention") {
         CHECK(f.metadata(user_id)["callback_note"] == "preserve even though the callback throws");
         CHECK(f.transport->requests().empty());
       }
-      // Direct writes after a completed send are intentionally not covered by
-      // the transient guard. A leaked map would wrongly mask this corruption.
+      // Durable authority is independent of later metadata projection writes.
+      // The original row remains inspectably corrupted, while an exact replay
+      // is accepted from the append-only event and gets a fresh projection.
       auto metadata = f.metadata(user_id);
       metadata["active_task"] = nullptr;
       MsgPatch patch;
       patch.metadata = metadata;
       LOOM_REQUIRE_OK(f.rt->db().update_msg(user_id, patch));
       const auto before = f.transport->requests().size();
-      auto attempt = f.rt->chat().send("Reject corrupt retained lineage.", f.options(false));
-      REQUIRE_FALSE(attempt);
-      CHECK(attempt.error().code == Errc::InvalidArgument);
-      CHECK(f.transport->requests().size() == before);
+      f.reply(200);
+      auto replay = unwrap(f.rt->chat().send("Replay durable retained lineage.", f.options(false)));
+      CHECK(f.transport->requests().size() == before + 1);
+      CHECK(f.metadata(user_id)["active_task"].is_null());
+      CHECK(f.metadata(replay.user_message_id)["active_task"]["supplied_spec"] == f.spec);
     }
   }
 

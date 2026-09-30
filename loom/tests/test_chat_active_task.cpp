@@ -402,7 +402,7 @@ TEST_SUITE("chat_active_task") {
     CHECK(result.context_trace["replaced_history_message_ids"].size() == 3);
   }
 
-  TEST_CASE("malformed retained task revisions are rejected before accepting another message") {
+  TEST_CASE("malformed metadata projection does not erase durable accepted authority") {
     ActiveTaskFixture f;
     f.reply();
     auto first = unwrap(f.rt->chat().send("Accept version one.", f.options()));
@@ -413,11 +413,12 @@ TEST_SUITE("chat_active_task") {
     patch.metadata = metadata;
     LOOM_REQUIRE_OK(f.rt->db().update_msg(first.user_message_id, patch));
     const auto count = unwrap(f.rt->db().get_msgs(f.conv)).size();
-    auto rejected = f.rt->chat().send("Reject corrupt lineage.", f.options());
-    REQUIRE_FALSE(rejected);
-    CHECK(rejected.error().code == Errc::InvalidArgument);
-    CHECK(f.transport->requests().size() == 1);
-    CHECK(unwrap(f.rt->db().get_msgs(f.conv)).size() == count);
+    f.reply();
+    auto replay = unwrap(f.rt->chat().send("Replay from durable lineage.", f.options()));
+    CHECK(f.transport->requests().size() == 2);
+    CHECK(unwrap(f.rt->db().get_msgs(f.conv)).size() == count + 2);
+    CHECK(f.saved_active_task(replay)["supplied_spec"] == f.spec);
+    CHECK(unwrap(f.rt->db().get_msg(first.user_message_id))->metadata == metadata);
   }
 
   TEST_CASE("revision cannot refer to a missing predecessor or skip its version") {
@@ -457,7 +458,7 @@ TEST_SUITE("chat_active_task") {
     CHECK(f.transport->requests().empty());
   }
 
-  TEST_CASE("maximal retained revision is rejected without wrapping its successor") {
+  TEST_CASE("metadata-only maximal revision cannot replace durable accepted version") {
     ActiveTaskFixture f;
     f.reply();
     auto first = unwrap(f.rt->chat().send("Accept first.", f.options()));
@@ -470,7 +471,10 @@ TEST_SUITE("chat_active_task") {
     f.spec["previous_product_ref"] = f.spec["product_ref"];
     f.spec["product_ref"]["id"] = "overflow-successor";
     f.spec["version"] = 2;
-    CHECK_FALSE(f.rt->chat().send("Do not wrap the revision.", f.options()));
-    CHECK(f.transport->requests().size() == 1);
+    f.reply();
+    auto successor = unwrap(f.rt->chat().send("Extend the durable revision.", f.options()));
+    CHECK(f.transport->requests().size() == 2);
+    CHECK(f.saved_active_task(successor)["supplied_spec"] == f.spec);
+    CHECK(unwrap(f.rt->db().get_msg(first.user_message_id))->metadata == metadata);
   }
 }
