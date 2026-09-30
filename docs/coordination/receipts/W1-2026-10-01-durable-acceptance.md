@@ -148,3 +148,20 @@ independent connections to one SQLite file.
   freshness transaction.
 - An acceptance event proves adapter acceptance, not provider delivery,
   exactly-once external effects, or owner judgement.
+
+## Publication of the tested tree
+
+The approved public W1 branch still pointed to remote commit
+`ba792b920fba36fb738ff39421d27b6d965aa11a`, tree
+`8dbd887aa8a3e3025df1eb02d679bb1db6ec9f48`, immediately before publication.
+The frozen local implementation commit was
+`9eff1e8c48d46d5084220f6649b4351cc74b515a`, tree
+`8c818cc3deb1068eb34dc8dd7ab6f5d4a70bf956`.
+
+GitHub created remote commit `200fae8ccab3ad50f954d35ea60b9a9148ddc514`
+with parent `ba792b920fba36fb738ff39421d27b6d965aa11a` and the exact same tree
+`8c818cc3deb1068eb34dc8dd7ab6f5d4a70bf956`. The branch ref was advanced with
+`force=false`, then read back at `200fae8ccab3ad50f954d35ea60b9a9148ddc514`.
+The local and remote commit SHAs differ because the connector authored a new
+commit on the remote history; equality of the complete tree is the content
+identity proof.
