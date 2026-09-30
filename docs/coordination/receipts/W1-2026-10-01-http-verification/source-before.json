@@ -1,0 +1,8 @@
+{
+  "loom/CMakeLists.txt": "a5dbf2e207bf9aa06cb24c1396f82c95c9a3c6d38720b7bc0e3f51a1f2d53fe8",
+  "loom/tests/compat/test_chat_active_task_http.py": "4fd63aa16d0fc06aaabd260ecf7d1c996d10c4b688cc1495401ff0f5ab446a5c",
+  "loom/server/tests/test_chat_active_task_server.py": "4b140e97dbb57f6f06ad7efd9d8aa4a0f9e89d949414d21fb054768454157802",
+  "loom/src/chat/chat_engine.cpp": "1c20e43f5b98dd2a233f60705b9344cdf5a30d414ce6751bcc348a822ced8c81",
+  "loom/src/chat/active_task_spec.cpp": "2e97fa10d0f231a32862bbdaf150a293c62210e2670f25e848b465dc3ba20904",
+  "loom/include/loom/chat_engine.h": "b03ba4dcf19a43aa0f62f1ba00bc745f6597aae0ac9bf2482118a6e5264e4883"
+}

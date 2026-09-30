@@ -1,0 +1,50 @@
+{
+  "source_commit": "2bc3c4f9ec0c97e8161cfdb35e0919aebc1ee8d1",
+  "base_sha": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "source_sha256": {
+    "loom/include/loom/chat_engine.h": "e9cf9299d67ebc9e60f43939dfd956f1ae392fd601ef7a78ed254329b964bec1",
+    "loom/src/chat/chat_engine.cpp": "f390da1f47b6e22022aa4e985e805c44e17407c15f189251a47e88e9e03f8edc",
+    "loom/src/chat/active_task_spec.cpp": "2e97fa10d0f231a32862bbdaf150a293c62210e2670f25e848b465dc3ba20904",
+    "loom/src/chat/active_task_spec.h": "e6ab83172115b2863aec6c944a4b95f1995705695b58f6d8444ad3f218d77229",
+    "loom/tests/test_chat_active_task.cpp": "24ea3fb0e8630e4617076fe701ec9fa1fa71d0bbcaa2606142a2be7ad5809127",
+    "loom/tests/compat/test_chat_active_task_http.py": "cfa7cf841243b4b3a037fbfb9c282f331facabeee4d4f0437ef157ccbbe84864"
+  },
+  "binary_sha256": {
+    "loom_tests": "3ea0d30419f76aac061739f7ec5909a47a5a9d1fde7ce0fd0dd11b6a536b7b07",
+    "libloom.so.0.1.0": "ba28caa1e4ee386de66d3b2bbd55ae5926b6b260754db8854ac6877b1de92f8e"
+  },
+  "native_cases": 19,
+  "model_calls_remote": 0,
+  "http_smoke_local_provider_calls": 3,
+  "scope": "mechanism/native request transport; synthetic developer-authored data",
+  "source_unchanged_after_run": true,
+  "full_ctest": {
+    "entries": 79,
+    "failures": 0,
+    "skipped": 0,
+    "elapsed_seconds": 121.43
+  },
+  "focused_ctest": {
+    "entries": 5,
+    "failures": 0,
+    "elapsed_seconds": 7.67,
+    "subset_of_full_run": true
+  },
+  "native_assertions": 186,
+  "transport_unittest_methods": 1,
+  "review": "Independent source review completed; no independent execution claimed",
+  "publication": {
+    "status": "blocked_by_automatic_approval_review",
+    "branch": "gpt/w1-active-task-2026-09-30",
+    "destination": "https://github.com/klb-t/chatadhd.git",
+    "visibility_checked": "public",
+    "remote_changed": false
+  },
+  "environment": {
+    "configuration": "Debug; LOOM_WERROR=ON; LOOM_SHARED=ON; LOOM_USE_SYSTEM_SQLITE=OFF; LOOM_BUILD_CLI=ON; LOOM_BUILD_SERVER=ON",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/var/tmp",
+    "PYTHONUSERBASE": "/workspace/scratch/a371a1ca13b1/verification/python-userbase",
+    "PYTHONPATH": "/workspace/scratch/23947acf329f/chatadhd-w1:/workspace/scratch/a371a1ca13b1/verification/deps"
+  }
+}

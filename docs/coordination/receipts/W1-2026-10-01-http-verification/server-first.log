@@ -1,0 +1,8 @@
+test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.083s
+
+OK
+W1 server transport: 1 scenario, 5 local provider calls, 0 remote; stale versions emit SSE error without start/persistence/transport; full server restart verified.
+Synthetic server fixture retained at /var/tmp/loom-w1-server-0kec5w5p

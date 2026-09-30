@@ -1,0 +1,1933 @@
+Start testing: Oct 01 00:12 CEST
+----------------------------------------------------------
+19/83 Testing: unit.test_context_engine
+19/83 Test: unit.test_context_engine
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_context_engine.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_context_engine" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   18 |   18 passed | 0 failed | 450 skipped
+[doctest] assertions: 1065 | 1065 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =  18.25 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_context_engine" end time: Oct 01 00:12 CEST
+"unit.test_context_engine" time elapsed: 00:00:18
+----------------------------------------------------------
+
+66/83 Testing: compat.test_crypto_compat
+66/83 Test: compat.test_crypto_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_crypto_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_crypto_compat" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+test_cpp_encrypts_python_decrypts (__main__.CryptoCompatTest.test_cpp_encrypts_python_decrypts) ... ok
+test_encrypted_blob_wire_format_is_byte_identical (__main__.CryptoCompatTest.test_encrypted_blob_wire_format_is_byte_identical)
+Loom's EncryptedBlob.to_dict() must use the same keys/order/defaults ... ok
+test_known_answer_vector (__main__.CryptoCompatTest.test_known_answer_vector) ... ok
+test_python_encrypts_cpp_decrypts (__main__.CryptoCompatTest.test_python_encrypts_cpp_decrypts) ... ok
+test_tampered_ciphertext_fails_on_both_sides (__main__.CryptoCompatTest.test_tampered_ciphertext_fails_on_both_sides) ... ok
+test_wrong_password_fails_on_both_sides (__main__.CryptoCompatTest.test_wrong_password_fails_on_both_sides) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 12.180s
+
+OK
+<end of output>
+Test time =  19.96 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_crypto_compat" end time: Oct 01 00:12 CEST
+"compat.test_crypto_compat" time elapsed: 00:00:19
+----------------------------------------------------------
+
+34/83 Testing: unit.test_kb_pack
+34/83 Test: unit.test_kb_pack
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_kb_pack.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_kb_pack" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  14 |  14 passed | 0 failed | 454 skipped
+[doctest] assertions: 184 | 184 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   8.84 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_kb_pack" end time: Oct 01 00:12 CEST
+"unit.test_kb_pack" time elapsed: 00:00:08
+----------------------------------------------------------
+
+35/83 Testing: unit.test_knowledge
+35/83 Test: unit.test_knowledge
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_knowledge.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_knowledge" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 450 skipped
+[doctest] assertions: 150 | 150 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =  10.42 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_knowledge" end time: Oct 01 00:12 CEST
+"unit.test_knowledge" time elapsed: 00:00:10
+----------------------------------------------------------
+
+73/83 Testing: compat.test_semantic_compat
+73/83 Test: compat.test_semantic_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_semantic_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_semantic_compat" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+...../workspace/scratch/23947acf329f/chatadhd-w1/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+.
+----------------------------------------------------------------------
+Ran 6 tests in 3.049s
+
+OK
+<end of output>
+Test time =   7.17 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_semantic_compat" end time: Oct 01 00:13 CEST
+"compat.test_semantic_compat" time elapsed: 00:00:07
+----------------------------------------------------------
+
+8/83 Testing: unit.test_catalog_links
+8/83 Test: unit.test_catalog_links
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_catalog_links.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_catalog_links" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_links.cpp:103:
+TEST SUITE: catalog_links
+TEST CASE:  candidate generation reproduces the exhaustive reference scan
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_links.cpp:130: MESSAGE: continuation links: reference=164 candidates=164 recall=1
+
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_links.cpp:166:
+TEST SUITE: catalog_links
+TEST CASE:  50k units: near-linear candidate generation, planted near-duplicates found
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_links.cpp:203: MESSAGE: 50k units: 6.26835 s, {"mode":"candidates","units":50000,"links":143314,"project_groups_aggregated":0,"minhash_pairs_verified":499,"lsh_candidates":499,"rare_term_candidates":506472}
+
+===============================================================================
+[doctest] test cases:    4 |    4 passed | 0 failed | 464 skipped
+[doctest] assertions: 3136 | 3136 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =  11.48 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_links" end time: Oct 01 00:13 CEST
+"unit.test_catalog_links" time elapsed: 00:00:11
+----------------------------------------------------------
+
+76/83 Testing: research.structure
+76/83 Test: research.structure
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "-m" "unittest" "discover" "-s" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tools/structure" "-p" "test_*.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"research.structure" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+.................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a pre-existing freeze; cannot create it in the same invocation
+....................................................................................................................................
+----------------------------------------------------------------------
+Ran 821 tests in 42.108s
+
+OK
+{"attempts": 1, "stopped_reason": "fixture-stop"}
+<end of output>
+Test time =  43.08 sec
+----------------------------------------------------------
+Test Passed.
+"research.structure" end time: Oct 01 00:13 CEST
+"research.structure" time elapsed: 00:00:43
+----------------------------------------------------------
+
+21/83 Testing: unit.test_crypto
+21/83 Test: unit.test_crypto
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_crypto.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_crypto" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 12 | 12 passed | 0 failed | 456 skipped
+[doctest] assertions: 66 | 66 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   5.57 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_crypto" end time: Oct 01 00:13 CEST
+"unit.test_crypto" time elapsed: 00:00:05
+----------------------------------------------------------
+
+53/83 Testing: unit.test_resolve_attribution
+53/83 Test: unit.test_resolve_attribution
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_resolve_attribution.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_resolve_attribution" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_resolve_attribution.cpp:327:
+TEST SUITE: resolve_attribution
+TEST CASE:  synthetic_dev: attribution of units that never name their project, before vs after
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_resolve_attribution.cpp:413: MESSAGE: noise conversations attributed to a project: 1/20
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_resolve_attribution.cpp:417: MESSAGE: method tfidf, stats {"method":"tfidf","units":68,"unattributed":56,"attributed":35,"ambiguous":2,"passes":17,"foundations":0,"inferred_aliases":0,"resubjected":91,"members":{"notatnik":["gdzie to trzymac@1","un_d92a70c431c9bf2b","notatki@2","un_f9cf3aaf24f1bdc9"],"Stroz":["un_4e5a46a0e672b6d3","watcher + restart dziala@4","ile razy w tym tygodniu recznie zabijalam zawieszony proces@1","podsumowania po restarcie@5","un_7b368a1dfb7f5866","buduje stroza@2","un_e9efb004cac9f0e7","powiadomienia na pulpit@3"],"plyta":["rozne@1"],"sprawa z Kwiatowej":["olal pismo, idziemy do sadu@3","zbieram dowody - Kwiatowa@1","strategia: pismo czy od razu sad@4","un_88da9b32fddd0402","Zenon sie wypiera, ale mam maila ze stycznia@2"],"NoteFlow":["czemu ciagle zmieniam zdanie@10","notatki 0.2 i co z szyfrowaniem@6","przeglad u dentysty@3","porzucam Slow Fracture (na razie)@15","un_51a74c052f244b55","nowa synchronizacja i graf wiedzy v2@1","transkrypcja wrocila + offline fallback@4","rozjazd: python czy c++@9","riffy i pomysly na EP@16","d-moll wygrywa@13","molowy czy inny - jeszcze nie wiem@14","szyfrowanie w koncu + zgubione checklisty (znowu)@8","wygrywa c++@11","notatki glosowe dzialaja@5","zmieniam polling na inotify@12","synchronizacja pierwsza wersja@2","rozne@7"],"generator reelsow":["storyboard z tekstu dziala@2","klipy beda drogie, trzeba to ogarnac@4","pomysl na generator reelsow@1","compose dalej czeka@3"]},"alias_probe":{"notatnik":{"best":"NoteFlow","cosine":0.151,"second":0.084},"plyta":{"best":"NoteFlow","cosine":0.106,"second":0.013},"sprawa z Kwiatowej":{"best":"Stroz","cosine":0.06,"second":0.019},"NoteFlow":{"best":"Stroz","cosine":0.014,"second":0.0},"generator reelsow":{"best":"NoteFlow","cosine":0.036,"second":0.035},"Stroz":{"best":"NoteFlow","cosine":0.066,"second":0.0}}}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_resolve_attribution.cpp:418: MESSAGE: unnamed relevant units = 33: attribution accuracy before 0 -> after 0.727273 (top-1), 0.757576 (GT among chosen), ambiguous 2
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_resolve_attribution.cpp:420: MESSAGE: alias recall before 0.230769 -> after 0.230769 (precision 0.545455 -> 0.545455, F1 0.324324 -> 0.324324)
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_resolve_attribution.cpp:423: MESSAGE: claims attached to a project: before 0.0920245 -> after 0.595092  (163 claims of relevant units)
+
+===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 461 skipped
+[doctest] assertions: 420 | 420 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   5.74 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_resolve_attribution" end time: Oct 01 00:13 CEST
+"unit.test_resolve_attribution" time elapsed: 00:00:05
+----------------------------------------------------------
+
+40/83 Testing: unit.test_knowledge_semantic_graph
+40/83 Test: unit.test_knowledge_semantic_graph
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_knowledge_semantic_graph.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_knowledge_semantic_graph" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 457 skipped
+[doctest] assertions: 100 | 100 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   4.64 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_knowledge_semantic_graph" end time: Oct 01 00:13 CEST
+"unit.test_knowledge_semantic_graph" time elapsed: 00:00:04
+----------------------------------------------------------
+
+27/83 Testing: unit.test_generalize
+27/83 Test: unit.test_generalize
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_generalize.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_generalize" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 461 skipped
+[doctest] assertions: 199 | 199 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   3.52 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_generalize" end time: Oct 01 00:13 CEST
+"unit.test_generalize" time elapsed: 00:00:03
+----------------------------------------------------------
+
+64/83 Testing: compat.test_chat_compat
+64/83 Test: compat.test_chat_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_chat_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_chat_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+..
+----------------------------------------------------------------------
+Ran 2 tests in 1.094s
+
+OK
+<end of output>
+Test time =   5.38 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_chat_compat" end time: Oct 01 00:13 CEST
+"compat.test_chat_compat" time elapsed: 00:00:05
+----------------------------------------------------------
+
+33/83 Testing: unit.test_import_stream
+33/83 Test: unit.test_import_stream
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_import_stream.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_import_stream" start time: Oct 01 00:12 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 467 skipped
+[doctest] assertions: 13 | 13 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =  51.63 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_import_stream" end time: Oct 01 00:13 CEST
+"unit.test_import_stream" time elapsed: 00:00:51
+----------------------------------------------------------
+
+75/83 Testing: compat.test_util_compat
+75/83 Test: compat.test_util_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_util_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_util_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_embedded_contract_data_matches_python_sources (__main__.UtilCompatTest.test_embedded_contract_data_matches_python_sources) ... ok
+test_float_repr (__main__.UtilCompatTest.test_float_repr) ... ok
+test_generated_ids_have_python_shape (__main__.UtilCompatTest.test_generated_ids_have_python_shape) ... ok
+test_json_dumps_is_byte_identical (__main__.UtilCompatTest.test_json_dumps_is_byte_identical) ... ok
+test_timestamps_match_utcnow_isoformat (__main__.UtilCompatTest.test_timestamps_match_utcnow_isoformat) ... /workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_util_compat.py:94: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.assertLess(abs((datetime.datetime.utcnow() - now).total_seconds()), 60)
+ok
+test_utf8_semantics_match_python_str (__main__.UtilCompatTest.test_utf8_semantics_match_python_str) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 4.227s
+
+OK
+<end of output>
+Test time =   4.56 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_util_compat" end time: Oct 01 00:13 CEST
+"compat.test_util_compat" time elapsed: 00:00:04
+----------------------------------------------------------
+
+71/83 Testing: compat.test_memory_compat
+71/83 Test: compat.test_memory_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_memory_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_memory_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_cpp_builds_python_reads (__main__.MemoryCompat.test_cpp_builds_python_reads) ... ok
+test_get_active_context_identical_with_deep_nesting (__main__.MemoryCompat.test_get_active_context_identical_with_deep_nesting) ... ok
+test_python_builds_cpp_reads (__main__.MemoryCompat.test_python_builds_cpp_reads) ... /workspace/scratch/23947acf329f/chatadhd-w1/engine/memory_engine.py:38: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.created = datetime.utcnow().isoformat() + "Z"
+ok
+test_recursive_delete_orphaning_matches (__main__.MemoryCompat.test_recursive_delete_orphaning_matches) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 5.701s
+
+OK
+<end of output>
+Test time =   6.05 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_memory_compat" end time: Oct 01 00:13 CEST
+"compat.test_memory_compat" time elapsed: 00:00:06
+----------------------------------------------------------
+
+39/83 Testing: unit.test_knowledge_semantic
+39/83 Test: unit.test_knowledge_semantic
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_knowledge_semantic.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_knowledge_semantic" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 455 skipped
+[doctest] assertions: 125 | 125 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   6.78 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_knowledge_semantic" end time: Oct 01 00:13 CEST
+"unit.test_knowledge_semantic" time elapsed: 00:00:06
+----------------------------------------------------------
+
+69/83 Testing: compat.test_graph_compat
+69/83 Test: compat.test_graph_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_graph_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_graph_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_empty_and_short_messages_produce_no_graph_writes (__main__.GraphCompat.test_empty_and_short_messages_produce_no_graph_writes) ... /workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+ok
+test_entities_topics_relations_across_conversations (__main__.GraphCompat.test_entities_topics_relations_across_conversations) ... /workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:634: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:577: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+ok
+test_reindex_like_sequence_single_conversation (__main__.GraphCompat.test_reindex_like_sequence_single_conversation) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.292s
+
+OK
+<end of output>
+Test time =   3.62 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_graph_compat" end time: Oct 01 00:13 CEST
+"compat.test_graph_compat" time elapsed: 00:00:03
+----------------------------------------------------------
+
+16/83 Testing: unit.test_chat_knowledge_context
+16/83 Test: unit.test_chat_knowledge_context
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_chat_knowledge_context.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_chat_knowledge_context" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 453 skipped
+[doctest] assertions: 212 | 212 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   3.30 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_knowledge_context" end time: Oct 01 00:13 CEST
+"unit.test_chat_knowledge_context" time elapsed: 00:00:03
+----------------------------------------------------------
+
+74/83 Testing: compat.test_semantic_recovery
+74/83 Test: compat.test_semantic_recovery
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_semantic_recovery.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_semantic_recovery" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_config_identity_returning_to_old_value_still_rejects_old_completion (__main__.SemanticRecoveryTest.test_config_identity_returning_to_old_value_still_rejects_old_completion) ... /workspace/scratch/23947acf329f/chatadhd-w1/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+ok
+test_each_relevant_change_recovers_without_automatic_replay (__main__.SemanticRecoveryTest.test_each_relevant_change_recovers_without_automatic_replay) ... ok
+test_manual_reset_invalidates_old_request (__main__.SemanticRecoveryTest.test_manual_reset_invalidates_old_request) ... ok
+test_old_failure_cannot_affect_changed_settings_without_enabled_poll (__main__.SemanticRecoveryTest.test_old_failure_cannot_affect_changed_settings_without_enabled_poll) ... ok
+test_old_success_cannot_clear_new_generation_failures (__main__.SemanticRecoveryTest.test_old_success_cannot_clear_new_generation_failures) ... ok
+test_preserves_configured_model_on_repeated_load (__main__.SemanticRecoveryTest.test_preserves_configured_model_on_repeated_load) ... ok
+test_same_or_unrelated_settings_do_not_reenable_or_make_requests (__main__.SemanticRecoveryTest.test_same_or_unrelated_settings_do_not_reenable_or_make_requests) ... ok
+test_success_resets_current_failure_count (__main__.SemanticRecoveryTest.test_success_resets_current_failure_count) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.033s
+
+OK
+<end of output>
+Test time =   3.45 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_semantic_recovery" end time: Oct 01 00:13 CEST
+"compat.test_semantic_recovery" time elapsed: 00:00:03
+----------------------------------------------------------
+
+3/83 Testing: unit.test_capi
+3/83 Test: unit.test_capi
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_capi.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_capi" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 458 skipped
+[doctest] assertions: 580 | 580 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   4.03 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_capi" end time: Oct 01 00:13 CEST
+"unit.test_capi" time elapsed: 00:00:04
+----------------------------------------------------------
+
+24/83 Testing: unit.test_extract
+24/83 Test: unit.test_extract
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_extract.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_extract" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 453 skipped
+[doctest] assertions: 241 | 241 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   4.80 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_extract" end time: Oct 01 00:13 CEST
+"unit.test_extract" time elapsed: 00:00:04
+----------------------------------------------------------
+
+82/83 Testing: cli.smoke
+82/83 Test: cli.smoke
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/cli/tests/test_cli_smoke.py"
+Directory: /workspace/scratch/23947acf329f/verification/build/cli
+"cli.smoke" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+cli smoke: ok
+<end of output>
+Test time =   3.49 sec
+----------------------------------------------------------
+Test Passed.
+"cli.smoke" end time: Oct 01 00:13 CEST
+"cli.smoke" time elapsed: 00:00:03
+----------------------------------------------------------
+
+18/83 Testing: unit.test_context_controls
+18/83 Test: unit.test_context_controls
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_context_controls.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_context_controls" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 459 skipped
+[doctest] assertions: 153 | 153 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   2.86 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_context_controls" end time: Oct 01 00:13 CEST
+"unit.test_context_controls" time elapsed: 00:00:02
+----------------------------------------------------------
+
+38/83 Testing: unit.test_knowledge_flow
+38/83 Test: unit.test_knowledge_flow
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_knowledge_flow.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_knowledge_flow" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 466 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.55 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_knowledge_flow" end time: Oct 01 00:13 CEST
+"unit.test_knowledge_flow" time elapsed: 00:00:01
+----------------------------------------------------------
+
+6/83 Testing: unit.test_catalog_context
+6/83 Test: unit.test_catalog_context
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_catalog_context.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_catalog_context" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 461 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   2.66 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_context" end time: Oct 01 00:13 CEST
+"unit.test_catalog_context" time elapsed: 00:00:02
+----------------------------------------------------------
+
+25/83 Testing: unit.test_extract_eval
+25/83 Test: unit.test_extract_eval
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_extract_eval.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_extract_eval" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:92:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: entities and aliases (after resolution)
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:141: MESSAGE: project entity P/R/F1 = 0.833333 / 1 / 0.909091  (5 of 5, predicted 6)
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:143: MESSAGE: alias P/R/F1 = 0.545455 / 0.230769 / 0.324324
+
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:149:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: versions
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:191: MESSAGE: version precision/recall = 0.95 / 0.818182  (18/22)
+
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:196:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: status per branch and version
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:230: MESSAGE: status accuracy = 0.8, status+version accuracy = 0.76  (25 located events)
+
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:243:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: decisions and forks
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:270: MESSAGE: decision recall (unit) = 0.619048, (message) = 0.571429, with recorded alternatives = 0.238095  (21)
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:306: MESSAGE: fork recall = 1  (5 forked conversations), design fork found = true
+
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:313:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: areas (R10)
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_extract_eval.cpp:350: MESSAGE: area recall = 1, listed-member recall = 0.428571 (token overlap, PL vs EN), member count exact = 5/5
+
+===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 462 skipped
+[doctest] assertions: 27 | 27 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   3.09 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_extract_eval" end time: Oct 01 00:13 CEST
+"unit.test_extract_eval" time elapsed: 00:00:03
+----------------------------------------------------------
+
+80/83 Testing: server.smoke
+80/83 Test: server.smoke
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/server/tests/test_server_smoke.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"server.smoke" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+OK: loom-server knowledge/catalog/context checks passed
+OK: all loom-server smoke checks passed
+OK: loom-server auth checks passed
+<end of output>
+Test time =   3.33 sec
+----------------------------------------------------------
+Test Passed.
+"server.smoke" end time: Oct 01 00:13 CEST
+"server.smoke" time elapsed: 00:00:03
+----------------------------------------------------------
+
+28/83 Testing: unit.test_generalize_eval
+28/83 Test: unit.test_generalize_eval
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_generalize_eval.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_generalize_eval" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:68:
+TEST SUITE: generalize_eval
+TEST CASE:  synthetic_dev: principles, operators, predictions, false certainty, EP soundness
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.optionality_over_speed -> p_4b48be69aa2f49d2 level value ok form invariant ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.honesty_over_comfort -> p_e3a2d7988454a4aa level value ok form invariant ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.keep_both_branches -> p_0c2b3b04100e4bd2 level epistemic ok form heuristic WRONG
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.data_over_branches -> p.presets_are_data level strategy ok form invariant ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.write_down_the_blocker -> p_db3c63210eee0c93 level epistemic ok form heuristic ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.counterexample_hunting -> p_8654c1ed489e8d32 level epistemic ok form meta WRONG
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:98: MESSAGE: principle not recalled: pr.provider_not_special_case
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:98: MESSAGE: principle not recalled: pr.momentum_over_perfection
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.decide_fast_correct_later -> p_57a4844d39c09722 level strategy ok form default ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.small_reversible_steps -> p_b7552f556fbfe41a level strategy ok form default ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.owner_confirmation_for_money -> p_962c0010c407c989 level strategy ok form conflict_resolution ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.two_masters_conflict -> p_231595376cdf4c41 level strategy ok form conflict_resolution ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.meta_two_examples_rule -> p_599da6dc0ad9146d level epistemic WRONG form meta ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:114: MESSAGE: principles: 30 (29 discovered), recall 0.846154, level acc 0.909091, form acc 0.818182
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.new_source_new_adapter: pre-T candidate yes, pre/post merged yes
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.new_artifact_shared_structure: pre-T candidate yes, pre/post merged no
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.observe_before_automate: pre-T candidate yes, pre/post merged no
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.uncertainty_keep_alternatives: pre-T candidate yes, pre/post merged yes
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.impl_detail_not_propagated: pre-T candidate yes, pre/post merged no
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.cost_gate_on_irreversibility: pre-T candidate yes, pre/post merged yes
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:162: MESSAGE: operators: 14 mined <= T, pre-T recovery 6/6; full-corpus recurrence 3/6, merged operators 3 (impure 0)
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.new_source_new_adapter: holds
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.new_artifact_shared_structure: MISSED
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.observe_before_automate: MISSED
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.uncertainty_keep_alternatives: holds
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.impl_detail_not_propagated: MISSED
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.cost_gate_on_irreversibility: holds
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:195: MESSAGE: predictions: 15 made at T, 3 evaluated (3 hold); holdout pair accuracy 0.5; negative control attributed 0x, specific-choice predictions 0, confident-but-violated 0
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.analogghosts (music): music ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.lokatorka (legal_case): legal_case ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.noteflow (multiplatform_app): software_app+multiplatform ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.reeltime (pipeline): film+staged_transformation WRONG
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.watchdog (agent_system): software_app ok
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_generalize_eval.cpp:257: MESSAGE: matching: kind accuracy 4/5; produced 157 claims (12 inferred, 4 transferred, 3 extrapolated, 4 analogies); false-certainty rate 0; inferred with EP 16/16; EP re-check after T: holds 6, violated 0, pending 6 (soundness 1)
+
+GENERALIZE_EVAL principle_recall=0.846 level_acc=0.909 form_acc=0.818 op_pre=6/6 op_recur=3/6 impure=0 pred_acc=0.500 neg_attr=0 specific=0 fc=0.000 ep_sound=1.000 kinds=4/5
+===============================================================================
+[doctest] test cases:   1 |   1 passed | 0 failed | 467 skipped
+[doctest] assertions: 173 | 173 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   2.03 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_generalize_eval" end time: Oct 01 00:13 CEST
+"unit.test_generalize_eval" time elapsed: 00:00:02
+----------------------------------------------------------
+
+9/83 Testing: unit.test_catalog_retention
+9/83 Test: unit.test_catalog_retention
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_catalog_retention.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_catalog_retention" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 463 skipped
+[doctest] assertions: 179 | 179 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   3.05 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_retention" end time: Oct 01 00:13 CEST
+"unit.test_catalog_retention" time elapsed: 00:00:03
+----------------------------------------------------------
+
+5/83 Testing: unit.test_catalog
+5/83 Test: unit.test_catalog
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_catalog.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_catalog" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 455 skipped
+[doctest] assertions: 344 | 344 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   2.82 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog" end time: Oct 01 00:13 CEST
+"unit.test_catalog" time elapsed: 00:00:02
+----------------------------------------------------------
+
+42/83 Testing: unit.test_materialize
+42/83 Test: unit.test_materialize
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_materialize.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_materialize" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 462 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.41 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_materialize" end time: Oct 01 00:13 CEST
+"unit.test_materialize" time elapsed: 00:00:01
+----------------------------------------------------------
+
+1/83 Testing: unit.test_archive
+1/83 Test: unit.test_archive
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_archive.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_archive" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 450 skipped
+[doctest] assertions: 270 | 270 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.47 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_archive" end time: Oct 01 00:13 CEST
+"unit.test_archive" time elapsed: 00:00:01
+----------------------------------------------------------
+
+7/83 Testing: unit.test_catalog_eval
+7/83 Test: unit.test_catalog_eval
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_catalog_eval.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_catalog_eval" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:118:
+TEST SUITE: catalog_eval
+TEST CASE:  synthetic_dev: recall/precision/noise-trap FP
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:249: MESSAGE: ranking AUC final=0.965556 lexical=0.777222 semantic=0.981111
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:250: MESSAGE: ranking hits@20=20/20 hits@45=42/45 (lexical hits@45=36, semantic hits@45=43)
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:253: MESSAGE: shadow: |C_lexical|=10 |C_semantic|=5 gap(lex-sem): rescue=5 noise=0 undecided=2 [cx-04-venting mu-01-kickoff rt-02-storyboard rt-05-clips-gate rt-07-stalled ] semantic-only: relevant=2 noise=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:258: MESSAGE: relevant: 31/45 recall=0.688889
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:259: MESSAGE: traps: 0/5 trap_fpr=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:260: MESSAGE: noise_generic selected: 0/15
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:261: MESSAGE: selected conversations: 31 precision=1
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:263: MESSAGE: selected auxiliary documents (outside conversation labels): 3
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_catalog_eval.cpp:264: MESSAGE: selector stats: {"run_id":"run_56ed9f716a7945b4","scoring_evidence_version":3,"legacy_combined_features":["id_hits","class_diversity","code_evidence"],"identity_unavailable":0,"relevant":34,"candidate":7,"irrelevant":27,"traps":4,"expanded_terms":[{"term":"zero","pass":1,"lift":3.4,"df_relevant":3,"df_corpus":6,"evidence":["un_3d70b7a34635f5fe","un_9e8228809931d5d0","un_e7c579ba8fc08dd1"],"reason":"lift >= 3.000000 against the verified-relevant set (vocabulary expansion)"}],"semantic":{"available":true,"passes":1,"seeds":40,"method":"tfidf_cosine(word_stems)+tfidf_cosine(char_4grams)","floor_word":0.0283,"ref_word":0.1362,"floor_gram":0.0865,"ref_gram":0.2412,"word_vocabulary":1267,"gram_vocabulary":4074},"channels":{"lexical_relevant":10,"semantic_relevant":5,"both":3,"lexical_only":7,"semantic_only":2},"links":56,"link_stats":{"mode":"candidates","units":68,"links":56,"project_groups_aggregated":0,"minhash_pairs_verified":1,"lsh_candidates":1,"rare_term_candidates":653,"uncorroborated_sessions":0}}
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 467 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.16 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_eval" end time: Oct 01 00:13 CEST
+"unit.test_catalog_eval" time elapsed: 00:00:01
+----------------------------------------------------------
+
+67/83 Testing: compat.test_db_compat
+67/83 Test: compat.test_db_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_db_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_db_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_a_python_created_db_is_read_identically_by_loom (__main__.DbCompatTest.test_a_python_created_db_is_read_identically_by_loom) ... /workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:634: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:577: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+ok
+test_b_loom_created_db_is_fully_usable_by_python (__main__.DbCompatTest.test_b_loom_created_db_is_fully_usable_by_python) ... ok
+test_c_interleaved_python_and_loom_on_one_file (__main__.DbCompatTest.test_c_interleaved_python_and_loom_on_one_file) ... ok
+test_d_concurrent_writers_python_and_loom (__main__.DbCompatTest.test_d_concurrent_writers_python_and_loom) ... ok
+test_fts_index_is_separate_and_python_vacuum_works (__main__.DbCompatTest.test_fts_index_is_separate_and_python_vacuum_works) ... ok
+test_legacy_schema_migrates_identically (__main__.DbCompatTest.test_legacy_schema_migrates_identically) ... ok
+test_schema_text_matches_python (__main__.DbCompatTest.test_schema_text_matches_python) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.630s
+
+OK
+<end of output>
+Test time =   1.79 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_db_compat" end time: Oct 01 00:13 CEST
+"compat.test_db_compat" time elapsed: 00:00:01
+----------------------------------------------------------
+
+70/83 Testing: compat.test_import_compat
+70/83 Test: compat.test_import_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_import_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_import_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+................./workspace/scratch/23947acf329f/chatadhd-w1/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+.......
+----------------------------------------------------------------------
+Ran 24 tests in 0.846s
+
+OK
+<end of output>
+Test time =   0.98 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_import_compat" end time: Oct 01 00:13 CEST
+"compat.test_import_compat" time elapsed: 00:00:00
+----------------------------------------------------------
+
+47/83 Testing: unit.test_pack_model
+47/83 Test: unit.test_pack_model
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_pack_model.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_pack_model" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 462 skipped
+[doctest] assertions: 900 | 900 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   2.15 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_pack_model" end time: Oct 01 00:13 CEST
+"unit.test_pack_model" time elapsed: 00:00:02
+----------------------------------------------------------
+
+62/83 Testing: compat.test_candidate_graph_native
+62/83 Test: compat.test_candidate_graph_native
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_candidate_graph_native.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_candidate_graph_native" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 1.141s
+
+OK
+<end of output>
+Test time =   1.27 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_candidate_graph_native" end time: Oct 01 00:13 CEST
+"compat.test_candidate_graph_native" time elapsed: 00:00:01
+----------------------------------------------------------
+
+83/83 Testing: eval.harness
+83/83 Test: eval.harness
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tools/eval/test_eval.py"
+Directory: /workspace/scratch/23947acf329f/verification/build/cli
+"eval.harness" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+.............no verifiable snapshot on HEAD's mainline exists on or before 2026-03-06 (UTC)
+......
+----------------------------------------------------------------------
+Ran 19 tests in 0.937s
+
+OK
+cut 2026-03-06: unavailable -> /var/tmp/tmpi5w9uf_8/nested/result.json
+<end of output>
+Test time =   1.11 sec
+----------------------------------------------------------
+Test Passed.
+"eval.harness" end time: Oct 01 00:13 CEST
+"eval.harness" time elapsed: 00:00:01
+----------------------------------------------------------
+
+14/83 Testing: unit.test_chat_active_task_revisions
+14/83 Test: unit.test_chat_active_task_revisions
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_chat_active_task_revisions.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_chat_active_task_revisions" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 458 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.71 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_revisions" end time: Oct 01 00:13 CEST
+"unit.test_chat_active_task_revisions" time elapsed: 00:00:00
+----------------------------------------------------------
+
+78/83 Testing: research.graph_native_protocol
+78/83 Test: research.graph_native_protocol
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "-m" "unittest" "discover" "-s" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tools/eval" "-p" "test_graph_native_eval.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"research.graph_native_protocol" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.605s
+
+OK
+<end of output>
+Test time =   0.77 sec
+----------------------------------------------------------
+Test Passed.
+"research.graph_native_protocol" end time: Oct 01 00:13 CEST
+"research.graph_native_protocol" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/83 Testing: unit.test_context_eval
+20/83 Test: unit.test_context_eval
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_context_eval.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_context_eval" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_context_eval.cpp:346:
+TEST SUITE: context_eval
+TEST CASE:  context efficiency vs naive full-history and flat-retrieval, coverage@budget, determinism
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=1/1 selected=552
+  logged: scenario: implement checklist feature (PL)
+
+/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=2/2 selected=667
+  logged: scenario: verify encryption claim
+
+===============================================================================
+[doctest] test cases:   2 |   2 passed | 0 failed | 466 skipped
+[doctest] assertions: 356 | 356 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.15 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_context_eval" end time: Oct 01 00:13 CEST
+"unit.test_context_eval" time elapsed: 00:00:01
+----------------------------------------------------------
+
+11/83 Testing: unit.test_chat_active_task
+11/83 Test: unit.test_chat_active_task
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_chat_active_task.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_chat_active_task" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 449 skipped
+[doctest] assertions: 186 | 186 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.08 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task" end time: Oct 01 00:13 CEST
+"unit.test_chat_active_task" time elapsed: 00:00:01
+----------------------------------------------------------
+
+13/83 Testing: unit.test_chat_active_task_retention
+13/83 Test: unit.test_chat_active_task_retention
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_chat_active_task_retention.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_chat_active_task_retention" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 457 skipped
+[doctest] assertions: 232 | 232 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.79 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_retention" end time: Oct 01 00:13 CEST
+"unit.test_chat_active_task_retention" time elapsed: 00:00:00
+----------------------------------------------------------
+
+36/83 Testing: unit.test_knowledge_candidate_graph
+36/83 Test: unit.test_knowledge_candidate_graph
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_knowledge_candidate_graph.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_knowledge_candidate_graph" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 458 skipped
+[doctest] assertions: 114 | 114 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.38 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_knowledge_candidate_graph" end time: Oct 01 00:13 CEST
+"unit.test_knowledge_candidate_graph" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/83 Testing: unit.test_capi_knowledge
+4/83 Test: unit.test_capi_knowledge
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_capi_knowledge.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_capi_knowledge" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 467 skipped
+[doctest] assertions: 55 | 55 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.50 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_capi_knowledge" end time: Oct 01 00:13 CEST
+"unit.test_capi_knowledge" time elapsed: 00:00:00
+----------------------------------------------------------
+
+52/83 Testing: unit.test_resolve
+52/83 Test: unit.test_resolve
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_resolve.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_resolve" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 460 skipped
+[doctest] assertions: 71 | 71 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.28 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_resolve" end time: Oct 01 00:13 CEST
+"unit.test_resolve" time elapsed: 00:00:00
+----------------------------------------------------------
+
+79/83 Testing: research.candidate_graph_protocol
+79/83 Test: research.candidate_graph_protocol
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "-m" "unittest" "discover" "-s" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tools/eval" "-p" "test_candidate_graph_eval.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"research.candidate_graph_protocol" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+...............
+----------------------------------------------------------------------
+Ran 15 tests in 0.945s
+
+OK
+<end of output>
+Test time =   1.13 sec
+----------------------------------------------------------
+Test Passed.
+"research.candidate_graph_protocol" end time: Oct 01 00:13 CEST
+"research.candidate_graph_protocol" time elapsed: 00:00:01
+----------------------------------------------------------
+
+61/83 Testing: compat.test_abi_compat
+61/83 Test: compat.test_abi_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_abi_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_abi_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.525s
+
+OK
+<end of output>
+Test time =   0.70 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_abi_compat" end time: Oct 01 00:13 CEST
+"compat.test_abi_compat" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/83 Testing: unit.test_db
+22/83 Test: unit.test_db
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_db.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_db" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   13 |   13 passed | 0 failed | 455 skipped
+[doctest] assertions: 5178 | 5178 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.35 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_db" end time: Oct 01 00:13 CEST
+"unit.test_db" time elapsed: 00:00:00
+----------------------------------------------------------
+
+68/83 Testing: compat.test_github_sync_defaults
+68/83 Test: compat.test_github_sync_defaults
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_github_sync_defaults.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_github_sync_defaults" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.014s
+
+OK
+<end of output>
+Test time =   0.33 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_github_sync_defaults" end time: Oct 01 00:13 CEST
+"compat.test_github_sync_defaults" time elapsed: 00:00:00
+----------------------------------------------------------
+
+65/83 Testing: compat.test_config_compat
+65/83 Test: compat.test_config_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_config_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_config_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_corrupt_config_falls_back_to_defaults_like_python (__main__.ConfigCompatTest.test_corrupt_config_falls_back_to_defaults_like_python) ... ok
+test_data_dir_resolution_matches_python (__main__.ConfigCompatTest.test_data_dir_resolution_matches_python) ... ok
+test_loom_written_config_is_read_by_python_without_upgrade (__main__.ConfigCompatTest.test_loom_written_config_is_read_by_python_without_upgrade) ... ok
+test_python_written_config_is_read_by_loom (__main__.ConfigCompatTest.test_python_written_config_is_read_by_loom) ... ok
+test_user_model_preservation_is_identical (__main__.ConfigCompatTest.test_user_model_preservation_is_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.102s
+
+OK
+<end of output>
+Test time =   0.27 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_config_compat" end time: Oct 01 00:13 CEST
+"compat.test_config_compat" time elapsed: 00:00:00
+----------------------------------------------------------
+
+41/83 Testing: unit.test_knowledge_store
+41/83 Test: unit.test_knowledge_store
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_knowledge_store.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_knowledge_store" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 461 skipped
+[doctest] assertions: 124 | 124 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.33 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_knowledge_store" end time: Oct 01 00:13 CEST
+"unit.test_knowledge_store" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/83 Testing: unit.test_chat_active_task_concurrency
+12/83 Test: unit.test_chat_active_task_concurrency
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_chat_active_task_concurrency.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_chat_active_task_concurrency" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 464 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.18 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_concurrency" end time: Oct 01 00:13 CEST
+"unit.test_chat_active_task_concurrency" time elapsed: 00:00:00
+----------------------------------------------------------
+
+77/83 Testing: research.independent_protocol
+77/83 Test: research.independent_protocol
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "-m" "unittest" "discover" "-s" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tools/eval" "-p" "test_independent_cases.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"research.independent_protocol" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.097s
+
+OK
+<end of output>
+Test time =   0.25 sec
+----------------------------------------------------------
+Test Passed.
+"research.independent_protocol" end time: Oct 01 00:13 CEST
+"research.independent_protocol" time elapsed: 00:00:00
+----------------------------------------------------------
+
+72/83 Testing: compat.test_selector_compat
+72/83 Test: compat.test_selector_compat
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_selector_compat.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_selector_compat" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.043s
+
+OK
+<end of output>
+Test time =   0.16 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_selector_compat" end time: Oct 01 00:13 CEST
+"compat.test_selector_compat" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/83 Testing: unit.test_chat_engine
+15/83 Test: unit.test_chat_engine
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_chat_engine.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_chat_engine" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 453 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.14 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_engine" end time: Oct 01 00:13 CEST
+"unit.test_chat_engine" time elapsed: 00:00:00
+----------------------------------------------------------
+
+31/83 Testing: unit.test_import
+31/83 Test: unit.test_import
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_import.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_import" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  23 |  23 passed | 0 failed | 445 skipped
+[doctest] assertions: 223 | 223 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.22 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_import" end time: Oct 01 00:13 CEST
+"unit.test_import" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/83 Testing: unit.test_fts
+26/83 Test: unit.test_fts
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_fts.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_fts" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 463 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.14 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_fts" end time: Oct 01 00:13 CEST
+"unit.test_fts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+59/83 Testing: unit.test_tasks
+59/83 Test: unit.test_tasks
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_tasks.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_tasks" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 463 skipped
+[doctest] assertions: 56 | 56 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.12 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_tasks" end time: Oct 01 00:13 CEST
+"unit.test_tasks" time elapsed: 00:00:00
+----------------------------------------------------------
+
+30/83 Testing: unit.test_graph
+30/83 Test: unit.test_graph
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_graph.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_graph" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 460 skipped
+[doctest] assertions: 30 | 30 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.12 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_graph" end time: Oct 01 00:13 CEST
+"unit.test_graph" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/83 Testing: unit.test_batch_api
+2/83 Test: unit.test_batch_api
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_batch_api.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_batch_api" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 460 skipped
+[doctest] assertions: 36 | 36 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_batch_api" end time: Oct 01 00:13 CEST
+"unit.test_batch_api" time elapsed: 00:00:00
+----------------------------------------------------------
+
+48/83 Testing: unit.test_provenance
+48/83 Test: unit.test_provenance
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_provenance.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_provenance" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 465 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_provenance" end time: Oct 01 00:13 CEST
+"unit.test_provenance" time elapsed: 00:00:00
+----------------------------------------------------------
+
+57/83 Testing: unit.test_semantic_llm
+57/83 Test: unit.test_semantic_llm
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_semantic_llm.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_semantic_llm" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 11 | 11 passed | 0 failed | 457 skipped
+[doctest] assertions: 91 | 91 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_semantic_llm" end time: Oct 01 00:13 CEST
+"unit.test_semantic_llm" time elapsed: 00:00:00
+----------------------------------------------------------
+
+51/83 Testing: unit.test_relations
+51/83 Test: unit.test_relations
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_relations.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_relations" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 467 skipped
+[doctest] assertions: 39 | 39 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_relations" end time: Oct 01 00:13 CEST
+"unit.test_relations" time elapsed: 00:00:00
+----------------------------------------------------------
+
+45/83 Testing: unit.test_model
+45/83 Test: unit.test_model
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_model.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_model" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 458 skipped
+[doctest] assertions: 137 | 137 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_model" end time: Oct 01 00:13 CEST
+"unit.test_model" time elapsed: 00:00:00
+----------------------------------------------------------
+
+60/83 Testing: unit.test_util
+60/83 Test: unit.test_util
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_util.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_util" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 458 skipped
+[doctest] assertions: 94 | 94 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_util" end time: Oct 01 00:13 CEST
+"unit.test_util" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/83 Testing: unit.test_github
+29/83 Test: unit.test_github
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_github.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_github" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 449 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_github" end time: Oct 01 00:13 CEST
+"unit.test_github" time elapsed: 00:00:00
+----------------------------------------------------------
+
+55/83 Testing: unit.test_runtime
+55/83 Test: unit.test_runtime
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_runtime.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_runtime" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 464 skipped
+[doctest] assertions: 50 | 50 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_runtime" end time: Oct 01 00:13 CEST
+"unit.test_runtime" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/83 Testing: unit.test_event_bus
+23/83 Test: unit.test_event_bus
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_event_bus.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_event_bus" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 463 skipped
+[doctest] assertions: 28 | 28 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_event_bus" end time: Oct 01 00:13 CEST
+"unit.test_event_bus" time elapsed: 00:00:00
+----------------------------------------------------------
+
+32/83 Testing: unit.test_import_exports
+32/83 Test: unit.test_import_exports
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_import_exports.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_import_exports" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 468 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_import_exports" end time: Oct 01 00:13 CEST
+"unit.test_import_exports" time elapsed: 00:00:00
+----------------------------------------------------------
+
+46/83 Testing: unit.test_net_sse
+46/83 Test: unit.test_net_sse
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_net_sse.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_net_sse" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 458 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_net_sse" end time: Oct 01 00:13 CEST
+"unit.test_net_sse" time elapsed: 00:00:00
+----------------------------------------------------------
+
+50/83 Testing: unit.test_regex
+50/83 Test: unit.test_regex
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_regex.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_regex" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 453 skipped
+[doctest] assertions: 89 | 89 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_regex" end time: Oct 01 00:13 CEST
+"unit.test_regex" time elapsed: 00:00:00
+----------------------------------------------------------
+
+37/83 Testing: unit.test_knowledge_candidates
+37/83 Test: unit.test_knowledge_candidates
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_knowledge_candidates.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_knowledge_candidates" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 467 skipped
+[doctest] assertions: 14 | 14 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_knowledge_candidates" end time: Oct 01 00:13 CEST
+"unit.test_knowledge_candidates" time elapsed: 00:00:00
+----------------------------------------------------------
+
+43/83 Testing: unit.test_media
+43/83 Test: unit.test_media
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_media.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_media" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 468 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_media" end time: Oct 01 00:13 CEST
+"unit.test_media" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/83 Testing: unit.test_config
+17/83 Test: unit.test_config
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_config.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_config" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 463 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_config" end time: Oct 01 00:13 CEST
+"unit.test_config" time elapsed: 00:00:00
+----------------------------------------------------------
+
+49/83 Testing: unit.test_providers
+49/83 Test: unit.test_providers
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_providers.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_providers" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 468 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_providers" end time: Oct 01 00:13 CEST
+"unit.test_providers" time elapsed: 00:00:00
+----------------------------------------------------------
+
+58/83 Testing: unit.test_semantic_worker
+58/83 Test: unit.test_semantic_worker
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_semantic_worker.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_semantic_worker" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 468 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_semantic_worker" end time: Oct 01 00:13 CEST
+"unit.test_semantic_worker" time elapsed: 00:00:00
+----------------------------------------------------------
+
+56/83 Testing: unit.test_selector
+56/83 Test: unit.test_selector
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_selector.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_selector" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 463 skipped
+[doctest] assertions: 22 | 22 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_selector" end time: Oct 01 00:13 CEST
+"unit.test_selector" time elapsed: 00:00:00
+----------------------------------------------------------
+
+44/83 Testing: unit.test_memory
+44/83 Test: unit.test_memory
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_memory.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_memory" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 468 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_memory" end time: Oct 01 00:13 CEST
+"unit.test_memory" time elapsed: 00:00:00
+----------------------------------------------------------
+
+54/83 Testing: unit.test_resolve_lineage
+54/83 Test: unit.test_resolve_lineage
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_resolve_lineage.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_resolve_lineage" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 468 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_resolve_lineage" end time: Oct 01 00:13 CEST
+"unit.test_resolve_lineage" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/83 Testing: unit.test_catalog_scale
+10/83 Test: unit.test_catalog_scale
+Command: "/workspace/scratch/23947acf329f/verification/build/loom_tests" "--source-file=*/test_catalog_scale.cpp" "--no-intro=true"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"unit.test_catalog_scale" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 468 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_scale" end time: Oct 01 00:13 CEST
+"unit.test_catalog_scale" time elapsed: 00:00:00
+----------------------------------------------------------
+
+63/83 Testing: compat.test_chat_active_task_http
+63/83 Test: compat.test_chat_active_task_http
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/tests/compat/test_chat_active_task_http.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"compat.test_chat_active_task_http" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not) ... 00:13:32 [INFO ] loom.config: config.json not found - using defaults
+00:13:32 [INFO ] loom.config: secrets.json not found - using defaults
+00:13:32 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:13:32 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-http-yuzwf1qa/chatadhd.db
+00:13:32 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:13:32 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-http-yuzwf1qa)
+00:13:32 [INFO ] loom.db: Database closed
+00:13:32 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding (__main__.ActiveTaskRevisionHttpTest.test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding) ... 00:13:32 [INFO ] loom.config: config.json not found - using defaults
+00:13:32 [INFO ] loom.config: secrets.json not found - using defaults
+00:13:32 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:13:32 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-xb0b3k96/chatadhd.db
+00:13:32 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:13:32 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-xb0b3k96)
+00:13:32 [INFO ] loom.db: Database closed
+00:13:32 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_selective_v2_v3_latest_replay_and_stale_rejection (__main__.ActiveTaskRevisionHttpTest.test_selective_v2_v3_latest_replay_and_stale_rejection) ... 00:13:33 [INFO ] loom.config: config.json not found - using defaults
+00:13:33 [INFO ] loom.config: secrets.json not found - using defaults
+00:13:33 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:13:33 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-635mtb3z/chatadhd.db
+00:13:33 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:13:33 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-635mtb3z)
+00:13:33 [INFO ] loom.db: Database closed
+00:13:33 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_trace_off_provider_failure_retains_product_across_runtime_restart (__main__.ActiveTaskRevisionHttpTest.test_trace_off_provider_failure_retains_product_across_runtime_restart) ... 00:13:34 [INFO ] loom.config: config.json not found - using defaults
+00:13:34 [INFO ] loom.config: secrets.json not found - using defaults
+00:13:34 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:13:34 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-stmlvfh7/chatadhd.db
+00:13:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:13:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-stmlvfh7)
+00:13:34 [INFO ] loom.db: Database closed
+00:13:34 [INFO ] loom.runtime: Loom runtime shut down
+00:13:34 [INFO ] loom.config: Loaded config.json (12 keys)
+00:13:34 [INFO ] loom.config: Loaded secrets.json (1 keys)
+00:13:34 [INFO ] loom.db: Database opened: /var/tmp/loom-w1-revision-http-stmlvfh7/chatadhd.db
+00:13:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:13:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /var/tmp/loom-w1-revision-http-stmlvfh7)
+00:13:34 [INFO ] loom.db: Database closed
+00:13:34 [INFO ] loom.runtime: Loom runtime shut down
+ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.780s
+
+OK
+W1 transport receipt: 3 local provider calls, 0 remote calls; invalid binding adds 0 messages.
+W1 retained synthetic HTTP database: /var/tmp/loom-w1-revision-http-xb0b3k96
+W1 native edit transport: 3 local calls, 0 remote; 2 rejected rebinding attempts add 0 calls/rows.
+W1 retained synthetic HTTP database: /var/tmp/loom-w1-revision-http-635mtb3z
+W1 revisions transport: 7 local calls, 0 remote; 2 stale rejections add 0 calls/rows.
+W1 retained synthetic HTTP database: /var/tmp/loom-w1-revision-http-stmlvfh7
+W1 restart transport: 5 local calls (1 HTTP 503), 0 remote; 2 version rejections add 0 calls/rows.
+<end of output>
+Test time =   2.90 sec
+----------------------------------------------------------
+Test Passed.
+"compat.test_chat_active_task_http" end time: Oct 01 00:13 CEST
+"compat.test_chat_active_task_http" time elapsed: 00:00:02
+----------------------------------------------------------
+
+81/83 Testing: server.chat_active_task
+81/83 Test: server.chat_active_task
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "/workspace/scratch/23947acf329f/chatadhd-w1/loom/server/tests/test_chat_active_task_server.py"
+Directory: /workspace/scratch/23947acf329f/verification/build
+"server.chat_active_task" start time: Oct 01 00:13 CEST
+Output:
+----------------------------------------------------------
+test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.982s
+
+OK
+W1 server transport: 1 scenario, 5 local provider calls, 0 remote; stale versions emit SSE error without start/persistence/transport; full server restart verified.
+Synthetic server fixture retained at /var/tmp/loom-w1-server-t5jk5as9
+<end of output>
+Test time =   1.12 sec
+----------------------------------------------------------
+Test Passed.
+"server.chat_active_task" end time: Oct 01 00:13 CEST
+"server.chat_active_task" time elapsed: 00:00:01
+----------------------------------------------------------
+
+End testing: Oct 01 00:13 CEST

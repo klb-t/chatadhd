@@ -1,0 +1,9 @@
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (0.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: /workspace/scratch/23947acf329f/verification/build
+[0/4] Re-checking globbed directories...
+ninja: no work to do.

@@ -1,0 +1,15 @@
+{
+  "returncode": 0,
+  "build_and_full_wall_seconds": 72.453,
+  "source_commit": "a86556809314d8dfd305e9d58147ee3845d9da2e",
+  "source_unchanged": true,
+  "command": [
+    "/workspace/scratch/a371a1ca13b1/verification/deps/cmake/data/bin/ctest",
+    "--test-dir",
+    "/workspace/scratch/23947acf329f/verification/build",
+    "-j4",
+    "--output-on-failure",
+    "--output-junit",
+    "/workspace/scratch/23947acf329f/verification/run1-http/full.xml"
+  ]
+}

@@ -1,0 +1,30 @@
+00:15:21 [INFO ] loom.config: config.json not found - using defaults
+00:15:21 [INFO ] loom.config: secrets.json not found - using defaults
+00:15:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:15:21 [INFO ] loom.db: Database opened: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/metadata_relayout/chatadhd.db
+00:15:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:15:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/metadata_relayout)
+00:15:21 [INFO ] loom.db: Database closed
+00:15:21 [INFO ] loom.runtime: Loom runtime shut down
+00:15:21 [INFO ] loom.config: Loaded config.json (12 keys)
+00:15:21 [INFO ] loom.config: secrets.json not found - using defaults
+00:15:21 [INFO ] loom.db: Database opened: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/metadata_relayout/chatadhd.db
+00:15:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:15:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/metadata_relayout)
+00:15:21 [INFO ] loom.db: Database closed
+00:15:21 [INFO ] loom.runtime: Loom runtime shut down
+00:15:21 [INFO ] loom.config: config.json not found - using defaults
+00:15:21 [INFO ] loom.config: secrets.json not found - using defaults
+00:15:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:15:21 [INFO ] loom.db: Database opened: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/move_accepting_row/chatadhd.db
+00:15:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:15:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/move_accepting_row)
+00:15:21 [INFO ] loom.db: Database closed
+00:15:21 [INFO ] loom.runtime: Loom runtime shut down
+00:15:21 [INFO ] loom.config: Loaded config.json (12 keys)
+00:15:21 [INFO ] loom.config: secrets.json not found - using defaults
+00:15:21 [INFO ] loom.db: Database opened: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/move_accepting_row/chatadhd.db
+00:15:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:15:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /workspace/scratch/23947acf329f/w1-acceptance-audit-9njhp9_n/move_accepting_row)
+00:15:21 [INFO ] loom.db: Database closed
+00:15:21 [INFO ] loom.runtime: Loom runtime shut down

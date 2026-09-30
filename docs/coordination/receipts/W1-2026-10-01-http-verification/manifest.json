@@ -1,0 +1,38 @@
+{
+  "abi-first.log": {
+    "bytes": 3839,
+    "sha256": "8f57a0fef0e47a658099029f19db00a68eedd6f5a2d797c2fc442a2508208c8c"
+  },
+  "build.log": {
+    "bytes": 340,
+    "sha256": "ce46981d626e3ab2ffb925de60b6abe7f0853ac0c2e27f1f9c6bc2fc90d7b6a7"
+  },
+  "execution.json": {
+    "bytes": 458,
+    "sha256": "1f9482a64f5862f7f524181cd48cb77656577827e9bcbb952d7e78c55ded81ad"
+  },
+  "full-details.log": {
+    "bytes": 107938,
+    "sha256": "f0fa6793c634d7e9bf380db1ce8116620e044dc88b2133a976eaa284f4e53376"
+  },
+  "full.log": {
+    "bytes": 10039,
+    "sha256": "e10290979b8a1b483c0ede71139dbeb473457d50794a9801ac133660dee21e9b"
+  },
+  "full.xml": {
+    "bytes": 45930,
+    "sha256": "c629f9e922c761204fc50bbc37be5105843aadf3ff7f55ee6e147006c1d9d108"
+  },
+  "results.json": {
+    "bytes": 1501,
+    "sha256": "0f0ec9aa0497a46c6e8c866e97d35d98c97bd038704702c09b1c7ec6d90aa8cb"
+  },
+  "server-first.log": {
+    "bytes": 508,
+    "sha256": "8e921db1726767054bf9a731a7a5d87db884885d95bfb67083dd5b4f570320da"
+  },
+  "source-before.json": {
+    "bytes": 656,
+    "sha256": "690e05d6a2b93fe0d557c935eaa1cae48b1740b9eb32608451cbf4b729163683"
+  }
+}

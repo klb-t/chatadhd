@@ -1,0 +1,20 @@
+[0/2] Re-checking globbed directories...
+[1/20] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[2/20] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+[3/20] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o
+[4/20] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[5/20] Linking CXX static library libloom_core.a
+[6/20] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o
+[7/20] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_retention.cpp.o
+[8/20] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_revisions.cpp.o
+[9/20] Linking CXX shared library libloom.so.0.1.0
+[10/20] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o
+[11/20] Creating library symlink libloom.so.0 libloom.so
+[12/20] Linking CXX executable loom_candidate_graph_native_tool
+[13/20] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_chat.cpp.o
+[14/20] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o
+[15/20] Linking CXX executable server/loom-server
+[16/20] Linking CXX executable loom_compat_tool
+[17/20] Building CXX object cli/CMakeFiles/loom_cli.dir/main.cpp.o
+[18/20] Linking CXX executable loom_tests
+[19/20] Linking CXX executable cli/loom

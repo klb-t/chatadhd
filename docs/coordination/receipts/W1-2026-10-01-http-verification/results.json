@@ -1,0 +1,34 @@
+{
+  "source_commit": "a86556809314d8dfd305e9d58147ee3845d9da2e",
+  "base_local": "57007d9a69d0cef658f6737aebbb78184c830cd6",
+  "base_remote": "5911b2dfe98da5a39d60879aca4f1b86ba8d29ff",
+  "build": "pass; CMake registration regenerated, no production compilation needed",
+  "production_source_changed": false,
+  "full_ctest": {
+    "entries": 83,
+    "failures": 0,
+    "skipped": 0,
+    "ctest_seconds": 71.59,
+    "build_and_test_wall_seconds": 72.453
+  },
+  "transport": {
+    "abi_methods": 4,
+    "abi_local_provider_calls": 18,
+    "server_http_sse_methods": 1,
+    "server_local_provider_calls": 5,
+    "full_total_local_provider_calls": 23,
+    "full_provider_http_503": 2,
+    "preliminary_total_local_provider_calls": 23,
+    "all_this_increment_local_provider_calls": 46,
+    "remote_calls": 0,
+    "preliminary_note": "before final server failure-payload assertions and new ABI fixture retention; final claims use full CTest"
+  },
+  "source_unchanged_after_full": true,
+  "junit_output_note": "CTest truncates long successful test output; full-details.log preserves complete actual ABI method/call receipts",
+  "scope": "synthetic boundary/lifecycle mechanism; no model quality measurement",
+  "binary_sha256": {
+    "libloom.so.0.1.0": "0916b6bb82a497bd1038501f85c5f1d73fce94857ff07a6727a814211d7c7496",
+    "loom_tests": "7487256af2676808e1c40a605e54e9a46c5b2c630e784aea8b82bc54800c3756",
+    "server/loom-server": "5cd441a94d49f6dc6def62d1b42b44e2dbe8a5b717589d13d5fb86fe506c16cf"
+  }
+}
