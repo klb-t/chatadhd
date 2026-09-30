@@ -77,6 +77,11 @@ them or work in other files — do not edit the same files in parallel and then 
 
 ## 3. Concrete experiments you can run now (live), in suggested order
 
+> **Owner, 2026-09-30: no paid model calls on synthetic data.** Implement and handle every method,
+> and verify it offline (scripted transport, fixtures, previously saved responses). Live runs wait
+> until the owner imports his own archives. The live parts of the experiments below are deferred
+> until then.
+
 Each with a frozen plan, a budget cap, saved first responses, no silent retries, and results
 split into development vs untouched validation. The OpenRouter key must never enter Git.
 
@@ -132,10 +137,9 @@ split into development vs untouched validation. The OpenRouter key must never en
      - critique the existing graph;
      - ask about gaps;
      - reason at length over a whole archive when the user wants that.
-   - **Possible pilot:** a few `synthetic_dev` conversations on several models; measure what each
-     method finds and what it really costs (`usage`). For planning numbers, the offline
-     `python3 loom/tools/eval/archive_cost.py --db <data_dir>/chatadhd.db` estimates the cost of a
-     reading pass (prices in `loom/tools/eval/pricing_2026-09-25.json`).
+   - **No paid pilot.** The owner has no budget for it. Implement these methods so they are handled
+     and configurable, and test them offline: scripted transport, fixtures, stored responses.
+     `loom/tools/eval/archive_cost.py` (offline) gives planning numbers.
    - **Proposal: one graph exchange form, `loom.graph_packet/1`.** The same shape would serve as
      model input and output, export, preview and manual editing, so every method gets the graph
      identically:
