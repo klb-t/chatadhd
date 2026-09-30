@@ -1,0 +1,38 @@
+{
+  "schema": "loom.graph_panel_independent_replay_baselines_audit/1",
+  "date": "2026-09-30",
+  "validation_read": false,
+  "model_calls": 0,
+  "actual_paid_raw_responses_read": false,
+  "frozen_implementations_modified": false,
+  "driver_mechanism_methods_passed": 8,
+  "synthetic_driver_accounting_counterexample_not_real_bill": {
+    "raw_cost_usd": "0.002",
+    "altered_ledger_cost_usd": "0.000001",
+    "driver_raises": false,
+    "output_state": "unavailable",
+    "summary_reported_cost_usd": "0.000001",
+    "summary_missing_cost_attempts": 0,
+    "decision": "separate_integrity_certification_from_semantic_compile_failure"
+  },
+  "retained_local_DEV_recount": {
+    "freeze_hash_checks": 6,
+    "exact_prefixes": 96,
+    "exact_source_candidate_bindings": 252,
+    "vector_shape": [146, 384],
+    "max_vector_norm_error": 5.8862095864142816e-8,
+    "max_stored_float64_dot_error": 0.0,
+    "eligible_evidence_spans": 66,
+    "queries_with_evidence": 60,
+    "applicable_correction_event_references": 6,
+    "always_unknown_correct_of96": 36,
+    "methods_at_predeclared_0_5": {
+      "lexical_token_cosine": {"hit1_of60":45,"turn_tp":53,"turn_fp":76,"turn_fn":13,"naive_correct_of96":41,"refuted_recall":"0/24"},
+      "character_3_5_cosine": {"hit1_of60":44,"turn_tp":29,"turn_fp":22,"turn_fn":37,"naive_correct_of96":50,"refuted_recall":"0/24"},
+      "learned_minilm_cosine": {"hit1_of60":46,"turn_tp":52,"turn_fp":110,"turn_fn":14,"naive_correct_of96":36,"refuted_recall":"0/24"},
+      "nongating_union": {"hit1_of60":45,"turn_tp":58,"turn_fp":128,"turn_fn":8,"naive_correct_of96":36,"refuted_recall":"0/24"}
+    },
+    "interpretation": "conditional_full_turn_retrieval_and_naive_diagnostics_not_semantic_graph_truth",
+    "threshold_tuned_in_audit": false
+  }
+}

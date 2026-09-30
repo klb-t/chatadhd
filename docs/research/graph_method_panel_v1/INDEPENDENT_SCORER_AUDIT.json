@@ -1,0 +1,41 @@
+{
+  "schema": "loom.graph_panel_independent_scorer_audit/1",
+  "date": "2026-09-30",
+  "split": "dev",
+  "validation_read": false,
+  "paid_responses_read": false,
+  "model_calls": 0,
+  "frozen_files_modified": false,
+  "core_freeze_hashes_passed": 5,
+  "additional_freeze_hashes_passed": 9,
+  "mechanism_tests_passed": 20,
+  "dev_denominators": {
+    "conversations": 24,
+    "source_assertions": 60,
+    "correction_events": 6,
+    "explicit_source_queries": 96,
+    "supported": 36,
+    "refuted": 24,
+    "unknown": 36
+  },
+  "mechanism_counterexamples_not_model_results": [
+    {
+      "name": "oracle_fields_with_unique_one_character_quotes",
+      "source_assertion_citations": 60,
+      "edges": {"tp": 60, "fp": 0, "fn": 0},
+      "narrow_quote_review_count": 60,
+      "decision": "keep_frozen_metric_as_typed_edge_and_turn_binding; separately_review_clause_adequacy"
+    },
+    {
+      "name": "DEV013_negative_replacement_vs_positive_alternative",
+      "gold_event_target": "gpv1_dev_013_e3",
+      "alternative_event_target": "gpv1_dev_013_e2",
+      "compiler_invalid_events": 0,
+      "edges": {"tp": 3, "fp": 0, "fn": 0},
+      "events": {"tp": 0, "fp": 1, "fn": 1},
+      "decision": "keep_frozen_gold_convention; record_semantically_defensible_alternative_as_diagnostic"
+    }
+  ],
+  "unmeasured_recipe_hypothesis": "Jev historical-refutation wording may conflict with active-positive wording after a later reaffirmation; no inference was performed.",
+  "decision": "keep_frozen_DEV_protocol; investigate_named_limits_without_post_response_recipe_changes"
+}

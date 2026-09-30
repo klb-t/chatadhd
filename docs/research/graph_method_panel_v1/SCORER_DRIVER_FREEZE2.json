@@ -1,0 +1,21 @@
+{
+  "schema": "loom.graph_panel_score_driver_freeze/1",
+  "frozen_at_utc": "2026-09-30T02:35:19.346993+00:00",
+  "before_graph_response_content_access": true,
+  "graph_transport_may_already_have_started": true,
+  "primary_scorer_unchanged": true,
+  "live_responses_read": 0,
+  "validation_read": false,
+  "api_calls": 0,
+  "revision": "billing integrity pre-outcome repair; FREEZE1 retained",
+  "files_sha256": {
+    "loom/tools/structure/graph_panel_score_run.py": "f19ca55e26fe934d99710ce2058387f2f6647eae3ba0aaf936919b6aa52acdbc",
+    "loom/tools/structure/test_graph_panel_score_run.py": "d6e4ba9bb96c4b84f5a82b02de37327b134eef67be8bcc21cc8eef48095ab11f",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "loom/tools/structure/jev_live_pilot.py": "a3036e372d30f93659e1933a956b61972a50a50a216ba0340dee1b38d191e805",
+    "docs/research/graph_method_panel_v1/SCORER_DRIVER_PROTOCOL.md": "5d20f9cff440b2087d72c19a25e54fb0dd972629cfac24eb84b05833af71059d",
+    "docs/research/graph_method_panel_v1/FREEZE.json": "acf2aad00d5a2593c384c9df5e75128ba63f49d9d8f625c8d295df714910cda0",
+    "docs/research/model_method_panel_v1/public_preflight/gpt41mini_endpoints.json": "30690db23394f01b4086cf7f02696ba540cfaa686fa34d0c0951c387d0191538"
+  }
+}
