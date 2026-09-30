@@ -1,0 +1,11 @@
+{
+  "source_head": "fafc77f",
+  "native_build": "paused_incomplete_by_root_direction_after_prioritizing_current_candidate",
+  "native_tests_run": false,
+  "python_eval": {"tests": 213, "failures": 0, "errors": 0},
+  "python_contracts": {"tests": 185, "failures": 0, "errors": 0},
+  "python_seeding": {"tests": 36, "failures": 0, "errors": 0},
+  "python_structure_initial": {"tests": 821, "errors": 12, "cause": "TMPDIR inside ancestor Git workspace; only credential-handoff fixtures errored"},
+  "credential_handoff_environment_recheck": {"tests": 12, "failures": 0, "errors": 0, "TMPDIR": "/var/tmp"},
+  "notes": "Do not combine suite denominators. Complete native baseline was not measured. Initial eval before installing declared dependencies had 97 successes plus 2 import errors; the full 213-test run succeeded after dependency setup."
+}

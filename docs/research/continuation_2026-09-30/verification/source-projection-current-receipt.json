@@ -1,0 +1,36 @@
+{
+  "source_head": "a79862837c6726f534471f8dbcdccfe749dfb942",
+  "started_at": "2026-09-30T19:27:31.054929+00:00",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "loom.tools.structure.retrieval_exploration_v1.test_source_projection",
+    "-v"
+  ],
+  "cwd": "/workspace/scratch/a371a1ca13b1/chatadhd",
+  "environment": {
+    "PYTHONUSERBASE": "/workspace/scratch/a371a1ca13b1/verification/python-userbase",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TMPDIR": "/var/tmp"
+  },
+  "exit_code": 0,
+  "elapsed_seconds": 0.36515610399874276,
+  "unittest_tests": 56,
+  "unittest_seconds": 0.156,
+  "passed": true,
+  "source_sha256_before": {
+    "loom/tools/structure/retrieval_exploration_v1/source_projection.py": "59031c6cf8eebff33bf32011cd7adcbc11f5c427e4cbc89733b8db125614425e",
+    "loom/tools/structure/retrieval_exploration_v1/test_source_projection.py": "53f7eccfb44e637f5b822cf52128c7a13dfd54fc46b4315712779ed0c74d9eb3",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/actor_projection_policy_v2.json": "2e195c02936c5dfd6158e8c34b89345cc33bd6669f38ec8f25952f7bc20a3cf2",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/test_actor_projection_v2.py": "9eadf814228c826f4069f9e6f80e87868b7688b4d400ee085de4d8884eaba20e"
+  },
+  "source_sha256_after": {
+    "loom/tools/structure/retrieval_exploration_v1/source_projection.py": "59031c6cf8eebff33bf32011cd7adcbc11f5c427e4cbc89733b8db125614425e",
+    "loom/tools/structure/retrieval_exploration_v1/test_source_projection.py": "53f7eccfb44e637f5b822cf52128c7a13dfd54fc46b4315712779ed0c74d9eb3",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/actor_projection_policy_v2.json": "2e195c02936c5dfd6158e8c34b89345cc33bd6669f38ec8f25952f7bc20a3cf2",
+    "loom/tools/structure/retrieval_exploration_v1/actor_projection_v1/test_actor_projection_v2.py": "9eadf814228c826f4069f9e6f80e87868b7688b4d400ee085de4d8884eaba20e"
+  },
+  "source_unchanged": true,
+  "reason": "single authorized rerun to replace missing file-backed final 56-test evidence; earlier 52-test log preserved separately"
+}

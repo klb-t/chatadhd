@@ -1,0 +1,190 @@
+{
+  "source_head": "a79862837c6726f534471f8dbcdccfe749dfb942",
+  "source_tree": "e24142cdf897a48ba1f51b08dc3edd216d423c29",
+  "native_sources_unchanged_after_test": true,
+  "build": {
+    "preset": "dev",
+    "build_type": "Debug",
+    "warnings_as_errors": true,
+    "shared_c_abi": true,
+    "cli": true,
+    "server": true,
+    "sqlite": "vendored 3.47.2 (system SQLite headers unavailable)",
+    "compiler": "GNU 13.3.0",
+    "cmake": "4.4.3",
+    "python": "3.12.14",
+    "all_targets_passed": true,
+    "server_followup_noop": true,
+    "old_list_runs_signature_absent_in_nm": true
+  },
+  "current_ctest": {
+    "exit_code": 0,
+    "seconds": 94.60088298099981,
+    "test_entries": 77,
+    "passed": 77,
+    "failed": [],
+    "skipped": []
+  },
+  "focused_subset": {
+    "ctest_entries": 10,
+    "passed": 10,
+    "seconds": 14.36,
+    "new_chat_context_cases": 15,
+    "new_context_controls_cases": 9,
+    "included_in_full_ctest": true
+  },
+  "current_structure_within_ctest": {
+    "tests": 821,
+    "errors": 0,
+    "failures": 0,
+    "unittest_seconds": 38.924,
+    "ctest_seconds": 39.81
+  },
+  "catalog_synthetic_dev": {
+    "relevant_selected": 31,
+    "relevant_total": 45,
+    "recall": 0.6888888888888889,
+    "recall_gate": 0.55,
+    "precision_numerator": 31,
+    "precision_denominator": 31,
+    "precision": 1.0,
+    "precision_gate": 0.75,
+    "trap_selected": 0,
+    "trap_total": 5,
+    "generic_noise_selected": 0,
+    "generic_noise_total": 15,
+    "ranking_auc": 0.965556,
+    "ranking_hits_at_20": 20,
+    "ranking_hits_at_45": 42,
+    "gate_passed": true,
+    "scope": "development fixture, not independent or real archive accuracy",
+    "attribution": "fresh measurement; no causal improvement attributed to this change"
+  },
+  "standalone_current_checks": [
+    {
+      "suite": "source_projection",
+      "tests": 56,
+      "passed": 56,
+      "seconds": 0.156,
+      "source_head": "a79862837c6726f534471f8dbcdccfe749dfb942",
+      "receipt": "source-projection-current-receipt.json",
+      "log": "source-projection-current.log",
+      "composition": {
+        "inherited_contract": 27,
+        "boundary_and_batch": 26,
+        "receipt_parity": 2,
+        "cli": 1
+      }
+    },
+    {
+      "suite": "github_sync_defaults",
+      "tests": 2,
+      "passed": 2,
+      "seconds": 0.016,
+      "also_in_full_ctest": true
+    }
+  ],
+  "web_e2e": {
+    "executed_by": "recover_history agent",
+    "status": "pass",
+    "local_fake_provider_calls": 5,
+    "remote_calls": 0,
+    "covers": [
+      "default recipe",
+      "knowledge context opt-in",
+      "R28 depth/detail",
+      "independent context sources",
+      "exact trace versus provider messages",
+      "recording opt-out",
+      "503 failure inspection",
+      "persistence/reload",
+      "mobile layout"
+    ]
+  },
+  "baseline": {
+    "source_head": "fafc77f",
+    "native_build": "paused_incomplete_by_root_direction_after_prioritizing_current_candidate",
+    "native_tests_run": false,
+    "python_eval": {
+      "tests": 213,
+      "failures": 0,
+      "errors": 0
+    },
+    "python_contracts": {
+      "tests": 185,
+      "failures": 0,
+      "errors": 0
+    },
+    "python_seeding": {
+      "tests": 36,
+      "failures": 0,
+      "errors": 0
+    },
+    "python_structure_initial": {
+      "tests": 821,
+      "errors": 12,
+      "cause": "TMPDIR inside ancestor Git workspace; only credential-handoff fixtures errored"
+    },
+    "credential_handoff_environment_recheck": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "TMPDIR": "/var/tmp"
+    },
+    "notes": "Do not combine suite denominators. Complete native baseline was not measured. Initial eval before installing declared dependencies had 97 successes plus 2 import errors; the full 213-test run succeeded after dependency setup."
+  },
+  "initial_failures": [
+    {
+      "log": "baseline-eval.log",
+      "result": "97 passing tests plus 2 module import errors",
+      "cause": "jsonschema absent before dependency installation",
+      "resolution": "declared local dependencies installed; pinned eval suite then 213/213"
+    },
+    {
+      "log": "baseline-structure-direct.log",
+      "result": "821 tests, 12 errors",
+      "cause": "credential-handoff test temporary paths were under an ancestor Git workspace",
+      "resolution": "TMPDIR=/var/tmp; all 12 pass in dedicated recheck, current full 821-test research suite also passes"
+    },
+    {
+      "log": "current-server-build.log",
+      "result": "server link failure",
+      "cause": "objects compiled across concurrent public-header changes retained old KnowledgeStore::list_runs(int) references",
+      "resolution": "freeze source, touch five changed public headers, rebuild; stable server links, no-op succeeds, nm has only new signature; final all-target build and full CTest pass"
+    }
+  ],
+  "scope_limits": [
+    "Native baseline compilation was paused and native baseline tests were not run.",
+    "No native baseline pass count is claimed.",
+    "Do not add subset/repeated suite denominators together.",
+    "JUnit output truncates some successful stdout; current-ctest-details.log retains full catalog and research output.",
+    "No sanitizer matrix or real-archive validation was performed.",
+    "No live model calls were made by this verification lane."
+  ],
+  "earlier_independent_checks": [
+    {
+      "suite": "source_projection",
+      "tests": 52,
+      "passed": 52,
+      "seconds": 0.167,
+      "log": "source-projection-review.log",
+      "log_last_modified_at": "2026-09-30T19:15:21.786959+00:00",
+      "time_semantics": "original log filesystem modification time, not a recorded test-start timestamp",
+      "source_head": null,
+      "source_sha256": null,
+      "source_scope": "earlier uncommitted working snapshot before four final adversarial regression tests; execution revision and source hashes were not captured",
+      "is_final_candidate_validation": false,
+      "later_added_tests": [
+        "test_empty_span_inside_utf8_codepoint_is_not_a_valid_binding",
+        "test_empty_span_at_valid_boundary_remains_available",
+        "test_oversized_array_index_is_an_unknown_field_not_conversion_failure",
+        "test_recipe_cannot_relabel_source_record_as_verified_identity"
+      ]
+    }
+  ],
+  "provenance_correction": {
+    "reason": "52-test independent review had incorrectly been grouped with final current checks; final 56-test tool-only evidence lacked a saved log",
+    "action": "preserved earlier52 separately and performed exactly one root-authorized final56 rerun at a798628, saving full output and before/after source hashes",
+    "native_tests_repeated": false
+  }
+}

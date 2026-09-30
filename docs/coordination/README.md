@@ -30,9 +30,10 @@ Podział poniżej jest decyzją wykonawczą ROOT, nie cytatem właściciela.
 | Ocena epistemiczna | Pewność twierdzenia użytkownika niezależna od jego uprawnienia do decyzji | `src/resolve/assess.cpp`, testy |
 | Weryfikacja | Osobny pomiar odzyskanej bazy, kompilacja, testy integracji i niezależny przegląd | artefakty testowe; bez edycji implementacji |
 
-To sześciu agentów plus integrator w jednym wątku. Dodatkowe rozmowy nie zostały
-automatycznie utworzone. Ich gotowe pakiety są poniżej. Po zakończeniu przyrostu
-agent przechodzi do przeglądu innego toru lub następnego odblokowanego zadania.
+Ten przyrost wykonało sześciu agentów plus integrator w jednym wątku. Agenci
+prowadzili również wzajemne przeglądy. Dodatkowe rozmowy nie zostały automatycznie
+utworzone. Ich gotowe pakiety są poniżej; wynik wspólnej weryfikacji opisuje
+aktualny `../STATE.md`.
 
 ## Osobne wątki — gotowe pakiety
 
@@ -59,8 +60,9 @@ Krótki prompt startowy do nowej rozmowy:
 > i nie scalaj innych gałęzi; integruje ROOT. Kontynuuj aż uzyskasz działający
 > przyrost oraz uczciwy wynik testów, nie tylko plan.
 
-Zastąp WN wybranym numerem. To jedyna ręczna czynność potrzebna do uruchomienia
-osobnych rozmów; wewnętrzne sześć torów już wykonuje przydzielone zadania.
+Zastąp WN wybranym numerem. Każdy uruchomiony wątek najpierw potwierdza aktualny
+HEAD oraz wolny zakres z integratorem. Przebieg wewnętrznych agentów nie oznacza
+samoczynnego uruchomienia ani dalszej pracy sześciu osobnych rozmów.
 
 ## Reguły integracji i restartu
 

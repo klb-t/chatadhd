@@ -1,0 +1,35 @@
+[0/2] Re-checking globbed directories...
+[1/35] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o
+[2/35] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[3/35] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[4/35] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[5/35] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[6/35] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[7/35] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[8/35] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o
+[9/35] Building CXX object CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o
+[10/35] Building CXX object CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o
+[11/35] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[12/35] Building CXX object CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o
+[13/35] Building CXX object CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o
+[14/35] Building CXX object CMakeFiles/loom_core.dir/src/extract/stage.cpp.o
+[15/35] Building CXX object CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o
+[16/35] Building CXX object CMakeFiles/loom_core.dir/src/generalize/common.cpp.o
+[17/35] Building CXX object CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o
+[18/35] Building CXX object CMakeFiles/loom_core.dir/src/generalize/match.cpp.o
+[19/35] Building CXX object CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o
+[20/35] Building CXX object CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o
+[21/35] Building CXX object CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o
+[22/35] Building CXX object CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o
+[23/35] Building CXX object CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o
+[24/35] Building CXX object CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o
+[25/35] Building CXX object CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o
+[26/35] Building CXX object CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o
+[27/35] Building CXX object CMakeFiles/loom_core.dir/src/kb/store.cpp.o
+[28/35] Building CXX object CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o
+[29/35] Building CXX object CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o
+[30/35] Building CXX object CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o
+[31/35] Building CXX object CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o
+[32/35] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+[33/35] Linking CXX static library libloom_core.a
+[34/35] Linking CXX executable server/loom-server

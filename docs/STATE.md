@@ -11,6 +11,8 @@ original reports and Git revisions; they are not current verification claims.
   No visibility change was performed. Do not publish private source archives or credentials.
 - Integration line: `gpt/research-2026-09-30`.
 - Recovered source: `fafc77f8eeebdff4c32897b5e8ef94dd26d4ec38`.
+- Verified implementation: `a79862837c6726f534471f8dbcdccfe749dfb942`.
+  Later documentation commits carry the verification receipts and handoff.
 - Current Claude development history through `46066308ac6306a1b30f65b98e19a40da6df7e9c`
   was merged while preserving the newer research fixes and owner clarification.
 - PR6 remains a draft from the older Codex branch into `main`. It has not been
@@ -34,7 +36,7 @@ Read `AGENTS.md`, `architecture/OWNER_REQUIREMENTS_2026-09-26.md`,
 `research/OWNER_CLARIFICATION_2026-09-30.md`. The ecosystem note in
 `../ECOSYSTEM.md` is a conceptual direction, not a mandate to build every integration.
 
-## Current continuation — implemented, final verification in progress
+## Current continuation — implemented and verified
 
 | Area | Change and boundary |
 |---|---|
@@ -56,24 +58,47 @@ Detailed contracts: [chat](research/CHAT_KNOWLEDGE_CONTEXT_2026-09-30.md),
 
 ## Verification ledger
 
-Final current-candidate results will be recorded here after the shared build and
-real-server browser test complete. Do not infer native success from the table above.
+Current implementation `a798628`: full Debug build with warnings treated as
+errors passes; the complete CTest run is **77/77 entries passed, 0 failed,
+0 skipped**, in **94.60 seconds**. These entries include native suites and Python
+regression suites; they are not 77 individual assertions. Detailed results,
+commands, environment, source hashes and earlier environment failures are in
+[the verification receipt](research/continuation_2026-09-30/verification/).
 
 Already captured in this session:
 
+- Current `research.structure`: **821/821**, as part of the full CTest run.
+  The separate projection and coordination suites below are not added to this
+  historical denominator.
 - Exact recovered baseline `fafc77f`: Python contracts **185/185**, eval
   **213/213**, seeding **36/36**. Separate suites; do not add overlapping counts.
-- Active source projection: **56/56** new boundary tests; combined selected
+- Active source projection: **56/56** boundary and inherited contract tests; combined selected
   retrieval/actor suites **145/145**. Historical object parity **84/84** native
   projections plus **12/12** controls. Synthetic/repository-derived evidence.
-- Coordination with CLI: **31/31**, including actual subprocesses, competing
+- Coordination with CLI: **34/34**, including actual subprocesses, competing
   processes, killed workers, unknown effects, backup and saved transcript replay.
-  Earlier 19/21/22-test runs are historical stages, not additional tests.
+  Independent review also passed. Earlier 19/21/22/31-test runs are historical
+  stages, not additional tests; the final stage fixes scalar-type equality.
 - Python GitHub defaults: **2/2**; legacy-preset negative control fails as expected.
-- Web TypeScript/Vite build passes; complete current native/browser gate pending.
+- Web TypeScript/Vite build passes. Chromium → real C++ server → local fake
+  provider passes: **5 local provider calls, 0 remote calls**, covering exact
+  message/trace agreement, scope/detail, independent sources, trace opt-out,
+  failure inspection, reload and mobile layout.
+- Native targeted gate: **10/10 CTest entries**, including the **15** new chat
+  cases and **9** scope/detail cases. This is a subset of the final 77-entry run,
+  not an additional independent denominator.
+- Fresh catalog synthetic DEV measurement in that full run: **31/45 recall**,
+  **31/31 precision**, traps **0/5**, generic noise **0/15**, ranking AUC
+  **0.965556**, hits@45 **42/45**. Existing acceptance thresholds pass unchanged.
 
 Build environment uses bundled SQLite because system development headers were
-unavailable. This difference must remain visible in final native evidence.
+unavailable. Credential-handoff tests use `TMPDIR=/var/tmp`, outside the enclosing
+workspace Git tree; earlier environmental failures remain in the receipt.
+No baseline native pass is claimed from its deliberately stopped build.
+
+For the next session, use [the continuation handoff](HANDOFF_CONTINUATION_2026-09-30.md)
+and the scoped coordination packages. Source is saved on the integration branch;
+PR6 and `main` remain unchanged.
 
 ## Historical research measurements and limits
 

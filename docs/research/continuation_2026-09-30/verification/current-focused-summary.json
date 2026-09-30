@@ -1,0 +1,138 @@
+{
+  "source_head": "a79862837c6726f534471f8dbcdccfe749dfb942",
+  "ctest_entries": 10,
+  "passed": 10,
+  "rows": [
+    {
+      "name": "unit.test_chat_engine",
+      "seconds": 0.118926,
+      "passed": true,
+      "doctest_cases": {
+        "total": 15,
+        "passed": 15,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 67,
+        "passed": 67,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unit.test_chat_knowledge_context",
+      "seconds": 3.86485,
+      "passed": true,
+      "doctest_cases": {
+        "total": 15,
+        "passed": 15,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 212,
+        "passed": 212,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unit.test_context_controls",
+      "seconds": 3.88892,
+      "passed": true,
+      "doctest_cases": {
+        "total": 9,
+        "passed": 9,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 153,
+        "passed": 153,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unit.test_context_engine",
+      "seconds": 14.3501,
+      "passed": true,
+      "doctest_cases": {
+        "total": 18,
+        "passed": 18,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 1065,
+        "passed": 1065,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unit.test_github",
+      "seconds": 0.0733607,
+      "passed": true,
+      "doctest_cases": {
+        "total": 19,
+        "passed": 19,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 113,
+        "passed": 113,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unit.test_graph",
+      "seconds": 0.126067,
+      "passed": true,
+      "doctest_cases": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 30,
+        "passed": 30,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unit.test_knowledge_store",
+      "seconds": 0.259549,
+      "passed": true,
+      "doctest_cases": {
+        "total": 7,
+        "passed": 7,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 124,
+        "passed": 124,
+        "failed": 0
+      }
+    },
+    {
+      "name": "unit.test_resolve",
+      "seconds": 0.389498,
+      "passed": true,
+      "doctest_cases": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0
+      },
+      "doctest_assertions": {
+        "total": 71,
+        "passed": 71,
+        "failed": 0
+      }
+    },
+    {
+      "name": "compat.test_abi_compat",
+      "seconds": 0.448963,
+      "passed": true
+    },
+    {
+      "name": "compat.test_github_sync_defaults",
+      "seconds": 0.254138,
+      "passed": true
+    }
+  ],
+  "note": "Doctest skip counts are other test files excluded by the per-file CTest selector, not skipped verification."
+}
