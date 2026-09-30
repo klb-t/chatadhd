@@ -1,0 +1,20 @@
+{
+  "schema": "loom.graph_direct_lookup_policy/1",
+  "scope": "explicit_source",
+  "match_fields": ["relation", "source", "target", "attributed_to"],
+  "source_time_filter": "known_at_lte_as_of",
+  "supersession": "all_applicable_events_by_old_assertion_id",
+  "replacement_query_match_required": false,
+  "cross_attribution_supersession": "apply_with_warning_not_semantic_repair",
+  "selection": "latest_active_matching_timestamp",
+  "same_latest_timestamp_opposite_polarities": "conflicting_unavailable",
+  "no_match": "unknown",
+  "missing_graph": "unavailable",
+  "withdrawal_only_abi": "unsupported_unavailable_with_warning",
+  "evidence_validation": "exact_source_binding_not_semantic_proof",
+  "formal_paths": false,
+  "operand_complements": false,
+  "content_truth": "unverified",
+  "pipeline_mode": "retrospective_full_conversation_extraction_then_source_cutoff",
+  "causal_prefix_extraction_verified": false
+}

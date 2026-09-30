@@ -1,0 +1,23 @@
+{
+  "schema": "loom.graph_formal_paths_freeze/1",
+  "frozen_at": "2026-09-30T02:38:40.213674+00:00",
+  "validation_read": false,
+  "model_calls": 0,
+  "model_quality_measurement": false,
+  "file_sha256": {
+    "loom/tools/structure/graph_formal_paths.py": "26f0d44804c6d577b7d9bc92c51a3b0438c52e937f3b17a961c896ebec670880",
+    "loom/tools/structure/graph_formal_paths_policy.json": "2c592a4de8328760002c4592017e6eaa8794208d2ab8a4abbdf37cf6ca990e85",
+    "loom/tools/structure/test_graph_formal_paths.py": "b12fe73c521257153fa32b48de8c599334f26fa6c30336c77f84d33919fbac59",
+    "docs/research/graph_method_panel_v1/FORMAL_PATHS_PROTOCOL.md": "6f8b9a112dba49c2e93f272abe1bd5761ee3d52a59b4278d00dcabf142269443",
+    "docs/research/graph_method_panel_v1/FORMAL_PATHS_FIRST_MECHANISM_RESULTS.json": "f59e75a5e32a9580c9ed4a270c45682f3229915c96804be6db834a8a45f9edc5"
+  },
+  "verification": {
+    "independent_mechanism_methods_passed": 32,
+    "exhaustive_authored_tiny_graph_subcases_passed": 128,
+    "long_chain_edges": 1100,
+    "related_regression_methods_passed": 101,
+    "initial_broad_command_import_path_errors": 2,
+    "correct_broad_command": "PYTHONPATH=loom/tools/structure PYTHONDONTWRITEBYTECODE=1 python3 -m unittest loom.tools.structure.test_graph_formal_paths loom.tools.structure.test_graph_panel_live loom.tools.structure.test_structure_methods loom.tools.structure.test_logic_check loom.tools.structure.test_graph_patterns -q"
+  },
+  "limits": "Distinct source/target simple positive-implies paths, same speaker, explicit temporal supersessions; no world truth, contraposition or implicit negative veto."
+}

@@ -1,0 +1,257 @@
+{
+  "actor_filter": false,
+  "binding": {
+    "strict_edges": {
+      "fn": 0,
+      "fp": 2,
+      "gold": 60,
+      "precision": 0.967741935483871,
+      "predicted": 62,
+      "recall": 1.0,
+      "tp": 60
+    },
+    "strict_status_events": {
+      "fn": 6,
+      "fp": 9,
+      "gold": 6,
+      "precision": 0.0,
+      "predicted": 9,
+      "recall": 0.0,
+      "tp": 0
+    }
+  },
+  "bound_entries": 71,
+  "case_count": 24,
+  "compiler_counts": {
+    "binding": {
+      "accepted_assertions": 62,
+      "accepted_events": 9,
+      "invalid_assertions": 0,
+      "invalid_events": 0
+    },
+    "original": {
+      "accepted_assertions": 58,
+      "accepted_events": 6,
+      "invalid_assertions": 4,
+      "invalid_events": 3
+    }
+  },
+  "evidence_entries": 71,
+  "live_calls": false,
+  "model_hints_not_exact_unique": 7,
+  "no_graph_promotion": true,
+  "original": {
+    "strict_edges": {
+      "fn": 4,
+      "fp": 6,
+      "gold": 60,
+      "precision": 0.9032258064516129,
+      "predicted": 62,
+      "recall": 0.9333333333333333,
+      "tp": 56
+    },
+    "strict_status_events": {
+      "fn": 6,
+      "fp": 9,
+      "gold": 6,
+      "precision": 0.0,
+      "predicted": 9,
+      "recall": 0.0,
+      "tp": 0
+    }
+  },
+  "original_execution_integrity": {
+    "attempted_requests": 24,
+    "compiled_complete": 24,
+    "diagnostics": [
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 5.013898,
+        "reported_cost_usd": "0.0008172",
+        "request_id": "gpv1_dev_001"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.091424,
+        "reported_cost_usd": "0.0006412",
+        "request_id": "gpv1_dev_002"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.660925,
+        "reported_cost_usd": "0.0007864",
+        "request_id": "gpv1_dev_003"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.716655,
+        "reported_cost_usd": "0.000654",
+        "request_id": "gpv1_dev_004"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.273936,
+        "reported_cost_usd": "0.0006708",
+        "request_id": "gpv1_dev_005"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.169717,
+        "reported_cost_usd": "0.00085",
+        "request_id": "gpv1_dev_006"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.876304,
+        "reported_cost_usd": "0.0008052",
+        "request_id": "gpv1_dev_007"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.178438,
+        "reported_cost_usd": "0.0006244",
+        "request_id": "gpv1_dev_008"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.297986,
+        "reported_cost_usd": "0.0006244",
+        "request_id": "gpv1_dev_009"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.223889,
+        "reported_cost_usd": "0.0006692",
+        "request_id": "gpv1_dev_010"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.484114,
+        "reported_cost_usd": "0.0006544",
+        "request_id": "gpv1_dev_011"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.13837,
+        "reported_cost_usd": "0.0006552",
+        "request_id": "gpv1_dev_012"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.559667,
+        "reported_cost_usd": "0.0009568",
+        "request_id": "gpv1_dev_013"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.55235,
+        "reported_cost_usd": "0.0009568",
+        "request_id": "gpv1_dev_014"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.138909,
+        "reported_cost_usd": "0.0009592",
+        "request_id": "gpv1_dev_015"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 5.287218,
+        "reported_cost_usd": "0.0009972",
+        "request_id": "gpv1_dev_016"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 5.113101,
+        "reported_cost_usd": "0.001048",
+        "request_id": "gpv1_dev_017"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.447156,
+        "reported_cost_usd": "0.0010152",
+        "request_id": "gpv1_dev_018"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 2.632811,
+        "reported_cost_usd": "0.0006204",
+        "request_id": "gpv1_dev_019"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.820302,
+        "reported_cost_usd": "0.0008192",
+        "request_id": "gpv1_dev_020"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 4.764692,
+        "reported_cost_usd": "0.0008124",
+        "request_id": "gpv1_dev_021"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 2.705957,
+        "reported_cost_usd": "0.000676",
+        "request_id": "gpv1_dev_022"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 3.612646,
+        "reported_cost_usd": "0.0008824",
+        "request_id": "gpv1_dev_023"
+      },
+      {
+        "attempt_state": "completed",
+        "compile_state": "completed",
+        "elapsed_seconds": 2.948262,
+        "reported_cost_usd": "0.0006872",
+        "request_id": "gpv1_dev_024"
+      }
+    ],
+    "elapsed_seconds_recorded_sum": 94.708727,
+    "instrument": "gpt",
+    "ledger_sha256": "393fe2154ae74022788784f1c5ec359123a9833e4dbb782e087c33abea9bbb74",
+    "manifest_sha256": "719c234b8930d1c5752a098539fb383424d56f1500f4c661fa12c6e79c679351",
+    "missing_cost_attempts": 0,
+    "no_graph_promotion": true,
+    "planned_requests": 24,
+    "reported_cost_usd": "0.0188832",
+    "track": "assisted_extraction"
+  },
+  "posthoc_development": true,
+  "previously_accepted_assertions_lost": [],
+  "projection_scope": "retrospective_whole_case_not_independent_past_prefix",
+  "quotes_changed": 33,
+  "refused_entries": 0,
+  "same_immutable_raw_responses": 24,
+  "schema": "loom.turn_reference_binding_comparison/1",
+  "semantic_support_established": false,
+  "source_files_verified_after_scoring": 41,
+  "split": "dev",
+  "typed_field_drift": 0
+}

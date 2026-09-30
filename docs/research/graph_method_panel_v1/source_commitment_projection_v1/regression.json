@@ -1,0 +1,12 @@
+{
+  "TMPDIR": "/var/tmp",
+  "command": "TMPDIR=/var/tmp PYTHONPATH=loom/tools/structure python -m unittest discover -s loom/tools/structure -p 'test*.py'",
+  "errors": 0,
+  "log_sha256": "d1eb768dbb3cf860a7b37f890c2ff536a17d68f822c16b0041c96d710eedd57f",
+  "network_or_real_credentials_used": false,
+  "passed": 664,
+  "sandbox_escalated": true,
+  "schema": "loom.graph_direct_lookup_final_regression/1",
+  "seconds": 13.852,
+  "tests": 664
+}

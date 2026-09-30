@@ -1,0 +1,13 @@
+{
+  "files": {
+    "binding_inputs_first.json": "705981e5410ccb19f320d17ac299745e7d3ac3661948c69c65f4055b8dd0a8d8",
+    "compiled_binding_first.json": "aed5432325da161e952031f39413d04c4fae0eec840994619365d107f3cb504e",
+    "compiled_original_first.json": "8fb81d673840cb654237718894423b80b1ad44ecc1aad2a32d58965c7f6ca21b",
+    "provenance_first.json": "35997ad1ca2bf74e5f694f71261c7b48737de0f0863ddf80c41e865abf6ca392",
+    "raw_model_contents_first.json": "1557322db79509430b03f119079f87bf209ed50d9083b03ae090492f39be97a6"
+  },
+  "freeze_sha256": "0bd247a73d6111fa1a0c9ed1a84c287e01e3e489dede38b765e3f6efe2689b20",
+  "gold_loaded_by_driver": false,
+  "schema": "loom.turn_reference_binding_before_gold/1",
+  "split": "dev"
+}

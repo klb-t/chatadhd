@@ -1,0 +1,17 @@
+{
+  "direct_binding_ablation_v1": {
+    "all_96_decision_and_provenance_rows_replayed_exactly": true,
+    "computation_timestamp_excluded": true,
+    "freeze_unchanged": true
+  },
+  "direct_lookup_v1": {
+    "all_96_decision_and_provenance_rows_replayed_exactly": true,
+    "computation_timestamp_excluded": true,
+    "freeze_unchanged": true
+  },
+  "source_commitment_projection_v1": {
+    "all_96_decision_and_provenance_rows_replayed_exactly": true,
+    "computation_timestamp_excluded": true,
+    "freeze_unchanged": true
+  }
+}

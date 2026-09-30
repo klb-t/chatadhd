@@ -1,0 +1,20 @@
+{
+  "api_calls": 0,
+  "correct": 95,
+  "files_sha256": {
+    "docs/research/graph_method_panel_v1/source_commitment_projection_v1/first_predictions.json": "501a4f82b82c1e356fbe68c33ac8b7e6429e8ddcd83767631c04874a40958c18",
+    "docs/research/graph_method_panel_v1/source_commitment_projection_v1/first_score.json": "c67a818b63374561381f013e58dfe35720069d234c9a15393c57d35ece07b1a7",
+    "docs/research/graph_method_panel_v1/source_commitment_projection_v1/freeze_before_predictions.json": "5f59f23461ee76e0ac0b5844ced90dd5bd344e375bd89b8f48695e4df4c2f11d"
+  },
+  "frozen_new_files_unchanged": true,
+  "planned": 96,
+  "post_prediction_counting_independent_of_primary_scorer": true,
+  "raw_candidate_events_all_preserved": true,
+  "raw_event_count": 9,
+  "raw_typed_assertions_all_witnesses_unchanged": true,
+  "schema": "loom.graph_source_commitment_integrity/1",
+  "source_reconstructed_witness_paths": 61,
+  "split": "dev",
+  "validation_accessed": false,
+  "withheld_events_independently_reconstructed": 3
+}

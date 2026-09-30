@@ -1,0 +1,44 @@
+{
+  "schema": "loom.graph_direct_lookup_mechanism_first_results/1",
+  "date": "2026-09-30",
+  "model_calls": 0,
+  "validation_read": false,
+  "model_quality_measurement": false,
+  "fixture_origin": "independent_authored_synthetic_mechanism_graphs",
+  "evidence_oracle": "manual_full_turn_character_and_utf8_byte_spans",
+  "first_independent_run": {
+    "methods": 31,
+    "passed": 22,
+    "failed_methods": 9,
+    "assertion_failure_instances": 1,
+    "erroring_methods": 8,
+    "error_instances_including_subtests": 18,
+    "elapsed_seconds": 0.010,
+    "observations": [
+      "Unavailable results omitted label; the independent helper expected a present null field, causing 18 KeyError instances across eight methods.",
+      "The author's pre-run API described enumerated labels when completed; null versus absent for unavailable had not been explicit. This was a schema-contract mismatch, not 18 wrong semantic decisions.",
+      "Reversing assertions/events/turns changed history_assertion_ids and trace ordering; deterministic report comparison failed."
+    ]
+  },
+  "decision": "clarify_unavailable_schema_and_canonicalize_report_order_before_freeze",
+  "agreed_repairs": [
+    "Use a stable label:null field for unavailable results; the author's explicit API clarification accepts this uniform shape.",
+    "Canonicalize eligible assertions by timestamp and ID, events by timestamp and referenced IDs with a record-content tie-break, and witness ordering without modifying raw record content."
+  ],
+  "superseding_independent_run_after_repairs": {
+    "methods": 31,
+    "passed": 31,
+    "failed_methods": 0,
+    "elapsed_seconds": 0.005,
+    "tests_changed_after_first_run": false,
+    "decision": "keep_mechanism_repairs_before_freeze",
+    "semantic_review": [
+      "Direct lookup preserves exact relation, operand IDs, attribution and source-cutoff filtering; two-hop paths and contraposition do not create direct source assertions.",
+      "Applicable supersession events preserve historical assertions and explicit cross-attribution warnings without post hoc semantic repair.",
+      "Literal UTF-8 source binding does not establish semantic correctness or world truth.",
+      "The full-conversation extraction followed by source-time filtering remains explicitly retrospective; causal prefix extraction is unverified."
+    ]
+  },
+  "tests_changed_to_hide_first_failures": false,
+  "predictions_or_gold_read_by_independent_reviewer": false
+}

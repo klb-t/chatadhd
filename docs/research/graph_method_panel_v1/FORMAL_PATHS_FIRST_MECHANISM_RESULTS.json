@@ -1,0 +1,32 @@
+{
+  "schema": "loom.graph_formal_paths_mechanism_first_results/1",
+  "date": "2026-09-30",
+  "model_calls": 0,
+  "validation_read": false,
+  "model_quality_measurement": false,
+  "first_independent_run": {
+    "methods": 26,
+    "passed": 25,
+    "failed_methods": 1,
+    "failure": "max_search_states=1 reported search_states=2",
+    "exhaustive_authored_tiny_graph_subcases_passed": 128
+  },
+  "second_independent_run_before_fixes": {
+    "methods": 28,
+    "passed": 25,
+    "failed_methods": 3,
+    "assertion_failure_instances": 1,
+    "error_instances_including_subtests": 4,
+    "failures": [
+      "state counter exceeded its declared cap",
+      "1100-edge authored chain with max_path_length=1100 raised RecursionError",
+      "unhashable event references and list premise_mode raised TypeError instead of promised ValueError"
+    ]
+  },
+  "decision": "fix_before_validation; preserve_first_failures",
+  "repairs": [
+    "guard state counter before increment",
+    "iterative iterator-frame DFS with memory proportional to depth",
+    "explicit string validation before reference/mode membership"
+  ]
+}

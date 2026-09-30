@@ -1,0 +1,1241 @@
+[
+  {
+    "case_id": "gpv1_dev_001",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "evidence": [
+            {
+              "quote": "Mira said: “If the hatch is open, the panel is lit.”",
+              "turn_id": "gpv1_dev_001_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "analyst",
+          "evidence": [
+            {
+              "quote": "In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+              "turn_id": "gpv1_dev_001_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "a1",
+          "evidence": [
+            {
+              "quote": "In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+              "turn_id": "gpv1_dev_001_t3"
+            }
+          ],
+          "known_at": "2026-08-10T09:02:00Z",
+          "status": "superseded",
+          "superseded_by": "a2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_002",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "Owen",
+          "evidence": [
+            {
+              "quote": "Owen said: “If the parcel is scanned, the receipt is printed.”",
+              "turn_id": "gpv1_dev_002_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "analyst",
+          "evidence": [
+            {
+              "quote": "In my own test notes, “the parcel is scanned” does not imply “the receipt is printed”.",
+              "turn_id": "gpv1_dev_002_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_003",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "Priya",
+          "evidence": [
+            {
+              "quote": "Priya said: “If the beacon flashes, the ferry waits.”",
+              "turn_id": "gpv1_dev_003_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "analyst",
+          "evidence": [
+            {
+              "quote": "In my own test notes, “the beacon flashes” does not imply “the ferry waits”.",
+              "turn_id": "gpv1_dev_003_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "a1",
+          "evidence": [
+            {
+              "quote": "In my own test notes, “the beacon flashes” does not imply “the ferry waits”.",
+              "turn_id": "gpv1_dev_003_t3"
+            }
+          ],
+          "known_at": "2026-08-10T09:02:00Z",
+          "status": "superseded",
+          "superseded_by": "a2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_004",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "Mira",
+          "evidence": [
+            {
+              "quote": "Mira powiedział: „Jeśli pokrywa jest otwarta, panel się świeci”.",
+              "turn_id": "gpv1_dev_004_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "analyst",
+          "evidence": [
+            {
+              "quote": "W moich własnych notatkach „pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+              "turn_id": "gpv1_dev_004_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "a1",
+          "evidence": [
+            {
+              "quote": "W moich własnych notatkach „pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+              "turn_id": "gpv1_dev_004_t3"
+            }
+          ],
+          "known_at": "2026-08-10T09:02:00Z",
+          "status": "superseded",
+          "superseded_by": "a2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_005",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "Olek",
+          "evidence": [
+            {
+              "quote": "Olek powiedział: „Jeśli paczka jest zeskanowana, drukuje się paragon”.",
+              "turn_id": "gpv1_dev_005_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "analyst",
+          "evidence": [
+            {
+              "quote": "W moich własnych notatkach „paczka jest zeskanowana” nie implikuje „drukuje się paragon”.",
+              "turn_id": "gpv1_dev_005_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_006",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "Iga",
+          "evidence": [
+            {
+              "quote": "Iga powiedział: „Jeśli boja miga, prom czeka”.",
+              "turn_id": "gpv1_dev_006_t1"
+            }
+          ],
+          "id": "sa1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "reporter",
+          "evidence": [
+            {
+              "quote": "Przytaczam słowa osoby Iga; sam nie przyjmuję tego warunku.",
+              "turn_id": "gpv1_dev_006_t2"
+            }
+          ],
+          "id": "sa2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "analyst",
+          "evidence": [
+            {
+              "quote": "W moich własnych notatkach „boja miga” nie implikuje „prom czeka”.",
+              "turn_id": "gpv1_dev_006_t3"
+            }
+          ],
+          "id": "sa3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_007",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "If the sensor reports no error, the record is not discarded.",
+              "turn_id": "gpv1_dev_007_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "This rule says nothing about whether the fan stops.",
+              "turn_id": "gpv1_dev_007_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "B",
+          "target": "C"
+        },
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "The statement “the record is not discarded” does not imply “the sensor reports no error”.",
+              "turn_id": "gpv1_dev_007_t3"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_008",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "If the gate is not locked, the courier does not leave.",
+              "turn_id": "gpv1_dev_008_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "The statement “the courier does not leave” does not imply “the gate is not locked”.",
+              "turn_id": "gpv1_dev_008_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_009",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "If the rope is not wet, the knot does not slip.",
+              "turn_id": "gpv1_dev_009_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "The statement “the knot does not slip” does not imply “the rope is not wet”.",
+              "turn_id": "gpv1_dev_009_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_010",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "Jeśli czujnik nie zgłasza błędu, rekord nie jest odrzucany.",
+              "turn_id": "gpv1_dev_010_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "Stwierdzenie „rekord nie jest odrzucany” nie implikuje „czujnik nie zgłasza błędu”.",
+              "turn_id": "gpv1_dev_010_t3"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_011",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "Jeśli brama nie jest zamknięta, kurier nie odchodzi.",
+              "turn_id": "gpv1_dev_011_t1"
+            }
+          ],
+          "id": "sa1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "Stwierdzenie „kurier nie odchodzi” nie implikuje „brama nie jest zamknięta”.",
+              "turn_id": "gpv1_dev_011_t3"
+            }
+          ],
+          "id": "sa2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_012",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "Jeśli lina nie jest mokra, węzeł się nie zsuwa.",
+              "turn_id": "gpv1_dev_012_t1"
+            }
+          ],
+          "id": "sa1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "tester",
+          "evidence": [
+            {
+              "quote": "Stwierdzenie „węzeł się nie zsuwa” nie implikuje „lina nie jest mokra”.",
+              "turn_id": "gpv1_dev_012_t3"
+            }
+          ],
+          "id": "sa2",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "B",
+          "target": "A"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_013",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "A power dip causes a controller reset.",
+              "turn_id": "gpv1_dev_013_t1"
+            }
+          ],
+          "id": "sa1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead.",
+              "turn_id": "gpv1_dev_013_t2"
+            }
+          ],
+          "id": "sa2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead.",
+              "turn_id": "gpv1_dev_013_t2"
+            }
+          ],
+          "id": "sa3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "sa1",
+          "evidence": [
+            {
+              "quote": "Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead.",
+              "turn_id": "gpv1_dev_013_t2"
+            }
+          ],
+          "known_at": "2026-08-10T09:01:00Z",
+          "status": "superseded",
+          "superseded_by": "sa2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_014",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "A blocked drain causes a wet floor.",
+              "turn_id": "gpv1_dev_014_t1"
+            }
+          ],
+          "id": "sa1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead.",
+              "turn_id": "gpv1_dev_014_t2"
+            }
+          ],
+          "id": "sa2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead.",
+              "turn_id": "gpv1_dev_014_t2"
+            }
+          ],
+          "id": "sa3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "sa1",
+          "evidence": [
+            {
+              "quote": "Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead.",
+              "turn_id": "gpv1_dev_014_t2"
+            }
+          ],
+          "known_at": "2026-08-10T09:01:00Z",
+          "status": "superseded",
+          "superseded_by": "sa2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_015",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "A loose belt causes a stalled wheel.",
+              "turn_id": "gpv1_dev_015_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead.",
+              "turn_id": "gpv1_dev_015_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead.",
+              "turn_id": "gpv1_dev_015_t2"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "a1",
+          "evidence": [
+            {
+              "quote": "Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead.",
+              "turn_id": "gpv1_dev_015_t2"
+            }
+          ],
+          "known_at": "2026-08-10T09:01:00Z",
+          "status": "superseded",
+          "superseded_by": "a2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_016",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "„spadek napięcia” powoduje „reset sterownika”.",
+              "turn_id": "gpv1_dev_016_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”.",
+              "turn_id": "gpv1_dev_016_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”.",
+              "turn_id": "gpv1_dev_016_t2"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "a1",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”.",
+              "turn_id": "gpv1_dev_016_t2"
+            }
+          ],
+          "known_at": "2026-08-10T09:01:00Z",
+          "status": "superseded",
+          "superseded_by": "a2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_017",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "„zatkany odpływ” powoduje „mokra podłoga”.",
+              "turn_id": "gpv1_dev_017_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+              "turn_id": "gpv1_dev_017_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+              "turn_id": "gpv1_dev_017_t2"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "a1",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+              "turn_id": "gpv1_dev_017_t2"
+            }
+          ],
+          "known_at": "2026-08-10T09:01:00Z",
+          "status": "superseded",
+          "superseded_by": "a2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_018",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "„luźny pasek” powoduje „zatrzymane koło”.",
+              "turn_id": "gpv1_dev_018_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”.",
+              "turn_id": "gpv1_dev_018_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "negative",
+          "relation": "causes",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "owner",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”.",
+              "turn_id": "gpv1_dev_018_t2"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "causes",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "a1",
+          "evidence": [
+            {
+              "quote": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”.",
+              "turn_id": "gpv1_dev_018_t2"
+            }
+          ],
+          "known_at": "2026-08-10T09:01:00Z",
+          "status": "superseded",
+          "superseded_by": "a2"
+        }
+      ]
+    }
+  },
+  {
+    "case_id": "gpv1_dev_019",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "If the latch is released, the bolt is free.",
+              "turn_id": "gpv1_dev_019_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "To restate the same rule in different words: whenever the catch no longer holds, the pin can move.",
+              "turn_id": "gpv1_dev_019_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "However, “the latch is released” does not imply “the lever is down”.",
+              "turn_id": "gpv1_dev_019_t3"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_020",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "If the sky is cloudless, the camera uses a short exposure.",
+              "turn_id": "gpv1_dev_020_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "To restate the same rule in different words: whenever no clouds cover the sky, the shutter interval is brief.",
+              "turn_id": "gpv1_dev_020_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "However, “the sky is cloudless” does not imply “the lens is capped”.",
+              "turn_id": "gpv1_dev_020_t3"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_021",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "If the seal is broken, the vessel loses pressure.",
+              "turn_id": "gpv1_dev_021_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "To restate the same rule in different words: whenever the closure is no longer intact, the container cannot hold its pressure.",
+              "turn_id": "gpv1_dev_021_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "However, “the seal is broken” does not imply “the heater starts”.",
+              "turn_id": "gpv1_dev_021_t3"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_022",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Jeśli zatrzask jest zwolniony, rygiel jest wolny.",
+              "turn_id": "gpv1_dev_022_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Tę samą regułę ujmę innymi słowami: zawsze gdy zapadka już nie trzyma, trzpień może się przesuwać.",
+              "turn_id": "gpv1_dev_022_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Natomiast „zatrzask jest zwolniony” nie implikuje „dźwignia jest opuszczona”.",
+              "turn_id": "gpv1_dev_022_t3"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_023",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Jeśli niebo jest bezchmurne, aparat używa krótkiej ekspozycji.",
+              "turn_id": "gpv1_dev_023_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Tę samą regułę ujmę innymi słowami: zawsze gdy chmury nie zasłaniają nieba, czas otwarcia migawki jest krótki.",
+              "turn_id": "gpv1_dev_023_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Natomiast „niebo jest bezchmurne” nie implikuje „obiektyw jest zasłonięty”.",
+              "turn_id": "gpv1_dev_023_t3"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": []
+    }
+  },
+  {
+    "case_id": "gpv1_dev_024",
+    "value": {
+      "source_assertions": [
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Jeśli uszczelnienie jest przerwane, naczynie traci ciśnienie.",
+              "turn_id": "gpv1_dev_024_t1"
+            }
+          ],
+          "id": "a1",
+          "known_at": "2026-08-10T09:00:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Tę samą regułę ujmę innymi słowami: zawsze gdy zamknięcie nie jest już szczelne, pojemnik nie utrzymuje ciśnienia.",
+              "turn_id": "gpv1_dev_024_t2"
+            }
+          ],
+          "id": "a2",
+          "known_at": "2026-08-10T09:01:00Z",
+          "polarity": "positive",
+          "relation": "implies",
+          "source": "A",
+          "target": "B"
+        },
+        {
+          "attributed_to": "author",
+          "evidence": [
+            {
+              "quote": "Natomiast „uszczelnienie jest przerwane” nie implikuje „grzałka rusza”.",
+              "turn_id": "gpv1_dev_024_t3"
+            }
+          ],
+          "id": "a3",
+          "known_at": "2026-08-10T09:02:00Z",
+          "polarity": "negative",
+          "relation": "implies",
+          "source": "A",
+          "target": "C"
+        }
+      ],
+      "status_events": []
+    }
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "scope": "authored mechanism fixtures, no model predictions or quality outcomes",
+  "first_combined_driver_run": {
+    "planned_tests": 35,
+    "passed": 33,
+    "errors": 2,
+    "elapsed_seconds": 0.013,
+    "error": "external temporary fixture paths and patched ROOT conflicted with relative_to metadata/dependency references",
+    "decision": "preserve first output; support external data file references without patching repository root"
+  },
+  "original_gold_read": false,
+  "validation_read": false,
+  "paid_calls": 0
+}

@@ -1,0 +1,53 @@
+{
+  "api_calls": 0,
+  "checks": {
+    "direct_binding_ablation_v1": {
+      "correct": 92,
+      "paths_compiled_records_identical": true,
+      "per_class_counts_recounted": true,
+      "planned": 96,
+      "retrospective_scope_verified": true,
+      "witness_paths_source_reconstructed": 58
+    },
+    "direct_lookup_v1": {
+      "correct": 88,
+      "paths_compiled_records_identical": true,
+      "per_class_counts_recounted": true,
+      "planned": 96,
+      "retrospective_scope_verified": true,
+      "witness_paths_source_reconstructed": 57
+    }
+  },
+  "files_sha256": {
+    "docs/research/graph_method_panel_v1/direct_binding_ablation_v1/first_predictions.json": "17ff44ffb7e98480697e8028240f4c483bdbafc9b41af19817cf3ff0a56a58f0",
+    "docs/research/graph_method_panel_v1/direct_binding_ablation_v1/first_score.json": "e1317b9e6a04163465c86252a7b30640a13372c9a985b68b79b451b2180b1611",
+    "docs/research/graph_method_panel_v1/direct_binding_ablation_v1/freeze_before_predictions.json": "62cc466f2b66844fc55c8820f8e62806b281e8a8ad28700b0265cc4fd71ab837",
+    "docs/research/graph_method_panel_v1/direct_lookup_v1/first_comparison.json": "3fb7ea6009c93b20c4c3fef38c4b0603c0ec0342db1e1d908591a3d78dd830b6",
+    "docs/research/graph_method_panel_v1/direct_lookup_v1/first_predictions.json": "c839c1dbe85cff1f2cd59b7e3035a092492bed9eaa110346b882bf9996f1c796",
+    "docs/research/graph_method_panel_v1/direct_lookup_v1/first_score.json": "1ac43d854fa05cfa8c50b564782045af7053bd345392e8210389a0c6766af73d",
+    "docs/research/graph_method_panel_v1/direct_lookup_v1/freeze_before_predictions.json": "ac413881eff14c8e1440de79776217ac7431413aebda3e47ced3b119eabe98df",
+    "docs/research/graph_method_panel_v1/direct_lookup_v1/model_response_availability.json": "cded01b06c96cb4681cea71378bc2f416976542871cd21cc7dcd643387effc7c"
+  },
+  "frozen_code_policy_protocol_tests_unchanged": true,
+  "post_prediction_independent_counting_algorithm": true,
+  "production_scorer_reused_for_this_recount": false,
+  "regression": {
+    "first_sandbox_run": {
+      "errors": 12,
+      "passed": 600,
+      "reason": "credential_handoff fixtures rejected tempfile fallback to /tmp containing parent .git; TMPDIR=/var/tmp unwritable in sandbox",
+      "tests": 612
+    },
+    "superseding_escalated_run": {
+      "TMPDIR": "/var/tmp",
+      "code_changed_between_runs": false,
+      "errors": 0,
+      "passed": 612,
+      "seconds": 13.498,
+      "tests": 612
+    }
+  },
+  "schema": "loom.graph_direct_post_result_integrity/1",
+  "split": "dev",
+  "validation_accessed": false
+}

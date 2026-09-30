@@ -1,0 +1,1990 @@
+[
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_001",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Mira said: “If the hatch is open, the panel is lit.”",
+      "turn_id": "gpv1_dev_001_t1"
+    },
+    "model_hint": "Mira said: “If the hatch is open, the panel is lit.”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "8723fb4c6fd6614d7416dac0b1d86cce4f4901e07895778a8bc9f802fda32bfb",
+    "reason": null,
+    "source": {
+      "byte_end": 56,
+      "byte_start": 0,
+      "char_end": 52,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_001",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "reporter",
+      "source_text_sha256": "685a2a8d9529f5d24da7d24d28e2e9600d7d96cf963bd24b566d4acf63fefbb3",
+      "turn_id": "gpv1_dev_001_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_001",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+      "turn_id": "gpv1_dev_001_t3"
+    },
+    "model_hint": "In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "8723fb4c6fd6614d7416dac0b1d86cce4f4901e07895778a8bc9f802fda32bfb",
+    "reason": null,
+    "source": {
+      "byte_end": 84,
+      "byte_start": 0,
+      "char_end": 76,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_001",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "0e55494852686721a980fd345936a2776f54d29695ab561c6416cbeebc8a0255",
+      "turn_id": "gpv1_dev_001_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_001",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+      "turn_id": "gpv1_dev_001_t3"
+    },
+    "model_hint": "In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "8723fb4c6fd6614d7416dac0b1d86cce4f4901e07895778a8bc9f802fda32bfb",
+    "reason": null,
+    "source": {
+      "byte_end": 84,
+      "byte_start": 0,
+      "char_end": 76,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_001",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "0e55494852686721a980fd345936a2776f54d29695ab561c6416cbeebc8a0255",
+      "turn_id": "gpv1_dev_001_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_002",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Owen said: “If the parcel is scanned, the receipt is printed.”",
+      "turn_id": "gpv1_dev_002_t1"
+    },
+    "model_hint": "Owen said: “If the parcel is scanned, the receipt is printed.”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "053b5735b949063f1df6826e3c87f24ea1c6ab6a5786451ddfa3e969879b008e",
+    "reason": null,
+    "source": {
+      "byte_end": 66,
+      "byte_start": 0,
+      "char_end": 62,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_002",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "reporter",
+      "source_text_sha256": "ff3004517255be40b16c5a473f6eaa60a7f7df72f13ce3b7a92b95fe58874967",
+      "turn_id": "gpv1_dev_002_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_002",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "In my own test notes, “the parcel is scanned” does not imply “the receipt is printed”.",
+      "turn_id": "gpv1_dev_002_t3"
+    },
+    "model_hint": "In my own test notes, “the parcel is scanned” does not imply “the receipt is printed”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "053b5735b949063f1df6826e3c87f24ea1c6ab6a5786451ddfa3e969879b008e",
+    "reason": null,
+    "source": {
+      "byte_end": 94,
+      "byte_start": 0,
+      "char_end": 86,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_002",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "c9d61c6eead37e04888cdd0eb539b3a1f45af7641889eed7cd93eeaecdbc0c44",
+      "turn_id": "gpv1_dev_002_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_003",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Priya said: “If the beacon flashes, the ferry waits.”",
+      "turn_id": "gpv1_dev_003_t1"
+    },
+    "model_hint": "Priya said: “If the beacon flashes, the ferry waits.”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "7a01fa4b2aff60d43cc4d2074f1d82f770575f407d40b2c9d2e49d862e044b09",
+    "reason": null,
+    "source": {
+      "byte_end": 57,
+      "byte_start": 0,
+      "char_end": 53,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_003",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "reporter",
+      "source_text_sha256": "eefd0dc1c643df9be59199d5b1f203ff1f308264e8b7067c53c75f473f25ace7",
+      "turn_id": "gpv1_dev_003_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_003",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "“the beacon flashes” does not imply “the ferry waits”.",
+      "turn_id": "gpv1_dev_003_t3"
+    },
+    "model_hint": "“the beacon flashes” does not imply “the ferry waits”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "7a01fa4b2aff60d43cc4d2074f1d82f770575f407d40b2c9d2e49d862e044b09",
+    "reason": null,
+    "source": {
+      "byte_end": 84,
+      "byte_start": 0,
+      "char_end": 76,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_003",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "94d23ede8cb4b71cb3e2fd8d2b191bae9330ce902f6ea4ef84cf3e24bc446177",
+      "turn_id": "gpv1_dev_003_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_003",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "“the beacon flashes” does not imply “the ferry waits”.",
+      "turn_id": "gpv1_dev_003_t3"
+    },
+    "model_hint": "“the beacon flashes” does not imply “the ferry waits”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "7a01fa4b2aff60d43cc4d2074f1d82f770575f407d40b2c9d2e49d862e044b09",
+    "reason": null,
+    "source": {
+      "byte_end": 84,
+      "byte_start": 0,
+      "char_end": 76,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_003",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "94d23ede8cb4b71cb3e2fd8d2b191bae9330ce902f6ea4ef84cf3e24bc446177",
+      "turn_id": "gpv1_dev_003_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_004",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Mira powiedział: „Jeśli pokrywa jest otwarta, panel się świeci”.",
+      "turn_id": "gpv1_dev_004_t1"
+    },
+    "model_hint": "Mira powiedział: „Jeśli pokrywa jest otwarta, panel się świeci”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "eee4c496d7f8c4bb2b6a13bee827a236a8fd388b3eda11ade367a212fad7a35e",
+    "reason": null,
+    "source": {
+      "byte_end": 72,
+      "byte_start": 0,
+      "char_end": 64,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_004",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "reporter",
+      "source_text_sha256": "51e27ace0ef35149e01bb90a3fb0f5f27a9fa224106492b207aa7db3d7653564",
+      "turn_id": "gpv1_dev_004_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_004",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+      "turn_id": "gpv1_dev_004_t3"
+    },
+    "model_hint": "„pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "eee4c496d7f8c4bb2b6a13bee827a236a8fd388b3eda11ade367a212fad7a35e",
+    "reason": null,
+    "source": {
+      "byte_end": 94,
+      "byte_start": 0,
+      "char_end": 83,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_004",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "588f06a663b079aa9d89b543dfb669b35f3ebc57af820cbd8f1c48d4a1b5aac2",
+      "turn_id": "gpv1_dev_004_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_004",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+      "turn_id": "gpv1_dev_004_t3"
+    },
+    "model_hint": "„pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "eee4c496d7f8c4bb2b6a13bee827a236a8fd388b3eda11ade367a212fad7a35e",
+    "reason": null,
+    "source": {
+      "byte_end": 94,
+      "byte_start": 0,
+      "char_end": 83,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_004",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "588f06a663b079aa9d89b543dfb669b35f3ebc57af820cbd8f1c48d4a1b5aac2",
+      "turn_id": "gpv1_dev_004_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_005",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Olek powiedział: „Jeśli paczka jest zeskanowana, drukuje się paragon”.",
+      "turn_id": "gpv1_dev_005_t1"
+    },
+    "model_hint": "Olek powiedział: „Jeśli paczka jest zeskanowana, drukuje się paragon”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "3b1a4d8787728465782b74e81c77761169dd064e63c32eb22729e732c63cc57a",
+    "reason": null,
+    "source": {
+      "byte_end": 77,
+      "byte_start": 0,
+      "char_end": 70,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_005",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "reporter",
+      "source_text_sha256": "ee88242c20bfeb627c38cf671f1638a0764959eb32b69bea80c76d2d37e053ca",
+      "turn_id": "gpv1_dev_005_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_005",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "W moich własnych notatkach „paczka jest zeskanowana” nie implikuje „drukuje się paragon”.",
+      "turn_id": "gpv1_dev_005_t3"
+    },
+    "model_hint": "W moich własnych notatkach „paczka jest zeskanowana” nie implikuje „drukuje się paragon”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "3b1a4d8787728465782b74e81c77761169dd064e63c32eb22729e732c63cc57a",
+    "reason": null,
+    "source": {
+      "byte_end": 99,
+      "byte_start": 0,
+      "char_end": 89,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_005",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "9d51bd4a228ffe347a67d0853f25223906a7929a4fe0dbfdb8b99e4c9caa7d20",
+      "turn_id": "gpv1_dev_005_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_006",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Iga powiedział: „Jeśli boja miga, prom czeka”.",
+      "turn_id": "gpv1_dev_006_t1"
+    },
+    "model_hint": "Iga powiedział: „Jeśli boja miga, prom czeka”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "83f7d6bb712dafd8b8fd0b89a5ae702fe52d9e4071390c685614089f836c07f9",
+    "reason": null,
+    "source": {
+      "byte_end": 52,
+      "byte_start": 0,
+      "char_end": 46,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_006",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "reporter",
+      "source_text_sha256": "0f2aadc4fb5d4507c7b74754d3af4132df4b534bd86bf9191d6d8157cf5b1327",
+      "turn_id": "gpv1_dev_006_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_006",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Przytaczam słowa osoby Iga; sam nie przyjmuję tego warunku.",
+      "turn_id": "gpv1_dev_006_t2"
+    },
+    "model_hint": "Przytaczam słowa osoby Iga; sam nie przyjmuję tego warunku.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "83f7d6bb712dafd8b8fd0b89a5ae702fe52d9e4071390c685614089f836c07f9",
+    "reason": null,
+    "source": {
+      "byte_end": 61,
+      "byte_start": 0,
+      "char_end": 59,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_006",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "reporter",
+      "source_text_sha256": "3a340531cf24be5ffccb0122f042178b38277e9567d21178d5debb0fa550f2fc",
+      "turn_id": "gpv1_dev_006_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_006",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "W moich własnych notatkach „boja miga” nie implikuje „prom czeka”.",
+      "turn_id": "gpv1_dev_006_t3"
+    },
+    "model_hint": "W moich własnych notatkach „boja miga” nie implikuje „prom czeka”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "83f7d6bb712dafd8b8fd0b89a5ae702fe52d9e4071390c685614089f836c07f9",
+    "reason": null,
+    "source": {
+      "byte_end": 75,
+      "byte_start": 0,
+      "char_end": 66,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_006",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "analyst",
+      "source_text_sha256": "c8405dc580c5c0159424b6c3d60cbd1b4b69f3f5bc4f345fdbc42a3afd88170b",
+      "turn_id": "gpv1_dev_006_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_007",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "If the sensor reports no error, the record is not discarded.",
+      "turn_id": "gpv1_dev_007_t1"
+    },
+    "model_hint": "If the sensor reports no error, the record is not discarded.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "01ae4441a5d5959bf7cada4c2db634aa794f6b8aa3b4a2fe81102780bbf1cae2",
+    "reason": null,
+    "source": {
+      "byte_end": 60,
+      "byte_start": 0,
+      "char_end": 60,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_007",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "5ebeee6b2cc8b37c616c176f099c90e715d6e2db60966f9275cfb8d902916c79",
+      "turn_id": "gpv1_dev_007_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_007",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "This rule says nothing about whether the fan stops.",
+      "turn_id": "gpv1_dev_007_t2"
+    },
+    "model_hint": "This rule says nothing about whether the fan stops.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "01ae4441a5d5959bf7cada4c2db634aa794f6b8aa3b4a2fe81102780bbf1cae2",
+    "reason": null,
+    "source": {
+      "byte_end": 51,
+      "byte_start": 0,
+      "char_end": 51,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_007",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "80a76d31a4fe367a77104e7d04fd9a29691f7b0ee2dd14a471162179a7f5e00a",
+      "turn_id": "gpv1_dev_007_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_007",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "The statement “the record is not discarded” does not imply “the sensor reports no error”.",
+      "turn_id": "gpv1_dev_007_t3"
+    },
+    "model_hint": "The statement “the record is not discarded” does not imply “the sensor reports no error”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "01ae4441a5d5959bf7cada4c2db634aa794f6b8aa3b4a2fe81102780bbf1cae2",
+    "reason": null,
+    "source": {
+      "byte_end": 97,
+      "byte_start": 0,
+      "char_end": 89,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_007",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "a566c71310a69f45d701617db422951846835e89646706fe55a5f26ee9d09952",
+      "turn_id": "gpv1_dev_007_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_008",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "If the gate is not locked, the courier does not leave.",
+      "turn_id": "gpv1_dev_008_t1"
+    },
+    "model_hint": "If the gate is not locked, the courier does not leave.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "1ac048d30b9cd69b8fda69bbdff60fc7e6c9b4149fc7ec5a869da865a05205f7",
+    "reason": null,
+    "source": {
+      "byte_end": 54,
+      "byte_start": 0,
+      "char_end": 54,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_008",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "1405951551b088672052f051299bd662949a47a3d35be8b6cdfe1e0443571ecb",
+      "turn_id": "gpv1_dev_008_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_008",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "The statement “the courier does not leave” does not imply “the gate is not locked”.",
+      "turn_id": "gpv1_dev_008_t3"
+    },
+    "model_hint": "The statement “the courier does not leave” does not imply “the gate is not locked”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "1ac048d30b9cd69b8fda69bbdff60fc7e6c9b4149fc7ec5a869da865a05205f7",
+    "reason": null,
+    "source": {
+      "byte_end": 91,
+      "byte_start": 0,
+      "char_end": 83,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_008",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "e20567e30ceed5e2ad3dc2f89e80e99948eef9acf9b77307583d1832f501f8b0",
+      "turn_id": "gpv1_dev_008_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_009",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "If the rope is not wet, the knot does not slip.",
+      "turn_id": "gpv1_dev_009_t1"
+    },
+    "model_hint": "If the rope is not wet, the knot does not slip.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "44ffa87d7cf64a4e25e84074f81a2036ce11208ff1489319859ca6e40be75552",
+    "reason": null,
+    "source": {
+      "byte_end": 47,
+      "byte_start": 0,
+      "char_end": 47,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_009",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "bbcc5ab068c5d635eafcbc36bc61b898265a77cdaae823d00018e8a9cdabb032",
+      "turn_id": "gpv1_dev_009_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_009",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "The statement “the knot does not slip” does not imply “the rope is not wet”.",
+      "turn_id": "gpv1_dev_009_t3"
+    },
+    "model_hint": "The statement “the knot does not slip” does not imply “the rope is not wet”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "44ffa87d7cf64a4e25e84074f81a2036ce11208ff1489319859ca6e40be75552",
+    "reason": null,
+    "source": {
+      "byte_end": 84,
+      "byte_start": 0,
+      "char_end": 76,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_009",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "b5628c18af318fdc53748f933cf8d6bedc43e98c0e8f3bd21607c75fec3b0223",
+      "turn_id": "gpv1_dev_009_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_010",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Jeśli czujnik nie zgłasza błędu, rekord nie jest odrzucany.",
+      "turn_id": "gpv1_dev_010_t1"
+    },
+    "model_hint": "Jeśli czujnik nie zgłasza błędu, rekord nie jest odrzucany.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "83efe22070899cdef5dcce57b876f41540718e1114cb57ac2a775b69a987eaef",
+    "reason": null,
+    "source": {
+      "byte_end": 63,
+      "byte_start": 0,
+      "char_end": 59,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_010",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "249d5880c47aef6cd0cdd31b1eed19ac738e9b968a78afd212036a7d0a508eaa",
+      "turn_id": "gpv1_dev_010_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_010",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Stwierdzenie „rekord nie jest odrzucany” nie implikuje „czujnik nie zgłasza błędu”.",
+      "turn_id": "gpv1_dev_010_t3"
+    },
+    "model_hint": "Stwierdzenie „rekord nie jest odrzucany” nie implikuje „czujnik nie zgłasza błędu”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "83efe22070899cdef5dcce57b876f41540718e1114cb57ac2a775b69a987eaef",
+    "reason": null,
+    "source": {
+      "byte_end": 94,
+      "byte_start": 0,
+      "char_end": 83,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_010",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "fb883b977a1973649d6cab08f11fc2b43c5b99780e3240452be4a43e5303fa08",
+      "turn_id": "gpv1_dev_010_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_011",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Jeśli brama nie jest zamknięta, kurier nie odchodzi.",
+      "turn_id": "gpv1_dev_011_t1"
+    },
+    "model_hint": "Jeśli brama nie jest zamknięta, kurier nie odchodzi.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "f2eeeedfde806504f14dd24a2692a2a8b58c85db00b3f2355d36042d7d46fba6",
+    "reason": null,
+    "source": {
+      "byte_end": 54,
+      "byte_start": 0,
+      "char_end": 52,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_011",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "8546966f789821ad0eb50895ce4626b9749b44a1c445fc88c1e9610f9395ed10",
+      "turn_id": "gpv1_dev_011_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_011",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Stwierdzenie „kurier nie odchodzi” nie implikuje „brama nie jest zamknięta”.",
+      "turn_id": "gpv1_dev_011_t3"
+    },
+    "model_hint": "Stwierdzenie „kurier nie odchodzi” nie implikuje „brama nie jest zamknięta”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "f2eeeedfde806504f14dd24a2692a2a8b58c85db00b3f2355d36042d7d46fba6",
+    "reason": null,
+    "source": {
+      "byte_end": 85,
+      "byte_start": 0,
+      "char_end": 76,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_011",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "4cf7509db9daf2b10fec93f04e791d2b14e79ba2ac5ccf08a7ed665545b43c82",
+      "turn_id": "gpv1_dev_011_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_012",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Jeśli lina nie jest mokra, węzeł się nie zsuwa.",
+      "turn_id": "gpv1_dev_012_t1"
+    },
+    "model_hint": "Jeśli lina nie jest mokra, węzeł się nie zsuwa.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "bf4439fbbcdb11f2e149482f28f70de9efb376905edd83763aa8b1549495fd62",
+    "reason": null,
+    "source": {
+      "byte_end": 51,
+      "byte_start": 0,
+      "char_end": 47,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_012",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "aa2f4e4d8213b447982bf84b2b4c21c65887e097bb5d016c32ecdc6a32f156d2",
+      "turn_id": "gpv1_dev_012_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_012",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Stwierdzenie „węzeł się nie zsuwa” nie implikuje „lina nie jest mokra”.",
+      "turn_id": "gpv1_dev_012_t3"
+    },
+    "model_hint": "Stwierdzenie „węzeł się nie zsuwa” nie implikuje „lina nie jest mokra”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "bf4439fbbcdb11f2e149482f28f70de9efb376905edd83763aa8b1549495fd62",
+    "reason": null,
+    "source": {
+      "byte_end": 82,
+      "byte_start": 0,
+      "char_end": 71,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_012",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "tester",
+      "source_text_sha256": "5946b2ad978567ca14edf5951d70f24a09b23c9fa73037200b88c086d9fc30a1",
+      "turn_id": "gpv1_dev_012_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_013",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "A power dip causes a controller reset.",
+      "turn_id": "gpv1_dev_013_t1"
+    },
+    "model_hint": "A power dip causes a controller reset.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "13b04b1f82cc25e93a30c0c8296622c595af207cfd99e1b160a0f94047d15f6b",
+    "reason": null,
+    "source": {
+      "byte_end": 38,
+      "byte_start": 0,
+      "char_end": 38,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_013",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "bbe5a16e45ccbab97b3c71a729f9672a0e731ba806a3e52ee6c48bc5accdd12c",
+      "turn_id": "gpv1_dev_013_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_013",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Correction: “a power dip” does not cause “a controller reset”",
+      "turn_id": "gpv1_dev_013_t2"
+    },
+    "model_hint": "Correction: “a power dip” does not cause “a controller reset”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "13b04b1f82cc25e93a30c0c8296622c595af207cfd99e1b160a0f94047d15f6b",
+    "reason": null,
+    "source": {
+      "byte_end": 109,
+      "byte_start": 0,
+      "char_end": 97,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_013",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "b7a2a41f4acdb4c43594ae8c0cd2e838f48f7d22a4cdc291bca0a90fd7b62101",
+      "turn_id": "gpv1_dev_013_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_013",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "it causes “a clock drift” instead.",
+      "turn_id": "gpv1_dev_013_t2"
+    },
+    "model_hint": "it causes “a clock drift” instead.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "13b04b1f82cc25e93a30c0c8296622c595af207cfd99e1b160a0f94047d15f6b",
+    "reason": null,
+    "source": {
+      "byte_end": 109,
+      "byte_start": 0,
+      "char_end": 97,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_013",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "b7a2a41f4acdb4c43594ae8c0cd2e838f48f7d22a4cdc291bca0a90fd7b62101",
+      "turn_id": "gpv1_dev_013_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_013",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Correction: “a power dip” does not cause “a controller reset”",
+      "turn_id": "gpv1_dev_013_t2"
+    },
+    "model_hint": "Correction: “a power dip” does not cause “a controller reset”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "13b04b1f82cc25e93a30c0c8296622c595af207cfd99e1b160a0f94047d15f6b",
+    "reason": null,
+    "source": {
+      "byte_end": 109,
+      "byte_start": 0,
+      "char_end": 97,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_013",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "b7a2a41f4acdb4c43594ae8c0cd2e838f48f7d22a4cdc291bca0a90fd7b62101",
+      "turn_id": "gpv1_dev_013_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_014",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "A blocked drain causes a wet floor.",
+      "turn_id": "gpv1_dev_014_t1"
+    },
+    "model_hint": "A blocked drain causes a wet floor.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "1dc132998cb8c4ac2ad75f71412e0511b87a7392ac3a116692df4ab1b80530e4",
+    "reason": null,
+    "source": {
+      "byte_end": 35,
+      "byte_start": 0,
+      "char_end": 35,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_014",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "da6e3d1d26171b1ce5761d65f9201cb3777780fd94dedb82e6062824bf8004a2",
+      "turn_id": "gpv1_dev_014_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_014",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Correction: “a blocked drain” does not cause “a wet floor”",
+      "turn_id": "gpv1_dev_014_t2"
+    },
+    "model_hint": "Correction: “a blocked drain” does not cause “a wet floor”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "1dc132998cb8c4ac2ad75f71412e0511b87a7392ac3a116692df4ab1b80530e4",
+    "reason": null,
+    "source": {
+      "byte_end": 107,
+      "byte_start": 0,
+      "char_end": 95,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_014",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "49daaa2dafe90988090dff45374e39cefbed698c149e30c901613f706f4233b2",
+      "turn_id": "gpv1_dev_014_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_014",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "it causes “a flooded sump” instead.",
+      "turn_id": "gpv1_dev_014_t2"
+    },
+    "model_hint": "it causes “a flooded sump” instead.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "1dc132998cb8c4ac2ad75f71412e0511b87a7392ac3a116692df4ab1b80530e4",
+    "reason": null,
+    "source": {
+      "byte_end": 107,
+      "byte_start": 0,
+      "char_end": 95,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_014",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "49daaa2dafe90988090dff45374e39cefbed698c149e30c901613f706f4233b2",
+      "turn_id": "gpv1_dev_014_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_014",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Correction: “a blocked drain” does not cause “a wet floor”",
+      "turn_id": "gpv1_dev_014_t2"
+    },
+    "model_hint": "Correction: “a blocked drain” does not cause “a wet floor”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "1dc132998cb8c4ac2ad75f71412e0511b87a7392ac3a116692df4ab1b80530e4",
+    "reason": null,
+    "source": {
+      "byte_end": 107,
+      "byte_start": 0,
+      "char_end": 95,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_014",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "49daaa2dafe90988090dff45374e39cefbed698c149e30c901613f706f4233b2",
+      "turn_id": "gpv1_dev_014_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_015",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "A loose belt causes a stalled wheel.",
+      "turn_id": "gpv1_dev_015_t1"
+    },
+    "model_hint": "A loose belt causes a stalled wheel.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "ee59de53dbe0baf143f91b5b36d0ce254cf78f0701d36490ff3dc7d3bf3ff191",
+    "reason": null,
+    "source": {
+      "byte_end": 36,
+      "byte_start": 0,
+      "char_end": 36,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_015",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "34cd1831726570e85fd5516dc92ab70fb16c7ae5f344f266325c988e760487b7",
+      "turn_id": "gpv1_dev_015_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_015",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Correction: “a loose belt” does not cause “a stalled wheel”",
+      "turn_id": "gpv1_dev_015_t2"
+    },
+    "model_hint": "Correction: “a loose belt” does not cause “a stalled wheel”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "ee59de53dbe0baf143f91b5b36d0ce254cf78f0701d36490ff3dc7d3bf3ff191",
+    "reason": null,
+    "source": {
+      "byte_end": 112,
+      "byte_start": 0,
+      "char_end": 100,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_015",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "81951d089c943861775df6d8ba0904db9ae5decb8ef5a4cad2411d0eea60032e",
+      "turn_id": "gpv1_dev_015_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_015",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "it causes “a squeaking pulley” instead.",
+      "turn_id": "gpv1_dev_015_t2"
+    },
+    "model_hint": "it causes “a squeaking pulley” instead.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "ee59de53dbe0baf143f91b5b36d0ce254cf78f0701d36490ff3dc7d3bf3ff191",
+    "reason": null,
+    "source": {
+      "byte_end": 112,
+      "byte_start": 0,
+      "char_end": 100,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_015",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "81951d089c943861775df6d8ba0904db9ae5decb8ef5a4cad2411d0eea60032e",
+      "turn_id": "gpv1_dev_015_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_015",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Correction: “a loose belt” does not cause “a stalled wheel”",
+      "turn_id": "gpv1_dev_015_t2"
+    },
+    "model_hint": "Correction: “a loose belt” does not cause “a stalled wheel”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "ee59de53dbe0baf143f91b5b36d0ce254cf78f0701d36490ff3dc7d3bf3ff191",
+    "reason": null,
+    "source": {
+      "byte_end": 112,
+      "byte_start": 0,
+      "char_end": 100,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_015",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "81951d089c943861775df6d8ba0904db9ae5decb8ef5a4cad2411d0eea60032e",
+      "turn_id": "gpv1_dev_015_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_016",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„spadek napięcia” powoduje „reset sterownika”.",
+      "turn_id": "gpv1_dev_016_t1"
+    },
+    "model_hint": "„spadek napięcia” powoduje „reset sterownika”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "e642b49f3d4b817d5d16bc88a52909a93085ee8f76c35f54b6e6ad5cf2ea5879",
+    "reason": null,
+    "source": {
+      "byte_end": 55,
+      "byte_start": 0,
+      "char_end": 46,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_016",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "806c783135b824e53079eca1d3da80bc2a4fab73535aa028fbd059c49e751063",
+      "turn_id": "gpv1_dev_016_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_016",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„spadek napięcia” nie powoduje „reset sterownika\"",
+      "turn_id": "gpv1_dev_016_t2"
+    },
+    "model_hint": "„spadek napięcia” nie powoduje „reset sterownika\"",
+    "model_hint_exact_unique_in_turn": false,
+    "quote_changed": true,
+    "raw_response_sha256": "e642b49f3d4b817d5d16bc88a52909a93085ee8f76c35f54b6e6ad5cf2ea5879",
+    "reason": null,
+    "source": {
+      "byte_end": 111,
+      "byte_start": 0,
+      "char_end": 98,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_016",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "8520d8fdc3914652cfefa8298561821fead15eea30ea6eb6528e3eb856d7a212",
+      "turn_id": "gpv1_dev_016_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_016",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„spadek napięcia” powoduje natomiast „dryf zegara\"",
+      "turn_id": "gpv1_dev_016_t2"
+    },
+    "model_hint": "„spadek napięcia” powoduje natomiast „dryf zegara\"",
+    "model_hint_exact_unique_in_turn": false,
+    "quote_changed": true,
+    "raw_response_sha256": "e642b49f3d4b817d5d16bc88a52909a93085ee8f76c35f54b6e6ad5cf2ea5879",
+    "reason": null,
+    "source": {
+      "byte_end": 111,
+      "byte_start": 0,
+      "char_end": 98,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_016",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "8520d8fdc3914652cfefa8298561821fead15eea30ea6eb6528e3eb856d7a212",
+      "turn_id": "gpv1_dev_016_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_016",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika\"",
+      "turn_id": "gpv1_dev_016_t2"
+    },
+    "model_hint": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika\"",
+    "model_hint_exact_unique_in_turn": false,
+    "quote_changed": true,
+    "raw_response_sha256": "e642b49f3d4b817d5d16bc88a52909a93085ee8f76c35f54b6e6ad5cf2ea5879",
+    "reason": null,
+    "source": {
+      "byte_end": 111,
+      "byte_start": 0,
+      "char_end": 98,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_016",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "8520d8fdc3914652cfefa8298561821fead15eea30ea6eb6528e3eb856d7a212",
+      "turn_id": "gpv1_dev_016_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_017",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„zatkany odpływ” powoduje „mokra podłoga”.",
+      "turn_id": "gpv1_dev_017_t1"
+    },
+    "model_hint": "„zatkany odpływ” powoduje „mokra podłoga”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "f10c940ecbc7943b15fcf244fb0da3f5332b32c9d9916f1daa017e32706009fa",
+    "reason": null,
+    "source": {
+      "byte_end": 52,
+      "byte_start": 0,
+      "char_end": 42,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_017",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "6da317e169e12de9f69b47c2d21a1788612b977bdf12d494b07e8c3ffe0e9d12",
+      "turn_id": "gpv1_dev_017_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_017",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga\"",
+      "turn_id": "gpv1_dev_017_t2"
+    },
+    "model_hint": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga\"",
+    "model_hint_exact_unique_in_turn": false,
+    "quote_changed": true,
+    "raw_response_sha256": "f10c940ecbc7943b15fcf244fb0da3f5332b32c9d9916f1daa017e32706009fa",
+    "reason": null,
+    "source": {
+      "byte_end": 114,
+      "byte_start": 0,
+      "char_end": 100,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_017",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "c39a3a95c4834cf28c01a5a374abda146d7109ec19b10f8e3036eb01d0bdfbf1",
+      "turn_id": "gpv1_dev_017_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_017",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+      "turn_id": "gpv1_dev_017_t2"
+    },
+    "model_hint": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "f10c940ecbc7943b15fcf244fb0da3f5332b32c9d9916f1daa017e32706009fa",
+    "reason": null,
+    "source": {
+      "byte_end": 114,
+      "byte_start": 0,
+      "char_end": 100,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_017",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "c39a3a95c4834cf28c01a5a374abda146d7109ec19b10f8e3036eb01d0bdfbf1",
+      "turn_id": "gpv1_dev_017_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_017",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga\"",
+      "turn_id": "gpv1_dev_017_t2"
+    },
+    "model_hint": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga\"",
+    "model_hint_exact_unique_in_turn": false,
+    "quote_changed": true,
+    "raw_response_sha256": "f10c940ecbc7943b15fcf244fb0da3f5332b32c9d9916f1daa017e32706009fa",
+    "reason": null,
+    "source": {
+      "byte_end": 114,
+      "byte_start": 0,
+      "char_end": 100,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_017",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "c39a3a95c4834cf28c01a5a374abda146d7109ec19b10f8e3036eb01d0bdfbf1",
+      "turn_id": "gpv1_dev_017_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_018",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„luźny pasek” powoduje „zatrzymane koło”.",
+      "turn_id": "gpv1_dev_018_t1"
+    },
+    "model_hint": "„luźny pasek” powoduje „zatrzymane koło”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "94a799226c83762aa9f61e4dbe0475d7bf02763ba6f47973a635aec150cd0de7",
+    "reason": null,
+    "source": {
+      "byte_end": 51,
+      "byte_start": 0,
+      "char_end": 41,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_018",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "56eb7b5f21c4b38fefee50b6ca51f1b41d15584324da4ba90e61ae206b02d36f",
+      "turn_id": "gpv1_dev_018_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_018",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„luźny pasek” nie powoduje „zatrzymane koło\"",
+      "turn_id": "gpv1_dev_018_t2"
+    },
+    "model_hint": "„luźny pasek” nie powoduje „zatrzymane koło\"",
+    "model_hint_exact_unique_in_turn": false,
+    "quote_changed": true,
+    "raw_response_sha256": "94a799226c83762aa9f61e4dbe0475d7bf02763ba6f47973a635aec150cd0de7",
+    "reason": null,
+    "source": {
+      "byte_end": 119,
+      "byte_start": 0,
+      "char_end": 103,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_018",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "4b700cf2feab483ce29bceb266d0caa2d9a5e545c56274e9d9124834c882c2cd",
+      "turn_id": "gpv1_dev_018_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_018",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "powoduje natomiast „piszczące koło pasowe”",
+      "turn_id": "gpv1_dev_018_t2"
+    },
+    "model_hint": "powoduje natomiast „piszczące koło pasowe”",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "94a799226c83762aa9f61e4dbe0475d7bf02763ba6f47973a635aec150cd0de7",
+    "reason": null,
+    "source": {
+      "byte_end": 119,
+      "byte_start": 0,
+      "char_end": 103,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_018",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "4b700cf2feab483ce29bceb266d0caa2d9a5e545c56274e9d9124834c882c2cd",
+      "turn_id": "gpv1_dev_018_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_018",
+    "evidence_pointer": "/status_events/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło\"",
+      "turn_id": "gpv1_dev_018_t2"
+    },
+    "model_hint": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło\"",
+    "model_hint_exact_unique_in_turn": false,
+    "quote_changed": true,
+    "raw_response_sha256": "94a799226c83762aa9f61e4dbe0475d7bf02763ba6f47973a635aec150cd0de7",
+    "reason": null,
+    "source": {
+      "byte_end": 119,
+      "byte_start": 0,
+      "char_end": 103,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_018",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "owner",
+      "source_text_sha256": "4b700cf2feab483ce29bceb266d0caa2d9a5e545c56274e9d9124834c882c2cd",
+      "turn_id": "gpv1_dev_018_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_019",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "If the latch is released, the bolt is free.",
+      "turn_id": "gpv1_dev_019_t1"
+    },
+    "model_hint": "If the latch is released, the bolt is free.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "19285538a5c3acd5a2f91f163f2d34ca62e184a3e6397404fdb8669d3b6322a8",
+    "reason": null,
+    "source": {
+      "byte_end": 43,
+      "byte_start": 0,
+      "char_end": 43,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_019",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "9f48bb4336d96535ce7c9fab2ab142a6dfa7066792f1edd6b2232b34229520f6",
+      "turn_id": "gpv1_dev_019_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_019",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "whenever the catch no longer holds, the pin can move.",
+      "turn_id": "gpv1_dev_019_t2"
+    },
+    "model_hint": "whenever the catch no longer holds, the pin can move.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "19285538a5c3acd5a2f91f163f2d34ca62e184a3e6397404fdb8669d3b6322a8",
+    "reason": null,
+    "source": {
+      "byte_end": 98,
+      "byte_start": 0,
+      "char_end": 98,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_019",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "48ccb6023e4b7f2bb59d98ea5fea1c829a2c26217aa8173a60aa39b58f174c97",
+      "turn_id": "gpv1_dev_019_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_019",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "“the latch is released” does not imply “the lever is down”.",
+      "turn_id": "gpv1_dev_019_t3"
+    },
+    "model_hint": "“the latch is released” does not imply “the lever is down”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "19285538a5c3acd5a2f91f163f2d34ca62e184a3e6397404fdb8669d3b6322a8",
+    "reason": null,
+    "source": {
+      "byte_end": 76,
+      "byte_start": 0,
+      "char_end": 68,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_019",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "4d89fa2e422fcdb9e47ad2e683c9a23cca8fb05e8295af262eb552d23578e2c2",
+      "turn_id": "gpv1_dev_019_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_020",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "If the sky is cloudless, the camera uses a short exposure.",
+      "turn_id": "gpv1_dev_020_t1"
+    },
+    "model_hint": "If the sky is cloudless, the camera uses a short exposure.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "ad693a0882591672ffdf1fa082e4016a8074727ff42ae83f3959c6a23a160e10",
+    "reason": null,
+    "source": {
+      "byte_end": 58,
+      "byte_start": 0,
+      "char_end": 58,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_020",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "520fbe89d6d04ab71d4566388acab1d3ed9251444013d777ea0d1ed4c814cee0",
+      "turn_id": "gpv1_dev_020_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_020",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "whenever no clouds cover the sky, the shutter interval is brief.",
+      "turn_id": "gpv1_dev_020_t2"
+    },
+    "model_hint": "whenever no clouds cover the sky, the shutter interval is brief.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "ad693a0882591672ffdf1fa082e4016a8074727ff42ae83f3959c6a23a160e10",
+    "reason": null,
+    "source": {
+      "byte_end": 109,
+      "byte_start": 0,
+      "char_end": 109,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_020",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "0510ada82a076e969c18f892787acf57fe5081fd4fd8efe2357f07a15d3d7ac0",
+      "turn_id": "gpv1_dev_020_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_020",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "“the sky is cloudless” does not imply “the lens is capped”.",
+      "turn_id": "gpv1_dev_020_t3"
+    },
+    "model_hint": "“the sky is cloudless” does not imply “the lens is capped”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "ad693a0882591672ffdf1fa082e4016a8074727ff42ae83f3959c6a23a160e10",
+    "reason": null,
+    "source": {
+      "byte_end": 76,
+      "byte_start": 0,
+      "char_end": 68,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_020",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "7bef1416fc0a78e96fc7d6db9bb6cc37a733362d7cffdcdb931986c3275c56c3",
+      "turn_id": "gpv1_dev_020_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_021",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "If the seal is broken, the vessel loses pressure.",
+      "turn_id": "gpv1_dev_021_t1"
+    },
+    "model_hint": "If the seal is broken, the vessel loses pressure.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "ff8750d456b762bcd8bd2914be6e8712cea151e7d069c0a04b6698955d797d8d",
+    "reason": null,
+    "source": {
+      "byte_end": 49,
+      "byte_start": 0,
+      "char_end": 49,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_021",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "657662407c0693bfba1180767205804a4b8fb808b6c62e0ed951fa2a32f98439",
+      "turn_id": "gpv1_dev_021_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_021",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "whenever the closure is no longer intact, the container cannot hold its pressure.",
+      "turn_id": "gpv1_dev_021_t2"
+    },
+    "model_hint": "whenever the closure is no longer intact, the container cannot hold its pressure.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "ff8750d456b762bcd8bd2914be6e8712cea151e7d069c0a04b6698955d797d8d",
+    "reason": null,
+    "source": {
+      "byte_end": 126,
+      "byte_start": 0,
+      "char_end": 126,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_021",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "6237020e5c3962a9748b4e603c40b9bfdf61bcbde70a60e56abea20207a7589d",
+      "turn_id": "gpv1_dev_021_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_021",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "“the seal is broken” does not imply “the heater starts”.",
+      "turn_id": "gpv1_dev_021_t3"
+    },
+    "model_hint": "“the seal is broken” does not imply “the heater starts”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "ff8750d456b762bcd8bd2914be6e8712cea151e7d069c0a04b6698955d797d8d",
+    "reason": null,
+    "source": {
+      "byte_end": 73,
+      "byte_start": 0,
+      "char_end": 65,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_021",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "8dbba36fcf319c9371f589a868e5363a02e1ee66bf7a3dcac2ae57bd77f08525",
+      "turn_id": "gpv1_dev_021_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_022",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Jeśli zatrzask jest zwolniony, rygiel jest wolny.",
+      "turn_id": "gpv1_dev_022_t1"
+    },
+    "model_hint": "Jeśli zatrzask jest zwolniony, rygiel jest wolny.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "36d47ee72855f231ec93eb99d783a6acfcaa99d0510ab8c1bf74e0a93e65aaed",
+    "reason": null,
+    "source": {
+      "byte_end": 50,
+      "byte_start": 0,
+      "char_end": 49,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_022",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "b4801d525c078ef7814906266aa3650ca88c7ad19b2abc8b94914a25d1263a32",
+      "turn_id": "gpv1_dev_022_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_022",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "zawsze gdy zapadka już nie trzyma, trzpień może się przesuwać.",
+      "turn_id": "gpv1_dev_022_t2"
+    },
+    "model_hint": "zawsze gdy zapadka już nie trzyma, trzpień może się przesuwać.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "36d47ee72855f231ec93eb99d783a6acfcaa99d0510ab8c1bf74e0a93e65aaed",
+    "reason": null,
+    "source": {
+      "byte_end": 109,
+      "byte_start": 0,
+      "char_end": 98,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_022",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "37674e5cb7c432f4e397ed07ed981edb6942326ae10e59186dd13a3b050adb00",
+      "turn_id": "gpv1_dev_022_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_022",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„zatrzask jest zwolniony” nie implikuje „dźwignia jest opuszczona”.",
+      "turn_id": "gpv1_dev_022_t3"
+    },
+    "model_hint": "„zatrzask jest zwolniony” nie implikuje „dźwignia jest opuszczona”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "36d47ee72855f231ec93eb99d783a6acfcaa99d0510ab8c1bf74e0a93e65aaed",
+    "reason": null,
+    "source": {
+      "byte_end": 86,
+      "byte_start": 0,
+      "char_end": 77,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_022",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "772c09a52b98166937d1ef13b8175280de7ab9a8e851127193bfab28f753becb",
+      "turn_id": "gpv1_dev_022_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_023",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Jeśli niebo jest bezchmurne, aparat używa krótkiej ekspozycji.",
+      "turn_id": "gpv1_dev_023_t1"
+    },
+    "model_hint": "Jeśli niebo jest bezchmurne, aparat używa krótkiej ekspozycji.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "f549c830f8a886dd695d5e0bdb6eb65dcf9c1db3bd6b712be558f99d082f6281",
+    "reason": null,
+    "source": {
+      "byte_end": 65,
+      "byte_start": 0,
+      "char_end": 62,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_023",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "1f5ec816cf86c122647ec2f50247f6c6b83404da470d898d5ee1ed651fdf6847",
+      "turn_id": "gpv1_dev_023_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_023",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "zawsze gdy chmury nie zasłaniają nieba, czas otwarcia migawki jest krótki.",
+      "turn_id": "gpv1_dev_023_t2"
+    },
+    "model_hint": "zawsze gdy chmury nie zasłaniają nieba, czas otwarcia migawki jest krótki.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "f549c830f8a886dd695d5e0bdb6eb65dcf9c1db3bd6b712be558f99d082f6281",
+    "reason": null,
+    "source": {
+      "byte_end": 119,
+      "byte_start": 0,
+      "char_end": 110,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_023",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "6da04e6d1d398ec389a038cad5bbc2200430f609de7c48ecd2f33bcc2f9bf6a4",
+      "turn_id": "gpv1_dev_023_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_023",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„niebo jest bezchmurne” nie implikuje „obiektyw jest zasłonięty”.",
+      "turn_id": "gpv1_dev_023_t3"
+    },
+    "model_hint": "„niebo jest bezchmurne” nie implikuje „obiektyw jest zasłonięty”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "f549c830f8a886dd695d5e0bdb6eb65dcf9c1db3bd6b712be558f99d082f6281",
+    "reason": null,
+    "source": {
+      "byte_end": 85,
+      "byte_start": 0,
+      "char_end": 75,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_023",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "1a8fcee9cbd0267822e33a3cb01d038c71ec7305b84c2dcf944bf589f39b11e6",
+      "turn_id": "gpv1_dev_023_t3"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_024",
+    "evidence_pointer": "/source_assertions/0/evidence/0",
+    "model_evidence_entry": {
+      "quote": "Jeśli uszczelnienie jest przerwane, naczynie traci ciśnienie.",
+      "turn_id": "gpv1_dev_024_t1"
+    },
+    "model_hint": "Jeśli uszczelnienie jest przerwane, naczynie traci ciśnienie.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": false,
+    "raw_response_sha256": "c1172429665b299bc8daff4566e9a9ab93e3d4775a2da0a660a0f43cfec8fdaf",
+    "reason": null,
+    "source": {
+      "byte_end": 63,
+      "byte_start": 0,
+      "char_end": 61,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_024",
+      "source_known_at": "2026-08-10T09:00:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "00339a8caf1f939fa094c50c9a5bdfce749c6dcc50da6328396c4567673cbed8",
+      "turn_id": "gpv1_dev_024_t1"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_024",
+    "evidence_pointer": "/source_assertions/1/evidence/0",
+    "model_evidence_entry": {
+      "quote": "zawsze gdy zamknięcie nie jest już szczelne, pojemnik nie utrzymuje ciśnienia.",
+      "turn_id": "gpv1_dev_024_t2"
+    },
+    "model_hint": "zawsze gdy zamknięcie nie jest już szczelne, pojemnik nie utrzymuje ciśnienia.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "c1172429665b299bc8daff4566e9a9ab93e3d4775a2da0a660a0f43cfec8fdaf",
+    "reason": null,
+    "source": {
+      "byte_end": 123,
+      "byte_start": 0,
+      "char_end": 114,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_024",
+      "source_known_at": "2026-08-10T09:01:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "df7d45798921e9f0c8b48c2e04e9ad526cc0dd1fa12ca2323ad6c4587205590d",
+      "turn_id": "gpv1_dev_024_t2"
+    }
+  },
+  {
+    "binding_state": "bound",
+    "case_id": "gpv1_dev_024",
+    "evidence_pointer": "/source_assertions/2/evidence/0",
+    "model_evidence_entry": {
+      "quote": "„uszczelnienie jest przerwane” nie implikuje „grzałka rusza”.",
+      "turn_id": "gpv1_dev_024_t3"
+    },
+    "model_hint": "„uszczelnienie jest przerwane” nie implikuje „grzałka rusza”.",
+    "model_hint_exact_unique_in_turn": true,
+    "quote_changed": true,
+    "raw_response_sha256": "c1172429665b299bc8daff4566e9a9ab93e3d4775a2da0a660a0f43cfec8fdaf",
+    "reason": null,
+    "source": {
+      "byte_end": 80,
+      "byte_start": 0,
+      "char_end": 71,
+      "char_start": 0,
+      "coordinate_space": "turn.text",
+      "derivation": "full_source_copied_by_turn_id",
+      "semantic_support_established": false,
+      "source_id": "synthetic:gpv1_dev_024",
+      "source_known_at": "2026-08-10T09:02:00Z",
+      "source_speaker": "author",
+      "source_text_sha256": "e41ef666b9ba54dd485e7746d86a89cf33a1dff1d0951572195cd9a120682e34",
+      "turn_id": "gpv1_dev_024_t3"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a pre-existing freeze; cannot create it in the same invocation
+----------------------------------------------------------------------
+Ran 606 tests in 13.333s
+
+OK
+{"attempts": 1, "stopped_reason": "fixture-stop"}
