@@ -1,0 +1,122 @@
+{
+  "run": "/tmp/loom-guide-smoke-wv55t5k3",
+  "input": "supplied synthetic_dev ZIP fixtures, not private real exports",
+  "commands": [
+    {
+      "command": [
+        "import",
+        "/tmp/loom-guide-smoke-wv55t5k3/inputs/chatgpt.zip",
+        "--audit"
+      ],
+      "returncode": 0,
+      "seconds": 0.131,
+      "stdout_bytes": 2339,
+      "stderr_bytes": 647
+    },
+    {
+      "command": [
+        "import",
+        "/tmp/loom-guide-smoke-wv55t5k3/inputs/claude.zip",
+        "--audit"
+      ],
+      "returncode": 0,
+      "seconds": 0.113,
+      "stdout_bytes": 2205,
+      "stderr_bytes": 590
+    },
+    {
+      "command": [
+        "catalog",
+        "scan",
+        "--source",
+        "/tmp/loom-guide-smoke-wv55t5k3/inputs"
+      ],
+      "returncode": 0,
+      "seconds": 0.367,
+      "stdout_bytes": 204,
+      "stderr_bytes": 56
+    },
+    {
+      "command": [
+        "catalog",
+        "profile"
+      ],
+      "returncode": 0,
+      "seconds": 0.208,
+      "stdout_bytes": 60992,
+      "stderr_bytes": 0
+    },
+    {
+      "command": [
+        "catalog",
+        "score"
+      ],
+      "returncode": 0,
+      "seconds": 0.616,
+      "stdout_bytes": 989,
+      "stderr_bytes": 3123
+    },
+    {
+      "command": [
+        "catalog",
+        "list",
+        "--label",
+        "relevant",
+        "--limit",
+        "100",
+        "--offset",
+        "0"
+      ],
+      "returncode": 0,
+      "seconds": 0.194,
+      "stdout_bytes": 1565,
+      "stderr_bytes": 0
+    },
+    {
+      "command": [
+        "catalog",
+        "list",
+        "--label",
+        "irrelevant",
+        "--limit",
+        "100",
+        "--offset",
+        "0"
+      ],
+      "returncode": 0,
+      "seconds": 0.207,
+      "stdout_bytes": 2377,
+      "stderr_bytes": 0
+    },
+    {
+      "command": [
+        "knowledge",
+        "run",
+        "--source",
+        "/tmp/loom-guide-smoke-wv55t5k3/inputs",
+        "--out",
+        "/tmp/loom-guide-smoke-wv55t5k3/products",
+        "--llm",
+        "off"
+      ],
+      "returncode": 0,
+      "seconds": 3.11,
+      "stdout_bytes": 865,
+      "stderr_bytes": 5079
+    },
+    {
+      "command": [
+        "artifacts",
+        "list"
+      ],
+      "returncode": 0,
+      "seconds": 0.033,
+      "stdout_bytes": 3025,
+      "stderr_bytes": 0
+    }
+  ],
+  "paid_calls": 0,
+  "source_line_base": "5816b557f9a02fba50a5e4f905aac6c63390be39",
+  "code_scope": "native CLI with context fixes under local verification; import/catalog/knowledge sources unchanged",
+  "limitation": "Command smoke, not real-account export fidelity or model-quality measurement; full mode configuration described but not run here"
+}
