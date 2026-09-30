@@ -1,0 +1,2562 @@
+{
+  "schema": "loom.research.graph_methods_panel.gold/1",
+  "split": "dev",
+  "cases": [
+    {
+      "id": "gpv1_dev_001",
+      "family": "attribution",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_001_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "Mira",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_001",
+              "turn_id": "gpv1_dev_001_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Mira said: “If the hatch is open, the panel is lit.”",
+              "char_start": 0,
+              "char_end": 52,
+              "byte_start": 0,
+              "byte_end": 56
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_001_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "analyst",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_001",
+              "turn_id": "gpv1_dev_001_t3",
+              "coordinate_space": "turn.text",
+              "quote": "In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+              "char_start": 0,
+              "char_end": 76,
+              "byte_start": 0,
+              "byte_end": 84
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_001_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_001_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_001_q2",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_001_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_001_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_001_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_002",
+      "family": "attribution",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_002_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "Owen",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_002",
+              "turn_id": "gpv1_dev_002_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Owen said: “If the parcel is scanned, the receipt is printed.”",
+              "char_start": 0,
+              "char_end": 62,
+              "byte_start": 0,
+              "byte_end": 66
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_002_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "analyst",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_002",
+              "turn_id": "gpv1_dev_002_t3",
+              "coordinate_space": "turn.text",
+              "quote": "In my own test notes, “the parcel is scanned” does not imply “the receipt is printed”.",
+              "char_start": 0,
+              "char_end": 86,
+              "byte_start": 0,
+              "byte_end": 94
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_002_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_002_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_002_q2",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_002_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_002_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_002_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_003",
+      "family": "attribution",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_003_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "Priya",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_003",
+              "turn_id": "gpv1_dev_003_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Priya said: “If the beacon flashes, the ferry waits.”",
+              "char_start": 0,
+              "char_end": 53,
+              "byte_start": 0,
+              "byte_end": 57
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_003_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "analyst",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_003",
+              "turn_id": "gpv1_dev_003_t3",
+              "coordinate_space": "turn.text",
+              "quote": "In my own test notes, “the beacon flashes” does not imply “the ferry waits”.",
+              "char_start": 0,
+              "char_end": 76,
+              "byte_start": 0,
+              "byte_end": 84
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_003_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_003_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_003_q2",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_003_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_003_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_003_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_004",
+      "family": "attribution",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_004_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "Mira",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_004",
+              "turn_id": "gpv1_dev_004_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Mira powiedział: „Jeśli pokrywa jest otwarta, panel się świeci”.",
+              "char_start": 0,
+              "char_end": 64,
+              "byte_start": 0,
+              "byte_end": 72
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_004_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "analyst",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_004",
+              "turn_id": "gpv1_dev_004_t3",
+              "coordinate_space": "turn.text",
+              "quote": "W moich własnych notatkach „pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+              "char_start": 0,
+              "char_end": 83,
+              "byte_start": 0,
+              "byte_end": 94
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_004_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_004_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_004_q2",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_004_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_004_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_004_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_005",
+      "family": "attribution",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_005_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "Olek",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_005",
+              "turn_id": "gpv1_dev_005_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Olek powiedział: „Jeśli paczka jest zeskanowana, drukuje się paragon”.",
+              "char_start": 0,
+              "char_end": 70,
+              "byte_start": 0,
+              "byte_end": 77
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_005_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "analyst",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_005",
+              "turn_id": "gpv1_dev_005_t3",
+              "coordinate_space": "turn.text",
+              "quote": "W moich własnych notatkach „paczka jest zeskanowana” nie implikuje „drukuje się paragon”.",
+              "char_start": 0,
+              "char_end": 89,
+              "byte_start": 0,
+              "byte_end": 99
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_005_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_005_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_005_q2",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_005_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_005_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_005_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_006",
+      "family": "attribution",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_006_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "Iga",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_006",
+              "turn_id": "gpv1_dev_006_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Iga powiedział: „Jeśli boja miga, prom czeka”.",
+              "char_start": 0,
+              "char_end": 46,
+              "byte_start": 0,
+              "byte_end": 52
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_006_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "analyst",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_006",
+              "turn_id": "gpv1_dev_006_t3",
+              "coordinate_space": "turn.text",
+              "quote": "W moich własnych notatkach „boja miga” nie implikuje „prom czeka”.",
+              "char_start": 0,
+              "char_end": 66,
+              "byte_start": 0,
+              "byte_end": 75
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_006_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_006_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_006_q2",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_006_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_006_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_006_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_007",
+      "family": "negation_unknown",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_007_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_007",
+              "turn_id": "gpv1_dev_007_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the sensor reports no error, the record is not discarded.",
+              "char_start": 0,
+              "char_end": 60,
+              "byte_start": 0,
+              "byte_end": 60
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_007_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_007",
+              "turn_id": "gpv1_dev_007_t3",
+              "coordinate_space": "turn.text",
+              "quote": "The statement “the record is not discarded” does not imply “the sensor reports no error”.",
+              "char_start": 0,
+              "char_end": 89,
+              "byte_start": 0,
+              "byte_end": 97
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_007_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_007_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_007_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_007_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_007_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_007_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_008",
+      "family": "negation_unknown",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_008_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_008",
+              "turn_id": "gpv1_dev_008_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the gate is not locked, the courier does not leave.",
+              "char_start": 0,
+              "char_end": 54,
+              "byte_start": 0,
+              "byte_end": 54
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_008_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_008",
+              "turn_id": "gpv1_dev_008_t3",
+              "coordinate_space": "turn.text",
+              "quote": "The statement “the courier does not leave” does not imply “the gate is not locked”.",
+              "char_start": 0,
+              "char_end": 83,
+              "byte_start": 0,
+              "byte_end": 91
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_008_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_008_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_008_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_008_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_008_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_008_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_009",
+      "family": "negation_unknown",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_009_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_009",
+              "turn_id": "gpv1_dev_009_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the rope is not wet, the knot does not slip.",
+              "char_start": 0,
+              "char_end": 47,
+              "byte_start": 0,
+              "byte_end": 47
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_009_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_009",
+              "turn_id": "gpv1_dev_009_t3",
+              "coordinate_space": "turn.text",
+              "quote": "The statement “the knot does not slip” does not imply “the rope is not wet”.",
+              "char_start": 0,
+              "char_end": 76,
+              "byte_start": 0,
+              "byte_end": 84
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_009_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_009_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_009_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_009_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_009_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_009_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_010",
+      "family": "negation_unknown",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_010_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_010",
+              "turn_id": "gpv1_dev_010_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli czujnik nie zgłasza błędu, rekord nie jest odrzucany.",
+              "char_start": 0,
+              "char_end": 59,
+              "byte_start": 0,
+              "byte_end": 63
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_010_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_010",
+              "turn_id": "gpv1_dev_010_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Stwierdzenie „rekord nie jest odrzucany” nie implikuje „czujnik nie zgłasza błędu”.",
+              "char_start": 0,
+              "char_end": 83,
+              "byte_start": 0,
+              "byte_end": 94
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_010_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_010_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_010_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_010_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_010_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_010_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_011",
+      "family": "negation_unknown",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_011_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_011",
+              "turn_id": "gpv1_dev_011_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli brama nie jest zamknięta, kurier nie odchodzi.",
+              "char_start": 0,
+              "char_end": 52,
+              "byte_start": 0,
+              "byte_end": 54
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_011_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_011",
+              "turn_id": "gpv1_dev_011_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Stwierdzenie „kurier nie odchodzi” nie implikuje „brama nie jest zamknięta”.",
+              "char_start": 0,
+              "char_end": 76,
+              "byte_start": 0,
+              "byte_end": 85
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_011_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_011_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_011_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_011_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_011_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_011_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_012",
+      "family": "negation_unknown",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_012_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_012",
+              "turn_id": "gpv1_dev_012_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli lina nie jest mokra, węzeł się nie zsuwa.",
+              "char_start": 0,
+              "char_end": 47,
+              "byte_start": 0,
+              "byte_end": 51
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_012_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "tester",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_012",
+              "turn_id": "gpv1_dev_012_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Stwierdzenie „węzeł się nie zsuwa” nie implikuje „lina nie jest mokra”.",
+              "char_start": 0,
+              "char_end": 71,
+              "byte_start": 0,
+              "byte_end": 82
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_012_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_012_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_012_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_012_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_012_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_012_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_013",
+      "family": "correction_known_at",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_013_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_013",
+              "turn_id": "gpv1_dev_013_t1",
+              "coordinate_space": "turn.text",
+              "quote": "A power dip causes a controller reset.",
+              "char_start": 0,
+              "char_end": 38,
+              "byte_start": 0,
+              "byte_end": 38
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_013_e2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_013",
+              "turn_id": "gpv1_dev_013_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead.",
+              "char_start": 0,
+              "char_end": 97,
+              "byte_start": 0,
+              "byte_end": 109
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_013_e3",
+          "relation": "causes",
+          "source": "A",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_013",
+              "turn_id": "gpv1_dev_013_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead.",
+              "char_start": 0,
+              "char_end": 97,
+              "byte_start": 0,
+              "byte_end": 109
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "gpv1_dev_013_e1",
+          "status": "superseded",
+          "superseded_by": "gpv1_dev_013_e3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_013",
+              "turn_id": "gpv1_dev_013_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead.",
+              "char_start": 0,
+              "char_end": 97,
+              "byte_start": 0,
+              "byte_end": 109
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_013_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_013_e3"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_013_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_013_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_013_q3",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_013_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_013_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_014",
+      "family": "correction_known_at",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_014_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_014",
+              "turn_id": "gpv1_dev_014_t1",
+              "coordinate_space": "turn.text",
+              "quote": "A blocked drain causes a wet floor.",
+              "char_start": 0,
+              "char_end": 35,
+              "byte_start": 0,
+              "byte_end": 35
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_014_e2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_014",
+              "turn_id": "gpv1_dev_014_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead.",
+              "char_start": 0,
+              "char_end": 95,
+              "byte_start": 0,
+              "byte_end": 107
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_014_e3",
+          "relation": "causes",
+          "source": "A",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_014",
+              "turn_id": "gpv1_dev_014_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead.",
+              "char_start": 0,
+              "char_end": 95,
+              "byte_start": 0,
+              "byte_end": 107
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "gpv1_dev_014_e1",
+          "status": "superseded",
+          "superseded_by": "gpv1_dev_014_e3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_014",
+              "turn_id": "gpv1_dev_014_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead.",
+              "char_start": 0,
+              "char_end": 95,
+              "byte_start": 0,
+              "byte_end": 107
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_014_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_014_e3"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_014_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_014_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_014_q3",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_014_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_014_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_015",
+      "family": "correction_known_at",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_015_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_015",
+              "turn_id": "gpv1_dev_015_t1",
+              "coordinate_space": "turn.text",
+              "quote": "A loose belt causes a stalled wheel.",
+              "char_start": 0,
+              "char_end": 36,
+              "byte_start": 0,
+              "byte_end": 36
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_015_e2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_015",
+              "turn_id": "gpv1_dev_015_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead.",
+              "char_start": 0,
+              "char_end": 100,
+              "byte_start": 0,
+              "byte_end": 112
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_015_e3",
+          "relation": "causes",
+          "source": "A",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_015",
+              "turn_id": "gpv1_dev_015_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead.",
+              "char_start": 0,
+              "char_end": 100,
+              "byte_start": 0,
+              "byte_end": 112
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "gpv1_dev_015_e1",
+          "status": "superseded",
+          "superseded_by": "gpv1_dev_015_e3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_015",
+              "turn_id": "gpv1_dev_015_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead.",
+              "char_start": 0,
+              "char_end": 100,
+              "byte_start": 0,
+              "byte_end": 112
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_015_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_015_e3"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_015_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_015_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_015_q3",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_015_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_015_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_016",
+      "family": "correction_known_at",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_016_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_016",
+              "turn_id": "gpv1_dev_016_t1",
+              "coordinate_space": "turn.text",
+              "quote": "„spadek napięcia” powoduje „reset sterownika”.",
+              "char_start": 0,
+              "char_end": 46,
+              "byte_start": 0,
+              "byte_end": 55
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_016_e2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_016",
+              "turn_id": "gpv1_dev_016_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”.",
+              "char_start": 0,
+              "char_end": 98,
+              "byte_start": 0,
+              "byte_end": 111
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_016_e3",
+          "relation": "causes",
+          "source": "A",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_016",
+              "turn_id": "gpv1_dev_016_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”.",
+              "char_start": 0,
+              "char_end": 98,
+              "byte_start": 0,
+              "byte_end": 111
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "gpv1_dev_016_e1",
+          "status": "superseded",
+          "superseded_by": "gpv1_dev_016_e3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_016",
+              "turn_id": "gpv1_dev_016_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”.",
+              "char_start": 0,
+              "char_end": 98,
+              "byte_start": 0,
+              "byte_end": 111
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_016_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_016_e3"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_016_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_016_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_016_q3",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_016_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_016_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_017",
+      "family": "correction_known_at",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_017_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_017",
+              "turn_id": "gpv1_dev_017_t1",
+              "coordinate_space": "turn.text",
+              "quote": "„zatkany odpływ” powoduje „mokra podłoga”.",
+              "char_start": 0,
+              "char_end": 42,
+              "byte_start": 0,
+              "byte_end": 52
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_017_e2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_017",
+              "turn_id": "gpv1_dev_017_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+              "char_start": 0,
+              "char_end": 100,
+              "byte_start": 0,
+              "byte_end": 114
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_017_e3",
+          "relation": "causes",
+          "source": "A",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_017",
+              "turn_id": "gpv1_dev_017_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+              "char_start": 0,
+              "char_end": 100,
+              "byte_start": 0,
+              "byte_end": 114
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "gpv1_dev_017_e1",
+          "status": "superseded",
+          "superseded_by": "gpv1_dev_017_e3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_017",
+              "turn_id": "gpv1_dev_017_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+              "char_start": 0,
+              "char_end": 100,
+              "byte_start": 0,
+              "byte_end": 114
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_017_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_017_e3"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_017_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_017_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_017_q3",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_017_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_017_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_018",
+      "family": "correction_known_at",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_018_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_018",
+              "turn_id": "gpv1_dev_018_t1",
+              "coordinate_space": "turn.text",
+              "quote": "„luźny pasek” powoduje „zatrzymane koło”.",
+              "char_start": 0,
+              "char_end": 41,
+              "byte_start": 0,
+              "byte_end": 51
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_018_e2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_018",
+              "turn_id": "gpv1_dev_018_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”.",
+              "char_start": 0,
+              "char_end": 103,
+              "byte_start": 0,
+              "byte_end": 119
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_018_e3",
+          "relation": "causes",
+          "source": "A",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "owner",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_018",
+              "turn_id": "gpv1_dev_018_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”.",
+              "char_start": 0,
+              "char_end": 103,
+              "byte_start": 0,
+              "byte_end": 119
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [
+        {
+          "assertion_id": "gpv1_dev_018_e1",
+          "status": "superseded",
+          "superseded_by": "gpv1_dev_018_e3",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_018",
+              "turn_id": "gpv1_dev_018_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”.",
+              "char_start": 0,
+              "char_end": 103,
+              "byte_start": 0,
+              "byte_end": 119
+            }
+          ]
+        }
+      ],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_018_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_018_e3"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_018_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_018_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_018_q3",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_018_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_018_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_019",
+      "family": "paraphrase",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_019_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_019",
+              "turn_id": "gpv1_dev_019_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the latch is released, the bolt is free.",
+              "char_start": 0,
+              "char_end": 43,
+              "byte_start": 0,
+              "byte_end": 43
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_019_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_019",
+              "turn_id": "gpv1_dev_019_t2",
+              "coordinate_space": "turn.text",
+              "quote": "To restate the same rule in different words: whenever the catch no longer holds, the pin can move.",
+              "char_start": 0,
+              "char_end": 98,
+              "byte_start": 0,
+              "byte_end": 98
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_019_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "polarity": "negative",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_019",
+              "turn_id": "gpv1_dev_019_t3",
+              "coordinate_space": "turn.text",
+              "quote": "However, “the latch is released” does not imply “the lever is down”.",
+              "char_start": 0,
+              "char_end": 68,
+              "byte_start": 0,
+              "byte_end": 76
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_019_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_019_e1",
+            "gpv1_dev_019_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_019_q2",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_019_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_019_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_019_q4",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_019_e3"
+          ],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_020",
+      "family": "paraphrase",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_020_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_020",
+              "turn_id": "gpv1_dev_020_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the sky is cloudless, the camera uses a short exposure.",
+              "char_start": 0,
+              "char_end": 58,
+              "byte_start": 0,
+              "byte_end": 58
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_020_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_020",
+              "turn_id": "gpv1_dev_020_t2",
+              "coordinate_space": "turn.text",
+              "quote": "To restate the same rule in different words: whenever no clouds cover the sky, the shutter interval is brief.",
+              "char_start": 0,
+              "char_end": 109,
+              "byte_start": 0,
+              "byte_end": 109
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_020_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "polarity": "negative",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_020",
+              "turn_id": "gpv1_dev_020_t3",
+              "coordinate_space": "turn.text",
+              "quote": "However, “the sky is cloudless” does not imply “the lens is capped”.",
+              "char_start": 0,
+              "char_end": 68,
+              "byte_start": 0,
+              "byte_end": 76
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_020_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_020_e1",
+            "gpv1_dev_020_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_020_q2",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_020_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_020_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_020_q4",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_020_e3"
+          ],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_021",
+      "family": "paraphrase",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_021_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_021",
+              "turn_id": "gpv1_dev_021_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the seal is broken, the vessel loses pressure.",
+              "char_start": 0,
+              "char_end": 49,
+              "byte_start": 0,
+              "byte_end": 49
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_021_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_021",
+              "turn_id": "gpv1_dev_021_t2",
+              "coordinate_space": "turn.text",
+              "quote": "To restate the same rule in different words: whenever the closure is no longer intact, the container cannot hold its pressure.",
+              "char_start": 0,
+              "char_end": 126,
+              "byte_start": 0,
+              "byte_end": 126
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_021_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "polarity": "negative",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_021",
+              "turn_id": "gpv1_dev_021_t3",
+              "coordinate_space": "turn.text",
+              "quote": "However, “the seal is broken” does not imply “the heater starts”.",
+              "char_start": 0,
+              "char_end": 65,
+              "byte_start": 0,
+              "byte_end": 73
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_021_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_021_e1",
+            "gpv1_dev_021_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_021_q2",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_021_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_021_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_021_q4",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_021_e3"
+          ],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_022",
+      "family": "paraphrase",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_022_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_022",
+              "turn_id": "gpv1_dev_022_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli zatrzask jest zwolniony, rygiel jest wolny.",
+              "char_start": 0,
+              "char_end": 49,
+              "byte_start": 0,
+              "byte_end": 50
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_022_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_022",
+              "turn_id": "gpv1_dev_022_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Tę samą regułę ujmę innymi słowami: zawsze gdy zapadka już nie trzyma, trzpień może się przesuwać.",
+              "char_start": 0,
+              "char_end": 98,
+              "byte_start": 0,
+              "byte_end": 109
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_022_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "polarity": "negative",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_022",
+              "turn_id": "gpv1_dev_022_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Natomiast „zatrzask jest zwolniony” nie implikuje „dźwignia jest opuszczona”.",
+              "char_start": 0,
+              "char_end": 77,
+              "byte_start": 0,
+              "byte_end": 86
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_022_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_022_e1",
+            "gpv1_dev_022_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_022_q2",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_022_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_022_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_022_q4",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_022_e3"
+          ],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_023",
+      "family": "paraphrase",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_023_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_023",
+              "turn_id": "gpv1_dev_023_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli niebo jest bezchmurne, aparat używa krótkiej ekspozycji.",
+              "char_start": 0,
+              "char_end": 62,
+              "byte_start": 0,
+              "byte_end": 65
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_023_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_023",
+              "turn_id": "gpv1_dev_023_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Tę samą regułę ujmę innymi słowami: zawsze gdy chmury nie zasłaniają nieba, czas otwarcia migawki jest krótki.",
+              "char_start": 0,
+              "char_end": 110,
+              "byte_start": 0,
+              "byte_end": 119
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_023_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "polarity": "negative",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_023",
+              "turn_id": "gpv1_dev_023_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Natomiast „niebo jest bezchmurne” nie implikuje „obiektyw jest zasłonięty”.",
+              "char_start": 0,
+              "char_end": 75,
+              "byte_start": 0,
+              "byte_end": 85
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_023_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_023_e1",
+            "gpv1_dev_023_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_023_q2",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_023_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_023_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_023_q4",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_023_e3"
+          ],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_dev_024",
+      "family": "paraphrase",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_dev_024_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_024",
+              "turn_id": "gpv1_dev_024_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli uszczelnienie jest przerwane, naczynie traci ciśnienie.",
+              "char_start": 0,
+              "char_end": 61,
+              "byte_start": 0,
+              "byte_end": 63
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_024_e2",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_024",
+              "turn_id": "gpv1_dev_024_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Tę samą regułę ujmę innymi słowami: zawsze gdy zamknięcie nie jest już szczelne, pojemnik nie utrzymuje ciśnienia.",
+              "char_start": 0,
+              "char_end": 114,
+              "byte_start": 0,
+              "byte_end": 123
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_dev_024_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "polarity": "negative",
+          "attributed_to": "author",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_dev_024",
+              "turn_id": "gpv1_dev_024_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Natomiast „uszczelnienie jest przerwane” nie implikuje „grzałka rusza”.",
+              "char_start": 0,
+              "char_end": 71,
+              "byte_start": 0,
+              "byte_end": 80
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_dev_024_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_024_e1",
+            "gpv1_dev_024_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_024_q2",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_024_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_024_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_dev_024_q4",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_dev_024_e3"
+          ],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    }
+  ]
+}

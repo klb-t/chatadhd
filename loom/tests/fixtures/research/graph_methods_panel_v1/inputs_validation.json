@@ -1,0 +1,2028 @@
+{
+  "schema": "loom.research.graph_methods_panel.inputs/1",
+  "split": "validation",
+  "cases": [
+    {
+      "id": "gpv1_validation_001",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_001",
+      "turns": [
+        {
+          "id": "gpv1_validation_001_t1",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "“the probe transmits” is possible only if “the antenna is connected”."
+        },
+        {
+          "id": "gpv1_validation_001_t2",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "“the antenna is connected” alone does not establish that “the probe transmits”. The converse implication is denied."
+        },
+        {
+          "id": "gpv1_validation_001_t3",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "I have no observation about whether the battery is warm."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the probe transmits",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the antenna is connected",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the battery is warm",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_001_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_001_q2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_001_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_001_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_002",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_002",
+      "turns": [
+        {
+          "id": "gpv1_validation_002_t1",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "“the receipt is issued” is possible only if “the payment is recorded”."
+        },
+        {
+          "id": "gpv1_validation_002_t2",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "“the payment is recorded” alone does not establish that “the receipt is issued”. The converse implication is denied."
+        },
+        {
+          "id": "gpv1_validation_002_t3",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "I have no observation about whether the queue is long."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the receipt is issued",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the payment is recorded",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the queue is long",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_002_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_002_q2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_002_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_002_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_003",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_003",
+      "turns": [
+        {
+          "id": "gpv1_validation_003_t1",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "“the crane can lift” is possible only if “the cable is taut”."
+        },
+        {
+          "id": "gpv1_validation_003_t2",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "“the cable is taut” alone does not establish that “the crane can lift”. The converse implication is denied."
+        },
+        {
+          "id": "gpv1_validation_003_t3",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "I have no observation about whether the hook is clean."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the crane can lift",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the cable is taut",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the hook is clean",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_003_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_003_q2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_003_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_003_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_004",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_004",
+      "turns": [
+        {
+          "id": "gpv1_validation_004_t1",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "„sonda nadaje” jest możliwe tylko wtedy, gdy „antena jest podłączona”."
+        },
+        {
+          "id": "gpv1_validation_004_t2",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Sam fakt „antena jest podłączona” nie oznacza „sonda nadaje”. Zaprzeczam implikacji odwrotnej."
+        },
+        {
+          "id": "gpv1_validation_004_t3",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "Nie mam obserwacji dotyczącej tego, czy bateria jest ciepła."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "sonda nadaje",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "antena jest podłączona",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "bateria jest ciepła",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_004_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_004_q2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_004_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_004_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_005",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_005",
+      "turns": [
+        {
+          "id": "gpv1_validation_005_t1",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "„paragon jest wystawiony” jest możliwe tylko wtedy, gdy „płatność jest zapisana”."
+        },
+        {
+          "id": "gpv1_validation_005_t2",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Sam fakt „płatność jest zapisana” nie oznacza „paragon jest wystawiony”. Zaprzeczam implikacji odwrotnej."
+        },
+        {
+          "id": "gpv1_validation_005_t3",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "Nie mam obserwacji dotyczącej tego, czy kolejka jest długa."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "paragon jest wystawiony",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "płatność jest zapisana",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "kolejka jest długa",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_005_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_005_q2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_005_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_005_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_006",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_006",
+      "turns": [
+        {
+          "id": "gpv1_validation_006_t1",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "„dźwig może podnosić” jest możliwe tylko wtedy, gdy „lina jest napięta”."
+        },
+        {
+          "id": "gpv1_validation_006_t2",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Sam fakt „lina jest napięta” nie oznacza „dźwig może podnosić”. Zaprzeczam implikacji odwrotnej."
+        },
+        {
+          "id": "gpv1_validation_006_t3",
+          "speaker": "engineer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "Nie mam obserwacji dotyczącej tego, czy hak jest czysty."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "dźwig może podnosić",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "lina jest napięta",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "hak jest czysty",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_006_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_006_q2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_006_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_006_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "engineer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_007",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_007",
+      "turns": [
+        {
+          "id": "gpv1_validation_007_t1",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "The two notes concern the same topic: “the repainting” and “the rust finding”."
+        },
+        {
+          "id": "gpv1_validation_007_t2",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "“the repainting” preceded “the rust finding”, but it did not cause it."
+        },
+        {
+          "id": "gpv1_validation_007_t3",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "“the microscope image” supports “the rust finding”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the repainting",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the rust finding",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the microscope image",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_007_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_007_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_007_q3",
+          "relation": "supports",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_007_q4",
+          "relation": "causes",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_008",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_008",
+      "turns": [
+        {
+          "id": "gpv1_validation_008_t1",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "The two notes concern the same topic: “the menu revision” and “the allergy report”."
+        },
+        {
+          "id": "gpv1_validation_008_t2",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "“the menu revision” preceded “the allergy report”, but it did not cause it."
+        },
+        {
+          "id": "gpv1_validation_008_t3",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "“the ingredient list” supports “the allergy report”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the menu revision",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the allergy report",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the ingredient list",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_008_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_008_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_008_q3",
+          "relation": "supports",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_008_q4",
+          "relation": "causes",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_009",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_009",
+      "turns": [
+        {
+          "id": "gpv1_validation_009_t1",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "The two notes concern the same topic: “the timetable change” and “the platform crowding”."
+        },
+        {
+          "id": "gpv1_validation_009_t2",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "“the timetable change” preceded “the platform crowding”, but it did not cause it."
+        },
+        {
+          "id": "gpv1_validation_009_t3",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "“the headcount log” supports “the platform crowding”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the timetable change",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the platform crowding",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the headcount log",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_009_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_009_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_009_q3",
+          "relation": "supports",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_009_q4",
+          "relation": "causes",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_010",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_010",
+      "turns": [
+        {
+          "id": "gpv1_validation_010_t1",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Obie notatki dotyczą tego samego tematu: „przemalowanie elementu” oraz „wykrycie rdzy”."
+        },
+        {
+          "id": "gpv1_validation_010_t2",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "„przemalowanie elementu” poprzedziło „wykrycie rdzy”, lecz go nie spowodowało."
+        },
+        {
+          "id": "gpv1_validation_010_t3",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "„obraz mikroskopowy” wspiera „wykrycie rdzy”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "przemalowanie elementu",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "wykrycie rdzy",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "obraz mikroskopowy",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_010_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_010_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_010_q3",
+          "relation": "supports",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_010_q4",
+          "relation": "causes",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_011",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_011",
+      "turns": [
+        {
+          "id": "gpv1_validation_011_t1",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Obie notatki dotyczą tego samego tematu: „zmiana menu” oraz „zgłoszenie alergii”."
+        },
+        {
+          "id": "gpv1_validation_011_t2",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "„zmiana menu” poprzedziło „zgłoszenie alergii”, lecz go nie spowodowało."
+        },
+        {
+          "id": "gpv1_validation_011_t3",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "„lista składników” wspiera „zgłoszenie alergii”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "zmiana menu",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "zgłoszenie alergii",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "lista składników",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_011_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_011_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_011_q3",
+          "relation": "supports",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_011_q4",
+          "relation": "causes",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_012",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_012",
+      "turns": [
+        {
+          "id": "gpv1_validation_012_t1",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Obie notatki dotyczą tego samego tematu: „zmiana rozkładu” oraz „tłok na peronie”."
+        },
+        {
+          "id": "gpv1_validation_012_t2",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "„zmiana rozkładu” poprzedziło „tłok na peronie”, lecz go nie spowodowało."
+        },
+        {
+          "id": "gpv1_validation_012_t3",
+          "speaker": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "„zapis liczby pasażerów” wspiera „tłok na peronie”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "zmiana rozkładu",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "tłok na peronie",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "zapis liczby pasażerów",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_012_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_012_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_012_q3",
+          "relation": "supports",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_012_q4",
+          "relation": "causes",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "observer",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_013",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_013",
+      "turns": [
+        {
+          "id": "gpv1_validation_013_t1",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Two separate observations: the vessel is warm. Separately, the lid is loose."
+        },
+        {
+          "id": "gpv1_validation_013_t2",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "I explicitly deny that “the vessel is warm” causes “the lid is loose”."
+        },
+        {
+          "id": "gpv1_validation_013_t3",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "“the thermal image” supports the observation “the vessel is warm”. I stated no implication between the two observations."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the vessel is warm",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the lid is loose",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the thermal image",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_013_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_013_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_013_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_013_q4",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_014",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_014",
+      "turns": [
+        {
+          "id": "gpv1_validation_014_t1",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Two separate observations: the basket is empty. Separately, the roof is wet."
+        },
+        {
+          "id": "gpv1_validation_014_t2",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "I explicitly deny that “the basket is empty” causes “the roof is wet”."
+        },
+        {
+          "id": "gpv1_validation_014_t3",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "“the inventory photograph” supports the observation “the basket is empty”. I stated no implication between the two observations."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the basket is empty",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the roof is wet",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the inventory photograph",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_014_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_014_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_014_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_014_q4",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_015",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_015",
+      "turns": [
+        {
+          "id": "gpv1_validation_015_t1",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Two separate observations: the display is dim. Separately, the cable is bent."
+        },
+        {
+          "id": "gpv1_validation_015_t2",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "I explicitly deny that “the display is dim” causes “the cable is bent”."
+        },
+        {
+          "id": "gpv1_validation_015_t3",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "“the luminance record” supports the observation “the display is dim”. I stated no implication between the two observations."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the display is dim",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the cable is bent",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the luminance record",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_015_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_015_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_015_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_015_q4",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_016",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_016",
+      "turns": [
+        {
+          "id": "gpv1_validation_016_t1",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Dwie osobne obserwacje: naczynie jest ciepłe. Niezależnie od tego pokrywa jest luźna."
+        },
+        {
+          "id": "gpv1_validation_016_t2",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Jawnie zaprzeczam temu, że „naczynie jest ciepłe” powoduje „pokrywa jest luźna”."
+        },
+        {
+          "id": "gpv1_validation_016_t3",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "„obraz termiczny” wspiera obserwację „naczynie jest ciepłe”. Nie podałem żadnej implikacji między dwiema obserwacjami."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "naczynie jest ciepłe",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "pokrywa jest luźna",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "obraz termiczny",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_016_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_016_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_016_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_016_q4",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_017",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_017",
+      "turns": [
+        {
+          "id": "gpv1_validation_017_t1",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Dwie osobne obserwacje: kosz jest pusty. Niezależnie od tego dach jest mokry."
+        },
+        {
+          "id": "gpv1_validation_017_t2",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Jawnie zaprzeczam temu, że „kosz jest pusty” powoduje „dach jest mokry”."
+        },
+        {
+          "id": "gpv1_validation_017_t3",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "„zdjęcie inwentaryzacyjne” wspiera obserwację „kosz jest pusty”. Nie podałem żadnej implikacji między dwiema obserwacjami."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "kosz jest pusty",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "dach jest mokry",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "zdjęcie inwentaryzacyjne",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_017_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_017_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_017_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_017_q4",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_018",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_018",
+      "turns": [
+        {
+          "id": "gpv1_validation_018_t1",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Dwie osobne obserwacje: wyświetlacz jest ciemny. Niezależnie od tego przewód jest zgięty."
+        },
+        {
+          "id": "gpv1_validation_018_t2",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Jawnie zaprzeczam temu, że „wyświetlacz jest ciemny” powoduje „przewód jest zgięty”."
+        },
+        {
+          "id": "gpv1_validation_018_t3",
+          "speaker": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "„zapis luminancji” wspiera obserwację „wyświetlacz jest ciemny”. Nie podałem żadnej implikacji między dwiema obserwacjami."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "wyświetlacz jest ciemny",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "przewód jest zgięty",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "zapis luminancji",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_018_q1",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_018_q2",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_018_q3",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_018_q4",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "attributed_to": "recorder",
+          "as_of": "2026-08-10T09:02:00Z",
+          "scope": "explicit_source"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_019",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_019",
+      "turns": [
+        {
+          "id": "gpv1_validation_019_t1",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "If the red switch is pressed, the primary relay closes."
+        },
+        {
+          "id": "gpv1_validation_019_t2",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "If the primary relay closes, the bell rings."
+        },
+        {
+          "id": "gpv1_validation_019_t3",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "If the red switch is pressed, the backup relay closes."
+        },
+        {
+          "id": "gpv1_validation_019_t4",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "text": "If the backup relay closes, the bell rings."
+        },
+        {
+          "id": "gpv1_validation_019_t5",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "text": "I stated only those four rules, not a direct sentence from the first condition to the final result. “the primary relay closes” does not imply “the backup relay closes”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the red switch is pressed",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the primary relay closes",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the bell rings",
+          "aliases": []
+        },
+        {
+          "id": "D",
+          "text": "the backup relay closes",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_019_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_019_q2",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        },
+        {
+          "id": "gpv1_validation_019_q3",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_019_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_020",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_020",
+      "turns": [
+        {
+          "id": "gpv1_validation_020_t1",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "If the packet is accepted, the first queue advances."
+        },
+        {
+          "id": "gpv1_validation_020_t2",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "If the first queue advances, the job runs."
+        },
+        {
+          "id": "gpv1_validation_020_t3",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "If the packet is accepted, the second queue advances."
+        },
+        {
+          "id": "gpv1_validation_020_t4",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "text": "If the second queue advances, the job runs."
+        },
+        {
+          "id": "gpv1_validation_020_t5",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "text": "I stated only those four rules, not a direct sentence from the first condition to the final result. “the first queue advances” does not imply “the second queue advances”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the packet is accepted",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the first queue advances",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the job runs",
+          "aliases": []
+        },
+        {
+          "id": "D",
+          "text": "the second queue advances",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_020_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_020_q2",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        },
+        {
+          "id": "gpv1_validation_020_q3",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_020_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_021",
+      "language": "en",
+      "source_id": "synthetic:gpv1_validation_021",
+      "turns": [
+        {
+          "id": "gpv1_validation_021_t1",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "If the rain starts, the gutter fills."
+        },
+        {
+          "id": "gpv1_validation_021_t2",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "If the gutter fills, the cistern receives water."
+        },
+        {
+          "id": "gpv1_validation_021_t3",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "If the rain starts, the bypass fills."
+        },
+        {
+          "id": "gpv1_validation_021_t4",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "text": "If the bypass fills, the cistern receives water."
+        },
+        {
+          "id": "gpv1_validation_021_t5",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "text": "I stated only those four rules, not a direct sentence from the first condition to the final result. “the gutter fills” does not imply “the bypass fills”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "the rain starts",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "the gutter fills",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "the cistern receives water",
+          "aliases": []
+        },
+        {
+          "id": "D",
+          "text": "the bypass fills",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_021_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_021_q2",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        },
+        {
+          "id": "gpv1_validation_021_q3",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_021_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_022",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_022",
+      "turns": [
+        {
+          "id": "gpv1_validation_022_t1",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Jeśli czerwony przycisk jest naciśnięty, główny przekaźnik się zamyka."
+        },
+        {
+          "id": "gpv1_validation_022_t2",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Jeśli główny przekaźnik się zamyka, dzwonek dzwoni."
+        },
+        {
+          "id": "gpv1_validation_022_t3",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "Jeśli czerwony przycisk jest naciśnięty, zapasowy przekaźnik się zamyka."
+        },
+        {
+          "id": "gpv1_validation_022_t4",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "text": "Jeśli zapasowy przekaźnik się zamyka, dzwonek dzwoni."
+        },
+        {
+          "id": "gpv1_validation_022_t5",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "text": "Podałem tylko te cztery reguły, bez bezpośredniego zdania od pierwszego warunku do końcowego wyniku. „główny przekaźnik się zamyka” nie implikuje „zapasowy przekaźnik się zamyka”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "czerwony przycisk jest naciśnięty",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "główny przekaźnik się zamyka",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "dzwonek dzwoni",
+          "aliases": []
+        },
+        {
+          "id": "D",
+          "text": "zapasowy przekaźnik się zamyka",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_022_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_022_q2",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        },
+        {
+          "id": "gpv1_validation_022_q3",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_022_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_023",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_023",
+      "turns": [
+        {
+          "id": "gpv1_validation_023_t1",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Jeśli pakiet jest przyjęty, pierwsza kolejka się przesuwa."
+        },
+        {
+          "id": "gpv1_validation_023_t2",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Jeśli pierwsza kolejka się przesuwa, zadanie rusza."
+        },
+        {
+          "id": "gpv1_validation_023_t3",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "Jeśli pakiet jest przyjęty, druga kolejka się przesuwa."
+        },
+        {
+          "id": "gpv1_validation_023_t4",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "text": "Jeśli druga kolejka się przesuwa, zadanie rusza."
+        },
+        {
+          "id": "gpv1_validation_023_t5",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "text": "Podałem tylko te cztery reguły, bez bezpośredniego zdania od pierwszego warunku do końcowego wyniku. „pierwsza kolejka się przesuwa” nie implikuje „druga kolejka się przesuwa”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "pakiet jest przyjęty",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "pierwsza kolejka się przesuwa",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "zadanie rusza",
+          "aliases": []
+        },
+        {
+          "id": "D",
+          "text": "druga kolejka się przesuwa",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_023_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_023_q2",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        },
+        {
+          "id": "gpv1_validation_023_q3",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_023_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_024",
+      "language": "pl",
+      "source_id": "synthetic:gpv1_validation_024",
+      "turns": [
+        {
+          "id": "gpv1_validation_024_t1",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "text": "Jeśli deszcz zaczyna padać, rynna się wypełnia."
+        },
+        {
+          "id": "gpv1_validation_024_t2",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "text": "Jeśli rynna się wypełnia, woda dociera do zbiornika."
+        },
+        {
+          "id": "gpv1_validation_024_t3",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "text": "Jeśli deszcz zaczyna padać, kanał obejściowy się wypełnia."
+        },
+        {
+          "id": "gpv1_validation_024_t4",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "text": "Jeśli kanał obejściowy się wypełnia, woda dociera do zbiornika."
+        },
+        {
+          "id": "gpv1_validation_024_t5",
+          "speaker": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "text": "Podałem tylko te cztery reguły, bez bezpośredniego zdania od pierwszego warunku do końcowego wyniku. „rynna się wypełnia” nie implikuje „kanał obejściowy się wypełnia”."
+        }
+      ],
+      "node_inventory": [
+        {
+          "id": "A",
+          "text": "deszcz zaczyna padać",
+          "aliases": []
+        },
+        {
+          "id": "B",
+          "text": "rynna się wypełnia",
+          "aliases": []
+        },
+        {
+          "id": "C",
+          "text": "woda dociera do zbiornika",
+          "aliases": []
+        },
+        {
+          "id": "D",
+          "text": "kanał obejściowy się wypełnia",
+          "aliases": []
+        }
+      ],
+      "judgment_queries": [
+        {
+          "id": "gpv1_validation_024_q1",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_024_q2",
+          "relation": "implies",
+          "source": "A",
+          "target": "C",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        },
+        {
+          "id": "gpv1_validation_024_q3",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "explicit_source"
+        },
+        {
+          "id": "gpv1_validation_024_q4",
+          "relation": "implies",
+          "source": "C",
+          "target": "A",
+          "attributed_to": "logician",
+          "as_of": "2026-08-10T09:04:00Z",
+          "scope": "formal_implication"
+        }
+      ]
+    }
+  ]
+}

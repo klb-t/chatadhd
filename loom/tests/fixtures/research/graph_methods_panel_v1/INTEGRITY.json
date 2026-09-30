@@ -1,0 +1,13 @@
+{
+  "schema": "loom.research.graph_methods_panel.integrity/1",
+  "frozen_core_manifest_unchanged": true,
+  "method_outputs_inspected": 0,
+  "api_calls": 0,
+  "mechanical_checks": 14,
+  "files": {
+    "manifest.json": "cf564f652647dd93e3d5f66acd2741eb69d3e39e3070ec69884c8023dc0a0569",
+    "test_fixture_mechanical.py": "c72ef8366fd26e0375177993b0e0dc1ee638cb584d48b7140b0d5c4a47cb9d94",
+    "SCORING_ADAPTER_NOTE.md": "fe9888b50f869c167a4af2c65e40d7b353a1d1194735911d30079ffbf62dfb46",
+    "MECHANICAL_CHECKS.md": "1633405e28024e25bed79a9c14733f00e824c699125f667d0b6e8e61138e5af6"
+  }
+}

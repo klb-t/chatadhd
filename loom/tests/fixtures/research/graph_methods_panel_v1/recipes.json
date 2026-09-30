@@ -1,0 +1,105 @@
+{
+  "schema": "loom.research.instrument_recipes/1",
+  "executed": false,
+  "api_spending_authorized": false,
+  "recipes": [
+    {
+      "id": "no_model_empty_graph",
+      "track": "assisted_extraction",
+      "instrument": "none",
+      "output": "empty assertion/event arrays"
+    },
+    {
+      "id": "no_model_unknown",
+      "track": "supplied_edge_judgment",
+      "instrument": "none",
+      "output_label": "unknown"
+    },
+    {
+      "id": "jev_source_direct_two_bits",
+      "track": "supplied_edge_judgment",
+      "instrument": "jev",
+      "representation": "source_prefix + node_inventory + one_query",
+      "question_supported": "Before as_of, does the attributed speaker explicitly assert this exact directed relation in the latest applicable view? Answer yes/no. Silence and similarity are not support.",
+      "question_refuted": "Before as_of, does that speaker explicitly deny or withdraw this exact directed relation? Answer yes/no. Silence is not refutation.",
+      "mapping": {
+        "yes/no": "supported",
+        "no/yes": "refuted",
+        "no/no": "unknown",
+        "yes/yes": "contested_invalid_for_this_panel"
+      },
+      "formal_scope": "do not reuse explicit-source questions for formal implication; use separate premise-aware recipe"
+    },
+    {
+      "id": "jev_graph_bound_two_bits",
+      "track": "supplied_edge_judgment",
+      "instrument": "jev",
+      "representation": "frozen proposer graph with evidence + one_query",
+      "graph_origin_required": "oracle_input or named_proposer; never mix the two quality denominators",
+      "question_supported": "Does this directed attributed candidate have an active positive assertion with exact source evidence at or before as_of? Answer yes/no.",
+      "question_refuted": "Does this candidate have an active explicit denial or withdrawal with exact source evidence at or before as_of? Answer yes/no.",
+      "same_mapping_as": "jev_source_direct_two_bits"
+    },
+    {
+      "id": "jev_formal_paths",
+      "track": "formal_path_support",
+      "instrument": "jev",
+      "representation": "positive implication graph + query + candidate support paths",
+      "question": "Does this supplied path compose directed positive implication premises from source to target with every premise available by as_of? Answer yes/no.",
+      "candidate_generation": "enumerate simple positive implication paths offline; preserve alternatives",
+      "evidence_class": "inferred"
+    },
+    {
+      "id": "llm_source_only",
+      "track": "source_only_extraction",
+      "instrument": "llm",
+      "prompt_file": "prompts_llm_source_only.txt"
+    },
+    {
+      "id": "llm_assisted",
+      "track": "assisted_extraction",
+      "instrument": "llm",
+      "prompt_file": "prompts_llm_assisted.txt"
+    },
+    {
+      "id": "llm_judge",
+      "track": "supplied_edge_judgment",
+      "instrument": "llm",
+      "prompt_file": "prompts_llm_judge.txt"
+    },
+    {
+      "id": "local_lexical_rank",
+      "track": "evidence_retrieval",
+      "instrument": "none",
+      "representation": "query relation/direction/attribution plus candidate turn text",
+      "configuration_required": [
+        "tokenizer_hash",
+        "casefold_policy",
+        "stopword_policy",
+        "tie_break"
+      ],
+      "truth_promotion": "forbidden"
+    },
+    {
+      "id": "local_vector_rank",
+      "track": "evidence_retrieval",
+      "instrument": "local_encoder",
+      "representation_variants": [
+        "endpoint_text_only",
+        "typed_directed_edge_text",
+        "typed_directed_attributed_edge_text"
+      ],
+      "configuration_required": [
+        "encoder_id",
+        "encoder_version",
+        "weights_hash",
+        "dimension",
+        "normalization",
+        "representation_hash",
+        "tie_break"
+      ],
+      "truth_promotion": "forbidden",
+      "network_default": "off"
+    }
+  ]
+}
