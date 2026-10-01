@@ -144,5 +144,15 @@ not changed, because this increment must not modify frozen instruments.
 
 ## Publication
 
-Publication mapping is appended after the tested local checkpoint is frozen
-and the current remote W1 head is re-read.
+Immediately before publication, the approved public W1 branch pointed to
+remote commit `b28e7bedb0094f8c0e98e653d156104f2709f15c`, tree
+`668ec776593d63b5f2e4c3e6522a362f50b9eeab`. The tested local implementation
+checkpoint is `e284bf681f56488d6bf7d9a118aeca85e72c6c30`, tree
+`7bca0d1f812c765dae3032b5412f7eb6d615ccde`.
+
+GitHub created remote commit `c016eb1c398ea892892d294bf24bf39b5a9b3dbc`
+with parent `b28e7bedb0094f8c0e98e653d156104f2709f15c` and the exact same complete
+tree `7bca0d1f812c765dae3032b5412f7eb6d615ccde`. The branch ref was advanced
+with `force=false` and read back at `c016eb1c398ea892892d294bf24bf39b5a9b3dbc`.
+The local and remote commit SHAs differ because the GitHub connector authored
+the remote commit; equality of the complete tree proves content identity.
