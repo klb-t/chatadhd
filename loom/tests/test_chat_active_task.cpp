@@ -388,17 +388,43 @@ TEST_SUITE("chat_active_task") {
 
   TEST_CASE("independent knowledge context is retained and is not represented as task-filtered") {
     ActiveTaskFixture f;
-    f.rt->chat().set_knowledge_context_builder([](const context::ContextRequest&) -> Result<Json> {
+    std::optional<context::ContextRequest> observed_request;
+    f.rt->chat().set_knowledge_context_builder([&](const context::ContextRequest& request) -> Result<Json> {
+      observed_request = request;
       return Json{{"prompt", "INDEPENDENT_CONTEXT: REJECTED_PLAN is mentioned here as evidence."},
-                  {"context_set", Json::object()}};
+                  {"context_set", Json::object()}, {"request", request.to_json()}};
     });
-    auto opts = f.options();
-    opts.knowledge_context = context::ContextRequest{};
+    auto input = f.option_json();
+    input["knowledge_context"] = Json{{"text", "INDEPENDENT_RETRIEVAL_QUERY"},
+                                      {"targets", Json::array({"entity.explicit"})},
+                                      {"project", "entity.project"}, {"budget_tokens", 1800},
+                                      {"relation_hops", 3}, {"detail_resolution", "full"}};
+    auto opts = unwrap(ChatOptions::from_json(input));
     f.reply();
     auto result = unwrap(f.rt->chat().send("Use the chosen context.", opts));
-    CHECK(contains_text(f.sent_messages(), "INDEPENDENT_CONTEXT"));
-    CHECK(contains_text(f.sent_messages(), "Prepare the operator report."));
-    CHECK(result.context_trace["messages"] == f.sent_messages());
+    REQUIRE(observed_request);
+    CHECK(observed_request->text == "INDEPENDENT_RETRIEVAL_QUERY");
+    CHECK(observed_request->targets == std::vector<std::string>{"entity.explicit"});
+    CHECK(observed_request->project == "entity.project");
+    CHECK(observed_request->budget_tokens == 1800);
+    CHECK(observed_request->relation_hops == 3);
+    REQUIRE(observed_request->detail_resolution);
+    CHECK(std::string(model::to_string(*observed_request->detail_resolution)) == "full");
+    const auto messages = f.sent_messages();
+    int rejected_mentions = 0;
+    for (const auto& message : messages) {
+      if (!message["content"].is_string() ||
+          message["content"].get<std::string>().find("REJECTED_PLAN") == std::string::npos) continue;
+      ++rejected_mentions;
+      CHECK(message["role"] == "system");
+      CHECK(message["content"].get<std::string>().find("INDEPENDENT_CONTEXT") != std::string::npos);
+    }
+    CHECK(rejected_mentions == 1);
+    CHECK(contains_text(messages, "Prepare the operator report."));
+    CHECK(exact_user_count(messages, "Use the chosen context.") == 1);
+    CHECK(result.context_trace["messages"] == messages);
+    CHECK(result.context_trace["knowledge_context_request"] == observed_request->to_json());
+    CHECK(result.context_trace["active_task"]["compiled_spec"]["product_ref"] == f.spec["product_ref"]);
     CHECK(result.context_trace["replaced_history_message_ids"].size() == 3);
   }
 

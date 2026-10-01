@@ -188,8 +188,12 @@ LOOM_API void loom_chat(LoomContext* ctx, const char* conv_id, const char* user_
 /* request_json: {"message" (required), "request_id"?, "conv_id"?, "model"?,
  * "attachments"?:[paths], "web_search"?, "deep_research"?,
  * "reasoning_effort"?, "temperature"?, "max_tokens"?, "system_prompt"?,
- * "context_depth"?, "stream"?:true}. Streams like loom_chat (callback may be
- * NULL) and also returns the final result JSON (or error JSON). */
+ * "context_depth"?, "stream"?:true, "include_memory"?,
+ * "include_graph_memory"?, "include_history"?, "knowledge_context"?,
+ * "trace_context"?, "active_task_spec"?, "active_task_bindings"?,
+ * "active_task_history"?}. Streams like loom_chat (callback may be NULL) and
+ * also returns the final result JSON (or error JSON). See ChatOptions for the
+ * strict nested contracts and defaults. */
 LOOM_API const char* loom_chat_ex(LoomContext* ctx, const char* request_json, LoomStreamCallback callback,
                                   void* user_data);
 /* Cancels an in-flight loom_chat_ex by its request_id (the partial answer is
