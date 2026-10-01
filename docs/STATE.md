@@ -6,6 +6,17 @@ original reports and Git revisions; they are not current verification claims.
 
 ## Current checkout and coordination
 
+- **Active continuation:** [night development plan](coordination/NIGHT_DEVELOPMENT_2026-10-01.md),
+  on `gpt/night-development-2026-10-01`. The owner requested further autonomous
+  development after the completed integration. N1–N6 cover late-W1 reconciliation,
+  measured TF-IDF reuse, explicit native GraphPacket persistence, ZIP member
+  materialization, historical reservation accounting and C ABI latest-run lookup.
+  Native changes in this candidate are **not yet covered by the previous 94/94
+  result**. N5's separate Python regression is 94/94; the combined native gate
+  and paired performance measurement are pending. Published candidate checkpoint
+  `d56edaed19f1f9248f3956fb33bf8cf09c97c9b9` preserves N4/N5/N6; subsequent
+  checkpoints will update the final ledger. The previous verified integration is
+  retained below as the baseline, not as verification of the new candidate.
 - **Current integration:** [W1–W6 status](coordination/PUBLICATION_STATUS.md).
   All six published lanes and the continuity audit are merged, with additional
   durable-acceptance, real-chat retrieval, importer and web corrections.

@@ -3,6 +3,15 @@
 Updated 2026-10-01, Europe/Amsterdam, by ROOT after the owner asked to reconcile
 the separate conversations with GitHub. Repository: `klb-t/chatadhd`.
 
+**A new development cycle is active:** see
+[N1–N6 plan](NIGHT_DEVELOPMENT_2026-10-01.md) and the leading note in STATE.
+Candidate checkpoint `d56edaed19f1f9248f3956fb33bf8cf09c97c9b9` is on
+`gpt/night-development-2026-10-01`; its new native changes await combined
+verification. The completed W1–W6 ledger below describes the preceding baseline.
+W1 subsequently advanced to `b28e7bedb0094f8c0e98e653d156104f2709f15c`;
+N1 reconciles compatible changes without silently replacing the integrated
+journal with that branch's alternative event format.
+
 **All six located deliverables and the continuity audit are published and merged
 into the shared candidate.** W5 was the only unpublished completed package found
 in the initial audit; ROOT recovered and published it. Subsequent integration

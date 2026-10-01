@@ -13,9 +13,10 @@ next combined gates pass. ROOT integrates, publishes and owns STATE.
 |---|---|---|---|
 | N1 | context_runtime | Reconcile late W1 `b28e7be` with integrated durable acceptance; preserve compatible improvements and tests without silently mixing alternative journal formats | Active-task acceptance and send path; dedicated chat tests |
 | N2 | retrieval_graph | Measure candidate/TF-IDF costs and improve repeated per-thesis work with exact output parity and explicit invalidation | Context/retrieval implementation; local benchmark and dedicated tests |
-| N3 | coordination_runtime | Explicit GraphPacket selection into the existing native KnowledgeStore, immutable run, durable receipt, replay and readback | New native graph-packet adapter, one C ABI operation, Python graph-store caller and tests |
+| N3 | coordination_runtime | Explicit GraphPacket selection into the existing native KnowledgeStore, immutable receipt with row-drift detection, replay and readback | New native graph-packet adapter, one C ABI operation, Python graph-store caller and tests |
 | N4 | recover_history | Materialize exact ZIP member bytes with source provenance; remove 64 KiB whitespace dispatch cliff without whole-array buffering | Import/export path, parser export-3 boundary, source-materialization tests |
 | N5 | design_audit | Separate current admission load, historical reservation high-water mark and actual instrumented evidence | ResourceLedger contract/reference, durable accounting and concurrency tests |
+| N6 | ROOT | Find the latest completed knowledge run through the C ABI even behind more than 50 newer unfinished runs; retain fallback and explicit selection | Existing C ABI lookup, public before/after probe, dedicated native tests |
 | Verification | verification / ROOT | Preserve current binary baseline; compare measured results, own the sole native build, run combined gates after freeze | Verification evidence only |
 
 All implementation lanes use isolated worktrees at the same base. Shared
