@@ -98,6 +98,22 @@ Result<context::ContextRequest> chat_context_request(const Json& value) {
   return context::ContextRequest::from_json(value);
 }
 
+Json native_history_row(const Message& message) {
+  return Json{{"id", message.id}, {"conv_id", message.conv_id}, {"status", message.status},
+              {"role", message.role}, {"text", message.text}, {"weight", message.weight}};
+}
+
+Result<Json> native_history_projection(Database& db, std::string_view conversation, bool include_history) {
+  Json projection = Json::array();
+  if (!include_history || conversation.empty()) return projection;
+  auto messages = db.get_msgs(conversation);
+  if (!messages) return messages.error();
+  for (const auto& message : *messages) {
+    if (message.status == msg_status::kActive) projection.push_back(native_history_row(message));
+  }
+  return projection;
+}
+
 Result<Json> native_request_inputs(Database& db, std::string_view conversation) {
   auto messages = db.get_msgs(conversation, true);
   if (!messages) return messages.error();
@@ -444,6 +460,8 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
 Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_view current_text,
                                         const std::vector<std::string>& attachments, const ChatOptions& opts,
                                         std::string_view exclude_message_id, Json* context_trace) {
+  const bool capture_native_history = context_trace && context_trace->is_object() &&
+      context_trace->value("_capture_native_history", Json()) == true;
   std::unique_lock<std::recursive_mutex> source_lock;
   if (opts.active_task_spec) source_lock = db_.lock();
   auto active_task = prepare_active_task(db_, conv_id, opts, active_task_in_flight_);
@@ -453,6 +471,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   Json resolved_context_request;
   Json history_ids = Json::array();
   Json replaced_ids = Json::array();
+  Json captured_native_history = Json::array();
   std::set<std::string> refinement_ids;
   if (opts.active_task_spec && opts.active_task_history == "replace_refinement") {
     for (const auto& mid : (*active_task)["history_coverage_message_ids"]) {
@@ -510,6 +529,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     if (!msgs) return msgs.error();
     for (const auto& m : *msgs) {
       if (m.status != msg_status::kActive) continue;
+      if (capture_native_history) captured_native_history.push_back(native_history_row(m));
       if (!exclude_message_id.empty() && m.id == exclude_message_id) continue;
       if (refinement_ids.count(m.id)) {
         replaced_ids.push_back(m.id);
@@ -546,6 +566,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       (*context_trace)["active_task"] = *active_task;
       (*context_trace)["replaced_history_message_ids"] = replaced_ids;
     }
+    if (capture_native_history) (*context_trace)["_native_history_snapshot"] = std::move(captured_native_history);
   }
   return messages;
 }
@@ -650,8 +671,14 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     // Arbitrary context builders run outside SQL transactions. Their returned
     // graph/knowledge/file context is frozen derived content, not a promise
     // that independent stores or external files remain globally current.
+    context_trace = Json{{"_capture_native_history", true}};
     auto built = build_messages(conv.id, text, opts.attachments, opts, "", &context_trace);
     if (!built) return built.error();
+    auto captured = context_trace.find("_native_history_snapshot");
+    if (captured == context_trace.end() || !captured->is_array())
+      return Error(Errc::Internal, "active_task: actual native history was not captured");
+    Json prepared_native_history = std::move(*captured);
+    context_trace.erase("_native_history_snapshot"); // internal validation, not a public trace field
     if (db_.conn().in_transaction()) {
       return Error(Errc::InvalidArgument,
         "active_task: context preparation left an externally owned transaction open");
@@ -664,7 +691,12 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     if (!after) return after.error();
     auto rechecked = prepare_active_task(db_, conv.id, opts, active_task_in_flight_);
     if (!rechecked) return rechecked.error();
-    if (*before != *after || *rechecked != context_trace["active_task"] ||
+    auto current_history = native_history_projection(db_, conv.id, opts.include_history);
+    if (!current_history) return current_history.error();
+    // Equal before/after endpoints alone miss A -> B (used by the builder) -> A.
+    // Validate the native rows actually consumed when composing this array.
+    if (*before != *after || *current_history != prepared_native_history ||
+        *rechecked != context_trace["active_task"] ||
         prepared_system != opts.system_prompt.value_or(cfg_string(cfg_, "system_prompt")) ||
         prepared_memory != (memory_ && opts.include_memory ? memory_->get_active_context() : std::string{})) {
       return Error(Errc::InvalidArgument,
