@@ -37,6 +37,7 @@ class ConnectionTests(unittest.TestCase):
                          self.context['catalog'][0]['input_schema'])
         self.assertEqual(self.compiled['payload']['model'], 'fixture/model')
         self.assertFalse(self.compiled['network_dispatched'])
+        self.assertEqual(self.compiled['secret_ref'], 'api_key')
         self.assertNotIn('Authorization', self.compiled)
 
     def test_all_multiple_requested_calls_and_reasoning_metadata_are_retained(self):

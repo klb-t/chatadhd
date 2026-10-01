@@ -116,8 +116,11 @@ wewnątrz klienta pozostaje w pamięci i sam nie przeżywa SIGKILL.
 
 Proces OS nie jest sandboxem. Sprzątanie killpg dotyczy tej grupy procesów,
 bez gwarancji dla odłączonych potomków. Capture limit ogranicza zwracany prefix,
-bez twardego limitu dysku tymczasowego. Brak Docker/bwrap w tej sesji nie
-dowodzi, że VM/container są nieprzydatne; oznacza brak ich weryfikacji tutaj.
+bez twardego limitu dysku tymczasowego. Końcowa obserwacja: Docker nie jest
+dostępny, Bubblewrap 0.9.0 jest dostępny. Rzeczywista próba `bwrap --unshare-all`
+zakończyła się odmową utworzenia NETLINK_ROUTE socket. To brak udanej weryfikacji
+izolacji w tej sesji, nie dowód nieprzydatności VM/container. Wstępna obserwacja
+braku bwrap była nieaktualna; pierwsze metadane i wynik próby pozostają.
 Rzeczywiste VM, przeglądarka/GUI, izolacja, uprawnienia, live modele, zdalne
 checkpointy i rozliczenie opłacanych żądań wymagają osobnych prób.
 

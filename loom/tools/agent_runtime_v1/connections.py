@@ -11,7 +11,7 @@ from .runtime import AgentError, validate
 from ..coordination.leases import digest
 
 
-def openrouter_request(context, *, model, parameters):
+def openrouter_request(context, *, model, parameters, secret_ref='api_key'):
     """Compile an initial/stateless planning request, retaining tool schemas.
 
     A live conversation adapter must additionally round-trip assistant/tool-call
@@ -19,6 +19,8 @@ def openrouter_request(context, *, model, parameters):
     """
     if type(model) is not str or not model.strip():
         raise AgentError('explicit_model_required')
+    if type(secret_ref) is not str or not secret_ref.strip():
+        raise AgentError('secret_reference_required')
     if {'model', 'messages', 'tools', 'stream'} & set(parameters):
         raise AgentError('reserved_request_fields')
     names, tools = {}, []
@@ -38,7 +40,7 @@ def openrouter_request(context, *, model, parameters):
     digest(payload)
     return {'endpoint': 'https://openrouter.ai/api/v1/chat/completions',
         'payload': payload, 'tool_names': names,
-        'secret_ref': 'openrouter_api_key', 'network_dispatched': False,
+        'secret_ref': secret_ref, 'network_dispatched': False,
         'transformation': {'preserved': ['input_schema', 'effects', 'domain_payload', 'units'],
             'added': ['protocol_function_alias'], 'lost': [], 'reversible_aliases': True}}
 

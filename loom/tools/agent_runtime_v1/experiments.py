@@ -196,6 +196,8 @@ def main():
         'working_tree_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=REPO)),
         'instrument_sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                               for p in Path(__file__).parent.glob('*.py')},
+        'fixture_sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                           for p in EXAMPLES.glob('graph-review-*.json')},
         'python': platform.python_version(),
         'platform': platform.platform(), 'docker_available': shutil.which('docker') is not None,
         'bwrap_available': shutil.which('bwrap') is not None,
