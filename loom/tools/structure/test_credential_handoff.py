@@ -12,13 +12,15 @@ from cryptography.hazmat.primitives import serialization
 
 try:
     from . import credential_handoff as handoff
+    from ._test_support import private_temporary_directory
 except ImportError:
     import credential_handoff as handoff
+    from _test_support import private_temporary_directory
 
 
 class HandoffTests(unittest.TestCase):
     def setUp(self):
-        temporary = tempfile.TemporaryDirectory()
+        temporary = private_temporary_directory()
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         self.session = self.root / "session"
@@ -37,6 +39,13 @@ class HandoffTests(unittest.TestCase):
         path = self.root / "envelope.json"
         path.write_text(json.dumps(self.envelope() if envelope is None else envelope))
         return handoff.decrypt(self.session, path, now=now)
+
+    def test_private_fixture_handles_git_nested_tmpdir(self):
+        (self.root / ".git").mkdir()
+        with patch.object(tempfile, "gettempdir", return_value=str(self.root)):
+            with private_temporary_directory() as directory:
+                self.assertNotIn(self.root, Path(directory).parents)
+                self.assertEqual(handoff.outside_git(directory), Path(directory))
 
     def test_roundtrip_owner_only_and_consumes_session(self):
         result = self.decrypt()

@@ -11,8 +11,10 @@ from unittest.mock import patch
 
 try:
     from . import openrouter_runner as runner
+    from ._test_support import private_temporary_directory
 except ImportError:
     import openrouter_runner as runner
+    from _test_support import private_temporary_directory
 
 
 def manifest(count=1):
@@ -67,7 +69,7 @@ class MockHTTP:
 
 class RunnerTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = private_temporary_directory()
         self.directory = Path(self.tmp.name) / "run"
         self.addCleanup(self.tmp.cleanup)
 

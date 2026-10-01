@@ -3,6 +3,7 @@ from pathlib import Path
 import importlib.util
 import tempfile
 import unittest
+from unittest.mock import patch
 
 try:
     from . import graph_panel_live as panel
@@ -35,7 +36,13 @@ class ScriptedRecipeChecks(unittest.TestCase):
     def test_schema_duplicate_json_and_bad_evidence_never_become_hidden_success(self):
         with tempfile.TemporaryDirectory() as temporary:
             folder = Path(temporary) / 'hint'
-            result = scripted.schema_hint_mechanism(folder)
+            # Replay this wholly scripted mechanism at the captured snapshot's
+            # time. Keep its historical manifest and live freshness guard intact.
+            source = panel.ROOT / 'docs/research/graph_method_panel_v1/extraction/prepared/manifest.json'
+            pricing = scripted.replay.read(source)['pricing_evidence']
+            snapshot_time = scripted.safe._timestamp(pricing[0]['retrieved_at'])
+            with patch.object(scripted.safe.time, 'time', return_value=snapshot_time):
+                result = scripted.schema_hint_mechanism(folder)
             self.assertEqual(result['post_count'], 3)
             self.assertEqual(result['compile_states'], ['completed', 'unavailable', 'completed'])
             score = scripted.replay.read(folder / 'scripted_contract_score.json')['scripted_contract']

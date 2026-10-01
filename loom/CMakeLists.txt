@@ -195,11 +195,14 @@ if(LOOM_BUILD_TESTS)
 
   find_package(Python3 COMPONENTS Interpreter)
   if(Python3_Interpreter_FOUND)
-    set(_loom_compat_env
-      "LOOM_COMPAT_TOOL=$<TARGET_FILE:loom_compat_tool>"
-      "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=$<TARGET_FILE:loom_candidate_graph_native_tool>"
+    # Test imports must not depend on the directory from which ctest is run or
+    # on a caller-provided PYTHONPATH (notably for namespace package `loom`).
+    set(_loom_python_env
       "PYTHONPATH=${LOOM_REPO_ROOT}"
       "PYTHONDONTWRITEBYTECODE=1")
+    set(_loom_compat_env ${_loom_python_env}
+      "LOOM_COMPAT_TOOL=$<TARGET_FILE:loom_compat_tool>"
+      "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=$<TARGET_FILE:loom_candidate_graph_native_tool>")
     if(LOOM_SHARED)
       list(APPEND _loom_compat_env "LOOM_LIBRARY=$<TARGET_FILE:loom>")
     endif()
@@ -223,8 +226,14 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME research.candidate_graph_protocol
       COMMAND ${Python3_EXECUTABLE} -m unittest discover
         -s ${LOOM_ROOT}/tools/eval -p "test_candidate_graph_eval.py")
-    set_tests_properties(research.structure research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol PROPERTIES
-      ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1" TIMEOUT 60)
+    add_test(NAME research.contracts
+      COMMAND ${Python3_EXECUTABLE} -m unittest discover
+        -s ${LOOM_ROOT}/tools/contracts -p "test_*.py")
+    add_test(NAME research.seeding
+      COMMAND ${Python3_EXECUTABLE} -m unittest discover
+        -s ${LOOM_ROOT}/tools/seeding -p "test_*.py")
+    set_tests_properties(research.structure research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol research.contracts research.seeding PROPERTIES
+      ENVIRONMENT "${_loom_python_env}" TIMEOUT 60)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
   endif()

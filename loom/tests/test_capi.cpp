@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <cstring>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <vector>
@@ -288,6 +289,53 @@ TEST_SUITE("capi") {
         CHECK(j["error"]["message"].is_string());
       }
     }
+  }
+
+  TEST_CASE("chat callback exceptions do not leave cancellable request registrations") {
+    Ctx c;
+    auto throwing_callback = [](const char*, int, void*) { throw std::runtime_error("scripted callback failure"); };
+
+    Json result = take(loom_chat_ex(c.ctx, R"({"message":"hi","request_id":"rq_throw"})", throwing_callback,
+                                    nullptr));
+
+    CHECK(is_error(result, "internal"));
+    CHECK(result["error"]["message"] == "loom_chat_ex: scripted callback failure");
+    CHECK(loom_chat_cancel(c.ctx, "rq_throw") == LOOM_E_NOT_FOUND);
+  }
+
+  TEST_CASE("duplicate request error callbacks can reenter cancellation") {
+    Ctx c;
+    struct Reentry {
+      LoomContext* ctx;
+      bool started = false;
+      int duplicate_errors = 0;
+      int cancellation = LOOM_E_NOT_FOUND;
+      Json nested;
+    } state{c.ctx, false, 0, LOOM_E_NOT_FOUND, Json()};
+    auto callback = [](const char* raw, int, void* data) {
+      auto& current = *static_cast<Reentry*>(data);
+      const Json event = Json::parse(raw);
+      if (event.value("type", "") != "start" || current.started) return;
+      current.started = true;
+      auto duplicate_callback = [](const char* duplicate_raw, int done, void* duplicate_data) {
+        auto& duplicate = *static_cast<Reentry*>(duplicate_data);
+        const Json error = Json::parse(duplicate_raw);
+        if (done && error.value("code", "") == "already_exists") {
+          ++duplicate.duplicate_errors;
+          duplicate.cancellation = loom_chat_cancel(duplicate.ctx, "rq_reentrant");
+        }
+      };
+      current.nested = take(loom_chat_ex(current.ctx,
+          R"({"message":"duplicate","request_id":"rq_reentrant"})", duplicate_callback, &current));
+    };
+    const auto result = take(loom_chat_ex(c.ctx,
+        R"({"message":"outer","request_id":"rq_reentrant"})", callback, &state));
+    CHECK(state.started);
+    CHECK(state.duplicate_errors == 1);
+    CHECK(state.cancellation == LOOM_OK);
+    CHECK(is_error(state.nested, "already_exists"));
+    CHECK(result.contains("error"));  // No credentials or provider calls in this fixture.
+    CHECK(loom_chat_cancel(c.ctx, "rq_reentrant") == LOOM_E_NOT_FOUND);
   }
 
   TEST_CASE("platform HTTP transport injection round-trip") {

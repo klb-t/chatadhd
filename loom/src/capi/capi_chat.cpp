@@ -13,6 +13,36 @@ using namespace loom::capi;
 
 namespace {
 
+class ChatRequestRegistration {
+ public:
+  ChatRequestRegistration(LoomContext& ctx, std::string_view request_id)
+      : ctx_(ctx), request_id_(request_id) {}
+  ChatRequestRegistration(const ChatRequestRegistration&) = delete;
+  ChatRequestRegistration& operator=(const ChatRequestRegistration&) = delete;
+
+  ~ChatRequestRegistration() noexcept {
+    try {
+      reset();
+    } catch (...) {
+      // The public C ABI must remain an exception firewall even while unwinding
+      // from a user callback. A failed mutex operation is not recoverable here.
+    }
+  }
+
+  void reset() {
+    if (!registered_) return;
+    std::lock_guard lk(ctx_.mu);
+    auto request = ctx_.chat_requests.find(request_id_);
+    if (request != ctx_.chat_requests.end()) ctx_.chat_requests.erase(request);
+    registered_ = false;
+  }
+
+ private:
+  LoomContext& ctx_;
+  std::string_view request_id_;
+  bool registered_ = true;
+};
+
 void emit_chunk(LoomStreamCallback cb, void* ud, const Json& chunk, int done) {
   if (!cb) return;
   std::string s = json::dump(chunk);
@@ -25,15 +55,19 @@ Json run_chat(LoomContext* ctx, const std::string& message, ChatOptions opts, st
               LoomStreamCallback cb, void* ud) {
   if (request_id.empty()) request_id = gen_id("rq_");
   CancelToken token;
+  bool already_in_flight = false;
   {
     std::lock_guard lk(ctx->mu);
-    if (ctx->chat_requests.count(request_id)) {
-      Json err = error_json(Error(Errc::AlreadyExists, "request_id already in flight: " + request_id));
-      emit_chunk(cb, ud, Json{{"type", "error"}, {"code", "already_exists"}, {"message", err["error"]["message"]}}, 1);
-      return err;
-    }
-    ctx->chat_requests.emplace(request_id, token);
+    already_in_flight = ctx->chat_requests.count(request_id) != 0;
+    if (!already_in_flight) ctx->chat_requests.emplace(request_id, token);
   }
+  if (already_in_flight) {
+    Json err = error_json(Error(Errc::AlreadyExists, "request_id already in flight: " + request_id));
+    emit_chunk(cb, ud,
+               Json{{"type", "error"}, {"code", "already_exists"}, {"message", err["error"]["message"]}}, 1);
+    return err;
+  }
+  ChatRequestRegistration registration(*ctx, request_id);
   ChatCallbacks cbs;
   cbs.on_start = [&](std::string_view conv_id, std::string_view user_msg_id) {
     emit_chunk(cb, ud,
@@ -49,10 +83,7 @@ Json run_chat(LoomContext* ctx, const std::string& message, ChatOptions opts, st
   };
   if (!cb) opts.stream = false;
   auto r = ctx->rt->chat().send(message, opts, cbs, &token);
-  {
-    std::lock_guard lk(ctx->mu);
-    ctx->chat_requests.erase(request_id);
-  }
+  registration.reset();
   if (!r) {
     emit_chunk(cb, ud,
                Json{{"type", "error"},

@@ -46,8 +46,34 @@ class FrontierTests(unittest.TestCase):
             if method=='GET': return 200,self.key_raw(key_limit)
             posts.append(body)
             return http_status, response if response is not None else self.response(manifest, len(posts)-1)
-        ledger=client.run_manifest(manifest,directory,transport_fn=transport,key_loader=lambda:'offline-test-credential')
+        # The public price snapshot is immutable research evidence. A mocked
+        # transport test runs at that snapshot's time; wall-clock aging must
+        # still block real requests through the unchanged production runner.
+        snapshot_time = safe._timestamp(manifest['pricing_evidence'][0]['retrieved_at'])
+        with patch.object(safe.time, 'time', return_value=snapshot_time):
+            ledger=client.run_manifest(manifest,directory,transport_fn=transport,key_loader=lambda:'offline-test-credential')
         return ledger,posts
+
+    def test_snapshot_freshness_guard_boundaries_before_transport(self):
+        manifest = self.one_manifest()
+        snapshot_time = safe._timestamp(manifest['pricing_evidence'][0]['retrieved_at'])
+        for age, allowed in ((-301, False), (-300, True), (0, True), (86400, True), (86401, False)):
+            with self.subTest(age=age), tempfile.TemporaryDirectory() as directory:
+                calls = []
+                def transport(method, path, body, key):
+                    calls.append(method)
+                    return (200, self.key_raw() if method == 'GET' else self.response(manifest))
+                with patch.object(safe.time, 'time', return_value=snapshot_time + age):
+                    if allowed:
+                        result = client.run_manifest(manifest, directory, transport_fn=transport,
+                                                     key_loader=lambda: 'offline-test-credential')
+                        self.assertEqual(result['attempts'][0]['state'], 'completed')
+                        self.assertEqual(calls, ['GET', 'POST'])
+                    else:
+                        with self.assertRaisesRegex(safe.RunnerError, 'pricing_evidence_stale'):
+                            client.run_manifest(manifest, directory, transport_fn=transport,
+                                                key_loader=lambda: 'offline-test-credential')
+                        self.assertEqual(calls, [])
 
     def test_public_snapshots_have_exact_provider_and_date_aliases(self):
         self.assertEqual(len(self.configs),5)

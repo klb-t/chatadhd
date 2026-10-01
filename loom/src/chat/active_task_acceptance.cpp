@@ -146,15 +146,21 @@ Status validate_chains(const Json& snapshots) {
     std::set<std::string> covered;
     for (const auto& source : (*snapshot)["source_messages"])
       covered.insert(source["message_id"].get<std::string>());
-    auto previous = (*snapshot)["supplied_spec"]["previous_product_ref"];
-    while (!previous.is_null()) {
-      const auto& ancestor = *products.at(previous["id"].get<std::string>());
-      for (const auto& source : ancestor["source_messages"]) {
+    const auto& previous = (*snapshot)["supplied_spec"]["previous_product_ref"];
+    if (!previous.is_null()) {
+      const auto& predecessor = *products.at(previous["id"].get<std::string>());
+      for (const auto& source : predecessor["source_messages"]) {
         if (covered.insert(source["message_id"].get<std::string>()).second)
-          expected.push_back(Json{{"product_ref", ancestor["supplied_spec"]["product_ref"]},
+          expected.push_back(Json{{"product_ref", predecessor["supplied_spec"]["product_ref"]},
                                   {"source_message", source}});
       }
-      previous = ancestor["supplied_spec"]["previous_product_ref"];
+      // Every predecessor is itself checked in this complete, acyclic chain.
+      // Its inherited evidence is the same nearest-first projection as an
+      // ancestor walk, without rescanning every older revision for every row.
+      for (const auto& inherited : predecessor["inherited_source_messages"]) {
+        if (covered.insert(inherited["source_message"]["message_id"].get<std::string>()).second)
+          expected.push_back(inherited);
+      }
     }
     if ((*snapshot)["inherited_source_messages"] != expected)
       return invalid("inherited evidence disagrees with accepted ancestry");

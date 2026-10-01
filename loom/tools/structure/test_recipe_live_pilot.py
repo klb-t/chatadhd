@@ -6,9 +6,11 @@ import unittest
 from unittest.mock import patch
 try:
     from . import recipe_live_pilot as p
+    from ._test_support import private_temporary_directory
     from .test_jev_live_pilot import catalog
 except ImportError:
     import recipe_live_pilot as p
+    from _test_support import private_temporary_directory
     from test_jev_live_pilot import catalog
 
 
@@ -48,7 +50,7 @@ class HTTP:
 
 class RecipeLiveTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = private_temporary_directory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.run_dir = self.root / 'run'

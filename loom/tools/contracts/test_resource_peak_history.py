@@ -11,8 +11,12 @@ import tempfile
 import threading
 import unittest
 
-from . import analysis_plan_ref as ref
-from .test_analysis_plan_ref import plan, result
+try:
+    from . import analysis_plan_ref as ref
+    from .test_analysis_plan_ref import plan, result
+except ImportError:
+    import analysis_plan_ref as ref
+    from test_analysis_plan_ref import plan, result
 
 
 def overlap_plan():

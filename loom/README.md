@@ -33,13 +33,22 @@ in [`docs/CODEX_HANDOFF_2026-09-28.md`](../docs/CODEX_HANDOFF_2026-09-28.md).
 ## Build
 
 Requirements: CMake 3.24+, Ninja, a C++20 compiler (GCC 13 or Clang 18), and
-Python 3.11 with `requests` and `cryptography` for the compat tests.
-All other dependencies are vendored in [`third_party/`](third_party/README.md).
+Python 3.11+ with `requests`, `cryptography` and the contract-validator
+requirements for the Python tests. Install those into the Python environment
+used by CMake (from the repository root):
 
 ```bash
+python3 -m pip install requests cryptography -r loom/tools/contracts/requirements.txt
 cd loom
 cmake --preset dev && cmake --build --preset dev && ctest --preset dev
 ```
+
+All other dependencies are vendored in [`third_party/`](third_party/README.md).
+If system SQLite development headers are unavailable, configure with
+`cmake --preset dev -DLOOM_USE_SYSTEM_SQLITE=OFF`; the build and test commands
+stay the same. CTest supplies its Python import paths; no `PYTHONPATH` or
+`TMPDIR` setup is required. Mocked transport tests use the pinned price-snapshot
+time; live requests still require fresh pricing evidence.
 
 To include the HTTP server and its integration test, configure with
 `cmake --preset dev -DLOOM_BUILD_SERVER=ON`. The web workbench uses the same
