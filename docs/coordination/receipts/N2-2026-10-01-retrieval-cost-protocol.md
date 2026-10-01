@@ -75,3 +75,41 @@ and asymptotic payload explicitly. Per-thesis source scans, entity reads,
 sorting, exact key comparison and full trace serialization may remain costs.
 The study is synthetic mechanism/performance evidence, not answer quality or
 proof of a tenfold overall application speedup.
+
+## Timing-window addendum, before any candidate execution
+
+The first baseline completed all 18 cases / 54 calls with exact warm parity,
+while other lanes were active and disk availability reached zero. Its 18 saved
+cold JSON outputs were read back, parsed and checked against their recorded
+SHA-256 values. Preserve that first run as diagnostic evidence.
+
+The primary timing comparator is now fixed **before candidate measurements**:
+after the combined build/CTest and disk recovery, reserve a quiet window and
+run the same complete baseline matrix once more, then the candidate matrix.
+Compare all cells in that fixed order. The first baseline remains published;
+do not choose the more favorable baseline post hoc. Acceptance also explicitly
+checks all 18 seed/request/output comparisons, all 54 call records and matching
+instrument SHA, even though the frozen runner's exit gate checks output parity
+only. A failure/timeout leaves subsequent matrix cells unmeasured (fail-fast).
+
+An additional native mechanism test will report logical retained corpus ID/text
+bytes and normalized vector entry/key counts at the same three sizes. These are
+owned payload counts, not exact allocator/RSS sizes; map/vector/string overhead
+and temporary cold-fit copies are extra. Add one shared-instrument concurrency
+regression, with varying corpora and queries, against the uncached equivalent.
+
+## V2 memory-instrument correction, before any candidate execution
+
+V1 reported the identical 177408 KiB peak RSS floor in all cases, masking the
+retained cache cost. Keep that complete instrument and first run unchanged.
+`context_candidate_cost_v2.py` retains the same seeds, requests, matrix, timer
+scope and repetition counts, but hashes the library by streaming chunks and
+adds Linux `/proc/self/status` current VmRSS snapshots before/after the native
+call. The primary quiet baseline-repeat and candidate arms both use V2 and must
+have identical V2 script hashes. V1 remains diagnostic, not a memory comparator.
+
+VmRSS is a whole-process snapshot while the returned C output buffer is still
+live, not the transient peak or isolated cache allocation. Preserve signed
+deltas (including negative values); allocator behavior and page residency may
+affect them. Keep the original high-water fields and their initial floor too.
+The logical payload test is independent evidence of cache-owned data volume.
