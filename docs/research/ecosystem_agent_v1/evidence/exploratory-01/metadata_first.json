@@ -1,0 +1,1 @@
+{"bwrap_available":true,"cloud_provisioning_calls":0,"docker_available":false,"inputs":"public_synthetic_fixtures","model":"deterministic_injected_planner","native_runtime_integration":false,"paid_provider_calls":0,"platform":"Linux-6.18.44-x86_64-with-glibc2.39","python":"3.12.14","source_commit":"f6012e87ad4f6bc9f07ba69c316d1082fe74c4b9"}

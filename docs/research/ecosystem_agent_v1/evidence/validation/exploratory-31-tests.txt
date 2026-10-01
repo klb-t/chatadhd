@@ -1,0 +1,36 @@
+test_mcp_changed_descriptor_prevents_tool_call (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_changed_descriptor_prevents_tool_call) ... ok
+test_mcp_declared_tool_error_is_distinct_from_protocol_error (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_declared_tool_error_is_distinct_from_protocol_error) ... ok
+test_mcp_missing_capability_is_visible (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_missing_capability_is_visible) ... ok
+test_mcp_protocol_error_does_not_trigger_retry (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_protocol_error_does_not_trigger_retry) ... ok
+test_mcp_schema_custom_domain_fields_and_unit_are_preserved (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_schema_custom_domain_fields_and_unit_are_preserved) ... ok
+test_mcp_silent_server_times_out_and_is_closed (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_silent_server_times_out_and_is_closed) ... ok
+test_mcp_unit_mismatch_retains_first_output_and_blocks (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_unit_mismatch_retains_first_output_and_blocks) ... ok
+test_mcp_unsupported_version_is_visible (loom.tools.agent_runtime_v1.test_runtime.MCPTests.test_mcp_unsupported_version_is_visible) ... ok
+test_bad_planner_schema_is_retained_and_not_replanned (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_bad_planner_schema_is_retained_and_not_replanned) ... ok
+test_concurrent_same_session_dispatches_once (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_concurrent_same_session_dispatches_once) ... ok
+test_cwd_does_not_supply_security_isolation (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_cwd_does_not_supply_security_isolation) ... ok
+test_environment_config_change_rejects_existing_session (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_environment_config_change_rejects_existing_session) ... ok
+test_graph_preview_retains_source_bytes_and_domain_truth_status (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_graph_preview_retains_source_bytes_and_domain_truth_status) ... ok
+test_invalid_arguments_do_not_dispatch_or_coerce_units (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_invalid_arguments_do_not_dispatch_or_coerce_units) ... ok
+test_invalid_first_tool_output_is_retained_blocks_retry (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_invalid_first_tool_output_is_retained_blocks_retry) ... ok
+test_new_application_tool_does_not_require_loop_change (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_new_application_tool_does_not_require_loop_change) ... ok
+test_parent_budget_denial_prevents_agent_dispatch (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_parent_budget_denial_prevents_agent_dispatch) ... ok
+test_physical_device_capability_is_unavailable_without_fake_action (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_physical_device_capability_is_unavailable_without_fake_action) ... ok
+test_pinned_unavailable_environment_does_not_fallback_or_plan (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_pinned_unavailable_environment_does_not_fallback_or_plan) ... ok
+test_process_group_cleanup_includes_child_after_leader_exit (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_process_group_cleanup_includes_child_after_leader_exit) ... ok
+test_process_nonzero_retains_output_as_tool_error (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_process_nonzero_retains_output_as_tool_error) ... ok
+test_process_preserves_non_utf8_stdout_and_stderr (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_process_preserves_non_utf8_stdout_and_stderr) ... ok
+test_process_timeout_cannot_claim_external_effect_rollback (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_process_timeout_cannot_claim_external_effect_rollback) ... ok
+test_process_truncation_declares_loss_and_full_hash (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_process_truncation_declares_loss_and_full_hash) ... ok
+test_real_kill_after_effect_does_not_duplicate (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_real_kill_after_effect_does_not_duplicate) ... ok
+test_real_kill_before_effect_does_not_retry (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_real_kill_before_effect_does_not_retry) ... ok
+test_step_limit_stops_effects (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_step_limit_stops_effects) ... ok
+test_three_adapters_compose_observed_data_and_replay_without_dispatch (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_three_adapters_compose_observed_data_and_replay_without_dispatch) ... ok
+test_tool_catalog_revision_change_rejects_existing_session (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_tool_catalog_revision_change_rejects_existing_session) ... ok
+test_tool_error_is_an_observation_planner_can_handle (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_tool_error_is_an_observation_planner_can_handle) ... ok
+test_unknown_tool_effect_blocks_next_action (loom.tools.agent_runtime_v1.test_runtime.RuntimeTests.test_unknown_tool_effect_blocks_next_action) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 1.749s
+
+OK
