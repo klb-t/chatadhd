@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <cstring>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <vector>
@@ -288,6 +289,18 @@ TEST_SUITE("capi") {
         CHECK(j["error"]["message"].is_string());
       }
     }
+  }
+
+  TEST_CASE("chat callback exceptions do not leave cancellable request registrations") {
+    Ctx c;
+    auto throwing_callback = [](const char*, int, void*) { throw std::runtime_error("scripted callback failure"); };
+
+    Json result = take(loom_chat_ex(c.ctx, R"({"message":"hi","request_id":"rq_throw"})", throwing_callback,
+                                    nullptr));
+
+    CHECK(is_error(result, "internal"));
+    CHECK(result["error"]["message"] == "loom_chat_ex: scripted callback failure");
+    CHECK(loom_chat_cancel(c.ctx, "rq_throw") == LOOM_E_NOT_FOUND);
   }
 
   TEST_CASE("platform HTTP transport injection round-trip") {

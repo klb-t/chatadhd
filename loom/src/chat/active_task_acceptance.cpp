@@ -166,24 +166,28 @@ Status validate_inherited_evidence(
     covered.insert(source["message_id"].get<std::string>());
   }
   const auto& spec = retained["supplied_spec"];
-  Json previous = spec["previous_product_ref"];
-  while (!previous.is_null()) {
-    auto ancestor = products.find(previous["id"].get<std::string>());
-    if (ancestor == products.end()) {
+  const auto& previous = spec["previous_product_ref"];
+  if (!previous.is_null()) {
+    auto predecessor = products.find(previous["id"].get<std::string>());
+    if (predecessor == products.end()) {
       return Error(Errc::InvalidArgument, "active_task: durable inherited evidence has a missing predecessor");
     }
-    const auto& ancestor_snapshot = ancestor->second.second;
-    const auto& ancestor_spec = ancestor_snapshot["supplied_spec"];
-    if (ancestor_spec["scope"] != spec["scope"]) {
+    const auto& predecessor_snapshot = predecessor->second.second;
+    const auto& predecessor_spec = predecessor_snapshot["supplied_spec"];
+    if (predecessor_spec["scope"] != spec["scope"]) {
       return Error(Errc::InvalidArgument, "active_task: durable inherited evidence crosses scope");
     }
-    for (const auto& source : ancestor_snapshot["source_messages"]) {
+    for (const auto& source : predecessor_snapshot["source_messages"]) {
       const auto mid = source["message_id"].get<std::string>();
       if (!covered.insert(mid).second) continue;
-      expected.push_back(Json{{"product_ref", ancestor_spec["product_ref"]},
+      expected.push_back(Json{{"product_ref", predecessor_spec["product_ref"]},
                               {"source_message", source}});
     }
-    previous = ancestor_spec["previous_product_ref"];
+    for (const auto& inherited : predecessor_snapshot["inherited_source_messages"]) {
+      const auto mid = inherited["source_message"]["message_id"].get<std::string>();
+      if (!covered.insert(mid).second) continue;
+      expected.push_back(inherited);
+    }
   }
   if (retained["inherited_source_messages"] != expected) {
     return Error(Errc::InvalidArgument, "active_task: durable inherited evidence disagrees with ancestry");
@@ -370,12 +374,23 @@ Result<ActiveTaskAuthority> load_active_task_authority(Database& db, std::string
     return invalid_authority("acceptance records exist without a completed baseline");
   }
   std::map<std::string, std::pair<std::string, Json>> products;
+  std::map<std::string, std::int64_t> first_product_seq;
   for (const auto& accepted : result.acceptances) {
     const auto product_id = accepted.snapshot["supplied_spec"]["product_ref"]["id"].get<std::string>();
+    first_product_seq.try_emplace(product_id, accepted.seq);
     auto [position, inserted] = products.emplace(
         product_id, std::make_pair(accepted.originating_message_id, accepted.snapshot));
     if (!inserted && !compatible_product_identity(position->second.second, accepted.snapshot)) {
       return invalid_authority("product identity has conflicting accepted snapshots");
+    }
+  }
+  for (const auto& accepted : result.acceptances) {
+    if (accepted.acceptance != "explicit_caller_supplied") continue;
+    const auto& previous = accepted.snapshot["supplied_spec"]["previous_product_ref"];
+    if (previous.is_null()) continue;
+    auto predecessor_seq = first_product_seq.find(previous["id"].get<std::string>());
+    if (predecessor_seq == first_product_seq.end() || predecessor_seq->second >= accepted.seq) {
+      return invalid_authority("explicit acceptance predates its predecessor");
     }
   }
   LOOM_TRY(validate_acceptance_chains(products));

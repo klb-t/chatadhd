@@ -840,6 +840,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   bool cancelled = false;
 
   auto handle_event = [&](const net::SseEvent& evt) {
+    if (cancel && cancel->cancelled()) return;
     if (evt.is_done()) return;
     auto parsed = json::parse(evt.data);
     if (!parsed) {
@@ -854,11 +855,13 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
         if (!chunk_text.empty()) {
           full_text += chunk_text;
           if (cb.on_chunk) cb.on_chunk(chunk_text);
+          if (cancel && cancel->cancelled()) return;
         }
         std::string r = json::get_string(*delta, "reasoning");
         if (!r.empty()) {
           reasoning_text += r;
           if (cb.on_reasoning) cb.on_reasoning(r);
+          if (cancel && cancel->cancelled()) return;
         }
       }
     }
@@ -886,6 +889,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
         return true;
       }
       parser.feed(chunk, handle_event);
+      if (cancel && cancel->cancelled()) {
+        aborted = true;
+        return false;
+      }
       return true;
     };
 
@@ -899,6 +906,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       return Error(Errc::Http, "API error " + std::to_string(status) + ": " + std::string(utf8::prefix(err_body, 500)));
     } else {
       parser.finish(handle_event);
+      if (cancel && cancel->cancelled()) cancelled = true;
     }
   } else {
     auto resp = http_.send(req, nullptr, cancel);
