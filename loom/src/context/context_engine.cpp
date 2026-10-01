@@ -265,7 +265,12 @@ Json ContextRequest::to_json() const {
 }
 
 ContextEngine::ContextEngine(Runtime& rt, kb::KnowledgeStore& store, std::shared_ptr<const kb::Pack> pack)
-    : rt_(rt), store_(store), pack_(std::move(pack)) {}
+    : rt_(rt), store_(store), pack_(std::move(pack)) {
+  // One lazily fitted built-in per engine lets plan theses share deterministic
+  // corpus vectors. Every thesis still reads its corpus from the store; an
+  // explicit caller injection under this id replaces the built-in normally.
+  candidate_channels_.emplace("tfidf", make_tfidf_candidate_channel(pack_));
+}
 
 int ContextEngine::estimate_tokens(std::string_view text) noexcept {
   std::size_t n = utf8::length(text);

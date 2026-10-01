@@ -5,6 +5,7 @@
 #include <exception>
 #include <limits>
 #include <mutex>
+#include <optional>
 #include <set>
 
 namespace loom::context {
@@ -66,15 +67,21 @@ int prepare_vector(resolve::SparseVec& vector) {
 class VectorCandidateChannel final : public CandidateChannel {
  public:
   explicit VectorCandidateChannel(std::shared_ptr<resolve::VectorSpace> space) : space_(std::move(space)) {}
+  // Only this private, deterministic built-in owns a reusable corpus. Injected
+  // VectorSpaces may be stateful or remote and always keep the original path.
+  explicit VectorCandidateChannel(std::shared_ptr<const kb::Pack> pack) : tfidf_pack_(std::move(pack)) {}
 
   RetrievalBatch retrieve(std::string_view query, const std::vector<RetrievalDocument>& corpus,
                           const CandidateChannelRequest& request) override {
     if (!valid_request(request)) return failure("vector", corpus.size(), "error", "invalid_request");
     if (!valid_corpus(corpus)) return failure("vector", corpus.size(), "error", "invalid_corpus_references");
-    if (!space_) return failure("vector", corpus.size(), "unavailable", "vector_space_not_installed");
     std::lock_guard<std::mutex> guard(mutex_);
     std::string method = "vector";
     try {
+      // Laziness keeps unused default chat/context paths free of normalizer
+      // construction. The built-in's pack cannot change during its lifetime.
+      if (!space_ && tfidf_pack_) space_ = resolve::make_tfidf_space(tfidf_pack_);
+      if (!space_) return failure("vector", corpus.size(), "unavailable", "vector_space_not_installed");
       method = space_->method();
       const auto modalities = space_->modalities();
       if (std::find(modalities.begin(), modalities.end(), "text") == modalities.end()) {
@@ -84,7 +91,22 @@ class VectorCandidateChannel final : public CandidateChannel {
       RetrievalBatch batch;
       batch.method = method;
       batch.corpus_count = corpus.size();
-      if (corpus.empty()) return batch;
+      if (corpus.empty()) {
+        cached_.reset();
+        return batch;
+      }
+      if (cached_ && same_corpus(corpus, cached_->documents)) {
+        auto query_vectors = space_->vectors({{cached_->query_id, "text", std::string(query), "", ""}});
+        if (!query_vectors) return failure(method, corpus.size(), "error", "vectorization_failed:" + std::string(errc_name(query_vectors.error().code)));
+        if (query_vectors->size() != 1) return failure(method, corpus.size(), "error", "vector_count_mismatch");
+        const int state = prepare_vector(query_vectors->front());
+        if (state < 0) return failure(method, corpus.size(), "error", "invalid_vector_values");
+        if (state == 0) return failure(method, corpus.size(), "unrepresentable", "empty_query_vector");
+        return score(method, corpus, cached_->vectors, cached_->states, query_vectors->front(), request);
+      }
+      // Never reuse a previous fit after any changed document id/text/order.
+      // Store reads and corpus-query failures remain outside this cache.
+      cached_.reset();
       std::vector<resolve::EmbedInput> inputs;
       inputs.reserve(corpus.size() + 1);
       std::set<std::string> input_ids;
@@ -108,17 +130,13 @@ class VectorCandidateChannel final : public CandidateChannel {
       }
       const auto& query_vector = vectors->back();
       if (vector_states.back() == 0) return failure(method, corpus.size(), "unrepresentable", "empty_query_vector");
-      for (std::size_t i = 0; i < corpus.size(); ++i) {
-        if (vector_states[i] == 0) {
-          ++batch.unrepresentable_count;
-          batch.unrepresentable_refs.push_back(corpus[i].ref);
-          continue;
-        }
-        const double score = resolve::cosine((*vectors)[i], query_vector);
-        if (!std::isfinite(score)) return failure(method, corpus.size(), "error", "invalid_cosine");
-        batch.scores.push_back({corpus[i].ref, std::clamp(score, -1.0, 1.0)});
+      batch = score(method, corpus, *vectors, vector_states, query_vector, request);
+      if (tfidf_pack_ && batch.status == "ok") {
+        // At most one copied corpus and its normalized vectors are retained.
+        // Scores/ranks/thresholds/query vectors and negative outcomes are not.
+        cached_ = CachedCorpus{corpus, {vectors->begin(), vectors->end() - 1},
+            {vector_states.begin(), vector_states.end() - 1}, std::move(query_id)};
       }
-      finish(batch, request);
       return batch;
     } catch (const std::exception&) {
       // Capability implementations can be third-party code. Do not copy an
@@ -130,7 +148,42 @@ class VectorCandidateChannel final : public CandidateChannel {
   }
 
  private:
+  struct CachedCorpus {
+    std::vector<RetrievalDocument> documents;
+    std::vector<resolve::SparseVec> vectors;
+    std::vector<int> states;
+    std::string query_id;
+  };
+
+  static bool same_corpus(const std::vector<RetrievalDocument>& a, const std::vector<RetrievalDocument>& b) {
+    return a.size() == b.size() && std::equal(a.begin(), a.end(), b.begin(), [](const auto& x, const auto& y) {
+      return x.ref == y.ref && x.text == y.text;
+    });
+  }
+
+  static RetrievalBatch score(const std::string& method, const std::vector<RetrievalDocument>& corpus,
+      const std::vector<resolve::SparseVec>& vectors, const std::vector<int>& states,
+      const resolve::SparseVec& query_vector, const CandidateChannelRequest& request) {
+    RetrievalBatch batch;
+    batch.method = method;
+    batch.corpus_count = corpus.size();
+    for (std::size_t i = 0; i < corpus.size(); ++i) {
+      if (states[i] == 0) {
+        ++batch.unrepresentable_count;
+        batch.unrepresentable_refs.push_back(corpus[i].ref);
+        continue;
+      }
+      const double value = resolve::cosine(vectors[i], query_vector);
+      if (!std::isfinite(value)) return failure(method, corpus.size(), "error", "invalid_cosine");
+      batch.scores.push_back({corpus[i].ref, std::clamp(value, -1.0, 1.0)});
+    }
+    finish(batch, request);
+    return batch;
+  }
+
   std::shared_ptr<resolve::VectorSpace> space_;
+  std::shared_ptr<const kb::Pack> tfidf_pack_;
+  std::optional<CachedCorpus> cached_;
   std::mutex mutex_;
 };
 
@@ -226,8 +279,7 @@ std::shared_ptr<CandidateChannel> make_vector_candidate_channel(std::shared_ptr<
   return std::make_shared<VectorCandidateChannel>(std::move(space));
 }
 std::shared_ptr<CandidateChannel> make_tfidf_candidate_channel(std::shared_ptr<const kb::Pack> pack) {
-  if (!pack) return make_vector_candidate_channel(nullptr);
-  return make_vector_candidate_channel(std::shared_ptr<resolve::VectorSpace>(resolve::make_tfidf_space(std::move(pack))));
+  return std::make_shared<VectorCandidateChannel>(std::move(pack));
 }
 std::shared_ptr<CandidateChannel> make_lexical_candidate_channel(std::shared_ptr<const kb::Pack> pack) {
   return std::make_shared<LexicalCandidateChannel>(std::move(pack));
