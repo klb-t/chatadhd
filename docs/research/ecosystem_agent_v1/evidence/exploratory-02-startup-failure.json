@@ -1,0 +1,10 @@
+{
+  "status": "failed_before_metadata",
+  "source_commit": "f6012e87ad4f6bc9f07ba69c316d1082fe74c4b9",
+  "working_tree": "uncommitted_instrument",
+  "exception": "subprocess.CalledProcessError",
+  "returncode": 128,
+  "stderr": "fatal: not a git repository (or any of the parent directories): .git",
+  "cause": "incorrect_repository_path_in_instrument",
+  "evidence_kind": "reconstructed_summary_from_observed_console_output_not_raw_log"
+}
