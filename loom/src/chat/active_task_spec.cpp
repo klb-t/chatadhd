@@ -48,6 +48,40 @@ bool integer(const Json& value, std::uint64_t minimum = 0) {
   return number >= 0 && static_cast<std::uint64_t>(number) >= minimum;
 }
 
+// Compare non-negative finite JSON numbers without first rounding integers to
+// double. In particular, adjacent integer timestamps above 2^53 must not
+// collapse to the same binary64 value.
+bool number_less(const Json& left, const Json& right) {
+  const bool left_integer = left.is_number_integer();
+  const bool right_integer = right.is_number_integer();
+  if (left_integer && right_integer) {
+    const auto as_unsigned = [](const Json& value) {
+      return value.is_number_unsigned() ? value.get<std::uint64_t>()
+                                        : static_cast<std::uint64_t>(value.get<std::int64_t>());
+    };
+    return as_unsigned(left) < as_unsigned(right);
+  }
+  if (!left_integer && !right_integer) return left.get<double>() < right.get<double>();
+
+  constexpr double kUint64Limit = 18446744073709551616.0;  // 2^64, exactly representable
+  if (left_integer) {
+    const auto integer_value = left.is_number_unsigned()
+        ? left.get<std::uint64_t>()
+        : static_cast<std::uint64_t>(left.get<std::int64_t>());
+    const double float_value = right.get<double>();
+    if (float_value >= kUint64Limit) return true;
+    const auto whole = static_cast<std::uint64_t>(float_value);
+    return integer_value < whole || (integer_value == whole && std::trunc(float_value) != float_value);
+  }
+
+  const double float_value = left.get<double>();
+  if (float_value >= kUint64Limit) return false;
+  const auto integer_value = right.is_number_unsigned()
+      ? right.get<std::uint64_t>()
+      : static_cast<std::uint64_t>(right.get<std::int64_t>());
+  return static_cast<std::uint64_t>(float_value) < integer_value;
+}
+
 bool strings(const Json& value, bool nonempty_array = false, bool unique = true) {
   if (!value.is_array() || (nonempty_array && value.empty())) return false;
   std::set<std::string> seen;
@@ -162,7 +196,7 @@ bool locator(const Json& value) {
   for (auto key : {"time_start", "time_end"}) {
     if (present(key) && (!value[key].is_number() || value[key].get<double>() < 0)) return false;
   }
-  return !present("time_start") || value["time_end"].get<double>() >= value["time_start"].get<double>();
+  return !present("time_start") || !number_less(value["time_end"], value["time_start"]);
 }
 
 Status validate(const Json& spec) {
