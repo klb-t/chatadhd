@@ -77,8 +77,8 @@ unchanged.
 The production validator at `bc166ef` and the first three new test files passed
 C++20 syntax-only compilation with `-Wall -Wextra -Werror`; `git diff --check` passed. No full native build was
 run in this lane. The coordinator's single verification lane owns runtime
-red/green and the combined regression. At this checkpoint the ABA hypothesis
-has a deterministic source-level reproducer; it is not yet an executed finding.
+red/green and the combined regression. The source-only ABA checkpoint was
+subsequently executed against the preserved baseline, as recorded below.
 
 
 ## Scope member-order follow-up
@@ -90,3 +90,40 @@ object arrives with its members rearranged. Raw supplied specifications and
 all existing journal encodings remain preserved. This source-level finding
 also affects external W1's `prepare_active_task` comparison; canonical keys
 in its later graph fold alone do not prevent a first bad acceptance.
+
+
+## Executed ABA baseline failure and minimal correction
+
+The separate verification lane compiled the unchanged test `d9f4b11` against
+the preserved `da77c76` static archives, with no core rebuild. Compilation
+passed in 19.76 seconds; the baseline probe exited 1 in 0.065 seconds: one
+failed case, nine assertions, four passed and five failed. Successful setup
+assertions establish that the second connection restored A and the entire
+native row equals its original value. The payload assertion independently
+establishes that B reached the actual scripted-provider request. The baseline
+incorrectly accepted the send, persisted four rows rather than two, ran one
+callback, and produced provider and acceptance-event effects.
+
+Evidence is retained at
+`/workspace/scratch/a371a1ca13b1/verification/night2-aba-baseline-first/`:
+`receipt.json`, `compile-first.log`, and `probe-first.log`. The receipt records
+all compiler/linker arguments, source/archive hashes, and confirms unchanged
+inputs. Test SHA-256:
+`555fc9ce95fae6a60fd722dd2175cb6a552e41813e027e61612d29d7b2bed1c6`.
+Baseline core archive SHA-256:
+`42f0f8a1b0d1fc274878db40983b750687654c0b2c52ca2ad6fc3fbd9b0a9a15`.
+This is a reproduced latent baseline failure, not a passing new-feature test.
+
+Fix `72f1b6f` captures the native history rows actually consumed inside
+`build_messages`, alongside its existing exact-message trace. Under the final
+writer transaction, the same row projection (ID, conversation, status, role,
+text and weight) must match. It supplements the existing before/after and task
+source checks, preserving earlier conservative rejection tests. The temporary
+capture control and result are removed before any stored or returned context
+trace; public trace and journal schemas remain unchanged. No arbitrary builder,
+callback or provider is invoked inside that transaction.
+
+All N1 production changes are now frozen for the single combined native build
+and green regression. The green result is pending central verification, not
+claimed by this implementation receipt. No paid calls, private archives or
+holdout data were used.
