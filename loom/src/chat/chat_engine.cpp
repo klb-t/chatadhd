@@ -186,7 +186,7 @@ Result<Json> prepare_active_task(Database& db, std::string_view conv_id, const C
          (*retained)["source_messages"] != sources)) {
       return invalid("a product identifier cannot be reused for different content or bindings");
     }
-    if ((*old)["scope"] != spec["scope"]) continue;
+    if (chat::active_task_scope_key((*old)["scope"]) != chat::active_task_scope_key(spec["scope"])) continue;
     const auto product_id = (*old)["product_ref"]["id"].get<std::string>();
     auto [product, added] = products.emplace(product_id, &*retained);
     if (!added && !chat::same_active_task_identity(*product->second, *retained)) {

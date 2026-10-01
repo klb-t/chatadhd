@@ -10,6 +10,9 @@ struct ActiveTaskHistory {
   std::map<std::string, Json> projections;
   bool baseline_complete = false;
 };
+// Identity uses the three named, validated values, not ordered-JSON member
+// order. This key never rewrites the retained supplied specification.
+std::string active_task_scope_key(const Json& scope);
 bool valid_active_task_snapshot(const Json& snapshot);
 bool same_active_task_identity(const Json& a, const Json& b);
 // Read-only, including legacy discovery. Caller holds db.lock().

@@ -17,6 +17,10 @@ constexpr auto kBaseline = "chat.active_task.baseline.v1";
 constexpr auto kBoundary = "visible_top_level_metadata_all_statuses_at_upgrade";
 }
 
+std::string active_task_scope_key(const Json& scope) {
+  return json::dump(Json::array({scope.at("conversation_id"), scope.at("branch_id"), scope.at("task_id")}));
+}
+
 bool valid_active_task_snapshot(const Json& retained) {
   // Validate the complete emitted representation, not only its current text
   // bindings: inherited evidence and coverage also control history replacement.
@@ -116,7 +120,7 @@ Status validate_chains(const Json& snapshots) {
     auto [at, added] = products.emplace(id, &snapshot);
     if (!added && !same_active_task_identity(*at->second, snapshot))
       return invalid("conflicting retained product identity");
-    auto& versions = scopes[json::dump(spec["scope"])];
+    auto& versions = scopes[active_task_scope_key(spec["scope"])];
     auto [version, first] = versions.emplace(spec["version"].get<std::uint64_t>(), id);
     if (!first && version->second != id) return invalid("competing retained version identities");
   }
@@ -162,7 +166,7 @@ Status validate_chains(const Json& snapshots) {
 // baseline, explicit acceptances must extend or replay the head at that event.
 Status advance_head(std::map<std::string, Json>& heads, const Json& snapshot) {
   const auto& spec = snapshot["supplied_spec"];
-  const auto key = json::dump(spec["scope"]);
+  const auto key = active_task_scope_key(spec["scope"]);
   auto old = heads.find(key);
   if (old == heads.end()) {
     if (spec["version"] != 1 || !spec["previous_product_ref"].is_null())
@@ -225,7 +229,7 @@ Result<ActiveTaskHistory> read_active_task_history(Database& db, std::string_vie
         LOOM_TRY(validate_chains(history.snapshots));
         for (const auto& snapshot : history.snapshots) {
           const auto& spec = snapshot["supplied_spec"];
-          auto& head = heads[json::dump(spec["scope"])];
+          auto& head = heads[active_task_scope_key(spec["scope"])];
           if (head.is_null() || spec["version"] > head["supplied_spec"]["version"]) head = snapshot;
         }
         history.baseline_complete = true;
