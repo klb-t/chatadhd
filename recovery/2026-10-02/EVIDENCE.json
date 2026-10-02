@@ -1,0 +1,20 @@
+{
+  "archive_parent": "9626969bce806b2270d764ebdea3a8e139453de3",
+  "source": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+  "bundles": [
+    {
+      "file": "verification.tar.xz",
+      "bytes": 108908,
+      "sha256": "85545d2d893e511ece4f5a404510e836e3b0b0e051b7ecea17a9a112785d5fb4",
+      "files": 44
+    },
+    {
+      "file": "n2-paired.tar.xz",
+      "bytes": 49100,
+      "sha256": "2b0d1078e6de8e27eb51fb19b9dd6ff693f32a5c230f1cbf47b492bc75430037",
+      "files": 221
+    }
+  ],
+  "paid_model_calls": 0,
+  "new_analysis_requests_prepared": 432
+}
