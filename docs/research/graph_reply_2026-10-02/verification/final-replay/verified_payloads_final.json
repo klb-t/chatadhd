@@ -1,0 +1,242 @@
+{
+  "schema": "loom.graph_reply_payload_comparison/1",
+  "origin": "deterministic-saved-sample-transport-measurement",
+  "rows": [
+    {
+      "case_id": "correction_a_b",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4061,
+        "raw_reply": 783,
+        "projected_diff": 14769,
+        "full_updated_packet": 56376,
+        "current_native_records_with_provenance": 21826,
+        "response_text": 124
+      }
+    },
+    {
+      "case_id": "branch_specific_choice",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 5770,
+        "raw_reply": 809,
+        "projected_diff": 14997,
+        "full_updated_packet": 58803,
+        "current_native_records_with_provenance": 23763,
+        "response_text": 142
+      }
+    },
+    {
+      "case_id": "context_not_requirement",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4170,
+        "raw_reply": 430,
+        "projected_diff": 8136,
+        "full_updated_packet": 32687,
+        "current_native_records_with_provenance": 13584,
+        "response_text": 138
+      }
+    },
+    {
+      "case_id": "negated_conditional",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 3992,
+        "raw_reply": 1230,
+        "projected_diff": 20461,
+        "full_updated_packet": 75342,
+        "current_native_records_with_provenance": 28308,
+        "response_text": 250
+      }
+    },
+    {
+      "case_id": "quotation_not_endorsement",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4215,
+        "raw_reply": 898,
+        "projected_diff": 15512,
+        "full_updated_packet": 58770,
+        "current_native_records_with_provenance": 22723,
+        "response_text": 193
+      }
+    },
+    {
+      "case_id": "unresolved_conflict",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 5911,
+        "raw_reply": 1294,
+        "projected_diff": 23751,
+        "full_updated_packet": 89108,
+        "current_native_records_with_provenance": 34376,
+        "response_text": 234
+      }
+    },
+    {
+      "case_id": "repeated_utf8_emoji",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4009,
+        "raw_reply": 559,
+        "projected_diff": 13784,
+        "full_updated_packet": 53374,
+        "current_native_records_with_provenance": 20789,
+        "response_text": 27
+      }
+    },
+    {
+      "case_id": "no_forced_semantic_relation",
+      "context_mode": "graph",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 3903,
+        "raw_reply": 244,
+        "projected_diff": 6886,
+        "full_updated_packet": 28674,
+        "current_native_records_with_provenance": 12067,
+        "response_text": 13
+      }
+    },
+    {
+      "case_id": "correction_a_b",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4061,
+        "raw_reply": 768,
+        "projected_diff": 14641,
+        "full_updated_packet": 55992,
+        "current_native_records_with_provenance": 21698,
+        "response_text": 109
+      }
+    },
+    {
+      "case_id": "branch_specific_choice",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 5770,
+        "raw_reply": 823,
+        "projected_diff": 15020,
+        "full_updated_packet": 58872,
+        "current_native_records_with_provenance": 23786,
+        "response_text": 143
+      }
+    },
+    {
+      "case_id": "context_not_requirement",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4170,
+        "raw_reply": 824,
+        "projected_diff": 14702,
+        "full_updated_packet": 56293,
+        "current_native_records_with_provenance": 21868,
+        "response_text": 175
+      }
+    },
+    {
+      "case_id": "negated_conditional",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 3992,
+        "raw_reply": 1220,
+        "projected_diff": 19539,
+        "full_updated_packet": 72576,
+        "current_native_records_with_provenance": 27386,
+        "response_text": 290
+      }
+    },
+    {
+      "case_id": "quotation_not_endorsement",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4215,
+        "raw_reply": 948,
+        "projected_diff": 15582,
+        "full_updated_packet": 58980,
+        "current_native_records_with_provenance": 22793,
+        "response_text": 191
+      }
+    },
+    {
+      "case_id": "unresolved_conflict",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 5911,
+        "raw_reply": 1241,
+        "projected_diff": 22747,
+        "full_updated_packet": 86096,
+        "current_native_records_with_provenance": 33372,
+        "response_text": 190
+      }
+    },
+    {
+      "case_id": "repeated_utf8_emoji",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 4009,
+        "raw_reply": 577,
+        "projected_diff": 13809,
+        "full_updated_packet": 53449,
+        "current_native_records_with_provenance": 20814,
+        "response_text": 27
+      }
+    },
+    {
+      "case_id": "no_forced_semantic_relation",
+      "context_mode": "flat",
+      "available": true,
+      "sizes_utf8_bytes": {
+        "base_packet": 3903,
+        "raw_reply": 250,
+        "projected_diff": 6889,
+        "full_updated_packet": 28683,
+        "current_native_records_with_provenance": 12070,
+        "response_text": 13
+      }
+    }
+  ],
+  "totals_by_context_mode": {
+    "graph": {
+      "base_packet": 36031,
+      "raw_reply": 6247,
+      "projected_diff": 118296,
+      "full_updated_packet": 453134,
+      "current_native_records_with_provenance": 177436,
+      "response_text": 1121,
+      "measured_samples": 8
+    },
+    "flat": {
+      "base_packet": 36031,
+      "raw_reply": 6651,
+      "projected_diff": 122929,
+      "full_updated_packet": 470941,
+      "current_native_records_with_provenance": 183787,
+      "response_text": 1138,
+      "measured_samples": 8
+    }
+  },
+  "model_snapshot_regeneration_samples": 0,
+  "not_measured": [
+    "tokens",
+    "latency",
+    "cost",
+    "model snapshot corruption rate"
+  ],
+  "interpretation": "raw compact model wire versus host compiled rich native diff and full packet; full packet includes reversible history"
+}

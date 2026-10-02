@@ -1,5 +1,18 @@
 # STATE — ChatADHD / Loom
 
+## Isolated graph-reply experiment — 2026-10-02
+
+Branch `gpt/graph-replies-2026-10-02`, based on recovered source `af3c81a`;
+published implementation checkpoint `a9110e1` (same source tree as local `7634446`). The owner requested direct graph-formatted
+API answers and an implementation experiment. [Report and exact evidence](research/graph_reply_2026-10-02/README.md).
+37/37 new reply/API tests and 880/880 Python structure tests pass on this branch.
+Prepared JSON Schema requests, graph-to-GraphPacket compiler, and preserved
+synthetic DEV pilot outputs are research artifacts; zero external API calls.
+Native ChatEngine/store integration is not delivered or silently promoted.
+This scoped experiment does not assign GPT ongoing integration ownership.
+The integration/coordination descriptions below are inherited 2026-10-01 state,
+not new verification or a replacement for the separate 2026-10-02 recovery handoff.
+
 Updated 2026-10-01 (Europe/Amsterdam) by the continuation integrator. This replaces the internally
 contradictory 2026-09-29 status summary. Historical measurements remain in their
 original reports and Git revisions; they are not current verification claims.

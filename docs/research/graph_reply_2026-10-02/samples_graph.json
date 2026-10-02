@@ -1,0 +1,63 @@
+{
+  "schema": "loom.graph_reply_samples/1",
+  "sample_origin": "in-session-model-pilot",
+  "model_identity": "inherited-session-model; exact endpoint not exposed",
+  "samples": [
+    {
+      "case_id": "correction_a_b",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"919a11e48176ad83a3df295d7555ae446557c54b2d65190eba5d6a1a552c5cfe\",\"response_id\":\"ca_response\",\"nodes\":[{\"id\":\"ca_response\",\"text\":\"Teraz obowiązuje plik B. Ustalenie o pliku A zostało zastąpione korektą i pozostaje tylko historyczną wersją pomysłu.\",\"role\":\"response\",\"children\":[\"ca_current\",\"ca_superseded\"]},{\"id\":\"ca_current\",\"text\":\"Teraz obowiązuje plik B. \",\"role\":\"current_requirement\",\"children\":[]},{\"id\":\"ca_superseded\",\"text\":\"Ustalenie o pliku A zostało zastąpione korektą i pozostaje tylko historyczną wersją pomysłu.\",\"role\":\"superseded_requirement\",\"children\":[]}],\"links\":[{\"from\":\"ca_current\",\"predicate\":\"refers_to\",\"to\":\"ctx_ca2\"},{\"from\":\"ca_superseded\",\"predicate\":\"refers_to\",\"to\":\"ctx_ca1\"}]}",
+      "request_sha256": "2c5883e5c4a590b85eefddbae6355f5ab6589ea1921a0fee08bed85b5822331c"
+    },
+    {
+      "case_id": "branch_specific_choice",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"0a755279d41bd7e53a3732596901de2b4c2151f45318ce73983f3892f148b918\",\"response_id\":\"bs_response\",\"nodes\":[{\"id\":\"bs_response\",\"text\":\"W aktywnej gałęzi desktop masz wybrane SQLite. Pliki JSON wybrałeś wyłącznie dla gałęzi mobile; ta decyzja nie zmienia wyboru desktop.\",\"role\":\"response\",\"children\":[\"bs_desktop\",\"bs_mobile\"]},{\"id\":\"bs_desktop\",\"text\":\"W aktywnej gałęzi desktop masz wybrane SQLite. \",\"role\":\"active_branch_decision\",\"children\":[]},{\"id\":\"bs_mobile\",\"text\":\"Pliki JSON wybrałeś wyłącznie dla gałęzi mobile; ta decyzja nie zmienia wyboru desktop.\",\"role\":\"other_branch_decision\",\"children\":[]}],\"links\":[{\"from\":\"bs_desktop\",\"predicate\":\"refers_to\",\"to\":\"ctx_bs2\"},{\"from\":\"bs_mobile\",\"predicate\":\"refers_to\",\"to\":\"ctx_bs3\"}]}",
+      "request_sha256": "16a63c8bed8f88c43bc85b929b333693c50f6ca97d41df9a0cad73b9b9faca59"
+    },
+    {
+      "case_id": "context_not_requirement",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"b2df13df577cfc9446fd370ec54cbf0869ff14eb676899eb8ab40b9dd3bd6db5\",\"response_id\":\"cn_response\",\"nodes\":[{\"id\":\"cn_response\",\"text\":\"Nie. Eksport CSV wspomniano wyłącznie jako kontekst dotyczący konkurencji; nie został zatwierdzony jako wymaganie naszej specyfikacji.\",\"role\":\"response\",\"children\":[]}],\"links\":[{\"from\":\"cn_response\",\"predicate\":\"refers_to\",\"to\":\"ctx_cn1\"}]}",
+      "request_sha256": "9497691da9e4328d569496f31e8fc12d11dcd262abac96d30d9e38f04ea3876f"
+    },
+    {
+      "case_id": "negated_conditional",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"903eee4e42904b3fd3817159668b492714a122318f499459b80417b02bf44086\",\"response_id\":\"nc_response\",\"nodes\":[{\"id\":\"nc_response\",\"text\":\"Na podstawie tego ustalenia nie można potwierdzić, że wolno teraz publikować. Wynik walidacji jest nieznany. Jeśli walidacja nie przejdzie, obowiązuje zakaz publikacji; reguła nie mówi, że jej przejście automatycznie zezwala na publikację.\",\"role\":\"response\",\"children\":[\"nc_permission\",\"nc_state\",\"nc_scope\"]},{\"id\":\"nc_permission\",\"text\":\"Na podstawie tego ustalenia nie można potwierdzić, że wolno teraz publikować. \",\"role\":\"unresolved_permission\",\"children\":[]},{\"id\":\"nc_state\",\"text\":\"Wynik walidacji jest nieznany. \",\"role\":\"reported_state\",\"children\":[]},{\"id\":\"nc_scope\",\"text\":\"Jeśli walidacja nie przejdzie, obowiązuje zakaz publikacji; reguła nie mówi, że jej przejście automatycznie zezwala na publikację.\",\"role\":\"conditional_scope\",\"children\":[]}],\"links\":[{\"from\":\"nc_state\",\"predicate\":\"refers_to\",\"to\":\"ctx_nc2\"},{\"from\":\"nc_scope\",\"predicate\":\"refers_to\",\"to\":\"ctx_nc1\"},{\"from\":\"nc_permission\",\"predicate\":\"depends_on\",\"to\":\"nc_state\"},{\"from\":\"nc_permission\",\"predicate\":\"depends_on\",\"to\":\"nc_scope\"}]}",
+      "request_sha256": "ed19f25c3622e624d7352bcb70cdaace8783f62c67aaf31a25abd480a82eabd7"
+    },
+    {
+      "case_id": "quotation_not_endorsement",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"fbc2c1ce76f709fd5f610c7a81ba9d9bf9c36b0bf862dae054647dff1417799a\",\"response_id\":\"qe_response\",\"nodes\":[{\"id\":\"qe_response\",\"text\":\"Nie popierasz hasła dostawcy „kasuj oryginały po ekstrakcji”; przytoczyłeś je jako przykład złej praktyki. Nie staje się regułą projektu. W naszym projekcie zachowujemy oryginały.\",\"role\":\"response\",\"children\":[\"qe_stance\",\"qe_rule\"]},{\"id\":\"qe_stance\",\"text\":\"Nie popierasz hasła dostawcy „kasuj oryginały po ekstrakcji”; przytoczyłeś je jako przykład złej praktyki. \",\"role\":\"quotation_and_stance\",\"children\":[]},{\"id\":\"qe_rule\",\"text\":\"Nie staje się regułą projektu. W naszym projekcie zachowujemy oryginały.\",\"role\":\"project_requirement\",\"children\":[]}],\"links\":[{\"from\":\"qe_stance\",\"predicate\":\"refers_to\",\"to\":\"ctx_qe1\"},{\"from\":\"qe_rule\",\"predicate\":\"refers_to\",\"to\":\"ctx_qe2\"}]}",
+      "request_sha256": "c13bfc4ad68f07e9a04590bf347cb540060d2678cdf1e2031e0b4525a58949b0"
+    },
+    {
+      "case_id": "unresolved_conflict",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"8a0c5eddd08366ac1c6b43a581a49250f06805a9b75146784e9d60434e55610a\",\"response_id\":\"uc_response\",\"nodes\":[{\"id\":\"uc_response\",\"text\":\"Limit pozostaje nieustalony. Zespół A raportuje 10 MB, zespół B 20 MB. Oba raporty są nadal w grze; nie przyjąłeś żadnego limitu, więc rozbieżność wymaga wyjaśnienia przed wpisaniem jednej wartości jako obowiązującej.\",\"role\":\"response\",\"children\":[\"uc_status\",\"uc_a\",\"uc_b\",\"uc_conflict\"]},{\"id\":\"uc_status\",\"text\":\"Limit pozostaje nieustalony. \",\"role\":\"nondecision\",\"children\":[]},{\"id\":\"uc_a\",\"text\":\"Zespół A raportuje 10 MB, \",\"role\":\"attributed_report\",\"children\":[]},{\"id\":\"uc_b\",\"text\":\"zespół B 20 MB. \",\"role\":\"attributed_report\",\"children\":[]},{\"id\":\"uc_conflict\",\"text\":\"Oba raporty są nadal w grze; nie przyjąłeś żadnego limitu, więc rozbieżność wymaga wyjaśnienia przed wpisaniem jednej wartości jako obowiązującej.\",\"role\":\"unresolved_conflict\",\"children\":[]}],\"links\":[{\"from\":\"uc_status\",\"predicate\":\"refers_to\",\"to\":\"ctx_uc3\"},{\"from\":\"uc_a\",\"predicate\":\"refers_to\",\"to\":\"ctx_uc1\"},{\"from\":\"uc_b\",\"predicate\":\"refers_to\",\"to\":\"ctx_uc2\"},{\"from\":\"uc_conflict\",\"predicate\":\"refers_to\",\"to\":\"ctx_uc3\"},{\"from\":\"uc_a\",\"predicate\":\"conflicts_with\",\"to\":\"uc_b\"}]}",
+      "request_sha256": "53c02307dc5312b41aaa145555e3865be8cfa535489194b4d936f91bb4bae6df"
+    },
+    {
+      "case_id": "repeated_utf8_emoji",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"2da982fda1d2e7b861d195bab9347cd3ac661b54446fb71ff16bdeb4fbcedc9f\",\"response_id\":\"ru_response\",\"nodes\":[{\"id\":\"ru_response\",\"text\":\"Żółć 🧠\\nŻółć 🧠\",\"role\":\"response\",\"children\":[\"ru_first\",\"ru_second\"]},{\"id\":\"ru_first\",\"text\":\"Żółć 🧠\\n\",\"role\":\"first_message\",\"children\":[]},{\"id\":\"ru_second\",\"text\":\"Żółć 🧠\",\"role\":\"second_message\",\"children\":[]}],\"links\":[{\"from\":\"ru_first\",\"predicate\":\"refers_to\",\"to\":\"ctx_ru1\"},{\"from\":\"ru_second\",\"predicate\":\"refers_to\",\"to\":\"ctx_ru2\"}]}",
+      "request_sha256": "a1305d97e2dbcce60499eac5d372cfd05df5ea2a5568cc2ba0170a56e1f47a53"
+    },
+    {
+      "case_id": "no_forced_semantic_relation",
+      "context_mode": "graph",
+      "attempt": 1,
+      "raw_response": "{\"schema\":\"loom.graph_reply/1\",\"base_packet_sha256\":\"c167a6cd66eb07f646d242e9bb4ee9622add9bb2f9fb11f6809eb2bcc0d54f76\",\"response_id\":\"nf_response\",\"nodes\":[{\"id\":\"nf_response\",\"text\":\"Miłego dnia.\",\"role\":\"response\",\"children\":[]}],\"links\":[]}",
+      "request_sha256": "6b005129a985e735091c6cb16bd4492115fce23fb66cb816c3e2b17c0737638d"
+    }
+  ]
+}

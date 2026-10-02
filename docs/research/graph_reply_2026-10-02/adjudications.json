@@ -1,0 +1,357 @@
+{
+  "schema": "loom.graph_reply_adjudications/1",
+  "adjudications": [
+    {
+      "case_id": "correction_a_b",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "current_b",
+          "passed": true,
+          "rationale": "The public root says “Teraz obowiązuje plik B”, matching the correction in ctx_ca2."
+        },
+        {
+          "criterion_id": "a_historical",
+          "passed": true,
+          "rationale": "It says A was replaced by the correction and remains only a historical version, not a current requirement."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "ca_current refers_to ctx_ca2; ca_superseded refers_to ctx_ca1, matching current B and historical A."
+        }
+      ]
+    },
+    {
+      "case_id": "branch_specific_choice",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "desktop_sqlite",
+          "passed": true,
+          "rationale": "The public root names SQLite as the selected store in the active desktop branch, matching ctx_bs2."
+        },
+        {
+          "criterion_id": "mobile_scoped",
+          "passed": true,
+          "rationale": "JSON is explicitly confined to mobile, and the text states that this decision does not change desktop."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "bs_desktop refers_to ctx_bs2 and bs_mobile refers_to ctx_bs3; neither text nor links treats mobile as a correction."
+        }
+      ]
+    },
+    {
+      "case_id": "context_not_requirement",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "not_approved",
+          "passed": true,
+          "rationale": "The answer begins “Nie” and states CSV was not approved as a specification requirement."
+        },
+        {
+          "criterion_id": "keeps_context",
+          "passed": true,
+          "rationale": "It describes CSV solely as context about competitors and adds no decision or implementation promise."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "cn_response refers_to ctx_cn1, whose source explicitly limits CSV to context and excludes it from the specification."
+        }
+      ]
+    },
+    {
+      "case_id": "negated_conditional",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "unknown_validation",
+          "passed": true,
+          "rationale": "The public root explicitly says the validation result is unknown; it asserts neither success nor failure."
+        },
+        {
+          "criterion_id": "no_inverted_permission",
+          "passed": true,
+          "rationale": "It says publication permission cannot be confirmed and explicitly rejects automatic permission after validation passes."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "nc_state refers_to ctx_nc2 and nc_scope refers_to ctx_nc1; the permission conclusion depends_on both rather than being presented as a new quoted rule."
+        }
+      ]
+    },
+    {
+      "case_id": "quotation_not_endorsement",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "rejects_slogan",
+          "passed": true,
+          "rationale": "The root attributes the deletion slogan to the supplier and says the user does not support it and cited it as bad practice."
+        },
+        {
+          "criterion_id": "preserves_originals",
+          "passed": true,
+          "rationale": "It explicitly states “W naszym projekcie zachowujemy oryginały”, matching ctx_qe2."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": false,
+          "rationale": "qe_stance combines the supplier quotation with “Nie popierasz” and links only to ctx_qe1. ctx_qe2 is linked only from qe_rule, so the required separation of quotation from explicit stance is incomplete."
+        }
+      ]
+    },
+    {
+      "case_id": "unresolved_conflict",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "retains_both",
+          "passed": true,
+          "rationale": "The root retains both reports with correct attribution: team A 10 MB and team B 20 MB."
+        },
+        {
+          "criterion_id": "no_arbitrary_resolution",
+          "passed": true,
+          "rationale": "It says the limit remains unsettled and neither report has been adopted; it selects no value and computes no average."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "uc_a/uc_b refer_to ctx_uc1/ctx_uc2; uc_status and uc_conflict refer_to ctx_uc3. conflicts_with matches the unresolved differing reports."
+        }
+      ]
+    },
+    {
+      "case_id": "repeated_utf8_emoji",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "exact_two_lines",
+          "passed": true,
+          "rationale": "The root text is exactly “Żółć 🧠\\nŻółć 🧠”: two occurrences separated by one newline and no other text."
+        },
+        {
+          "criterion_id": "distinct_occurrences",
+          "passed": true,
+          "rationale": "ru_first and ru_second are separate ordered children; ru_first contains the newline, so neither occurrence is deduplicated."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "ru_first refers_to ctx_ru1 and ru_second refers_to ctx_ru2 in the same order as the two source events."
+        }
+      ]
+    },
+    {
+      "case_id": "no_forced_semantic_relation",
+      "context_mode": "graph",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "requested_text_only",
+          "passed": true,
+          "rationale": "The complete root text is exactly “Miłego dnia.”."
+        },
+        {
+          "criterion_id": "no_forced_links",
+          "passed": true,
+          "rationale": "links is an empty list, with no fabricated reference to the device color or module names."
+        },
+        {
+          "criterion_id": "minimal_tree",
+          "passed": true,
+          "rationale": "There is one response node with no children; no additional logical assertion is imposed on the courtesy text."
+        }
+      ]
+    },
+    {
+      "case_id": "correction_a_b",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "current_b",
+          "passed": true,
+          "rationale": "The public root says “Obowiązuje plik B”, matching the current correction in ctx_ca2."
+        },
+        {
+          "criterion_id": "a_historical",
+          "passed": true,
+          "rationale": "It says the A agreement was corrected and remains only a historical version, not a current requirement."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "flat1_current refers_to ctx_ca2 and flat1_history refers_to ctx_ca1, matching current B and historical A."
+        }
+      ]
+    },
+    {
+      "case_id": "branch_specific_choice",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "desktop_sqlite",
+          "passed": true,
+          "rationale": "The public root names SQLite as the selected store in the active desktop branch, matching ctx_bs2."
+        },
+        {
+          "criterion_id": "mobile_scoped",
+          "passed": true,
+          "rationale": "JSON is explicitly confined to mobile, and the text states this decision does not change desktop."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "flat2_desktop refers_to ctx_bs2 and flat2_mobile refers_to ctx_bs3; the independent choices are not presented as a correction."
+        }
+      ]
+    },
+    {
+      "case_id": "context_not_requirement",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "not_approved",
+          "passed": true,
+          "rationale": "The root explicitly says there is no approved CSV export requirement."
+        },
+        {
+          "criterion_id": "keeps_context",
+          "passed": true,
+          "rationale": "It preserves the competitor mention as context and repeats the instruction not to add it to the specification now."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "flat3_context refers_to ctx_cn1; that segment accurately reflects its context-only scope and explicit exclusion from the specification."
+        }
+      ]
+    },
+    {
+      "case_id": "negated_conditional",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "unknown_validation",
+          "passed": true,
+          "rationale": "The root says validation is unknown and neither success nor failure has been confirmed."
+        },
+        {
+          "criterion_id": "no_inverted_permission",
+          "passed": true,
+          "rationale": "It refuses to infer current publication permission and says passing validation does not automatically grant permission."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "flat4_state refers_to ctx_nc2 and flat4_rule refers_to ctx_nc1, preserving unknown state and the one-way conditional without adding a quoted proposal."
+        }
+      ]
+    },
+    {
+      "case_id": "quotation_not_endorsement",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "rejects_slogan",
+          "passed": true,
+          "rationale": "The root calls it the supplier’s slogan and states the user rejects it and quotes it as bad practice."
+        },
+        {
+          "criterion_id": "preserves_originals",
+          "passed": true,
+          "rationale": "It states the project preserves originals, matching the requirement in ctx_qe2."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": false,
+          "rationale": "flat5_stance combines the supplier quotation with “Nie popierasz” and links only to ctx_qe1. ctx_qe2 is linked only from flat5_requirement, so the required separation of quotation from explicit stance is incomplete."
+        }
+      ]
+    },
+    {
+      "case_id": "unresolved_conflict",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "retains_both",
+          "passed": true,
+          "rationale": "The root retains team A’s 10 MB maximum and team B’s 20 MB maximum with correct attribution."
+        },
+        {
+          "criterion_id": "no_arbitrary_resolution",
+          "passed": true,
+          "rationale": "It calls the limit unsettled and says neither value has been adopted; it neither averages nor automatically chooses the later report."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "flat6_team_a/flat6_team_b refer_to ctx_uc1/ctx_uc2, while flat6_conflict refers_to ctx_uc3 for nonapproval. conflicts_with fits the reported discrepancy."
+        }
+      ]
+    },
+    {
+      "case_id": "repeated_utf8_emoji",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "exact_two_lines",
+          "passed": true,
+          "rationale": "The root text is exactly “Żółć 🧠\\nŻółć 🧠”: two occurrences separated by one newline and no other text."
+        },
+        {
+          "criterion_id": "distinct_occurrences",
+          "passed": true,
+          "rationale": "flat7_first and flat7_second are distinct ordered children; the first includes the newline, retaining both occurrences."
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "passed": true,
+          "rationale": "flat7_first quotes ctx_ru1 and flat7_second quotes ctx_ru2 in source order; both extracted messages match exactly."
+        }
+      ]
+    },
+    {
+      "case_id": "no_forced_semantic_relation",
+      "context_mode": "flat",
+      "adjudicator": "separate-session-model-task; correlated-family-not-independent-provider",
+      "criteria": [
+        {
+          "criterion_id": "requested_text_only",
+          "passed": true,
+          "rationale": "The complete root text is exactly “Miłego dnia.”."
+        },
+        {
+          "criterion_id": "no_forced_links",
+          "passed": true,
+          "rationale": "links is an empty list, with no fabricated reference to the unrelated context."
+        },
+        {
+          "criterion_id": "minimal_tree",
+          "passed": true,
+          "rationale": "The reply contains only one response node with no children and adds no logical claims."
+        }
+      ]
+    }
+  ]
+}

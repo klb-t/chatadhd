@@ -1,0 +1,43 @@
+{
+  "schema": "loom.graph_reply_verification/1",
+  "base_commit": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+  "implementation_commit": "a9110e1561697d50826b03bccd7a578575d1b560",
+  "implementation_tree": "b7ae1599976ba9ce58d3a42ff78d37a34323c104",
+  "local_source_checkpoint": "7634446",
+  "branch": "gpt/graph-replies-2026-10-02",
+  "external_api_calls": 0,
+  "native_store_written": false,
+  "source_sha256": {
+    "loom/tools/structure/graph_reply_v1/__init__.py": "d3e7fa8dfa5cca7ce722b6641842874217c196c88c9aa256506b96413783f470",
+    "loom/tools/structure/graph_reply_v1/experiment.py": "130c57b548e2bb74dd4b365f61d566bf3970ee4fe46c44e1af4625a8ac566d37",
+    "loom/tools/structure/graph_reply_v1/prompt.py": "375cdff3fea91ca7317c40d9d2c08ba4ce11388072f4f03b14ba94cdd0ad50bc",
+    "loom/tools/structure/graph_reply_v1/reply.py": "50fffaffbf1abcbb2de1b626ae51f270a5842cd3e023c1dc3cee8011a401a903",
+    "loom/tools/structure/graph_reply_v1/test_api.py": "aa4d8a9e5bf88885df0306615b76149ab3b6b8731a4cd149c43434a07dfe7bdc",
+    "loom/tools/structure/graph_reply_v1/test_reply.py": "4111a290dd8e470c7e4052b3cfa74d995819c5f771d375d8ba771c8fddcb4b2f",
+    "loom/tools/structure/graph_reply_v1/transport.py": "96b474455d96ddd95e03af4dfeb7e85da985ebd674c49ccc0d4a2ccb45fe3c98",
+    "docs/research/graph_reply_2026-10-02/reproduce.py": "24be06429fd58efb0a839d553fa8b8f01e4e9c4bc6dd29bc52c6b2fd6c191e56"
+  },
+  "logs": {
+    "root-reply-api-verified.log": {
+      "sha256": "b40da7094a3542e3ad84469fc158726764c88db5b3b68ad431c3a1499b7f8acb",
+      "tests": 37,
+      "seconds": 2.947,
+      "passed": true
+    },
+    "research-structure-final.log": {
+      "sha256": "a5d72f29663900797b6cb7867f91b67a87e83335981b08ebb7a35656aa3ae829",
+      "tests": 880,
+      "seconds": 33.493,
+      "passed": true
+    },
+    "research-structure-first.log": {
+      "sha256": "4aa961fe22928d497a6c619c8f29070138bcbf0bd7de459d1fd1c24fe9bfc49e",
+      "tests": 844,
+      "seconds": 28.188,
+      "passed": false
+    }
+  },
+  "pilot_generation": "separate session model tasks authored graph objects and serialized JSON; no provider constrained decoding measurement",
+  "model_identity": "inherited-session-model; exact endpoint not exposed",
+  "semantic_reviewer": "separate session model task; correlated-family-not-independent-provider"
+}

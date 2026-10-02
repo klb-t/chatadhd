@@ -1,0 +1,29 @@
+............................................................E.......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a pre-existing freeze; cannot create it in the same invocation
+........................................................................................................................................................
+======================================================================
+ERROR: graph_reply_v1 (unittest.loader._FailedTest.graph_reply_v1)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: graph_reply_v1
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 429, in _find_test_path
+    package = self._get_module_from_name(name)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/workspace/scratch/9a0d91183a5e/chatadhd-graph-replies/loom/tools/structure/graph_reply_v1/__init__.py", line 3, in <module>
+    from .reply import (REPLY_SCHEMA, GraphReplyError, apply_compiled_reply,
+  File "/workspace/scratch/9a0d91183a5e/chatadhd-graph-replies/loom/tools/structure/graph_reply_v1/reply.py", line 15, in <module>
+    from ..agentic_graph_v1 import packet as graph
+ImportError: attempted relative import beyond top-level package
+
+
+----------------------------------------------------------------------
+Ran 844 tests in 28.188s
+
+FAILED (errors=1)
+{"attempts": 1, "stopped_reason": "fixture-stop"}
