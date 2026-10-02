@@ -1,0 +1,168 @@
+{
+  "schema": "loom.graph_reply_dev_expectations/1",
+  "split": "dev",
+  "criteria_frozen_before_first_model_sample": true,
+  "criteria_count": 24,
+  "expectations": [
+    {
+      "case_id": "correction_a_b",
+      "criteria": [
+        {
+          "criterion_id": "current_b",
+          "description": "Przedstawia B jako bieżący obowiązujący plik.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "a_historical",
+          "description": "Zachowuje A jako poprzednie historyczne ustalenie, bez traktowania go jako obecnego wymagania.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "description": "Łączy odpowiednie części z poprawką ctx_ca2 i historycznym ustaleniem ctx_ca1; znaczenie łączy pasuje do tekstu.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    },
+    {
+      "case_id": "branch_specific_choice",
+      "criteria": [
+        {
+          "criterion_id": "desktop_sqlite",
+          "description": "Jako wybraną opcję desktop podaje SQLite.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "mobile_scoped",
+          "description": "Nie przenosi późniejszego wyboru JSON do desktop; jeśli wspomina JSON, ogranicza go do mobile.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "description": "Uzasadnienie desktop odsyła do ctx_bs2; ewentualne JSON do ctx_bs3 i nie przedstawia niezależnych decyzji jako korekty.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    },
+    {
+      "case_id": "context_not_requirement",
+      "criteria": [
+        {
+          "criterion_id": "not_approved",
+          "description": "Odpowiada, że zatwierdzonego wymagania eksportu CSV nie ma.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "keeps_context",
+          "description": "Nie zmienia wzmianki o konkurencji w decyzję, wymaganie ani obietnicę implementacji.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "description": "Odpowiedź odsyła do ctx_cn1, używając związku zgodnego z kontekstowym statusem.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    },
+    {
+      "case_id": "negated_conditional",
+      "criteria": [
+        {
+          "criterion_id": "unknown_validation",
+          "description": "Stan walidacji pozostaje nieznany, nie zostaje opisany jako sukces ani porażka.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "no_inverted_permission",
+          "description": "Nie uznaje samego braku znanej porażki za zgodę na publikację ani nie odwraca warunku w dwustronną implikację.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "description": "Część o warunku odsyła do ctx_nc1, część o nieznanym stanie do ctx_nc2; ewentualna ostrożna propozycja jest oznaczona jako propozycja, nie cytowane ustalenie.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    },
+    {
+      "case_id": "quotation_not_endorsement",
+      "criteria": [
+        {
+          "criterion_id": "rejects_slogan",
+          "description": "Przypisuje hasło kasowania dostawcy i wskazuje, że użytkownik go nie popiera.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "preserves_originals",
+          "description": "Jako regułę projektu podaje zachowywanie oryginałów.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "description": "Odniesienia zachowują rozdział cytatu ctx_qe1 od stanowiska/wymagania ctx_qe2.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    },
+    {
+      "case_id": "unresolved_conflict",
+      "criteria": [
+        {
+          "criterion_id": "retains_both",
+          "description": "Zachowuje 10 MB i 20 MB jako konkurujące raporty, z poprawnym przypisaniem zespołom.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "no_arbitrary_resolution",
+          "description": "Nie ogłasza żadnego z nich zatwierdzonym limitem, nie uśrednia do 15 MB i nie stosuje automatycznie nowszego raportu.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "description": "Opis kandydatów odsyła do ctx_uc1/ctx_uc2, a niezatwierdzonego statusu do ctx_uc3.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    },
+    {
+      "case_id": "repeated_utf8_emoji",
+      "criteria": [
+        {
+          "criterion_id": "exact_two_lines",
+          "description": "Tekst odpowiedzi ma dokładnie dwa wiersze: Żółć 🧠 oraz Żółć 🧠, oddzielone jednym znakiem nowej linii.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "distinct_occurrences",
+          "description": "Dwa identyczne wystąpienia są reprezentowane jako odrębne segmenty grafu, bez deduplikacji; separator należy do któregoś segmentu.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "grounded_refs",
+          "description": "Pierwsze wystąpienie odsyła do ctx_ru1, drugie do ctx_ru2, z zachowaniem kolejności.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    },
+    {
+      "case_id": "no_forced_semantic_relation",
+      "criteria": [
+        {
+          "criterion_id": "requested_text_only",
+          "description": "Cały tekst odpowiedzi wynosi dokładnie Miłego dnia.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "no_forced_links",
+          "description": "Lista links pozostaje pusta; nie fabrykuje związku życzenia z kolorem lub nazwami modułu.",
+          "requires_human_semantic_judgment": true
+        },
+        {
+          "criterion_id": "minimal_tree",
+          "description": "Pojedynczy root odpowiedzi jest wystarczający; nie narzuca dodatkowych logicznych twierdzeń na tekst kurtuazyjny.",
+          "requires_human_semantic_judgment": true
+        }
+      ]
+    }
+  ]
+}
