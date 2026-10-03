@@ -1,0 +1,2317 @@
+{
+ "schema": "loom.kb.cues/1",
+ "description": "Cue-phrase classes for the paradigm wave (item cues of archive v1 stay in item_cues.json). Phrases are lowercase; a trailing '*' is a word prefix; matching is on word boundaries over the lowercased sentence (same matcher as the item classifier). 'weight' feeds raw confidence; the scope says what the cue qualifies.",
+ "classes": {
+  "normative": {
+   "description": "Sentences stating a rule of conduct: candidate principles (philosophy discovery).",
+   "phrases": [
+    {
+     "p": "always",
+     "w": 1
+    },
+    {
+     "p": "never",
+     "w": 1.5
+    },
+    {
+     "p": "must",
+     "w": 1
+    },
+    {
+     "p": "must not",
+     "w": 1.5
+    },
+    {
+     "p": "should not",
+     "w": 1
+    },
+    {
+     "p": "principle",
+     "w": 2
+    },
+    {
+     "p": "rule of thumb",
+     "w": 2
+    },
+    {
+     "p": "philosophy",
+     "w": 2
+    },
+    {
+     "p": "invariant",
+     "w": 1.5
+    },
+    {
+     "p": "by default",
+     "w": 1
+    },
+    {
+     "p": "zawsze",
+     "w": 1
+    },
+    {
+     "p": "nigdy",
+     "w": 1.5
+    },
+    {
+     "p": "musi",
+     "w": 1
+    },
+    {
+     "p": "nie wolno",
+     "w": 2
+    },
+    {
+     "p": "nie może",
+     "w": 1
+    },
+    {
+     "p": "zasad*",
+     "w": 2
+    },
+    {
+     "p": "reguł*",
+     "w": 1.5
+    },
+    {
+     "p": "filozofi*",
+     "w": 2
+    },
+    {
+     "p": "konstytucj*",
+     "w": 2
+    },
+    {
+     "p": "domyślnie",
+     "w": 1
+    },
+    {
+     "p": "≠",
+     "w": 2
+    },
+    {
+     "p": "nie „",
+     "w": 0.5
+    }
+   ]
+  },
+  "status.implemented": {
+   "description": "Component/feature works.",
+   "phrases": [
+    {
+     "p": "implemented",
+     "w": 2
+    },
+    {
+     "p": "works",
+     "w": 1
+    },
+    {
+     "p": "working",
+     "w": 1
+    },
+    {
+     "p": "done",
+     "w": 1
+    },
+    {
+     "p": "shipped",
+     "w": 2
+    },
+    {
+     "p": "landed",
+     "w": 1.5
+    },
+    {
+     "p": "zaimplementowa*",
+     "w": 2
+    },
+    {
+     "p": "działa",
+     "w": 1
+    },
+    {
+     "p": "gotowe",
+     "w": 1.5
+    },
+    {
+     "p": "zrobione",
+     "w": 1.5
+    },
+    {
+     "p": "dodałem",
+     "w": 1
+    },
+    {
+     "p": "ready",
+     "w": 1
+    },
+    {
+     "p": "released",
+     "w": 1.5
+    },
+    {
+     "p": "wyszło",
+     "w": 1.5
+    },
+    {
+     "p": "wyszła",
+     "w": 1.5
+    },
+    {
+     "p": "skończone",
+     "w": 1.5
+    },
+    {
+     "p": "gotowy",
+     "w": 1.5
+    },
+    {
+     "p": "gotowa",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.partial": {
+   "description": "Component exists but is incomplete or broken.",
+   "phrases": [
+    {
+     "p": "partially",
+     "w": 2
+    },
+    {
+     "p": "not yet",
+     "w": 1.5
+    },
+    {
+     "p": "stub",
+     "w": 2
+    },
+    {
+     "p": "placeholder",
+     "w": 2
+    },
+    {
+     "p": "wip",
+     "w": 2
+    },
+    {
+     "p": "work in progress",
+     "w": 2
+    },
+    {
+     "p": "doesn't work",
+     "w": 1.5
+    },
+    {
+     "p": "częściowo",
+     "w": 2
+    },
+    {
+     "p": "jeszcze nie",
+     "w": 1.5
+    },
+    {
+     "p": "zaślepk*",
+     "w": 2
+    },
+    {
+     "p": "w trakcie",
+     "w": 1.5
+    },
+    {
+     "p": "nie działa",
+     "w": 1.5
+    },
+    {
+     "p": "wstępn*",
+     "w": 1.5
+    },
+    {
+     "p": "partial",
+     "w": 2
+    }
+   ]
+  },
+  "status.planned": {
+   "description": "Future-tense intentions only.",
+   "phrases": [
+    {
+     "p": "will add",
+     "w": 1.5
+    },
+    {
+     "p": "we'll add",
+     "w": 1.5
+    },
+    {
+     "p": "plan to",
+     "w": 1.5
+    },
+    {
+     "p": "planned",
+     "w": 2
+    },
+    {
+     "p": "todo",
+     "w": 1
+    },
+    {
+     "p": "later",
+     "w": 0.5
+    },
+    {
+     "p": "next step",
+     "w": 1.5
+    },
+    {
+     "p": "roadmap",
+     "w": 1.5
+    },
+    {
+     "p": "dodamy",
+     "w": 1.5
+    },
+    {
+     "p": "planuj*",
+     "w": 1.5
+    },
+    {
+     "p": "w planach",
+     "w": 2
+    },
+    {
+     "p": "następny krok",
+     "w": 1.5
+    },
+    {
+     "p": "później",
+     "w": 0.5
+    },
+    {
+     "p": "kiedyś",
+     "w": 0.5
+    },
+    {
+     "p": "szkic",
+     "w": 1.5
+    },
+    {
+     "p": "szkice",
+     "w": 1.5
+    },
+    {
+     "p": "szkicu",
+     "w": 1.5
+    },
+    {
+     "p": "sketch",
+     "w": 1.5
+    },
+    {
+     "p": "sketches",
+     "w": 1.5
+    },
+    {
+     "p": "draft",
+     "w": 1
+    }
+   ]
+  },
+  "status.abandoned": {
+   "description": "Explicitly given up.",
+   "phrases": [
+    {
+     "p": "abandon*",
+     "w": 2
+    },
+    {
+     "p": "gave up",
+     "w": 2
+    },
+    {
+     "p": "dropped",
+     "w": 1.5
+    },
+    {
+     "p": "no longer",
+     "w": 1
+    },
+    {
+     "p": "dead end",
+     "w": 2
+    },
+    {
+     "p": "scrapped",
+     "w": 2
+    },
+    {
+     "p": "porzuc*",
+     "w": 2
+    },
+    {
+     "p": "rezygnuj*",
+     "w": 2
+    },
+    {
+     "p": "zarzuc*",
+     "w": 2
+    },
+    {
+     "p": "odpuszczam*",
+     "w": 1.5
+    },
+    {
+     "p": "ślepa uliczka",
+     "w": 2
+    },
+    {
+     "p": "odpadł",
+     "w": 2
+    },
+    {
+     "p": "odpadło",
+     "w": 2
+    },
+    {
+     "p": "odpadła",
+     "w": 2
+    },
+    {
+     "p": "porzucam",
+     "w": 2
+    },
+    {
+     "p": "porzucona",
+     "w": 2
+    },
+    {
+     "p": "porzucony",
+     "w": 2
+    }
+   ]
+  },
+  "status.paused": {
+   "description": "Explicitly on hold.",
+   "phrases": [
+    {
+     "p": "on hold",
+     "w": 2
+    },
+    {
+     "p": "paused",
+     "w": 2
+    },
+    {
+     "p": "postponed",
+     "w": 2
+    },
+    {
+     "p": "parked",
+     "w": 1.5
+    },
+    {
+     "p": "wstrzyman*",
+     "w": 2
+    },
+    {
+     "p": "odłożon*",
+     "w": 2
+    },
+    {
+     "p": "na później",
+     "w": 1.5
+    },
+    {
+     "p": "zawieszon*",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.superseded": {
+   "description": "Replaced by something else (object of the phrase = successor).",
+   "phrases": [
+    {
+     "p": "replaced by",
+     "w": 2
+    },
+    {
+     "p": "superseded by",
+     "w": 2.5
+    },
+    {
+     "p": "instead of",
+     "w": 1
+    },
+    {
+     "p": "in favour of",
+     "w": 1.5
+    },
+    {
+     "p": "in favor of",
+     "w": 1.5
+    },
+    {
+     "p": "deprecated",
+     "w": 1.5
+    },
+    {
+     "p": "zastąpion*",
+     "w": 2
+    },
+    {
+     "p": "zamiast",
+     "w": 1
+    },
+    {
+     "p": "na rzecz",
+     "w": 1.5
+    },
+    {
+     "p": "przestarzał*",
+     "w": 1.5
+    }
+   ]
+  },
+  "lineage.merged_into": {
+   "description": "X becomes part of Y.",
+   "phrases": [
+    {
+     "p": "merged into",
+     "w": 2
+    },
+    {
+     "p": "becomes part of",
+     "w": 2
+    },
+    {
+     "p": "folded into",
+     "w": 2
+    },
+    {
+     "p": "absorbed by",
+     "w": 2
+    },
+    {
+     "p": "becomes a capability pack",
+     "w": 2.5
+    },
+    {
+     "p": "staje się częścią",
+     "w": 2
+    },
+    {
+     "p": "wchodzi do",
+     "w": 1.5
+    },
+    {
+     "p": "scal*",
+     "w": 1.5
+    },
+    {
+     "p": "wpada do",
+     "w": 1.5
+    },
+    {
+     "p": "nie powinien być osobną aplikacją",
+     "w": 2.5
+    },
+    {
+     "p": "to nie osobny",
+     "w": 2
+    }
+   ]
+  },
+  "lineage.evolved_into": {
+   "description": "X turns into Y (identity continues).",
+   "phrases": [
+    {
+     "p": "evolved into",
+     "w": 2
+    },
+    {
+     "p": "becomes",
+     "w": 1
+    },
+    {
+     "p": "migrat*",
+     "w": 1.5
+    },
+    {
+     "p": "rewrite in",
+     "w": 1.5
+    },
+    {
+     "p": "port to",
+     "w": 1.5
+    },
+    {
+     "p": "ported to",
+     "w": 1.5
+    },
+    {
+     "p": "staje się",
+     "w": 1
+    },
+    {
+     "p": "migracja",
+     "w": 1.5
+    },
+    {
+     "p": "przepisanie na",
+     "w": 1.5
+    },
+    {
+     "p": "przeniesienie na",
+     "w": 1.5
+    },
+    {
+     "p": "to jest",
+     "w": 0.5
+    }
+   ]
+  },
+  "lineage.based_on": {
+   "description": "Version/code derived from a base.",
+   "phrases": [
+    {
+     "p": "based on",
+     "w": 2
+    },
+    {
+     "p": "forked from",
+     "w": 2.5
+    },
+    {
+     "p": "on top of",
+     "w": 1.5
+    },
+    {
+     "p": "starting from",
+     "w": 1
+    },
+    {
+     "p": "na bazie",
+     "w": 2
+    },
+    {
+     "p": "bazując na",
+     "w": 2
+    },
+    {
+     "p": "od wersji",
+     "w": 1.5
+    },
+    {
+     "p": "na podstawie",
+     "w": 1
+    },
+    {
+     "p": "drugie podejście",
+     "w": 1.5
+    }
+   ]
+  },
+  "enumeration.options": {
+   "description": "Option lists (brainstorm roots).",
+   "phrases": [
+    {
+     "p": "option 1",
+     "w": 2
+    },
+    {
+     "p": "option a",
+     "w": 2
+    },
+    {
+     "p": "alternatives",
+     "w": 1.5
+    },
+    {
+     "p": "either",
+     "w": 1
+    },
+    {
+     "p": "vs",
+     "w": 1
+    },
+    {
+     "p": "versus",
+     "w": 1
+    },
+    {
+     "p": "or rather",
+     "w": 1
+    },
+    {
+     "p": "opcja 1",
+     "w": 2
+    },
+    {
+     "p": "opcja a",
+     "w": 2
+    },
+    {
+     "p": "wariant*",
+     "w": 1.5
+    },
+    {
+     "p": "albo",
+     "w": 0.5
+    },
+    {
+     "p": "alternatyw*",
+     "w": 1.5
+    },
+    {
+     "p": "do wyboru",
+     "w": 2
+    },
+    {
+     "p": "możliwości",
+     "w": 1
+    }
+   ]
+  },
+  "enumeration.chain": {
+   "description": "Ordered stage chains.",
+   "phrases": [
+    {
+     "p": "→",
+     "w": 2
+    },
+    {
+     "p": "->",
+     "w": 1.5
+    },
+    {
+     "p": "then",
+     "w": 0.5
+    },
+    {
+     "p": "step 1",
+     "w": 2
+    },
+    {
+     "p": "stage",
+     "w": 1
+    },
+    {
+     "p": "pipeline",
+     "w": 1.5
+    },
+    {
+     "p": "krok 1",
+     "w": 2
+    },
+    {
+     "p": "etap*",
+     "w": 1.5
+    },
+    {
+     "p": "potok",
+     "w": 1.5
+    },
+    {
+     "p": "następnie",
+     "w": 0.5
+    }
+   ]
+  },
+  "paradigm.multiplatform_app": {
+   "description": "Anchor cue for multiplatform_app.",
+   "phrases": [
+    {
+     "p": "cross-platform",
+     "w": 2
+    },
+    {
+     "p": "multi-platform",
+     "w": 2
+    },
+    {
+     "p": "multiplatform",
+     "w": 2
+    },
+    {
+     "p": "android and desktop",
+     "w": 2
+    },
+    {
+     "p": "android + desktop",
+     "w": 2
+    },
+    {
+     "p": "wieloplatformow*",
+     "w": 2
+    },
+    {
+     "p": "na androida i desktop",
+     "w": 2
+    },
+    {
+     "p": "pracy wieloplatformowej",
+     "w": 2
+    },
+    {
+     "p": "single codebase",
+     "w": 1.5
+    },
+    {
+     "p": "jeden kod",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.pipeline": {
+   "description": "Anchor cue for pipeline.",
+   "phrases": [
+    {
+     "p": "pipeline",
+     "w": 1.5
+    },
+    {
+     "p": "workflow",
+     "w": 1
+    },
+    {
+     "p": "stage",
+     "w": 0.5
+    },
+    {
+     "p": "ingest",
+     "w": 1
+    },
+    {
+     "p": "render",
+     "w": 0.5
+    },
+    {
+     "p": "potok",
+     "w": 1.5
+    },
+    {
+     "p": "przepływ",
+     "w": 1
+    },
+    {
+     "p": "etap*",
+     "w": 0.5
+    }
+   ]
+  },
+  "paradigm.brainstorm": {
+   "description": "Anchor cue for brainstorm.",
+   "phrases": [
+    {
+     "p": "brainstorm",
+     "w": 2
+    },
+    {
+     "p": "ideas for",
+     "w": 1.5
+    },
+    {
+     "p": "options for",
+     "w": 1.5
+    },
+    {
+     "p": "which is better",
+     "w": 1.5
+    },
+    {
+     "p": "pros and cons",
+     "w": 2
+    },
+    {
+     "p": "burza mózgów",
+     "w": 2
+    },
+    {
+     "p": "pomysły na",
+     "w": 1.5
+    },
+    {
+     "p": "co lepsze",
+     "w": 1.5
+    },
+    {
+     "p": "za i przeciw",
+     "w": 2
+    },
+    {
+     "p": "zastanawiam się",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.specification": {
+   "description": "Anchor cue for specification.",
+   "phrases": [
+    {
+     "p": "specification",
+     "w": 2
+    },
+    {
+     "p": "spec",
+     "w": 1.5
+    },
+    {
+     "p": "requirements",
+     "w": 2
+    },
+    {
+     "p": "contract",
+     "w": 1
+    },
+    {
+     "p": "interface",
+     "w": 1
+    },
+    {
+     "p": "specyfikacj*",
+     "w": 2
+    },
+    {
+     "p": "wymagania",
+     "w": 2
+    },
+    {
+     "p": "kontrakt*",
+     "w": 1
+    },
+    {
+     "p": "master spec",
+     "w": 2
+    }
+   ]
+  },
+  "paradigm.agent_system": {
+   "description": "Anchor cue for agent_system.",
+   "phrases": [
+    {
+     "p": "agent",
+     "w": 1
+    },
+    {
+     "p": "autonomous",
+     "w": 1.5
+    },
+    {
+     "p": "computer use",
+     "w": 2
+    },
+    {
+     "p": "tool use",
+     "w": 1.5
+    },
+    {
+     "p": "multi-agent",
+     "w": 2
+    },
+    {
+     "p": "autonomiczny agent",
+     "w": 2
+    },
+    {
+     "p": "agent kodujący",
+     "w": 2
+    },
+    {
+     "p": "role modeli",
+     "w": 1.5
+    },
+    {
+     "p": "samoreplikacj*",
+     "w": 2
+    }
+   ]
+  },
+  "purpose": {
+   "description": "Sentences stating what a subject is for (has_purpose facts).",
+   "phrases": [
+    {
+     "p": "is a",
+     "w": 0.5
+    },
+    {
+     "p": "is an",
+     "w": 0.5
+    },
+    {
+     "p": "is meant to",
+     "w": 1.5
+    },
+    {
+     "p": "the goal is",
+     "w": 2
+    },
+    {
+     "p": "purpose",
+     "w": 2
+    },
+    {
+     "p": "used for",
+     "w": 1
+    },
+    {
+     "p": "to jest",
+     "w": 0.5
+    },
+    {
+     "p": "służy do",
+     "w": 2
+    },
+    {
+     "p": "celem jest",
+     "w": 2
+    },
+    {
+     "p": "ma służyć",
+     "w": 2
+    },
+    {
+     "p": "aplikacja do",
+     "w": 1.5
+    },
+    {
+     "p": "narzędzie do",
+     "w": 1.5
+    }
+   ]
+  },
+  "paradigm.film": {
+   "description": "Anchor cue for the film project kind.",
+   "phrases": [
+    {
+     "p": "screenplay",
+     "w": 2
+    },
+    {
+     "p": "storyboard",
+     "w": 2
+    },
+    {
+     "p": "scene",
+     "w": 1
+    },
+    {
+     "p": "character",
+     "w": 1
+    },
+    {
+     "p": "shot",
+     "w": 1
+    },
+    {
+     "p": "scenariusz",
+     "w": 2
+    },
+    {
+     "p": "scenopis",
+     "w": 2
+    },
+    {
+     "p": "scena",
+     "w": 1
+    },
+    {
+     "p": "postać",
+     "w": 1
+    },
+    {
+     "p": "ujęci*",
+     "w": 1
+    },
+    {
+     "p": "film*",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.music": {
+   "description": "Anchor cue for the music project kind.",
+   "phrases": [
+    {
+     "p": "chorus",
+     "w": 2
+    },
+    {
+     "p": "verse",
+     "w": 1.5
+    },
+    {
+     "p": "bpm",
+     "w": 2
+    },
+    {
+     "p": "mixdown",
+     "w": 2
+    },
+    {
+     "p": "master*",
+     "w": 1
+    },
+    {
+     "p": "track",
+     "w": 0.5
+    },
+    {
+     "p": "refren",
+     "w": 2
+    },
+    {
+     "p": "zwrotk*",
+     "w": 1.5
+    },
+    {
+     "p": "tonacj*",
+     "w": 1.5
+    },
+    {
+     "p": "utwór",
+     "w": 1
+    },
+    {
+     "p": "miks*",
+     "w": 1
+    }
+   ]
+  },
+  "paradigm.legal_case": {
+   "description": "Anchor cue for the legal_case project kind.",
+   "phrases": [
+    {
+     "p": "court",
+     "w": 1.5
+    },
+    {
+     "p": "appeal",
+     "w": 1.5
+    },
+    {
+     "p": "article",
+     "w": 0.5
+    },
+    {
+     "p": "deadline",
+     "w": 1
+    },
+    {
+     "p": "disciplinary",
+     "w": 2
+    },
+    {
+     "p": "sąd",
+     "w": 1.5
+    },
+    {
+     "p": "odwołani*",
+     "w": 1.5
+    },
+    {
+     "p": "art.",
+     "w": 1
+    },
+    {
+     "p": "kodeks*",
+     "w": 1.5
+    },
+    {
+     "p": "postępowani*",
+     "w": 1.5
+    },
+    {
+     "p": "dyscyplinarn*",
+     "w": 2
+    },
+    {
+     "p": "zarzut*",
+     "w": 1
+    },
+    {
+     "p": "pismo procesowe",
+     "w": 2
+    }
+   ]
+  },
+  "paradigm.research": {
+   "description": "Anchor cue for the research project kind.",
+   "phrases": [
+    {
+     "p": "hypothesis",
+     "w": 2
+    },
+    {
+     "p": "experiment",
+     "w": 1.5
+    },
+    {
+     "p": "dataset",
+     "w": 1
+    },
+    {
+     "p": "replicat*",
+     "w": 1.5
+    },
+    {
+     "p": "falsif*",
+     "w": 2
+    },
+    {
+     "p": "hipotez*",
+     "w": 2
+    },
+    {
+     "p": "eksperyment*",
+     "w": 1.5
+    },
+    {
+     "p": "badani*",
+     "w": 1
+    },
+    {
+     "p": "falsyfik*",
+     "w": 2
+    }
+   ]
+  },
+  "status.lost": {
+   "description": "Something that existed disappeared (model §5 status \"lost\"): a regression, not a decision.",
+   "phrases": [
+    {
+     "p": "lost",
+     "w": 2
+    },
+    {
+     "p": "got lost",
+     "w": 2.5
+    },
+    {
+     "p": "went missing",
+     "w": 2.5
+    },
+    {
+     "p": "disappeared",
+     "w": 2.5
+    },
+    {
+     "p": "is gone",
+     "w": 2
+    },
+    {
+     "p": "zgubił*",
+     "w": 2.5
+    },
+    {
+     "p": "zgubiło*",
+     "w": 2.5
+    },
+    {
+     "p": "zgubiły*",
+     "w": 2.5
+    },
+    {
+     "p": "zniknął",
+     "w": 2.5
+    },
+    {
+     "p": "zniknęła",
+     "w": 2.5
+    },
+    {
+     "p": "zniknęło",
+     "w": 2.5
+    },
+    {
+     "p": "zniknęły",
+     "w": 2.5
+    },
+    {
+     "p": "przepadł*",
+     "w": 2
+    },
+    {
+     "p": "padły",
+     "w": 1.5
+    },
+    {
+     "p": "padło",
+     "w": 1.5
+    }
+   ]
+  },
+  "status.restored": {
+   "description": "Something lost came back (model §5 status \"restored\").",
+   "phrases": [
+    {
+     "p": "restored",
+     "w": 2.5
+    },
+    {
+     "p": "brought back",
+     "w": 2.5
+    },
+    {
+     "p": "re-added",
+     "w": 2
+    },
+    {
+     "p": "przywrócon*",
+     "w": 2.5
+    },
+    {
+     "p": "przywracam",
+     "w": 2.5
+    },
+    {
+     "p": "przywróciłam",
+     "w": 2.5
+    },
+    {
+     "p": "przywróciłem",
+     "w": 2.5
+    },
+    {
+     "p": "przywróciliśmy",
+     "w": 2.5
+    }
+   ]
+  },
+  "generalization": {
+   "description": "Umbrella statements that delimit an area (model §3.7, R10): \"everything about X: a, b, c\". The clause after the cue names the area; the list after the colon gives its members.",
+   "phrases": [
+    {
+     "p": "everything about",
+     "w": 2.5
+    },
+    {
+     "p": "all about",
+     "w": 2
+    },
+    {
+     "p": "everything that concerns",
+     "w": 2.5
+    },
+    {
+     "p": "everything related to",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko o",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko co dotyczy",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko, co dotyczy",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko dotyczące",
+     "w": 2.5
+    },
+    {
+     "p": "wszystko związane z",
+     "w": 2.5
+    }
+   ]
+  },
+  "decision": {
+   "description": "First-person PL/EN decision verbs that complement the archive item table (item_cues.json is generated from items.cpp and stays verbatim).",
+   "phrases": [
+    {
+     "p": "biorę",
+     "w": 2
+    },
+    {
+     "p": "bierzemy",
+     "w": 2
+    },
+    {
+     "p": "wybieram",
+     "w": 2
+    },
+    {
+     "p": "decyduję",
+     "w": 2
+    },
+    {
+     "p": "decydujemy",
+     "w": 2
+    },
+    {
+     "p": "zostaję przy",
+     "w": 2
+    },
+    {
+     "p": "stawiam na",
+     "w": 1.5
+    },
+    {
+     "p": "idę w",
+     "w": 1.5
+    },
+    {
+     "p": "przechodzę na",
+     "w": 2
+    },
+    {
+     "p": "zamieniam na",
+     "w": 1.5
+    },
+    {
+     "p": "zamieniłam",
+     "w": 1.5
+    },
+    {
+     "p": "zamieniłem",
+     "w": 1.5
+    },
+    {
+     "p": "i'll go with",
+     "w": 2
+    },
+    {
+     "p": "i choose",
+     "w": 2
+    },
+    {
+     "p": "i picked",
+     "w": 2
+    },
+    {
+     "p": "i decided",
+     "w": 2
+    },
+    {
+     "p": "buduję",
+     "w": 1.5
+    },
+    {
+     "p": "składamy",
+     "w": 1.5
+    },
+    {
+     "p": "robimy",
+     "w": 1
+    }
+   ]
+  },
+  "decision.reversal": {
+   "description": "An explicit reversal of an earlier decision (conflict resolution \"reversal\", model §2.3).",
+   "phrases": [
+    {
+     "p": "odwracam",
+     "w": 2.5
+    },
+    {
+     "p": "odwracamy",
+     "w": 2.5
+    },
+    {
+     "p": "cofam decyzję",
+     "w": 2.5
+    },
+    {
+     "p": "zmieniam decyzję",
+     "w": 2
+    },
+    {
+     "p": "reverse the decision",
+     "w": 2.5
+    },
+    {
+     "p": "reversing the decision",
+     "w": 2.5
+    },
+    {
+     "p": "we revert",
+     "w": 2
+    },
+    {
+     "p": "explicit reversal",
+     "w": 2.5
+    },
+    {
+     "p": "jawnie odwracam",
+     "w": 3
+    }
+   ]
+  },
+  "fork": {
+   "description": "A branch point in a design or a code line (model §5 Fork); hyphenated names near it are branch names.",
+   "phrases": [
+    {
+     "p": "gałąź*",
+     "w": 2
+    },
+    {
+     "p": "galąź*",
+     "w": 2
+    },
+    {
+     "p": "branch",
+     "w": 1.5
+    },
+    {
+     "p": "branches",
+     "w": 1.5
+    },
+    {
+     "p": "fork*",
+     "w": 1.5
+    },
+    {
+     "p": "rozgałęzi*",
+     "w": 2
+    },
+    {
+     "p": "rozjazd",
+     "w": 1.5
+    },
+    {
+     "p": "two branches",
+     "w": 2
+    },
+    {
+     "p": "dwie gałęzie",
+     "w": 2.5
+    }
+   ]
+  },
+  "contradiction": {
+   "description": "A statement that two supported values are incompatible (a conflict is a state, not an evidence class, model §2.3).",
+   "phrases": [
+    {
+     "p": "contradicts",
+     "w": 2.5
+    },
+    {
+     "p": "contradiction",
+     "w": 2
+    },
+    {
+     "p": "inconsistent with",
+     "w": 2
+    },
+    {
+     "p": "przeczy",
+     "w": 2.5
+    },
+    {
+     "p": "sprzeczn*",
+     "w": 2
+    },
+    {
+     "p": "wypiera",
+     "w": 1.5
+    },
+    {
+     "p": "niezgodne z",
+     "w": 1.5
+    }
+   ]
+  },
+  "project.head": {
+   "description": "Head nouns that make an adjacent name a project mention (\"projekt X\", \"X app\", \"appka od notatek (NoteFlow)\", \"projects: A, B\").",
+   "phrases": [
+    {
+     "p": "projekt",
+     "w": 2
+    },
+    {
+     "p": "projektu",
+     "w": 2
+    },
+    {
+     "p": "projekty",
+     "w": 2
+    },
+    {
+     "p": "projektami",
+     "w": 2
+    },
+    {
+     "p": "project",
+     "w": 2
+    },
+    {
+     "p": "projects",
+     "w": 2
+    },
+    {
+     "p": "app",
+     "w": 1.5
+    },
+    {
+     "p": "appka",
+     "w": 1.5
+    },
+    {
+     "p": "apka",
+     "w": 1.5
+    },
+    {
+     "p": "aplikacja",
+     "w": 1.5
+    },
+    {
+     "p": "aplikacji",
+     "w": 1.5
+    },
+    {
+     "p": "sprawa",
+     "w": 1
+    },
+    {
+     "p": "sprawie",
+     "w": 1
+    }
+   ]
+  },
+  "component.head": {
+   "description": "Heads (suffixes of identifiers or nouns) that type a mined name as a component.",
+   "phrases": [
+    {
+     "p": "provider",
+     "w": 2
+    },
+    {
+     "p": "engine",
+     "w": 2
+    },
+    {
+     "p": "panel",
+     "w": 1.5
+    },
+    {
+     "p": "store",
+     "w": 1.5
+    },
+    {
+     "p": "manager",
+     "w": 1.5
+    },
+    {
+     "p": "worker",
+     "w": 1.5
+    },
+    {
+     "p": "service",
+     "w": 1.5
+    },
+    {
+     "p": "adapter",
+     "w": 2
+    },
+    {
+     "p": "module",
+     "w": 2
+    },
+    {
+     "p": "parser",
+     "w": 1.5
+    },
+    {
+     "p": "importer",
+     "w": 1.5
+    },
+    {
+     "p": "selector",
+     "w": 1.5
+    },
+    {
+     "p": "moduł",
+     "w": 2
+    },
+    {
+     "p": "silnik",
+     "w": 2
+    },
+    {
+     "p": "warstwa",
+     "w": 1.5
+    },
+    {
+     "p": "stage",
+     "w": 1.5
+    },
+    {
+     "p": "etap",
+     "w": 1.5
+    }
+   ]
+  },
+  "negated_item": {
+   "description": "A listed item that starts with one of these delimits an area (a constraint of its generating statement) instead of enumerating a member.",
+   "phrases": [
+    {
+     "p": "bez",
+     "w": 1
+    },
+    {
+     "p": "nic",
+     "w": 1
+    },
+    {
+     "p": "nie",
+     "w": 1
+    },
+    {
+     "p": "no",
+     "w": 1
+    },
+    {
+     "p": "without",
+     "w": 1
+    },
+    {
+     "p": "nothing",
+     "w": 1
+    },
+    {
+     "p": "never",
+     "w": 1
+    },
+    {
+     "p": "nigdy",
+     "w": 1
+    },
+    {
+     "p": "not",
+     "w": 1
+    }
+   ]
+  },
+  "affirmation": {
+   "description": "Openers of a reply that accept what the other side asked or proposed (a user reply to a question: an accepted decision).",
+   "phrases": [
+    {
+     "p": "tak",
+     "w": 1
+    },
+    {
+     "p": "no to",
+     "w": 1
+    },
+    {
+     "p": "dokładnie",
+     "w": 1
+    },
+    {
+     "p": "dobra",
+     "w": 1
+    },
+    {
+     "p": "okej",
+     "w": 1
+    },
+    {
+     "p": "ok",
+     "w": 1
+    },
+    {
+     "p": "zgoda",
+     "w": 1
+    },
+    {
+     "p": "yes",
+     "w": 1
+    },
+    {
+     "p": "yep",
+     "w": 1
+    },
+    {
+     "p": "exactly",
+     "w": 1
+    },
+    {
+     "p": "sure",
+     "w": 1
+    },
+    {
+     "p": "agreed",
+     "w": 1
+    },
+    {
+     "p": "sounds good",
+     "w": 1
+    }
+   ]
+  },
+  "bridge": {
+   "description": "An explicit bridging statement between two domains (\"X is like Y\", \"ta sama reguła co w ...\"): with concepts of two domains in the same message it is a cross-domain association (analogous_to / bridges).",
+   "phrases": [
+    {
+     "p": "jak w",
+     "w": 1.5
+    },
+    {
+     "p": "tak jak",
+     "w": 1.5
+    },
+    {
+     "p": "to samo co",
+     "w": 2
+    },
+    {
+     "p": "ta sama reguła",
+     "w": 2.5
+    },
+    {
+     "p": "ten sam wzorzec",
+     "w": 2.5
+    },
+    {
+     "p": "analogi*",
+     "w": 2.5
+    },
+    {
+     "p": "przypomina",
+     "w": 1.5
+    },
+    {
+     "p": "odpowiada",
+     "w": 1.5
+    },
+    {
+     "p": "odpowiednik",
+     "w": 2
+    },
+    {
+     "p": "izomorfi*",
+     "w": 2.5
+    },
+    {
+     "p": "jest jak",
+     "w": 2
+    },
+    {
+     "p": "like in",
+     "w": 1.5
+    },
+    {
+     "p": "just as",
+     "w": 2
+    },
+    {
+     "p": "the same as",
+     "w": 2
+    },
+    {
+     "p": "analog*",
+     "w": 2.5
+    },
+    {
+     "p": "mirrors",
+     "w": 2
+    },
+    {
+     "p": "isomorphic",
+     "w": 2.5
+    },
+    {
+     "p": "corresponds to",
+     "w": 2
+    },
+    {
+     "p": "is like",
+     "w": 2
+    },
+    {
+     "p": "maps onto",
+     "w": 2
+    },
+    {
+     "p": "same pattern",
+     "w": 2.5
+    },
+    {
+     "p": "same rule",
+     "w": 2.5
+    }
+   ]
+  },
+  "domain.philosophy": {
+   "description": "Domain terms: philosophy.",
+   "phrases": [
+    {
+     "p": "filozofi*",
+     "w": 2
+    },
+    {
+     "p": "philosoph*",
+     "w": 2
+    },
+    {
+     "p": "epistemolog*",
+     "w": 2
+    },
+    {
+     "p": "ontolog*",
+     "w": 2
+    },
+    {
+     "p": "etyk*",
+     "w": 1.5
+    },
+    {
+     "p": "ethic*",
+     "w": 1.5
+    },
+    {
+     "p": "wartości",
+     "w": 1
+    },
+    {
+     "p": "values",
+     "w": 1
+    },
+    {
+     "p": "prawda",
+     "w": 1
+    },
+    {
+     "p": "truth",
+     "w": 1
+    },
+    {
+     "p": "wolna wola",
+     "w": 2
+    },
+    {
+     "p": "free will",
+     "w": 2
+    },
+    {
+     "p": "świadomość",
+     "w": 1.5
+    },
+    {
+     "p": "consciousness",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.physics": {
+   "description": "Domain terms: physics.",
+   "phrases": [
+    {
+     "p": "fizyk*",
+     "w": 2
+    },
+    {
+     "p": "physic*",
+     "w": 2
+    },
+    {
+     "p": "entropi*",
+     "w": 2
+    },
+    {
+     "p": "entropy",
+     "w": 2
+    },
+    {
+     "p": "termodynami*",
+     "w": 2
+    },
+    {
+     "p": "thermodynamic*",
+     "w": 2
+    },
+    {
+     "p": "energi*",
+     "w": 1
+    },
+    {
+     "p": "energy",
+     "w": 1
+    },
+    {
+     "p": "kwantow*",
+     "w": 2
+    },
+    {
+     "p": "quantum",
+     "w": 2
+    },
+    {
+     "p": "pole grawitacyjne",
+     "w": 2
+    },
+    {
+     "p": "gravity",
+     "w": 1.5
+    },
+    {
+     "p": "grawitacj*",
+     "w": 1.5
+    },
+    {
+     "p": "nieodwracalno*",
+     "w": 1.5
+    },
+    {
+     "p": "irreversib*",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.mathematics": {
+   "description": "Domain terms: mathematics.",
+   "phrases": [
+    {
+     "p": "matematy*",
+     "w": 2
+    },
+    {
+     "p": "mathemati*",
+     "w": 2
+    },
+    {
+     "p": "twierdzeni*",
+     "w": 1.5
+    },
+    {
+     "p": "theorem",
+     "w": 1.5
+    },
+    {
+     "p": "dowód",
+     "w": 1
+    },
+    {
+     "p": "proof",
+     "w": 1
+    },
+    {
+     "p": "izomorfizm*",
+     "w": 2
+    },
+    {
+     "p": "isomorphism",
+     "w": 2
+    },
+    {
+     "p": "topologi*",
+     "w": 2
+    },
+    {
+     "p": "topology",
+     "w": 2
+    },
+    {
+     "p": "kategori* teori*",
+     "w": 2
+    },
+    {
+     "p": "category theory",
+     "w": 2
+    },
+    {
+     "p": "morfizm*",
+     "w": 2
+    },
+    {
+     "p": "morphism",
+     "w": 2
+    },
+    {
+     "p": "gödel*",
+     "w": 2
+    },
+    {
+     "p": "godel*",
+     "w": 2
+    }
+   ]
+  },
+  "domain.ai_alignment": {
+   "description": "Domain terms: AI and alignment.",
+   "phrases": [
+    {
+     "p": "alignment",
+     "w": 2
+    },
+    {
+     "p": "ai safety",
+     "w": 2
+    },
+    {
+     "p": "bezpieczeństwo ai",
+     "w": 2
+    },
+    {
+     "p": "reward",
+     "w": 1
+    },
+    {
+     "p": "nagrod*",
+     "w": 1
+    },
+    {
+     "p": "model językowy",
+     "w": 1.5
+    },
+    {
+     "p": "language model",
+     "w": 1.5
+    },
+    {
+     "p": "llm",
+     "w": 1.5
+    },
+    {
+     "p": "agent*",
+     "w": 1
+    },
+    {
+     "p": "superinteligencj*",
+     "w": 2
+    },
+    {
+     "p": "superintelligence",
+     "w": 2
+    },
+    {
+     "p": "korygowalno*",
+     "w": 2
+    },
+    {
+     "p": "corrigib*",
+     "w": 2
+    }
+   ]
+  },
+  "domain.software": {
+   "description": "Domain terms: software engineering.",
+   "phrases": [
+    {
+     "p": "kod",
+     "w": 1
+    },
+    {
+     "p": "code",
+     "w": 1
+    },
+    {
+     "p": "moduł*",
+     "w": 1
+    },
+    {
+     "p": "module",
+     "w": 1
+    },
+    {
+     "p": "architektur*",
+     "w": 1.5
+    },
+    {
+     "p": "architecture",
+     "w": 1.5
+    },
+    {
+     "p": "api",
+     "w": 1
+    },
+    {
+     "p": "adapter*",
+     "w": 1.5
+    },
+    {
+     "p": "interfejs*",
+     "w": 1
+    },
+    {
+     "p": "interface",
+     "w": 1
+    },
+    {
+     "p": "provider*",
+     "w": 1.5
+    },
+    {
+     "p": "refaktor*",
+     "w": 1.5
+    },
+    {
+     "p": "refactor*",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.law": {
+   "description": "Domain terms: law.",
+   "phrases": [
+    {
+     "p": "sąd",
+     "w": 1.5
+    },
+    {
+     "p": "court",
+     "w": 1.5
+    },
+    {
+     "p": "ustaw*",
+     "w": 1.5
+    },
+    {
+     "p": "statute",
+     "w": 1.5
+    },
+    {
+     "p": "termin procesow*",
+     "w": 2
+    },
+    {
+     "p": "pozew",
+     "w": 2
+    },
+    {
+     "p": "lawsuit",
+     "w": 2
+    },
+    {
+     "p": "kodeks",
+     "w": 1.5
+    },
+    {
+     "p": "art.",
+     "w": 1
+    }
+   ]
+  },
+  "domain.music": {
+   "description": "Domain terms: music.",
+   "phrases": [
+    {
+     "p": "muzyk*",
+     "w": 1.5
+    },
+    {
+     "p": "music",
+     "w": 1.5
+    },
+    {
+     "p": "tonacj*",
+     "w": 2
+    },
+    {
+     "p": "key of",
+     "w": 1
+    },
+    {
+     "p": "akord*",
+     "w": 1.5
+    },
+    {
+     "p": "chord*",
+     "w": 1.5
+    },
+    {
+     "p": "melodi*",
+     "w": 1.5
+    },
+    {
+     "p": "rytm*",
+     "w": 1.5
+    },
+    {
+     "p": "rhythm",
+     "w": 1.5
+    },
+    {
+     "p": "utw*r",
+     "w": 1
+    }
+   ]
+  },
+  "domain.biology": {
+   "description": "Domain terms: biology.",
+   "phrases": [
+    {
+     "p": "biolog*",
+     "w": 2
+    },
+    {
+     "p": "ewolucj*",
+     "w": 2
+    },
+    {
+     "p": "evolution",
+     "w": 2
+    },
+    {
+     "p": "gen*",
+     "w": 0.5
+    },
+    {
+     "p": "dobór naturalny",
+     "w": 2
+    },
+    {
+     "p": "natural selection",
+     "w": 2
+    },
+    {
+     "p": "organizm*",
+     "w": 1.5
+    },
+    {
+     "p": "organism*",
+     "w": 1.5
+    }
+   ]
+  },
+  "domain.economics": {
+   "description": "Domain terms: economics.",
+   "phrases": [
+    {
+     "p": "ekonomi*",
+     "w": 2
+    },
+    {
+     "p": "economic*",
+     "w": 2
+    },
+    {
+     "p": "koszt*",
+     "w": 1
+    },
+    {
+     "p": "cost*",
+     "w": 1
+    },
+    {
+     "p": "rynek",
+     "w": 1.5
+    },
+    {
+     "p": "market*",
+     "w": 1.5
+    },
+    {
+     "p": "inflacj*",
+     "w": 2
+    },
+    {
+     "p": "inflation",
+     "w": 2
+    },
+    {
+     "p": "pieniądze",
+     "w": 1
+    },
+    {
+     "p": "money",
+     "w": 1
+    }
+   ]
+  }
+ }
+}

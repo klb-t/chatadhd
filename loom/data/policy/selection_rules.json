@@ -1,0 +1,8 @@
+{
+  "schema": "loom.kb.selection_rules/1",
+  "description": "Default selection rules. Precedence (fixed, in code): 1. user pin/exclude (loom_cat_decisions with decided_by='user'); 2. these rules in order, first match wins; 3. label default (relevant -> include, candidate -> review, irrelevant -> exclude). Match keys: label, project, title_regex, date_from, date_to, file_glob, score_min, score_max, lang, min_chars, max_chars. Actions: include | exclude | review.",
+  "rules": [
+    {"id": "sel.philosophy", "match": {"label": "candidate", "project": "owner"}, "action": "include", "why": "coding-philosophy chats are relevant even without an app name (R2)"},
+    {"id": "sel.tiny", "match": {"label": "candidate", "max_chars": 400}, "action": "exclude", "why": "tiny candidate chats carry too little evidence to review"}
+  ]
+}

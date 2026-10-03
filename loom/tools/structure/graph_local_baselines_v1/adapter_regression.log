@@ -1,0 +1,25 @@
+test_ambiguous_overlapping_quote_is_rejected (test_graph_panel_live.GraphPanelMechanismTests.test_ambiguous_overlapping_quote_is_rejected) ... ok
+test_compiled_quote_offsets_cannot_be_tampered_before_scoring (test_graph_panel_live.GraphPanelMechanismTests.test_compiled_quote_offsets_cannot_be_tampered_before_scoring) ... ok
+test_confusion_keeps_unavailable_in_recall_denominators (test_graph_panel_live.GraphPanelMechanismTests.test_confusion_keeps_unavailable_in_recall_denominators) ... ok
+test_duplicate_local_id_adds_fp_without_erasing_correct_edges (test_graph_panel_live.GraphPanelMechanismTests.test_duplicate_local_id_adds_fp_without_erasing_correct_edges) ... ok
+test_duplicate_unknown_case_output_rejected (test_graph_panel_live.GraphPanelMechanismTests.test_duplicate_unknown_case_output_rejected) ... ok
+test_exact_subspan_is_source_bound_with_explicit_review_count (test_graph_panel_live.GraphPanelMechanismTests.test_exact_subspan_is_source_bound_with_explicit_review_count) ... ok
+test_extraction_payload_has_no_queries_gold_or_family (test_graph_panel_live.GraphPanelMechanismTests.test_extraction_payload_has_no_queries_gold_or_family) ... ok
+test_first_output_no_overwrite (test_graph_panel_live.GraphPanelMechanismTests.test_first_output_no_overwrite) ... ok
+test_formal_scope_is_not_silently_judged_as_explicit_source (test_graph_panel_live.GraphPanelMechanismTests.test_formal_scope_is_not_silently_judged_as_explicit_source) ... ok
+test_gpt_exact_query_identity_and_ternary_only (test_graph_panel_live.GraphPanelMechanismTests.test_gpt_exact_query_identity_and_ternary_only) ... ok
+test_jev_shape_must_have_exactly_two_valid_probabilities (test_graph_panel_live.GraphPanelMechanismTests.test_jev_shape_must_have_exactly_two_valid_probabilities) ... ok
+test_known_at_mismatch_and_truth_promotion_are_invalid (test_graph_panel_live.GraphPanelMechanismTests.test_known_at_mismatch_and_truth_promotion_are_invalid) ... ok
+test_missing_output_keeps_every_gold_denominator (test_graph_panel_live.GraphPanelMechanismTests.test_missing_output_keeps_every_gold_denominator) ... ok
+test_nonexistent_quote_and_turn_are_rejected (test_graph_panel_live.GraphPanelMechanismTests.test_nonexistent_quote_and_turn_are_rejected) ... ok
+test_noul_conflict_is_unavailable_and_no_positive_is_unknown (test_graph_panel_live.GraphPanelMechanismTests.test_noul_conflict_is_unavailable_and_no_positive_is_unknown) ... ok
+test_oracle_shape_is_only_a_scorer_mechanism_check (test_graph_panel_live.GraphPanelMechanismTests.test_oracle_shape_is_only_a_scorer_mechanism_check) ... ok
+test_physical_prefix_excludes_future_and_other_queries (test_graph_panel_live.GraphPanelMechanismTests.test_physical_prefix_excludes_future_and_other_queries) ... ok
+test_prepare_shapes_and_no_retry_or_network_surface (test_graph_panel_live.GraphPanelMechanismTests.test_prepare_shapes_and_no_retry_or_network_surface) ... ok
+test_quote_compiler_exact_unicode_and_utf8 (test_graph_panel_live.GraphPanelMechanismTests.test_quote_compiler_exact_unicode_and_utf8) ... ok
+test_wrong_direction_and_attribution_count_fp_fn (test_graph_panel_live.GraphPanelMechanismTests.test_wrong_direction_and_attribution_count_fp_fn) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.003s
+
+OK

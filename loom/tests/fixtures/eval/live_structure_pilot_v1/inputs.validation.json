@@ -1,0 +1,338 @@
+[
+  {
+    "case_id": "case_009_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_009_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_009_en",
+          "text": "It is not true that the fan spins and the pump hums.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_009_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_009_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_009_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_009_pl",
+          "text": "Nie jest prawdą, że wentylator wiruje i pompa buczy.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_009_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_010_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_010_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_010_en",
+          "text": "If the sensor does not blink, the relay clicks.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_010_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_010_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_010_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_010_pl",
+          "text": "Jeśli czujnik nie miga, przekaźnik klika.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_010_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_011_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_011_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_011_en",
+          "text": "If the editor signs, the reviewer does not resign.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_011_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_011_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_011_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_011_pl",
+          "text": "Jeśli redaktor podpisuje, recenzent nie rezygnuje.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_011_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_012_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_012_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_012_en",
+          "text": "If the seal cracks, then if the fluid leaks, the alarm sounds.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_012_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_012_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_012_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_012_pl",
+          "text": "Jeśli uszczelka pęka, to jeśli płyn wycieka, alarm rozbrzmiewa.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_012_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_013_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_013_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_013_en",
+          "text": "Quoted passage: “Oskar does not greet Mira.”",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_013_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_013_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_013_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_013_pl",
+          "text": "Cytowany fragment: „Oskar nie wita Miry”.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_013_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_014_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_014_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_014_en",
+          "text": "For every x, x does not sink.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_014_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_014_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_014_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_014_pl",
+          "text": "Dla każdego x, x nie tonie.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_014_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_015_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_015_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_015_en",
+          "text": "For some x, if x glows, x heats.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_015_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_015_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_015_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_015_pl",
+          "text": "Dla pewnego x, jeśli x świeci, x grzeje.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_015_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_016_en",
+    "language": "en",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_016_en",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_016_en",
+          "text": "I saw the guard with the telescope.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_016_en.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  },
+  {
+    "case_id": "case_016_pl",
+    "language": "pl",
+    "source_packet": {
+      "schema": "loom.source_packet/1",
+      "snapshot_id": "live-structure-v1:case_016_pl",
+      "observations": [
+        {
+          "id": "ob_source",
+          "unit": "case_016_pl",
+          "text": "Widziałem strażnika z teleskopem.",
+          "locator": {
+            "source": "authored:live_structure_pilot_v1",
+            "member": "case_016_pl.txt"
+          }
+        }
+      ],
+      "entities": [],
+      "claims": []
+    }
+  }
+]

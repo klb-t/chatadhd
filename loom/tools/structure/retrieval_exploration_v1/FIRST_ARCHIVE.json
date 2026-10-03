@@ -1,0 +1,41 @@
+{
+  "archive_bytes": 808022,
+  "archive_sha256": "03686a8a6eb2fa79e0f6791ff6f06655e83cf9f65274c6fcd7d9836a747a4f82",
+  "credentials_included": false,
+  "entries": [
+    {
+      "bytes": 944757,
+      "path": "first_scores.json",
+      "sha256": "e8d5af75b8cb6908f186522d37c91c042bf9c3272ab7fa83c7787ddc962afd81"
+    },
+    {
+      "bytes": 733708,
+      "path": "first_results.json",
+      "sha256": "e4f561bf44e98014d2afb8e37ae4560f854dc59d9b32af1773c23c3347e47c90"
+    },
+    {
+      "bytes": 3313817,
+      "path": "byte_budget_results.json",
+      "sha256": "2e31bb274d6f68d041aba07929988dd0f5a1ed819d7ea75a66551ae30c5fb164"
+    },
+    {
+      "bytes": 648320,
+      "path": "first_embedding/vectors.npy",
+      "sha256": "3f9b882e12760d35858dd2b41333b087687bec09e8ef9e067d43e4507f00b1ea"
+    },
+    {
+      "bytes": 139001,
+      "path": "first_embedding/index.json",
+      "sha256": "dc7cbbbd9d07f32dc5a825653a9686102a6fe63404346caea90e9bffae790696"
+    },
+    {
+      "bytes": 52420,
+      "path": "first_embedding/scores.json",
+      "sha256": "2b2cbcfe1c8d47b8da0659c07897d3c6e56d19d066b5c621e6b42324ab82fa9d"
+    }
+  ],
+  "model_weights_included": false,
+  "raw_bytes": 5832023,
+  "schema": "loom.research.retrieval_exploration_first_archive/1",
+  "validation_included": false
+}

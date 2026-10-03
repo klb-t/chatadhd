@@ -1,0 +1,465 @@
+{
+  "schema": "chatadhd.branch_inventory/2",
+  "snapshot_date": "2026-10-02",
+  "purpose": "Preserve exact ORIGINAL branch tips privately. Public branch/tag projections may use only separately verified sanitized commit identities; original SHA tags are prohibited.",
+  "finding_scope": "26 ChatADHD original-main commits contain private owner contact metadata in author/committer fields. Shared ancestry affects original ChatADHD historical refs. No private source-document content was confirmed by the final content audit. Standalone Loom has separate ancestry and requires its own metadata audit.",
+  "remote_execution_status": "Read-only snapshot and plan. No visibility change, public publication, archive tags or branch retirement performed.",
+  "sanitization_contract": "Record original-to-sanitized commit mapping, preserve every source tree byte-for-byte, check all public ancestors and keep originals in verified private bundles. No original SHA is a default public tag target.",
+  "repositories": {
+    "klb-t/chatadhd": {
+      "default_branch": "main",
+      "branches": [
+        {
+          "name": "archive/2026-10-01/handoff-source",
+          "sha": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "8185eadec09dcd42c2869355fbb96806c0e7b59a",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-01/handoff-source"
+        },
+        {
+          "name": "archive/2026-10-02/handoff-complete",
+          "sha": "2878a0c8f80800732f0ffcfff695a24f135748e0",
+          "original_history_role": "active_or_supporting_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "a11be39052a810eb40f234d9b307fbf348b7e149",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/handoff-complete"
+        },
+        {
+          "name": "chore/repo-hygiene-2026-09",
+          "sha": "970ca2836177c561796d393e454dfb37f173809b",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "bbde8b983cad9fb3055f2fe5706f2f2fea4a0f1b",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/chore/repo-hygiene-2026-09"
+        },
+        {
+          "name": "claude/chataddhd-cpp-loom-core-IRGRN",
+          "sha": "46066308ac6306a1b30f65b98e19a40da6df7e9c",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "aebee4d5f41b0afec88e9cc8550378cc9176f11d",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/claude/chataddhd-cpp-loom-core-IRGRN"
+        },
+        {
+          "name": "claude/restore-lost-features-adK74",
+          "sha": "287bdc1dea06c266837f88041250a70a95521d85",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "8ee85b334f684d6351279487bdeb67bf63f9659c",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/claude/restore-lost-features-adK74"
+        },
+        {
+          "name": "codex/handoff-recovery-2026-10-02",
+          "sha": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "8185eadec09dcd42c2869355fbb96806c0e7b59a",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/codex/handoff-recovery-2026-10-02"
+        },
+        {
+          "name": "codex/loom-handoff-2026-09-28",
+          "sha": "816406722257d70431cc2acadaac313f0503b48c",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "729e1b971ffeaf6917c27a6addc252d8b807e51d",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/codex/loom-handoff-2026-09-28"
+        },
+        {
+          "name": "eval/real-holdout-key",
+          "sha": "0fcf2402f60fdf394c0c74c4eb128353d536db0b",
+          "original_history_role": "isolated_evaluation",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": null,
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": null
+        },
+        {
+          "name": "gpt/continuity-audit-2026-09-30",
+          "sha": "6828216b23b465f59055ccd8ae3e665abf6bce97",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "429eaaf541231d349ef3e62eba7cb6e5abbd5ba7",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/continuity-audit-2026-09-30"
+        },
+        {
+          "name": "gpt/ecosystem-agent-research-2026-10-01",
+          "sha": "157762ef60be8b14fe75c6a9c922d6df7ffe97a1",
+          "original_history_role": "active_or_supporting_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "e9a6f5caedeb13aa9a8c8a5d28987db35b8f2ebb",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/heads/gpt/ecosystem-agent-research-2026-10-01"
+        },
+        {
+          "name": "gpt/graph-replies-2026-10-02",
+          "sha": "d49e05fd484e1a0af8432a5512762107ff633c1e",
+          "original_history_role": "active_or_supporting_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "30851d066aaf791b5867824855b34b3c6c82ac5a",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/heads/gpt/graph-replies-2026-10-02"
+        },
+        {
+          "name": "gpt/integration-w1-w6-2026-10-01",
+          "sha": "926072ce43b8de21a42a3abe439a7781598136f6",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "a7b0a769b21b79ef23f4ea6127eb855b80639138",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/integration-w1-w6-2026-10-01"
+        },
+        {
+          "name": "gpt/night-development-2026-10-01",
+          "sha": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+          "original_history_role": "active_or_supporting_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "55ca36812044b095a75a475dfc9dc3251ed5c1ed",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/heads/gpt/night-development-2026-10-01",
+          "reason": "Supporting baseline for active draft PR #7; public projection needs sanitized ancestry."
+        },
+        {
+          "name": "gpt/night2-resources-2026-10-01",
+          "sha": "6c883f3665d1c0151c7b25f0e480817dfc40cc20",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "02f396e67038a099a534fb01238d034bdf4f75e4",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/night2-resources-2026-10-01"
+        },
+        {
+          "name": "gpt/offline-2026-09-29",
+          "sha": "31f130cd38f25a1d523194ddac93c2ba713bbd07",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "d539fc33f8ba861ce0fc8e3aee1fd08266ad5533",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/offline-2026-09-29"
+        },
+        {
+          "name": "gpt/research-2026-09-30",
+          "sha": "c19bac2918636a2a69e8b52cabc49b9cf3f7ec6f",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "032ec9c01df3b870ab13f5ff40564483a06d0328",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/research-2026-09-30"
+        },
+        {
+          "name": "gpt/w1-active-task-2026-09-30",
+          "sha": "803eb78a8b49ece8b5d7e765f99fdd0f495caf4b",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "342a25fb8293b0f5a4e7eb462866a32dcb051b5a",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/w1-active-task-2026-09-30"
+        },
+        {
+          "name": "gpt/w2-retrieval-2026-09-30",
+          "sha": "f6b44f6059777892474b45e54e7fae516bd1eb04",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "8d5c4859c51eb2e950484d0b66d7b0f44f29c7b7",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/w2-retrieval-2026-09-30"
+        },
+        {
+          "name": "gpt/w3-model-recipes-2026-09-30",
+          "sha": "078378d5fa65225b5978e2641dd1849cd4830536",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "98b61a9a2cffaccbab25302b63e36c5a5286b1f1",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/w3-model-recipes-2026-09-30"
+        },
+        {
+          "name": "gpt/w4-graph-runtime-2026-09-30",
+          "sha": "e7000a9beda08769254f1893da5ed3a5097bfe58",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "97fd50b025b35fff9848825ae31fef02dcd802db",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/w4-graph-runtime-2026-09-30"
+        },
+        {
+          "name": "gpt/w5-workspace-2026-09-30",
+          "sha": "ecf6931bdde797799d2a1081ff898d3d0f1d3c8c",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "b46a6eb9f7f6ea405e282a3a343da69254b98eaa",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/w5-workspace-2026-09-30"
+        },
+        {
+          "name": "gpt/w6-evidence-2026-09-30",
+          "sha": "84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "f5825594eaa061733b89168fd344cebdac645d58",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/gpt/w6-evidence-2026-09-30"
+        },
+        {
+          "name": "main",
+          "sha": "b5f7eacdead11101e5c2a08e1864195c74034d45",
+          "original_history_role": "active_or_supporting_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "bdabd804bcfe17da6c86b2236f04b6dd5071e41d",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/heads/main"
+        },
+        {
+          "name": "wip/catalog-finish",
+          "sha": "89e40933e5d7ccbbd9868b533769194dc4716ae4",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "ddc98a4a0967b83f4617df5bb2cbd6e0a1c474f3",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/catalog-finish"
+        },
+        {
+          "name": "wip/catalog-r3",
+          "sha": "bf057541a45b9c8fa2fbeac478b374ffdc5fbcc0",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "44ca6d92c8c00e8850b586af12d664e8726991ce",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/catalog-r3"
+        },
+        {
+          "name": "wip/continuation-2026-09-30",
+          "sha": "a79862837c6726f534471f8dbcdccfe749dfb942",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "d6893c64b2f7a3748cfb7b774671ef58ddf8bdc5",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/continuation-2026-09-30"
+        },
+        {
+          "name": "wip/determinism-fix",
+          "sha": "3486fd2e69411d2932f7b1b98f6d4fa1fcbca7eb",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "51250583c46371e9785d2cad907c8e77c178ee98",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/determinism-fix"
+        },
+        {
+          "name": "wip/export-finish",
+          "sha": "af6d3e898cce26fb4a6a5a98e3e4216162a83123",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "0f8e4e33787458d5c7f496714fac26f8e4445b63",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/export-finish"
+        },
+        {
+          "name": "wip/precision",
+          "sha": "de3b9203253ddfdf30e02ea26881a1bcba7077c8",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "bec82acb31bf7e0489a54737dbabe0a60ea77365",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/precision"
+        },
+        {
+          "name": "wip/resolve-finish",
+          "sha": "bcc77fb27861f093e2e0c48a19bb519e362a16da",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "4d5a126eb2ec293e05650747c557e3a7280d877c",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/resolve-finish"
+        },
+        {
+          "name": "wip/worktree-agent-a06d7260ba8b658cc",
+          "sha": "2554bcc045ede3cc7f7014b37bf210d7e59c3681",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "1393d2516f320d345f9e6768e53de143dd6a9fdc",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-a06d7260ba8b658cc"
+        },
+        {
+          "name": "wip/worktree-agent-a342fccb481c4116c",
+          "sha": "5d85034e2353a3a6e2b2beacd1549b8cd0566584",
+          "original_history_role": "isolated_evaluation",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": null,
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": null
+        },
+        {
+          "name": "wip/worktree-agent-a382d0e063192b5ed",
+          "sha": "90113a906fe4180532eeadef3a2037b322472683",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "55b007f3d65817447c445f28dc2373b5b1cea397",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-a382d0e063192b5ed"
+        },
+        {
+          "name": "wip/worktree-agent-a436abbcd1b794a18",
+          "sha": "819de58fbca5daed4c4ed840ef1b250230c22f0a",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "bb2ae6c89b687e5de974ccc0dea42fbdcb487542",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-a436abbcd1b794a18"
+        },
+        {
+          "name": "wip/worktree-agent-a56d696101c89a58c",
+          "sha": "453207ae6142b0ada53af1dabebe54c82a8a842e",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "15dcbf05b207aaa3a022828a0811dd7db36780c4",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-a56d696101c89a58c"
+        },
+        {
+          "name": "wip/worktree-agent-a822af86e44b82241",
+          "sha": "eae85871269458753a850d05bab7eb44ff378425",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "79d49d4d8a634bdeb2721193c77049a9c41cfbf7",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-a822af86e44b82241"
+        },
+        {
+          "name": "wip/worktree-agent-a8df74a3ca608a703",
+          "sha": "d14535a0a944324caf671fdd796b582e928a5882",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "2375b19416549caf0f7b7b316035571881351d2c",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-a8df74a3ca608a703"
+        },
+        {
+          "name": "wip/worktree-agent-a90a2e07c062c7efc",
+          "sha": "dccaf9bdf1d981de2ddbb1184079bb954dc96990",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "0917ef3c0a59763e12d7dd2d824e9ef84e5118a5",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-a90a2e07c062c7efc"
+        },
+        {
+          "name": "wip/worktree-agent-ab76c2dece93103a1",
+          "sha": "2d8826fec26331aa293a0c0110cc9912495b7671",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "d76fb7d97993e52857b934ebd1ae32cd3d31bccd",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-ab76c2dece93103a1"
+        },
+        {
+          "name": "wip/worktree-agent-ac45c7e794faf4cb0",
+          "sha": "2de5d16f0b773055357dd4022b57c3c6aafbcc15",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "9a515c7b55837b872e75c65151547b435eeead60",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-ac45c7e794faf4cb0"
+        },
+        {
+          "name": "wip/worktree-agent-ace3dd50eb645ccb0",
+          "sha": "da7b34f5714f76f7ddbffe689379d1847427742b",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "22bf09891d7f980b7ab8a9444d6a6481c75a05b2",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/wip/worktree-agent-ace3dd50eb645ccb0"
+        }
+      ],
+      "unpublished_keep": [
+        "codex/recovery-2026-10-02"
+      ]
+    },
+    "klb-t/loom": {
+      "default_branch": "main",
+      "branches": [
+        {
+          "name": "chore/repo-hygiene-2026-09",
+          "sha": "17ce3204cae7c03f7647f67c3f7d113f68026858",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "17ce3204cae7c03f7647f67c3f7d113f68026858",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/chore/repo-hygiene-2026-09"
+        },
+        {
+          "name": "main",
+          "sha": "66bc1440295bd95e523ae17be662f321db6b71fc",
+          "original_history_role": "active_or_supporting_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "66bc1440295bd95e523ae17be662f321db6b71fc",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/heads/main"
+        },
+        {
+          "name": "port/chatadhd-v0710-core",
+          "sha": "8164783a623ec627449cdbcdac5512f07b941cb0",
+          "original_history_role": "completed_historical_ref",
+          "public_original_history_allowed": false,
+          "original_recovery": "verified_private_git_bundle",
+          "sanitized_public_sha": "8164783a623ec627449cdbcdac5512f07b941cb0",
+          "sanitized_mapping_required": true,
+          "intended_sanitized_public_ref": "refs/tags/archive/2026-10-02/port/chatadhd-v0710-core"
+        }
+      ]
+    }
+  },
+  "sanitization_status": "Local mapped histories validated; no remote publication or visibility change."
+}

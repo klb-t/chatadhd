@@ -1,0 +1,1659 @@
+{
+ "schema": "loom.kb.principles/2",
+ "description": "Seed principles: PRIORS, not facts (validation_status candidate). The engine must still DISCOVER principles in the sources: a seed counts as observed for a corpus only when sources match its phrasings; unmatched seeds are reported as 'seed, not found in corpus'. Every source is dated so the temporal holdout can drop priors that did not exist yet (model::PriorFilter, priors_as_of). Levels/forms/fields: LOOM_CONCEPTUAL_MODEL §3.1. Preferences are principles owned by the user with a product scope.",
+ "principles": [
+  {
+   "id": "p.data_is_variety",
+   "statement": {
+    "en": "Find a representation of the problem in which the variety of the world is data and code describes only universal operations; if a new case seems to need a new code branch, first check whether it should be a new data value",
+    "pl": "Szukaj takiej reprezentacji problemu, żeby różnorodność świata była danymi, a kod opisywał tylko uniwersalne operacje; jeśli nowy przypadek wymaga nowej gałęzi kodu, najpierw sprawdź, czy nie powinien być nową wartością danych"
+   },
+   "phrasings": [
+    "Szukaj takiej reprezentacji problemu, żeby różnorodność świata była danymi",
+    "Maksymalizuj to, co można wyrazić jako niezmienną transformację",
+    "Jeśli nowy przypadek wymaga nowej gałęzi kodu, najpierw sprawdź, czy naprawdę nie powinien być nową wartością danych"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "protects": [
+    "p.value.minimal_arbitrariness",
+    "p.value.transparency"
+   ],
+   "exceptions": [
+    "a special case is allowed when the difference is genuinely semantic and cannot honestly be moved into data or a capability description (note §3)"
+   ],
+   "confidence": 0.5,
+   "predicts": [
+    {
+     "situation": "a new kind of project, document or source appears",
+     "solution": "a new data file (kind, type, manifest) over existing universal operations"
+    }
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§3"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§3.1"
+    }
+   ]
+  },
+  {
+   "id": "p.value.truth",
+   "statement": {
+    "en": "Truth",
+    "pl": "Prawda"
+   },
+   "phrasings": [
+    "prawda"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.autonomy",
+   "statement": {
+    "en": "Autonomy (the owner keeps control)",
+    "pl": "Autonomia (kontrola po stronie właściciela)"
+   },
+   "phrasings": [
+    "autonomia",
+    "Pełna kontrola lokalna",
+    "lokalne, edytowalne, z pełną kontrolą"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.transparency",
+   "statement": {
+    "en": "Transparency",
+    "pl": "Przejrzystość"
+   },
+   "phrasings": [
+    "przejrzystość",
+    "co można by logować, co byłoby deterministyczne i wystarczające do zapewnienia transparentności"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 9 'reproducible builds'",
+     "date": "2026-02-04"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.honesty",
+   "statement": {
+    "en": "Honesty (never present a guess as a fact)",
+    "pl": "Uczciwość (nie podawać zgadywania jako faktu)"
+   },
+   "phrasings": [
+    "uczciwość",
+    "brak możliwości ⇒ niższy poziom dowodu, nigdy fałszywa metryka"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "§6 'Uczciwa degradacja'"
+    }
+   ]
+  },
+  {
+   "id": "p.value.information_preservation",
+   "statement": {
+    "en": "Preservation of information",
+    "pl": "Zachowanie informacji"
+   },
+   "phrasings": [
+    "zachowanie informacji",
+    "edycja = nowa wersja",
+    "stara wersja nie ginie",
+    "porzucone ≠ nieważne"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 1 'Branching conversations'",
+     "date": "2026-01-21"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12, §13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.minimal_arbitrariness",
+   "statement": {
+    "en": "Minimal arbitrariness",
+    "pl": "Minimalizacja arbitralności"
+   },
+   "phrasings": [
+    "minimalizacja arbitralności",
+    "Każda arbitralna decyzja pozostaje otwarta"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "preamble"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.value.optionality",
+   "statement": {
+    "en": "Preservation of optionality",
+    "pl": "Zachowanie opcjonalności"
+   },
+   "phrasings": [
+    "zachowanie opcjonalności",
+    "zachować opcjonalność"
+   ],
+   "level": "value",
+   "form": "invariant",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "preamble, §8"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Values"
+    }
+   ]
+  },
+  {
+   "id": "p.provenance",
+   "statement": {
+    "en": "Everything carries its provenance: source, transformation chain, confidence",
+    "pl": "Wszystko ma pochodzenie: źródło, łańcuch transformacji, pewność"
+   },
+   "phrasings": [
+    "provenance",
+    "SourceRef / Provenance",
+    "transformation chain",
+    "synthesis z linkami do źródeł"
+   ],
+   "level": "epistemic",
+   "form": "invariant",
+   "protects": [
+    "p.value.truth",
+    "p.value.transparency"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.F, §3, §4.2"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Epistemic principles"
+    }
+   ]
+  },
+  {
+   "id": "p.fact_not_inference",
+   "statement": {
+    "en": "Keep fact and inference apart: inferred values are marked, with method, confidence and an expected property",
+    "pl": "Oddzielaj fakt od inferencji: wartości wywnioskowane są oznaczone, z metodą, pewnością i oczekiwaną własnością"
+   },
+   "phrasings": [
+    "oddzielanie faktu od inferencji",
+    "inferencja ≠ fakt",
+    "dane inferowalne z określoną oczekiwaną własnością"
+   ],
+   "level": "epistemic",
+   "form": "invariant",
+   "protects": [
+    "p.value.honesty",
+    "p.value.truth"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R5"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4, §13"
+    }
+   ]
+  },
+  {
+   "id": "p.explicit_uncertainty",
+   "statement": {
+    "en": "Uncertainty is explicit and calibrated",
+    "pl": "Niepewność jest jawna i skalibrowana"
+   },
+   "phrasings": [
+    "jawna niepewność",
+    "opacity jako jedna z wielu opcji może sygnalizować dane inferowalne"
+   ],
+   "level": "epistemic",
+   "form": "invariant",
+   "protects": [
+    "p.value.honesty"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R5"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.keep_alternatives",
+   "statement": {
+    "en": "Keep alternative hypotheses and competing models instead of choosing arbitrarily",
+    "pl": "Zachowuj alternatywne hipotezy i konkurencyjne modele zamiast wybierać arbitralnie"
+   },
+   "phrasings": [
+    "zachowanie alternatywnych hipotez",
+    "Dla tych samych danych może istnieć kilka konkurencyjnych modeli",
+    "Otwarte decyzje — celowo NIE zamknięte"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "protects": [
+    "p.value.optionality",
+    "p.value.minimal_arbitrariness"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§10"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4, §8"
+    }
+   ]
+  },
+  {
+   "id": "p.seek_counterexamples",
+   "statement": {
+    "en": "Seek counterexamples",
+    "pl": "Szukaj kontrprzykładów"
+   },
+   "phrasings": [
+    "szukanie kontrprzykładów"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "protects": [
+    "p.value.truth"
+   ],
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.avoid_overgeneralisation",
+   "statement": {
+    "en": "Avoid over-generalisation",
+    "pl": "Unikaj nadmiernej generalizacji"
+   },
+   "phrasings": [
+    "unikanie nadmiernej generalizacji",
+    "speculative generality"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§17"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.update_on_data",
+   "statement": {
+    "en": "Update the model on new data; later passes come from terms found earlier",
+    "pl": "Aktualizuj model po nowych danych; kolejne przebiegi wynikają z terminów znalezionych w poprzednich"
+   },
+   "phrasings": [
+    "aktualizowanie modelu po nowych danych",
+    "kolejne przebiegi wyszukiwania mają wynikać z terminów znalezionych w poprzednich"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.9 step 12, §13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4"
+    }
+   ]
+  },
+  {
+   "id": "p.titles_weak_signal",
+   "statement": {
+    "en": "Conversation titles are a weak signal; never filter by title",
+    "pl": "Tytuły rozmów są słabym sygnałem; nie filtrujemy po tytułach"
+   },
+   "phrasings": [
+    "tytuły rozmów są słabym sygnałem",
+    "ingest wszystkiego bez ufania tytułom",
+    "Titles are never used as a filter"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "derived_from": [
+    "p.seek_counterexamples"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.9, §13, §15"
+    }
+   ]
+  },
+  {
+   "id": "p.decision_classes",
+   "statement": {
+    "en": "Every decision is an invariant (code/contract), a policy/default (data) or a platform detail (adapter); never promote without evidence",
+    "pl": "Każda decyzja to invariant (kod/kontrakt), policy/default (dane) albo platform detail (adapter); nie awansujemy klas bez dowodu"
+   },
+   "phrasings": [
+    "invariant — musi być w kodzie/kontrakcie",
+    "policy/default — dane, które można wymienić",
+    "Nie awansujemy 2 ani 3 do 1 bez dowodu"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A"
+    },
+    {
+     "doc": "loom/README.md",
+     "date": "2026-09-25",
+     "section": "Decisions"
+    }
+   ]
+  },
+  {
+   "id": "p.learning_track",
+   "statement": {
+    "en": "The system learns through events -> pattern -> candidate -> evaluation -> promotion; it never rewrites itself",
+    "pl": "System uczy się przez tor zdarzenia → wzorzec → kandydat → ewaluacja → promocja; nie przepisuje się magicznie"
+   },
+   "phrasings": [
+    "System uczy się, ale nie „magicznie sam się przepisuje”",
+    "events/logs → outcomes → mined pattern → candidate rule/template/policy/test → evaluation → promotion"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "protects": [
+    "p.value.transparency"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.H, §4.10"
+    }
+   ]
+  },
+  {
+   "id": "p.honest_extensibility",
+   "statement": {
+    "en": "A new value in existing semantics is data; a new backend is an adapter; new semantics is schema evolution — minimise the third, never pretend it disappears",
+    "pl": "Nowa wartość w istniejącej semantyce to dane; nowy backend to adapter; nowa semantyka to ewolucja schematu — minimalizujemy trzecią kategorię"
+   },
+   "phrasings": [
+    "nowa wartość w istniejącej semantyce → data-only",
+    "Celem jest zminimalizowanie trzeciej kategorii",
+    "Czy to nowa wartość danych?"
+   ],
+   "level": "strategy",
+   "form": "meta",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.65,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.E, §9"
+    }
+   ]
+  },
+  {
+   "id": "p.user_override_wins",
+   "statement": {
+    "en": "An explicit user override always wins unless it breaks a hard safety invariant",
+    "pl": "Jawny override użytkownika zawsze wygrywa, o ile nie łamie twardego invariantu bezpieczeństwa"
+   },
+   "phrasings": [
+    "explicit override usera zawsze wygrywa",
+    "Możliwy explicit override usera zawsze wygrywa, o ile nie łamie twardego safety/invariant contract"
+   ],
+   "level": "strategy",
+   "form": "conflict_resolution",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.6"
+    }
+   ]
+  },
+  {
+   "id": "p.later_explicit_decision_wins",
+   "statement": {
+    "en": "Contradictions are resolved by the later explicit decision, without deleting history",
+    "pl": "Sprzeczności rozstrzyga późniejsza jawna decyzja, bez kasowania historii"
+   },
+   "phrasings": [
+    "contradiction/supersession resolution bez kasowania historii"
+   ],
+   "level": "strategy",
+   "form": "conflict_resolution",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.9 step 9"
+    }
+   ]
+  },
+  {
+   "id": "p.owner_sources_over_general_knowledge",
+   "statement": {
+    "en": "General model knowledge never outranks the owner's own sources",
+    "pl": "Wiedza ogólna modelu nigdy nie wygrywa z własnymi źródłami właściciela"
+   },
+   "phrasings": [
+    "general model knowledge marked as its own evidence source, below archive evidence"
+   ],
+   "level": "epistemic",
+   "form": "conflict_resolution",
+   "protects": [
+    "p.value.truth",
+    "p.value.autonomy"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R7"
+    },
+    {
+     "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+     "date": "2026-09-26",
+     "section": "§2.3"
+    }
+   ]
+  },
+  {
+   "id": "p.kod_ne_dane",
+   "statement": {
+    "en": "Code is not data: configuration, model lists, presets, lexicons and policies live in data files; data lives apart from code",
+    "pl": "Kod ≠ dane: konfiguracja, listy modeli, presety, leksykony i polityki są w plikach danych; dane żyją osobno od kodu"
+   },
+   "phrasings": [
+    "konfiguracja i wszystkie dane jak listy modeli – w zewnętrznych plikach",
+    "KOD ≠ DANE",
+    "Kod ≠ dane",
+    "Danymi są",
+    "presets-as-data"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "project_kinds": [
+     "software_app"
+    ]
+   },
+   "protects": [
+    "p.value.autonomy",
+    "p.value.minimal_arbitrariness"
+   ],
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.85,
+   "predicts": [
+    {
+     "situation": "a hard-coded path, list or policy is found in code",
+     "solution": "move it to a data file read at runtime"
+    }
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'Zmiana architektury'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'Nowa zasada KOD ≠ DANE'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Architecture: KOD ≠ DANE"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.B"
+    }
+   ],
+   "checks": [
+    "chk.literal_policy_table"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.literal_policy_table"
+    ]
+   }
+  },
+  {
+   "id": "p.not_everything_yaml",
+   "statement": {
+    "en": "Data never replaces program semantics: contracts, invariants, validation and algorithms stay in code",
+    "pl": "Dane nie zastępują semantyki programu: kontrakty, invarianty, walidacja i algorytmy zostają w kodzie"
+   },
+   "phrasings": [
+    "ale nie „wszystko YAML”",
+    "Dane nie mogą zastępować semantyki programu",
+    "W kodzie zostają"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "derived_from": [
+    "p.decision_classes"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.B"
+    }
+   ]
+  },
+  {
+   "id": "p.defer_decisions",
+   "statement": {
+    "en": "Do not decide until forced: a decision closes only through a contract, a test, a cost or a platform constraint",
+    "pl": "Nie podejmujemy decyzji, jeśli nie musimy: decyzja zamyka się dopiero przez kontrakt, test, koszt lub ograniczenie platformy"
+   },
+   "phrasings": [
+    "Nie podejmujemy decyzji, jeśli nie musimy",
+    "Zamykamy je dopiero przez constraint albo benchmark",
+    "odraczanie niepotrzebnych decyzji"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.optionality"
+   ],
+   "derived_from": [
+    "p.keep_alternatives"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.A, §10, §17"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Action/design strategies"
+    }
+   ]
+  },
+  {
+   "id": "p.serialization_not_architecture",
+   "statement": {
+    "en": "Serialization is not architecture: a typed IR / schema registry with swappable codecs on top",
+    "pl": "Serializacja to nie architektura: typed IR / schema registry, a nad nim wymienne kodeki"
+   },
+   "phrasings": [
+    "Serialization is not architecture",
+    "Zmiana serializacji nie może zmieniać semantyki",
+    "typed declarative IR / schema registry"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "protects": [
+    "p.value.optionality"
+   ],
+   "confidence": 0.65,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.C, §6"
+    }
+   ]
+  },
+  {
+   "id": "p.capability_not_enum",
+   "statement": {
+    "en": "Capability-based, not enum-based: code asks can(resource, capability, constraints), never if provider == X",
+    "pl": "Capability-based, nie enum-based: kod pyta can(resource, capability, constraints), a nie if provider == X"
+   },
+   "phrasings": [
+    "Implementuję pełną abstrakcję providerów",
+    "Capability-based, nie enum-based",
+    "can(resource, capability, constraints)",
+    "a nie: if provider == X"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.8,
+   "predicts": [
+    {
+     "situation": "a new model, media type or platform must be supported",
+     "solution": "a manifest + adapter behind the capability registry"
+    }
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 'no placeholders ... abstrakcję providerów'",
+     "date": "2026-02-06"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.D"
+    }
+   ],
+   "checks": [
+    "chk.enum_dispatch"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.enum_dispatch"
+    ]
+   }
+  },
+  {
+   "id": "p.raw_immutable",
+   "statement": {
+    "en": "Raw source is immutable: every import keeps bytes/hash, source id, parser/version and the transformation chain; derived state is rebuildable",
+    "pl": "Surowe źródło jest niezmienne: import zachowuje bajty/hash, ID źródła, parser/wersję i łańcuch transformacji; stan pochodny można przebudować"
+   },
+   "phrasings": [
+    "Raw source is immutable",
+    "raw source zostaje",
+    "Derived state można przebudować; źródła nie",
+    "zachowanie immutable originals"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.information_preservation",
+    "p.value.truth"
+   ],
+   "derived_from": [
+    "p.provenance"
+   ],
+   "confidence": 0.85,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.F, §13"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§4 Action/design strategies"
+    }
+   ]
+  },
+  {
+   "id": "p.resumable_auditable",
+   "statement": {
+    "en": "Everything significant is resumable and auditable: id, status, input/output hash, provenance, checkpoint, retries, event log",
+    "pl": "Wszystko istotne jest wznawialne i audytowalne: ID, status, input/output hash, provenance, checkpoint, retry, log zdarzeń"
+   },
+   "phrasings": [
+    "Wszystko istotne jest resumable i auditable",
+    "checkpoint / retry / rollback / resume",
+    "resumable task log"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.transparency"
+   ],
+   "derived_from": [
+    "p.provenance"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§2.G, §11"
+    }
+   ]
+  },
+  {
+   "id": "p.presets_are_data",
+   "statement": {
+    "en": "A preset is information, not code; agent roles are policy bundles, not classes",
+    "pl": "Preset = informacja, nie kod; role agentów to pakiety polityk, nie klasy"
+   },
+   "phrasings": [
+    "System prompt presets",
+    "preset = informacja, nie kod",
+    "role/preset jako dane",
+    "role/policy bundles, nie klasy zaszyte w kodzie"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "facets": [
+     "agent"
+    ]
+   },
+   "derived_from": [
+    "p.kod_ne_dane"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'System prompt edytowalny z kilkoma presetami'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.7, §11"
+    }
+   ],
+   "value_constraints": {
+    "roles": {
+     "defined_in": "data"
+    }
+   }
+  },
+  {
+   "id": "p.local_first",
+   "statement": {
+    "en": "Local-first with graceful degradation: the app works offline and optional features switch off without failing",
+    "pl": "Local-first i łagodna degradacja: aplikacja działa offline, funkcje opcjonalne wyłączają się bez awarii"
+   },
+   "phrasings": [
+    "lokalne, edytowalne, z pełną kontrolą",
+    "local-first / graceful degradation",
+    "degrade gracefully",
+    "gracefully degrades"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Error Handling"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ],
+   "value_constraints": {
+    "storage": {
+     "require_implies": [
+      "offline_capable"
+     ]
+    },
+    "sync": {
+     "require_optional": true
+    }
+   }
+  },
+  {
+   "id": "p.zero_knowledge",
+   "statement": {
+    "en": "Data encrypted so that the operator cannot read it; the owner keeps full local control",
+    "pl": "Dane szyfrowane bez możliwości odtworzenia przez operatora; pełna kontrola lokalna"
+   },
+   "phrasings": [
+    "Dane szyfrowane na serwerze bez możliwości odtworzenia przez operatora",
+    "zero-knowledge storage/sync option"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 8 'architektura konkurencyjna'",
+     "date": "2026-02-02"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ]
+  },
+  {
+   "id": "p.capability_honesty",
+   "statement": {
+    "en": "When a capability is missing the result is marked unverified at a lower evidence class, never a fabricated metric",
+    "pl": "Brak możliwości ⇒ wynik niezweryfikowany na niższym poziomie dowodu, nigdy fałszywa metryka"
+   },
+   "phrasings": [
+    "brak możliwości ⇒ „niezweryfikowane”, nie fałszywa metryka",
+    "Uczciwa degradacja"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.honesty"
+   ],
+   "derived_from": [
+    "p.local_first",
+    "p.explicit_uncertainty"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "embeddings.py verdict; §6"
+    }
+   ]
+  },
+  {
+   "id": "p.no_telemetry",
+   "statement": {
+    "en": "No telemetry by default",
+    "pl": "Brak telemetrii jako domyślne ustawienie"
+   },
+   "phrasings": [
+    "No telemetry, no analytics, no remote tracking of any kind",
+    "brak telemetrii jako default"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "protects": [
+    "p.value.autonomy"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Security Notes"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ],
+   "checks": [
+    "chk.telemetry_call"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.telemetry_call"
+    ]
+   }
+  },
+  {
+   "id": "p.edit_is_branch",
+   "statement": {
+    "en": "An edit creates a branch; the old version is never lost",
+    "pl": "Edycja tworzy gałąź, stara wersja nie ginie"
+   },
+   "phrasings": [
+    "Branching conversations (edycja = nowa wersja)",
+    "edit → branch, stara wersja nie ginie",
+    "edit a message → old version preserved, new branch created"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.85,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 1 'Kluczowe decyzje'",
+     "date": "2026-01-21"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Project Overview"
+    },
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§12"
+    }
+   ]
+  },
+  {
+   "id": "p.errors_are_values",
+   "statement": {
+    "en": "No silent 'except: pass'; errors are values and are logged at least at debug level",
+    "pl": "Żadnego cichego 'except: pass'; błędy to wartości, logujemy co najmniej na poziomie debug"
+   },
+   "phrasings": [
+    "Problem - crash bez komunikatu",
+    "No silent `except: pass`",
+    "log.debug(..., exc_info=True)",
+    "Errors are values"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.transparency"
+   ],
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 3 'crash bez komunikatu'",
+     "date": "2026-01-23"
+    },
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "Error Handling"
+    },
+    {
+     "doc": "loom/README.md",
+     "date": "2026-09-25",
+     "section": "Decisions"
+    }
+   ],
+   "checks": [
+    "chk.silent_except"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.silent_except"
+    ]
+   }
+  },
+  {
+   "id": "p.atomic_writes",
+   "statement": {
+    "en": "JSON writes are atomic: write .tmp, then rename",
+    "pl": "Zapisy JSON są atomowe: .tmp, potem rename"
+   },
+   "phrasings": [
+    "All JSON writes are atomic",
+    "atomic write (`.tmp` → rename)"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "CLAUDE.md",
+     "date": "2026-02-19",
+     "section": "File Persistence"
+    }
+   ],
+   "checks": [
+    "chk.nonatomic_json_write"
+   ],
+   "value_constraints": {
+    "forbid_checks": [
+     "chk.nonatomic_json_write"
+    ]
+   }
+  },
+  {
+   "id": "p.abandoned_not_unimportant",
+   "statement": {
+    "en": "Abandoned is not unimportant: every idea, fork and decision keeps its chronology; the graph shows the path through states",
+    "pl": "Porzucone ≠ nieważne: każda idea, fork i decyzja ma chronologię, a graf pokazuje drogę po stanach"
+   },
+   "phrasings": [
+    "porzucone ≠ nieważne",
+    "każda idea/fork/decyzja ma chronologię",
+    "graf ma pokazywać nie tylko stan końcowy, ale drogę po stanach"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "derived_from": [
+    "p.edit_is_branch"
+   ],
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§13, §4.9"
+    }
+   ]
+  },
+  {
+   "id": "p.no_speculative_generality",
+   "statement": {
+    "en": "No speculative generality: abstractions come from vertical tests, not in advance",
+    "pl": "Żadnej spekulatywnej ogólności: abstrakcje powstają przez pionowe testy, nie na zapas"
+   },
+   "phrasings": [
+    "speculative generality",
+    "nie produkujemy setek martwych abstrakcji bez testu użycia",
+    "Najpierw pionowy szkielet"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "derived_from": [
+    "p.avoid_overgeneralisation"
+   ],
+   "confidence": 0.8,
+   "conflicts_with": [
+    "p.data_is_variety"
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§8, §17"
+    }
+   ]
+  },
+  {
+   "id": "p.one_system",
+   "statement": {
+    "en": "One system: Loom as kernel/SDK, ChatADHD as workbench; former projects are capability packs, workflows, adapters or views",
+    "pl": "Jeden system: Loom jako rdzeń/SDK, ChatADHD jako workbench; dawne projekty to capability packs, workflowy, adaptery albo widoki"
+   },
+   "phrasings": [
+    "Budujemy jeden system",
+    "capability packs, workflows, adapterami albo widokami",
+    "Są manifestacjami jednego głębszego procesu"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "derived_from": [
+    "p.data_is_variety"
+   ],
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§0, §5"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§2"
+    }
+   ]
+  },
+  {
+   "id": "p.renderer_is_adapter",
+   "statement": {
+    "en": "The UI has its own IR; a renderer is an adapter, not the system's ontology",
+    "pl": "UI ma własny IR; renderer jest adapterem, nie ontologią systemu"
+   },
+   "phrasings": [
+    "Renderer jest adapterem",
+    "Compose Multiplatform może być pierwszym, nie ontologią systemu"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "derived_from": [
+    "p.decision_classes"
+   ],
+   "confidence": 0.65,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.11"
+    },
+    {
+     "doc": "history/chatadhd_v0.9.0/gui/panel_system.py",
+     "date": "2026-04-17",
+     "section": "panels and layouts as data"
+    }
+   ]
+  },
+  {
+   "id": "p.code_is_knowledge",
+   "statement": {
+    "en": "Code is a source of knowledge too; the system points out missing artefacts",
+    "pl": "Kod też jest źródłem wiedzy; system wskazuje brakujące artefakty"
+   },
+   "phrasings": [
+    "kod też jest źródłem wiedzy",
+    "system ma wskazywać brakujące artefakty"
+   ],
+   "level": "epistemic",
+   "form": "heuristic",
+   "confidence": 0.7,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§13"
+    }
+   ]
+  },
+  {
+   "id": "p.memory_is_everything",
+   "statement": {
+    "en": "All data is memory: conversation trees, attachments, everything, with an organising layer on top",
+    "pl": "Wszystkie dane = pamięć: drzewa rozmów, załączniki, wszystko, z nakładką porządkującą"
+   },
+   "phrasings": [
+    "wszystkie dane = memory",
+    "Do tego jest nakładka porządkująca"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "protects": [
+    "p.value.information_preservation"
+   ],
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 7 'pamięć = wszystko'",
+     "date": "2026-01-30"
+    }
+   ]
+  },
+  {
+   "id": "p.context_by_goal",
+   "statement": {
+    "en": "Context is selected for the goal of each prompt; selection is the primary saving and caching only helps the stable prefix",
+    "pl": "Kontekst dobierany do celu prompta; selekcja jest główną oszczędnością, a cache pomaga tylko stabilnemu prefiksowi"
+   },
+   "phrasings": [
+    "Nie „wstrzykujemy pamięci do promptu”, tylko budujemy ContextSet",
+    "Intelligent context selection and prompt caching are complementary"
+   ],
+   "level": "strategy",
+   "form": "heuristic",
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+     "date": "2026-09-16",
+     "section": "§4.4"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R12"
+    },
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§1"
+    }
+   ]
+  },
+  {
+   "id": "p.generator_not_history",
+   "statement": {
+    "en": "Learn the generator of decisions, not only their history",
+    "pl": "Ucz się generatora decyzji, nie tylko historii"
+   },
+   "phrasings": [
+    "Znacznie cenniejszym wynikiem jest znalezienie generatora decyzji"
+   ],
+   "level": "epistemic",
+   "form": "meta",
+   "confidence": 0.5,
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "§2, §8"
+    },
+    {
+     "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+     "date": "2026-09-26",
+     "section": "R13"
+    }
+   ]
+  },
+  {
+   "id": "p.modular_code",
+   "statement": {
+    "en": "Code is split into modules (engine, gui, core) rather than one file",
+    "pl": "Kod podzielony na moduły (engine, gui, core), a nie jeden plik"
+   },
+   "phrasings": [
+    "v0.4.0-dev Modular Refactor",
+    "Modular refactor"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "confidence": 0.6,
+   "supersedes": [
+    "p.pref.single_file"
+   ],
+   "validation_status": "candidate",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 6 'Modular Refactor'",
+     "date": "2026-01-29"
+    }
+   ]
+  },
+  {
+   "id": "p.pref.single_file",
+   "statement": {
+    "en": "Pydroid: one code file",
+    "pl": "Pydroid: jeden plik z kodem"
+   },
+   "phrasings": [
+    "pydroid tylko 1 plik",
+    "Chodziło mi o jeden plik z kodem"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "scope": {
+    "products": [
+     "codebase"
+    ],
+    "conditions": [
+     "runs in Pydroid"
+    ]
+   },
+   "confidence": 0.4,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 2 'Request'",
+     "date": "2026-01-23"
+    }
+   ]
+  },
+  {
+   "id": "p.pref.ascii_icons",
+   "statement": {
+    "en": "No emoji in the UI; ASCII icons ([+], R, Cfg) render everywhere (Pydroid)",
+    "pl": "Bez emoji w UI; ikony ASCII ([+], R, Cfg) renderują się wszędzie (Pydroid)"
+   },
+   "phrasings": [
+    "Ikony emoji (↻, ⚙) nie renderują się (pokazują □)",
+    "Bez emoji",
+    "ASCII ikony zamiast emoji"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "products": [
+     "codebase"
+    ]
+   },
+   "confidence": 0.8,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 7 'Błędy'",
+     "date": "2026-01-30"
+    },
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 14",
+     "date": "2026-02-06"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "Status funkcji: regresja emoji"
+    }
+   ],
+   "checks": [
+    "chk.emoji_in_ui"
+   ]
+  },
+  {
+   "id": "p.pref.no_placeholders",
+   "statement": {
+    "en": "No placeholders or stubs in delivered code",
+    "pl": "Żadnych placeholderów w dostarczonym kodzie"
+   },
+   "phrasings": [
+    "Żadnych placeholderów",
+    "bez placeholderów"
+   ],
+   "level": "strategy",
+   "form": "invariant",
+   "scope": {
+    "products": [
+     "codebase",
+     "deliverable"
+    ]
+   },
+   "confidence": 0.75,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 20 'Request - no placeholders'",
+     "date": "2026-02-06"
+    }
+   ],
+   "checks": [
+    "chk.placeholder"
+   ]
+  },
+  {
+   "id": "p.pref.flat_zip",
+   "statement": {
+    "en": "Deliver one flat zip",
+    "pl": "Dostarczaj jeden płaski zip"
+   },
+   "phrasings": [
+    "FLAT ZIP",
+    "jeden płaski zip"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "scope": {
+    "products": [
+     "deliverable"
+    ]
+   },
+   "confidence": 0.6,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 7 'v0.4.2-dev - FLAT ZIP'",
+     "date": "2026-01-30"
+    }
+   ]
+  },
+  {
+   "id": "p.pref.sortable_versions",
+   "statement": {
+    "en": "Versions are sortable x.yy.zz",
+    "pl": "Wersje sortowalne x.yy.zz"
+   },
+   "phrasings": [
+    "0.06.00",
+    "wersje sortowalne x.yy.zz"
+   ],
+   "level": "strategy",
+   "form": "default",
+   "scope": {
+    "products": [
+     "deliverable"
+    ]
+   },
+   "confidence": 0.55,
+   "validation_status": "candidate",
+   "owner": "user",
+   "origin": "archive",
+   "sources": [
+    {
+     "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+     "section": "Sesja 19 'v0.06.00'",
+     "date": "2026-02-06"
+    },
+    {
+     "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+     "date": "2026-09-26",
+     "section": "§3"
+    }
+   ]
+  }
+ ]
+}

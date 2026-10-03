@@ -1,0 +1,19 @@
+{
+  "schema": "loom.research.retrieval_exploration_policy/1",
+  "split": "dev",
+  "registered_relations": ["implies", "causes"],
+  "bm25": {"k1": 1.2, "primary_b": 0.75, "b_controls": [0.0, 1.0], "idf_scope": "only_this_query_eligible_source_prefix"},
+  "rrf_rank_constants": [10, 60],
+  "direction_order_bonus": 0.25,
+  "speaker_soft_bonuses": [0.5, 1.0],
+  "ranking_k": [1, 2, 3],
+  "query_variants": ["structured", "endpoints", "forward", "typed", "question", "denial", "reverse", "aliases"],
+  "primary_embedding_variants": ["forward", "typed", "question", "denial", "reverse"],
+  "multiquery_variants": ["forward", "denial", "reverse"],
+  "candidate_unit": "full_unchanged_source_turn",
+  "candidate_eligibility": "reuse_frozen_primary_query_prefix_known_at_lte_as_of",
+  "no_hard_source_actor_filter": true,
+  "judgment_prediction": null,
+  "no_graph_promotion": true,
+  "validation_access": "sealed_not_authorized_for_this_exploration"
+}

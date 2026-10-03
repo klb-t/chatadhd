@@ -1,0 +1,215 @@
+{
+  "verified_at_utc": "2026-10-02T17:18:46.967071+00:00",
+  "initial_tracked_source_tree": "5d07ccbc9928de704c69e2e874be23d4c22e8c97",
+  "post_snapshot_updates": [
+    "loom/tools/structure/w3_directed_commitment_v1/experiment.py",
+    "loom/tools/structure/w3_directed_commitment_v1/test_experiment.py",
+    "docs/contracts/model_profile.schema.json",
+    "docs/archive/public-history-map.json"
+  ],
+  "source_manifest": "source-final.json",
+  "source_manifest_sha256": "5147f9f811dc69eb8b0d46e333ee89c3493c3439db1d5804216abbd30b76b2e0",
+  "source_file_count": 898,
+  "native_source_checkpoint": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+  "native_source_unchanged": true,
+  "native_build": {
+    "type": "Debug",
+    "debug_flags": "-O0 -g0",
+    "warnings_as_errors": true,
+    "bundled_sqlite": true,
+    "shared_library": true,
+    "cli": true,
+    "server": true,
+    "parallel_jobs": 4,
+    "result": "passed"
+  },
+  "binary_hashes": {
+    "libloom.so.0.1.0": "8f7a60d473676151e1c39af0ca6d29a26de2cc083bc86b75ce96af3e52f5e6c4",
+    "loom_tests": "f0d5bd2a6a9246481db323513dcf71b171e17df704b044563de12b00143baead",
+    "loom_compat_tool": "77cc4f98785d2b0ad6e32f1a1166485d758f6dc768ac6a1c573ad1613999b4f8",
+    "loom_candidate_graph_native_tool": "f9b8e5c4af896b3ae8a2e559a2315653ee1e151c59c7d8e93c142be807bdc743",
+    "server/loom-server": "c891c8efb72ab29d26cf63b48cef32468b376b45212b0eb3873221bd1db6dcf3",
+    "cli/loom": "bde3ed695be1be71d493beb59a8b4a99896750c3196aa6496163ff31099b869f"
+  },
+  "git_object_boundary": {
+    "original_commit": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+    "original_object_absent": true,
+    "resolved_commit": "e8bbae43366d1ae4cf7f79341c8d27464f44a47a",
+    "tree": "b122b30314009a4b7d793a2c634e5b65d6835397",
+    "alternate": "reachable-only clone of sanitized refs"
+  },
+  "ctest": {
+    "command": "env -u PYTHONPATH -u TMPDIR ctest --preset dev",
+    "passed": 107,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 77.58,
+    "entries": {
+      "native_source_file_suites": 81,
+      "compatibility": 16,
+      "research": 6,
+      "server": 2
+    },
+    "log": "sanitized-ctest.log",
+    "full_output": "sanitized-ctest-full-output.log",
+    "junit": "sanitized-ctest.xml"
+  },
+  "research_structure": {
+    "tests": 859,
+    "seconds": 34.967,
+    "new_source_provenance_regressions": 6
+  },
+  "web": {
+    "production_build": "passed",
+    "transport": "passed",
+    "retrieval_plan_state": "passed",
+    "workspace_state_groups": 8,
+    "native_workspace_scenarios": 10,
+    "chat_context_local_fake_provider_calls": 5,
+    "generic_browser_native_steps": 16,
+    "remote_model_calls": 0,
+    "dependency_install": "reused existing lockfile-compatible node_modules read-only; no npm ci executed"
+  },
+  "demos": {
+    "source_tree": "5d07ccbc9928de704c69e2e874be23d4c22e8c97",
+    "fixtures": "authored synthetic DEV only",
+    "llm": "off",
+    "remote_model_calls": 0,
+    "demos": {
+      "knowledge": {
+        "command": [
+          "/tmp/chatadhd-curated-verification-source/loom/build/dev/cli/loom",
+          "--data-dir",
+          "/workspace/scratch/7365c3378a5c/verification/demos/knowledge-data",
+          "knowledge",
+          "run",
+          "--source",
+          "/tmp/chatadhd-curated-verification-source/loom/tests/fixtures/eval/synthetic_dev/chatgpt_export.zip",
+          "--source",
+          "/tmp/chatadhd-curated-verification-source/loom/tests/fixtures/eval/synthetic_dev/claude_export.zip",
+          "--no-priors",
+          "--llm",
+          "off"
+        ],
+        "returncode": 0,
+        "seconds": 3.2106,
+        "completed_run": "kr_6ae4d968158a1d2e",
+        "native_table_counts": {
+          "loom_blobs": 39,
+          "loom_sources": 19,
+          "loom_provenance": 116,
+          "loom_events": 21,
+          "loom_tasks": 7,
+          "loom_artifacts": 36,
+          "loom_relation_types": 20,
+          "loom_kb_meta": 1,
+          "loom_kb_runs": 1,
+          "loom_kb_observations": 140,
+          "loom_kb_entities": 77,
+          "loom_kb_aliases": 74,
+          "loom_kb_claims": 174,
+          "loom_kb_claim_support": 166,
+          "loom_kb_principles": 44,
+          "loom_kb_operators": 7,
+          "loom_kb_morphisms": 136,
+          "loom_kb_instances": 17,
+          "loom_kb_slot_values": 53,
+          "loom_kb_areas": 2,
+          "loom_kb_decisions": 8,
+          "loom_kb_forks": 3,
+          "loom_kb_status_records": 26,
+          "loom_kb_predictions": 10,
+          "loom_kb_models": 2,
+          "loom_kb_products": 36,
+          "loom_kb_judgements": 0,
+          "loom_kb_candidates": 0,
+          "loom_kb_policy_versions": 0,
+          "loom_kb_llm_cache": 0,
+          "loom_cat_units": 68,
+          "loom_cat_profiles": 1,
+          "loom_cat_scores": 68,
+          "loom_cat_overrides": 0,
+          "loom_cat_decisions": 68,
+          "loom_cat_imports": 19,
+          "loom_cat_sources": 2,
+          "loom_cat_checkpoint": 4,
+          "loom_cat_links": 56
+        },
+        "completed_status_in_database": "done"
+      },
+      "archive": {
+        "command": [
+          "/tmp/chatadhd-curated-verification-source/loom/build/dev/cli/loom",
+          "--data-dir",
+          "/workspace/scratch/7365c3378a5c/verification/demos/archive-data",
+          "archive",
+          "run",
+          "--source",
+          "/tmp/chatadhd-curated-verification-source/loom/tests/fixtures/eval/synthetic_dev/chatgpt_export.zip",
+          "--source",
+          "/tmp/chatadhd-curated-verification-source/loom/tests/fixtures/eval/synthetic_dev/claude_export.zip",
+          "--out",
+          "/workspace/scratch/7365c3378a5c/verification/demos/archive-report",
+          "--seed",
+          "NoteFlow",
+          "--llm",
+          "off"
+        ],
+        "returncode": 0,
+        "seconds": 0.518,
+        "completed_run": "t_fcd4b5d7bd99",
+        "required_files": {
+          "MASTER.md": 15364,
+          "source_map.csv": 12280,
+          "timeline.json": 10247,
+          "items.jsonl": 5341,
+          "gap_report.md": 3056
+        },
+        "timeline_json_valid": true,
+        "item_rows": 13,
+        "source_map_rows": 67
+      }
+    }
+  },
+  "environment": {
+    "python": "Python 3.12.14",
+    "node": "v24.19.0",
+    "cmake": "cmake version 4.4.3",
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
+  },
+  "first_attempts": {
+    "git_archive_no_git_metadata": {
+      "passed": 106,
+      "failed": 1,
+      "error": "W3 historical git show requires Git metadata, absent from source tar",
+      "log": "clean-ctest.log"
+    },
+    "sanitized_mirror_unreachable_original_objects": {
+      "result": "cancelled before certification",
+      "log": "sanitized-unpruned-ctest-cancelled.log",
+      "correction": "reachable-refs-only git clone --no-local; original commit proved absent"
+    },
+    "initial_worktree_build": "intentionally cancelled in favor of tracked-only snapshot closure",
+    "initial_configure": "missing symlink target corrected without source changes; first log retained"
+  },
+  "not_exercised": [
+    "Release build",
+    "sanitizers",
+    "Android packaging or device",
+    "real external model providers",
+    "semantic model quality"
+  ],
+  "paid_model_calls": 0,
+  "github_actions_runs": 0,
+  "native_source_files_compared": 301,
+  "knowledge_browser_demo": {
+    "run": "kr_6ae4d968158a1d2e",
+    "nodes": 60,
+    "visible_claims": 11,
+    "external_requests": [],
+    "page_errors": [],
+    "fixture": "synthetic DEV chatgpt_export.zip + claude_export.zip",
+    "llm": "off"
+  },
+  "knowledge_screenshot": "docs/images/knowledge-workbench.png"
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "loom.research.graph_local_release/1",
+  "frozen_at": "2026-09-30T02:49:11.332379+00:00",
+  "split_measured": "dev",
+  "validation_accessed": false,
+  "entrypoints": "DEVonly; methods may be invoked by separate released wrapper frozen by root before validation",
+  "queries": 96,
+  "eligible_candidate_bindings": 252,
+  "future_candidate_leaks": 0,
+  "unique_vector_strings": 146,
+  "truncated_strings": 0,
+  "source_judgment_available": false,
+  "primary_thresholds": [
+    0.25,
+    0.5,
+    0.75,
+    0.9
+  ],
+  "secondary_k": [
+    1,
+    3,
+    5
+  ],
+  "new_mechanism_tests": {
+    "passed": 13,
+    "total": 13
+  },
+  "unchanged_adapter_tests": {
+    "passed": 20,
+    "total": 20
+  },
+  "exact_primary_score_reproduction": {
+    "query_rows": 96,
+    "candidate_rows": 252
+  },
+  "first_results_unchanged": true,
+  "scorer_and_method_files_sha256": {
+    "embed_queries.py": "50c97ebc6760e1aa0183566f3b9e21f6c5c2d5c9411a2cf9b83690d55ba13a8e",
+    "evaluate_dev.py": "6739e931e2a2f5c078dee56ad1bb07d52670b4143314bfd0ba83774cee714ae3",
+    "local_baselines.py": "d678bba901229d76047f036efb57337b09f7a34e9a339b5047ee4c729203b6e6",
+    "secondary_set_union.py": "e541f765e545da56e1f23d5dab88f3bf816072697be7d47da5525c14a5ea4928",
+    "test_evaluate_dev.py": "ad217a5e0bc9b6fdf04a3c92110bf5bcb7fe479ef94aed615dc54d94d3c0923b",
+    "test_local_baselines.py": "fcc7248bb473307a59c34794c4b339c22c057f30383498c089413554ae5276d8"
+  },
+  "instrument_protocol_sha256": "adf46f846dcc157d2924fa991134125184b33b2c41d6df70e522f69b1c9dfa6d",
+  "instrument_model_manifest_sha256": "0c6d998b882dfb0773f165efe1d8339d63a8888b5d9c1f3fd4390382a0b6856d",
+  "policy_sha256": "3f04e3a555f741bd3327ab1b97c208a9857d6c0d8770ab067e15becf7b964a67",
+  "primary_protocol_sha256": "f7377bcc23f56583bbb152bccef4a77b9af108c0ede5461925dc67c9d82a2c52",
+  "secondary_protocol_sha256": "4fd0f3ba4b329b4d97280505339f2eb4499b80cd8b4cf108b7a91792088a9a0a"
+}

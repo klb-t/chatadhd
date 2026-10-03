@@ -1,0 +1,218 @@
+{
+ "schema": "loom.kb.facet/1",
+ "id": "agent",
+ "version": 1,
+ "title": {
+  "en": "Agent system",
+  "pl": "System agentowy"
+ },
+ "description": "An autonomous or semi-autonomous executor: models in roles (roles are data), tools, environments, memory, actions with checkpoints, approval gates. MEGA MASTER §1.3 maps it onto Loom's Task/Action/Execution layer.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§1.3, §4.7, §11"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.5"
+  }
+ ],
+ "applies_to": [
+  "software_app"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "agent"
+   },
+   {
+    "op": "claim_count",
+    "rel": "has_role",
+    "min": 1
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.agent_system",
+    "min": 2
+   }
+  ],
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "agent_role",
+   "role": "actor",
+   "labels": {
+    "en": "Agent role / preset",
+    "pl": "Rola agenta / preset"
+   },
+   "entity_kind": "role",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_role",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "action"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "role"
+    ]
+   },
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "has_role"
+    },
+    {
+     "kind": "lexicon",
+     "class": "role",
+     "scope": "subject_sentences"
+    }
+   ],
+   "rules": [
+    "r.presets_as_data"
+   ]
+  },
+  {
+   "id": "agent_tool",
+   "role": "resource",
+   "labels": {
+    "en": "Tool (browser, terminal, GUI, API)",
+    "pl": "Narzędzie agenta"
+   },
+   "entity_kind": "tool",
+   "card": "many",
+   "relation": "uses_tool",
+   "anchors": {
+    "lexicon": [
+     "tool"
+    ]
+   }
+  },
+  {
+   "id": "environment",
+   "role": "resource",
+   "labels": {
+    "en": "Execution environment",
+    "pl": "Środowisko wykonania"
+   },
+   "entity_kind": "platform",
+   "card": "many",
+   "relation": "runs_in",
+   "anchors": {
+    "lexicon": [
+     "environment"
+    ]
+   }
+  },
+  {
+   "id": "agent_memory",
+   "role": "resource",
+   "labels": {
+    "en": "Central memory",
+    "pl": "Pamięć centralna"
+   },
+   "entity_kind": "concept",
+   "card": "many",
+   "relation": "has_memory",
+   "anchors": {
+    "lexicon": [
+     "concept.memory"
+    ]
+   }
+  },
+  {
+   "id": "action",
+   "role": "event",
+   "labels": {
+    "en": "Action",
+    "pl": "Akcja"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_action",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "module"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "action",
+      "step"
+     ],
+     "pl": [
+      "akcja",
+      "krok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "plan",
+   "role": "artifact",
+   "labels": {
+    "en": "Plan / checkpoint",
+    "pl": "Plan / punkt kontrolny"
+   },
+   "entity_kind": "plan",
+   "card": "many",
+   "relation": "has_plan",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "action"
+    }
+   ],
+   "anchors": {
+    "lexicon": [
+     "concept.resumability"
+    ]
+   },
+   "rules": [
+    "x.agent_on_task_engine"
+   ]
+  },
+  {
+   "id": "approval_gate",
+   "role": "check",
+   "labels": {
+    "en": "Approval gate / state verification",
+    "pl": "Bramka akceptacji / weryfikacja stanu"
+   },
+   "entity_kind": "gate",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "action"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "approval",
+      "verify"
+     ],
+     "pl": [
+      "akceptacja",
+      "weryfikacja"
+     ]
+    }
+   }
+  }
+ ],
+ "constraints": [],
+ "rules": []
+}

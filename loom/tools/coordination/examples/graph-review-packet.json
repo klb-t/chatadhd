@@ -1,0 +1,216 @@
+{
+  "schema": "loom.graph_packet/1",
+  "definitions": [],
+  "entities": [
+    {
+      "id": "e_test_a",
+      "kind": "concept",
+      "canonical_key": "lampa",
+      "label": "lampa",
+      "labels": {
+        "pl": "lampa"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "archive",
+      "confidence": 0.7,
+      "status": "active",
+      "attrs": {
+        "custom_type_detail": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "id": "e_test_b",
+      "kind": "concept",
+      "canonical_key": "żaba czeka",
+      "label": "żaba czeka",
+      "labels": {
+        "pl": "żaba czeka"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "archive",
+      "confidence": 0.7,
+      "status": "active",
+      "attrs": {
+        "custom_type_detail": [
+          1,
+          2
+        ]
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "cl_test",
+      "subject": "e_test_a",
+      "predicate": "implies",
+      "object": "e_test_b",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "individual-source",
+        "lang": "pl",
+        "extra": {
+          "attributed_to": "frog",
+          "content_truth": "unverified"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_test",
+              "locator": {
+                "source": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "member": "messages.json",
+                "json_pointer": "/0/text",
+                "byte_start": 30,
+                "byte_len": 37,
+                "time_start": null,
+                "time_end": null,
+                "line": 1
+              },
+              "quote": "Żaba: jeśli lampa zgaśnie, czekam.",
+              "extractor": "scripted.test@1",
+              "quality": 1
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "archive",
+        "confidence": 0.4,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [
+            "Czy to prawda?"
+          ],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": [
+          {
+            "object": "",
+            "value": "unknown",
+            "score": 0.1
+          }
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "observation": {
+        "id": "ob_test",
+        "unit": "un_test",
+        "kind": "utterance",
+        "text": "Żaba: jeśli lampa zgaśnie, czekam.",
+        "locator": {
+          "source": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "member": "messages.json",
+          "json_pointer": "/0/text",
+          "byte_start": 30,
+          "byte_len": 37,
+          "time_start": null,
+          "time_end": null,
+          "line": 1
+        },
+        "lang": "pl",
+        "date": "2026-09-30",
+        "ordinal": 0,
+        "artifact_type": "conversation",
+        "speaker": "frog",
+        "attrs": {}
+      },
+      "known_at": "2026-09-30T12:00:00Z",
+      "text_sha256": "aef1811154705ae5cb67c31a46580ce0d8d7a8cce5d845ff8da414cf75860165"
+    }
+  ],
+  "task": {
+    "operation": "critique_graph"
+  },
+  "provenance": {
+    "definitions": {},
+    "entities": {
+      "e_test_a": {
+        "known_at": null,
+        "origin": {
+          "kind": "recorded",
+          "actor": "import.test",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "95f6330b1f135eb545ffc2292c62bd6af5e568f8f5f9324979679a27eb512935"
+      },
+      "e_test_b": {
+        "known_at": null,
+        "origin": {
+          "kind": "recorded",
+          "actor": "import.test",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "1eecce32c56a76967de22ed1600e8b97ec3e37b7bd262600228cc00a133fb4bb"
+      }
+    },
+    "claims": {
+      "cl_test": {
+        "known_at": null,
+        "origin": {
+          "kind": "recorded",
+          "actor": "import.test",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "7cfb3c6671cabcb8744bb4e50fe2f795a0486eb9734d99b4abbed57c554d8c8c"
+      }
+    },
+    "sources": {
+      "ob_test": {
+        "known_at": "2026-09-30T12:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "import.test",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "e167a6a735f055200ac49e2196defc6d5b1421942b96189641887c204675d842"
+      }
+    }
+  },
+  "history": [],
+  "packet_id": "550552c712df8065d139c3ef509c98d78c1a603bddc73f00af6569d1ffb11cbc"
+}

@@ -1,0 +1,561 @@
+{
+  "experiment_id": "jev-structure-v1",
+  "manifest_hash": "c654843d137241d7b427d42c63f3db462810a541df892aa5d5bfd9ad7b8a8e72",
+  "confusion": {
+    "tp": 66,
+    "tn": 676,
+    "fp": 26,
+    "fn": 0
+  },
+  "constant_negative_accuracy": 0.9140625,
+  "balanced_accuracy": 0.9814814814814814,
+  "exact_vectors": 39,
+  "vector_count": 64,
+  "vector_comparisons": {
+    "paraphrase": {
+      "pair_count": 16,
+      "whole_vector_equal": 12,
+      "whole_vector_both_correct": 8
+    },
+    "domain_transfer": {
+      "pair_count": 16,
+      "whole_vector_equal": 14,
+      "whole_vector_both_correct": 7
+    },
+    "foil": {
+      "pair_count": 16,
+      "whole_vector_equal": 0,
+      "whole_vector_both_correct": 8
+    }
+  },
+  "high_confidence": {
+    "answered": 673,
+    "correct": 668,
+    "errors": [
+      {
+        "attempt_state": "completed",
+        "case_id": "j_24b2b364d4deae33",
+        "family_id": "causation_correlation",
+        "label": 0,
+        "language": "en",
+        "probability": 0.86,
+        "question": "q01",
+        "split": "development",
+        "variant": "base"
+      },
+      {
+        "attempt_state": "completed",
+        "case_id": "j_784c3d9aaf3b0fd7",
+        "family_id": "causation_correlation",
+        "label": 0,
+        "language": "pl",
+        "probability": 0.84,
+        "question": "q01",
+        "split": "development",
+        "variant": "paraphrase"
+      },
+      {
+        "attempt_state": "completed",
+        "case_id": "j_7c9d7d557a448e02",
+        "family_id": "causation_correlation",
+        "label": 0,
+        "language": "pl",
+        "probability": 0.86,
+        "question": "q01",
+        "split": "development",
+        "variant": "base"
+      },
+      {
+        "attempt_state": "completed",
+        "case_id": "j_85895bee1e89ff3a",
+        "family_id": "causation_correlation",
+        "label": 0,
+        "language": "pl",
+        "probability": 0.81,
+        "question": "q01",
+        "split": "development",
+        "variant": "domain_transfer"
+      },
+      {
+        "attempt_state": "completed",
+        "case_id": "j_e44d0c4b50516cf1",
+        "family_id": "causation_correlation",
+        "label": 0,
+        "language": "en",
+        "probability": 0.85,
+        "question": "q01",
+        "split": "development",
+        "variant": "paraphrase"
+      }
+    ]
+  },
+  "errors_by_question": {
+    "q01": 14,
+    "q07": 6,
+    "q11": 5,
+    "q03": 1
+  },
+  "errors_by_family": {
+    "universal_existential": 6,
+    "causation_correlation": 6,
+    "support_counterexample": 2,
+    "analogy_identity": 6,
+    "conditional_direction": 6
+  },
+  "input_tokens": 127171,
+  "output_tokens": 14080,
+  "request_seconds": {
+    "p50": 0.183089,
+    "p95_nearest_rank": 7.679959,
+    "max": 10.272925,
+    "sum": 137.94719800000001
+  },
+  "actual_run_duration_seconds": 150.731079,
+  "reported_cost_usd": "0.005341182",
+  "score": {
+    "overall": {
+      "accuracy_available": 0.9661458333333334,
+      "accuracy_planned": 0.9661458333333334,
+      "available": 768,
+      "brier_available": 0.029867447916666668,
+      "coverage": 1.0,
+      "f1_available": 0.8354430379746836,
+      "missing": 0,
+      "planned": 768,
+      "precision_available": 0.717391304347826,
+      "recall_available": 1.0,
+      "selective_coverage_planned": 0.8763020833333334,
+      "selective_error": 0.007429420505200594
+    },
+    "groups": {
+      "family_id": {
+        "analogy_identity": {
+          "accuracy_available": 0.9375,
+          "accuracy_planned": 0.9375,
+          "available": 96,
+          "brier_available": 0.037986458333333334,
+          "coverage": 1.0,
+          "f1_available": 0.7272727272727273,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 0.5714285714285714,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8541666666666666,
+          "selective_error": 0.0
+        },
+        "causation_correlation": {
+          "accuracy_available": 0.9375,
+          "accuracy_planned": 0.9375,
+          "available": 96,
+          "brier_available": 0.07063229166666667,
+          "coverage": 1.0,
+          "f1_available": 0.6666666666666666,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 0.5,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8125,
+          "selective_error": 0.0641025641025641
+        },
+        "conditional_direction": {
+          "accuracy_available": 0.9375,
+          "accuracy_planned": 0.9375,
+          "available": 96,
+          "brier_available": 0.03765729166666667,
+          "coverage": 1.0,
+          "f1_available": 0.7272727272727273,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 0.5714285714285714,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8645833333333334,
+          "selective_error": 0.0
+        },
+        "conjunction_disjunction": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 96,
+          "brier_available": 0.012131250000000001,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.9166666666666666,
+          "selective_error": 0.0
+        },
+        "inductive_generalization": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 96,
+          "brier_available": 0.012011458333333334,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.90625,
+          "selective_error": 0.0
+        },
+        "negation_scope": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 96,
+          "brier_available": 0.0053625,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.9895833333333334,
+          "selective_error": 0.0
+        },
+        "support_counterexample": {
+          "accuracy_available": 0.9791666666666666,
+          "accuracy_planned": 0.9791666666666666,
+          "available": 96,
+          "brier_available": 0.030830208333333334,
+          "coverage": 1.0,
+          "f1_available": 0.8888888888888888,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 0.8,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.84375,
+          "selective_error": 0.0
+        },
+        "universal_existential": {
+          "accuracy_available": 0.9375,
+          "accuracy_planned": 0.9375,
+          "available": 96,
+          "brier_available": 0.032328125,
+          "coverage": 1.0,
+          "f1_available": 0.7272727272727273,
+          "missing": 0,
+          "planned": 96,
+          "precision_available": 0.5714285714285714,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8229166666666666,
+          "selective_error": 0.0
+        }
+      },
+      "language": {
+        "en": {
+          "accuracy_available": 0.9713541666666666,
+          "accuracy_planned": 0.9713541666666666,
+          "available": 384,
+          "brier_available": 0.027340624999999997,
+          "coverage": 1.0,
+          "f1_available": 0.8571428571428571,
+          "missing": 0,
+          "planned": 384,
+          "precision_available": 0.75,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8880208333333334,
+          "selective_error": 0.005865102639296188
+        },
+        "pl": {
+          "accuracy_available": 0.9609375,
+          "accuracy_planned": 0.9609375,
+          "available": 384,
+          "brier_available": 0.032394270833333336,
+          "coverage": 1.0,
+          "f1_available": 0.8148148148148148,
+          "missing": 0,
+          "planned": 384,
+          "precision_available": 0.6875,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8645833333333334,
+          "selective_error": 0.009036144578313253
+        }
+      },
+      "question": {
+        "q01": {
+          "accuracy_available": 0.78125,
+          "accuracy_planned": 0.78125,
+          "available": 64,
+          "brier_available": 0.11916875,
+          "coverage": 1.0,
+          "f1_available": 0.46153846153846156,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 0.3,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.71875,
+          "selective_error": 0.10869565217391304
+        },
+        "q02": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.0272015625,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.796875,
+          "selective_error": 0.0
+        },
+        "q03": {
+          "accuracy_available": 0.984375,
+          "accuracy_planned": 0.984375,
+          "available": 64,
+          "brier_available": 0.0284375,
+          "coverage": 1.0,
+          "f1_available": 0.96,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 0.9230769230769231,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.78125,
+          "selective_error": 0.0
+        },
+        "q04": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.0088765625,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 1.0,
+          "selective_error": 0.0
+        },
+        "q05": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.0215859375,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.859375,
+          "selective_error": 0.0
+        },
+        "q06": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.0097140625,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.96875,
+          "selective_error": 0.0
+        },
+        "q07": {
+          "accuracy_available": 0.90625,
+          "accuracy_planned": 0.90625,
+          "available": 64,
+          "brier_available": 0.0761640625,
+          "coverage": 1.0,
+          "f1_available": 0.8235294117647058,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 0.7,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.546875,
+          "selective_error": 0.0
+        },
+        "q08": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.0027046875,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 1.0,
+          "selective_error": 0.0
+        },
+        "q09": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.0080265625,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.984375,
+          "selective_error": 0.0
+        },
+        "q10": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.0049703125,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.96875,
+          "selective_error": 0.0
+        },
+        "q11": {
+          "accuracy_available": 0.921875,
+          "accuracy_planned": 0.921875,
+          "available": 64,
+          "brier_available": 0.040434375,
+          "coverage": 1.0,
+          "f1_available": 0.7058823529411765,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 0.5454545454545454,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.890625,
+          "selective_error": 0.0
+        },
+        "q12": {
+          "accuracy_available": 1.0,
+          "accuracy_planned": 1.0,
+          "available": 64,
+          "brier_available": 0.011125000000000001,
+          "coverage": 1.0,
+          "f1_available": 1.0,
+          "missing": 0,
+          "planned": 64,
+          "precision_available": 1.0,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 1.0,
+          "selective_error": 0.0
+        }
+      },
+      "split": {
+        "development": {
+          "accuracy_available": 0.9635416666666666,
+          "accuracy_planned": 0.9635416666666666,
+          "available": 384,
+          "brier_available": 0.0377828125,
+          "coverage": 1.0,
+          "f1_available": 0.8571428571428571,
+          "missing": 0,
+          "planned": 384,
+          "precision_available": 0.75,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8567708333333334,
+          "selective_error": 0.015197568389057751
+        },
+        "validation": {
+          "accuracy_available": 0.96875,
+          "accuracy_planned": 0.96875,
+          "available": 384,
+          "brier_available": 0.021952083333333334,
+          "coverage": 1.0,
+          "f1_available": 0.8,
+          "missing": 0,
+          "planned": 384,
+          "precision_available": 0.6666666666666666,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8958333333333334,
+          "selective_error": 0.0
+        }
+      },
+      "variant": {
+        "base": {
+          "accuracy_available": 0.9635416666666666,
+          "accuracy_planned": 0.9635416666666666,
+          "available": 192,
+          "brier_available": 0.0329109375,
+          "coverage": 1.0,
+          "f1_available": 0.8372093023255814,
+          "missing": 0,
+          "planned": 192,
+          "precision_available": 0.72,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8697916666666666,
+          "selective_error": 0.011976047904191617
+        },
+        "domain_transfer": {
+          "accuracy_available": 0.953125,
+          "accuracy_planned": 0.953125,
+          "available": 192,
+          "brier_available": 0.03416197916666667,
+          "coverage": 1.0,
+          "f1_available": 0.8,
+          "missing": 0,
+          "planned": 192,
+          "precision_available": 0.6666666666666666,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8645833333333334,
+          "selective_error": 0.006024096385542169
+        },
+        "foil": {
+          "accuracy_available": 0.984375,
+          "accuracy_planned": 0.984375,
+          "available": 192,
+          "brier_available": 0.019022916666666667,
+          "coverage": 1.0,
+          "f1_available": 0.8888888888888888,
+          "missing": 0,
+          "planned": 192,
+          "precision_available": 0.8,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.90625,
+          "selective_error": 0.0
+        },
+        "paraphrase": {
+          "accuracy_available": 0.9635416666666666,
+          "accuracy_planned": 0.9635416666666666,
+          "available": 192,
+          "brier_available": 0.033373958333333335,
+          "coverage": 1.0,
+          "f1_available": 0.8372093023255814,
+          "missing": 0,
+          "planned": 192,
+          "precision_available": 0.72,
+          "recall_available": 1.0,
+          "selective_coverage_planned": 0.8645833333333334,
+          "selective_error": 0.012048192771084338
+        }
+      }
+    },
+    "comparisons": {
+      "domain_transfer": {
+        "available_pairs": 192,
+        "foil_changed_decision_fraction": null,
+        "foil_changed_questions_available": 0,
+        "hard_decision_agreement": 0.9895833333333334,
+        "mean_absolute_probability_delta": 0.023645833333333335,
+        "planned_pairs": 192
+      },
+      "foil": {
+        "available_pairs": 192,
+        "foil_changed_decision_fraction": 1.0,
+        "foil_changed_questions_available": 26,
+        "hard_decision_agreement": 0.8333333333333334,
+        "mean_absolute_probability_delta": 0.18317708333333335,
+        "planned_pairs": 192
+      },
+      "paraphrase": {
+        "available_pairs": 192,
+        "foil_changed_decision_fraction": null,
+        "foil_changed_questions_available": 0,
+        "hard_decision_agreement": 0.9791666666666666,
+        "mean_absolute_probability_delta": 0.03234375,
+        "planned_pairs": 192
+      }
+    }
+  }
+}

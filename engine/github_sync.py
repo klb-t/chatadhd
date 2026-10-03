@@ -37,7 +37,10 @@ class SyncConfig:
     sync_direction: str = "bidirectional"  # bidirectional, push_only, pull_only
     auto_sync: bool = False
     include_patterns: List[str] = field(default_factory=lambda: ["*.py", "*.md", "*.json", "*.txt"])
-    exclude_patterns: List[str] = field(default_factory=lambda: ["__pycache__/*", ".git/*", "*.pyc"])
+    # Default preset only; explicit caller patterns, including [], replace it.
+    exclude_patterns: List[str] = field(default_factory=lambda: [
+        "__pycache__/*", ".git/*", "*.pyc", "secrets.json", "*/secrets.json"
+    ])
 
 
 class GitHubSync:

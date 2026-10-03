@@ -1,0 +1,26 @@
+{
+ "conversations": [
+  {
+   "title": "Obj A",
+   "messages": [
+    {
+     "role": "human",
+     "text": "hi"
+    },
+    {
+     "role": "ai",
+     "text": "hello"
+    }
+   ]
+  },
+  {
+   "name": "Obj B",
+   "items": [
+    {
+     "sender": "user",
+     "content": "items key"
+    }
+   ]
+  }
+ ]
+}

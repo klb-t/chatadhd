@@ -1,0 +1,3511 @@
+{
+  "schema": "loom.independent_topics_report/1",
+  "fixture_hash": "113421e9ff11aecdbfffa4af9f4d6e991ace3a814603d532f9428c0a5269a39a",
+  "expectations_hash": "d40d737026a826b4f71e9ac883801f244604b5abb0e950e4a555e261f528a56e",
+  "method": {
+    "path": "/tmp/loom-independent-method-v1/topics.py",
+    "sha256": "1175c60d5cdf80758603231e8e8746c517fcad9d69c26cb77d301786f994de28"
+  },
+  "span_results": [
+    {
+      "id": "ind-thread-late_identity.span1",
+      "case_id": "ind-thread-late_identity",
+      "split": "development",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_cf96094cb10570c13915"
+      ]
+    },
+    {
+      "id": "ind-thread-late_identity.span2",
+      "case_id": "ind-thread-late_identity",
+      "split": "development",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_a984fc006fe83e234e7d"
+      ]
+    },
+    {
+      "id": "ind-thread-late_identity.span3",
+      "case_id": "ind-thread-late_identity",
+      "split": "development",
+      "expected_focus": [
+        "chatadhd"
+      ],
+      "predicted_focus": [
+        "chatadhd"
+      ],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_53604c0425a6f0b3cd45"
+      ]
+    },
+    {
+      "id": "ind-thread-topic_return.span1",
+      "case_id": "ind-thread-topic_return",
+      "split": "validation",
+      "expected_focus": [
+        "loom"
+      ],
+      "predicted_focus": [
+        "loom"
+      ],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_8359dc222b5a938d33cd"
+      ]
+    },
+    {
+      "id": "ind-thread-topic_return.span2",
+      "case_id": "ind-thread-topic_return",
+      "split": "validation",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_4dea45fe7830b65ed787"
+      ]
+    },
+    {
+      "id": "ind-thread-topic_return.span3",
+      "case_id": "ind-thread-topic_return",
+      "split": "validation",
+      "expected_focus": [
+        "loom"
+      ],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [
+        "loom"
+      ],
+      "focus_correct": false,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_a8f9df522ff0c543b6d0"
+      ]
+    },
+    {
+      "id": "ind-thread-ambiguous_reference.span1",
+      "case_id": "ind-thread-ambiguous_reference",
+      "split": "development",
+      "expected_focus": [
+        "lighting"
+      ],
+      "predicted_focus": [
+        "lighting"
+      ],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_e2d6f8a83b8afae10ee1",
+        "obs_4150a90b95a1a9197e2c"
+      ]
+    },
+    {
+      "id": "ind-thread-ambiguous_reference.span2",
+      "case_id": "ind-thread-ambiguous_reference",
+      "split": "development",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_b3b8c86f5c3c241fc725",
+        "obs_bcdf0db06e48dcacef09"
+      ]
+    },
+    {
+      "id": "ind-thread-resolved_reference.span1",
+      "case_id": "ind-thread-resolved_reference",
+      "split": "validation",
+      "expected_focus": [
+        "chatadhd",
+        "counter"
+      ],
+      "predicted_focus": [
+        "chatadhd",
+        "counter"
+      ],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_4585a4a5f280cf096175"
+      ]
+    },
+    {
+      "id": "ind-thread-resolved_reference.span2",
+      "case_id": "ind-thread-resolved_reference",
+      "split": "validation",
+      "expected_focus": [
+        "counter"
+      ],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [
+        "counter"
+      ],
+      "focus_correct": false,
+      "gold_boundaries_present": false,
+      "observation_ids": [
+        "obs_d87bee35c6c974e8eb3f"
+      ]
+    },
+    {
+      "id": "ind-thread-resolved_reference.span3",
+      "case_id": "ind-thread-resolved_reference",
+      "split": "validation",
+      "expected_focus": [
+        "chatadhd"
+      ],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [
+        "chatadhd"
+      ],
+      "focus_correct": false,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_1da901925cad317071ce"
+      ]
+    },
+    {
+      "id": "ind-thread-mid_turn_reset.span1",
+      "case_id": "ind-thread-mid_turn_reset",
+      "split": "development",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": false,
+      "observation_ids": [
+        "obs_9da5d7bd1acb61c80c17"
+      ]
+    },
+    {
+      "id": "ind-thread-mid_turn_reset.span2",
+      "case_id": "ind-thread-mid_turn_reset",
+      "split": "development",
+      "expected_focus": [
+        "loom"
+      ],
+      "predicted_focus": [
+        "loom"
+      ],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_f64c04704e49ced1da05"
+      ]
+    },
+    {
+      "id": "ind-thread-late_context.span1",
+      "case_id": "ind-thread-late_context",
+      "split": "validation",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": false,
+      "observation_ids": [
+        "obs_09a204177c9b2d2a281d"
+      ]
+    },
+    {
+      "id": "ind-thread-late_context.span2",
+      "case_id": "ind-thread-late_context",
+      "split": "validation",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_7ac3c38e725a4e957474"
+      ]
+    },
+    {
+      "id": "ind-thread-unresolved_switch.span1",
+      "case_id": "ind-thread-unresolved_switch",
+      "split": "development",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": false,
+      "observation_ids": [
+        "obs_b38b326d6310e032e3bc"
+      ]
+    },
+    {
+      "id": "ind-thread-unresolved_switch.span2",
+      "case_id": "ind-thread-unresolved_switch",
+      "split": "development",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": false,
+      "observation_ids": [
+        "obs_6fe7952fc0ade30e415e"
+      ]
+    },
+    {
+      "id": "ind-thread-unresolved_switch.span3",
+      "case_id": "ind-thread-unresolved_switch",
+      "split": "development",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_c005631f62bec9c0d781"
+      ]
+    },
+    {
+      "id": "ind-thread-late_named_return.span1",
+      "case_id": "ind-thread-late_named_return",
+      "split": "validation",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": false,
+      "observation_ids": [
+        "obs_2c742b2589cf804834d5"
+      ]
+    },
+    {
+      "id": "ind-thread-late_named_return.span2",
+      "case_id": "ind-thread-late_named_return",
+      "split": "validation",
+      "expected_focus": [
+        "loom"
+      ],
+      "predicted_focus": [
+        "loom"
+      ],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": false,
+      "observation_ids": [
+        "obs_4df6f336ceabe172e15a"
+      ]
+    },
+    {
+      "id": "ind-thread-late_named_return.span3",
+      "case_id": "ind-thread-late_named_return",
+      "split": "validation",
+      "expected_focus": [],
+      "predicted_focus": [],
+      "extra_focus": [],
+      "missing_focus": [],
+      "focus_correct": true,
+      "gold_boundaries_present": true,
+      "observation_ids": [
+        "obs_3d5a113c26e41084511e"
+      ]
+    }
+  ],
+  "case_results": [
+    {
+      "case_id": "ind-thread-late_identity",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-late_identity.t1",
+            "sha256": "894e90853b174c67945c77a41fcbd6f2072b1fbb8dc91e0a82f9e63cdf21ca0c",
+            "n_chars": 46,
+            "n_bytes": 46,
+            "role": "user"
+          },
+          {
+            "turn_id": "ind-thread-late_identity.t2",
+            "sha256": "5440a5aca8174ba99a62b2774aa21f248cc614cb4873844f3bc4fb7cf3aad7be",
+            "n_chars": 40,
+            "n_bytes": 40,
+            "role": "assistant"
+          },
+          {
+            "turn_id": "ind-thread-late_identity.t3",
+            "sha256": "a31bc8923a3817e6aed43938275009ed808d090a2aad396ba192dd128dcfdf3b",
+            "n_chars": 90,
+            "n_bytes": 90,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_cf96094cb10570c13915",
+            "segment_id": "seg_d01f1c37d855133c76db",
+            "text": "Let us plan the garden bench dimensions first.",
+            "source": {
+              "turn_id": "ind-thread-late_identity.t1",
+              "char_start": 0,
+              "char_end": 46,
+              "byte_start": 0,
+              "byte_end": 46,
+              "sha256": "894e90853b174c67945c77a41fcbd6f2072b1fbb8dc91e0a82f9e63cdf21ca0c"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_a984fc006fe83e234e7d",
+            "segment_id": "seg_d01f1c37d855133c76db",
+            "text": "We can compare a narrow and a wide seat.",
+            "source": {
+              "turn_id": "ind-thread-late_identity.t2",
+              "char_start": 0,
+              "char_end": 40,
+              "byte_start": 0,
+              "byte_end": 40,
+              "sha256": "5440a5aca8174ba99a62b2774aa21f248cc614cb4873844f3bc4fb7cf3aad7be"
+            },
+            "role": "assistant",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": null,
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_53604c0425a6f0b3cd45",
+            "segment_id": "seg_24be32fde1e4f56ea421",
+            "text": "One more topic: in ChatADHD, save an interrupted model response before changing providers.",
+            "source": {
+              "turn_id": "ind-thread-late_identity.t3",
+              "char_start": 0,
+              "char_end": 90,
+              "byte_start": 0,
+              "byte_end": 90,
+              "sha256": "a31bc8923a3817e6aed43938275009ed808d090a2aad396ba192dd128dcfdf3b"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "chatadhd",
+                "alias": "ChatADHD",
+                "char_start": 19,
+                "char_end": 27,
+                "surface": "ChatADHD",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 89,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [
+              "chatadhd"
+            ],
+            "focus_basis": "local_alias",
+            "reference_status": "explicit_local_alias",
+            "focus_evidence_observation_ids": [
+              "obs_53604c0425a6f0b3cd45"
+            ],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "anchor_change",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_d01f1c37d855133c76db",
+            "boundary": "start",
+            "boundary_observation_id": "obs_cf96094cb10570c13915",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_cf96094cb10570c13915",
+              "obs_a984fc006fe83e234e7d"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_24be32fde1e4f56ea421",
+            "boundary": "anchor_change",
+            "boundary_observation_id": "obs_53604c0425a6f0b3cd45",
+            "previous_segment_id": "seg_d01f1c37d855133c76db",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_53604c0425a6f0b3cd45"
+            ],
+            "anchor_entity_ids": [
+              "chatadhd"
+            ],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-late_identity",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_cf96094cb10570c13915",
+              "segment_id": "seg_d01f1c37d855133c76db",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_a984fc006fe83e234e7d",
+              "segment_id": "seg_d01f1c37d855133c76db",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_53604c0425a6f0b3cd45",
+              "segment_id": "seg_24be32fde1e4f56ea421",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [
+                "obs_53604c0425a6f0b3cd45"
+              ],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "context_link",
+              "observation_ids": [
+                "obs_53604c0425a6f0b3cd45"
+              ],
+              "subject_candidates": [
+                "chatadhd"
+              ],
+              "evidence_observation_ids": [
+                "obs_53604c0425a6f0b3cd45"
+              ],
+              "basis": "local_alias",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_2101e662ad30e20a060c"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 3,
+      "source_spans": 3
+    },
+    {
+      "case_id": "ind-thread-topic_return",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-topic_return.t1",
+            "sha256": "9c0d0a55fdfb0c6b8514a4e982d1d278aa7da13856c58f954c0b48b09baf3920",
+            "n_chars": 45,
+            "n_bytes": 45,
+            "role": "user"
+          },
+          {
+            "turn_id": "ind-thread-topic_return.t2",
+            "sha256": "34215ca046eec5d1f2421226ef81ecacfc6746eab8792b17e141fac45c3e2ed3",
+            "n_chars": 51,
+            "n_bytes": 51,
+            "role": "user"
+          },
+          {
+            "turn_id": "ind-thread-topic_return.t3",
+            "sha256": "4e7b0ed5ffd4830d4fe278a8ced5f79da6df256c32fa91ea016b8cca4584cd8d",
+            "n_chars": 88,
+            "n_bytes": 88,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_8359dc222b5a938d33cd",
+            "segment_id": "seg_ff8e4d837fff3a02eb56",
+            "text": "For Loom SDK, keep a durable task checkpoint.",
+            "source": {
+              "turn_id": "ind-thread-topic_return.t1",
+              "char_start": 0,
+              "char_end": 45,
+              "byte_start": 0,
+              "byte_end": 45,
+              "sha256": "9c0d0a55fdfb0c6b8514a4e982d1d278aa7da13856c58f954c0b48b09baf3920"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "loom",
+                "alias": "Loom",
+                "char_start": 4,
+                "char_end": 8,
+                "surface": "Loom",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [
+                  "SDK"
+                ],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 44,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              },
+              {
+                "entity_id": "loom",
+                "alias": "Loom SDK",
+                "char_start": 4,
+                "char_end": 12,
+                "surface": "Loom SDK",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 44,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [
+              "loom"
+            ],
+            "focus_basis": "local_alias",
+            "reference_status": "explicit_local_alias",
+            "focus_evidence_observation_ids": [
+              "obs_8359dc222b5a938d33cd"
+            ],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_4dea45fe7830b65ed787",
+            "segment_id": "seg_ec5ff7c8eda09bca2f9b",
+            "text": "Now switch to dinner: the oven timer is unreliable.",
+            "source": {
+              "turn_id": "ind-thread-topic_return.t2",
+              "char_start": 0,
+              "char_end": 51,
+              "byte_start": 0,
+              "byte_end": 51,
+              "sha256": "34215ca046eec5d1f2421226ef81ecacfc6746eab8792b17e141fac45c3e2ed3"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "lexical_novelty_candidate",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_a8f9df522ff0c543b6d0",
+            "segment_id": "seg_87189ebdc7bcbee3ce6a",
+            "text": "Returning to the SDK task: it must resume from that checkpoint, not from the oven timer.",
+            "source": {
+              "turn_id": "ind-thread-topic_return.t3",
+              "char_start": 0,
+              "char_end": 88,
+              "byte_start": 0,
+              "byte_end": 88,
+              "sha256": "4e7b0ed5ffd4830d4fe278a8ced5f79da6df256c32fa91ea016b8cca4584cd8d"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": "returning to",
+            "boundary": "explicit_return",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_ff8e4d837fff3a02eb56",
+            "boundary": "start",
+            "boundary_observation_id": "obs_8359dc222b5a938d33cd",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_8359dc222b5a938d33cd"
+            ],
+            "anchor_entity_ids": [
+              "loom"
+            ],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_ec5ff7c8eda09bca2f9b",
+            "boundary": "lexical_novelty_candidate",
+            "boundary_observation_id": "obs_4dea45fe7830b65ed787",
+            "previous_segment_id": "seg_ff8e4d837fff3a02eb56",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_4dea45fe7830b65ed787"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_87189ebdc7bcbee3ce6a",
+            "boundary": "explicit_return",
+            "boundary_observation_id": "obs_a8f9df522ff0c543b6d0",
+            "previous_segment_id": "seg_ec5ff7c8eda09bca2f9b",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_a8f9df522ff0c543b6d0"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-topic_return",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_8359dc222b5a938d33cd",
+              "segment_id": "seg_ff8e4d837fff3a02eb56",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [
+                "obs_8359dc222b5a938d33cd"
+              ],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_4dea45fe7830b65ed787",
+              "segment_id": "seg_ec5ff7c8eda09bca2f9b",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_a8f9df522ff0c543b6d0",
+              "segment_id": "seg_87189ebdc7bcbee3ce6a",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "context_link",
+              "observation_ids": [
+                "obs_8359dc222b5a938d33cd"
+              ],
+              "subject_candidates": [
+                "loom"
+              ],
+              "evidence_observation_ids": [
+                "obs_8359dc222b5a938d33cd"
+              ],
+              "basis": "local_alias",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_0efa4371a615a8169592"
+            },
+            {
+              "kind": "new_topic_review",
+              "observation_ids": [
+                "obs_4dea45fe7830b65ed787"
+              ],
+              "subject_candidates": [],
+              "basis": "lexical_novelty_candidate",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_5cd3504e30a95ab897fa"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 3,
+      "source_spans": 3
+    },
+    {
+      "case_id": "ind-thread-ambiguous_reference",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-ambiguous_reference.t1",
+            "sha256": "74763904ce6e18da5f1297cc8c1af0c9c15c5797205f66eb159cbddb7aa53a92",
+            "n_chars": 88,
+            "n_bytes": 88,
+            "role": "user"
+          },
+          {
+            "turn_id": "ind-thread-ambiguous_reference.t2",
+            "sha256": "475688a6814515f5f782ba6e3d39ce9ef3ba76af2cdc719d26c01205eaf61245",
+            "n_chars": 46,
+            "n_bytes": 46,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_e2d6f8a83b8afae10ee1",
+            "segment_id": "seg_1e40a18c524ced0e412d",
+            "text": "I am comparing our conversation app and a separate lighting console. ",
+            "source": {
+              "turn_id": "ind-thread-ambiguous_reference.t1",
+              "char_start": 0,
+              "char_end": 69,
+              "byte_start": 0,
+              "byte_end": 69,
+              "sha256": "74763904ce6e18da5f1297cc8c1af0c9c15c5797205f66eb159cbddb7aa53a92"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "lighting",
+                "alias": "lighting console",
+                "char_start": 51,
+                "char_end": 67,
+                "surface": "lighting console",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 67,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [
+              "lighting"
+            ],
+            "focus_basis": "local_alias",
+            "reference_status": "explicit_local_alias",
+            "focus_evidence_observation_ids": [
+              "obs_e2d6f8a83b8afae10ee1"
+            ],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_4150a90b95a1a9197e2c",
+            "segment_id": "seg_1e40a18c524ced0e412d",
+            "text": "Both have a buffer.",
+            "source": {
+              "turn_id": "ind-thread-ambiguous_reference.t1",
+              "char_start": 69,
+              "char_end": 88,
+              "byte_start": 69,
+              "byte_end": 88,
+              "sha256": "74763904ce6e18da5f1297cc8c1af0c9c15c5797205f66eb159cbddb7aa53a92"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": null,
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_b3b8c86f5c3c241fc725",
+            "segment_id": "seg_1e40a18c524ced0e412d",
+            "text": "It must survive restart. ",
+            "source": {
+              "turn_id": "ind-thread-ambiguous_reference.t2",
+              "char_start": 0,
+              "char_end": 25,
+              "byte_start": 0,
+              "byte_end": 25,
+              "sha256": "475688a6814515f5f782ba6e3d39ce9ef3ba76af2cdc719d26c01205eaf61245"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unresolved_continuation",
+            "reference_status": "unresolved",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [
+              "lighting"
+            ],
+            "shared_terms": [],
+            "control_cue": "it",
+            "boundary": null,
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_bcdf0db06e48dcacef09",
+            "segment_id": "seg_37b42425ea581f58e564",
+            "text": "Make that persistent.",
+            "source": {
+              "turn_id": "ind-thread-ambiguous_reference.t2",
+              "char_start": 25,
+              "char_end": 46,
+              "byte_start": 25,
+              "byte_end": 46,
+              "sha256": "475688a6814515f5f782ba6e3d39ce9ef3ba76af2cdc719d26c01205eaf61245"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "focus_expired",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_1e40a18c524ced0e412d",
+            "boundary": "start",
+            "boundary_observation_id": "obs_e2d6f8a83b8afae10ee1",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_e2d6f8a83b8afae10ee1",
+              "obs_4150a90b95a1a9197e2c",
+              "obs_b3b8c86f5c3c241fc725"
+            ],
+            "anchor_entity_ids": [
+              "lighting"
+            ],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_37b42425ea581f58e564",
+            "boundary": "focus_expired",
+            "boundary_observation_id": "obs_bcdf0db06e48dcacef09",
+            "previous_segment_id": "seg_1e40a18c524ced0e412d",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_bcdf0db06e48dcacef09"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-ambiguous_reference",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_e2d6f8a83b8afae10ee1",
+              "segment_id": "seg_1e40a18c524ced0e412d",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [
+                "obs_e2d6f8a83b8afae10ee1"
+              ],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_4150a90b95a1a9197e2c",
+              "segment_id": "seg_1e40a18c524ced0e412d",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_b3b8c86f5c3c241fc725",
+              "segment_id": "seg_1e40a18c524ced0e412d",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_bcdf0db06e48dcacef09",
+              "segment_id": "seg_37b42425ea581f58e564",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "context_link",
+              "observation_ids": [
+                "obs_e2d6f8a83b8afae10ee1"
+              ],
+              "subject_candidates": [
+                "lighting"
+              ],
+              "evidence_observation_ids": [
+                "obs_e2d6f8a83b8afae10ee1"
+              ],
+              "basis": "local_alias",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_ec812ff4fa761c62006c"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 4,
+      "source_spans": 4
+    },
+    {
+      "case_id": "ind-thread-resolved_reference",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-resolved_reference.t1",
+            "sha256": "9913f2abbf89b8130e3fca6e737aad86ba4b6529e66ecabf43c83cc71fafcd9f",
+            "n_chars": 61,
+            "n_bytes": 61,
+            "role": "user"
+          },
+          {
+            "turn_id": "ind-thread-resolved_reference.t2",
+            "sha256": "e0ed5b8bab2456fd954e3d9389139d7e945783e0c9845155d7759128c8e92c1a",
+            "n_chars": 102,
+            "n_bytes": 102,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_4585a4a5f280cf096175",
+            "segment_id": "seg_132ba01f5f05dd552090",
+            "text": "A knitting counter and our ChatADHD client both keep history.",
+            "source": {
+              "turn_id": "ind-thread-resolved_reference.t1",
+              "char_start": 0,
+              "char_end": 61,
+              "byte_start": 0,
+              "byte_end": 61,
+              "sha256": "9913f2abbf89b8130e3fca6e737aad86ba4b6529e66ecabf43c83cc71fafcd9f"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "counter",
+                "alias": "knitting counter",
+                "char_start": 2,
+                "char_end": 18,
+                "surface": "knitting counter",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 60,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              },
+              {
+                "entity_id": "chatadhd",
+                "alias": "ChatADHD",
+                "char_start": 27,
+                "char_end": 35,
+                "surface": "ChatADHD",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 60,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [
+              "chatadhd",
+              "counter"
+            ],
+            "focus_basis": "local_alias",
+            "reference_status": "explicit_local_alias",
+            "focus_evidence_observation_ids": [
+              "obs_4585a4a5f280cf096175"
+            ],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_d87bee35c6c974e8eb3f",
+            "segment_id": "seg_132ba01f5f05dd552090",
+            "text": "The counter can reset. ",
+            "source": {
+              "turn_id": "ind-thread-resolved_reference.t2",
+              "char_start": 0,
+              "char_end": 23,
+              "byte_start": 0,
+              "byte_end": 23,
+              "sha256": "e0ed5b8bab2456fd954e3d9389139d7e945783e0c9845155d7759128c8e92c1a"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [
+              "counter"
+            ],
+            "control_cue": null,
+            "boundary": null,
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_1da901925cad317071ce",
+            "segment_id": "seg_e2366502a57cf3ba5601",
+            "text": "By it in the next sentence I mean the client: it must retain every edited turn.",
+            "source": {
+              "turn_id": "ind-thread-resolved_reference.t2",
+              "char_start": 23,
+              "char_end": 102,
+              "byte_start": 23,
+              "byte_end": 102,
+              "sha256": "e0ed5b8bab2456fd954e3d9389139d7e945783e0c9845155d7759128c8e92c1a"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "lexical_novelty_candidate",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_132ba01f5f05dd552090",
+            "boundary": "start",
+            "boundary_observation_id": "obs_4585a4a5f280cf096175",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_4585a4a5f280cf096175",
+              "obs_d87bee35c6c974e8eb3f"
+            ],
+            "anchor_entity_ids": [
+              "chatadhd",
+              "counter"
+            ],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_e2366502a57cf3ba5601",
+            "boundary": "lexical_novelty_candidate",
+            "boundary_observation_id": "obs_1da901925cad317071ce",
+            "previous_segment_id": "seg_132ba01f5f05dd552090",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_1da901925cad317071ce"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-resolved_reference",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_4585a4a5f280cf096175",
+              "segment_id": "seg_132ba01f5f05dd552090",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [
+                "obs_4585a4a5f280cf096175"
+              ],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_d87bee35c6c974e8eb3f",
+              "segment_id": "seg_132ba01f5f05dd552090",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_1da901925cad317071ce",
+              "segment_id": "seg_e2366502a57cf3ba5601",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "context_link",
+              "observation_ids": [
+                "obs_4585a4a5f280cf096175"
+              ],
+              "subject_candidates": [
+                "chatadhd",
+                "counter"
+              ],
+              "evidence_observation_ids": [
+                "obs_4585a4a5f280cf096175"
+              ],
+              "basis": "local_alias",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_a08eb0600677e561927f"
+            },
+            {
+              "kind": "new_topic_review",
+              "observation_ids": [
+                "obs_1da901925cad317071ce"
+              ],
+              "subject_candidates": [],
+              "basis": "lexical_novelty_candidate",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_df26b57296c54f4a660e"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 3,
+      "source_spans": 3
+    },
+    {
+      "case_id": "ind-thread-mid_turn_reset",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-mid_turn_reset.t1",
+            "sha256": "793533092fdd0f88508a8537070efa908d184935674676147d7b58245948a900",
+            "n_chars": 105,
+            "n_bytes": 105,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_9da5d7bd1acb61c80c17",
+            "segment_id": "seg_f6abde7d94fcf40b43ac",
+            "text": "First topic: my wooden loom makes woven cloth. ",
+            "source": {
+              "turn_id": "ind-thread-mid_turn_reset.t1",
+              "char_start": 0,
+              "char_end": 47,
+              "byte_start": 0,
+              "byte_end": 47,
+              "sha256": "793533092fdd0f88508a8537070efa908d184935674676147d7b58245948a900"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "loom",
+                "alias": "Loom",
+                "char_start": 23,
+                "char_end": 27,
+                "surface": "loom",
+                "accepted": false,
+                "reason": "negative_local_context",
+                "positive_cues": [],
+                "negative_cues": [
+                  "cloth",
+                  "wooden",
+                  "woven"
+                ],
+                "context_char_start": 0,
+                "context_char_end": 45,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_f64c04704e49ced1da05",
+            "segment_id": "seg_6458c5d61bcd9a7b833a",
+            "text": "New topic: our Loom SDK must expose the C++ task callback.",
+            "source": {
+              "turn_id": "ind-thread-mid_turn_reset.t1",
+              "char_start": 47,
+              "char_end": 105,
+              "byte_start": 47,
+              "byte_end": 105,
+              "sha256": "793533092fdd0f88508a8537070efa908d184935674676147d7b58245948a900"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "loom",
+                "alias": "Loom",
+                "char_start": 15,
+                "char_end": 19,
+                "surface": "Loom",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [
+                  "C++",
+                  "SDK",
+                  "callback"
+                ],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 57,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              },
+              {
+                "entity_id": "loom",
+                "alias": "Loom SDK",
+                "char_start": 15,
+                "char_end": 23,
+                "surface": "Loom SDK",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 57,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [
+              "loom"
+            ],
+            "focus_basis": "local_alias",
+            "reference_status": "explicit_local_alias",
+            "focus_evidence_observation_ids": [
+              "obs_f64c04704e49ced1da05"
+            ],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": "new topic",
+            "boundary": "explicit_reset",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_f6abde7d94fcf40b43ac",
+            "boundary": "start",
+            "boundary_observation_id": "obs_9da5d7bd1acb61c80c17",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_9da5d7bd1acb61c80c17"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_6458c5d61bcd9a7b833a",
+            "boundary": "explicit_reset",
+            "boundary_observation_id": "obs_f64c04704e49ced1da05",
+            "previous_segment_id": "seg_f6abde7d94fcf40b43ac",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_f64c04704e49ced1da05"
+            ],
+            "anchor_entity_ids": [
+              "loom"
+            ],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-mid_turn_reset",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_9da5d7bd1acb61c80c17",
+              "segment_id": "seg_f6abde7d94fcf40b43ac",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_f64c04704e49ced1da05",
+              "segment_id": "seg_6458c5d61bcd9a7b833a",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [
+                "obs_f64c04704e49ced1da05"
+              ],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "context_link",
+              "observation_ids": [
+                "obs_f64c04704e49ced1da05"
+              ],
+              "subject_candidates": [
+                "loom"
+              ],
+              "evidence_observation_ids": [
+                "obs_f64c04704e49ced1da05"
+              ],
+              "basis": "local_alias",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_968f2f7334bfd68f7289"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 2,
+      "source_spans": 2
+    },
+    {
+      "case_id": "ind-thread-late_context",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-late_context.t1",
+            "sha256": "1c6e0e4b6f631d806258ae8d76af86ede0f47a57ecaf39316160ed7b90cb7166",
+            "n_chars": 102,
+            "n_bytes": 102,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_09a204177c9b2d2a281d",
+            "segment_id": "seg_bac5b588c8793192ca7d",
+            "text": "At the fair I saw a loom and admired the woven cloth. ",
+            "source": {
+              "turn_id": "ind-thread-late_context.t1",
+              "char_start": 0,
+              "char_end": 54,
+              "byte_start": 0,
+              "byte_end": 54,
+              "sha256": "1c6e0e4b6f631d806258ae8d76af86ede0f47a57ecaf39316160ed7b90cb7166"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "loom",
+                "alias": "Loom",
+                "char_start": 20,
+                "char_end": 24,
+                "surface": "loom",
+                "accepted": false,
+                "reason": "negative_local_context",
+                "positive_cues": [],
+                "negative_cues": [
+                  "cloth",
+                  "woven"
+                ],
+                "context_char_start": 0,
+                "context_char_end": 52,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_7ac3c38e725a4e957474",
+            "segment_id": "seg_81aa44b2eb3d4657e3cd",
+            "text": "New topic: explain what a C++ SDK is in general.",
+            "source": {
+              "turn_id": "ind-thread-late_context.t1",
+              "char_start": 54,
+              "char_end": 102,
+              "byte_start": 54,
+              "byte_end": 102,
+              "sha256": "1c6e0e4b6f631d806258ae8d76af86ede0f47a57ecaf39316160ed7b90cb7166"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": "new topic",
+            "boundary": "explicit_reset",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_bac5b588c8793192ca7d",
+            "boundary": "start",
+            "boundary_observation_id": "obs_09a204177c9b2d2a281d",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_09a204177c9b2d2a281d"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_81aa44b2eb3d4657e3cd",
+            "boundary": "explicit_reset",
+            "boundary_observation_id": "obs_7ac3c38e725a4e957474",
+            "previous_segment_id": "seg_bac5b588c8793192ca7d",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_7ac3c38e725a4e957474"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-late_context",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_09a204177c9b2d2a281d",
+              "segment_id": "seg_bac5b588c8793192ca7d",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_7ac3c38e725a4e957474",
+              "segment_id": "seg_81aa44b2eb3d4657e3cd",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "new_topic_review",
+              "observation_ids": [
+                "obs_7ac3c38e725a4e957474"
+              ],
+              "subject_candidates": [],
+              "basis": "explicit_reset",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_4a06da7bf83f41cf146c"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 2,
+      "source_spans": 2
+    },
+    {
+      "case_id": "ind-thread-unresolved_switch",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-unresolved_switch.t1",
+            "sha256": "38719c9de73b1e5b55a1bd9940fab6e48181a690a5d6b2c645fac4aa06fc275e",
+            "n_chars": 132,
+            "n_bytes": 132,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_b38b326d6310e032e3bc",
+            "segment_id": "seg_7a8ac7a995a16db5d4f2",
+            "text": "Our client saves a response buffer. ",
+            "source": {
+              "turn_id": "ind-thread-unresolved_switch.t1",
+              "char_start": 0,
+              "char_end": 36,
+              "byte_start": 0,
+              "byte_end": 36,
+              "sha256": "38719c9de73b1e5b55a1bd9940fab6e48181a690a5d6b2c645fac4aa06fc275e"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_6fe7952fc0ade30e415e",
+            "segment_id": "seg_fda7edec59f6990c60e9",
+            "text": "The laboratory sensor also saves a response buffer. ",
+            "source": {
+              "turn_id": "ind-thread-unresolved_switch.t1",
+              "char_start": 36,
+              "char_end": 88,
+              "byte_start": 36,
+              "byte_end": 88,
+              "sha256": "38719c9de73b1e5b55a1bd9940fab6e48181a690a5d6b2c645fac4aa06fc275e"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "lexical_novelty_candidate",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_c005631f62bec9c0d781",
+            "segment_id": "seg_abaf844c4d594a02621d",
+            "text": "New topic: it should use the smaller buffer.",
+            "source": {
+              "turn_id": "ind-thread-unresolved_switch.t1",
+              "char_start": 88,
+              "char_end": 132,
+              "byte_start": 88,
+              "byte_end": 132,
+              "sha256": "38719c9de73b1e5b55a1bd9940fab6e48181a690a5d6b2c645fac4aa06fc275e"
+            },
+            "role": "user",
+            "mentions": [],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": "new topic",
+            "boundary": "explicit_reset",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_7a8ac7a995a16db5d4f2",
+            "boundary": "start",
+            "boundary_observation_id": "obs_b38b326d6310e032e3bc",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_b38b326d6310e032e3bc"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_fda7edec59f6990c60e9",
+            "boundary": "lexical_novelty_candidate",
+            "boundary_observation_id": "obs_6fe7952fc0ade30e415e",
+            "previous_segment_id": "seg_7a8ac7a995a16db5d4f2",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_6fe7952fc0ade30e415e"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_abaf844c4d594a02621d",
+            "boundary": "explicit_reset",
+            "boundary_observation_id": "obs_c005631f62bec9c0d781",
+            "previous_segment_id": "seg_fda7edec59f6990c60e9",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_c005631f62bec9c0d781"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-unresolved_switch",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_b38b326d6310e032e3bc",
+              "segment_id": "seg_7a8ac7a995a16db5d4f2",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_6fe7952fc0ade30e415e",
+              "segment_id": "seg_fda7edec59f6990c60e9",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_c005631f62bec9c0d781",
+              "segment_id": "seg_abaf844c4d594a02621d",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "new_topic_review",
+              "observation_ids": [
+                "obs_6fe7952fc0ade30e415e"
+              ],
+              "subject_candidates": [],
+              "basis": "lexical_novelty_candidate",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_c79146ba5b4880e35e16"
+            },
+            {
+              "kind": "new_topic_review",
+              "observation_ids": [
+                "obs_c005631f62bec9c0d781"
+              ],
+              "subject_candidates": [],
+              "basis": "explicit_reset",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_79fdfdf7df71f711d6b2"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 3,
+      "source_spans": 3
+    },
+    {
+      "case_id": "ind-thread-late_named_return",
+      "result": {
+        "version": "topic-context-experiment/1",
+        "policy": {
+          "schema": "loom.experiment.topic_policy/1",
+          "context_window_tokens": 12,
+          "minimum_shared_terms": 2,
+          "novelty_minimum_terms": 5,
+          "focus_max_unanchored_spans": 2,
+          "context_node_budget": 16,
+          "reset_cues": [
+            "new topic",
+            "unrelated",
+            "switching topics",
+            "switching gears",
+            "separately",
+            "on another subject",
+            "zmiana tematu",
+            "inny temat",
+            "osobno",
+            "a teraz o czymś innym"
+          ],
+          "return_cues": [
+            "back to",
+            "returning to",
+            "return to",
+            "wracając do",
+            "wracajac do",
+            "wracam do",
+            "powrót do",
+            "powrot do"
+          ],
+          "continuation_cues": [
+            "also",
+            "next",
+            "then",
+            "that",
+            "this",
+            "it",
+            "these",
+            "those",
+            "yes",
+            "no",
+            "agreed",
+            "same",
+            "dalej",
+            "potem",
+            "tak",
+            "nie",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "czyli"
+          ],
+          "stopwords": [
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "of",
+            "to",
+            "in",
+            "on",
+            "at",
+            "for",
+            "from",
+            "with",
+            "by",
+            "as",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "i",
+            "you",
+            "we",
+            "they",
+            "he",
+            "she",
+            "me",
+            "my",
+            "our",
+            "your",
+            "their",
+            "it",
+            "its",
+            "this",
+            "that",
+            "these",
+            "those",
+            "have",
+            "has",
+            "had",
+            "will",
+            "would",
+            "should",
+            "can",
+            "could",
+            "do",
+            "does",
+            "did",
+            "not",
+            "no",
+            "yes",
+            "now",
+            "also",
+            "then",
+            "next",
+            "new",
+            "topic",
+            "back",
+            "returning",
+            "unrelated",
+            "separately",
+            "z",
+            "ze",
+            "w",
+            "na",
+            "do",
+            "od",
+            "o",
+            "po",
+            "pod",
+            "nad",
+            "przy",
+            "za",
+            "dla",
+            "a",
+            "ale",
+            "lub",
+            "czy",
+            "i",
+            "oraz",
+            "jest",
+            "sa",
+            "są",
+            "byl",
+            "była",
+            "to",
+            "ten",
+            "ta",
+            "te",
+            "tego",
+            "tym",
+            "moja",
+            "moje",
+            "nasze",
+            "sie",
+            "się",
+            "tak",
+            "nie",
+            "teraz",
+            "dalej",
+            "potem",
+            "czyli",
+            "osobno",
+            "temat",
+            "tematu",
+            "wracam",
+            "wracajac",
+            "wracając"
+          ]
+        },
+        "policy_hash": "d0d852b04c455247848e0eb2324870983ebee496e3c873559b14ed7d27eddb75",
+        "sources": [
+          {
+            "turn_id": "ind-thread-late_named_return.t1",
+            "sha256": "034f96df505b2c71ed3bffbac5fd07cb7dfaea546e0c697caf3c88dd3a86910f",
+            "n_chars": 165,
+            "n_bytes": 165,
+            "role": "user"
+          }
+        ],
+        "observations": [
+          {
+            "id": "obs_2c742b2589cf804834d5",
+            "segment_id": "seg_2ac20db8f592be0a38f6",
+            "text": "We began by discussing a wooden loom and its cloth. ",
+            "source": {
+              "turn_id": "ind-thread-late_named_return.t1",
+              "char_start": 0,
+              "char_end": 52,
+              "byte_start": 0,
+              "byte_end": 52,
+              "sha256": "034f96df505b2c71ed3bffbac5fd07cb7dfaea546e0c697caf3c88dd3a86910f"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "loom",
+                "alias": "Loom",
+                "char_start": 32,
+                "char_end": 36,
+                "surface": "loom",
+                "accepted": false,
+                "reason": "negative_local_context",
+                "positive_cues": [],
+                "negative_cues": [
+                  "cloth",
+                  "wooden"
+                ],
+                "context_char_start": 0,
+                "context_char_end": 50,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "start",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_4df6f336ceabe172e15a",
+            "segment_id": "seg_d8a37572e3035fb09215",
+            "text": "Later I started a separate Loom SDK task about C++ callbacks. ",
+            "source": {
+              "turn_id": "ind-thread-late_named_return.t1",
+              "char_start": 52,
+              "char_end": 114,
+              "byte_start": 52,
+              "byte_end": 114,
+              "sha256": "034f96df505b2c71ed3bffbac5fd07cb7dfaea546e0c697caf3c88dd3a86910f"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "loom",
+                "alias": "Loom",
+                "char_start": 27,
+                "char_end": 31,
+                "surface": "Loom",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [
+                  "C++",
+                  "SDK"
+                ],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 60,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              },
+              {
+                "entity_id": "loom",
+                "alias": "Loom SDK",
+                "char_start": 27,
+                "char_end": 35,
+                "surface": "Loom SDK",
+                "accepted": true,
+                "reason": "local_alias_match",
+                "positive_cues": [],
+                "negative_cues": [],
+                "context_char_start": 0,
+                "context_char_end": 60,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [
+              "loom"
+            ],
+            "focus_basis": "local_alias",
+            "reference_status": "explicit_local_alias",
+            "focus_evidence_observation_ids": [
+              "obs_4df6f336ceabe172e15a"
+            ],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": null,
+            "boundary": "anchor_change",
+            "inference_status": "candidate",
+            "confidence": null
+          },
+          {
+            "id": "obs_3d5a113c26e41084511e",
+            "segment_id": "seg_37b198f1aaef95145023",
+            "text": "Back to the wooden loom: it needs a stronger frame.",
+            "source": {
+              "turn_id": "ind-thread-late_named_return.t1",
+              "char_start": 114,
+              "char_end": 165,
+              "byte_start": 114,
+              "byte_end": 165,
+              "sha256": "034f96df505b2c71ed3bffbac5fd07cb7dfaea546e0c697caf3c88dd3a86910f"
+            },
+            "role": "user",
+            "mentions": [
+              {
+                "entity_id": "loom",
+                "alias": "Loom",
+                "char_start": 19,
+                "char_end": 23,
+                "surface": "loom",
+                "accepted": false,
+                "reason": "negative_local_context",
+                "positive_cues": [],
+                "negative_cues": [
+                  "wooden"
+                ],
+                "context_char_start": 0,
+                "context_char_end": 50,
+                "evidence_channel": "lexical_alias",
+                "semantic_identity": "not_verified"
+              }
+            ],
+            "focus_entity_ids": [],
+            "focus_basis": "unanchored",
+            "reference_status": "no_reference",
+            "focus_evidence_observation_ids": [],
+            "possible_continuation_entity_ids": [],
+            "shared_terms": [],
+            "control_cue": "back to",
+            "boundary": "explicit_return",
+            "inference_status": "candidate",
+            "confidence": null
+          }
+        ],
+        "segments": [
+          {
+            "id": "seg_2ac20db8f592be0a38f6",
+            "boundary": "start",
+            "boundary_observation_id": "obs_2c742b2589cf804834d5",
+            "previous_segment_id": null,
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_2c742b2589cf804834d5"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_d8a37572e3035fb09215",
+            "boundary": "anchor_change",
+            "boundary_observation_id": "obs_4df6f336ceabe172e15a",
+            "previous_segment_id": "seg_2ac20db8f592be0a38f6",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_4df6f336ceabe172e15a"
+            ],
+            "anchor_entity_ids": [
+              "loom"
+            ],
+            "status": "candidate"
+          },
+          {
+            "id": "seg_37b198f1aaef95145023",
+            "boundary": "explicit_return",
+            "boundary_observation_id": "obs_3d5a113c26e41084511e",
+            "previous_segment_id": "seg_d8a37572e3035fb09215",
+            "return_to_segment_ids": [],
+            "observation_ids": [
+              "obs_3d5a113c26e41084511e"
+            ],
+            "anchor_entity_ids": [],
+            "status": "candidate"
+          }
+        ],
+        "limitations": [
+          "lexical_and_discourse_heuristics_only",
+          "no_calibrated_confidence",
+          "no_general_coreference_or_semantic_identity",
+          "no_graph_mutation"
+        ],
+        "conversation_id": "ind-thread-late_named_return",
+        "context_projection": {
+          "version": "topic-context-experiment/1",
+          "graph_hash": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7",
+          "contexts": [
+            {
+              "observation_id": "obs_2c742b2589cf804834d5",
+              "segment_id": "seg_2ac20db8f592be0a38f6",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_4df6f336ceabe172e15a",
+              "segment_id": "seg_d8a37572e3035fb09215",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [
+                "obs_4df6f336ceabe172e15a"
+              ],
+              "eligibility_as_premise": "not_assessed"
+            },
+            {
+              "observation_id": "obs_3d5a113c26e41084511e",
+              "segment_id": "seg_37b198f1aaef95145023",
+              "candidates": [],
+              "omitted_by_budget": 0,
+              "evidence_observation_ids": [],
+              "eligibility_as_premise": "not_assessed"
+            }
+          ],
+          "update_proposals": [
+            {
+              "kind": "context_link",
+              "observation_ids": [
+                "obs_4df6f336ceabe172e15a"
+              ],
+              "subject_candidates": [
+                "loom"
+              ],
+              "evidence_observation_ids": [
+                "obs_4df6f336ceabe172e15a"
+              ],
+              "basis": "local_alias",
+              "status": "candidate",
+              "automatic_mutation": false,
+              "persistable_claim": false,
+              "confidence": null,
+              "id": "proposal_e7d1437a280b8ca1048c"
+            }
+          ],
+          "blocked_claims": [],
+          "mutations_applied": 0
+        }
+      },
+      "verified_source_spans": 3,
+      "source_spans": 3
+    }
+  ],
+  "interpretation": [
+    "Actual source turns and entity aliases were inputs; labels and source expectations were withheld.",
+    "Local focus and segmentation are measured independently of whole-conversation project membership.",
+    "Overlapping observations with extra focus are counted as errors even if another span correctly names the entity.",
+    "This is an eight-conversation synthetic diagnostic, not general reference-resolution accuracy."
+  ],
+  "summaries": {
+    "development": {
+      "spans": 10,
+      "focus_correct": 10,
+      "extra_focus_spans": 0,
+      "missing_focus_spans": 0,
+      "gold_boundaries_present": 7
+    },
+    "validation": {
+      "spans": 11,
+      "focus_correct": 8,
+      "extra_focus_spans": 0,
+      "missing_focus_spans": 3,
+      "gold_boundaries_present": 7
+    }
+  }
+}

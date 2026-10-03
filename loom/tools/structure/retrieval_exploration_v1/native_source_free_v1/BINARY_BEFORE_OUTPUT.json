@@ -1,0 +1,13 @@
+{
+  "actual_source_outputs_observed": false,
+  "binary_sha256": "8e784b882b9a509f4e1f55bae50748d738a896e5a198a02781cb0c4168c23c2c",
+  "created_at": "2026-09-30T13:17:06.998250+00:00",
+  "library_sha256": "6e19657f3cdaf0fb5a572bdec9fd03cd3e95079bd421244d8600ab1f28f08310",
+  "native_pack_documents": 42,
+  "native_pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+  "native_pack_manifest_sha256": "225997d45cd865bd30a7bc698440b69890badb7056e822ac7b43559c997007c5",
+  "paid_calls": 0,
+  "source_aggregate_sha256": "7549cbd40f54c9f894792016bc9208af030a0ad00dc466511607434b82d14882",
+  "source_environment_sha256": "4f373522fef76ad67cc58c968643a91a5c64e66ba689d217a89a78756ae47a08",
+  "source_head": "4f170db2047cdc0fffe2e9a5ed6e190ae779efde"
+}

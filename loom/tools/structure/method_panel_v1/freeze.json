@@ -1,0 +1,119 @@
+{
+  "schema": "loom.research.method_panel_freeze/1",
+  "frozen_at": "2026-09-30T01:50:24.207182+00:00",
+  "remote_head": "3a3c6236",
+  "remote_index_sha256": "f55b2ce79b1657e1b8d35d57b5c756668458b6937973a3f61e273910353d2a74",
+  "verified_inputs_and_dependencies": [
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pairs_v1/README.md",
+      "git_blob_sha": "9db567a5b275ab2c706dfb15d0b1da019c0dfddf",
+      "expected_remote_blob_sha": "9db567a5b275ab2c706dfb15d0b1da019c0dfddf",
+      "sha256": "83875bcb9d61d0dc1ced563344c299e15107b250e8d097422e98b28d86149a8a",
+      "bytes": 4593,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pairs_v1/inputs.json",
+      "git_blob_sha": "284a336ccadf0ea3d86a326300cf8ea24d6fef1b",
+      "expected_remote_blob_sha": "284a336ccadf0ea3d86a326300cf8ea24d6fef1b",
+      "sha256": "3474eef3ee9060f790aae21ee30fd962569ae902f2352dda46deea576e44c545",
+      "bytes": 128193,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pairs_v1/gold.json",
+      "git_blob_sha": "923b2d1e4b58f7c99442b10da1b70ad574902f4d",
+      "expected_remote_blob_sha": "923b2d1e4b58f7c99442b10da1b70ad574902f4d",
+      "sha256": "2db33aeba01fc004ace04bfa206e8d60d2aa171234822a7f36d71769f2a116c0",
+      "bytes": 17399,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pairs_v1/manifest.json",
+      "git_blob_sha": "c375dd445def4c3583923c296fdf72c60a34c0f8",
+      "expected_remote_blob_sha": "c375dd445def4c3583923c296fdf72c60a34c0f8",
+      "sha256": "970846e4834902d1064c1e4b0cac4761ad17994c1bdf4272307f58fc25bdd716",
+      "bytes": 15172,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pilot_v1/README.md",
+      "git_blob_sha": "9722c8ccd9f50346721fe7ed7ae592caba4522d0",
+      "expected_remote_blob_sha": "9722c8ccd9f50346721fe7ed7ae592caba4522d0",
+      "sha256": "8d37988a7c73af9b0b7c4940b7a0e5c0e3ca5d51e4e2a751f6b9a6f704d6fff8",
+      "bytes": 5088,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pilot_v1/inputs.json",
+      "git_blob_sha": "5e9976f23f5f3bcbf1c4f621099bd196331fae64",
+      "expected_remote_blob_sha": "5e9976f23f5f3bcbf1c4f621099bd196331fae64",
+      "sha256": "ab569c1f74be4c3f80fbbe23bd8b380f30217a7514d52081ccc3f4283122af3c",
+      "bytes": 610197,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pilot_v1/gold.json",
+      "git_blob_sha": "215b7543090904ceb50e815631f5f7e15f31ad17",
+      "expected_remote_blob_sha": "215b7543090904ceb50e815631f5f7e15f31ad17",
+      "sha256": "556a28a5b0ac9320be3ef03ea65fb443c853af5d306f42cd933b971c7187c3ac",
+      "bytes": 32597,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tests/fixtures/eval/jev_structure_pilot_v1/manifest.json",
+      "git_blob_sha": "09dc17a3623ff19eeceefbb2ab6cf5301fc4b40b",
+      "expected_remote_blob_sha": "09dc17a3623ff19eeceefbb2ab6cf5301fc4b40b",
+      "sha256": "0bbd5957f90e0e5a3c33b64ff4bb498686361a2fb5b189f492e628fa43b6f5b7",
+      "bytes": 14595,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tools/structure/extract.py",
+      "git_blob_sha": "7890d815270f57ecfe56f08acb21975b44d20cc5",
+      "expected_remote_blob_sha": "7890d815270f57ecfe56f08acb21975b44d20cc5",
+      "sha256": "a20e3a8422684ee073443ae89be60b01ff87dfa6af848f3b000a481283518964",
+      "bytes": 22268,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tools/structure/structure_methods.py",
+      "git_blob_sha": "f9bc16fe0477675d594ba8056281253c4c901243",
+      "expected_remote_blob_sha": "f9bc16fe0477675d594ba8056281253c4c901243",
+      "sha256": "89596297f279ad50b1599d2cb125fc7e140c065c91827d21f2c11ec4021e0fb3",
+      "bytes": 29639,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tools/structure/relation_envelopes.py",
+      "git_blob_sha": "338cc1db95d9c33b221b786c2f1c325d59d153c6",
+      "expected_remote_blob_sha": "338cc1db95d9c33b221b786c2f1c325d59d153c6",
+      "sha256": "932faad15b77ec3954ab6741a4e85c6026e633ba111b6129e8b5328b260d3fe9",
+      "bytes": 13247,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tools/structure/relation_envelopes_policy.json",
+      "git_blob_sha": "525e0421789a033f115c3176b5e787d80f9e2921",
+      "expected_remote_blob_sha": "525e0421789a033f115c3176b5e787d80f9e2921",
+      "sha256": "d629d979f504544bbe00444fea4de7f305614f49278c5fe78de61eaa3ebacd21",
+      "bytes": 29982,
+      "matches_current_remote": true
+    },
+    {
+      "path": "loom/tools/structure/operations.json",
+      "git_blob_sha": "3247bd67a13b36d273dad1edd56841415f2a09e4",
+      "expected_remote_blob_sha": "3247bd67a13b36d273dad1edd56841415f2a09e4",
+      "sha256": "0bdd4dbe0a915577999c595c5f215be8cc0fa2c0c10405e9b101a2eb1a7c0ba1",
+      "bytes": 13888,
+      "matches_current_remote": true
+    }
+  ],
+  "new_arm_files_sha256": {
+    "PROTOCOL.md": "0a098682be776b708dfecae72610a7b9acffa13af07963fec6ac7e8331bd0826",
+    "policy.json": "7059def88dd78f7029cec06876b18c671f7e3b24ff29bd8b83130448a1494ad3",
+    "methods_panel.py": "01b09004e82f06616d5e71cf8d45699a9321ddddbe41d91fe91fd76befed6a04",
+    "test_methods_panel.py": "60374ee294d508cae11bba09423829cd1986b18f1033a338147666a3c9b70d49"
+  },
+  "new_method_scores_observed_before_freeze": false
+}

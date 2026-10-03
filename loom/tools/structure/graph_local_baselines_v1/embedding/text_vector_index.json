@@ -1,0 +1,1319 @@
+{
+  "rows": [
+    {
+      "text": "attribution: Iga\nrelation: implies\nsource: boja miga\ntarget: prom czeka",
+      "text_sha256": "84a1d101dec1a7307da4a6646c2c8f055b21ed7968c73f3805f301a02e2d8fbc",
+      "tokenization": {
+        "encoded_tokens": 19,
+        "truncated": false,
+        "untruncated_tokens": 19
+      }
+    },
+    {
+      "text": "attribution: Iga\nrelation: implies\nsource: prom czeka\ntarget: boja miga",
+      "text_sha256": "be2bb59459e75919e7590dff1de3e3fab724223079a5ae795b7164391d7032bf",
+      "tokenization": {
+        "encoded_tokens": 19,
+        "truncated": false,
+        "untruncated_tokens": 19
+      }
+    },
+    {
+      "text": "attribution: Mira\nrelation: implies\nsource: panel się świeci\ntarget: pokrywa jest otwarta",
+      "text_sha256": "bdd709b7ee51aecedc82bd7bbd858228d5318626605643ac364c8db1f04255d1",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: Mira\nrelation: implies\nsource: pokrywa jest otwarta\ntarget: panel się świeci",
+      "text_sha256": "0e2b8d6a70b62964c7390ec5beec359c132d6202f934fec21b829668dde92cf0",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: Mira\nrelation: implies\nsource: the hatch is open\ntarget: the panel is lit",
+      "text_sha256": "51c161b017222e5024674557080e6d8ceed6ad3d58ba591f29a632d097213933",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: Mira\nrelation: implies\nsource: the panel is lit\ntarget: the hatch is open",
+      "text_sha256": "0a811254a2111e7b3dd8e3570060b4e55ae4fda210b22b2604d3bf20d22b5502",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: Olek\nrelation: implies\nsource: drukuje się paragon\ntarget: paczka jest zeskanowana",
+      "text_sha256": "7188737e67b9eb4fd6f0c4c191a73e53de22fa58c563cfe0524c1e0063f5e2b1",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: Olek\nrelation: implies\nsource: paczka jest zeskanowana\ntarget: drukuje się paragon",
+      "text_sha256": "4dd72f44591fc719ae34b2266e8fc38264c50d823d8dd12f9fdfe8ca35639eaa",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: Owen\nrelation: implies\nsource: the parcel is scanned\ntarget: the receipt is printed",
+      "text_sha256": "ec3d38522fd6bc37ab10b7271731a332b62e75078564726c806d6fd275689089",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: Owen\nrelation: implies\nsource: the receipt is printed\ntarget: the parcel is scanned",
+      "text_sha256": "743831d26d01d55f7dc82bd14f30ada7d4e5c36c2f4b274e6cc590c6dc85b83b",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: Priya\nrelation: implies\nsource: the beacon flashes\ntarget: the ferry waits",
+      "text_sha256": "67d3ad4bec43058d8c22a2dab3f328ded8ce49d41dc26cfbbd5f058e30c091f2",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: Priya\nrelation: implies\nsource: the ferry waits\ntarget: the beacon flashes",
+      "text_sha256": "3f7ac0c519198dd1def3e8f86eb20749f58359033c62957fdf15d87a42ba373b",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: analyst\nrelation: implies\nsource: boja miga\ntarget: prom czeka",
+      "text_sha256": "4187d2e52098a1dc176ebb00047a3f2d0d0a1ad4bb55819f1739def6a652651b",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "attribution: analyst\nrelation: implies\nsource: paczka jest zeskanowana\ntarget: drukuje się paragon",
+      "text_sha256": "1a7f8f0b0e4f34b26239379053eb871106e11a0831e1ea95f9b1b1fed127320c",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: analyst\nrelation: implies\nsource: pokrywa jest otwarta\ntarget: panel się świeci",
+      "text_sha256": "ac2b7ec1f0719b37e8da16d1fbfd190d1a9b3b73e66fc029639555f13991c207",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: analyst\nrelation: implies\nsource: the beacon flashes\ntarget: the ferry waits",
+      "text_sha256": "8cb18d935738c7664b9690fd686f526cb3543cdc74f0a981764504209d19e6c0",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: analyst\nrelation: implies\nsource: the hatch is open\ntarget: the panel is lit",
+      "text_sha256": "915a9fefab9aa3bbf23ea9181ae9bbba763f67b0eeddc3d6a078b3f9e8c69148",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: analyst\nrelation: implies\nsource: the parcel is scanned\ntarget: the receipt is printed",
+      "text_sha256": "af47422783961b610645fcab4ece4cbbcfb6e6da438c43a16f93180d2a4a8a52",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: aparat używa krótkiej ekspozycji\ntarget: niebo jest bezchmurne",
+      "text_sha256": "1b2cad30b69e0a06a53e59d65480bd441a12f438aa1521c3cff2c432878c995d",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: naczynie traci ciśnienie\ntarget: uszczelnienie jest przerwane",
+      "text_sha256": "9adb608d4e534bec212b926dc16f9e2f0e57498308661fe32345fb170d9c9c85",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: niebo jest bezchmurne\ntarget: aparat używa krótkiej ekspozycji",
+      "text_sha256": "c9c4312fee173f3439b65c18460c389b3c0ae25b68433a1fdbdc96800711fb64",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: niebo jest bezchmurne\ntarget: obiektyw jest zasłonięty",
+      "text_sha256": "995ac86ec9cfec5cdfc1a44db6760000d8f41e4fa0e0adc4dbee387f944842a1",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: rygiel jest wolny\ntarget: zatrzask jest zwolniony",
+      "text_sha256": "596a16b7545b3c2e465e5fe54804bf153d23b108e758eff6af0fcc39382a3377",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the bolt is free\ntarget: the latch is released",
+      "text_sha256": "b8cdde7cb3281b7a2fd55d5a4a52a1b40ac093b29efe1072ea2d39dd4c034d2f",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the camera uses a short exposure\ntarget: the sky is cloudless",
+      "text_sha256": "1b1f08336a01a5868001235605cd988d3748e04ea94dd419aa93c2506fbd13ee",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the latch is released\ntarget: the bolt is free",
+      "text_sha256": "e412b4e2f68312f94595efdb752c046e34cd6eb7226f9bf96bd24ba277fbc51f",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the latch is released\ntarget: the lever is down",
+      "text_sha256": "ca120912d523846052112024d6b504f5df6e6d8c11f94a8b2b65213ce684ad70",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the seal is broken\ntarget: the heater starts",
+      "text_sha256": "970d994782f0056c7183eb01a277ae63f29e3f9517058dc5640a4cb5b80d1092",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the seal is broken\ntarget: the vessel loses pressure",
+      "text_sha256": "5fa5e0e1d1177426cad3f71ce2d870f02ceefecbd5f96efc14fc24f116c1d8ba",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the sky is cloudless\ntarget: the camera uses a short exposure",
+      "text_sha256": "12d911b220356567118caafb15f88617516028111ead15eef526457513584095",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the sky is cloudless\ntarget: the lens is capped",
+      "text_sha256": "2d8ab23978b4c4b2b808bafed8d1634a7f7ef600076f693a7a3d3a30d2cbe9f9",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: the vessel loses pressure\ntarget: the seal is broken",
+      "text_sha256": "224e07febc4b47212a03644e1a16a4798258f9da5a1e2600c8005fbeb2211c67",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: uszczelnienie jest przerwane\ntarget: grzałka rusza",
+      "text_sha256": "8bb4681a7280e162ea373279e7be00692cb080ffc90bdae6581791281cc52e93",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: uszczelnienie jest przerwane\ntarget: naczynie traci ciśnienie",
+      "text_sha256": "a1fbe8a6fe914f1d25c184f4a9f4ad52254558ba2425b409e76829b5d3378d4c",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: zatrzask jest zwolniony\ntarget: dźwignia jest opuszczona",
+      "text_sha256": "16bc694d2a8399ab1e52fb83b00979d6175841eba06762e9b10823a5701dbcf7",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "attribution: author\nrelation: implies\nsource: zatrzask jest zwolniony\ntarget: rygiel jest wolny",
+      "text_sha256": "53c4b085b3a4c0ac6af24522ad19497c50f278d45509bef58f2e583502598650",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: a blocked drain\ntarget: a flooded sump",
+      "text_sha256": "04b329d0084c79ccff6db2627f0ee0af5a9abaece60e24903711404b48c9eb93",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: a blocked drain\ntarget: a wet floor",
+      "text_sha256": "ccb78e0d2ef6088e3008a24b58518f7a4df291766a5e863caf8c1483014c09bc",
+      "tokenization": {
+        "encoded_tokens": 21,
+        "truncated": false,
+        "untruncated_tokens": 21
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: a loose belt\ntarget: a squeaking pulley",
+      "text_sha256": "fbc37efe18749420cad4b0cd1304cc119d5a0dee0e362addc28646d20af9e9ac",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: a loose belt\ntarget: a stalled wheel",
+      "text_sha256": "fb5dc65ad3d2fe170115bd7aaa58501954c790b8bdf20278f8b1a590e57ea0ea",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: a power dip\ntarget: a clock drift",
+      "text_sha256": "a7bad8d402e25dc00949c007cf1747be3b5e548b69256e251412de33245fcbfe",
+      "tokenization": {
+        "encoded_tokens": 21,
+        "truncated": false,
+        "untruncated_tokens": 21
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: a power dip\ntarget: a controller reset",
+      "text_sha256": "81bb412f553a912019c65f8edd6cebafb44bbb931eb9d8f9bb4e0ee36ae861ec",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: luźny pasek\ntarget: piszczące koło pasowe",
+      "text_sha256": "b7c61afec0f49f3f9f9b1120e3982e501eebc39425715b087e1c47f607b54f3b",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: luźny pasek\ntarget: zatrzymane koło",
+      "text_sha256": "150689c6271f1b27ed661a055ef6e0abe4e8c3509a3533737d2322631b05a98e",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: spadek napięcia\ntarget: dryf zegara",
+      "text_sha256": "4dc4053f6578ebb8f89573250797aa916e52b46dec0dd8a4fca4f56b9d359c58",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: spadek napięcia\ntarget: reset sterownika",
+      "text_sha256": "4b68c903c38735d401590d540c312188ae564294d5bcc139d9ad007407906886",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: zatkany odpływ\ntarget: mokra podłoga",
+      "text_sha256": "2de54f67005285efd017c7aa318f4dacb1c7e84c2411a38cdea4ed9255ad2f7b",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: owner\nrelation: causes\nsource: zatkany odpływ\ntarget: zalana studzienka",
+      "text_sha256": "74ffac49bafc67ff58f1dbc84222c6745004ed1b885de16091eec95d73053f62",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: reporter\nrelation: implies\nsource: boja miga\ntarget: prom czeka",
+      "text_sha256": "cabdc1b62e82063b126cd2264973de404aff04da4d69b23ffce191097e3158fd",
+      "tokenization": {
+        "encoded_tokens": 19,
+        "truncated": false,
+        "untruncated_tokens": 19
+      }
+    },
+    {
+      "text": "attribution: reporter\nrelation: implies\nsource: paczka jest zeskanowana\ntarget: drukuje się paragon",
+      "text_sha256": "d21c071a9f431e86e1f00ee491f25456e49affa6ac70da6841ac6f644427a517",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: reporter\nrelation: implies\nsource: pokrywa jest otwarta\ntarget: panel się świeci",
+      "text_sha256": "796db5d2e7efe073a03289d22726e3e6ebdd2dd3214f3f897f0fc834e3167d20",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: reporter\nrelation: implies\nsource: the beacon flashes\ntarget: the ferry waits",
+      "text_sha256": "2f7a7f58fdfe4f0f483d4e20a067f707925913f095596f3d9412edf1df79507a",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: reporter\nrelation: implies\nsource: the hatch is open\ntarget: the panel is lit",
+      "text_sha256": "64627f9cf553f2ef204ef08ec0ddef063326fe64d41e4f56c594f5203080c995",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: reporter\nrelation: implies\nsource: the parcel is scanned\ntarget: the receipt is printed",
+      "text_sha256": "dc2ceac3192e1266aeea48d4096022c496fe8b663b5f743afb1b59e0c49f6ecf",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: brama nie jest zamknięta\ntarget: dzwonek dzwoni",
+      "text_sha256": "f9e0efe64a029fec606b159193ff7a002ddfdf2cc31eca7e4fa0ef1362dc58b1",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: brama nie jest zamknięta\ntarget: kurier nie odchodzi",
+      "text_sha256": "8649cdd4afceb3cc4180dd5664fdf822960f7cd0e63c9819003c8c1b9b4e38ed",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: czujnik nie zgłasza błędu\ntarget: rekord nie jest odrzucany",
+      "text_sha256": "12860cabc1592e323d16cf14b241623076278d62968c295e26914ea727bedb2f",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: czujnik nie zgłasza błędu\ntarget: wentylator staje",
+      "text_sha256": "4f938a86be55299fb0ea561cc9b8a3d6583a5a9ba7ca01855b7bf4a6c932abb3",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: dzwonek dzwoni\ntarget: kurier nie odchodzi",
+      "text_sha256": "fc9e46ed843156f25a844d4b78d022783914f2a23a4d8c59d28ba526fb94ba3f",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: hak się wygina\ntarget: węzeł się nie zsuwa",
+      "text_sha256": "144aaab244451bea5087b00452887c261b6a480eeaa00b0f9f69499c76a13c32",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: kurier nie odchodzi\ntarget: brama nie jest zamknięta",
+      "text_sha256": "8b5b01845cd166b15360ddc6b90e8ac7357aad63cbf7fbd21da94cb72e0ffd08",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: lina nie jest mokra\ntarget: hak się wygina",
+      "text_sha256": "881bae11d1418b139ba045fc2b3fb5fb44724e3fce540b3b1dc6abc1bf588676",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: lina nie jest mokra\ntarget: węzeł się nie zsuwa",
+      "text_sha256": "cae8c5df0a60c4556f8b8c8156bf1a022e95f80931921ae9c0ec1cbe37bf0a2f",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: rekord nie jest odrzucany\ntarget: czujnik nie zgłasza błędu",
+      "text_sha256": "09c4534667417c6bdd5f547fa509d7e3c5404451267f947a302c183e3013039e",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the bell rings\ntarget: the courier does not leave",
+      "text_sha256": "407f07b28668ccd648b050c590f70c05201c3b49a5ed88a9d6c2c57777b78df8",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the courier does not leave\ntarget: the gate is not locked",
+      "text_sha256": "e764bda2a2a98e502ba54c9ca49b54350022ead37bd56206260528a1453eeab0",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the fan stops\ntarget: the record is not discarded",
+      "text_sha256": "67eeb58dc0bb9da024e0cc2b666c2a06730bbd2a1b4446a17684f3f85c5a3ec3",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the gate is not locked\ntarget: the bell rings",
+      "text_sha256": "9577ce20fe685b964227c5cb59732d484caff2cfb5b7e9a5f93f2a123a401fda",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the gate is not locked\ntarget: the courier does not leave",
+      "text_sha256": "7fd25ebc5cd237fcba9b0fc3feb46fe2b310a8c85a0caccfe2b45ee171a7e2aa",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the hook bends\ntarget: the knot does not slip",
+      "text_sha256": "b42a8035d061c6b9e5ee08b1f9d53e7ea78c0e46348cda5197d54d5bf316b7a1",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the knot does not slip\ntarget: the rope is not wet",
+      "text_sha256": "58c9837d938d10c07f28e5e160003ca01bcb967a432f22dcb73e0f725ef85522",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the record is not discarded\ntarget: the sensor reports no error",
+      "text_sha256": "8d10ba474d7f834250dc40a2e5e59123e22edad5db9bf7a0523b506a9bf2d8d1",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the rope is not wet\ntarget: the hook bends",
+      "text_sha256": "f17ad1ce2012f09d975e5aa828adff0ceccc3aad9954c55bc59285d44b316973",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the rope is not wet\ntarget: the knot does not slip",
+      "text_sha256": "9b89783ac6f9e540726a2312f8b1f326b90279ebd28f50959770216263dd7915",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the sensor reports no error\ntarget: the fan stops",
+      "text_sha256": "00d29a10b7720234a2a8dd4cd1f21d79a3bd311e5ad01d7b51334e948fc27f63",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: the sensor reports no error\ntarget: the record is not discarded",
+      "text_sha256": "4c21f6dc2f0a244ce85dc9d1a613731ab16ade7276340da7120d060f968a00be",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: wentylator staje\ntarget: rekord nie jest odrzucany",
+      "text_sha256": "a0a91da03b8c26f4e1b8aadad214da0f016a100cb2193c3dbeb9764466b0c0a6",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "attribution: tester\nrelation: implies\nsource: węzeł się nie zsuwa\ntarget: lina nie jest mokra",
+      "text_sha256": "d59e33c788bdd85c4ce08e7fcef926733775f3472c9e871e6d18de32d8ae9342",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "speaker: analyst\ntext: In my own test notes, “the beacon flashes” does not imply “the ferry waits”.",
+      "text_sha256": "e46984e446274170979e8d34f3fbd807ab3f2d249d3bc4288eb7f51eefb3cc8d",
+      "tokenization": {
+        "encoded_tokens": 33,
+        "truncated": false,
+        "untruncated_tokens": 33
+      }
+    },
+    {
+      "text": "speaker: analyst\ntext: In my own test notes, “the hatch is open” does not imply “the panel is lit”.",
+      "text_sha256": "28c9fb50b974b9f6c7b2bfb5e6109be5f4a810b8f6dcc74689fb275ec182e456",
+      "tokenization": {
+        "encoded_tokens": 31,
+        "truncated": false,
+        "untruncated_tokens": 31
+      }
+    },
+    {
+      "text": "speaker: analyst\ntext: In my own test notes, “the parcel is scanned” does not imply “the receipt is printed”.",
+      "text_sha256": "b21b6fb536f1d42cc28e11bfb4abf45beea7a8c32d1fd41ba5170f883ac11931",
+      "tokenization": {
+        "encoded_tokens": 34,
+        "truncated": false,
+        "untruncated_tokens": 34
+      }
+    },
+    {
+      "text": "speaker: analyst\ntext: W moich własnych notatkach „boja miga” nie implikuje „prom czeka”.",
+      "text_sha256": "727ee8aee7765677a77991e20db606c3b1024cae7f5ad87f125c36742fc26eb6",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "speaker: analyst\ntext: W moich własnych notatkach „paczka jest zeskanowana” nie implikuje „drukuje się paragon”.",
+      "text_sha256": "d29bfc0a9f57f27eb6ced0c0a8f3f0efc9b9b947ec8c99dd9b288e2ae7412584",
+      "tokenization": {
+        "encoded_tokens": 32,
+        "truncated": false,
+        "untruncated_tokens": 32
+      }
+    },
+    {
+      "text": "speaker: analyst\ntext: W moich własnych notatkach „pokrywa jest otwarta” nie implikuje „panel się świeci”.",
+      "text_sha256": "980ba75c493d62cc353dc854af7f9ca0883ad8570b3824295b8849f05c6b89cc",
+      "tokenization": {
+        "encoded_tokens": 33,
+        "truncated": false,
+        "untruncated_tokens": 33
+      }
+    },
+    {
+      "text": "speaker: author\ntext: However, “the latch is released” does not imply “the lever is down”.",
+      "text_sha256": "d2e220b12ea0ce74ef55c5e98cd358f4b1275913f0433e72dd3f62ab7550d50b",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "speaker: author\ntext: However, “the seal is broken” does not imply “the heater starts”.",
+      "text_sha256": "db71184d125593be8363ae46695198d23a671b2b8b2a9423d0d68a5a5db2b782",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "speaker: author\ntext: However, “the sky is cloudless” does not imply “the lens is capped”.",
+      "text_sha256": "d8543254a4921af7302db6af5094802ee79129646e017b1e5051d3202733949c",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "speaker: author\ntext: If the latch is released, the bolt is free.",
+      "text_sha256": "9585e916d1d55d28e7d567f3fe7add9f15a1d753b672621bff296ef296704f33",
+      "tokenization": {
+        "encoded_tokens": 19,
+        "truncated": false,
+        "untruncated_tokens": 19
+      }
+    },
+    {
+      "text": "speaker: author\ntext: If the seal is broken, the vessel loses pressure.",
+      "text_sha256": "450ae73bf33a36f4e02c00b68f7a5ff50bcb14a6cd1d678bc82739f1495a9004",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "speaker: author\ntext: If the sky is cloudless, the camera uses a short exposure.",
+      "text_sha256": "0aa0fc2ac8ba1f8962f0112268209ff35898faca7d6f57af0be0e790301a4070",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Jeśli niebo jest bezchmurne, aparat używa krótkiej ekspozycji.",
+      "text_sha256": "fd86e731151a4fa9019c4ac7f586135a20405351ccb7404c7edba779c43dc784",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Jeśli uszczelnienie jest przerwane, naczynie traci ciśnienie.",
+      "text_sha256": "d3a79b0b6f6b8d45a428d0d066f9c27fef15e3cd736da21c9a7b5c305f891bc1",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Jeśli zatrzask jest zwolniony, rygiel jest wolny.",
+      "text_sha256": "7c261249c1b29dcac63004c9c901703031d4d42a92aa64fafde6a2c1fe8fb63d",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Natomiast „niebo jest bezchmurne” nie implikuje „obiektyw jest zasłonięty”.",
+      "text_sha256": "ba6c6b52b41fd56ce02a9f7c89f305845008a86eb1fec877cc277d692cc4d247",
+      "tokenization": {
+        "encoded_tokens": 31,
+        "truncated": false,
+        "untruncated_tokens": 31
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Natomiast „uszczelnienie jest przerwane” nie implikuje „grzałka rusza”.",
+      "text_sha256": "06e53de1c04eb4464b4c377239c4a34a3af75c92b354704df27526f959272b66",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Natomiast „zatrzask jest zwolniony” nie implikuje „dźwignia jest opuszczona”.",
+      "text_sha256": "17205d69f122737997a73c9a94a5fd5bacdf4069c70bba0a19006e63cb9b55cf",
+      "tokenization": {
+        "encoded_tokens": 28,
+        "truncated": false,
+        "untruncated_tokens": 28
+      }
+    },
+    {
+      "text": "speaker: author\ntext: To restate the same rule in different words: whenever no clouds cover the sky, the shutter interval is brief.",
+      "text_sha256": "ee253ccc56a78f747398f4416b7efa3c8d8b45f3d75ae008c8ece6ad2762bfdc",
+      "tokenization": {
+        "encoded_tokens": 32,
+        "truncated": false,
+        "untruncated_tokens": 32
+      }
+    },
+    {
+      "text": "speaker: author\ntext: To restate the same rule in different words: whenever the catch no longer holds, the pin can move.",
+      "text_sha256": "646c92a73a3dfb426016795216e76e97abe34a10322e27915ba77dcc5e549998",
+      "tokenization": {
+        "encoded_tokens": 30,
+        "truncated": false,
+        "untruncated_tokens": 30
+      }
+    },
+    {
+      "text": "speaker: author\ntext: To restate the same rule in different words: whenever the closure is no longer intact, the container cannot hold its pressure.",
+      "text_sha256": "b78f8a9eea70001d9426d480a4356985bc61734ffec8e95a5c68bfb891e95973",
+      "tokenization": {
+        "encoded_tokens": 33,
+        "truncated": false,
+        "untruncated_tokens": 33
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Tę samą regułę ujmę innymi słowami: zawsze gdy chmury nie zasłaniają nieba, czas otwarcia migawki jest krótki.",
+      "text_sha256": "0d91555d12d77841018dad6a75591c86fe01b1a8bb0c74f85a614c1cf1e6812f",
+      "tokenization": {
+        "encoded_tokens": 43,
+        "truncated": false,
+        "untruncated_tokens": 43
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Tę samą regułę ujmę innymi słowami: zawsze gdy zamknięcie nie jest już szczelne, pojemnik nie utrzymuje ciśnienia.",
+      "text_sha256": "ad47898b7165a164e3d6dd11e44741405f765b2545be402f353ce14332faeb13",
+      "tokenization": {
+        "encoded_tokens": 40,
+        "truncated": false,
+        "untruncated_tokens": 40
+      }
+    },
+    {
+      "text": "speaker: author\ntext: Tę samą regułę ujmę innymi słowami: zawsze gdy zapadka już nie trzyma, trzpień może się przesuwać.",
+      "text_sha256": "6b6481328f9a1a4cda561e468b575f11995d280f329158a2e24c88cd617c9c5e",
+      "tokenization": {
+        "encoded_tokens": 39,
+        "truncated": false,
+        "untruncated_tokens": 39
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: A blocked drain causes a wet floor.",
+      "text_sha256": "a309ecaf77dd9847cf4b0875a23aa0ddfcb1d4e00c67ea0666c65250bb66ce6a",
+      "tokenization": {
+        "encoded_tokens": 17,
+        "truncated": false,
+        "untruncated_tokens": 17
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: A loose belt causes a stalled wheel.",
+      "text_sha256": "5ef323e2419044937ad34a6e0dd4b4753d8458a40909c6b09d990b7b2c4f090f",
+      "tokenization": {
+        "encoded_tokens": 18,
+        "truncated": false,
+        "untruncated_tokens": 18
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: A power dip causes a controller reset.",
+      "text_sha256": "e3de25c4e7bcf91db91808193771fa9f1bb1c464213638bc4c317316ca95406c",
+      "tokenization": {
+        "encoded_tokens": 16,
+        "truncated": false,
+        "untruncated_tokens": 16
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Correction: “a blocked drain” does not cause “a wet floor”; it causes “a flooded sump” instead.",
+      "text_sha256": "f4905b4529ff138de5eff19f3e380f370120573c7de37663463675c90f09fa69",
+      "tokenization": {
+        "encoded_tokens": 36,
+        "truncated": false,
+        "untruncated_tokens": 36
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Correction: “a loose belt” does not cause “a stalled wheel”; it causes “a squeaking pulley” instead.",
+      "text_sha256": "1b04bc97cb224c038bcf00520b20f82acea82ecc3b3b574374760e972cb26156",
+      "tokenization": {
+        "encoded_tokens": 39,
+        "truncated": false,
+        "untruncated_tokens": 39
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Correction: “a power dip” does not cause “a controller reset”; it causes “a clock drift” instead.",
+      "text_sha256": "6acad5d764eed5f9af893ee4a3fde2368bff4c2cacff32e027e25d1944ee2874",
+      "tokenization": {
+        "encoded_tokens": 34,
+        "truncated": false,
+        "untruncated_tokens": 34
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Keep the initial statement in the record. This correction was not known when I wrote it.",
+      "text_sha256": "1b7d184eb0a0b953cbd36abe6882f7fb9cdb4ee5f2f92a7e07e0193d772b4993",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Sprostowanie: „luźny pasek” nie powoduje „zatrzymane koło”; powoduje natomiast „piszczące koło pasowe”.",
+      "text_sha256": "8cdc69b4b674c59489a9ba8b7edbcfbdb525cbfcbf03ef1eb70cf8765c8d6bbd",
+      "tokenization": {
+        "encoded_tokens": 39,
+        "truncated": false,
+        "untruncated_tokens": 39
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Sprostowanie: „spadek napięcia” nie powoduje „reset sterownika”; powoduje natomiast „dryf zegara”.",
+      "text_sha256": "f9084707498894fa4a62ed9e4997b1c180d061960a71c78b80d7baec7bcef1bd",
+      "tokenization": {
+        "encoded_tokens": 32,
+        "truncated": false,
+        "untruncated_tokens": 32
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Sprostowanie: „zatkany odpływ” nie powoduje „mokra podłoga”; powoduje natomiast „zalana studzienka”.",
+      "text_sha256": "8160b6313e3983662a7bcab8e64b273273cf015c22feb713aa6e9e1a08c39511",
+      "tokenization": {
+        "encoded_tokens": 36,
+        "truncated": false,
+        "untruncated_tokens": 36
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: Zachowaj pierwszy zapis w historii. Sprostowanie nie było znane w chwili jego napisania.",
+      "text_sha256": "632b6e1ab8861f7b99445339ec7cceae4aa7459fb6011b5e03d9dd0e8a27d2ca",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: „luźny pasek” powoduje „zatrzymane koło”.",
+      "text_sha256": "ac706416d2ed8e57dda884526fecbfe0c08ab6c0483f55f7159c00a2bf8cf55d",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: „spadek napięcia” powoduje „reset sterownika”.",
+      "text_sha256": "51451d1a5cf93fc87f5fa9e0fda0ea2db1352d8520d1d90e316e59ceb7b25f99",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "speaker: owner\ntext: „zatkany odpływ” powoduje „mokra podłoga”.",
+      "text_sha256": "8ae0506e0e91738ef3feae65097057a814cc712665da4e6a13445d237d8e4475",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: I am reporting Mira's words, not endorsing the conditional.",
+      "text_sha256": "900a94f87b2018cdb3f0aa9c06f91c07588be6c500192178273001a4bec95f4e",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: I am reporting Owen's words, not endorsing the conditional.",
+      "text_sha256": "d2bb50acd6e800c88cb7ba9b40d7c3188f9d41600da27c37614c142618d89e33",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: I am reporting Priya's words, not endorsing the conditional.",
+      "text_sha256": "cfe5b3bb4e78d90408f8aa6e2cb9595b8425206550b8fa10299d36bcbbe37171",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Iga powiedział: „Jeśli boja miga, prom czeka”.",
+      "text_sha256": "e6db18d2b9c5325edab84d60082b09ade7842729d725c4c1b82cb192352d7b12",
+      "tokenization": {
+        "encoded_tokens": 20,
+        "truncated": false,
+        "untruncated_tokens": 20
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Mira powiedział: „Jeśli pokrywa jest otwarta, panel się świeci”.",
+      "text_sha256": "5d6cd2fe4e1b2a0fd36b919d4c06f15a44330f1e2a28f3edd22e874dd225cc09",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Mira said: “If the hatch is open, the panel is lit.”",
+      "text_sha256": "7e0c90032eba14d1f79cf12460325bc8cb9ddf1ba5261bdf0b168300bb6dbdf5",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Olek powiedział: „Jeśli paczka jest zeskanowana, drukuje się paragon”.",
+      "text_sha256": "549653c950180cac61c884be1777ce336d8f29dc7a1c6c90cb02a3dd55af666c",
+      "tokenization": {
+        "encoded_tokens": 27,
+        "truncated": false,
+        "untruncated_tokens": 27
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Owen said: “If the parcel is scanned, the receipt is printed.”",
+      "text_sha256": "958e1a4250f1e9e3d7d61ba6445551f3b07b335246975784df4c4849bcdd0cf8",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Priya said: “If the beacon flashes, the ferry waits.”",
+      "text_sha256": "4787a383186515066582b0b40cc2db0479ff7b3a3e6ac2fad9054052d6d6442c",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Przytaczam słowa osoby Iga; sam nie przyjmuję tego warunku.",
+      "text_sha256": "7e935420329a0c3699bdcf20688c527b0aa63b2817852965c575ccd5122e6382",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Przytaczam słowa osoby Mira; sam nie przyjmuję tego warunku.",
+      "text_sha256": "051ee7afbe7ee33d709d0ca8091c2470c28c72abf4d1ca0b0d1594dae5e95de8",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "speaker: reporter\ntext: Przytaczam słowa osoby Olek; sam nie przyjmuję tego warunku.",
+      "text_sha256": "ac51155682fa95d5a046c5b2f317a46f5b0df734f1cb82d8b6ce4fa9aba33e53",
+      "tokenization": {
+        "encoded_tokens": 26,
+        "truncated": false,
+        "untruncated_tokens": 26
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: If the gate is not locked, the courier does not leave.",
+      "text_sha256": "8637a7ca1e8937c0a544da4841de1207f310bf6583e6c40d349eb4cf988dfbc7",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: If the rope is not wet, the knot does not slip.",
+      "text_sha256": "ed8630c9f41c64c07665512a1a7f056e9273b5538189d3de342e432c94fdc728",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: If the sensor reports no error, the record is not discarded.",
+      "text_sha256": "c4fa97f570148fabbc99097a194112f98dc66bbcd4a8c5a39fd9958a2e5df260",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Jeśli brama nie jest zamknięta, kurier nie odchodzi.",
+      "text_sha256": "9988e578529f3075e7598dd8d21e09556f931b98e1d82e65c4977944effe294d",
+      "tokenization": {
+        "encoded_tokens": 22,
+        "truncated": false,
+        "untruncated_tokens": 22
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Jeśli czujnik nie zgłasza błędu, rekord nie jest odrzucany.",
+      "text_sha256": "2b516a74bf922f0343f81899bf74f688e5de982cab7ed988402d1ade57c1f779",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Jeśli lina nie jest mokra, węzeł się nie zsuwa.",
+      "text_sha256": "b630f6accface53e83dc2812e1d5054a31c9202e09454ae3cdcd57f5249f5704",
+      "tokenization": {
+        "encoded_tokens": 24,
+        "truncated": false,
+        "untruncated_tokens": 24
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Stwierdzenie „kurier nie odchodzi” nie implikuje „brama nie jest zamknięta”.",
+      "text_sha256": "49b89a4c7be24f1d7e35011b5b7a65ef2fbefdde61be849f879043a7c0613a9c",
+      "tokenization": {
+        "encoded_tokens": 29,
+        "truncated": false,
+        "untruncated_tokens": 29
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Stwierdzenie „rekord nie jest odrzucany” nie implikuje „czujnik nie zgłasza błędu”.",
+      "text_sha256": "48a8be73d2c60651c534eb39d8b78f747d01873b243b7a378b14b5bad382f1eb",
+      "tokenization": {
+        "encoded_tokens": 32,
+        "truncated": false,
+        "untruncated_tokens": 32
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Stwierdzenie „węzeł się nie zsuwa” nie implikuje „lina nie jest mokra”.",
+      "text_sha256": "4910147455c594e7db544847582533412caadd2cfc39a699effb377f7e0523b7",
+      "tokenization": {
+        "encoded_tokens": 30,
+        "truncated": false,
+        "untruncated_tokens": 30
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Ta reguła nic nie mówi o tym, czy dzwonek dzwoni.",
+      "text_sha256": "e81d5f11e979de30046ff2a26476a950fc60663f40a49a4fd69c191fa6245cff",
+      "tokenization": {
+        "encoded_tokens": 25,
+        "truncated": false,
+        "untruncated_tokens": 25
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Ta reguła nic nie mówi o tym, czy hak się wygina.",
+      "text_sha256": "77c492b0b12a737040fd42c6db5c1a4a0643801f125eef8d3e95b9252d72658a",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: Ta reguła nic nie mówi o tym, czy wentylator staje.",
+      "text_sha256": "bb345181f628fe96854f6921348d31b80739d4fedf2b79937bed2e816cf1ef3d",
+      "tokenization": {
+        "encoded_tokens": 23,
+        "truncated": false,
+        "untruncated_tokens": 23
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: The statement “the courier does not leave” does not imply “the gate is not locked”.",
+      "text_sha256": "76ae96f06391787a1fd8cabefcbee927a27b9a7ef3b74935540b0de3eeccc48a",
+      "tokenization": {
+        "encoded_tokens": 29,
+        "truncated": false,
+        "untruncated_tokens": 29
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: The statement “the knot does not slip” does not imply “the rope is not wet”.",
+      "text_sha256": "ef0261f284ac0b0f717190d629692c8b86605044d7daaf2e61182c161b445d01",
+      "tokenization": {
+        "encoded_tokens": 29,
+        "truncated": false,
+        "untruncated_tokens": 29
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: The statement “the record is not discarded” does not imply “the sensor reports no error”.",
+      "text_sha256": "864df9658ada57f09a7e7ac3f28e18006b040198d8c454da8addbe782200de79",
+      "tokenization": {
+        "encoded_tokens": 29,
+        "truncated": false,
+        "untruncated_tokens": 29
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: This rule says nothing about whether the bell rings.",
+      "text_sha256": "0f9f0312205fbbba7c06804cc5fd15063ded206199848e7c2d01f34160d95694",
+      "tokenization": {
+        "encoded_tokens": 18,
+        "truncated": false,
+        "untruncated_tokens": 18
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: This rule says nothing about whether the fan stops.",
+      "text_sha256": "669bb7256057a3e6dc180aca003cf14b84ff7b3d474c53b7e628eff49f0f7581",
+      "tokenization": {
+        "encoded_tokens": 18,
+        "truncated": false,
+        "untruncated_tokens": 18
+      }
+    },
+    {
+      "text": "speaker: tester\ntext: This rule says nothing about whether the hook bends.",
+      "text_sha256": "f22d30ed5b2d3f73d89f93e6620f80b30d8ca7f59503af9eda14ff3cf191eed9",
+      "tokenization": {
+        "encoded_tokens": 18,
+        "truncated": false,
+        "untruncated_tokens": 18
+      }
+    }
+  ],
+  "schema": "loom.research.graph_local_text_vector_index/1"
+}

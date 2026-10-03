@@ -1,0 +1,236 @@
+[
+  {
+    "branch": "archive/2026-10-01/handoff-source",
+    "sha": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "archive/2026-10-02/handoff-complete",
+    "sha": "9626969bce806b2270d764ebdea3a8e139453de3",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "chore/repo-hygiene-2026-09",
+    "sha": "970ca2836177c561796d393e454dfb37f173809b",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "claude/chataddhd-cpp-loom-core-IRGRN",
+    "sha": "46066308ac6306a1b30f65b98e19a40da6df7e9c",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "claude/restore-lost-features-adK74",
+    "sha": "287bdc1dea06c266837f88041250a70a95521d85",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "codex/loom-handoff-2026-09-28",
+    "sha": "816406722257d70431cc2acadaac313f0503b48c",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "eval/real-holdout-key",
+    "sha": "0fcf2402f60fdf394c0c74c4eb128353d536db0b",
+    "isolated_evaluation": true,
+    "anchored_history": false
+  },
+  {
+    "branch": "gpt/continuity-audit-2026-09-30",
+    "sha": "6828216b23b465f59055ccd8ae3e665abf6bce97",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/ecosystem-agent-research-2026-10-01",
+    "sha": "157762ef60be8b14fe75c6a9c922d6df7ffe97a1",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/integration-w1-w6-2026-10-01",
+    "sha": "926072ce43b8de21a42a3abe439a7781598136f6",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/night-development-2026-10-01",
+    "sha": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/night2-resources-2026-10-01",
+    "sha": "6c883f3665d1c0151c7b25f0e480817dfc40cc20",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/offline-2026-09-29",
+    "sha": "31f130cd38f25a1d523194ddac93c2ba713bbd07",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/research-2026-09-30",
+    "sha": "c19bac2918636a2a69e8b52cabc49b9cf3f7ec6f",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/w1-active-task-2026-09-30",
+    "sha": "803eb78a8b49ece8b5d7e765f99fdd0f495caf4b",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/w2-retrieval-2026-09-30",
+    "sha": "f6b44f6059777892474b45e54e7fae516bd1eb04",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/w3-model-recipes-2026-09-30",
+    "sha": "078378d5fa65225b5978e2641dd1849cd4830536",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/w4-graph-runtime-2026-09-30",
+    "sha": "e7000a9beda08769254f1893da5ed3a5097bfe58",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/w5-workspace-2026-09-30",
+    "sha": "ecf6931bdde797799d2a1081ff898d3d0f1d3c8c",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "gpt/w6-evidence-2026-09-30",
+    "sha": "84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "main",
+    "sha": "b5f7eacdead11101e5c2a08e1864195c74034d45",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/catalog-finish",
+    "sha": "89e40933e5d7ccbbd9868b533769194dc4716ae4",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/catalog-r3",
+    "sha": "bf057541a45b9c8fa2fbeac478b374ffdc5fbcc0",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/continuation-2026-09-30",
+    "sha": "a79862837c6726f534471f8dbcdccfe749dfb942",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/determinism-fix",
+    "sha": "3486fd2e69411d2932f7b1b98f6d4fa1fcbca7eb",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/export-finish",
+    "sha": "af6d3e898cce26fb4a6a5a98e3e4216162a83123",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/precision",
+    "sha": "de3b9203253ddfdf30e02ea26881a1bcba7077c8",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/resolve-finish",
+    "sha": "bcc77fb27861f093e2e0c48a19bb519e362a16da",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-a06d7260ba8b658cc",
+    "sha": "2554bcc045ede3cc7f7014b37bf210d7e59c3681",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-a342fccb481c4116c",
+    "sha": "5d85034e2353a3a6e2b2beacd1549b8cd0566584",
+    "isolated_evaluation": true,
+    "anchored_history": false
+  },
+  {
+    "branch": "wip/worktree-agent-a382d0e063192b5ed",
+    "sha": "90113a906fe4180532eeadef3a2037b322472683",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-a436abbcd1b794a18",
+    "sha": "819de58fbca5daed4c4ed840ef1b250230c22f0a",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-a56d696101c89a58c",
+    "sha": "453207ae6142b0ada53af1dabebe54c82a8a842e",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-a822af86e44b82241",
+    "sha": "eae85871269458753a850d05bab7eb44ff378425",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-a8df74a3ca608a703",
+    "sha": "d14535a0a944324caf671fdd796b582e928a5882",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-a90a2e07c062c7efc",
+    "sha": "dccaf9bdf1d981de2ddbb1184079bb954dc96990",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-ab76c2dece93103a1",
+    "sha": "2d8826fec26331aa293a0c0110cc9912495b7671",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-ac45c7e794faf4cb0",
+    "sha": "2de5d16f0b773055357dd4022b57c3c6aafbcc15",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  },
+  {
+    "branch": "wip/worktree-agent-ace3dd50eb645ccb0",
+    "sha": "da7b34f5714f76f7ddbffe689379d1847427742b",
+    "isolated_evaluation": false,
+    "anchored_history": true
+  }
+]

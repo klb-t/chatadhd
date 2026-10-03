@@ -1,0 +1,858 @@
+{
+ "schema": "loom.kb.project_kind/1",
+ "id": "film",
+ "version": 1,
+ "title": {
+  "en": "Film",
+  "pl": "Film"
+ },
+ "description": "A film being made: premise and style, acts/scenes/shots, characters, locations, props, motifs, citations, timeline, screenplay/storyboard/clips, render and edit passes, continuity and consistency checks, cuts (note §6 'Film', R8). Seeded from the 0.9.0 FilmStructure IR (history/chatadhd_v0.9.0/data/schemas/film_structure.json): its characters, locations, props, motifs, citations, mood_board, scenes (subjects, camera, lighting, transitions, variations, state) are domain kinds and slots here.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "history/chatadhd_v0.9.0/data/schemas/film_structure.json",
+   "date": "2026-04-17",
+   "section": "FilmStructure"
+  },
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R8"
+  },
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Film"
+  },
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "Moduły: film_structure.json"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "film"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.film",
+    "min": 2
+   }
+  ],
+  "min_score": 0.4
+ },
+ "domain_kinds": [
+  {
+   "id": "premise",
+   "role": "intent",
+   "labels": {
+    "en": "Logline / premise / synopsis",
+    "pl": "Logline / założenie / synopsis"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_premise",
+   "anchors": {
+    "terms": {
+     "en": [
+      "logline",
+      "premise",
+      "synopsis"
+     ],
+     "pl": [
+      "logline",
+      "założenie",
+      "streszczenie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "audience",
+   "role": "intent",
+   "labels": {
+    "en": "Audience",
+    "pl": "Widownia"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "has_audience",
+   "anchors": {
+    "terms": {
+     "en": [
+      "audience",
+      "viewers"
+     ],
+     "pl": [
+      "widz",
+      "widownia"
+     ]
+    }
+   }
+  },
+  {
+   "id": "style_manifesto",
+   "role": "constraint",
+   "labels": {
+    "en": "Style manifesto",
+    "pl": "Manifest stylu"
+   },
+   "value_type": "text",
+   "card": "many",
+   "relation": "has_style",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "style",
+      "look",
+      "aesthetic"
+     ],
+     "pl": [
+      "styl",
+      "estetyka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "genre_rule",
+   "role": "constraint",
+   "labels": {
+    "en": "Genre rule / rating / budget",
+    "pl": "Reguła gatunku / budżet"
+   },
+   "entity_kind": "genre_rule",
+   "card": "many",
+   "relation": "has_rule",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "genre",
+      "rating",
+      "budget",
+      "duration"
+     ],
+     "pl": [
+      "gatunek",
+      "budżet",
+      "czas trwania"
+     ]
+    }
+   }
+  },
+  {
+   "id": "act",
+   "role": "part",
+   "labels": {
+    "en": "Act",
+    "pl": "Akt"
+   },
+   "entity_kind": "act",
+   "card": "many",
+   "relation": "has_act",
+   "relations": [
+    {
+     "rel": "precedes",
+     "target": "act"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "act"
+     ],
+     "pl": [
+      "akt"
+     ]
+    }
+   }
+  },
+  {
+   "id": "scene",
+   "role": "part",
+   "labels": {
+    "en": "Scene",
+    "pl": "Scena"
+   },
+   "entity_kind": "scene",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_scene",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "act"
+    },
+    {
+     "rel": "precedes",
+     "target": "scene"
+    },
+    {
+     "rel": "uses",
+     "target": "location"
+    },
+    {
+     "rel": "uses",
+     "target": "prop"
+    },
+    {
+     "rel": "uses",
+     "target": "citation"
+    },
+    {
+     "rel": "uses",
+     "target": "mood_ref"
+    }
+   ],
+   "slots": [
+    {
+     "name": "narrative_order",
+     "type": "string",
+     "card": "one"
+    },
+    {
+     "name": "duration_seconds",
+     "type": "string",
+     "card": "one"
+    },
+    {
+     "name": "synopsis",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "camera",
+     "type": "text",
+     "card": "one",
+     "description": "camera path, lens, fov (FilmStructure camera)"
+    },
+    {
+     "name": "lighting",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "state",
+     "type": "enum:scene_state",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "scene"
+     ],
+     "pl": [
+      "scena",
+      "scen"
+     ]
+    }
+   }
+  },
+  {
+   "id": "shot",
+   "role": "part",
+   "labels": {
+    "en": "Shot",
+    "pl": "Ujęcie"
+   },
+   "entity_kind": "shot",
+   "card": "many",
+   "relation": "has_shot",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "shot"
+     ],
+     "pl": [
+      "ujęcie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "character",
+   "role": "actor",
+   "labels": {
+    "en": "Character",
+    "pl": "Postać"
+   },
+   "entity_kind": "character",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_character",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "scene"
+    }
+   ],
+   "slots": [
+    {
+     "name": "role",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "appearance",
+     "type": "text",
+     "card": "one"
+    },
+    {
+     "name": "voice_profile",
+     "type": "text",
+     "card": "one"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "character",
+      "protagonist"
+     ],
+     "pl": [
+      "postać",
+      "bohater"
+     ]
+    }
+   }
+  },
+  {
+   "id": "location",
+   "role": "resource",
+   "labels": {
+    "en": "Location",
+    "pl": "Lokacja"
+   },
+   "entity_kind": "location",
+   "card": "many",
+   "relation": "has_location",
+   "anchors": {
+    "terms": {
+     "en": [
+      "location",
+      "set"
+     ],
+     "pl": [
+      "lokacja",
+      "plener"
+     ]
+    }
+   }
+  },
+  {
+   "id": "prop",
+   "role": "resource",
+   "labels": {
+    "en": "Prop",
+    "pl": "Rekwizyt"
+   },
+   "entity_kind": "prop",
+   "card": "many",
+   "relation": "has_prop",
+   "anchors": {
+    "terms": {
+     "en": [
+      "prop"
+     ],
+     "pl": [
+      "rekwizyt"
+     ]
+    }
+   }
+  },
+  {
+   "id": "mood_ref",
+   "role": "resource",
+   "labels": {
+    "en": "Portfolio / mood reference",
+    "pl": "Referencja (portfolio, mood board)"
+   },
+   "entity_kind": "mood_ref",
+   "card": "many",
+   "relation": "has_reference",
+   "anchors": {
+    "terms": {
+     "en": [
+      "mood board",
+      "portfolio",
+      "reference"
+     ],
+     "pl": [
+      "moodboard",
+      "portfolio",
+      "referencja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "citation",
+   "role": "resource",
+   "labels": {
+    "en": "Citation",
+    "pl": "Cytat"
+   },
+   "entity_kind": "citation",
+   "card": "many",
+   "relation": "has_citation",
+   "anchors": {
+    "terms": {
+     "en": [
+      "quote",
+      "citation",
+      "homage"
+     ],
+     "pl": [
+      "cytat",
+      "hołd"
+     ]
+    }
+   }
+  },
+  {
+   "id": "transition",
+   "role": "interface",
+   "labels": {
+    "en": "Transition / cut",
+    "pl": "Przejście / cięcie"
+   },
+   "entity_kind": "transition",
+   "card": "many",
+   "relation": "has_transition",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "cut",
+      "dissolve",
+      "fade",
+      "match cut"
+     ],
+     "pl": [
+      "cięcie",
+      "przenikanie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "motif",
+   "role": "flow",
+   "labels": {
+    "en": "Motif",
+    "pl": "Motyw"
+   },
+   "entity_kind": "motif",
+   "card": "many",
+   "relation": "has_motif",
+   "relations": [
+    {
+     "rel": "recurs_in",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "motif",
+      "leitmotif"
+     ],
+     "pl": [
+      "motyw"
+     ]
+    }
+   }
+  },
+  {
+   "id": "plot_link",
+   "role": "flow",
+   "labels": {
+    "en": "Plot causality",
+    "pl": "Związek fabularny"
+   },
+   "entity_kind": "plot_link",
+   "card": "many",
+   "relation": "has_plot_link",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "because",
+      "leads to",
+      "plot"
+     ],
+     "pl": [
+      "fabuła",
+      "prowadzi do"
+     ]
+    }
+   }
+  },
+  {
+   "id": "timeline_event",
+   "role": "event",
+   "labels": {
+    "en": "Timeline event",
+    "pl": "Zdarzenie na osi czasu"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "timeline"
+     ],
+     "pl": [
+      "oś czasu"
+     ]
+    }
+   }
+  },
+  {
+   "id": "screenplay",
+   "role": "artifact",
+   "labels": {
+    "en": "Screenplay",
+    "pl": "Scenariusz"
+   },
+   "entity_kind": "screenplay",
+   "card": "one",
+   "relation": "has_screenplay",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "screenplay",
+      "script"
+     ],
+     "pl": [
+      "scenariusz",
+      "scenopis"
+     ]
+    }
+   }
+  },
+  {
+   "id": "storyboard",
+   "role": "artifact",
+   "labels": {
+    "en": "Storyboard",
+    "pl": "Storyboard"
+   },
+   "entity_kind": "storyboard",
+   "card": "many",
+   "relation": "has_storyboard",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "storyboard"
+     ],
+     "pl": [
+      "storyboard"
+     ]
+    }
+   }
+  },
+  {
+   "id": "clip",
+   "role": "artifact",
+   "labels": {
+    "en": "Keyframe / clip",
+    "pl": "Klatka kluczowa / klip"
+   },
+   "entity_kind": "clip",
+   "card": "many",
+   "relation": "has_clip",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "shot"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "keyframe",
+      "clip"
+     ],
+     "pl": [
+      "klatka",
+      "klip"
+     ]
+    }
+   }
+  },
+  {
+   "id": "render_pass",
+   "role": "transformation",
+   "labels": {
+    "en": "Render / generation",
+    "pl": "Render / generowanie"
+   },
+   "entity_kind": "render_pass",
+   "card": "many",
+   "relation": "has_render_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "clip"
+    },
+    {
+     "rel": "consumes",
+     "target": "storyboard"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "render",
+      "generate"
+     ],
+     "pl": [
+      "render",
+      "generowanie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "edit_pass",
+   "role": "transformation",
+   "labels": {
+    "en": "Edit / compose",
+    "pl": "Montaż"
+   },
+   "entity_kind": "edit_pass",
+   "card": "many",
+   "relation": "has_edit_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "cut"
+    },
+    {
+     "rel": "consumes",
+     "target": "clip"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "edit",
+      "compose",
+      "compositor"
+     ],
+     "pl": [
+      "montaż"
+     ]
+    }
+   }
+  },
+  {
+   "id": "continuity_check",
+   "role": "check",
+   "labels": {
+    "en": "Continuity check",
+    "pl": "Kontrola ciągłości"
+   },
+   "entity_kind": "continuity_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "scene"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "continuity"
+     ],
+     "pl": [
+      "ciągłość"
+     ]
+    }
+   }
+  },
+  {
+   "id": "consistency_check",
+   "role": "check",
+   "labels": {
+    "en": "Character / structure consistency",
+    "pl": "Spójność postaci i struktury"
+   },
+   "entity_kind": "consistency_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "character"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "consistency",
+      "critic"
+     ],
+     "pl": [
+      "spójność",
+      "krytyk"
+     ]
+    }
+   }
+  },
+  {
+   "id": "cut",
+   "role": "output",
+   "labels": {
+    "en": "Cut / export",
+    "pl": "Wersja montażowa / eksport"
+   },
+   "entity_kind": "cut",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "premise"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "final cut",
+      "rough cut",
+      "export"
+     ],
+     "pl": [
+      "wersja montażowa",
+      "eksport"
+     ]
+    }
+   }
+  },
+  {
+   "id": "creative_decision",
+   "role": "decision",
+   "labels": {
+    "en": "Creative decision",
+    "pl": "Decyzja twórcza"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "scene"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "decision",
+     "scope": "subject"
+    }
+   ]
+  },
+  {
+   "id": "plot_question",
+   "role": "question",
+   "labels": {
+    "en": "Unresolved plot point",
+    "pl": "Nierozstrzygnięty wątek"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "scene"
+    }
+   ],
+   "bind": [
+    {
+     "kind": "items",
+     "type": "open_question",
+     "scope": "subject"
+    }
+   ]
+  }
+ ],
+ "constraints": [
+  {
+   "id": "film.c1",
+   "expr": {
+    "op": "nonempty",
+    "args": [
+     "$slot:scene"
+    ]
+   },
+   "on_violation": "extend",
+   "why": "a film instance without scenes is a premise only; the scene slot is flagged absent"
+  }
+ ],
+ "rules": [
+  "r.project_status"
+ ]
+}

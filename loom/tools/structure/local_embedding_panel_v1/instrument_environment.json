@@ -1,0 +1,20 @@
+{
+  "schema": "loom.local_embedding_panel.environment/1",
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "onnxruntime": "1.23.2",
+    "tokenizers": "0.22.1",
+    "protobuf": "7.36.2",
+    "sympy": "1.14.0",
+    "packaging": "26.3",
+    "huggingface-hub": "1.33.0"
+  },
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "provider": "CPUExecutionProvider",
+  "threads": 2,
+  "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+  "code_sha256": "d52a2708a90358fb5d696b4e7b5839eb3bcbccc08f0cc38714bc038f9f315614",
+  "model_manifest_sha256": "0c6d998b882dfb0773f165efe1d8339d63a8888b5d9c1f3fd4390382a0b6856d"
+}

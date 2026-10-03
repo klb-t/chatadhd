@@ -1,0 +1,79 @@
+{
+  "schema": "loom.kb.thresholds/1",
+  "description": "Numeric policy for every area. Changing a value changes the pack hash, so every dependent stage recomputes deterministically. Values here are priors; the learning track fits candidates on the dev corpus and promotes them only without regression on holdout.",
+  "catalog": {
+    "context_window_tokens": 30,
+    "tau_relevant": 0.7,
+    "tau_candidate": 0.35,
+    "max_expansion_passes": 3,
+    "expansion_min_lift": 3.0,
+    "expansion_min_df_relevant": 3,
+    "expansion_max_terms_per_pass": 16,
+    "link_minhash_jaccard": 0.4,
+    "link_shared_rare_terms": 3,
+    "link_same_session_hours": 2,
+    "link_damping": 0.6,
+    "project_share_ratio": 0.25,
+    "verify_max_units": 3000,
+    "neighbour_time_hours": 48,
+    "neighbour_sketch_jaccard": 0.3,
+    "sem_ngram": 4,
+    "sem_floor_percentile": 10,
+    "sem_ref_percentile": 75,
+    "sem_cap": 1.5,
+    "sem_min_seeds": 2,
+    "sem_passes": 2,
+    "sem_self_doc_weight": 0.5,
+    "link_exact_max_units": 0,
+    "link_session_max_neighbours": 32,
+    "link_project_max_clique": 32,
+    "link_session_similarity_ref": 0.15
+  },
+  "concepts": {
+    "min_units": 2,
+    "max_phrase_tokens": 4,
+    "merge_tau": 0.6,
+    "fuzzy_trigram_jaccard": 0.6,
+    "fuzzy_min_chars": 6,
+    "split_guard_bimodality": 0.35,
+    "mentions_cap_per_entity_unit": 32,
+    "related_to_min_pmi": 2.0,
+    "version_bind_window_tokens": 12
+  },
+  "paradigm": {
+    "tau_observed": 0.5,
+    "tau_inferred": 0.55,
+    "extrapolation_cap": 0.5,
+    "conflict_runner_up_ratio": 0.8,
+    "analogy_min_similarity": 0.4,
+    "analogy_max_depth": 1,
+    "required_slot_weight_multiplier": 2.0
+  },
+  "status": {
+    "abandoned_after_days": 180,
+    "paused_after_days": 60,
+    "explicit_cue_min_weight": 1.5
+  },
+  "principles": {
+    "cluster_jaccard": 0.5,
+    "seed_match_overlap": 0.5,
+    "min_units": 2,
+    "min_distinct_dates": 2
+  },
+  "atlas": {
+    "node_budget_phone": 60,
+    "node_budget_desktop": 250,
+    "doi_lambda": 0.8,
+    "hide_related_above_level": 3,
+    "layout_iterations": 300
+  },
+  "review": {
+    "queue_default_limit": 20,
+    "candidate_min_repeats": 3
+  },
+  "llm": {
+    "slot_band_low": 0.2,
+    "max_window_bytes": 3072,
+    "self_disable_after_failures": 5
+  }
+}

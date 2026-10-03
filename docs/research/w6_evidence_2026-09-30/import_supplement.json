@@ -1,0 +1,74 @@
+{
+  "note": "Supplementary interpretation, not replacement of first frozen checks. Stored ZIP recovery satisfies byte availability without requiring duplicate member blobs.",
+  "checks": [
+    {
+      "case": "openai",
+      "member": "conversations.json",
+      "bytes": 2927,
+      "sha256": "71a7382c50253a498c28dda1ee7b0bd3ebc63c122b46b695fc77d6a6c51570d5",
+      "recoverable_from_stored_zip": true
+    },
+    {
+      "case": "openai",
+      "member": "file-W6audit-dane.bin",
+      "bytes": 260,
+      "sha256": "498d18d2a7fad5338d9f751ffe0b06b81e387f6d9961f2db531c1c9cb35acb63",
+      "recoverable_from_stored_zip": true
+    },
+    {
+      "case": "openai",
+      "member": "file-W6orphan.bin",
+      "bytes": 8,
+      "sha256": "a6625992f5488de770042ef6864481a8b1f3d815d13dd52be0ec527073f82c68",
+      "recoverable_from_stored_zip": true
+    },
+    {
+      "case": "openai",
+      "member": "future-unknown.json",
+      "bytes": 146,
+      "sha256": "f6996f61a9e24eaad6ae503c05c372b95fb1a80347f99adc574ea0cb4da52e45",
+      "recoverable_from_stored_zip": true
+    },
+    {
+      "case": "anthropic",
+      "member": "conversations.json",
+      "bytes": 4131,
+      "sha256": "1e9112c0d9553f0038ccb86033012141631cc48a4cc49d9664a0eb480cd4fe9a",
+      "recoverable_from_stored_zip": true
+    },
+    {
+      "case": "anthropic",
+      "member": "unknown-member.bin",
+      "bytes": 10,
+      "sha256": "37fa384ab99cf644e5907ffcd3e1e276e5b21c8a6e985d014b3639cbe12952ff",
+      "recoverable_from_stored_zip": true
+    },
+    {
+      "case": "anthropic",
+      "member": "future-unknown.json",
+      "bytes": 146,
+      "sha256": "f6996f61a9e24eaad6ae503c05c372b95fb1a80347f99adc574ea0cb4da52e45",
+      "recoverable_from_stored_zip": true
+    }
+  ],
+  "binary_build_home": "/workspace/scratch/a371a1ca13b1/chatadhd/loom",
+  "build_source_head": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "build_source_git_status": "",
+  "import_source_hashes": {
+    "loom/src/import/export_anthropic.cpp": "50bea94d338e33c3225aa6fb58947ae1e04c8db2da3e3d0097571f4336384a7e",
+    "loom/src/import/export_archive.cpp": "c05118951bd5fdfc801990e3204a6899788a3adb3a04e1464875f41a5e064fc1",
+    "loom/src/import/export_common.cpp": "bb47f202fe8f8da4bc56b2e2574a8462fd239fc5e1f075e919509b6e9ec89440",
+    "loom/src/import/export_openai.cpp": "ba28fd694030303f047db2b1539cb43160f452d62896c662ebc94711913b8f76",
+    "loom/src/import/export_unknown.cpp": "e44cc4edf311610a35a644566b634d906ba26387e27e049c9b0c07ec85fb8b80",
+    "loom/src/import/exporter.cpp": "c0d3e97476fa04627085c7b9262e45f1ba91fdfc2ab54a5ebfe3bfb6b5d8a746",
+    "loom/src/import/importer_common.cpp": "75dcbc391a918526c4621fde6768d73c971cc03597320215e232cc1bd2c833b2",
+    "loom/src/import/importer_core.cpp": "086dce076345153655a53a0ddd64408fba584d913e872ab1ef6663ca91432b7a",
+    "loom/src/import/importer_html.cpp": "4263d0cfaa37631f4364fce7d66a12b7f30489ac5743706cd410f7806c85f27e",
+    "loom/src/import/importer_json.cpp": "aff781bed3d5742bf4fccf491d5effeb6e0de0b5757521bdef245d19c7907570",
+    "loom/src/import/importer_sqlite.cpp": "e387cfd5386a2977409f9775828706f6d259c0c5237a5596e053bba264fe4c76",
+    "loom/src/import/importer_text.cpp": "1e8d732e6d8333245936d70b0b2417e69de6186be6687eee03f858b34954ee3c",
+    "loom/src/import/importer_zip.cpp": "e57aefd825c3d31116d261c9eae3dd7335d58a85447e77817a2da3865d028794"
+  },
+  "all_import_cpp_bytes_equal_baseline_checkout": true,
+  "ldd": "\tlinux-vdso.so.1 (0x00007fa38072f000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007fa37f609000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007fa37f0f6000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fa37ee78000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fa37ed8f000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fa37ed61000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fa37eb4d000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fa380731000)\n"
+}

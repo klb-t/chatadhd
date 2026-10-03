@@ -1,0 +1,175 @@
+[
+  {
+    "uuid": "an-independent",
+    "name": "W6 kolejność",
+    "current_leaf_message_uuid": "child/~current",
+    "future": {
+      "tilde~/key": [
+        false,
+        0,
+        null,
+        {},
+        [],
+        "Zażółć 🧪 é é \u0000 końcówka"
+      ]
+    },
+    "chat_messages": [
+      {
+        "uuid": "child/~current",
+        "parent_message_uuid": "parent",
+        "sender": "assistant",
+        "text": "Nowa decyzja",
+        "created_at": "2026-09-30T12:00:00Z",
+        "content": [
+          {
+            "type": "text",
+            "text": "Nowa decyzja"
+          },
+          {
+            "type": "future_widget",
+            "payload": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        ],
+        "attachments": [
+          {
+            "file_name": "notatki.txt",
+            "extracted_content": "Cytat nie jest stanowiskiem autora.",
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        ],
+        "future": {
+          "tilde~/key": [
+            false,
+            0,
+            null,
+            {},
+            [],
+            "Zażółć 🧪 é é \u0000 końcówka"
+          ]
+        }
+      },
+      {
+        "uuid": "parent",
+        "parent_message_uuid": null,
+        "sender": "human",
+        "text": "Wyjątek: tylko syntetyczne dane.",
+        "created_at": "2026-09-30T12:00:00Z",
+        "content": [
+          {
+            "type": "text",
+            "text": "Wyjątek: tylko syntetyczne dane."
+          },
+          {
+            "type": "future_widget",
+            "payload": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        ],
+        "attachments": [
+          {
+            "file_name": "notatki.txt",
+            "extracted_content": "Cytat nie jest stanowiskiem autora.",
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        ],
+        "future": {
+          "tilde~/key": [
+            false,
+            0,
+            null,
+            {},
+            [],
+            "Zażółć 🧪 é é \u0000 końcówka"
+          ]
+        }
+      },
+      {
+        "uuid": "child/rejected",
+        "parent_message_uuid": "parent",
+        "sender": "assistant",
+        "text": "Poprzednia propozycja",
+        "created_at": "2026-09-30T12:00:00Z",
+        "content": [
+          {
+            "type": "text",
+            "text": "Poprzednia propozycja"
+          },
+          {
+            "type": "future_widget",
+            "payload": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        ],
+        "attachments": [
+          {
+            "file_name": "notatki.txt",
+            "extracted_content": "Cytat nie jest stanowiskiem autora.",
+            "future": {
+              "tilde~/key": [
+                false,
+                0,
+                null,
+                {},
+                [],
+                "Zażółć 🧪 é é \u0000 końcówka"
+              ]
+            }
+          }
+        ],
+        "future": {
+          "tilde~/key": [
+            false,
+            0,
+            null,
+            {},
+            [],
+            "Zażółć 🧪 é é \u0000 końcówka"
+          ]
+        }
+      }
+    ]
+  }
+]

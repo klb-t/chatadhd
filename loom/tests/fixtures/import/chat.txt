@@ -1,0 +1,5 @@
+Human: plain text export, question one
+Assistant: answer one
+spanning two lines
+User: question two
+AI: answer two

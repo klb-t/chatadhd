@@ -1,0 +1,14 @@
+{
+  "files": {
+    "embedding_protocol.json": "5c0fcd75a8d89501e47616e37bb31da4f3cb89f8e541bb0edb9615f1853cdc7a",
+    "embedding_scores.json": "1b5a6e6ce5917bea54f404295aa268e459731ad0d7b20b8262f18d140989f8d0",
+    "first_scores.json": "e14101ae63eb240ec372ef10c49aa566621233da55b577f474b48ac8f751b0fa",
+    "prepared_inputs.json": "a731fc297470feac3cb0180a62d153a1963daf68704a56d50621379c2da12d15",
+    "text_vector_index.json": "b24b51edd182bb8614806d7e5eeb839cf0b6276a3cb20dbcd38cc313b9adbad4",
+    "vectors.npy": "b7bf631107ff8e8733971e85df5d51f538d6d0ff8ba089c87a86fff876f3fe79"
+  },
+  "gold_accessed_by_wrapper": false,
+  "release_sha256": "bc4d6afdca9cb99a2a660d1e3a90829654cf667ada0dd77de38b6e2eb588bdcd",
+  "schema": "loom.graph_local_generic_before_gold/1",
+  "split": "dev"
+}

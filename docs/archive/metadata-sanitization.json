@@ -1,0 +1,21 @@
+{
+  "schema": "chatadhd.sanitized_commit_metadata/1",
+  "input_bundle_sha256": "bd046c58f21e4bd01ce8b5287adfe0b0a286f34c7e3a3ad4dafaefed5dcad086",
+  "allowed_ref_count": 42,
+  "excluded_opaque_ref_count": 2,
+  "verified_commit_count": 404,
+  "rehashed_commit_count": 404,
+  "target_commit_count": 26,
+  "changed_identity_header_count": 52,
+  "stripped_signature_or_mergetag_headers": 196,
+  "source_trees_unchanged": true,
+  "ordered_parent_topology_preserved": true,
+  "commit_dates_preserved": true,
+  "commit_messages_preserved": true,
+  "target_contact_metadata_absent": true,
+  "original_refs_absent": true,
+  "sanitized_main": "bdabd804bcfe17da6c86b2236f04b6dd5071e41d",
+  "stripped_header_counts": {
+    "gpgsig": 196
+  }
+}

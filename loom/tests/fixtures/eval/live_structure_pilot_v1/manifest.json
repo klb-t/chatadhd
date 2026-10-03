@@ -1,0 +1,214 @@
+{
+  "schema": "loom.live_structure_pilot_manifest/1",
+  "created": "2026-09-28",
+  "provenance": "Fresh author-written synthetic English/Polish minimal sentences. No existing hidden holdout or model inference used.",
+  "frozen_before_inference": true,
+  "pre_inference_revision": {
+    "reason": "Replaced descriptive prompt-visible IDs with opaque IDs to prevent structure-label leakage. No provider inference preceded this revision; mechanical reference-projection tests had run.",
+    "supersedes_manifest_sha256": "84fab46a79d56f1eb99f10bebab6fdf3a2a74ed807a302015a005f7603be5df6"
+  },
+  "case_count": 32,
+  "families": 16,
+  "split_unit": "template family, including both language versions",
+  "scope": "Small controlled diagnostic extraction pilot. Composition families are split; primitive operations and vocabulary can overlap. Not a natural-conversation generalization benchmark.",
+  "files_sha256": {
+    "gold.dev.json": "8c1318969d99e615d043648ee8788fbd8970271d2b5f1cb5d513fd4fe66b7c78",
+    "gold.validation.json": "3bd040c23eb518152288a3843ae5c48ecc5d1d029ec2103f706c8f60dbc0f49d",
+    "inputs.dev.json": "01c544aa3937152b6f698a1a8f509bf831c8bb4d02126b54769e1cf97f198085",
+    "inputs.validation.json": "78e52712d8badd57615efbaa41d415eaca866c6b83d314b9ac4595c7fa841381"
+  },
+  "cases": [
+    {
+      "case_id": "case_001_en",
+      "family": "binary_agent_patient",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_001_pl",
+      "family": "binary_agent_patient",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_002_en",
+      "family": "unary_negation",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_002_pl",
+      "family": "unary_negation",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_003_en",
+      "family": "plain_conditional",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_003_pl",
+      "family": "plain_conditional",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_004_en",
+      "family": "conjoined_unary",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_004_pl",
+      "family": "conjoined_unary",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_005_en",
+      "family": "quoted_binary",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_005_pl",
+      "family": "quoted_binary",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_006_en",
+      "family": "universal_implication",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_006_pl",
+      "family": "universal_implication",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_007_en",
+      "family": "existential_conjunction",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_007_pl",
+      "family": "existential_conjunction",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_008_en",
+      "family": "ambiguous_pronoun",
+      "language": "en",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_008_pl",
+      "family": "ambiguous_pronoun",
+      "language": "pl",
+      "split": "dev"
+    },
+    {
+      "case_id": "case_009_en",
+      "family": "negation_over_conjunction",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_009_pl",
+      "family": "negation_over_conjunction",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_010_en",
+      "family": "negated_condition",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_010_pl",
+      "family": "negated_condition",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_011_en",
+      "family": "negated_consequence",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_011_pl",
+      "family": "negated_consequence",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_012_en",
+      "family": "nested_conditionals",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_012_pl",
+      "family": "nested_conditionals",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_013_en",
+      "family": "quoted_negated_binary",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_013_pl",
+      "family": "quoted_negated_binary",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_014_en",
+      "family": "universal_negation",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_014_pl",
+      "family": "universal_negation",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_015_en",
+      "family": "existential_implication",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_015_pl",
+      "family": "existential_implication",
+      "language": "pl",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_016_en",
+      "family": "ambiguous_attachment",
+      "language": "en",
+      "split": "validation"
+    },
+    {
+      "case_id": "case_016_pl",
+      "family": "ambiguous_attachment",
+      "language": "pl",
+      "split": "validation"
+    }
+  ]
+}

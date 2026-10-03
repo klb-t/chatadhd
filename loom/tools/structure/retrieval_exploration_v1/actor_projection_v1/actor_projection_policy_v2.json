@@ -1,0 +1,30 @@
+{
+  "schema": "loom.research.native_raw_actor_projection_policy/2",
+  "supported_source_format": "frozen_synthetic_openai_wrapper",
+  "actor_paths_relative_to_message": [
+    "/author/name",
+    "/metadata/loom_source_speaker"
+  ],
+  "source_id_paths_relative_to_message": [
+    "/metadata/loom_source_id"
+  ],
+  "source_id_paths_relative_to_document": [
+    "/metadata/loom_source_id"
+  ],
+  "turn_id_paths_relative_to_message": [
+    "/id",
+    "/metadata/loom_source_turn_id"
+  ],
+  "source_known_at_path_relative_to_message": "/metadata/loom_source_known_at",
+  "transport_role_path_relative_to_message": "/author/role",
+  "conflict_policy": "abstain_per_field",
+  "missing_policy": "unknown_per_field",
+  "role_fallback_for_actor": false,
+  "identity_semantics": "literal_source_actor_label_not_verified_world_identity",
+  "actor_epistemic_status": "source_recorded",
+  "cross_source_identity_merge": "forbidden",
+  "materialize_native_graph": false,
+  "allowed_content_parts": [
+    0
+  ]
+}

@@ -1,0 +1,471 @@
+{
+ "schema": "loom.kb.project_kind/1",
+ "id": "research",
+ "version": 1,
+ "title": {
+  "en": "Research",
+  "pl": "Badania"
+ },
+ "description": "A research line: question, hypotheses, observations, experiments, confounders, falsifiers, competing explanations (note §6 'Research').",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/NOTATKA_GPT_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "§6 Research"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4 Research column"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "research"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.research",
+    "min": 2
+   }
+  ],
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "research_question",
+   "role": "intent",
+   "labels": {
+    "en": "Research question",
+    "pl": "Pytanie badawcze"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "asks",
+   "anchors": {
+    "terms": {
+     "en": [
+      "research question"
+     ],
+     "pl": [
+      "pytanie badawcze"
+     ]
+    }
+   }
+  },
+  {
+   "id": "assumption",
+   "role": "constraint",
+   "labels": {
+    "en": "Assumption / ethics",
+    "pl": "Założenie / etyka"
+   },
+   "entity_kind": "assumption",
+   "card": "many",
+   "relation": "assumes",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "assume",
+      "ethics"
+     ],
+     "pl": [
+      "zakładamy",
+      "etyka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "experiment",
+   "role": "part",
+   "labels": {
+    "en": "Experiment / study",
+    "pl": "Eksperyment / badanie"
+   },
+   "entity_kind": "experiment",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_experiment",
+   "relations": [
+    {
+     "rel": "investigates",
+     "target": "hypothesis"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "experiment",
+      "study",
+      "trial"
+     ],
+     "pl": [
+      "eksperyment",
+      "badanie",
+      "próba"
+     ]
+    }
+   }
+  },
+  {
+   "id": "researcher",
+   "role": "actor",
+   "labels": {
+    "en": "Researcher / subject",
+    "pl": "Badacz / uczestnik"
+   },
+   "entity_kind": "researcher",
+   "card": "many",
+   "relation": "involves",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "participant",
+      "researcher"
+     ],
+     "pl": [
+      "uczestnik",
+      "badacz"
+     ]
+    }
+   }
+  },
+  {
+   "id": "dataset",
+   "role": "resource",
+   "labels": {
+    "en": "Dataset / instrument",
+    "pl": "Zbiór danych / instrument"
+   },
+   "entity_kind": "dataset",
+   "card": "many",
+   "relation": "uses_dataset",
+   "relations": [
+    {
+     "rel": "evidences",
+     "target": "hypothesis"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "dataset",
+      "corpus",
+      "instrument"
+     ],
+     "pl": [
+      "zbiór danych",
+      "korpus"
+     ]
+    }
+   }
+  },
+  {
+   "id": "measurement_protocol",
+   "role": "interface",
+   "labels": {
+    "en": "Measurement protocol",
+    "pl": "Protokół pomiaru"
+   },
+   "entity_kind": "protocol",
+   "card": "many",
+   "relation": "uses_protocol",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "protocol",
+      "measurement"
+     ],
+     "pl": [
+      "protokół",
+      "pomiar"
+     ]
+    }
+   }
+  },
+  {
+   "id": "analysis_pipeline",
+   "role": "flow",
+   "labels": {
+    "en": "Analytic pipeline / causal chain",
+    "pl": "Tok analizy / łańcuch przyczynowy"
+   },
+   "entity_kind": "flow",
+   "card": "many",
+   "relation": "has_flow",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "causes",
+      "pipeline"
+     ],
+     "pl": [
+      "powoduje",
+      "potok"
+     ]
+    }
+   }
+  },
+  {
+   "id": "run",
+   "role": "event",
+   "labels": {
+    "en": "Run / observation",
+    "pl": "Przebieg / obserwacja"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "run",
+      "observed"
+     ],
+     "pl": [
+      "przebieg",
+      "zaobserwowano"
+     ]
+    }
+   }
+  },
+  {
+   "id": "paper",
+   "role": "artifact",
+   "labels": {
+    "en": "Paper / notebook",
+    "pl": "Artykuł / notatnik"
+   },
+   "entity_kind": "paper",
+   "card": "many",
+   "relation": "has_paper",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "paper",
+      "notebook",
+      "preprint"
+     ],
+     "pl": [
+      "artykuł",
+      "notatnik"
+     ]
+    }
+   }
+  },
+  {
+   "id": "analysis",
+   "role": "transformation",
+   "labels": {
+    "en": "Analysis / simulation",
+    "pl": "Analiza / symulacja"
+   },
+   "entity_kind": "analysis",
+   "card": "many",
+   "relation": "has_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "result"
+    },
+    {
+     "rel": "consumes",
+     "target": "dataset"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "analysis",
+      "simulation"
+     ],
+     "pl": [
+      "analiza",
+      "symulacja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "falsifier",
+   "role": "check",
+   "labels": {
+    "en": "Falsifier / replication",
+    "pl": "Falsyfikator / replikacja"
+   },
+   "entity_kind": "falsifier",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "result"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "falsify",
+      "replicate",
+      "counterexample"
+     ],
+     "pl": [
+      "falsyfikacja",
+      "replikacja",
+      "kontrprzykład"
+     ]
+    }
+   }
+  },
+  {
+   "id": "result",
+   "role": "output",
+   "labels": {
+    "en": "Result / publication",
+    "pl": "Wynik / publikacja"
+   },
+   "entity_kind": "result",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "answers",
+     "target": "hypothesis"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "result",
+      "finding",
+      "publication"
+     ],
+     "pl": [
+      "wynik",
+      "publikacja"
+     ]
+    }
+   }
+  },
+  {
+   "id": "methodological_choice",
+   "role": "decision",
+   "labels": {
+    "en": "Methodological choice",
+    "pl": "Wybór metodologiczny"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "experiment"
+    }
+   ]
+  },
+  {
+   "id": "hypothesis",
+   "role": "question",
+   "labels": {
+    "en": "Hypothesis / competing explanation",
+    "pl": "Hipoteza / konkurencyjne wyjaśnienie"
+   },
+   "entity_kind": "hypothesis",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_hypothesis",
+   "anchors": {
+    "terms": {
+     "en": [
+      "hypothesis",
+      "explanation"
+     ],
+     "pl": [
+      "hipoteza",
+      "wyjaśnienie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "confounder",
+   "role": "question",
+   "labels": {
+    "en": "Confounder",
+    "pl": "Czynnik zakłócający"
+   },
+   "entity_kind": "confounder",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "experiment"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "confounder",
+      "bias"
+     ],
+     "pl": [
+      "czynnik zakłócający",
+      "błąd"
+     ]
+    }
+   }
+  }
+ ],
+ "constraints": [],
+ "rules": [
+  "r.project_status"
+ ]
+}

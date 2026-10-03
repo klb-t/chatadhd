@@ -1,0 +1,17 @@
+{
+  "schema": "loom.research.graph_local_first_scores_freeze/1",
+  "frozen_at": "2026-09-30T02:32:55.281079+00:00",
+  "split": "dev",
+  "gold_dev_accessed_by_this_arm": false,
+  "validation_accessed": false,
+  "query_rows": 96,
+  "candidate_score_rows": 252,
+  "files_sha256": {
+    "first_scores.json": "68249c44ac2d91631c2226585899a424aed14a9a57c994de9a05a8396f3c6632",
+    "prepared_inputs.json": "c5c39329ffbedd1abffb5adaeb8328c545c6b0dafe39afbbebe7564b871a06b3",
+    "embedding/scores.json": "26a3a14b009aca39ee259286be0e894aa50373d2aa953ce8b1ef5e64010bdc42",
+    "embedding/vectors.npy": "b7bf631107ff8e8733971e85df5d51f538d6d0ff8ba089c87a86fff876f3fe79",
+    "embedding/text_vector_index.json": "c84b8a05867e8ed93e00fcc15cb42229d96531a94601b6879b1d37fadbf62a2d",
+    "freeze_before_scores.json": "10df156c925b630304b446ca2220656629239c98c0e2d259f9f569b9c8736c4d"
+  }
+}

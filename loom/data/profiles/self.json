@@ -1,0 +1,460 @@
+{
+ "schema": "loom.kb.profile/1",
+ "id": "self",
+ "description": "The self-profile probe: what 'the system itself' is. Seeded from MEGA MASTER §0, §1, §5 and §15; each project names its project kind and facets; the catalog merges it with terms derived from the repository (paths, declared symbols, config keys, git versions) and with terms discovered in expansion passes. Aliases are matched on match keys. An 'ambiguous' alias counts only when requires_context.min of its context terms occur within policy/thresholds.json catalog.context_window_tokens, and not when negative_context dominates; such rejected hits are reported as noise-trap candidates with the reason.",
+ "owner_subject": "owner",
+ "projects": [
+  {
+   "id": "chatadhd",
+   "name": "ChatADHD",
+   "project_kind": "software_app",
+   "facets": [
+    "multiplatform"
+   ],
+   "merged_into": null,
+   "role": "reference workbench / UX (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "ChatADHD"
+    },
+    {
+     "t": "chat adhd"
+    },
+    {
+     "t": "czat adhd"
+    },
+    {
+     "t": "adhd chat"
+    },
+    {
+     "t": "chatadhd app"
+    },
+    {
+     "t": "openrouter_gui"
+    },
+    {
+     "t": "openrouter client"
+    },
+    {
+     "t": "ADHD",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "kivy",
+       "openrouter",
+       "graf",
+       "graph",
+       "czat",
+       "chat",
+       "app",
+       "aplikacj",
+       "loom",
+       "pamięć",
+       "memory"
+      ],
+      "min": 2
+     },
+     "negative_context": [
+      "diagnoz",
+      "leki",
+      "leków",
+      "medication",
+      "psychiatr",
+      "objaw",
+      "symptom",
+      "terapi",
+      "therapy",
+      "dziecko",
+      "szkoła",
+      "concerta",
+      "medikinet"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "loom",
+   "name": "Loom",
+   "project_kind": "software_app",
+   "facets": [
+    "multiplatform"
+   ],
+   "merged_into": null,
+   "role": "kernel / SDK / runtime (MEGA MASTER §0)",
+   "aliases": [
+    {
+     "t": "Loom SDK"
+    },
+    {
+     "t": "loom kernel"
+    },
+    {
+     "t": "libloom"
+    },
+    {
+     "t": "loom.h"
+    },
+    {
+     "t": "rdzeń loom"
+    },
+    {
+     "t": "Loom",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "kernel",
+       "c++",
+       "abi",
+       "sdk",
+       "chatadhd",
+       "rdzeń",
+       "runtime",
+       "jni",
+       "graph store",
+       "sqlite"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "screen recording",
+      "nagranie ekranu",
+      "loom.com",
+      "video message",
+      "weaving",
+      "krosno",
+      "tkanin",
+      "tkack",
+      "loom band",
+      "gumki"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "agent2024",
+   "name": "Autonomous Agent (2024)",
+   "project_kind": "software_app",
+   "facets": [
+    "agent"
+   ],
+   "merged_into": "loom",
+   "role": "Task/Action/Execution + policy + tools (MEGA MASTER §1.3)",
+   "aliases": [
+    {
+     "t": "agent base"
+    },
+    {
+     "t": "autonomiczny agent"
+    },
+    {
+     "t": "autonomous agent"
+    },
+    {
+     "t": "universal agent"
+    },
+    {
+     "t": "uniwersalny agent"
+    },
+    {
+     "t": "agent",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "gcp",
+       "vm",
+       "computer use",
+       "checkpoint",
+       "samoreplikacj",
+       "self-deploy",
+       "central memory",
+       "centralna pamięć",
+       "dwa llm",
+       "two llm"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "agent nieruchomości",
+      "real estate agent",
+      "travel agent",
+      "agent ubezpieczeniowy",
+      "insurance agent",
+      "user agent"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "archive_analyzer",
+   "name": "Archive Analyzer",
+   "project_kind": "software_app",
+   "facets": [
+    "staged_transformation"
+   ],
+   "merged_into": "loom",
+   "role": "Archive Intelligence workflow (MEGA MASTER §1.4)",
+   "aliases": [
+    {
+     "t": "archive analyzer"
+    },
+    {
+     "t": "analizator archiwów"
+    },
+    {
+     "t": "analiza archiwów"
+    },
+    {
+     "t": "archive intelligence"
+    },
+    {
+     "t": "project compiler"
+    },
+    {
+     "t": "automating chatbot conversation analysis"
+    },
+    {
+     "t": "analiza rozmów z chatbotem"
+    }
+   ]
+  },
+  {
+   "id": "projects_project",
+   "name": "the projects project",
+   "project_kind": "software_app",
+   "facets": [
+    "staged_transformation"
+   ],
+   "merged_into": "loom",
+   "role": "Project Compiler + provenance/fork timeline (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "the projects project"
+    },
+    {
+     "t": "projects project"
+    },
+    {
+     "t": "projekt projektów"
+    }
+   ]
+  },
+  {
+   "id": "multillm_kg",
+   "name": "Multi-LLM KG chatbot",
+   "project_kind": "software_app",
+   "facets": [],
+   "merged_into": "chatadhd",
+   "role": "Provider/Model + Graph/Context + UI composition (MEGA MASTER §1.5)",
+   "aliases": [
+    {
+     "t": "multi-llm"
+    },
+    {
+     "t": "multillm"
+    },
+    {
+     "t": "multi llm chatbot"
+    },
+    {
+     "t": "knowledge graph chatbot"
+    },
+    {
+     "t": "kg chatbot"
+    },
+    {
+     "t": "czatbot z grafem wiedzy"
+    }
+   ]
+  },
+  {
+   "id": "gcp_vm_manager",
+   "name": "GCP VM manager",
+   "project_kind": "software_app",
+   "facets": [],
+   "merged_into": "loom",
+   "role": "ExecutionEnvironment / ComputeProvider adapters (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "gcp vm manager"
+    },
+    {
+     "t": "vm manager"
+    },
+    {
+     "t": "menedżer vm"
+    },
+    {
+     "t": "zarządzanie vm na gcp"
+    }
+   ]
+  },
+  {
+   "id": "video_pipeline",
+   "name": "Video pipeline",
+   "project_kind": "software_app",
+   "facets": [
+    "staged_transformation"
+   ],
+   "merged_into": "chatadhd",
+   "role": "Artifact + media pipeline pack (MEGA MASTER §1.6, §5)",
+   "aliases": [
+    {
+     "t": "video combine"
+    },
+    {
+     "t": "scene tools"
+    },
+    {
+     "t": "video pipeline"
+    },
+    {
+     "t": "pipeline wideo"
+    },
+    {
+     "t": "potok wideo"
+    },
+    {
+     "t": "film structure"
+    },
+    {
+     "t": "struktura filmu"
+    },
+    {
+     "t": "compositor"
+    },
+    {
+     "t": "storyboard",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "chatadhd",
+       "pipeline",
+       "ffmpeg",
+       "timeline",
+       "scene",
+       "scena",
+       "compositor"
+      ],
+      "min": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "watchdog",
+   "name": "WatchDog",
+   "project_kind": "software_app",
+   "facets": [
+    "agent"
+   ],
+   "merged_into": "loom",
+   "role": "domain application/plugin/preset on the common substrate (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "WatchDog automated coding agents"
+    },
+    {
+     "t": "watchdog coding agent"
+    },
+    {
+     "t": "watchdog",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "coding agent",
+       "agent",
+       "claude code",
+       "minimal-human",
+       "config as data",
+       "ui as data"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "watchdog timer",
+      "wdt",
+      "mikrokontroler",
+      "microcontroller",
+      "esp32",
+      "arduino",
+      "reset timer"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pitching_agent",
+   "name": "Pitching agent / avatar",
+   "project_kind": "software_app",
+   "facets": [
+    "agent"
+   ],
+   "merged_into": "loom",
+   "role": "presentation/agent UI pack, later (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "agent piczujący"
+    },
+    {
+     "t": "pitching agent"
+    },
+    {
+     "t": "pitch agent"
+    },
+    {
+     "t": "avatar agent"
+    }
+   ]
+  },
+  {
+   "id": "lem",
+   "name": "LEM",
+   "project_kind": "research",
+   "facets": [],
+   "merged_into": null,
+   "role": "optional representation/metadata provider, not a core dependency (MEGA MASTER §5)",
+   "aliases": [
+    {
+     "t": "LEM",
+     "ambiguous": true,
+     "requires_context": {
+      "any": [
+       "reprezentacj",
+       "representation",
+       "metadata",
+       "semantic",
+       "context"
+      ],
+      "min": 1
+     },
+     "negative_context": [
+      "stanisław lem",
+      "solaris",
+      "cyberiada",
+      "powieść",
+      "novel"
+     ]
+    }
+   ]
+  }
+ ],
+ "philosophy_probe": {
+  "description": "Coding-philosophy probe: chats that never name the app but state the owner's principles are relevant too (R2). Terms are the seed principles' phrasings (philosophy/seed_principles.json) plus these topic anchors.",
+  "anchors": [
+   "zasady kodowania",
+   "fundamentalne zasady",
+   "filozofia kodowania",
+   "coding philosophy",
+   "coding principles",
+   "architektura",
+   "architecture",
+   "abstrakcj",
+   "presets-as-data",
+   "kod ≠ dane"
+  ]
+ },
+ "date_prior": {
+  "from": "2024-06-01",
+  "soft_penalty_before": -0.5
+ }
+}

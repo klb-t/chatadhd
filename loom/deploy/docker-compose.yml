@@ -1,0 +1,45 @@
+# loom/deploy/docker-compose.yml
+#
+# Usage:
+#   cd loom/deploy
+#   cp .env.example .env && edit LOOM_SERVER_TOKEN in it
+#   docker compose up -d --build
+#
+# The server is bound to 127.0.0.1 only — it is not reachable from outside
+# this host. Put a reverse proxy (ec2-setup.sh sets up Caddy) in front of it
+# for real TLS/external access.
+services:
+  loom-server:
+    build:
+      context: ../..
+      dockerfile: loom/deploy/Dockerfile
+    image: loom-server:latest
+    container_name: loom-server
+    restart: unless-stopped
+    environment:
+      LOOM_SERVER_TOKEN: ${LOOM_SERVER_TOKEN:?set LOOM_SERVER_TOKEN in loom/deploy/.env}
+      LOOM_SERVER_PORT: ${LOOM_SERVER_PORT:-8080}
+      CHATADHD_DATA: /data
+    volumes:
+      - loom_data:/data
+    ports:
+      # 127.0.0.1 only: never publish the API on every interface directly.
+      - "127.0.0.1:${LOOM_SERVER_PORT:-8080}:${LOOM_SERVER_PORT:-8080}"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:${LOOM_SERVER_PORT:-8080}/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  # Named volume, not a bind mount: survives `docker compose down`, and
+  # keeps host filesystem layout out of this file (KOD != DANE — see
+  # loom/README.md). Switch to a bind mount here if you want the data
+  # directory at a known host path instead.
+  loom_data:

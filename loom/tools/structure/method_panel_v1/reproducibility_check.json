@@ -1,0 +1,9 @@
+{
+  "schema": "loom.research.method_panel_determinism/1",
+  "original_score_rows": 48,
+  "identical_recomputed_score_rows": 48,
+  "original_evidence_hashes_verified": 4,
+  "idf_frequency_hashes_match": true,
+  "frozen_new_arm_code_policy_protocol_hashes_match": true,
+  "no_original_results_overwritten": true
+}

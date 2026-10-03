@@ -1,0 +1,15 @@
+{
+  "schema": "loom.agentic_graph_model/1",
+  "id": "gpt41mini",
+  "model": "openai/gpt-4.1-mini",
+  "provider": "openai",
+  "max_price": {
+    "prompt": ".4",
+    "completion": "1.6"
+  },
+  "max_tokens": 3072,
+  "snapshot_path": "docs/research/model_method_panel_v1/public_preflight/gpt41mini_endpoints.json",
+  "snapshot_sha256": "30690db23394f01b4086cf7f02696ba540cfaa686fa34d0c0951c387d0191538",
+  "retrieved_at": "2026-09-30T01:49:34.956981+00:00",
+  "disable_reasoning": false
+}

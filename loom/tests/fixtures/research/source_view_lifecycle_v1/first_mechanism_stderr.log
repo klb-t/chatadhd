@@ -1,0 +1,20 @@
+test_all_quotes_have_exact_unique_source_and_utf8_coordinates (test_fixture.FixtureMechanisms.test_all_quotes_have_exact_unique_source_and_utf8_coordinates) ... ok
+test_coordinate_adapter_nonzero_multibyte_offset_and_ambiguous_quote_rejection (test_fixture.FixtureMechanisms.test_coordinate_adapter_nonzero_multibyte_offset_and_ambiguous_quote_rejection) ... ok
+test_deterministic_authoring_and_frozen_hashes (test_fixture.FixtureMechanisms.test_deterministic_authoring_and_frozen_hashes) ... ok
+test_every_request_is_a_physical_causal_prefix (test_fixture.FixtureMechanisms.test_every_request_is_a_physical_causal_prefix) ... ok
+test_exact_inventory_and_class_denominators (test_fixture.FixtureMechanisms.test_exact_inventory_and_class_denominators) ... ok
+test_existing_judgment_scorer_accepts_new_gold_and_counts_missing_conflicting (test_fixture.FixtureMechanisms.test_existing_judgment_scorer_accepts_new_gold_and_counts_missing_conflicting) ... ok
+test_future_content_mutation_cannot_change_earlier_request (test_fixture.FixtureMechanisms.test_future_content_mutation_cannot_change_earlier_request) ... ok
+test_gold_views_keep_only_as_of_matching_attribution_and_direction (test_fixture.FixtureMechanisms.test_gold_views_keep_only_as_of_matching_attribution_and_direction) ... ok
+test_input_contains_no_evaluator_gold_family_or_trace (test_fixture.FixtureMechanisms.test_input_contains_no_evaluator_gold_family_or_trace) ... ok
+test_other_speaker_positive_and_irrelevant_speech_do_not_erase_denial (test_fixture.FixtureMechanisms.test_other_speaker_positive_and_irrelevant_speech_do_not_erase_denial) ... ok
+test_positive_withdrawal_is_null_replacement_and_not_a_negative_assertion (test_fixture.FixtureMechanisms.test_positive_withdrawal_is_null_replacement_and_not_a_negative_assertion) ... ok
+test_quoted_withdrawal_is_not_reporter_commitment (test_fixture.FixtureMechanisms.test_quoted_withdrawal_is_not_reporter_commitment) ... ok
+test_reaffirmation_retains_denial_as_history_without_active_refutation (test_fixture.FixtureMechanisms.test_reaffirmation_retains_denial_as_history_without_active_refutation) ... ok
+test_repeated_positives_are_three_observations_without_fabricated_supersession (test_fixture.FixtureMechanisms.test_repeated_positives_are_three_observations_without_fabricated_supersession) ... ok
+test_withdrawn_denial_has_no_inferred_positive_and_silence_preserves_unknown (test_fixture.FixtureMechanisms.test_withdrawn_denial_has_no_inferred_positive_and_silence_preserves_unknown) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.006s
+
+OK

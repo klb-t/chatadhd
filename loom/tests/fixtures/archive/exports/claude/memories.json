@@ -1,0 +1,8 @@
+[
+ {
+  "conversations_memory": "User builds ChatADHD, a local-first knowledge graph chat app.",
+  "project_memories": {
+   "p1": "Graph storage for ChatADHD is SQLite."
+  }
+ }
+]

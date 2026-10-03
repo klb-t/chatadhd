@@ -1,0 +1,19 @@
+{
+  "schema": "loom.research.method_panel_policy/1",
+  "evaluation_status": "exploratory_all_reused_48_pairs_not_independent_holdout",
+  "thresholds": [0.25, 0.5, 0.75, 0.9],
+  "primary_descriptive_threshold": 0.5,
+  "character_ngram_range": [3, 5],
+  "word_ngram_length": 2,
+  "tf": "1+ln(count)",
+  "idf": "1+ln((1+N)/(1+df))",
+  "idf_corpus": "unique_exact_pair_source_texts_unlabelled_transductive",
+  "word_char_kernel_weights": [0.5, 0.5],
+  "extractor_policies": ["bounded", "explicit_relations"],
+  "wl_rounds": 2,
+  "alignment_budget": 10000,
+  "union_policy": "max_of_available_scores_no_veto",
+  "input_sha256": "3474eef3ee9060f790aae21ee30fd962569ae902f2352dda46deea576e44c545",
+  "gold_sha256": "2db33aeba01fc004ace04bfa206e8d60d2aa171234822a7f36d71769f2a116c0",
+  "independent_graph_annotation_status": "not_present_in_pair_or_source_fixture"
+}

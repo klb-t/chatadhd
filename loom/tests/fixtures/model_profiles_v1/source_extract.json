@@ -1,0 +1,311 @@
+{
+  "schema": "loom.model_profile_source_extract/1",
+  "repository": "klb-t/chatadhd",
+  "commit": "494b164c4515b875014b3cfd1c3760de23bda401",
+  "provenance_note": "Selected fields transcribed from connector reads and the previously supplied offline aggregate extract; NOT the complete original JSON, NOT a raw-response replay. validate --verify-repo-sources checks the originals when present.",
+  "sources": [
+    {
+      "id": "jev_aggregate",
+      "path": "docs/research/inputs/jev-structure-analysis-2026-09-28.json",
+      "git_blob_sha": "7f935790844adfaf0b27684a480dcc80ec237441",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "jev_questions",
+      "path": "loom/tests/fixtures/eval/jev_structure_pilot_v1/inputs.json",
+      "git_blob_sha": "5e9976f23f5f3bcbf1c4f621099bd196331fae64",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "jev_report",
+      "path": "docs/research/JEV_RESULTS_2026-09-28.md",
+      "git_blob_sha": "2951757b257c4e7560629b3aa765f734641c6a58",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "native_reconciled",
+      "path": "docs/research/OPENROUTER_NATIVE_REMAINDER_2026-09-28.md",
+      "git_blob_sha": "42c4700dbec9e54a23a4a2bd492d27ef311e90e8",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "native_mechanical",
+      "path": "docs/research/LOCAL_NATIVE_VERIFICATION_2026-09-28.md",
+      "git_blob_sha": "25c050749860dcbc2af33c6d386f2b2514f87dbb",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    },
+    {
+      "id": "requirements",
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "git_blob_sha": "54a3670928443c1a6e6fd3dc9e072e173b5ac88e",
+      "commit": "494b164c4515b875014b3cfd1c3760de23bda401"
+    }
+  ],
+  "jev": {
+    "requested_model": "typesafe/jev-1.13",
+    "returned_model": "typesafe/jev-1.13-20260917",
+    "provider": "typesafe",
+    "experiment_id": "jev-structure-v1",
+    "manifest_hash": "c654843d137241d7b427d42c63f3db462810a541df892aa5d5bfd9ad7b8a8e72",
+    "observed_on": "2026-09-28",
+    "cases": 64,
+    "decisions": 768,
+    "confusion": {
+      "tp": 66,
+      "tn": 676,
+      "fp": 26,
+      "fn": 0
+    },
+    "questions": [
+      {
+        "id": "q01",
+        "n": 64,
+        "errors": 14,
+        "precision_reported": 0.3,
+        "recall_reported": 1.0,
+        "retained_fraction": 0.71875,
+        "selective_error": 0.10869565217391304,
+        "operation": "asserted_conditional_forward",
+        "instructions": "Does the text assert the conditional direction P implies Q, using its locally defined proposition roles P and Q? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.11916875,
+        "aggregate_pointer": "/score/groups/question/q01",
+        "recipe_pointer": "/0/questions/q01"
+      },
+      {
+        "id": "q02",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 0.796875,
+        "selective_error": 0.0,
+        "operation": "asserted_conditional_reverse",
+        "instructions": "Does the text assert the conditional direction Q implies P, using its locally defined proposition roles P and Q? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0272015625,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q02",
+        "recipe_pointer": "/0/questions/q02"
+      },
+      {
+        "id": "q03",
+        "n": 64,
+        "errors": 1,
+        "precision_reported": 0.9230769230769231,
+        "recall_reported": 1.0,
+        "retained_fraction": 0.78125,
+        "selective_error": 0.0,
+        "operation": "endorsed_universal_claim",
+        "instructions": "Is the endorsed main claim or conclusion universally quantified over every member of a category? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0284375,
+        "aggregate_pointer": "/score/groups/question/q03",
+        "recipe_pointer": "/0/questions/q03"
+      },
+      {
+        "id": "q04",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 1.0,
+        "selective_error": 0.0,
+        "operation": "endorsed_existential_claim",
+        "instructions": "Is the endorsed main claim existentially quantified, asserting that some or at least one category member has the stated property? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0088765625,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q04",
+        "recipe_pointer": "/0/questions/q04"
+      },
+      {
+        "id": "q05",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 0.859375,
+        "selective_error": 0.0,
+        "operation": "sample_to_universal_generalization",
+        "instructions": "Does the reasoning extend observations of a finite sample into an endorsed or proposed rule for all category members? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0215859375,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q05",
+        "recipe_pointer": "/0/questions/q05"
+      },
+      {
+        "id": "q06",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 0.96875,
+        "selective_error": 0.0,
+        "operation": "negated_joint_truth",
+        "instructions": "Does the main assertion negate the joint truth of the locally defined propositions P and Q, rather than assert Q together with not-P? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0097140625,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q06",
+        "recipe_pointer": "/0/questions/q06"
+      },
+      {
+        "id": "q07",
+        "n": 64,
+        "errors": 6,
+        "precision_reported": 0.7,
+        "recall_reported": 1.0,
+        "retained_fraction": 0.546875,
+        "selective_error": 0.0,
+        "operation": "evidence_in_favor_of_target",
+        "instructions": "Is evidence explicitly offered in favor of the stated target claim T, as opposed to evidence against T? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0761640625,
+        "aggregate_pointer": "/score/groups/question/q07",
+        "recipe_pointer": "/0/questions/q07"
+      },
+      {
+        "id": "q08",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 1.0,
+        "selective_error": 0.0,
+        "operation": "universal_counterexample",
+        "instructions": "Does the text refute its stated universal target T by identifying a category member that lacks the required property? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0027046875,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q08",
+        "recipe_pointer": "/0/questions/q08"
+      },
+      {
+        "id": "q09",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 0.984375,
+        "selective_error": 0.0,
+        "operation": "distinct_system_analogy",
+        "instructions": "Does the main assertion map a shared relational pattern between explicitly distinct systems or entities? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0080265625,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q09",
+        "recipe_pointer": "/0/questions/q09"
+      },
+      {
+        "id": "q10",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 0.96875,
+        "selective_error": 0.0,
+        "operation": "asserted_identity",
+        "instructions": "Does the main assertion say that the two named descriptions designate one and the same entity or system? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.0049703125,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q10",
+        "recipe_pointer": "/0/questions/q10"
+      },
+      {
+        "id": "q11",
+        "n": 64,
+        "errors": 5,
+        "precision_reported": 0.5454545454545454,
+        "recall_reported": 1.0,
+        "retained_fraction": 0.890625,
+        "selective_error": 0.0,
+        "operation": "asserted_causation",
+        "instructions": "Does the main assertion claim that changing or occurring one event produces a change in another? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.040434375,
+        "aggregate_pointer": "/score/groups/question/q11",
+        "recipe_pointer": "/0/questions/q11"
+      },
+      {
+        "id": "q12",
+        "n": 64,
+        "errors": 0,
+        "retained_fraction": 1.0,
+        "selective_error": 0.0,
+        "operation": "positive_inclusive_disjunction",
+        "instructions": "Does the endorsed main assertion allow P or Q (including both), without requiring both, for its locally defined proposition roles? Judge the represented assertion or reasoning operation, not word overlap or facts imported from outside the text. Quoted targets are not automatically endorsed. Return true only for explicit or unambiguously paraphrased structure; do not add consequences by logical closure.",
+        "brier_reported": 0.011125000000000001,
+        "precision_reported": 1.0,
+        "recall_reported": 1.0,
+        "aggregate_pointer": "/score/groups/question/q12",
+        "recipe_pointer": "/0/questions/q12"
+      }
+    ],
+    "cost_usd": "0.005341182",
+    "input_tokens": 127171,
+    "output_tokens": 14080,
+    "p50_seconds": 0.183089,
+    "p95_seconds_nearest_rank": 7.679959,
+    "max_seconds": 10.272925,
+    "positive_q01": {
+      "correct": 6,
+      "predicted": 20,
+      "basis": "JEV_OFFLINE_POLICY_AUDIT q01 paragraph; also recoverable from aggregate precision and FP14, global FN0"
+    },
+    "high_score_errors": {
+      "question": "q01",
+      "probabilities": [
+        0.86,
+        0.84,
+        0.86,
+        0.81,
+        0.85
+      ],
+      "split": "development"
+    },
+    "group_dependencies": "64 authored texts; 8 families, 4 variants, PL/EN, not 768 independent cases"
+  },
+  "native": {
+    "observed_on": "2026-09-28",
+    "original_plan": 32,
+    "started": 22,
+    "responses": 20,
+    "uncertain": 2,
+    "untouched": 10,
+    "accepted": 0,
+    "cost_usd": "0.02617219",
+    "uncertain_reservation_usd": "0.00602193",
+    "models": [
+      {
+        "model": "openai/gpt-4.1-mini",
+        "provider": "openai",
+        "planned": 16,
+        "responses": 11,
+        "uncertain": 0,
+        "untouched": 5,
+        "duplicate_json": 6,
+        "contract_failures": 5,
+        "cost_usd": "0.0222088"
+      },
+      {
+        "model": "qwen/qwen3-30b-a3b-instruct-2507",
+        "provider": "siliconflow/fp8",
+        "planned": 16,
+        "responses": 9,
+        "uncertain": 2,
+        "untouched": 5,
+        "duplicate_json": 0,
+        "contract_failures": 9,
+        "cost_usd": "0.00396339"
+      }
+    ],
+    "pooled_first_contract_failures": {
+      "quote_mismatch": 9,
+      "handle": 2,
+      "subject": 1,
+      "scope_membership": 1,
+      "utf8_boundary": 1
+    },
+    "recipe": "native_v1",
+    "original_manifest": "e7c047d815e92172c183e4da5c0cc598e3babeb32bdeec6f4970a389a71c2a06",
+    "continuation_manifest": "ff5f0e59859b0853336543277bc9f708e10c2799e85ed3e52bb1f9e80fd84756",
+    "original_archive_sha256": "da619121ff8d4ed2fd28ea9a1753cb1c9f4d1da414447647ad1ae3acb2afed48",
+    "continuation_archive_sha256": "0fe70aa08572f46e4d12640e046925bb62960bbfa6c415f9d070eb6c9bedc792"
+  },
+  "mechanism_evidence": {
+    "build_completed": 189,
+    "build_total": 189,
+    "ctest_initial_passed": 70,
+    "ctest_initial_total": 72,
+    "focused_rerun_passed": 1,
+    "ctest_reconciled_passed": 71,
+    "catalog_recall_numerator": 13,
+    "catalog_recall_denominator": 45,
+    "scope": "Historical report, not rerun here. Scale test ran zero cases; lineage cases returned early. Not a model reliability observation."
+  }
+}

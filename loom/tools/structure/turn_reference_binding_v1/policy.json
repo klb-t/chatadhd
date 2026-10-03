@@ -1,0 +1,22 @@
+{
+  "schema": "loom.turn_reference_binding_policy/1",
+  "split": "dev",
+  "evaluation_status": "posthoc_development_mechanism_replay",
+  "binding": {
+    "required_evidence_keys": ["turn_id", "quote"],
+    "turn_id": "existing_string_id_in_same_case",
+    "quote": "full_unchanged_turn_text",
+    "derivation": "full_source_copied_by_turn_id",
+    "original_quote": "retained_as_model_hint_in_separate_sidecar",
+    "malformed_entries": "unchanged_for_frozen_compiler",
+    "missing_quote": "unchanged_for_frozen_compiler",
+    "known_at": "unchanged_validated_by_frozen_compiler"
+  },
+  "mutable_fields": ["source_assertions[*].evidence[*].quote", "status_events[*].evidence[*].quote"],
+  "actor_filter": false,
+  "semantic_support_established": false,
+  "raw_responses_mutable": false,
+  "gold_used_by_transform": false,
+  "live_calls": false,
+  "no_graph_promotion": true
+}

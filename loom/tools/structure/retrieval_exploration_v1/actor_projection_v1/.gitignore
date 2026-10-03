@@ -1,0 +1,8 @@
+# Exact first and corrected receipt bytes are retained in first_evidence.zip.
+/first_projection.json
+/second_projection.json
+/first_controls.json
+/second_controls.json
+/prepared_control_manifest.json
+/prepared_control_sources/
+/PARITY_RECOUNT.json

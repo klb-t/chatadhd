@@ -1,0 +1,26 @@
+{
+  "schema": "loom.graph_panel_score_driver_freeze/1",
+  "frozen_at_utc": "2026-09-30T02:43:02.081829+00:00",
+  "before_successful_graph_response_content_access": true,
+  "graph_transport_already_started": true,
+  "v1_http400_diagnostic_known": true,
+  "primary_scorer_unchanged": true,
+  "successful_live_responses_read": 0,
+  "validation_read": false,
+  "api_calls_by_author": 0,
+  "revision": "billing mismatch is hard failure; rawcost audit independent of semantic state;12mechanism checks; older freezes retained",
+  "files_sha256": {
+    "loom/tools/structure/graph_panel_score_run.py": "2e29dd9f4c4af0bbb9760996af6ad63ee6fcc133ff8a0d348518c1d57a295018",
+    "loom/tools/structure/test_graph_panel_score_run.py": "9a1a86e5dc0898848a58bef166a8288377504e0f7008d6eda95a98d8f4bd74eb",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "loom/tools/structure/jev_live_pilot.py": "a3036e372d30f93659e1933a956b61972a50a50a216ba0340dee1b38d191e805",
+    "docs/research/graph_method_panel_v1/SCORER_DRIVER_PROTOCOL.md": "e6939371d87e8b60f59a5aef8d2e57cd7039bd3cec8795972ba7c753cb77b704",
+    "docs/research/graph_method_panel_v1/GPT_JUDGE_V2_NOTE.md": "851e3cba4c65955146e439a78c208e1902211d48185b1e2d9756a0c0b46d143a",
+    "docs/research/graph_method_panel_v1/gpt_judge_v2_recipe.json": "369e152f24d01cdb67fbe95a70692e2cddfd86c0c8a50cee0c2643bbc7ea6d19",
+    "docs/research/graph_method_panel_v1/FREEZE.json": "acf2aad00d5a2593c384c9df5e75128ba63f49d9d8f625c8d295df714910cda0",
+    "docs/research/model_method_panel_v1/public_preflight/gpt41mini_endpoints.json": "30690db23394f01b4086cf7f02696ba540cfaa686fa34d0c0951c387d0191538",
+    "docs/research/graph_method_panel_v1/prepared_v2/gpt_judge_batch01_requests.json": "78844af72b4f06b14367e6393e1761993c2c4bcd5628ce3e404dcc84e0fb666c",
+    "docs/research/graph_method_panel_v1/prepared_v2/gpt_judge_batch02_requests.json": "596be9b96cbeb9a54a2d33daaff118bb3fb6b5a9ef7c1078f7afae4eba8da13d"
+  }
+}

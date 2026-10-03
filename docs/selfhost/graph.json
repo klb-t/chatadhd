@@ -1,0 +1,6284 @@
+{
+ "project": "ChatADHD",
+ "nodes": [
+  {
+   "id": "T1",
+   "kind": "theme",
+   "label": "android · chatadhd · directory",
+   "size": 57
+  },
+  {
+   "id": "term:android",
+   "kind": "term",
+   "label": "android"
+  },
+  {
+   "id": "term:chatadhd",
+   "kind": "term",
+   "label": "chatadhd"
+  },
+  {
+   "id": "term:directory",
+   "kind": "term",
+   "label": "directory"
+  },
+  {
+   "id": "term:task",
+   "kind": "term",
+   "label": "task"
+  },
+  {
+   "id": "term:loombridge",
+   "kind": "term",
+   "label": "loombridge"
+  },
+  {
+   "id": "term:jni",
+   "kind": "term",
+   "label": "jni"
+  },
+  {
+   "id": "term:sdk",
+   "kind": "term",
+   "label": "sdk"
+  },
+  {
+   "id": "term:system",
+   "kind": "term",
+   "label": "system"
+  },
+  {
+   "id": "term:agent",
+   "kind": "term",
+   "label": "agent"
+  },
+  {
+   "id": "term:android sdk",
+   "kind": "term",
+   "label": "android sdk"
+  },
+  {
+   "id": "term:gradle",
+   "kind": "term",
+   "label": "gradle"
+  },
+  {
+   "id": "term:java",
+   "kind": "term",
+   "label": "java"
+  },
+  {
+   "id": "T2",
+   "kind": "theme",
+   "label": "graph · knowledge · analyzer",
+   "size": 52
+  },
+  {
+   "id": "term:graph",
+   "kind": "term",
+   "label": "graph"
+  },
+  {
+   "id": "term:knowledge",
+   "kind": "term",
+   "label": "knowledge"
+  },
+  {
+   "id": "term:analyzer",
+   "kind": "term",
+   "label": "analyzer"
+  },
+  {
+   "id": "term:kivy",
+   "kind": "term",
+   "label": "kivy"
+  },
+  {
+   "id": "term:nodes",
+   "kind": "term",
+   "label": "nodes"
+  },
+  {
+   "id": "term:semanticanalyzer",
+   "kind": "term",
+   "label": "semanticanalyzer"
+  },
+  {
+   "id": "term:graphengine",
+   "kind": "term",
+   "label": "graphengine"
+  },
+  {
+   "id": "term:graphmemoryselector",
+   "kind": "term",
+   "label": "graphmemoryselector"
+  },
+  {
+   "id": "term:extract",
+   "kind": "term",
+   "label": "extract"
+  },
+  {
+   "id": "term:topic",
+   "kind": "term",
+   "label": "topic"
+  },
+  {
+   "id": "term:zero knowledge",
+   "kind": "term",
+   "label": "zero knowledge"
+  },
+  {
+   "id": "term:compat",
+   "kind": "term",
+   "label": "compat"
+  },
+  {
+   "id": "T3",
+   "kind": "theme",
+   "label": "model · cost · convert",
+   "size": 46
+  },
+  {
+   "id": "term:model",
+   "kind": "term",
+   "label": "model"
+  },
+  {
+   "id": "term:cost",
+   "kind": "term",
+   "label": "cost"
+  },
+  {
+   "id": "term:convert",
+   "kind": "term",
+   "label": "convert"
+  },
+  {
+   "id": "term:jsonstore",
+   "kind": "term",
+   "label": "jsonstore"
+  },
+  {
+   "id": "term:shape",
+   "kind": "term",
+   "label": "shape"
+  },
+  {
+   "id": "term:relative",
+   "kind": "term",
+   "label": "relative"
+  },
+  {
+   "id": "term:pricing",
+   "kind": "term",
+   "label": "pricing"
+  },
+  {
+   "id": "term:absolute",
+   "kind": "term",
+   "label": "absolute"
+  },
+  {
+   "id": "term:attachment",
+   "kind": "term",
+   "label": "attachment"
+  },
+  {
+   "id": "term:attachment handler",
+   "kind": "term",
+   "label": "attachment handler"
+  },
+  {
+   "id": "term:convert relative",
+   "kind": "term",
+   "label": "convert relative"
+  },
+  {
+   "id": "term:convert selected",
+   "kind": "term",
+   "label": "convert selected"
+  },
+  {
+   "id": "T4",
+   "kind": "theme",
+   "label": "gui · engine · version",
+   "size": 43
+  },
+  {
+   "id": "term:gui",
+   "kind": "term",
+   "label": "gui"
+  },
+  {
+   "id": "term:engine",
+   "kind": "term",
+   "label": "engine"
+  },
+  {
+   "id": "term:version",
+   "kind": "term",
+   "label": "version"
+  },
+  {
+   "id": "term:panels",
+   "kind": "term",
+   "label": "panels"
+  },
+  {
+   "id": "term:init",
+   "kind": "term",
+   "label": "init"
+  },
+  {
+   "id": "term:main",
+   "kind": "term",
+   "label": "main"
+  },
+  {
+   "id": "term:viz",
+   "kind": "term",
+   "label": "viz"
+  },
+  {
+   "id": "term:readme",
+   "kind": "term",
+   "label": "readme"
+  },
+  {
+   "id": "term:widgets",
+   "kind": "term",
+   "label": "widgets"
+  },
+  {
+   "id": "term:github",
+   "kind": "term",
+   "label": "github"
+  },
+  {
+   "id": "term:panel",
+   "kind": "term",
+   "label": "panel"
+  },
+  {
+   "id": "term:colors",
+   "kind": "term",
+   "label": "colors"
+  },
+  {
+   "id": "T5",
+   "kind": "theme",
+   "label": "archive · project · terms",
+   "size": 39
+  },
+  {
+   "id": "term:archive",
+   "kind": "term",
+   "label": "archive"
+  },
+  {
+   "id": "term:project",
+   "kind": "term",
+   "label": "project"
+  },
+  {
+   "id": "term:terms",
+   "kind": "term",
+   "label": "terms"
+  },
+  {
+   "id": "term:items",
+   "kind": "term",
+   "label": "items"
+  },
+  {
+   "id": "term:ingest",
+   "kind": "term",
+   "label": "ingest"
+  },
+  {
+   "id": "term:stage",
+   "kind": "term",
+   "label": "stage"
+  },
+  {
+   "id": "term:term",
+   "kind": "term",
+   "label": "term"
+  },
+  {
+   "id": "term:license",
+   "kind": "term",
+   "label": "license"
+  },
+  {
+   "id": "term:commercial",
+   "kind": "term",
+   "label": "commercial"
+  },
+  {
+   "id": "term:document",
+   "kind": "term",
+   "label": "document"
+  },
+  {
+   "id": "term:git",
+   "kind": "term",
+   "label": "git"
+  },
+  {
+   "id": "term:noncommercial",
+   "kind": "term",
+   "label": "noncommercial"
+  },
+  {
+   "id": "T6",
+   "kind": "theme",
+   "label": "provenance · artifact · hash",
+   "size": 39
+  },
+  {
+   "id": "term:provenance",
+   "kind": "term",
+   "label": "provenance"
+  },
+  {
+   "id": "term:artifact",
+   "kind": "term",
+   "label": "artifact"
+  },
+  {
+   "id": "term:hash",
+   "kind": "term",
+   "label": "hash"
+  },
+  {
+   "id": "term:registry",
+   "kind": "term",
+   "label": "registry"
+  },
+  {
+   "id": "term:protobuf",
+   "kind": "term",
+   "label": "protobuf"
+  },
+  {
+   "id": "term:blobs",
+   "kind": "term",
+   "label": "blobs"
+  },
+  {
+   "id": "term:nowa",
+   "kind": "term",
+   "label": "nowa"
+  },
+  {
+   "id": "term:cbor",
+   "kind": "term",
+   "label": "cbor"
+  },
+  {
+   "id": "term:pomiar",
+   "kind": "term",
+   "label": "pomiar"
+  },
+  {
+   "id": "term:serializacji",
+   "kind": "term",
+   "label": "serializacji"
+  },
+  {
+   "id": "term:video",
+   "kind": "term",
+   "label": "video"
+  },
+  {
+   "id": "term:yaml",
+   "kind": "term",
+   "label": "yaml"
+  },
+  {
+   "id": "T7",
+   "kind": "theme",
+   "label": "sqlite · abi · vendored",
+   "size": 30
+  },
+  {
+   "id": "term:sqlite",
+   "kind": "term",
+   "label": "sqlite"
+  },
+  {
+   "id": "term:abi",
+   "kind": "term",
+   "label": "abi"
+  },
+  {
+   "id": "term:vendored",
+   "kind": "term",
+   "label": "vendored"
+  },
+  {
+   "id": "term:create table",
+   "kind": "term",
+   "label": "create table"
+  },
+  {
+   "id": "term:crypto",
+   "kind": "term",
+   "label": "crypto"
+  },
+  {
+   "id": "term:schema",
+   "kind": "term",
+   "label": "schema"
+  },
+  {
+   "id": "term:capi",
+   "kind": "term",
+   "label": "capi"
+  },
+  {
+   "id": "term:column",
+   "kind": "term",
+   "label": "column"
+  },
+  {
+   "id": "term:vendored sqlite",
+   "kind": "term",
+   "label": "vendored sqlite"
+  },
+  {
+   "id": "term:httplib",
+   "kind": "term",
+   "label": "httplib"
+  },
+  {
+   "id": "term:meta",
+   "kind": "term",
+   "label": "meta"
+  },
+  {
+   "id": "term:party",
+   "kind": "term",
+   "label": "party"
+  },
+  {
+   "id": "T8",
+   "kind": "theme",
+   "label": "importer · html · format",
+   "size": 23
+  },
+  {
+   "id": "term:importer",
+   "kind": "term",
+   "label": "importer"
+  },
+  {
+   "id": "term:conversationimporter",
+   "kind": "term",
+   "label": "conversationimporter"
+  },
+  {
+   "id": "term:html",
+   "kind": "term",
+   "label": "html"
+  },
+  {
+   "id": "term:format",
+   "kind": "term",
+   "label": "format"
+  },
+  {
+   "id": "term:claude",
+   "kind": "term",
+   "label": "claude"
+  },
+  {
+   "id": "term:zip",
+   "kind": "term",
+   "label": "zip"
+  },
+  {
+   "id": "term:detect",
+   "kind": "term",
+   "label": "detect"
+  },
+  {
+   "id": "term:title",
+   "kind": "term",
+   "label": "title"
+  },
+  {
+   "id": "term:single",
+   "kind": "term",
+   "label": "single"
+  },
+  {
+   "id": "term:detection",
+   "kind": "term",
+   "label": "detection"
+  },
+  {
+   "id": "term:extension",
+   "kind": "term",
+   "label": "extension"
+  },
+  {
+   "id": "term:add",
+   "kind": "term",
+   "label": "add"
+  },
+  {
+   "id": "T9",
+   "kind": "theme",
+   "label": "bus · handler · emit",
+   "size": 11
+  },
+  {
+   "id": "term:bus",
+   "kind": "term",
+   "label": "bus"
+  },
+  {
+   "id": "term:handler",
+   "kind": "term",
+   "label": "handler"
+  },
+  {
+   "id": "term:emit",
+   "kind": "term",
+   "label": "emit"
+  },
+  {
+   "id": "term:event",
+   "kind": "term",
+   "label": "event"
+  },
+  {
+   "id": "term:events",
+   "kind": "term",
+   "label": "events"
+  },
+  {
+   "id": "term:handlers",
+   "kind": "term",
+   "label": "handlers"
+  },
+  {
+   "id": "term:subscribe",
+   "kind": "term",
+   "label": "subscribe"
+  },
+  {
+   "id": "term:eventbus",
+   "kind": "term",
+   "label": "eventbus"
+  },
+  {
+   "id": "term:synchronous pub",
+   "kind": "term",
+   "label": "synchronous pub"
+  },
+  {
+   "id": "term:clock",
+   "kind": "term",
+   "label": "clock"
+  },
+  {
+   "id": "term:schedule",
+   "kind": "term",
+   "label": "schedule"
+  },
+  {
+   "id": "term:event bus",
+   "kind": "term",
+   "label": "event bus"
+  },
+  {
+   "id": "T10",
+   "kind": "theme",
+   "label": "other",
+   "size": 2
+  },
+  {
+   "id": "dd1ef2322ab2d",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 15. Mining wykonany w tej iteracji @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d0b559a5969c3",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 5. Jak dawne projekty wpadają do wspólnej struktury @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d50a9e4658e8a",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 0. Teza @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "da365bf6eb24c",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Project Overview @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d0d651dd7b18a",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Layout @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d4ff84e8c5dd0",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "db35789a5e561",
+   "kind": "doc",
+   "label": "[loom/README.md › Loom @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "kfdba87a93e2e",
+   "kind": "code",
+   "label": "[main.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k7f93eb17d421",
+   "kind": "code",
+   "label": "[loom/android/app/src/main/java/com/chatadhd/android/MainActivity.kt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d8657c72901da",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Loom Android shell @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d090ebe21e4ea",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Data directory & permissions @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k2d5b226af27f",
+   "kind": "code",
+   "label": "[loom/include/loom/archive.h @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k6a6147404898",
+   "kind": "code",
+   "label": "[loom/src/runtime.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d54d2e30c62a8",
+   "kind": "doc",
+   "label": "[loom/README.md › Layout @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d90c3e6c8cfdc",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Building the app @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d8a158aafbef1",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 8. Implementacja równoległa bez „big-bang” @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d3c032a3d9177",
+   "kind": "doc",
+   "label": "[README.md › Features @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d7e95003675f1",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Architecture: KOD ≠ DANE @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "k2b4ba81a10ea",
+   "kind": "code",
+   "label": "[loom/android/verify/java/loomverify/HostSmokeTest.java @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dee979a19bd6b",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 7. Najważniejszy test architektury @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d23b0eef9e47d",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.12 Storage / Sync / Identity @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "kc3eecb26c8c9",
+   "kind": "code",
+   "label": "[loom/src/archive/pipeline.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k60bf364c6e1c",
+   "kind": "code",
+   "label": "[loom/deploy/build-android.sh @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d2ed88175a81a",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 1. Co faktycznie scala się bez konfliktu › 1.2 Loom @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d21c728b06600",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Directory Structure @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "dde32241730fa",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › G. Wszystko istotne jest resumable i auditable @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g8c0caf1017f2",
+   "kind": "commit",
+   "label": "[git chatadhd › caea807 loom(android): fix loom_jni.cpp to depend only on the C ABI, add README @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k1ffb67b3b126",
+   "kind": "code",
+   "label": "[loom/tests/test_archive.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d8ead284fd07c",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.11 UI / Panel engine @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d388a7d78bc78",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "dc79c24290319",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Verification without an Android SDK › 2. Host JNI smoke test (`loom/android/verify/`) @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "daae09a719898",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Verification without an Android SDK @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dd7baccbc4e7b",
+   "kind": "doc",
+   "label": "[loom/README.md › Decisions @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "kfbf0efdb7e11",
+   "kind": "code",
+   "label": "[engine/graph_memory.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "d40267e6de895",
+   "kind": "doc",
+   "label": "[loom/README.md › Command line @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k62e48ff1383c",
+   "kind": "code",
+   "label": "[loom/src/import/importer_sqlite.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d1748d8e2603c",
+   "kind": "doc",
+   "label": "[loom/README.md › Archive Intelligence @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ga7537fb31edf",
+   "kind": "commit",
+   "label": "[git chatadhd › b95b891 loom: complete module contracts, wave-2 stubs, Runtime and the C ABI @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "dc6fa20b755bd",
+   "kind": "doc",
+   "label": "[loom/README.md › Archive Intelligence @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k6ac7fa929954",
+   "kind": "code",
+   "label": "[loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d89a6300dbce0",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Gaps @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dc1efc1e415c8",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 3. Uniwersalny model obiektów @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k0a3413d6c847",
+   "kind": "code",
+   "label": "[loom/android/app/build.gradle.kts @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ke610c46bb92b",
+   "kind": "code",
+   "label": "[engine/paths.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k586bcb4d8e65",
+   "kind": "code",
+   "label": "[loom/include/loom/util/fs.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "db4b7b3b584c8",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Version History @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "de4ff0694077f",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 1. Co faktycznie scala się bez konfliktu › 1.4 Analizator archiwów / „the projects project” @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "daf013833a3da",
+   "kind": "doc",
+   "label": "[loom/README.md › Build @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d7094df14966c",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Running the App @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "g43bf2cb4ae78",
+   "kind": "commit",
+   "label": "[git chatadhd › 4bc4144 docs: add ChatADHD/Loom MEGA MASTER architecture document @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d612813a3d50c",
+   "kind": "doc",
+   "label": "[loom/android/README.md › Verification without an Android SDK › 1. Gradle config, offline @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k95f637ac1236",
+   "kind": "code",
+   "label": "[loom/android/verify/CMakeLists.txt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dd3150abfbac5",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 1. Co faktycznie scala się bez konfliktu › 1.5 Multi-LLM / KG chatbot @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d7b2991a1cb1e",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.4 Context / Memory engine @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g21f2f3043c12",
+   "kind": "commit",
+   "label": "[git chatadhd › 4119677 loom(android): WIP Android shell (interrupted by session limit) @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d692044f2b2d8",
+   "kind": "doc",
+   "label": "[README.md › Architecture @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "dca8fce520c44",
+   "kind": "doc",
+   "label": "[README.md › ChatADHD v0.07.10 @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d55433af1f8a8",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 16. Następny sensowny invariant implementation target @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d9b01d95fbf7b",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.5 Provider / Model / Compute fabric @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k9270031da5e2",
+   "kind": "code",
+   "label": "[loom/include/loom/loom.h @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g6bcbf9f5da0a",
+   "kind": "commit",
+   "label": "[git chatadhd › 0159a73 loom(import): implement ConversationImporter and ConversationExporter @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kf3777ceb20c7",
+   "kind": "code",
+   "label": "[loom/cli/main.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d69807868a2e9",
+   "kind": "doc",
+   "label": "[loom/README.md › Sharing data with the Python app @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "da7f9ec78f5e8",
+   "kind": "doc",
+   "label": "[loom/android/README.md › WebView hardening @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k2f7b011accc1",
+   "kind": "code",
+   "label": "[loom/server/src/app.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g967c46f9656b",
+   "kind": "commit",
+   "label": "[git chatadhd › b69a096 loom(server): add loom-server REST/SSE facade over the C ABI @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d5a68620af893",
+   "kind": "doc",
+   "label": "[requirements.txt › Optional: Zero-knowledge encryption @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k3194619a70b6",
+   "kind": "code",
+   "label": "[loom/web/src/api/types.ts @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k2e5e408420fc",
+   "kind": "code",
+   "label": "[loom/cli/tests/test_cli_smoke.py @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k8cb1f53cab16",
+   "kind": "code",
+   "label": "[loom/include/loom/importer.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "ke28699feeddf",
+   "kind": "code",
+   "label": "[loom/web/src/api/loom-jni.ts @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kc3c9b45ef089",
+   "kind": "code",
+   "label": "[loom/include/loom/runtime.h @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g7fd1700eae1e",
+   "kind": "commit",
+   "label": "[git chatadhd › 91c20a2 loom(semantic): implement regex engine, semantic analyzer, graph engine… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g3c91ced0e68e",
+   "kind": "commit",
+   "label": "[git chatadhd › f02b2df loom(deploy): Docker/compose/scripts for loom-server, EC2 setup @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k5041f526fa90",
+   "kind": "code",
+   "label": "[loom/android/app/src/main/cpp/loom_jni.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "gdd43184aa105",
+   "kind": "commit",
+   "label": "[git chatadhd › 2dd1d9d Merge wave 2: regex engine, semantic analyzer, graph engine, context se… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k3ead4701ccd6",
+   "kind": "code",
+   "label": "[loom/src/archive/ingest.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g095e15d74102",
+   "kind": "commit",
+   "label": "[git chatadhd › 60af67b Merge wave 2: universal importer with provenance and streaming @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kb160a1ed8ae4",
+   "kind": "code",
+   "label": "[loom/web/src/api/loom-api.ts @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k968e349ac4c5",
+   "kind": "code",
+   "label": "[loom/tools/gen_import_fixtures.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "ke2c24ce689e8",
+   "kind": "code",
+   "label": "[loom/android/verify/java/com/chatadhd/android/LoomNative.java @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k7278b02de553",
+   "kind": "code",
+   "label": "[loom/src/import/importer_core.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kf47995eaec3c",
+   "kind": "code",
+   "label": "[loom/include/loom/semantic_llm.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k805e573a558c",
+   "kind": "code",
+   "label": "[loom/include/loom/chat_engine.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k4c28e96e5e67",
+   "kind": "code",
+   "label": "[gui/__init__.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k593764739b95",
+   "kind": "code",
+   "label": "[loom/src/capi/capi_graph.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gfbefb4830944",
+   "kind": "commit",
+   "label": "[git chatadhd › 5e66ee4 loom(archive): sharper gap report and item extraction; README for CLI +… @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k5c54590683ad",
+   "kind": "code",
+   "label": "[loom/server/src/app.h @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dd055cf94760d",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 1. Co faktycznie scala się bez konfliktu › 1.6 Multimedia / video / artifact workbench @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d3e882e1ccff6",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/graph_engine.py` — Knowledge Graph @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "db80848eee7b3",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "ke393914a221c",
+   "kind": "code",
+   "label": "[loom/src/capi/capi_core.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kcc9342c806ce",
+   "kind": "code",
+   "label": "[loom/tests/test_config.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "defee7e6a51e6",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d01fdac9ace7c",
+   "kind": "doc",
+   "label": "[loom/deploy/README.md › Status: waiting on two other pieces @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dfc6f9345fd54",
+   "kind": "doc",
+   "label": "[README.md › Security notes @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "dc6d8b2787640",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/chat_engine.py` — Chat Engine @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "k1b62a1a0e935",
+   "kind": "code",
+   "label": "[core/crypto.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "d3ecbfdce2400",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.3 Graph + Semantic layer @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g92623b9d4d3d",
+   "kind": "commit",
+   "label": "[git chatadhd › 1f28c4c Version 0.6.1 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "d4c3a149d3a36",
+   "kind": "doc",
+   "label": "[README.md › Core ideas @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "dc828013c36a2",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/config.py` — Configuration @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "k40920c771d3a",
+   "kind": "code",
+   "label": "[engine/config.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g0c36d155f8c6",
+   "kind": "commit",
+   "label": "[git chatadhd › a4c9d38 loom(archive): C ABI, server endpoints and stage/resume/determinism tes… @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d83895bfa499c",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `core/semantic.py` — Semantic Analysis @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d38815d3e5b63",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 1. Co faktycznie scala się bez konfliktu › 1.1 ChatADHD @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "df462b26d4dd7",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/importer.py` — Universal Importer @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "gd28f40bb1e85",
+   "kind": "commit",
+   "label": "[git chatadhd › c5a3120 Version 0.6.2 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "keca54bd1ff1d",
+   "kind": "code",
+   "label": "[loom/include/loom/provenance.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gd65ae39c0007",
+   "kind": "commit",
+   "label": "[git chatadhd › e994503 Version 0.7.8 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k704a48f98b67",
+   "kind": "code",
+   "label": "[engine/semantic_llm.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k429f3f2a712f",
+   "kind": "code",
+   "label": "[loom/src/archive/synth.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dfee11a4055b3",
+   "kind": "doc",
+   "label": "[loom/android/README.md › The bridge contract › Fast, synchronous calls @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k9fb1af4c4f03",
+   "kind": "code",
+   "label": "[engine/graph_engine.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k8767183e2d03",
+   "kind": "code",
+   "label": "[loom/include/loom/result.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k91fd9ac4fc08",
+   "kind": "code",
+   "label": "[gui/dialogs.py @ 2026-03-06]",
+   "date": "2026-03-06"
+  },
+  {
+   "id": "kd4fbcc67f006",
+   "kind": "code",
+   "label": "[loom/android/verify/java/com/chatadhd/android/LoomHttp.java @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d852013abe764",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › ChatADHD / Loom — MEGA MASTER @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "kbb29c570c900",
+   "kind": "code",
+   "label": "[loom/src/capi/capi_http.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kdb029266d5a2",
+   "kind": "code",
+   "label": "[loom/include/loom/sqlite.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k3a948babab8c",
+   "kind": "code",
+   "label": "[gui/memory_panel.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k2b1e19997161",
+   "kind": "code",
+   "label": "[loom/src/import/importer_internal.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k03841ea12f44",
+   "kind": "code",
+   "label": "[loom/include/loom/config.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g1adc2d4cda92",
+   "kind": "commit",
+   "label": "[git chatadhd › 5982105 loom(archive): resumable Archive Intelligence pipeline, loom CLI, fixtu… @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g285de0f89724",
+   "kind": "commit",
+   "label": "[git chatadhd › 48ad58d Version 0.7.1 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k7077a422927d",
+   "kind": "code",
+   "label": "[gui/import_panel.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g126d08fb36e4",
+   "kind": "commit",
+   "label": "[git chatadhd › ddcab9e Fix attachment file paths: convert relative to absolute @ 2026-03-06]",
+   "date": "2026-03-06"
+  },
+  {
+   "id": "gbee76daf22b7",
+   "kind": "commit",
+   "label": "[git chatadhd › 287bdc1 Fix attachment file paths: convert relative to absolute @ 2026-03-06]",
+   "date": "2026-03-06"
+  },
+  {
+   "id": "d49780c1dfa0e",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 1. Co faktycznie scala się bez konfliktu › 1.3 Autonomiczny Agent (2024→) @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k0b5169774dbf",
+   "kind": "code",
+   "label": "[loom/CMakeLists.txt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k1d99b8d55ed2",
+   "kind": "code",
+   "label": "[loom/android/verify/java/com/chatadhd/android/LoomCallbacks.java @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ka41b05bfbc37",
+   "kind": "code",
+   "label": "[loom/android/app/src/main/cpp/CMakeLists.txt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k93d149dfff3b",
+   "kind": "code",
+   "label": "[loom/src/archive/archive_internal.h @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k0d8f13c8066c",
+   "kind": "code",
+   "label": "[loom/android/app/src/main/java/com/chatadhd/android/LoomNative.kt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ddb52e06b0bed",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/db.py` — Database @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "df616f78543d5",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 14. Bieżący stan GitHub — krytyczna obserwacja @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "kfaa8ae5613e1",
+   "kind": "code",
+   "label": "[engine/memory_engine.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "d83f1503c3381",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.9 Project Compiler / Archive Intelligence @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k65920c4025cd",
+   "kind": "code",
+   "label": "[loom/android/app/src/main/java/com/chatadhd/android/LoomCallbacks.kt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k3715f4acb204",
+   "kind": "code",
+   "label": "[loom/tests/test_import.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k3b3e902f574b",
+   "kind": "code",
+   "label": "[loom/include/loom/batch_api.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k31725f35f3f1",
+   "kind": "code",
+   "label": "[core/semantic.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "kdb9313accee4",
+   "kind": "code",
+   "label": "[loom/src/archive/text.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g389c0964831b",
+   "kind": "commit",
+   "label": "[git chatadhd › 07cec2c loom: deterministic import fixtures for every importer format @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "ke4659e496c7e",
+   "kind": "code",
+   "label": "[loom/android/app/src/main/java/com/chatadhd/android/LoomHttp.kt @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "kab848f6f1f00",
+   "kind": "code",
+   "label": "[loom/tests/compat/test_import_compat.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gbf1dc8383d6b",
+   "kind": "commit",
+   "label": "[git chatadhd › 3fd51bd loom(import): add edit/branch, unicode, odd-message, malformed and nest… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g1ca219dee86d",
+   "kind": "commit",
+   "label": "[git chatadhd › 8adc0d5 loom(import): unit tests, Python differential harness, and a bounded-me… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d8a50088871f2",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › H. System uczy się, ale nie „magicznie sam się przepisuje” @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "daab709354f28",
+   "kind": "doc",
+   "label": "[loom/android/README.md › The bridge contract @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dc21d1c4b847b",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.7 Agent runtime / Execution engine @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g8ba0b905bc5c",
+   "kind": "commit",
+   "label": "[git chatadhd › 5825d05 loom(archive): WIP archive intelligence pipeline (interrupted by sessio… @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k303c1d4074dc",
+   "kind": "code",
+   "label": "[loom/include/loom/tasks.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k0412a6862571",
+   "kind": "code",
+   "label": "[loom/include/loom/github_sync.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k6333e3ee9af2",
+   "kind": "code",
+   "label": "[engine/models.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "kdc4f4b8ff6c5",
+   "kind": "code",
+   "label": "[loom/src/graph/graph_memory.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "dd5033f4c6ea9",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Configuration: First Run @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "k4d240ed371bf",
+   "kind": "code",
+   "label": "[loom/tests/test_tasks.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g5a8a35362abb",
+   "kind": "commit",
+   "label": "[git chatadhd › 61f52f9 chore: untrack Gradle cache, ignore Android/web build outputs @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d176cedb0d262",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Conventions › Kivy / GUI Patterns @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "gdbedb4c2c4a8",
+   "kind": "commit",
+   "label": "[git chatadhd › 7b54ea2 loom(android): untrack stray Gradle cache, ignore build outputs @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ke8ad874692ed",
+   "kind": "code",
+   "label": "[loom/src/capi/capi_archive.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g6e7eaf747317",
+   "kind": "commit",
+   "label": "[git chatadhd › 1c789a9 loom(archive): list-heading items, header-only doc dates, term-head gap… @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g1c3dfe85cce3",
+   "kind": "commit",
+   "label": "[git chatadhd › 6ab4366 Version 0.7.10: Restore lost features + enhanced model selection @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "gf4973cf8b2ff",
+   "kind": "commit",
+   "label": "[git chatadhd › 1e3fa2b Version 0.7.10: Restore lost features + enhanced model selection @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g1a22916bbe8b",
+   "kind": "commit",
+   "label": "[git chatadhd › 5fa13e8 loom(semantic): differential test for GraphEngine + GraphMemorySelector… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kd43828dec405",
+   "kind": "code",
+   "label": "[loom/src/graph/graph_engine.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k922cb815f2af",
+   "kind": "code",
+   "label": "[loom/tests/compat/tool_import.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g9a21f5dc5b06",
+   "kind": "commit",
+   "label": "[git chatadhd › fd76b37 docs: refresh README for v0.07.10 and clarify project status @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g175d4fd88b69",
+   "kind": "commit",
+   "label": "[git chatadhd › 432bc97 loom: Python<->C++ differential compat harness (DB, config, util, ABI) @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k60452349117d",
+   "kind": "code",
+   "label": "[loom/web/src/App.tsx @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "ge391f02cbac4",
+   "kind": "commit",
+   "label": "[git chatadhd › 4bab964 loom: event bus, config/secrets/paths, blob+provenance+event log, tasks… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d859ff6f1c362",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/memory_engine.py` — Memory Tree @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "kd67af5f4aaf5",
+   "kind": "code",
+   "label": "[loom/include/loom/graph_memory.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "dee6640671696",
+   "kind": "doc",
+   "label": "[requirements.txt › Core (required) @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k148d79b70c8d",
+   "kind": "code",
+   "label": "[gui/graph_viz.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g60f7808ed941",
+   "kind": "commit",
+   "label": "[git chatadhd › b2e66b0 loom(semantic): unit tests for regex, selector, memory_engine, graph_en… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k779930f599a2",
+   "kind": "code",
+   "label": "[loom/src/import/importer_zip.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kc671d6d39fc5",
+   "kind": "code",
+   "label": "[loom/src/archive/archive_runtime.h @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "kea5b84b4d5c8",
+   "kind": "code",
+   "label": "[loom/tests/compat/test_graph_compat.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k8bfd97492ce0",
+   "kind": "code",
+   "label": "[loom/tests/test_provenance.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gf563289f1a40",
+   "kind": "commit",
+   "label": "[git chatadhd › 08b37ab loom(archive): require a substantial shared subject for supersedes/reso… @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "dadc5328da792",
+   "kind": "doc",
+   "label": "[loom/README.md › C ABI conventions @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ga4f8fd97c26d",
+   "kind": "commit",
+   "label": "[git chatadhd › d3d6c48 loom(chat): implement ChatEngine @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g5aab1f6495b4",
+   "kind": "commit",
+   "label": "[git chatadhd › d6dbe79 loom: README (status, build, ABI conventions, decisions, wave-2 ownersh… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "df3f62c193091",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.2 Provenance / Event / Blob layer @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g538631d07374",
+   "kind": "commit",
+   "label": "[git chatadhd › 3813b92 docs: document commercial licensing model @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d9171232d861d",
+   "kind": "doc",
+   "label": "[README.md › Licensing @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d71e99623cdc1",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.6 Policy / Routing engine @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "gaf17b0ef9124",
+   "kind": "commit",
+   "label": "[git chatadhd › 2f398fa loom(web): add React 18 + TypeScript web UI for Loom @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gaf47fb2369df",
+   "kind": "commit",
+   "label": "[git chatadhd › 4ed3291 Version 0.7.5 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "dff388be14a17",
+   "kind": "doc",
+   "label": "[loom/android/README.md › HTTP: injected from Kotlin, not linked into the native library @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k7b9ef1ff2a60",
+   "kind": "code",
+   "label": "[loom/server/CMakeLists.txt @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k7651ec331160",
+   "kind": "code",
+   "label": "[loom/src/core/tasks.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k18b2612bccc0",
+   "kind": "code",
+   "label": "[loom/include/loom/graph_engine.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d30bc94e918cd",
+   "kind": "doc",
+   "label": "[loom/android/README.md › The bridge contract › The streaming contract, precisely @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "gc908a2112962",
+   "kind": "commit",
+   "label": "[git chatadhd › 8e82271 loom: build clean with Clang 18; CI leg for Clang + vendored SQLite @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k0b02bacca493",
+   "kind": "code",
+   "label": "[core/__init__.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k28b1e0248f0f",
+   "kind": "code",
+   "label": "[engine/__init__.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "d88b50f33b9f3",
+   "kind": "doc",
+   "label": "[loom/deploy/README.md › Loom deployment @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k15d1154a9b46",
+   "kind": "code",
+   "label": "[loom/src/semantic/analyzer.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kd2ea95fe33f6",
+   "kind": "code",
+   "label": "[loom/tests/test_chat_engine.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "de3a92f7a7f14",
+   "kind": "doc",
+   "label": "[CLAUDE.md › CLAUDE.md — ChatADHD Codebase Guide @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "k4776d0ac9fc1",
+   "kind": "code",
+   "label": "[loom/src/db/sqlite.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g2ac657ada690",
+   "kind": "commit",
+   "label": "[git chatadhd › e16579a Merge wave 3 (WIP): Android shell @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k942db9d50b24",
+   "kind": "code",
+   "label": "[loom/android/settings.gradle.kts @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g8d3b1fa20444",
+   "kind": "commit",
+   "label": "[git chatadhd › 86c7508 Version 0.6.3 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "kb03b2309bdc6",
+   "kind": "code",
+   "label": "[loom/src/capi/capi_import.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d7acc2bfc4f8a",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.1 Ingest + Normalization @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g1f9b63cfacde",
+   "kind": "commit",
+   "label": "[git chatadhd › a89f73f Version 0.6.0 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "dbece32bedcb4",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › D. Capability-based, nie enum-based @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k61c61eca79ef",
+   "kind": "code",
+   "label": "[loom/tests/test_import_stream.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kd8dc8c49868c",
+   "kind": "code",
+   "label": "[engine/importer.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "gc1559e1c139f",
+   "kind": "commit",
+   "label": "[git chatadhd › 8376e9d Merge wave 3: Android shell, host JNI smoke test, deploy tooling @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k542038d4651b",
+   "kind": "code",
+   "label": "[loom/src/capi/context.h @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k9855435fae91",
+   "kind": "code",
+   "label": "[loom/src/memory/memory_engine.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "ke35125116387",
+   "kind": "code",
+   "label": "[loom/tests/compat/tool_graph.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g81a239b0fcb0",
+   "kind": "commit",
+   "label": "[git chatadhd › 928d566 Version 0.5.1 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g97316d48de3e",
+   "kind": "commit",
+   "label": "[git chatadhd › 74af5ba Version 0.7.4 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "dd25ceb79f22f",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Conventions › Thread Safety @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d1538a67ca4cf",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › C. Serialization is not architecture @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "ka439b5b17021",
+   "kind": "code",
+   "label": "[gui/github_panel.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "d91c0cb261f17",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Extending the Codebase › Adding a new import format @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "de4835649fa71",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 9. Zasady ewolucji @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k558db9920fcd",
+   "kind": "code",
+   "label": "[loom/tests/test_fts.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k2be92b112fb3",
+   "kind": "code",
+   "label": "[loom/android/build.gradle.kts @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k5529893a7391",
+   "kind": "code",
+   "label": "[loom/src/import/importer_text.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kdf9943039c60",
+   "kind": "code",
+   "label": "[gui/voice_panel.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "daf76a87a9533",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 6. YAML? Odpowiedź architektoniczna @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "da23667cf0d7f",
+   "kind": "doc",
+   "label": "[loom/deploy/README.md › Files @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g6147bd5260c1",
+   "kind": "commit",
+   "label": "[git chatadhd › 5d94c6c loom: vendored deps, CMake presets, util layer and SQLite Database port @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kfb5175c2f1d2",
+   "kind": "code",
+   "label": "[loom/tools/gen_semantic_rules.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d45e72fa992e3",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/events.py` — Event Bus @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "k93e73e259aa4",
+   "kind": "code",
+   "label": "[loom/src/capi/shared_anchor.c @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kcc8093eb6396",
+   "kind": "code",
+   "label": "[loom/tests/test_capi.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d5a37a5698a70",
+   "kind": "doc",
+   "label": "[loom/deploy/README.md › Design notes @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d8afbba0178cb",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Extending the Codebase › Adding a new graph node/edge type @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "geee1e7eb0305",
+   "kind": "commit",
+   "label": "[git chatadhd › 952ae04 loom(web): finish and pass the Playwright e2e suite @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "de3615cbb4a16",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Database Schema Summary @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "kfbbfcebef0d2",
+   "kind": "code",
+   "label": "[gui/conv_panel.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g7c7b409ae11e",
+   "kind": "commit",
+   "label": "[git chatadhd › 5f3b9b2 loom(chat): unit tests for SemanticLLM @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kbc7b9bb9417b",
+   "kind": "code",
+   "label": "[loom/tests/compat/test_semantic_compat.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kc2a7b0769c8e",
+   "kind": "code",
+   "label": "[loom/android/verify/java/com/chatadhd/android/JsonObj.java @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k670b2c0cfb8a",
+   "kind": "code",
+   "label": "[loom/include/loom/semantic_analyzer.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k536ffa4316fd",
+   "kind": "code",
+   "label": "[loom/src/core/provenance.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kb281adf84c0e",
+   "kind": "code",
+   "label": "[loom/web/src/api/loom-http.ts @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g9fe319c22af2",
+   "kind": "commit",
+   "label": "[git chatadhd › 3da3e8b loom(server): add API smoke ctest for loom-server @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "dd18ce6f1caf9",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Security Notes @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "k1fd409368894",
+   "kind": "code",
+   "label": "[loom/include/loom/providers.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k334cbc98cf45",
+   "kind": "code",
+   "label": "[loom/include/loom/selector.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k5c675ecb577a",
+   "kind": "code",
+   "label": "[engine/events.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k31d383a7dc74",
+   "kind": "code",
+   "label": "[loom/src/archive/vocab.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ka053126c9863",
+   "kind": "code",
+   "label": "[loom/tests/compat/test_config_compat.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k511b91f1ef4d",
+   "kind": "code",
+   "label": "[loom/tests/compat/test_abi_compat.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k16a480a834f6",
+   "kind": "code",
+   "label": "[loom/src/archive/cluster.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "kb9f25353f354",
+   "kind": "code",
+   "label": "[loom/src/db/db.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d0920990ee8bb",
+   "kind": "doc",
+   "label": "[COMMERCIAL_LICENSE.md › Commercial licensing @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "k46d43d92ee38",
+   "kind": "code",
+   "label": "[loom/deploy/Dockerfile @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "gf2526cb09f5e",
+   "kind": "commit",
+   "label": "[git chatadhd › f7fd0f4 Version 0.7.0 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "kf91461a3542a",
+   "kind": "code",
+   "label": "[gui/base.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "kc11e9f0a55f3",
+   "kind": "code",
+   "label": "[loom/include/loom/semantic_worker.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k6caa4614ccff",
+   "kind": "code",
+   "label": "[loom/src/core/config.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "df274aac65ba3",
+   "kind": "doc",
+   "label": "[loom/android/README.md › The bridge contract › Long-running / networked calls @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "kc616fc1f86f5",
+   "kind": "code",
+   "label": "[loom/src/import/importer_common.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k2d2d72889c29",
+   "kind": "code",
+   "label": "[engine/chat_engine.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "k2aa1568b2987",
+   "kind": "code",
+   "label": "[loom/include/loom/event_bus.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kf2463d44558f",
+   "kind": "code",
+   "label": "[loom/include/loom/re/regex.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k6c62adf1f66b",
+   "kind": "code",
+   "label": "[loom/src/import/importer_json.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "ke676aef605eb",
+   "kind": "code",
+   "label": "[loom/include/loom/db.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kdf748a975128",
+   "kind": "code",
+   "label": "[loom/web/e2e/run.mjs @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k353c5bbbf755",
+   "kind": "code",
+   "label": "[loom/deploy/ec2-setup.sh @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k8b6c4c497f04",
+   "kind": "code",
+   "label": "[engine/db.py @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "de68ff3ca5013",
+   "kind": "doc",
+   "label": "[loom/deploy/README.md › Quick start (once loom/web and loom/server exist) @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "kd14bbe350025",
+   "kind": "code",
+   "label": "[loom/include/loom/memory_engine.h @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k6e9620eb62f9",
+   "kind": "code",
+   "label": "[loom/src/db/fts.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k369d18ee12de",
+   "kind": "code",
+   "label": "[loom/tests/compat/test_chat_compat.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "kba8b026d1dae",
+   "kind": "code",
+   "label": "[loom/src/import/importer_html.cpp @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "k75c0ed872546",
+   "kind": "code",
+   "label": "[loom/src/archive/items.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k8d41abbb4e26",
+   "kind": "code",
+   "label": "[loom/src/archive/ingest_parse.cpp @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "k0f942216ed37",
+   "kind": "code",
+   "label": "[loom/tests/compat/test_db_compat.py @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "d020d579cb93e",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `gui/base.py` — Theme + Shared Widgets @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d1b55c1eb5152",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `core/crypto.py` — Encryption @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d22847fee8db8",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Conventions › Logging @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d3d9c6123343e",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.10 Learning / Experience distillation @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d595f018e4acd",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Conventions › ID Generation @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d5bc0cf1b819e",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.13 Artifact engine @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d5defb527b89b",
+   "kind": "doc",
+   "label": "[loom/android/README.md › The bridge contract › Fast, synchronous calls @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d61fbfbc9f5ff",
+   "kind": "doc",
+   "label": "[loom/README.md › Code ownership @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "d63cd5509bc8f",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `core/selector.py` — Search Engine @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d75f567c4f2f1",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Conventions › File Persistence @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "d7d62f6d593f1",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › A. Nie podejmujemy decyzji, jeśli nie musimy @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d84d0743be667",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › F. Raw source is immutable @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d9a06750ff9a6",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 17. Jedno ostrzeżenie @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "d9fbbc10248d3",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Extending the Codebase › Adding a new event @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "dacd3528f5bfb",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › B. „Kod ≠ dane” — ale nie „wszystko YAML” @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "db81d6eeddf66",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Extending the Codebase › Adding a new config key @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "dc50952e8a28d",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.8 Environment / Deployment fabric @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "dca4a536263d1",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Conventions › Error Handling @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "dcbbd3401060c",
+   "kind": "doc",
+   "label": "[README.md › Quick start @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "dda588b679fe0",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Extending the Codebase › DB schema changes @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "ddf615982aab0",
+   "kind": "doc",
+   "label": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › E. Unknown future ≠ „przewidzimy wszystko” @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "deb32a5d52d85",
+   "kind": "doc",
+   "label": "[CLAUDE.md › Key Modules In Depth › `engine/semantic_worker.py` — Background Worker @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "g0ad62a364b47",
+   "kind": "commit",
+   "label": "[git chatadhd › 25c4d26 Version 0.4.2 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g0e11edddcdb3",
+   "kind": "commit",
+   "label": "[git chatadhd › d840dca loom(chat): unit tests for SseParser and ChatEngine @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g0f6aafa090d1",
+   "kind": "commit",
+   "label": "[git chatadhd › 99830c4 Merge wave 3 (partial): loom-server + React web UI @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g0f6e0ea72902",
+   "kind": "commit",
+   "label": "[git chatadhd › 6aa700d Version 0.4.5 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g11a4dead4ecd",
+   "kind": "commit",
+   "label": "[git chatadhd › 17b3eac loom(chat): implement SemanticWorker background loop @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g139aba5a823a",
+   "kind": "commit",
+   "label": "[git chatadhd › 7b68124 loom(test): fix a GCC -O3 -Wnull-dereference false positive in test_git… @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "g15f5ea66c1b9",
+   "kind": "commit",
+   "label": "[git chatadhd › 970ca28 ci: add honest Python syntax sanity gate @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "g18cc920811b9",
+   "kind": "commit",
+   "label": "[git chatadhd › 006af04 Version 0.4.2 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g243a8a93d959",
+   "kind": "commit",
+   "label": "[git chatadhd › ef4e824 Version 0.7.2 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g46e225ef726f",
+   "kind": "commit",
+   "label": "[git chatadhd › 556a2dd loom(chat): implement SemanticBatchAPI @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g4a1528dac226",
+   "kind": "commit",
+   "label": "[git chatadhd › ba0e3d4 Version 0.3.0 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g5a7858bb89ec",
+   "kind": "commit",
+   "label": "[git chatadhd › 278f10b Version 0.7.7 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g5bcd6861fd2e",
+   "kind": "commit",
+   "label": "[git chatadhd › 0ccd273 loom(chat): implement SSE parser and default HTTP transport @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g5d4c03a50045",
+   "kind": "commit",
+   "label": "[git chatadhd › fda3013 loom(chat): unit tests for SemanticWorker lifecycle @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g5e60f732a6e4",
+   "kind": "commit",
+   "label": "[git chatadhd › f0c5834 Version 0.5.0 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g60b56862aaf7",
+   "kind": "commit",
+   "label": "[git chatadhd › 46d0ba7 Version 0.7.9 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g7167550ad277",
+   "kind": "commit",
+   "label": "[git chatadhd › f7f0e7c Update README.md @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g73a58663652a",
+   "kind": "commit",
+   "label": "[git chatadhd › 6b14dba Version 0.4.1 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "g7903658dc2dc",
+   "kind": "commit",
+   "label": "[git chatadhd › f0db06a loom(crypto/media/github): implement wave-2 area @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g7dba0f2ca877",
+   "kind": "commit",
+   "label": "[git chatadhd › 3c966db loom(chat): implement SemanticLLM and ModelRegistry/ProviderRegistry @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "g8ff61062ff55",
+   "kind": "commit",
+   "label": "[git chatadhd › 0028066 loom(chat): Python<->Loom differential test against a live mock server @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "ga3a00ea96cea",
+   "kind": "commit",
+   "label": "[git chatadhd › d0692a2 Version 0.7.3 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "ga84dd71a1298",
+   "kind": "commit",
+   "label": "[git chatadhd › e083875 Version 0.4.4 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "gb25fde575ad3",
+   "kind": "commit",
+   "label": "[git chatadhd › 8746e70 loom(semantic): differential tests for selector TF-IDF and memory_engin… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gb677b7ea6b13",
+   "kind": "commit",
+   "label": "[git chatadhd › 1afb834 Version 0.4.0 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "gbaed142cd1d3",
+   "kind": "commit",
+   "label": "[git chatadhd › 51a8afe Merge repository hygiene, CI and licensing @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "gc05fbc51cfb1",
+   "kind": "commit",
+   "label": "[git chatadhd › 488d27e loom(chat): unit tests for ModelRegistry and ProviderRegistry @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gc84c56e15778",
+   "kind": "commit",
+   "label": "[git chatadhd › 30e7912 Merge wave 3: web e2e (Playwright) + server smoke test @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "gca83a1069eda",
+   "kind": "commit",
+   "label": "[git chatadhd › d48514b Merge Claude execution branch into main @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "gd0939b7efd49",
+   "kind": "commit",
+   "label": "[git chatadhd › cd1e467 loom(chat): unit tests for SemanticBatchAPI @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gd62cca4055dd",
+   "kind": "commit",
+   "label": "[git chatadhd › 30b3da6 Initial commit: version 0.2.0 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "gd63a072899d6",
+   "kind": "commit",
+   "label": "[git chatadhd › 9dfceff chore: align dependency header with current version @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "gd8216c780636",
+   "kind": "commit",
+   "label": "[git chatadhd › 4733447 Merge wave 2: HTTP transport, SSE, chat engine, providers, batch API, s… @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gd9301a2a3584",
+   "kind": "commit",
+   "label": "[git chatadhd › 759b285 docs: add noncommercial source-available license @ 2026-09-16]",
+   "date": "2026-09-16"
+  },
+  {
+   "id": "ge3487acf678c",
+   "kind": "commit",
+   "label": "[git chatadhd › a05e5bc loom(web): WIP Playwright e2e (interrupted by session limit) @ 2026-09-26]",
+   "date": "2026-09-26"
+  },
+  {
+   "id": "ge422237c03df",
+   "kind": "commit",
+   "label": "[git chatadhd › c21de36 Version 0.5.2 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "ge4ff146c8cd3",
+   "kind": "commit",
+   "label": "[git chatadhd › 13a4d67 Version 0.3.0 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "gf274e14321cc",
+   "kind": "commit",
+   "label": "[git chatadhd › 64cd6ed Add comprehensive CLAUDE.md for AI assistant guidance @ 2026-02-19]",
+   "date": "2026-02-19"
+  },
+  {
+   "id": "gf31675631854",
+   "kind": "commit",
+   "label": "[git chatadhd › 7a7b21a Merge wave 2: crypto, media providers, GitHub sync @ 2026-09-25]",
+   "date": "2026-09-25"
+  },
+  {
+   "id": "gfcfd4f519a0d",
+   "kind": "commit",
+   "label": "[git chatadhd › 66f926f Version 0.7.6 @ 2026-02-11]",
+   "date": "2026-02-11"
+  },
+  {
+   "id": "i_4d147cd507",
+   "kind": "invariant",
+   "label": "Never overwritten by upgrades.",
+   "status": "active"
+  },
+  {
+   "id": "i_f8f7be0b0b",
+   "kind": "requirement",
+   "label": "**UI thread** (Kivy main): all widget operations must happen here",
+   "status": "active"
+  },
+  {
+   "id": "i_0a967ba336",
+   "kind": "requirement",
+   "label": "Event bus: synchronous — handlers run in emitter's thread; UI event handlers must use `Clock.schedu…",
+   "status": "active"
+  },
+  {
+   "id": "i_68e4e28a05",
+   "kind": "bug",
+   "label": "DB uses WAL + `synchronous=NORMAL` for crash resilience",
+   "status": "active"
+  },
+  {
+   "id": "i_d853c358a3",
+   "kind": "invariant",
+   "label": "Never use `CREATE TABLE` with new columns — use `ALTER TABLE ADD COLUMN`",
+   "status": "active"
+  },
+  {
+   "id": "i_c5e496fee5",
+   "kind": "invariant",
+   "label": "`secrets.json` stores all credentials; never log its contents",
+   "status": "active"
+  },
+  {
+   "id": "i_bab9ec4f6d",
+   "kind": "idea",
+   "label": "Jego zadaniem jest zachować opcjonalność, scalić historycznie rozdzielone pomysły i wyznaczyć wspól…",
+   "status": "active"
+  },
+  {
+   "id": "i_a0eed07e92",
+   "kind": "decision",
+   "label": "Każda arbitralna decyzja pozostaje otwarta, dopóki nie wymusza jej kontrakt, test, koszt lub ograni…",
+   "status": "active"
+  },
+  {
+   "id": "i_60cc93357a",
+   "kind": "rejected_option",
+   "label": "Nie budujemy pięciu projektów: „ChatADHD”, „Loom”, „autonomiczny agent”, „analizator archiwów”, „mu…",
+   "status": "active"
+  },
+  {
+   "id": "i_cf62edd010",
+   "kind": "decision",
+   "label": "Nie nadajemy teraz nowej nazwy całemu ekosystemowi — to decyzja kosmetyczna i nie jest potrzebna do…",
+   "status": "active"
+  },
+  {
+   "id": "i_534c00889b",
+   "kind": "invariant",
+   "label": "**invariant** — musi być w kodzie/kontrakcie,",
+   "status": "active"
+  },
+  {
+   "id": "i_f40e25b98b",
+   "kind": "invariant",
+   "label": "Dane nie mogą zastępować semantyki programu.",
+   "status": "active"
+  },
+  {
+   "id": "i_cacf51c7ca",
+   "kind": "decision",
+   "label": "Nie wybieramy „YAML” jako fundamentu.",
+   "status": "active"
+  },
+  {
+   "id": "i_187ccf039c",
+   "kind": "invariant",
+   "label": "Zmiana serializacji nie może zmieniać semantyki.",
+   "status": "active"
+  },
+  {
+   "id": "i_95e992bf4e",
+   "kind": "requirement",
+   "label": "Nowa implementacja znanego kontraktu wymaga pluginu, ale nie przebudowy rdzenia.",
+   "status": "active"
+  },
+  {
+   "id": "i_2a09340dbb",
+   "kind": "invariant",
+   "label": "**Event** — append-only fakt, że coś zaszło.",
+   "status": "active"
+  },
+  {
+   "id": "i_e6245826fb",
+   "kind": "invariant",
+   "label": "append-only event stream,",
+   "status": "active"
+  },
+  {
+   "id": "i_7c0ca1078e",
+   "kind": "invariant",
+   "label": "Możliwy explicit override usera zawsze wygrywa, o ile nie łamie twardego safety/invariant contract.",
+   "status": "active"
+  },
+  {
+   "id": "i_401e26d58b",
+   "kind": "idea",
+   "label": "Z 2024 agenta zostaje bardzo dobry pomysł: pełne logi z debugowania są materiałem badawczym.",
+   "status": "active"
+  },
+  {
+   "id": "i_77db0c474f",
+   "kind": "rejected_option",
+   "label": "**Tak jako jeden z formatów authoringu; nie jako „prawda systemu”.**",
+   "status": "active"
+  },
+  {
+   "id": "i_db0e8d0403",
+   "kind": "idea",
+   "label": "Można uwzględnić wszystkie pomysły jednocześnie **w modelu i kontraktach**, ale nie warto pisać wsz…",
+   "status": "active"
+  },
+  {
+   "id": "i_ac4ef5f35f",
+   "kind": "open_question",
+   "label": "Czy to nowa wartość danych?",
+   "status": "active"
+  },
+  {
+   "id": "i_a4d8244d18",
+   "kind": "open_question",
+   "label": "Czy to nowa implementacja istniejącego kontraktu?",
+   "status": "active"
+  },
+  {
+   "id": "i_9b3a147526",
+   "kind": "open_question",
+   "label": "Czy naprawdę wymaga nowej semantyki?",
+   "status": "active"
+  },
+  {
+   "id": "i_2aefa41a86",
+   "kind": "open_question",
+   "label": "JSON vs YAML vs protobuf jako external representation.",
+   "status": "active"
+  },
+  {
+   "id": "i_26937e3c1b",
+   "kind": "open_question",
+   "label": "SQLite vs inny backend dla niektórych storage paths.",
+   "status": "active"
+  },
+  {
+   "id": "i_56766b50a4",
+   "kind": "open_question",
+   "label": "Compose MP vs alternatywne rendery poza pierwszym klientem.",
+   "status": "active"
+  },
+  {
+   "id": "i_c440aedd0b",
+   "kind": "open_question",
+   "label": "monorepo vs kilka repozytoriów.",
+   "status": "active"
+  },
+  {
+   "id": "i_8b9fcb8544",
+   "kind": "open_question",
+   "label": "event sourcing pełny vs hybrydowy.",
+   "status": "active"
+  },
+  {
+   "id": "i_c4d4cb7477",
+   "kind": "open_question",
+   "label": "plugin ABI poza C ABI.",
+   "status": "active"
+  },
+  {
+   "id": "i_10d665813d",
+   "kind": "open_question",
+   "label": "dokładna ontologia nodes/edges.",
+   "status": "active"
+  },
+  {
+   "id": "i_9880783807",
+   "kind": "open_question",
+   "label": "scheduler/orchestrator implementation.",
+   "status": "active"
+  },
+  {
+   "id": "i_40633112dc",
+   "kind": "open_question",
+   "label": "local vs remote server topology.",
+   "status": "active"
+  },
+  {
+   "id": "i_badce2dc5f",
+   "kind": "open_question",
+   "label": "platform build order.",
+   "status": "active"
+  },
+  {
+   "id": "i_0f63705bbf",
+   "kind": "open_question",
+   "label": "jaki provider/model jest defaultem.",
+   "status": "active"
+  },
+  {
+   "id": "i_f2b43b0921",
+   "kind": "open_question",
+   "label": "czy i kiedy Web jest klientem first-class.",
+   "status": "active"
+  },
+  {
+   "id": "i_f263e6fed6",
+   "kind": "open_question",
+   "label": "Zamykamy je dopiero przez constraint albo benchmark.",
+   "status": "active"
+  },
+  {
+   "id": "i_119182ccd2",
+   "kind": "requirement",
+   "label": "centralna pamięć/system knowledge, nie pamięć jednej instancji,",
+   "status": "active"
+  },
+  {
+   "id": "i_4fb3ae43df",
+   "kind": "requirement",
+   "label": "wiedza destylowana z pełnych logów debugowania,",
+   "status": "active"
+  },
+  {
+   "id": "i_6a16725e17",
+   "kind": "requirement",
+   "label": "checkpointy z możliwością ponownego złożenia ścieżki,",
+   "status": "active"
+  },
+  {
+   "id": "i_506caab584",
+   "kind": "requirement",
+   "label": "GUI action → screenshot/state → success evaluation,",
+   "status": "active"
+  },
+  {
+   "id": "i_61d502a525",
+   "kind": "requirement",
+   "label": "role modeli dobrane do zadania,",
+   "status": "active"
+  },
+  {
+   "id": "i_8772f77ac4",
+   "kind": "requirement",
+   "label": "local ↔ remote/GCP portability,",
+   "status": "active"
+  },
+  {
+   "id": "i_f530aeac5a",
+   "kind": "requirement",
+   "label": "preset = informacja, nie kod,",
+   "status": "active"
+  },
+  {
+   "id": "i_db57c9a35a",
+   "kind": "requirement",
+   "label": "pełne logowanie z różnymi widokami poziomu szczegółowości,",
+   "status": "active"
+  },
+  {
+   "id": "i_c4fd03a785",
+   "kind": "requirement",
+   "label": "retry/rollback/failure artifacts,",
+   "status": "active"
+  },
+  {
+   "id": "i_2926b436cc",
+   "kind": "requirement",
+   "label": "auto-detection środowiska,",
+   "status": "active"
+  },
+  {
+   "id": "i_f205514c75",
+   "kind": "requirement",
+   "label": "natural-language high-level tasks nad deterministycznym action engine.",
+   "status": "active"
+  },
+  {
+   "id": "i_844bcb3d8a",
+   "kind": "requirement",
+   "label": "edit → branch, stara wersja nie ginie,",
+   "status": "active"
+  },
+  {
+   "id": "i_4f022fb66e",
+   "kind": "requirement",
+   "label": "message/version provenance,",
+   "status": "active"
+  },
+  {
+   "id": "i_5b5a3078dc",
+   "kind": "requirement",
+   "label": "graph budowany na bieżąco,",
+   "status": "active"
+  },
+  {
+   "id": "i_c301f09776",
+   "kind": "requirement",
+   "label": "pamięć/kontekst jako osobny byt,",
+   "status": "active"
+  },
+  {
+   "id": "i_789342249a",
+   "kind": "requirement",
+   "label": "provider/model registry,",
+   "status": "active"
+  },
+  {
+   "id": "i_b81e279503",
+   "kind": "requirement",
+   "label": "debug/log panel,",
+   "status": "active"
+  },
+  {
+   "id": "i_8acdcde63b",
+   "kind": "requirement",
+   "label": "zero-knowledge storage/sync option,",
+   "status": "active"
+  },
+  {
+   "id": "i_ad937a7839",
+   "kind": "requirement",
+   "label": "brak telemetrii jako default,",
+   "status": "active"
+  },
+  {
+   "id": "i_96fea6e57c",
+   "kind": "requirement",
+   "label": "local-first / graceful degradation.",
+   "status": "active"
+  },
+  {
+   "id": "i_ff1c7914f4",
+   "kind": "requirement",
+   "label": "tytuły rozmów są słabym sygnałem,",
+   "status": "active"
+  },
+  {
+   "id": "i_9942622abc",
+   "kind": "requirement",
+   "label": "raw source zostaje,",
+   "status": "active"
+  },
+  {
+   "id": "i_1487639137",
+   "kind": "requirement",
+   "label": "każda idea/fork/decyzja ma chronologię,",
+   "status": "active"
+  },
+  {
+   "id": "i_d177b8462b",
+   "kind": "requirement",
+   "label": "system ma wskazywać brakujące artefakty,",
+   "status": "active"
+  },
+  {
+   "id": "i_89bcdd66e5",
+   "kind": "requirement",
+   "label": "kod też jest źródłem wiedzy i należy z niego wydobywać wartościowe fragmenty,",
+   "status": "active"
+  },
+  {
+   "id": "i_5e1f8d1fd1",
+   "kind": "requirement",
+   "label": "graf ma pokazywać nie tylko stan końcowy, ale drogę po stanach,",
+   "status": "active"
+  },
+  {
+   "id": "i_de24ffb9e5",
+   "kind": "requirement",
+   "label": "kolejne przebiegi wyszukiwania mają wynikać z terminów znalezionych w poprzednich.",
+   "status": "active"
+  },
+  {
+   "id": "i_b58ef11282",
+   "kind": "requirement",
+   "label": "z wyników wyprowadzono pass 2: m.in. checkpoint/rollback, central memory, auto-migration/self-deplo…",
+   "status": "active"
+  },
+  {
+   "id": "i_88ed94804f",
+   "kind": "decision",
+   "label": "Nie wybieramy jeszcze pełnego roadmapu produktu.",
+   "status": "active"
+  },
+  {
+   "id": "i_4fb92af1cd",
+   "kind": "requirement",
+   "label": "„Zaimplementujmy wszystkie znalezione pomysły jednocześnie” jest dobre jako **wymóg kompatybilności…",
+   "status": "active"
+  },
+  {
+   "id": "i_27a453bbb0",
+   "kind": "idea",
+   "label": "każdy pomysł od razu trafia do grafu wymagań,",
+   "status": "active"
+  },
+  {
+   "id": "i_bbbdf89f0d",
+   "kind": "requirement",
+   "label": "To jest spójne z zasadą: **decyzji nie podejmujemy, jeśli nie musimy**.",
+   "status": "active"
+  },
+  {
+   "id": "i_711d89445b",
+   "kind": "invariant",
+   "label": "Sources and tests are picked up by glob, so adding a file never requires editing `CMakeLists.txt`.",
+   "status": "active"
+  },
+  {
+   "id": "i_cdcb1505e6",
+   "kind": "invariant",
+   "label": "Loom-only state lives in `loom_*` tables and never changes what the core tables mean.",
+   "status": "active"
+  },
+  {
+   "id": "i_6fcb523aae",
+   "kind": "invariant",
+   "label": "Loom reconciles it after writes from any process and rebuilds it when it is missing or corrupt, so…",
+   "status": "active"
+  },
+  {
+   "id": "i_92ae2a81bd",
+   "kind": "invariant",
+   "label": "On failure, JSON functions return `{\"error\":{\"code\":\"not_found\",\"message\":\"...\"}}` and never NULL (…",
+   "status": "active"
+  },
+  {
+   "id": "i_615a164c1b",
+   "kind": "invariant",
+   "label": "Following constitution A of the architecture document, each decision is one of: **invariant** (enfo…",
+   "status": "active"
+  },
+  {
+   "id": "i_3a445c87ca",
+   "kind": "invariant",
+   "label": "Shared on-disk format with the Python app (schema v4 DDL, IDs, timestamps, `json.dumps` formatting,…",
+   "status": "active"
+  },
+  {
+   "id": "i_895a704348",
+   "kind": "invariant",
+   "label": "Loom state only in `loom_*` tables; no triggers or virtual tables in the main DB — invariant",
+   "status": "active"
+  },
+  {
+   "id": "i_8e8866d93a",
+   "kind": "invariant",
+   "label": "Raw sources are immutable: content-addressed blobs (`blobs/ab/cd/<sha256>`, chmod 444), with source…",
+   "status": "active"
+  },
+  {
+   "id": "i_1a1230b782",
+   "kind": "invariant",
+   "label": "Task and event history is append-only (`loom_events`); tasks carry input/output hashes and checkpoi…",
+   "status": "active"
+  },
+  {
+   "id": "i_bd868b1ed4",
+   "kind": "invariant",
+   "label": "Errors are values (`Result`/`Status`); nothing throws across the C ABI — invariant",
+   "status": "active"
+  },
+  {
+   "id": "i_05e5ea5718",
+   "kind": "invariant",
+   "label": "C ABI: opaque context, caller-freed JSON strings, error object, negative codes — invariant (version…",
+   "status": "active"
+  },
+  {
+   "id": "i_617426ee9a",
+   "kind": "invariant",
+   "label": "FTS is derived, rebuildable state with a LIKE fallback — invariant; whether FTS5 is available is a…",
+   "status": "active"
+  },
+  {
+   "id": "i_472e9d03c4",
+   "kind": "decision",
+   "label": "Relation vocabulary (inverse, symmetry, category); unknown types auto-registered — policy/default (…",
+   "status": "active"
+  },
+  {
+   "id": "i_bf6038bc5e",
+   "kind": "decision",
+   "label": "Analyzer rules (regexes, topic keywords), generated from `core/semantic.py` — policy/default (data)",
+   "status": "active"
+  },
+  {
+   "id": "i_7e1fcc2946",
+   "kind": "invariant",
+   "label": "Config defaults = Python `DEFAULTS`; Loom policy keys (`loom_event_log_types`, `loom_task_workers`)…",
+   "status": "active"
+  },
+  {
+   "id": "i_2e7514cb43",
+   "kind": "decision",
+   "label": "Provider manifests and capabilities; `can(resource, capability, constraints)` instead of `if provid…",
+   "status": "active"
+  },
+  {
+   "id": "i_2ebcf6eea1",
+   "kind": "decision",
+   "label": "Context budget (tokens ≈ code points / 4), source order memory → graph → FTS — policy/default",
+   "status": "active"
+  },
+  {
+   "id": "i_8c7074bbeb",
+   "kind": "decision",
+   "label": "System SQLite vs vendored amalgamation — platform detail",
+   "status": "active"
+  },
+  {
+   "id": "i_e32d4e1aa3",
+   "kind": "decision",
+   "label": "HTTP stack (cpp-httplib + OpenSSL, or an injected platform transport) — platform detail",
+   "status": "active"
+  },
+  {
+   "id": "i_9e1863af48",
+   "kind": "decision",
+   "label": "Log sinks (stderr, ring buffer, logcat through the C ABI) — platform detail",
+   "status": "active"
+  },
+  {
+   "id": "i_b988cca1ae",
+   "kind": "decision",
+   "label": "JSON as the ABI codec (`nlohmann::ordered_json`, which keeps key order like Python dicts) — platfor…",
+   "status": "active"
+  },
+  {
+   "id": "i_5aa0d31250",
+   "kind": "decision",
+   "label": "Unicode tables pinned to the generating CPython (currently Unicode 14.0) — platform detail (regener…",
+   "status": "active"
+  },
+  {
+   "id": "i_7aacf306c5",
+   "kind": "decision",
+   "label": "Row ordering breaks ties by `rowid`, so batch-imported rows come back in insertion order.",
+   "status": "active"
+  },
+  {
+   "id": "i_a93765ffc8",
+   "kind": "decision",
+   "label": "`update_msg` enforces the status whitelist.",
+   "status": "active"
+  },
+  {
+   "id": "i_8d41e9f186",
+   "kind": "decision",
+   "label": "Bad JSON in a column is returned as a string instead of raising.",
+   "status": "active"
+  },
+  {
+   "id": "i_f07440c1a7",
+   "kind": "decision",
+   "label": "`ChatEngine` no longer sends the new user message twice.",
+   "status": "active"
+  },
+  {
+   "id": "i_dec05fc0bb",
+   "kind": "decision",
+   "label": "`estimate_cost` parses string prices.",
+   "status": "active"
+  },
+  {
+   "id": "i_a535a82cea",
+   "kind": "decision",
+   "label": "Native TF-IDF is always available, so the default selector tier is 2.",
+   "status": "active"
+  },
+  {
+   "id": "i_5a1f488ee6",
+   "kind": "decision",
+   "label": "The C ABI returns parsed JSON for metadata columns.",
+   "status": "active"
+  },
+  {
+   "id": "i_62a7666a52",
+   "kind": "invariant",
+   "label": "Secrets and passwords are read from stdin (with echo off on a terminal) and never accepted as argum…",
+   "status": "active"
+  },
+  {
+   "id": "i_ea8a52f708",
+   "kind": "invariant",
+   "label": "Titles are never used as a filter.",
+   "status": "active"
+  },
+  {
+   "id": "i_6b5b6ba934",
+   "kind": "rejected_option",
+   "label": "`timeline` — Chronological path per theme, ChatGPT/Claude forks (kept or abandoned branch), version…",
+   "status": "active"
+  },
+  {
+   "id": "i_1148f188ba",
+   "kind": "invariant",
+   "label": "`items` — Typed items: `idea`, `decision`, `rejected_option`, `open_question`, `implementation`, `b…",
+   "status": "active"
+  },
+  {
+   "id": "i_cc376b83e7",
+   "kind": "rejected_option",
+   "label": "`synthesize` — Renders `MASTER.md` (themes, timeline, decisions, rejected options, open questions,…",
+   "status": "active"
+  },
+  {
+   "id": "i_2f8dd666e6",
+   "kind": "bug",
+   "label": "A crashed process leaves the task `running`, and `recover_interrupted()` requeues it.",
+   "status": "active"
+  },
+  {
+   "id": "i_649121b0a5",
+   "kind": "invariant",
+   "label": "The output directory gets a `.loom-archive` marker, and the walker skips marked directories so a ru…",
+   "status": "active"
+  },
+  {
+   "id": "i_9c43d74b84",
+   "kind": "rationale",
+   "label": "That is the reason for the optional LLM refinement.",
+   "status": "active"
+  },
+  {
+   "id": "i_dc42e018cd",
+   "kind": "requirement",
+   "label": "Nobody outside this directory needs to know Loom exists — the web UI talks to `window.LoomBridge` t…",
+   "status": "active"
+  },
+  {
+   "id": "i_1ada070364",
+   "kind": "invariant",
+   "label": "Every method takes/returns **JSON strings** (never parsed JS objects) — the same convention `loom.h…",
+   "status": "active"
+  },
+  {
+   "id": "i_bc633a1cd3",
+   "kind": "requirement",
+   "label": "The web adapter must generate a fresh `callbackId` (any string; the sample UI uses a UUID) per call…",
+   "status": "active"
+  },
+  {
+   "id": "i_5ad81a20d3",
+   "kind": "invariant",
+   "label": "It is embedded as a JS string literal via `org.json.JSONObject.quote()` (`LoomCallbacks.kt`), which…",
+   "status": "active"
+  },
+  {
+   "id": "i_f917daa4a3",
+   "kind": "invariant",
+   "label": "The page is **never** loaded from a `file://` URL.",
+   "status": "active"
+  },
+  {
+   "id": "i_6d36e41d71",
+   "kind": "invariant",
+   "label": "`LoomBridge` is added to exactly one `WebView`, which only ever navigates within that virtual origi…",
+   "status": "active"
+  },
+  {
+   "id": "i_bd1fd1175e",
+   "kind": "invariant",
+   "label": "`loom/CMakeLists.txt`'s `LOOM_WITH_OPENSSL` is forced `OFF` for this build (`app/src/main/cpp/CMake…",
+   "status": "active"
+  },
+  {
+   "id": "i_ab92e90c6f",
+   "kind": "bug",
+   "label": "So on this build `loom_crypto_status` reports `available: false` and the optional zero-knowledge en…",
+   "status": "active"
+  },
+  {
+   "id": "i_aeda82e903",
+   "kind": "requirement",
+   "label": "The shared data directory (`/storage/emulated/0/Documents/ChatADHD`, `engine/paths.py` / `loom/incl…",
+   "status": "active"
+  },
+  {
+   "id": "i_1cd71a0b4f",
+   "kind": "invariant",
+   "label": "Configure silently adds no test (exit 0, zero tests) if no JDK or no `libloom.so` is found, so it n…",
+   "status": "active"
+  },
+  {
+   "id": "i_c356f1be12",
+   "kind": "bug",
+   "label": "Fixing this test caught a real bug: the first version of `loom_jni.cpp` called `loom::utf8::encode/…",
+   "status": "active"
+  },
+  {
+   "id": "i_80fc7d9f99",
+   "kind": "rationale",
+   "label": "That happens to link when `loom_jni.so` statically absorbs `loom_core` (the on-device Android build…",
+   "status": "active"
+  },
+  {
+   "id": "i_bc7ec41545",
+   "kind": "invariant",
+   "label": "**Never run on a device or emulator** — no Android SDK/NDK in this environment.",
+   "status": "active"
+  },
+  {
+   "id": "i_c62a0c29b0",
+   "kind": "invariant",
+   "label": "`docker-compose.yml` — One service, a named volume for `/data`, binds `127.0.0.1:$LOOM_SERVER_PORT`…",
+   "status": "active"
+  },
+  {
+   "id": "i_4425dacb16",
+   "kind": "rejected_option",
+   "label": "If `loom-server` ends up with its own lightweight health-check mode this can be dropped in favour o…",
+   "status": "active"
+  },
+  {
+   "id": "i_a56d48b86d",
+   "kind": "bug",
+   "label": "Fix attachment file paths: convert relative to absolute",
+   "status": "active"
+  },
+  {
+   "id": "i_ad2e240f3c",
+   "kind": "bug",
+   "label": "Fix attachment file paths: convert relative to absolute",
+   "status": "active"
+  },
+  {
+   "id": "i_c6a3619ee6",
+   "kind": "bug",
+   "label": "loom(android): fix loom_jni.cpp to depend only on the C ABI, add README",
+   "status": "active"
+  },
+  {
+   "id": "i_7a91853389",
+   "kind": "bug",
+   "label": "loom(test): fix a GCC -O3 -Wnull-dereference false positive in test_github",
+   "status": "active"
+  }
+ ],
+ "edges": [
+  {
+   "src": "term:android",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:chatadhd",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:directory",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:task",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:loombridge",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:jni",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:sdk",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:system",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:agent",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:android sdk",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:gradle",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:java",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:graph",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:knowledge",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:analyzer",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:kivy",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:nodes",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:semanticanalyzer",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:graphengine",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:graphmemoryselector",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:extract",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:topic",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:zero knowledge",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:compat",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:model",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:cost",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:convert",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:jsonstore",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:shape",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:relative",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:pricing",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:absolute",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:attachment",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:attachment handler",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:convert relative",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:convert selected",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:gui",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:engine",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:version",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:panels",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:init",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:main",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:viz",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:readme",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:widgets",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:github",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:panel",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:colors",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "term:archive",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:project",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:terms",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:items",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:ingest",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:stage",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:term",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:license",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:commercial",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:document",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:git",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:noncommercial",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "term:provenance",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:artifact",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:hash",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:registry",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:protobuf",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:blobs",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:nowa",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:cbor",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:pomiar",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:serializacji",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:video",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:yaml",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "term:sqlite",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:abi",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:vendored",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:create table",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:crypto",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:schema",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:capi",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:column",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:vendored sqlite",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:httplib",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:meta",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:party",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "term:importer",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:conversationimporter",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:html",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:format",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:claude",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:zip",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:detect",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:title",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:single",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:detection",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:extension",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:add",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "term:bus",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:handler",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:emit",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:event",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:events",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:handlers",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:subscribe",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:eventbus",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:synchronous pub",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:clock",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:schedule",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "term:event bus",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "dd1ef2322ab2d",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d0b559a5969c3",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d50a9e4658e8a",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "da365bf6eb24c",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d0d651dd7b18a",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d4ff84e8c5dd0",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "db35789a5e561",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "kfdba87a93e2e",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k7f93eb17d421",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d8657c72901da",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d090ebe21e4ea",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k2d5b226af27f",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k6a6147404898",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d54d2e30c62a8",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d90c3e6c8cfdc",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d8a158aafbef1",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d3c032a3d9177",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d7e95003675f1",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k2b4ba81a10ea",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "dee979a19bd6b",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d23b0eef9e47d",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "kc3eecb26c8c9",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k60bf364c6e1c",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d2ed88175a81a",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d21c728b06600",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "dde32241730fa",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "g8c0caf1017f2",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k1ffb67b3b126",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "d8ead284fd07c",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d388a7d78bc78",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "dc79c24290319",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "daae09a719898",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "dd7baccbc4e7b",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "kfbf0efdb7e11",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d40267e6de895",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k62e48ff1383c",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "d1748d8e2603c",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "ga7537fb31edf",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "dc6fa20b755bd",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k6ac7fa929954",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d89a6300dbce0",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "dc1efc1e415c8",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "k0a3413d6c847",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "ke610c46bb92b",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k586bcb4d8e65",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "db4b7b3b584c8",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "de4ff0694077f",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "daf013833a3da",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d7094df14966c",
+   "dst": "T10",
+   "type": "part_of"
+  },
+  {
+   "src": "g43bf2cb4ae78",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "d612813a3d50c",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k95f637ac1236",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "dd3150abfbac5",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d7b2991a1cb1e",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "g21f2f3043c12",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d692044f2b2d8",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "dca8fce520c44",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d55433af1f8a8",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "d9b01d95fbf7b",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k9270031da5e2",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "g6bcbf9f5da0a",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "kf3777ceb20c7",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "d69807868a2e9",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "da7f9ec78f5e8",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k2f7b011accc1",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "g967c46f9656b",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d5a68620af893",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k3194619a70b6",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k2e5e408420fc",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k8cb1f53cab16",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "ke28699feeddf",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "kc3c9b45ef089",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "g7fd1700eae1e",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "g3c91ced0e68e",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k5041f526fa90",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "gdd43184aa105",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k3ead4701ccd6",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g095e15d74102",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "kb160a1ed8ae4",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "k968e349ac4c5",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "ke2c24ce689e8",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k7278b02de553",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "kf47995eaec3c",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k805e573a558c",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k4c28e96e5e67",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k593764739b95",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "gfbefb4830944",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k5c54590683ad",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "dd055cf94760d",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d3e882e1ccff6",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "db80848eee7b3",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "ke393914a221c",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "kcc9342c806ce",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "defee7e6a51e6",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d01fdac9ace7c",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "dfc6f9345fd54",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "dc6d8b2787640",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k1b62a1a0e935",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "d3ecbfdce2400",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "g92623b9d4d3d",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "d4c3a149d3a36",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "dc828013c36a2",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k40920c771d3a",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g0c36d155f8c6",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "d83895bfa499c",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d38815d3e5b63",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "df462b26d4dd7",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "gd28f40bb1e85",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "keca54bd1ff1d",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "gd65ae39c0007",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "k704a48f98b67",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k429f3f2a712f",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "dfee11a4055b3",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "k9fb1af4c4f03",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k8767183e2d03",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "k91fd9ac4fc08",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "kd4fbcc67f006",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d852013abe764",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "kbb29c570c900",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "kdb029266d5a2",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k3a948babab8c",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "k2b1e19997161",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "k03841ea12f44",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "g1adc2d4cda92",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g285de0f89724",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "k7077a422927d",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g126d08fb36e4",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "gbee76daf22b7",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "d49780c1dfa0e",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "k0b5169774dbf",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k1d99b8d55ed2",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "ka41b05bfbc37",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "k93d149dfff3b",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k0d8f13c8066c",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "ddb52e06b0bed",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "df616f78543d5",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "kfaa8ae5613e1",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d83f1503c3381",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k65920c4025cd",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k3715f4acb204",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "k3b3e902f574b",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k31725f35f3f1",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "kdb9313accee4",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g389c0964831b",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "ke4659e496c7e",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "kab848f6f1f00",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "gbf1dc8383d6b",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g1ca219dee86d",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d8a50088871f2",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "daab709354f28",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "dc21d1c4b847b",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "g8ba0b905bc5c",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k303c1d4074dc",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "k0412a6862571",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "k6333e3ee9af2",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "kdc4f4b8ff6c5",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "dd5033f4c6ea9",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k4d240ed371bf",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "g5a8a35362abb",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d176cedb0d262",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "gdbedb4c2c4a8",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "ke8ad874692ed",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g6e7eaf747317",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g1c3dfe85cce3",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "gf4973cf8b2ff",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g1a22916bbe8b",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "kd43828dec405",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k922cb815f2af",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "g9a21f5dc5b06",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g175d4fd88b69",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k60452349117d",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "ge391f02cbac4",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "d859ff6f1c362",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "kd67af5f4aaf5",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "dee6640671696",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k148d79b70c8d",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "g60f7808ed941",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "k779930f599a2",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "kc671d6d39fc5",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "kea5b84b4d5c8",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k8bfd97492ce0",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "gf563289f1a40",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "dadc5328da792",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "ga4f8fd97c26d",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g5aab1f6495b4",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "df3f62c193091",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "g538631d07374",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "d9171232d861d",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "d71e99623cdc1",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "gaf17b0ef9124",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "gaf47fb2369df",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "dff388be14a17",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "k7b9ef1ff2a60",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k7651ec331160",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k18b2612bccc0",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d30bc94e918cd",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "gc908a2112962",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "k0b02bacca493",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "k28b1e0248f0f",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "d88b50f33b9f3",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k15d1154a9b46",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "kd2ea95fe33f6",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "de3a92f7a7f14",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k4776d0ac9fc1",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "g2ac657ada690",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k942db9d50b24",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "g8d3b1fa20444",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "kb03b2309bdc6",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "d7acc2bfc4f8a",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "g1f9b63cfacde",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "dbece32bedcb4",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "k61c61eca79ef",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "kd8dc8c49868c",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "gc1559e1c139f",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k542038d4651b",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "k9855435fae91",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "ke35125116387",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "g81a239b0fcb0",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g97316d48de3e",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "dd25ceb79f22f",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "d1538a67ca4cf",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "ka439b5b17021",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "d91c0cb261f17",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "de4835649fa71",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "k558db9920fcd",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "k2be92b112fb3",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k5529893a7391",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "kdf9943039c60",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "daf76a87a9533",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "da23667cf0d7f",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "g6147bd5260c1",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "kfb5175c2f1d2",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d45e72fa992e3",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "k93e73e259aa4",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "kcc8093eb6396",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "d5a37a5698a70",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d8afbba0178cb",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "geee1e7eb0305",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "de3615cbb4a16",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "kfbbfcebef0d2",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "g7c7b409ae11e",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "kbc7b9bb9417b",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "kc2a7b0769c8e",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k670b2c0cfb8a",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k536ffa4316fd",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "kb281adf84c0e",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "g9fe319c22af2",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "dd18ce6f1caf9",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k1fd409368894",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "k334cbc98cf45",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k5c675ecb577a",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "k31d383a7dc74",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "ka053126c9863",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k511b91f1ef4d",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "k16a480a834f6",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "kb9f25353f354",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d0920990ee8bb",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k46d43d92ee38",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "gf2526cb09f5e",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "kf91461a3542a",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "kc11e9f0a55f3",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k6caa4614ccff",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "df274aac65ba3",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "kc616fc1f86f5",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "k2d2d72889c29",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k2aa1568b2987",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "kf2463d44558f",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k6c62adf1f66b",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "ke676aef605eb",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "kdf748a975128",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "k353c5bbbf755",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k8b6c4c497f04",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "de68ff3ca5013",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "kd14bbe350025",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k6e9620eb62f9",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "k369d18ee12de",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "kba8b026d1dae",
+   "dst": "T8",
+   "type": "part_of"
+  },
+  {
+   "src": "k75c0ed872546",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k8d41abbb4e26",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "k0f942216ed37",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d020d579cb93e",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "d1b55c1eb5152",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d22847fee8db8",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d3d9c6123343e",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d595f018e4acd",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d5bc0cf1b819e",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d5defb527b89b",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d61fbfbc9f5ff",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d63cd5509bc8f",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d75f567c4f2f1",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "d7d62f6d593f1",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d84d0743be667",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d9a06750ff9a6",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "d9fbbc10248d3",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "dacd3528f5bfb",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "db81d6eeddf66",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "dc50952e8a28d",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "dca4a536263d1",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "dcbbd3401060c",
+   "dst": "T10",
+   "type": "part_of"
+  },
+  {
+   "src": "dda588b679fe0",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "ddf615982aab0",
+   "dst": "T6",
+   "type": "part_of"
+  },
+  {
+   "src": "deb32a5d52d85",
+   "dst": "T9",
+   "type": "part_of"
+  },
+  {
+   "src": "g0ad62a364b47",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g0e11edddcdb3",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g0f6aafa090d1",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g0f6e0ea72902",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g11a4dead4ecd",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g139aba5a823a",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "g15f5ea66c1b9",
+   "dst": "T7",
+   "type": "part_of"
+  },
+  {
+   "src": "g18cc920811b9",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g243a8a93d959",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g46e225ef726f",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g4a1528dac226",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g5a7858bb89ec",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g5bcd6861fd2e",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "g5d4c03a50045",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g5e60f732a6e4",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g60b56862aaf7",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g7167550ad277",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g73a58663652a",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g7903658dc2dc",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "g7dba0f2ca877",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "g8ff61062ff55",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "ga3a00ea96cea",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "ga84dd71a1298",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gb25fde575ad3",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "gb677b7ea6b13",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gbaed142cd1d3",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "gc05fbc51cfb1",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "gc84c56e15778",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "gca83a1069eda",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gd0939b7efd49",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "gd62cca4055dd",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gd63a072899d6",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gd8216c780636",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gd9301a2a3584",
+   "dst": "T5",
+   "type": "part_of"
+  },
+  {
+   "src": "ge3487acf678c",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "ge422237c03df",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "ge4ff146c8cd3",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gf274e14321cc",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "gf31675631854",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "gfcfd4f519a0d",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "i_4d147cd507",
+   "dst": "d7e95003675f1",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f8f7be0b0b",
+   "dst": "dd25ceb79f22f",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_0a967ba336",
+   "dst": "dd25ceb79f22f",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_68e4e28a05",
+   "dst": "d75f567c4f2f1",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_d853c358a3",
+   "dst": "dda588b679fe0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c5e496fee5",
+   "dst": "dd18ce6f1caf9",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_bab9ec4f6d",
+   "dst": "d852013abe764",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_a0eed07e92",
+   "dst": "d852013abe764",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_60cc93357a",
+   "dst": "d50a9e4658e8a",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_cf62edd010",
+   "dst": "d50a9e4658e8a",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_534c00889b",
+   "dst": "d7d62f6d593f1",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f40e25b98b",
+   "dst": "dacd3528f5bfb",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_cacf51c7ca",
+   "dst": "d1538a67ca4cf",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_187ccf039c",
+   "dst": "d1538a67ca4cf",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_95e992bf4e",
+   "dst": "dbece32bedcb4",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_2a09340dbb",
+   "dst": "dc1efc1e415c8",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_e6245826fb",
+   "dst": "df3f62c193091",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_7c0ca1078e",
+   "dst": "d71e99623cdc1",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_401e26d58b",
+   "dst": "d3d9c6123343e",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_77db0c474f",
+   "dst": "daf76a87a9533",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_db0e8d0403",
+   "dst": "d8a158aafbef1",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_ac4ef5f35f",
+   "dst": "de4835649fa71",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_a4d8244d18",
+   "dst": "de4835649fa71",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_9b3a147526",
+   "dst": "de4835649fa71",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_2aefa41a86",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_26937e3c1b",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_56766b50a4",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c440aedd0b",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_8b9fcb8544",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c4d4cb7477",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_10d665813d",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_9880783807",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_40633112dc",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_badce2dc5f",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_0f63705bbf",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f2b43b0921",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f263e6fed6",
+   "dst": "d388a7d78bc78",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_119182ccd2",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_4fb3ae43df",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_6a16725e17",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_506caab584",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_61d502a525",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_8772f77ac4",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f530aeac5a",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_db57c9a35a",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c4fd03a785",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_2926b436cc",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f205514c75",
+   "dst": "defee7e6a51e6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_844bcb3d8a",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_4f022fb66e",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_5b5a3078dc",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c301f09776",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_789342249a",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_b81e279503",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_8acdcde63b",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_ad937a7839",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_96fea6e57c",
+   "dst": "d4ff84e8c5dd0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_ff1c7914f4",
+   "dst": "db80848eee7b3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_9942622abc",
+   "dst": "db80848eee7b3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_1487639137",
+   "dst": "db80848eee7b3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_d177b8462b",
+   "dst": "db80848eee7b3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_89bcdd66e5",
+   "dst": "db80848eee7b3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_5e1f8d1fd1",
+   "dst": "db80848eee7b3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_de24ffb9e5",
+   "dst": "db80848eee7b3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_b58ef11282",
+   "dst": "dd1ef2322ab2d",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_88ed94804f",
+   "dst": "d55433af1f8a8",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_4fb92af1cd",
+   "dst": "d9a06750ff9a6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_27a453bbb0",
+   "dst": "d9a06750ff9a6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_bbbdf89f0d",
+   "dst": "d9a06750ff9a6",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_711d89445b",
+   "dst": "daf013833a3da",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_cdcb1505e6",
+   "dst": "d69807868a2e9",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_6fcb523aae",
+   "dst": "d69807868a2e9",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_92ae2a81bd",
+   "dst": "dadc5328da792",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_615a164c1b",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_3a445c87ca",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_895a704348",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_8e8866d93a",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_1a1230b782",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_bd868b1ed4",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_05e5ea5718",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_617426ee9a",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_472e9d03c4",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_bf6038bc5e",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_7e1fcc2946",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_2e7514cb43",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_2ebcf6eea1",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_8c7074bbeb",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_e32d4e1aa3",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_9e1863af48",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_b988cca1ae",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_5aa0d31250",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_7aacf306c5",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_a93765ffc8",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_8d41e9f186",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f07440c1a7",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_dec05fc0bb",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_a535a82cea",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_5a1f488ee6",
+   "dst": "dd7baccbc4e7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_62a7666a52",
+   "dst": "d40267e6de895",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_ea8a52f708",
+   "dst": "dc6fa20b755bd",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_6b5b6ba934",
+   "dst": "dc6fa20b755bd",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_1148f188ba",
+   "dst": "dc6fa20b755bd",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_cc376b83e7",
+   "dst": "dc6fa20b755bd",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_2f8dd666e6",
+   "dst": "d1748d8e2603c",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_649121b0a5",
+   "dst": "d1748d8e2603c",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_9c43d74b84",
+   "dst": "d1748d8e2603c",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_dc42e018cd",
+   "dst": "d8657c72901da",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_1ada070364",
+   "dst": "daab709354f28",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_bc633a1cd3",
+   "dst": "df274aac65ba3",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_5ad81a20d3",
+   "dst": "d30bc94e918cd",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f917daa4a3",
+   "dst": "da7f9ec78f5e8",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_6d36e41d71",
+   "dst": "da7f9ec78f5e8",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_bd1fd1175e",
+   "dst": "dff388be14a17",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_ab92e90c6f",
+   "dst": "dff388be14a17",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_aeda82e903",
+   "dst": "d090ebe21e4ea",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_1cd71a0b4f",
+   "dst": "dc79c24290319",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c356f1be12",
+   "dst": "dc79c24290319",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_80fc7d9f99",
+   "dst": "dc79c24290319",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_bc7ec41545",
+   "dst": "d89a6300dbce0",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c62a0c29b0",
+   "dst": "da23667cf0d7f",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_4425dacb16",
+   "dst": "d5a37a5698a70",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_a56d48b86d",
+   "dst": "gbee76daf22b7",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_ad2e240f3c",
+   "dst": "g126d08fb36e4",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_c6a3619ee6",
+   "dst": "g8c0caf1017f2",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_7a91853389",
+   "dst": "g139aba5a823a",
+   "type": "derived_from"
+  }
+ ]
+}

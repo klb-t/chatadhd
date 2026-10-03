@@ -1,0 +1,1330 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://loom.local/schemas/graph_packet_diff/1",
+  "$ref": "#/$defs/diff",
+  "$defs": {
+    "evidence": {
+      "enum": [
+        "observed",
+        "derived",
+        "inferred",
+        "extrapolated",
+        "absent",
+        "user"
+      ]
+    },
+    "origin": {
+      "enum": [
+        "archive",
+        "repo",
+        "user",
+        "external_authority",
+        "model_knowledge",
+        "system"
+      ]
+    },
+    "status": {
+      "enum": [
+        "active",
+        "contested",
+        "superseded",
+        "rejected"
+      ]
+    },
+    "instrument_origin": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "recorded",
+            "model",
+            "user",
+            "system"
+          ]
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recipe_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "response_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "actor",
+        "model",
+        "recipe_sha256",
+        "response_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "locator": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "member": {
+          "type": "string"
+        },
+        "json_pointer": {
+          "type": "string"
+        },
+        "byte_start": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "byte_len": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_start": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "time_end": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "line": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "member",
+        "json_pointer",
+        "byte_start",
+        "byte_len",
+        "time_start",
+        "time_end",
+        "line"
+      ],
+      "additionalProperties": false
+    },
+    "support": {
+      "type": "object",
+      "properties": {
+        "observation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "extractor": {
+          "type": "string"
+        },
+        "quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "observation",
+        "locator",
+        "quote",
+        "extractor",
+        "quality"
+      ],
+      "additionalProperties": false
+    },
+    "derivation": {
+      "type": "object",
+      "properties": {
+        "operator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operator_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "morphism": {
+          "type": "string"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "operator",
+        "operator_version",
+        "morphism",
+        "depth"
+      ],
+      "additionalProperties": false
+    },
+    "assessment": {
+      "type": "object",
+      "properties": {
+        "basis": {
+          "type": "object",
+          "properties": {
+            "support": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/support"
+              }
+            },
+            "derivation": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/derivation"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "support",
+            "derivation"
+          ],
+          "additionalProperties": false
+        },
+        "evidence_class": {
+          "$ref": "#/$defs/evidence"
+        },
+        "origin": {
+          "$ref": "#/$defs/origin"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "premises": {
+          "type": "object",
+          "properties": {
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "principles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "assumptions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "claims",
+            "principles",
+            "assumptions"
+          ],
+          "additionalProperties": false
+        },
+        "counter": {
+          "type": "object",
+          "properties": {
+            "observations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "observations",
+            "claims"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "consequences": {
+          "type": "object",
+          "properties": {
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "predictions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "claims",
+            "predictions",
+            "checks"
+          ],
+          "additionalProperties": false
+        },
+        "open": {
+          "type": "object",
+          "properties": {
+            "slots": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "questions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "fill_query": {}
+          },
+          "required": [
+            "slots",
+            "questions",
+            "fill_query"
+          ],
+          "additionalProperties": false
+        },
+        "expected_property": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "expr": {
+                  "type": "object"
+                },
+                "rationale": {
+                  "type": "string"
+                },
+                "confirm_if": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "refute_if": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "expr",
+                "rationale",
+                "confirm_if",
+                "refute_if"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "check_state": {
+          "enum": [
+            "pending",
+            "holds",
+            "violated",
+            "n/a"
+          ]
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "type": "string"
+              },
+              "value": {},
+              "score": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "object",
+              "value",
+              "score"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "basis",
+        "evidence_class",
+        "origin",
+        "confidence",
+        "premises",
+        "counter",
+        "status",
+        "consequences",
+        "open",
+        "expected_property",
+        "check_state",
+        "alternatives"
+      ],
+      "additionalProperties": false
+    },
+    "claim": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "object": {
+          "type": "string"
+        },
+        "value": {},
+        "qualifiers": {
+          "type": "object",
+          "properties": {
+            "valid_from": {
+              "type": "string"
+            },
+            "valid_to": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "branch": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string"
+            },
+            "lang": {
+              "type": "string"
+            },
+            "extra": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "valid_from",
+            "valid_to",
+            "version",
+            "branch",
+            "scope",
+            "lang",
+            "extra"
+          ],
+          "additionalProperties": false
+        },
+        "assessment": {
+          "$ref": "#/$defs/assessment"
+        }
+      },
+      "required": [
+        "id",
+        "subject",
+        "predicate",
+        "object",
+        "value",
+        "qualifiers",
+        "assessment"
+      ],
+      "additionalProperties": false
+    },
+    "entity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonical_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "surface": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string"
+              },
+              "count": {
+                "type": "integer"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "key",
+              "surface",
+              "lang",
+              "method",
+              "count",
+              "confidence"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "parent": {
+          "type": "string"
+        },
+        "first_seen": {
+          "type": "string"
+        },
+        "last_seen": {
+          "type": "string"
+        },
+        "evidence_class": {
+          "$ref": "#/$defs/evidence"
+        },
+        "origin": {
+          "$ref": "#/$defs/origin"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "attrs": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "canonical_key",
+        "label",
+        "labels",
+        "aliases",
+        "parent",
+        "first_seen",
+        "last_seen",
+        "evidence_class",
+        "origin",
+        "confidence",
+        "status",
+        "attrs"
+      ],
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "sentence",
+            "list_item",
+            "heading",
+            "code_block",
+            "utterance",
+            "table_row",
+            "field"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "locator": {
+          "$ref": "#/$defs/locator"
+        },
+        "lang": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "ordinal": {
+          "type": "integer"
+        },
+        "artifact_type": {
+          "type": "string"
+        },
+        "speaker": {
+          "type": "string"
+        },
+        "attrs": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "unit",
+        "kind",
+        "text",
+        "locator",
+        "lang",
+        "date",
+        "ordinal",
+        "artifact_type",
+        "speaker",
+        "attrs"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "observation": {
+          "$ref": "#/$defs/observation"
+        },
+        "known_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "text_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "observation",
+        "known_at",
+        "text_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "definition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "examples": {
+          "type": "array",
+          "items": {}
+        },
+        "origin": {
+          "$ref": "#/$defs/instrument_origin"
+        },
+        "attrs": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "description",
+        "examples",
+        "origin",
+        "attrs"
+      ],
+      "additionalProperties": false
+    },
+    "record_provenance": {
+      "type": "object",
+      "properties": {
+        "known_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "$ref": "#/$defs/instrument_origin"
+        },
+        "record_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "known_at",
+        "origin",
+        "record_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "diff": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "loom.graph_packet_diff/1"
+        },
+        "base_packet_sha256": {
+          "type": "string",
+          "minLength": 1
+        },
+        "proposal_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "$ref": "#/$defs/instrument_origin"
+        },
+        "known_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "definitions": {
+          "type": "object",
+          "properties": {
+            "add": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/definition"
+              }
+            },
+            "update": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "after": {
+                    "$ref": "#/$defs/definition"
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "after"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "add",
+            "update",
+            "remove"
+          ],
+          "additionalProperties": false
+        },
+        "entities": {
+          "type": "object",
+          "properties": {
+            "add": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/entity"
+              }
+            },
+            "update": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "after": {
+                    "$ref": "#/$defs/entity"
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "after"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "add",
+            "update",
+            "remove"
+          ],
+          "additionalProperties": false
+        },
+        "claims": {
+          "type": "object",
+          "properties": {
+            "add": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/claim"
+              }
+            },
+            "update": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "after": {
+                    "$ref": "#/$defs/claim"
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "after"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "add",
+            "update",
+            "remove"
+          ],
+          "additionalProperties": false
+        },
+        "sources": {
+          "type": "object",
+          "properties": {
+            "add": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/source"
+              }
+            },
+            "update": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "after": {
+                    "$ref": "#/$defs/source"
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "after"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "before_sha256": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "id",
+                  "before_sha256",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "add",
+            "update",
+            "remove"
+          ],
+          "additionalProperties": false
+        },
+        "task": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "before_sha256": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "after": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "before_sha256",
+                "after"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "annotations": {
+          "type": "object",
+          "properties": {
+            "critique": {
+              "type": "array",
+              "items": {}
+            },
+            "questions": {
+              "type": "array",
+              "items": {}
+            },
+            "operations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "outputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "inputs",
+                  "outputs",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "critique",
+            "questions",
+            "operations"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schema",
+        "base_packet_sha256",
+        "proposal_id",
+        "origin",
+        "known_at",
+        "definitions",
+        "entities",
+        "claims",
+        "sources",
+        "task",
+        "annotations"
+      ],
+      "additionalProperties": false
+    },
+    "history_change": {
+      "type": "object",
+      "properties": {
+        "collection": {
+          "enum": [
+            "definitions",
+            "entities",
+            "claims",
+            "sources"
+          ]
+        },
+        "action": {
+          "enum": [
+            "add",
+            "update",
+            "remove"
+          ]
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "before": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "after": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "before_provenance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/record_provenance"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "after_provenance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/record_provenance"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "collection",
+        "action",
+        "record_id",
+        "before",
+        "after",
+        "before_provenance",
+        "after_provenance"
+      ],
+      "additionalProperties": false
+    },
+    "history_event": {
+      "type": "object",
+      "properties": {
+        "application_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base_packet_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "diff": {
+          "$ref": "#/$defs/diff"
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/history_change"
+          }
+        },
+        "previous_task": {
+          "type": "object"
+        },
+        "previous_order": {
+          "type": "object",
+          "properties": {
+            "definitions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "entities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "definitions",
+            "entities",
+            "claims",
+            "sources"
+          ],
+          "additionalProperties": false
+        },
+        "result_origin": {
+          "$ref": "#/$defs/instrument_origin"
+        }
+      },
+      "required": [
+        "application_id",
+        "base_packet_id",
+        "diff",
+        "changes",
+        "previous_task",
+        "previous_order",
+        "result_origin"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "description": "Same graph record shapes inside reversible add/update/tombstone diff. Open operation annotations perform no implicit graph rewrite."
+}

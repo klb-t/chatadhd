@@ -1,0 +1,431 @@
+{
+  "protocol": "controlled_full_import_diagnostic",
+  "corpus": "synthetic_dev",
+  "binary_sha256": "c57e0b022a642dbb4ef26d83ff7bef57c2751a616923cdb00471eea9025253a2",
+  "config": {
+    "sources": [
+      "/workspace/scratch/edcd10c4764c/chatadhd/loom/tests/fixtures/eval/synthetic_dev/chatgpt_export.zip",
+      "/workspace/scratch/edcd10c4764c/chatadhd/loom/tests/fixtures/eval/synthetic_dev/claude_export.zip"
+    ],
+    "project": "NoteFlow",
+    "stage_params": {
+      "catalog": {
+        "profile": {
+          "extra_terms": [
+            "NoteFlow",
+            "appka od notatek",
+            "note-app",
+            "ta apka z notatkami i czatem",
+            "notatnik",
+            "Reeltime",
+            "generator reelsow",
+            "ten pipeline do wideo",
+            "reels-gen",
+            "generator klipow",
+            "Stroz",
+            "Watchdog-skrypt",
+            "ten pilnujacy skrypt",
+            "CodeWatchdog",
+            "stroz.py",
+            "sprawa z Kwiatowej",
+            "sprawa najmu",
+            "sprawa z Zenonem",
+            "sprawa o kaucje",
+            "Lokatorka-sprawa",
+            "Analog Ghosts",
+            "plyta",
+            "EP",
+            "projekt muzyczny",
+            "te nagrania"
+          ]
+        },
+        "import": {
+          "mode": "full"
+        }
+      }
+    },
+    "out_dir": "/tmp/loom-full-diagnostic-n6k4walx/products"
+  },
+  "run": "kr_e4aea41920835795",
+  "status": "done",
+  "catalog": {
+    "recall": 0.2889,
+    "precision": 1.0,
+    "precision_population": "labeled_conversations",
+    "trap_fpr": 0.0,
+    "generic_selected": 0,
+    "selected": 16,
+    "labeled_selected": 13,
+    "unlabeled_selected": 3
+  },
+  "resolve": {
+    "project_recall": 1.0,
+    "alias_recall_on_canonical": 0.24,
+    "fragmented_extra_entities": 1,
+    "spurious_projects": 0,
+    "per_project": {
+      "proj.noteflow": {
+        "entities": 2,
+        "aliases_on_best": 2,
+        "aliases": 5
+      },
+      "proj.reeltime": {
+        "entities": 1,
+        "aliases_on_best": 1,
+        "aliases": 5
+      },
+      "proj.watchdog": {
+        "entities": 1,
+        "aliases_on_best": 1,
+        "aliases": 5
+      },
+      "proj.lokatorka": {
+        "entities": 1,
+        "aliases_on_best": 1,
+        "aliases": 5
+      },
+      "proj.analogghosts": {
+        "entities": 1,
+        "aliases_on_best": 1,
+        "aliases": 5
+      }
+    }
+  },
+  "extract": {
+    "version_recall_chat": 0.8182,
+    "versions_total_chat": 22,
+    "decision_recall": 0.5714,
+    "chosen_accuracy": 0.25,
+    "supersession_recall": 0.5,
+    "decisions_total": 21,
+    "decisions_found": 21,
+    "fork_recall": 1.0,
+    "forks_found": 6,
+    "status_event_recall": 0.7419,
+    "status_events_total": 31,
+    "oscillating_features_gt": 2,
+    "oscillating_entities_found": 0,
+    "status_records": 44,
+    "open_question_recall": 0.2,
+    "area_recall": 1.0,
+    "areas_found": 6,
+    "inferred_members": 0
+  },
+  "assess": {
+    "contradiction_recall": 0.0,
+    "contested_claims": 7
+  },
+  "generalize": {
+    "principle_recall": 0.8462,
+    "level_accuracy": 0.9091,
+    "form_accuracy": 0.8182,
+    "principles_with_evidence": 64,
+    "principle_precision": 0.4844,
+    "principles_total": 64,
+    "operator_recall": 0.1667,
+    "operators_found": 15
+  },
+  "epistemic": {
+    "false_certainty_rate": 0.0,
+    "claims_with_structural_violations": 0,
+    "claims_evaluated": 385,
+    "observed_without_support": 0,
+    "observed_quote_not_in_observation": 0,
+    "inferred_without_expected_property": 0,
+    "extrapolated_or_absent_premises": 0,
+    "claims_by_evidence_class": {
+      "absent": 85,
+      "derived": 3,
+      "observed": 297
+    },
+    "expected_property_states": {}
+  },
+  "determinism": {
+    "measured": false,
+    "reason": "one full-import run"
+  },
+  "predictive_accuracy": null,
+  "stages": {
+    "catalog": {
+      "scan": {
+        "units": 68,
+        "new": 68,
+        "unchanged": 0,
+        "versions": 0,
+        "bytes": 93279,
+        "warnings": []
+      },
+      "score": {
+        "run_id": "run_29ef74f65777a586",
+        "relevant": 10,
+        "candidate": 6,
+        "irrelevant": 52,
+        "traps": 4,
+        "expanded_terms": [
+          {
+            "term": "zero",
+            "pass": 1,
+            "lift": 3.78,
+            "df_relevant": 3,
+            "df_corpus": 6,
+            "evidence": [
+              "un_3d70b7a34635f5fe",
+              "un_9e8228809931d5d0",
+              "un_e7c579ba8fc08dd1"
+            ],
+            "reason": "lift >= 3.000000 against the verified-relevant set (vocabulary expansion)"
+          },
+          {
+            "term": "zapisuje",
+            "pass": 1,
+            "lift": 3.78,
+            "df_relevant": 3,
+            "df_corpus": 6,
+            "evidence": [
+              "un_3d70b7a34635f5fe",
+              "un_4cca8cd17d164c76",
+              "un_87a5708795d0a8e7"
+            ],
+            "reason": "lift >= 3.000000 against the verified-relevant set (vocabulary expansion)"
+          }
+        ],
+        "links": 56
+      },
+      "selected": 16,
+      "import": {
+        "imported": 68,
+        "skipped": 0,
+        "bytes": 93279,
+        "conversations": [
+          "c_f398ecb170a1",
+          "c_470e16ea5fd8",
+          "c_a334a2b1bd3b",
+          "c_5338b189f5c7",
+          "c_7aeac2bfb2d0",
+          "c_93924ae954ef",
+          "c_c30a345503f3",
+          "c_eb665208b9b5",
+          "c_0caf43683712",
+          "c_4d04b6e8de04",
+          "c_9d63ce78bc73",
+          "c_06fbc63d5fab",
+          "c_e5fffd137f79",
+          "c_4643692950b5",
+          "c_bd17617ab49c",
+          "c_06c49f3c3e72",
+          "c_88ef44cd031c",
+          "c_2a444793246c",
+          "c_f8195cd93747",
+          "c_d5a287be2349",
+          "c_96a965106eb6",
+          "c_abef814567ac",
+          "c_18cce374a689",
+          "c_b9fd4ffc5a0c",
+          "c_d54f07ed1491",
+          "c_43fb80aedbfb",
+          "c_91b2d367af00",
+          "c_228b0df54fb5",
+          "c_616fff5917d9",
+          "c_2fe0e1035428",
+          "c_b2908ffa2bf5",
+          "c_bf4838b7f5a5",
+          "c_5c243bf174eb",
+          "c_90de2ab7510b",
+          "c_e39feea79f88",
+          "c_8a3e953d4d93",
+          "c_6315bab9dbcf",
+          "c_3f406db19a23",
+          "c_0272843865b7",
+          "c_c1a236859c44",
+          "c_12e827854c0b",
+          "c_79b201f2fc8d",
+          "c_d445c7417bee",
+          "c_632d8ac30ad9",
+          "c_17362e2f2e67",
+          "c_cdc98bbb3581",
+          "c_f4f9cec560b5",
+          "c_ccb593b5b90d",
+          "c_213a35197468",
+          "c_d9a81a05fa0f",
+          "c_219f72eb19b6",
+          "c_9bc2b2a9a36a",
+          "c_5a7470e0ce44",
+          "c_a858c4cefe86",
+          "c_701de13ba6f0",
+          "c_1f2d718183d8",
+          "c_6ec9e3dff761",
+          "c_a709163baad2",
+          "c_a47942120385",
+          "c_6fe80a4e539e",
+          "c_35092d54fa9c",
+          "c_8078b117ea0a",
+          "c_9ae47a3cafa0",
+          "c_f81c8b03d595",
+          "c_08490c4b2710",
+          "c_f5323a6eda55",
+          "c_3f80750465f1",
+          "c_8b0326001ff0"
+        ],
+        "units": [
+          "un_0013895a80a1b2a7",
+          "un_03a9ef7134685c35",
+          "un_07ab9155906cd7e4",
+          "un_0de37bf11510f0b7",
+          "un_1643bd1a017780d5",
+          "un_1ac65f67bfc02c4d",
+          "un_214c5e497cec7b75",
+          "un_267c4f1062957111",
+          "un_289362a2a57eb883",
+          "un_2904f423528904d7",
+          "un_2f610822f4fd7505",
+          "un_30db4f34c157b0d5",
+          "un_31be95f019852809",
+          "un_366b6fda881ecd0e",
+          "un_3d70b7a34635f5fe",
+          "un_3e372ae8f888ff0f",
+          "un_4192649ecc19f13b",
+          "un_4384d4445216955a",
+          "un_4402ed44d526b309",
+          "un_47df78f0339ed633",
+          "un_486dd6bdca09145c",
+          "un_4b1b98e2bcd92025",
+          "un_4cca8cd17d164c76",
+          "un_4ff484313767608c",
+          "un_540da04fb9885a97",
+          "un_5e98bc0979f30325",
+          "un_6d2a023fdeb7a03a",
+          "un_7283b4adb0636089",
+          "un_7355396778b1e111",
+          "un_73900872279b2762",
+          "un_7e259a91fcfa495b",
+          "un_7fffda266f9d5bef",
+          "un_80835787f9aee81b",
+          "un_87a5708795d0a8e7",
+          "un_87f0ef8ff9fed335",
+          "un_8841b8c6d66c271e",
+          "un_89ef7ec0c3a496a7",
+          "un_8b0424eced8aecde",
+          "un_8b4622b578921644",
+          "un_90417490f68e0d18",
+          "un_90516358e7c5c088",
+          "un_950ab0bd5a638ffd",
+          "un_970632604cfc50de",
+          "un_9790aefa0f908671",
+          "un_9b3a5b0f1542fd49",
+          "un_9b97ad889525d568",
+          "un_9e8228809931d5d0",
+          "un_a1da474e9993acca",
+          "un_a9c07f55638048e0",
+          "un_b62e81cc8c8f0ac4",
+          "un_b74c13729d8d4db1",
+          "un_bc0de66056ba0a4e",
+          "un_bce8e5c0f50d82f2",
+          "un_bd10bee315aaab35",
+          "un_c10e2e05a92b0ab7",
+          "un_c15910292b0349f6",
+          "un_c605813460052740",
+          "un_c8138a61ac120656",
+          "un_cae246a71b8db0af",
+          "un_e05a7aff7e0005b7",
+          "un_e2e9097262f75584",
+          "un_e3f2bff4d4674204",
+          "un_e7c579ba8fc08dd1",
+          "un_f109ec0d86a71a5f",
+          "un_f3a6b9830f0bc437",
+          "un_f401707062be8e81",
+          "un_f4160c51b1fc27f5",
+          "un_fcfa6432feb21049"
+        ],
+        "retained_sources": [
+          {
+            "source_id": "sha256:167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+            "blob_hash": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299"
+          },
+          {
+            "source_id": "sha256:318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+            "blob_hash": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637"
+          }
+        ]
+      }
+    },
+    "extract": {
+      "from": "catalog",
+      "units": 68,
+      "failed": 0,
+      "names": 9,
+      "observations": 346,
+      "entities": 167,
+      "claims": 295,
+      "areas": 6,
+      "principles": 29,
+      "decisions": 21,
+      "forks": 6,
+      "statuses": 42
+    },
+    "resolve": {
+      "entities": 165,
+      "mentions": 167,
+      "merges": 2,
+      "blocked": 76,
+      "claims": 299,
+      "lineage": []
+    },
+    "assess": {
+      "claims": 299,
+      "contested": 7,
+      "conflicts": 3,
+      "reversals": 2,
+      "replayed": 0
+    },
+    "generalize": {
+      "instances": 63,
+      "absent": 85,
+      "analogies": 0,
+      "inferred": 1,
+      "extrapolated": 0,
+      "transferred": 0,
+      "principles": 41,
+      "operators": 15,
+      "models": 3,
+      "predictions": 36,
+      "predictions_holds": 0,
+      "predictions_violated": 0
+    },
+    "materialize": {
+      "dossiers": 63,
+      "extrapolated_specs": 63,
+      "products": 128
+    }
+  },
+  "summary": {
+    "run": "kr_e4aea41920835795",
+    "counts": {
+      "observations": 346,
+      "entities": 167,
+      "aliases": 127,
+      "claims": 385,
+      "claim_support": 320,
+      "principles": 64,
+      "operators": 15,
+      "morphisms": 136,
+      "instances": 63,
+      "slot_values": 185,
+      "areas": 6,
+      "decisions": 21,
+      "forks": 6,
+      "status_records": 44,
+      "predictions": 36,
+      "models": 3,
+      "products": 128
+    }
+  },
+  "work_dir": "/tmp/loom-full-diagnostic-n6k4walx",
+  "integrity_check": "ok",
+  "measurement": {
+    "binary_sha256": "c57e0b022a642dbb4ef26d83ff7bef57c2751a616923cdb00471eea9025253a2",
+    "pipeline_version": "4",
+    "scanner_version": "3",
+    "scope": "fictional synthetic_dev development corpus; current embedded pack; explicit alias hints from labeled fixture",
+    "scoring_tests": 19
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "cache": "stateless exact-string cache; eligible candidate identities selected independently perquery",
+  "dimensions": 384,
+  "download": false,
+  "fine_tuning": false,
+  "inputs": "only exact frozen query and eligible full-turn representation strings from prepared DEVpayloads",
+  "instrument_code_sha256": "d52a2708a90358fb5d696b4e7b5839eb3bcbccc08f0cc38714bc038f9f315614",
+  "instrument_protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+  "max_tokens": 128,
+  "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "model_manifest_sha256": "0c6d998b882dfb0773f165efe1d8339d63a8888b5d9c1f3fd4390382a0b6856d",
+  "paid_calls": 0,
+  "prediction": null,
+  "prepared_input_sha256": "c5c39329ffbedd1abffb5adaeb8328c545c6b0dafe39afbbebe7564b871a06b3",
+  "protocol_frozen_at": "2026-09-30T02:31:06.817706+00:00",
+  "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+  "schema": "loom.research.graph_local_embedding_protocol/1",
+  "score": "float64dotofL2normalizedfloat32vectors",
+  "source_judgment_available": false,
+  "split": "dev",
+  "threads": 2
+}

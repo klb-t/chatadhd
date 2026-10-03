@@ -1,0 +1,31 @@
+{
+  "schema": "loom.independent_graph_native_provenance/1",
+  "fixture_payload_hashes": {
+    "cases.json": "a23645a6eb8ffcd3b1ab231898d72b96f9c0ff9ff29a09649fde30eaf3ebe37c",
+    "core_claim_cases.json": "719b19fb140ab83ce58bbe2230f69bc257a68a5eb9c3ca974710f11e9b11e2a6"
+  },
+  "frozen_method_snapshots": {
+    "loom-independent-graph-search-v1": {
+      "graph_search.py": "798ea9ddde1168c5bf67e48c4538446db211ef815f57eb0984fab16842ed2d6b",
+      "operations.json": "0bdd4dbe0a915577999c595c5f215be8cc0fa2c0c10405e9b101a2eb1a7c0ba1",
+      "structure_methods.py": "89596297f279ad50b1599d2cb125fc7e140c065c91827d21f2c11ec4021e0fb3"
+    },
+    "loom-independent-core-projection-v1": {
+      "core_projection.py": "42e864af2046d036f31b1db30e1199a66d7a6b335d24e14090b5a9459ee8aba6",
+      "structure_methods.py": "89596297f279ad50b1599d2cb125fc7e140c065c91827d21f2c11ec4021e0fb3"
+    }
+  },
+  "artifact_file_sha256": {
+    "loom/tests/fixtures/eval/independent_graph_native_v1/CORE_CLAIM_PROTOCOL.md": "22b426d5a4da854693ca28dd993c7a43ecff4c262623ace73161becf27ccc09d",
+    "loom/tests/fixtures/eval/independent_graph_native_v1/INITIAL_RESULTS.md": "9cba964d84f1095f850d43c5b2d6987af96dd5d0e73350ef40ca2ab7bb1696d7",
+    "loom/tests/fixtures/eval/independent_graph_native_v1/README.md": "7c53bc077c31f4efadfb1bd85117b5aa8e21d31026b64419c6f47bd31429c3eb",
+    "loom/tests/fixtures/eval/independent_graph_native_v1/cases.json": "278d3997b23a796b3e2475658a9d221d631fbdf5f6324e4cf79f8b69915e15e6",
+    "loom/tests/fixtures/eval/independent_graph_native_v1/core_claim_cases.json": "c81eb758cd52f9ee3cc98d2519df8c2c17f4c39029234b8aff614a35eb24d8c0",
+    "loom/tests/fixtures/eval/independent_graph_native_v1/initial_core_projection_report.json": "91d02da669d4fb2b309ab3e2e27dcdfcdf618d2adbf67de1a88cf687dccf5825",
+    "loom/tests/fixtures/eval/independent_graph_native_v1/initial_search_report.json": "482e162fc7da5c53079995308a306b8d83a866ced1126b73fde314e0e7a4555f",
+    "loom/tests/fixtures/eval/independent_graph_native_v1/oracle_labels.json": "60c2989d20a37803456d564acfd5f72737906cb0b930e2c7b766798784ae1122",
+    "loom/tools/eval/graph_native_eval.py": "4e7955840ed044b25c26cc325d708fd4335558056c96b923b24368d9afd4cf4d",
+    "loom/tools/eval/test_graph_native_eval.py": "b068985fb0441b1a1f1656787d72d2820f00c9f709abca030ef5c75b6aaf0806"
+  },
+  "independent_guard_tests": 12
+}

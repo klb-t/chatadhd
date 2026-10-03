@@ -1,0 +1,20 @@
+First authoring attempt, 2026-09-30, before inputs/gold/manifest existed.
+Exact initial exception recorded from tool output; no method was run:
+
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/structure/graph_panel_live.py", line 17, in <module>
+    from . import openrouter_runner as safe
+ImportError: attempted relative import with no known parent package
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tests/fixtures/research/source_view_lifecycle_v1/author_fixture.py", line 15, in <module>
+    spec.loader.exec_module(adapter)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspace/scratch/34e008d7a951/chatadhd/loom/tools/structure/graph_panel_live.py", line 19, in <module>
+    import openrouter_runner as safe
+ModuleNotFoundError: No module named 'openrouter_runner'
+
+Decision: fix author-only import context, no change to adapter or fixture policy.

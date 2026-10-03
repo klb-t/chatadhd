@@ -1,0 +1,4 @@
+{"role": "user", "content": "line one"}
+{"role": "assistant", "content": "line two"}
+"not an object"
+{"messages": [{"role": "user", "content": "nested conversation"}], "title": "Nested"}

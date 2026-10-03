@@ -1,0 +1,1585 @@
+{
+  "schema": "loom.local_embedding_panel.scores/1",
+  "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+  "inputs_sha256": "3474eef3ee9060f790aae21ee30fd962569ae902f2352dda46deea576e44c545",
+  "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+  "code_sha256": "d52a2708a90358fb5d696b4e7b5839eb3bcbccc08f0cc38714bc038f9f315614",
+  "model_manifest_sha256": "0c6d998b882dfb0773f165efe1d8339d63a8888b5d9c1f3fd4390382a0b6856d",
+  "vectors_file": "vectors.npy",
+  "vectors_sha256": "0563b156a8865f7acaa961550c460bd8fa204d5429f744828312ba326024d26c",
+  "vector_count": 64,
+  "dimensions": 384,
+  "runtime": {
+    "inputs": [
+      "input_ids",
+      "attention_mask",
+      "token_type_ids"
+    ],
+    "outputs": [
+      "last_hidden_state"
+    ],
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "threads": 2,
+    "versions": {
+      "python": "3.12.14",
+      "numpy": "2.5.3",
+      "onnxruntime": "1.23.2",
+      "tokenizers": "0.22.1",
+      "protobuf": "7.36.2",
+      "sympy": "1.14.0",
+      "packaging": "26.3",
+      "huggingface-hub": "1.33.0"
+    },
+    "environment_sha256": "3088d890c73848cc0c490bb33badbb6071be8285875fb47b1a82bc4fbfa02f9f"
+  },
+  "coverage": {
+    "pair_total": 48,
+    "available_pairs": 48,
+    "unavailable_pairs": 0,
+    "unique_texts": 64,
+    "truncated_unique_texts": 0
+  },
+  "elapsed_seconds": 0.9669679230000838,
+  "rows": [
+    {
+      "case_id": "jp_04004a1418176015",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8780282819207101,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 0,
+          "text_sha256": "ed013437b3526f2d581e6dd6faf43fbd946b963e891fa3196a3f41c5c19f6214",
+          "text_utf8_bytes": 54,
+          "vector_sha256": "eff4d00496a2f16a6705915e4c7dec419894f5c206435d450cf3de9f68c1d183",
+          "untruncated_tokens": 13,
+          "encoded_tokens": 13,
+          "truncated": false
+        },
+        "right": {
+          "index": 1,
+          "text_sha256": "1c1234435fea132827bb2506cb8fdbba8089c9c60fcaa079a5cd276bdfde12ef",
+          "text_utf8_bytes": 101,
+          "vector_sha256": "0cc4bdc97e721305e48834c1bdbceca3282e1a7b5c00b6841b18d346c26f37bc",
+          "untruncated_tokens": 28,
+          "encoded_tokens": 28,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_0ab5969e50ad1605",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.4997515639496455,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 2,
+          "text_sha256": "c2b4bf996c5a56ed4a4b094674d3e8e7390fcd0a300decbaf51e479ed66f92c7",
+          "text_utf8_bytes": 169,
+          "vector_sha256": "a2366334c281081c8ab089c64b3a18552ed0d59c3f7597d610e858a9d15d3760",
+          "untruncated_tokens": 44,
+          "encoded_tokens": 44,
+          "truncated": false
+        },
+        "right": {
+          "index": 3,
+          "text_sha256": "2030f675196a684b912ba65ebe1e5befeeeb539c48d2b067fd5d44399bece621",
+          "text_utf8_bytes": 183,
+          "vector_sha256": "53d6268b689210b6419c3dcbe5bab88b119606adaaff8904e040c82c42e2912b",
+          "untruncated_tokens": 47,
+          "encoded_tokens": 47,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_181fa63f4e9d8585",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8526996185574603,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 4,
+          "text_sha256": "fd0df53e47e8cac1d6b9b1dd4d76c69a566f627568ec4ffd13bb315d031b7a92",
+          "text_utf8_bytes": 61,
+          "vector_sha256": "355138e87a65ffaa96bcda21a430d2e854ca8188e2c8f028b751e4ef8b96fc19",
+          "untruncated_tokens": 16,
+          "encoded_tokens": 16,
+          "truncated": false
+        },
+        "right": {
+          "index": 5,
+          "text_sha256": "2eeea43a86ae424e16cb50bb6df716b2433a32748dd4024d7384cc0ba22a43de",
+          "text_utf8_bytes": 108,
+          "vector_sha256": "950dcf9ae440549c7bcebff8b151742b896dda4a965e97d629c911f67b9a0de6",
+          "untruncated_tokens": 32,
+          "encoded_tokens": 32,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_19259a9bea97478f",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8331989262982591,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 6,
+          "text_sha256": "cbffbd509e477140cce36c868e15d559a9f2407d2ad6bc1bbd25cd8e8f2d2b17",
+          "text_utf8_bytes": 86,
+          "vector_sha256": "d94fbf99eda79709dd6d58df1445fe442943990f52b1630585e5428d14f04418",
+          "untruncated_tokens": 27,
+          "encoded_tokens": 27,
+          "truncated": false
+        },
+        "right": {
+          "index": 7,
+          "text_sha256": "7d735ba41dee5d0d58ae6af1a3a3bf0ec60ec3b3e435594a049bb5eeb12ccff6",
+          "text_utf8_bytes": 80,
+          "vector_sha256": "ec15af1c360c3f5af46c6be2fb1d59357a0c69a919328e2ab8b12c49cc0631a4",
+          "untruncated_tokens": 24,
+          "encoded_tokens": 24,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_19d7180a26b7eee2",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.7859297705240806,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 8,
+          "text_sha256": "d7a23efaf971b0df489e5e440ca25a73036f8257176aa014ddcbf9109e5c473c",
+          "text_utf8_bytes": 48,
+          "vector_sha256": "3e83141ab0a84d1b0204afcc42fc2b6edeae094fd5fda1e223b2e8f284c6370b",
+          "untruncated_tokens": 12,
+          "encoded_tokens": 12,
+          "truncated": false
+        },
+        "right": {
+          "index": 9,
+          "text_sha256": "5848af66441edc06063aadacd8180ee8cb1c080f22998480e9df15517cb90773",
+          "text_utf8_bytes": 60,
+          "vector_sha256": "d6552875fdc436d99879ac282084da5d413f002ebdfb18635863b89bc80fc001",
+          "untruncated_tokens": 17,
+          "encoded_tokens": 17,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_28bf8d09143db45c",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.07462978835776092,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 0,
+          "text_sha256": "ed013437b3526f2d581e6dd6faf43fbd946b963e891fa3196a3f41c5c19f6214",
+          "text_utf8_bytes": 54,
+          "vector_sha256": "eff4d00496a2f16a6705915e4c7dec419894f5c206435d450cf3de9f68c1d183",
+          "untruncated_tokens": 13,
+          "encoded_tokens": 13,
+          "truncated": false
+        },
+        "right": {
+          "index": 10,
+          "text_sha256": "662cc584c5291ce34a90c732798668170193d7a40f3ff8b73e6fcf19d3eee352",
+          "text_utf8_bytes": 41,
+          "vector_sha256": "440592fd73741f2b65748b3693911775f3f561d9b90af43d512d19762adc6050",
+          "untruncated_tokens": 11,
+          "encoded_tokens": 11,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_2960aa8d59d4ae21",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.5405747808100505,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 11,
+          "text_sha256": "fac7e0cc2415141b147d1760f4c32da9e46a4bb2f8e8b7287114250dcece0a9b",
+          "text_utf8_bytes": 184,
+          "vector_sha256": "a1a055dbf2aff5b3b737e9cace7e6ddf599d83f938c6abeca78d7329901b9404",
+          "untruncated_tokens": 54,
+          "encoded_tokens": 54,
+          "truncated": false
+        },
+        "right": {
+          "index": 12,
+          "text_sha256": "fd71b01bb38008f52eb2155568e002d0baf0facae03d5b5c77e186554b3dbd54",
+          "text_utf8_bytes": 176,
+          "vector_sha256": "4305c995e2d26278ef714e7379ae3cd7ab31a6f0b1e421c915e7069c03d5cd01",
+          "untruncated_tokens": 53,
+          "encoded_tokens": 53,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_2e19690b2ef783e2",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.5197079323325252,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 13,
+          "text_sha256": "4a6d59cfc689fa657bc890bae8f68a6ca177a320412d14fec35d7ae7ae020970",
+          "text_utf8_bytes": 184,
+          "vector_sha256": "da0132a3e7a7561606728987b93b4f4b951e912bb6709abb1b1408997a6d4012",
+          "untruncated_tokens": 52,
+          "encoded_tokens": 52,
+          "truncated": false
+        },
+        "right": {
+          "index": 14,
+          "text_sha256": "c33e989a9befce363208961fd6a4bc1375363bc87143ac2f2d8e57493157eb38",
+          "text_utf8_bytes": 191,
+          "vector_sha256": "0c8066f7c7acfde75d23520af9a63072046c357088413e02d5487cd2d159f194",
+          "untruncated_tokens": 52,
+          "encoded_tokens": 52,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_2e4ffd541e92a4f1",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.5988034020120623,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 15,
+          "text_sha256": "43ffb258ffc3abe5cb844045f11a3f032c8288675ada3532792b23ab6081e77b",
+          "text_utf8_bytes": 214,
+          "vector_sha256": "9be45f6aabf42b299a381c3fc41bddac0df2051a15469a1341cb0d9d04c27aad",
+          "untruncated_tokens": 51,
+          "encoded_tokens": 51,
+          "truncated": false
+        },
+        "right": {
+          "index": 16,
+          "text_sha256": "7fc9be37a8b6f3fefebcb5e8844163fc68a1a3bbea9495808ce02ee4eb7174ad",
+          "text_utf8_bytes": 190,
+          "vector_sha256": "f567df2591ea2a1f8c1a17c51802631a7ef37242ceebc9fc17f9552c6c495d21",
+          "untruncated_tokens": 43,
+          "encoded_tokens": 43,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_33afe06483ae5733",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.764082324237111,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 11,
+          "text_sha256": "fac7e0cc2415141b147d1760f4c32da9e46a4bb2f8e8b7287114250dcece0a9b",
+          "text_utf8_bytes": 184,
+          "vector_sha256": "a1a055dbf2aff5b3b737e9cace7e6ddf599d83f938c6abeca78d7329901b9404",
+          "untruncated_tokens": 54,
+          "encoded_tokens": 54,
+          "truncated": false
+        },
+        "right": {
+          "index": 17,
+          "text_sha256": "8491985ac559d530eb6af481149e41f102d6bd06bcf318b2a61cd619317cad13",
+          "text_utf8_bytes": 235,
+          "vector_sha256": "8e57ac77ad8de4778d5619e8f24589cd984fc50e7b4592fb004fb1cf93aaaf90",
+          "untruncated_tokens": 63,
+          "encoded_tokens": 63,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_34504e84b54d853f",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.47377136643577256,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 18,
+          "text_sha256": "c8fc1d9b46aa029b3a1105cebe02559b9f1d4bb94ededb76a49b756ffe1d75ee",
+          "text_utf8_bytes": 79,
+          "vector_sha256": "de45d9d50dfd5ff16b6a8d297f21d9b1abea58d3d62549778952d64c5685defe",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        },
+        "right": {
+          "index": 19,
+          "text_sha256": "6e249fddd37f3b20d3267e8cea4d24f41b2cd286728657d8aa18fc883854e946",
+          "text_utf8_bytes": 88,
+          "vector_sha256": "2763526230cb8a065a07b3748afb742691f5618f63fcc7fab742572ea86358e4",
+          "untruncated_tokens": 31,
+          "encoded_tokens": 31,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_35c9fba82648c85a",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.7899213940598461,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 13,
+          "text_sha256": "4a6d59cfc689fa657bc890bae8f68a6ca177a320412d14fec35d7ae7ae020970",
+          "text_utf8_bytes": 184,
+          "vector_sha256": "da0132a3e7a7561606728987b93b4f4b951e912bb6709abb1b1408997a6d4012",
+          "untruncated_tokens": 52,
+          "encoded_tokens": 52,
+          "truncated": false
+        },
+        "right": {
+          "index": 20,
+          "text_sha256": "290c72517fac13ebae0b1001cc9d7fcf9277ae69b239313f44e9c98b75f2731a",
+          "text_utf8_bytes": 203,
+          "vector_sha256": "5a3d6c9012557b5e0d1d3d13dab5991cd9a6575f608f2527ab18477a0bd995c9",
+          "untruncated_tokens": 49,
+          "encoded_tokens": 49,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_36f91a270b7f41b5",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.40232189341310753,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 21,
+          "text_sha256": "2af8b041eeb3b25e2222902bb52ebbc85cccb84d065906883c371802c3ad1153",
+          "text_utf8_bytes": 68,
+          "vector_sha256": "0b6b33506f99cc847e6181bbde93f8a884c5dacbda39b8e655c91f3241c4225c",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        },
+        "right": {
+          "index": 22,
+          "text_sha256": "57ad210218ddf57f545651c24784c976936927f2a6e1753c39536db62dede624",
+          "text_utf8_bytes": 57,
+          "vector_sha256": "1f3c8b453b5fd796634e24317f13a50f56d00ab1892ba0c778a26d9ea7bd965d",
+          "untruncated_tokens": 24,
+          "encoded_tokens": 24,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_414b21aea49b70b6",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9489473437191436,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 23,
+          "text_sha256": "3aa47c6f5e19bd3bec3d7e66c447f4dfa81c32b53ed297a607e024702b890500",
+          "text_utf8_bytes": 185,
+          "vector_sha256": "507906135f7b82ee77f044e9c246b83ce90efb23ff9aba45bbc2eaf7467dce06",
+          "untruncated_tokens": 49,
+          "encoded_tokens": 49,
+          "truncated": false
+        },
+        "right": {
+          "index": 24,
+          "text_sha256": "0085d0c8e1d95fe70d9182027a16a005ed4040dc874b6ddb6840983b4895ac50",
+          "text_utf8_bytes": 209,
+          "vector_sha256": "306bb758acc088d0e8a467a245047d5200408ef017d25e85eb69ab6564b2c278",
+          "untruncated_tokens": 53,
+          "encoded_tokens": 53,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_426acda1a0c218da",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.6623192457736163,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 15,
+          "text_sha256": "43ffb258ffc3abe5cb844045f11a3f032c8288675ada3532792b23ab6081e77b",
+          "text_utf8_bytes": 214,
+          "vector_sha256": "9be45f6aabf42b299a381c3fc41bddac0df2051a15469a1341cb0d9d04c27aad",
+          "untruncated_tokens": 51,
+          "encoded_tokens": 51,
+          "truncated": false
+        },
+        "right": {
+          "index": 25,
+          "text_sha256": "8e47b55d55e491aedeaa4fe2c42a708c5feca42ba7097edd8b2497ab0caabe8c",
+          "text_utf8_bytes": 203,
+          "vector_sha256": "9921be8354bbecffc193caee12a6dd201a8c21a4d993e360ce518e48ac00e218",
+          "untruncated_tokens": 55,
+          "encoded_tokens": 55,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_4919e90b05331dde",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9990213740179832,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 21,
+          "text_sha256": "2af8b041eeb3b25e2222902bb52ebbc85cccb84d065906883c371802c3ad1153",
+          "text_utf8_bytes": 68,
+          "vector_sha256": "0b6b33506f99cc847e6181bbde93f8a884c5dacbda39b8e655c91f3241c4225c",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        },
+        "right": {
+          "index": 26,
+          "text_sha256": "87ff0b071d2a5a9170a2d5c2d78ac3e820a67d3d454d0ffa583e4942d631ead0",
+          "text_utf8_bytes": 68,
+          "vector_sha256": "8f7f91d44a2a521190c5dd667da5d05512f575120d848b286017f4b6558d40a6",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_4e62d77cde791799",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.974808303525867,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 2,
+          "text_sha256": "c2b4bf996c5a56ed4a4b094674d3e8e7390fcd0a300decbaf51e479ed66f92c7",
+          "text_utf8_bytes": 169,
+          "vector_sha256": "a2366334c281081c8ab089c64b3a18552ed0d59c3f7597d610e858a9d15d3760",
+          "untruncated_tokens": 44,
+          "encoded_tokens": 44,
+          "truncated": false
+        },
+        "right": {
+          "index": 27,
+          "text_sha256": "d7777995c9b404e7bf75aa08385af94ee7f6f53c8a0e1dbf54b2df698e27429f",
+          "text_utf8_bytes": 140,
+          "vector_sha256": "ee634f46b3f6f394587a0f56a5b1e8810ce497c06be786de375bf1c4dd0c3275",
+          "untruncated_tokens": 37,
+          "encoded_tokens": 37,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_4f5a6652ab487699",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8847408617883639,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 28,
+          "text_sha256": "09df10763ae5135e06cbeb3a12dd215e9413126297cc3511767b85aa01b518d4",
+          "text_utf8_bytes": 78,
+          "vector_sha256": "6843b8408cb01f6f476ccb985b689a88c8ab2b294b525c7fdef6d3fdcfb155a8",
+          "untruncated_tokens": 27,
+          "encoded_tokens": 27,
+          "truncated": false
+        },
+        "right": {
+          "index": 29,
+          "text_sha256": "570dd6b782a182487b06f6be91f337baffb3f53a8008c91003b6713782503dfc",
+          "text_utf8_bytes": 137,
+          "vector_sha256": "84007858ecde32ac8b24fcfe5df2f592b7cb02d7018997aead4690cd99625035",
+          "untruncated_tokens": 38,
+          "encoded_tokens": 38,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_66e9e034c7c59415",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.7887110517565086,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 18,
+          "text_sha256": "c8fc1d9b46aa029b3a1105cebe02559b9f1d4bb94ededb76a49b756ffe1d75ee",
+          "text_utf8_bytes": 79,
+          "vector_sha256": "de45d9d50dfd5ff16b6a8d297f21d9b1abea58d3d62549778952d64c5685defe",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        },
+        "right": {
+          "index": 30,
+          "text_sha256": "6bddbc8092715b63ff01874b2ec405bd3cf0cd81edcde65a0bc78ffae98b2f8c",
+          "text_utf8_bytes": 104,
+          "vector_sha256": "0abeb58833ccacec1d4b72fdeb345de96afcde03c0b8c0ea77cf5367ac3744ba",
+          "untruncated_tokens": 32,
+          "encoded_tokens": 32,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_691d7817e3a7b977",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.836130454730951,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 8,
+          "text_sha256": "d7a23efaf971b0df489e5e440ca25a73036f8257176aa014ddcbf9109e5c473c",
+          "text_utf8_bytes": 48,
+          "vector_sha256": "3e83141ab0a84d1b0204afcc42fc2b6edeae094fd5fda1e223b2e8f284c6370b",
+          "untruncated_tokens": 12,
+          "encoded_tokens": 12,
+          "truncated": false
+        },
+        "right": {
+          "index": 31,
+          "text_sha256": "3aef07d64b27ed5e596557718e5864b7604135a674b0455c89e21a53b7a4b8f9",
+          "text_utf8_bytes": 55,
+          "vector_sha256": "26a3a6f29889a727b9411cd68cdb0f85ca756fb8a5edc94b8a28421d88f7d733",
+          "untruncated_tokens": 14,
+          "encoded_tokens": 14,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_760aa2cd3adb76cb",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8056543864392055,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 32,
+          "text_sha256": "18ec9592e8a5edb0cb1d30ca693d1b4e86803089aa28f6c9f2b6f8bad02d774c",
+          "text_utf8_bytes": 41,
+          "vector_sha256": "b83f0aef24f9f10f4ead98a7f3a297b975877ebe4a85f9970521d6d33ee21d0f",
+          "untruncated_tokens": 10,
+          "encoded_tokens": 10,
+          "truncated": false
+        },
+        "right": {
+          "index": 33,
+          "text_sha256": "5ee9423d9e97651d941da1b7de8e9d885360ebedbc54e2cf719bccbfd7b9a91f",
+          "text_utf8_bytes": 74,
+          "vector_sha256": "3c58f161b1c9c84bab9ac53f77d62b8cb62926571f151a3345a822c5c91f1a82",
+          "untruncated_tokens": 16,
+          "encoded_tokens": 16,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_834547992ed91dd4",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9116922962073761,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 15,
+          "text_sha256": "43ffb258ffc3abe5cb844045f11a3f032c8288675ada3532792b23ab6081e77b",
+          "text_utf8_bytes": 214,
+          "vector_sha256": "9be45f6aabf42b299a381c3fc41bddac0df2051a15469a1341cb0d9d04c27aad",
+          "untruncated_tokens": 51,
+          "encoded_tokens": 51,
+          "truncated": false
+        },
+        "right": {
+          "index": 34,
+          "text_sha256": "7bd5f4c094629ece8cc52b3ae047cc9d0d235fb8563af2dc66ef7c7fc2fc546e",
+          "text_utf8_bytes": 206,
+          "vector_sha256": "b07ab6be4de5db343c477dcb4c6c7fb31f4c4e1a07fc28cf6d771b5a35a1ba6a",
+          "untruncated_tokens": 44,
+          "encoded_tokens": 44,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_879f4d33d712a1fe",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9985696927815695,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 35,
+          "text_sha256": "76a96cc553113d50dfece80995e5ea105ce9083a543a8d3ae97865c335b1c4bb",
+          "text_utf8_bytes": 70,
+          "vector_sha256": "61d179a72b943586e759d14dfd717e3cc75c49626fab4a1b5026f6a166fd0b22",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        },
+        "right": {
+          "index": 36,
+          "text_sha256": "3d4b7041d77ebedf1a6c0a727aa566adeda32bc6bc872bc00f380ba0c7870c8b",
+          "text_utf8_bytes": 70,
+          "vector_sha256": "5c99d18cb310984bdbe9bebccadddc5f67d82941c81d4f48351451e9a293cd88",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_8c163db9b0b5a2bc",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.7087980006350467,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 23,
+          "text_sha256": "3aa47c6f5e19bd3bec3d7e66c447f4dfa81c32b53ed297a607e024702b890500",
+          "text_utf8_bytes": 185,
+          "vector_sha256": "507906135f7b82ee77f044e9c246b83ce90efb23ff9aba45bbc2eaf7467dce06",
+          "untruncated_tokens": 49,
+          "encoded_tokens": 49,
+          "truncated": false
+        },
+        "right": {
+          "index": 37,
+          "text_sha256": "dfa6c6a377e2361c1965e6f8c620bd49c171cfb8f134dbd6e96f9a65f97d28b1",
+          "text_utf8_bytes": 179,
+          "vector_sha256": "f291232942812ee725fdfa9920f06cb18f60939516f4a2ebf0abee1e4074dc27",
+          "untruncated_tokens": 45,
+          "encoded_tokens": 45,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_8d862e029fb6ebc3",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8400297954840006,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 38,
+          "text_sha256": "2a584cd2f3349d788d6d425d70a73085ba1048c71985526d2aa018a2ace9d51d",
+          "text_utf8_bytes": 209,
+          "vector_sha256": "34a0cea93172595504d0d71566d0ee41a7f355ea37d2053c8413ac6a500db6f1",
+          "untruncated_tokens": 58,
+          "encoded_tokens": 58,
+          "truncated": false
+        },
+        "right": {
+          "index": 39,
+          "text_sha256": "3c3c3f0f74391ede07c04f41d96c844a910a8d1dd679e762f0fb1bcfed938696",
+          "text_utf8_bytes": 189,
+          "vector_sha256": "a46e881ca5634c823480ca646848e90a747dc095e4cac1117aec362102fa715e",
+          "untruncated_tokens": 55,
+          "encoded_tokens": 55,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_8d966f2d7f76b6cd",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.6223277305259827,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 28,
+          "text_sha256": "09df10763ae5135e06cbeb3a12dd215e9413126297cc3511767b85aa01b518d4",
+          "text_utf8_bytes": 78,
+          "vector_sha256": "6843b8408cb01f6f476ccb985b689a88c8ab2b294b525c7fdef6d3fdcfb155a8",
+          "untruncated_tokens": 27,
+          "encoded_tokens": 27,
+          "truncated": false
+        },
+        "right": {
+          "index": 40,
+          "text_sha256": "4a747800c40d3b605ab3694d30fa6bd4908f42d13f6ec0d1ef1d6a80627d475f",
+          "text_utf8_bytes": 84,
+          "vector_sha256": "868b0a03ffaf1eb7a5655c2cff828d5ff1caa09c3a637d404b259f3370ea34c4",
+          "untruncated_tokens": 28,
+          "encoded_tokens": 28,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_90644f0b41e42438",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9547708610608904,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 18,
+          "text_sha256": "c8fc1d9b46aa029b3a1105cebe02559b9f1d4bb94ededb76a49b756ffe1d75ee",
+          "text_utf8_bytes": 79,
+          "vector_sha256": "de45d9d50dfd5ff16b6a8d297f21d9b1abea58d3d62549778952d64c5685defe",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        },
+        "right": {
+          "index": 41,
+          "text_sha256": "8033a7eed738d1933e5258c17883318902713218e324976fd6b7e0dc64e61301",
+          "text_utf8_bytes": 107,
+          "vector_sha256": "d8f70f626912d92b6341bb27dad068c30089610ae68de02da6f4c5cf2e78f1d6",
+          "untruncated_tokens": 34,
+          "encoded_tokens": 34,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_90d304fb08e80c9e",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9435799597368628,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 6,
+          "text_sha256": "cbffbd509e477140cce36c868e15d559a9f2407d2ad6bc1bbd25cd8e8f2d2b17",
+          "text_utf8_bytes": 86,
+          "vector_sha256": "d94fbf99eda79709dd6d58df1445fe442943990f52b1630585e5428d14f04418",
+          "untruncated_tokens": 27,
+          "encoded_tokens": 27,
+          "truncated": false
+        },
+        "right": {
+          "index": 42,
+          "text_sha256": "3ffe617d4f7857b4b493ef5f35b33791e322a735a30427683e955729c07741b3",
+          "text_utf8_bytes": 117,
+          "vector_sha256": "c42248781a4c2646fec60c8b0515af4f1f46fcdb69dc9c8034195a82ae9f99dc",
+          "untruncated_tokens": 36,
+          "encoded_tokens": 36,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_9362a529719c6b22",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8130493839850246,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 35,
+          "text_sha256": "76a96cc553113d50dfece80995e5ea105ce9083a543a8d3ae97865c335b1c4bb",
+          "text_utf8_bytes": 70,
+          "vector_sha256": "61d179a72b943586e759d14dfd717e3cc75c49626fab4a1b5026f6a166fd0b22",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        },
+        "right": {
+          "index": 43,
+          "text_sha256": "1d064fdc936ae7e26d3fc7a6604a72de2855a2f8128a53ccaa6401d4b68fb691",
+          "text_utf8_bytes": 104,
+          "vector_sha256": "cc4f9f8c8ae2c48c7cfafa4a43598bff1f018f6dc23e53fe76ff672937d81882",
+          "untruncated_tokens": 30,
+          "encoded_tokens": 30,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_9581a1b9755458a8",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.23173095799147977,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 8,
+          "text_sha256": "d7a23efaf971b0df489e5e440ca25a73036f8257176aa014ddcbf9109e5c473c",
+          "text_utf8_bytes": 48,
+          "vector_sha256": "3e83141ab0a84d1b0204afcc42fc2b6edeae094fd5fda1e223b2e8f284c6370b",
+          "untruncated_tokens": 12,
+          "encoded_tokens": 12,
+          "truncated": false
+        },
+        "right": {
+          "index": 44,
+          "text_sha256": "68b3f075dad1e4916798e707986b77848d68631e470afb9bcd74997d37da6086",
+          "text_utf8_bytes": 49,
+          "vector_sha256": "3935f4d737bff9c65904bd8cff8000273db0f1e7647033dc6084a647aaa598a1",
+          "untruncated_tokens": 13,
+          "encoded_tokens": 13,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_96817a8f364a80a5",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.3704070964329348,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 23,
+          "text_sha256": "3aa47c6f5e19bd3bec3d7e66c447f4dfa81c32b53ed297a607e024702b890500",
+          "text_utf8_bytes": 185,
+          "vector_sha256": "507906135f7b82ee77f044e9c246b83ce90efb23ff9aba45bbc2eaf7467dce06",
+          "untruncated_tokens": 49,
+          "encoded_tokens": 49,
+          "truncated": false
+        },
+        "right": {
+          "index": 45,
+          "text_sha256": "716355a5ec9c4eb0eb1699ebd0d4be856966a8650b04e4ed3cab8d1eb1fb7980",
+          "text_utf8_bytes": 187,
+          "vector_sha256": "d7877df28942cfc7b3726740da4a8ee34cad9a6e8728c824bf82c3cc2088b786",
+          "untruncated_tokens": 48,
+          "encoded_tokens": 48,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_a0d7275f1edd95a3",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.7490047458245209,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 21,
+          "text_sha256": "2af8b041eeb3b25e2222902bb52ebbc85cccb84d065906883c371802c3ad1153",
+          "text_utf8_bytes": 68,
+          "vector_sha256": "0b6b33506f99cc847e6181bbde93f8a884c5dacbda39b8e655c91f3241c4225c",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        },
+        "right": {
+          "index": 46,
+          "text_sha256": "90483b0b80405f7c2180dbed1c602aa621f65d07f004c25a2b58e9c9f82535fc",
+          "text_utf8_bytes": 94,
+          "vector_sha256": "093f873d44cba049ec8a0cb99d2eb20cc7b5668d173ab3ef290ee7b6696aa415",
+          "untruncated_tokens": 28,
+          "encoded_tokens": 28,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_a548105739124127",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.1266076111969477,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 4,
+          "text_sha256": "fd0df53e47e8cac1d6b9b1dd4d76c69a566f627568ec4ffd13bb315d031b7a92",
+          "text_utf8_bytes": 61,
+          "vector_sha256": "355138e87a65ffaa96bcda21a430d2e854ca8188e2c8f028b751e4ef8b96fc19",
+          "untruncated_tokens": 16,
+          "encoded_tokens": 16,
+          "truncated": false
+        },
+        "right": {
+          "index": 47,
+          "text_sha256": "b741736b37f288bfc078b35c020b3f137c31954a5b9d3618078796b035a78248",
+          "text_utf8_bytes": 45,
+          "vector_sha256": "db9e7f441a2994cde99b2f6197a60622b8a38170ea0d589ebfdca13bfad295da",
+          "untruncated_tokens": 14,
+          "encoded_tokens": 14,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_ace3baaf05e49c5e",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.41674345913629224,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 35,
+          "text_sha256": "76a96cc553113d50dfece80995e5ea105ce9083a543a8d3ae97865c335b1c4bb",
+          "text_utf8_bytes": 70,
+          "vector_sha256": "61d179a72b943586e759d14dfd717e3cc75c49626fab4a1b5026f6a166fd0b22",
+          "untruncated_tokens": 25,
+          "encoded_tokens": 25,
+          "truncated": false
+        },
+        "right": {
+          "index": 48,
+          "text_sha256": "c8922417949099fa9bf7f1937f6ecc72b10d6990ed2b38ce3b297df7bd862a39",
+          "text_utf8_bytes": 62,
+          "vector_sha256": "284adb2e194720aacccde9ee763a9a10a58b2778a3324aa0c9317dd9eb946800",
+          "untruncated_tokens": 24,
+          "encoded_tokens": 24,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_b3a97be5d12c2283",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8606244327492598,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 38,
+          "text_sha256": "2a584cd2f3349d788d6d425d70a73085ba1048c71985526d2aa018a2ace9d51d",
+          "text_utf8_bytes": 209,
+          "vector_sha256": "34a0cea93172595504d0d71566d0ee41a7f355ea37d2053c8413ac6a500db6f1",
+          "untruncated_tokens": 58,
+          "encoded_tokens": 58,
+          "truncated": false
+        },
+        "right": {
+          "index": 49,
+          "text_sha256": "471e0be6ee1eea8eca32d6ec7ca19a2c033d4f1c7dde7cb3b49de5d97b77b9fc",
+          "text_utf8_bytes": 174,
+          "vector_sha256": "f83fba0e7ed4fc4a008c163c1006be8c7fac5c9fc2464ab41189e88b8b0322c0",
+          "untruncated_tokens": 51,
+          "encoded_tokens": 51,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_b6862181a58cfd3c",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9366642583258558,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 32,
+          "text_sha256": "18ec9592e8a5edb0cb1d30ca693d1b4e86803089aa28f6c9f2b6f8bad02d774c",
+          "text_utf8_bytes": 41,
+          "vector_sha256": "b83f0aef24f9f10f4ead98a7f3a297b975877ebe4a85f9970521d6d33ee21d0f",
+          "untruncated_tokens": 10,
+          "encoded_tokens": 10,
+          "truncated": false
+        },
+        "right": {
+          "index": 50,
+          "text_sha256": "30608c1ee48974bdf3f203b2037e1981ed76f892589fd80c8511a20a4bba2d25",
+          "text_utf8_bytes": 52,
+          "vector_sha256": "fc111153e29cc92250b519ebb6fc679feb26f140b46b3dc53f986ed4d51f1a2e",
+          "untruncated_tokens": 12,
+          "encoded_tokens": 12,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_b969594b5b97d333",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.5841962885747379,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 6,
+          "text_sha256": "cbffbd509e477140cce36c868e15d559a9f2407d2ad6bc1bbd25cd8e8f2d2b17",
+          "text_utf8_bytes": 86,
+          "vector_sha256": "d94fbf99eda79709dd6d58df1445fe442943990f52b1630585e5428d14f04418",
+          "untruncated_tokens": 27,
+          "encoded_tokens": 27,
+          "truncated": false
+        },
+        "right": {
+          "index": 51,
+          "text_sha256": "94e7fd2fe5622165f1fecfe1c5ab1a3ff9787322954bdfaf54e42c9401824949",
+          "text_utf8_bytes": 63,
+          "vector_sha256": "e7df2a3d91154f441b15395f674066d06fecdd78d775bb48b0b823a581efe3b4",
+          "untruncated_tokens": 24,
+          "encoded_tokens": 24,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_b98acebeaaaa7378",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9841189320269772,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 52,
+          "text_sha256": "f43762d0a32241f7e8aa8434d86df010253c9c0b64f408dee7afa668ef8722f5",
+          "text_utf8_bytes": 84,
+          "vector_sha256": "885b71e73b4228e2c130d7a3dbbce78f21827a597d8e2d8a0b31701c6c02b3ee",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        },
+        "right": {
+          "index": 53,
+          "text_sha256": "31ddddcbaa9559ab29feaae124a46c2e46c924816c8dc48a603ff0956fdf2d8d",
+          "text_utf8_bytes": 79,
+          "vector_sha256": "6634e978195dae22e88d1099e0dcda22e6d0bdb3cde0c617bd68bab131577a9d",
+          "untruncated_tokens": 27,
+          "encoded_tokens": 27,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_bc3deb59f3a96649",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.8013029470803953,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 52,
+          "text_sha256": "f43762d0a32241f7e8aa8434d86df010253c9c0b64f408dee7afa668ef8722f5",
+          "text_utf8_bytes": 84,
+          "vector_sha256": "885b71e73b4228e2c130d7a3dbbce78f21827a597d8e2d8a0b31701c6c02b3ee",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        },
+        "right": {
+          "index": 54,
+          "text_sha256": "90c1312c5a665e91590802836da549fded86e62933236935e3821c153d5036b9",
+          "text_utf8_bytes": 137,
+          "vector_sha256": "57e786f52f24227c278729be2d432957b98983eb8b032e161092c6310553c7e0",
+          "untruncated_tokens": 44,
+          "encoded_tokens": 44,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_d5187ba699226df6",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.43508053574894456,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 38,
+          "text_sha256": "2a584cd2f3349d788d6d425d70a73085ba1048c71985526d2aa018a2ace9d51d",
+          "text_utf8_bytes": 209,
+          "vector_sha256": "34a0cea93172595504d0d71566d0ee41a7f355ea37d2053c8413ac6a500db6f1",
+          "untruncated_tokens": 58,
+          "encoded_tokens": 58,
+          "truncated": false
+        },
+        "right": {
+          "index": 55,
+          "text_sha256": "c9cb2b82a69fd9deb901c2c090a7303c2550fbd8cdcd5ef2275cb9738c77b4eb",
+          "text_utf8_bytes": 233,
+          "vector_sha256": "2de1059aeb77161d51a7a0fed6d92191a27f44fb0a28dafd2334280538594d6b",
+          "untruncated_tokens": 69,
+          "encoded_tokens": 69,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_d5d00e152f385b62",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.7085767627540058,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 2,
+          "text_sha256": "c2b4bf996c5a56ed4a4b094674d3e8e7390fcd0a300decbaf51e479ed66f92c7",
+          "text_utf8_bytes": 169,
+          "vector_sha256": "a2366334c281081c8ab089c64b3a18552ed0d59c3f7597d610e858a9d15d3760",
+          "untruncated_tokens": 44,
+          "encoded_tokens": 44,
+          "truncated": false
+        },
+        "right": {
+          "index": 56,
+          "text_sha256": "e795ccd28774d746eda0cc99c5112067e19abdf2bcd68159264a016e98d9b8e0",
+          "text_utf8_bytes": 199,
+          "vector_sha256": "7a04d8c598a54d8bb31fec67324e2f7f05247c2b13abd6056f3a93721ea38c2e",
+          "untruncated_tokens": 54,
+          "encoded_tokens": 54,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_d756b8c30c8e0aaa",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.5782491984285212,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 0,
+          "text_sha256": "ed013437b3526f2d581e6dd6faf43fbd946b963e891fa3196a3f41c5c19f6214",
+          "text_utf8_bytes": 54,
+          "vector_sha256": "eff4d00496a2f16a6705915e4c7dec419894f5c206435d450cf3de9f68c1d183",
+          "untruncated_tokens": 13,
+          "encoded_tokens": 13,
+          "truncated": false
+        },
+        "right": {
+          "index": 57,
+          "text_sha256": "ff8acfc47d0aec1910b935dd2bbc0414f710aa61ea6deec7436b17f815c76ede",
+          "text_utf8_bytes": 60,
+          "vector_sha256": "bc5c339067d7b54890cb7a42835fa3155e99904ce316419cfba1fbb1390c1c4e",
+          "untruncated_tokens": 21,
+          "encoded_tokens": 21,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_d7ff6bd52f0eae8e",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9686294930902051,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 11,
+          "text_sha256": "fac7e0cc2415141b147d1760f4c32da9e46a4bb2f8e8b7287114250dcece0a9b",
+          "text_utf8_bytes": 184,
+          "vector_sha256": "a1a055dbf2aff5b3b737e9cace7e6ddf599d83f938c6abeca78d7329901b9404",
+          "untruncated_tokens": 54,
+          "encoded_tokens": 54,
+          "truncated": false
+        },
+        "right": {
+          "index": 58,
+          "text_sha256": "50fd95a3fb9cf4f869daf8f4802a0f296eb5a1068cca65503ffddd8bbad0104f",
+          "text_utf8_bytes": 145,
+          "vector_sha256": "4b1446e3968d2805aa0e1067e9af9c7f7393c1c2db5788bf989a69285f5892ae",
+          "untruncated_tokens": 44,
+          "encoded_tokens": 44,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_e462802d8d04ab27",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.69935606719267,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 4,
+          "text_sha256": "fd0df53e47e8cac1d6b9b1dd4d76c69a566f627568ec4ffd13bb315d031b7a92",
+          "text_utf8_bytes": 61,
+          "vector_sha256": "355138e87a65ffaa96bcda21a430d2e854ca8188e2c8f028b751e4ef8b96fc19",
+          "untruncated_tokens": 16,
+          "encoded_tokens": 16,
+          "truncated": false
+        },
+        "right": {
+          "index": 59,
+          "text_sha256": "315c2dea4ee58cb6c09c318003021b7a2554be5fb79e2aa4974cdbaeca35f095",
+          "text_utf8_bytes": 66,
+          "vector_sha256": "425b4e74c939c3efed3a996e39c58717c74d3f4c39019d0c891555606f72ec3c",
+          "untruncated_tokens": 17,
+          "encoded_tokens": 17,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_e929148203b09918",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.245039570627143,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 32,
+          "text_sha256": "18ec9592e8a5edb0cb1d30ca693d1b4e86803089aa28f6c9f2b6f8bad02d774c",
+          "text_utf8_bytes": 41,
+          "vector_sha256": "b83f0aef24f9f10f4ead98a7f3a297b975877ebe4a85f9970521d6d33ee21d0f",
+          "untruncated_tokens": 10,
+          "encoded_tokens": 10,
+          "truncated": false
+        },
+        "right": {
+          "index": 60,
+          "text_sha256": "1c58dace679ee2c3e813dd0c388c15dfda2bc43da1eb6f161a7154bd6038e6d9",
+          "text_utf8_bytes": 50,
+          "vector_sha256": "c32b9af94f0b97db85c420bf2cee9f9d471aace44453b52fbdbec09bef8dbcf1",
+          "untruncated_tokens": 13,
+          "encoded_tokens": 13,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_f1399f462c51fff8",
+      "language": "en",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9680563240932218,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 28,
+          "text_sha256": "09df10763ae5135e06cbeb3a12dd215e9413126297cc3511767b85aa01b518d4",
+          "text_utf8_bytes": 78,
+          "vector_sha256": "6843b8408cb01f6f476ccb985b689a88c8ab2b294b525c7fdef6d3fdcfb155a8",
+          "untruncated_tokens": 27,
+          "encoded_tokens": 27,
+          "truncated": false
+        },
+        "right": {
+          "index": 61,
+          "text_sha256": "d86bccf2bf97043796c2ea5017e33feb3acb77d8f1756b7b0ae0734696a22656",
+          "text_utf8_bytes": 69,
+          "vector_sha256": "07fa76845137f473381021a4f54f0cb9bf80aa8b3d964bc450b0c547d82cc833",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_f3744fab90a5b995",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.5555724198478806,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 52,
+          "text_sha256": "f43762d0a32241f7e8aa8434d86df010253c9c0b64f408dee7afa668ef8722f5",
+          "text_utf8_bytes": 84,
+          "vector_sha256": "885b71e73b4228e2c130d7a3dbbce78f21827a597d8e2d8a0b31701c6c02b3ee",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        },
+        "right": {
+          "index": 62,
+          "text_sha256": "179955cbf1206a5f24de179bae2dd2c955bc3625709a7eea11bb809bf44573a1",
+          "text_utf8_bytes": 77,
+          "vector_sha256": "461ae58154f8685128c7621864d7b2f89823f12dd98dc5da9c21aba7c0121a77",
+          "untruncated_tokens": 26,
+          "encoded_tokens": 26,
+          "truncated": false
+        }
+      }
+    },
+    {
+      "case_id": "jp_fbc262f810fb7e5b",
+      "language": "pl",
+      "method": "learned_multilingual_minilm_l12_v2_onnx_cosine_v1",
+      "score": 0.9709406504115822,
+      "prediction": null,
+      "available": true,
+      "representation": "raw_text_learned_sentence_embedding",
+      "provenance": {
+        "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+        "protocol_sha256": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+        "left": {
+          "index": 13,
+          "text_sha256": "4a6d59cfc689fa657bc890bae8f68a6ca177a320412d14fec35d7ae7ae020970",
+          "text_utf8_bytes": 184,
+          "vector_sha256": "da0132a3e7a7561606728987b93b4f4b951e912bb6709abb1b1408997a6d4012",
+          "untruncated_tokens": 52,
+          "encoded_tokens": 52,
+          "truncated": false
+        },
+        "right": {
+          "index": 63,
+          "text_sha256": "b1f7a0d57975869287de7b694a0a3ad7a96b3cda1368c3b13b892239a8afb06e",
+          "text_utf8_bytes": 220,
+          "vector_sha256": "56376d2c0f9432b342e3e971104a0586b3e18de84a77474993119a1adb0255bf",
+          "untruncated_tokens": 60,
+          "encoded_tokens": 60,
+          "truncated": false
+        }
+      }
+    }
+  ],
+  "threshold": null,
+  "quality_evaluation": "not_performed; no_gold_read"
+}

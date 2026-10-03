@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches gui/base.py THEMES["dark"]["bg"] (0.06, 0.06, 0.08) so the
+         WebView's first paint (before the web UI sets its own background)
+         doesn't flash. -->
+    <color name="loom_background">#0F0F14</color>
+    <color name="loom_icon_bg">#1A1D24</color>
+    <color name="loom_icon_fg">#7C9CFF</color>
+</resources>

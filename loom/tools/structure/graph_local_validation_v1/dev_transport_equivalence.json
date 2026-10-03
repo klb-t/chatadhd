@@ -1,0 +1,12 @@
+{
+  "all_naive_overall_metric_fields_exact": true,
+  "all_retrieval_groups_exact": true,
+  "all_score_rows_exact": true,
+  "dev_queries": 96,
+  "difference_not_repaired_after_freeze": true,
+  "initial_overstrict_report_assertion_failed": "naive report lacks legacy interpretation metadata; no numerical or prediction mismatch",
+  "paid_calls": 0,
+  "release_sha256": "bc4d6afdca9cb99a2a660d1e3a90829654cf667ada0dd77de38b6e2eb588bdcd",
+  "validation_accessed": false,
+  "vectors_byte_hash_equal": true
+}

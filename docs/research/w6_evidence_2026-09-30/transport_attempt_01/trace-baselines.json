@@ -1,0 +1,413 @@
+{
+  "m_627ae93e66b3": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      }
+    ],
+    "messages_sha256": "3f9dd8e09bcf956058764aacedb2b7e9e667b0bc362f1b90971bbb80f3d7a56f",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": false,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": {
+      "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+      "targets": [],
+      "project": "",
+      "budget_tokens": 1000,
+      "goal_type": null,
+      "run": "kr_069dee736f460c0d",
+      "lang": "",
+      "relation_hops": 0,
+      "detail_resolution": "full"
+    },
+    "knowledge_context": {
+      "goal": {
+        "id": "g_ebac815d59721f7c",
+        "type": "answer_question",
+        "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+        "targets": [],
+        "project": "",
+        "confidence": 0.25,
+        "params": {
+          "confidence_basis": "heuristic_cue_margin",
+          "calibration_status": "unavailable",
+          "external_goal_typing": {
+            "status": "offline",
+            "requests": 0
+          },
+          "classifier": "cue",
+          "scores": {
+            "answer_question": 0.0,
+            "brainstorm": 0.0,
+            "compute_deadline": 0.0,
+            "extend_scene": 0.0,
+            "implement_part": 0.0,
+            "review_decision": 0.0,
+            "verify_claim": 0.0,
+            "write_artifact": 0.0
+          },
+          "context_controls": {
+            "relation_hops": 0,
+            "detail_resolution": "full"
+          }
+        }
+      },
+      "context_set": {
+        "id": "cx_222901a764626a7d",
+        "goal": {
+          "id": "g_ebac815d59721f7c",
+          "type": "answer_question",
+          "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+          "targets": [],
+          "project": "",
+          "confidence": 0.25,
+          "params": {
+            "confidence_basis": "heuristic_cue_margin",
+            "calibration_status": "unavailable",
+            "external_goal_typing": {
+              "status": "offline",
+              "requests": 0
+            },
+            "classifier": "cue",
+            "scores": {
+              "answer_question": 0.0,
+              "brainstorm": 0.0,
+              "compute_deadline": 0.0,
+              "extend_scene": 0.0,
+              "implement_part": 0.0,
+              "review_decision": 0.0,
+              "verify_claim": 0.0,
+              "write_artifact": 0.0
+            },
+            "context_controls": {
+              "relation_hops": 0,
+              "detail_resolution": "full"
+            }
+          }
+        },
+        "budget_tokens": 1000,
+        "used_tokens": 0,
+        "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+        "items": [],
+        "dropped": []
+      },
+      "prompt": "",
+      "request": {
+        "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+        "targets": [],
+        "project": "",
+        "budget_tokens": 1000,
+        "goal_type": null,
+        "run": "kr_069dee736f460c0d",
+        "lang": "",
+        "relation_hops": 0,
+        "detail_resolution": "full"
+      }
+    }
+  },
+  "m_f7a31d6d3e3e": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      }
+    ],
+    "messages_sha256": "52d8dabd925ade5bc43ca4da0436a1553c17eee10bded9bc3e646311003548f8",
+    "history_message_ids": [
+      "m_627ae93e66b3",
+      "m_0793113faff7"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": false,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_c867d918cfeb": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      }
+    ],
+    "messages_sha256": "bc96447aeef9513a82ecd9f0f13580b8331b44c56a03f9cc8e53d0fea3f5a694",
+    "history_message_ids": [],
+    "selection": {
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_3a7f301b205f": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_NO_TRACE"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_HTTP"
+      }
+    ],
+    "messages_sha256": "ff3e0f2ea11f69b231e7f407be77b6a9dc5e550702df9dc634524489faf64e49",
+    "history_message_ids": [
+      "m_627ae93e66b3",
+      "m_0793113faff7",
+      "m_f7a31d6d3e3e",
+      "m_6df50df32682",
+      "m_c867d918cfeb",
+      "m_8929db3e31cb",
+      "m_f70b9148c0ea",
+      "m_aaefe2525edf"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": true,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_b8c896780683": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_NO_TRACE"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_HTTP"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_AUTH"
+      }
+    ],
+    "messages_sha256": "fb272f687410b19f1dcd936254d4a47d370c9f87ff658c01fc29c0917e88ad00",
+    "history_message_ids": [
+      "m_627ae93e66b3",
+      "m_0793113faff7",
+      "m_f7a31d6d3e3e",
+      "m_6df50df32682",
+      "m_c867d918cfeb",
+      "m_8929db3e31cb",
+      "m_f70b9148c0ea",
+      "m_aaefe2525edf",
+      "m_3a7f301b205f"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": true,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  },
+  "m_d6391688fa2c": {
+    "kind": "compiled_messages",
+    "version": 1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "W6_SYSTEM_SENTINEL"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+      },
+      {
+        "role": "user",
+        "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_SECOND"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_ISOLATED"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_NO_TRACE"
+      },
+      {
+        "role": "assistant",
+        "content": "W6 fixed reply"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_HTTP"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_AUTH"
+      },
+      {
+        "role": "user",
+        "content": "W6_FAIL_RUN"
+      },
+      {
+        "role": "user",
+        "content": "W6_STREAM"
+      }
+    ],
+    "messages_sha256": "c5323abd05a45d63646fc03c33351139a1c2c298d318829106f6f451961227be",
+    "history_message_ids": [
+      "m_627ae93e66b3",
+      "m_0793113faff7",
+      "m_f7a31d6d3e3e",
+      "m_6df50df32682",
+      "m_c867d918cfeb",
+      "m_8929db3e31cb",
+      "m_f70b9148c0ea",
+      "m_aaefe2525edf",
+      "m_3a7f301b205f",
+      "m_b8c896780683",
+      "m_f07dd7d5e05a"
+    ],
+    "selection": {
+      "include_memory": true,
+      "include_graph_memory": true,
+      "include_history": true,
+      "context_depth": null
+    },
+    "knowledge_context_request": null,
+    "knowledge_context": null
+  }
+}

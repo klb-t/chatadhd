@@ -1,0 +1,103 @@
+{
+  "schema": "loom.analysis_runtime_presets/1",
+  "presets": {
+    "local": {
+      "schema": "loom.analysis_runtime/1",
+      "budget_usd": "2",
+      "reservation_per_call_usd": ".1",
+      "max_steps": 20,
+      "recipe": "complete_graph",
+      "application_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "preview",
+        "allow_source_tombstones": false
+      },
+      "kind": "local",
+      "tool_permissions": {},
+      "semantic_contract": "loom.graph_packet/1",
+      "resource_scope": {
+        "kind": "supplied_packet",
+        "project_access_grants": []
+      }
+    },
+    "client_loop": {
+      "schema": "loom.analysis_runtime/1",
+      "budget_usd": "2",
+      "reservation_per_call_usd": ".1",
+      "max_steps": 20,
+      "recipe": "complete_graph",
+      "application_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "preview",
+        "allow_source_tombstones": false
+      },
+      "kind": "client_loop",
+      "model_key": "gpt61_sol",
+      "tools": [],
+      "parallel_tool_calls": true,
+      "tool_permissions": {},
+      "semantic_contract": "loom.graph_packet/1",
+      "resource_scope": {
+        "kind": "supplied_packet",
+        "project_access_grants": []
+      }
+    },
+    "managed_agent": {
+      "schema": "loom.analysis_runtime/1",
+      "budget_usd": "2",
+      "reservation_per_call_usd": ".1",
+      "max_steps": 20,
+      "recipe": "complete_graph",
+      "application_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "preview",
+        "allow_source_tombstones": false
+      },
+      "kind": "managed_agent",
+      "model": "gpt-6.1-sol",
+      "max_output_tokens": 8192,
+      "reasoning": {
+        "effort": "low"
+      },
+      "store": false,
+      "tools": [],
+      "tool_permissions": {},
+      "semantic_contract": "loom.graph_packet/1",
+      "resource_scope": {
+        "kind": "supplied_packet",
+        "project_access_grants": []
+      }
+    },
+    "managed_swarm": {
+      "schema": "loom.analysis_runtime/1",
+      "budget_usd": "2",
+      "reservation_per_call_usd": ".1",
+      "max_steps": 20,
+      "recipe": "complete_graph",
+      "application_policy": {
+        "schema": "loom.graph_packet_apply_policy/1",
+        "acceptance": "preview",
+        "allow_source_tombstones": false
+      },
+      "kind": "managed_swarm",
+      "model": "gpt-6.1-sol",
+      "max_output_tokens": 8192,
+      "reasoning": {
+        "effort": "low"
+      },
+      "store": false,
+      "tools": [],
+      "max_concurrent_subagents": 3,
+      "tool_permissions": {},
+      "semantic_contract": "loom.graph_packet/1",
+      "resource_scope": {
+        "kind": "supplied_packet",
+        "project_access_grants": []
+      }
+    }
+  },
+  "defaults_are_editable": true,
+  "api_account_access_verified": false,
+  "persistent_agents_api": "extension capability; Responses adapter does not claim Agents API session implementation",
+  "heterogeneous_model_swarm": "Loom orchestration uses per-node model/runtime; hosted Responses subagents share model/tools"
+}

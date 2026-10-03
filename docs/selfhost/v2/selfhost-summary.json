@@ -1,0 +1,168 @@
+{
+  "protocol": "repository_text_discovery_diagnostic",
+  "status": "done",
+  "run": "kr_dcd288fd8fc7e755",
+  "binary_sha256": "6083b400da1fd20cd1c889ca3fb5b782b8a070b13cf047c77100b55e6959bbbb",
+  "pipeline_version": "3",
+  "scanner_version": "2",
+  "pack_hash": "2a543e24d3b1b4daa5f9471d0c99d8d602b545a849eec5b8cbe70edb76860cae",
+  "source_snapshot": {
+    "revision": "8e50b044fffb6356b399c9cdf14205dd5815445b",
+    "cut": null,
+    "cut_timezone": null,
+    "basis": "tracked HEAD snapshot",
+    "working_tree_included": false,
+    "other_refs_included": false,
+    "excluded_counts": {
+      "hidden": 5,
+      "unsupported_or_binary": 21,
+      "marked_generated_directory": 10,
+      "evaluation_or_generated": 126,
+      "policy_pack_not_source": 41
+    },
+    "limitations": [
+      "Git timestamps are repository evidence, not independent historical attestation.",
+      "Archives, large files, untracked files, policy packs and generated/evaluation artifacts are excluded."
+    ]
+  },
+  "source_files": 283,
+  "source_bytes": 3260871,
+  "input_hashes": "inputs.sha256",
+  "product_hashes": "products.sha256",
+  "products": 504,
+  "product_bytes": 1460670,
+  "counts": {
+    "observations": 14602,
+    "entities": 1585,
+    "aliases": 1677,
+    "claims": 8928,
+    "claim_support": 9268,
+    "principles": 506,
+    "operators": 3,
+    "morphisms": 136,
+    "instances": 251,
+    "slot_values": 5443,
+    "areas": 1,
+    "decisions": 27,
+    "forks": 0,
+    "status_records": 62,
+    "predictions": 10,
+    "models": 3,
+    "products": 504
+  },
+  "stages": {
+    "run": {
+      "status": "done",
+      "started_utc": "2026-09-28T02:45:38.215701Z",
+      "finished_utc": "2026-09-28T02:51:33.750254Z",
+      "seconds": 355.535
+    },
+    "catalog": {
+      "status": "done",
+      "started_utc": "2026-09-28T02:45:38.216513Z",
+      "finished_utc": "2026-09-28T02:45:54.025450Z",
+      "seconds": 15.809,
+      "input_hash": "eb6254849696f84543e2e442724db7e99c7b48aa1ae88595b923ce3fa4b3a935",
+      "output_hash": "21419fb04ca9cbd63de01acd660a4e224b784f84ba3b663722cde72cad26a1c9",
+      "stats": {
+        "selected": 169
+      }
+    },
+    "extract": {
+      "status": "done",
+      "started_utc": "2026-09-28T02:45:54.028287Z",
+      "finished_utc": "2026-09-28T02:46:46.812418Z",
+      "seconds": 52.784,
+      "input_hash": "9cdf9309d848642f648458598e9ec35b37474b023eb80f07568915ada430c456",
+      "output_hash": "eb48f900d72cea61998855ba906caff4b8f2e047ff4227c9e341221b92c692f5",
+      "stats": {
+        "from": "catalog",
+        "units": 169,
+        "failed": 0,
+        "names": 164,
+        "observations": 14602,
+        "entities": 1585,
+        "claims": 3891,
+        "areas": 1,
+        "principles": 339,
+        "decisions": 27,
+        "forks": 0,
+        "statuses": 49
+      }
+    },
+    "resolve": {
+      "status": "done",
+      "started_utc": "2026-09-28T02:46:46.819122Z",
+      "finished_utc": "2026-09-28T02:46:54.722293Z",
+      "seconds": 7.903,
+      "input_hash": "485311c72af02cc9ad54afdf9526eefb932d193df2ee15bfd60b133edaa66637",
+      "output_hash": "4fa17bc723cf3033466e4e39445cce1cd28fede07d038dbc71ebffa69772e6e8",
+      "stats": {
+        "entities": 1341,
+        "mentions": 1585,
+        "merges": 244,
+        "blocked": 1729,
+        "claims": 4616
+      }
+    },
+    "assess": {
+      "status": "done",
+      "started_utc": "2026-09-28T02:46:54.728016Z",
+      "finished_utc": "2026-09-28T02:46:58.735677Z",
+      "seconds": 4.008,
+      "input_hash": "7610c41a756c7d81d5373daca6ce80e8a63b5361116f7a754d1a6251c5680c7e",
+      "output_hash": "169c5a20c18cbbe2b82097ecd96772c121241d70f44e7212fed5cf5eaa891499",
+      "stats": {
+        "claims": 4616,
+        "contested": 22,
+        "conflicts": 2,
+        "reversals": 0,
+        "replayed": 0
+      }
+    },
+    "generalize": {
+      "status": "done",
+      "started_utc": "2026-09-28T02:46:58.736547Z",
+      "finished_utc": "2026-09-28T02:51:22.527858Z",
+      "seconds": 263.791,
+      "input_hash": "c1a7222a6b4d1073059756ae6402e61f54677e4c9ff1b934c90f6b6b2f81617a",
+      "output_hash": "d72513bd5af1c556b6fba479c206ea882de462fd3b5ded79c14936b3f590223a",
+      "stats": {
+        "instances": 251,
+        "absent": 4104,
+        "analogies": 29,
+        "inferred": 25,
+        "extrapolated": 154,
+        "transferred": 0,
+        "principles": 334,
+        "operators": 3,
+        "models": 3,
+        "predictions": 10,
+        "predictions_holds": 0,
+        "predictions_violated": 0
+      }
+    },
+    "materialize": {
+      "status": "done",
+      "started_utc": "2026-09-28T02:51:22.529671Z",
+      "finished_utc": "2026-09-28T02:51:33.721980Z",
+      "seconds": 11.192,
+      "input_hash": "6ec067b927cdb723baed8b812fc3347928c3c526cdfea7837f85a67fb72bf9d8",
+      "output_hash": "6374c5fbac8e1c88f3a7c996f9d191c9ea1824da19126825f4411e8791017e16",
+      "stats": {
+        "dossiers": 251,
+        "extrapolated_specs": 251,
+        "products": 504
+      }
+    }
+  },
+  "integrity_check": "ok",
+  "limitations": [
+    "Snapshot8e50b04 is local API reconstruction, not authentic upstream history.",
+    "Sources are allowed tracked repository UTF-8 files; no private chat exports or real lineage.",
+    "Known evaluation/materialized outputs excluded; historical prose and handoff summaries remain sources.",
+    "Current embedded policy pack and owner hints are used; no temporal prediction benchmark.",
+    "This diagnostic predates final scanner3/pipeline4 and catalogue scoring fixes.",
+    "Database counts include rejected/superseded rows and generated absence claims; they do not measure correctness."
+  ]
+}

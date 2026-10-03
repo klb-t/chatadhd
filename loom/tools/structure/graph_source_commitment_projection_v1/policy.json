@@ -1,0 +1,11 @@
+{
+  "schema": "loom.graph_source_commitment_projection_policy/1",
+  "source_scope": "individual_source_commitment",
+  "supersession_application": "exact_equal_attributed_to_only",
+  "cross_source_events": "withhold_in_view_preserve_raw_candidate_audit",
+  "identity_aliases": false,
+  "malformed_events": "delegate_unchanged_to_frozen_lookup",
+  "typed_assertions": "unchanged",
+  "canonical_mutation": false,
+  "world_authority": "unresolved_outside_this_projection"
+}

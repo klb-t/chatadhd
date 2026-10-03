@@ -1,0 +1,106 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "codebase",
+ "version": 1,
+ "title": {
+  "en": "Codebase",
+  "pl": "Baza kodu"
+ },
+ "description": "A concrete source tree: a repository, a recovered snapshot (history/chatadhd_v0.9.0) or code pasted into conversations. Code is a source of knowledge too (MEGA MASTER §13).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§13"
+  },
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "Linia wersji"
+  }
+ ],
+ "medium": "code",
+ "detect": {
+  "any": [
+   {
+    "op": "path_glob",
+    "value": "**/*.py"
+   },
+   {
+    "op": "path_glob",
+    "value": "**/*.cpp"
+   },
+   {
+    "op": "path_glob",
+    "value": "**/CMakeLists.txt"
+   }
+  ],
+  "min_score": 0.3
+ },
+ "parse": {
+  "segment": [
+   "code_symbols",
+   "code_blocks"
+  ],
+  "observation_kinds": [
+   "code_block",
+   "field"
+  ]
+ },
+ "extract": [
+  {
+   "op": "code_symbols"
+  },
+  {
+   "op": "versions"
+  },
+  {
+   "op": "entities_lexicon"
+  }
+ ],
+ "structure": [
+  {
+   "name": "repo",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "languages",
+   "type": "entity:language",
+   "card": "many",
+   "required": true
+  },
+  {
+   "name": "modules",
+   "type": "entity:component",
+   "card": "many",
+   "required": true
+  },
+  {
+   "name": "entry_points",
+   "type": "string",
+   "card": "many",
+   "rules": [
+    "r.entry_points_from_names"
+   ]
+  },
+  {
+   "name": "tests",
+   "type": "string",
+   "card": "many"
+  },
+  {
+   "name": "version",
+   "type": "version",
+   "card": "one"
+  },
+  {
+   "name": "files",
+   "type": "string",
+   "card": "many"
+  }
+ ]
+}

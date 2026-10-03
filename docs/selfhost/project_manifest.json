@@ -1,0 +1,4106 @@
+{
+ "project": "ChatADHD",
+ "generated_by": "loom archive v1",
+ "settings": {
+  "seed_terms": [
+   "chatadhd",
+   "loom",
+   "provenance",
+   "graph",
+   "importer",
+   "agent",
+   "archive"
+  ],
+  "max_passes": 3,
+  "max_new_terms": 8,
+  "max_hits_per_term": 44,
+  "max_synthesis_rounds": 1,
+  "llm": "off"
+ },
+ "vocabulary": [
+  "chatadhd",
+  "loom",
+  "provenance",
+  "graph",
+  "importer",
+  "agent",
+  "archive",
+  "task",
+  "sqlite",
+  "android",
+  "knowledge",
+  "project",
+  "loombridge",
+  "abi",
+  "directory",
+  "system",
+  "kivy",
+  "storage",
+  "sdk",
+  "zero knowledge",
+  "model",
+  "analyzer",
+  "android sdk"
+ ],
+ "themes": [
+  {
+   "id": "T1",
+   "label": "android · chatadhd · directory",
+   "terms": [
+    "android",
+    "chatadhd",
+    "directory",
+    "task",
+    "loombridge",
+    "jni",
+    "sdk",
+    "system",
+    "agent",
+    "android sdk",
+    "gradle",
+    "java"
+   ],
+   "size": 57
+  },
+  {
+   "id": "T2",
+   "label": "graph · knowledge · analyzer",
+   "terms": [
+    "graph",
+    "knowledge",
+    "analyzer",
+    "kivy",
+    "nodes",
+    "semanticanalyzer",
+    "graphengine",
+    "graphmemoryselector",
+    "extract",
+    "topic",
+    "zero knowledge",
+    "compat"
+   ],
+   "size": 52
+  },
+  {
+   "id": "T3",
+   "label": "model · cost · convert",
+   "terms": [
+    "model",
+    "cost",
+    "convert",
+    "jsonstore",
+    "shape",
+    "relative",
+    "pricing",
+    "absolute",
+    "attachment",
+    "attachment handler",
+    "convert relative",
+    "convert selected"
+   ],
+   "size": 46
+  },
+  {
+   "id": "T4",
+   "label": "gui · engine · version",
+   "terms": [
+    "gui",
+    "engine",
+    "version",
+    "panels",
+    "init",
+    "main",
+    "viz",
+    "readme",
+    "widgets",
+    "github",
+    "panel",
+    "colors"
+   ],
+   "size": 43
+  },
+  {
+   "id": "T5",
+   "label": "archive · project · terms",
+   "terms": [
+    "archive",
+    "project",
+    "terms",
+    "items",
+    "ingest",
+    "stage",
+    "term",
+    "license",
+    "commercial",
+    "document",
+    "git",
+    "noncommercial"
+   ],
+   "size": 39
+  },
+  {
+   "id": "T6",
+   "label": "provenance · artifact · hash",
+   "terms": [
+    "provenance",
+    "artifact",
+    "hash",
+    "registry",
+    "protobuf",
+    "blobs",
+    "nowa",
+    "cbor",
+    "pomiar",
+    "serializacji",
+    "video",
+    "yaml"
+   ],
+   "size": 39
+  },
+  {
+   "id": "T7",
+   "label": "sqlite · abi · vendored",
+   "terms": [
+    "sqlite",
+    "abi",
+    "vendored",
+    "create table",
+    "crypto",
+    "schema",
+    "capi",
+    "column",
+    "vendored sqlite",
+    "httplib",
+    "meta",
+    "party"
+   ],
+   "size": 30
+  },
+  {
+   "id": "T8",
+   "label": "importer · html · format",
+   "terms": [
+    "importer",
+    "conversationimporter",
+    "html",
+    "format",
+    "claude",
+    "zip",
+    "detect",
+    "title",
+    "single",
+    "detection",
+    "extension",
+    "add"
+   ],
+   "size": 23
+  },
+  {
+   "id": "T9",
+   "label": "bus · handler · emit",
+   "terms": [
+    "bus",
+    "handler",
+    "emit",
+    "event",
+    "events",
+    "handlers",
+    "subscribe",
+    "eventbus",
+    "synchronous pub",
+    "clock",
+    "schedule",
+    "event bus"
+   ],
+   "size": 11
+  },
+  {
+   "id": "T10",
+   "label": "other",
+   "terms": [],
+   "size": 2
+  }
+ ],
+ "components": [
+  {
+   "name": "AndroidManifest",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d0d651dd7b18a",
+   "note": ""
+  },
+  {
+   "name": "BlobStore",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/provenance.h"
+   ],
+   "mentions": 2,
+   "source": "dc6fa20b755bd",
+   "note": ""
+  },
+  {
+   "name": "CancelToken",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/util/cancel.h"
+   ],
+   "mentions": 1,
+   "source": "d1748d8e2603c",
+   "note": ""
+  },
+  {
+   "name": "ChatADHDApp",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "main.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "ChatEngine",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/chat_engine.py",
+    "loom/include/loom/chat_engine.h"
+   ],
+   "mentions": 2,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "ChatPanel",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "gui/chat_panel.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "ComputeProvider",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d0b559a5969c3",
+   "note": ""
+  },
+  {
+   "name": "ConfigIR",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "daf76a87a9533",
+   "note": ""
+  },
+  {
+   "name": "ContextSet",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/graph_memory.h",
+    "loom/web/src/api/types.ts"
+   ],
+   "mentions": 2,
+   "source": "dc1efc1e415c8",
+   "note": ""
+  },
+  {
+   "name": "ConvPanel",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "gui/conv_panel.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "ConversationImporter",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/importer.py",
+    "loom/include/loom/importer.h"
+   ],
+   "mentions": 2,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "CryptoEngine",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "core/crypto.py",
+    "loom/include/loom/crypto.h"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "EnvironmentManifest",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "dc50952e8a28d",
+   "note": ""
+  },
+  {
+   "name": "EventBus",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/events.py",
+    "loom/include/loom/event_bus.h"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "ExecStart",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/deploy/ec2-setup.sh"
+   ],
+   "mentions": 1,
+   "source": "de68ff3ca5013",
+   "note": ""
+  },
+  {
+   "name": "ExecutionEnvironment",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d0b559a5969c3",
+   "note": ""
+  },
+  {
+   "name": "GetStringChars",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/app/src/main/cpp/loom_jni.cpp"
+   ],
+   "mentions": 1,
+   "source": "dc79c24290319",
+   "note": ""
+  },
+  {
+   "name": "GetStringUTFChars",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [
+    "loom/android/app/src/main/cpp/loom_jni.cpp",
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomNative.kt"
+   ],
+   "mentions": 1,
+   "source": "dc79c24290319",
+   "note": "no declaration, only named in code comments"
+  },
+  {
+   "name": "GitHubSync",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/github_sync.py",
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt",
+    "loom/include/loom/github_sync.h"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "GraphEngine",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/graph_engine.py",
+    "loom/include/loom/graph_engine.h"
+   ],
+   "mentions": 2,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "GraphExplorerPanel",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "gui/graph_viz.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "GraphMemorySelector",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/graph_memory.py",
+    "loom/include/loom/graph_memory.h"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "GraphStore",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d8a158aafbef1",
+   "note": ""
+  },
+  {
+   "name": "HostSmokeTest",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/android/verify/java/loomverify/HostSmokeTest.java"
+   ],
+   "mentions": 1,
+   "source": "dc79c24290319",
+   "note": ""
+  },
+  {
+   "name": "HttpServer",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/verify/java/loomverify/HostSmokeTest.java"
+   ],
+   "mentions": 1,
+   "source": "dc79c24290319",
+   "note": ""
+  },
+  {
+   "name": "HttpURLConnection",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomHttp.kt",
+    "loom/android/verify/java/com/chatadhd/android/LoomHttp.java"
+   ],
+   "mentions": 2,
+   "source": "d0d651dd7b18a",
+   "note": ""
+  },
+  {
+   "name": "IBlobStore",
+   "kind": "identifier",
+   "status": "partial",
+   "evidence": [
+    "loom/include/loom/provenance.h"
+   ],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": "concrete `BlobStore` exists, no `IBlobStore` interface"
+  },
+  {
+   "name": "IDataStore",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": ""
+  },
+  {
+   "name": "IEventStore",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": ""
+  },
+  {
+   "name": "IExecutionEnvironment",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [
+    "loom/src/archive/archive_internal.h"
+   ],
+   "mentions": 1,
+   "source": "dc50952e8a28d",
+   "note": "no declaration, only named in code comments"
+  },
+  {
+   "name": "IIdentityProvider",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": ""
+  },
+  {
+   "name": "IKeyProvider",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": ""
+  },
+  {
+   "name": "ISecretStore",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": ""
+  },
+  {
+   "name": "ISyncTransport",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": ""
+  },
+  {
+   "name": "ImportPanel",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/web/src/App.tsx",
+    "loom/web/src/components/ImportPanel.tsx"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "JSONObject",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt",
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomCallbacks.kt"
+   ],
+   "mentions": 1,
+   "source": "d30bc94e918cd",
+   "note": ""
+  },
+  {
+   "name": "JavascriptInterface",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt"
+   ],
+   "mentions": 2,
+   "source": "d0d651dd7b18a",
+   "note": ""
+  },
+  {
+   "name": "JsonStore",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/config.h"
+   ],
+   "mentions": 2,
+   "source": "dc828013c36a2",
+   "note": ""
+  },
+  {
+   "name": "LogBuffer",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "gui/base.py"
+   ],
+   "mentions": 1,
+   "source": "d020d579cb93e",
+   "note": ""
+  },
+  {
+   "name": "LoomBridge",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt"
+   ],
+   "mentions": 13,
+   "source": "d8657c72901da",
+   "note": ""
+  },
+  {
+   "name": "LoomCallbacks",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomCallbacks.kt",
+    "loom/android/verify/java/com/chatadhd/android/LoomCallbacks.java"
+   ],
+   "mentions": 3,
+   "source": "d0d651dd7b18a",
+   "note": ""
+  },
+  {
+   "name": "LoomHttp",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomHttp.kt",
+    "loom/android/verify/java/com/chatadhd/android/LoomHttp.java"
+   ],
+   "mentions": 4,
+   "source": "d0d651dd7b18a",
+   "note": ""
+  },
+  {
+   "name": "LoomNative",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomNative.kt",
+    "loom/android/verify/java/com/chatadhd/android/LoomNative.java"
+   ],
+   "mentions": 5,
+   "source": "d0d651dd7b18a",
+   "note": ""
+  },
+  {
+   "name": "MainActivity",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/MainActivity.kt"
+   ],
+   "mentions": 4,
+   "source": "d0d651dd7b18a",
+   "note": ""
+  },
+  {
+   "name": "MemoryEngine",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/memory_engine.py",
+    "loom/include/loom/memory_engine.h"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "MemoryNode",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/memory_engine.py",
+    "loom/include/loom/memory_engine.h",
+    "loom/web/src/api/types.ts"
+   ],
+   "mentions": 1,
+   "source": "d859ff6f1c362",
+   "note": ""
+  },
+  {
+   "name": "MemoryPanel",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "gui/memory_panel.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "MessagePack",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d1538a67ca4cf",
+   "note": ""
+  },
+  {
+   "name": "ModelRegistry",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/models.py",
+    "loom/include/loom/providers.h"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "MultiLLM",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d0b559a5969c3",
+   "note": ""
+  },
+  {
+   "name": "NewString",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/app/src/main/cpp/loom_jni.cpp"
+   ],
+   "mentions": 1,
+   "source": "dc79c24290319",
+   "note": ""
+  },
+  {
+   "name": "NewStringUTF",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [
+    "loom/android/app/src/main/cpp/loom_jni.cpp",
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomNative.kt"
+   ],
+   "mentions": 1,
+   "source": "dc79c24290319",
+   "note": "no declaration, only named in code comments"
+  },
+  {
+   "name": "NormalizedArtifact",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d7acc2bfc4f8a",
+   "note": ""
+  },
+  {
+   "name": "ProviderManager",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/providers.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "RBtn",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "gui/base.py"
+   ],
+   "mentions": 2,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "RLock",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "engine/db.py"
+   ],
+   "mentions": 2,
+   "source": "ddb52e06b0bed",
+   "note": ""
+  },
+  {
+   "name": "RawArtifact",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d7acc2bfc4f8a",
+   "note": ""
+  },
+  {
+   "name": "SelectorEngine",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "core/selector.py",
+    "loom/include/loom/selector.h",
+    "loom/src/search/selector.cpp"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "SemanticAnalyzer",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "core/semantic.py",
+    "loom/include/loom/semantic_analyzer.h",
+    "loom/src/semantic/analyzer.cpp"
+   ],
+   "mentions": 2,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "SemanticLLM",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/semantic_llm.h"
+   ],
+   "mentions": 4,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "SemanticWorker",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "engine/semantic_worker.py",
+    "loom/include/loom/semantic_worker.h"
+   ],
+   "mentions": 4,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "SettingsPopup",
+   "kind": "identifier",
+   "status": "implemented",
+   "evidence": [
+    "gui/dialogs.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "SourceRef",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "dc1efc1e415c8",
+   "note": ""
+  },
+  {
+   "name": "ValueError",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "engine/chat_engine.py",
+    "engine/config.py"
+   ],
+   "mentions": 1,
+   "source": "dca4a536263d1",
+   "note": ""
+  },
+  {
+   "name": "ViewNode",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d8ead284fd07c",
+   "note": ""
+  },
+  {
+   "name": "WatchDog",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 2,
+   "source": "d0b559a5969c3",
+   "note": ""
+  },
+  {
+   "name": "WebView",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt",
+    "loom/android/app/src/main/java/com/chatadhd/android/LoomCallbacks.kt"
+   ],
+   "mentions": 10,
+   "source": "d8657c72901da",
+   "note": ""
+  },
+  {
+   "name": "WebViewAssetLoader",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/MainActivity.kt"
+   ],
+   "mentions": 1,
+   "source": "da7f9ec78f5e8",
+   "note": ""
+  },
+  {
+   "name": "WorkingDirectory",
+   "kind": "identifier",
+   "status": "used",
+   "evidence": [
+    "loom/deploy/ec2-setup.sh"
+   ],
+   "mentions": 1,
+   "source": "de68ff3ca5013",
+   "note": ""
+  },
+  {
+   "name": "Agent System",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/android/app/src/main/java/com/chatadhd/android/MainActivity.kt"
+   ],
+   "mentions": 1,
+   "source": "dd1ef2322ab2d",
+   "note": ""
+  },
+  {
+   "name": "Android Studio",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "engine/paths.py"
+   ],
+   "mentions": 1,
+   "source": "dd1ef2322ab2d",
+   "note": ""
+  },
+  {
+   "name": "Anthropic Message Batches",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "engine/semantic_worker.py"
+   ],
+   "mentions": 2,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "Archive Analyzer",
+   "kind": "named_phrase",
+   "status": "implemented",
+   "evidence": [
+    "loom/src/runtime.cpp"
+   ],
+   "mentions": 1,
+   "source": "dee979a19bd6b",
+   "note": ""
+  },
+  {
+   "name": "Archive Intelligence",
+   "kind": "named_phrase",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/archive.h"
+   ],
+   "mentions": 5,
+   "source": "de4ff0694077f",
+   "note": ""
+  },
+  {
+   "name": "Chat Setup",
+   "kind": "named_phrase",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/loom.h"
+   ],
+   "mentions": 1,
+   "source": "dd1ef2322ab2d",
+   "note": ""
+  },
+  {
+   "name": "Claude Code",
+   "kind": "named_phrase",
+   "status": "implemented",
+   "evidence": [
+    "loom/src/archive/ingest_parse.cpp"
+   ],
+   "mentions": 1,
+   "source": "df616f78543d5",
+   "note": ""
+  },
+  {
+   "name": "Compose Multiplatform",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/include/loom/net/http.h"
+   ],
+   "mentions": 1,
+   "source": "d8ead284fd07c",
+   "note": ""
+  },
+  {
+   "name": "Comprehensive Mind Map",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "dd1ef2322ab2d",
+   "note": ""
+  },
+  {
+   "name": "Deterministic Louvain",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/src/archive/cluster.cpp"
+   ],
+   "mentions": 1,
+   "source": "dc6fa20b755bd",
+   "note": ""
+  },
+  {
+   "name": "Google Drive",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "engine/providers.py"
+   ],
+   "mentions": 1,
+   "source": "d23b0eef9e47d",
+   "note": ""
+  },
+  {
+   "name": "Google Speech",
+   "kind": "named_phrase",
+   "status": "implemented",
+   "evidence": [
+    "loom/include/loom/media_providers.h"
+   ],
+   "mentions": 1,
+   "source": "da365bf6eb24c",
+   "note": ""
+  },
+  {
+   "name": "Groq Whisper",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/src/media/media_providers.cpp"
+   ],
+   "mentions": 1,
+   "source": "da365bf6eb24c",
+   "note": ""
+  },
+  {
+   "name": "Historyczny Agent",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/tests/compat/test_chat_compat.py"
+   ],
+   "mentions": 1,
+   "source": "dc21d1c4b847b",
+   "note": ""
+  },
+  {
+   "name": "Idempotent Ubuntu",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/deploy/ec2-setup.sh"
+   ],
+   "mentions": 1,
+   "source": "da23667cf0d7f",
+   "note": ""
+  },
+  {
+   "name": "Ingest Claude",
+   "kind": "named_phrase",
+   "status": "implemented",
+   "evidence": [
+    "loom/src/archive/ingest_parse.cpp"
+   ],
+   "mentions": 1,
+   "source": "d8a158aafbef1",
+   "note": ""
+  },
+  {
+   "name": "Kivy App",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "gui/base.py"
+   ],
+   "mentions": 1,
+   "source": "d21c728b06600",
+   "note": ""
+  },
+  {
+   "name": "Mega Master",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/src/archive/vocab.cpp"
+   ],
+   "mentions": 2,
+   "source": "dee979a19bd6b",
+   "note": ""
+  },
+  {
+   "name": "Memory Retriever",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "core/selector.py"
+   ],
+   "mentions": 1,
+   "source": "dd1ef2322ab2d",
+   "note": ""
+  },
+  {
+   "name": "Noncommercial License",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 2,
+   "source": "d0920990ee8bb",
+   "note": ""
+  },
+  {
+   "name": "Open Settings",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/include/loom/chat_engine.h"
+   ],
+   "mentions": 1,
+   "source": "dd5033f4c6ea9",
+   "note": ""
+  },
+  {
+   "name": "Project Compiler",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [
+    "loom/android/verify/CMakeLists.txt"
+   ],
+   "mentions": 4,
+   "source": "de4ff0694077f",
+   "note": ""
+  },
+  {
+   "name": "Semantic Model",
+   "kind": "named_phrase",
+   "status": "implemented",
+   "evidence": [
+    "loom/src/capi/capi_chat.cpp"
+   ],
+   "mentions": 1,
+   "source": "dd5033f4c6ea9",
+   "note": ""
+  }
+ ],
+ "requirements": [
+  {
+   "id": "i_89bcdd66e5",
+   "text": "kod też jest źródłem wiedzy i należy z niego wydobywać wartościowe fragmenty,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]"
+  },
+  {
+   "id": "i_119182ccd2",
+   "text": "centralna pamięć/system knowledge, nie pamięć jednej instancji,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_1487639137",
+   "text": "każda idea/fork/decyzja ma chronologię,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]"
+  },
+  {
+   "id": "i_2926b436cc",
+   "text": "auto-detection środowiska,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_4f022fb66e",
+   "text": "message/version provenance,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_4fb3ae43df",
+   "text": "wiedza destylowana z pełnych logów debugowania,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_506caab584",
+   "text": "GUI action → screenshot/state → success evaluation,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_5b5a3078dc",
+   "text": "graph budowany na bieżąco,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_5e1f8d1fd1",
+   "text": "graf ma pokazywać nie tylko stan końcowy, ale drogę po stanach,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]"
+  },
+  {
+   "id": "i_61d502a525",
+   "text": "role modeli dobrane do zadania,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_6a16725e17",
+   "text": "checkpointy z możliwością ponownego złożenia ścieżki,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_789342249a",
+   "text": "provider/model registry,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_844bcb3d8a",
+   "text": "edit → branch, stara wersja nie ginie,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_8772f77ac4",
+   "text": "local ↔ remote/GCP portability,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_8acdcde63b",
+   "text": "zero-knowledge storage/sync option,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_96fea6e57c",
+   "text": "local-first / graceful degradation.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_9942622abc",
+   "text": "raw source zostaje,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]"
+  },
+  {
+   "id": "i_ad937a7839",
+   "text": "brak telemetrii jako default,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_b81e279503",
+   "text": "debug/log panel,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_c301f09776",
+   "text": "pamięć/kontekst jako osobny byt,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 12. Rzeczy, których nie wolno zgubić z ChatADHD @ 2026-09-16]"
+  },
+  {
+   "id": "i_c4fd03a785",
+   "text": "retry/rollback/failure artifacts,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_d177b8462b",
+   "text": "system ma wskazywać brakujące artefakty,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]"
+  },
+  {
+   "id": "i_db57c9a35a",
+   "text": "pełne logowanie z różnymi widokami poziomu szczegółowości,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_de24ffb9e5",
+   "text": "kolejne przebiegi wyszukiwania mają wynikać z terminów znalezionych w poprzednich.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]"
+  },
+  {
+   "id": "i_f205514c75",
+   "text": "natural-language high-level tasks nad deterministycznym action engine.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_f530aeac5a",
+   "text": "preset = informacja, nie kod,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 11. Rzeczy, których nie wolno zgubić z historycznego Agenta @ 2026-09-16]"
+  },
+  {
+   "id": "i_ff1c7914f4",
+   "text": "tytuły rozmów są słabym sygnałem,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 13. Rzeczy, których nie wolno zgubić z „projects project” @ 2026-09-16]"
+  },
+  {
+   "id": "i_aeda82e903",
+   "text": "The shared data directory (`/storage/emulated/0/Documents/ChatADHD`, `engine/paths.py` / `loom/include/loom/config.h`) is outside app-specific storage on purpose — it must survive an uninstall/reinstall and stay readable by the desktop app.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › Data directory & permissions @ 2026-09-26]"
+  },
+  {
+   "id": "i_bc633a1cd3",
+   "text": "The web adapter must generate a fresh `callbackId` (any string; the sample UI uses a UUID) per call and register `window.__loomCallbacks[callbackId]` before invoking these.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › The bridge contract › Long-running / networked calls @ 2026-09-26]"
+  },
+  {
+   "id": "i_dc42e018cd",
+   "text": "Nobody outside this directory needs to know Loom exists — the web UI talks to `window.LoomBridge` the same way it would talk to `loom/server`'s HTTP API (that adapter is `loom/web/src/api/loom-jni.ts`, owned by a different agent; this file…",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › Loom Android shell @ 2026-09-26]"
+  },
+  {
+   "id": "i_95e992bf4e",
+   "text": "Nowa implementacja znanego kontraktu wymaga pluginu, ale nie przebudowy rdzenia.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › D. Capability-based, nie enum-based @ 2026-09-16]"
+  },
+  {
+   "id": "i_b58ef11282",
+   "text": "z wyników wyprowadzono pass 2: m.in. checkpoint/rollback, central memory, auto-migration/self-deploy, GUI control, project mining, context retriever, provider discovery, pattern/topology/materialization, panel/artifact/media, compute fabri…",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 15. Mining wykonany w tej iteracji @ 2026-09-16]"
+  },
+  {
+   "id": "i_bbbdf89f0d",
+   "text": "To jest spójne z zasadą: **decyzji nie podejmujemy, jeśli nie musimy**.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 17. Jedno ostrzeżenie @ 2026-09-16]"
+  },
+  {
+   "id": "i_0a967ba336",
+   "text": "Event bus: synchronous — handlers run in emitter's thread; UI event handlers must use `Clock.schedule_once`",
+   "theme": "T9",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[CLAUDE.md › Conventions › Thread Safety @ 2026-02-19]"
+  },
+  {
+   "id": "i_f8f7be0b0b",
+   "text": "**UI thread** (Kivy main): all widget operations must happen here",
+   "theme": "T9",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[CLAUDE.md › Conventions › Thread Safety @ 2026-02-19]"
+  },
+  {
+   "id": "i_4fb92af1cd",
+   "text": "„Zaimplementujmy wszystkie znalezione pomysły jednocześnie” jest dobre jako **wymóg kompatybilności architektonicznej**, ale złe jako strategia pisania całego kodu.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.55,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 17. Jedno ostrzeżenie @ 2026-09-16]"
+  }
+ ],
+ "invariants": [
+  {
+   "id": "i_1a1230b782",
+   "text": "Task and event history is append-only (`loom_events`); tasks carry input/output hashes and checkpoints and resume after a crash — invariant",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.95,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_8e8866d93a",
+   "text": "Raw sources are immutable: content-addressed blobs (`blobs/ab/cd/<sha256>`, chmod 444), with sources and provenance rows for every import — invariant",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.95,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_7c0ca1078e",
+   "text": "Możliwy explicit override usera zawsze wygrywa, o ile nie łamie twardego safety/invariant contract.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.95,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.6 Policy / Routing engine @ 2026-09-16]"
+  },
+  {
+   "id": "i_05e5ea5718",
+   "text": "C ABI: opaque context, caller-freed JSON strings, error object, negative codes — invariant (versioned by `LOOM_ABI_VERSION`)",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_1148f188ba",
+   "text": "`items` — Typed items: `idea`, `decision`, `rejected_option`, `open_question`, `implementation`, `bug`, `requirement`, `invariant`, `rationale`.",
+   "theme": "T5",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[loom/README.md › Archive Intelligence @ 2026-09-26]"
+  },
+  {
+   "id": "i_3a445c87ca",
+   "text": "Shared on-disk format with the Python app (schema v4 DDL, IDs, timestamps, `json.dumps` formatting, file names, data-dir resolution) — invariant",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_615a164c1b",
+   "text": "Following constitution A of the architecture document, each decision is one of: **invariant** (enforced in code and tests), **policy/default** (data you can replace) or **platform detail** (an adapter).",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_617426ee9a",
+   "text": "FTS is derived, rebuildable state with a LIKE fallback — invariant; whether FTS5 is available is a platform detail",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_895a704348",
+   "text": "Loom state only in `loom_*` tables; no triggers or virtual tables in the main DB — invariant",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_bd868b1ed4",
+   "text": "Errors are values (`Result`/`Status`); nothing throws across the C ABI — invariant",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_534c00889b",
+   "text": "**invariant** — musi być w kodzie/kontrakcie,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.8,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › A. Nie podejmujemy decyzji, jeśli nie musimy @ 2026-09-16]"
+  },
+  {
+   "id": "i_2a09340dbb",
+   "text": "**Event** — append-only fakt, że coś zaszło.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 3. Uniwersalny model obiektów @ 2026-09-16]"
+  },
+  {
+   "id": "i_e6245826fb",
+   "text": "append-only event stream,",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 4. Warstwy mega-systemu › 4.2 Provenance / Event / Blob layer @ 2026-09-16]"
+  },
+  {
+   "id": "i_1ada070364",
+   "text": "Every method takes/returns **JSON strings** (never parsed JS objects) — the same convention `loom.h` itself uses.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › The bridge contract @ 2026-09-26]"
+  },
+  {
+   "id": "i_1cd71a0b4f",
+   "text": "Configure silently adds no test (exit 0, zero tests) if no JDK or no `libloom.so` is found, so it never breaks a machine with neither — see the two `return()`s at the top of `verify/CMakeLists.txt`.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › Verification without an Android SDK › 2. Host JNI smoke test (`loom/android/verify/`) @ 2026-09-26]"
+  },
+  {
+   "id": "i_5ad81a20d3",
+   "text": "It is embedded as a JS string literal via `org.json.JSONObject.quote()` (`LoomCallbacks.kt`), which escapes exactly what needs escaping for a JS/JSON string literal (quotes, backslashes, control characters, U+2028/U+2029); it is never stri…",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › The bridge contract › The streaming contract, precisely @ 2026-09-26]"
+  },
+  {
+   "id": "i_62a7666a52",
+   "text": "Secrets and passwords are read from stdin (with echo off on a terminal) and never accepted as arguments.",
+   "theme": "T5",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Command line @ 2026-09-26]"
+  },
+  {
+   "id": "i_649121b0a5",
+   "text": "The output directory gets a `.loom-archive` marker, and the walker skips marked directories so a run never ingests its own output.",
+   "theme": "T5",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Archive Intelligence @ 2026-09-26]"
+  },
+  {
+   "id": "i_6d36e41d71",
+   "text": "`LoomBridge` is added to exactly one `WebView`, which only ever navigates within that virtual origin — `shouldOverrideUrlLoading` hands any other host to the system browser instead of navigating the WebView there — so the interface is neve…",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › WebView hardening @ 2026-09-26]"
+  },
+  {
+   "id": "i_6fcb523aae",
+   "text": "Loom reconciles it after writes from any process and rebuilds it when it is missing or corrupt, so the main database never needs an SQLite build with FTS5.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Sharing data with the Python app @ 2026-09-26]"
+  },
+  {
+   "id": "i_711d89445b",
+   "text": "Sources and tests are picked up by glob, so adding a file never requires editing `CMakeLists.txt`.",
+   "theme": "T7",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Build @ 2026-09-26]"
+  },
+  {
+   "id": "i_92ae2a81bd",
+   "text": "On failure, JSON functions return `{\"error\":{\"code\":\"not_found\",\"message\":\"...\"}}` and never NULL (except `loom_init`).",
+   "theme": "T7",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › C ABI conventions @ 2026-09-26]"
+  },
+  {
+   "id": "i_bc7ec41545",
+   "text": "**Never run on a device or emulator** — no Android SDK/NDK in this environment.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › Gaps @ 2026-09-26]"
+  },
+  {
+   "id": "i_bd1fd1175e",
+   "text": "`loom/CMakeLists.txt`'s `LOOM_WITH_OPENSSL` is forced `OFF` for this build (`app/src/main/cpp/CMakeLists.txt`): the native library never links cpp-httplib/OpenSSL.",
+   "theme": "T7",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › HTTP: injected from Kotlin, not linked into the native library @ 2026-09-26]"
+  },
+  {
+   "id": "i_c62a0c29b0",
+   "text": "`docker-compose.yml` — One service, a named volume for `/data`, binds `127.0.0.1:$LOOM_SERVER_PORT` only (never publishes on every interface).",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/deploy/README.md › Files @ 2026-09-26]"
+  },
+  {
+   "id": "i_cdcb1505e6",
+   "text": "Loom-only state lives in `loom_*` tables and never changes what the core tables mean.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Sharing data with the Python app @ 2026-09-26]"
+  },
+  {
+   "id": "i_ea8a52f708",
+   "text": "Titles are never used as a filter.",
+   "theme": "T5",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Archive Intelligence @ 2026-09-26]"
+  },
+  {
+   "id": "i_f917daa4a3",
+   "text": "The page is **never** loaded from a `file://` URL.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/android/README.md › WebView hardening @ 2026-09-26]"
+  },
+  {
+   "id": "i_187ccf039c",
+   "text": "Zmiana serializacji nie może zmieniać semantyki.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › C. Serialization is not architecture @ 2026-09-16]"
+  },
+  {
+   "id": "i_f40e25b98b",
+   "text": "Dane nie mogą zastępować semantyki programu.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › B. „Kod ≠ dane” — ale nie „wszystko YAML” @ 2026-09-16]"
+  },
+  {
+   "id": "i_4d147cd507",
+   "text": "Never overwritten by upgrades.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[CLAUDE.md › Architecture: KOD ≠ DANE @ 2026-02-19]"
+  },
+  {
+   "id": "i_c5e496fee5",
+   "text": "`secrets.json` stores all credentials; never log its contents",
+   "theme": "T3",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[CLAUDE.md › Security Notes @ 2026-02-19]"
+  },
+  {
+   "id": "i_d853c358a3",
+   "text": "Never use `CREATE TABLE` with new columns — use `ALTER TABLE ADD COLUMN`",
+   "theme": "T7",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[CLAUDE.md › Extending the Codebase › DB schema changes @ 2026-02-19]"
+  },
+  {
+   "id": "i_7e1fcc2946",
+   "text": "Config defaults = Python `DEFAULTS`; Loom policy keys (`loom_event_log_types`, `loom_task_workers`) are served as fallbacks and never written — policy/default",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.48,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  }
+ ],
+ "decisions": [
+  {
+   "id": "i_2e7514cb43",
+   "text": "Provider manifests and capabilities; `can(resource, capability, constraints)` instead of `if provider == X` — policy/default",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_2ebcf6eea1",
+   "text": "Context budget (tokens ≈ code points / 4), source order memory → graph → FTS — policy/default",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_472e9d03c4",
+   "text": "Relation vocabulary (inverse, symmetry, category); unknown types auto-registered — policy/default (seeded JSON)",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_5a1f488ee6",
+   "text": "The C ABI returns parsed JSON for metadata columns.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_5aa0d31250",
+   "text": "Unicode tables pinned to the generating CPython (currently Unicode 14.0) — platform detail (regenerate with `tools/gen_unicode_tables.py`)",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_7aacf306c5",
+   "text": "Row ordering breaks ties by `rowid`, so batch-imported rows come back in insertion order.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_8c7074bbeb",
+   "text": "System SQLite vs vendored amalgamation — platform detail",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_8d41e9f186",
+   "text": "Bad JSON in a column is returned as a string instead of raising.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_9e1863af48",
+   "text": "Log sinks (stderr, ring buffer, logcat through the C ABI) — platform detail",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_a535a82cea",
+   "text": "Native TF-IDF is always available, so the default selector tier is 2.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_a93765ffc8",
+   "text": "`update_msg` enforces the status whitelist.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_b988cca1ae",
+   "text": "JSON as the ABI codec (`nlohmann::ordered_json`, which keeps key order like Python dicts) — platform detail; the semantics live in the C++ types",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_bf6038bc5e",
+   "text": "Analyzer rules (regexes, topic keywords), generated from `core/semantic.py` — policy/default (data)",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_dec05fc0bb",
+   "text": "`estimate_cost` parses string prices.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_e32d4e1aa3",
+   "text": "HTTP stack (cpp-httplib + OpenSSL, or an injected platform transport) — platform detail",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_f07440c1a7",
+   "text": "`ChatEngine` no longer sends the new user message twice.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Decisions @ 2026-09-26]"
+  },
+  {
+   "id": "i_a0eed07e92",
+   "text": "Każda arbitralna decyzja pozostaje otwarta, dopóki nie wymusza jej kontrakt, test, koszt lub ograniczenie platformy.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › ChatADHD / Loom — MEGA MASTER @ 2026-09-16]"
+  },
+  {
+   "id": "i_cf62edd010",
+   "text": "Nie nadajemy teraz nowej nazwy całemu ekosystemowi — to decyzja kosmetyczna i nie jest potrzebna do implementacji.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 0. Teza @ 2026-09-16]"
+  },
+  {
+   "id": "i_88ed94804f",
+   "text": "Nie wybieramy jeszcze pełnego roadmapu produktu.",
+   "theme": "T5",
+   "status": "active",
+   "confidence": 0.55,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 16. Następny sensowny invariant implementation target @ 2026-09-16]"
+  },
+  {
+   "id": "i_cacf51c7ca",
+   "text": "Nie wybieramy „YAML” jako fundamentu.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.55,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 2. Konstytucja architektury › C. Serialization is not architecture @ 2026-09-16]"
+  }
+ ],
+ "rejected_options": [
+  {
+   "id": "i_cc376b83e7",
+   "text": "`synthesize` — Renders `MASTER.md` (themes, timeline, decisions, rejected options, open questions, requirements, invariants, every claim as `[title › location @ date]`), `source_map.csv`, `timeline.json`, `items.jsonl`, `graph.json`, `proj…",
+   "theme": "T5",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[loom/README.md › Archive Intelligence @ 2026-09-26]"
+  },
+  {
+   "id": "i_60cc93357a",
+   "text": "Nie budujemy pięciu projektów: „ChatADHD”, „Loom”, „autonomiczny agent”, „analizator archiwów”, „multi-LLM knowledge graph chatbot”.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 0. Teza @ 2026-09-16]"
+  },
+  {
+   "id": "i_4425dacb16",
+   "text": "If `loom-server` ends up with its own lightweight health-check mode this can be dropped in favour of `CMD [\"/app/loom-server\", \"--healthcheck\"]` (JSON form, no shell needed) — worth revisiting once that binary exists.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/deploy/README.md › Design notes @ 2026-09-26]"
+  },
+  {
+   "id": "i_6b5b6ba934",
+   "text": "`timeline` — Chronological path per theme, ChatGPT/Claude forks (kept or abandoned branch), version groups, commits.",
+   "theme": "T5",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[loom/README.md › Archive Intelligence @ 2026-09-26]"
+  },
+  {
+   "id": "i_77db0c474f",
+   "text": "**Tak jako jeden z formatów authoringu; nie jako „prawda systemu”.**",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.57,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 6. YAML? Odpowiedź architektoniczna @ 2026-09-16]"
+  }
+ ],
+ "open_questions": [
+  {
+   "id": "i_9b3a147526",
+   "text": "Czy naprawdę wymaga nowej semantyki?",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.88,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 9. Zasady ewolucji @ 2026-09-16]"
+  },
+  {
+   "id": "i_a4d8244d18",
+   "text": "Czy to nowa implementacja istniejącego kontraktu?",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.88,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 9. Zasady ewolucji @ 2026-09-16]"
+  },
+  {
+   "id": "i_ac4ef5f35f",
+   "text": "Czy to nowa wartość danych?",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.88,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 9. Zasady ewolucji @ 2026-09-16]"
+  },
+  {
+   "id": "i_f2b43b0921",
+   "text": "czy i kiedy Web jest klientem first-class.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.88,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_0f63705bbf",
+   "text": "jaki provider/model jest defaultem.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_10d665813d",
+   "text": "dokładna ontologia nodes/edges.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_26937e3c1b",
+   "text": "SQLite vs inny backend dla niektórych storage paths.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_2aefa41a86",
+   "text": "JSON vs YAML vs protobuf jako external representation.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_40633112dc",
+   "text": "local vs remote server topology.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_56766b50a4",
+   "text": "Compose MP vs alternatywne rendery poza pierwszym klientem.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_8b9fcb8544",
+   "text": "event sourcing pełny vs hybrydowy.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_9880783807",
+   "text": "scheduler/orchestrator implementation.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_badce2dc5f",
+   "text": "platform build order.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_c440aedd0b",
+   "text": "monorepo vs kilka repozytoriów.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_c4d4cb7477",
+   "text": "plugin ABI poza C ABI.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  },
+  {
+   "id": "i_f263e6fed6",
+   "text": "Zamykamy je dopiero przez constraint albo benchmark.",
+   "theme": "T6",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[docs/architecture/MEGA_MASTER_2026-09-16.md › 10. Otwarte decyzje — celowo NIE zamknięte @ 2026-09-16]"
+  }
+ ],
+ "missing_files": [
+  {
+   "path": "third_party/README.md",
+   "source": "daf013833a3da"
+  }
+ ],
+ "sources": [
+  {
+   "uri": "CLAUDE.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "0ddf8781d3cf543e92fa3e314c7599704276f58b0aae00555c4553e156138893",
+   "units": 1,
+   "docs": 32
+  },
+  {
+   "uri": "COMMERCIAL_LICENSE.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "266430de29e1891cc13230277c62c89e9b7e99adb89691fe21d019b5927fe292",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "README.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "b48d3e07c24fcdc8daf28fab6329f83c7365e4db6bf2e9b44b793dca1a6eb5ac",
+   "units": 1,
+   "docs": 7
+  },
+  {
+   "uri": "core/__init__.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "60b3c175332ec31d7294503b32a4d6c6248d7a0f959381acf46ae68ac198ec7b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "core/crypto.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "6007c146e9b14af7baab5947b767aee3b5d95904c24506ccdc6160556b3115ab",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "core/selector.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "2b36f25af1c9c7b4b7097fc63b91225f8ab14c3fc137797ddc2a4484bf2f98ad",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "core/semantic.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "e36097488d0cff1772686f4845a392ce506d923c294098b0379594be72782c77",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "8fa4a0ee604c13523826158ec7b4d4697443b8a8b2116bf0ea07cda363b2afb4",
+   "units": 1,
+   "docs": 43
+  },
+  {
+   "uri": "engine/__init__.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "57b7b38217a209541d662da020f7289ddce0f394ecf96095733d5b11a64f4585",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/batch_api.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "900c4fb37dcb871aba7767e04145908c8a487e9eaabc1a90490b13137da2cf9a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/chat_engine.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "e847e73780c423cf3dfc6a302795aedfae5350cdc7c8a8df514306828c27982d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/config.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "84562ded825a451936a68eed7158c4720d279173eb058e3b1bf077c801da0d9b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/db.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "75397fc9927a57819d8d8db7a76e7d93fcf29cf541df9a5bee63b8d059319fa3",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/events.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "9752f1e0158c1648ab65094e9811c02ffbc9d957e3644ed55040a8150f5b150c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/github_sync.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "48733f8b0ab038ddd7787e91d51513ae73aecd077bfbfc5e7cc3a946aa35871f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/graph_engine.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "fe4221595e5486c2f0c5e803e4639254861336c2ceaf40de893e11ffe81eb96b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/graph_memory.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "f4e60f0290de8dc572363704094e6d0b72a98a0f15be582b553bfb0e514ce4b7",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/importer.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "60200262d5ac4ef04319415bce3dfd067ee8152a71fc7e29355a3c8d4da6210c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/memory_engine.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "4e852b713b31307da57f02cc286b6063a227bb6f6d9c5426b9ec1b3ea65eda97",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/models.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "300ad6eb271a205ae5b34835a28921868f6045f689677f09b913b2759c6071a9",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/paths.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "a58e2f814706b642dd2326c9b8063d57650d73185421fc938abf88d1d9f51d07",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/providers.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "827405ef591db63a017a6d20580ac3ec96a1bcfb7c721817544a8dba46f7cdbb",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/semantic_llm.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "165e446dbd2f08c4c0bb11a38a07921b706ae21ca58f4a1e7e9e81f13e82880b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "engine/semantic_worker.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "883b35545d13cd79daf7c52202eeee639f105fe7a92e013f605fec2745e7fc64",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/__init__.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "59a9c4a133f0e3aa61003e2a2c0852664ad6880ddfc3700f8586a2c733fca85e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/base.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "e8e6ad18c47389f412d98ce2bf599215206d42d005199d21c7ccd57d7f77c044",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/chat_panel.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "af7cf3a086403cf9d0c5c686bd359049a94222461289a07a91bd5bf4ffd1edb9",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/conv_panel.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "870a14fb84c6252bf4b2415a0a2c43f3f49ac251f47dd242c2ec1ef7612c0016",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/dialogs.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "6232a3c60f0bc27789feedd01520d106f76e3c72e715f5247035a180eb2fe3df",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/github_panel.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "10e94e66ee272504621fc7601e886bb9e115834aac232c1bdc1325954463f64b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/graph_viz.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "76d6dfdd42e0329f14db1eddb390ceca3fd4b0f28642306119571e0df56358bb",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/import_panel.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "40b998a03faa68b8e49d770817f578dc5ed6055b2069d21d6b4b922ae8e02902",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/memory_panel.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "9ac15f3b2abbdb10c9f6254d99ce729f358bc38c94bdf7b09d7e4e63c34e7f2e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "gui/voice_panel.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "010ec8b773335cf8929fbfc117ba1388d02ce43a858ff11eb0710070a5b3ed13",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/CMakeLists.txt",
+   "adapter": "code",
+   "format": "cmake",
+   "hash": "ef09d7d1a9ef8932ffe41408be6de28adc182a8fe85e07e4cbae97900d47d60d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/README.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "e6998200ce70e0a0ee71af7ad4d504dea52d3c94c22c7b3a5254dd32ddbf753f",
+   "units": 1,
+   "docs": 10
+  },
+  {
+   "uri": "loom/android/README.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "a53fc87dc55daf6790a4734bfba9fa0012edf6ee00ceebf876fc4b35ed654404",
+   "units": 1,
+   "docs": 15
+  },
+  {
+   "uri": "loom/android/app/build.gradle.kts",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "d653201e71cf3cba9289abf7679f3cc6c0588f10fddd44acda88a97125a1aab5",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/app/src/main/cpp/CMakeLists.txt",
+   "adapter": "code",
+   "format": "cmake",
+   "hash": "39c5840d70f67c7e25ff5b9e319ad26c153f073843e80db9315e7ba863a69830",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/app/src/main/cpp/loom_jni.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "130d935d217a1f66c0d29b304844b9496837823694aec1230a409bbdc73015a9",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "0caa2be59e9706255d12f5552d5c631a0aced47f1970e7888f6cb827ef7a45e2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/app/src/main/java/com/chatadhd/android/LoomCallbacks.kt",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "4cc447f68def4dbb0535bafb6ba05d5863b85c133650b500ab0e6c7db7b80e3f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/app/src/main/java/com/chatadhd/android/LoomHttp.kt",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "ccf48b5c60bab5c8a7b5bee9f454703b2df44fd3985d78dd3e3c755b84e3e0e1",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/app/src/main/java/com/chatadhd/android/LoomNative.kt",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "fd9d5e6876a2e5915bdf8327e4290b16e4b39504cc6de98f4f158e8e7d6b0ffa",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/app/src/main/java/com/chatadhd/android/MainActivity.kt",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "c55a740056feca59ae113a8d0c01576be7a3a488277f3a0f4e3c764280d62028",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/build.gradle.kts",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "c3d2824f070a1c896e8fda3276ae1b6d998bc31cb403a5f3f2e8d01430f5c289",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/settings.gradle.kts",
+   "adapter": "code",
+   "format": "kotlin",
+   "hash": "64194e769ff385a4fb3cd7d648cb76e844fe995ddb4b42e04705c4ed3268a356",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/verify/CMakeLists.txt",
+   "adapter": "code",
+   "format": "cmake",
+   "hash": "88c61acc9811b2bdd6276043769bd9fdbe89f7583e18e4ea4e65342af799a974",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/verify/java/com/chatadhd/android/JsonObj.java",
+   "adapter": "code",
+   "format": "java",
+   "hash": "1d4f47bcb476451ce457ba86454fbbb22134a2745ade48d4962ff14c60b58cb4",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/verify/java/com/chatadhd/android/LoomCallbacks.java",
+   "adapter": "code",
+   "format": "java",
+   "hash": "76b0dc8b7fab0c5ed6a2b87a4aa06a3c173c22dcd764eac07fd68cd41636c7db",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/verify/java/com/chatadhd/android/LoomHttp.java",
+   "adapter": "code",
+   "format": "java",
+   "hash": "c2a0c99a93401734dd9c55893f6507b363af2be9c052f0d350726d6d7fee9140",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/verify/java/com/chatadhd/android/LoomNative.java",
+   "adapter": "code",
+   "format": "java",
+   "hash": "ec98fbc70a98a9ef475594b16328d40f0012f12a5221c74f258942385dcf32db",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/android/verify/java/loomverify/HostSmokeTest.java",
+   "adapter": "code",
+   "format": "java",
+   "hash": "049c5f92f30fa0eb0ac4308f548500b2b3b8bd9b71d99ead2be5ddc3a1157f94",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/cli/CMakeLists.txt",
+   "adapter": "code",
+   "format": "cmake",
+   "hash": "5dbcc879b7669f13f512e571ecd3b051978c09df0b467a0525f172ebf168afb3",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/cli/main.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7ef6701036e1fb116161e851e4f1fd4e8211ebf210faf4710ad83391fd3682e9",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/cli/tests/test_cli_smoke.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "7f25d92efabe9e69fd720c136043ffeb1d62f5360bfd21a30ea79b6ef12d8f4e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/deploy/Dockerfile",
+   "adapter": "code",
+   "format": "docker",
+   "hash": "ee7c1a8efe6296004aafd685286567d261fbeae54495a9c926a9d5dc220280cc",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/deploy/README.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "b85b862dd3fc8169151470f3973cb9ccb9a823fd47f4eecf339d6246ec9c8ba3",
+   "units": 1,
+   "docs": 5
+  },
+  {
+   "uri": "loom/deploy/build-android.sh",
+   "adapter": "code",
+   "format": "shell",
+   "hash": "6f5bb475cbf75ca87b8d70005046e73550b7a99380b5ff88c9c4179183d2167f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/deploy/build-linux.sh",
+   "adapter": "code",
+   "format": "shell",
+   "hash": "5a19585df5bd362cde2cf95056260aeb2ebe4ce5607d765f352677febfaded30",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/deploy/ec2-setup.sh",
+   "adapter": "code",
+   "format": "shell",
+   "hash": "6a20e252099f8eab223381c5a88b56aab1aa41eec3ff0e79e3b66750de700e45",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/archive.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "0d6aa0478aa28d3341ad1ade8555e0ab9723dae0788023d635fbde8b9f104748",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/batch_api.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7bba0b06df3e63966e096b4fef537b859568b1401817280df142db073638f3ca",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/chat_engine.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "57b95dd1dfd3d3cdb59585bbdd580604af5658705e10fab76ef39cf2375159d5",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/config.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "144e572631ced85e8b7522b2c96c4220097d2e33e2daed16e97e5a9d2ccd04bf",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/crypto.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f7a5cfa5752c70adbdcdbde1b65dd4330d67ab91ca5fdfe4d4811a8b605dac9d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/db.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "8d9241941edf94c32a23739df40e737729214fb038d4d0979ccce7a6bfa2d396",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/event_bus.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f420a2e960c766e90aef220fbe332d340da7b3964eaba1b8a5716b87cde82afb",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/github_sync.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "9e0287486d33b132d46f16bb8f1f9a7769c6632175f94752b2efee8d2123eeda",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/graph_engine.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "87c3496ccab89011f0abebd1baaa074d15b0356231a9a28526c113e8cc4ff457",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/graph_memory.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "ff481b0f8ebdf94c0f8333ec67c8fccb0435e5176ba223bca8787491df13e908",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/importer.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "b630fb46102854bf752e92189c08df7b9d3627b9f0a605bcf22b8876b300782a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/log.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "3cea3665318d8c7fb2fe4fc81d37c25769431e9a567be04ceb49aec4ddc0de78",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/loom.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e91f3a7bf846c5f023f34c1f95aac1f2a516beb2cd5dbbdb5eaf4e35e9565818",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/media_providers.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "3085ebe4bb925a3cdd9ef69abe0b86d59c536b71e7640b148e27a56737235410",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/memory_engine.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "73761906ab31e326f21496e698b1824dbcacb1c728ce01bf67516a4975b78892",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/net/http.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "fe89573bbb01e44a2d642a4c485aa66756e59614f19a756bff4b4a8d6050e73e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/net/sse.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "50b4a396d410f4fc2a47707488a5885a8610c57cb2d5b334e4d04888a3ef392c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/provenance.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "150d811ccd7d583a959bb274dd83866d8f0f6d84ad77b8e4eba6439fb2f9c8a2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/providers.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f79b0aef7fcb112f10559f11b6d13233eb1585726f64e386881cffabcea50123",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/re/regex.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "885ec185e73a68735750b4d417decf595b954629cbcfbfa8bd7bb4282cb0bbd8",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/relations.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "bb650a1c535ceab1736e02678bb9930f78f45a1a1eb69a8c29e77a9d8d97d73b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/result.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/runtime.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "5bb6256971261d9f84e77dcdf7b77fc6aa1073544cd086618bbeceb659b7e25d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/selector.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "ea79ba31b0dc9b9e77cb3b57020a802215a38c452cbcd4163d2a47ae9547e08c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/semantic_analyzer.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "aa3c73b25a5a200b4a86a635665c4f8ee1a2927064ed5d8a289d61734608b416",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/semantic_llm.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "62c857d0f6d98a4cbe0b4a200e39cb5ce1352657c5fea9ea91fb46bafae84342",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/semantic_worker.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "efaedcd4beaa48cac37987587660c6c513a4032732bb3a1764af4644ae518275",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/sqlite.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e5a62ad5f89030176f19b33c9419c9ad2da0d22883256b7f9f9a101c36b78685",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/tasks.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "329cacdcc83629483d9c0ebe89c81d4cec2aac5a2e37186449b8d075bf609254",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/base64.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e783f5dda320a1d0ae272f5569817a029119b9c70de3ade6f35af3e78b02d51b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/cancel.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "99b188e7c57e23e3210c613c53c90d9f88168b9c70221842e5c247861f9b435b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/fs.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "5b1c9530be2a1cb19f4dc976411136e8d992f87d8f0ce5c8b3c67f7a9be6d93d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/ids.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "63162ffded704ad2b199f519e5ac9828c4a47281108dc3125379ee565a92c876",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/json.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/random.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "a49774652aad58f9937a1ccd45bf598ae4a109f950711041f4a5ab29470b67d3",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/sha256.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/time.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/unicode.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/include/loom/util/utf8.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/server/CMakeLists.txt",
+   "adapter": "code",
+   "format": "cmake",
+   "hash": "332795fd0e7b1a745a55f515f465ba64e46f729ef84afb835b36d9f0ab5482e4",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/server/src/app.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "46d0f468f0d027127d1f6295a66f7bffd02c76e8061a6243e6181fb5ad6ab244",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/server/src/app.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7ffc846b4e94c324d17f6b53864ac7a705eb50a677855e48b84c060f428f9362",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/server/src/main.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "29c57adc41270df5ae0d1d74e275e71da7c0ee0c848ebe294498628d706866d3",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/server/src/sse_stream.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7aa686155cfb1aa40cc530e7a01b1fd07675a63090dccf97c6ec06b048909e1f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/server/tests/test_server_smoke.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "dcef41cf814d65c64e9a6c38a18a822a3f777b6e015325b50fb854327d27be36",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/archive_internal.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "bb910528c24d40d50e14d5caf61c8ae571b664fc62751a76f421649a090fd41f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/archive_runtime.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e539d59030d834d8d2d5e904f922c3359f1dbbd3630c2eae815c9a9a90eaf2d3",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/cluster.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "00f89522b2eeb675998edfb2e72e8047589085a83c20e171ea3833557b7c9b04",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/ingest.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "679fe215cfd7e54ba8f32df29d783f8a4d4fac9b02a30385209cf4be37876393",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/ingest_parse.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "243105d56d890c37e01ded1e9d9a450784427ac11acb89a7720218e08682155f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/items.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "5e7dbc483a02f2c9af6da4e04a7d3f9042aa801f36b5982fccc66194a0018e81",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/pipeline.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "39281d2372bc6da5242ff675d9811a1801ca8127e6a332a6c995094621ad44a3",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/synth.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e65b43ad0f5d81049722d4c1bd7c0087a5a5f5d4eec4b918e7c96c5fa110da52",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/text.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "357c58f29f9fefe739cbe05a217f9d69b797193392720337296151905c539044",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/archive/vocab.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "20b2188c236f2a2a801fe6f6dfc1b3b8043c7749fccd981a4c4ddf8442ff73ef",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/capi_archive.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "1efcd871a1f043667c2c4760edcd9787c2471edcccb96df90ec7023717954751",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/capi_chat.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7dd31ecfc58d1ca3b211679bc1dcf0dd8bb679e24d92b259f3f1ddcfc2205f1e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/capi_core.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "00bc411ad0c96cb1bd52239f12a5f1cb40075553141df77c4f094a34e6f28f53",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/capi_graph.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "25e89506076776ec14363cdbedafc724976325d049fd2bc2a361018f30ed4408",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/capi_http.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "b790158038a27259f9ab0a0a65027077ca4e658c3f8b9001fa83da16bfc230c2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/capi_import.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f06483a53e51322b3ce3cb0ce4d0de4e2aad83cf570081371e0e0a6abbc905ce",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/capi_media.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "856f9f4843c2d2a85c61e56ac880997db0e8ce62cb48fae87e1a6052c32e4e06",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/context.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "344a75eb9c425fb6b3d528a8cfd08691d54db6c57876d3f6a5aa552d365bd5c0",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/capi/shared_anchor.c",
+   "adapter": "code",
+   "format": "c",
+   "hash": "9637fc17fb42ec233ad0150e6e53d629a053843aae356e5b2f06ad457cd2aa82",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/chat/batch_api.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7a7e1fba5e2947e1297c06d74ddc023cfc82e80000be38f28e124d7743cf08fc",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/chat/chat_engine.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "28a50dd92bea0f931203a06825bbb697d5681ba9741983f6256c32591f9b0f4c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/core/config.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "6ec6e56bbd6893b01c405ba2111b73ce0a0df59ad9b0289ef700fbf34320946d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/core/event_bus.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "40222dce81535b3e09f44cef5eb65bf1a6e39c8cf16991d325a8470575ae8f73",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/core/provenance.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e0b48f891d61c28ac9f18c003c9c5e00efcbde06d82a73216936f1f05ba9faba",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/core/relations.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f91185de23439eb0f8ac7c9bdd336fa4fa3fef6f432126feaff1bd3e15002a10",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/core/tasks.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "9d8bb9366c0e05b515b4f76d1c0f94253a3588cad9679ed521ee57633b612e0f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/crypto/crypto.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "4491571ebceeed7998c482171feb09a520070bfe57381d8ed7c5ea1524c6b6ad",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/db/db.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "65ee18501ceaab19f8d81b00c759775b432cac83003c554ffdcf66b97436a93a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/db/db_internal.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "9638db2afa63d93608f1570ffa622415ab4d3b185476edf2a18f84101910f501",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/db/fts.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "8e5d61ed79c0131e76ce92ba290f951812336f0d03668fbc6dd06efc0bb7640e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/db/sqlite.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "c293a4bdcd67365b07220ff09730ea1aa5c618f284610ebe61a209c88302bb2a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/github/github_sync.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7df2bd344f80d60290ef9f2f236e23861c64c36cbf6fa0a5bc07e2c74a56c3c8",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/graph/graph_engine.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "ada941fb548829a7ad5da1aa2c839172fb0fcebf73c82e590b4abc97353a7608",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/graph/graph_memory.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "87c762ef85fdd8e5699552086a1b09b5320db54d4981ae7ca07b5aa3eec13f7d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/exporter.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "c0d3e97476fa04627085c7b9262e45f1ba91fdfc2ab54a5ebfe3bfb6b5d8a746",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_common.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "75dcbc391a918526c4621fde6768d73c971cc03597320215e232cc1bd2c833b2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_core.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "fe8310cbbaba15398e1cc0ce7e5e81c2f52e196917eb0be384709895b77d4550",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_html.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "4263d0cfaa37631f4364fce7d66a12b7f30489ac5743706cd410f7806c85f27e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_internal.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "80e8e28de1036f6d4446e4f783649dcce18eb2be2db09f73549bbdf534d0726f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_json.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "aff781bed3d5742bf4fccf491d5effeb6e0de0b5757521bdef245d19c7907570",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_sqlite.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e387cfd5386a2977409f9775828706f6d259c0c5237a5596e053bba264fe4c76",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_text.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "b5b87845332be53d1ed87e308a2d02a8ef62e0d8a179993e17e1ba353d5cf7a6",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/import/importer_zip.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e57aefd825c3d31116d261c9eae3dd7335d58a85447e77817a2da3865d028794",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/media/media_providers.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "d4349b8d12e32002d97a5288ad8e47bfc90860f0685faf45716976024d139f7f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/memory/memory_engine.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f02b9ad14cf9e86a2058b4de028e760daad4fd120fb7c50401455ccefbff89b8",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/net/http_common.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "ddecf23c4b730907302621fe68fc9d7619e00a325a2368bb61ab1a90b013f89b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/net/http_default.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "0df8e8f895e329605d8bd8e614c4d607c2fd51962397126995da4ffda5d12a82",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/net/sse.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "9491adc32e7d182b5ba232eade12c37b639911d26ea45372e4d78446a59077b2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/providers/providers.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "3f5090ea1d5e7e6b11c895e3155c693ee6e3d19637330b00363466e86c7e68ab",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/re/regex.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "0a92cb69cdd1369bc95b0e2ceef0e6e3c2e702af73727b3f8b0d2b71250d8888",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/runtime.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "db51ff6e7a2d76ad7e3f17632d4249561ca37c21f24d4a80c7da7de6998e0c22",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/search/selector.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "815017c9f3a6662684c26f35ae723f36d369952b89f2c6c4f36c5ee29e6bb471",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/semantic/analyzer.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "2e92591cab0bc87492779cf6ab7fefb43d7ca17dd9b9e4e7c71016c29745a209",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/semantic/semantic_llm.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "6c2291b184513185494d56691f2025367e45898b7c6c72a8c4f6ff898fae3ae2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/stub.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "92fe5a235bb6ec37ff38c8ecf2d8478f534677274d7290d91d8e733ca0a7bc1d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/base64.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "b680121d37ef16623f62f06d6186db48b29a7d6f0024b75d84754a0d4d1c5b22",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/fs.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "ed3412eb6e87589009e63c3bd974a7c5d63bf104806d74a550986c305099ebdd",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/json.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/log.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "dc44f67cbe6868f041998a122747713109a56196eb7502b65bf5d9be35fd9fa2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/random_ids_time.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/result.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/sha256.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/unicode.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/util/utf8.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/src/worker/semantic_worker.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "5f22795e96214d652365e0f6f8c1d5c05514a550e1be6e566f766f404882b7da",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/compat_common.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "d31f5862ab430f356f747d1c460a24c40f7373e2c7f97349097e73aca1b5c588",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/compat_registry.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "11858cacbc31a13d5e6e0a80c709aa077ceb7700ae4c76f33c71f13c243ac476",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/main.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e631069d276ec6f89523f0e0b6718399d24898ae889714ee7e45d327a67d7809",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_abi_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "5e6fd2748b068a28865cec1ac7aca5a64af9ce66880a8911d69f180fbbbd85fe",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_chat_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "0f3f0afcd09f98ab61239b55575a305c36e45597f178b4b76329623a7dbf34b0",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_config_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "6b619fd5e4dd9897302ec3eb1c27be393dde982899db4a99cc51730a7f3f32f7",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_crypto_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "b872d508af77c27d6e1bbab527b938d12d275f8f2a9a5de3e3a399e8ed927055",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_db_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "e41ac847736f9243e86548a5f8e2f4bf5b650fd14fa0ea23f216a639e261dbed",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_graph_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "eec094d508e30c4d9bb4ff408eb606488a62f29ce39c3066b4be82153d741ead",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_import_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "9f3d5b194872c2ee0e553685e43390043e78c4b026c9a71714291682cc378535",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_memory_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "ba33794e8f69d049e412acc2d7537fb4e5178eaad48ed75c6791b442dd119264",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_selector_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "221f3be151f5d3873bddfaca0949eda7363b1d5d809515fa6e25543dc6becc6e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_semantic_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "c34fe8c2eb6727fce4cc3fb417c435865f6bf3d7d3ebc3633c4b0259fab7e3b7",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/test_util_compat.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "037245d2e54af34ea84318159c4b774d598f9e3fb7d6afc7c3a64fbadb1baf2b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_chat.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "240654de51e2bcc2f79e2101602d6d09dca314d00c92cb9b96fc112426e88cec",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_core.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "4ab6a5c8ba99672582becdd81f133387ddb2c3573b10aeedad14fa4404153fef",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_crypto.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "70e6d710c8a3fd91d1d3b7d289e410382018707d2b7422dbf43e71c3facb736f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_db.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "a5735c3ce3fe0d875280a1e1349d414a1451b4cda843b1f47f7a5ef5a15a04b5",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_graph.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "210405d63d0a195ad1b61d2d2aeee8fe8d700bd6316cc46b032ea1f8df16b325",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_import.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "fac704ac72396f1499ad214a74266c55b3a0a2232245328d50d9611f12c8be9a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_memory.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "b75ce18ad66bb3ee6e60ab29ac85c1bc4c1a280c564ec9b0cb19af9879e687a2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_selector.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "6e8076b49611392edcd66fd854b47fd32c663d0501a23c6e7ed407478b000f4a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/compat/tool_semantic.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "c7ed4e1fef396ec0032954f8572d7b1dd6cf9c2d6a0044cc2d0140ba056adbb8",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/main.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f3ec52fb13e6028ab6cb10a25ecdce0db57486809b09a7f65d1661bc6e1ca4d0",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_archive.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "512d224f62e500ce27758ed44d2061b9cc66fe04e9b391cd66af46f441fcfd64",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_batch_api.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "3e80f4b6fe43d68ce6e3fbd16e48989e4c17ada2d8cec17ac096d73eb2079e9d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_capi.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f0754996ea01e2ac407f0c50f6796689585b3c56e70f925bf7b7de67102e12f1",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_chat_engine.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f846c2aa2074139bc6cc4b6d0a1e29077ed31aedb371716024c652c37f35e1cc",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_config.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "6078096f4d56a66a00f0875a6b6fabe4dfe3cfae311cd243a201396c0c12456d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_crypto.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "2cb1010f6a599f15732b2c692cb8429a06aff00860aa2f32ff79fd19404728be",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_db.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "9569a2525ac4ed51c4be4eb734b008c8e09353c934b861465971a45762e218df",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_event_bus.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "c0ef8c522ff8ae498e4e186b24a75fc6088f1268b9790f296237e7686042516b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_fts.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "995d769c82e3b6681d411abbe5fc6d8a58089430c7fc2ae96a5112e291d2a667",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_github.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "a1882fef80b83af8c5683e5ddeb15f4296d1d334a2950a8ade5bd10fe720f332",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_graph.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "43e64b139b1ef2bd692043d0dc0be3b3e6e1c70a635beb389ab78d6b84919cd4",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_helpers.h",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "2b2e5d3f7bb7ae0837db901680f8aafb7595221c57c40b00bcdf8760b4e98a89",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_import.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "80283b9a0793beb05bfcd60508126f429f7ec6b6b696814dc69a1b09f5812cac",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_import_stream.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "99072c7be93d12ef78633692223aff8daba379b20d82f3f7eb17a83349ce5dbd",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_media.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "f227f6d71eb8902e2ab11bd7525735ee50486deca7513bbc51a05523167c04f0",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_memory.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "6d0b1998b68f5883613bcec5922f6b2c51a8b060afbab3af338bf845d0b2d124",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_net_sse.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "27fbe2f63bbe8c3dc6df92323f368853233a992018739d7b69cf8302e3081d45",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_provenance.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "aa07128c0dde3d0ddf00f2fcfb35259fd80b62251ad32bfcd06e3953700bf81c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_providers.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "755471ba6bd9e4f868812422121379742b08f719e5f94d47d18816b5b5e9fc0e",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_regex.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "a977c88a88d6a0942d447b954de6bbb43cd9dc56cadded836952644d1324831c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_relations.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "cb9884560cf7ea13b9ba9cca9480803a71708669d7a2c30eb1ea931bc971731b",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_runtime.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "694ca06fb1af436f15eb00b87a2979b3b167f0072c5077eb8822111187c9bd2d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_selector.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "d4daf679ccb0ef4b390a912b143d05af0d6873aaa3151de2f655a96284ececef",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_semantic_llm.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "7d0f8335bacb898cb8b22a7b57f9c645585acacc8dfed352f89572887f2b4995",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_semantic_worker.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "3088d5dee2fead004be6710038e6329fce41b91b56be5cba0586be4e8c63f48a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_tasks.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "17b3c3d96fbe716d713b3f216dd01c7618a2202473e949b474d8785abd80c2cf",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tests/test_util.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "1f19536e47fc43d9c230f5a4f779d53699d719b0756f5de723259c4192bbbd7a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tools/gen_import_fixtures.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "3c359a7609bf647e3522e0798fbf98e929e11aaad7fb7b2d06d0f55c805d7d8d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tools/gen_semantic_rules.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "40838c5eed57a3c05e134742b398f6e13485a344df56b1ee0b4e1ee0c17874bd",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/tools/gen_unicode_tables.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "2e95987f0380b5b531b08adc033e323ff8aa37720fe8b3aab743753bc6733d41",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/e2e/mock_llm_server.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "46be92dabd4356be7244ac6599185e6a3c8b5a5314d62f3cf373da78175f040c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/e2e/run.mjs",
+   "adapter": "code",
+   "format": "javascript",
+   "hash": "ba9e410e53f8e150b668571e9a1498a4d2716d8cc8534d4fe09ccf309f244fdd",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/App.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "b2241c4370d39324398e45c61715f47e8cc9413ab764026f74735c192fc77b89",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/api/index.ts",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "b1a9c96939961e7bba1093e4fdf427afe244d55bc4b178955f8a7bd88102b519",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/api/loom-api.ts",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "44ec6f0513118b2523f0d94bb1b06304cc7c8b8e95ddadf6a951951594969ac1",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/api/loom-http.ts",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "9ffc491405d5ff278af984eea6fbb830a8a5ad85de0241bc8b152eaab4d23d92",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/api/loom-jni.ts",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "28c6baf44e8face74c611308efbefc9fd95a1483fe2109a0d7c54774b3eda002",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/api/types.ts",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "444d06aa0f5b3343d41e74a001acf131e1f5c7f8f3aa01b18d30419bfc1bb65a",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/ChatView.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "2d69641e88bf8a76506c4388780e0a405a3a05af5ac83c7c52c077e110ec7f1c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/ContextSlider.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "6c90df73b22b417b3ed9f48926d2128aa410ff0f07aaeca0df46afb3fcc38154",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/ConversationList.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "7c88d47ea51098721ad821c9aee3e5ceb42463fccf029a54403f1631dfbc0f3c",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/GraphView.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "647ed98d7059b706f6b6f5696e8de79a7b1ad89f06f21cf93a72f21a7e0b4016",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/ImportPanel.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "b07a1cfc859f5bbb23387093908cd57a3aeff1d67848b05e8e06c0137f1ee096",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/LogPanel.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "ad57016107926bfe588c3602b4323bb1317716c65554ccc1b19d1bb6e98cb3e2",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/MemoryPanel.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "c6e94262757a4cd4a87306c5b3cb6128b1a1e0ef0d5f7a9aa663d618cc0256bd",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/SemanticStatus.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "1d588786db5b73363c63d9431a20c1188001d56192a464f66b73abf7812c18f1",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/components/SettingsPanel.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "acee1fd0df386738ae83c3914a65346bdeb2f7a05a4ce0fbe8cf0cefb1b83b9f",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/src/main.tsx",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "41431cb94a112ca05f90ca6037229d09d4bb8ecc1c27ae3bb3740ace8f01d2a6",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "loom/web/vite.config.ts",
+   "adapter": "code",
+   "format": "typescript",
+   "hash": "f73226c3d8b28efa5c0ca360c45be579b19697ab53ac244ce18eebd21fef4dfc",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "main.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "732d393483d25f5b569ed14a494bfc9287110b529432e63428ce87dc469797eb",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "requirements.txt",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "2ed495d882483da8ac268a16bad42468bde5860891877030f21b5af065118cde",
+   "units": 1,
+   "docs": 2
+  },
+  {
+   "uri": "chatadhd.git",
+   "adapter": "git",
+   "format": "git-log",
+   "hash": "d80791e18715098e065faed9b840467c39aad616fb1059ddaa6c528bd4e2bdf2",
+   "units": 1,
+   "docs": 91
+  }
+ ]
+}

@@ -1,0 +1,633 @@
+{
+ "schema": "loom.kb.project_kind/1",
+ "id": "music",
+ "version": 1,
+ "title": {
+  "en": "Music",
+  "pl": "Muzyka"
+ },
+ "description": "A piece or album being made. DERIVED, not observed: mapped from the film kind by the transfer morphisms listed in derived_from (scene -> section, character -> performer, motif -> motif, render -> synthesis, edit -> mix, continuity check -> mix check, cut -> track) and completed with general music knowledge (key, tempo, form, mastering). Origin model_knowledge, validation candidate: the owner's archives have not confirmed it yet (R8: 'mogłeś się domyślić, że oprócz filmów również muzykę').",
+ "origin": "model_knowledge",
+ "validation_status": "candidate",
+ "derived_from": [
+  "m.film_music.scene_section",
+  "m.film_music.character_performer",
+  "m.film_music.motif",
+  "m.film_music.render_synthesis",
+  "m.film_music.edit_mix",
+  "m.check.film_music",
+  "m.film_music.cut_track"
+ ],
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R8"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.4 Music column"
+  }
+ ],
+ "subject_kind": "project",
+ "facets": [
+  "staged_transformation"
+ ],
+ "anchors": {
+  "any": [
+   {
+    "op": "kind_hint",
+    "value": "music"
+   },
+   {
+    "op": "cue",
+    "class": "paradigm.music",
+    "min": 2
+   }
+  ],
+  "min_score": 0.45
+ },
+ "domain_kinds": [
+  {
+   "id": "mood",
+   "role": "intent",
+   "labels": {
+    "en": "Mood / genre intent",
+    "pl": "Nastrój / zamiar gatunkowy"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_mood",
+   "anchors": {
+    "terms": {
+     "en": [
+      "mood",
+      "vibe",
+      "feel"
+     ],
+     "pl": [
+      "nastrój",
+      "klimat"
+     ]
+    }
+   }
+  },
+  {
+   "id": "key",
+   "role": "constraint",
+   "labels": {
+    "en": "Key",
+    "pl": "Tonacja"
+   },
+   "entity_kind": "musical_key",
+   "card": "one",
+   "relation": "in_key",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "key",
+      "major",
+      "minor"
+     ],
+     "pl": [
+      "tonacja",
+      "dur",
+      "moll"
+     ]
+    }
+   }
+  },
+  {
+   "id": "tempo",
+   "role": "constraint",
+   "labels": {
+    "en": "Tempo / meter",
+    "pl": "Tempo / metrum"
+   },
+   "value_type": "string",
+   "card": "one",
+   "relation": "has_tempo",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "bpm",
+      "tempo",
+      "meter"
+     ],
+     "pl": [
+      "tempo",
+      "metrum"
+     ]
+    }
+   }
+  },
+  {
+   "id": "form",
+   "role": "constraint",
+   "labels": {
+    "en": "Form",
+    "pl": "Forma"
+   },
+   "value_type": "text",
+   "card": "one",
+   "relation": "has_form",
+   "relations": [
+    {
+     "rel": "constrains",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "form",
+      "structure"
+     ],
+     "pl": [
+      "forma"
+     ]
+    }
+   }
+  },
+  {
+   "id": "track",
+   "role": "part",
+   "labels": {
+    "en": "Track",
+    "pl": "Utwór"
+   },
+   "entity_kind": "track",
+   "card": "many",
+   "weight": 1.5,
+   "relation": "has_track",
+   "anchors": {
+    "terms": {
+     "en": [
+      "track",
+      "song"
+     ],
+     "pl": [
+      "utwór",
+      "piosenka"
+     ]
+    }
+   }
+  },
+  {
+   "id": "section",
+   "role": "part",
+   "labels": {
+    "en": "Section (verse, chorus, bridge)",
+    "pl": "Sekcja (zwrotka, refren, most)"
+   },
+   "entity_kind": "section",
+   "card": "many",
+   "required": true,
+   "weight": 2.0,
+   "relation": "has_section",
+   "relations": [
+    {
+     "rel": "part_of",
+     "target": "track"
+    },
+    {
+     "rel": "precedes",
+     "target": "section"
+    },
+    {
+     "rel": "uses",
+     "target": "sample"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "verse",
+      "chorus",
+      "bridge",
+      "intro",
+      "outro"
+     ],
+     "pl": [
+      "zwrotka",
+      "refren",
+      "most"
+     ]
+    }
+   }
+  },
+  {
+   "id": "performer",
+   "role": "actor",
+   "labels": {
+    "en": "Performer",
+    "pl": "Wykonawca"
+   },
+   "entity_kind": "performer",
+   "card": "many",
+   "relation": "has_performer",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "vocalist",
+      "singer",
+      "performer"
+     ],
+     "pl": [
+      "wokalista",
+      "wykonawca"
+     ]
+    }
+   }
+  },
+  {
+   "id": "instrument",
+   "role": "actor",
+   "labels": {
+    "en": "Instrument",
+    "pl": "Instrument"
+   },
+   "entity_kind": "instrument",
+   "card": "many",
+   "relation": "has_instrument",
+   "relations": [
+    {
+     "rel": "participates_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "guitar",
+      "synth",
+      "drums",
+      "instrument"
+     ],
+     "pl": [
+      "gitara",
+      "perkusja",
+      "instrument"
+     ]
+    }
+   }
+  },
+  {
+   "id": "sample",
+   "role": "resource",
+   "labels": {
+    "en": "Sample / patch",
+    "pl": "Sampel / brzmienie"
+   },
+   "entity_kind": "sample",
+   "card": "many",
+   "relation": "uses_sample",
+   "anchors": {
+    "terms": {
+     "en": [
+      "sample",
+      "patch",
+      "preset"
+     ],
+     "pl": [
+      "sampel",
+      "brzmienie"
+     ]
+    }
+   }
+  },
+  {
+   "id": "modulation",
+   "role": "interface",
+   "labels": {
+    "en": "Modulation / transition",
+    "pl": "Modulacja / przejście"
+   },
+   "entity_kind": "transition",
+   "card": "many",
+   "relation": "has_transition",
+   "relations": [
+    {
+     "rel": "connects",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "modulation",
+      "transition"
+     ],
+     "pl": [
+      "modulacja",
+      "przejście"
+     ]
+    }
+   }
+  },
+  {
+   "id": "progression",
+   "role": "flow",
+   "labels": {
+    "en": "Harmonic progression",
+    "pl": "Progresja harmoniczna"
+   },
+   "entity_kind": "progression",
+   "card": "many",
+   "relation": "has_progression",
+   "relations": [
+    {
+     "rel": "flows_to",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "progression",
+      "chords"
+     ],
+     "pl": [
+      "progresja",
+      "akordy"
+     ]
+    }
+   }
+  },
+  {
+   "id": "motif",
+   "role": "flow",
+   "labels": {
+    "en": "Motif",
+    "pl": "Motyw"
+   },
+   "entity_kind": "motif",
+   "card": "many",
+   "relation": "has_motif",
+   "relations": [
+    {
+     "rel": "recurs_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "motif",
+      "hook",
+      "riff"
+     ],
+     "pl": [
+      "motyw",
+      "riff"
+     ]
+    }
+   }
+  },
+  {
+   "id": "cue",
+   "role": "event",
+   "labels": {
+    "en": "Cue / drop",
+    "pl": "Wejście / drop"
+   },
+   "entity_kind": "event",
+   "card": "many",
+   "relation": "has_event",
+   "relations": [
+    {
+     "rel": "occurs_in",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "drop",
+      "cue",
+      "break"
+     ],
+     "pl": [
+      "drop",
+      "wejście"
+     ]
+    }
+   }
+  },
+  {
+   "id": "score",
+   "role": "artifact",
+   "labels": {
+    "en": "Score / MIDI / arrangement / lyrics",
+    "pl": "Partytura / MIDI / aranżacja / tekst"
+   },
+   "entity_kind": "score",
+   "card": "many",
+   "relation": "has_score",
+   "relations": [
+    {
+     "rel": "depicts",
+     "target": "section"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "score",
+      "midi",
+      "arrangement",
+      "lyrics"
+     ],
+     "pl": [
+      "partytura",
+      "aranżacja",
+      "tekst"
+     ]
+    }
+   }
+  },
+  {
+   "id": "synthesis",
+   "role": "transformation",
+   "labels": {
+    "en": "Synthesis / recording",
+    "pl": "Synteza / nagranie"
+   },
+   "entity_kind": "synthesis_pass",
+   "card": "many",
+   "relation": "has_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "score"
+    },
+    {
+     "rel": "consumes",
+     "target": "sample"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "record",
+      "synthesize"
+     ],
+     "pl": [
+      "nagranie",
+      "synteza"
+     ]
+    }
+   }
+  },
+  {
+   "id": "mix",
+   "role": "transformation",
+   "labels": {
+    "en": "Mix / master",
+    "pl": "Miks / mastering"
+   },
+   "entity_kind": "mix_pass",
+   "card": "many",
+   "relation": "has_pass",
+   "relations": [
+    {
+     "rel": "produces",
+     "target": "track_output"
+    },
+    {
+     "rel": "consumes",
+     "target": "score"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "mix",
+      "master"
+     ],
+     "pl": [
+      "miks",
+      "mastering"
+     ]
+    }
+   }
+  },
+  {
+   "id": "mix_check",
+   "role": "check",
+   "labels": {
+    "en": "Mix / key consistency check",
+    "pl": "Kontrola miksu / spójności tonacji"
+   },
+   "entity_kind": "mix_check",
+   "card": "many",
+   "relation": "has_check",
+   "relations": [
+    {
+     "rel": "verifies",
+     "target": "track"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "mix check",
+      "loudness",
+      "in key"
+     ],
+     "pl": [
+      "kontrola miksu",
+      "głośność"
+     ]
+    }
+   }
+  },
+  {
+   "id": "track_output",
+   "role": "output",
+   "labels": {
+    "en": "Released track / album",
+    "pl": "Wydany utwór / album"
+   },
+   "entity_kind": "release_output",
+   "card": "many",
+   "relation": "delivers",
+   "relations": [
+    {
+     "rel": "serves",
+     "target": "mood"
+    }
+   ],
+   "anchors": {
+    "terms": {
+     "en": [
+      "album",
+      "single",
+      "release"
+     ],
+     "pl": [
+      "album",
+      "singiel"
+     ]
+    }
+   }
+  },
+  {
+   "id": "arrangement_choice",
+   "role": "decision",
+   "labels": {
+    "en": "Arrangement choice",
+    "pl": "Wybór aranżacyjny"
+   },
+   "entity_kind": "decision",
+   "card": "many",
+   "relation": "has_decision",
+   "relations": [
+    {
+     "rel": "decides_about",
+     "target": "section"
+    }
+   ]
+  },
+  {
+   "id": "open_idea",
+   "role": "question",
+   "labels": {
+    "en": "Open arrangement idea",
+    "pl": "Otwarty pomysł aranżacyjny"
+   },
+   "entity_kind": "open_question",
+   "card": "many",
+   "relation": "has_question",
+   "relations": [
+    {
+     "rel": "concerns",
+     "target": "section"
+    }
+   ]
+  }
+ ],
+ "constraints": [],
+ "rules": [
+  "r.project_status"
+ ]
+}

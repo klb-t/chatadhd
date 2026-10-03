@@ -1,0 +1,117 @@
+{
+  "schema": "loom.eval.conversation_context_split/1",
+  "cases": [
+    {
+      "case_id": "c_5ac7d705676b",
+      "family": "late_project_onset",
+      "split": "development",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_4bb7ed45fbc3",
+      "family": "late_project_onset",
+      "split": "development",
+      "language": "en",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_fe3a5e7ffde4",
+      "family": "return_after_digression",
+      "split": "development",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_7dcfc9d74e3c",
+      "family": "return_after_digression",
+      "split": "development",
+      "language": "en",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_d63a8bf08ed3",
+      "family": "overlapping_topics",
+      "split": "validation",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_cd1739cd35e9",
+      "family": "overlapping_topics",
+      "split": "validation",
+      "language": "en",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_3553baf3e7eb",
+      "family": "correction_and_contradiction",
+      "split": "development",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_f69279d98b85",
+      "family": "correction_and_contradiction",
+      "split": "development",
+      "language": "en",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_b87456440b0b",
+      "family": "scope_prevents_false_conflict",
+      "split": "validation",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_9968c98baba0",
+      "family": "scope_prevents_false_conflict",
+      "split": "validation",
+      "language": "en",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_5520c7a8dff6",
+      "family": "later_name_cannot_backfill",
+      "split": "validation",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_edb2a9c64f65",
+      "family": "later_name_cannot_backfill",
+      "split": "validation",
+      "language": "en",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_64face0fd8ae",
+      "family": "availability_and_unknown_time",
+      "split": "development",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_001f84cadd8a",
+      "family": "availability_and_unknown_time",
+      "split": "development",
+      "language": "en",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_ff56803ceb54",
+      "family": "analogy_not_identity",
+      "split": "validation",
+      "language": "pl",
+      "message_count": 6
+    },
+    {
+      "case_id": "c_7e98ed3ef693",
+      "family": "analogy_not_identity",
+      "split": "validation",
+      "language": "en",
+      "message_count": 6
+    }
+  ]
+}

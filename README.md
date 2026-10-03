@@ -1,65 +1,96 @@
-# ChatADHD v0.07.10
+# ChatADHD / Loom
 
-Local-first, mobile-oriented AI chat client built around branching conversations, hierarchical memory, semantic retrieval and user-owned persistent data.
+A local-first conversation workbench with a reusable C++20 kernel. ChatADHD
+explores branching conversations and inspectable memory; Loom provides the
+storage, import, graph, context and resumable analysis machinery behind it.
 
-**Status:** functional Python/Kivy prototype. The repository contains the working application and storage/engine layers; it is not yet presented as a packaged consumer release.
+**Development preview for developers and testers.** The native kernel, CLI,
+HTTP server and React workbench run today. The Python/Kivy prototype is retained;
+Android has a JNI bridge but still needs device validation. This is not yet a
+packaged consumer release.
 
-## Core ideas
+![Knowledge workbench with fictional entities, claims and linked graph views](docs/images/knowledge-workbench.png)
 
-- **Code and data are separate.** Application code can be replaced or versioned without moving the persistent user store.
-- **Conversation history is a graph, not a flat transcript.** Editing or branching preserves earlier versions.
-- **Memory is inspectable.** Hierarchical and graph memory can be searched and toggled rather than hidden behind an opaque prompt.
-- **Provider choice is runtime data.** The model registry includes provider/model metadata, pricing and context information.
-- **Local privacy controls matter.** Secrets are stored outside the repository and optional AES-256-GCM encryption is supported for local data.
+*Synthetic offline demonstration against the native server, with LLM analysis
+disabled. It shows the inspectable workflow, not general extraction accuracy.*
 
-## Features
+## What is distinctive
 
-- multi-model chat through OpenRouter-compatible providers;
-- streaming responses and reasoning/thinking display;
-- branching/versioned conversations;
-- hierarchical memory tree;
-- real-time knowledge graph and graph-based retrieval;
-- semantic analysis, entity extraction and topic detection;
-- tiered search: embeddings → TF-IDF → keyword fallback;
-- import from SQLite, JSON, HTML, MHT, Markdown, text and screenshots/OCR paths;
-- voice input;
-- bidirectional GitHub sync;
-- model filtering, descriptions, context lengths, pricing and cost estimation;
-- dark and AMOLED-oriented Kivy UI.
+- **Preserve the source.** Imports retain raw source material and provenance;
+  editing a conversation preserves earlier versions.
+- **Inspect the context.** Memory, graph records, claims, supporting sources and
+  context-selection reasons are exposed through the workbench and APIs.
+- **Reuse one kernel.** A C ABI connects the native library to clients without
+  requiring the storage and analysis logic to be reimplemented.
+- **Keep code and user data separate.** Application upgrades replace code;
+  persistent stores, attachments and secrets have their own data directory.
 
-## Architecture
+## Architecture and current scope
 
-```text
-core/      crypto, semantic analysis, selection/retrieval primitives
-engine/    persistence, chat, memory, providers, import, graph and GitHub sync
-gui/       Kivy panels, dialogs and graph visualisation
-main.py    application entry point
-```
+| Component | Role and current boundary |
+|---|---|
+| [`loom/`](loom/README.md) | C++20 library, C ABI, SQLite storage, import/provenance, tasks, graph and context pipelines |
+| [`loom/cli/`](loom/cli/) | CLI for chat, import, search, archives, knowledge runs and artifact inspection |
+| [`loom/server/`](loom/server/) + [`loom/web/`](loom/web/README.md) | REST/SSE facade and React/TypeScript workbench; browser/native integration tested |
+| [`loom/android/`](loom/android/README.md) | JNI/WebView shell; host-side bridge tests, device testing outstanding |
+| `core/`, `engine/`, `gui/`, `main.py` | Retained Python/Kivy prototype and compatibility regression sentinels |
 
-Persistent user data defaults outside the source tree and includes configuration, SQLite state, memory, attachments, exports and logs. See `CLAUDE.md` for the detailed code/data contract and extension notes.
+The workbench includes independent and linked graph views, source inspection,
+browser-local saved perspectives and explicit context preview. Native
+CandidateGraph and the Python GraphPacket research representation remain
+distinct; native GraphPacket persistence is still open work.
 
-## Quick start
+## Build and open a synthetic demo
+
+Requirements: CMake 3.25+, Ninja, a C++20 compiler, Python 3.11+ and Node.js
+with npm. The commands below run from the repository root and use bundled
+SQLite. See [Loom's build guide](loom/README.md#build) for other presets.
 
 ```bash
-python -m pip install -r requirements.txt
-python main.py
+python3 -m pip install requests cryptography -r loom/tools/contracts/requirements.txt
+cmake --preset dev -S loom -DLOOM_USE_SYSTEM_SQLITE=OFF -DLOOM_BUILD_SERVER=ON
+cmake --build loom/build/dev -j 4
+ctest --test-dir loom/build/dev --output-on-failure -j 4
+npm --prefix loom/web ci
+npm --prefix loom/web run build
+
+DEMO_DATA="$(mktemp -d)"
+./loom/build/dev/cli/loom --data-dir "$DEMO_DATA" knowledge run \
+  --source loom/tests/fixtures/eval/synthetic_dev/chatgpt_export.zip \
+  --source loom/tests/fixtures/eval/synthetic_dev/claude_export.zip \
+  --no-priors --llm off
+./loom/build/dev/server/loom-server --host 127.0.0.1 --port 8787 \
+  --data-dir "$DEMO_DATA" --static-dir loom/web/dist
 ```
 
-Optional semantic backends can be installed when needed:
+Open [http://127.0.0.1:8787](http://127.0.0.1:8787) and select **Knowledge**.
+Explore the fictional source corpus, graph and claims, then build a context
+preview. This demo needs no API key. Live chat requires configuring a provider
+and key in Settings. The [demo guide](docs/DEMO.md) gives a short walkthrough
+and describes what each step establishes.
 
-```bash
-python -m pip install scikit-learn
-python -m pip install sentence-transformers
-```
+## Evidence and limits
 
-## Security notes
+The [2026-10-02 verification report](docs/verification/current-2026-10-02/RESULTS.md)
+records **107/107 CTest suite entries**, a successful web production build and
+browser tests against the real native server. Chat tests use a local fake
+provider. These are engineering checks on the recorded source snapshot;
+they do not establish general extraction accuracy, recipe efficacy or model
+quality. Android packaging, real devices and real external providers were not
+part of that verification.
 
-- API secrets belong in the user data/config path, not in the repository.
-- Local encryption is optional; remote model providers necessarily receive the plaintext sent to them.
-- The project does not add telemetry, analytics or advertising.
+[Current state](docs/STATE.md), [engineering gaps](docs/LIMITS_AND_WIRING_2026-10-01.md)
+and the [Claude handoff](docs/HANDOFF_2026-10-02_TO_CLAUDE.md) describe what remains.
+[Documentation](docs/README.md) keeps current reports at the front; the
+[archive index](docs/archive/README.md) explains how to reconstruct historical
+branches and experiments.
 
-## Licensing
+## Data and licensing
 
-This project is **source-available**, not OSI open-source. Noncommercial use is licensed under the PolyForm Noncommercial License 1.0.0; see `LICENSE`.
+Use a separate data directory for demonstrations. Optional local encryption
+does not prevent a configured remote provider from receiving the plaintext
+sent to it. API secrets belong in the data store, outside the repository.
 
-Commercial use requires a separate written license; see `COMMERCIAL_LICENSE.md`.
+**Source-available:** noncommercial use is licensed under
+[PolyForm Noncommercial 1.0.0](LICENSE). Commercial use requires a separate
+written license; see [commercial licensing](COMMERCIAL_LICENSE.md).

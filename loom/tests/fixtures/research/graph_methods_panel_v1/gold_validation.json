@@ -1,0 +1,2670 @@
+{
+  "schema": "loom.research.graph_methods_panel.gold/1",
+  "split": "validation",
+  "cases": [
+    {
+      "id": "gpv1_validation_001",
+      "family": "reversed_implication",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_001_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_001",
+              "turn_id": "gpv1_validation_001_t1",
+              "coordinate_space": "turn.text",
+              "quote": "“the probe transmits” is possible only if “the antenna is connected”.",
+              "char_start": 0,
+              "char_end": 69,
+              "byte_start": 0,
+              "byte_end": 77
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_001_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_001",
+              "turn_id": "gpv1_validation_001_t2",
+              "coordinate_space": "turn.text",
+              "quote": "“the antenna is connected” alone does not establish that “the probe transmits”. The converse implication is denied.",
+              "char_start": 0,
+              "char_end": 115,
+              "byte_start": 0,
+              "byte_end": 123
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_001_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_001_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_001_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_001_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_001_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_001_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_002",
+      "family": "reversed_implication",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_002_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_002",
+              "turn_id": "gpv1_validation_002_t1",
+              "coordinate_space": "turn.text",
+              "quote": "“the receipt is issued” is possible only if “the payment is recorded”.",
+              "char_start": 0,
+              "char_end": 70,
+              "byte_start": 0,
+              "byte_end": 78
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_002_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_002",
+              "turn_id": "gpv1_validation_002_t2",
+              "coordinate_space": "turn.text",
+              "quote": "“the payment is recorded” alone does not establish that “the receipt is issued”. The converse implication is denied.",
+              "char_start": 0,
+              "char_end": 116,
+              "byte_start": 0,
+              "byte_end": 124
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_002_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_002_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_002_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_002_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_002_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_002_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_003",
+      "family": "reversed_implication",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_003_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_003",
+              "turn_id": "gpv1_validation_003_t1",
+              "coordinate_space": "turn.text",
+              "quote": "“the crane can lift” is possible only if “the cable is taut”.",
+              "char_start": 0,
+              "char_end": 61,
+              "byte_start": 0,
+              "byte_end": 69
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_003_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_003",
+              "turn_id": "gpv1_validation_003_t2",
+              "coordinate_space": "turn.text",
+              "quote": "“the cable is taut” alone does not establish that “the crane can lift”. The converse implication is denied.",
+              "char_start": 0,
+              "char_end": 107,
+              "byte_start": 0,
+              "byte_end": 115
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_003_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_003_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_003_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_003_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_003_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_003_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_004",
+      "family": "reversed_implication",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_004_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_004",
+              "turn_id": "gpv1_validation_004_t1",
+              "coordinate_space": "turn.text",
+              "quote": "„sonda nadaje” jest możliwe tylko wtedy, gdy „antena jest podłączona”.",
+              "char_start": 0,
+              "char_end": 70,
+              "byte_start": 0,
+              "byte_end": 81
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_004_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_004",
+              "turn_id": "gpv1_validation_004_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sam fakt „antena jest podłączona” nie oznacza „sonda nadaje”. Zaprzeczam implikacji odwrotnej.",
+              "char_start": 0,
+              "char_end": 94,
+              "byte_start": 0,
+              "byte_end": 104
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_004_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_004_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_004_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_004_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_004_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_004_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_005",
+      "family": "reversed_implication",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_005_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_005",
+              "turn_id": "gpv1_validation_005_t1",
+              "coordinate_space": "turn.text",
+              "quote": "„paragon jest wystawiony” jest możliwe tylko wtedy, gdy „płatność jest zapisana”.",
+              "char_start": 0,
+              "char_end": 81,
+              "byte_start": 0,
+              "byte_end": 93
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_005_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_005",
+              "turn_id": "gpv1_validation_005_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sam fakt „płatność jest zapisana” nie oznacza „paragon jest wystawiony”. Zaprzeczam implikacji odwrotnej.",
+              "char_start": 0,
+              "char_end": 105,
+              "byte_start": 0,
+              "byte_end": 116
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_005_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_005_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_005_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_005_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_005_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_005_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_006",
+      "family": "reversed_implication",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_006_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_006",
+              "turn_id": "gpv1_validation_006_t1",
+              "coordinate_space": "turn.text",
+              "quote": "„dźwig może podnosić” jest możliwe tylko wtedy, gdy „lina jest napięta”.",
+              "char_start": 0,
+              "char_end": 72,
+              "byte_start": 0,
+              "byte_end": 85
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_006_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "A",
+          "polarity": "negative",
+          "attributed_to": "engineer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_006",
+              "turn_id": "gpv1_validation_006_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Sam fakt „lina jest napięta” nie oznacza „dźwig może podnosić”. Zaprzeczam implikacji odwrotnej.",
+              "char_start": 0,
+              "char_end": 96,
+              "byte_start": 0,
+              "byte_end": 108
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_006_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_006_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_006_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_006_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_006_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_006_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_007",
+      "family": "relation_vs_topic",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_007_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_007",
+              "turn_id": "gpv1_validation_007_t2",
+              "coordinate_space": "turn.text",
+              "quote": "“the repainting” preceded “the rust finding”, but it did not cause it.",
+              "char_start": 0,
+              "char_end": 70,
+              "byte_start": 0,
+              "byte_end": 78
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_007_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_007",
+              "turn_id": "gpv1_validation_007_t3",
+              "coordinate_space": "turn.text",
+              "quote": "“the microscope image” supports “the rust finding”.",
+              "char_start": 0,
+              "char_end": 51,
+              "byte_start": 0,
+              "byte_end": 59
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_007_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_007_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_007_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_007_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_007_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_007_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_008",
+      "family": "relation_vs_topic",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_008_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_008",
+              "turn_id": "gpv1_validation_008_t2",
+              "coordinate_space": "turn.text",
+              "quote": "“the menu revision” preceded “the allergy report”, but it did not cause it.",
+              "char_start": 0,
+              "char_end": 75,
+              "byte_start": 0,
+              "byte_end": 83
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_008_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_008",
+              "turn_id": "gpv1_validation_008_t3",
+              "coordinate_space": "turn.text",
+              "quote": "“the ingredient list” supports “the allergy report”.",
+              "char_start": 0,
+              "char_end": 52,
+              "byte_start": 0,
+              "byte_end": 60
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_008_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_008_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_008_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_008_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_008_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_008_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_009",
+      "family": "relation_vs_topic",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_009_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_009",
+              "turn_id": "gpv1_validation_009_t2",
+              "coordinate_space": "turn.text",
+              "quote": "“the timetable change” preceded “the platform crowding”, but it did not cause it.",
+              "char_start": 0,
+              "char_end": 81,
+              "byte_start": 0,
+              "byte_end": 89
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_009_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_009",
+              "turn_id": "gpv1_validation_009_t3",
+              "coordinate_space": "turn.text",
+              "quote": "“the headcount log” supports “the platform crowding”.",
+              "char_start": 0,
+              "char_end": 53,
+              "byte_start": 0,
+              "byte_end": 61
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_009_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_009_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_009_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_009_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_009_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_009_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_010",
+      "family": "relation_vs_topic",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_010_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_010",
+              "turn_id": "gpv1_validation_010_t2",
+              "coordinate_space": "turn.text",
+              "quote": "„przemalowanie elementu” poprzedziło „wykrycie rdzy”, lecz go nie spowodowało.",
+              "char_start": 0,
+              "char_end": 78,
+              "byte_start": 0,
+              "byte_end": 88
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_010_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_010",
+              "turn_id": "gpv1_validation_010_t3",
+              "coordinate_space": "turn.text",
+              "quote": "„obraz mikroskopowy” wspiera „wykrycie rdzy”.",
+              "char_start": 0,
+              "char_end": 45,
+              "byte_start": 0,
+              "byte_end": 53
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_010_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_010_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_010_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_010_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_010_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_010_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_011",
+      "family": "relation_vs_topic",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_011_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_011",
+              "turn_id": "gpv1_validation_011_t2",
+              "coordinate_space": "turn.text",
+              "quote": "„zmiana menu” poprzedziło „zgłoszenie alergii”, lecz go nie spowodowało.",
+              "char_start": 0,
+              "char_end": 72,
+              "byte_start": 0,
+              "byte_end": 83
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_011_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_011",
+              "turn_id": "gpv1_validation_011_t3",
+              "coordinate_space": "turn.text",
+              "quote": "„lista składników” wspiera „zgłoszenie alergii”.",
+              "char_start": 0,
+              "char_end": 48,
+              "byte_start": 0,
+              "byte_end": 59
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_011_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_011_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_011_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_011_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_011_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_011_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_012",
+      "family": "relation_vs_topic",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_012_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_012",
+              "turn_id": "gpv1_validation_012_t2",
+              "coordinate_space": "turn.text",
+              "quote": "„zmiana rozkładu” poprzedziło „tłok na peronie”, lecz go nie spowodowało.",
+              "char_start": 0,
+              "char_end": 73,
+              "byte_start": 0,
+              "byte_end": 85
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_012_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "observer",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_012",
+              "turn_id": "gpv1_validation_012_t3",
+              "coordinate_space": "turn.text",
+              "quote": "„zapis liczby pasażerów” wspiera „tłok na peronie”.",
+              "char_start": 0,
+              "char_end": 51,
+              "byte_start": 0,
+              "byte_end": 62
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_012_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_012_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_012_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_012_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_012_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_012_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_013",
+      "family": "omitted_relation",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_013_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_013",
+              "turn_id": "gpv1_validation_013_t2",
+              "coordinate_space": "turn.text",
+              "quote": "I explicitly deny that “the vessel is warm” causes “the lid is loose”.",
+              "char_start": 0,
+              "char_end": 70,
+              "byte_start": 0,
+              "byte_end": 78
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_013_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "polarity": "positive",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_013",
+              "turn_id": "gpv1_validation_013_t3",
+              "coordinate_space": "turn.text",
+              "quote": "“the thermal image” supports the observation “the vessel is warm”. I stated no implication between the two observations.",
+              "char_start": 0,
+              "char_end": 120,
+              "byte_start": 0,
+              "byte_end": 128
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_013_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_013_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_013_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_013_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_013_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_013_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_014",
+      "family": "omitted_relation",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_014_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_014",
+              "turn_id": "gpv1_validation_014_t2",
+              "coordinate_space": "turn.text",
+              "quote": "I explicitly deny that “the basket is empty” causes “the roof is wet”.",
+              "char_start": 0,
+              "char_end": 70,
+              "byte_start": 0,
+              "byte_end": 78
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_014_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "polarity": "positive",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_014",
+              "turn_id": "gpv1_validation_014_t3",
+              "coordinate_space": "turn.text",
+              "quote": "“the inventory photograph” supports the observation “the basket is empty”. I stated no implication between the two observations.",
+              "char_start": 0,
+              "char_end": 128,
+              "byte_start": 0,
+              "byte_end": 136
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_014_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_014_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_014_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_014_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_014_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_014_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_015",
+      "family": "omitted_relation",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_015_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_015",
+              "turn_id": "gpv1_validation_015_t2",
+              "coordinate_space": "turn.text",
+              "quote": "I explicitly deny that “the display is dim” causes “the cable is bent”.",
+              "char_start": 0,
+              "char_end": 71,
+              "byte_start": 0,
+              "byte_end": 79
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_015_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "polarity": "positive",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_015",
+              "turn_id": "gpv1_validation_015_t3",
+              "coordinate_space": "turn.text",
+              "quote": "“the luminance record” supports the observation “the display is dim”. I stated no implication between the two observations.",
+              "char_start": 0,
+              "char_end": 123,
+              "byte_start": 0,
+              "byte_end": 131
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_015_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_015_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_015_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_015_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_015_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_015_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_016",
+      "family": "omitted_relation",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_016_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_016",
+              "turn_id": "gpv1_validation_016_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Jawnie zaprzeczam temu, że „naczynie jest ciepłe” powoduje „pokrywa jest luźna”.",
+              "char_start": 0,
+              "char_end": 80,
+              "byte_start": 0,
+              "byte_end": 91
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_016_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "polarity": "positive",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_016",
+              "turn_id": "gpv1_validation_016_t3",
+              "coordinate_space": "turn.text",
+              "quote": "„obraz termiczny” wspiera obserwację „naczynie jest ciepłe”. Nie podałem żadnej implikacji między dwiema obserwacjami.",
+              "char_start": 0,
+              "char_end": 118,
+              "byte_start": 0,
+              "byte_end": 131
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_016_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_016_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_016_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_016_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_016_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_016_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_017",
+      "family": "omitted_relation",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_017_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_017",
+              "turn_id": "gpv1_validation_017_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Jawnie zaprzeczam temu, że „kosz jest pusty” powoduje „dach jest mokry”.",
+              "char_start": 0,
+              "char_end": 72,
+              "byte_start": 0,
+              "byte_end": 81
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_017_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "polarity": "positive",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_017",
+              "turn_id": "gpv1_validation_017_t3",
+              "coordinate_space": "turn.text",
+              "quote": "„zdjęcie inwentaryzacyjne” wspiera obserwację „kosz jest pusty”. Nie podałem żadnej implikacji między dwiema obserwacjami.",
+              "char_start": 0,
+              "char_end": 122,
+              "byte_start": 0,
+              "byte_end": 135
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_017_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_017_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_017_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_017_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_017_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_017_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_018",
+      "family": "omitted_relation",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_018_e1",
+          "relation": "causes",
+          "source": "A",
+          "target": "B",
+          "polarity": "negative",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_018",
+              "turn_id": "gpv1_validation_018_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Jawnie zaprzeczam temu, że „wyświetlacz jest ciemny” powoduje „przewód jest zgięty”.",
+              "char_start": 0,
+              "char_end": 84,
+              "byte_start": 0,
+              "byte_end": 96
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_018_e2",
+          "relation": "supports",
+          "source": "C",
+          "target": "A",
+          "polarity": "positive",
+          "attributed_to": "recorder",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_018",
+              "turn_id": "gpv1_validation_018_t3",
+              "coordinate_space": "turn.text",
+              "quote": "„zapis luminancji” wspiera obserwację „wyświetlacz jest ciemny”. Nie podałem żadnej implikacji między dwiema obserwacjami.",
+              "char_start": 0,
+              "char_end": 122,
+              "byte_start": 0,
+              "byte_end": 135
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_018_q1",
+          "label": "supported",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_018_e2"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_018_q2",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_018_e1"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_018_q3",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_018_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": []
+    },
+    {
+      "id": "gpv1_validation_019",
+      "family": "multihop_alternatives",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_019_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_019",
+              "turn_id": "gpv1_validation_019_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the red switch is pressed, the primary relay closes.",
+              "char_start": 0,
+              "char_end": 55,
+              "byte_start": 0,
+              "byte_end": 55
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_019_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_019",
+              "turn_id": "gpv1_validation_019_t2",
+              "coordinate_space": "turn.text",
+              "quote": "If the primary relay closes, the bell rings.",
+              "char_start": 0,
+              "char_end": 44,
+              "byte_start": 0,
+              "byte_end": 44
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_019_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "D",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_019",
+              "turn_id": "gpv1_validation_019_t3",
+              "coordinate_space": "turn.text",
+              "quote": "If the red switch is pressed, the backup relay closes.",
+              "char_start": 0,
+              "char_end": 54,
+              "byte_start": 0,
+              "byte_end": 54
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_019_e4",
+          "relation": "implies",
+          "source": "D",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_019",
+              "turn_id": "gpv1_validation_019_t4",
+              "coordinate_space": "turn.text",
+              "quote": "If the backup relay closes, the bell rings.",
+              "char_start": 0,
+              "char_end": 43,
+              "byte_start": 0,
+              "byte_end": 43
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_019_e5",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "polarity": "negative",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_019",
+              "turn_id": "gpv1_validation_019_t5",
+              "coordinate_space": "turn.text",
+              "quote": "I stated only those four rules, not a direct sentence from the first condition to the final result. “the primary relay closes” does not imply “the backup relay closes”.",
+              "char_start": 0,
+              "char_end": 168,
+              "byte_start": 0,
+              "byte_end": 176
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_019_q1",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_019_q2",
+          "label": "supported",
+          "basis_class": "inferred_path",
+          "support_assertion_ids": [
+            "gpv1_validation_019_e1",
+            "gpv1_validation_019_e2",
+            "gpv1_validation_019_e3",
+            "gpv1_validation_019_e4"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_019_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_019_e5"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_019_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": [
+        {
+          "query_id": "gpv1_validation_019_q2",
+          "evidence_class": "inferred",
+          "minimal_support_paths": [
+            [
+              "gpv1_validation_019_e1",
+              "gpv1_validation_019_e2"
+            ],
+            [
+              "gpv1_validation_019_e3",
+              "gpv1_validation_019_e4"
+            ]
+          ],
+          "content_truth": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_020",
+      "family": "multihop_alternatives",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_020_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_020",
+              "turn_id": "gpv1_validation_020_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the packet is accepted, the first queue advances.",
+              "char_start": 0,
+              "char_end": 52,
+              "byte_start": 0,
+              "byte_end": 52
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_020_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_020",
+              "turn_id": "gpv1_validation_020_t2",
+              "coordinate_space": "turn.text",
+              "quote": "If the first queue advances, the job runs.",
+              "char_start": 0,
+              "char_end": 42,
+              "byte_start": 0,
+              "byte_end": 42
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_020_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "D",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_020",
+              "turn_id": "gpv1_validation_020_t3",
+              "coordinate_space": "turn.text",
+              "quote": "If the packet is accepted, the second queue advances.",
+              "char_start": 0,
+              "char_end": 53,
+              "byte_start": 0,
+              "byte_end": 53
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_020_e4",
+          "relation": "implies",
+          "source": "D",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_020",
+              "turn_id": "gpv1_validation_020_t4",
+              "coordinate_space": "turn.text",
+              "quote": "If the second queue advances, the job runs.",
+              "char_start": 0,
+              "char_end": 43,
+              "byte_start": 0,
+              "byte_end": 43
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_020_e5",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "polarity": "negative",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_020",
+              "turn_id": "gpv1_validation_020_t5",
+              "coordinate_space": "turn.text",
+              "quote": "I stated only those four rules, not a direct sentence from the first condition to the final result. “the first queue advances” does not imply “the second queue advances”.",
+              "char_start": 0,
+              "char_end": 170,
+              "byte_start": 0,
+              "byte_end": 178
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_020_q1",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_020_q2",
+          "label": "supported",
+          "basis_class": "inferred_path",
+          "support_assertion_ids": [
+            "gpv1_validation_020_e1",
+            "gpv1_validation_020_e2",
+            "gpv1_validation_020_e3",
+            "gpv1_validation_020_e4"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_020_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_020_e5"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_020_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": [
+        {
+          "query_id": "gpv1_validation_020_q2",
+          "evidence_class": "inferred",
+          "minimal_support_paths": [
+            [
+              "gpv1_validation_020_e1",
+              "gpv1_validation_020_e2"
+            ],
+            [
+              "gpv1_validation_020_e3",
+              "gpv1_validation_020_e4"
+            ]
+          ],
+          "content_truth": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_021",
+      "family": "multihop_alternatives",
+      "language": "en",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_021_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_021",
+              "turn_id": "gpv1_validation_021_t1",
+              "coordinate_space": "turn.text",
+              "quote": "If the rain starts, the gutter fills.",
+              "char_start": 0,
+              "char_end": 37,
+              "byte_start": 0,
+              "byte_end": 37
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_021_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_021",
+              "turn_id": "gpv1_validation_021_t2",
+              "coordinate_space": "turn.text",
+              "quote": "If the gutter fills, the cistern receives water.",
+              "char_start": 0,
+              "char_end": 48,
+              "byte_start": 0,
+              "byte_end": 48
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_021_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "D",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_021",
+              "turn_id": "gpv1_validation_021_t3",
+              "coordinate_space": "turn.text",
+              "quote": "If the rain starts, the bypass fills.",
+              "char_start": 0,
+              "char_end": 37,
+              "byte_start": 0,
+              "byte_end": 37
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_021_e4",
+          "relation": "implies",
+          "source": "D",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_021",
+              "turn_id": "gpv1_validation_021_t4",
+              "coordinate_space": "turn.text",
+              "quote": "If the bypass fills, the cistern receives water.",
+              "char_start": 0,
+              "char_end": 48,
+              "byte_start": 0,
+              "byte_end": 48
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_021_e5",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "polarity": "negative",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_021",
+              "turn_id": "gpv1_validation_021_t5",
+              "coordinate_space": "turn.text",
+              "quote": "I stated only those four rules, not a direct sentence from the first condition to the final result. “the gutter fills” does not imply “the bypass fills”.",
+              "char_start": 0,
+              "char_end": 153,
+              "byte_start": 0,
+              "byte_end": 161
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_021_q1",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_021_q2",
+          "label": "supported",
+          "basis_class": "inferred_path",
+          "support_assertion_ids": [
+            "gpv1_validation_021_e1",
+            "gpv1_validation_021_e2",
+            "gpv1_validation_021_e3",
+            "gpv1_validation_021_e4"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_021_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_021_e5"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_021_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": [
+        {
+          "query_id": "gpv1_validation_021_q2",
+          "evidence_class": "inferred",
+          "minimal_support_paths": [
+            [
+              "gpv1_validation_021_e1",
+              "gpv1_validation_021_e2"
+            ],
+            [
+              "gpv1_validation_021_e3",
+              "gpv1_validation_021_e4"
+            ]
+          ],
+          "content_truth": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_022",
+      "family": "multihop_alternatives",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_022_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_022",
+              "turn_id": "gpv1_validation_022_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli czerwony przycisk jest naciśnięty, główny przekaźnik się zamyka.",
+              "char_start": 0,
+              "char_end": 70,
+              "byte_start": 0,
+              "byte_end": 77
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_022_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_022",
+              "turn_id": "gpv1_validation_022_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli główny przekaźnik się zamyka, dzwonek dzwoni.",
+              "char_start": 0,
+              "char_end": 51,
+              "byte_start": 0,
+              "byte_end": 56
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_022_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "D",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_022",
+              "turn_id": "gpv1_validation_022_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli czerwony przycisk jest naciśnięty, zapasowy przekaźnik się zamyka.",
+              "char_start": 0,
+              "char_end": 72,
+              "byte_start": 0,
+              "byte_end": 77
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_022_e4",
+          "relation": "implies",
+          "source": "D",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_022",
+              "turn_id": "gpv1_validation_022_t4",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli zapasowy przekaźnik się zamyka, dzwonek dzwoni.",
+              "char_start": 0,
+              "char_end": 53,
+              "byte_start": 0,
+              "byte_end": 56
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_022_e5",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "polarity": "negative",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_022",
+              "turn_id": "gpv1_validation_022_t5",
+              "coordinate_space": "turn.text",
+              "quote": "Podałem tylko te cztery reguły, bez bezpośredniego zdania od pierwszego warunku do końcowego wyniku. „główny przekaźnik się zamyka” nie implikuje „zapasowy przekaźnik się zamyka”.",
+              "char_start": 0,
+              "char_end": 179,
+              "byte_start": 0,
+              "byte_end": 197
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_022_q1",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_022_q2",
+          "label": "supported",
+          "basis_class": "inferred_path",
+          "support_assertion_ids": [
+            "gpv1_validation_022_e1",
+            "gpv1_validation_022_e2",
+            "gpv1_validation_022_e3",
+            "gpv1_validation_022_e4"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_022_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_022_e5"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_022_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": [
+        {
+          "query_id": "gpv1_validation_022_q2",
+          "evidence_class": "inferred",
+          "minimal_support_paths": [
+            [
+              "gpv1_validation_022_e1",
+              "gpv1_validation_022_e2"
+            ],
+            [
+              "gpv1_validation_022_e3",
+              "gpv1_validation_022_e4"
+            ]
+          ],
+          "content_truth": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_023",
+      "family": "multihop_alternatives",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_023_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_023",
+              "turn_id": "gpv1_validation_023_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli pakiet jest przyjęty, pierwsza kolejka się przesuwa.",
+              "char_start": 0,
+              "char_end": 58,
+              "byte_start": 0,
+              "byte_end": 61
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_023_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_023",
+              "turn_id": "gpv1_validation_023_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli pierwsza kolejka się przesuwa, zadanie rusza.",
+              "char_start": 0,
+              "char_end": 51,
+              "byte_start": 0,
+              "byte_end": 53
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_023_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "D",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_023",
+              "turn_id": "gpv1_validation_023_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli pakiet jest przyjęty, druga kolejka się przesuwa.",
+              "char_start": 0,
+              "char_end": 55,
+              "byte_start": 0,
+              "byte_end": 58
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_023_e4",
+          "relation": "implies",
+          "source": "D",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_023",
+              "turn_id": "gpv1_validation_023_t4",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli druga kolejka się przesuwa, zadanie rusza.",
+              "char_start": 0,
+              "char_end": 48,
+              "byte_start": 0,
+              "byte_end": 50
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_023_e5",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "polarity": "negative",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_023",
+              "turn_id": "gpv1_validation_023_t5",
+              "coordinate_space": "turn.text",
+              "quote": "Podałem tylko te cztery reguły, bez bezpośredniego zdania od pierwszego warunku do końcowego wyniku. „pierwsza kolejka się przesuwa” nie implikuje „druga kolejka się przesuwa”.",
+              "char_start": 0,
+              "char_end": 176,
+              "byte_start": 0,
+              "byte_end": 190
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_023_q1",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_023_q2",
+          "label": "supported",
+          "basis_class": "inferred_path",
+          "support_assertion_ids": [
+            "gpv1_validation_023_e1",
+            "gpv1_validation_023_e2",
+            "gpv1_validation_023_e3",
+            "gpv1_validation_023_e4"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_023_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_023_e5"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_023_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": [
+        {
+          "query_id": "gpv1_validation_023_q2",
+          "evidence_class": "inferred",
+          "minimal_support_paths": [
+            [
+              "gpv1_validation_023_e1",
+              "gpv1_validation_023_e2"
+            ],
+            [
+              "gpv1_validation_023_e3",
+              "gpv1_validation_023_e4"
+            ]
+          ],
+          "content_truth": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "gpv1_validation_024",
+      "family": "multihop_alternatives",
+      "language": "pl",
+      "source_assertions": [
+        {
+          "id": "gpv1_validation_024_e1",
+          "relation": "implies",
+          "source": "A",
+          "target": "B",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:00:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_024",
+              "turn_id": "gpv1_validation_024_t1",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli deszcz zaczyna padać, rynna się wypełnia.",
+              "char_start": 0,
+              "char_end": 47,
+              "byte_start": 0,
+              "byte_end": 51
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_024_e2",
+          "relation": "implies",
+          "source": "B",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:01:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_024",
+              "turn_id": "gpv1_validation_024_t2",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli rynna się wypełnia, woda dociera do zbiornika.",
+              "char_start": 0,
+              "char_end": 52,
+              "byte_start": 0,
+              "byte_end": 55
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_024_e3",
+          "relation": "implies",
+          "source": "A",
+          "target": "D",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:02:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_024",
+              "turn_id": "gpv1_validation_024_t3",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli deszcz zaczyna padać, kanał obejściowy się wypełnia.",
+              "char_start": 0,
+              "char_end": 58,
+              "byte_start": 0,
+              "byte_end": 64
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_024_e4",
+          "relation": "implies",
+          "source": "D",
+          "target": "C",
+          "polarity": "positive",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:03:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_024",
+              "turn_id": "gpv1_validation_024_t4",
+              "coordinate_space": "turn.text",
+              "quote": "Jeśli kanał obejściowy się wypełnia, woda dociera do zbiornika.",
+              "char_start": 0,
+              "char_end": 63,
+              "byte_start": 0,
+              "byte_end": 68
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        },
+        {
+          "id": "gpv1_validation_024_e5",
+          "relation": "implies",
+          "source": "B",
+          "target": "D",
+          "polarity": "negative",
+          "attributed_to": "logician",
+          "known_at": "2026-08-10T09:04:00Z",
+          "evidence": [
+            {
+              "source_id": "synthetic:gpv1_validation_024",
+              "turn_id": "gpv1_validation_024_t5",
+              "coordinate_space": "turn.text",
+              "quote": "Podałem tylko te cztery reguły, bez bezpośredniego zdania od pierwszego warunku do końcowego wyniku. „rynna się wypełnia” nie implikuje „kanał obejściowy się wypełnia”.",
+              "char_start": 0,
+              "char_end": 168,
+              "byte_start": 0,
+              "byte_end": 186
+            }
+          ],
+          "content_truth": "unverified",
+          "basis_class": "observed_source_assertion"
+        }
+      ],
+      "status_events": [],
+      "judgments": [
+        {
+          "query_id": "gpv1_validation_024_q1",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_024_q2",
+          "label": "supported",
+          "basis_class": "inferred_path",
+          "support_assertion_ids": [
+            "gpv1_validation_024_e1",
+            "gpv1_validation_024_e2",
+            "gpv1_validation_024_e3",
+            "gpv1_validation_024_e4"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_024_q3",
+          "label": "refuted",
+          "basis_class": "observed_source_assertion",
+          "support_assertion_ids": [
+            "gpv1_validation_024_e5"
+          ],
+          "content_truth": "unverified"
+        },
+        {
+          "query_id": "gpv1_validation_024_q4",
+          "label": "unknown",
+          "basis_class": "none",
+          "support_assertion_ids": [],
+          "content_truth": "unverified"
+        }
+      ],
+      "formal_paths": [
+        {
+          "query_id": "gpv1_validation_024_q2",
+          "evidence_class": "inferred",
+          "minimal_support_paths": [
+            [
+              "gpv1_validation_024_e1",
+              "gpv1_validation_024_e2"
+            ],
+            [
+              "gpv1_validation_024_e3",
+              "gpv1_validation_024_e4"
+            ]
+          ],
+          "content_truth": "unverified"
+        }
+      ]
+    }
+  ]
+}

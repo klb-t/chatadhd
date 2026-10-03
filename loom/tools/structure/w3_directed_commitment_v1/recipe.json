@@ -1,0 +1,7 @@
+{
+  "schema": "loom.w3_directed_commitment.recipe/1",
+  "id": "directed_refute_v3",
+  "parent": "active_refute_v2",
+  "changed_field": "questions.q02.criteria.false",
+  "append": " Match the speaker and the ORDERED source and target propositions before applying a denial or withdrawal. Withdrawing P implies Q says nothing about Q implies P, which remains unsupported and unrefuted unless separately stated. A withdrawn denial stays withdrawn when later turns discuss other matters; unrelated speech does not reinstate it. Negation inside P or Q is part of that proposition, not a denial of the whole directed relation. Reporting another person's stance without endorsement is not the reporter's denial."
+}

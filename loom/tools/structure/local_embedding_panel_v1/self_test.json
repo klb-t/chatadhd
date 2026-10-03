@@ -1,0 +1,41 @@
+{
+  "schema": "loom.local_embedding_panel.self_test/1",
+  "runtime": {
+    "inputs": [
+      "input_ids",
+      "attention_mask",
+      "token_type_ids"
+    ],
+    "outputs": [
+      "last_hidden_state"
+    ],
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "threads": 2,
+    "versions": {
+      "python": "3.12.14",
+      "numpy": "2.5.3",
+      "onnxruntime": "1.23.2",
+      "tokenizers": "0.22.1",
+      "protobuf": "7.36.2",
+      "sympy": "1.14.0",
+      "packaging": "26.3",
+      "huggingface-hub": "1.33.0"
+    },
+    "environment_sha256": "3088d890c73848cc0c490bb33badbb6071be8285875fb47b1a82bc4fbfa02f9f"
+  },
+  "identity_cosine": 1.000000073250756,
+  "dimensions": 384,
+  "short_tokenization": {
+    "untruncated_tokens": 11,
+    "encoded_tokens": 11,
+    "truncated": false
+  },
+  "long_tokenization": {
+    "untruncated_tokens": 402,
+    "encoded_tokens": 128,
+    "truncated": true
+  },
+  "quality_model_measurement": false
+}

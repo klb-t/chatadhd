@@ -1,0 +1,57 @@
+{
+  "source_checkpoint": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+  "native_source_unchanged_from_checkpoint": true,
+  "build": {
+    "preset": "dev",
+    "type": "Debug",
+    "debug_flags": "-O0 -g0",
+    "warnings_as_errors": true,
+    "bundled_sqlite": true,
+    "server_enabled": true,
+    "parallel_jobs": 4,
+    "generated_artifacts_on_local_temporary_volume": true
+  },
+  "ctest": {
+    "command": "env -u PYTHONPATH -u TMPDIR ctest --preset dev",
+    "passed": 107,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 82.02,
+    "log": "ctest-final-first.log"
+  },
+  "python": "3.12.14",
+  "packages": {
+    "jsonschema": "4.26.0",
+    "referencing": "0.37.0",
+    "requests": "2.34.2",
+    "cryptography": "46.0.0"
+  },
+  "binaries": {
+    "loom/build/dev/libloom.so.0.1.0": "9611d7fdff2fbd2a4cd85b18c744cd5e52c4cf1c86556a66a0ac6bd58cb62362",
+    "loom/build/dev/loom_tests": "0b610a93838598830d528bcdfc0a5b73468cf06d41285ccd3f93a8e0d2b7cd02",
+    "loom/build/dev/server/loom-server": "8267caca1f69b49e33c07943f4e660aa3d3bc2cec4105befe51a40768ac613a2",
+    "loom/build/dev/cli/loom": "98dfb774cf8a2191019e34babe18ecf61291bbf63f45e2ac096b1fa0fc17926d"
+  },
+  "web": {
+    "production_build": "passed",
+    "workspace_state_groups": 8,
+    "workspace_native_browser_scenarios": 10,
+    "chat_context_fake_provider_calls": 5,
+    "generic_e2e_scenarios": 16,
+    "remote_model_calls": 0
+  },
+  "new_analysis_preparation": {
+    "planned_model_requests": 432,
+    "executed_model_requests": 0,
+    "offline_boundary_tests_passed": 10,
+    "run_blocker": "programme credential absent; current account usage unavailable"
+  },
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "cmake": "cmake version 4.4.3",
+  "node": "v24.19.0",
+  "post_experiment_structure": {
+    "passed": 853,
+    "ctest_entry_passed": true,
+    "seconds": 29.25
+  }
+}

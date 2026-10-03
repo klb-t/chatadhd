@@ -14,8 +14,10 @@ The LLM receives a structured prompt and returns JSON with:
 Cost estimate: Haiku at ~$0.25/M input → analysing a 500-token message
 costs ~$0.000125.  At 200 messages/day ≈ $0.025/day.
 """
+import hashlib
 import json
 import logging
+import threading
 from typing import Any, Optional
 
 import requests
@@ -54,15 +56,59 @@ class SemanticLLM:
         self.secrets = secrets
         self._consecutive_failures = 0
         self._disabled_by_errors = False
+        self._state_lock = threading.Lock()
+        self._config_identity = None
+        self._config_generation = 0
+
+    def _settings_locked(self) -> tuple:
+        """Snapshot request settings; only a key digest survives in state."""
+        config = self.config.all()
+        model = config.get("semantic_model", "")
+        base = config.get("base_url", "")
+        key = self.secrets.get("api_key", "")
+        return (bool(config.get("semantic_analysis", True)),
+                model if isinstance(model, str) else "",
+                base.rstrip("/") if isinstance(base, str) else "",
+                key if isinstance(key, str) else "")
+
+    def _refresh_identity_locked(self, settings: tuple) -> None:
+        active, model, base, key = settings
+        identity = (active, model, base, hashlib.sha256(key.encode("utf-8")).digest())
+        if identity != self._config_identity:
+            self._config_identity = identity
+            self._config_generation += 1
+            self._consecutive_failures = 0
+            self._disabled_by_errors = False
+
+    def reset_failures(self) -> None:
+        """Explicitly retry current settings; old in-flight calls cannot undo it."""
+        with self._state_lock:
+            self._config_generation += 1
+            self._consecutive_failures = 0
+            self._disabled_by_errors = False
+
+    def _record_result(self, generation: int, success: bool) -> None:
+        with self._state_lock:
+            self._refresh_identity_locked(self._settings_locked())
+            if generation != self._config_generation or self._disabled_by_errors:
+                return
+            if success:
+                self._consecutive_failures = 0
+            else:
+                self._consecutive_failures += 1
+                if self._consecutive_failures >= 5:
+                    self._disabled_by_errors = True
+                    log.warning("Semantic LLM disabled after %d consecutive failures. "
+                                "Check semantic model, endpoint and credentials in Settings.",
+                                self._consecutive_failures)
 
     @property
     def enabled(self) -> bool:
-        return bool(
-            not self._disabled_by_errors
-            and self.config.get("semantic_analysis", True)
-            and self.config.get("semantic_model")
-            and self.secrets.get("api_key")
-        )
+        with self._state_lock:
+            settings = self._settings_locked()
+            self._refresh_identity_locked(settings)
+            active, model, _, key = settings
+            return bool(not self._disabled_by_errors and active and model and key)
 
     def analyse(self, text: str) -> dict[str, Any]:
         """
@@ -72,33 +118,33 @@ class SemanticLLM:
         # Always run regex first (instant, free).
         regex_result = regex_analyzer.analyse(text)
 
-        if not self.enabled or len(text) < 20:
-            return self._convert_regex(regex_result)
+        with self._state_lock:
+            settings = self._settings_locked()
+            self._refresh_identity_locked(settings)
+            active, model, _, key = settings
+            if self._disabled_by_errors or not (active and model and key) or len(text) < 20:
+                return self._convert_regex(regex_result)
+            generation = self._config_generation
 
         try:
-            llm_result = self._call_llm(text)
+            llm_result = self._call_llm(text, settings)
             if llm_result:
-                self._consecutive_failures = 0
                 # Merge: LLM results + regex entities that LLM might have missed.
-                return self._merge(llm_result, regex_result)
-            else:
-                self._consecutive_failures += 1
+                merged = self._merge(llm_result, regex_result)
+                self._record_result(generation, True)
+                return merged
         except Exception:
             log.debug("LLM semantic analysis failed — using regex", exc_info=True)
-            self._consecutive_failures += 1
-
-        if self._consecutive_failures >= 5:
-            self._disabled_by_errors = True
-            log.warning("Semantic LLM disabled after %d consecutive failures. "
-                        "Check model ID in Settings.", self._consecutive_failures)
+        self._record_result(generation, False)
 
         return self._convert_regex(regex_result)
 
-    def _call_llm(self, text: str) -> Optional[dict]:
+    def _call_llm(self, text: str, settings: Optional[tuple] = None) -> Optional[dict]:
         """Call the semantic model and parse JSON response."""
-        key = self.secrets.get("api_key")
-        base = self.config.get("base_url", "").rstrip("/")
-        model = self.config.get("semantic_model")
+        if settings is None:
+            with self._state_lock:
+                settings = self._settings_locked()
+        _, model, base, key = settings
 
         if not all((key, base, model)):
             return None

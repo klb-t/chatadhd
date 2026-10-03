@@ -1,0 +1,183 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "brainstorm",
+ "version": 1,
+ "title": {
+  "en": "Brainstorm",
+  "pl": "Burza mózgów"
+ },
+ "description": "An unstructured capture (R10): items of any kind (features, implementation details, principles, data sources; characters, scenes; arguments, evidence, legal bases) plus generalizations that delimit areas. Processed automatically: segment into items, detect generalizations and their areas, classify items against the roles, map into slots with provenance, deduplicate across brainstorms, infer unlisted members, flag gaps.",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+   "date": "2026-09-26",
+   "section": "R10"
+  },
+  {
+   "doc": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+   "date": "2026-09-26",
+   "section": "§3.7"
+  }
+ ],
+ "medium": "text",
+ "detect": {
+  "any": [
+   {
+    "op": "cue",
+    "value": "paradigm.brainstorm"
+   },
+   {
+    "op": "heading",
+    "value": "brainstorm"
+   },
+   {
+    "op": "heading",
+    "value": "burza mózgów"
+   },
+   {
+    "op": "cue",
+    "value": "generalization"
+   }
+  ],
+  "min_score": 0.35
+ },
+ "parse": {
+  "segment": [
+   "markdown_sections",
+   "list_items",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "heading",
+   "list_item",
+   "sentence"
+  ]
+ },
+ "extract": [
+  {
+   "op": "items"
+  },
+  {
+   "op": "generalizations"
+  },
+  {
+   "op": "areas"
+  },
+  {
+   "op": "normative"
+  },
+  {
+   "op": "entities_lexicon"
+  },
+  {
+   "op": "decisions"
+  },
+  {
+   "op": "status_cues"
+  }
+ ],
+ "structure": [
+  {
+   "name": "topic",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "items",
+   "type": "record[]",
+   "card": "many",
+   "required": true,
+   "description": "listed items of any kind, each classified against the project kind's roles",
+   "fields": {
+    "text": {
+     "type": "text"
+    },
+    "role": {
+     "type": "string"
+    },
+    "kind": {
+     "type": "string"
+    },
+    "observation": {
+     "type": "string"
+    }
+   }
+  },
+  {
+   "name": "generalizations",
+   "type": "record[]",
+   "card": "many",
+   "description": "umbrella statements that delimit an area ('everything is data'); each becomes a candidate principle scoped to its area",
+   "fields": {
+    "statement": {
+     "type": "text"
+    },
+    "principle": {
+     "type": "string"
+    },
+    "observation": {
+     "type": "string"
+    }
+   }
+  },
+  {
+   "name": "areas",
+   "type": "record[]",
+   "card": "many",
+   "description": "regions delimited by a generalization: roles/kinds under the subject, listed members (observed) and inferred members; an empty area is a gap (model §3.7)",
+   "fields": {
+    "statement": {
+     "type": "text"
+    },
+    "roles": {
+     "type": "string",
+     "card": "many"
+    },
+    "kinds": {
+     "type": "string",
+     "card": "many"
+    },
+    "members": {
+     "type": "string",
+     "card": "many"
+    },
+    "inferred_members": {
+     "type": "string",
+     "card": "many"
+    },
+    "gap": {
+     "type": "string"
+    }
+   }
+  },
+  {
+   "name": "options",
+   "type": "entity:option",
+   "card": "many"
+  },
+  {
+   "name": "chosen",
+   "type": "entity:option",
+   "card": "one",
+   "rules": [
+    "r.brainstorm_chosen_from_decision"
+   ]
+  },
+  {
+   "name": "rejected",
+   "type": "entity:option",
+   "card": "many",
+   "rules": [
+    "r.brainstorm_rejected_complement"
+   ]
+  },
+  {
+   "name": "open_questions",
+   "type": "text",
+   "card": "many"
+  }
+ ]
+}

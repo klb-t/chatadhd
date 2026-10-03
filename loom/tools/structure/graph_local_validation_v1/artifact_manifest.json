@@ -1,0 +1,89 @@
+{
+  "artifact_count": 16,
+  "files": [
+    {
+      "bytes": 2036,
+      "path": "PROTOCOL.md",
+      "sha256": "a90adc1340e30a1bbb2e419a64aa877ad1332f1053350d6786c01445ed446cd4"
+    },
+    {
+      "bytes": 2351,
+      "path": "README.md",
+      "sha256": "0ab0955ac897414712adfb4a7965710fcf6f664bf8900c80e2a3c350425c5ec7"
+    },
+    {
+      "bytes": 503,
+      "path": "dev_transport_equivalence.json",
+      "sha256": "5cdb9bcf1ec0bfcf418a7365dcce6da57e58b6e5aae0f49d4e90b2d9ded31d69"
+    },
+    {
+      "bytes": 537,
+      "path": "dev_transport_first/embedding_protocol.json",
+      "sha256": "5c0fcd75a8d89501e47616e37bb31da4f3cb89f8e541bb0edb9615f1853cdc7a"
+    },
+    {
+      "bytes": 45237,
+      "path": "dev_transport_first/embedding_scores.json",
+      "sha256": "1b5a6e6ce5917bea54f404295aa268e459731ad0d7b20b8262f18d140989f8d0"
+    },
+    {
+      "bytes": 395598,
+      "path": "dev_transport_first/first_results.json",
+      "sha256": "25cae6a39ae23a478f7b5b30b0a8377931342c0d92b9c1893c890fba722722ba"
+    },
+    {
+      "bytes": 328100,
+      "path": "dev_transport_first/first_scores.json",
+      "sha256": "e14101ae63eb240ec372ef10c49aa566621233da55b577f474b48ac8f751b0fa"
+    },
+    {
+      "bytes": 787,
+      "path": "dev_transport_first/freeze_before_gold.json",
+      "sha256": "bb15452b1fd88951627ef0b61162437f1c694452e453c43b7503997a681304d5"
+    },
+    {
+      "bytes": 186534,
+      "path": "dev_transport_first/naive_predictions.json",
+      "sha256": "9408796baf337faf8b76c437d3bb9c336447b7d91b0a7e0a40a084a6f9a62cb4"
+    },
+    {
+      "bytes": 432939,
+      "path": "dev_transport_first/prepared_inputs.json",
+      "sha256": "a731fc297470feac3cb0180a62d153a1963daf68704a56d50621379c2da12d15"
+    },
+    {
+      "bytes": 49628,
+      "path": "dev_transport_first/text_vector_index.json",
+      "sha256": "b24b51edd182bb8614806d7e5eeb839cf0b6276a3cb20dbcd38cc313b9adbad4"
+    },
+    {
+      "bytes": 224384,
+      "path": "dev_transport_first/vectors.npy",
+      "sha256": "b7bf631107ff8e8733971e85df5d51f538d6d0ff8ba089c87a86fff876f3fe79"
+    },
+    {
+      "bytes": 14203,
+      "path": "graph_local_validation.py",
+      "sha256": "4997dd6b0a101720e4fba8fb12f373a81e38c1dc2a4b980542990a1d6ff5e15f"
+    },
+    {
+      "bytes": 1077,
+      "path": "mechanism_tests.log",
+      "sha256": "e22ee667c222237b03b179ac1939daaaa13fb753bbdb4c8e265eaa5f5a86cdeb"
+    },
+    {
+      "bytes": 1837,
+      "path": "release.json",
+      "sha256": "bc4d6afdca9cb99a2a660d1e3a90829654cf667ada0dd77de38b6e2eb588bdcd"
+    },
+    {
+      "bytes": 4526,
+      "path": "test_wrapper.py",
+      "sha256": "86455923985b13444d98fbd03bfc361af1313df983fa38259a534d1aa847cbfb"
+    }
+  ],
+  "folder": "graph_local_validation_v1",
+  "schema": "loom.research.artifact_manifest/1",
+  "total_bytes": 1690277,
+  "validation_accessed_by_preparation": false
+}

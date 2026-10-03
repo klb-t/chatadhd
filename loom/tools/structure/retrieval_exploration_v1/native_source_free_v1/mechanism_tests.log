@@ -1,0 +1,17 @@
+test_exact_pointer_unicode_byte_grounding (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeGroundingTests.test_exact_pointer_unicode_byte_grounding) ... ok
+test_inside_unicode_codepoint_rejected (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeGroundingTests.test_inside_unicode_codepoint_rejected) ... ok
+test_rfc6901_escaping (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeGroundingTests.test_rfc6901_escaping) ... ok
+test_wrong_quote_rejected (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeGroundingTests.test_wrong_quote_rejected) ... ok
+test_duplicate_turn_identity_rejected (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_duplicate_turn_identity_rejected) ... ok
+test_epoch_roundtrip_exact (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_epoch_roundtrip_exact) ... ok
+test_exact_unicode_source_content_preserved (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_exact_unicode_source_content_preserved) ... ok
+test_linear_parent_children_order (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_linear_parent_children_order) ... ok
+test_literal_speaker_control_is_explicit_not_silent_repair (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_literal_speaker_control_is_explicit_not_silent_repair) ... ok
+test_original_speaker_and_date_metadata_preserved (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_original_speaker_and_date_metadata_preserved) ... ok
+test_source_only_strips_all_supplied_nodes_queries_gold (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_source_only_strips_all_supplied_nodes_queries_gold) ... ok
+test_unknown_arm_rejected (loom.tools.structure.retrieval_exploration_v1.native_source_free_v1.test_native_panel.NativeWrapperTests.test_unknown_arm_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.001s
+
+OK

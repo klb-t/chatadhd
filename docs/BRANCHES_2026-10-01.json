@@ -1,0 +1,624 @@
+{
+  "schema": "chatadhd.branch_inventory/1",
+  "observed_date": "2026-10-01",
+  "main_before": "b5f7eacdead11101e5c2a08e1864195c74034d45",
+  "candidate": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+  "remote_head_symbolic": "refs/heads/main",
+  "scope": "37 live origin branches verified by git ls-remote --heads origin on 2026-10-01; one local-only inherited recovery alias recorded separately",
+  "main_before_paths": [
+    ".github/workflows/python.yml",
+    ".gitignore",
+    "CLAUDE.md",
+    "COMMERCIAL_LICENSE.md",
+    "ECOSYSTEM.md",
+    "LICENSE",
+    "README.md",
+    "core/__init__.py",
+    "core/crypto.py",
+    "core/selector.py",
+    "core/semantic.py",
+    "engine/__init__.py",
+    "engine/batch_api.py",
+    "engine/chat_engine.py",
+    "engine/config.py",
+    "engine/db.py",
+    "engine/events.py",
+    "engine/github_sync.py",
+    "engine/graph_engine.py",
+    "engine/graph_memory.py",
+    "engine/importer.py",
+    "engine/memory_engine.py",
+    "engine/models.py",
+    "engine/paths.py",
+    "engine/providers.py",
+    "engine/semantic_llm.py",
+    "engine/semantic_worker.py",
+    "gui/__init__.py",
+    "gui/base.py",
+    "gui/chat_panel.py",
+    "gui/conv_panel.py",
+    "gui/dialogs.py",
+    "gui/github_panel.py",
+    "gui/graph_viz.py",
+    "gui/import_panel.py",
+    "gui/memory_panel.py",
+    "gui/voice_panel.py",
+    "main.py",
+    "requirements.txt"
+  ],
+  "branches": [
+    {
+      "branch": "chore/repo-hygiene-2026-09",
+      "sha": "970ca2836177c561796d393e454dfb37f173809b",
+      "parents": [
+        "9dfceffebf4959d504a0ad8767627d7820874934"
+      ],
+      "merge_base_main": "970ca2836177c561796d393e454dfb37f173809b",
+      "merge_base_candidate": "970ca2836177c561796d393e454dfb37f173809b",
+      "candidate_only_commits": 339,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "claude/chataddhd-cpp-loom-core-IRGRN",
+      "sha": "46066308ac6306a1b30f65b98e19a40da6df7e9c",
+      "parents": [
+        "de7564c9a3be82e817850396a0157d396db20f23"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "46066308ac6306a1b30f65b98e19a40da6df7e9c",
+      "candidate_only_commits": 105,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "claude/restore-lost-features-adK74",
+      "sha": "287bdc1dea06c266837f88041250a70a95521d85",
+      "parents": [
+        "1e3fa2b6ed746a2252cd83182c47b5d7ae257505"
+      ],
+      "merge_base_main": "287bdc1dea06c266837f88041250a70a95521d85",
+      "merge_base_candidate": "287bdc1dea06c266837f88041250a70a95521d85",
+      "candidate_only_commits": 348,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "codex/loom-handoff-2026-09-28",
+      "sha": "816406722257d70431cc2acadaac313f0503b48c",
+      "parents": [
+        "991db09f05da9fe97c7802d09aedcaab38798b58"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "816406722257d70431cc2acadaac313f0503b48c",
+      "candidate_only_commits": 158,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "eval/real-holdout-key",
+      "sha": "0fcf2402f60fdf394c0c74c4eb128353d536db0b",
+      "parents": [
+        "23324fe008cdb1a60deb27a916a0f4673df5d7b9"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "e8de3a7eb864da64c8d96fbeaebf20ce53c1f057",
+      "candidate_only_commits": 270,
+      "branch_only_commits": 6,
+      "inspection": "ref and ancestry metadata only; no files, diffs, logs, or payloads opened"
+    },
+    {
+      "branch": "gpt/continuity-audit-2026-09-30",
+      "sha": "6828216b23b465f59055ccd8ae3e665abf6bce97",
+      "parents": [
+        "b118c80e981c08ec6d7f9ab6aacc177979186cf2"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "6828216b23b465f59055ccd8ae3e665abf6bce97",
+      "candidate_only_commits": 67,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/ecosystem-agent-research-2026-10-01",
+      "sha": "157762ef60be8b14fe75c6a9c922d6df7ffe97a1",
+      "parents": [
+        "f8dabcc008416137b8b46492c072f3e7f16764d4"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+      "candidate_only_commits": 0,
+      "branch_only_commits": 4,
+      "unique_commits": [
+        "157762ef60be8b14fe75c6a9c922d6df7ffe97a1 research: preserve five agent experiment tracks and 141 passing checks [skip ci]",
+        "f8dabcc008416137b8b46492c072f3e7f16764d4 research: bind existing provider secret reference and record access contract [skip ci]",
+        "59bf64827cbf29d5228967f4b3dd3c1e85802b1f research: prototype shared ecosystem agent adapters and crash probes [skip ci]",
+        "f6012e87ad4f6bc9f07ba69c316d1082fe74c4b9 docs: freeze ecosystem agent experiment protocol [skip ci]"
+      ],
+      "patch_equivalence": [
+        "+ f6012e87ad4f6bc9f07ba69c316d1082fe74c4b9 docs: freeze ecosystem agent experiment protocol [skip ci]",
+        "+ 59bf64827cbf29d5228967f4b3dd3c1e85802b1f research: prototype shared ecosystem agent adapters and crash probes [skip ci]",
+        "+ f8dabcc008416137b8b46492c072f3e7f16764d4 research: bind existing provider secret reference and record access contract [skip ci]",
+        "+ 157762ef60be8b14fe75c6a9c922d6df7ffe97a1 research: preserve five agent experiment tracks and 141 passing checks [skip ci]"
+      ]
+    },
+    {
+      "branch": "gpt/integration-w1-w6-2026-10-01",
+      "sha": "926072ce43b8de21a42a3abe439a7781598136f6",
+      "parents": [
+        "b141afb77b5f67372dc1fe6b49644e7c3d955372"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "926072ce43b8de21a42a3abe439a7781598136f6",
+      "candidate_only_commits": 21,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/night-development-2026-10-01",
+      "sha": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+      "parents": [
+        "2afd5ecec887177be7dc756801d4f0913b02a826"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+      "candidate_only_commits": 0,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/night2-resources-2026-10-01",
+      "sha": "6c883f3665d1c0151c7b25f0e480817dfc40cc20",
+      "parents": [
+        "4eba31d293e90d9cd49303719ff2eba188885666"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "926072ce43b8de21a42a3abe439a7781598136f6",
+      "candidate_only_commits": 21,
+      "branch_only_commits": 2,
+      "unique_commits": [
+        "6c883f3665d1c0151c7b25f0e480817dfc40cc20 Preserve historical resource reservation peaks independently of admission [skip ci]",
+        "4eba31d293e90d9cd49303719ff2eba188885666 Freeze N5 reservation peak protocol and first reproduction [skip ci]"
+      ],
+      "patch_equivalence": [
+        "- 4eba31d293e90d9cd49303719ff2eba188885666 Freeze N5 reservation peak protocol and first reproduction [skip ci]",
+        "- 6c883f3665d1c0151c7b25f0e480817dfc40cc20 Preserve historical resource reservation peaks independently of admission [skip ci]"
+      ]
+    },
+    {
+      "branch": "gpt/offline-2026-09-29",
+      "sha": "31f130cd38f25a1d523194ddac93c2ba713bbd07",
+      "parents": [
+        "f9d1168ac29acb91c10b2efb53520a306ca90de7"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "f9d1168ac29acb91c10b2efb53520a306ca90de7",
+      "candidate_only_commits": 126,
+      "branch_only_commits": 1,
+      "unique_commits": [
+        "31f130cd38f25a1d523194ddac93c2ba713bbd07 offline(T5): composable workspace IR and atomic parameter couplings, 77 tests [skip ci]"
+      ],
+      "patch_equivalence": [
+        "- 31f130cd38f25a1d523194ddac93c2ba713bbd07 offline(T5): composable workspace IR and atomic parameter couplings, 77 tests [skip ci]"
+      ]
+    },
+    {
+      "branch": "gpt/research-2026-09-30",
+      "sha": "c19bac2918636a2a69e8b52cabc49b9cf3f7ec6f",
+      "parents": [
+        "926072ce43b8de21a42a3abe439a7781598136f6"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "c19bac2918636a2a69e8b52cabc49b9cf3f7ec6f",
+      "candidate_only_commits": 20,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/w1-active-task-2026-09-30",
+      "sha": "803eb78a8b49ece8b5d7e765f99fdd0f495caf4b",
+      "parents": [
+        "e853f435a62525c1d29d5e6cea29a3bcfe87c7f8"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "ba792b920fba36fb738ff39421d27b6d965aa11a",
+      "candidate_only_commits": 64,
+      "branch_only_commits": 8,
+      "unique_commits": [
+        "803eb78a8b49ece8b5d7e765f99fdd0f495caf4b docs(w1): record W2 handoff boundary [skip ci]",
+        "e853f435a62525c1d29d5e6cea29a3bcfe87c7f8 test(w1): pin active task context handoff [skip ci]",
+        "33149ab4840cd9fc97915c079e00b2d90997c297 docs(w1): record scale and exceptional evidence [skip ci]",
+        "13b573ccc238db40a9f40bca3dc22c4a95ae2b55 fix(active-task): harden scale and exceptional paths [skip ci]",
+        "86056452477659b69568b9ff9286f4d78b84baa4 docs(w1): record compiler publication evidence [skip ci]",
+        "c016eb1c398ea892892d294bf24bf39b5a9b3dbc fix(active-task): preserve exact locator time ordering [skip ci]",
+        "b28e7bedb0094f8c0e98e653d156104f2709f15c docs(w1): record durable publication evidence [skip ci]",
+        "200fae8ccab3ad50f954d35ea60b9a9148ddc514 feat(chat): persist active-task acceptance [skip ci]"
+      ],
+      "patch_equivalence": [
+        "+ 200fae8ccab3ad50f954d35ea60b9a9148ddc514 feat(chat): persist active-task acceptance [skip ci]",
+        "+ b28e7bedb0094f8c0e98e653d156104f2709f15c docs(w1): record durable publication evidence [skip ci]",
+        "+ c016eb1c398ea892892d294bf24bf39b5a9b3dbc fix(active-task): preserve exact locator time ordering [skip ci]",
+        "+ 86056452477659b69568b9ff9286f4d78b84baa4 docs(w1): record compiler publication evidence [skip ci]",
+        "+ 13b573ccc238db40a9f40bca3dc22c4a95ae2b55 fix(active-task): harden scale and exceptional paths [skip ci]",
+        "+ 33149ab4840cd9fc97915c079e00b2d90997c297 docs(w1): record scale and exceptional evidence [skip ci]",
+        "+ e853f435a62525c1d29d5e6cea29a3bcfe87c7f8 test(w1): pin active task context handoff [skip ci]",
+        "+ 803eb78a8b49ece8b5d7e765f99fdd0f495caf4b docs(w1): record W2 handoff boundary [skip ci]"
+      ]
+    },
+    {
+      "branch": "gpt/w2-retrieval-2026-09-30",
+      "sha": "f6b44f6059777892474b45e54e7fae516bd1eb04",
+      "parents": [
+        "9a6f54c254b3996946bc87067b467d6c927b8361"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "f6b44f6059777892474b45e54e7fae516bd1eb04",
+      "candidate_only_commits": 64,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/w3-model-recipes-2026-09-30",
+      "sha": "078378d5fa65225b5978e2641dd1849cd4830536",
+      "parents": [
+        "729699fe8dab6dd696b133bd277d3717c3bbd055"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "078378d5fa65225b5978e2641dd1849cd4830536",
+      "candidate_only_commits": 66,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/w4-graph-runtime-2026-09-30",
+      "sha": "e7000a9beda08769254f1893da5ed3a5097bfe58",
+      "parents": [
+        "b5bad4c35a0831d490f942f53f672fa105aea250"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "e7000a9beda08769254f1893da5ed3a5097bfe58",
+      "candidate_only_commits": 66,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/w5-workspace-2026-09-30",
+      "sha": "ecf6931bdde797799d2a1081ff898d3d0f1d3c8c",
+      "parents": [
+        "411b18be4d8a8906d9587b1a5761861aad089f47"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "ecf6931bdde797799d2a1081ff898d3d0f1d3c8c",
+      "candidate_only_commits": 63,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "gpt/w6-evidence-2026-09-30",
+      "sha": "84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd",
+      "parents": [
+        "196c952a70ef587d0e54d33903f05aaaf5156b7a"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd",
+      "candidate_only_commits": 63,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "main",
+      "sha": "b5f7eacdead11101e5c2a08e1864195c74034d45",
+      "parents": [
+        "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3"
+      ],
+      "merge_base_main": "b5f7eacdead11101e5c2a08e1864195c74034d45",
+      "merge_base_candidate": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "candidate_only_commits": 338,
+      "branch_only_commits": 1,
+      "unique_commits": [
+        "b5f7eacdead11101e5c2a08e1864195c74034d45 docs: record ecosystem concepts and project links [skip ci]"
+      ],
+      "patch_equivalence": [
+        "+ b5f7eacdead11101e5c2a08e1864195c74034d45 docs: record ecosystem concepts and project links [skip ci]"
+      ]
+    },
+    {
+      "branch": "wip/catalog-finish",
+      "sha": "89e40933e5d7ccbbd9868b533769194dc4716ae4",
+      "parents": [
+        "fb5213c8d6c6a7daffb57319c849c1a7a4adcb58"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "89e40933e5d7ccbbd9868b533769194dc4716ae4",
+      "candidate_only_commits": 144,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/catalog-r3",
+      "sha": "bf057541a45b9c8fa2fbeac478b374ffdc5fbcc0",
+      "parents": [
+        "cbb50d3095575781076a70644f6d777deccfd1bf"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "bf057541a45b9c8fa2fbeac478b374ffdc5fbcc0",
+      "candidate_only_commits": 114,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/continuation-2026-09-30",
+      "sha": "a79862837c6726f534471f8dbcdccfe749dfb942",
+      "parents": [
+        "75eca2f9fadc27aea929606c32e6bd74c3df83cc"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "a79862837c6726f534471f8dbcdccfe749dfb942",
+      "candidate_only_commits": 69,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/determinism-fix",
+      "sha": "3486fd2e69411d2932f7b1b98f6d4fa1fcbca7eb",
+      "parents": [
+        "357cda79721fb64fdf1e6116176d00eaf266d982"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "3486fd2e69411d2932f7b1b98f6d4fa1fcbca7eb",
+      "candidate_only_commits": 119,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/export-finish",
+      "sha": "af6d3e898cce26fb4a6a5a98e3e4216162a83123",
+      "parents": [
+        "bdb0c7e1649c0830b3a4484c8dd7aec70e30441a"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "af6d3e898cce26fb4a6a5a98e3e4216162a83123",
+      "candidate_only_commits": 129,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/precision",
+      "sha": "de3b9203253ddfdf30e02ea26881a1bcba7077c8",
+      "parents": [
+        "acba6cfeb8cf7c1f931c34ba4e778603deb31ed8"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "03780193bc53b8c3a7327e70351686c3a39d64e8",
+      "candidate_only_commits": 116,
+      "branch_only_commits": 3,
+      "unique_commits": [
+        "de3b9203253ddfdf30e02ea26881a1bcba7077c8 precision: WIP snapshot (container restart; untested)",
+        "acba6cfeb8cf7c1f931c34ba4e778603deb31ed8 precision: prose gate, third-party version binding, lenient/strict name rules [skip ci]",
+        "7fce6cef2bc4e0cbfc84272b7a698c69cb752f07 precision: name plausibility rules (data), distinct-weight paradigm cues, user-class reading fidelity [skip ci]"
+      ],
+      "patch_equivalence": [
+        "+ 7fce6cef2bc4e0cbfc84272b7a698c69cb752f07 precision: name plausibility rules (data), distinct-weight paradigm cues, user-class reading fidelity [skip ci]",
+        "+ acba6cfeb8cf7c1f931c34ba4e778603deb31ed8 precision: prose gate, third-party version binding, lenient/strict name rules [skip ci]",
+        "+ de3b9203253ddfdf30e02ea26881a1bcba7077c8 precision: WIP snapshot (container restart; untested)"
+      ]
+    },
+    {
+      "branch": "wip/resolve-finish",
+      "sha": "bcc77fb27861f093e2e0c48a19bb519e362a16da",
+      "parents": [
+        "f4209e0e5359951aca9172e244c0149b0b59a744"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "bcc77fb27861f093e2e0c48a19bb519e362a16da",
+      "candidate_only_commits": 122,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-a06d7260ba8b658cc",
+      "sha": "2554bcc045ede3cc7f7014b37bf210d7e59c3681",
+      "parents": [
+        "4e48b76cbfb3b43f994f34b5c26a32162fcc2453"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "8d93e7d651e8006d315171cfb286fd2f9a854061",
+      "candidate_only_commits": 156,
+      "branch_only_commits": 2,
+      "unique_commits": [
+        "2554bcc045ede3cc7f7014b37bf210d7e59c3681 test(exports): deterministic synthetic OpenAI/Anthropic export fixtures + independent oracle [skip ci]",
+        "4e48b76cbfb3b43f994f34b5c26a32162fcc2453 docs(exports): OpenAI/Anthropic export format reference with sources, retrieval date, confidence [skip ci]"
+      ],
+      "patch_equivalence": [
+        "- 4e48b76cbfb3b43f994f34b5c26a32162fcc2453 docs(exports): OpenAI/Anthropic export format reference with sources, retrieval date, confidence [skip ci]",
+        "- 2554bcc045ede3cc7f7014b37bf210d7e59c3681 test(exports): deterministic synthetic OpenAI/Anthropic export fixtures + independent oracle [skip ci]"
+      ]
+    },
+    {
+      "branch": "wip/worktree-agent-a342fccb481c4116c",
+      "sha": "5d85034e2353a3a6e2b2beacd1549b8cd0566584",
+      "parents": [
+        "2acf17d3552c51ed304fda9e4879bf28db01cbeb"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "8d93e7d651e8006d315171cfb286fd2f9a854061",
+      "candidate_only_commits": 156,
+      "branch_only_commits": 4,
+      "unique_commits": [
+        "5d85034e2353a3a6e2b2beacd1549b8cd0566584 WIP snapshot (session limit)",
+        "2acf17d3552c51ed304fda9e4879bf28db01cbeb loom/eval: blind_catalog_v2 surface noise (diacritics/typos/dictation), long drifting thread, render self-checks",
+        "ad4786a2d7474e1ab4dead37b47789f6aa34d988 loom/eval: blind_catalog_v2 noise + 15 lexical-trap conversations (WIP)",
+        "d60a8beec2ab3dd41094e7f2630d623a175c6633 loom/eval: blind_catalog_v2 generator + relevant conversations (WIP, fictional persona)"
+      ],
+      "patch_equivalence": [
+        "+ d60a8beec2ab3dd41094e7f2630d623a175c6633 loom/eval: blind_catalog_v2 generator + relevant conversations (WIP, fictional persona)",
+        "+ ad4786a2d7474e1ab4dead37b47789f6aa34d988 loom/eval: blind_catalog_v2 noise + 15 lexical-trap conversations (WIP)",
+        "+ 2acf17d3552c51ed304fda9e4879bf28db01cbeb loom/eval: blind_catalog_v2 surface noise (diacritics/typos/dictation), long drifting thread, render self-checks",
+        "+ 5d85034e2353a3a6e2b2beacd1549b8cd0566584 WIP snapshot (session limit)"
+      ]
+    },
+    {
+      "branch": "wip/worktree-agent-a382d0e063192b5ed",
+      "sha": "90113a906fe4180532eeadef3a2037b322472683",
+      "parents": [
+        "7d3df6a0e658f7fdd9e1aa3fa433af2846f9e85a"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "90113a906fe4180532eeadef3a2037b322472683",
+      "candidate_only_commits": 148,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-a436abbcd1b794a18",
+      "sha": "819de58fbca5daed4c4ed840ef1b250230c22f0a",
+      "parents": [
+        "a8ab6dd33b0550823c5708f509124b95d2f3587f"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "819de58fbca5daed4c4ed840ef1b250230c22f0a",
+      "candidate_only_commits": 154,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-a56d696101c89a58c",
+      "sha": "453207ae6142b0ada53af1dabebe54c82a8a842e",
+      "parents": [
+        "d32af4fa64f049827eec71f1028437056a1281a0"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "d32af4fa64f049827eec71f1028437056a1281a0",
+      "candidate_only_commits": 151,
+      "branch_only_commits": 1,
+      "unique_commits": [
+        "453207ae6142b0ada53af1dabebe54c82a8a842e WIP snapshot (session limit)"
+      ],
+      "patch_equivalence": [
+        "+ 453207ae6142b0ada53af1dabebe54c82a8a842e WIP snapshot (session limit)"
+      ]
+    },
+    {
+      "branch": "wip/worktree-agent-a822af86e44b82241",
+      "sha": "eae85871269458753a850d05bab7eb44ff378425",
+      "parents": [
+        "5a66201d5021a9a94b79e1512e460dd18a99ba02"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "eae85871269458753a850d05bab7eb44ff378425",
+      "candidate_only_commits": 248,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-a8df74a3ca608a703",
+      "sha": "d14535a0a944324caf671fdd796b582e928a5882",
+      "parents": [
+        "21d07eb12ca43a06e069275736e52179814b6af8"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "d14535a0a944324caf671fdd796b582e928a5882",
+      "candidate_only_commits": 242,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-a90a2e07c062c7efc",
+      "sha": "dccaf9bdf1d981de2ddbb1184079bb954dc96990",
+      "parents": [
+        "0de075e8f159d7a15e406d4c021c603e2e5b2688",
+        "bd4dab32823525218885152047030e9def87eaa4"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "dccaf9bdf1d981de2ddbb1184079bb954dc96990",
+      "candidate_only_commits": 209,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-ab76c2dece93103a1",
+      "sha": "2d8826fec26331aa293a0c0110cc9912495b7671",
+      "parents": [
+        "acafcbd1580f596f57431e32ab746ebe24e0814d"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "2d8826fec26331aa293a0c0110cc9912495b7671",
+      "candidate_only_commits": 146,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-ac45c7e794faf4cb0",
+      "sha": "2de5d16f0b773055357dd4022b57c3c6aafbcc15",
+      "parents": [
+        "dccaf9bdf1d981de2ddbb1184079bb954dc96990"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "2de5d16f0b773055357dd4022b57c3c6aafbcc15",
+      "candidate_only_commits": 208,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    },
+    {
+      "branch": "wip/worktree-agent-ace3dd50eb645ccb0",
+      "sha": "da7b34f5714f76f7ddbffe689379d1847427742b",
+      "parents": [
+        "351e7e38644ab4102d5c794a8a2320efa88d1525"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "da7b34f5714f76f7ddbffe689379d1847427742b",
+      "candidate_only_commits": 220,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": []
+    }
+  ],
+  "local_only_recovery_refs": [
+    {
+      "branch": "codex/recovery-audit-20261001",
+      "sha": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+      "parents": [
+        "2afd5ecec887177be7dc756801d4f0913b02a826"
+      ],
+      "merge_base_main": "51a8afefb4938a23a3a3aecfee4b768b47fe5fd3",
+      "merge_base_candidate": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+      "candidate_only_commits": 0,
+      "branch_only_commits": 0,
+      "unique_commits": [],
+      "patch_equivalence": [],
+      "category": "local clone recovery alias; not a live origin branch"
+    }
+  ],
+  "remote_head_verification": {
+    "command": "git ls-remote --symref origin HEAD",
+    "symbolic": "refs/heads/main",
+    "sha": "b5f7eacdead11101e5c2a08e1864195c74034d45"
+  },
+  "local_origin_head_warning": "Local origin/HEAD points at codex/recovery-audit-20261001 because this clone was made from a local recovery repository. It is not the hosted default branch."
+}

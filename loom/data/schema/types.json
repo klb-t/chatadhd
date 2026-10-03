@@ -1,0 +1,1253 @@
+{
+ "schema": "loom.kb.types/1",
+ "description": "Open vocabularies of the pack (I6): entity kinds, enums, relation types (claim predicates) and the temporal slots every project instance has (versions, forks and lineage are a temporal dimension, not a role: model §3.4). Closed sets (evidence classes, origins, roles, principle levels/forms, statuses, binding kinds, predicates, ops) live in code: include/loom/model.h and include/loom/kb.h.",
+ "entity_kinds": [
+  {
+   "kind": "project",
+   "level": 0
+  },
+  {
+   "kind": "principle",
+   "level": 1
+  },
+  {
+   "kind": "repo",
+   "level": 1
+  },
+  {
+   "kind": "topic",
+   "level": 1
+  },
+  {
+   "kind": "version",
+   "level": 1
+  },
+  {
+   "kind": "act",
+   "level": 2
+  },
+  {
+   "kind": "actor",
+   "level": 2
+  },
+  {
+   "kind": "analysis",
+   "level": 2
+  },
+  {
+   "kind": "assumption",
+   "level": 2
+  },
+  {
+   "kind": "build_step",
+   "level": 2
+  },
+  {
+   "kind": "channel",
+   "level": 2
+  },
+  {
+   "kind": "character",
+   "level": 2
+  },
+  {
+   "kind": "checkpoint",
+   "level": 2
+  },
+  {
+   "kind": "citation",
+   "level": 2
+  },
+  {
+   "kind": "citation_check",
+   "level": 2
+  },
+  {
+   "kind": "clip",
+   "level": 2
+  },
+  {
+   "kind": "component",
+   "level": 2
+  },
+  {
+   "kind": "concept",
+   "level": 2
+  },
+  {
+   "kind": "confounder",
+   "level": 2
+  },
+  {
+   "kind": "consistency_check",
+   "level": 2
+  },
+  {
+   "kind": "continuity_check",
+   "level": 2
+  },
+  {
+   "kind": "contradiction_check",
+   "level": 2
+  },
+  {
+   "kind": "count",
+   "level": 2
+  },
+  {
+   "kind": "cut",
+   "level": 2
+  },
+  {
+   "kind": "data_source",
+   "level": 2
+  },
+  {
+   "kind": "dataset",
+   "level": 2
+  },
+  {
+   "kind": "deadline",
+   "level": 2
+  },
+  {
+   "kind": "deadline_check",
+   "level": 2
+  },
+  {
+   "kind": "decision",
+   "level": 2
+  },
+  {
+   "kind": "deliverable",
+   "level": 2
+  },
+  {
+   "kind": "document",
+   "level": 2
+  },
+  {
+   "kind": "drafting",
+   "level": 2
+  },
+  {
+   "kind": "edit_pass",
+   "level": 2
+  },
+  {
+   "kind": "event",
+   "level": 2
+  },
+  {
+   "kind": "evidence",
+   "level": 2
+  },
+  {
+   "kind": "experiment",
+   "level": 2
+  },
+  {
+   "kind": "falsifier",
+   "level": 2
+  },
+  {
+   "kind": "file",
+   "level": 2
+  },
+  {
+   "kind": "filed_document",
+   "level": 2
+  },
+  {
+   "kind": "flow",
+   "level": 2
+  },
+  {
+   "kind": "fork",
+   "level": 2
+  },
+  {
+   "kind": "format",
+   "level": 2
+  },
+  {
+   "kind": "gate",
+   "level": 2
+  },
+  {
+   "kind": "genre_rule",
+   "level": 2
+  },
+  {
+   "kind": "hypothesis",
+   "level": 2
+  },
+  {
+   "kind": "institution",
+   "level": 2
+  },
+  {
+   "kind": "instrument",
+   "level": 2
+  },
+  {
+   "kind": "interface",
+   "level": 2
+  },
+  {
+   "kind": "invariant",
+   "level": 2
+  },
+  {
+   "kind": "ir",
+   "level": 2
+  },
+  {
+   "kind": "language",
+   "level": 2
+  },
+  {
+   "kind": "legal_norm",
+   "level": 2
+  },
+  {
+   "kind": "location",
+   "level": 2
+  },
+  {
+   "kind": "mix_check",
+   "level": 2
+  },
+  {
+   "kind": "mix_pass",
+   "level": 2
+  },
+  {
+   "kind": "mood_ref",
+   "level": 2
+  },
+  {
+   "kind": "motif",
+   "level": 2
+  },
+  {
+   "kind": "musical_key",
+   "level": 2
+  },
+  {
+   "kind": "open_question",
+   "level": 2
+  },
+  {
+   "kind": "paper",
+   "level": 2
+  },
+  {
+   "kind": "party",
+   "level": 2
+  },
+  {
+   "kind": "performer",
+   "level": 2
+  },
+  {
+   "kind": "plan",
+   "level": 2
+  },
+  {
+   "kind": "platform",
+   "level": 2
+  },
+  {
+   "kind": "pleading",
+   "level": 2
+  },
+  {
+   "kind": "plot_link",
+   "level": 2
+  },
+  {
+   "kind": "procedural_rule",
+   "level": 2
+  },
+  {
+   "kind": "procedural_step",
+   "level": 2
+  },
+  {
+   "kind": "proceeding",
+   "level": 2
+  },
+  {
+   "kind": "progression",
+   "level": 2
+  },
+  {
+   "kind": "prop",
+   "level": 2
+  },
+  {
+   "kind": "protocol",
+   "level": 2
+  },
+  {
+   "kind": "provider",
+   "level": 2
+  },
+  {
+   "kind": "release_output",
+   "level": 2
+  },
+  {
+   "kind": "render_pass",
+   "level": 2
+  },
+  {
+   "kind": "requirement",
+   "level": 2
+  },
+  {
+   "kind": "researcher",
+   "level": 2
+  },
+  {
+   "kind": "result",
+   "level": 2
+  },
+  {
+   "kind": "role",
+   "level": 2
+  },
+  {
+   "kind": "sample",
+   "level": 2
+  },
+  {
+   "kind": "scene",
+   "level": 2
+  },
+  {
+   "kind": "score",
+   "level": 2
+  },
+  {
+   "kind": "screenplay",
+   "level": 2
+  },
+  {
+   "kind": "section",
+   "level": 2
+  },
+  {
+   "kind": "shot",
+   "level": 2
+  },
+  {
+   "kind": "stage",
+   "level": 2
+  },
+  {
+   "kind": "storage",
+   "level": 2
+  },
+  {
+   "kind": "storyboard",
+   "level": 2
+  },
+  {
+   "kind": "sync",
+   "level": 2
+  },
+  {
+   "kind": "synthesis_pass",
+   "level": 2
+  },
+  {
+   "kind": "test",
+   "level": 2
+  },
+  {
+   "kind": "tool",
+   "level": 2
+  },
+  {
+   "kind": "track",
+   "level": 2
+  },
+  {
+   "kind": "transcript",
+   "level": 2
+  },
+  {
+   "kind": "transition",
+   "level": 2
+  },
+  {
+   "kind": "ui_framework",
+   "level": 2
+  },
+  {
+   "kind": "option",
+   "level": 3
+  },
+  {
+   "kind": "foundation",
+   "level": 1
+  },
+  {
+   "kind": "branch",
+   "level": 2
+  },
+  {
+   "kind": "feature",
+   "level": 2
+  },
+  {
+   "kind": "domain",
+   "level": 2
+  }
+ ],
+ "enums": {
+  "project_status": [
+   "active",
+   "paused",
+   "abandoned",
+   "merged"
+  ],
+  "component_status": [
+   "implemented",
+   "partial",
+   "planned",
+   "abandoned",
+   "superseded",
+   "lost",
+   "restored"
+  ],
+  "version_source": [
+   "git",
+   "archive",
+   "both"
+  ],
+  "item_type": [
+   "decision",
+   "rejected_option",
+   "open_question",
+   "requirement",
+   "invariant",
+   "idea",
+   "rationale",
+   "implementation",
+   "bug"
+  ],
+  "gt_evidence": [
+   "observed",
+   "inferable",
+   "absent"
+  ],
+  "scene_state": [
+   "pending",
+   "keyframe_ready",
+   "keyframe_failed",
+   "clip_ready",
+   "clip_failed",
+   "flagged"
+  ]
+ },
+ "relations": [
+  {
+   "name": "part_of",
+   "inverse": "has_part",
+   "category": "structural",
+   "transitive": true
+  },
+  {
+   "name": "has_component",
+   "inverse": "component_of",
+   "category": "structural"
+  },
+  {
+   "name": "has_version",
+   "inverse": "version_of",
+   "category": "temporal"
+  },
+  {
+   "name": "introduced_in",
+   "inverse": "introduces",
+   "category": "temporal"
+  },
+  {
+   "name": "removed_in",
+   "inverse": "removes",
+   "category": "temporal"
+  },
+  {
+   "name": "targets_platform",
+   "inverse": "platform_of",
+   "category": "semantic"
+  },
+  {
+   "name": "written_in",
+   "inverse": "language_of",
+   "category": "semantic"
+  },
+  {
+   "name": "uses_ui_framework",
+   "inverse": "ui_framework_of",
+   "category": "semantic"
+  },
+  {
+   "name": "stores_in",
+   "inverse": "storage_of",
+   "category": "semantic"
+  },
+  {
+   "name": "syncs_via",
+   "inverse": "sync_of",
+   "category": "semantic"
+  },
+  {
+   "name": "uses_tool",
+   "inverse": "tool_of",
+   "category": "semantic"
+  },
+  {
+   "name": "uses_protocol",
+   "inverse": "protocol_of",
+   "category": "semantic"
+  },
+  {
+   "name": "implements",
+   "inverse": "implemented_by",
+   "category": "structural"
+  },
+  {
+   "name": "has_purpose",
+   "inverse": "purpose_of",
+   "category": "semantic",
+   "value": true
+  },
+  {
+   "name": "has_stage",
+   "inverse": "stage_of",
+   "category": "structural"
+  },
+  {
+   "name": "next_stage",
+   "inverse": "previous_stage",
+   "category": "temporal"
+  },
+  {
+   "name": "has_input",
+   "inverse": "input_of",
+   "category": "semantic"
+  },
+  {
+   "name": "has_output",
+   "inverse": "output_of",
+   "category": "semantic"
+  },
+  {
+   "name": "has_role",
+   "inverse": "role_of",
+   "category": "structural"
+  },
+  {
+   "name": "decides_about",
+   "inverse": "decided_by",
+   "category": "semantic"
+  },
+  {
+   "name": "alternative_of",
+   "inverse": "alternative_of",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "chosen_over",
+   "inverse": "rejected_for",
+   "category": "semantic"
+  },
+  {
+   "name": "supersedes",
+   "inverse": "superseded_by",
+   "category": "temporal"
+  },
+  {
+   "name": "contradicts",
+   "inverse": "contradicts",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "resolves",
+   "inverse": "resolved_by",
+   "category": "semantic"
+  },
+  {
+   "name": "states_principle",
+   "inverse": "principle_stated_in",
+   "category": "semantic"
+  },
+  {
+   "name": "applies_principle",
+   "inverse": "principle_applied_by",
+   "category": "semantic"
+  },
+  {
+   "name": "violates",
+   "inverse": "violated_by",
+   "category": "semantic"
+  },
+  {
+   "name": "evolved_into",
+   "inverse": "evolved_from",
+   "category": "temporal"
+  },
+  {
+   "name": "merged_into",
+   "inverse": "absorbed",
+   "category": "temporal"
+  },
+  {
+   "name": "forked_from",
+   "inverse": "fork_parent_of",
+   "category": "temporal"
+  },
+  {
+   "name": "based_on",
+   "inverse": "basis_of",
+   "category": "temporal"
+  },
+  {
+   "name": "same_as",
+   "inverse": "same_as",
+   "category": "provenance",
+   "symmetric": true
+  },
+  {
+   "name": "instance_of",
+   "inverse": "has_instance",
+   "category": "structural"
+  },
+  {
+   "name": "fills_slot",
+   "inverse": "slot_filled_by",
+   "category": "structural"
+  },
+  {
+   "name": "inferred_from",
+   "inverse": "supports_inference",
+   "category": "provenance"
+  },
+  {
+   "name": "analogous_to",
+   "inverse": "analogous_to",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "mentioned_in",
+   "inverse": "mentions",
+   "category": "provenance"
+  },
+  {
+   "name": "related_to",
+   "inverse": "related_to",
+   "category": "semantic",
+   "symmetric": true
+  },
+  {
+   "name": "uses",
+   "category": "semantic"
+  },
+  {
+   "name": "connects",
+   "category": "semantic"
+  },
+  {
+   "name": "flows_to",
+   "category": "semantic"
+  },
+  {
+   "name": "recurs_in",
+   "category": "semantic"
+  },
+  {
+   "name": "verifies",
+   "category": "semantic"
+  },
+  {
+   "name": "constrains",
+   "category": "semantic"
+  },
+  {
+   "name": "serves",
+   "category": "semantic"
+  },
+  {
+   "name": "produces",
+   "category": "semantic"
+  },
+  {
+   "name": "consumes",
+   "category": "semantic"
+  },
+  {
+   "name": "participates_in",
+   "category": "semantic"
+  },
+  {
+   "name": "occurs_in",
+   "category": "semantic"
+  },
+  {
+   "name": "precedes",
+   "category": "temporal"
+  },
+  {
+   "name": "depicts",
+   "category": "semantic"
+  },
+  {
+   "name": "cites",
+   "category": "semantic"
+  },
+  {
+   "name": "evidences",
+   "category": "semantic"
+  },
+  {
+   "name": "concerns",
+   "category": "semantic"
+  },
+  {
+   "name": "investigates",
+   "category": "semantic"
+  },
+  {
+   "name": "answers",
+   "category": "semantic"
+  },
+  {
+   "name": "responds_to",
+   "category": "semantic"
+  },
+  {
+   "name": "has_user",
+   "category": "structural",
+   "inverse": "user_of"
+  },
+  {
+   "name": "has_requirement",
+   "category": "structural",
+   "inverse": "requirement_of"
+  },
+  {
+   "name": "has_invariant",
+   "category": "structural",
+   "inverse": "invariant_of"
+  },
+  {
+   "name": "uses_service",
+   "category": "structural"
+  },
+  {
+   "name": "uses_data_source",
+   "category": "structural"
+  },
+  {
+   "name": "uses_provider",
+   "category": "structural"
+  },
+  {
+   "name": "has_interface",
+   "category": "structural",
+   "inverse": "interface_of"
+  },
+  {
+   "name": "has_flow",
+   "category": "structural",
+   "inverse": "flow_of"
+  },
+  {
+   "name": "has_event",
+   "category": "structural",
+   "inverse": "event_of"
+  },
+  {
+   "name": "has_file",
+   "category": "structural",
+   "inverse": "file_of"
+  },
+  {
+   "name": "has_document",
+   "category": "structural",
+   "inverse": "document_of"
+  },
+  {
+   "name": "has_build_step",
+   "category": "structural",
+   "inverse": "build_step_of"
+  },
+  {
+   "name": "has_test",
+   "category": "structural",
+   "inverse": "test_of"
+  },
+  {
+   "name": "delivers",
+   "category": "structural"
+  },
+  {
+   "name": "has_decision",
+   "category": "structural",
+   "inverse": "decision_of"
+  },
+  {
+   "name": "has_question",
+   "category": "structural",
+   "inverse": "question_of"
+  },
+  {
+   "name": "has_premise",
+   "category": "structural",
+   "inverse": "premise_of"
+  },
+  {
+   "name": "has_audience",
+   "category": "structural",
+   "inverse": "audience_of"
+  },
+  {
+   "name": "has_style",
+   "category": "structural",
+   "inverse": "style_of"
+  },
+  {
+   "name": "has_rule",
+   "category": "structural",
+   "inverse": "rule_of"
+  },
+  {
+   "name": "has_act",
+   "category": "structural",
+   "inverse": "act_of"
+  },
+  {
+   "name": "has_scene",
+   "category": "structural",
+   "inverse": "scene_of"
+  },
+  {
+   "name": "has_shot",
+   "category": "structural",
+   "inverse": "shot_of"
+  },
+  {
+   "name": "has_character",
+   "category": "structural",
+   "inverse": "character_of"
+  },
+  {
+   "name": "has_location",
+   "category": "structural",
+   "inverse": "location_of"
+  },
+  {
+   "name": "has_prop",
+   "category": "structural",
+   "inverse": "prop_of"
+  },
+  {
+   "name": "has_reference",
+   "category": "structural",
+   "inverse": "reference_of"
+  },
+  {
+   "name": "has_citation",
+   "category": "structural",
+   "inverse": "citation_of"
+  },
+  {
+   "name": "has_transition",
+   "category": "structural",
+   "inverse": "transition_of"
+  },
+  {
+   "name": "has_motif",
+   "category": "structural",
+   "inverse": "motif_of"
+  },
+  {
+   "name": "has_plot_link",
+   "category": "structural",
+   "inverse": "plot_link_of"
+  },
+  {
+   "name": "has_screenplay",
+   "category": "structural",
+   "inverse": "screenplay_of"
+  },
+  {
+   "name": "has_storyboard",
+   "category": "structural",
+   "inverse": "storyboard_of"
+  },
+  {
+   "name": "has_clip",
+   "category": "structural",
+   "inverse": "clip_of"
+  },
+  {
+   "name": "has_render_pass",
+   "category": "structural",
+   "inverse": "render_pass_of"
+  },
+  {
+   "name": "has_edit_pass",
+   "category": "structural",
+   "inverse": "edit_pass_of"
+  },
+  {
+   "name": "has_check",
+   "category": "structural",
+   "inverse": "check_of"
+  },
+  {
+   "name": "has_mood",
+   "category": "structural",
+   "inverse": "mood_of"
+  },
+  {
+   "name": "in_key",
+   "category": "structural"
+  },
+  {
+   "name": "has_tempo",
+   "category": "structural",
+   "inverse": "tempo_of"
+  },
+  {
+   "name": "has_form",
+   "category": "structural",
+   "inverse": "form_of"
+  },
+  {
+   "name": "has_track",
+   "category": "structural",
+   "inverse": "track_of"
+  },
+  {
+   "name": "has_section",
+   "category": "structural",
+   "inverse": "section_of"
+  },
+  {
+   "name": "has_performer",
+   "category": "structural",
+   "inverse": "performer_of"
+  },
+  {
+   "name": "has_instrument",
+   "category": "structural",
+   "inverse": "instrument_of"
+  },
+  {
+   "name": "uses_sample",
+   "category": "structural"
+  },
+  {
+   "name": "has_progression",
+   "category": "structural",
+   "inverse": "progression_of"
+  },
+  {
+   "name": "has_score",
+   "category": "structural",
+   "inverse": "score_of"
+  },
+  {
+   "name": "has_pass",
+   "category": "structural",
+   "inverse": "pass_of"
+  },
+  {
+   "name": "seeks",
+   "category": "structural"
+  },
+  {
+   "name": "relies_on",
+   "category": "structural"
+  },
+  {
+   "name": "has_proceeding",
+   "category": "structural",
+   "inverse": "proceeding_of"
+  },
+  {
+   "name": "has_count",
+   "category": "structural",
+   "inverse": "count_of"
+  },
+  {
+   "name": "has_party",
+   "category": "structural",
+   "inverse": "party_of"
+  },
+  {
+   "name": "involves",
+   "category": "structural"
+  },
+  {
+   "name": "has_evidence",
+   "category": "structural",
+   "inverse": "evidence_of"
+  },
+  {
+   "name": "files_via",
+   "category": "structural"
+  },
+  {
+   "name": "has_step",
+   "category": "structural",
+   "inverse": "step_of"
+  },
+  {
+   "name": "has_deadline",
+   "category": "structural",
+   "inverse": "deadline_of"
+  },
+  {
+   "name": "has_pleading",
+   "category": "structural",
+   "inverse": "pleading_of"
+  },
+  {
+   "name": "has_transcript",
+   "category": "structural",
+   "inverse": "transcript_of"
+  },
+  {
+   "name": "asks",
+   "category": "structural"
+  },
+  {
+   "name": "assumes",
+   "category": "structural"
+  },
+  {
+   "name": "has_experiment",
+   "category": "structural",
+   "inverse": "experiment_of"
+  },
+  {
+   "name": "uses_dataset",
+   "category": "structural"
+  },
+  {
+   "name": "has_paper",
+   "category": "structural",
+   "inverse": "paper_of"
+  },
+  {
+   "name": "has_hypothesis",
+   "category": "structural",
+   "inverse": "hypothesis_of"
+  },
+  {
+   "name": "runs_in",
+   "category": "structural"
+  },
+  {
+   "name": "has_memory",
+   "category": "structural",
+   "inverse": "memory_of"
+  },
+  {
+   "name": "has_action",
+   "category": "structural",
+   "inverse": "action_of"
+  },
+  {
+   "name": "has_plan",
+   "category": "structural",
+   "inverse": "plan_of"
+  },
+  {
+   "name": "has_budget",
+   "category": "structural",
+   "inverse": "budget_of"
+  },
+  {
+   "name": "has_ir",
+   "category": "structural",
+   "inverse": "ir_of"
+  },
+  {
+   "name": "has_checkpoint",
+   "category": "structural",
+   "inverse": "checkpoint_of"
+  },
+  {
+   "name": "decides",
+   "category": "semantic"
+  },
+  {
+   "name": "has_status",
+   "category": "temporal"
+  },
+  {
+   "name": "member_of",
+   "category": "structural"
+  },
+  {
+   "name": "transferred_from",
+   "category": "provenance"
+  },
+  {
+   "name": "anchors_on",
+   "category": "structural"
+  },
+  {
+   "name": "about",
+   "inverse": "subject_of",
+   "category": "provenance"
+  },
+  {
+   "name": "uses_foundation",
+   "inverse": "foundation_of",
+   "category": "structural"
+  },
+  {
+   "name": "bridges",
+   "inverse": "bridges",
+   "category": "semantic",
+   "symmetric": true
+  }
+ ],
+ "temporal_slots": [
+  {
+   "name": "versions",
+   "type": "record[]",
+   "card": "list",
+   "required": true,
+   "weight": 3.0,
+   "fields": {
+    "version": {
+     "type": "version"
+    },
+    "date": {
+     "type": "date"
+    },
+    "features": {
+     "type": "text",
+     "card": "many"
+    },
+    "conv_ids": {
+     "type": "string",
+     "card": "many"
+    },
+    "source": {
+     "type": "enum:version_source"
+    },
+    "base": {
+     "type": "version"
+    },
+    "branch": {
+     "type": "string"
+    }
+   },
+   "bind": [
+    {
+     "kind": "versions",
+     "source": "any"
+    }
+   ],
+   "rules": [
+    "r.archive_only_version",
+    "r.version_base",
+    "r.version_date_first_mention",
+    "r.version_features_comention"
+   ],
+   "description": "dated versions of the project with features and lineage; versions above the newest git version are archive-only"
+  },
+  {
+   "name": "current_version",
+   "type": "version",
+   "card": "one",
+   "required": true,
+   "rules": [
+    "r.current_version"
+   ]
+  },
+  {
+   "name": "forks",
+   "type": "record[]",
+   "card": "many",
+   "fields": {
+    "base": {
+     "type": "version"
+    },
+    "branches": {
+     "type": "version",
+     "card": "many"
+    },
+    "merged": {
+     "type": "string"
+    }
+   },
+   "rules": [
+    "r.version_forks"
+   ]
+  },
+  {
+   "name": "lineage",
+   "type": "entity:project",
+   "card": "many",
+   "bind": [
+    {
+     "kind": "claim",
+     "rel": "evolved_into",
+     "dir": "in"
+    },
+    {
+     "kind": "claim",
+     "rel": "merged_into",
+     "dir": "in"
+    }
+   ]
+  },
+  {
+   "name": "status",
+   "type": "enum:project_status",
+   "card": "one",
+   "required": true,
+   "rules": [
+    "r.project_status"
+   ]
+  },
+  {
+   "name": "part_status",
+   "type": "record[]",
+   "card": "many",
+   "fields": {
+    "entity": {
+     "type": "string"
+    },
+    "branch": {
+     "type": "string"
+    },
+    "version": {
+     "type": "version"
+    },
+    "status": {
+     "type": "enum:component_status"
+    },
+    "date": {
+     "type": "date"
+    }
+   },
+   "description": "status of each part per branch and version, oscillation recorded (model §5, StatusRecord)"
+  }
+ ]
+}

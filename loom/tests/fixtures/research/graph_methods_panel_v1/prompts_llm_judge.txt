@@ -1,0 +1,13 @@
+Evaluate the supplied candidate relation against the supplied source prefix,
+requested attribution, direction and query scope. Return JSON {"query_id":str,
+"label":"supported|refuted|unknown","basis_class":"observed_source_assertion|inferred_path|none",
+"evidence":[exact turn-text spans],"support_paths":[lists of premise assertion IDs],
+"content_truth":"unverified"}.
+Supported means the requested speaker explicitly asserts this relation in the
+queried temporal view. Refuted requires explicit denial/withdrawal of this
+relation by that speaker; silence is unknown. Quoting somebody does not make
+the reporting speaker endorse the quote. Ignore turns learned after as_of.
+In explicit_source scope, a multi-hop consequence is unknown unless directly
+asserted. In formal_implication scope, valid composition may be supported only
+as inferred_path with premise paths. Keep alternative minimal paths. Never
+promote the answer or probability into an observed world fact.

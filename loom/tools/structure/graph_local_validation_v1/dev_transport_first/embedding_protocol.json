@@ -1,0 +1,14 @@
+{
+  "download": false,
+  "max_tokens": 128,
+  "model_id": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "paid_calls": 0,
+  "prediction": null,
+  "prepared_sha256": "a731fc297470feac3cb0180a62d153a1963daf68704a56d50621379c2da12d15",
+  "release_sha256": "bc4d6afdca9cb99a2a660d1e3a90829654cf667ada0dd77de38b6e2eb588bdcd",
+  "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+  "schema": "loom.graph_local_generic_embedding/1",
+  "score": "float64dotofL2normalizedfloat32vectors",
+  "split": "dev",
+  "threads": 2
+}

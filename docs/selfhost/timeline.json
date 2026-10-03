@@ -1,0 +1,1816 @@
+{
+ "project": "ChatADHD",
+ "themes": [
+  {
+   "id": "T1",
+   "label": "android · chatadhd · directory",
+   "first": "2026-02-11",
+   "last": "2026-09-26",
+   "commits": 8,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "ke610c46bb92b",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d7e95003675f1",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d0b559a5969c3",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dee979a19bd6b",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dd1ef2322ab2d",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k03841ea12f44",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k3194619a70b6",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k4776d0ac9fc1",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k4d240ed371bf",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k7b9ef1ff2a60",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kdb029266d5a2",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ke28699feeddf",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g9fe319c22af2",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k0a3413d6c847",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k0b5169774dbf",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k0d8f13c8066c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k1d99b8d55ed2",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k2b4ba81a10ea",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k2be92b112fb3",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k353c5bbbf755",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k46d43d92ee38",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k5041f526fa90",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d88b50f33b9f3",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d01fdac9ace7c",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "da23667cf0d7f",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "de68ff3ca5013",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d5a37a5698a70",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k60bf364c6e1c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k65920c4025cd",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k6ac7fa929954",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d8657c72901da",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d0d651dd7b18a",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "daab709354f28",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "df274aac65ba3",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d30bc94e918cd",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "da7f9ec78f5e8",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d090ebe21e4ea",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d90c3e6c8cfdc",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "daae09a719898",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d612813a3d50c",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "dc79c24290319",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d89a6300dbce0",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k7f93eb17d421",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k942db9d50b24",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k95f637ac1236",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kc2a7b0769c8e",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kd4fbcc67f006",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "ke2c24ce689e8",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "ke4659e496c7e",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d69807868a2e9",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g21f2f3043c12",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g2ac657ada690",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g5a8a35362abb",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "gdbedb4c2c4a8",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g8c0caf1017f2",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g3c91ced0e68e",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "gc1559e1c139f",
+     "kind": "commit"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T2",
+   "label": "graph · knowledge · analyzer",
+   "first": "2026-02-11",
+   "last": "2026-09-26",
+   "commits": 7,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "k148d79b70c8d",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k31725f35f3f1",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k4c28e96e5e67",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k9fb1af4c4f03",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "kfaa8ae5613e1",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "kfbf0efdb7e11",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "kfdba87a93e2e",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "da365bf6eb24c",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d859ff6f1c362",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d83895bfa499c",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d63cd5509bc8f",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d3e882e1ccff6",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d595f018e4acd",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d22847fee8db8",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d176cedb0d262",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d8afbba0178cb",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "db4b7b3b584c8",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-03-06",
+     "key": "k91fd9ac4fc08",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dee6640671696",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d5a68620af893",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d2ed88175a81a",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d3ecbfdce2400",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d7b2991a1cb1e",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d9b01d95fbf7b",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dca8fce520c44",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d3c032a3d9177",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k15d1154a9b46",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k18b2612bccc0",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k334cbc98cf45",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k593764739b95",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k670b2c0cfb8a",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k9855435fae91",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kb9f25353f354",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kbc7b9bb9417b",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kd14bbe350025",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kd43828dec405",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kd67af5f4aaf5",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kdc4f4b8ff6c5",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ke35125116387",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ke676aef605eb",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kea5b84b4d5c8",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kf2463d44558f",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kfb5175c2f1d2",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g175d4fd88b69",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g5bcd6861fd2e",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g7fd1700eae1e",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gb25fde575ad3",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g1a22916bbe8b",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gdd43184aa105",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g1ca219dee86d",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k6a6147404898",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kc3c9b45ef089",
+     "kind": "code"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T3",
+   "label": "model · cost · convert",
+   "first": "2026-02-11",
+   "last": "2026-09-26",
+   "commits": 19,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "k1b62a1a0e935",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k2d2d72889c29",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k40920c771d3a",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k6333e3ee9af2",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k704a48f98b67",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gf4973cf8b2ff",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g1c3dfe85cce3",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "de3a92f7a7f14",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "dc6d8b2787640",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "dc828013c36a2",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "dca4a536263d1",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "dd5033f4c6ea9",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "de3615cbb4a16",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "dd18ce6f1caf9",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "gf274e14321cc",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-03-06",
+     "key": "gbee76daf22b7",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-03-06",
+     "key": "g126d08fb36e4",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d4c3a149d3a36",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d692044f2b2d8",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dfc6f9345fd54",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k369d18ee12de",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k3b3e902f574b",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k60452349117d",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k6caa4614ccff",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k805e573a558c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ka053126c9863",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kc11e9f0a55f3",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kcc8093eb6396",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kcc9342c806ce",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kd2ea95fe33f6",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kf47995eaec3c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g7dba0f2ca877",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ga4f8fd97c26d",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g46e225ef726f",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g11a4dead4ecd",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g0e11edddcdb3",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g7c7b409ae11e",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gc05fbc51cfb1",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g5d4c03a50045",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g8ff61062ff55",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gd0939b7efd49",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gaf17b0ef9124",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kdf748a975128",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "ge3487acf678c",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "geee1e7eb0305",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "gc84c56e15778",
+     "kind": "commit"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T4",
+   "label": "gui · engine · version",
+   "first": "2026-02-11",
+   "last": "2026-09-26",
+   "commits": 33,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "k0b02bacca493",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k28b1e0248f0f",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "k7077a422927d",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "ka439b5b17021",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "kdf9943039c60",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "kf91461a3542a",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gd62cca4055dd",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g7167550ad277",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "ge4ff146c8cd3",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g4a1528dac226",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gb677b7ea6b13",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g73a58663652a",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g0ad62a364b47",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g18cc920811b9",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "ga84dd71a1298",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g0f6e0ea72902",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g5e60f732a6e4",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g81a239b0fcb0",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "ge422237c03df",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g1f9b63cfacde",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g92623b9d4d3d",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gd28f40bb1e85",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g8d3b1fa20444",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gf2526cb09f5e",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g285de0f89724",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g243a8a93d959",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "ga3a00ea96cea",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g97316d48de3e",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gaf47fb2369df",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gfcfd4f519a0d",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g5a7858bb89ec",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "gd65ae39c0007",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "g60b56862aaf7",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d21c728b06600",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d020d579cb93e",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "db81d6eeddf66",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "gca83a1069eda",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "gd63a072899d6",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k0412a6862571",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g7903658dc2dc",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gf31675631854",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gd8216c780636",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g0f6aafa090d1",
+     "kind": "commit"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T5",
+   "label": "archive · project · terms",
+   "first": "2026-02-11",
+   "last": "2026-09-26",
+   "commits": 12,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "kfbbfcebef0d2",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d0920990ee8bb",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d83f1503c3381",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d55433af1f8a8",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d9171232d861d",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "gd9301a2a3584",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "g538631d07374",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "g9a21f5dc5b06",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "gbaed142cd1d3",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k7651ec331160",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k968e349ac4c5",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g43bf2cb4ae78",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gbf1dc8383d6b",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k16a480a834f6",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k1ffb67b3b126",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k2d5b226af27f",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k2e5e408420fc",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k31d383a7dc74",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k3ead4701ccd6",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k429f3f2a712f",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k5c54590683ad",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k75c0ed872546",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k8d41abbb4e26",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k93d149dfff3b",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kc3eecb26c8c9",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kc671d6d39fc5",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kdb9313accee4",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "db35789a5e561",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d40267e6de895",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "dc6fa20b755bd",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d1748d8e2603c",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "ke8ad874692ed",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "kf3777ceb20c7",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g8ba0b905bc5c",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g1adc2d4cda92",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g0c36d155f8c6",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "gfbefb4830944",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g6e7eaf747317",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "gf563289f1a40",
+     "kind": "commit"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T6",
+   "label": "provenance · artifact · hash",
+   "first": "2026-09-16",
+   "last": "2026-09-26",
+   "commits": 0,
+   "events": [
+    {
+     "date": "2026-09-16",
+     "key": "d852013abe764",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d50a9e4658e8a",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d38815d3e5b63",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d49780c1dfa0e",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "de4ff0694077f",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dd3150abfbac5",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dd055cf94760d",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d7d62f6d593f1",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dacd3528f5bfb",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d1538a67ca4cf",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dbece32bedcb4",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "ddf615982aab0",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d84d0743be667",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dde32241730fa",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d8a50088871f2",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dc1efc1e415c8",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d7acc2bfc4f8a",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "df3f62c193091",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d71e99623cdc1",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dc21d1c4b847b",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dc50952e8a28d",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d3d9c6123343e",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d8ead284fd07c",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d23b0eef9e47d",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d5bc0cf1b819e",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "daf76a87a9533",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d8a158aafbef1",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "de4835649fa71",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d388a7d78bc78",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "defee7e6a51e6",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d4ff84e8c5dd0",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "db80848eee7b3",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "d9a06750ff9a6",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k1fd409368894",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k536ffa4316fd",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kb160a1ed8ae4",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kb281adf84c0e",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "keca54bd1ff1d",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "dd7baccbc4e7b",
+     "kind": "doc"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T7",
+   "label": "sqlite · abi · vendored",
+   "first": "2026-02-11",
+   "last": "2026-09-26",
+   "commits": 7,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "k8b6c4c497f04",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "ddb52e06b0bed",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d1b55c1eb5152",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d75f567c4f2f1",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "dda588b679fe0",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "g15f5ea66c1b9",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k0f942216ed37",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k511b91f1ef4d",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k586bcb4d8e65",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k8767183e2d03",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k93e73e259aa4",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kbb29c570c900",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ke393914a221c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g6147bd5260c1",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ga7537fb31edf",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g5aab1f6495b4",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "gc908a2112962",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g967c46f9656b",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k2f7b011accc1",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k542038d4651b",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "dfee11a4055b3",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d5defb527b89b",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "dff388be14a17",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "k9270031da5e2",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "ka41b05bfbc37",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "daf013833a3da",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d54d2e30c62a8",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "dadc5328da792",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "d61fbfbc9f5ff",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-26",
+     "key": "g139aba5a823a",
+     "kind": "commit"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T8",
+   "label": "importer · html · format",
+   "first": "2026-02-11",
+   "last": "2026-09-25",
+   "commits": 3,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "k3a948babab8c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-11",
+     "key": "kd8dc8c49868c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "df462b26d4dd7",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d91c0cb261f17",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "df616f78543d5",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k2b1e19997161",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k3715f4acb204",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k5529893a7391",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k61c61eca79ef",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k62e48ff1383c",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k6c62adf1f66b",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k7278b02de553",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k779930f599a2",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k8bfd97492ce0",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k8cb1f53cab16",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k922cb815f2af",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kab848f6f1f00",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kb03b2309bdc6",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kba8b026d1dae",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "kc616fc1f86f5",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g389c0964831b",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g6bcbf9f5da0a",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g095e15d74102",
+     "kind": "commit"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T9",
+   "label": "bus · handler · emit",
+   "first": "2026-02-11",
+   "last": "2026-09-25",
+   "commits": 2,
+   "events": [
+    {
+     "date": "2026-02-11",
+     "key": "k5c675ecb577a",
+     "kind": "code"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d45e72fa992e3",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "deb32a5d52d85",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "dd25ceb79f22f",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-02-19",
+     "key": "d9fbbc10248d3",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k2aa1568b2987",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k303c1d4074dc",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k558db9920fcd",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "k6e9620eb62f9",
+     "kind": "code"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "ge391f02cbac4",
+     "kind": "commit"
+    },
+    {
+     "date": "2026-09-25",
+     "key": "g60f7808ed941",
+     "kind": "commit"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T10",
+   "label": "other",
+   "first": "2026-02-19",
+   "last": "2026-09-16",
+   "commits": 0,
+   "events": [
+    {
+     "date": "2026-02-19",
+     "key": "d7094df14966c",
+     "kind": "doc"
+    },
+    {
+     "date": "2026-09-16",
+     "key": "dcbbd3401060c",
+     "kind": "doc"
+    }
+   ],
+   "forks": []
+  }
+ ],
+ "forks": []
+}

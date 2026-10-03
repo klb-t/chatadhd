@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+  Placeholder page. The real UI is loom/web/dist, copied here by the
+  `copyWebAssets` Gradle task (see app/build.gradle.kts) once loom/web has a
+  production build; this file is only ever committed so `assembleDebug` has
+  something to package and so `window.LoomBridge` can be smoke-tested by
+  hand before loom/web exists. It is silently overwritten (Sync, not Copy)
+  the first time `npm run build` produces loom/web/dist.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ChatADHD / Loom</title>
+<style>
+  body { font: 14px/1.5 -apple-system, Roboto, sans-serif; background: #0f0f14; color: #e6e6ea; padding: 16px; }
+  pre { background: #1a1d24; padding: 12px; border-radius: 8px; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+  button { padding: 8px 12px; margin: 4px 4px 4px 0; }
+</style>
+</head>
+<body>
+<h1>Loom bridge smoke test</h1>
+<p>loom/web/dist has not been built into this asset yet. This page only exercises <code>window.LoomBridge</code>.</p>
+<button onclick="doInit()">LoomBridge.init(null, null)</button>
+<button onclick="doVersion()">LoomBridge.version()</button>
+<button onclick="doListConversations()">LoomBridge.listConversations(10)</button>
+<pre id="out">(nothing yet)</pre>
+<script>
+function show(x) { document.getElementById('out').textContent =
+  typeof x === 'string' ? x : JSON.stringify(x, null, 2); }
+function doInit() { show(window.LoomBridge ? window.LoomBridge.init(null, null) : 'window.LoomBridge missing'); }
+function doVersion() { show(window.LoomBridge ? window.LoomBridge.version() : 'window.LoomBridge missing'); }
+function doListConversations() { show(window.LoomBridge ? window.LoomBridge.listConversations(10) : 'window.LoomBridge missing'); }
+window.__loomCallbacks = window.__loomCallbacks || {};
+</script>
+</body>
+</html>

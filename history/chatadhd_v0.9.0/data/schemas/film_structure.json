@@ -1,0 +1,653 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://chatadhd.local/schemas/film_structure.json",
+  "title": "FilmStructure",
+  "description": "Rich, 3D-aware representation of a film for deterministic prompt compilation and critic-assisted quality control. Not a format consumed by generation models directly — it feeds PromptCompiler which emits model-friendly prose, and StructureCritic which validates coherence across scenes.",
+  "type": "object",
+  "required": ["structure_id", "title", "scenes"],
+  "properties": {
+    "structure_id": {"type": "string", "pattern": "^fs_[0-9a-f]+$"},
+    "title": {"type": "string"},
+    "synopsis": {"type": "string"},
+    "style_manifesto": {
+      "type": "string",
+      "description": "High-level artistic direction shared by all scenes. Fed into every prompt compilation as invariant context."
+    },
+    "target_duration_s": {"type": "number", "minimum": 0},
+    "language_variants": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/language_variant"}
+    },
+    "portfolio_id": {"type": ["string", "null"]},
+    "characters": {"type": "array", "items": {"$ref": "#/definitions/character"}},
+    "locations": {"type": "array", "items": {"$ref": "#/definitions/location"}},
+    "props": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/prop"},
+      "description": "Cross-scene narrative objects (rekwizyty) with their own transformation arc across the film. Scenes reference prop_ids; props live at film level so they can evolve across scenes."
+    },
+    "motifs": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/motif"},
+      "description": "First-class motifs: recurring visual/sonic/linguistic/narrative themes. Scenes activate motifs by referencing motif_ids. Motifs connect citations, props, and scene semantics."
+    },
+    "citations": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/quote"},
+      "description": "Reusable citation library for this film. Scenes reference quote_ids. User-verified flag tracks whether a user confirmed the source (LLM can propose but not confirm)."
+    },
+    "artistic_text": {"$ref": "#/definitions/artistic_text"},
+    "mood_board": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/mood_ref"},
+      "description": "Portfolio item references used as style anchors across the whole film."
+    },
+    "scenes": {"type": "array", "items": {"$ref": "#/definitions/scene"}},
+    "extra": {
+      "type": "object",
+      "description": "Open field for unclassified ideas. Survives serialization. PromptCompiler ignores unknown keys."
+    }
+  },
+  "definitions": {
+    "localized_string": {
+      "description": "Text string with optional per-language variants. Use plain string for single-language, object for multilingual content. PromptCompiler picks matching variant or falls back to 'default'.",
+      "oneOf": [
+        {"type": "string"},
+        {
+          "type": "object",
+          "description": "Keys are language codes (e.g. 'pl', 'nl', 'en'). Special key 'default' used when language match fails.",
+          "additionalProperties": {"type": "string"}
+        }
+      ]
+    },
+    "artistic_text": {
+      "description": "Film-level artistic text blocks: prologue, motto, epilogue, lyrics, dedication. All optional, all language-aware.",
+      "type": "object",
+      "properties": {
+        "prologue": {"$ref": "#/definitions/localized_string"},
+        "motto": {"$ref": "#/definitions/localized_string"},
+        "epilogue": {"$ref": "#/definitions/localized_string"},
+        "dedication": {"$ref": "#/definitions/localized_string"},
+        "lyrics": {
+          "description": "For musical/music-video films. Lyrics as structured segments with scene linkage.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "segment_id": {"type": "string"},
+              "text": {"$ref": "#/definitions/localized_string"},
+              "role": {"enum": ["verse", "chorus", "bridge", "pre_chorus", "intro", "outro", "spoken", "refrain", "ad_lib"]},
+              "linked_scene_ids": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Scenes where this segment plays, for deterministic sync."
+              }
+            }
+          }
+        },
+        "tagline": {"$ref": "#/definitions/localized_string"},
+        "extra": {"type": "object"}
+      }
+    },
+    "quote": {
+      "description": "Citation / artistic reference. LLM can propose; user-verified=true means user confirmed the source exists and is accurate. License_note supports fair-use tracking for AoD covers-album etc.",
+      "type": "object",
+      "required": ["id", "text"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^q_[0-9a-f]+$"},
+        "text": {"$ref": "#/definitions/localized_string"},
+        "source": {
+          "type": "object",
+          "properties": {
+            "author": {"type": "string"},
+            "title": {"type": "string"},
+            "year": {"type": ["integer", "string"]},
+            "medium": {"enum": ["painting", "poem", "novel", "film", "music", "text", "sculpture", "photography", "essay", "aphorism", "scripture", "other"]},
+            "url": {"type": "string"},
+            "raw": {"type": "string", "description": "Full free-form citation string for anything not captured above."}
+          }
+        },
+        "relationship": {
+          "type": "string",
+          "enum": ["homage", "inversion", "direct_quote", "paraphrase", "conceptual_link", "visual_echo", "structural_parallel", "critique"],
+          "description": "How this citation relates to the film's scene that invokes it."
+        },
+        "visual_reference": {
+          "type": "string",
+          "description": "portfolio_item_id pointing to an image of the cited work, if available. Critical for visual quotes where PromptCompiler will use it as anchor."
+        },
+        "license_note": {
+          "type": "string",
+          "description": "Notes on licensing status: public_domain / fair_use_rationale / license_obtained / concern / requires_review. Hand-maintained."
+        },
+        "verified": {"type": "boolean", "default": false, "description": "True only after user explicitly confirms source is accurate. LLM can propose, cannot verify."},
+        "embedding": {
+          "type": "array",
+          "items": {"type": "number"},
+          "description": "Optional semantic embedding of the quote text. For critic-matching / auto-suggestion. Filled by separate embedding provider when available."
+        },
+        "extra": {"type": "object"}
+      }
+    },
+    "prop": {
+      "description": "A narrative object persisting across scenes. E.g. a book that changes through the story, a bottle that accumulates meaning, a photograph.",
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^pr_[0-9a-f]+$"},
+        "name": {"type": "string"},
+        "description": {"$ref": "#/definitions/localized_string"},
+        "portfolio_item_id": {"type": "string", "description": "Visual anchor."},
+        "first_appearance_scene_id": {"type": "string"},
+        "narrative_arc": {"$ref": "#/definitions/localized_string", "description": "High-level description of how this prop evolves through the film."},
+        "transformation_log": {
+          "type": "array",
+          "description": "Ordered list of how the prop changes scene-by-scene. Hand-maintained or LLM-suggested. PromptCompiler uses this to prompt consistent appearance.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scene_id": {"type": "string"},
+              "state_description": {"$ref": "#/definitions/localized_string"},
+              "visual_delta": {"type": "string", "description": "What changed since previous state (free-form)."}
+            }
+          }
+        },
+        "extra": {"type": "object"}
+      }
+    },
+    "motif": {
+      "description": "A first-class recurring theme. Kind distinguishes visual motif (e.g. specific color, geometric shape), sonic (instrument, interval, rhythm), linguistic (repeated word, phrase), narrative (repeated beat, inversion pattern).",
+      "type": "object",
+      "required": ["id", "name", "kind"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^mo_[0-9a-f]+$"},
+        "name": {"type": "string"},
+        "kind": {"enum": ["visual", "sonic", "linguistic", "narrative", "structural", "compound"]},
+        "description": {"$ref": "#/definitions/localized_string"},
+        "recurrence_schema": {
+          "type": "object",
+          "description": "How the motif recurs across the film. Hand-maintained initially; future: LLM-derived from scene activations.",
+          "properties": {
+            "scene_ids": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Scenes where this motif is intended to appear."
+            },
+            "variation_pattern": {"type": "string", "description": "Free-form: e.g. 'A-A-B-A', 'crescendo', 'fragmented-then-whole'."},
+            "rules": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Human-readable constraints: 'always appears on beat 1 of bar', 'inverted in night scenes'."
+            }
+          }
+        },
+        "associated_citation_ids": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Quotes that connect to or inform this motif."
+        },
+        "associated_prop_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "extra": {"type": "object"}
+      }
+    },
+    "narration": {
+      "description": "Scene-level narration: voiceover, dialog, onscreen text, lyrics. All optional, all language-aware.",
+      "type": "object",
+      "properties": {
+        "voiceover": {"$ref": "#/definitions/localized_string"},
+        "dialog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "properties": {
+              "speaker_character_id": {"type": "string"},
+              "speaker_label": {"type": "string", "description": "Used when no character_id (e.g. 'NARRATOR', 'CROWD')."},
+              "text": {"$ref": "#/definitions/localized_string"},
+              "delivery": {"type": "string", "description": "Performance note: 'whispered', 'shouted', 'overlapping', 'off-screen'."},
+              "start_offset_s": {"type": "number"}
+            }
+          }
+        },
+        "onscreen_text": {
+          "type": "array",
+          "description": "Text appearing in frame: titles, subtitles, signs, chyrons.",
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "properties": {
+              "text": {"$ref": "#/definitions/localized_string"},
+              "kind": {"enum": ["title", "subtitle", "insert", "sign_in_world", "chyron", "credit"]},
+              "position": {"enum": ["top", "bottom", "center", "custom"]},
+              "start_offset_s": {"type": "number"},
+              "duration_s": {"type": "number"}
+            }
+          }
+        },
+        "lyrics_aligned": {
+          "description": "For music-video scenes where lyrics sync with cuts. Two modes: by time (timestamp_s) or by beat (beat_index referencing audio_sync.beat_pattern).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "properties": {
+              "text": {"$ref": "#/definitions/localized_string"},
+              "timestamp_s": {"type": "number"},
+              "beat_index": {"type": "integer"},
+              "emphasis": {"enum": ["normal", "soft", "accent", "roared"]},
+              "linked_lyrics_segment_id": {"type": "string", "description": "Ties back to artistic_text.lyrics segment."}
+            }
+          }
+        },
+        "extra": {"type": "object"}
+      }
+    },
+    "vec3": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "quat": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "scalar_curve": {
+      "description": "A time-parameterized scalar. Either an expression (sympy-evaluable, variable 't' in [0, duration]), or a list of (t, value) control points with interpolation mode.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "expression"],
+          "properties": {
+            "type": {"const": "expression"},
+            "expression": {"type": "string"},
+            "fallback_samples": {
+              "type": "array",
+              "description": "Pre-evaluated (t, value) pairs. Used when expression eval fails or sympy is unavailable.",
+              "items": {
+                "type": "array",
+                "items": {"type": "number"},
+                "minItems": 2,
+                "maxItems": 2
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "control_points"],
+          "properties": {
+            "type": {"const": "piecewise"},
+            "interpolation": {"enum": ["linear", "step", "cosine", "bezier"], "default": "linear"},
+            "control_points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {"type": "number"},
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 1
+            }
+          }
+        },
+        {"type": "number", "description": "Shorthand for constant scalar."}
+      ]
+    },
+    "vec3_curve": {
+      "description": "A time-parameterized 3D vector. Same two modes as scalar_curve, with 3D tuples.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "x", "y", "z"],
+          "properties": {
+            "type": {"const": "expression_per_axis"},
+            "x": {"type": "string"},
+            "y": {"type": "string"},
+            "z": {"type": "string"},
+            "fallback_samples": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {"type": "number"},
+                "minItems": 4,
+                "maxItems": 4
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "control_points"],
+          "properties": {
+            "type": {"const": "piecewise"},
+            "interpolation": {"enum": ["linear", "step", "cosine", "bezier"], "default": "linear"},
+            "control_points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {"type": "number"},
+                "minItems": 4,
+                "maxItems": 4,
+                "description": "[t, x, y, z]"
+              }
+            }
+          }
+        },
+        {"$ref": "#/definitions/vec3"}
+      ]
+    },
+    "transform": {
+      "type": "object",
+      "properties": {
+        "position": {"$ref": "#/definitions/vec3_curve"},
+        "rotation_euler": {"$ref": "#/definitions/vec3_curve"},
+        "rotation_quat": {"$ref": "#/definitions/quat"},
+        "scale": {"$ref": "#/definitions/vec3_curve"}
+      }
+    },
+    "material_hints": {
+      "type": "object",
+      "properties": {
+        "dominant_colors": {
+          "type": "array",
+          "items": {"type": "string", "description": "hex or name"}
+        },
+        "texture_hint": {"type": "string"},
+        "emissive": {"type": "boolean"},
+        "roughness_hint": {"enum": ["matte", "satin", "glossy", "mirror"]}
+      }
+    },
+    "character": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^ch_[0-9a-f]+$"},
+        "name": {"type": "string"},
+        "role": {"type": "string"},
+        "portfolio_item_id": {"type": "string"},
+        "appearance": {"type": "string"},
+        "voice_profile": {"type": "string"},
+        "language_specific": {
+          "type": "object",
+          "description": "Per-language overrides (name/voice) for language_variants",
+          "additionalProperties": {"type": "object"}
+        },
+        "extra": {"type": "object"}
+      }
+    },
+    "location": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^loc_[0-9a-f]+$"},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "portfolio_item_id": {"type": "string"},
+        "lighting_baseline": {
+          "type": "object",
+          "properties": {
+            "time_of_day": {"enum": ["dawn", "morning", "noon", "afternoon", "dusk", "night", "blue_hour", "golden_hour"]},
+            "color_temperature_k": {"type": "number"},
+            "intensity": {"type": "number"},
+            "direction": {"$ref": "#/definitions/vec3"},
+            "weather": {"type": "string"}
+          }
+        },
+        "extra": {"type": "object"}
+      }
+    },
+    "mood_ref": {
+      "type": "object",
+      "required": ["portfolio_item_id"],
+      "properties": {
+        "portfolio_item_id": {"type": "string"},
+        "weight": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "subject": {
+      "description": "An actor or object present in a scene. Tracks 3D placement and behavior.",
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string"},
+        "character_id": {"type": "string"},
+        "label": {"type": "string"},
+        "transform": {"$ref": "#/definitions/transform"},
+        "material": {"$ref": "#/definitions/material_hints"},
+        "behavior": {
+          "type": "object",
+          "properties": {
+            "kind": {"enum": ["static", "animated", "reactive"]},
+            "description": {"type": "string"}
+          }
+        },
+        "extra": {"type": "object"}
+      }
+    },
+    "camera_path": {
+      "description": "Camera path parameterized by t in [0, duration]. Composite: either a named preset with parameters, or an explicit transform curve.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {"const": "static"},
+            "position": {"$ref": "#/definitions/vec3"},
+            "look_at": {"$ref": "#/definitions/vec3"},
+            "up": {"$ref": "#/definitions/vec3"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "center"],
+          "properties": {
+            "type": {"const": "orbit"},
+            "center": {"$ref": "#/definitions/vec3"},
+            "radius": {"$ref": "#/definitions/scalar_curve"},
+            "angular_velocity": {"$ref": "#/definitions/scalar_curve"},
+            "elevation": {"$ref": "#/definitions/scalar_curve"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {"const": "dolly"},
+            "start": {"$ref": "#/definitions/vec3"},
+            "end": {"$ref": "#/definitions/vec3"},
+            "easing": {"enum": ["linear", "ease_in", "ease_out", "ease_in_out"]}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {"const": "bezier"},
+            "control_points": {
+              "type": "array",
+              "items": {"$ref": "#/definitions/vec3"},
+              "minItems": 2
+            },
+            "look_at_path": {"$ref": "#/definitions/vec3_curve"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "position", "look_at"],
+          "properties": {
+            "type": {"const": "explicit"},
+            "position": {"$ref": "#/definitions/vec3_curve"},
+            "look_at": {"$ref": "#/definitions/vec3_curve"}
+          }
+        }
+      ]
+    },
+    "camera": {
+      "type": "object",
+      "properties": {
+        "path": {"$ref": "#/definitions/camera_path"},
+        "fov_degrees": {"$ref": "#/definitions/scalar_curve"},
+        "focus_distance": {"$ref": "#/definitions/scalar_curve"},
+        "aperture": {"$ref": "#/definitions/scalar_curve"},
+        "lens_qualitative": {
+          "type": "string",
+          "description": "Short human-readable lens tag: 'wide', 'macro', 'telephoto', 'fisheye'. Used in prompt compilation."
+        },
+        "shake": {
+          "type": "object",
+          "properties": {
+            "amplitude": {"type": "number"},
+            "frequency_hz": {"type": "number"},
+            "description": {"type": "string"}
+          }
+        }
+      }
+    },
+    "lighting": {
+      "type": "object",
+      "properties": {
+        "primary_direction": {"$ref": "#/definitions/vec3"},
+        "color_temperature_k": {"$ref": "#/definitions/scalar_curve"},
+        "intensity": {"$ref": "#/definitions/scalar_curve"},
+        "time_of_day": {"type": "string"},
+        "ambient": {
+          "type": "object",
+          "properties": {
+            "color": {"type": "string"},
+            "intensity": {"type": "number"}
+          }
+        },
+        "qualitative": {"type": "string"}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "location_id": {"type": "string"},
+        "weather": {"type": "string"},
+        "particulates": {
+          "type": "object",
+          "properties": {
+            "kind": {"enum": ["none", "fog", "mist", "rain", "snow", "dust", "smoke"]},
+            "density": {"type": "number"}
+          }
+        },
+        "ambient_sound_cues": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "scene_variation": {
+      "description": "An alternative rendering of the same narrative scene (different style, mood, angle). Used for A/B testing generation and for providing the user with choices.",
+      "type": "object",
+      "required": ["variation_id"],
+      "properties": {
+        "variation_id": {"type": "string", "pattern": "^v_[0-9a-f]+$"},
+        "label": {"type": "string"},
+        "style_overrides": {"type": "object"},
+        "camera_override": {"$ref": "#/definitions/camera"},
+        "lighting_override": {"$ref": "#/definitions/lighting"},
+        "artifact_path": {"type": "string"},
+        "embedding": {"type": "array", "items": {"type": "number"}},
+        "user_rating": {"type": "number", "minimum": 0, "maximum": 5},
+        "extra": {"type": "object"}
+      }
+    },
+    "scene": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^sc_[0-9a-f]+$"},
+        "narrative_order": {"type": "integer"},
+        "duration_seconds": {"type": "number"},
+        "language_description": {
+          "type": "string",
+          "description": "Prose description of the scene. Either the source (user wrote it, model generates the structured fields) or the output (model generated structure, prose is reverse-synthesis for sanity check)."
+        },
+        "synopsis": {"type": "string", "description": "One-sentence summary for navigation"},
+        "subjects": {"type": "array", "items": {"$ref": "#/definitions/subject"}},
+        "camera": {"$ref": "#/definitions/camera"},
+        "lighting": {"$ref": "#/definitions/lighting"},
+        "environment": {"$ref": "#/definitions/environment"},
+        "style_tokens": {"type": "array", "items": {"type": "string"}},
+        "negative_prompts": {"type": "array", "items": {"type": "string"}},
+        "anchors": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "portfolio_item_ids serving as hard visual anchors"
+        },
+        "cited_quote_ids": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Quote IDs (q_*) from FilmStructure.citations that this scene invokes."
+        },
+        "active_motif_ids": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Motif IDs (mo_*) active in this scene."
+        },
+        "props_present": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Prop IDs (pr_*) visible in this scene."
+        },
+        "narration": {"$ref": "#/definitions/narration"},
+        "audio_sync": {
+          "type": "object",
+          "properties": {
+            "audio_file": {"type": "string"},
+            "start_offset_s": {"type": "number"},
+            "beat_pattern": {"type": "string"},
+            "zoom_schedule": {"$ref": "#/definitions/scalar_curve"},
+            "bpm": {"type": "number"},
+            "polyrhythm": {"type": "array", "items": {"type": "integer"}}
+          }
+        },
+        "transitions": {
+          "type": "object",
+          "properties": {
+            "in_from_previous": {"enum": ["cut", "dissolve", "fade", "match_cut", "hard_zoom"]},
+            "out_to_next": {"enum": ["cut", "dissolve", "fade", "match_cut", "hard_zoom"]},
+            "duration_s": {"type": "number"}
+          }
+        },
+        "variations": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/scene_variation"}
+        },
+        "selected_variation_id": {"type": "string"},
+        "artifacts": {
+          "type": "object",
+          "properties": {
+            "keyframe_path": {"type": "string"},
+            "clip_path": {"type": "string"},
+            "embedding_keyframe": {"type": "array", "items": {"type": "number"}},
+            "embedding_clip": {"type": "array", "items": {"type": "number"}},
+            "model_used_keyframe": {"type": "string"},
+            "model_used_clip": {"type": "string"},
+            "generation_cost_usd": {"type": "number"},
+            "attempts": {"type": "integer"}
+          }
+        },
+        "state": {"enum": ["pending", "keyframe_ready", "keyframe_failed", "clip_ready", "clip_failed", "flagged"]},
+        "notes": {"type": "string"},
+        "extra": {"type": "object"}
+      }
+    },
+    "language_variant": {
+      "type": "object",
+      "required": ["code", "name"],
+      "properties": {
+        "code": {"type": "string"},
+        "name": {"type": "string"},
+        "narrator_voice": {"type": "string"},
+        "localized_title": {"type": "string"},
+        "extra": {"type": "object"}
+      }
+    }
+  }
+}

@@ -1,0 +1,662 @@
+"""
+ChatADHD v0.07.10 - Dialog Popups
+
+Settings, QuickAPI, Theme, FilePicker, LogViewer, ModelSelector,
+NodeEditor — all popups that overlay the main UI.
+
+v0.7.10 adds:
+  - Provider filtering with colored tabs
+  - Model pricing and description display
+  - Cost estimation
+  - Better search and organization
+"""
+import json
+import logging
+import os
+
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.slider import Slider
+from kivy.uix.spinner import Spinner
+from kivy.uix.filechooser import FileChooserListView
+from kivy.core.clipboard import Clipboard
+from kivy.graphics import Color, Rectangle
+from kivy.metrics import dp, sp
+
+from gui.base import C, RBtn, Card, DarkInput, LOGBUF, show_toast
+
+log = logging.getLogger(__name__)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# SETTINGS
+# ═══════════════════════════════════════════════════════════════════
+
+class SettingsPopup(Popup):
+    """API keys and core configuration."""
+
+    def __init__(self, config, secrets, models=None, on_save=None, **kw):
+        self.config = config
+        self.secrets = secrets
+        self.models = models  # ModelRegistry for picker
+        self.on_save = on_save
+
+        content = BoxLayout(orientation="vertical", padding=dp(6), spacing=dp(3))
+
+        # API Key
+        content.add_widget(Label(text="API Key:", color=C["text"],
+                                 size_hint_y=None, height=dp(16), font_size=sp(9)))
+        self.api_key = DarkInput(
+            text=secrets.get("api_key", ""), password=True,
+            size_hint_y=None, height=dp(32), font_size=sp(10),
+        )
+        content.add_widget(self.api_key)
+
+        # Base URL
+        content.add_widget(Label(text="Base URL:", color=C["text"],
+                                 size_hint_y=None, height=dp(16), font_size=sp(9)))
+        self.base_url = DarkInput(
+            text=config.get("base_url", ""),
+            size_hint_y=None, height=dp(32), font_size=sp(10),
+        )
+        content.add_widget(self.base_url)
+
+        # GitHub Token
+        content.add_widget(Label(text="GitHub Token:", color=C["text"],
+                                 size_hint_y=None, height=dp(16), font_size=sp(9)))
+        self.gh_token = DarkInput(
+            text=secrets.get("github_token", ""), password=True,
+            size_hint_y=None, height=dp(32), font_size=sp(10),
+        )
+        content.add_widget(self.gh_token)
+
+        # Groq Key (for voice)
+        content.add_widget(Label(text="Groq API Key (voice):", color=C["text"],
+                                 size_hint_y=None, height=dp(16), font_size=sp(9)))
+        self.groq_key = DarkInput(
+            text=secrets.get("groq_api_key", ""), password=True,
+            size_hint_y=None, height=dp(32), font_size=sp(10),
+        )
+        content.add_widget(self.groq_key)
+
+        # Anthropic Batch API Key (for 50% cheaper bulk semantic analysis)
+        content.add_widget(Label(text="Anthropic Batch Key (optional):", color=C["text"],
+                                 size_hint_y=None, height=dp(16), font_size=sp(9)))
+        self.batch_key = DarkInput(
+            text=secrets.get("anthropic_batch_key", ""), password=True,
+            size_hint_y=None, height=dp(32), font_size=sp(10),
+            hint_text="sk-ant-... (enables 50% cheaper batch analysis)",
+        )
+        content.add_widget(self.batch_key)
+
+        # System Prompt
+        content.add_widget(Label(text="System Prompt:", color=C["text"],
+                                 size_hint_y=None, height=dp(16), font_size=sp(9)))
+        self.sys_prompt = DarkInput(
+            text=config.get("system_prompt", ""),
+            multiline=True, size_hint_y=0.25, font_size=sp(9),
+        )
+        content.add_widget(self.sys_prompt)
+
+        # Semantic Model — picker button (same as main model selector)
+        sem_row = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(4))
+        sem_row.add_widget(Label(text="Semantic:", color=C["text"],
+                                  size_hint_x=0.25, font_size=sp(9)))
+        cur_sem = config.get("semantic_model", "")
+        self._sem_model_id = cur_sem
+        sem_label = cur_sem.split("/")[-1][:20] if cur_sem else "(none)"
+        self.sem_model_btn = RBtn(
+            text=sem_label, bg=C["card"], font_size=sp(8),
+            on_press=self._pick_semantic_model,
+        )
+        sem_row.add_widget(self.sem_model_btn)
+        content.add_widget(sem_row)
+
+        # Semantic analysis toggle
+        sem_toggle = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(4))
+        sem_toggle.add_widget(Label(text="LLM Analysis:", color=C["text"],
+                                     size_hint_x=0.4, font_size=sp(9)))
+        self._sem_enabled = config.get("semantic_analysis", True)
+        self.sem_btn = RBtn(
+            text="ON" if self._sem_enabled else "OFF",
+            bg=C["ok"] if self._sem_enabled else C["card"],
+            font_size=sp(9),
+            on_press=self._toggle_semantic,
+        )
+        sem_toggle.add_widget(self.sem_btn)
+        content.add_widget(sem_toggle)
+
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Save", bg=C["accent"], on_press=self._save))
+        btns.add_widget(RBtn(text="Cancel", bg=C["card"],
+                             on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+
+        super().__init__(title="Settings", content=content,
+                         size_hint=(0.95, 0.7), **kw)
+
+    def _toggle_semantic(self, *_):
+        self._sem_enabled = not self._sem_enabled
+        self.sem_btn.text = "ON" if self._sem_enabled else "OFF"
+        self.sem_btn.background_color = C["ok"] if self._sem_enabled else C["card"]
+
+    def _pick_semantic_model(self, *_):
+        if not self.models:
+            show_toast("No model list available")
+            return
+
+        def on_sel(model_id):
+            self._sem_model_id = model_id
+            self.sem_model_btn.text = model_id.split("/")[-1][:20]
+
+        ModelSelectorPopup(self.models, self._sem_model_id, on_sel).open()
+
+    def _save(self, *_):
+        self.secrets.set("api_key", self.api_key.text.strip())
+        self.secrets.set("github_token", self.gh_token.text.strip())
+        self.secrets.set("groq_api_key", self.groq_key.text.strip())
+        self.secrets.set("anthropic_batch_key", self.batch_key.text.strip())
+        self.secrets.save()
+
+        self.config.set("base_url", self.base_url.text.strip())
+        self.config.set("system_prompt", self.sys_prompt.text.strip())
+        self.config.set("semantic_model", self._sem_model_id or "")
+        self.config.set("semantic_analysis", self._sem_enabled)
+        self.config.save()
+
+        show_toast("Settings saved")
+        self.dismiss()
+        if self.on_save:
+            self.on_save()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# QUICK API PANEL
+# ═══════════════════════════════════════════════════════════════════
+
+class QuickAPIPanel(Popup):
+    """Fast access to model selection, presets, and temperature."""
+
+    PRESETS = {
+        "Creative":  {"temperature": 0.9, "max_tokens": 4096},
+        "Balanced":  {"temperature": 0.7, "max_tokens": 4096},
+        "Precise":   {"temperature": 0.3, "max_tokens": 4096},
+        "Code":      {"temperature": 0.2, "max_tokens": 8192},
+        "Long":      {"temperature": 0.7, "max_tokens": 16384},
+    }
+
+    FAVORITES = [
+        "anthropic/claude-sonnet-4-20250514",
+        "anthropic/claude-4.6-opus",
+        "openai/gpt-5.2",
+        "openai/gpt-5.3-codex",
+        "google/gemini-2.5-pro",
+        "deepseek/deepseek-r1",
+    ]
+
+    def __init__(self, config, models, on_change=None, **kw):
+        self.config = config
+        self.models = models
+        self.on_change = on_change
+
+        content = BoxLayout(orientation="vertical", padding=dp(8), spacing=dp(4))
+
+        # Favourite models
+        content.add_widget(Label(text="Quick Models:", color=C["text"],
+                                 size_hint_y=None, height=dp(18), font_size=sp(10)))
+
+        current = config.get("default_model", "")
+        fav_grid = BoxLayout(size_hint_y=None, height=dp(70),
+                             orientation="vertical", spacing=dp(2))
+        row1, row2 = BoxLayout(spacing=dp(2)), BoxLayout(spacing=dp(2))
+        for i, mid in enumerate(self.FAVORITES[:6]):
+            short = mid.split("/")[-1][:10]
+            is_current = mid == current
+            btn = RBtn(text=short,
+                       bg=C["accent"] if is_current else C["card"],
+                       font_size=sp(8))
+            btn.model_id = mid
+            btn.bind(on_press=self._select_model)
+            (row1 if i < 3 else row2).add_widget(btn)
+        fav_grid.add_widget(row1)
+        fav_grid.add_widget(row2)
+        content.add_widget(fav_grid)
+
+        # Presets
+        content.add_widget(Label(text="Presets:", color=C["text"],
+                                 size_hint_y=None, height=dp(18), font_size=sp(10)))
+        preset_row = BoxLayout(size_hint_y=None, height=dp(32), spacing=dp(2))
+        for name in self.PRESETS:
+            btn = RBtn(text=name, bg=C["card"], font_size=sp(8))
+            btn.preset_name = name
+            btn.bind(on_press=self._apply_preset)
+            preset_row.add_widget(btn)
+        content.add_widget(preset_row)
+
+        # Temperature slider
+        temp_row = BoxLayout(size_hint_y=None, height=dp(34))
+        temp_row.add_widget(Label(text="Temp:", color=C["text"],
+                                  size_hint_x=0.2, font_size=sp(9)))
+        self.temp_slider = Slider(min=0.0, max=1.5,
+                                  value=config.get("temperature", 0.7),
+                                  size_hint_x=0.6)
+        temp_row.add_widget(self.temp_slider)
+        self.temp_label = Label(
+            text=f"{config.get('temperature', 0.7):.2f}",
+            color=C["text"], size_hint_x=0.2, font_size=sp(9),
+        )
+        self.temp_slider.bind(value=self._on_temp)
+        temp_row.add_widget(self.temp_label)
+        content.add_widget(temp_row)
+
+        # Max tokens slider
+        tok_row = BoxLayout(size_hint_y=None, height=dp(34))
+        tok_row.add_widget(Label(text="Tokens:", color=C["text"],
+                                 size_hint_x=0.2, font_size=sp(9)))
+        self.tok_slider = Slider(min=1000, max=32000,
+                                 value=config.get("max_tokens", 4096),
+                                 size_hint_x=0.6)
+        tok_row.add_widget(self.tok_slider)
+        self.tok_label = Label(
+            text=f"{int(config.get('max_tokens', 4096)):,}",
+            color=C["text"], size_hint_x=0.2, font_size=sp(9),
+        )
+        self.tok_slider.bind(value=self._on_tok)
+        tok_row.add_widget(self.tok_label)
+        content.add_widget(tok_row)
+
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Apply", bg=C["accent"], on_press=self._apply))
+        btns.add_widget(RBtn(text="Close", bg=C["card"],
+                             on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+
+        super().__init__(title="Quick API Settings", content=content,
+                         size_hint=(0.95, 0.55), **kw)
+
+    def _select_model(self, btn):
+        self.config.set("default_model", btn.model_id)
+        show_toast(f"Model: {btn.model_id.split('/')[-1]}")
+        self._notify()
+
+    def _apply_preset(self, btn):
+        preset = self.PRESETS.get(btn.preset_name, {})
+        for k, v in preset.items():
+            self.config.set(k, v)
+        self.temp_slider.value = preset.get("temperature", 0.7)
+        self.tok_slider.value = preset.get("max_tokens", 4096)
+        show_toast(f"Preset: {btn.preset_name}")
+        self._notify()
+
+    def _on_temp(self, _, val):
+        self.temp_label.text = f"{val:.2f}"
+
+    def _on_tok(self, _, val):
+        self.tok_label.text = f"{int(val):,}"
+
+    def _apply(self, *_):
+        self.config.set("temperature", round(self.temp_slider.value, 2))
+        self.config.set("max_tokens", int(self.tok_slider.value))
+        self.config.save()
+        show_toast("Settings applied")
+        self._notify()
+        self.dismiss()
+
+    def _notify(self):
+        if self.on_change:
+            self.on_change()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# THEME POPUP
+# ═══════════════════════════════════════════════════════════════════
+
+class ThemePopup(Popup):
+    def __init__(self, config, on_change=None, **kw):
+        self.config = config
+        self.on_change = on_change
+        content = BoxLayout(orientation="vertical", padding=dp(8), spacing=dp(4))
+        for name in ("dark", "amoled"):
+            btn = RBtn(text=name.capitalize(), bg=C["accent"], font_size=sp(11))
+            btn.theme_name = name
+            btn.bind(on_press=self._pick)
+            content.add_widget(btn)
+        super().__init__(title="Theme", content=content, size_hint=(0.6, 0.35), **kw)
+
+    def _pick(self, btn):
+        from gui.base import set_theme
+        set_theme(btn.theme_name)
+        self.config.set("theme", btn.theme_name)
+        self.config.save()
+        show_toast(f"Theme: {btn.theme_name}")
+        self.dismiss()
+        if self.on_change:
+            self.on_change()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# FILE PICKER
+# ═══════════════════════════════════════════════════════════════════
+
+class FilePickerPopup(Popup):
+    """Kivy-based file browser (plyer doesn't work in Pydroid)."""
+
+    def __init__(self, on_select, title="Select File", allow_dirs=False, **kw):
+        self._on_select = on_select
+        self._allow_dirs = allow_dirs
+
+        content = BoxLayout(orientation="vertical", padding=dp(4), spacing=dp(2))
+
+        start_path = "/storage/emulated/0" if os.path.exists("/storage/emulated/0") \
+            else os.path.expanduser("~")
+
+        self.chooser = FileChooserListView(
+            path=start_path,
+            dirselect=allow_dirs,
+            filters=["*"] if allow_dirs else [],
+        )
+        content.add_widget(self.chooser)
+
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Select", bg=C["accent"], on_press=self._select))
+        btns.add_widget(RBtn(text="Cancel", bg=C["card"],
+                             on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+
+        super().__init__(title=title, content=content, size_hint=(0.95, 0.85), **kw)
+
+    def _select(self, *_):
+        sel = self.chooser.selection
+        if sel:
+            self._on_select(sel[0])
+        elif self._allow_dirs:
+            self._on_select(self.chooser.path)
+        self.dismiss()
+
+
+# ═══════════════════════════════════════════════════════════════════
+# LOG VIEWER
+# ═══════════════════════════════════════════════════════════════════
+
+class LogViewer(Popup):
+    def __init__(self, **kw):
+        content = BoxLayout(orientation="vertical", padding=dp(4))
+        txt = DarkInput(text=LOGBUF.get(), readonly=True, font_size=sp(8))
+        content.add_widget(txt)
+        btns = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(4))
+        btns.add_widget(RBtn(text="Copy", bg=C["card"],
+                             on_press=lambda *a: (Clipboard.copy(txt.text),
+                                                  show_toast("Copied"))))
+        btns.add_widget(RBtn(text="Clear", bg=C["err"],
+                             on_press=lambda *a: (LOGBUF.clear(),
+                                                  setattr(txt, "text", ""),
+                                                  show_toast("Cleared"))))
+        btns.add_widget(RBtn(text="Close", bg=C["card"],
+                             on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+        super().__init__(title="Log", content=content, size_hint=(0.95, 0.7), **kw)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# MODEL SELECTOR
+# ═══════════════════════════════════════════════════════════════════
+
+class ModelSelectorPopup(Popup):
+    """Full model picker with provider filtering, pricing, and descriptions."""
+
+    # Provider colors (RGB)
+    PROVIDER_COLORS = {
+        "openai": (0.2, 0.7, 0.45),      # Green
+        "anthropic": (0.9, 0.55, 0.3),   # Orange
+        "google": (0.3, 0.55, 0.9),      # Blue
+        "meta-llama": (0.3, 0.4, 0.8),   # Purple
+        "mistralai": (0.8, 0.45, 0.25),  # Brown
+        "deepseek": (0.55, 0.35, 0.75),  # Magenta
+        "x-ai": (0.2, 0.8, 0.6),         # Cyan
+        "perplexity": (0.8, 0.2, 0.2),   # Red
+    }
+
+    def __init__(self, models, current_id, on_select, **kw):
+        self.models = models
+        self._on_select = on_select
+        self.current_id = current_id
+        self._search_text = ""
+        self._current_provider = None  # None = All
+
+        content = BoxLayout(orientation="vertical", padding=dp(4), spacing=dp(3))
+
+        # Search bar
+        search_row = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(3))
+        self._search_input = DarkInput(
+            hint_text="Search models...", multiline=False, font_size=sp(9)
+        )
+        self._search_input.bind(text=self._on_search_text)
+        search_row.add_widget(self._search_input)
+        search_row.add_widget(RBtn(
+            text="X", size_hint_x=None, width=dp(32), bg=C["card"], font_size=sp(9),
+            on_press=lambda *a: setattr(self._search_input, "text", "")
+        ))
+        content.add_widget(search_row)
+
+        # Provider tabs
+        grouped = models.grouped()
+        providers = sorted(grouped.keys())
+
+        tabs_row = BoxLayout(size_hint_y=None, height=dp(28), spacing=dp(2))
+        self._tabs = {}
+
+        # "All" tab
+        all_btn = RBtn(text="All", bg=C["accent"], font_size=sp(8), size_hint_x=0.15)
+        all_btn.provider = None
+        all_btn.bind(on_press=self._on_provider_tab)
+        tabs_row.add_widget(all_btn)
+        self._tabs[None] = all_btn
+
+        # Provider tabs
+        for prov in providers:
+            short_name = prov[:4].upper()
+            btn = RBtn(text=short_name, bg=C["card"], font_size=sp(7), size_hint_x=0.15)
+            btn.provider = prov
+            btn.bind(on_press=self._on_provider_tab)
+            tabs_row.add_widget(btn)
+            self._tabs[prov] = btn
+
+        content.add_widget(tabs_row)
+
+        # Model list
+        self._scroll = ScrollView()
+        self._lst = BoxLayout(orientation="vertical", size_hint_y=None, spacing=dp(2))
+        self._lst.bind(minimum_height=self._lst.setter("height"))
+        self._scroll.add_widget(self._lst)
+        content.add_widget(self._scroll)
+
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(34), spacing=dp(4))
+        btns.add_widget(RBtn(text="Close", bg=C["card"], on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+
+        super().__init__(title="Select Model", content=content,
+                         size_hint=(0.98, 0.85), **kw)
+
+        # Initial render
+        self._build_list()
+
+    def _on_search_text(self, _, text):
+        self._search_text = text.lower()
+        self._build_list()
+
+    def _on_provider_tab(self, btn):
+        self._current_provider = btn.provider
+        for provider, tab_btn in self._tabs.items():
+            if tab_btn.provider == self._current_provider:
+                tab_btn.background_color = C["accent"]
+            else:
+                tab_btn.background_color = C["card"]
+        self._build_list()
+
+    def _build_list(self):
+        self._lst.clear_widgets()
+
+        grouped = self.models.grouped()
+        if self._current_provider:
+            grouped = {k: v for k, v in grouped.items() if k == self._current_provider}
+
+        for provider, provider_models in sorted(grouped.items()):
+            # Provider header with color
+            prov_color = self.PROVIDER_COLORS.get(provider, (0.5, 0.5, 0.5))
+            header = BoxLayout(size_hint_y=None, height=dp(24), padding=dp(2))
+            header.canvas.before.clear()
+            with header.canvas.before:
+                Color(*prov_color, 0.3)
+                Rectangle(pos=header.pos, size=header.size)
+            header.add_widget(Label(
+                text=f"🔹 {provider.upper()}",
+                color=prov_color + (1,),
+                size_hint_y=None, height=dp(22),
+                font_size=sp(9), bold=True,
+                halign="left",
+            ))
+            self._lst.add_widget(header)
+
+            # Models in this provider
+            for m in sorted(provider_models, key=lambda x: x.get("name", x["id"])):
+                if self._search_text:
+                    if (self._search_text not in m["id"].lower() and
+                        self._search_text not in m.get("name", "").lower() and
+                        self._search_text not in m.get("description", "").lower()):
+                        continue
+
+                is_current = m["id"] == self.current_id
+                model_name = m.get("name", m["id"])[:22]
+
+                # Model button card
+                card_height = dp(48) if m.get("pricing") else dp(38)
+                model_card = Card(
+                    size_hint_y=None, height=card_height,
+                    bg=C["accent"] if is_current else C["card"],
+                )
+
+                card_layout = BoxLayout(orientation="vertical", padding=dp(2), spacing=dp(1))
+
+                # Name + context
+                header_row = BoxLayout(size_hint_y=None, height=dp(18))
+                header_row.add_widget(Label(
+                    text=model_name + ("*" if is_current else ""),
+                    font_size=sp(9), color=C["text"], bold=is_current,
+                    halign="left",
+                ))
+                ctx = m.get("context_length", 0)
+                if ctx > 0:
+                    ctx_text = f"{ctx/1000:.0f}K" if ctx >= 1000 else f"{ctx}"
+                    header_row.add_widget(Label(
+                        text=ctx_text,
+                        font_size=sp(8), color=C["dim"],
+                        size_hint_x=0.2, halign="right",
+                    ))
+                card_layout.add_widget(header_row)
+
+                # Pricing info
+                pricing = m.get("pricing", {})
+                if pricing:
+                    prompt_price = pricing.get("prompt", 0) or 0
+                    completion_price = pricing.get("completion", 0) or 0
+                    price_text = f"${prompt_price:.2e} / ${completion_price:.2e}"
+                    card_layout.add_widget(Label(
+                        text=price_text,
+                        font_size=sp(7), color=C["dim"],
+                    ))
+
+                model_card.add_widget(card_layout)
+                model_card.model_id = m["id"]
+                model_card.bind(on_touch_down=self._on_model_tap)
+
+                self._lst.add_widget(model_card)
+
+    def _on_model_tap(self, widget, touch):
+        if widget.collide_point(*touch.pos):
+            self._on_select(widget.model_id)
+            show_toast(f"Model: {widget.model_id.split('/')[-1]}")
+            self.dismiss()
+            return True
+        return False
+
+
+# ═══════════════════════════════════════════════════════════════════
+# NODE EDITOR (for Graph)
+# ═══════════════════════════════════════════════════════════════════
+
+class NodeEditorPopup(Popup):
+    """Edit properties of a graph node (weight, pin, content)."""
+
+    def __init__(self, node, engine, memory, on_update=None, **kw):
+        self.node = node
+        self.engine = engine
+        self.memory = memory
+        self.on_update = on_update
+
+        content = BoxLayout(orientation="vertical", padding=dp(8), spacing=dp(4))
+
+        content.add_widget(Label(
+            text=f"[{node.type}] {node.id[:10]}",
+            font_size=sp(9), color=C["dim"],
+            size_hint_y=None, height=dp(20),
+        ))
+
+        content.add_widget(Label(text="Content:", color=C["text"],
+                                 size_hint_y=None, height=dp(16)))
+        label_text = (node.data.get("text", node.full_label)
+                      if hasattr(node, "full_label") else node.label)
+        self.content_input = DarkInput(text=label_text, multiline=True, size_hint_y=0.4)
+        content.add_widget(self.content_input)
+
+        # Weight
+        wr = BoxLayout(size_hint_y=None, height=dp(34))
+        wr.add_widget(Label(text="Weight:", color=C["text"], size_hint_x=0.25))
+        self.weight_slider = Slider(min=0.1, max=2.0, value=node.weight, size_hint_x=0.5)
+        wr.add_widget(self.weight_slider)
+        self.weight_label = Label(text=f"{node.weight:.1f}", color=C["text"], size_hint_x=0.25)
+        self.weight_slider.bind(
+            value=lambda _, v: setattr(self.weight_label, "text", f"{v:.1f}"))
+        wr.add_widget(self.weight_label)
+        content.add_widget(wr)
+
+        # Pin
+        pr = BoxLayout(size_hint_y=None, height=dp(30))
+        pr.add_widget(Label(text="Pin:", color=C["text"], size_hint_x=0.4))
+        self.pin_btn = RBtn(
+            text="PINNED" if node.pinned else "FREE",
+            bg=C["warn"] if node.pinned else C["card"],
+            size_hint_x=0.6, on_press=self._toggle_pin,
+        )
+        pr.add_widget(self.pin_btn)
+        content.add_widget(pr)
+
+        # Buttons
+        btns = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(4))
+        btns.add_widget(RBtn(text="Save", bg=C["accent"], on_press=self._save))
+        btns.add_widget(RBtn(text="Close", bg=C["card"],
+                             on_press=lambda *a: self.dismiss()))
+        content.add_widget(btns)
+
+        super().__init__(title=f"Edit: {node.label[:18]}", content=content,
+                         size_hint=(0.92, 0.55), **kw)
+
+    def _toggle_pin(self, *_):
+        self.node.pinned = not self.node.pinned
+        self.pin_btn.text = "PINNED" if self.node.pinned else "FREE"
+        self.pin_btn.background_color = C["warn"] if self.node.pinned else C["card"]
+
+    def _save(self, *_):
+        self.node.weight = self.weight_slider.value
+        if self.node.type in ("user", "assistant") and self.engine:
+            self.engine.db.update_msg(self.node.id, weight=self.node.weight)
+        elif self.memory:
+            self.memory.update_node(self.node.id, weight=self.node.weight)
+        show_toast("Saved")
+        self.dismiss()
+        if self.on_update:
+            self.on_update()

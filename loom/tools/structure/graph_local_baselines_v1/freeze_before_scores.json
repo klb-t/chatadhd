@@ -1,0 +1,18 @@
+{
+  "schema": "loom.research.graph_local_before_scores/1",
+  "frozen_at": "2026-09-30T02:31:06.747858+00:00",
+  "split": "dev",
+  "validation_accessed": false,
+  "gold_dev_accessed_by_this_arm": false,
+  "files_sha256": {
+    "graph_local_baselines_v1/PROTOCOL.md": "f7377bcc23f56583bbb152bccef4a77b9af108c0ede5461925dc67c9d82a2c52",
+    "graph_local_baselines_v1/policy.json": "3f04e3a555f741bd3327ab1b97c208a9857d6c0d8770ab067e15becf7b964a67",
+    "graph_local_baselines_v1/local_baselines.py": "d678bba901229d76047f036efb57337b09f7a34e9a339b5047ee4c729203b6e6",
+    "graph_local_baselines_v1/embed_queries.py": "50c97ebc6760e1aa0183566f3b9e21f6c5c2d5c9411a2cf9b83690d55ba13a8e",
+    "graph_local_baselines_v1/prepared_inputs.json": "c5c39329ffbedd1abffb5adaeb8328c545c6b0dafe39afbbebe7564b871a06b3",
+    "graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "local_embedding_panel.py": "d52a2708a90358fb5d696b4e7b5839eb3bcbccc08f0cc38714bc038f9f315614",
+    "local_embedding_panel_v1/protocol.json": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+    "local_embedding_panel_v1/model_manifest.json": "0c6d998b882dfb0773f165efe1d8339d63a8888b5d9c1f3fd4390382a0b6856d"
+  }
+}

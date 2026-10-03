@@ -1,0 +1,22 @@
+{
+  "created_at": "2026-09-30T13:27:03.539726+00:00",
+  "files_sha256": {
+    "docs/research/retrieval_exploration_v1/NATIVE_SOURCE_FREE_PROTOCOL.md": "61e4ccdd5f578cd64559ecdb052e99c2f3683cc3f25d2ae3e72efd3c12d6c8f9",
+    "loom/tools/structure/graph_composed_validation_v1/native_baseline/environment_before_build.json": "4f373522fef76ad67cc58c968643a91a5c64e66ba689d217a89a78756ae47a08",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/BINARY_BEFORE_OUTPUT.json": "e6cc5756434b5573eca84608d67a5d8cf7b3395a824cea0c9b0ccd99f1e70608",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/PACK_BEFORE_OUTPUT.json": "225997d45cd865bd30a7bc698440b69890badb7056e822ac7b43559c997007c5",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/evaluate_native.py": "46ddf39eb9e17e3c2448fba2b20f88de26df094784992de6d03cab11af4e04bc",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/native_panel.py": "c509319a80f20064a023a8eef667610d59c2253af108b84be41c394daee5ef89",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/policy.json": "374997a632734d3f5618dcb2f276e37f26e038d4daa1b127e29a02f3260d02ca",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/prepared_manifest.json": "ee8012bc5a7ba8a3320a7e78b10c4496c4d91063a0f3e08593f37643b1cc427c",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/source_only_inputs.json": "85b650c841d569bbf09cc1de8e17da147337cff2bca4c54019ed98a640368a2e",
+    "loom/tools/structure/retrieval_exploration_v1/native_source_free_v1/test_native_panel.py": "e651691b9a7b9f219b7d7e332ad75c1e497bef61af7b50da7f34478c7e8b5b80"
+  },
+  "native_binary_sha256": "8e784b882b9a509f4e1f55bae50748d738a896e5a198a02781cb0c4168c23c2c",
+  "native_pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+  "paid_calls": 0,
+  "prior_dev_gold_exposed_elsewhere": true,
+  "source_head_at_freeze": "28dfe27aa4124bf00f25d4795592ae2dffa01edc",
+  "this_arm_gold_accessed": false,
+  "validation_accessed": false
+}

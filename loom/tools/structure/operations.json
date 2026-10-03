@@ -1,0 +1,437 @@
+{
+  "schema": "loom.experiment.operation_inventory/1",
+  "version": 1,
+  "status": "research_candidate_not_core_pack",
+  "unknown_operation_policy": "preserve source; report unrepresented; never infer validity from graph resemblance",
+  "operations": [
+    {
+      "id": "universal_instantiation",
+      "family": "deduction",
+      "inputs": [
+        "forall x P(x)",
+        "existing constant a"
+      ],
+      "output": "P(a)",
+      "preconditions": [
+        "capture-avoiding substitution",
+        "same scope",
+        "eligible assessed premises"
+      ],
+      "implementation": "bounded_proof_search",
+      "layer": "inference_rule",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "modus_ponens",
+      "family": "deduction",
+      "inputs": [
+        "P implies Q",
+        "P"
+      ],
+      "output": "Q",
+      "preconditions": [
+        "identical P including bindings",
+        "strict implication",
+        "same scope",
+        "eligible assessed premises"
+      ],
+      "implementation": "bounded_proof_search",
+      "layer": "inference_rule",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "modus_tollens",
+      "family": "deduction",
+      "inputs": [
+        "P implies Q",
+        "not Q"
+      ],
+      "output": "not P",
+      "preconditions": [
+        "identical Q including bindings",
+        "strict implication",
+        "same scope",
+        "eligible assessed premises"
+      ],
+      "implementation": "bounded_proof_search",
+      "layer": "inference_rule",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "conjunction_elimination",
+      "family": "deduction",
+      "inputs": [
+        "P and Q"
+      ],
+      "output": "P or Q as separate consequences",
+      "preconditions": [
+        "conjunct explicitly present",
+        "eligible assessed premises"
+      ],
+      "implementation": "bounded_proof_search",
+      "layer": "inference_rule",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "generalization",
+      "family": "abstraction",
+      "inputs": [
+        "assessed examples",
+        "candidate common relation"
+      ],
+      "output": "candidate principle or template",
+      "preconditions": [
+        "counterexamples sought",
+        "scope declared",
+        "examples do not prove a universal"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "specialization",
+      "family": "abstraction",
+      "inputs": [
+        "template",
+        "bindings",
+        "additional constraints"
+      ],
+      "output": "more constrained instance",
+      "preconditions": [
+        "constraints preserved",
+        "bindings consistent"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "conditional_branch",
+      "family": "control",
+      "inputs": [
+        "condition",
+        "then branch",
+        "else branch"
+      ],
+      "output": "conditioned alternatives",
+      "preconditions": [
+        "branch guards retained",
+        "unknown condition does not pick a branch"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "exception",
+      "family": "defeasible_reasoning",
+      "inputs": [
+        "default rule",
+        "applicability conditions",
+        "exceptions"
+      ],
+      "output": "defeasible candidate or blocked result",
+      "preconditions": [
+        "explicit exception and priority policy",
+        "absence is not falsity"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "aggregation",
+      "family": "composition",
+      "inputs": [
+        "members",
+        "aggregation rule"
+      ],
+      "output": "group summary or aggregate",
+      "preconditions": [
+        "member provenance",
+        "units and weighting declared",
+        "summary does not erase dissent"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "comparison",
+      "family": "comparison",
+      "inputs": [
+        "alternatives",
+        "comparison dimensions"
+      ],
+      "output": "dimension-specific relations",
+      "preconditions": [
+        "shared scale or explicit map",
+        "no unjustified scalar utility"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "analogy",
+      "family": "structure_mapping",
+      "inputs": [
+        "source structure",
+        "target structure",
+        "role bindings"
+      ],
+      "output": "candidate morphism or transfer proposal",
+      "preconditions": [
+        "relations preserved",
+        "applicability checked",
+        "transfer depth one",
+        "Expected Property before persistence"
+      ],
+      "implementation": "graph_comparison_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "means_end",
+      "family": "goal_reasoning",
+      "inputs": [
+        "goal",
+        "candidate action",
+        "constraints",
+        "consequences"
+      ],
+      "output": "conditional recommendation",
+      "preconditions": [
+        "goal and causal link supported",
+        "trade-offs and alternatives retained"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "causal_chain",
+      "family": "causal_reasoning",
+      "inputs": [
+        "causal claims",
+        "conditions",
+        "temporal order"
+      ],
+      "output": "candidate causal path",
+      "preconditions": [
+        "causation is not material implication",
+        "confounders and intervention assumptions explicit"
+      ],
+      "implementation": "representation_only",
+      "layer": "structural_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "segment",
+      "family": "conversation",
+      "inputs": [
+        "source text with turns"
+      ],
+      "output": "located segments",
+      "preconditions": [
+        "exact source coverage",
+        "boundaries are proposed, not silently destructive"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "focus",
+      "family": "conversation",
+      "inputs": [
+        "segments and current goal"
+      ],
+      "output": "local focus and candidate anchors",
+      "preconditions": [
+        "time and topic scope preserved",
+        "focus is not sole ownership"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "contextualize",
+      "family": "conversation",
+      "inputs": [
+        "segment and candidate context"
+      ],
+      "output": "explicit scoped association",
+      "preconditions": [
+        "source provenance",
+        "association is not fact membership"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "append",
+      "family": "data_transformation",
+      "inputs": [
+        "prior state and new observations"
+      ],
+      "output": "extended state",
+      "preconditions": [
+        "immutable originals retained",
+        "new evidence assessment"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "revise",
+      "family": "data_transformation",
+      "inputs": [
+        "earlier claim and correction"
+      ],
+      "output": "supersession or competing interpretation",
+      "preconditions": [
+        "retain old claim",
+        "correction provenance and scope"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "merge",
+      "family": "data_transformation",
+      "inputs": [
+        "candidate equivalent records"
+      ],
+      "output": "proposed combined view",
+      "preconditions": [
+        "identity resolution evidence",
+        "lineage is not alias identity",
+        "reversible mapping"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "refine",
+      "family": "data_transformation",
+      "inputs": [
+        "coarse representation and additional constraints"
+      ],
+      "output": "more detailed representation",
+      "preconditions": [
+        "parent links",
+        "added detail grounded or marked inferred"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    },
+    {
+      "id": "simplify",
+      "family": "data_transformation",
+      "inputs": [
+        "detailed representation and purpose"
+      ],
+      "output": "coarser view",
+      "preconditions": [
+        "information loss declared",
+        "raw source recoverable",
+        "no truth strengthening"
+      ],
+      "implementation": "representation_only",
+      "layer": "data_transform",
+      "grounding_required": true,
+      "information_loss": "must be declared per application; source preserved",
+      "forbidden_inferences": [
+        "representation or recurrence alone does not establish truth or applicability"
+      ]
+    }
+  ]
+}

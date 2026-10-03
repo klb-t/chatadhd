@@ -1,0 +1,84 @@
+{
+ "schema": "loom.kb.artifact_type/1",
+ "id": "commit",
+ "version": 1,
+ "title": {
+  "en": "Commit",
+  "pl": "Commit"
+ },
+ "description": "One commit of a git history: dated, with changed files; the unit of code lineage (nearest revision by content per file, then a vote).",
+ "origin": "archive",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+   "date": "2026-09-16",
+   "section": "§4.9"
+  },
+  {
+   "doc": "docs/history/ANALIZA_v0.8.3_v0.9.0.md",
+   "date": "2026-09-26",
+   "section": "Linia wersji"
+  }
+ ],
+ "medium": "structured",
+ "detect": {
+  "any": [
+   {
+    "op": "export_shape",
+    "value": "git_log"
+   }
+  ],
+  "min_score": 0.5
+ },
+ "parse": {
+  "segment": [
+   "commit_fields",
+   "sentences"
+  ],
+  "observation_kinds": [
+   "field",
+   "sentence"
+  ]
+ },
+ "extract": [
+  {
+   "op": "versions"
+  },
+  {
+   "op": "items"
+  },
+  {
+   "op": "dates"
+  }
+ ],
+ "structure": [
+  {
+   "name": "hash",
+   "type": "string",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "date",
+   "type": "date",
+   "card": "one",
+   "required": true
+  },
+  {
+   "name": "author",
+   "type": "string",
+   "card": "one"
+  },
+  {
+   "name": "subject",
+   "type": "text",
+   "card": "one"
+  },
+  {
+   "name": "files",
+   "type": "string",
+   "card": "many"
+  }
+ ]
+}

@@ -1,0 +1,888 @@
+[
+  {
+    "case_id": "case_009_en",
+    "source_packet_sha256": "cf06bb1359f822704516fd72e3d2dfa41acd822adae8e22db7d6c645e615bef7",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 28,
+          "byte_len": 5,
+          "quote": "spins"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 24,
+          "byte_len": 3,
+          "quote": "fan"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 47,
+          "byte_len": 4,
+          "quote": "hums"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 42,
+          "byte_len": 4,
+          "quote": "pump"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "negation",
+        "context": "asserted",
+        "body": {
+          "op": "conjunction",
+          "context": "asserted",
+          "members": [
+            {
+              "op": "predicate_application",
+              "context": "asserted",
+              "predicate": "p",
+              "arguments": [
+                "a"
+              ]
+            },
+            {
+              "op": "predicate_application",
+              "context": "asserted",
+              "predicate": "r",
+              "arguments": [
+                "b"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_009_pl",
+    "source_packet_sha256": "cf03cccb61a1cadc0163669f4a3ae96208c1d8d96969c00fda34f8c587b80afd",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 33,
+          "byte_len": 6,
+          "quote": "wiruje"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 22,
+          "byte_len": 10,
+          "quote": "wentylator"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 48,
+          "byte_len": 5,
+          "quote": "buczy"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 42,
+          "byte_len": 5,
+          "quote": "pompa"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "negation",
+        "context": "asserted",
+        "body": {
+          "op": "conjunction",
+          "context": "asserted",
+          "members": [
+            {
+              "op": "predicate_application",
+              "context": "asserted",
+              "predicate": "p",
+              "arguments": [
+                "a"
+              ]
+            },
+            {
+              "op": "predicate_application",
+              "context": "asserted",
+              "predicate": "r",
+              "arguments": [
+                "b"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_010_en",
+    "source_packet_sha256": "812c05d349f2758d20920631ab8ee10038de2b49f1efc86df5346274e5e7dfdb",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 23,
+          "byte_len": 5,
+          "quote": "blink"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 7,
+          "byte_len": 6,
+          "quote": "sensor"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 40,
+          "byte_len": 6,
+          "quote": "clicks"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 34,
+          "byte_len": 5,
+          "quote": "relay"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "conditional",
+        "context": "asserted",
+        "antecedent": {
+          "op": "negation",
+          "context": "asserted",
+          "body": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "p",
+            "arguments": [
+              "a"
+            ]
+          }
+        },
+        "consequent": {
+          "op": "predicate_application",
+          "context": "asserted",
+          "predicate": "r",
+          "arguments": [
+            "b"
+          ]
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_010_pl",
+    "source_packet_sha256": "18a75d95d30630137d5ebc2d9c9e854036997508447ddcae481a7a3d9296a4cc",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 19,
+          "byte_len": 4,
+          "quote": "miga"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 7,
+          "byte_len": 7,
+          "quote": "czujnik"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 37,
+          "byte_len": 5,
+          "quote": "klika"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 25,
+          "byte_len": 11,
+          "quote": "przekaźnik"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "conditional",
+        "context": "asserted",
+        "antecedent": {
+          "op": "negation",
+          "context": "asserted",
+          "body": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "p",
+            "arguments": [
+              "a"
+            ]
+          }
+        },
+        "consequent": {
+          "op": "predicate_application",
+          "context": "asserted",
+          "predicate": "r",
+          "arguments": [
+            "b"
+          ]
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_011_en",
+    "source_packet_sha256": "bfb632d49f8dde994fc81f371e794dddfb7d2a589455612cab74f71dcf399baf",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 14,
+          "byte_len": 5,
+          "quote": "signs"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 7,
+          "byte_len": 6,
+          "quote": "editor"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 43,
+          "byte_len": 6,
+          "quote": "resign"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 25,
+          "byte_len": 8,
+          "quote": "reviewer"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "conditional",
+        "context": "asserted",
+        "antecedent": {
+          "op": "predicate_application",
+          "context": "asserted",
+          "predicate": "p",
+          "arguments": [
+            "a"
+          ]
+        },
+        "consequent": {
+          "op": "negation",
+          "context": "asserted",
+          "body": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "r",
+            "arguments": [
+              "b"
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_011_pl",
+    "source_packet_sha256": "680b36950be5eb235dd6d1b6c398e11d64eb40cd2f5797ecef99a2d1fee9adb9",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 16,
+          "byte_len": 9,
+          "quote": "podpisuje"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 7,
+          "byte_len": 8,
+          "quote": "redaktor"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 41,
+          "byte_len": 9,
+          "quote": "rezygnuje"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 27,
+          "byte_len": 9,
+          "quote": "recenzent"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "conditional",
+        "context": "asserted",
+        "antecedent": {
+          "op": "predicate_application",
+          "context": "asserted",
+          "predicate": "p",
+          "arguments": [
+            "a"
+          ]
+        },
+        "consequent": {
+          "op": "negation",
+          "context": "asserted",
+          "body": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "r",
+            "arguments": [
+              "b"
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_012_en",
+    "source_packet_sha256": "27154aab340ed21ce4f6cda3fd1db43dd41eee68a1206678ed0534d8a6ceac7b",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 12,
+          "byte_len": 6,
+          "quote": "cracks"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 7,
+          "byte_len": 4,
+          "quote": "seal"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 38,
+          "byte_len": 5,
+          "quote": "leaks"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 32,
+          "byte_len": 5,
+          "quote": "fluid"
+        }
+      ],
+      "s": [
+        {
+          "observation": "ob_source",
+          "byte_start": 55,
+          "byte_len": 6,
+          "quote": "sounds"
+        }
+      ],
+      "c": [
+        {
+          "observation": "ob_source",
+          "byte_start": 49,
+          "byte_len": 5,
+          "quote": "alarm"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "conditional",
+        "context": "asserted",
+        "antecedent": {
+          "op": "predicate_application",
+          "context": "asserted",
+          "predicate": "p",
+          "arguments": [
+            "a"
+          ]
+        },
+        "consequent": {
+          "op": "conditional",
+          "context": "asserted",
+          "antecedent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "r",
+            "arguments": [
+              "b"
+            ]
+          },
+          "consequent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "s",
+            "arguments": [
+              "c"
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_012_pl",
+    "source_packet_sha256": "a8c8ae3ca2af5f8f12bbcd27d8cfcb7d32e90e58f0a841fb8f00c458103be061",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 17,
+          "byte_len": 5,
+          "quote": "pęka"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 7,
+          "byte_len": 9,
+          "quote": "uszczelka"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 40,
+          "byte_len": 7,
+          "quote": "wycieka"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 34,
+          "byte_len": 5,
+          "quote": "płyn"
+        }
+      ],
+      "s": [
+        {
+          "observation": "ob_source",
+          "byte_start": 55,
+          "byte_len": 11,
+          "quote": "rozbrzmiewa"
+        }
+      ],
+      "c": [
+        {
+          "observation": "ob_source",
+          "byte_start": 49,
+          "byte_len": 5,
+          "quote": "alarm"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "conditional",
+        "context": "asserted",
+        "antecedent": {
+          "op": "predicate_application",
+          "context": "asserted",
+          "predicate": "p",
+          "arguments": [
+            "a"
+          ]
+        },
+        "consequent": {
+          "op": "conditional",
+          "context": "asserted",
+          "antecedent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "r",
+            "arguments": [
+              "b"
+            ]
+          },
+          "consequent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "s",
+            "arguments": [
+              "c"
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_013_en",
+    "source_packet_sha256": "dac74e554c602a214057fd4297e230f29639d8941a62e4d0806da5bf26faf273",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 34,
+          "byte_len": 5,
+          "quote": "greet"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 19,
+          "byte_len": 5,
+          "quote": "Oskar"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 40,
+          "byte_len": 4,
+          "quote": "Mira"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "negation",
+        "context": "quoted",
+        "body": {
+          "op": "predicate_application",
+          "context": "quoted",
+          "predicate": "p",
+          "arguments": [
+            "a",
+            "b"
+          ]
+        }
+      }
+    ],
+    "notes": "Related vocabulary to a development case, reversed roles, negation and quoted context.",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_013_pl",
+    "source_packet_sha256": "b6de217bc7565ea8adc69c63fabf4228c5c2189294eea93be83c5d5a5bd6c0fc",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 32,
+          "byte_len": 4,
+          "quote": "wita"
+        }
+      ],
+      "a": [
+        {
+          "observation": "ob_source",
+          "byte_start": 22,
+          "byte_len": 5,
+          "quote": "Oskar"
+        }
+      ],
+      "b": [
+        {
+          "observation": "ob_source",
+          "byte_start": 37,
+          "byte_len": 4,
+          "quote": "Miry"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "negation",
+        "context": "quoted",
+        "body": {
+          "op": "predicate_application",
+          "context": "quoted",
+          "predicate": "p",
+          "arguments": [
+            "a",
+            "b"
+          ]
+        }
+      }
+    ],
+    "notes": "Related vocabulary to a development case, reversed roles, negation and quoted context.",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_014_en",
+    "source_packet_sha256": "02adcd2c145e1c1a9592ef1cd007f616b420544a1bc6b7639d56f0e254902e0f",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 24,
+          "byte_len": 4,
+          "quote": "sink"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "forall",
+        "context": "asserted",
+        "body": {
+          "op": "negation",
+          "context": "asserted",
+          "body": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "p",
+            "arguments": [
+              {
+                "variable": 0
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_014_pl",
+    "source_packet_sha256": "7b2bc80c0386f622c9c57581a83ed8a99f68ab207f8da2de9149fa2fa2de34ff",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 22,
+          "byte_len": 5,
+          "quote": "tonie"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "forall",
+        "context": "asserted",
+        "body": {
+          "op": "negation",
+          "context": "asserted",
+          "body": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "p",
+            "arguments": [
+              {
+                "variable": 0
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_015_en",
+    "source_packet_sha256": "cca075612a7672952a1b532ecccb469a803092a7f2c9f56093bd08bd19279ed0",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 17,
+          "byte_len": 5,
+          "quote": "glows"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 26,
+          "byte_len": 5,
+          "quote": "heats"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "exists",
+        "context": "asserted",
+        "body": {
+          "op": "conditional",
+          "context": "asserted",
+          "antecedent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "p",
+            "arguments": [
+              {
+                "variable": 0
+              }
+            ]
+          },
+          "consequent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "r",
+            "arguments": [
+              {
+                "variable": 0
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "Existential quantifier scopes over the full conditional; no existential strengthening.",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_015_pl",
+    "source_packet_sha256": "17faf2813f24452139bcb12d179b21f12dff1f44fe78c813e232d56ef8202bff",
+    "expected": "represented",
+    "anchors": {
+      "p": [
+        {
+          "observation": "ob_source",
+          "byte_start": 24,
+          "byte_len": 7,
+          "quote": "świeci"
+        }
+      ],
+      "r": [
+        {
+          "observation": "ob_source",
+          "byte_start": 35,
+          "byte_len": 6,
+          "quote": "grzeje"
+        }
+      ]
+    },
+    "roots": [
+      {
+        "op": "exists",
+        "context": "asserted",
+        "body": {
+          "op": "conditional",
+          "context": "asserted",
+          "antecedent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "p",
+            "arguments": [
+              {
+                "variable": 0
+              }
+            ]
+          },
+          "consequent": {
+            "op": "predicate_application",
+            "context": "asserted",
+            "predicate": "r",
+            "arguments": [
+              {
+                "variable": 0
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "notes": "Existential quantifier scopes over the full conditional; no existential strengthening.",
+    "abstention_policy": null
+  },
+  {
+    "case_id": "case_016_en",
+    "source_packet_sha256": "cc19c214160f2a7d2c16d2932952e2521ba88d421d22154352036f7f85cb68ad",
+    "expected": "abstain",
+    "anchors": {},
+    "roots": [],
+    "notes": "The isolated passage does not fix instrument versus possession attachment; abstain for whole passage.",
+    "abstention_policy": "located_whole_passage_unknown_no_graph"
+  },
+  {
+    "case_id": "case_016_pl",
+    "source_packet_sha256": "4b45e3c19929828ae7d5a129a72fc6f64abc9c8fa2ce07981c00516858de98f9",
+    "expected": "abstain",
+    "anchors": {},
+    "roots": [],
+    "notes": "The isolated passage does not fix instrument versus possession attachment; abstain for whole passage.",
+    "abstention_policy": "located_whole_passage_unknown_no_graph"
+  }
+]

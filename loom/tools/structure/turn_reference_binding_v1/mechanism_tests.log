@@ -1,0 +1,17 @@
+test_bad_known_at_not_repaired (test_binding.TurnBindingMechanismTests.test_bad_known_at_not_repaired) ... ok
+test_copy_failure_recovered_with_original_hint_visible (test_binding.TurnBindingMechanismTests.test_copy_failure_recovered_with_original_hint_visible) ... ok
+test_cross_speaker_supersession_unchanged_in_primary_arm (test_binding.TurnBindingMechanismTests.test_cross_speaker_supersession_unchanged_in_primary_arm) ... ok
+test_duplicate_assertion_ids_keep_invalid_counter (test_binding.TurnBindingMechanismTests.test_duplicate_assertion_ids_keep_invalid_counter) ... ok
+test_empty_and_duplicate_source_turns_refused (test_binding.TurnBindingMechanismTests.test_empty_and_duplicate_source_turns_refused) ... ok
+test_input_deep_copy_and_non_quote_fields_unchanged (test_binding.TurnBindingMechanismTests.test_input_deep_copy_and_non_quote_fields_unchanged) ... ok
+test_missing_quote_and_extra_evidence_fields_not_repaired (test_binding.TurnBindingMechanismTests.test_missing_quote_and_extra_evidence_fields_not_repaired) ... ok
+test_multiple_evidence_entries_and_order_preserved (test_binding.TurnBindingMechanismTests.test_multiple_evidence_entries_and_order_preserved) ... ok
+test_non_string_hint_retained_as_hint_binding_only_changes_quote (test_binding.TurnBindingMechanismTests.test_non_string_hint_retained_as_hint_binding_only_changes_quote) ... ok
+test_unicode_full_turn_char_and_byte_provenance (test_binding.TurnBindingMechanismTests.test_unicode_full_turn_char_and_byte_provenance) ... ok
+test_unknown_and_unhashable_turn_ids_remain_invalid (test_binding.TurnBindingMechanismTests.test_unknown_and_unhashable_turn_ids_remain_invalid) ... ok
+test_wrong_semantics_not_proven_by_valid_binding (test_binding.TurnBindingMechanismTests.test_wrong_semantics_not_proven_by_valid_binding) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.002s
+
+OK

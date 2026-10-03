@@ -1,0 +1,816 @@
+[
+  {
+    "path": "/api/healthz",
+    "request": null,
+    "response": {
+      "ok": true
+    }
+  },
+  {
+    "path": "/api/config",
+    "request": {
+      "base_url": "http://127.0.0.1:34733",
+      "semantic_model": "",
+      "semantic_analysis": false,
+      "default_model": "w6-local",
+      "system_prompt": "W6_SYSTEM_SENTINEL",
+      "stream": false
+    },
+    "response": {
+      "base_url": "http://127.0.0.1:34733",
+      "default_model": "w6-local",
+      "semantic_model": "",
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "theme": "dark",
+      "system_prompt": "W6_SYSTEM_SENTINEL",
+      "auto_title": true,
+      "stream": false,
+      "semantic_analysis": false,
+      "graph_memory_depth": 2,
+      "graph_memory_max_nodes": 20,
+      "loom_event_log_types": [
+        "conv:created",
+        "import:done",
+        "graph:changed"
+      ],
+      "loom_task_workers": 1
+    }
+  },
+  {
+    "path": "/api/memory",
+    "request": {
+      "content": "W6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly.",
+      "active": true
+    },
+    "response": {
+      "id": "303e99acb714",
+      "content": "W6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly.",
+      "parent_id": null,
+      "node_type": "text",
+      "active": true,
+      "depth": 0,
+      "weight": 1.0,
+      "tags": [],
+      "created": "2026-09-30T21:51:49.233086Z",
+      "metadata": {}
+    }
+  },
+  {
+    "path": "/api/knowledge/run",
+    "request": {
+      "sources": [
+        "/workspace/scratch/a22a9f93cf94/w6-transport-attempt-01/runtime/w6-source.json"
+      ],
+      "llm": "off",
+      "out_dir": "w6-knowledge",
+      "stage_params": {
+        "catalog": {
+          "import": {
+            "mode": "full"
+          }
+        }
+      }
+    },
+    "response": {
+      "task_id": "t_94fa1f2b9162",
+      "run": "kr_069dee736f460c0d",
+      "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+      "status": "done",
+      "error": "",
+      "stages": [
+        {
+          "stage": "catalog",
+          "task_id": "t_dfbb5baccacb",
+          "input_hash": "0b4162236ed3d67897dd0e77a89d6d8baa51ddbd1e729166511c48bfae12c273",
+          "output_hash": "010705945d234f14e673e920a80ed7348fc01b612d565cddb4917a60c5893d52",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "scan": {
+              "units": 1,
+              "new": 1,
+              "unchanged": 0,
+              "refreshed": 0,
+              "input_hash": "6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8",
+              "versions": 0,
+              "bytes": 428,
+              "warnings": []
+            },
+            "score": {
+              "run_id": "run_623073816fa92a1f",
+              "scoring_evidence_version": 3,
+              "legacy_combined_features": [
+                "id_hits",
+                "class_diversity",
+                "code_evidence"
+              ],
+              "identity_unavailable": 0,
+              "relevant": 0,
+              "candidate": 1,
+              "irrelevant": 0,
+              "traps": 0,
+              "expanded_terms": [],
+              "semantic": {
+                "available": false,
+                "passes": 0
+              },
+              "channels": {
+                "lexical_relevant": 0,
+                "semantic_relevant": 0,
+                "both": 0,
+                "lexical_only": 0,
+                "semantic_only": 0
+              },
+              "links": 0,
+              "link_stats": {
+                "mode": "candidates",
+                "units": 1,
+                "links": 0,
+                "project_groups_aggregated": 0,
+                "minhash_pairs_verified": 0,
+                "lsh_candidates": 0,
+                "rare_term_candidates": 0,
+                "uncorroborated_sessions": 0
+              }
+            },
+            "selected": 0,
+            "import": {
+              "imported": 1,
+              "skipped": 0,
+              "bytes": 428,
+              "conversations": [
+                "c_815e625f75ba"
+              ],
+              "units": [
+                "un_3a55cd8dd2f9168b"
+              ],
+              "retained_sources": [
+                {
+                  "source_id": "sha256:b77895e7d29f7141c8d91c9f2811463712dc0588ad49f57600a6c952688371aa",
+                  "blob_hash": "b77895e7d29f7141c8d91c9f2811463712dc0588ad49f57600a6c952688371aa"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "stage": "extract",
+          "task_id": "t_f1984ec0854d",
+          "input_hash": "0069cba69049ddcd8149dc882d16df62abfeb651715415c4f9500f72da2e4121",
+          "output_hash": "42e786e9dc8bd9ed9f2431e7cb6d00c538b01edf68d6b161f84d61cfd946e93a",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "from": "catalog",
+            "units": 1,
+            "failed": 0,
+            "names": 0,
+            "observations": 4,
+            "entities": 1,
+            "claims": 3,
+            "areas": 0,
+            "principles": 1,
+            "decisions": 1,
+            "forks": 0,
+            "statuses": 0,
+            "semantic": {
+              "status": "off",
+              "candidate_ids": [],
+              "rejections": [],
+              "skipped": [],
+              "requests": 0,
+              "cache_hits": 0,
+              "accepted": 0,
+              "rejected": 0,
+              "failed": 0,
+              "input_bytes": 0,
+              "chunks": 0,
+              "omitted_observations": 0,
+              "failed_chunk_observations": 0,
+              "selected_chunks": [],
+              "identity": {
+                "version": "2",
+                "requested": false,
+                "limits": {
+                  "max_requests": 4,
+                  "max_observations": 16,
+                  "max_chunk_bytes": 16000,
+                  "max_input_bytes": 64000,
+                  "max_output_tokens": 1600,
+                  "max_proposals": 16,
+                  "max_response_bytes": 128000,
+                  "timeout_ms": 30000
+                },
+                "representation": "relation_v1"
+              },
+              "requests_spent": 0,
+              "input_bytes_spent": 0,
+              "retry_required": false,
+              "representation": "relation_v1",
+              "accepted_bundles": 0,
+              "entity_drafts": 0,
+              "claim_drafts": 0,
+              "abstentions": 0,
+              "response_outcomes": [],
+              "output": "497ffcd6abfb43c9ff830263cd31933c77590d2c6e0deed4d908dd9b7b3dda62"
+            }
+          }
+        },
+        {
+          "stage": "resolve",
+          "task_id": "t_0a2f8aef57a7",
+          "input_hash": "fb86bec8e59abf4b5478094b6d6f06e7f814b27f23e56ca19f1755fe8c5457f6",
+          "output_hash": "a7a308a699917f103f47a3b92964c2155dba8d9204feda1b58cbbb7ee9b6c0e4",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "entities": 1,
+            "mentions": 1,
+            "merges": 0,
+            "blocked": 0,
+            "claims": 3,
+            "lineage": []
+          }
+        },
+        {
+          "stage": "assess",
+          "task_id": "t_5ed8d3048f56",
+          "input_hash": "843f47511c2704a655b2b60ecbc1d4b51c1c129bd326c70aefaf3ed9302c4967",
+          "output_hash": "5fec45f7d2656ed46c722c83b72a7f306336e6e38865dd2dfd88679a4ab6a916",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "claims": 3,
+            "contested": 0,
+            "conflicts": 0,
+            "reversals": 0,
+            "replayed": 0
+          }
+        },
+        {
+          "stage": "generalize",
+          "task_id": "t_5b1fed2f3592",
+          "input_hash": "0fbaf09ac56242c3243531289fae2fac04e6ea4950cf958815c91dfccc3b1230",
+          "output_hash": "cd4d0af987f47f54b3ed8a74017645482fa3290da0eb717dfa2b42133f2d929d",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "instances": 1,
+            "absent": 1,
+            "analogies": 0,
+            "inferred": 0,
+            "extrapolated": 0,
+            "transferred": 0,
+            "principles": 1,
+            "operators": 1,
+            "models": 2,
+            "predictions": 1,
+            "predictions_holds": 0,
+            "predictions_violated": 0
+          }
+        },
+        {
+          "stage": "materialize",
+          "task_id": "t_bfc48214be89",
+          "input_hash": "366fa864ef0fc5b7d18c0a9af338bb65e92eff954fc28d81cba609220c8a8a87",
+          "output_hash": "a246edc31745924f7e179db03e40c373bebfb16f17df4344ce26b438e28eb2d1",
+          "cache_hit": false,
+          "resumed": false,
+          "stats": {
+            "dossiers": 1,
+            "extrapolated_specs": 1,
+            "products": 4
+          }
+        }
+      ],
+      "summary": {
+        "run": "kr_069dee736f460c0d",
+        "counts": {
+          "observations": 4,
+          "entities": 1,
+          "aliases": 0,
+          "claims": 4,
+          "claim_support": 3,
+          "principles": 1,
+          "operators": 1,
+          "morphisms": 136,
+          "instances": 1,
+          "slot_values": 2,
+          "areas": 0,
+          "decisions": 1,
+          "forks": 0,
+          "status_records": 0,
+          "predictions": 1,
+          "models": 2,
+          "products": 4
+        }
+      }
+    }
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "Explain Loom source preservation. W6_FIRST μ 🙂",
+      "knowledge_context": {
+        "run": "kr_069dee736f460c0d",
+        "budget_tokens": 1000,
+        "detail_resolution": "full",
+        "relation_hops": 0
+      },
+      "trace_context": true,
+      "include_graph_memory": false
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208549926619_0",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_627ae93e66b3"
+      },
+      {
+        "type": "done",
+        "request_id": "req_25208549926619_0",
+        "message_id": "m_0793113faff7",
+        "conv_id": "c_6e6827bd9564",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false,
+        "title": "Explain Loom source preservati...",
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "system",
+              "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+            },
+            {
+              "role": "user",
+              "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+            }
+          ],
+          "messages_sha256": "3f9dd8e09bcf956058764aacedb2b7e9e667b0bc362f1b90971bbb80f3d7a56f",
+          "history_message_ids": [],
+          "selection": {
+            "include_memory": true,
+            "include_graph_memory": false,
+            "include_history": true,
+            "context_depth": null
+          },
+          "knowledge_context_request": {
+            "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+            "targets": [],
+            "project": "",
+            "budget_tokens": 1000,
+            "goal_type": null,
+            "run": "kr_069dee736f460c0d",
+            "lang": "",
+            "relation_hops": 0,
+            "detail_resolution": "full"
+          },
+          "knowledge_context": {
+            "goal": {
+              "id": "g_ebac815d59721f7c",
+              "type": "answer_question",
+              "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+              "targets": [],
+              "project": "",
+              "confidence": 0.25,
+              "params": {
+                "confidence_basis": "heuristic_cue_margin",
+                "calibration_status": "unavailable",
+                "external_goal_typing": {
+                  "status": "offline",
+                  "requests": 0
+                },
+                "classifier": "cue",
+                "scores": {
+                  "answer_question": 0.0,
+                  "brainstorm": 0.0,
+                  "compute_deadline": 0.0,
+                  "extend_scene": 0.0,
+                  "implement_part": 0.0,
+                  "review_decision": 0.0,
+                  "verify_claim": 0.0,
+                  "write_artifact": 0.0
+                },
+                "context_controls": {
+                  "relation_hops": 0,
+                  "detail_resolution": "full"
+                }
+              }
+            },
+            "context_set": {
+              "id": "cx_222901a764626a7d",
+              "goal": {
+                "id": "g_ebac815d59721f7c",
+                "type": "answer_question",
+                "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+                "targets": [],
+                "project": "",
+                "confidence": 0.25,
+                "params": {
+                  "confidence_basis": "heuristic_cue_margin",
+                  "calibration_status": "unavailable",
+                  "external_goal_typing": {
+                    "status": "offline",
+                    "requests": 0
+                  },
+                  "classifier": "cue",
+                  "scores": {
+                    "answer_question": 0.0,
+                    "brainstorm": 0.0,
+                    "compute_deadline": 0.0,
+                    "extend_scene": 0.0,
+                    "implement_part": 0.0,
+                    "review_decision": 0.0,
+                    "verify_claim": 0.0,
+                    "write_artifact": 0.0
+                  },
+                  "context_controls": {
+                    "relation_hops": 0,
+                    "detail_resolution": "full"
+                  }
+                }
+              },
+              "budget_tokens": 1000,
+              "used_tokens": 0,
+              "pack_hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+              "items": [],
+              "dropped": []
+            },
+            "prompt": "",
+            "request": {
+              "text": "Explain Loom source preservation. W6_FIRST μ 🙂",
+              "targets": [],
+              "project": "",
+              "budget_tokens": 1000,
+              "goal_type": null,
+              "run": "kr_069dee736f460c0d",
+              "lang": "",
+              "relation_hops": 0,
+              "detail_resolution": "full"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_SECOND",
+      "conv_id": "c_6e6827bd9564",
+      "trace_context": true,
+      "include_graph_memory": false
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208614012104_1",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_f7a31d6d3e3e"
+      },
+      {
+        "type": "done",
+        "request_id": "req_25208614012104_1",
+        "message_id": "m_6df50df32682",
+        "conv_id": "c_6e6827bd9564",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false,
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "system",
+              "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+            },
+            {
+              "role": "user",
+              "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_SECOND"
+            }
+          ],
+          "messages_sha256": "52d8dabd925ade5bc43ca4da0436a1553c17eee10bded9bc3e646311003548f8",
+          "history_message_ids": [
+            "m_627ae93e66b3",
+            "m_0793113faff7"
+          ],
+          "selection": {
+            "include_memory": true,
+            "include_graph_memory": false,
+            "include_history": true,
+            "context_depth": null
+          },
+          "knowledge_context_request": null,
+          "knowledge_context": null
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_ISOLATED",
+      "conv_id": "c_6e6827bd9564",
+      "include_memory": false,
+      "include_history": false,
+      "include_graph_memory": false,
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208639753842_2",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_c867d918cfeb"
+      },
+      {
+        "type": "done",
+        "request_id": "req_25208639753842_2",
+        "message_id": "m_8929db3e31cb",
+        "conv_id": "c_6e6827bd9564",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false,
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "user",
+              "content": "W6_ISOLATED"
+            }
+          ],
+          "messages_sha256": "bc96447aeef9513a82ecd9f0f13580b8331b44c56a03f9cc8e53d0fea3f5a694",
+          "history_message_ids": [],
+          "selection": {
+            "include_memory": false,
+            "include_graph_memory": false,
+            "include_history": false,
+            "context_depth": null
+          },
+          "knowledge_context_request": null,
+          "knowledge_context": null
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_NO_TRACE",
+      "trace_context": false,
+      "include_history": false
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208660866922_3",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_f70b9148c0ea"
+      },
+      {
+        "type": "done",
+        "request_id": "req_25208660866922_3",
+        "message_id": "m_aaefe2525edf",
+        "conv_id": "c_6e6827bd9564",
+        "text": "W6 fixed reply",
+        "usage": {
+          "prompt_tokens": 4,
+          "completion_tokens": 3
+        },
+        "model": "w6-local",
+        "cancelled": false
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_FAIL_HTTP",
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208670079876_4",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_3a7f301b205f"
+      },
+      {
+        "type": "error",
+        "request_id": "req_25208670079876_4",
+        "code": "http",
+        "message": "API error 500: {\"error\":{\"message\":\"W6_SYNTHETIC_PROVIDER_FAILURE\"}}"
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_FAIL_AUTH",
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208709114395_5",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_b8c896780683"
+      },
+      {
+        "type": "error",
+        "request_id": "req_25208709114395_5",
+        "code": "auth",
+        "message": "No API key configured - open Settings"
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_FAIL_RUN",
+      "knowledge_context": {
+        "run": "w6-nonexistent"
+      },
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208735333397_6",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_f07dd7d5e05a"
+      },
+      {
+        "type": "error",
+        "request_id": "req_25208735333397_6",
+        "code": "not_found",
+        "message": "knowledge run not found: w6-nonexistent"
+      }
+    ]
+  },
+  {
+    "path": "/api/chat",
+    "request": {
+      "message": "W6_STREAM",
+      "stream": true,
+      "trace_context": true
+    },
+    "response": [
+      {
+        "type": "start",
+        "request_id": "req_25208751629855_7",
+        "conv_id": "c_6e6827bd9564",
+        "user_message_id": "m_d6391688fa2c"
+      },
+      {
+        "type": "delta",
+        "text": "W6 fixed stream reply"
+      },
+      {
+        "type": "done",
+        "request_id": "req_25208751629855_7",
+        "message_id": "m_ae83013877f1",
+        "conv_id": "c_6e6827bd9564",
+        "text": "W6 fixed stream reply",
+        "usage": {},
+        "model": "w6-local",
+        "cancelled": false,
+        "context_trace": {
+          "kind": "compiled_messages",
+          "version": 1,
+          "messages": [
+            {
+              "role": "system",
+              "content": "W6_SYSTEM_SENTINEL"
+            },
+            {
+              "role": "system",
+              "content": "User's memory/context:\nW6_MEMORY_SENTINEL: Preserve μ and 🙂 exactly."
+            },
+            {
+              "role": "user",
+              "content": "Explain Loom source preservation. W6_FIRST μ 🙂"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_SECOND"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_ISOLATED"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_NO_TRACE"
+            },
+            {
+              "role": "assistant",
+              "content": "W6 fixed reply"
+            },
+            {
+              "role": "user",
+              "content": "W6_FAIL_HTTP"
+            },
+            {
+              "role": "user",
+              "content": "W6_FAIL_AUTH"
+            },
+            {
+              "role": "user",
+              "content": "W6_FAIL_RUN"
+            },
+            {
+              "role": "user",
+              "content": "W6_STREAM"
+            }
+          ],
+          "messages_sha256": "c5323abd05a45d63646fc03c33351139a1c2c298d318829106f6f451961227be",
+          "history_message_ids": [
+            "m_627ae93e66b3",
+            "m_0793113faff7",
+            "m_f7a31d6d3e3e",
+            "m_6df50df32682",
+            "m_c867d918cfeb",
+            "m_8929db3e31cb",
+            "m_f70b9148c0ea",
+            "m_aaefe2525edf",
+            "m_3a7f301b205f",
+            "m_b8c896780683",
+            "m_f07dd7d5e05a"
+          ],
+          "selection": {
+            "include_memory": true,
+            "include_graph_memory": true,
+            "include_history": true,
+            "context_depth": null
+          },
+          "knowledge_context_request": null,
+          "knowledge_context": null
+        }
+      }
+    ]
+  },
+  {
+    "path": "/api/healthz",
+    "request": null,
+    "response": {
+      "ok": true
+    }
+  },
+  {
+    "path": "/api/graph/reindex",
+    "request": {},
+    "response": {
+      "reindexed": 14
+    }
+  }
+]

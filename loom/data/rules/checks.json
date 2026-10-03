@@ -1,0 +1,133 @@
+{
+ "schema": "loom.kb.checks/1",
+ "description": "Principle and preference checks run over code digests (and code pasted into conversations). A hit is a failing check (I8): a 'violates' claim (principle -> file:line) and a backlog item; for products a preference violation is a test failure, not a style note. Detector kinds are a closed set in code; patterns and thresholds are data.",
+ "checks": [
+  {
+   "id": "chk.literal_policy_table",
+   "principle": "p.kod_ne_dane",
+   "detector": "string_array_literal",
+   "params": {
+    "languages": [
+     "cpp",
+     "c",
+     "kotlin",
+     "java",
+     "typescript",
+     "python"
+    ],
+    "min_entries": 20
+   },
+   "message": {
+    "en": "A literal table of {n} string entries in code: lexicon/policy data belongs in a data file",
+    "pl": "Tablica {n} literałów w kodzie: leksykon/polityka powinny być danymi"
+   }
+  },
+  {
+   "id": "chk.enum_dispatch",
+   "principle": "p.capability_not_enum",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "cpp",
+     "python",
+     "kotlin",
+     "typescript"
+    ],
+    "pattern": "(provider|model|platform|backend)\\s*==\\s*[\"'][A-Za-z0-9_.-]+[\"']",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "Dispatch on a provider/platform name: ask can(resource, capability, constraints) instead",
+    "pl": "Rozgałęzienie po nazwie providera/platformy: zamiast tego can(resource, capability, constraints)"
+   }
+  },
+  {
+   "id": "chk.silent_except",
+   "principle": "p.errors_are_values",
+   "detector": "regex_block",
+   "params": {
+    "languages": [
+     "python"
+    ],
+    "pattern": "except(\\s+[A-Za-z_.]+)?\\s*:\\s*\\n\\s*pass\\b"
+   },
+   "message": {
+    "en": "Silent 'except: pass': log at least at debug level with exc_info",
+    "pl": "Ciche 'except: pass': co najmniej log.debug(..., exc_info=True)"
+   }
+  },
+  {
+   "id": "chk.nonatomic_json_write",
+   "principle": "p.atomic_writes",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python"
+    ],
+    "pattern": "json\\.dump\\(.*open\\(",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "JSON written in place: write to .tmp and rename",
+    "pl": "Zapis JSON w miejscu: zapisz do .tmp i zrób rename"
+   }
+  },
+  {
+   "id": "chk.telemetry_call",
+   "principle": "p.no_telemetry",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python",
+     "cpp",
+     "kotlin",
+     "typescript"
+    ],
+    "pattern": "(analytics|telemetry|tracking)\\.(send|track|log)\\(",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "Telemetry call: the default is no telemetry",
+    "pl": "Wywołanie telemetrii: domyślnie brak telemetrii"
+   }
+  },
+  {
+   "id": "chk.emoji_in_ui",
+   "principle": "p.pref.ascii_icons",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python",
+     "kotlin",
+     "typescript",
+     "cpp"
+    ],
+    "pattern": "[↻⚙✓✗✕☰★⬆⬇▶◀]",
+    "max_hits_per_file": 20
+   },
+   "message": {
+    "en": "Emoji / pictograph in UI code: the owner's preference is ASCII icons (Pydroid renders them as boxes)",
+    "pl": "Emoji / piktogram w kodzie UI: preferencja właściciela to ikony ASCII (Pydroid pokazuje kwadraty)"
+   }
+  },
+  {
+   "id": "chk.placeholder",
+   "principle": "p.pref.no_placeholders",
+   "detector": "regex_line",
+   "params": {
+    "languages": [
+     "python",
+     "cpp",
+     "kotlin",
+     "typescript"
+    ],
+    "pattern": "(placeholder|NotImplementedError|STUB:)",
+    "max_hits_per_file": 50
+   },
+   "message": {
+    "en": "Placeholder / stub in delivered code",
+    "pl": "Placeholder / zaślepka w dostarczonym kodzie"
+   }
+  }
+ ]
+}

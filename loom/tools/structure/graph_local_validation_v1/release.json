@@ -1,0 +1,22 @@
+{
+  "files": {
+    "graph_local_baselines_v1/PROTOCOL.md": "f7377bcc23f56583bbb152bccef4a77b9af108c0ede5461925dc67c9d82a2c52",
+    "graph_local_baselines_v1/embed_queries.py": "50c97ebc6760e1aa0183566f3b9e21f6c5c2d5c9411a2cf9b83690d55ba13a8e",
+    "graph_local_baselines_v1/evaluate_dev.py": "6739e931e2a2f5c078dee56ad1bb07d52670b4143314bfd0ba83774cee714ae3",
+    "graph_local_baselines_v1/local_baselines.py": "d678bba901229d76047f036efb57337b09f7a34e9a339b5047ee4c729203b6e6",
+    "graph_local_baselines_v1/policy.json": "3f04e3a555f741bd3327ab1b97c208a9857d6c0d8770ab067e15becf7b964a67",
+    "graph_local_baselines_v1/release.json": "ffb92aec07490197e67fefca7001413757a53ceccafe2c7fe1159dff0f9f6cee",
+    "graph_local_validation_v1/PROTOCOL.md": "a90adc1340e30a1bbb2e419a64aa877ad1332f1053350d6786c01445ed446cd4",
+    "graph_local_validation_v1/graph_local_validation.py": "4997dd6b0a101720e4fba8fb12f373a81e38c1dc2a4b980542990a1d6ff5e15f",
+    "graph_local_validation_v1/test_wrapper.py": "86455923985b13444d98fbd03bfc361af1313df983fa38259a534d1aa847cbfb",
+    "graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "local_embedding_panel.py": "d52a2708a90358fb5d696b4e7b5839eb3bcbccc08f0cc38714bc038f9f315614",
+    "local_embedding_panel_v1/instrument_environment.json": "3088d890c73848cc0c490bb33badbb6071be8285875fb47b1a82bc4fbfa02f9f",
+    "local_embedding_panel_v1/model_manifest.json": "0c6d998b882dfb0773f165efe1d8339d63a8888b5d9c1f3fd4390382a0b6856d",
+    "local_embedding_panel_v1/protocol.json": "f050bba48ccc9618227513a50e6ec5131b4f9debe2fd1daa743c69cef1db20cd",
+    "openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635"
+  },
+  "model_or_method_changes": false,
+  "schema": "loom.graph_local_generic_release/1",
+  "validation_accessed": false
+}

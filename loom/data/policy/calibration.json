@@ -1,0 +1,26 @@
+{
+  "schema": "loom.kb.calibration/1",
+  "description": "Confidence calibration. raw = unit-deduplicated noisy-OR: 1 - prod_units(1 - r_source * q), where r_source is the Beta mean of the extractor/rule reliability below and q the match quality; evidence from one conversation counts once. Final confidence = isotonic map of raw for the evidence class (monotone piecewise-linear, points sorted by x). Priors are hand-set until the dev ground truth exists; `loom kb calibrate` fits candidates (isotonic only when n >= min_labels per class) and promotion requires ECE <= gates.ece on holdout.",
+  "min_labels": 30,
+  "reliability": {
+    "extractor.alias": {"alpha": 18, "beta": 2},
+    "extractor.pattern": {"alpha": 7, "beta": 3},
+    "extractor.item": {"alpha": 6, "beta": 4},
+    "extractor.symbol": {"alpha": 19, "beta": 1},
+    "extractor.version": {"alpha": 17, "beta": 3},
+    "extractor.section": {"alpha": 6, "beta": 4},
+    "extractor.enumeration": {"alpha": 5, "beta": 5},
+    "extractor.fork": {"alpha": 9, "beta": 1},
+    "extractor.gazetteer": {"alpha": 7, "beta": 3},
+    "extractor.codebase": {"alpha": 19, "beta": 1},
+    "extractor.llm": {"alpha": 6, "beta": 4},
+    "rule.default": {"alpha": 7, "beta": 3}
+  },
+  "isotonic": {
+    "observed": [[0.0, 0.0], [1.0, 1.0]],
+    "derived": [[0.0, 0.0], [1.0, 1.0]],
+    "inferred": [[0.0, 0.0], [1.0, 1.0]],
+    "extrapolated": [[0.0, 0.0], [1.0, 0.5]]
+  },
+  "gates": {"ece": 0.10, "ece_target": 0.08, "bins": 10}
+}
