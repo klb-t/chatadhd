@@ -1,0 +1,30 @@
+{
+  "verification_mode": "initial_full_plus_failed_only_rerun",
+  "initial": {
+    "tests": 108,
+    "failed": 15,
+    "xml_time": "57"
+  },
+  "rerun": {
+    "tests": 15,
+    "failed": 0,
+    "xml_time": "28"
+  },
+  "final": {
+    "tests": 108,
+    "passed": 108,
+    "failed": 0,
+    "skipped": 0
+  },
+  "source_edits_for_runtime_repair": false,
+  "runtime_repairs": [
+    "installed existing documented Python dependencies",
+    "relinked only corrupted generated loom_compat_tool"
+  ],
+  "stdout_log_incomplete": true,
+  "complete_output": "n3-ctest-rerun.xml",
+  "xml": "n3-ctest-rerun.xml",
+  "environment": "n3-python-environment.json",
+  "supporting_pertest_log": "Incomplete supporting text log retained in the separate recovery evidence package",
+  "pertest_log_incomplete": true
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "loom.n3_verification/1",
+  "verified_at_utc": "2026-10-03T14:24:32.706851+00:00",
+  "source_predecessor_commit": "ab581923b3cfc8b885a9223699252559508566e1",
+  "source_manifest": "source-final.json",
+  "source_file_count": 903,
+  "source_manifest_sha256": "7760e436e28a705f698833adc83cdf1ba2dd3c656422b3052a51a54c1e41ee0f",
+  "changed_measured_paths": [
+    "loom/include/loom/kb.h",
+    "loom/include/loom/knowledge_store.h",
+    "loom/include/loom/loom.h",
+    "loom/src/kb/schema.cpp"
+  ],
+  "new_measured_paths": [
+    "loom/include/loom/graph_packet_store.h",
+    "loom/src/kb/graph_packet_store.cpp",
+    "loom/src/capi/capi_graph_packet_store.cpp",
+    "loom/tests/compat/test_graph_packet_store.py",
+    "loom/tools/coordination/graph_store.py"
+  ],
+  "unchanged_previous_measured_files": 894,
+  "binary_sha256": {
+    "libloom.so.0.1.0": "391440ec7aaf5eca1be0d17336f0583e73c3c53fc458a8b014a81c789f882f48",
+    "loom_tests": "3883abbd24433792bd76bb356c58abe570bb83b7b134ca11e826be248bd89c12",
+    "loom_compat_tool": "f7ea3ce97d8b94fe78634a9f713e65762659575970a6553b0f43e09b7b6d4ff3",
+    "loom_candidate_graph_native_tool": "0202ee42e7292a65bcf72b43013224f03ceef520885695a5a3626d7b632a53cf",
+    "server/loom-server": "e1d74815a7ae28c7dfa587378187c6d98edbd3c141938ee8bf238e8a9322e8ae",
+    "cli/loom": "7cafae2e8778cb95b2b7b60c2038a9626dfe51b0289f44af2acdc2822bb7718e"
+  },
+  "ctest": {
+    "verification_mode": "initial_full_plus_failed_only_rerun",
+    "passed": 108,
+    "failed": 0,
+    "skipped": 0,
+    "initial_passed": 93,
+    "initial_environment_failures": 15,
+    "rerun_passed": 15,
+    "complete_outputs": [
+      "n3-ctest.xml",
+      "n3-ctest-rerun.xml"
+    ]
+  },
+  "targeted_ffi": {
+    "passed": 13,
+    "failed": 0,
+    "log": "n3-ffi.log",
+    "actual_native_c_abi": true
+  },
+  "build": {
+    "result": "passed",
+    "cpp": "GNU 13.3",
+    "cmake": "3.31.10",
+    "ninja": "1.13.2",
+    "debug_flags": "-O0 -g0",
+    "warnings_as_errors": true,
+    "bundled_sqlite": "3.47.2",
+    "shared_library": true,
+    "cli": true,
+    "server": true
+  },
+  "migration": {
+    "kb_before": 2,
+    "kb_after": 3,
+    "core": 4,
+    "preserves_existing_records": true
+  },
+  "paid_model_calls": 0,
+  "web_source_unchanged": true,
+  "previous_web_verification": "../current-2026-10-02/RESULTS.md"
+}

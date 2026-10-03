@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="15"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="28"
+	timestamp="2026-10-03T16:18:11"
+	>
+	<testcase name="compat.test_active_task_compiler_compat" classname="compat.test_active_task_compiler_compat" time="0.778604" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.645s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_compat" classname="compat.test_chat_compat" time="3.36591" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+..
+-----------------------------------------------------...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_config_compat" classname="compat.test_config_compat" time="0.203171" status="run">
+		<properties/>
+		<system-out>test_corrupt_config_falls_back_to_defaults_like_python (__main__.ConfigCompatTest.test_corrupt_config_falls_back_to_defaults_like_python) ... ok
+test_data_dir_resolution_matches_python (__main__.ConfigCompatTest.test_data_dir_resolution_matches_python) ... ok
+test_loom_written_config_is_read_by_python_without_upgrade (__main__.ConfigCompatTest.test_loom_written_config_is_read_by_python_without_upgrade) ... ok
+test_python_written_config_is_read_by_loom (__main__.ConfigCompatTest.test_python_written_config_is_read_by_loom) ... ok
+test_user_model_preservation_is_identical (__main__.ConfigCompatTest.test_user_model_preservation_is_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.121s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_crypto_compat" classname="compat.test_crypto_compat" time="8.60237" status="run">
+		<properties/>
+		<system-out>test_cpp_encrypts_python_decrypts (__main__.CryptoCompatTest.test_cpp_encrypts_python_decrypts) ... ok
+test_encrypted_blob_wire_format_is_byte_identical (__main__.CryptoCompatTest.test_encrypted_blob_wire_format_is_byte_identical)
+Loom's EncryptedBlob.to_dict() must use the same keys/order/defaults ... ok
+test_known_answer_vector (__main__.CryptoCompatTest.test_known_answer_vector) ... ok
+test_python_encrypts_cpp_decrypts (__main__.CryptoCompatTest.test_python_encrypts_cpp_decrypts) ... ok
+test_tampered_ciphertext_fails_on_both_sides (__main__.CryptoCompatTest.test_tampered_ciphertext_fails_on_both_sides) ... ok
+test_wrong_password_fails_on_both_sides (__main__.CryptoCompatTest.test_wrong_password_fails_on_both_sides) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 6.419s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_db_compat" classname="compat.test_db_compat" time="0.950026" status="run">
+		<properties/>
+		<system-out>test_a_python_created_db_is_read_identically_by_loom (__main__.DbCompatTest.test_a_python_created_db_is_read_identically_by_loom) ... /workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_github_sync_defaults" classname="compat.test_github_sync_defaults" time="0.158853" status="run">
+		<properties/>
+		<system-out>..
+----------------------------------------------------------------------
+Ran 2 tests in 0.003s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_graph_compat" classname="compat.test_graph_compat" time="2.21379" status="run">
+		<properties/>
+		<system-out>test_empty_and_short_messages_produce_no_graph_writes (__main__.GraphCompat.test_empty_and_short_messages_produce_no_graph_writes) ... /workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetim...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_import_compat" classname="compat.test_import_compat" time="0.625049" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/7365c3378a5c/publication/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+................./workspace/scratch/7365c3378a5c/publica...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_memory_compat" classname="compat.test_memory_compat" time="2.15107" status="run">
+		<properties/>
+		<system-out>test_cpp_builds_python_reads (__main__.MemoryCompat.test_cpp_builds_python_reads) ... ok
+test_get_active_context_identical_with_deep_nesting (__main__.MemoryCompat.test_get_active_context_identical_with_deep_nesting) ... ok
+test_python_builds_cpp_reads (__main__.MemoryCompat.test_python_builds_cpp_reads) ... /workspace/scratch/7365c3378a5c/publication/chatadhd/engine/memory_engine.py:38: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.created = datetime.utcnow().isoformat() + "Z"
+ok
+test_recursive_delete_orphaning_matches (__main__.MemoryCompat.test_recursive_delete_orphaning_matches) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.924s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_selector_compat" classname="compat.test_selector_compat" time="0.0954381" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.019s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_compat" classname="compat.test_semantic_compat" time="4.66223" status="run">
+		<properties/>
+		<system-out>...../workspace/scratch/7365c3378a5c/publication/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+.
+----------------------------------------------------------------------
+Ran 6 tests in 2.681s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_recovery" classname="compat.test_semantic_recovery" time="2.11314" status="run">
+		<properties/>
+		<system-out>test_config_identity_returning_to_old_value_still_rejects_old_completion (__main__.SemanticRecoveryTest.test_config_identity_returning_to_old_value_still_rejects_old_completion) ... /workspace/scratch/7365c3378a5c/publication/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+ok
+test_each_relevant_change_recovers_without_automatic_replay (__main__.SemanticRecoveryTest.test_each_relevant_change_recovers_without_automatic_replay) ... ok
+test_manual_reset_invalidates_old_request (__main__.SemanticRecoveryTest.test_manual_reset_invalidates_old_request) ... ok
+test_old_failure_cannot_affect_changed_settings_without_enabled_poll (__main__.SemanticRecoveryTest.test_old_failure_cannot_affect_changed_settings_without_enabled_poll) ... ok
+test_old_success_cannot_clear_new_generation_failu...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_util_compat" classname="compat.test_util_compat" time="1.98432" status="run">
+		<properties/>
+		<system-out>test_embedded_contract_data_matches_python_sources (__main__.UtilCompatTest.test_embedded_contract_data_matches_python_sources) ... ok
+test_float_repr (__main__.UtilCompatTest.test_float_repr) ... ok
+test_generated_ids_have_python_shape (__main__.UtilCompatTest.test_generated_ids_have_python_shape) ... ok
+test_json_dumps_is_byte_identical (__main__.UtilCompatTest.test_json_dumps_is_byte_identical) ... ok
+test_timestamps_match_utcnow_isoformat (__main__.UtilCompatTest.test_timestamps_match_utcnow_isoformat) ... /workspace/scratch/7365c3378a5c/publication/chatadhd/loom/tests/compat/test_util_compat.py:94: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.assertLess(abs((datetime.datetime.utcnow() - now).total_seconds()), 60)
+ok
+test_utf8_semantics_match_python_str (__main__.UtilCompatTest.test_utf8_semantics_match_python_str) ... ok
+
+--------------------...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="research.structure" classname="research.structure" time="22.738" status="run">
+		<properties/>
+		<system-out>.............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="research.contracts" classname="research.contracts" time="14.172" status="run">
+		<properties/>
+		<system-out>.....................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 197 tests in 13.997s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>

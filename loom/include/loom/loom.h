@@ -343,6 +343,10 @@ LOOM_API const char* loom_kb_runs(LoomContext* ctx, int limit);
  * "instance","role","slot","claim" (slots), "entity" (status_history), "limit"}
  * -> {"run","items":[model objects]} (stats: {"run","items":{table: rows}}) */
 LOOM_API const char* loom_kb_query(LoomContext* ctx, const char* query_json);
+/* Explicit GraphPacket selection / immutable receipt read / checked replay.
+ * JSON operations: accept (target,packet,selection,expected_rows,
+ * explicitly_accepted=true), read/replay (receipt_id). Caller frees result. */
+LOOM_API const char* loom_graph_packet_store(LoomContext* ctx, const char* request_json);
 /* Appends an owner judgement (append-only, replayed last on every rebuild):
  * {"target_kind","target","verdict":"confirm|reject|edit|merge|split","payload"?,"reason"?}
  * -> the stored judgement {"id","seq",...}. Add {"replay_run":"kr_..."} to apply it now. */

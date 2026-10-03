@@ -314,7 +314,7 @@ std::string stable_id(std::string_view prefix, std::string_view key, std::size_t
 // compat). Records the version in loom_kb_meta.schema_version and in
 // _meta.loom_kb_schema_version (never touches _meta.loom_schema_version).
 // The catalog's loom_cat_* tables belong to the catalog area (catalog.h).
-inline constexpr int kKbSchemaVersion = 2;
+inline constexpr int kKbSchemaVersion = 3;
 Status ensure_schema(Database& db);
 bool has_schema(Database& db);  // no side effects
 

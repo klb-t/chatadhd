@@ -38,7 +38,10 @@ disabled. It shows the inspectable workflow, not general extraction accuracy.*
 The workbench includes independent and linked graph views, source inspection,
 browser-local saved perspectives and explicit context preview. Native
 CandidateGraph and the Python GraphPacket research representation remain
-distinct; native GraphPacket persistence is still open work.
+distinct. [Explicit GraphPacket persistence](docs/NATIVE_GRAPH_PACKET_STORE.md)
+now writes selected entities, claims and observations to native KnowledgeStore,
+with atomic acceptance, immutable receipts and checked readback/replay.
+Full GraphPacket history validation remains in Python.
 
 ## Build and open a synthetic demo
 
@@ -71,10 +74,12 @@ and describes what each step establishes.
 
 ## Evidence and limits
 
-The [2026-10-02 verification report](docs/verification/current-2026-10-02/RESULTS.md)
-records **107/107 CTest suite entries**, a successful web production build and
-browser tests against the real native server. Chat tests use a local fake
-provider. These are engineering checks on the recorded source snapshot;
+The [2026-10-03 verification report](docs/verification/current-2026-10-03/RESULTS.md)
+records **108/108 CTest suite entries** and **13/13 native GraphPacket store
+regressions**. The [previous verification](docs/verification/current-2026-10-02/RESULTS.md)
+also records a successful web production build and browser tests against the
+real native server; web source is unchanged. Chat tests use a local fake
+provider. These are engineering checks on the recorded source snapshots;
 they do not establish general extraction accuracy, recipe efficacy or model
 quality. Android packaging, real devices and real external providers were not
 part of that verification.

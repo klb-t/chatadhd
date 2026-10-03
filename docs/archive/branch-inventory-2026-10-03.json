@@ -1,0 +1,233 @@
+{
+  "schema": "chatadhd.branch_rename_receipt/1",
+  "verified_at_utc": "2026-10-03",
+  "remote_branch_count": 41,
+  "renamed_count": 33,
+  "archived_count": 35,
+  "active_or_supporting_count": 4,
+  "isolated_evaluation_count": 2,
+  "tips_preserved": true,
+  "visibility_changed": false,
+  "deletion_count": 0,
+  "branches": [
+    {
+      "original_name": "archive/2026-10-01/handoff-source",
+      "archived_name": "archive/2026-10-01/handoff-source",
+      "original_sha": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0"
+    },
+    {
+      "original_name": "archive/2026-10-02/handoff-complete",
+      "archived_name": "archive/2026-10-02/handoff-complete",
+      "original_sha": "2878a0c8f80800732f0ffcfff695a24f135748e0"
+    },
+    {
+      "original_name": "chore/repo-hygiene-2026-09",
+      "archived_name": "archive/2026-10-03/chore/repo-hygiene-2026-09",
+      "original_sha": "970ca2836177c561796d393e454dfb37f173809b"
+    },
+    {
+      "original_name": "claude/chataddhd-cpp-loom-core-IRGRN",
+      "archived_name": "archive/2026-10-03/claude/chataddhd-cpp-loom-core-IRGRN",
+      "original_sha": "46066308ac6306a1b30f65b98e19a40da6df7e9c"
+    },
+    {
+      "original_name": "claude/restore-lost-features-adK74",
+      "archived_name": "archive/2026-10-03/claude/restore-lost-features-adK74",
+      "original_sha": "287bdc1dea06c266837f88041250a70a95521d85"
+    },
+    {
+      "original_name": "codex/handoff-recovery-2026-10-02",
+      "archived_name": "archive/2026-10-03/codex/handoff-recovery-2026-10-02",
+      "original_sha": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0"
+    },
+    {
+      "original_name": "codex/loom-handoff-2026-09-28",
+      "archived_name": "archive/2026-10-03/codex/loom-handoff-2026-09-28",
+      "original_sha": "816406722257d70431cc2acadaac313f0503b48c"
+    },
+    {
+      "original_name": "gpt/continuity-audit-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/continuity-audit-2026-09-30",
+      "original_sha": "6828216b23b465f59055ccd8ae3e665abf6bce97"
+    },
+    {
+      "original_name": "gpt/integration-w1-w6-2026-10-01",
+      "archived_name": "archive/2026-10-03/gpt/integration-w1-w6-2026-10-01",
+      "original_sha": "926072ce43b8de21a42a3abe439a7781598136f6"
+    },
+    {
+      "original_name": "gpt/night2-resources-2026-10-01",
+      "archived_name": "archive/2026-10-03/gpt/night2-resources-2026-10-01",
+      "original_sha": "6c883f3665d1c0151c7b25f0e480817dfc40cc20"
+    },
+    {
+      "original_name": "gpt/offline-2026-09-29",
+      "archived_name": "archive/2026-10-03/gpt/offline-2026-09-29",
+      "original_sha": "31f130cd38f25a1d523194ddac93c2ba713bbd07"
+    },
+    {
+      "original_name": "gpt/research-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/research-2026-09-30",
+      "original_sha": "c19bac2918636a2a69e8b52cabc49b9cf3f7ec6f"
+    },
+    {
+      "original_name": "gpt/w1-active-task-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/w1-active-task-2026-09-30",
+      "original_sha": "803eb78a8b49ece8b5d7e765f99fdd0f495caf4b"
+    },
+    {
+      "original_name": "gpt/w2-retrieval-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/w2-retrieval-2026-09-30",
+      "original_sha": "f6b44f6059777892474b45e54e7fae516bd1eb04"
+    },
+    {
+      "original_name": "gpt/w3-model-recipes-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/w3-model-recipes-2026-09-30",
+      "original_sha": "078378d5fa65225b5978e2641dd1849cd4830536"
+    },
+    {
+      "original_name": "gpt/w4-graph-runtime-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/w4-graph-runtime-2026-09-30",
+      "original_sha": "e7000a9beda08769254f1893da5ed3a5097bfe58"
+    },
+    {
+      "original_name": "gpt/w5-workspace-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/w5-workspace-2026-09-30",
+      "original_sha": "ecf6931bdde797799d2a1081ff898d3d0f1d3c8c"
+    },
+    {
+      "original_name": "gpt/w6-evidence-2026-09-30",
+      "archived_name": "archive/2026-10-03/gpt/w6-evidence-2026-09-30",
+      "original_sha": "84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd"
+    },
+    {
+      "original_name": "wip/catalog-finish",
+      "archived_name": "archive/2026-10-03/wip/catalog-finish",
+      "original_sha": "89e40933e5d7ccbbd9868b533769194dc4716ae4"
+    },
+    {
+      "original_name": "wip/catalog-r3",
+      "archived_name": "archive/2026-10-03/wip/catalog-r3",
+      "original_sha": "bf057541a45b9c8fa2fbeac478b374ffdc5fbcc0"
+    },
+    {
+      "original_name": "wip/continuation-2026-09-30",
+      "archived_name": "archive/2026-10-03/wip/continuation-2026-09-30",
+      "original_sha": "a79862837c6726f534471f8dbcdccfe749dfb942"
+    },
+    {
+      "original_name": "wip/determinism-fix",
+      "archived_name": "archive/2026-10-03/wip/determinism-fix",
+      "original_sha": "3486fd2e69411d2932f7b1b98f6d4fa1fcbca7eb"
+    },
+    {
+      "original_name": "wip/export-finish",
+      "archived_name": "archive/2026-10-03/wip/export-finish",
+      "original_sha": "af6d3e898cce26fb4a6a5a98e3e4216162a83123"
+    },
+    {
+      "original_name": "wip/precision",
+      "archived_name": "archive/2026-10-03/wip/precision",
+      "original_sha": "de3b9203253ddfdf30e02ea26881a1bcba7077c8"
+    },
+    {
+      "original_name": "wip/resolve-finish",
+      "archived_name": "archive/2026-10-03/wip/resolve-finish",
+      "original_sha": "bcc77fb27861f093e2e0c48a19bb519e362a16da"
+    },
+    {
+      "original_name": "wip/worktree-agent-a06d7260ba8b658cc",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-a06d7260ba8b658cc",
+      "original_sha": "2554bcc045ede3cc7f7014b37bf210d7e59c3681"
+    },
+    {
+      "original_name": "wip/worktree-agent-a382d0e063192b5ed",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-a382d0e063192b5ed",
+      "original_sha": "90113a906fe4180532eeadef3a2037b322472683"
+    },
+    {
+      "original_name": "wip/worktree-agent-a436abbcd1b794a18",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-a436abbcd1b794a18",
+      "original_sha": "819de58fbca5daed4c4ed840ef1b250230c22f0a"
+    },
+    {
+      "original_name": "wip/worktree-agent-a56d696101c89a58c",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-a56d696101c89a58c",
+      "original_sha": "453207ae6142b0ada53af1dabebe54c82a8a842e"
+    },
+    {
+      "original_name": "wip/worktree-agent-a822af86e44b82241",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-a822af86e44b82241",
+      "original_sha": "eae85871269458753a850d05bab7eb44ff378425"
+    },
+    {
+      "original_name": "wip/worktree-agent-a8df74a3ca608a703",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-a8df74a3ca608a703",
+      "original_sha": "d14535a0a944324caf671fdd796b582e928a5882"
+    },
+    {
+      "original_name": "wip/worktree-agent-a90a2e07c062c7efc",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-a90a2e07c062c7efc",
+      "original_sha": "dccaf9bdf1d981de2ddbb1184079bb954dc96990"
+    },
+    {
+      "original_name": "wip/worktree-agent-ab76c2dece93103a1",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-ab76c2dece93103a1",
+      "original_sha": "2d8826fec26331aa293a0c0110cc9912495b7671"
+    },
+    {
+      "original_name": "wip/worktree-agent-ac45c7e794faf4cb0",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-ac45c7e794faf4cb0",
+      "original_sha": "2de5d16f0b773055357dd4022b57c3c6aafbcc15"
+    },
+    {
+      "original_name": "wip/worktree-agent-ace3dd50eb645ccb0",
+      "archived_name": "archive/2026-10-03/wip/worktree-agent-ace3dd50eb645ccb0",
+      "original_sha": "da7b34f5714f76f7ddbffe689379d1847427742b"
+    }
+  ],
+  "remote_heads": {
+    "archive/2026-10-01/handoff-source": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+    "archive/2026-10-02/handoff-complete": "2878a0c8f80800732f0ffcfff695a24f135748e0",
+    "archive/2026-10-03/chore/repo-hygiene-2026-09": "970ca2836177c561796d393e454dfb37f173809b",
+    "archive/2026-10-03/claude/chataddhd-cpp-loom-core-IRGRN": "46066308ac6306a1b30f65b98e19a40da6df7e9c",
+    "archive/2026-10-03/claude/restore-lost-features-adK74": "287bdc1dea06c266837f88041250a70a95521d85",
+    "archive/2026-10-03/codex/handoff-recovery-2026-10-02": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+    "archive/2026-10-03/codex/loom-handoff-2026-09-28": "816406722257d70431cc2acadaac313f0503b48c",
+    "archive/2026-10-03/gpt/continuity-audit-2026-09-30": "6828216b23b465f59055ccd8ae3e665abf6bce97",
+    "archive/2026-10-03/gpt/integration-w1-w6-2026-10-01": "926072ce43b8de21a42a3abe439a7781598136f6",
+    "archive/2026-10-03/gpt/night2-resources-2026-10-01": "6c883f3665d1c0151c7b25f0e480817dfc40cc20",
+    "archive/2026-10-03/gpt/offline-2026-09-29": "31f130cd38f25a1d523194ddac93c2ba713bbd07",
+    "archive/2026-10-03/gpt/research-2026-09-30": "c19bac2918636a2a69e8b52cabc49b9cf3f7ec6f",
+    "archive/2026-10-03/gpt/w1-active-task-2026-09-30": "803eb78a8b49ece8b5d7e765f99fdd0f495caf4b",
+    "archive/2026-10-03/gpt/w2-retrieval-2026-09-30": "f6b44f6059777892474b45e54e7fae516bd1eb04",
+    "archive/2026-10-03/gpt/w3-model-recipes-2026-09-30": "078378d5fa65225b5978e2641dd1849cd4830536",
+    "archive/2026-10-03/gpt/w4-graph-runtime-2026-09-30": "e7000a9beda08769254f1893da5ed3a5097bfe58",
+    "archive/2026-10-03/gpt/w5-workspace-2026-09-30": "ecf6931bdde797799d2a1081ff898d3d0f1d3c8c",
+    "archive/2026-10-03/gpt/w6-evidence-2026-09-30": "84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd",
+    "archive/2026-10-03/wip/catalog-finish": "89e40933e5d7ccbbd9868b533769194dc4716ae4",
+    "archive/2026-10-03/wip/catalog-r3": "bf057541a45b9c8fa2fbeac478b374ffdc5fbcc0",
+    "archive/2026-10-03/wip/continuation-2026-09-30": "a79862837c6726f534471f8dbcdccfe749dfb942",
+    "archive/2026-10-03/wip/determinism-fix": "3486fd2e69411d2932f7b1b98f6d4fa1fcbca7eb",
+    "archive/2026-10-03/wip/export-finish": "af6d3e898cce26fb4a6a5a98e3e4216162a83123",
+    "archive/2026-10-03/wip/precision": "de3b9203253ddfdf30e02ea26881a1bcba7077c8",
+    "archive/2026-10-03/wip/resolve-finish": "bcc77fb27861f093e2e0c48a19bb519e362a16da",
+    "archive/2026-10-03/wip/worktree-agent-a06d7260ba8b658cc": "2554bcc045ede3cc7f7014b37bf210d7e59c3681",
+    "archive/2026-10-03/wip/worktree-agent-a382d0e063192b5ed": "90113a906fe4180532eeadef3a2037b322472683",
+    "archive/2026-10-03/wip/worktree-agent-a436abbcd1b794a18": "819de58fbca5daed4c4ed840ef1b250230c22f0a",
+    "archive/2026-10-03/wip/worktree-agent-a56d696101c89a58c": "453207ae6142b0ada53af1dabebe54c82a8a842e",
+    "archive/2026-10-03/wip/worktree-agent-a822af86e44b82241": "eae85871269458753a850d05bab7eb44ff378425",
+    "archive/2026-10-03/wip/worktree-agent-a8df74a3ca608a703": "d14535a0a944324caf671fdd796b582e928a5882",
+    "archive/2026-10-03/wip/worktree-agent-a90a2e07c062c7efc": "dccaf9bdf1d981de2ddbb1184079bb954dc96990",
+    "archive/2026-10-03/wip/worktree-agent-ab76c2dece93103a1": "2d8826fec26331aa293a0c0110cc9912495b7671",
+    "archive/2026-10-03/wip/worktree-agent-ac45c7e794faf4cb0": "2de5d16f0b773055357dd4022b57c3c6aafbcc15",
+    "archive/2026-10-03/wip/worktree-agent-ace3dd50eb645ccb0": "da7b34f5714f76f7ddbffe689379d1847427742b",
+    "eval/real-holdout-key": "0fcf2402f60fdf394c0c74c4eb128353d536db0b",
+    "gpt/ecosystem-agent-research-2026-10-01": "157762ef60be8b14fe75c6a9c922d6df7ffe97a1",
+    "gpt/graph-replies-2026-10-02": "d49e05fd484e1a0af8432a5512762107ff633c1e",
+    "gpt/night-development-2026-10-01": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+    "main": "ab581923b3cfc8b885a9223699252559508566e1",
+    "wip/worktree-agent-a342fccb481c4116c": "5d85034e2353a3a6e2b2beacd1549b8cd0566584"
+  },
+  "snapshot_phase": "After renames, before N3 main increment; main SHA records that predecessor snapshot"
+}

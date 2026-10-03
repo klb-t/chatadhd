@@ -68,6 +68,15 @@ const std::vector<Table>& tables() {
                        {"replayed_seq", "INTEGER NOT NULL DEFAULT 0"}},
                       {},
                       false});
+    // N3 receipts are separate from candidates and owner judgements. They
+    // preserve a complete exchange packet; accepted rows use existing tables.
+    t.push_back(Table{"loom_kb_graph_receipts",
+                      "CREATE TABLE IF NOT EXISTS loom_kb_graph_receipts ("
+                      "id TEXT PRIMARY KEY, run_id TEXT NOT NULL, body TEXT NOT NULL)",
+                      {{"id", "TEXT"}, {"run_id", "TEXT NOT NULL DEFAULT ''"},
+                       {"body", "TEXT NOT NULL DEFAULT '{}'"}},
+                      {"CREATE INDEX IF NOT EXISTS idx_loom_kb_graph_receipts_run ON loom_kb_graph_receipts(run_id)"},
+                      true});
     t.push_back(run_table("loom_kb_observations",
                           {{"unit", "TEXT NOT NULL DEFAULT ''"}, {"kind", "TEXT NOT NULL DEFAULT ''"},
                            {"date", "TEXT NOT NULL DEFAULT ''"}},
@@ -260,6 +269,17 @@ Status ensure_schema(Database& db) {
     for (const char* ix : t.indexes) LOOM_TRY(c.exec(ix));
   }
   const std::string ver = std::to_string(kKbSchemaVersion);
+  LOOM_TRY(c.exec("CREATE TRIGGER IF NOT EXISTS loom_kb_graph_receipts_no_update "
+                  "BEFORE UPDATE ON loom_kb_graph_receipts BEGIN "
+                  "SELECT RAISE(ABORT, 'graph receipt is immutable'); END"));
+  LOOM_TRY(c.exec("CREATE TRIGGER IF NOT EXISTS loom_kb_graph_receipts_no_delete "
+                  "BEFORE DELETE ON loom_kb_graph_receipts BEGIN "
+                  "SELECT RAISE(ABORT, 'graph receipt is immutable'); END"));
+  // SQLite REPLACE can bypass DELETE triggers when recursive_triggers is off.
+  LOOM_TRY(c.exec("CREATE TRIGGER IF NOT EXISTS loom_kb_graph_receipts_no_replace "
+                  "BEFORE INSERT ON loom_kb_graph_receipts "
+                  "WHEN EXISTS (SELECT 1 FROM loom_kb_graph_receipts WHERE id = NEW.id) BEGIN "
+                  "SELECT RAISE(ABORT, 'graph receipt is immutable'); END"));
   LOOM_TRY(c.run("INSERT OR REPLACE INTO loom_kb_meta (key, value) VALUES ('schema_version', ?)", ver));
   LOOM_TRY(c.run("INSERT OR REPLACE INTO _meta (key, value) VALUES ('loom_kb_schema_version', ?)", ver));
   return txn.commit();

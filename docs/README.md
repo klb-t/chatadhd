@@ -10,7 +10,9 @@ retained through the archive rather than presented as current product claims.
 | [Privacy review](PUBLICATION_PRIVACY_2026-10-02.md) | Source audit, historical Git contact metadata and the separate local correction |
 | [Current state](STATE.md) | Accepted implementation, verification and open engineering work |
 | [Claude handoff](HANDOFF_2026-10-02_TO_CLAUDE.md) | Development ownership, recovered source and next integration boundaries |
-| [Verification report](verification/current-2026-10-02/RESULTS.md) | Measured test/build results and reproduction commands |
+| [Verification report](verification/current-2026-10-03/RESULTS.md) | Current native integration gates, source hashes and retained first failures |
+| [Previous web/demo verification](verification/current-2026-10-02/RESULTS.md) | Recorded production web build and actual native/browser demonstrations |
+| [GraphPacket native store](NATIVE_GRAPH_PACKET_STORE.md) | Explicit acceptance, immutable receipts, CAS, readback/replay and migration |
 | [Limits and wiring](LIMITS_AND_WIRING_2026-10-01.md) | Missing connections and remaining resource/policy work |
 | [Research and costs](RESEARCH_AND_COSTS_2026-10-01.md) | Conclusions with task-specific denominators and spending reconciliation |
 

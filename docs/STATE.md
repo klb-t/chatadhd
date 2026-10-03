@@ -7,8 +7,9 @@ with zero new model calls; restoring this programme's credential is the live
 execution blocker. This temporary research task is distinct from a permanent
 GPT integration/helper assignment.
 **Published on `main` in the existing public `klb-t/chatadhd` repository.**
-The integration directly continues original main `b5f7eac` with one parent;
-its 40 historical commits retain their original identities. Read
+The first integration `ab581923` directly continues original main `b5f7eac`
+with one parent; N3 is a later increment on that line. The 40 original
+main-line commits retain their identities. Read
 [the Claude handoff](HANDOFF_2026-10-02_TO_CLAUDE.md).
 
 ## Source and ownership
@@ -22,6 +23,9 @@ its 40 historical commits retain their original identities. Read
   bundle is an optional derivative, not this hosted main's ancestry.
 - [Archive and exact selection](archive/README.md) retain full source,
   first failures, unused experiments and original W3/W5 Git bundles.
+  Completed hosted branches were renamed under `archive/`: 33 renames,
+  35 archived branches in total, all original tips preserved. Four active or
+  supporting branches and two isolated evaluation branches remain separate.
   No remote branch has been deleted or force-pushed by this recovery.
 - No GPT helper has an ongoing assignment from this recovery. Claude chooses
   any later helper's scope, branch, deadline and integration boundary.
@@ -40,7 +44,7 @@ its 40 historical commits retain their original identities. Read
 | W1 / N1 — task acceptance | Explicit ActiveTaskSpec reaches real chat. Acceptance and its user row share the existing EventLog transaction. Exact locator/time ordering, durable source checks, exceptional/C ABI cancellation cleanup, large revision/timestamp tests, history ABA and scope identity fixes are included. The incompatible second W1 journal is archived. This is not automatic task inference from prose. |
 | W2 / N2 — retrieval | Per-thesis scope/detail, claims/counters and graph/TF-IDF channels reach actual chat. Exact built-in TF-IDF corpus vectors are reused across plan queries. Plan provenance is caller-declared; verified W1→W2 plan authority is still missing. |
 | W3 — recipes | `directed_refute_v3`, 48 prepared DEV requests and historical-response replay are retained. No fresh live model-quality measurement is claimed. |
-| W4 — graph workflow | Python AnalysisPlan, GraphPacket transforms and durable local lease/receipt coordination work. Native CandidateGraph is a different representation; the N3 native GraphPacket/store writer was not delivered. |
+| W4 / N3 — graph workflow | Python AnalysisPlan, GraphPacket transforms and durable coordination work. Explicitly selected entities/claims/observations now reach native KnowledgeStore atomically, with immutable full-packet receipts, owner judgement replay, CAS and checked readback/replay. Native CandidateGraph remains distinct; full reversible-history validation remains in Python. See the [store contract](NATIVE_GRAPH_PACKET_STORE.md). |
 | W5 — workspace | Native views/references/couplings and browser-local perspective restoration work. Plan execution remains an explicit user choice. This is not cross-device perspective synchronization. |
 | W6 / N4 — import | Source-array and traversal order stay distinct; parent bindings, actual-root pointers, wrapper fields and member indices are retained. ZIP raw member materialization and the large-whitespace sniff fix are included. Raw source remains preserved. |
 | N5 / N6 | Historical resource peaks survive reservation release/crash boundaries. Latest completed native knowledge-run lookup no longer loses an older completion behind many unfinished runs. |
@@ -48,7 +52,9 @@ its 40 historical commits retain their original identities. Read
 Existing chat context, provenance, semantic metadata preservation, confidence,
 workspace contracts, ABI and import behavior remain subject to regression gates.
 Python compatibility is no longer a product requirement, but existing sentinels
-remain until a deliberate migration. No database or ABI migration is introduced. The optional W3 source-record
+remain until a deliberate migration. N3 adds `loom_graph_packet_store` to the
+C ABI and migrates KB schema 2→3 with a receipt table; core schema remains v4.
+Existing KB records are preserved by the tested migration. The optional W3 source-record
 fields `resolved_commit` and `git_tree_sha` also permit exact historical byte
 verification in the separately prepared metadata-corrected bundle. The public
 repository retains the original commit identities.
@@ -56,8 +62,10 @@ repository retains the original commit identities.
 ## Fresh verification
 
 The final measured results and exact command/binary hashes are recorded in
-[verification/current-2026-10-02/RESULTS.md](verification/current-2026-10-02/RESULTS.md).
-Only that receipt is the current gate; historical 77/77, 94/94 and 851-test
+[verification/current-2026-10-03/RESULTS.md](verification/current-2026-10-03/RESULTS.md):
+108/108 CTest entries and 13/13 actual native-store FFI regressions. The initial
+15 environment failures and their passing rerun are retained. Previous web
+verification remains attached to its unchanged web source. Historical 77/77, 94/94 and 851-test
 claims are not transferred to the recovered source.
 
 ## Research and money
@@ -77,6 +85,10 @@ not current balances. The authorized cheap/Jev programme has a non-resetting
 **$2** limit; a new conversation does not reset it. No new frontier pilot is
 authorized. Reconcile live identity, usage and outstanding reservations before
 resuming paid work.
+The recovered credential envelope expired on 2026-10-01. The required private
+decryption/session artifacts are unavailable; its expiration is not bypassed.
+The 432 requests remain unexecuted pending a valid authorized credential and
+fresh account reconciliation.
 
 ## Open engineering and evidence boundaries
 
@@ -90,17 +102,20 @@ in the handoff. Priorities for Claude to scope are:
    representation and transaction invariants, and preserve unknown source data.
 2. Connect model goal typing and a real vector provider to production callers;
    provide candidate-channel controls and capability reporting in the UI.
-3. Design native GraphPacket persistence and checked task→retrieval provenance
-   without treating the existing native CandidateGraph as the same contract.
+3. Connect checked task→retrieval provenance and scope any broader native
+   GraphPacket history/transformation support. N3 acceptance/read/replay is
+   delivered; it does not replace Python's complete history validator.
 4. W1 callback exceptions after output still do not retain a partial assistant
    row; many distinct lineage sources can produce quadratic provenance payload.
 5. Recipe efficacy, real full-export/Anthropic semantic quality and independent
    evaluation remain unproved. Do not use the sealed holdout as DEV.
 
 `gpt/ecosystem-agent-research-2026-10-01` / draft PR7 is an isolated Python
-prototype, not a production service or a launched cloud VM. `wip/precision`
+prototype, not a production service or a launched cloud VM. The archived `wip/precision`
 is an unverified historical experiment. Neither is silently promoted.
 The original `semantic_sketch` and shared-lease `c26c525` bytes remain missing;
 later replacements do not recover those originals. Full transcripts of all
 36 historical child agents are unavailable. See the bounded
 [recovery inventory](CONVERSATION_RECOVERY_2026-10-01.md).
+The additional bounded search of 68 recent saved files on 2026-10-03 found no
+missing originals or complete child-agent transcripts.

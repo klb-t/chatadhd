@@ -19,15 +19,20 @@ and cached commit pages. The contact value is not repeated here.
 ## Current publication boundary
 
 The selected product tree is published on the existing public `main`, as a
-single-parent successor of original main `b5f7eac`. Historical experiments are
+single-parent progression from original main `b5f7eac`. Historical experiments are
 not merged wholesale into the product line. Current reports and demonstrations
 are at the front; the dated inventory and archive retain reconstruction paths.
 
-**The 41 hosted branch labels have not been physically retired.** The current
-connector can publish trees, commits and branch tips, but has no tag, rename
-or branch-deletion operation. Direct Git push is not authenticated. The separate
-local metadata-corrected bundle has four heads and 35 archive tags; those counts
-do not describe GitHub's current ref list.
+**2026-10-03: 33 completed hosted branches were renamed under `archive/`.**
+[The verified mapping](branch-inventory-2026-10-03.json) checks every original
+tip against the remote: 35 archived branches, four active or supporting branches,
+and two isolated evaluation branches; 41 in total. No duplicate or deletion
+was used. The earlier inventory remains a dated snapshot.
+
+This organizes names; public archive branches still expose reachable history.
+Direct Git push is not authenticated. A separate local metadata-corrected
+derivative has four heads and 35 archive tags; it does not describe GitHub's
+current branch/tag layout or establish remote metadata privacy.
 
 | Work | Role in the existing repository |
 |---|---|
@@ -37,7 +42,7 @@ do not describe GitHub's current ref list.
 | Ecosystem-agent prototype | Separate current research, retaining its independent review boundary. |
 | Night-development baseline | Supporting baseline for draft PR #7. |
 | Sealed holdout/blind evaluation | Preserve isolated original tips; do not inspect or promote their contents. |
-| Completed old lane/WIP labels | Retire redundant labels after exact backup and recovery mapping verification. |
+| Completed old lane/WIP labels | Renamed under `archive/2026-10-03/`; exact original tips retained and verified. |
 | Standalone Loom | Compatibility baseline; authoritative current implementation is embedded in ChatADHD. |
 
 The inventory also records mapped tips for the separate local derivative;
@@ -93,9 +98,10 @@ Its report records zero external API calls. Eight synthetic cases yielded
 advantage was demonstrated. V1→V2 byte-size comparisons do not measure actual
 tokens, API cost or latency.
 
-At the read-only audit, [PR #6](https://github.com/klb-t/chatadhd/pull/6) was
-an open draft for the superseded September 28 handoff. Its work is superseded
-by the recovered main integration; closing it is a separate repository action.
+At the initial audit, [PR #6](https://github.com/klb-t/chatadhd/pull/6) was
+an open draft for the superseded September 28 handoff. It is now closed,
+verified on 2026-10-03; its branch tip remains archived. Its work is superseded
+by the recovered main integration.
 [PR #7](https://github.com/klb-t/chatadhd/pull/7) was an open ecosystem-agent
 draft based on night development. Preserve its independent review boundary
 and supporting original identities.

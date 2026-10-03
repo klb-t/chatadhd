@@ -9,7 +9,9 @@ first failures and original W3/W5 bundles remain reconstructible separately.
 The 2026-10-02 audit confirmed a private owner email in the author/committer
 metadata of 26 original-main commits. That ancestry reaches every examined
 ChatADHD branch. Public archive paths and tags cannot hide those fields.
-The owner explicitly retains the original public repository and main ancestry.
+The owner explicitly retains the original public repository. Current hosted
+refs still reach the original ancestry; correcting its contact metadata is
+pending authenticated Git transport.
 Full original histories were also preserved in verified, self-contained
 private Git bundles. A separate local metadata-corrected derivative does not
 replace the history hosted on `klb-t/chatadhd`.
@@ -69,9 +71,10 @@ The original ZIP hashes and bounded recovery gaps are recorded in
 ## Hosted branches and the separate local derivative
 
 The selected product tree is published on the existing public `main`. The
-41 ChatADHD branch labels recorded at the audit have not been physically
-retired by this integration; their original tips and roles remain in the
-dated inventory. Historical reports are outside the current front-page
+41 ChatADHD branches are now grouped as 35 archived, four active or supporting,
+and two isolated evaluation refs. [The current verified mapping](branch-inventory-2026-10-03.json)
+records 33 renames with all original tips unchanged. Earlier tips and roles
+remain in the dated inventory. Historical reports are outside the current front-page
 navigation, while required tests and fixtures remain in the active tree.
 
 The separately prepared local metadata-corrected bundle contains four heads

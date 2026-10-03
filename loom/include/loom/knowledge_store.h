@@ -48,6 +48,8 @@
 //   loom_kb_candidates      id PK; kind, payload, support, eval, status, created   (learning track, §6.7)
 //   loom_kb_policy_versions (pack, version) PK; hash, status, metrics, created
 //   loom_kb_llm_cache       (prompt_hash, model) PK; response, created
+//   loom_kb_graph_receipts  id PK; run_id, body — immutable N3 acceptance
+//                           receipts, retained across clear_run/rebuild
 //
 // ── Semantics ───────────────────────────────────────────────────────
 // * Writes upsert by (run_id, id) and validate first (Claim::validate, ...).

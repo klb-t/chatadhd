@@ -12,6 +12,13 @@ Publishing another commit with that ancestry retains that exposure.
 its original main ancestry. No repository visibility change or replacement
 repository is part of this publication. The historical metadata finding is
 unchanged; the local correction described below is a separate derivative.
+Completed branch names were grouped under `archive/` on 2026-10-03 with exact
+tips preserved. This does not hide public commit metadata. New integration/N3
+commits use GitHub noreply identities; 26 affected historical commits remain.
+Current access can append ordinary commits but cannot publish a replacement
+root history with controlled metadata. Authenticated Git transport is required
+to apply the prepared correction across reachable public refs. Complete private
+original backups retain exact reconstruction independently of that derivative.
 
 ## What was checked
 
