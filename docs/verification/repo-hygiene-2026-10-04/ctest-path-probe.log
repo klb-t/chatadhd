@@ -1,0 +1,9 @@
+Test project /workspace/scratch/2a6e71927cf3/ctest-path-probe/build/probe
+    Start 1: script.path_probe
+1/1 Test #1: script.path_probe ................   Passed    0.05 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.05 sec
+Verified 1 executed CTest entries; 0 explicitly unexecuted entries.
+Absolute JUnit file exists at the guard path. This checks instrumentation, not native product cases.
