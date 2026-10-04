@@ -12,18 +12,29 @@ are retained. No implementation file outside an accepted lane is edited here.
 | 2 | 34cc920 | Ready infrastructure; awaiting integrator full gates |
 | 3 | 36ec2a8 | In progress; embedding adapter only, no finished selector |
 | 4 | 3caa6b4 | Held: confirmed replay accounting defect |
-| 5 | 9295a88 | In progress; streaming/resume and final report outstanding |
+| 5 | f2af0a8 | Held: failed interpretation checkpoint can replay as complete |
 | 1 | a042ab7 | Ready, queued after lanes 3/4/5 under the requested order |
 | 6 | 1fb25ae | In progress; semantic helper not yet connected to selection |
-| 7 | 68f7531 | In progress; confirmed orphan-response audit defect in f8bf51b |
-| 8 | ee97311 | In progress; evidence corrections published, final receipt/report pending |
+| 7 | 3855178 | In progress; orphan-response audit defect remains |
+| 8 | 51caa0c | In progress; CI Clang captures/final receipt still outstanding |
+| 10 | ccc8bbf | In progress; source views only, final author verification pending |
+| 11 | c21e664 | Inventory published before code edits; routed through INDEX |
 
-No lane has been advanced to main by this checkpoint. Web build at the base
-passed. Fresh full native build/CTest is still running: an initial Ninja
-configuration could not find its installed executable on PATH, then compilation
-hit a full shared disk. Both original failures are retained. The executable
-path was set and only reproducible local intermediates were removed; assertions,
-thresholds and tests were not changed. No paid calls or Actions were started.
+No lane has been advanced to main by this checkpoint. W2 is linearly rebased
+on the integrator review commits and published on the integration branch only
+(hosted code receipt `85ac0a0`). Its native build and fresh web build passed;
+the actual kernel passed 19/19 standalone policy groups, with both fake HTTP
+sentinels at zero. The full W2 CTest gate is running separately.
+
+Fresh baseline CTest executed 106/108 successfully; research.structure and
+research.contracts exceeded their unchanged 60-second timeouts. A separate
+tmpfs retry also timed out. No assertion failure is demonstrated by a timeout.
+Observed shared-host CPU throttling and memory pressure are retained separately
+from product correctness; neither timeout is waived. Original build logs retain
+disk-full and linker-OOM failures. The successful local build uses low-memory
+GNU linker flags, `-O0 -g0`, bundled SQLite and GNU thin static archives; all
+129 actual core archive members are hashed. Assertions, tests and thresholds
+are unchanged. No paid calls or Actions were started by this integrator.
 
 ## Concrete returns to lane authors
 
@@ -35,6 +46,18 @@ reproduced the defect. Preserve unresolved measurements; add an execution/replay
 regression. Source, portable runner, first inputs/results, hashes and full log:
 [negative archive](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-packet-unresolved-replay/docs/reports/integrator-packet-replay-2026-10-04.md).
 The active W4 branch is unchanged.
+
+**W5:** a valid Anthropic project/document with a transient link-write failure
+rolls back its provider transaction. Source retention then records a successful
+checkpoint under the same key. After removing the injected error, retry reports
+complete without restoring either node or their link; the third attempt returns
+the completed-source cache. Both this valid-input case and a malformed-known
+member case were reproduced with actual c797225 importer bytes. The newer
+f2af0a8 usage-receipt guard does not change the faulty member checkpoint.
+Full sources, synthetic archives, results and hashes are preserved in the
+[negative archive](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-import-checkpoint-replay/docs/reports/integrator-import-checkpoint-2026-10-04.md).
+Return recognized-member failures independently from successful raw-byte
+retention and add recovery regressions. The active W5 branch is unchanged.
 
 **W7:** `arm_audit` checks stranded response files only when no ledger exists.
 A valid ledger for request01 plus an unreferenced request02 response yields
@@ -75,11 +98,17 @@ The sealed answer key and the blind catalog corpus are not integration inputs.
   including result-to-method provenance edges and a cross-lane regression,
   before either completed combination is admitted. Keep model provenance explicit.
 - **4:** repair the archived unresolved-replay accounting defect above.
+- **5:** repair interpretation checkpoint replay and verify restored project,
+  document and link after a transient error; publish final report/instructions.
 - **7:** repair orphan-response discovery even when a verified ledger exists;
   publish the final research/billing report and recipes for1.
-- **1/2:** first increments do not end the expanded task. Take new prompt/graph
-  and UI/settings handoffs, then the lane11 inventory when published.
-- **5/6/8/10:** publish final readiness reports and full receipts; scope-specific
+- **1/2:** renewed assignments are published in INDEX from lane11's pinned
+  inventory: prompt/graph methods for1 and startup/config presets for2.
+- **6/8/10:** publish final readiness reports and full receipts; scope-specific
   pending work and dependencies are tracked in INDEX.
-- **11:** publish the per-lane inventory and aggregate JSON before editing;
-  integrator9 will route it and record renewed assignments for completed lanes.
+- **10:** repair unused captures for /api/logs and /api/version reported by8;
+  leave /api/info's used capture intact. Do not suppress the Clang warning.
+- **11:** per-lane reports and JSON have been routed; mark each hardcoded method's
+  graph destination and coordinate Semantic LLM with1/graph selection with3.
+  Ownership gaps in native/core/CAPI/crypto, Android and retained Python remain
+  explicit; an inventory label does not authorize out-of-scope implementation.
