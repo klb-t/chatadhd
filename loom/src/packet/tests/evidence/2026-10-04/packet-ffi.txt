@@ -1,0 +1,13 @@
+22:07:06 [INFO ] loom.config: config.json not found - using defaults
+22:07:06 [INFO ] loom.config: secrets.json not found - using defaults
+22:07:06 [INFO ] loom.db: Schema upgraded: v0 -> v4
+22:07:06 [INFO ] loom.db: Database opened: /tmp/tmp6rb8pnn_/chatadhd.db
+22:07:06 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+22:07:06 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp6rb8pnn_)
+...........22:07:10 [INFO ] loom.db: Database closed
+22:07:10 [INFO ] loom.runtime: Loom runtime shut down
+
+----------------------------------------------------------------------
+Ran 11 tests in 3.681s
+
+OK
