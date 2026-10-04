@@ -1,0 +1,1 @@
+pack window: defaults/hash parity, former ceiling, int boundary, overlays and malformed values passed

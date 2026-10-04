@@ -1,0 +1,37 @@
+[0/2] Re-checking globbed directories...
+[1/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[2/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[3/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[4/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[5/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o
+[6/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[7/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[8/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o
+[9/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o
+[10/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o
+[11/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o
+[12/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[13/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o
+[14/37] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_packet.cpp.o
+[15/37] Building CXX object CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o
+[16/37] Building CXX object CMakeFiles/loom_core.dir/src/kb/pack.cpp.o
+[17/37] Building CXX object CMakeFiles/loom_core.dir/src/packet/packet.cpp.o
+[18/37] Building CXX object CMakeFiles/loom_core.dir/src/packet/reply.cpp.o
+[19/37] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+[20/37] Linking CXX static library libloom_core.a
+[21/37] Linking CXX shared library libloom.so.0.1.0
+[22/37] Building CXX object CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o
+[23/37] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o
+[24/37] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o
+[25/37] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge_latest_run.cpp.o
+[26/37] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_native_consumer.cpp.o
+[27/37] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_exports.cpp.o
+[28/37] Building CXX object CMakeFiles/loom_tests.dir/tests/test_packet.cpp.o
+[29/37] Building CXX object server/CMakeFiles/loom-server.dir/src/main.cpp.o
+[30/37] Building CXX object server/CMakeFiles/loom-server.dir/src/app.cpp.o
+[31/37] Creating library symlink libloom.so.0 libloom.so
+[32/37] Linking CXX executable loom_tests
+[33/37] Linking CXX executable loom_compat_tool
+[34/37] Linking CXX executable loom_candidate_graph_native_tool
+[35/37] Linking CXX executable cli/loom
+[36/37] Linking CXX executable server/loom-server

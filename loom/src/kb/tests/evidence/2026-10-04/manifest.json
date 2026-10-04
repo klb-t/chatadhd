@@ -1,0 +1,45 @@
+{
+  "schema": "loom.kb_window_verification/1",
+  "base_ref": "14eccaf679c3897c82b252ca8504f35f653d93f0",
+  "main_ref": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "provider_calls": 0,
+  "before": {
+    "scope": "actual pre-change native archive linked to the saved standalone source; not a fresh old-checkout build",
+    "test_snapshot": "before-test.snapshot.cc",
+    "pack_source_sha256": "4e8122b32840fbd82d81c0f018d087e738e35d8cc98fb4f6e58b70daaae9ac2e",
+    "binary_sha256": "bd7874ca7b14333d1d8416caf2a2be5a07474cb6cdc1d22a50c4de5e8f0af1a6",
+    "exit_code": 1,
+    "rejected_setting": 201,
+    "diagnostic_path": "lexicons/version_patterns.json#/window_tokens"
+  },
+  "after": {
+    "compile_exit_code": 0,
+    "exit_code": 0,
+    "accepted_values": [
+      0,
+      1,
+      12,
+      200,
+      201,
+      2147483647
+    ],
+    "rejected_malformed_values": 11,
+    "missing_field_rejected": true,
+    "unrepresentable_overlay_rejected": true,
+    "default_preset": 12,
+    "default_loader_hash_parity": true,
+    "binary_sha256": "868ed68fe752fb89514a8ffd283a0f390ec206a0b6c4053df947418831381ba5",
+    "scope": "one standalone native executable, not CTest case counts"
+  },
+  "source_sha256": {
+    "loom/src/kb/pack.cpp": "a9411f1ad48a5ecab29075611a02f4e27ed54508345ab0ed36c75ed5d293d4a2",
+    "loom/src/kb/tests/pack_window.verify.cc": "2b2f39b51f22503ebbf57348ddfdf40525f272272c146d17254a677fc66cea2b",
+    "loom/data/lexicons/version_patterns.json": "3198c87e2f8b8ed64fe4e4723932e7b936fb620b406059a877d3d05bba61691e"
+  },
+  "binary_sha256": {
+    "loom/build/dev/libloom_core.a": "52248d9aa83ea77914528d9d5321b88215e15aa14200d5f6c8c31a8a48a6e04f",
+    "loom/build/dev/libloom.so.0.1.0": "5b39b1bdf2e2bc6f4a65f2278e62c5a1e9ef482ceadab32db639fe0c1fd3d3fb",
+    "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/pack.cpp.o": "bd9e8f2858725f434da94310ae1701ea1653a15bcd1403b3b78ae51f6efd60dc"
+  },
+  "zero_semantics": "existing extractor uses lo=hi=token_index, an empty local anchor_word scan; project_alias remains message-wide. No extract source or data preset changed."
+}
