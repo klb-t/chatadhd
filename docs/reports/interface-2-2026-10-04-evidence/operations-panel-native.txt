@@ -1,0 +1,7 @@
+[operations-panel] PASS transport filters, encoded identity, explicit content and unavailable upload
+[operations-panel] PASS capabilities individually queryable; source/profile serializer preserved
+[operations-panel] PASS duplicate evidence rejected before persistence
+[operations-panel] PASS artifact metadata listing never reads content; explicit read stays inert
+[operations-panel] PASS audio upload is explicit; chosen provider/language and exact file survive
+[operations-panel] PASS capability status and additive persistence surface native read receipt
+[operations-panel] PASS provider failures are visible, without automatic retry

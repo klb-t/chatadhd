@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import defaults from "../profiles/data/resource-controls.json";
+import defaults from "../profiles/presets/resource-controls.json";
 
 export type ResourceControlPresets = typeof defaults;
 export type ContextPreviewParameters = ResourceControlPresets["context_preview"]["defaults"];

@@ -1,0 +1,12 @@
+[application-profile-graph] PASS deterministic complete raw-source projection passes the actual Python GraphPacket codec
+[application-profile-graph] PASS raw whitespace or recorded source changes use distinct immutable observation identities
+[application-profile-graph] PASS leading UTF-8 BOM remains exact source evidence while profile parsing preserves its semantic definition
+[application-profile-graph] PASS missing dates and transformation history stay unknown; explicit dates and CAS expectations survive
+[application-profile-graph] PASS source mismatch, malformed JSON, invalid timestamps and malformed Unicode are rejected
+[application-profile-graph] PASS receipt restoration validates projection, acceptance identity and drift before registration
+[application-profile-graph] PASS actual HTTP adapter preserves named endpoint, request, bearer authentication and error semantics
+[application-profile-graph] PASS actual HTTP/native acceptance persists complete source bytes and restores a profile from fresh readback
+[application-profile-graph] PASS actual native replay and identical acceptance retries retain the immutable original receipt
+[application-profile-graph] PASS native BOM source persistence and receipt restoration preserve all original UTF-8 bytes
+[application-profile-graph] PASS native profile receipt and exact source restore after server restart without changing model configuration
+[application-profile-graph] 11/11 groups passed (actual isolated native HTTP persistence; 0 model/provider calls)

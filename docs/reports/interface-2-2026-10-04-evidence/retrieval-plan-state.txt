@@ -1,0 +1,1 @@
+[retrieval-plan-state] PASS: inheritance vs explicit empty, exact text, scoped detail/weights, declared source, validation, and no thesis count limit

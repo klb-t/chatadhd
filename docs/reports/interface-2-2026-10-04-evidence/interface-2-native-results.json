@@ -1,0 +1,204 @@
+{
+  "status": "passed",
+  "groups": [
+    "channel validation precedes dispatch and native traces retain channels, counters and lexical shadow",
+    "exact one-call override dispatches with an empty composer and invalid normal drafts, then normal controls rebuild once",
+    "independent view context settings persist through reload without execution",
+    "native imported descendant paths navigate read-only with unchanged message statuses",
+    "native workflow snapshot restores original source and validated trace after browser storage reset",
+    "media capability read and failed multipart transcription clean uploaded temporary files",
+    "native config rejects malformed/nonobject PATCH and malformed/nonobject/missing-value PUT without changing stored values",
+    "usage-policy malformed envelopes fail before dispatch and native capability is explicit"
+  ],
+  "failure": null,
+  "external_requests": [],
+  "page_errors": [],
+  "browser_chat_requests": [
+    {
+      "message": "NATIVE_CHANNELS_7214",
+      "conv_id": "c_518034c43911",
+      "knowledge_context": {
+        "project": "e_575a1716bd88d8b9",
+        "targets": [
+          "e_575a1716bd88d8b9"
+        ],
+        "budget_tokens": 1600,
+        "run": "kr_303a8b7982a811a6",
+        "candidate_channels": [
+          {
+            "id": "tfidf",
+            "limit": 25,
+            "min_score": 0
+          },
+          {
+            "id": "lexical",
+            "limit": 9,
+            "min_score": 0
+          },
+          {
+            "id": "not-installed-public-fixture",
+            "limit": 3
+          }
+        ],
+        "candidate_scan_limit": 2000,
+        "include_counter_evidence": true,
+        "lexical_shadow": true
+      }
+    },
+    {
+      "message": "EXACT_OVERRIDE_5291",
+      "conv_id": "c_518034c43911",
+      "model": "mock/interface-two",
+      "temperature": 0.13,
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "trace_context": true
+    },
+    {
+      "message": "NEXT_NORMAL_1425",
+      "conv_id": "c_518034c43911",
+      "knowledge_context": {
+        "project": "e_575a1716bd88d8b9",
+        "targets": [
+          "e_575a1716bd88d8b9"
+        ],
+        "budget_tokens": 1600,
+        "run": "kr_303a8b7982a811a6",
+        "candidate_channels": [
+          {
+            "id": "tfidf",
+            "limit": 25,
+            "min_score": 0
+          },
+          {
+            "id": "lexical",
+            "limit": 9,
+            "min_score": 0
+          },
+          {
+            "id": "not-installed-public-fixture",
+            "limit": 3
+          }
+        ],
+        "candidate_scan_limit": 2000,
+        "include_counter_evidence": true,
+        "lexical_shadow": true
+      }
+    }
+  ],
+  "provider_requests": [
+    {
+      "model": "mock/interface-one",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **Storyboard mentioned_in un_c15910292b0349f6**  <!-- why: one hop from 'Storyboard' via 'mentioned_in' -->\n[INCOMPLETE: candidate instrument not-installed-public-fixture: unavailable]\n\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\n- [INCOMPLETE: counter-evidence for cl_4d294e696d823a52: [\"no_recorded_counter_links\"]]\n"
+        },
+        {
+          "role": "user",
+          "content": "NATIVE_CHANNELS_7214"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/interface-two",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "user",
+          "content": "EXACT_OVERRIDE_5291"
+        }
+      ],
+      "temperature": 0.13,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/interface-one",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **Storyboard mentioned_in un_c15910292b0349f6**  <!-- why: one hop from 'Storyboard' via 'mentioned_in' -->\n[INCOMPLETE: candidate instrument not-installed-public-fixture: unavailable]\n\nCounter-evidence coverage follows recorded links only; absence of a link does not establish absence of contradiction.\n- [INCOMPLETE: counter-evidence for cl_4d294e696d823a52: [\"no_recorded_counter_links\"]]\n"
+        },
+        {
+          "role": "user",
+          "content": "NATIVE_CHANNELS_7214"
+        },
+        {
+          "role": "assistant",
+          "content": "Native interface reply 1"
+        },
+        {
+          "role": "user",
+          "content": "EXACT_OVERRIDE_5291"
+        },
+        {
+          "role": "assistant",
+          "content": "Native interface reply 2"
+        },
+        {
+          "role": "user",
+          "content": "NEXT_NORMAL_1425"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": false,
+      "include_reasoning": true
+    }
+  ],
+  "native_mutations": [
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "body": "{}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": "{\"message\":\"NATIVE_CHANNELS_7214\",\"conv_id\":\"c_518034c43911\",\"knowledge_context\":{\"project\":\"e_575a1716bd88d8b9\",\"targets\":[\"e_575a1716bd88d8b9\"],\"budget_tokens\":1600,\"run\":\"kr_303a8b7982a811a6\",\"candidate_channels\":[{\"id\":\"tfidf\",\"limit\":25,\"min_score\":0},{\"id\":\"lexical\",\"limit\":9,\"min_score\":0},{\"id\":\"not-installed-public-fixture\",\"limit\":3}],\"candidate_scan_limit\":2000,\"include_counter_evidence\":true,\"lexical_shadow\":true}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": "{\"message\":\"EXACT_OVERRIDE_5291\",\"conv_id\":\"c_518034c43911\",\"model\":\"mock/interface-two\",\"temperature\":0.13,\"include_memory\":false,\"include_graph_memory\":false,\"include_history\":false,\"trace_context\":true}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": "{\"message\":\"NEXT_NORMAL_1425\",\"conv_id\":\"c_518034c43911\",\"knowledge_context\":{\"project\":\"e_575a1716bd88d8b9\",\"targets\":[\"e_575a1716bd88d8b9\"],\"budget_tokens\":1600,\"run\":\"kr_303a8b7982a811a6\",\"candidate_channels\":[{\"id\":\"tfidf\",\"limit\":25,\"min_score\":0},{\"id\":\"lexical\",\"limit\":9,\"min_score\":0},{\"id\":\"not-installed-public-fixture\",\"limit\":3}],\"candidate_scan_limit\":2000,\"include_counter_evidence\":true,\"lexical_shadow\":true}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "body": "{\"title\":\"Profile conversation\"}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/config",
+      "body": "{\"application_workflow_snapshots_v1\":{\"schema\":\"loom.application_workflow_snapshots/1\",\"snapshots\":[{\"profiles\":[{\"schema\":\"loom.application_profile/1\",\"id\":\"loom-default\",\"profile_revision\":2,\"label\":\"Loom\",\"target\":{\"application_id\":\"chatadhd\",\"version\":\"development-2026-10-04\",\"platform\":\"web\"},\"evidence\":{\"status\":\"partial\",\"sources\":[{\"url\":\"https://github.com/klb-t/chatadhd\",\"revision\":\"421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd\",\"note\":\"Base of this implementation; local profile increment is separate.\"}],\"gaps\":[\"Original service backend, hidden prompts and request compilation are not reproduced.\",\"Artifact editing, original project workflows, web browsing, voice and descendant-branch navigation need additional adapters.\"]},\"presentation\":{\"renderer\":\"chat\",\"tokens\":{\"background\":\"#0f0f14\",\"surface\":\"#24242e\",\"text\":\"#f2f2f2\",\"muted\":\"#8c8c99\",\"accent\":\"#4d8cf2\",\"border\":\"#33333e\"},\"sidebar\":{\"side\":\"left\",\"width\":280},\"content_width\":900,\"message_style\":\"bubble\"},\"composer\":{\"submit\":\"enter\",\"placeholder\":\"Message in Loom view…\"},\"actions\":[{\"id\":\"create\",\"label\":\"New conversation\",\"operation\":\"chat.create\",\"capability\":\"chat.create\",\"required\":true},{\"id\":\"select\",\"label\":\"Return to conversation\",\"operation\":\"chat.select\",\"capability\":\"chat.select\",\"required\":true},{\"id\":\"send\",\"label\":\"Send\",\"operation\":\"chat.send\",\"capability\":\"chat.send\",\"required\":true},{\"id\":\"cancel\",\"label\":\"Stop\",\"operation\":\"chat.cancel\",\"capability\":\"chat.cancel\",\"required\":true},{\"id\":\"edit\",\"label\":\"Edit message\",\"operation\":\"message.edit\",\"capability\":\"message.edit\",\"required\":true},{\"id\":\"restore\",\"label\":\"Restore version\",\"operation\":\"message.restore\",\"capability\":\"message.restore\",\"required\":true},{\"id\":\"exclude\",\"label\":\"Exclude message\",\"operation\":\"message.exclude\",\"capability\":\"message.exclude\",\"required\":true},{\"id\":\"knowledge\",\"label\":\"Inspect knowledge\",\"operation\":\"knowledge.open\",\"capability\":\"knowledge.open\",\"required\":false},{\"id\":\"memory\",\"label\":\"Memory\",\"operation\":\"memory.open\",\"capability\":\"memory.open\",\"required\":false},{\"id\":\"import\",\"label\":\"Import\",\"operation\":\"import.open\",\"capability\":\"import.open\",\"required\":false},{\"id\":\"settings\",\"label\":\"Settings\",\"operation\":\"settings.open\",\"capability\":\"settings.open\",\"required\":false}],\"workflows\":[{\"id\":\"conversation-review\",\"initial\":\"ready\",\"states\":[\"ready\",\"chat\",\"review\"],\"transitions\":[{\"from\":\"ready\",\"event\":\"create\",\"action\":\"create\",\"to\":\"chat\",\"payload\":{\"object\":{\"title\":{\"literal\":\"Profile conversation\"}}},\"save\":{\"conversation_id\":{\"from\":\"result\",\"pointer\":\"/id\"}}},{\"from\":\"chat\",\"event\":\"inspect\",\"action\":\"knowledge\",\"to\":\"review\",\"payload\":{\"object\":{}}},{\"from\":\"review\",\"event\":\"return\",\"action\":\"select\",\"to\":\"chat\",\"payload\":{\"object\":{\"id\":{\"from\":\"vars\",\"pointer\":\"/conversation_id\"}}}}]}]},{\"schema\":\"loom.application_profile/1\",\"id\":\"public-native-snapshot\",\"profile_revision\":1,\"label\":\"Public snapshot fixture\",\"target\":{\"application_id\":\"chatadhd\",\"version\":\"development-2026-10-04\",\"platform\":\"web\"},\"evidence\":{\"status\":\"partial\",\"sources\":[{\"url\":\"https://github.com/klb-t/chatadhd\",\"revision\":\"421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd\",\"note\":\"Base of this implementation; local profile increment is separate.\"}],\"gaps\":[\"Original service backend, hidden prompts and request compilation are not reproduced.\",\"Artifact editing, original project workflows, web browsing, voice and descendant-branch navigation need additional adapters.\"]},\"presentation\":{\"renderer\":\"chat\",\"tokens\":{\"background\":\"#0f0f14\",\"surface\":\"#24242e\",\"text\":\"#f2f2f2\",\"muted\":\"#8c8c99\",\"accent\":\"#4d8cf2\",\"border\":\"#33333e\"},\"sidebar\":{\"side\":\"left\",\"width\":280},\"content_width\":900,\"message_style\":\"bubble\"},\"composer\":{\"submit\":\"enter\",\"placeholder\":\"Message in Loom view…\"},\"actions\":[{\"id\":\"create\",\"label\":\"New conversation\",\"operation\":\"chat.create\",\"capability\":\"chat.create\",\"required\":true},{\"id\":\"select\",\"label\":\"Return to conversation\",\"operation\":\"chat.select\",\"capability\":\"chat.select\",\"required\":true},{\"id\":\"send\",\"label\":\"Send\",\"operation\":\"chat.send\",\"capability\":\"chat.send\",\"required\":true},{\"id\":\"cancel\",\"label\":\"Stop\",\"operation\":\"chat.cancel\",\"capability\":\"chat.cancel\",\"required\":true},{\"id\":\"edit\",\"label\":\"Edit message\",\"operation\":\"message.edit\",\"capability\":\"message.edit\",\"required\":true},{\"id\":\"restore\",\"label\":\"Restore version\",\"operation\":\"message.restore\",\"capability\":\"message.restore\",\"required\":true},{\"id\":\"exclude\",\"label\":\"Exclude message\",\"operation\":\"message.exclude\",\"capability\":\"message.exclude\",\"required\":true},{\"id\":\"knowledge\",\"label\":\"Inspect knowledge\",\"operation\":\"knowledge.open\",\"capability\":\"knowledge.open\",\"required\":false},{\"id\":\"memory\",\"label\":\"Memory\",\"operation\":\"memory.open\",\"capability\":\"memory.open\",\"required\":false},{\"id\":\"import\",\"label\":\"Import\",\"operation\":\"import.open\",\"capability\":\"import.open\",\"required\":false},{\"id\":\"settings\",\"label\":\"Settings\",\"operation\":\"settings.open\",\"capability\":\"settings.open\",\"required\":false}],\"workflows\":[{\"id\":\"conversation-review\",\"initial\":\"ready\",\"states\":[\"ready\",\"chat\",\"review\"],\"transitions\":[{\"from\":\"ready\",\"event\":\"create\",\"action\":\"create\",\"to\":\"chat\",\"payload\":{\"object\":{\"title\":{\"literal\":\"Profile conversation\"}}},\"save\":{\"conversation_id\":{\"from\":\"result\",\"pointer\":\"/id\"}}},{\"from\":\"chat\",\"event\":\"inspect\",\"action\":\"knowledge\",\"to\":\"review\",\"payload\":{\"object\":{}}},{\"from\":\"review\",\"event\":\"return\",\"action\":\"select\",\"to\":\"chat\",\"payload\":{\"object\":{\"id\":{\"from\":\"vars\",\"pointer\":\"/conversation_id\"}}}}]}]}],\"views\":[{\"id\":\"primary\",\"profile\":\"[\\\"public-native-snapshot\\\",1]\",\"conversation\":{\"coupling\":\"coupled\",\"selectedId\":null,\"sidebarOpen\":false}},{\"id\":\"2fedefd8-9c8f-4273-b742-1dcfdd9dc76f\",\"profile\":\"[\\\"loom-default\\\",2]\",\"conversation\":{\"coupling\":\"coupled\",\"selectedId\":null,\"sidebarOpen\":false}}],\"sharedConversationId\":\"c_b71d76f0ed4a\",\"sources\":[{\"profile\":\"[\\\"loom-default\\\",2]\",\"text\":\"{\\n  \\\"schema\\\": \\\"loom.application_profile/1\\\",\\n  \\\"id\\\": \\\"loom-default\\\",\\n  \\\"profile_revision\\\": 2,\\n  \\\"label\\\": \\\"Loom\\\",\\n  \\\"target\\\": {\\n    \\\"application_id\\\": \\\"chatadhd\\\",\\n    \\\"version\\\": \\\"development-2026-10-04\\\",\\n    \\\"platform\\\": \\\"web\\\"\\n  },\\n  \\\"evidence\\\": {\\n    \\\"status\\\": \\\"partial\\\",\\n    \\\"sources\\\": [\\n      {\\n        \\\"url\\\": \\\"https://github.com/klb-t/chatadhd\\\",\\n        \\\"revision\\\": \\\"421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd\\\",\\n        \\\"note\\\": \\\"Base of this implementation; local profile increment is separate.\\\"\\n      }\\n    ],\\n    \\\"gaps\\\": [\\n      \\\"Original service backend, hidden prompts and request compilation are not reproduced.\\\",\\n      \\\"Artifact editing, original project workflows, web browsing, voice and descendant-branch navigation need additional adapters.\\\"\\n    ]\\n  },\\n  \\\"presentation\\\": {\\n    \\\"renderer\\\": \\\"chat\\\",\\n    \\\"tokens\\\": {\\n      \\\"background\\\": \\\"#0f0f14\\\",\\n      \\\"surface\\\": \\\"#24242e\\\",\\n      \\\"text\\\": \\\"#f2f2f2\\\",\\n      \\\"muted\\\": \\\"#8c8c99\\\",\\n      \\\"accent\\\": \\\"#4d8cf2\\\",\\n      \\\"border\\\": \\\"#33333e\\\"\\n    },\\n    \\\"sidebar\\\": {\\n      \\\"side\\\": \\\"left\\\",\\n      \\\"width\\\": 280\\n    },\\n    \\\"content_width\\\": 900,\\n    \\\"message_style\\\": \\\"bubble\\\"\\n  },\\n  \\\"composer\\\": {\\n    \\\"submit\\\": \\\"enter\\\",\\n    \\\"placeholder\\\": \\\"Message in Loom view…\\\"\\n  },\\n  \\\"actions\\\": [\\n    {\\n      \\\"id\\\": \\\"create\\\",\\n      \\\"label\\\": \\\"New conversation\\\",\\n      \\\"operation\\\": \\\"chat.create\\\",\\n      \\\"capability\\\": \\\"chat.create\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"select\\\",\\n      \\\"label\\\": \\\"Return to conversation\\\",\\n      \\\"operation\\\": \\\"chat.select\\\",\\n      \\\"capability\\\": \\\"chat.select\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"send\\\",\\n      \\\"label\\\": \\\"Send\\\",\\n      \\\"operation\\\": \\\"chat.send\\\",\\n      \\\"capability\\\": \\\"chat.send\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"cancel\\\",\\n      \\\"label\\\": \\\"Stop\\\",\\n      \\\"operation\\\": \\\"chat.cancel\\\",\\n      \\\"capability\\\": \\\"chat.cancel\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"edit\\\",\\n      \\\"label\\\": \\\"Edit message\\\",\\n      \\\"operation\\\": \\\"message.edit\\\",\\n      \\\"capability\\\": \\\"message.edit\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"restore\\\",\\n      \\\"label\\\": \\\"Restore version\\\",\\n      \\\"operation\\\": \\\"message.restore\\\",\\n      \\\"capability\\\": \\\"message.restore\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"exclude\\\",\\n      \\\"label\\\": \\\"Exclude message\\\",\\n      \\\"operation\\\": \\\"message.exclude\\\",\\n      \\\"capability\\\": \\\"message.exclude\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"knowledge\\\",\\n      \\\"label\\\": \\\"Inspect knowledge\\\",\\n      \\\"operation\\\": \\\"knowledge.open\\\",\\n      \\\"capability\\\": \\\"knowledge.open\\\",\\n      \\\"required\\\": false\\n    },\\n    {\\n      \\\"id\\\": \\\"memory\\\",\\n      \\\"label\\\": \\\"Memory\\\",\\n      \\\"operation\\\": \\\"memory.open\\\",\\n      \\\"capability\\\": \\\"memory.open\\\",\\n      \\\"required\\\": false\\n    },\\n    {\\n      \\\"id\\\": \\\"import\\\",\\n      \\\"label\\\": \\\"Import\\\",\\n      \\\"operation\\\": \\\"import.open\\\",\\n      \\\"capability\\\": \\\"import.open\\\",\\n      \\\"required\\\": false\\n    },\\n    {\\n      \\\"id\\\": \\\"settings\\\",\\n      \\\"label\\\": \\\"Settings\\\",\\n      \\\"operation\\\": \\\"settings.open\\\",\\n      \\\"capability\\\": \\\"settings.open\\\",\\n      \\\"required\\\": false\\n    }\\n  ],\\n  \\\"workflows\\\": [\\n    {\\n      \\\"id\\\": \\\"conversation-review\\\",\\n      \\\"initial\\\": \\\"ready\\\",\\n      \\\"states\\\": [\\n        \\\"ready\\\",\\n        \\\"chat\\\",\\n        \\\"review\\\"\\n      ],\\n      \\\"transitions\\\": [\\n        {\\n          \\\"from\\\": \\\"ready\\\",\\n          \\\"event\\\": \\\"create\\\",\\n          \\\"action\\\": \\\"create\\\",\\n          \\\"to\\\": \\\"chat\\\",\\n          \\\"payload\\\": {\\n            \\\"object\\\": {\\n              \\\"title\\\": {\\n                \\\"literal\\\": \\\"Profile conversation\\\"\\n              }\\n            }\\n          },\\n          \\\"save\\\": {\\n            \\\"conversation_id\\\": {\\n              \\\"from\\\": \\\"result\\\",\\n              \\\"pointer\\\": \\\"/id\\\"\\n            }\\n          }\\n        },\\n        {\\n          \\\"from\\\": \\\"chat\\\",\\n          \\\"event\\\": \\\"inspect\\\",\\n          \\\"action\\\": \\\"knowledge\\\",\\n          \\\"to\\\": \\\"review\\\",\\n          \\\"payload\\\": {\\n            \\\"object\\\": {}\\n          }\\n        },\\n        {\\n          \\\"from\\\": \\\"review\\\",\\n          \\\"event\\\": \\\"return\\\",\\n          \\\"action\\\": \\\"select\\\",\\n          \\\"to\\\": \\\"chat\\\",\\n          \\\"payload\\\": {\\n            \\\"object\\\": {\\n              \\\"id\\\": {\\n                \\\"from\\\": \\\"vars\\\",\\n                \\\"pointer\\\": \\\"/conversation_id\\\"\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}\\n\",\"sourceRef\":\"repository:loom/web/src/profiles/data/loom-default-r2.json\"},{\"profile\":\"[\\\"public-native-snapshot\\\",1]\",\"text\":\"﻿ \\n{\\n  \\\"schema\\\": \\\"loom.application_profile/1\\\",\\n  \\\"id\\\": \\\"public-native-snapshot\\\",\\n  \\\"profile_revision\\\": 1,\\n  \\\"label\\\": \\\"Public snapshot fixture\\\",\\n  \\\"target\\\": {\\n    \\\"application_id\\\": \\\"chatadhd\\\",\\n    \\\"version\\\": \\\"development-2026-10-04\\\",\\n    \\\"platform\\\": \\\"web\\\"\\n  },\\n  \\\"evidence\\\": {\\n    \\\"status\\\": \\\"partial\\\",\\n    \\\"sources\\\": [\\n      {\\n        \\\"url\\\": \\\"https://github.com/klb-t/chatadhd\\\",\\n        \\\"revision\\\": \\\"421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd\\\",\\n        \\\"note\\\": \\\"Base of this implementation; local profile increment is separate.\\\"\\n      }\\n    ],\\n    \\\"gaps\\\": [\\n      \\\"Original service backend, hidden prompts and request compilation are not reproduced.\\\",\\n      \\\"Artifact editing, original project workflows, web browsing, voice and descendant-branch navigation need additional adapters.\\\"\\n    ]\\n  },\\n  \\\"presentation\\\": {\\n    \\\"renderer\\\": \\\"chat\\\",\\n    \\\"tokens\\\": {\\n      \\\"background\\\": \\\"#0f0f14\\\",\\n      \\\"surface\\\": \\\"#24242e\\\",\\n      \\\"text\\\": \\\"#f2f2f2\\\",\\n      \\\"muted\\\": \\\"#8c8c99\\\",\\n      \\\"accent\\\": \\\"#4d8cf2\\\",\\n      \\\"border\\\": \\\"#33333e\\\"\\n    },\\n    \\\"sidebar\\\": {\\n      \\\"side\\\": \\\"left\\\",\\n      \\\"width\\\": 280\\n    },\\n    \\\"content_width\\\": 900,\\n    \\\"message_style\\\": \\\"bubble\\\"\\n  },\\n  \\\"composer\\\": {\\n    \\\"submit\\\": \\\"enter\\\",\\n    \\\"placeholder\\\": \\\"Message in Loom view…\\\"\\n  },\\n  \\\"actions\\\": [\\n    {\\n      \\\"id\\\": \\\"create\\\",\\n      \\\"label\\\": \\\"New conversation\\\",\\n      \\\"operation\\\": \\\"chat.create\\\",\\n      \\\"capability\\\": \\\"chat.create\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"select\\\",\\n      \\\"label\\\": \\\"Return to conversation\\\",\\n      \\\"operation\\\": \\\"chat.select\\\",\\n      \\\"capability\\\": \\\"chat.select\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"send\\\",\\n      \\\"label\\\": \\\"Send\\\",\\n      \\\"operation\\\": \\\"chat.send\\\",\\n      \\\"capability\\\": \\\"chat.send\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"cancel\\\",\\n      \\\"label\\\": \\\"Stop\\\",\\n      \\\"operation\\\": \\\"chat.cancel\\\",\\n      \\\"capability\\\": \\\"chat.cancel\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"edit\\\",\\n      \\\"label\\\": \\\"Edit message\\\",\\n      \\\"operation\\\": \\\"message.edit\\\",\\n      \\\"capability\\\": \\\"message.edit\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"restore\\\",\\n      \\\"label\\\": \\\"Restore version\\\",\\n      \\\"operation\\\": \\\"message.restore\\\",\\n      \\\"capability\\\": \\\"message.restore\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"exclude\\\",\\n      \\\"label\\\": \\\"Exclude message\\\",\\n      \\\"operation\\\": \\\"message.exclude\\\",\\n      \\\"capability\\\": \\\"message.exclude\\\",\\n      \\\"required\\\": true\\n    },\\n    {\\n      \\\"id\\\": \\\"knowledge\\\",\\n      \\\"label\\\": \\\"Inspect knowledge\\\",\\n      \\\"operation\\\": \\\"knowledge.open\\\",\\n      \\\"capability\\\": \\\"knowledge.open\\\",\\n      \\\"required\\\": false\\n    },\\n    {\\n      \\\"id\\\": \\\"memory\\\",\\n      \\\"label\\\": \\\"Memory\\\",\\n      \\\"operation\\\": \\\"memory.open\\\",\\n      \\\"capability\\\": \\\"memory.open\\\",\\n      \\\"required\\\": false\\n    },\\n    {\\n      \\\"id\\\": \\\"import\\\",\\n      \\\"label\\\": \\\"Import\\\",\\n      \\\"operation\\\": \\\"import.open\\\",\\n      \\\"capability\\\": \\\"import.open\\\",\\n      \\\"required\\\": false\\n    },\\n    {\\n      \\\"id\\\": \\\"settings\\\",\\n      \\\"label\\\": \\\"Settings\\\",\\n      \\\"operation\\\": \\\"settings.open\\\",\\n      \\\"capability\\\": \\\"settings.open\\\",\\n      \\\"required\\\": false\\n    }\\n  ],\\n  \\\"workflows\\\": [\\n    {\\n      \\\"id\\\": \\\"conversation-review\\\",\\n      \\\"initial\\\": \\\"ready\\\",\\n      \\\"states\\\": [\\n        \\\"ready\\\",\\n        \\\"chat\\\",\\n        \\\"review\\\"\\n      ],\\n      \\\"transitions\\\": [\\n        {\\n          \\\"from\\\": \\\"ready\\\",\\n          \\\"event\\\": \\\"create\\\",\\n          \\\"action\\\": \\\"create\\\",\\n          \\\"to\\\": \\\"chat\\\",\\n          \\\"payload\\\": {\\n            \\\"object\\\": {\\n              \\\"title\\\": {\\n                \\\"literal\\\": \\\"Profile conversation\\\"\\n              }\\n            }\\n          },\\n          \\\"save\\\": {\\n            \\\"conversation_id\\\": {\\n              \\\"from\\\": \\\"result\\\",\\n              \\\"pointer\\\": \\\"/id\\\"\\n            }\\n          }\\n        },\\n        {\\n          \\\"from\\\": \\\"chat\\\",\\n          \\\"event\\\": \\\"inspect\\\",\\n          \\\"action\\\": \\\"knowledge\\\",\\n          \\\"to\\\": \\\"review\\\",\\n          \\\"payload\\\": {\\n            \\\"object\\\": {}\\n          }\\n        },\\n        {\\n          \\\"from\\\": \\\"review\\\",\\n          \\\"event\\\": \\\"return\\\",\\n          \\\"action\\\": \\\"select\\\",\\n          \\\"to\\\": \\\"chat\\\",\\n          \\\"payload\\\": {\\n            \\\"object\\\": {\\n              \\\"id\\\": {\\n                \\\"from\\\": \\\"vars\\\",\\n                \\\"pointer\\\": \\\"/conversation_id\\\"\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}\\n\",\"sourceRef\":\"import:public-native-profile.json\"}],\"sessions\":[{\"viewId\":\"primary\",\"profile\":\"[\\\"public-native-snapshot\\\",1]\",\"session\":{\"schema\":\"loom.application_profile_session/1\",\"profile\":{\"id\":\"public-native-snapshot\",\"profile_revision\":1,\"target\":{\"application_id\":\"chatadhd\",\"version\":\"development-2026-10-04\",\"platform\":\"web\"},\"definition\":\"{\\\"actions\\\":[{\\\"capability\\\":\\\"chat.create\\\",\\\"id\\\":\\\"create\\\",\\\"label\\\":\\\"New conversation\\\",\\\"operation\\\":\\\"chat.create\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"chat.select\\\",\\\"id\\\":\\\"select\\\",\\\"label\\\":\\\"Return to conversation\\\",\\\"operation\\\":\\\"chat.select\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"chat.send\\\",\\\"id\\\":\\\"send\\\",\\\"label\\\":\\\"Send\\\",\\\"operation\\\":\\\"chat.send\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"chat.cancel\\\",\\\"id\\\":\\\"cancel\\\",\\\"label\\\":\\\"Stop\\\",\\\"operation\\\":\\\"chat.cancel\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"message.edit\\\",\\\"id\\\":\\\"edit\\\",\\\"label\\\":\\\"Edit message\\\",\\\"operation\\\":\\\"message.edit\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"message.restore\\\",\\\"id\\\":\\\"restore\\\",\\\"label\\\":\\\"Restore version\\\",\\\"operation\\\":\\\"message.restore\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"message.exclude\\\",\\\"id\\\":\\\"exclude\\\",\\\"label\\\":\\\"Exclude message\\\",\\\"operation\\\":\\\"message.exclude\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"knowledge.open\\\",\\\"id\\\":\\\"knowledge\\\",\\\"label\\\":\\\"Inspect knowledge\\\",\\\"operation\\\":\\\"knowledge.open\\\",\\\"required\\\":false},{\\\"capability\\\":\\\"memory.open\\\",\\\"id\\\":\\\"memory\\\",\\\"label\\\":\\\"Memory\\\",\\\"operation\\\":\\\"memory.open\\\",\\\"required\\\":false},{\\\"capability\\\":\\\"import.open\\\",\\\"id\\\":\\\"import\\\",\\\"label\\\":\\\"Import\\\",\\\"operation\\\":\\\"import.open\\\",\\\"required\\\":false},{\\\"capability\\\":\\\"settings.open\\\",\\\"id\\\":\\\"settings\\\",\\\"label\\\":\\\"Settings\\\",\\\"operation\\\":\\\"settings.open\\\",\\\"required\\\":false}],\\\"composer\\\":{\\\"placeholder\\\":\\\"Message in Loom view…\\\",\\\"submit\\\":\\\"enter\\\"},\\\"evidence\\\":{\\\"gaps\\\":[\\\"Original service backend, hidden prompts and request compilation are not reproduced.\\\",\\\"Artifact editing, original project workflows, web browsing, voice and descendant-branch navigation need additional adapters.\\\"],\\\"sources\\\":[{\\\"note\\\":\\\"Base of this implementation; local profile increment is separate.\\\",\\\"revision\\\":\\\"421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd\\\",\\\"url\\\":\\\"https://github.com/klb-t/chatadhd\\\"}],\\\"status\\\":\\\"partial\\\"},\\\"id\\\":\\\"public-native-snapshot\\\",\\\"label\\\":\\\"Public snapshot fixture\\\",\\\"presentation\\\":{\\\"content_width\\\":900,\\\"message_style\\\":\\\"bubble\\\",\\\"renderer\\\":\\\"chat\\\",\\\"sidebar\\\":{\\\"side\\\":\\\"left\\\",\\\"width\\\":280},\\\"tokens\\\":{\\\"accent\\\":\\\"#4d8cf2\\\",\\\"background\\\":\\\"#0f0f14\\\",\\\"border\\\":\\\"#33333e\\\",\\\"muted\\\":\\\"#8c8c99\\\",\\\"surface\\\":\\\"#24242e\\\",\\\"text\\\":\\\"#f2f2f2\\\"}},\\\"profile_revision\\\":1,\\\"schema\\\":\\\"loom.application_profile/1\\\",\\\"target\\\":{\\\"application_id\\\":\\\"chatadhd\\\",\\\"platform\\\":\\\"web\\\",\\\"version\\\":\\\"development-2026-10-04\\\"},\\\"workflows\\\":[{\\\"id\\\":\\\"conversation-review\\\",\\\"initial\\\":\\\"ready\\\",\\\"states\\\":[\\\"ready\\\",\\\"chat\\\",\\\"review\\\"],\\\"transitions\\\":[{\\\"action\\\":\\\"create\\\",\\\"event\\\":\\\"create\\\",\\\"from\\\":\\\"ready\\\",\\\"payload\\\":{\\\"object\\\":{\\\"title\\\":{\\\"literal\\\":\\\"Profile conversation\\\"}}},\\\"save\\\":{\\\"conversation_id\\\":{\\\"from\\\":\\\"result\\\",\\\"pointer\\\":\\\"/id\\\"}},\\\"to\\\":\\\"chat\\\"},{\\\"action\\\":\\\"knowledge\\\",\\\"event\\\":\\\"inspect\\\",\\\"from\\\":\\\"chat\\\",\\\"payload\\\":{\\\"object\\\":{}},\\\"to\\\":\\\"review\\\"},{\\\"action\\\":\\\"select\\\",\\\"event\\\":\\\"return\\\",\\\"from\\\":\\\"review\\\",\\\"payload\\\":{\\\"object\\\":{\\\"id\\\":{\\\"from\\\":\\\"vars\\\",\\\"pointer\\\":\\\"/conversation_id\\\"}}},\\\"to\\\":\\\"chat\\\"}]}]}\"},\"workflows\":{\"conversation-review\":\"chat\"},\"sequence\":1,\"history\":[{\"sequence\":1,\"action\":\"create\",\"operation\":\"chat.create\",\"workflow\":{\"id\":\"conversation-review\",\"event\":\"create\",\"from\":\"ready\",\"to\":\"chat\"},\"variables\":{\"conversation_id\":\"c_b71d76f0ed4a\"}}],\"variables\":{\"conversation-review\":{\"conversation_id\":\"c_b71d76f0ed4a\"}}},\"recovery\":{\"status\":\"ready\"}},{\"viewId\":\"2fedefd8-9c8f-4273-b742-1dcfdd9dc76f\",\"profile\":\"[\\\"loom-default\\\",2]\",\"session\":{\"schema\":\"loom.application_profile_session/1\",\"profile\":{\"id\":\"loom-default\",\"profile_revision\":2,\"target\":{\"application_id\":\"chatadhd\",\"version\":\"development-2026-10-04\",\"platform\":\"web\"},\"definition\":\"{\\\"actions\\\":[{\\\"capability\\\":\\\"chat.create\\\",\\\"id\\\":\\\"create\\\",\\\"label\\\":\\\"New conversation\\\",\\\"operation\\\":\\\"chat.create\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"chat.select\\\",\\\"id\\\":\\\"select\\\",\\\"label\\\":\\\"Return to conversation\\\",\\\"operation\\\":\\\"chat.select\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"chat.send\\\",\\\"id\\\":\\\"send\\\",\\\"label\\\":\\\"Send\\\",\\\"operation\\\":\\\"chat.send\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"chat.cancel\\\",\\\"id\\\":\\\"cancel\\\",\\\"label\\\":\\\"Stop\\\",\\\"operation\\\":\\\"chat.cancel\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"message.edit\\\",\\\"id\\\":\\\"edit\\\",\\\"label\\\":\\\"Edit message\\\",\\\"operation\\\":\\\"message.edit\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"message.restore\\\",\\\"id\\\":\\\"restore\\\",\\\"label\\\":\\\"Restore version\\\",\\\"operation\\\":\\\"message.restore\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"message.exclude\\\",\\\"id\\\":\\\"exclude\\\",\\\"label\\\":\\\"Exclude message\\\",\\\"operation\\\":\\\"message.exclude\\\",\\\"required\\\":true},{\\\"capability\\\":\\\"knowledge.open\\\",\\\"id\\\":\\\"knowledge\\\",\\\"label\\\":\\\"Inspect knowledge\\\",\\\"operation\\\":\\\"knowledge.open\\\",\\\"required\\\":false},{\\\"capability\\\":\\\"memory.open\\\",\\\"id\\\":\\\"memory\\\",\\\"label\\\":\\\"Memory\\\",\\\"operation\\\":\\\"memory.open\\\",\\\"required\\\":false},{\\\"capability\\\":\\\"import.open\\\",\\\"id\\\":\\\"import\\\",\\\"label\\\":\\\"Import\\\",\\\"operation\\\":\\\"import.open\\\",\\\"required\\\":false},{\\\"capability\\\":\\\"settings.open\\\",\\\"id\\\":\\\"settings\\\",\\\"label\\\":\\\"Settings\\\",\\\"operation\\\":\\\"settings.open\\\",\\\"required\\\":false}],\\\"composer\\\":{\\\"placeholder\\\":\\\"Message in Loom view…\\\",\\\"submit\\\":\\\"enter\\\"},\\\"evidence\\\":{\\\"gaps\\\":[\\\"Original service backend, hidden prompts and request compilation are not reproduced.\\\",\\\"Artifact editing, original project workflows, web browsing, voice and descendant-branch navigation need additional adapters.\\\"],\\\"sources\\\":[{\\\"note\\\":\\\"Base of this implementation; local profile increment is separate.\\\",\\\"revision\\\":\\\"421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd\\\",\\\"url\\\":\\\"https://github.com/klb-t/chatadhd\\\"}],\\\"status\\\":\\\"partial\\\"},\\\"id\\\":\\\"loom-default\\\",\\\"label\\\":\\\"Loom\\\",\\\"presentation\\\":{\\\"content_width\\\":900,\\\"message_style\\\":\\\"bubble\\\",\\\"renderer\\\":\\\"chat\\\",\\\"sidebar\\\":{\\\"side\\\":\\\"left\\\",\\\"width\\\":280},\\\"tokens\\\":{\\\"accent\\\":\\\"#4d8cf2\\\",\\\"background\\\":\\\"#0f0f14\\\",\\\"border\\\":\\\"#33333e\\\",\\\"muted\\\":\\\"#8c8c99\\\",\\\"surface\\\":\\\"#24242e\\\",\\\"text\\\":\\\"#f2f2f2\\\"}},\\\"profile_revision\\\":2,\\\"schema\\\":\\\"loom.application_profile/1\\\",\\\"target\\\":{\\\"application_id\\\":\\\"chatadhd\\\",\\\"platform\\\":\\\"web\\\",\\\"version\\\":\\\"development-2026-10-04\\\"},\\\"workflows\\\":[{\\\"id\\\":\\\"conversation-review\\\",\\\"initial\\\":\\\"ready\\\",\\\"states\\\":[\\\"ready\\\",\\\"chat\\\",\\\"review\\\"],\\\"transitions\\\":[{\\\"action\\\":\\\"create\\\",\\\"event\\\":\\\"create\\\",\\\"from\\\":\\\"ready\\\",\\\"payload\\\":{\\\"object\\\":{\\\"title\\\":{\\\"literal\\\":\\\"Profile conversation\\\"}}},\\\"save\\\":{\\\"conversation_id\\\":{\\\"from\\\":\\\"result\\\",\\\"pointer\\\":\\\"/id\\\"}},\\\"to\\\":\\\"chat\\\"},{\\\"action\\\":\\\"knowledge\\\",\\\"event\\\":\\\"inspect\\\",\\\"from\\\":\\\"chat\\\",\\\"payload\\\":{\\\"object\\\":{}},\\\"to\\\":\\\"review\\\"},{\\\"action\\\":\\\"select\\\",\\\"event\\\":\\\"return\\\",\\\"from\\\":\\\"review\\\",\\\"payload\\\":{\\\"object\\\":{\\\"id\\\":{\\\"from\\\":\\\"vars\\\",\\\"pointer\\\":\\\"/conversation_id\\\"}}},\\\"to\\\":\\\"chat\\\"}]}]}\"},\"workflows\":{\"conversation-review\":\"ready\"},\"sequence\":0,\"history\":[]},\"recovery\":{\"status\":\"ready\"}}],\"schema\":\"loom.application_workflow_snapshot/1\",\"id\":\"3309f9b4-da55-48e6-a3dd-cc5030794b97\",\"label\":\"Public native recovery fixture\",\"savedAt\":\"2026-10-04T15:35:05.601Z\"}]}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": "{\"action\":\"settings\"}"
+    }
+  ]
+}

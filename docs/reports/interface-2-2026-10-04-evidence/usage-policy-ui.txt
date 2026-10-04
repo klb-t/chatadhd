@@ -1,0 +1,1 @@
+[usage-policy-ui] 1/1 group passed: preset/override/effective, read-only override preview + hashes + invalid draft preservation, whole-object policy, failed draft preservation, preview vs request, exact approval/rejection, stale lockout/manual refresh, unknown reservations, config/secret separation, unavailable host

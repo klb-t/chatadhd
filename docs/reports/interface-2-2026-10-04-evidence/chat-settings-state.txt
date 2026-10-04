@@ -1,0 +1,9 @@
+[chat-settings-state] PASS registered and unavailable channel IDs remain explicit transport data without guessed availability
+[chat-settings-state] PASS channel page sizes exceed previous UI presets and retain the native integer boundary
+[chat-settings-state] PASS unsupported method weights and parameters fail visibly instead of being silently discarded
+[chat-settings-state] PASS empty and malformed stored values retain their exact original bytes
+[chat-settings-state] PASS invalid known setting types are rejected before restoration without repairing stored values
+[chat-settings-state] PASS duplicate draft thesis identities cannot enter a restored plan
+[chat-settings-state] PASS independent view settings and full context plans survive restart and changes stay isolated
+[chat-settings-state] PASS failed settings persistence leaves both views' previous values intact
+[chat-settings-state] 8/8 passed; zero provider calls.

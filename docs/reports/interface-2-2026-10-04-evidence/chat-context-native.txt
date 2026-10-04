@@ -1,0 +1,1 @@
+[chat-context] PASS: default path, native authored multi-thesis plan, independent sources, validation, exact provider trace, W5 perspective coexistence, recording opt-out, failure inspection, persisted inspection, and mobile layout; 5 local fake-provider calls, 0 remote calls
