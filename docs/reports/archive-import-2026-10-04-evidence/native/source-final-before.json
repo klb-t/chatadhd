@@ -1,0 +1,117 @@
+{
+  "base": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "implementation_commit": "1474b260582a80f006f99953baaad1b3253ca6e1",
+  "copied_loom_paths": 27,
+  "sources": {
+    "loom/cli/main.cpp": {
+      "sha256": "dfca838ce0ab2e38be05533e3261c56a119ef7899c4f123b644de38874da63b0",
+      "bytes": 54566
+    },
+    "loom/include/loom/db.h": {
+      "sha256": "cb99e2ffb90775b8fdf9f221a3720813f09c00164959985fa065dafa815261c2",
+      "bytes": 18874
+    },
+    "loom/include/loom/importer.h": {
+      "sha256": "32498025428eea26120df65050aae27d3678f3f08557cbd9f03bc2e741cc7d48",
+      "bytes": 20741
+    },
+    "loom/src/db/annotations.cpp": {
+      "sha256": "6b448984ee75949ae6832560378aaf5d299d106b2e7d7425d809215ef3cae648",
+      "bytes": 16640
+    },
+    "loom/src/db/db.cpp": {
+      "sha256": "afb515b6c4aaf4cb2f2c291fbd5cc396c1b936a282e8748448dbd311bb8fa3f7",
+      "bytes": 42958
+    },
+    "loom/src/import/export_anthropic.cpp": {
+      "sha256": "a13cc31f4b7125938c17fbba5f38c4bb6b5f71a79055c426696660c8de1eb3bc",
+      "bytes": 22523
+    },
+    "loom/src/import/export_archive.cpp": {
+      "sha256": "5223e5807d2beced05a477e797b157054a2815f788dcb8b1fa6a91f1e33f3791",
+      "bytes": 42549
+    },
+    "loom/src/import/export_checkpoint.cpp": {
+      "sha256": "0a8ab50c9948cfae5e02ec2aabf907fead154cf453e3f46e854ab6a31176bb6c",
+      "bytes": 1692
+    },
+    "loom/src/import/export_common.cpp": {
+      "sha256": "c4877e278e90bcea0e6fdf274190ab839598b305f367ee227c63ada7c0c0b227",
+      "bytes": 27990
+    },
+    "loom/src/import/export_internal.h": {
+      "sha256": "b53d179474a9e0913bb817914f582a587d9c2bd96fd35dbcc9d45a1ed5d0cdd6",
+      "bytes": 12635
+    },
+    "loom/src/import/export_openai.cpp": {
+      "sha256": "af9fe7548d23f1b71dc6320b03ba9aa305fbe3b2f661a220d79c568e8882e91b",
+      "bytes": 39371
+    },
+    "loom/src/import/export_unknown.cpp": {
+      "sha256": "4bf29bdfb89aebe08306b7d89ec188719790aeec35dee8092136743a09beb7b6",
+      "bytes": 9040
+    },
+    "loom/src/import/import_audit.cpp": {
+      "sha256": "fb9dcaadb865823eb10a390ef76bdc6857a44a295a114cacadbeeaea9cb2ad40",
+      "bytes": 5671
+    },
+    "loom/src/import/import_audit.h": {
+      "sha256": "dadf6c91996ff52a6064265def64843989a27323dbedb7908ecaef660efc4e46",
+      "bytes": 743
+    },
+    "loom/src/import/import_usage.cpp": {
+      "sha256": "04fa104bf988d53d285dc30b12f212d79de9419a82714ad09ece198e5c29a471",
+      "bytes": 5181
+    },
+    "loom/src/import/import_usage.h": {
+      "sha256": "b45f4d92e14e0b2f3aba0a052dec9f4df2b870248f6a382386b85680ca014144",
+      "bytes": 944
+    },
+    "loom/src/import/importer_core.cpp": {
+      "sha256": "9da247100d90428c10006acfacb618a6e11e6a76df8f3c79688f9e24a6347b66",
+      "bytes": 28189
+    },
+    "loom/src/import/importer_html.cpp": {
+      "sha256": "9c983460ae43918c2a1c915bde2e0dd405d6b260f61f9fb098c084388047ebca",
+      "bytes": 14786
+    },
+    "loom/src/import/importer_json.cpp": {
+      "sha256": "92703995941f4ce84ea4afded617bd9e9c8f5faa0c577bf8f201e82a506bb420",
+      "bytes": 15973
+    },
+    "loom/src/import/importer_sqlite.cpp": {
+      "sha256": "50da21eb83bc7917de0874c53a5d092f93b090eecd8800ed5e496f5a038bc00f",
+      "bytes": 5437
+    },
+    "loom/src/import/importer_text.cpp": {
+      "sha256": "ee80b1c15b209eae63a0bef4e6b1020593b1c59232c253e80a8c8da74e3b8718",
+      "bytes": 14136
+    },
+    "loom/src/import/importer_zip.cpp": {
+      "sha256": "ba3ef148d9fc05b070bbed1fa55c507883ef6e44046c590df80a8c11b7495991",
+      "bytes": 4104
+    },
+    "loom/tests/test_db_annotations.cpp": {
+      "sha256": "c396e99197d4dc876bbd44523707fc6b17fb487b2410e27f1fdb8577aee00040",
+      "bytes": 17571
+    },
+    "loom/tests/test_import_audit.cpp": {
+      "sha256": "884ca43bd704d9d6615266ce73bff78b5bde7d50de095faff6f041b7f01857db",
+      "bytes": 3218
+    },
+    "loom/tests/test_import_resume.cpp": {
+      "sha256": "299d8012b1d186e18c99fe104e9022bf125c5be8486d4c787d42fcf6fdb7fa14",
+      "bytes": 49409
+    },
+    "loom/tests/test_import_usage.cpp": {
+      "sha256": "ad1e14b5c3ff8b1d0a8dc2b4edbdab6703a35a531a0d834b0661e320095cac63",
+      "bytes": 3940
+    },
+    "loom/tools/eval/archive_cost.py": {
+      "sha256": "799e879bc20ce61835644a7c2ff2c1fe591a2e6f4c99e4d3955ccf19f1a01212",
+      "bytes": 22129
+    }
+  },
+  "source_identical": true,
+  "isolated_source_base": "7282437b1c88933977f64b3468b9f42f7b400494"
+}

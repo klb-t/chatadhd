@@ -79,6 +79,17 @@ def doctest_counts(text: str) -> dict:
     return counts
 
 
+def ctest_counts(text: str) -> dict:
+    # Newer CTest omits the zero-failures clause on a successful full run.
+    match = re.search(r'(\d+)% tests passed(?:,\s*(\d+) tests failed)? out of (\d+)', text)
+    if not match or (match[2] is None and int(match[1]) != 100):
+        raise ValueError('full CTest did not report an executed-test denominator')
+    failed, executed = int(match[2] or 0), int(match[3])
+    if executed == 0 or failed > executed:
+        raise ValueError('invalid full CTest execution counts')
+    return {'executed': executed, 'failed': failed, 'passed': executed - failed}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repo', type=Path)
@@ -180,12 +191,9 @@ def main() -> int:
         receipt['registered_ctest_entries'] = len(registered)
         full = run('ctest-full', [ctest, '--test-dir', str(build), '--output-on-failure',
             '--no-tests=error', '--parallel', str(args.jobs)])
-        summary = re.search(r'(\d+)% tests passed,\s*(\d+) tests failed out of (\d+)', full.stdout)
-        if not summary:
-            raise ValueError('full CTest did not report an executed-test denominator')
-        failed, executed = int(summary[2]), int(summary[3])
-        receipt['full_ctest'] = {'executed': executed, 'failed': failed,
-            'passed': executed - failed, 'exit_code': full.returncode}
+        counts = ctest_counts(full.stdout)
+        failed, executed = counts['failed'], counts['executed']
+        receipt['full_ctest'] = {**counts, 'exit_code': full.returncode}
         if not executed or executed != len(registered):
             raise ValueError('full CTest execution count does not match its registered tests')
         # These are existing native tests: source filtering cannot create new
