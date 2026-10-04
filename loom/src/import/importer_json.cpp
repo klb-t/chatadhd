@@ -326,7 +326,7 @@ Result<std::vector<Conversation>> ConversationImporter::json_body(const fs::path
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_json(const fs::path& path, const ImportOptions& opts) {
-  return with_source(path, "json", opts, "file", [&] { return json_body(path, opts); });
+  return with_source(path, "json", opts, "file", [&](const fs::path& input_path) { return json_body(input_path, opts); });
 }
 
 Result<std::vector<Conversation>> ConversationImporter::jsonl_body(const fs::path& path, const ImportOptions& opts) {
@@ -365,7 +365,7 @@ Result<std::vector<Conversation>> ConversationImporter::jsonl_body(const fs::pat
 
 Result<std::vector<Conversation>> ConversationImporter::import_jsonl(const fs::path& path,
                                                                      const ImportOptions& opts) {
-  return with_source(path, "jsonl", opts, "file", [&] { return jsonl_body(path, opts); });
+  return with_source(path, "jsonl", opts, "file", [&](const fs::path& input_path) { return jsonl_body(input_path, opts); });
 }
 
 }  // namespace loom

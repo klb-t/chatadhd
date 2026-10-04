@@ -104,7 +104,7 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_zip(const fs::path& path, const ImportOptions& opts) {
-  return with_source(path, "zip", opts, "file", [&] { return zip_body(path, opts); });
+  return with_source(path, "zip", opts, "file", [&](const fs::path& input_path) { return zip_body(input_path, opts); });
 }
 
 }  // namespace loom

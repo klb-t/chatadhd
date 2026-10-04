@@ -94,7 +94,7 @@ Result<std::vector<Conversation>> ConversationImporter::markdown_body(const fs::
 
 Result<std::vector<Conversation>> ConversationImporter::import_markdown(const fs::path& path,
                                                                         const ImportOptions& opts) {
-  return with_source(path, "markdown", opts, "file", [&] { return markdown_body(path, opts); });
+  return with_source(path, "markdown", opts, "file", [&](const fs::path& input_path) { return markdown_body(input_path, opts); });
 }
 
 // ── Plain text (Python import_text) ─────────────────────────────────
@@ -181,7 +181,7 @@ Result<std::vector<Conversation>> ConversationImporter::text_body(const fs::path
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_text(const fs::path& path, const ImportOptions& opts) {
-  return with_source(path, "text", opts, "file", [&] { return text_body(path, opts); });
+  return with_source(path, "text", opts, "file", [&](const fs::path& input_path) { return text_body(input_path, opts); });
 }
 
 // ── Screenshot (OCR via MediaProviders) ─────────────────────────────
@@ -347,7 +347,7 @@ Result<std::vector<Conversation>> ConversationImporter::screenshot_body(const fs
 
 Result<std::vector<Conversation>> ConversationImporter::import_screenshot(const fs::path& path,
                                                                           const ImportOptions& opts) {
-  return with_source(path, "screenshot", opts, "file", [&] { return screenshot_body(path, opts); });
+  return with_source(path, "screenshot", opts, "file", [&](const fs::path& input_path) { return screenshot_body(input_path, opts); });
 }
 
 }  // namespace loom
