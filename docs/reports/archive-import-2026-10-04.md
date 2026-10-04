@@ -4,6 +4,17 @@ Gałąź: `gpt/archive-import-2026-10-04`; po rebase na main **7282437**.
 Końcowy kod: **1474b260582a80f006f99953baaad1b3253ca6e1**.
 Zakres 5, dane syntetyczne/publiczne, offline: **zero płatnych wywołań**.
 
+**Gotowy do odbioru przyrost W5: import/wznowienie/audyt/adnotacje.**
+Po szturchnięciu właściciela 18:51: świeży fetch, rebase (`up to date`), pełny
+build/CTest **112/112 w 307,19 s**, **696/25 341** natywnych przypadków/asercji,
+**1276 Python/0 skips**, nowe grupy **37/37 i 876/876**. Niezależny replay
+**2/2 scenariusze, 31/31 kontroli**, web TypeScript/Vite: **85 modułów**.
+[Nowe receipts/logi/hashe](archive-import-2026-10-04-evidence/native/owner-nudge-1851/receipt.json)
+i [niezależny replay](archive-import-2026-10-04-evidence/native/probes/owner-nudge-1851/receipt.json).
+Kod/header bytes 4314976 nadal odpowiadają zmierzonemu 1474b260; nowy pełny
+build potwierdził brak pracy, a źródła/binaria mają niezmienione hashe.
+To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
+
 ## Wdrożone
 
 JSON/ZIP dostawców przetwarza rozmowy strumieniowo, zachowując źródłowe bajty,
@@ -101,6 +112,11 @@ sam JSON diagnostyczny W5 tego nie realizuje. Wspólna regresja3/4 nadal wymagan
 
 ## Do wątku 9
 
+**W5 gotowy do odbioru wskazanego przyrostu.** INDEX na main nadal opisuje
+abade80 i 2GiB jako samo generowanie; uaktualnić do bieżącego raportu,
+307,19s/full112, niezależnego replay 2/31 i web 85. Rzeczywisty pomiar2,15GB
+jest już zachowany. Main 7282437 ponownie pobrany; rebase bieżący.
+
 Nowe próby odtwarzają oba oryginalne reproduktory bez osłabiania kontroli
 (jedyna adaptacja: jawny `resume=true` po zachowaniu starego presetu C++).
 W2 przed W5; ponowić fetch/rebase, fullCTest i build web przed fast-forward.
@@ -114,3 +130,8 @@ Brakuje packów importu/audytu: dostarczyć `import-formats`, profile dostawców
 role/tekst i presety, bez drugiego loadera. W5 nie edytuje cudzych `loom/data/**`.
 Potem podłączyć dane w naszym zakresie z porównaniem domyślnych wyników,
 wiążąc efektywny hash wersji metody/przepisu/parametrów z grafem4.
+Odebrano nowe 6116664: CLI profile API istnieje, lecz packów import/audytu brak.
+DIC0515, wspólny streaming conversations/projects/memories z archive i
+parametry get_unanalysed_msgs pozostają kolejnymi przyrostami w naszym zakresie;
+konsument archive/worker oraz dane profilu należą do11. Konkretna granica
+i obecny Loader/API są opisane w instrukcji.

@@ -370,10 +370,37 @@ a wszystkie wyniki są przypięte do faktycznie zmierzonych bajtów.
 
 
 Ostatni fetch: W11 `3cd3f47` dostarczył dane `usage_policy`, `config` i
-`runtime_paths` (łącznie19 packów), z golden wartościami oraz izolowanym
+`runtime_paths` (łącznie 19 packów), z golden wartościami oraz izolowanym
 14/14 receipt autora. To dane do podłączenia przez W2, nie już aktywny
 bootstrap/adapter na main. Domyślna polityka ma float `10.0`; shallow override
 Config zachowuje usunięcia baseline, a native walidacja W2 jest nadal konieczna.
 Profil importu/audytu pozostaje zadaniem W11. W4 `8e0e86b` po ostatnim rebase
 zmienił dokumenty/dowody; odczytany wcześniej kontrakt metod `daa6d42` pozostał
 identyczny. Te nowe cudze bramki nie są certyfikowane własnym CTest W5.
+
+
+## Aktualizacja przekazań po szturchnięciu 18:51
+
+W11 `6116664` ma już rzeczywiste CLI `profile list/inspect/validate/save`;
+nie oznacza to istniejących packów importu/audytu ani wdrożenia ich przez W5.
+W4 `14eccaf` dopisał parameter-set oraz combination i rzeczywiste krawędzie,
+z dokładnymi efektywnymi definicjami. Wspólny producent/fixture W3 jest nadal
+warunkiem odbioru3/4; adnotacje W5 nadal wskazują starsze `Database::nodes`.
+
+Konkretne kolejne zadania W5 z W11:
+
+- **DIC0515:** wspólna schema/capabilities/validation `ImportOptions`, nazwy
+  `export-mode auto/off/on`; profil importu/audytu potrzebny od właściciela danych.
+- **Stream wrapperów:** obecne `xport::Loader` / `load_json_file` w
+  `loom/src/import/export_internal.h` strumieniuje tablicę i wrapper conversations,
+  z callbackami, anulowaniem i jawnymi statystykami błędów. Projects/memories
+  pozostają auxiliary DOM. Współdzielony interfejs i parametry kluczy/ścieżek
+  wymagają kolejnego przyrostu w import, a wywołanie/fallback w archive — W11.
+- **Pending messages:** `Database::get_unanalysed_msgs(int limit=100)` i
+  `length(text)>=20` są odziedziczonym presetem do przeniesienia. Uzgodnić z W11
+  parametr/pochodzenie aktywnego profilu worker; nie nadpisywać jego konsumenta
+  `worker/**` ani kopiować autorytatywnych defaults do drugiego miejsca.
+
+To otwarte dalsze przyrosty, nie blokery odtworzonej poprawki checkpointów.
+Nowa sesja potwierdza gotowość wskazanego przyrostu import/adnotacje po pełnych
+bramkach; nie deklaruje migracji wszystkich 52 grup inwentarza.
