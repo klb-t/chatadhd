@@ -1,10 +1,10 @@
 {
   "schema": "loom.full_offline_gate/1",
-  "completed_utc": "2026-10-04T16:00:28.272217+00:00",
+  "completed_utc": "2026-10-04T16:24:50.778794+00:00",
   "exit_code": 0,
   "passed": 108,
   "total": 108,
-  "wall_seconds": 180.66,
+  "wall_seconds": 179.45,
   "command": "ctest --test-dir loom/build/dev --output-on-failure -j 2",
   "environment": {
     "TMPDIR": "<scratch tmpfs directory>",
@@ -35,5 +35,14 @@
     "loom/src/extract/sources.cpp": "11ba9f5a8b2edb644d0e126a4215682ec4313a532a722cb14881bc5bfb5ffa1f",
     "loom/src/extract/stage.cpp": "fdd7ffae2c959b15fc5de7eb48d299c1640085a622a29747447da042fe1b1347"
   },
-  "full_ctest_stdout_sha256": "57425d72c28525fd5441e6445d584d767730ab0ee6e2c0598b8327b56640ab66"
+  "full_ctest_stdout_sha256": "a3252532ae02a822ba36c54b7593bf283e5d09c0e95df10d14cb289ea1890daa",
+  "previous_full_gate": {
+    "passed": 108,
+    "total": 108,
+    "wall_seconds": 180.66,
+    "base": "161cc22dfb84fe863389d6b90323bd44516a68dc"
+  },
+  "after_rebase": true,
+  "main_base": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "branch_tip_before_gate_receipt": "549d746e9f41db9d036478cc07773e508fc3a234"
 }

@@ -974,7 +974,7 @@ provenance, cache and resume checks. No model-accuracy gain is claimed here.
 | Registry offline proof | — | 43/43, including headers, Unicode, snapshots, validation and limits |
 | Native scripted integration | — | 16/16 cases, 244/244 assertions |
 | Actual latest W2 conditional ledger integration | — | 6/6, including absent-config defaults; zero paid calls |
-| Final full CTest | Precision gate above | 108/108, 180.66 s; research 859 + 209 real cases |
+| Final full CTest | Precision gate above | 108/108 after rebase, 179.45 s; research 859 + 209 real cases |
 | Synthetic before/after prompt migration | Precision scorecard | All metrics/stats unchanged; 65 deterministic products |
 | Selfhost on the same pinned source | 12,863 claims / 1,006 products | 12,863 / 1,006, unchanged |
 
@@ -1035,6 +1035,13 @@ other extraction windows, resolver/generalization policy and candidate-graph
 presets need their own measured increments. Existing `C++`/`Ż` misses and the
 old precision limitations above remain. Full negative replay and infrastructure
 history are kept on `archive/2026-10-04/knowledge-precision-prompt-negatives`, outside the accepted tree.
+
+## Do wątku 1
+
+Continue measured migrations for the remaining W11 inventory in our scope:
+calibration, extraction windows/caps, resolver/generalization presets and
+candidate-graph rules. This increment closes the selected precision and prompt
+mechanisms, not all 127 inventory groups. Existing `C++`/`Ż` misses remain.
 
 ## Do wątku 2
 
