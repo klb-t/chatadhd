@@ -104,7 +104,9 @@ try {
   await workbench.getByRole("button", { name: "Refresh model settings" }).click();
   await workbench.getByText("Semantic model: mock/cheap", { exact: true }).waitFor();
   await workbench.getByLabel("Maximum model requests", { exact: true }).fill("9");
-  assert.equal(await analyze.isDisabled(), true, "out-of-range request count cannot submit");
+  assert.equal(await analyze.isDisabled(), false, "owner request count above the preset suggestion can submit");
+  await workbench.getByLabel("Maximum model requests", { exact: true }).fill("0.5");
+  assert.equal(await analyze.isDisabled(), true, "non-integer native resource fields cannot submit");
   await workbench.getByLabel("Maximum model requests", { exact: true }).fill("2");
   await workbench.getByLabel("Maximum total input bytes", { exact: true }).fill("8192");
   await workbench.getByLabel("Maximum output tokens per request", { exact: true }).fill("512");
@@ -206,7 +208,7 @@ try {
   assert.equal(await inspector.getByTestId("kb-candidate-structure").count(), 0, "mismatched-run selection is not resolved");
   assert.deepEqual(unexpected, []);
   assert.deepEqual(pageErrors, []);
-  console.log("[semantic-controls] PASS: default off/relation mode, bounded auto, experimental graph opt-in/counts/drafts/unknowns/source links, candidate provenance/pagination, retained views; all API calls mocked");
+  console.log("[semantic-controls] PASS: default off/relation mode, configurable resource parameters, experimental graph opt-in/counts/drafts/unknowns/source links, candidate provenance/pagination, retained views; all API calls mocked");
 } finally {
   if (browser) await browser.close();
   await new Promise((resolve) => server.httpServer.close(resolve));
