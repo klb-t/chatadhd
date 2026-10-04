@@ -15,6 +15,7 @@
 #include "loom/event_bus.h"
 #include "loom/importer.h"
 #include "loom/provenance.h"
+#include "loom/sqlite.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "../third_party/miniz/miniz.h"
@@ -227,6 +228,78 @@ TEST_SUITE("import_resume") {
         REQUIRE(receipts.size() == 1); CHECK(receipts[0].locator["source"] == "sha256:" + result.blob_hash);
         if (metadata["raw"]["uuid"] == "parent") CHECK(message.text == "Parent");
       }
+    }
+  }
+
+  TEST_CASE("live SQLite imports preserve committed WAL rows while raw main capture stays explicit") {
+    ResumeFixture source_fixture;
+    const auto source_path = source_fixture.temporary.path() / "live-archive.db";
+    auto source = unwrap(sql::Connection::open(source_path));
+    LOOM_REQUIRE_OK(source.exec("PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; "
+                               "CREATE TABLE archive_messages(role TEXT,content TEXT);"));
+    LOOM_REQUIRE_OK(source.exec("PRAGMA wal_checkpoint(TRUNCATE)"));
+    const auto main_hash = unwrap(sha256_file_hex(source_path));
+    LOOM_REQUIRE_OK(source.run("INSERT INTO archive_messages(role,content) VALUES(?,?)",
+                              "user", "Committed only in the live WAL"));
+    CHECK(unwrap(sha256_file_hex(source_path)) == main_hash);
+    REQUIRE(std::filesystem::file_size(source_path.string() + "-wal") > 0);
+
+    // Both public routes use fresh destination runtimes so existing main-file
+    // hash caching cannot mask which source connection they actually read.
+    ResumeFixture file_fixture;
+    auto imported = unwrap(file_fixture.importer.import_file(source_path, file_fixture.options));
+    REQUIRE(imported.conversations.size() == 1); CHECK(imported.messages == 1);
+    REQUIRE(imported.warnings.size() == 1);
+    CHECK(imported.warnings[0].find("excludes WAL bytes") != std::string::npos);
+    CHECK(imported.blob_hash == main_hash);
+    CHECK(unwrap(file_fixture.blobs.read(imported.blob_hash)) == unwrap(fsutil::read_file(source_path)));
+    const auto file_messages = unwrap(file_fixture.db->get_msgs(imported.conversations[0].id, true));
+    REQUIRE(file_messages.size() == 1); CHECK(file_messages[0].text == "Committed only in the live WAL");
+    const auto source_receipt = unwrap(file_fixture.provenance.get_source(imported.source_id));
+    REQUIRE(source_receipt); CHECK(source_receipt->blob_hash == main_hash); CHECK(source_receipt->uri == source_path.string());
+
+    ResumeFixture direct_fixture;
+    const auto direct = unwrap(direct_fixture.importer.import_sqlite(source_path, direct_fixture.options));
+    REQUIRE(direct.size() == 1);
+    const auto direct_messages = unwrap(direct_fixture.db->get_msgs(direct[0].id, true));
+    REQUIRE(direct_messages.size() == 1); CHECK(direct_messages[0].text == "Committed only in the live WAL");
+    CHECK(unwrap(direct_fixture.blobs.read(main_hash)) == unwrap(fsutil::read_file(source_path)));
+    const auto direct_sources = unwrap(direct_fixture.provenance.find_sources_by_hash(main_hash));
+    REQUIRE(direct_sources.size() == 1); CHECK(direct_sources[0].uri == source_path.string());
+    CHECK(unwrap(sha256_file_hex(source_path)) == main_hash);
+  }
+
+  TEST_CASE("immutable text Markdown HTML and MHT reads retain original fallback titles in both routes") {
+    using Handler = Result<std::vector<Conversation>> (ConversationImporter::*)(
+        const std::filesystem::path&, const ImportOptions&);
+    struct Example { const char* extension; const char* bytes; Handler handler; };
+    const Example examples[] = {
+      {"txt", "A plain text note without speaker labels.\n", &ConversationImporter::import_text},
+      {"md", "A plain Markdown note without a heading.\n", &ConversationImporter::import_markdown},
+      {"html", "<html><body>A plain HTML note without a title.</body></html>", &ConversationImporter::import_html},
+      {"mht", "MIME-Version: 1.0\nContent-Type: multipart/related\n\n------=_example\n"
+              "Content-Type: text/html\n\n<html><body>A plain MHT note.</body></html>\n------=_example--",
+              &ConversationImporter::import_mht}
+    };
+    for (const auto& example : examples) {
+      CAPTURE(example.extension);
+      ResumeFixture file_fixture;
+      const auto path = file_fixture.write(example.bytes, std::string("Original.filename.") + example.extension);
+      const auto file_result = unwrap(file_fixture.importer.import_file(path, file_fixture.options));
+      REQUIRE(file_result.conversations.size() == 1);
+      CHECK(file_result.conversations[0].title == "[Import] Original.filename");
+      CHECK(file_result.blob_hash == Sha256::hex(example.bytes));
+      CHECK(file_result.conversations[0].title.find(file_result.blob_hash) == std::string::npos);
+      CHECK(unwrap(file_fixture.blobs.read(file_result.blob_hash)) == example.bytes);
+      const auto file_messages = unwrap(file_fixture.db->get_msgs(file_result.conversations[0].id, true));
+      REQUIRE(file_messages.size() == 1); CHECK_FALSE(file_messages[0].text.empty());
+
+      ResumeFixture direct_fixture;
+      const auto direct_result = unwrap((direct_fixture.importer.*example.handler)(path, direct_fixture.options));
+      REQUIRE(direct_result.size() == 1); CHECK(direct_result[0].title == "[Import] Original.filename");
+      CHECK(unwrap(direct_fixture.blobs.read(file_result.blob_hash)) == example.bytes);
+      const auto direct_messages = unwrap(direct_fixture.db->get_msgs(direct_result[0].id, true));
+      REQUIRE(direct_messages.size() == 1); CHECK(direct_messages[0].text == file_messages[0].text);
     }
   }
 
