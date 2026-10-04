@@ -66,11 +66,13 @@ class UsagePolicy {
 extern "C" {
 #endif
 
-// JSON command API for the future settings/confirmation screen and non-C++
-// clients. Returns malloc-owned JSON (loom_free_string), including normal
+// Static-kernel JSON command API for future settings/confirmation clients.
+// Shared-library export registration requires a scoped loom.h/ABI-test change;
+// this lane deliberately leaves the existing shared export set unchanged.
+// Returns malloc-owned JSON (loom_free_string), including normal
 // requires_confirmation receipts; errors use the existing C ABI envelope.
 // Actions: settings, preview, request, confirm, complete, cancel, inspect.
-LOOM_API const char* loom_usage_policy_json(LoomContext* ctx, const char* command_json);
+const char* loom_usage_policy_json(LoomContext* ctx, const char* command_json);
 
 #ifdef __cplusplus
 }  // extern "C"
