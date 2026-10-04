@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/root/.local/bin/ctest",
+    "--preset",
+    "dev",
+    "--output-on-failure",
+    "-V"
+  ],
+  "working_directory": "loom",
+  "exit_code": 0,
+  "elapsed_seconds": 100.123
+}

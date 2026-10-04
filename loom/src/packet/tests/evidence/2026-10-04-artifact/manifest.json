@@ -1,0 +1,73 @@
+{
+  "schema": "loom.method_graph_native_consumer_proof/1",
+  "base_ref": "14eccaf679c3897c82b252ca8504f35f653d93f0",
+  "main_ref": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "w3_observed_ref": "c4a9412",
+  "w11_observed_ref": "49e5e65",
+  "provider_calls": 0,
+  "producer_execution_verified": false,
+  "current_library_sha256": "5b39b1bdf2e2bc6f4a65f2278e62c5a1e9ef482ceadab32db639fe0c1fd3d3fb",
+  "source_sha256": {
+    "loom/src/packet/packet.cpp": "f95574debd94ff675596807b7de7eff8a65b5aafc3360b9be2d513a335bfaf59",
+    "loom/src/packet/reply.cpp": "4575f44b4614888fa25166b6b3a2e58c59966b49021cb25b07c06aaf74fc091c",
+    "loom/src/packet/packet.h": "c1ffb4580ac99feb98bbc81006731b0bc8763ddb13c618e832aa675f30dc4bc7",
+    "loom/src/kb/graph_packet_store.cpp": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466",
+    "loom/src/kb/pack.cpp": "a9411f1ad48a5ecab29075611a02f4e27ed54508345ab0ed36c75ed5d293d4a2",
+    "loom/src/capi/capi_packet.cpp": "b11a970e8bcbdbcba910c3e1dc49d69c4ff843e0afbbb838f40c281bf9c4a00b",
+    "loom/src/packet/METHOD_GRAPH.md": "b9a291868473a15dde6c97abf424ec934f6c08927fe898b136f12eadff9c8725",
+    "loom/src/packet/method-graph.schema.json": "76613d7e7586d28cdb28678372361c9120950cac85fb4ec20459cb1d7f3ccdd9",
+    "loom/src/packet/tests/method-graph-fixture.json": "eff380dce7b53d883eb0ed50fdda74c7254d33d2dc895e0e154618e5628ca10b",
+    "loom/src/packet/tests/verify_method_graph_artifact.py": "0a4c2a6db77bd8d4cffbe5a7ee7b49da46b4efb21150e844f5d1dc57faab18aa",
+    "loom/tests/compat/test_graph_packet_store.py": "b7bad22d7d28af70aeab28b178f5cfe0c6438fc4e7bb4a2fbfb9445ca393461a",
+    "docs/reports/native-graph-packet-2026-10-04.md": "84798ed3f3e4ab3a00703daf165543e4e978de2c5b3999260999bf5a05d1235d"
+  },
+  "full_ctest": {
+    "completed": 110,
+    "passed": 110,
+    "elapsed_seconds": 99.95,
+    "command_file": "ctest-final-command.json",
+    "store_cases": 26,
+    "semantic_counterexamples": 12,
+    "store_elapsed_seconds": 48.62,
+    "thresholds_timeouts_changed": false
+  },
+  "first_completed_gate": {
+    "file": "ctest-before-zero-window.txt",
+    "passed": 110,
+    "elapsed_seconds": 96.87,
+    "scope": "before the final zero-window and strict-capture/CLI/preset checks; not the final gate"
+  },
+  "focused_final_for_first_counterexample_set": {
+    "file": "store.txt",
+    "cases": 26,
+    "semantic_counterexamples": 11,
+    "elapsed_seconds": 27.32
+  },
+  "retained_failure": {
+    "file": "store-failed-remove-shape.txt",
+    "expected_error": "native_packet:graph_packet_object_shape_invalid",
+    "cause": "new negative-test removal omitted required reason; fixed without weakening native contract",
+    "test_snapshot": "store-failed-test.snapshot.py",
+    "verifier_snapshot": "store-failed-verifier.snapshot.py",
+    "replay": "restore snapshots at original source paths in a disposable checkout; ctest --test-dir loom/build/dev -R ^compat.test_graph_packet_store$ --output-on-failure -V"
+  },
+  "reference_current": "reference-final/verification.json",
+  "reference_previous": "reference-before-zero/verification.json",
+  "proof_sha256": {
+    "ctest-before-zero-command.json": "62cdbd66c3260b81cf5be91926f271b984a73c5628432f5809e4146a5b600af1",
+    "ctest-before-zero-window.txt": "7c7032bd43508d25a801adae3082f58168210e59e06af596b068e106ab786715",
+    "ctest-final-command.json": "c48d379e6f756201382df6f539a8a09ba70786c52f777597e4d9b7261d3252da",
+    "ctest-final.txt": "98874f9b80b01ae5a01a3136434a590d522e88dee22406e7a8acd186757273de",
+    "reference-before-zero/input.json": "5e3d73e24e8ca3329133463f5bb2723cb179908d76b72822589ce1f053ce372d",
+    "reference-before-zero/receipt.json": "c081a716ad8eff601f488be7c9dc59ab9c44fa359c2821a3c20f2a879cf471ef",
+    "reference-before-zero/verification.json": "34ecea1fbddf5354e858ba32ffd0468af784f08d95d976c5e66de9218eed7aa3",
+    "reference-final/input.json": "5e3d73e24e8ca3329133463f5bb2723cb179908d76b72822589ce1f053ce372d",
+    "reference-final/receipt.json": "c081a716ad8eff601f488be7c9dc59ab9c44fa359c2821a3c20f2a879cf471ef",
+    "reference-final/verification.json": "fc14ef6eab5792204b2cdf0d512cffe6798976a0ff4bfd6f0129a1b2433e5ffe",
+    "store-failed-remove-shape.txt": "1ff122323d08083d56a815f55c7cb2d8d7b04bbb9e6f187bd4e20b1de38a001b",
+    "store-failed-test.snapshot.py": "8be91ade84edd5e1731787c451a5c9f9c45ed11724a36e319aee8086e04152bd",
+    "store-failed-verifier.snapshot.py": "c7cc96582bae8ccd82ec80f9d08e0f179a96d61fd280c38092ab9d97b7583a8d",
+    "store.txt": "69555add52a378929da0505f88c722a6986d38cf1c705336d79810e80b3af3c9"
+  },
+  "kb_increment_ref": "78e43c2fd1c42c351f72c31d74adcf21cb78db11"
+}

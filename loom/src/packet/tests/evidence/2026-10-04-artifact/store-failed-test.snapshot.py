@@ -259,8 +259,7 @@ class GraphPacketStoreTests(CompatTestCase):
             before = next(row for row in packet['claims'] if row['predicate'] == predicate)
             diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': packet,
                                            'proposal_id': 'remove-real-edge', 'origin': MODEL})
-            diff['claims']['remove'].append({'id': before['id'], 'before_sha256': codec.digest(before),
-                                              'reason': 'synthetic missing provenance edge'})
+            diff['claims']['remove'].append({'id': before['id'], 'before_sha256': codec.digest(before)})
             artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': packet,
                                                          'diff': diff, 'policy': AUTO})['packet']
 
@@ -276,15 +275,6 @@ class GraphPacketStoreTests(CompatTestCase):
             altered = dict(before, unversioned_change=True)
             update_entity(artifact, id_, altered)
             update_entity(artifact, id_, before)
-
-        def wrong_method_preset(artifact):
-            id_ = artifact['contract']['bindings']['method_version_id']
-            attrs = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
-            attrs['definition']['preset_sha256'] = 'f' * 64
-            attrs['definition_sha256'] = codec.digest(attrs['definition'])
-            artifact['contract']['definition_hashes']['method_version'] = attrs['definition_sha256']
-            artifact['contract']['definition_records']['method_version_id'] = deepcopy(attrs)
-            update_entity(artifact, id_, attrs)
 
         def captured_trace_drift(artifact):
             artifact['trace']['response_provenance'] = 'different-recorded-provenance'
@@ -312,7 +302,6 @@ class GraphPacketStoreTests(CompatTestCase):
             ('result_compiler', lambda a: a['trace']['result_bindings'][0].pop('compiler_transform_id')),
             ('version_overwritten', overwritten_version),
             ('run_trace:result_bindings', conflicting_result_attrs),
-            ('method_preset_hash', wrong_method_preset),
         ]
         for index, (error, change) in enumerate(changes):
             with self.subTest(error=error):
@@ -349,15 +338,6 @@ class GraphPacketStoreTests(CompatTestCase):
         self.assertEqual(retry.returncode, 2, retry.stderr)
         self.assertIn('--evidence-dir must be empty', retry.stderr)
         self.assertEqual({path.name: path.read_bytes() for path in evidence.iterdir()}, before)
-        for index, raw in enumerate((b'[]', b'null')):
-            with self.subTest(raw=raw):
-                artifact.write_bytes(raw)
-                other = self.tmp.path / ('non-object-evidence-' + str(index))
-                command[-1] = str(other)
-                failed = subprocess.run(command, capture_output=True, text=True, check=False)
-                self.assertEqual(failed.returncode, 1, failed.stderr)
-                self.assertEqual(json.loads((other / 'error.json').read_text())['error'], 'artifact_object_required')
-                self.assertEqual((other / 'input.json').read_bytes(), raw)
 
     def test_retry_preserves_exact_receipt_without_a_second_insertion(self):
         result = self.accept()
