@@ -4,9 +4,35 @@
 
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 
 namespace loom {
 namespace {
+#include "../policy/usage_policy_preset.inc"
+
+const std::string& preset_text() {
+  static const std::string bytes = [] {
+    std::string result;
+    for (auto chunk : kUsagePolicyPresetChunks) result.append(chunk);
+    return result;
+  }();
+  return bytes;
+}
+
+const Result<Json>& builtin_preset() {
+  static const Result<Json> preset = []() -> Result<Json> {
+    LOOM_TRY_ASSIGN(auto data, json::parse(preset_text()));
+    LOOM_TRY(validate_usage_policy_options(data));
+    for (const auto* field : {"schema", "growth_factor", "baseline_window", "ledger_busy_timeout_ms",
+                              "include_reservations", "initial_baselines"}) {
+      if (!data.contains(field))
+        return Error(Errc::InvalidArgument, std::string("missing usage preset field: ") + field);
+    }
+    return data;
+  }();
+  return preset;
+}
+
 Result<Json> apply_override(const Json& preset, const Json& override) {
   LOOM_TRY(validate_usage_policy_options(override));
   Json effective = preset;
@@ -18,14 +44,12 @@ std::string policy_hash(const Json& value) { return Sha256::hex(json::canonical(
 }  // namespace
 
 const Json& usage_policy_defaults() {
-  static const Json preset{{"schema", "loom.usage_policy/1"},
-                           {"growth_factor", 10.0},
-                           {"baseline_window", 32},
-                           {"ledger_busy_timeout_ms", 30000},
-                           {"include_reservations", true},
-                           {"initial_baselines", Json::object()}};
-  return preset;
+  const auto& preset = builtin_preset();
+  if (!preset) throw std::runtime_error(preset.error().to_string());
+  return *preset;
 }
+
+Result<Json> usage_policy_preset() { return builtin_preset(); }
 
 Status validate_usage_policy_options(const Json& options) {
   if (!options.is_object()) return Error(Errc::InvalidArgument, "usage policy must be an object");
@@ -70,7 +94,8 @@ Status validate_usage_policy_options(const Json& options) {
 
 Result<Json> effective_usage_policy_options(const Config& config) {
   // Execution callers only need this setting, not a copy of unrelated config.
-  return apply_override(usage_policy_defaults(),
+  LOOM_TRY_ASSIGN(auto preset, usage_policy_preset());
+  return apply_override(preset,
                         config.JsonStore::get("loom_usage_policy", Json::object()));
 }
 
@@ -79,11 +104,14 @@ Result<Json> usage_policy_settings(const Config& config, const Json* proposed_ov
   // different concurrent config revisions.
   const auto stored = config.all();
   const auto* override = json::find(stored, "loom_usage_policy");
-  const auto& preset = usage_policy_defaults();
+  LOOM_TRY_ASSIGN(auto preset, usage_policy_preset());
   LOOM_TRY_ASSIGN(auto effective, apply_override(preset, override ? *override : Json::object()));
   Json snapshot{{"preset", preset}, {"stored_override", override ? *override : Json(nullptr)},
                 {"effective", effective}, {"source", override ? "configured" : "preset"},
-                {"preset_source", "legacy_code_pending_pack_migration"},
+                {"preset_source", "embedded_data"},
+                {"preset_document", Json{{"path", kUsagePolicyPresetSource},
+                  {"schema", "loom.usage_policy/1"}, {"encoding", "utf8_json"},
+                  {"source_sha256", Sha256::hex(preset_text())}}},
                 {"override_semantics", "replace_top_level_fields"},
                 {"hashes", Json{{"algorithm", "sha256"}, {"representation", "loom.canonical_json"},
                   {"preset", policy_hash(preset)},

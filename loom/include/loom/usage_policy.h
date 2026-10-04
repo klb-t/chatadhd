@@ -13,10 +13,14 @@
 namespace loom {
 class Config;
 
-// Versioned preset and validation, also used by configuration/C ABI callers.
+// Versioned, generated data preset and validation, also used by config/C ABI
+// callers. The checked decoder is shared by every default path. The reference
+// view is for legacy non-Result config interfaces; malformed compiled data
+// throws there rather than silently substituting policy values.
 // No resource ceiling is imposed. Known amounts are finite nonnegative JSON
 // numbers; null means unknown, never zero. Unknown names/extensions survive.
 const Json& usage_policy_defaults();
+Result<Json> usage_policy_preset();
 Status validate_usage_policy_options(const Json& options);
 Result<Json> effective_usage_policy_options(const Config& config);
 
@@ -34,7 +38,7 @@ class UsagePolicy {
  public:
   static Result<std::unique_ptr<UsagePolicy>> open(
       const std::filesystem::path& ledger_path,
-      const Json& options = usage_policy_defaults());
+      const Json& options = Json::object());
   ~UsagePolicy();
   UsagePolicy(const UsagePolicy&) = delete;
   UsagePolicy& operator=(const UsagePolicy&) = delete;
