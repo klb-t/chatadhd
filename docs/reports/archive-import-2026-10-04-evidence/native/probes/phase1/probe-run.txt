@@ -1,0 +1,4 @@
+00:13:44 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:13:44 [INFO ] loom.db: Database opened: /dev/shm/chatadhd-thread5/checkpoint-probes-phase1/probe-data/probe.db
+00:13:44 [INFO ] loom.db: Database closed
+first_partial=true second_partial=true third_cached=0

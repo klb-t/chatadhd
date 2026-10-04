@@ -1,0 +1,525 @@
+{
+  "first": {
+    "conversations": [
+      {
+        "id": "c_f5304d9fa13a",
+        "title": "Synthetic conversation",
+        "created": "2026-10-04T16:13:49.230896Z",
+        "updated": "2026-10-04T16:13:49.230896Z",
+        "source": "import:anthropic",
+        "metadata": {
+          "export": {
+            "provider": "anthropic",
+            "schema": "loom.export.v1",
+            "member": "conversations.json",
+            "index": 0,
+            "key": "synthetic-c",
+            "title_original": "Synthetic conversation",
+            "title_source": "export",
+            "current_node": null,
+            "current_node_resolved": true,
+            "current_path_inferred": false,
+            "has_mapping": true,
+            "fields": {
+              "uuid": "synthetic-c",
+              "name": "Synthetic conversation"
+            },
+            "null_nodes": [],
+            "graph": {
+              "messages": 1,
+              "fork_points": 0,
+              "leaves": 1,
+              "roots": 0,
+              "current_path_messages": 1,
+              "has_parent_links": false,
+              "version_groups": 0
+            },
+            "source_index": 0,
+            "source_container": "array",
+            "json_pointer": "/0",
+            "archive_index": 0
+          }
+        }
+      }
+    ],
+    "format": "zip",
+    "source_id": "src_5f742dcaf4f8",
+    "blob_hash": "0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+    "messages": 1,
+    "cancelled": false,
+    "already_imported": false,
+    "resumed": false,
+    "include_result_metadata": true,
+    "warnings": [],
+    "retained_conversation_count": 1,
+    "export_report": {
+      "schema": "loom.export_report.v1",
+      "provider": "anthropic",
+      "counts": {
+        "account": 0,
+        "artifact": 0,
+        "attachment": 0,
+        "block": 1,
+        "block_kind": {
+          "text": 1
+        },
+        "branch": 1,
+        "citation": 0,
+        "citation_group": 0,
+        "conversation": 1,
+        "current_path_messages": 1,
+        "custom_instruction": 0,
+        "feedback": 0,
+        "fork_points": 0,
+        "memory": 0,
+        "message": 1,
+        "project": 0,
+        "project_doc": 0,
+        "record": 0,
+        "shared_link": 0
+      },
+      "members": [
+        {
+          "wrapper": false,
+          "source_id": "src_810ca6e283c2",
+          "blob_hash": "b5ed83e1ce9251a6f1cdecfcc877b90c3436e484aef0989dcb321800e4185733",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "conversations.json",
+            "archive_index": 0
+          },
+          "archive_index": 0,
+          "name": "conversations.json",
+          "size": 145,
+          "disposition": "conversations"
+        },
+        {
+          "source_id": "src_8e8164ba2152",
+          "blob_hash": "648256a2a18677788c27ad97c856c601ab781abbb8c87b555d94558dbb20088c",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "projects.json",
+            "archive_index": 1
+          },
+          "archive_index": 1,
+          "name": "projects.json",
+          "size": 119,
+          "disposition": "record_failed_raw_retained"
+        }
+      ],
+      "member_count": 2,
+      "errors": [
+        {
+          "member": "projects.json",
+          "code": "member_checkpoint_failed",
+          "message": "step: synthetic link failure"
+        }
+      ],
+      "warnings": [],
+      "partial": true,
+      "include_result_metadata": true,
+      "inferred": false,
+      "resumed_conversations": 0,
+      "resumed_members": 0,
+      "largest_json_value_bytes": 143,
+      "scanner_buffer_bytes": 65536,
+      "repairs": {},
+      "json_leaves": 5,
+      "leaves_preserved": 5,
+      "asset_members": [],
+      "unreferenced_members": [],
+      "unresolved_keys": [],
+      "pointer_links": {},
+      "duplicate_groups": [],
+      "unknown_members": [
+        "projects.json"
+      ],
+      "parts": []
+    }
+  },
+  "second": {
+    "conversations": [
+      {
+        "id": "c_f5304d9fa13a",
+        "title": "Synthetic conversation",
+        "created": "2026-10-04T16:13:49.230896Z",
+        "updated": "2026-10-04T16:13:49.230896Z",
+        "source": "import:anthropic",
+        "metadata": {
+          "export": {
+            "provider": "anthropic",
+            "schema": "loom.export.v1",
+            "member": "conversations.json",
+            "index": 0,
+            "key": "synthetic-c",
+            "title_original": "Synthetic conversation",
+            "title_source": "export",
+            "current_node": null,
+            "current_node_resolved": true,
+            "current_path_inferred": false,
+            "has_mapping": true,
+            "fields": {
+              "uuid": "synthetic-c",
+              "name": "Synthetic conversation"
+            },
+            "null_nodes": [],
+            "graph": {
+              "messages": 1,
+              "fork_points": 0,
+              "leaves": 1,
+              "roots": 0,
+              "current_path_messages": 1,
+              "has_parent_links": false,
+              "version_groups": 0
+            },
+            "source_index": 0,
+            "source_container": "array",
+            "json_pointer": "/0",
+            "archive_index": 0
+          }
+        }
+      }
+    ],
+    "format": "zip",
+    "source_id": "src_5f742dcaf4f8",
+    "blob_hash": "0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+    "messages": 1,
+    "cancelled": false,
+    "already_imported": false,
+    "resumed": true,
+    "include_result_metadata": true,
+    "warnings": [],
+    "retained_conversation_count": 1,
+    "export_report": {
+      "schema": "loom.export_report.v1",
+      "provider": "anthropic",
+      "counts": {
+        "account": 0,
+        "artifact": 0,
+        "attachment": 0,
+        "block": 1,
+        "block_kind": {
+          "text": 1
+        },
+        "branch": 1,
+        "citation": 0,
+        "citation_group": 0,
+        "conversation": 1,
+        "current_path_messages": 1,
+        "custom_instruction": 0,
+        "feedback": 0,
+        "fork_points": 0,
+        "memory": 0,
+        "message": 1,
+        "project": 1,
+        "project_doc": 1,
+        "record": 0,
+        "shared_link": 0
+      },
+      "members": [
+        {
+          "wrapper": false,
+          "source_id": "src_810ca6e283c2",
+          "blob_hash": "b5ed83e1ce9251a6f1cdecfcc877b90c3436e484aef0989dcb321800e4185733",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "conversations.json",
+            "archive_index": 0
+          },
+          "archive_index": 0,
+          "name": "conversations.json",
+          "size": 145,
+          "disposition": "conversations"
+        },
+        {
+          "source_id": "src_8e8164ba2152",
+          "blob_hash": "648256a2a18677788c27ad97c856c601ab781abbb8c87b555d94558dbb20088c",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "projects.json",
+            "archive_index": 1
+          },
+          "archive_index": 1,
+          "name": "projects.json",
+          "size": 119,
+          "disposition": "record"
+        }
+      ],
+      "member_count": 2,
+      "errors": [],
+      "warnings": [],
+      "partial": false,
+      "include_result_metadata": true,
+      "inferred": false,
+      "resumed_conversations": 1,
+      "resumed_members": 0,
+      "largest_json_value_bytes": 143,
+      "scanner_buffer_bytes": 65536,
+      "repairs": {},
+      "json_leaves": 5,
+      "leaves_preserved": 5,
+      "asset_members": [],
+      "unreferenced_members": [],
+      "unresolved_keys": [],
+      "pointer_links": {},
+      "duplicate_groups": [],
+      "unknown_members": [],
+      "parts": []
+    }
+  },
+  "third": {
+    "conversations": [
+      {
+        "id": "c_f5304d9fa13a",
+        "title": "Synthetic conversation",
+        "created": "2026-10-04T16:13:49.230896Z",
+        "updated": "2026-10-04T16:13:49.230896Z",
+        "source": "import:anthropic",
+        "metadata": {
+          "export": {
+            "provider": "anthropic",
+            "schema": "loom.export.v1",
+            "member": "conversations.json",
+            "index": 0,
+            "key": "synthetic-c",
+            "title_original": "Synthetic conversation",
+            "title_source": "export",
+            "current_node": null,
+            "current_node_resolved": true,
+            "current_path_inferred": false,
+            "has_mapping": true,
+            "fields": {
+              "uuid": "synthetic-c",
+              "name": "Synthetic conversation"
+            },
+            "null_nodes": [],
+            "graph": {
+              "messages": 1,
+              "fork_points": 0,
+              "leaves": 1,
+              "roots": 0,
+              "current_path_messages": 1,
+              "has_parent_links": false,
+              "version_groups": 0
+            },
+            "source_index": 0,
+            "source_container": "array",
+            "json_pointer": "/0",
+            "archive_index": 0
+          }
+        }
+      }
+    ],
+    "format": "zip",
+    "source_id": "src_5f742dcaf4f8",
+    "blob_hash": "0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+    "messages": 1,
+    "cancelled": false,
+    "already_imported": true,
+    "resumed": false,
+    "include_result_metadata": true,
+    "warnings": [
+      "already imported (source src_5f742dcaf4f8)"
+    ],
+    "retained_conversation_count": 1,
+    "export_report": {
+      "schema": "loom.export_report.v1",
+      "provider": "anthropic",
+      "counts": {
+        "account": 0,
+        "artifact": 0,
+        "attachment": 0,
+        "block": 1,
+        "block_kind": {
+          "text": 1
+        },
+        "branch": 1,
+        "citation": 0,
+        "citation_group": 0,
+        "conversation": 1,
+        "current_path_messages": 1,
+        "custom_instruction": 0,
+        "feedback": 0,
+        "fork_points": 0,
+        "memory": 0,
+        "message": 1,
+        "project": 1,
+        "project_doc": 1,
+        "record": 0,
+        "shared_link": 0
+      },
+      "members": [
+        {
+          "wrapper": false,
+          "source_id": "src_810ca6e283c2",
+          "blob_hash": "b5ed83e1ce9251a6f1cdecfcc877b90c3436e484aef0989dcb321800e4185733",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "conversations.json",
+            "archive_index": 0
+          },
+          "archive_index": 0,
+          "name": "conversations.json",
+          "size": 145,
+          "disposition": "conversations"
+        },
+        {
+          "source_id": "src_8e8164ba2152",
+          "blob_hash": "648256a2a18677788c27ad97c856c601ab781abbb8c87b555d94558dbb20088c",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "projects.json",
+            "archive_index": 1
+          },
+          "archive_index": 1,
+          "name": "projects.json",
+          "size": 119,
+          "disposition": "record"
+        }
+      ],
+      "member_count": 2,
+      "errors": [],
+      "warnings": [],
+      "partial": false,
+      "include_result_metadata": true,
+      "inferred": false,
+      "resumed_conversations": 1,
+      "resumed_members": 0,
+      "largest_json_value_bytes": 143,
+      "scanner_buffer_bytes": 65536,
+      "repairs": {},
+      "json_leaves": 5,
+      "leaves_preserved": 5,
+      "asset_members": [],
+      "unreferenced_members": [],
+      "unresolved_keys": [],
+      "pointer_links": {},
+      "duplicate_groups": [],
+      "unknown_members": [],
+      "parts": []
+    }
+  },
+  "counts": {
+    "project_nodes": 1,
+    "unknown_member_nodes": 1
+  },
+  "project_checkpoint": {
+    "kind": "member",
+    "report": {
+      "counts": {
+        "account": 0,
+        "artifact": 0,
+        "attachment": 0,
+        "block": 0,
+        "block_kind": {
+          "text": 0
+        },
+        "branch": 0,
+        "citation": 0,
+        "citation_group": 0,
+        "conversation": 0,
+        "current_path_messages": 0,
+        "custom_instruction": 0,
+        "feedback": 0,
+        "fork_points": 0,
+        "memory": 0,
+        "message": 0,
+        "project": 1,
+        "project_doc": 1,
+        "record": 0,
+        "shared_link": 0
+      },
+      "errors": [],
+      "warnings": [],
+      "unknown_members": [],
+      "repairs": {},
+      "partial": false
+    },
+    "projects": {
+      "synthetic-project": "n_65c1809ba697"
+    }
+  },
+  "final_source_metadata": {
+    "import_status": "complete",
+    "import_resume_version": 1,
+    "conversation_ids": [
+      "c_f5304d9fa13a"
+    ],
+    "export_report": {
+      "schema": "loom.export_report.v1",
+      "provider": "anthropic",
+      "counts": {
+        "account": 0,
+        "artifact": 0,
+        "attachment": 0,
+        "block": 1,
+        "block_kind": {
+          "text": 1
+        },
+        "branch": 1,
+        "citation": 0,
+        "citation_group": 0,
+        "conversation": 1,
+        "current_path_messages": 1,
+        "custom_instruction": 0,
+        "feedback": 0,
+        "fork_points": 0,
+        "memory": 0,
+        "message": 1,
+        "project": 1,
+        "project_doc": 1,
+        "record": 0,
+        "shared_link": 0
+      },
+      "members": [
+        {
+          "wrapper": false,
+          "source_id": "src_810ca6e283c2",
+          "blob_hash": "b5ed83e1ce9251a6f1cdecfcc877b90c3436e484aef0989dcb321800e4185733",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "conversations.json",
+            "archive_index": 0
+          },
+          "archive_index": 0,
+          "name": "conversations.json",
+          "size": 145,
+          "disposition": "conversations"
+        },
+        {
+          "source_id": "src_8e8164ba2152",
+          "blob_hash": "648256a2a18677788c27ad97c856c601ab781abbb8c87b555d94558dbb20088c",
+          "locator": {
+            "source": "sha256:0a19b701924c2b1af7ff0ca0b5a08a8b1b97314f64062f56661078842af95f3a",
+            "member": "projects.json",
+            "archive_index": 1
+          },
+          "archive_index": 1,
+          "name": "projects.json",
+          "size": 119,
+          "disposition": "record"
+        }
+      ],
+      "member_count": 2,
+      "errors": [],
+      "warnings": [],
+      "partial": false,
+      "include_result_metadata": true,
+      "inferred": false,
+      "resumed_conversations": 1,
+      "resumed_members": 0,
+      "largest_json_value_bytes": 143,
+      "scanner_buffer_bytes": 65536,
+      "repairs": {},
+      "json_leaves": 5,
+      "leaves_preserved": 5,
+      "asset_members": [],
+      "unreferenced_members": [],
+      "unresolved_keys": [],
+      "pointer_links": {},
+      "duplicate_groups": [],
+      "unknown_members": [],
+      "parts": []
+    }
+  }
+}
