@@ -1,0 +1,207 @@
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 0.064s
+
+OK
+{
+  "stats": {
+    "schema": "loom.archive_text_audit/1",
+    "measurement": "stored message text: Unicode characters including embedded NUL; not provider tokens",
+    "coverage": "text only; retained source JSON, attachments/OCR, framing and hidden prompts excluded",
+    "raw": {
+      "conversations": 2,
+      "messages": 6,
+      "chars": 11399
+    },
+    "conversations": 2,
+    "messages": 5,
+    "chars_active": 4800,
+    "chars_versions": 600,
+    "chars_excluded": 999,
+    "chars_deleted": 5000,
+    "chars_unknown_status": 0,
+    "unknown_status_messages": 0,
+    "tool_messages": 0,
+    "chars_tools": 0,
+    "chars_by_role": {
+      "assistant": 2400,
+      "user": 2400
+    },
+    "conversation_chars": {
+      "median": 2700.0,
+      "max": 4200
+    },
+    "status_counts": [
+      {
+        "status": "active",
+        "messages": 3,
+        "chars": 4800
+      },
+      {
+        "status": "deleted",
+        "messages": 1,
+        "chars": 5000
+      },
+      {
+        "status": "excluded",
+        "messages": 1,
+        "chars": 999
+      },
+      {
+        "status": "version",
+        "messages": 1,
+        "chars": 600
+      }
+    ],
+    "role_counts": [
+      {
+        "role": "assistant",
+        "messages": 3,
+        "chars": 8399
+      },
+      {
+        "role": "user",
+        "messages": 3,
+        "chars": 3000
+      }
+    ],
+    "message_groups": [
+      {
+        "status": "active",
+        "status_class": "active",
+        "role": "assistant",
+        "tool": false,
+        "messages": 1,
+        "chars": 2400
+      },
+      {
+        "status": "active",
+        "status_class": "active",
+        "role": "user",
+        "tool": false,
+        "messages": 2,
+        "chars": 2400
+      },
+      {
+        "status": "deleted",
+        "status_class": "deleted",
+        "role": "assistant",
+        "tool": false,
+        "messages": 1,
+        "chars": 5000
+      },
+      {
+        "status": "excluded",
+        "status_class": "excluded",
+        "role": "assistant",
+        "tool": false,
+        "messages": 1,
+        "chars": 999
+      },
+      {
+        "status": "version",
+        "status_class": "version",
+        "role": "user",
+        "tool": false,
+        "messages": 1,
+        "chars": 600
+      }
+    ],
+    "conversation_scope_groups": [
+      {
+        "non_tool_statuses": [
+          "active",
+          "version"
+        ],
+        "tool_statuses": [],
+        "conversations": 1
+      },
+      {
+        "non_tool_statuses": [
+          "active",
+          "excluded",
+          "deleted"
+        ],
+        "tool_statuses": [],
+        "conversations": 1
+      }
+    ],
+    "execution": {
+      "sqlite_cache_kib": 4096,
+      "temporary_storage": "file; counts, roles/statuses and conversation IDs only",
+      "python_retention": "status/role aggregates and <=1024 conversation-presence groups"
+    },
+    "projected": {
+      "scope": {
+        "status_classes": [
+          "active",
+          "version",
+          "excluded",
+          "deleted",
+          "unknown"
+        ],
+        "include_tools": true,
+        "tool_roles": [
+          "tool",
+          "function"
+        ],
+        "coverage": "stored message text only"
+      },
+      "conversations": 2,
+      "messages": 6,
+      "chars": 11399
+    }
+  },
+  "estimate": {
+    "schema": "loom.archive_cost_projection/1",
+    "local_import_cost_usd": 0,
+    "projected": {
+      "scope": {
+        "status_classes": [
+          "active",
+          "version",
+          "excluded",
+          "deleted",
+          "unknown"
+        ],
+        "include_tools": true,
+        "tool_roles": [
+          "tool",
+          "function"
+        ],
+        "coverage": "stored message text only"
+      },
+      "conversations": 2,
+      "messages": 6,
+      "chars": 11399
+    },
+    "assumptions": {
+      "fraction": 1.0,
+      "fraction_method": "proportional projection; not a measured sample",
+      "output_ratio": 0.4,
+      "prefix_tokens": 0,
+      "include_versions": true,
+      "include_unknown_status": true,
+      "chars_per_token": {
+        "low": 4.0,
+        "high": 3.0
+      },
+      "token_measurement": "character-based estimate; not tokenizer/billed usage",
+      "prefix_cache": "all prefixes priced at cache-read; first-write and cache eligibility unverified",
+      "batch": "uniform table discount; provider/model eligibility unverified",
+      "pricing_as_of": null,
+      "pricing_source": "not supplied; no model USD estimate"
+    },
+    "tokens": {
+      "low": 2850,
+      "high": 3800
+    },
+    "output_tokens": {
+      "low": 1139.9,
+      "high": 1519.8666666666668
+    },
+    "prefix_tokens": 0.0,
+    "models": null,
+    "models_unrounded": null
+  }
+}
