@@ -1,0 +1,13 @@
+loom/include/loom/usage_policy.h SHA-256 89894f7acdc7bc22e3e9b946241048fe517bd7b6bb355972d6c5e38f0adbf6d3
+loom/src/policy/usage_policy.cpp SHA-256 790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9
+loom/src/core/config_usage_policy.cpp SHA-256 8e401b1a6504ed73ca10bfafe72bb664a5fd1cb8bda2da05e6696571855ecd04
+/tmp/loom-packet-policy-ed917hie/usage.cpp:427:1: fatal error: error writing to /tmp/ccuSq0sP.s: No space left on device
+  427 | }  // namespace loom
+      | ^
+compilation terminated.
+Traceback (most recent call last):
+  File "/workspace/scratch/b189e486f506/chatadhd/loom/src/packet/tests/reproduce_policy.py", line 35, in <module>
+    subprocess.run(['g++','-std=c++20','-fPIC','-fvisibility=hidden',*warnings,*include,'-c',str(source),'-o',str(obj)],check=True)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['g++', '-std=c++20', '-fPIC', '-fvisibility=hidden', '-Wall', '-Wextra', '-Wpedantic', '-Wshadow', '-Wnon-virtual-dtor', '-Wold-style-cast', '-Wcast-align', '-Woverloaded-virtual', '-Wnull-dereference', '-Wimplicit-fallthrough', '-Wno-unused-parameter', '-Werror', '-I/tmp/loom-packet-policy-ed917hie/include', '-I/workspace/scratch/b189e486f506/chatadhd/loom/include', '-I/workspace/scratch/b189e486f506/chatadhd/loom/src', '-isystem', '/workspace/scratch/b189e486f506/chatadhd/loom/third_party/nlohmann', '-isystem', '/workspace/scratch/b189e486f506/chatadhd/loom/third_party/sqlite', '-c', '/tmp/loom-packet-policy-ed917hie/usage.cpp', '-o', '/tmp/loom-packet-policy-ed917hie/usage.o']' returned non-zero exit status 1.

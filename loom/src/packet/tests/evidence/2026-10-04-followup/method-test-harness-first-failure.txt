@@ -1,0 +1,500 @@
+UpdateCTestConfiguration  from :/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/DartConfiguration.tcl
+Test project /workspace/scratch/b189e486f506/chatadhd/loom/build/dev
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 93
+    Start 93: compat.test_graph_packet_store
+
+93: Test command: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12 "/workspace/scratch/b189e486f506/chatadhd/loom/tests/compat/test_graph_packet_store.py"
+93: Working Directory: /workspace/scratch/b189e486f506/chatadhd/loom/build/dev
+93: Environment variables: 
+93:  PYTHONPATH=/workspace/scratch/b189e486f506/chatadhd/loom/..
+93:  PYTHONDONTWRITEBYTECODE=1
+93:  LOOM_COMPAT_TOOL=/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/loom_compat_tool
+93:  LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/loom_candidate_graph_native_tool
+93:  LOOM_LIBRARY=/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom.so.0.1.0
+93: Test timeout computed to be: 600
+93: test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity (__main__.GraphPacketStoreTests.test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_cx000yp7/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_cx000yp7/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_cas_mismatch_rolls_back_new_packet_and_receipt (__main__.GraphPacketStoreTests.test_cas_mismatch_rolls_back_new_packet_and_receipt) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_eb576bsg/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_eb576bsg/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation (__main__.GraphPacketStoreTests.test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_kz_ov_l5/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_kz_ov_l5/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_direct_abi_rejects_rehashed_corrupt_history_without_any_native_writes (__main__.GraphPacketStoreTests.test_direct_abi_rejects_rehashed_corrupt_history_without_any_native_writes) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_uw0ntiiy/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_uw0ntiiy/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_existing_owner_judgement_remains_authoritative_after_later_acceptance (__main__.GraphPacketStoreTests.test_existing_owner_judgement_remains_authoritative_after_later_acceptance) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_amvemrnq/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_amvemrnq/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_explicit_acceptance_and_closed_selection_are_required (__main__.GraphPacketStoreTests.test_explicit_acceptance_and_closed_selection_are_required) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_hg367fzg/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_hg367fzg/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_full_packet_history_and_metadata_survive_accept_read_replay_restart (__main__.GraphPacketStoreTests.test_full_packet_history_and_metadata_survive_accept_read_replay_restart) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_5ox4q73j/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_5ox4q73j/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_5ox4q73j/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_5ox4q73j/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_integer_to_float_precision_loss_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_integer_to_float_precision_loss_rejects_without_native_writes) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_vuq6zeip/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_vuq6zeip/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_late_sql_error_rolls_back_rows_run_and_receipt (__main__.GraphPacketStoreTests.test_late_sql_error_rolls_back_rows_run_and_receipt) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_x8gz994_/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_x8gz994_/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_legacy_receipt_keeps_original_validation_scope_on_read_replay_and_retry (__main__.GraphPacketStoreTests.test_legacy_receipt_keeps_original_validation_scope_on_read_replay_and_retry) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_7pcm6g6a/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_7pcm6g6a/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_7pcm6g6a/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_7pcm6g6a/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_lossless_numeric_normalization_preserves_large_json_attrs (__main__.GraphPacketStoreTests.test_lossless_numeric_normalization_preserves_large_json_attrs) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_hoh1km0q/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_hoh1km0q/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_member_order_tolerance_still_rejects_discarded_fields (__main__.GraphPacketStoreTests.test_member_order_tolerance_still_rejects_discarded_fields) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_igpllye_/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_igpllye_/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry (__main__.GraphPacketStoreTests.test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_zsd6766w/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_zsd6766w/graph-store)
+93: 23:48:21 [INFO ] loom.db: Database closed
+93: 23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_native_compiled_reply_history_and_model_sources_survive_acceptance (__main__.GraphPacketStoreTests.test_native_compiled_reply_history_and_model_sources_survive_acceptance) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_tcf4ox0s/graph-store/chatadhd.db
+93: 23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_tcf4ox0s/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_object_key_order_is_not_native_content_loss_or_identity_change (__main__.GraphPacketStoreTests.test_object_key_order_is_not_native_content_loss_or_identity_change) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_04bdjf32/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_04bdjf32/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_oversized_unsigned_ordinal_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_oversized_unsigned_ordinal_rejects_without_native_writes) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_msly4noc/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_msly4noc/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_python_caller_rejects_forged_reversible_history_before_native_write (__main__.GraphPacketStoreTests.test_python_caller_rejects_forged_reversible_history_before_native_write) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_23t1lzdi/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_23t1lzdi/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_receipt_updates_and_deletes_are_rejected_by_database (__main__.GraphPacketStoreTests.test_receipt_updates_and_deletes_are_rejected_by_database) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_8j0k5r6x/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_8j0k5r6x/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_retry_preserves_exact_receipt_without_a_second_insertion (__main__.GraphPacketStoreTests.test_retry_preserves_exact_receipt_without_a_second_insertion) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_y1gywdnd/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_y1gywdnd/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references (__main__.GraphPacketStoreTests.test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_mnvee0_h/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_mnvee0_h/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_utf8_subspan_projection_does_not_rewrite_quote_or_locator (__main__.GraphPacketStoreTests.test_utf8_subspan_projection_does_not_rewrite_quote_or_locator) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_twiwlx4s/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_twiwlx4s/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4 (__main__.GraphPacketStoreTests.test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_eysm8whb/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_eysm8whb/graph-store)
+93: 23:48:24 [INFO ] loom.db: Database closed
+93: 23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+93: ok
+93: test_versioned_method_graph_reply_bindings_survive_native_store_replay (__main__.GraphPacketStoreTests.test_versioned_method_graph_reply_bindings_survive_native_store_replay) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+93: 23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+93: 23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+93: 23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_w8zc28c5/graph-store/chatadhd.db
+93: 23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+93: 23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_w8zc28c5/graph-store)
+93: FAIL
+93: 23:48:27 [INFO ] loom.db: Database closed
+93: 23:48:27 [INFO ] loom.runtime: Loom runtime shut down
+93: 
+93: ======================================================================
+93: FAIL: test_versioned_method_graph_reply_bindings_survive_native_store_replay (__main__.GraphPacketStoreTests.test_versioned_method_graph_reply_bindings_survive_native_store_replay)
+93: ----------------------------------------------------------------------
+93: Traceback (most recent call last):
+93:   File "/workspace/scratch/b189e486f506/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 145, in test_versioned_method_graph_reply_bindings_survive_native_store_replay
+93:     with self.assertRaises(GraphStoreError):
+93:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+93: AssertionError: GraphStoreError not raised
+93: 
+93: ----------------------------------------------------------------------
+93: Ran 23 tests in 6.709s
+93: 
+93: FAILED (failures=1)
+1/1 Test #93: compat.test_graph_packet_store ...***Failed    6.86 sec
+test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity (__main__.GraphPacketStoreTests.test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_cx000yp7/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_cx000yp7/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_cas_mismatch_rolls_back_new_packet_and_receipt (__main__.GraphPacketStoreTests.test_cas_mismatch_rolls_back_new_packet_and_receipt) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_eb576bsg/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_eb576bsg/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation (__main__.GraphPacketStoreTests.test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_kz_ov_l5/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_kz_ov_l5/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_direct_abi_rejects_rehashed_corrupt_history_without_any_native_writes (__main__.GraphPacketStoreTests.test_direct_abi_rejects_rehashed_corrupt_history_without_any_native_writes) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_uw0ntiiy/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_uw0ntiiy/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_existing_owner_judgement_remains_authoritative_after_later_acceptance (__main__.GraphPacketStoreTests.test_existing_owner_judgement_remains_authoritative_after_later_acceptance) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_amvemrnq/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_amvemrnq/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_explicit_acceptance_and_closed_selection_are_required (__main__.GraphPacketStoreTests.test_explicit_acceptance_and_closed_selection_are_required) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_hg367fzg/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_hg367fzg/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_full_packet_history_and_metadata_survive_accept_read_replay_restart (__main__.GraphPacketStoreTests.test_full_packet_history_and_metadata_survive_accept_read_replay_restart) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_5ox4q73j/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_5ox4q73j/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_5ox4q73j/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_5ox4q73j/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_integer_to_float_precision_loss_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_integer_to_float_precision_loss_rejects_without_native_writes) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_vuq6zeip/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_vuq6zeip/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_late_sql_error_rolls_back_rows_run_and_receipt (__main__.GraphPacketStoreTests.test_late_sql_error_rolls_back_rows_run_and_receipt) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_x8gz994_/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_x8gz994_/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_legacy_receipt_keeps_original_validation_scope_on_read_replay_and_retry (__main__.GraphPacketStoreTests.test_legacy_receipt_keeps_original_validation_scope_on_read_replay_and_retry) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_7pcm6g6a/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_7pcm6g6a/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_7pcm6g6a/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_7pcm6g6a/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_lossless_numeric_normalization_preserves_large_json_attrs (__main__.GraphPacketStoreTests.test_lossless_numeric_normalization_preserves_large_json_attrs) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_hoh1km0q/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_hoh1km0q/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_member_order_tolerance_still_rejects_discarded_fields (__main__.GraphPacketStoreTests.test_member_order_tolerance_still_rejects_discarded_fields) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_igpllye_/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_igpllye_/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry (__main__.GraphPacketStoreTests.test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_zsd6766w/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_zsd6766w/graph-store)
+23:48:21 [INFO ] loom.db: Database closed
+23:48:21 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_native_compiled_reply_history_and_model_sources_survive_acceptance (__main__.GraphPacketStoreTests.test_native_compiled_reply_history_and_model_sources_survive_acceptance) ... 23:48:21 [INFO ] loom.config: config.json not found - using defaults
+23:48:21 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:21 [INFO ] loom.db: Database opened: /tmp/loom_compat_tcf4ox0s/graph-store/chatadhd.db
+23:48:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_tcf4ox0s/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_object_key_order_is_not_native_content_loss_or_identity_change (__main__.GraphPacketStoreTests.test_object_key_order_is_not_native_content_loss_or_identity_change) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_04bdjf32/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_04bdjf32/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_oversized_unsigned_ordinal_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_oversized_unsigned_ordinal_rejects_without_native_writes) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_msly4noc/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_msly4noc/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_python_caller_rejects_forged_reversible_history_before_native_write (__main__.GraphPacketStoreTests.test_python_caller_rejects_forged_reversible_history_before_native_write) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_23t1lzdi/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_23t1lzdi/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_receipt_updates_and_deletes_are_rejected_by_database (__main__.GraphPacketStoreTests.test_receipt_updates_and_deletes_are_rejected_by_database) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_8j0k5r6x/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_8j0k5r6x/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_retry_preserves_exact_receipt_without_a_second_insertion (__main__.GraphPacketStoreTests.test_retry_preserves_exact_receipt_without_a_second_insertion) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_y1gywdnd/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_y1gywdnd/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references (__main__.GraphPacketStoreTests.test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_mnvee0_h/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_mnvee0_h/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_utf8_subspan_projection_does_not_rewrite_quote_or_locator (__main__.GraphPacketStoreTests.test_utf8_subspan_projection_does_not_rewrite_quote_or_locator) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_twiwlx4s/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_twiwlx4s/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4 (__main__.GraphPacketStoreTests.test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_eysm8whb/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_eysm8whb/graph-store)
+23:48:24 [INFO ] loom.db: Database closed
+23:48:24 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_versioned_method_graph_reply_bindings_survive_native_store_replay (__main__.GraphPacketStoreTests.test_versioned_method_graph_reply_bindings_survive_native_store_replay) ... 23:48:24 [INFO ] loom.config: config.json not found - using defaults
+23:48:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:48:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:48:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_w8zc28c5/graph-store/chatadhd.db
+23:48:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_w8zc28c5/graph-store)
+FAIL
+23:48:27 [INFO ] loom.db: Database closed
+23:48:27 [INFO ] loom.runtime: Loom runtime shut down
+
+======================================================================
+FAIL: test_versioned_method_graph_reply_bindings_survive_native_store_replay (__main__.GraphPacketStoreTests.test_versioned_method_graph_reply_bindings_survive_native_store_replay)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/b189e486f506/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 145, in test_versioned_method_graph_reply_bindings_survive_native_store_replay
+    with self.assertRaises(GraphStoreError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: GraphStoreError not raised
+
+----------------------------------------------------------------------
+Ran 23 tests in 6.709s
+
+FAILED (failures=1)
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   6.87 sec
+
+The following tests FAILED:
+	 93 - compat.test_graph_packet_store (Failed)
+Errors while running CTest

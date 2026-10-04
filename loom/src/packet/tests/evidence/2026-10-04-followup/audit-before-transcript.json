@@ -1,0 +1,22 @@
+{
+  "schema": "loom.packet_audit_transcript/1",
+  "source_commit": "3caa6b4dcfb6412294bf816c1105bcf99afacdbc",
+  "mode": "offline synthetic",
+  "evidence_kind": "observations retained from the pre-fix agent tool transcript; not a rerun of the corrected final test suite",
+  "observations": [
+    "invert mutated accepted accepted? True error None",
+    "invert mutated candidate_packet_sha256 accepted? True error None",
+    "invert mutated canonical_store_written accepted? True error None",
+    "invert mutated acceptance_establishes_content_truth accepted? True error None",
+    "compile string limit 300 error None string bytes output 15564",
+    "compile string limit 500 error None string bytes output 15564",
+    "compile string limit 1000 error None string bytes output 15564",
+    "compile string limit 2000 error None string bytes output 15564",
+    "dangling counter observation make accepted True",
+    "claim counter {'observations': ['missing-source'], 'claims': []}",
+    "max_string_bytes=300 compilation generated resource counts: nodes/bytes (952, 11634)",
+    "generated diff counts: (858, 9818)"
+  ],
+  "reproduction": "Build 3caa6b4 in a separate worktree; run current src/packet/tests/audit_regressions.py OLD_LIB --expect accepted",
+  "initial_test_draft_note": "The first resource regression draft also had an invalid apply-envelope input assertion (863 > cap 853). The corrected cap is 953. Only its preview rejection was an observed native regression; the corrected final test was not rerun on the old binary."
+}
