@@ -21,7 +21,7 @@ class Extra(unittest.TestCase):
   p=a.project_stats(s,include_active=False,include_versions=False,include_unknown_status=False,include_deleted=True);self.assertEqual((p['conversations'],p['messages'],p['chars']),(1,1,4))
  def test_no_rates(self):
   with contextlib.redirect_stdout(io.StringIO()) as out: a.main(['--db',str(self.db),'--json'])
-  d=json.loads(out.getvalue());self.assertIsNone(d['estimate']['models']);self.assertEqual(d['stats']['projected']['chars'],27);self.assertEqual(d['estimate']['local_import_cost_usd'],0)
+  d=json.loads(out.getvalue());self.assertIsNone(d['estimate']['models']);self.assertEqual(d['stats']['projected']['chars'],27);self.assertEqual(d['estimate']['model_calls'],0);self.assertEqual(d['estimate']['local_import_model_cost_usd'],0);self.assertIsNone(d['estimate']['local_compute_cost_usd']);self.assertNotIn('local_import_cost_usd',d['estimate'])
  def test_rates_and_estimator(self):
   with contextlib.redirect_stdout(io.StringIO()) as out: a.main(['--db',str(self.db),'--input-price','2','--output-price','10','--chars-per-token-low','5','--chars-per-token-high','2','--prefix-tokens','4','--scope','active','--no-tools','--json'])
   e=json.loads(out.getvalue())['estimate'];self.assertEqual(e['prefix_tokens'],4);self.assertAlmostEqual(e['models_unrounded']['configured']['high'],(3/2*2+3/2*.4*10+4*2)/1e6)
