@@ -783,6 +783,75 @@ void c_api_settings_preview_matches_save_and_restart() {
   check(f.http_calls == 0, "preview, save, restart and local consumption remain entirely offline");
 }
 
+void opaque_graph_provenance_is_bound_and_retained() {
+  Fixture f;
+  seed(f, "seed", {{"money_usd", 10.0}});
+  auto first_estimate = estimate("graph-run-a", {{"money_usd", 100.0}});
+  // This extension name and its shape are synthetic caller-owned examples,
+  // not a required production graph-provenance schema.
+  first_estimate["example_graph_refs"] = Json{
+      {"method", "synthetic:method/offline"}, {"version", "synthetic:version/1"},
+      {"run", "synthetic:run/planned"},
+      {"prompt_hash", loom::Sha256::hex("offline synthetic prompt")},
+      {"parameters", {{"temperature", 0.0}, {"caller_variant", "synthetic:variant/a"}}}};
+  auto first = take(f.policy->request(first_estimate), "graph provenance first request");
+  check(first.at("status") == "requires_confirmation" &&
+            first.at("estimate") == first_estimate,
+        "tenfold graph request retains its complete opaque provenance");
+  auto changed_same_id = first_estimate;
+  changed_same_id["example_graph_refs"]["version"] = "synthetic:version/2";
+  const auto before_conflict = f.inspect();
+  error(f.policy->request(changed_same_id), Errc::Conflict,
+        "changed graph provenance under the same operation conflicts");
+  check(f.inspect() == before_conflict, "graph provenance conflict changes no ledger state");
+
+  auto comparison = first_estimate;
+  comparison["operation_id"] = "graph-run-b";
+  auto edited = comparison;
+  edited["example_graph_refs"]["version"] = "synthetic:version/2";
+  auto before_edit = take(f.policy->preview(comparison), "preview original graph version");
+  auto after_edit = take(f.policy->preview(edited), "preview edited graph version");
+  check(before_edit.at("receipt_id") != after_edit.at("receipt_id"),
+        "changing only opaque method version changes the receipt");
+  auto second = take(f.policy->request(edited), "request distinct edited graph operation");
+  check(second.at("status") == "requires_confirmation" &&
+            second.at("receipt_id") == after_edit.at("receipt_id"),
+        "edited graph operation binds the exact previewed receipt");
+  error(f.policy->confirm("graph-run-b", first.at("receipt_id").get<std::string>(),
+                          true, "synthetic:owner/confirmation"),
+        Errc::Conflict, "different graph operation receipt cannot approve edited provenance");
+  f.reopen();
+  auto pending = f.inspect();
+  auto second_record = std::find_if(pending.at("operations").begin(), pending.at("operations").end(),
+                                  [](const Json& value) { return value.at("operation_id") == "graph-run-b"; });
+  check(second_record != pending.at("operations").end() &&
+            second_record->at("estimate") == edited &&
+            second_record->at("receipt_id") == second.at("receipt_id"),
+        "restart and public inspection retain edited graph provenance and receipt");
+  auto confirmed = take(f.policy->confirm("graph-run-b", second.at("receipt_id").get<std::string>(),
+                                          true, "synthetic:owner/confirmation"),
+                        "confirm exact graph provenance receipt");
+  check(confirmed.at("authorized") == true && confirmed.at("estimate") == edited,
+        "exact receipt authorizes its retained opaque graph provenance");
+
+  auto observed = actual({{"money_usd", 80.0}}, "provider_reported");
+  observed["example_actual_graph_refs"] = Json{
+      {"method_version", "synthetic:version/2"}, {"run", "synthetic:run/completed"},
+      {"result_node", "synthetic:graph/node/offline-result"}};
+  auto completed = take(f.policy->complete("graph-run-b", observed), "complete graph provenance run");
+  check(completed.at("status") == "completed" &&
+            completed.at("actual").at("money_usd").at("provenance") == "provider_reported",
+        "completion keeps measured resource provenance separately from opaque graph references");
+  f.reopen();
+  auto persisted = f.inspect();
+  auto actual_event = std::find_if(persisted.at("events").begin(), persisted.at("events").end(),
+                                 [](const Json& value) {
+                                   return value.at("operation_id") == "graph-run-b" && value.at("kind") == "actual";
+                                 });
+  check(actual_event != persisted.at("events").end() && actual_event->at("payload") == observed,
+        "public actual event retains complete caller graph references after restart");
+}
+
 void c_api_receipt_lifecycle_dispatcher() {
   CApiFixture f;
   Json options{{"initial_baselines", {{"contract", {{"money_usd", 10.0}}}}}};
@@ -871,6 +940,7 @@ int main() {
       {"C API settings reset and shallow replacement preview", c_api_settings_preview_reset_and_shallow_replacement},
       {"C API invalid settings preview is read-only", c_api_invalid_settings_preview_is_read_only},
       {"C API settings preview matches save and restart", c_api_settings_preview_matches_save_and_restart},
+      {"opaque graph provenance binds receipts and survives restart", opaque_graph_provenance_is_bound_and_retained},
       {"C API receipt lifecycle dispatcher", c_api_receipt_lifecycle_dispatcher},
       {"corrupt record returns Result error", corrupt_record_returns_result_error_without_exception},
   };
