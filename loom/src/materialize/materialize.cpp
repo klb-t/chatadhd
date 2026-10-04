@@ -3,6 +3,7 @@
 #include "loom/materialize.h"
 
 #include <algorithm>
+#include <functional>
 #include <map>
 #include <set>
 
@@ -534,12 +535,87 @@ Result<std::vector<model::ProductCheck>> Materializer::check_preferences(const m
 
 Result<Json> run_stage(knowledge::StageContext& ctx) {
   LOOM_TRY_ASSIGN(auto profile, profile_for(ctx.rt));
+  LOOM_TRY_ASSIGN(auto builtin_profile, RuntimeProfile::load("materialize"));
+  if (ctx.expected_runtime_profiles) {
+    const auto& expected = *ctx.expected_runtime_profiles;
+    if (!expected.is_object()) return Error(Errc::InvalidArgument, "expected runtime profiles must be a hash object");
+    const auto* hash = json::find(expected, "materialize");
+    if (hash && !hash->is_string()) return Error(Errc::InvalidArgument, "invalid expected materialize profile hash");
+    const auto selected_hash = hash ? hash->get<std::string>() : builtin_profile.hash();
+    if (profile.hash() != selected_hash) {
+      return Error(Errc::Conflict, "runtime profile recipe changed for materialize; expected " + selected_hash +
+                                      ", actual " + profile.hash());
+    }
+  }
   const Json& policy = profile.values();
   Materializer m(ctx.rt, ctx.store, ctx.pack);
+  struct Renderer {
+    bool per_instance;
+    std::string statistic;
+    std::function<Result<Rendered>(std::string_view)> execute;
+  };
+  // These are executable capabilities, not domain-name policy. The recipe
+  // selects and orders them; adding an executable renderer is a code change.
+  const std::map<std::string, Renderer> registry{
+      {"self_description", {false, "", [&](std::string_view) { return m.self_description(ctx.run); }}},
+      {"dossier", {true, "dossiers", [&](std::string_view instance) { return m.dossier(ctx.run, instance); }}},
+      {"extrapolated_spec", {true, "extrapolated_specs", [&](std::string_view instance) { return m.extrapolated_spec(ctx.run, instance); }}},
+      {"backlog", {false, "", [&](std::string_view) { return m.backlog(ctx.run); }}},
+  };
+  struct Operation {
+    std::string name;
+    const Renderer* renderer;
+    bool omit_error;
+  };
+  std::vector<Operation> operations;
+  for (const auto& entry : policy.at("products")) {
+    const auto name = entry.at("renderer").get<std::string>();
+    auto found = registry.find(name);
+    if (found == registry.end()) return Error(Errc::Unavailable, "unknown materialize renderer: " + name);
+    if (entry.at("enabled").get<bool>())
+      operations.push_back({name, &found->second, entry.at("on_error") == "omit"});
+  }
+  LOOM_TRY_ASSIGN(auto instances, ctx.store.query_instances(ctx.run, "", ""));
+  struct Planned {
+    Operation operation;
+    std::string instance;
+    std::string file_name;
+  };
+  std::vector<Planned> plan;
+  auto add_to_plan = [&](const Operation& operation, std::string_view instance) -> Status {
+    Json variables = instance.empty() ? Json::object() : Json{{"instance", instance}};
+    LOOM_TRY_ASSIGN(auto file, render_profile_template(policy.at("outputs").at(operation.name).get<std::string>(), variables));
+    plan.push_back({operation, std::string(instance), std::move(file)});
+    return {};
+  };
+  // Consecutive instance operations interleave per instance. The default
+  // recipe therefore keeps the original self, (dossier,spec)*, backlog order.
+  for (std::size_t begin = 0; begin < operations.size();) {
+    if (!operations[begin].renderer->per_instance) {
+      LOOM_TRY(add_to_plan(operations[begin], ""));
+      ++begin;
+      continue;
+    }
+    std::size_t end = begin;
+    while (end < operations.size() && operations[end].renderer->per_instance) ++end;
+    for (const auto& instance : instances)
+      for (std::size_t index = begin; index < end; ++index) LOOM_TRY(add_to_plan(operations[index], instance.id));
+    begin = end;
+  }
   Json artifacts = Json::array();
   std::vector<model::Product> products;
 
   auto store_artifact = [&](const Rendered& r, std::string_view file_name) -> Status {
+    // Individual renderers load their recipe at entry. File names and MIME
+    // came from the stage's outer recipe; require the body to share that
+    // identity before writing a blob, provenance row or exported file.
+    const auto* hash = json::find(r.data, "runtime_profile_hash");
+    if (hash && !hash->is_string()) return Error(Errc::InvalidArgument, "invalid rendered materialize profile hash");
+    const auto rendered_hash = hash ? hash->get<std::string>() : builtin_profile.hash();
+    if (rendered_hash != profile.hash()) {
+      return Error(Errc::Conflict, "runtime profile recipe changed while materializing; expected " + profile.hash() +
+                                      ", actual " + rendered_hash);
+    }
     LOOM_TRY_ASSIGN(BlobRef ref, ctx.rt.blobs().put(r.markdown, "text/markdown"));
     ArtifactRecord ar;
     ar.kind = "knowledge." + r.kind;
@@ -561,33 +637,21 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
     return {};
   };
 
-  LOOM_TRY_ASSIGN(Rendered self, m.self_description(ctx.run));
-  LOOM_TRY_ASSIGN(auto self_file, render_profile_template(policy.at("outputs").at("self_description").get<std::string>(), Json::object()));
-  LOOM_TRY(store_artifact(self, self_file));
-
-  LOOM_TRY_ASSIGN(auto instances, ctx.store.query_instances(ctx.run, "", ""));
-  int n_dossiers = 0, n_specs = 0;
-  for (const auto& inst : instances) {
-    auto d = m.dossier(ctx.run, inst.id);
-    if (d) {
-      LOOM_TRY_ASSIGN(auto file, render_profile_template(policy.at("outputs").at("dossier").get<std::string>(), Json{{"instance", inst.id}}));
-      LOOM_TRY(store_artifact(*d, file));
-      ++n_dossiers;
+  Json statistics = Json::object();
+  for (const auto& [name, renderer] : registry)
+    if (!renderer.statistic.empty()) statistics[renderer.statistic] = 0;
+  for (const auto& planned : plan) {
+    auto rendered = planned.operation.renderer->execute(planned.instance);
+    if (!rendered) {
+      if (planned.operation.omit_error) continue;
+      return rendered.error();
     }
-    // Materialized for every instance, proposals or not: an instance with
-    // nothing extrapolated still gets a "(none)" file rather than silently
-    // missing one.
-    auto spec = m.extrapolated_spec(ctx.run, inst.id);
-    if (spec) {
-      LOOM_TRY_ASSIGN(auto file, render_profile_template(policy.at("outputs").at("extrapolated_spec").get<std::string>(), Json{{"instance", inst.id}}));
-      LOOM_TRY(store_artifact(*spec, file));
-      ++n_specs;
+    LOOM_TRY(store_artifact(*rendered, planned.file_name));
+    if (!planned.operation.renderer->statistic.empty()) {
+      auto& count = statistics[planned.operation.renderer->statistic];
+      count = count.get<int>() + 1;
     }
   }
-
-  LOOM_TRY_ASSIGN(Rendered bl, m.backlog(ctx.run));
-  LOOM_TRY_ASSIGN(auto backlog_file, render_profile_template(policy.at("outputs").at("backlog").get<std::string>(), Json::object()));
-  LOOM_TRY(store_artifact(bl, backlog_file));
 
   LOOM_TRY(ctx.store.put_products(ctx.run, products));
 
@@ -596,10 +660,11 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   std::sort(hashes.begin(), hashes.end());
   std::string joined;
   for (auto& h : hashes) joined += h + "|";
+  statistics["products"] = products.size();
 
   return Json{{"output", Sha256::hex(joined)},
               {"artifacts", artifacts},
-              {"stats", Json{{"dossiers", n_dossiers}, {"extrapolated_specs", n_specs}, {"products", products.size()}}}};
+              {"stats", statistics}};
 }
 
 }  // namespace loom::materialize
