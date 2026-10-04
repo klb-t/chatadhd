@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/b189e486f506/chatadhd/loom/src/packet/tests/test_http.py", line 52, in <module>
+    assert response.status_code==400,response.text
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {"schema":"loom.graph_reply_capture/1","sha256":"ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb","byte_len":1,"raw_base64":"YQ=="}

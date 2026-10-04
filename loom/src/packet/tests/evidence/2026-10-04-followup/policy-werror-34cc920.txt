@@ -1,0 +1,19 @@
+loom/include/loom/usage_policy.h SHA-256 89dfad23470928a45900ff00c2cb6197fa183f9c2a7ab96f89bb832cb99273ca
+loom/src/policy/usage_policy.cpp SHA-256 790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9
+loom/src/core/config_usage_policy.cpp SHA-256 ddc7fdb8e9215aa3e29b90af9c04eab42f421267ee1f9b493b6ad55a425456f4
+23:17:48 [INFO ] loom.config: config.json not found - using defaults
+23:17:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:17:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:17:48 [INFO ] loom.db: Database opened: /tmp/loom-packet-policy-1xjd7o2u/data/chatadhd.db
+23:17:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:17:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-packet-policy-1xjd7o2u/data)
+23:17:48 [INFO ] loom.db: Database closed
+23:17:48 [INFO ] loom.runtime: Loom runtime shut down
+23:17:48 [INFO ] loom.config: Loaded config.json (13 keys)
+23:17:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:17:48 [INFO ] loom.db: Database opened: /tmp/loom-packet-policy-1xjd7o2u/data/chatadhd.db
+23:17:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:17:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-packet-policy-1xjd7o2u/data)
+23:17:48 [INFO ] loom.db: Database closed
+23:17:48 [INFO ] loom.runtime: Loom runtime shut down
+policy integration: 14/14 scenarios passed (initial, 10x hold, confirmed resume, binding conflict, failure cancel, unknown quantity, completed replay, unresolved replay, failure replay, concurrent duplicate, failed settlement recovery, legacy unresolved, interrupted claim, accounting-only restart recovery)

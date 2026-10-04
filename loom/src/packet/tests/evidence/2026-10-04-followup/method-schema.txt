@@ -1,0 +1,1 @@
+method graph schema: 14/14 checks passed; model/lexical/open data and invalid contracts
