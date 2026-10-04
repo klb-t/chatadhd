@@ -14,22 +14,26 @@ extern "C" const char* loom_usage_policy_json(LoomContext* ctx, const char* comm
     if (!parsed->is_object()) return out_error(Errc::InvalidArgument, "policy command must be an object");
     const Json& command = *parsed;
     const auto action = json::get_string(command, "action");
-    auto options = effective_usage_policy_options(ctx->rt->config());
-    if (!options) return out_error(options.error());
     auto ledger_path = ctx->rt->paths().root / "usage-policy.sqlite";
-    if (action == "settings") {
-      auto& config = ctx->rt->config();
-      return out(Json{{"preset", usage_policy_defaults()},
-                      {"stored_override", config.contains("loom_usage_policy") ? config.get("loom_usage_policy") : Json(nullptr)},
-                      {"effective", *options}, {"source", config.contains("loom_usage_policy") ? "configured" : "preset"},
-                      {"ledger_path", ledger_path.string()},
-                      {"capabilities", Json{{"schema", "loom.usage_policy/1"}, {"resource_names", "open"},
-                          {"number_representation", "finite_binary64"}, {"growth_requires_confirmation", true},
-                          {"scope", "explicit_callers"}, {"preset_application", "next_policy_open"}}}});
+    if (action == "settings" || action == "preview_settings") {
+      const Json* proposed_override = nullptr;
+      if (action == "preview_settings") {
+        if (!command.contains("override")) return out_error(missing("override"));
+        proposed_override = &command["override"];
+      }
+      auto settings = usage_policy_settings(ctx->rt->config(), proposed_override);
+      if (!settings) return out_error(settings.error());
+      (*settings)["ledger_path"] = ledger_path.string();
+      (*settings)["capabilities"] = Json{{"schema", "loom.usage_policy/1"}, {"resource_names", "open"},
+          {"number_representation", "finite_binary64"}, {"growth_requires_confirmation", true},
+          {"scope", "explicit_callers"}, {"preset_application", "next_policy_open"}};
+      return out(*settings);
     }
     if (action != "preview" && action != "request" && action != "confirm" && action != "complete" &&
         action != "cancel" && action != "inspect")
       return out_error(Errc::InvalidArgument, "unknown usage policy action");
+    auto options = effective_usage_policy_options(ctx->rt->config());
+    if (!options) return out_error(options.error());
     auto policy = UsagePolicy::open(ledger_path, *options);
     if (!policy) return out_error(policy.error());
     Result<Json> result = Error(Errc::InvalidArgument, "invalid usage command");
