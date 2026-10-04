@@ -317,7 +317,7 @@ Result<std::vector<Conversation>> ConversationImporter::html_body(const fs::path
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_html(const fs::path& path, const ImportOptions& opts) {
-  return with_source(path, "html", opts, "file", [&] { return html_body(path, opts); });
+  return with_source(path, "html", opts, "file", [&](const fs::path& input_path) { return html_body(input_path, opts); });
 }
 
 Result<std::vector<Conversation>> ConversationImporter::mht_body(const fs::path& path, const ImportOptions& opts) {
@@ -373,7 +373,7 @@ Result<std::vector<Conversation>> ConversationImporter::mht_body(const fs::path&
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_mht(const fs::path& path, const ImportOptions& opts) {
-  return with_source(path, "mht", opts, "file", [&] { return mht_body(path, opts); });
+  return with_source(path, "mht", opts, "file", [&](const fs::path& input_path) { return mht_body(input_path, opts); });
 }
 
 }  // namespace loom

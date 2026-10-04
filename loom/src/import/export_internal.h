@@ -55,6 +55,7 @@ struct Counts {
                feedback = 0, shared_link = 0, project = 0, project_doc = 0, record = 0;
   std::map<std::string, std::int64_t> block_kind;
   void add(const Counts& o);
+  static Counts from_json(const Json& value);
   Json to_json() const;
 };
 
@@ -73,7 +74,12 @@ struct Report {
   std::vector<std::vector<std::string>> duplicate_groups;
   std::vector<std::string> unknown_members;   // members no rule of the provider knows (kept verbatim)
   std::vector<Json> parts;                    // nested archives
+  bool include_result_metadata = true;
   bool partial = false;                        // some element could not be imported
+  std::int64_t resumed_conversations = 0;
+  std::int64_t resumed_members = 0;
+  std::int64_t largest_json_value_bytes = 0;
+  std::int64_t scanner_buffer_bytes = 0;
   bool inferred = false;                       // conversations were guessed heuristically (unknown provider)
   Json to_json() const;
 };
@@ -84,7 +90,9 @@ struct Env {
   BlobStore* blobs = nullptr;
   const ImportOptions& opts;
   // Called after each conversation is committed (provenance hook).
-  std::function<void(const Conversation&, const std::string& member, int index)> on_conv;
+  std::function<Status(const Conversation&, const std::string& member, int index)> on_conv;
+  std::string checkpoint_source_id;
+  std::optional<Error> write_error = std::nullopt;
   bool cancelled() const { return opts.cancel && opts.cancel->cancelled(); }
 };
 
@@ -135,6 +143,8 @@ struct LoadStats {
   std::int64_t truncated_bytes = 0;
   bool invalid = false;                 // could not be parsed at all
   std::string message;
+  std::int64_t largest_value_bytes = 0;
+  std::int64_t scanner_buffer_bytes = 0;
 };
 // Visits every element of the top-level array (streamed, so a truncated tail
 // or one bad element does not lose the rest). A top-level object is visited as
@@ -145,6 +155,8 @@ struct Loader {
   std::function<bool(Json&& element, std::int64_t index)> element;
   std::function<void(std::int64_t index, const std::string& why)> bad_element;
   std::function<bool()> cancelled;  // cooperative stop while scanning/streaming
+  std::size_t read_chunk_bytes = 65'536;
+  std::size_t max_depth = 512;
   bool wrapper = false;
   bool top_is_array = false;
   std::optional<std::int64_t> archive_index;
@@ -154,6 +166,14 @@ LoadStats load_json_file(const fs::path& path, Loader& loader);
 // Whole-document convenience (small files): parsed value or nullopt (see stats).
 std::optional<Json> load_json_doc(const fs::path& path, LoadStats& stats);
 Json stats_to_json(const LoadStats& s);
+
+// Durable per-conversation/ZIP-record journal. source_index=-1 denotes a
+// complete interpreted member; nonnegative indices denote conversations.
+struct Checkpoint { std::string conversation_id; Json metadata; };
+Result<std::optional<Checkpoint>> read_checkpoint(Env& env, const std::string& member,
+                                                std::int64_t archive_index, std::int64_t source_index);
+Status write_checkpoint(Env& env, const std::string& member, std::int64_t archive_index,
+                        std::int64_t source_index, const std::string& conversation_id, const Json& metadata);
 
 // ── provider parsers ──
 // Asset lookup for OpenAI exports (ids/pointers -> ZIP members).
@@ -195,7 +215,6 @@ struct OpenAiCtx {
   AssetIndex* assets = nullptr;
   Env* env = nullptr;
   std::map<std::string, std::string> conv_db_id;   // conversation id -> db id
-  std::map<std::string, std::string> msg_db_id;    // conv id + '\x1f' + message key -> db id
 };
 
 // Builds the model + counters for one ChatGPT conversation object.
