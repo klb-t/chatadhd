@@ -1,0 +1,11 @@
+/usr/bin/ld: /tmp/ccKj47Uo.o: in function `DOCTEST_ANON_SUITE_7::DOCTEST_ANON_FUNC_10()':
+test_runtime_recipe_consumers.cpp:(.text+0x20fa): undefined reference to `loom::fsutil::TempDir::TempDir()'
+/usr/bin/ld: /tmp/ccKj47Uo.o: in function `DOCTEST_ANON_SUITE_7::DOCTEST_ANON_FUNC_12()':
+test_runtime_recipe_consumers.cpp:(.text+0x4eff): undefined reference to `loom::fsutil::TempDir::TempDir()'
+/usr/bin/ld: /tmp/ccKj47Uo.o: in function `DOCTEST_ANON_SUITE_7::DOCTEST_ANON_FUNC_14()':
+test_runtime_recipe_consumers.cpp:(.text+0x89fc): undefined reference to `loom::fsutil::TempDir::TempDir()'
+/usr/bin/ld: /tmp/ccKj47Uo.o: in function `DOCTEST_ANON_SUITE_7::DOCTEST_ANON_FUNC_16()':
+test_runtime_recipe_consumers.cpp:(.text+0xac50): undefined reference to `loom::fsutil::TempDir::TempDir()'
+/usr/bin/ld: /tmp/ccKj47Uo.o: in function `DOCTEST_ANON_SUITE_7::DOCTEST_ANON_FUNC_18()':
+test_runtime_recipe_consumers.cpp:(.text+0xc8c0): undefined reference to `loom::fsutil::TempDir::TempDir()'
+collect2: error: ld returned 1 exit status

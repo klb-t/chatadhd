@@ -3,13 +3,13 @@
 
 #include "loom/log.h"
 #include "loom/re/regex.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/time.h"
 #include "loom/util/utf8.h"
+#include <stdexcept>
 
 namespace loom {
 namespace {
-#include "builtin_rules.json.inc"
-
 unsigned flags_from_json(const Json& arr) {
   unsigned f = 0;
   if (!arr.is_array()) return f;
@@ -52,16 +52,12 @@ Json Analysis::to_json() const {
 
 const AnalyzerRules& AnalyzerRules::builtin() {
   static const AnalyzerRules kRules = [] {
-    auto parsed = json::parse(kBuiltinRulesJson);
-    if (!parsed) {
-      log::error("loom.semantic", "embedded analyzer rules are invalid JSON");
-      return AnalyzerRules{};
-    }
-    auto r = AnalyzerRules::from_json(*parsed);
-    if (!r) {
-      log::error("loom.semantic", "embedded analyzer rules rejected: {}", r.error().message);
-      return AnalyzerRules{};
-    }
+    auto profile = RuntimeProfile::builtin("semantic_analyzer");
+    // This legacy reference API cannot return an error. It only reads
+    // build-generated defaults; invalid user overlays use the fallible APIs.
+    if (!profile) throw std::logic_error(profile.error().message);
+    auto r = AnalyzerRules::from_profile(*profile);
+    if (!r) throw std::logic_error(r.error().message);
     return std::move(r).value();
   }();
   return kRules;
@@ -77,6 +73,11 @@ Result<AnalyzerRules> AnalyzerRules::from_json(const Json& j) {
       e.pattern = json::get_string(p, "pattern");
       if (e.entity_type.empty() || e.pattern.empty()) return Error(Errc::InvalidArgument, "entity pattern incomplete");
       if (const Json* f = json::find(p, "flags")) e.flags = flags_from_json(*f);
+      if (const Json* c = json::find(p, "confidence")) {
+        if (!c->is_number() || c->get<double>() < 0 || c->get<double>() > 1)
+          return Error(Errc::InvalidArgument, "entity confidence must be in [0, 1]");
+        e.confidence = c->get<double>();
+      }
       r.entity_patterns.push_back(std::move(e));
     }
   }
@@ -100,17 +101,35 @@ Result<AnalyzerRules> AnalyzerRules::from_json(const Json& j) {
       x.pattern = json::get_string(p, "pattern");
       if (x.predicate.empty() || x.pattern.empty()) return Error(Errc::InvalidArgument, "relation pattern incomplete");
       if (const Json* f = json::find(p, "flags")) x.flags = flags_from_json(*f);
-      x.confidence = json::get_number(p, "confidence", 0.5);
+      x.confidence = json::get_number(p, "confidence", 0.5);  // Legacy JSON decoder default.
       r.relation_patterns.push_back(std::move(x));
     }
   }
   return r;
 }
 
+Result<AnalyzerRules> AnalyzerRules::from_profile(const RuntimeProfile& profile) {
+  if (profile.domain() != "semantic_analyzer") return Error(Errc::InvalidArgument, "expected semantic_analyzer profile");
+  LOOM_TRY_ASSIGN(auto descriptor, RuntimeProfile::builtin("semantic_analyzer"));
+  LOOM_TRY(descriptor.with_values(profile.values()));
+  const Json& values = profile.values();
+  Json rules = values.at("rules");
+  const Json& parameters = values.at("parameters");
+  for (auto& pattern : rules.at("relation_patterns")) {
+    if (!pattern.contains("confidence")) pattern["confidence"] = parameters.at("relation_confidence");
+  }
+  LOOM_TRY_ASSIGN(auto out, from_json(rules));
+  out.profile_parameters = parameters;
+  out.profile_hash = profile.hash();
+  return out;
+}
+
 Json AnalyzerRules::to_json() const {
   Json ep = Json::array();
   for (const auto& e : entity_patterns) {
-    ep.push_back(Json{{"entity_type", e.entity_type}, {"pattern", e.pattern}, {"flags", flags_to_json(e.flags)}});
+    Json entry{{"entity_type", e.entity_type}, {"pattern", e.pattern}, {"flags", flags_to_json(e.flags)}};
+    if (e.confidence) entry["confidence"] = *e.confidence;
+    ep.push_back(std::move(entry));
   }
   Json tp = Json::array();
   for (const auto& [t, kws] : topics) tp.push_back(Json{{"topic", t}, {"keywords", kws}});
@@ -127,6 +146,7 @@ Json AnalyzerRules::to_json() const {
 struct CompiledEntityPattern {
   std::string entity_type;
   re::Regex regex;
+  double confidence;
 };
 struct CompiledRelationPattern {
   std::string predicate;
@@ -146,10 +166,15 @@ SemanticAnalyzer::~SemanticAnalyzer() = default;
 Result<std::unique_ptr<SemanticAnalyzer>> SemanticAnalyzer::create(const AnalyzerRules& rules) {
   auto impl = std::make_unique<Impl>();
   impl->rules = rules;
+  if (impl->rules.profile_parameters.empty()) {
+    LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::builtin("semantic_analyzer"));
+    impl->rules.profile_parameters = profile.values().at("parameters");
+  }
   for (const auto& p : rules.entity_patterns) {
     auto rx = re::Regex::compile(p.pattern, p.flags);
     if (!rx) return Error(Errc::Parse, "entity pattern '" + p.entity_type + "': " + rx.error().message);
-    impl->entity_patterns.push_back(CompiledEntityPattern{p.entity_type, std::move(rx).value()});
+    const double confidence = p.confidence.value_or(impl->rules.profile_parameters.at("entity_confidence").get<double>());
+    impl->entity_patterns.push_back(CompiledEntityPattern{p.entity_type, std::move(rx).value(), confidence});
   }
   for (const auto& p : rules.relation_patterns) {
     auto rx = re::Regex::compile(p.pattern, p.flags);
@@ -158,6 +183,19 @@ Result<std::unique_ptr<SemanticAnalyzer>> SemanticAnalyzer::create(const Analyze
   }
   return std::make_unique<SemanticAnalyzer>(std::move(impl));
 }
+
+Result<std::unique_ptr<SemanticAnalyzer>> SemanticAnalyzer::create_with_profile(const RuntimeProfile& profile) {
+  LOOM_TRY_ASSIGN(auto rules, AnalyzerRules::from_profile(profile));
+  return create(rules);
+}
+
+Result<std::unique_ptr<SemanticAnalyzer>> SemanticAnalyzer::create_from_data_dir(const std::filesystem::path& data_dir,
+                                                                             const Json& overrides) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("semantic_analyzer", data_dir, overrides));
+  return create_with_profile(profile);
+}
+
+const std::string& SemanticAnalyzer::profile_hash() const noexcept { return impl_->rules.profile_hash; }
 
 const AnalyzerRules& SemanticAnalyzer::rules() const noexcept { return impl_->rules; }
 
@@ -184,13 +222,17 @@ std::vector<ExtractedEntity> SemanticAnalyzer::extract_entities(std::string_view
       ExtractedEntity e;
       e.text = value;
       e.entity_type = ep.entity_type;
-      e.confidence = 1.0;
+      e.confidence = ep.confidence;
       e.start = static_cast<std::size_t>(m.start(0));
       e.end = static_cast<std::size_t>(m.end(0));
       out.push_back(std::move(e));
     }
   }
   return out;
+}
+
+std::vector<std::string> SemanticAnalyzer::extract_topics(std::string_view text) const {
+  return extract_topics(text, impl_->rules.profile_parameters.at("topic_threshold").get<int>());
 }
 
 std::vector<std::string> SemanticAnalyzer::extract_topics(std::string_view text, int threshold) const {
@@ -233,19 +275,30 @@ Analysis SemanticAnalyzer::analyse(std::string_view text) const {
   return a;
 }
 
-Json SemanticAnalyzer::to_unified(const Analysis& a) {
+namespace {
+Json unified_with_parameters(const Analysis& a, const Json& parameters) {
   Json ents = Json::array();
   for (const auto& e : a.entities) {
     ents.push_back(Json{{"name", e.text}, {"kind", e.entity_type}, {"relevance", e.confidence}});
   }
   Json tops = Json::array();
-  for (const auto& t : a.topics) tops.push_back(Json{{"label", t}, {"confidence", 0.5}});
+  for (const auto& t : a.topics)
+    tops.push_back(Json{{"label", t}, {"confidence", parameters.at("topic_confidence")}});
   Json rels = Json::array();
   for (const auto& r : a.relations) {
     rels.push_back(Json{{"subject", r.subject}, {"predicate", r.predicate}, {"object", r.obj}});
   }
   return Json{{"entities", ents}, {"topics", tops},        {"relations", rels},
-              {"summary", ""},    {"sentiment", "neutral"}, {"source", "regex"}};
+              {"summary", ""},    {"sentiment", parameters.at("sentiment")}, {"source", "regex"}};
+}
+}  // namespace
+
+Json SemanticAnalyzer::to_unified(const Analysis& a) {
+  return unified_with_parameters(a, AnalyzerRules::builtin().profile_parameters);
+}
+
+Json SemanticAnalyzer::to_unified_profile(const Analysis& a) const {
+  return unified_with_parameters(a, impl_->rules.profile_parameters);
 }
 
 }  // namespace loom

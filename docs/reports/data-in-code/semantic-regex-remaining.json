@@ -1,0 +1,94 @@
+{
+  "reviewed_on": "2026-10-04",
+  "scope": "assigned analyzer + re remainder only; no prompt edits",
+  "findings": [
+    {
+      "path": "loom/src/semantic/analyzer.cpp",
+      "line": 14,
+      "end_line": 32,
+      "classification": "grammar invariant",
+      "reason": "IGNORECASE/MULTILINE/DOTALL map declared flags to universal regex operations; the profile controls which flags each pattern uses."
+    },
+    {
+      "path": "loom/src/semantic/analyzer.cpp",
+      "line": 35,
+      "end_line": 51,
+      "classification": "wire/schema invariant",
+      "reason": "Analysis/entity/relation JSON field names are the existing public interchange contract, not domain vocabulary."
+    },
+    {
+      "path": "loom/src/semantic/analyzer.cpp",
+      "line": 105,
+      "classification": "legacy decoder preset",
+      "reason": "The old AnalyzerRules::from_json API still defaults missing relation confidence to0.5. Effective profile conversion resolves parameters.relation_confidence before this decoder, so profile execution does not depend on this literal."
+    },
+    {
+      "path": "loom/include/loom/semantic_analyzer.h",
+      "line": 42,
+      "end_line": 66,
+      "classification": "compatibility vocabulary",
+      "reason": "Old public entity_type/relation_type string constants remain for source compatibility. Executable extraction never branches on these names; kinds and predicates are arbitrary profile strings."
+    },
+    {
+      "path": "loom/include/loom/semantic_analyzer.h",
+      "line": 68,
+      "end_line": 106,
+      "classification": "legacy DTO defaults",
+      "reason": "Legacy aggregate constructors keep1.0/0.5 values. Extractor execution writes resolved profile confidence explicitly; direct caller-created objects are caller data."
+    },
+    {
+      "path": "loom/src/semantic/analyzer.cpp",
+      "line": 216,
+      "classification": "current rule DSL capture contract",
+      "reason": "Entity rules select capture1 if any group participated, otherwise whole match; relation rules select subject1/object2 and source0 at258-262. These are the existing trusted extraction operation semantics. An alternative capture mapping needs an additive rule-schema capability; not migrated here."
+    },
+    {
+      "path": "loom/src/semantic/analyzer.cpp",
+      "line": 244,
+      "end_line": 247,
+      "classification": "algorithm invariant",
+      "reason": "Generic case-insensitive substring hit count and >= comparison; dictionaries and threshold are profile data."
+    },
+    {
+      "path": "loom/src/semantic/analyzer.cpp",
+      "line": 292,
+      "end_line": 292,
+      "classification": "honest provenance invariant",
+      "reason": "source=regex identifies the actual executor and cannot be spoofed by the profile. Empty summary is absence of generated prose."
+    },
+    {
+      "path": "loom/src/re/regex.cpp",
+      "line": 29,
+      "end_line": 557,
+      "classification": "grammar/VM invariant",
+      "reason": "Node kinds, switches over syntax/escapes/flags, numeric radices and Unicode predicates implement regex language grammar, not provider/model/domain names."
+    },
+    {
+      "path": "loom/src/re/regex.cpp",
+      "line": 553,
+      "end_line": 575,
+      "classification": "algorithm invariant",
+      "reason": "VM instruction opcodes and capture-slot layout define universal regex operations."
+    },
+    {
+      "path": "loom/src/re/regex.cpp",
+      "line": 581,
+      "classification": "migrated by root",
+      "reason": "10000000-step default is now defaults.step_limit in re.pack, with validated compile(profile)/with_profile and profile inspection; legacy mutable set_step_limit remains. Per-user-root consumer wiring and x10 preflight need consuming owner integration."
+    },
+    {
+      "path": "loom/src/re/regex.cpp",
+      "line": 264,
+      "end_line": 267,
+      "classification": "algorithm correctness follow-up",
+      "reason": "Quantifier decimal accumulation into int has no explicit overflow check. This is numeric parser correctness, not an invented resource threshold or domain policy."
+    },
+    {
+      "path": "loom/src/semantic/semantic_llm.cpp",
+      "line": 130,
+      "end_line": 132,
+      "classification": "owner1 handoff",
+      "reason": "Request branding/header recipe remained in source because thread1 owns full prompt/request composer. Also fixed model fallback/merge uses Runtime builtin analyzer reference; thread1 must consume checked semantic profile instance and its hash."
+    }
+  ]
+}
