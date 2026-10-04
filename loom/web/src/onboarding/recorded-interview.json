@@ -1,0 +1,8 @@
+{
+  "section": "work",
+  "summary": "You work on a synthetic offline test project and prefer concise replies.",
+  "questions": [{"field": "style", "text": "Would a short summary followed by optional detail help?"}],
+  "candidates": [
+    {"id": "model-style-1", "field": "style", "value": "concise with optional detail", "time": "2026-10-04T00:00:00Z", "source_refs": ["synthetic-recorded-reply"]}
+  ]
+}
