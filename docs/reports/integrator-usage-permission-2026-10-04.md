@@ -20,6 +20,18 @@ The failure state can be reproduced on a disposable completed build by setting
 its CLI artifact0644 and running cli.smoke/fullCTest; restore0755 afterwards.
 This is an archived local-artifact failure, not a demonstrated W2 code defect.
 
+## Second full attempt
+
+The next complete run also failed107/108: same CLI PermissionError,
+283s in rounded JUnit suite metadata. Full JUnit retains all108 entries and their
+stdout; the separate redirected log stops at entry5 and is explicitly incomplete.
+No capture was reconstructed from another run. Mode correction in a previous
+invocation did not persist. The later passing run performs0755 correction and
+complete CTest together, preserving exactly the same CLI bytes.
+
+[Second evidence](integrator-usage-permission-2026-10-04/second-evidence.zip),
+SHA256 `8bfcbf2194f5d6f1c901895045c42d5111a6b607f70973b0836a328570cd35ef`, 21610 bytes.
+
 ## Do wątku N
 
 - **9:** require executable artifacts and a fresh complete green CTest before
