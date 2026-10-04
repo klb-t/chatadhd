@@ -1,0 +1,4 @@
+03:22:18 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:22:18 [INFO ] loom.db: Database opened: /workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/probe-data/probe.db
+03:22:18 [INFO ] loom.db: Database closed
+first_partial=true second_partial=true third_cached=0

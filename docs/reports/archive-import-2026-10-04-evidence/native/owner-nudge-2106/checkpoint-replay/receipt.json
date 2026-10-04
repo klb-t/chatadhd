@@ -1,0 +1,280 @@
+{
+  "schema": "loom.import_checkpoint_replay_verification/1",
+  "provider_calls": 0,
+  "source_root": "/workspace/scratch/943af489e102/chatadhd",
+  "expected_source_commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+  "adaptation": {
+    "schema": "loom.import_checkpoint_probe_adaptation/1",
+    "original_archive": "archive/2026-10-04/integrator-import-checkpoint-replay",
+    "reviewed_commit": "c7972252a23cb13c54797f6b57df24de903c5296",
+    "executed_import_source_commit": "d77867517bb128b7e43236c436a2dc3a31e1ae46",
+    "adaptation": "Only append options.resume = true after ImportOptions options; library compatibility default is now false.",
+    "files": {
+      "probe.cpp": {
+        "original_sha256": "c67d2f96670e6eea33c6918d1bbf6ac103652c8ba7a64d61e9fd62b9718b6443",
+        "adapted_sha256": "2bfa39063a19d259220c8471cd7084d99282c9c3e3247a57bd769ec3b19ea405",
+        "original_bytes": 2784,
+        "adapted_bytes": 2809
+      },
+      "probe_link_failure.cpp": {
+        "original_sha256": "aeda949dc4c5766fc912717a8e2426aa8c2a4adebb89667fae0fe99c07bae6f7",
+        "adapted_sha256": "0eb34d40aae32cc1586b75e1ff26a926551e2781b8dc3134aa8742caaed9b9ee",
+        "original_bytes": 3103,
+        "adapted_bytes": 3128
+      }
+    }
+  },
+  "libraries_before": {
+    "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_core.a": {
+      "bytes": 327052552,
+      "sha256": "d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028"
+    },
+    "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_sqlite3_amalgamation.a": {
+      "bytes": 1836182,
+      "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+    },
+    "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_miniz.a": {
+      "bytes": 167828,
+      "sha256": "04f430e01025ed2dfdd51fb358bdb3fd91a309e31076c0bc52b3fa7fa5369a03"
+    }
+  },
+  "cmake_cache": {
+    "bytes": 18535,
+    "sha256": "7fc0e64686bbc03eeec5ca1abed9fc113fe27050cd2534337732d275e4a0708f"
+  },
+  "compiler": "/usr/bin/c++",
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-pthread",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/miniz",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/cpp-httplib",
+        "/workspace/scratch/943af489e102/chatadhd/docs/reports/archive-import-2026-10-04-evidence/native/probes/probe.cpp",
+        "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_core.a",
+        "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_miniz.a",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-Wl,--no-keep-memory",
+        "-Wl,--reduce-memory-overheads",
+        "-o",
+        "/workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/probe"
+      ],
+      "exit_code": 0,
+      "log": "probe-compile.txt"
+    },
+    {
+      "command": [
+        "/workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/probe",
+        "/workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/probe-data"
+      ],
+      "exit_code": 0,
+      "log": "probe-run.txt"
+    },
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-pthread",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/miniz",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/cpp-httplib",
+        "/workspace/scratch/943af489e102/chatadhd/docs/reports/archive-import-2026-10-04-evidence/native/probes/probe_link_failure.cpp",
+        "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_core.a",
+        "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_miniz.a",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-Wl,--no-keep-memory",
+        "-Wl,--reduce-memory-overheads",
+        "-o",
+        "/workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/probe_link_failure"
+      ],
+      "exit_code": 0,
+      "log": "probe_link_failure-compile.txt"
+    },
+    {
+      "command": [
+        "/workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/probe_link_failure",
+        "/workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/probe_link_failure-data"
+      ],
+      "exit_code": 0,
+      "log": "probe_link_failure-run.txt"
+    }
+  ],
+  "scenarios": {
+    "probe": {
+      "checks": {
+        "first_partial": true,
+        "first_errors_visible": true,
+        "same_source_id": true,
+        "second_resumed": true,
+        "conversation_ids_preserved": true,
+        "no_duplicate_conversation_or_message": true,
+        "database_integrity": true,
+        "first_stays_partial": true,
+        "first_not_completed_cache": true,
+        "second_stays_partial": true,
+        "second_errors_visible": true,
+        "second_not_completed_cache": true,
+        "third_stays_partial": true,
+        "third_errors_visible": true,
+        "third_not_completed_cache": true,
+        "source_stays_partial": true,
+        "no_fabricated_project_or_document": true
+      },
+      "passed": true,
+      "counts": {
+        "conversations": 1,
+        "messages": 1,
+        "project_nodes": 0,
+        "project_document_nodes": 0,
+        "project_document_links": 0,
+        "integrity_check": "ok",
+        "foreign_key_errors": 0
+      },
+      "source_id": "src_645e729d13b5",
+      "conversation_ids": [
+        "c_a2deb105efde"
+      ],
+      "final_node_ids": [
+        "n_7a79d618d370"
+      ],
+      "results": {
+        "bytes": 15503,
+        "sha256": "3060070aa24b353b3f9f22ff943190f8fcf530857c4d8f44b9c6516320cb6f99"
+      },
+      "source_zip": {
+        "bytes": 390,
+        "sha256": "1bdcf765e85bbca52ad77eca6746dda905c6ba31c14c3504b964d939a0c8f0bb"
+      },
+      "binary": {
+        "bytes": 7582736,
+        "sha256": "9d43311048f0ad6ca239d8caadfc2d3e5b789d9ce382de4570773aaf7a166c90"
+      }
+    },
+    "probe_link_failure": {
+      "checks": {
+        "first_partial": true,
+        "first_errors_visible": true,
+        "same_source_id": true,
+        "second_resumed": true,
+        "conversation_ids_preserved": true,
+        "no_duplicate_conversation_or_message": true,
+        "database_integrity": true,
+        "second_complete": true,
+        "second_errors_empty": true,
+        "third_completed_source_cache": true,
+        "source_complete": true,
+        "project_restored": true,
+        "document_restored": true,
+        "link_restored": true
+      },
+      "passed": true,
+      "counts": {
+        "conversations": 1,
+        "messages": 1,
+        "project_nodes": 1,
+        "project_document_nodes": 1,
+        "project_document_links": 1,
+        "integrity_check": "ok",
+        "foreign_key_errors": 0
+      },
+      "source_id": "src_5753fa091008",
+      "conversation_ids": [
+        "c_eb1055a7c846"
+      ],
+      "final_node_ids": [
+        "n_56abdb72e7f0",
+        "n_571c6c83e42c",
+        "n_f1aa1ef541e5"
+      ],
+      "results": {
+        "bytes": 15182,
+        "sha256": "9ad786c20addd4ae2a91296ea59c99de6a1bcea16c4d68f09dfa0297a821eac0"
+      },
+      "source_zip": {
+        "bytes": 461,
+        "sha256": "f9bb4df642fe3b31a3df0d83ce2d5ed3c5d468e12133b8aafe3d461c29c131c2"
+      },
+      "binary": {
+        "bytes": 7582744,
+        "sha256": "b757f803cec1d104531c196aeab46bae3138963f9f372e98bd71bcafc8b371da"
+      }
+    }
+  },
+  "passed": true,
+  "source_commit_mismatches": [],
+  "libraries_after": {
+    "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_core.a": {
+      "bytes": 327052552,
+      "sha256": "d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028"
+    },
+    "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_sqlite3_amalgamation.a": {
+      "bytes": 1836182,
+      "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+    },
+    "/workspace/scratch/943af489e102/thread5-mixed-build/libloom_miniz.a": {
+      "bytes": 167828,
+      "sha256": "04f430e01025ed2dfdd51fb358bdb3fd91a309e31076c0bc52b3fa7fa5369a03"
+    }
+  },
+  "inputs_stable": true,
+  "evidence": {
+    "probe-compile.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "probe-run.txt": {
+      "bytes": 275,
+      "sha256": "b3366a87f5df5c2b2fbca6e509cb5a8790a1488cc01c0a2ad4e04d35e27d0166"
+    },
+    "probe_link_failure-compile.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "probe_link_failure-run.txt": {
+      "bytes": 368,
+      "sha256": "a41daec5cfc9479e8b2aabf92ec93139073ab3b7f891ef323e8b944e170c2ee5"
+    },
+    "source-after.json": {
+      "bytes": 33578,
+      "sha256": "c52644589016622adc5eb92f3101e0733f6f7089f6f68e000cf6553a44f21df8"
+    },
+    "source-before.json": {
+      "bytes": 33578,
+      "sha256": "c52644589016622adc5eb92f3101e0733f6f7089f6f68e000cf6553a44f21df8"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "status": "prepared_not_executed",
+  "original_negative_commit": "6e4bf03d6294719de8df4e9477e417d232c7b87b",
+  "original_archive_sha256": "c840cc9ca0948253460478918ced73bc13155cab65d281c686964e81129fcfae",
+  "probe_unchanged": true,
+  "changes": [
+    "Require expected PNG URI true and empty-format URI false in all three routes, replacing the historical diagnostic expectation.",
+    "Retain all original 11 diagnostic checks as acceptance conditions; add exact decoded captured PNG payload comparisons and persisted SourceRecord MIME/format/hash checks.",
+    "Require caller source commit; retain library/source snapshots and exact completed-core link.",
+    "Preserve failed result/receipt and nonzero exit rather than claiming success."
+  ],
+  "expected_scenarios": 3,
+  "expected_acceptance_checks": 22,
+  "files": {
+    "probe.cpp": {
+      "bytes": 3678,
+      "sha256": "2fa6ed9b1c01d5719281563f464315e4190e996ed4d4408b0288975b73f3e9f3"
+    },
+    "replay_acceptance.py": {
+      "bytes": 7792,
+      "sha256": "eb667ee26f02ffdd1ab9eb308492f47167beb360a21ff727d959ed293fb126bb"
+    },
+    "synthetic.png": {
+      "bytes": 68,
+      "sha256": "4c10026382fbceb3dcd57e71d67356375c7ea252f4cc95af2fded9abfeb6ef9b"
+    }
+  }
+}

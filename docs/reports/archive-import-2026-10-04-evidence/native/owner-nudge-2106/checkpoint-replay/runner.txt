@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "scenarios": {
+    "probe": true,
+    "probe_link_failure": true
+  },
+  "error": null,
+  "receipt": "/workspace/scratch/943af489e102/thread5-mixed-checkpoint-replay/receipt.json"
+}

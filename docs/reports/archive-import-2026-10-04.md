@@ -65,6 +65,14 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
 [Publiczne dowody nowych prób](archive-import-2026-10-04-evidence/native/owner-nudge-2106/README.md)
 zachowują pełne red/green, dokładne polecenia/hashe i osobny web build
 (85 modułów, 79 niezmienionych źródeł). Nie zastępują pełnych mixed bramek.
+Niezależne replaye na rzeczywistym świeżym rdzeniu W2+W5 **4e8c3de**
+(core SHA256 `d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028`):
+**OCR MIME3/3,22/22 kontroli**, bez zmiany oryginalnego probe;
+**checkpointy2/2 scenariusze,31/31 kontroli**, zachowane ID/projekt/dokument/relacja
+oraz jawny niekompletny wynik malformed. Źródła/biblioteki przed/po bez zmian.
+[OCR replay](archive-import-2026-10-04-evidence/native/owner-nudge-2106/screenshot-replay/README.md),
+[checkpoint replay](archive-import-2026-10-04-evidence/native/owner-nudge-2106/checkpoint-replay/README.md).
+Pełny native build kończy jeszcze kompilację testów; pełnego CTest nie deklarujemy.
 Nowy fetch po wszystkich4 poprawkach: main30ad7d3 bez zmian, rebase up to date.
 
 ## Wdrożone

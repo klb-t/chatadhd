@@ -1,0 +1,59 @@
+03:22:13 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:22:13 [INFO ] loom.db: Database opened: /workspace/scratch/943af489e102/thread5-ocr-independent/positive-executed/data/no_provenance_control/probe.db
+03:22:13 [INFO ] loom.config: never-written-secrets.json not found - using defaults
+03:22:13 [INFO ] loom.media: OCR.space initialized
+03:22:13 [INFO ] loom.db: Batch inserted 1 messages into c_7f4b01cbe380
+03:22:13 [INFO ] loom.import: Imported 1 messages into 'Screenshot 2026-10-05 03:22'
+03:22:13 [INFO ] loom.db: Database closed
+03:22:13 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:22:13 [INFO ] loom.db: Database opened: /workspace/scratch/943af489e102/thread5-ocr-independent/positive-executed/data/blob_import_file/probe.db
+03:22:13 [INFO ] loom.config: never-written-secrets.json not found - using defaults
+03:22:13 [INFO ] loom.media: OCR.space initialized
+03:22:13 [INFO ] loom.db: Batch inserted 1 messages into c_0e7cb9605502
+03:22:13 [INFO ] loom.import: Imported 1 messages into 'Screenshot 2026-10-05 03:22'
+03:22:13 [INFO ] loom.db: Database closed
+03:22:13 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:22:13 [INFO ] loom.db: Database opened: /workspace/scratch/943af489e102/thread5-ocr-independent/positive-executed/data/blob_import_screenshot/probe.db
+03:22:13 [INFO ] loom.config: never-written-secrets.json not found - using defaults
+03:22:13 [INFO ] loom.media: OCR.space initialized
+03:22:13 [INFO ] loom.db: Batch inserted 1 messages into c_645fbed8e28c
+03:22:13 [INFO ] loom.import: Imported 1 messages into 'Screenshot 2026-10-05 03:22'
+03:22:13 [INFO ] loom.db: Database closed
+[
+  {
+    "scenario": "no_provenance_control",
+    "import_succeeded_against_nonvalidating_mock": true,
+    "mock_requests": 1,
+    "request_body": "apikey=SYNTHETIC_ONLY_NOT_A_REAL_KEY&base64Image=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8%2Fx8AAwMCAO%2BaJ0cAAAAASUVORK5CYII%3D&language=eng&OCREngine=2&isTable=True&scale=True",
+    "expected_png_uri_present": true,
+    "empty_format_uri_present": false,
+    "live_provider_calls": 0,
+    "source_sha256": "4c10026382fbceb3dcd57e71d67356375c7ea252f4cc95af2fded9abfeb6ef9b"
+  },
+  {
+    "scenario": "blob_import_file",
+    "import_succeeded_against_nonvalidating_mock": true,
+    "mock_requests": 1,
+    "request_body": "apikey=SYNTHETIC_ONLY_NOT_A_REAL_KEY&base64Image=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8%2Fx8AAwMCAO%2BaJ0cAAAAASUVORK5CYII%3D&language=eng&OCREngine=2&isTable=True&scale=True",
+    "expected_png_uri_present": true,
+    "empty_format_uri_present": false,
+    "live_provider_calls": 0,
+    "source_sha256": "4c10026382fbceb3dcd57e71d67356375c7ea252f4cc95af2fded9abfeb6ef9b",
+    "blob_filename": "4c10026382fbceb3dcd57e71d67356375c7ea252f4cc95af2fded9abfeb6ef9b",
+    "blob_extension": "",
+    "blob_bytes_match_source": true
+  },
+  {
+    "scenario": "blob_import_screenshot",
+    "import_succeeded_against_nonvalidating_mock": true,
+    "mock_requests": 1,
+    "request_body": "apikey=SYNTHETIC_ONLY_NOT_A_REAL_KEY&base64Image=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8%2Fx8AAwMCAO%2BaJ0cAAAAASUVORK5CYII%3D&language=eng&OCREngine=2&isTable=True&scale=True",
+    "expected_png_uri_present": true,
+    "empty_format_uri_present": false,
+    "live_provider_calls": 0,
+    "source_sha256": "4c10026382fbceb3dcd57e71d67356375c7ea252f4cc95af2fded9abfeb6ef9b",
+    "blob_filename": "4c10026382fbceb3dcd57e71d67356375c7ea252f4cc95af2fded9abfeb6ef9b",
+    "blob_extension": "",
+    "blob_bytes_match_source": true
+  }
+]
