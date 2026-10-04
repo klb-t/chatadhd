@@ -1,0 +1,21 @@
+{
+  "schema": "loom.checkpoint_focus/1",
+  "source_commit": "3b67246e78ef4d9c9030f6656e6531e1e10136cb",
+  "base": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "cases": 23,
+  "passed": 23,
+  "assertions": 614,
+  "exit_code": 0,
+  "files": {
+    "loom/src/import/export_archive.cpp": "685524237d3b126093d4ce37ca6e5a59a84066e71dd1bdb63aa0e7b268bab64a",
+    "loom/src/import/export_common.cpp": "c4877e278e90bcea0e6fdf274190ab839598b305f367ee227c63ada7c0c0b227",
+    "loom/src/import/export_openai.cpp": "af9fe7548d23f1b71dc6320b03ba9aa305fbe3b2f661a220d79c568e8882e91b",
+    "loom/src/import/importer_core.cpp": "21af30bddecaf3e7534728653e888019e52e240eb074df43040218a0feb49b9f",
+    "loom/tests/test_import_resume.cpp": "c34a43fde6ef8238dd3b75d51ae7837f47dd7e1c82a7c1a9cb73436e843b3093"
+  },
+  "binary_sha256": "8b787b43c0b4a571018b4e0feebc9f4ea78e3672f937ed29ca132ad74e295bda",
+  "core_sha256": "1f9e041465dfe939db532607dd8d1ff7902fd46c0283268de3448db955fb2b43",
+  "log": "focused-checkpoint-phase2.txt",
+  "log_sha256": "b73334c45bf05179933c6c89c810026c98d2da8a13cae82d1648fcca341bcf0b",
+  "caveat": "Separate focused phase2 proof; subsequent dependency-DAG change requires its own rerun. Not a full CTest gate."
+}

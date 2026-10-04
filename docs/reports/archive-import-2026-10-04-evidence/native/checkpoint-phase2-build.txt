@@ -1,0 +1,14 @@
+[0/2] Re-checking globbed directories...
+[1/14] Building CXX object CMakeFiles/loom_core.dir/src/import/export_common.cpp.o
+[2/14] Building CXX object CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o
+[3/14] Building CXX object CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o
+[4/14] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o
+[5/14] Linking CXX static library libloom_core.a
+[6/14] Linking CXX shared library libloom.so.0.1.0
+[7/14] Creating library symlink libloom.so.0 libloom.so
+[8/14] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_resume.cpp.o
+[9/14] Linking CXX executable loom_compat_tool
+[10/14] Linking CXX executable loom_candidate_graph_native_tool
+[11/14] Linking CXX executable loom_tests
+[12/14] Linking CXX executable cli/loom
+[13/14] Linking CXX executable server/loom-server

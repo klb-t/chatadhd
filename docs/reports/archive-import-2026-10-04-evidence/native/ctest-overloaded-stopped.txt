@@ -1,0 +1,10 @@
+Test project /dev/shm/chatadhd-thread5/baseline-build
+        Start  57: unit.test_import_stream
+        Start 107: research.contracts
+  1/112 Test #107: research.contracts .................................***Timeout  60.00 sec
+
+        Start  32: unit.test_context_diagnostics
+  2/112 Test  #57: unit.test_import_stream ............................   Passed   78.56 sec
+        Start 103: research.structure
+  3/112 Test  #32: unit.test_context_diagnostics ......................   Passed   28.80 sec
+        Start  33: unit.test_context_engine

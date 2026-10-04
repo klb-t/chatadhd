@@ -1,0 +1,21 @@
+{
+  "schema": "loom.import_checkpoint_probe_adaptation/1",
+  "original_archive": "archive/2026-10-04/integrator-import-checkpoint-replay",
+  "reviewed_commit": "c7972252a23cb13c54797f6b57df24de903c5296",
+  "executed_import_source_commit": "d77867517bb128b7e43236c436a2dc3a31e1ae46",
+  "adaptation": "Only append options.resume = true after ImportOptions options; library compatibility default is now false.",
+  "files": {
+    "probe.cpp": {
+      "original_sha256": "c67d2f96670e6eea33c6918d1bbf6ac103652c8ba7a64d61e9fd62b9718b6443",
+      "adapted_sha256": "2bfa39063a19d259220c8471cd7084d99282c9c3e3247a57bd769ec3b19ea405",
+      "original_bytes": 2784,
+      "adapted_bytes": 2809
+    },
+    "probe_link_failure.cpp": {
+      "original_sha256": "aeda949dc4c5766fc912717a8e2426aa8c2a4adebb89667fae0fe99c07bae6f7",
+      "adapted_sha256": "0eb34d40aae32cc1586b75e1ff26a926551e2781b8dc3134aa8742caaed9b9ee",
+      "original_bytes": 3103,
+      "adapted_bytes": 3128
+    }
+  }
+}
