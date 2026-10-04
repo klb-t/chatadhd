@@ -1,0 +1,22 @@
+{
+  "purpose": "hydrate only public historical blobs needed by unchanged resolve_lineage tests in the partial clone",
+  "revision_count": 36,
+  "path_count": 56,
+  "blob_count": 166,
+  "object_list_sha256": "f0ba389cbbd152ffc2c73a635609afe4107eaec9793d2bf146b8c851e8a50b9b",
+  "argv": [
+    "git",
+    "-c",
+    "fetch.negotiationAlgorithm=noop",
+    "fetch",
+    "origin",
+    "--no-tags",
+    "--no-write-fetch-head",
+    "--recurse-submodules=no",
+    "--filter=blob:none",
+    "--stdin"
+  ],
+  "stdin_file": "lineage-needed-objects.txt",
+  "exit_code": 0,
+  "test_changes": false
+}

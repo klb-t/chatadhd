@@ -1,0 +1,16 @@
+03:26:37 [INFO ] loom.config: config.json not found - using defaults
+03:26:37 [INFO ] loom.config: secrets.json not found - using defaults
+03:26:37 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:26:37 [INFO ] loom.db: Database opened: /tmp/loom-method-artifact-07m25_yh/chatadhd.db
+03:26:37 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:26:37 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-method-artifact-07m25_yh)
+03:26:42 [INFO ] loom.db: Database closed
+03:26:42 [INFO ] loom.runtime: Loom runtime shut down
+03:26:42 [INFO ] loom.config: config.json not found - using defaults
+03:26:42 [INFO ] loom.config: secrets.json not found - using defaults
+03:26:42 [INFO ] loom.db: Database opened: /tmp/loom-method-artifact-07m25_yh/chatadhd.db
+03:26:42 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:26:42 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-method-artifact-07m25_yh)
+03:26:45 [INFO ] loom.db: Database closed
+03:26:45 [INFO ] loom.runtime: Loom runtime shut down
+{"schema": "loom.method_graph_artifact_verification/1", "passed": true, "packet_id": "98c959a0844c2d42e16919b29b15a486cd685cbe6eb082a62b6abfb8b72fa799", "contract_sha256": "108af6cf557f2139d01b61553c14343efc37bb3ad372cac72453c6fcf159feb9", "trace_sha256": "c043dd0e561272a5159d87b0ae7f93f851d6829c9eb22881b5f0a9f7f1dc5067", "receipt_id": "gpr_b6c221b62bd6075a8e6945dcc2cb74157d3d8a157abfe8b2b13d9f245aaae362", "receipt_sha256": "2b5df4036b3e4ea7589f4ba8ce8c6b45fbb87297f0aa6f89da6a152f272b61c9", "result_count": 3, "native_records": {"entities": 22, "claims": 35, "sources": 23}, "producer_execution_verified": false, "verifier_provider_calls": 0, "scope": "declared graph consistency and actual native accept/restart/read/replay/retry", "input_sha256": "f8bbc606555fec1212a7960f6ad6658e6490e5d8ef0858aa2fa42a3be5f4d0fb", "library_sha256": "c620550e16c39ef828db044d04b3174dab429b1bd6eca12c4e56069e51a3706f", "contract_file_sha256": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8"}

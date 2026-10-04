@@ -1,0 +1,62 @@
+test_registry_exports_reject_false_observations_and_reused_nested_versions (__main__.GraphPacketStoreTests.test_registry_exports_reject_false_observations_and_reused_nested_versions) ... 03:30:23 [INFO ] loom.config: config.json not found - using defaults
+03:30:23 [INFO ] loom.config: secrets.json not found - using defaults
+03:30:23 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:30:23 [INFO ] loom.db: Database opened: /tmp/loom_compat_aodakoys/graph-store/chatadhd.db
+03:30:23 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:30:23 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_aodakoys/graph-store)
+03:30:46 [INFO ] loom.config: config.json not found - using defaults
+03:30:46 [INFO ] loom.config: secrets.json not found - using defaults
+03:30:46 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:30:46 [INFO ] loom.db: Database opened: /tmp/loom_compat_aodakoys/registry-reject-0/chatadhd.db
+03:30:46 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:30:46 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_aodakoys/registry-reject-0)
+03:30:51 [INFO ] loom.db: Database closed
+03:30:51 [INFO ] loom.runtime: Loom runtime shut down
+03:31:27 [INFO ] loom.config: config.json not found - using defaults
+03:31:27 [INFO ] loom.config: secrets.json not found - using defaults
+03:31:27 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:31:27 [INFO ] loom.db: Database opened: /tmp/loom_compat_aodakoys/registry-reject-1/chatadhd.db
+03:31:27 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:31:27 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_aodakoys/registry-reject-1)
+03:31:31 [INFO ] loom.db: Database closed
+03:31:31 [INFO ] loom.runtime: Loom runtime shut down
+03:31:56 [INFO ] loom.config: config.json not found - using defaults
+03:31:56 [INFO ] loom.config: secrets.json not found - using defaults
+03:31:56 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:31:56 [INFO ] loom.db: Database opened: /tmp/loom_compat_aodakoys/registry-reject-2/chatadhd.db
+03:31:56 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:31:56 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_aodakoys/registry-reject-2)
+03:32:00 [INFO ] loom.db: Database closed
+03:32:00 [INFO ] loom.runtime: Loom runtime shut down
+03:32:32 [INFO ] loom.config: config.json not found - using defaults
+03:32:32 [INFO ] loom.config: secrets.json not found - using defaults
+03:32:32 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:32:32 [INFO ] loom.db: Database opened: /tmp/loom_compat_aodakoys/registry-reject-3/chatadhd.db
+03:32:32 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:32:32 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_aodakoys/registry-reject-3)
+03:32:35 [INFO ] loom.db: Database closed
+03:32:35 [INFO ] loom.runtime: Loom runtime shut down
+03:32:50 [INFO ] loom.config: config.json not found - using defaults
+03:32:50 [INFO ] loom.config: secrets.json not found - using defaults
+03:32:50 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:32:50 [INFO ] loom.db: Database opened: /tmp/loom_compat_aodakoys/registry-reject-4/chatadhd.db
+03:32:50 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:32:50 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_aodakoys/registry-reject-4)
+03:32:52 [INFO ] loom.db: Database closed
+03:32:52 [INFO ] loom.runtime: Loom runtime shut down
+03:33:24 [INFO ] loom.config: config.json not found - using defaults
+03:33:24 [INFO ] loom.config: secrets.json not found - using defaults
+03:33:24 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:33:24 [INFO ] loom.db: Database opened: /tmp/loom_compat_aodakoys/registry-reject-5/chatadhd.db
+03:33:24 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:33:24 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_aodakoys/registry-reject-5)
+03:33:27 [INFO ] loom.db: Database closed
+03:33:27 [INFO ] loom.runtime: Loom runtime shut down
+03:33:27 [INFO ] loom.db: Database closed
+03:33:27 [INFO ] loom.runtime: Loom runtime shut down
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 183.401s
+
+OK

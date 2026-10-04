@@ -1,0 +1,21 @@
+{
+  "schema": "loom.method_graph_artifact_verification/1",
+  "passed": true,
+  "packet_id": "5432ec627080ca9978b15e979d44ed9f2023caa8bd94d145c1bf7a36de053277",
+  "contract_sha256": "e1972fc82c0a5119382787dbda816bb657cdbed3c1d9926c5470943d62d6c932",
+  "trace_sha256": "628884f68c113dfa0a45a5bbbf43a314342e3c3461b7bb59e4b0b1dc3bad7031",
+  "receipt_id": "gpr_241da22d4951de6460b58db7bede37f336e73179e0334f9f3c84f3c59b4e4f98",
+  "receipt_sha256": "fe62b8d6c80546697f0d12c15f76ed19567184f9826a80fba3ca4353df4a3aef",
+  "result_count": 3,
+  "native_records": {
+    "entities": 22,
+    "claims": 35,
+    "sources": 22
+  },
+  "producer_execution_verified": false,
+  "verifier_provider_calls": 0,
+  "scope": "declared graph consistency and actual native accept/restart/read/replay/retry",
+  "input_sha256": "2863b07fc6401a9bb7b29b6ef2dfaa1f386faeb03934b639ae22a7a163d5c9cd",
+  "library_sha256": "c620550e16c39ef828db044d04b3174dab429b1bd6eca12c4e56069e51a3706f",
+  "contract_file_sha256": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8"
+}

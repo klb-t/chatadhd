@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/usr/bin/c++",
+    "-g0",
+    "-Wl,--no-keep-memory",
+    "/tmp/w4-method-registry.o",
+    "/tmp/w4-method-variants.o",
+    "-o",
+    "/tmp/w4-method-variants",
+    "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_core.a",
+    "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+    "-ldl",
+    "-lm",
+    "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_miniz.a",
+    "-lssl",
+    "-lcrypto",
+    "-pthread"
+  ],
+  "cwd": "/workspace/scratch/b189e486f506/chatadhd",
+  "exit_code": 0,
+  "elapsed_seconds": 1.7191220749955392
+}

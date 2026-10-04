@@ -1,0 +1,10 @@
+[
+  "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+  "/workspace/scratch/b189e486f506/chatadhd/loom/src/packet/tests/verify_method_graph_artifact.py",
+  "--library",
+  "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom.so.0.1.0",
+  "--artifact",
+  "/workspace/scratch/b189e486f506/chatadhd/loom/src/packet/tests/evidence/2026-10-04-shared-intake/registry-variants-rerun/nested-combination-alias.json",
+  "--evidence-dir",
+  "/workspace/scratch/b189e486f506/chatadhd/loom/src/packet/tests/evidence/2026-10-04-shared-intake/variants-consumer/nested-combination-alias"
+]

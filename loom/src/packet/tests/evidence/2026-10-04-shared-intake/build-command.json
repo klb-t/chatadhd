@@ -1,0 +1,7 @@
+[
+  "/root/.local/bin/cmake",
+  "--build",
+  "--preset",
+  "dev",
+  "-j2"
+]

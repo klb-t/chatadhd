@@ -1,0 +1,24 @@
+{
+  "consumer_source_commit": "1377e20",
+  "passed_variants": 0,
+  "results": [
+    {
+      "name": "observed-model-alias",
+      "accepted": false,
+      "error": "trace_binding:model_identity_id",
+      "exception": "ArtifactError"
+    },
+    {
+      "name": "nested-combination",
+      "accepted": false,
+      "error": "'method_version_id'",
+      "exception": "KeyError"
+    },
+    {
+      "name": "nested-combination-alias",
+      "accepted": false,
+      "error": "trace_binding:model_identity_id",
+      "exception": "ArtifactError"
+    }
+  ]
+}

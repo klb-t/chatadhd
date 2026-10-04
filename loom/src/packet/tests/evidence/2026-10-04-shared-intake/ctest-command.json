@@ -1,0 +1,19 @@
+{
+  "cwd": "/workspace/scratch/b189e486f506/chatadhd",
+  "argv": [
+    "/root/.local/bin/ctest",
+    "--test-dir",
+    "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev",
+    "--output-on-failure",
+    "-j2"
+  ],
+  "main_base": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+  "source_sha256": {
+    "loom/src/packet/tests/verify_method_graph_artifact.py": "4e7b03df0ade22a965c7206b763b03278baac9551a08e07b62e6951dcb30e26f",
+    "loom/tests/compat/test_graph_packet_store.py": "ccffffff45f6cc0f73a548344dd63bef48ce45d642f556af274bbacd57065242",
+    "loom/src/packet/method-graph.schema.json": "4ccb4b1c0c4a0468cb9d565f0917a0dc415dd34a7585e08ec8f16dabff4bc0cd",
+    "loom/src/packet/METHOD_GRAPH.md": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8",
+    "loom/src/packet/tests/method_registry_variants.verify.cc": "8b7935d51e7f99369eb778f6bee4975ab25c85b55aa1d2bafc1f2565f516e248"
+  },
+  "library_sha256": "c620550e16c39ef828db044d04b3174dab429b1bd6eca12c4e56069e51a3706f"
+}

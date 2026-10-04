@@ -1,0 +1,12 @@
+[
+  "/root/.local/bin/cmake",
+  "--preset",
+  "dev",
+  "-DLOOM_USE_SYSTEM_SQLITE=OFF",
+  "-DLOOM_BUILD_SERVER=ON",
+  "-DCMAKE_CXX_FLAGS_DEBUG=-g0",
+  "-DCMAKE_C_FLAGS_DEBUG=-g0",
+  "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+  "-DCMAKE_EXE_LINKER_FLAGS=-Wl,--no-keep-memory",
+  "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--no-keep-memory"
+]

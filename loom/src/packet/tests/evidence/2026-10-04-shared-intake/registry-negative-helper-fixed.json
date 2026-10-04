@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/workspace/scratch/b189e486f506/chatadhd/loom/tests/compat/test_graph_packet_store.py",
+    "-k",
+    "registry_exports_reject"
+  ],
+  "cwd": "/workspace/scratch/b189e486f506/chatadhd",
+  "test_environment": {
+    "LOOM_LIBRARY": "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom.so.0.1.0"
+  },
+  "exit_code": 0,
+  "elapsed_seconds": 183.67191733299842,
+  "scope": "focused six counterexamples with corrected UTF-8 capture; process loaded helper before subsequent single-diff batching",
+  "test_cases": 1,
+  "negative_counterexamples": 6,
+  "helper_batching_verified_by_this_run": false
+}

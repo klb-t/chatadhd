@@ -1,8 +1,8 @@
 # Wątek 4 — natywny GraphPacket, 2026-10-04
 
 Gałąź: `gpt/native-graph-packet-2026-10-04`. Baza: `30ad7d3` — przyjęty W2 i R39–R41.
-Status: wspólny artefakt i warianty PASS; trwa pełny CTest po nowych regresjach.
-Rebase i checkpoint raportu wypchnięte jako `2a7ad39` oraz `932a3b4`.
+**Status: GOTOWY do wspólnego odbioru 3/4.** Kanoniczny eksport, aliasy, nested i pełny CTest PASS.
+Rebase, checkpoint i poprawki formatu wypchnięte jako `2a7ad39`, `932a3b4` i `3fe2723`.
 Poprzedni kompletny stan wraz z obszernym raportem i negatywnymi reprodukcjami:
 `archive/2026-10-04/native-graph-packet-before-usage-intake` (`1377e20`).
 Nie zmieniono main, STATE, README, UI, profili ani kodu innych wątków.
@@ -47,8 +47,8 @@ adnotacje mogą się zmieniać z zachowaniem historii.
 | Kanoniczny rzeczywisty eksport W3 na świeżej bibliotece W4 | PASS | PASS; 19 bytów / 30 twierdzeń / 17 źródeł / 3 wyniki |
 | Alias / nested / nested+alias — stary konsument versus poprawiony | 0/3 | 3/3 |
 | Rzeczywisty rejestr W3 i natywny zapis wariantów | brak wspólnego dowodu tych wariantów | 3/3; nested: 4 ścieżki, waga −24, 2 efektywne wersje |
-| Zwykłe przypadki zestawu GraphPacketStore | 26 | 29; pełne wykonanie końcowe w toku |
-| Pełny CTest | historyczne 110/110 na `7282437` | świeży build WERROR + vendored SQLite PASS; CTest w toku |
+| Zwykłe przypadki zestawu GraphPacketStore | 26 | **29/29 PASS**, 201,56 s; wpis CTest 201,73 s |
+| Pełny CTest | historyczne 110/110 na `7282437` | **110/110 PASS**, 437,69 s; WERROR + vendored SQLite |
 
 Eksporty wariantów mają odpowiednio 19/30/18, 22/35/22 i 22/35/23
 bytów/twierdzeń/źródeł; każdy ma 3 wyniki. Zamrożone eksporty włączono do zwykłych
@@ -123,7 +123,10 @@ przenoszono ich do prywatnego loadera W4 ani cudzych plików danych.
 ## Do wątku 9
 
 Format i eksport wspólnej bramki 3/4 są zgodne oraz przechodzą natywny zapis.
-Końcowe zgłoszenie gotowości nastąpi po pełnym CTest tej aktualnej bazy.
+**W4 gotowy do wspólnego odbioru 3/4: pełny CTest aktualnej bazy 110/110 PASS.**
+Weryfikacja źródeł przed i po całym przebiegu potwierdza niezmieniony kod.
+Odziedziczony test lineage wykonał 2/2 przypadki po pobraniu dokładnie 166
+potrzebnych publicznych obiektów Git; nie zmieniono ani nie pominięto testu.
 Integrator powinien użyć tego samego kontraktu i tego samego goldenego artefaktu,
 przejrzeć osobny dowód rzeczywistego wykonania W3, potem puścić pełny CTest i build
 web na połączonych gałęziach i wykonać fast-forward. Nie cofaj zmian innych wątków.

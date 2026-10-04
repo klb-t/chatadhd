@@ -1,0 +1,301 @@
+// Offline W3 registry / W4 native-store compatibility probes. This is a local
+// saved-response projection and binding test; it does not execute a provider.
+// Compile with the exact pinned W3 method_registry.{h,cpp} and the real W4 core.
+#include "context/method_registry.h"
+#include "packet/packet.h"
+
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <set>
+#include <stdexcept>
+#include <string>
+#include <utility>
+
+#include "loom/db.h"
+#include "loom/graph_packet_store.h"
+#include "loom/model.h"
+#include "loom/util/fs.h"
+#include "loom/util/sha256.h"
+
+namespace {
+using namespace loom;
+constexpr const char* known = "2026-10-04T14:00:00Z";
+
+void require(bool condition, const std::string& message) {
+  if (!condition) throw std::runtime_error(message);
+}
+template <class T> T must(Result<T> result) {
+  if (!result) throw std::runtime_error(result.error().to_string());
+  return std::move(result).value();
+}
+std::string hash(const Json& value) { return Sha256::hex(json::canonical(value)); }
+void write_json(const std::filesystem::path& path, const Json& value) {
+  std::ofstream file(path, std::ios::binary);
+  require(file.good(), "cannot create output " + path.string());
+  file << json::dump(value);
+  file.close();
+  require(file.good(), "cannot preserve complete output " + path.string());
+}
+const Json& entity(const Json& packet, const Json& id) {
+  for (const auto& record : packet["entities"]) if (record["id"] == id) return record;
+  throw std::runtime_error("native entity missing " + id.dump());
+}
+bool edge(const Json& packet, const Json& vocabulary, const Json& subject,
+          const char* role, const Json& object) {
+  for (const auto& claim : packet["claims"])
+    if (claim["subject"] == subject && claim["object"] == object &&
+        claim["predicate"] == vocabulary["predicates"][role]) return true;
+  return false;
+}
+Json observation(const std::string& id, const Json& definition) {
+  const auto bytes = json::canonical(definition);
+  model::Observation record;
+  record.id = id;
+  record.unit = "synthetic-w4-registry-variants";
+  record.kind = model::ObservationKind::Field;
+  record.text = bytes;
+  record.locator.source = "sha256:" + Sha256::hex(bytes);
+  record.locator.byte_start = 0;
+  record.locator.byte_len = bytes.size();
+  return Json{{"observation", record.to_json()}, {"known_at", known},
+              {"text_sha256", Sha256::hex(bytes)}};
+}
+Json claim(const Json& vocabulary, const std::string& subject, const Json& object,
+           const Json& source) {
+  const auto record = must(model::Observation::from_json(source["observation"]));
+  model::Claim result;
+  result.subject = subject;
+  result.predicate = vocabulary["predicates"]["includes_method"];
+  result.object = object.get<std::string>();
+  result.qualifiers.extra = Json{{"confidence_scope", "structure_only"},
+                                 {"content_truth", "not_established"}};
+  result.assessment.evidence = model::EvidenceClass::Derived;
+  result.assessment.origin = model::Origin::System;
+  result.assessment.confidence = 1;
+  result.assessment.derivation = model::Derivation{"synthetic.w4.registry_variant", 1, "", 0};
+  result.assessment.support.push_back(model::Support{record.id, record.locator, record.text,
+                                                    "synthetic.w4.registry_variant", 1});
+  result.id = model::Claim::make_id(result.subject, result.predicate, result.object,
+                                   result.value, result.qualifiers);
+  require(static_cast<bool>(result.validate()), "invalid synthetic combination Claim");
+  return result.to_json();
+}
+void add_combination(Json& profile, const Json& vocabulary, const std::string& id,
+                     const Json& members) {
+  const Json definition{{"members", members}, {"parameters", Json::object()},
+                         {"fusion", Json{{"operation", "synthetic/sum"}}}};
+  model::Entity record;
+  record.id = id;
+  record.canonical_key = id;
+  record.label = id;
+  record.kind = vocabulary["kinds"]["combination_version"];
+  record.evidence = model::EvidenceClass::User;
+  record.origin = model::Origin::User;
+  record.first_seen = known;
+  record.last_seen = known;
+  record.attrs = Json{{"definition", definition}, {"definition_sha256", hash(definition)}};
+  profile["entities"].push_back(record.to_json());
+  const auto source = observation("source_" + id, definition);
+  profile["sources"].push_back(source);
+  std::set<std::string> linked;
+  for (const auto& member : members) {
+    const auto target = member.contains("method_version_id") ? member["method_version_id"]
+                                                              : member["combination_version_id"];
+    // Graph edges are set-like; ordered repeated occurrences remain in definition.
+    if (linked.insert(target.get<std::string>()).second)
+      profile["claims"].push_back(claim(vocabulary, id, target, source));
+  }
+}
+Json acceptance(const Json& packet, const std::string& target) {
+  Json selection = Json::object(), expected = Json::object();
+  for (const char* collection : {"entities", "claims", "sources"}) {
+    selection[collection] = Json::array();
+    expected[collection] = Json::object();
+    for (const auto& record : packet[collection]) {
+      const auto id = std::string_view(collection) == "sources" ? record["observation"]["id"]
+                                                                : record["id"];
+      selection[collection].push_back(id);
+      expected[collection][id.get<std::string>()] = nullptr;
+    }
+  }
+  return Json{{"operation", "accept"}, {"target", target}, {"packet", packet},
+              {"selection", selection}, {"expected_rows", expected}, {"explicitly_accepted", true}};
+}
+Json capture_source_id(const Json& packet, const Json& value) {
+  const auto bytes = json::canonical(value);
+  for (const auto& source : packet["sources"])
+    if (source["observation"]["text"] == bytes) return source["observation"]["id"];
+  throw std::runtime_error("exact manifest/trace Observation missing");
+}
+
+Json variant(const Json& fixture, const std::string& fixture_bytes,
+             const std::filesystem::path& output, const std::string& name,
+             bool nested, bool alias) {
+  fsutil::TempDir temporary;
+  const auto database_path = temporary.path() / "variant.sqlite";
+  auto db = must(Database::open(database_path));
+  context::MethodRegistry registry(*db);
+  const auto& original_bindings = fixture["contract"]["bindings"];
+  const auto& vocabulary = fixture["contract"]["vocabulary"];
+  auto profile = fixture["base_make_request"];
+  const std::string inner_id = "synthetic_variant_inner_" + name;
+  const std::string outer_id = "synthetic_variant_outer_" + name;
+  if (nested) {
+    const Json child{{"method_version_id", original_bindings["method_version_id"]}, {"weight", -3.0}};
+    add_combination(profile, vocabulary, inner_id, Json::array({child, child}));
+    const Json inner{{"combination_version_id", inner_id}, {"weight", 2.0}};
+    add_combination(profile, vocabulary, outer_id, Json::array({inner, inner}));
+  }
+  const auto base = must(packet::execute(profile));
+  profile["vocabulary"] = vocabulary;
+  profile["selection"] = Json{{"members", Json::array({Json{
+      {"combination_version_id", nested ? Json(outer_id) : original_bindings["combination_version_id"]},
+      {"weight", nested ? 4.0 : 1.0}}})},
+      {"parameter_layers", Json::array({"preset", "recipe", "method", "combination", "parameter_set", "user"})},
+      {"user_overrides", fixture["contract"]["trace"]["user_overrides"]}};
+  const auto snapshot = must(registry.load(profile));
+  const Json capabilities{{"execution", Json{{"offline_saved_response", Json{{"available", true}}}}},
+                           {"fusion", Json{{"ordered_single_member", Json{{"available", true}}},
+                                            {"synthetic/sum", Json{{"available", true}}}}}};
+  const auto resolved = must(registry.resolve(snapshot, Json::object(), capabilities));
+  require(resolved["leaves"].size() == (nested ? 4U : 1U), "ordered repeated leaves were lost");
+  const auto leaf = resolved["leaves"][0];
+  require(leaf["available"] == true, "real registry capability resolution failed");
+  if (nested) {
+    for (const auto& row : resolved["leaves"]) require(row["weight"] == -24.0, "signed path weights changed");
+    require(resolved["leaves"][0]["path"][1]["member_index"] == 0, "first shared inner occurrence changed");
+    require(resolved["leaves"][1]["path"][2]["member_index"] == 1, "repeated method occurrence changed");
+    require(resolved["leaves"][2]["path"][1]["member_index"] == 1, "second shared inner occurrence changed");
+  }
+  const auto requested_model = leaf["recipe"]["attrs"]["definition"]["model"];
+  const Json request{{"model", requested_model}, {"messages", Json::array({Json{
+      {"role", "user"}, {"content", leaf["prompt"]["attrs"]["text"]}}})}, {"stream", false}};
+  const Json run_context{{"run_id", "synthetic_variant_run_" + name},
+      {"origin", fixture["base_make_request"]["origin"]}, {"known_at", known},
+      {"input_sha256", Sha256::hex(fixture_bytes)}, {"base_packet", base},
+      {"model_identity_id", original_bindings["model_identity_id"]},
+      {"compiler_transform_id", original_bindings["compiler_transform_id"]},
+      {"recipe_overrides", Json{{"request", request}}},
+      {"measurements", Json{{"provider_calls", 0}, {"money_usd", 0}, {"accuracy", nullptr}}},
+      {"measurement_scope", "synthetic_local_projection_registry_binding_no_transport"}};
+  const context::MethodPacketOperation operation = [](const Json& command) { return packet::execute(command); };
+  const auto prepared = must(registry.prepare(snapshot, leaf, run_context, operation));
+  const auto contract = prepared["manifest"];
+  const auto definition_source_id = capture_source_id(prepared["packet"], contract);
+  const auto& binding = contract["bindings"];
+  if (nested) {
+    const auto& versions = contract["trace"]["effective_combination_versions"];
+    require(versions.size() == 2, "nested effective versions were flattened");
+    const auto& inner = versions[0];
+    const auto& outer = versions[1];
+    require(binding["combination_version_id"] == outer["id"], "run does not bind outer effective combination");
+    require(inner["attrs"]["definition"]["members"][0]["method_version_id"] == binding["method_version_id"],
+            "consumed method occurrence not updated");
+    require(inner["attrs"]["definition"]["members"][1]["method_version_id"] == original_bindings["method_version_id"],
+            "unconsumed repeated method occurrence overwritten");
+    require(outer["attrs"]["definition"]["members"][0]["combination_version_id"] == inner["id"],
+            "outer consumed occurrence not updated");
+    require(outer["attrs"]["definition"]["members"][1]["combination_version_id"] == inner_id,
+            "unconsumed shared combination overwritten");
+    require(edge(prepared["packet"], vocabulary, outer["id"], "includes_method", inner["id"]),
+            "effective outer-to-inner edge missing");
+    require(edge(prepared["packet"], vocabulary, inner["id"], "includes_method", binding["method_version_id"]),
+            "effective inner-to-method edge missing");
+  }
+  auto reply = fixture["reply_request"];
+  auto raw = must(json::parse(reply["raw"].get<std::string>()));
+  raw["base_packet_sha256"] = prepared["packet"]["packet_id"];
+  reply["operation"] = "compile_reply";
+  reply["packet"] = prepared["packet"];
+  reply["raw"] = json::canonical(raw);
+  reply["host"]["recipe_sha256"] = contract["definition_hashes"]["recipe"];
+  reply["host"]["model"] = alias ? Json("synthetic/test-model-observed-alias") : requested_model;
+  const auto compilation = must(packet::execute(reply));
+  const auto applied = must(packet::execute(Json{{"operation", "apply_compiled_reply"},
+      {"packet", prepared["packet"]}, {"compilation", compilation}, {"policy", fixture["apply_policy"]},
+      {"explicitly_accepted", true}}));
+  const Json result_context{{"origin", fixture["base_make_request"]["origin"]}, {"known_at", known},
+      {"node_ids", compilation["node_ids"]}, {"compilation_sha256", compilation["compilation_sha256"]},
+      {"request", prepared["effective_recipe"]["request"]},
+      {"measurements", Json{{"provider_calls", 0}, {"money_usd", 0}, {"accuracy", nullptr}}}};
+  const auto bound = must(registry.bind_results(applied["packet"], contract, result_context, operation));
+  const auto& final_packet = bound["packet"];
+  const auto& trace = bound["manifest"]["trace"];
+  Json result_ids = Json::array();
+  for (const auto& id : compilation["node_ids"]) result_ids.push_back(id);
+  require(must(packet::execute(Json{{"operation", "validate"}, {"packet", final_packet}})) == final_packet,
+          "final native validation changed packet");
+  require(trace["requested_model"] == requested_model, "requested model identity changed after response");
+  require(trace["actual_model"] == reply["host"]["model"], "observed model identity lost");
+  if (alias) {
+    require(trace["requested_model_identity_id"] == original_bindings["model_identity_id"],
+            "requested model descriptor lost");
+    require(trace["actual_model_identity_id"].is_null() && trace["model_identity_id"].is_null(),
+            "actual model descriptor inferred from alias text");
+    require(bound["manifest"]["bindings"]["model_identity_id"].is_null(), "requested descriptor misbound as actual");
+    require(!bound["manifest"]["definition_records"].contains("model_identity_id"),
+            "requested descriptor miscaptured as actual definition");
+  }
+  for (const auto& id : compilation["node_ids"]) {
+    require(edge(final_packet, vocabulary, id, "produced_in_run", binding["run_id"]), "result run edge missing");
+    require(edge(final_packet, vocabulary, id, "produced_by_method_version", binding["method_version_id"]),
+            "result method version edge missing");
+    require(entity(final_packet, id)["attrs"]["model_origin"]["model"] == reply["host"]["model"],
+            "observed model origin differs from response projection");
+  }
+  const auto accept_request = acceptance(final_packet, "synthetic-w4-registry-variant-" + name);
+  const auto stored = must(registry.accept(accept_request));
+  const auto receipt = stored["receipt"];
+  require(receipt["packet"] == final_packet, "native acceptance changed packet");
+  require(receipt["acceptance_establishes_content_truth"] == false, "acceptance declared content truth");
+  db.reset();
+  auto restarted = must(Database::open(database_path));
+  kb::GraphPacketStore store(*restarted);
+  for (const char* action : {"read", "replay"}) {
+    const auto replayed = must(store.execute(Json{{"operation", action}, {"receipt_id", receipt["id"]}}));
+    require(replayed["receipt"] == receipt && replayed["row_drift"]["matches"] == true,
+            "native restart/replay receipt drift");
+  }
+  const auto retry = must(store.execute(accept_request));
+  require(retry["replayed"] == true && retry["receipt"] == receipt, "native retry changed receipt");
+  const Json artifact{{"schema", "loom.method_graph_fixture/1"}, {"contract", contract}, {"trace", trace},
+      {"packet", final_packet}, {"result_entity_ids", result_ids},
+      {"definition_capture_source_id", definition_source_id},
+      {"trace_capture_source_id", capture_source_id(final_packet, trace)},
+      {"producer_evidence", Json{{"contract_reference", "loom/src/packet/METHOD_GRAPH.md"},
+          {"variant", name}, {"exact_input_fixture_sha256", Sha256::hex(fixture_bytes)},
+          {"scope", "actual W3 registry resolve/prepare/bind and local W4 saved-response projection/native persistence"},
+          {"transport_execution_verified", false}, {"provider_calls", 0}, {"paid_calls", 0},
+          {"selection", profile["selection"]}, {"resolved_leaves", resolved["leaves"]},
+          {"prepared_manifest", contract}, {"bound_manifest", bound["manifest"]}}}};
+  write_json(output / (name + ".json"), artifact);
+  write_json(output / (name + "-registry-receipt.json"), receipt);
+  return Json{{"variant", name}, {"passed", true}, {"packet_id", final_packet["packet_id"]},
+      {"artifact_sha256", Sha256::hex(json::dump(artifact))}, {"result_count", compilation["node_ids"].size()},
+      {"resolved_leaf_count", resolved["leaves"].size()}, {"provider_calls", 0},
+      {"transport_execution_verified", false}};
+}
+}  // namespace
+
+int main(int argc, char** argv) {
+  try {
+    require(argc == 3, "usage: method_registry_variants.verify <original-fixture.json> <fresh-output-directory>");
+    const auto fixture_bytes = must(loom::fsutil::read_file(argv[1]));
+    const auto fixture = must(loom::json::parse(fixture_bytes));
+    const std::filesystem::path output(argv[2]);
+    require(!std::filesystem::exists(output), "output directory already exists; preserve earlier evidence");
+    require(std::filesystem::create_directories(output), "cannot create output directory");
+    loom::Json results = loom::Json::array();
+    results.push_back(variant(fixture, fixture_bytes, output, "observed-model-alias", false, true));
+    results.push_back(variant(fixture, fixture_bytes, output, "nested-combination", true, false));
+    results.push_back(variant(fixture, fixture_bytes, output, "nested-combination-alias", true, true));
+    require(must(loom::fsutil::read_file(argv[1])) == fixture_bytes, "original golden fixture bytes changed");
+    write_json(output / "variants.json", results);
+    std::cout << loom::json::dump(results) << '\n';
+    return 0;
+  } catch (const std::exception& error) {
+    std::cerr << "W3/W4 method variants: " << error.what() << '\n';
+    return 1;
+  }
+}
