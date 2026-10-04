@@ -681,6 +681,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
   Run run(env);
   std::string provider;
   bool recognized = true;
+  bool bad_element_parse = false;
   const std::string member = current_source_ && !current_source_->source_filename.empty()
       ? current_source_->source_filename : path.filename().string();
 
@@ -709,6 +710,9 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
     // Recognition may happen after a malformed array element. Retain earlier
     // errors if a later element establishes this as a provider export; the
     // report is still discarded when the whole path falls back to legacy.
+    // A syntactically valid value beyond the caller's depth preset remains a
+    // capability diagnostic; malformed JSON must not enter legacy fallback.
+    if (why == "invalid JSON") bad_element_parse = true;
     run.rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "invalid_element"}, {"message", why}});
     run.rep.partial = true;
   };
@@ -719,6 +723,11 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
     return std::optional<std::vector<Conversation>>(std::move(run.convs));
   }
   if (!recognized || provider.empty()) {
+    if (provider.empty() && (bad_element_parse || st.invalid || st.truncated)) {
+      run.note_stats(member, st);
+      run.rep.partial = true; report_out = run.rep.to_json();
+      return Error(Errc::Parse, st.message.empty() ? "invalid or truncated JSON" : st.message);
+    }
     if (st.invalid || st.too_deep || st.truncated) {
       run.note_stats(member, st);
       run.rep.partial = true; report_out = run.rep.to_json();

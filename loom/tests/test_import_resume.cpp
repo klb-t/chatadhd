@@ -303,6 +303,29 @@ TEST_SUITE("import_resume") {
     }
   }
 
+  TEST_CASE("malformed generic arrays and empty wrappers cannot become completed legacy imports") {
+    ResumeFixture fixture;
+    const std::vector<std::string> malformed{
+      "[" + std::string(5'000'001, ' ') + "truX]", // above the legacy streaming preset
+      "{\"conversations\":[truX]}",
+      "{\"conversations\":[],\"suffix\":truX}",
+      "{\"conversations\":[,]}"
+    };
+    for (std::size_t index = 0; index < malformed.size(); ++index) {
+      CAPTURE(index);
+      const auto path = fixture.write(malformed[index], "malformed-" + std::to_string(index) + ".json");
+      auto result = fixture.importer.import_file(path, fixture.options);
+      REQUIRE_FALSE(result.has_value()); CHECK(result.error().code == Errc::Parse);
+      CHECK(fixture.count("conversations") == 0); CHECK(fixture.count("messages") == 0);
+      const auto sources = unwrap(fixture.provenance.find_sources_by_hash(Sha256::hex(malformed[index])));
+      REQUIRE(sources.size() == 1); CHECK(sources[0].metadata["import_status"] == "failed");
+    }
+    const auto valid = fixture.write(Json::array({Json{{"role", "user"}, {"content", "Valid generic API message"}}}).dump(), "valid-generic.json");
+    const auto accepted = unwrap(fixture.importer.import_file(valid, fixture.options));
+    REQUIRE(accepted.conversations.size() == 1); CHECK(accepted.messages == 1);
+    CHECK(accepted.export_report.is_null()); // valid non-provider probes still route to legacy
+  }
+
   TEST_CASE("two concurrent importer instances share source identity and item checkpoints") {
     ResumeFixture fixture;
     const auto path = fixture.write(Json::array({resume_conversation(0), resume_conversation(1)}).dump());
