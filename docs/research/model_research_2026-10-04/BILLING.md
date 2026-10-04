@@ -138,3 +138,97 @@ joins, omitted unknown fields and refusal to overwrite receipts. Their result
 is recorded in [billing/test-results.txt](billing/test-results.txt). They test
 the accounting instrument, not provider invoice authenticity or live model
 quality.
+
+## Addendum: separately authorized EUR 5 programme
+
+The owner's subsequent instruction authorizes paid work within **EUR 5 on a
+separate new OpenRouter key**. That authority does not reset the old USD 2
+programme, spend its purported remaining balance, or assign its historical
+$1.098135722 difference. Earlier consent requirements in this report describe
+the older programme. Additional permission is not missing for this new scope;
+the new private credential and fresh execution evidence are missing.
+
+OpenRouter documents [key spending limits in USD](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key)
+and [USD-denominated credits](https://openrouter.ai/support/). Therefore a key
+field `limit: 5` means USD 5, not EUR 5. No EUR/USD rate or current model price
+is asserted by this preparation. Convert the authorized EUR amount using
+documented, dated FX evidence and configure a USD cap no greater than that
+conversion. A reference FX quote is not proof of a payment card's settlement
+rate; record the selected conversion basis separately.
+
+The [new programme preset](billing/new-programme-5eur.json) records this
+authorization with an empty, separate ledger. It contains no secret, actual
+key fingerprint, guessed FX rate or guessed USD cap. The
+[offline preparation gate](../../../loom/tools/structure/new_budget5eur_gate.py)
+does not inspect environment values, load a key, contact metadata endpoints or
+dispatch inference. It validates supplied private evidence and reports
+`blocked` until the necessary records exist. Its input contract requires:
+
+1. A private binding record identifying the new programme, a SHA-256 key
+   fingerprint, binding to the future transport's loaded credential, and the
+   owner's confirmation that this is the separate new key. Fingerprints and
+   credential labels are omitted from public gate output.
+2. A fresh, fingerprint-bound [current-key metadata observation](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-api-key)
+   with USD limit, remaining credit and actual usage, no reset, no management
+   credential, and explicit BYOK accounting. Freshness windows are editable
+   data presets in the JSON, not application-wide ceilings.
+3. Dated EUR→USD evidence with a source reference and an explicit USD cap
+   within the EUR authority. Missing FX blocks preparation without inventing
+   a rate.
+4. A frozen stage manifest hash and fresh model/provider-specific endpoint
+   price evidence. Each price row includes currency, source reference, raw
+   snapshot SHA-256 and all charge components with declared upper unit
+   quantities. The stage reservation must cover their calculated projection;
+   the tool cannot verify an externally supplied tokenizer upper bound or
+   claim a reservation is guaranteed provider billing.
+5. The separate cumulative ledger: unique operation IDs, programme/key
+   binding, first-response hash, reported actual cost and credit-versus-BYOK
+   status. Actual amounts are summed after each operation. Unknown costs keep
+   their reservation; the preset stops continuation until reconciled. Account
+   usage must match known cumulative actuals before proceeding.
+
+The live executor must capture fresh evidence **before every stage**, write a
+durable reservation before dispatch, retain the first raw response and append
+actual cost after each operation. Report that stage's actual and cumulative
+costs, remaining cap and unresolved amounts. Re-run the gate after every paid
+operation and before the next stage. Do not retry an uncertain billed attempt
+automatically. Preserve the original runner's secret checks, first-response
+retention and uncertain-charge handling when designing a successor; this
+prepared gate is not integrated paid execution. Its supplied binding record
+does not independently authenticate the eventual transport.
+
+The native thread-2 `UsagePolicy` can additionally record admission,
+reservations, ×10 confirmation and actual resource usage when adopted by a
+future executor. Its finite binary64 quantities do not replace this exact
+decimal billing ledger or actual provider receipts. A native admission receipt
+alone is neither credential binding nor paid-call permission.
+
+Current preparation can be reproduced without credentials:
+
+```sh
+python3 -B loom/tools/structure/new_budget5eur_gate.py \
+  --policy docs/research/model_research_2026-10-04/billing/new-programme-5eur.json \
+  --output /tmp/new-programme-5eur-readiness.json
+python3 -B -m unittest discover -s loom/tools/structure \
+  -p 'test_new_budget5eur_gate.py' -v
+```
+
+With private normalized evidence, add `--evidence /private/new-stage.json` and
+`--ledger /private/new-programme-ledger.json`. Outputs refuse to overwrite
+existing files. The tool's JSON/CSV historical export join remains separate;
+the [generation metadata endpoint](https://openrouter.ai/docs/api/api-reference/generations/get-request-&-usage-metadata-for-a-generation)
+documents generation identifiers and `total_cost`, useful for future private
+reconciliation. Public [model metadata](https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties)
+contains pricing fields, but examples in documentation are not current price
+quotes for any planned model.
+
+To execute, provide the new key through the environment's private credential
+mechanism under `OPENROUTER_THREAD7_NEW_KEY`; do not paste it into public files
+or research manifests. No additional budget-consent question is needed for
+the already authorized EUR 5 scope. The old expired credential is not reused.
+
+Eight new offline regressions cover the missing-key state despite existing
+authorization, EUR/USD cap mismatch, identity/reset/management checks, price
+freshness and charge coverage, cumulative actual costs, unknown reservations,
+duplicate operation IDs and budget overflow. Their invented FX/prices are
+test fixtures. Neither this preparation nor these tests made paid calls.

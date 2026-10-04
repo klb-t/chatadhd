@@ -1,0 +1,27 @@
+{
+  "schema": "loom.new_programme_budget/1",
+  "programme_id": "thread7-new-key-2026-10-04-eur5",
+  "authorization": {
+    "status": "owner_authorized_within_budget",
+    "source_ref": "owner-followup-new-scope-thread7-2026-10-04",
+    "currency": "EUR",
+    "amount": "5"
+  },
+  "provider_currency": "USD",
+  "usd_cap": null,
+  "credential_environment_variable": "OPENROUTER_THREAD7_NEW_KEY",
+  "credential_in_this_file": false,
+  "freshness_presets_seconds": {
+    "key_metadata": 300,
+    "pricing": 86400,
+    "fx": 259200,
+    "future_clock_skew": 300
+  },
+  "unknown_cost_policy": "stop",
+  "preparation_status": "new_private_key_and_fresh_evidence_missing",
+  "initial_ledger": {
+    "schema": "loom.new_programme_billing_ledger/1",
+    "programme_id": "thread7-new-key-2026-10-04-eur5",
+    "attempts": []
+  }
+}
