@@ -1,0 +1,14 @@
+[workflow-snapshot] PASS restart restores exact source bytes, current variables, trace and references without dispatch
+[workflow-snapshot] PASS named snapshots coexist and replacing one uses whole-value config semantics
+[workflow-snapshot] PASS canonical definition/source drift and host same-revision drift are rejected without dispatch
+[workflow-snapshot] PASS changed snapshot state or saved variables cannot bypass trace replay
+[workflow-snapshot] PASS pending remote work survives restart as unknown and cannot continue automatically
+[workflow-snapshot] PASS explicit reconciliation never fabricates success, and abandonment keeps workflow blocked
+[workflow-snapshot] PASS readback detects a lost write and retains the candidate including source bytes
+[workflow-snapshot] PASS malformed remote store is preserved instead of overwritten or silently repaired
+[workflow-snapshot] PASS current capability availability and malformed pending state fail before dispatch
+[workflow-snapshot] PASS JSON boundaries reject hidden values, nonfinite references and invalid Unicode without source mutation
+[workflow-snapshot] PASS every view has exactly one selected-profile session; missing, duplicate, mismatched and extra sessions are rejected
+[workflow-snapshot] PASS browser panel performs no implicit reads/dispatch and read-only unknown recovery is explicit
+[workflow-snapshot] PASS browser reconciliation is staged, saved explicitly and survives browser restart without execution
+[workflow-snapshot] 13 groups passed; persistence/restore never dispatched an adapter.

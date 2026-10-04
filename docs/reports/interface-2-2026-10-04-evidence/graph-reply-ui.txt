@@ -1,0 +1,10 @@
+[graph-reply-ui] PASS Python fixture code-point spans preserve supplementary Unicode and model provenance
+[graph-reply-ui] PASS candidate compilation, exact raw wire, native replay validation, semantic fragment addresses and narrow layout
+[graph-reply-ui] PASS explicit apply returns actual Python algebra packet/receipt and any input edit invalidates prior compilation
+[graph-reply-ui] PASS first schema failure preserves original CRLF/Unicode text and server exact-byte capture as inert source
+[graph-reply-ui] PASS ×10 hold binds explicit confirmation to its exact receipt and retries the identical command
+[graph-reply-ui] PASS declined usage never retries or compiles the held operation
+[graph-reply-ui] PASS missing capability is visible while raw response and input changes remain available
+[graph-reply-ui] PASS malformed native DTO fails visibly without replacing source text or crashing React
+[graph-reply-ui] PASS late compilation cannot attach the preceding turn's graph to a replacement response
+[graph-reply-ui] 9/9 groups passed; fixture compiler 50fffaffbf1abcbb2de1b626ae51f270a5842cd3e023c1dc3cee8011a401a903; all endpoints synthetic/local

@@ -1,0 +1,6 @@
+test_schema_and_all_actual_builtins_are_valid (loom.tools.contracts.test_application_profiles.ApplicationProfiles.test_schema_and_all_actual_builtins_are_valid) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.565s
+
+OK

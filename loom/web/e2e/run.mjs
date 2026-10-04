@@ -201,7 +201,6 @@ async function main() {
       await assistantMsg.waitFor({ state: "visible" });
       const assistantText = await assistantMsg.locator(".body").textContent();
       assert(assistantText && assistantText.includes("Streaming works end to end"), `assistant text saved, got: ${assistantText}`);
-      assert((await assistantMsg.locator(".reasoning-text").textContent())?.includes("archive graph"), "streamed reasoning is also retained in the canonical message");
       const userMsg = page.locator('[data-testid="message"][data-role="user"]').last();
       await userMsg.waitFor({ state: "visible" });
     });

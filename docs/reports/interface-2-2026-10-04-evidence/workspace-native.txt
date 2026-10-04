@@ -1,0 +1,11 @@
+[workspace] PASS actual run, stable identities and copied independent reference
+[workspace] PASS directed depth coupling, convergent cycle, keyboard selection and reference isolation
+[workspace] PASS saved perspective, profile isolation and exact reload restoration
+[workspace] PASS run switching preserves independent reference and native run provenance
+[workspace] PASS native context preview, persisted input and explicit non-delivery status
+[workspace] PASS no five-view cap, mobile layout and keyboard controls
+[workspace] PASS unlinked first pane stays independent when new views are added
+[workspace] PASS catalog selection restores from native data, not a saved record copy
+[workspace] PASS late catalog preview after pane close cannot corrupt saved active identity
+[workspace] PASS unavailable saved run is reported without silently selecting latest data
+[workspace] 10/10 scenarios passed; real native API, authored synthetic DEV fixture, zero model calls

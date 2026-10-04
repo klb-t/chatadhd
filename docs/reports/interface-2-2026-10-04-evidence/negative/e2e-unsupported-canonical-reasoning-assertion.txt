@@ -1,0 +1,42 @@
+[e2e] data dir: /tmp/loom-e2e-data-fOkUFn
+[e2e] mock LLM: http://127.0.0.1:46465  loom-server: http://127.0.0.1:39033
+[loom-server] 23:48:20 [INFO ] loom.config: config.json not found - using defaults
+23:48:20 [INFO ] loom.config: secrets.json not found - using defaults
+[loom-server] 23:48:20 [INFO ] loom.db: Schema upgraded: v0 -> v4
+[loom-server] 23:48:20 [INFO ] loom.db: Database opened: /tmp/loom-e2e-data-fOkUFn/chatadhd.db
+[loom-server] 23:48:20 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:48:20 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-e2e-data-fOkUFn)
+[loom-server] loom-server: listening on 127.0.0.1:39033 (static: /workspace/scratch/308e2340bae7/chatadhd/loom/web/dist)
+[e2e] loom-server is up
+[e2e] PASS  load app
+[browser console] Failed to load resource: the server responded with a status of 503 (Service Unavailable)
+[e2e] PASS  configure model + API key via Settings panel
+[e2e] PASS  create a new conversation
+[e2e] FAIL  send a message and see streamed reply + reasoning
+locator.textContent: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="message"][data-role="assistant"]').last().locator('.reasoning-text')[22m
+
+    at /workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/run.mjs:204:61
+    at async step (/workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/run.mjs:45:5)
+    at async main (/workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/run.mjs:192:5)
+[e2e] PASS  edit a message and switch versions
+[e2e] PASS  markdown XSS payloads are sanitized, not executed
+[loom-server] 23:48:59 [INFO ] loom.db: Batch inserted 4 messages into c_a22a5bf2c20f
+[loom-server] 23:48:59 [INFO ] loom.import: Imported 4 messages into 'req_21821700506049_3'
+[loom-server] 23:48:59 [INFO ] loom.semantic_worker: Semantic: 3 done (regex, 300.0/s, 2 left)
+[e2e] PASS  import a fixture and see it complete
+[e2e] graph counts: 11 nodes · 5 edges
+[e2e] PASS  graph renders nodes for the active conversation
+[e2e] PASS  context slider shows a live preview
+[e2e] PASS  toggle semantic pause/resume
+[browser console] Failed to load resource: the server responded with a status of 503 (Service Unavailable)
+[e2e] PASS  change a setting (theme) and confirm it persists across reload
+[e2e] PASS  knowledge analysis runs from UI and exposes actual claims with provenance
+[e2e] PASS  coordinated graph views remain open together with independent filters
+[e2e] PASS  knowledge context preview explains inclusion and flags stale inputs
+[e2e] PASS  catalog displays real source units and requires a reviewed import
+[e2e] PASS  phone layout renders and is navigable
+[loom-server] loom-server: stopped
+[loom-server] 23:49:10 [INFO ] loom.db: Database closed
+23:49:10 [INFO ] loom.runtime: Loom runtime shut down
