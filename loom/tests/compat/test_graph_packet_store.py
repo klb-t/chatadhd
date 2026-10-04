@@ -104,19 +104,40 @@ class GraphPacketStoreTests(CompatTestCase):
         entities = {row['id']: row for row in packet['entities']}
         claims = {row['id']: row for row in packet['claims']}
         sources = {row['observation']['id']: row for row in packet['sources']}
-        for name in ('method_version', 'recipe_version', 'preset_version', 'combination_version'):
+        for name in ('method_version', 'recipe_version', 'preset_version', 'combination_version',
+                     'parameter_set_version'):
             attrs = entities[bindings[name + '_id']]['attrs']
             self.assertEqual(codec.digest(attrs['definition']), attrs['definition_sha256'])
         prompt = entities[bindings['prompt_version_id']]['attrs']
         self.assertEqual(hashlib.sha256(prompt['text'].encode()).hexdigest(),
                          contract['definition_hashes']['prompt_bytes'])
         trace = entities[bindings['run_id']]['attrs']
-        for name in ('effective_parameters', 'user_overrides', 'preset_sha256',
+        for name in ('effective_parameters', 'user_overrides', 'parameter_set_version_id',
+                     'parameter_set_sha256', 'preset_sha256',
                      'combination_sha256', 'prompt_sha256', 'recipe_sha256', 'measurements'):
             self.assertEqual(trace[name], contract['trace'][name])
         self.assertEqual(trace['projection_status'], 'response_projected')
         self.assertEqual(trace['response_sha256'], compiled['raw_capture']['sha256'])
         self.assertIsNone(trace['measurements']['accuracy'])
+        parameters = entities[bindings['parameter_set_version_id']]['attrs']
+        self.assertEqual(parameters['definition']['effective_parameters'], trace['effective_parameters'])
+        self.assertEqual(parameters['definition']['user_overrides'], trace['user_overrides'])
+        self.assertEqual(parameters['definition_sha256'], trace['parameter_set_sha256'])
+        self.assertEqual(entities[bindings['method_version_id']]['attrs']['definition']['parameter_set_sha256'],
+                         trace['parameter_set_sha256'])
+        self.assertEqual(entities[bindings['recipe_version_id']]['attrs']['definition']['parameters'],
+                         trace['effective_parameters'])
+        for subject, role, target in (
+                (bindings['method_version_id'], 'uses_parameter_set', bindings['parameter_set_version_id']),
+                (bindings['run_id'], 'uses_parameter_set', bindings['parameter_set_version_id']),
+                (bindings['run_id'], 'uses_combination', bindings['combination_version_id'])):
+            edges = [c for c in claims.values()
+                     if c['subject'] == subject and c['predicate'] == predicates[role]]
+            self.assertEqual([edge['object'] for edge in edges], [target])
+        captured_definitions = json.loads(sources[expected['source_ids'][0]]['observation']['text'])
+        self.assertEqual(captured_definitions['definition_records'], contract['definition_records'])
+        for role, attrs in contract['definition_records'].items():
+            self.assertEqual(entities[bindings[role]]['attrs'], attrs)
         for result_id in compiled['node_ids'].values():
             for role, target in (('produced_in_run', bindings['run_id']),
                                  ('produced_by_method_version', bindings['method_version_id']),
@@ -136,6 +157,8 @@ class GraphPacketStoreTests(CompatTestCase):
         self.assertEqual(evaluation['value']['measurement_status'], 'unavailable')
         self.assertEqual(evaluation['assessment']['origin'], 'model_knowledge')
         self.assertEqual(evaluation['qualifiers']['extra']['model_origin']['kind'], 'model')
+        self.assertIsNone(evaluation['qualifiers']['extra']['model_origin']['recipe_sha256'])
+        self.assertIsNone(sources[expected['source_ids'][-1]]['observation']['attrs']['model_origin']['recipe_sha256'])
         self.assertEqual(evaluation['qualifiers']['extra']['content_verification'], 'unverified')
         self.assertEqual(evaluation['assessment']['basis']['support'][0]['observation'],
                          expected['source_ids'][-1])

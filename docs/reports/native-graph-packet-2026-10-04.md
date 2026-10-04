@@ -155,6 +155,74 @@ test/data and binary hashes carry the green 110/110 result; no extra repeat or
 rebuild is claimed for this documentation-only advance. `latest-base.json`
 records the exact equivalence.
 
+## Owner supplement — methods are graph entities
+
+Fresh fetch for the owner's explicit supplement found main unchanged at
+`7282437`, W3 rebased to `8293fc7`, W2 `910a1d6` and W11 `3cd3f47`.
+W1 `2d08797` supplies prompt contracts/snapshots but explicitly leaves graph
+method-node wiring open; its request for shared identities is addressed here.
+W3's selector/embedding implementation still has no producing method-registry
+adapter, GraphPacket reply composition or real method/run graph edges. Its
+message metadata is not evidence that the shared W3→W4 contract is adopted.
+
+The earlier fixture retained exact parameters in recipe/run attrs and a
+combination reference in run attrs. This increment makes parameters independently
+addressable as a hashed parameter-set-version Entity. Actual Claims now link the
+specific method version and run to that set, and the run to its exact combination
+version. Result→method-version→parameters and result→run→combination are graph
+traversals. Captured definitions preserve exact values, including prompt text,
+alongside hashes; this is checked against native Entity attrs after composition.
+The exact captures exposed an inherited synthetic evaluator-origin mismatch:
+the judge had been stamped with the evaluated method's recipe hash. Both judge
+origins now retain null for its unavailable recipe; response bytes/date/evidence
+remain captured. A full gate started before this review finding was interrupted
+and retained, rather than presented as a final result.
+
+| Packet-side measure | Before supplement (`8e0e86b`) | After supplement |
+|---|---:|---:|
+| Final synthetic graph entities / claims / sources | 13 / 19 / 5 | 14 / 22 / 5 |
+| Parameter-set Entities | 0 | 1 |
+| Real version/run→parameters and run→combination Claims | 0 | 3 |
+| Result→run/version/compiler Claims | 9 | 9, retained |
+| Schema checks | 14/14 | 14/14 |
+| Native store cases | 23/23 | 23/23, stronger parameter/definition/edge assertions |
+| Full CTest | 110/110, earlier pinned receipt | 110/110, fresh 341.71 s |
+
+The schema adds optional typed parameter-set bindings/hashes and exact definition
+captures, preserving the earlier v1 shapes. It remains a shape contract:
+hash equality, actual edges and settings consumed are separate producer/native
+checks. Kernel, C ABI, HTTP and KB implementation are unchanged; no method-name
+branch, production default or policy ceiling was added. Builtin definitions must
+come from pack data; this synthetic fixture is not such a pack.
+
+Focused native-store CTest passed 1/1 (23/23 cases) in 10.42 s. The fresh full
+CTest passed **110/110 in 341.71 s**, with unchanged gates; its store entry
+executed **23/23 cases** in 6.64 s. The receipt is recorded separately in
+`loom/src/packet/tests/evidence/2026-10-04-method-supplement/`.
+Earlier receipts stay pinned to their original code, data and report snapshots.
+The joint execution gate and production packs remain open in their assigned
+lanes. No provider calls or GitHub Actions runs were made.
+Final fetch kept main at `7282437`; W11 advanced to `1841c26` in runtime profiles,
+archive/search/graph consumers and reports, with no packet/KB implementation
+collision. The published packet-side
+contract and fixtures are ready for the owning producers; joint adoption is not
+claimed by this full gate.
+
+## Do wątku 1
+
+Represent effective prompt and recipe definitions as ordinary versioned Entities,
+with exact captured bytes/values and hashes using `METHOD_GRAPH.md`. The method
+version must identify the recipe and parameter set actually used after overlays;
+editing a prompt or parameter set creates a new version without rewriting old
+run/result provenance. Packet-side representation is available; production prompt
+data and pack construction stay in your lane.
+At `2d08797`, `Contract.hash`/prepared snapshots can supply captured recipe
+identity when they describe the effective invocation. Keep overlays and one-call
+parameters bound separately and accurately. No new `compile_reply.host` fields
+are required: method/version/run bindings are ordinary native Entities/Claims
+composed through packet diffs, as in the fixture. The existing recipe hash field
+does not establish provider execution or a verified first-response identity.
+
 ## Do wątku 2
 
 Packet's optional `usage_estimate` already uses the shared admission/reservation/
@@ -183,6 +251,12 @@ Adopt the versioned packet-side method graph contract and fixture linked above.
 Its regression covers real edges and native persistence; add a joint regression
 using your actual registry/trace adapter before W9 admits the combination. Do not
 stamp a builtin recipe hash on a result from different effective user settings.
+The current fixture also binds a parameter-set-version Entity and real
+version/run→parameters and run→combination Claims. Preserve these in registry
+output. `8293fc7` still lacks this adapter; declaring fields in message metadata
+does not fulfill the owner requirement for graph edges. All producer paths,
+including non-model methods, must supply applicable identities/edges; no fake
+model or prompt is required for lexical methods.
 
 Every emitted reply node/source carries `model_origin.kind=model`.
 Diff/structural origin
@@ -191,6 +265,15 @@ content provenance for response annotations, and retain compiler provenance.
 Semantic links remain unverified draft attributes; acceptance never confirms
 content. An unresolved authorized usage reservation is not a new dispatch grant;
 chat must preserve its own first responses/execution identity before paid work. Do not map system containment to model factual claims.
+
+## Do wątku 7
+
+Use ordinary dated Claims about the exact method/version/model Entities for
+experiment results and model profiles. Keep evaluator/source bytes and evidence
+locators, dataset identity, measured dimensions and unavailable quantities.
+The fixture shows a model judgement with explicit model origin; it is not a
+measured quality result. Both evaluations and profiles use the same native
+Claim/Observation structure; revisions preserve earlier assessments/history.
 
 ## Do wątku 10
 
@@ -225,7 +308,10 @@ The returned unresolved-replay defect is corrected in the packet dispatcher;
 verify its 14 offline policy scenarios separately from main's CTest because W2
 is not yet integrated. The packet-side method-graph contract, open JSON Schema and regression are
 published here; W3's actual producing adapter and joint regression remain an
-explicit integration prerequisite. Register/export the existing thread-2 confirmation C API if UI uses shared FFI;
+explicit integration prerequisite.
+Current parameter-set and combination traversals are part of that shared
+fixture; require W3's actual adapter to produce them before closing the gate.
+Register/export the existing thread-2 confirmation C API if UI uses shared FFI;
 this lane does not add another approval engine. Update STATE with native history
 validation now including KB acceptance. Thread 8's presentation README draft
 still describes full history validation as Python-only; update that claim only

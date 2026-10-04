@@ -150,8 +150,10 @@ is integrated, rather than bypassing the requested policy.
 
 [METHOD_GRAPH.md](METHOD_GRAPH.md) defines `loom.method_graph/1` and
 `loom.method_run_trace/1` as versioned caller data patterns. Existing packet
-operations preserve method/version/prompt/recipe/preset/combination/run records
-and real result-to-version/run/compiler Claims. No algorithm-name dispatch or
+operations preserve method/version/parameters/prompt/recipe/preset/combination/run records
+and real result-to-version/run/compiler Claims. Parameter-set versions are
+addressable Entities, with version/run-to-parameters and run-to-combination
+Claims. Exact captured definitions accompany the hashes. No algorithm-name dispatch or
 closed domain taxonomy is added. The synthetic native C ABI/store regression
 covers exact captured bytes, hashes, effective user settings, full history and
 separate dated, unmeasured model assessments. Thread 3 must adopt this pattern

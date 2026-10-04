@@ -59,6 +59,7 @@
         "method_identity_id": { "$ref": "#/$defs/entityId" },
         "method_version_id": { "$ref": "#/$defs/entityId" },
         "run_id": { "$ref": "#/$defs/entityId" },
+        "parameter_set_version_id": { "$ref": "#/$defs/nullableEntityId" },
         "prompt_version_id": { "$ref": "#/$defs/nullableEntityId" },
         "recipe_version_id": { "$ref": "#/$defs/nullableEntityId" },
         "preset_version_id": { "$ref": "#/$defs/nullableEntityId" },
@@ -74,6 +75,7 @@
       "required": ["method_version"],
       "properties": {
         "method_version": { "$ref": "#/$defs/sha256" },
+        "parameter_set": { "$ref": "#/$defs/nullableSha256" },
         "prompt_bytes": { "$ref": "#/$defs/nullableSha256" },
         "recipe": { "$ref": "#/$defs/nullableSha256" },
         "preset": { "$ref": "#/$defs/nullableSha256" },
@@ -136,6 +138,8 @@
         "effective_parameters": {
           "description": "Exact effective client parameters as arbitrary JSON data, including nested objects, arrays, numbers, booleans and null. The schema assigns no parameter names, ranges, counts or preset values."
         },
+        "parameter_set_version_id": { "$ref": "#/$defs/nullableEntityId" },
+        "parameter_set_sha256": { "$ref": "#/$defs/nullableSha256" },
         "preset_version_id": { "$ref": "#/$defs/nullableEntityId" },
         "preset_sha256": { "$ref": "#/$defs/nullableSha256" },
         "combination_version_id": { "$ref": "#/$defs/nullableEntityId" },
@@ -174,6 +178,11 @@
         "vocabulary": { "$ref": "#/$defs/vocabulary" },
         "bindings": { "$ref": "#/$defs/bindings" },
         "definition_hashes": { "$ref": "#/$defs/definitionHashes" },
+        "definition_records": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Exact caller definition values captured alongside their hashes. Native entities and supporting Observations retain these values; this envelope adds no closed role or parameter vocabulary."
+        },
         "trace": { "$ref": "#/$defs/methodRunTrace" }
       },
       "additionalProperties": true,

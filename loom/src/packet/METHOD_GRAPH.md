@@ -16,8 +16,9 @@ a request operation accepted by `loom_packet`. Its fields are:
 |---|---|
 | `schema` | `loom.method_graph/1` |
 | `vocabulary` | Caller-supplied entity-kind and predicate strings, indexed by the semantic roles below. Values are data, never dispatch instructions. |
-| `bindings` | Native entity IDs for method identity, method version, prompt version, recipe version, preset version, combination version, run, model identity and compiler transform. |
+| `bindings` | Native entity IDs for method identity, method version, parameter-set version, prompt version, recipe version, preset version, combination version, run, model identity and compiler transform. |
 | `definition_hashes` | SHA-256 of canonical JSON definitions; prompt hash separately covers exact UTF-8 prompt bytes. |
+| `definition_records` | Exact definition values captured alongside the hashes; the corresponding Entity attrs and immutable Observation preserve them. |
 | `trace` | `loom.method_run_trace/1`: concrete method/version/run/model bindings, effective parameters, preset, combination, user overrides, input identity, response provenance and actual measurement availability. |
 
 An input may register several methods or versions by repeating records and
@@ -41,6 +42,7 @@ lexical shapes, open caller data and invalid contracts.
 |---|---|
 | Method identity | `model::Entity`; stable caller namespace/key. A later recipe does not overwrite its identity. |
 | Method version | Separate Entity with the exact immutable definition and content hash in `attrs`. It identifies the effective recipe/model/parameters, not just a display name. |
+| Parameter-set version | Separate Entity containing exact effective parameters and captured user overrides, with canonical definition/hash. The method version and run link to this Entity through actual Claims; a changed set gets a new version/identity. |
 | Prompt version | Separate Entity with exact text, byte hash and encoding; an Observation retains the captured definition bytes. |
 | Recipe version | Separate Entity with canonical definition/hash, including the prompt binding and effective parameters. |
 | Preset version | Separate Entity with declared defaults and hash. It is distinct from a run's one-call overrides. |
@@ -70,6 +72,8 @@ acceptance is expressed by application policy, not an invented enum value.
 | Uses recipe/prompt/preset | Version/recipe Entity → corresponding version Entity |
 | Combination member | Combination-version Entity → specific method-version Entity |
 | Run requested method | Run Entity → specific method-version Entity, with prepared/captured state explicit |
+| Uses effective parameters | Method-version Entity and run Entity → exact parameter-set-version Entity |
+| Run used combination | Run Entity → exact combination-version Entity, when a combination contributed |
 | Result produced in run | Each compiled result Entity → run Entity |
 | Result produced by method version | Each compiled result Entity → specific method-version Entity |
 | Result projected by compiler | Each compiled result Entity → compiler-transform Entity |
@@ -81,12 +85,23 @@ sources supply reproducible supporting quotes/locators. Structural claims use
 Confidence in a verified binding does not confer confidence in model content.
 
 Definitions, parameters, presets, combination membership and overrides also
-remain inspectable in native entity attrs and immutable source bytes. Additional
-assertions about them can be separate literal-valued Claims when needed.
+remain inspectable in native entity attrs and immutable source bytes. In the
+fixture, parameters are a separate addressable Entity and the run has a real
+combination edge; traversal from a result reaches both without reading hidden
+JSON references. Additional assertions about individual parameters can be
+literal-valued Claims or parameter Entities using caller-supplied kinds and
+predicates. This creates no closed list of parameter names or algorithms.
+
+The versioned schema remains backward compatible with earlier manifests: the
+parameter-set fields and exact `definition_records` are optional shape fields.
+Current producer adoption must emit the applicable graph records and edges;
+schema acceptance alone does not verify their equality or execution provenance.
+Changing weights, order or composition creates a new combination version, even
+when the member-method list stays the same. Old runs retain their original edge.
 
 ## Composition with existing reply compilation
 
-1. `make` registers the native method/version/prompt/recipe/preset/combination/run
+1. `make` registers the native method/version/parameters/prompt/recipe/preset/combination/run
    records and captured manifest sources. Alternatively, append their ordinary
    add/update records using `empty_diff` and `apply` against an existing packet.
 2. Request the existing graph-reply format using that packet's exact ID. Use the
@@ -140,8 +155,10 @@ pattern through the real packet C ABI and KB store:
 3. Apply `binding_diff`; check `expected.bound_packet_id` and native validation.
 4. For every result ID, find actual Claims linking it to the fixture's exact run,
    method-version and compiler-transform IDs with the caller's predicates.
-5. Compare captured source bytes, model-origin attrs, effective parameters,
-   prompt/recipe hashes, preset, combination and user overrides after composition.
+5. Compare captured source bytes, model-origin attrs, effective parameter Entity,
+   parameter hashes/edges, prompt/recipe hashes, preset, the run's combination
+   edge and user overrides after composition. Definition captures retain values
+   as well as hashes; their attrs must equal the native records after replay.
 6. Verify the evaluation is a separate dated model-origin Claim with a retained
    evaluator Observation; it must remain explicitly unmeasured/unverified.
 7. Accept all closed native rows through the existing store; read/replay the
@@ -155,3 +172,14 @@ This is a native graph construction/persistence regression. It becomes a
 cross-lane execution regression only when W3's actual adapter produces this
 envelope/trace from its registry and the same checked effective recipe. Until
 then, the contract is supplied to W3 and production adoption remains open.
+
+## Pack and producer ownership
+
+Builtin method definitions are pack data. W3 reads definitions and user
+combinations from the graph and produces the run/result edges; W1 supplies
+versioned prompt/recipe nodes. W7 records measured experiments and model
+profiles as dated Claims using the same native evidence structure. W4 preserves
+these ordinary records, references and history. The synthetic fixture installs
+no production defaults and does not replace a pack. Pack/profile data and the
+registry adapter stay with their assigned lanes; the W3→W4 shared execution
+regression is still a prerequisite before integration by W9.
