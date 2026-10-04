@@ -8,8 +8,11 @@ the units first.
 
 First score with the setting absent/disabled. The score result returns
 `profile.id` and the complete `profile.input_hash`. `loom_catalog_query` returns
-the unit IDs and exact record `content_hash` values. A producer binds its vectors
-to those values, then supplies this envelope:
+the unit IDs and exact catalog-record `content_hash` values. That hash binds
+the scanner's record representation, which depends on the source format; it
+does not by itself bind the complete raw export or the producer's text
+projection. Retain raw-source and embedding-input hashes separately. A producer
+binds its vectors to the returned catalog values, then supplies this envelope:
 
 ```json
 {
@@ -52,10 +55,13 @@ and the resulting label. A tiny candidate rule does not discard a unit whose
 semantic channel independently made it relevant. Explicit rules can still
 exclude a relevant unit. Unprovided units receive no score from the channel,
 even with positive bias. Disabling the channel restores the original run ID,
-features and decisions. A changed active envelope gets a different run ID.
+features and decisions when the other inputs, profile, pack, corpus and owner
+overrides remain unchanged. A changed active envelope gets a different run ID.
 
 `external_semantic` in the score summary reports availability, supplied/missing
 units, method/model/configuration hash, fusion and zero provider calls.
+Availability means that a supplied-vector envelope was accepted; it does not
+report a working producer or a reachable model service.
 `channels.external_semantic` records lexical-only and semantic-only unit IDs;
 it distinguishes missing semantic evidence from a scored result below the
 channel threshold. These gaps need independent verification before being
@@ -67,6 +73,14 @@ The producer must obtain authorized vectors and account for its own provider
 usage. Wiring the production provider/cache, the shared usage policy or UI
 controls is outside thread 6's file scope; this change neither spends money nor
 establishes model quality on real archives.
+
+The current provenance is JSON with input hashes and unverified method/model
+names. It does not yet implement the owner's graph entities for methods,
+versions and runs or the result-to-method provenance edge. Threads 3 and 4
+must agree on that shared contract before graph persistence is wired. The run
+identifier does not bind the complete unit/sketch corpus, and the score tables
+are not immutable history. Persisting the full input envelope and output
+artifacts is still required for that contract.
 
 Owned-path regressions are reproducible separately from unchanged CTest:
 
