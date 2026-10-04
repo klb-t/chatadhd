@@ -25,6 +25,7 @@
 #include "context_execution.h"
 #include "context_goal_usage.h"
 #include "provider_vector.h"
+#include "method_execution.h"
 
 namespace loom::context {
 
@@ -39,7 +40,7 @@ ContextExecutionScope* current_context_execution_scope() { return execution_scop
 
 Status validate_context_execution_options(const Json& options) {
   if (!options.is_object()) return Error(Errc::InvalidArgument, "context execution options must be an object");
-  for (const auto* section : {"unified", "embedding", "goal_typing"}) {
+  for (const auto* section : {"unified", "embedding", "goal_typing", "method_registry", "graph_reply"}) {
     if (const auto* settings = json::find(options, section)) {
       if (!settings->is_object()) return Error(Errc::InvalidArgument, std::string("context execution ") + section + " must be an object");
       for (const auto* key : {"enabled", "calls_authorized", "include_knowledge", "include_graph_memory", "include_memory", "include_history"}) {
@@ -252,7 +253,7 @@ void score_all(std::vector<Candidate>& cands, std::string_view anchor_date) {
 // Maximal-marginal-relevance-style diversity: repeatedly pick the remaining
 // candidate whose score, discounted by how many items of the same subject
 // were already picked, is highest. Deterministic (ties broken by ref).
-std::vector<Candidate> diversify(std::vector<Candidate> cands) {
+Result<std::vector<Candidate>> diversify(std::vector<Candidate> cands, const Json* method_settings = nullptr) {
   std::vector<Candidate> out;
   out.reserve(cands.size());
   std::map<std::string, int> subject_count;
@@ -264,6 +265,9 @@ std::vector<Candidate> diversify(std::vector<Candidate> cands) {
       if (used[i]) continue;
       int cnt = subject_count.count(cands[i].subject) ? subject_count[cands[i].subject] : 0;
       double eff = cands[i].score * std::pow(0.8, cnt);
+      if (method_settings) {
+        LOOM_TRY_ASSIGN(eff, method_diversity_score(cands[i].score, static_cast<std::size_t>(cnt), *method_settings));
+      }
       if (best < 0 || eff > best_eff || (eff == best_eff && cands[i].ref < cands[best].ref)) {
         best = static_cast<int>(i);
         best_eff = eff;
@@ -554,8 +558,6 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
             catch (...) { resp = Error(Errc::Network, "goal typing transport failed"); }
             if (resp) response_status = resp->status;
             else attempt["transport_error"] = std::string(errc_name(resp.error().code));
-            auto usage_body = json::parse(response_bytes);
-            usage.complete(prompt.size(), received_response_bytes, usage_body ? &*usage_body : nullptr, attempt);
             // The provider may echo private prompt contents or credentials. Keep
             // the actual bytes in the canonical raw-source store; a loggable goal
             // trace carries references only. Oversized replies retain an explicitly
@@ -594,6 +596,11 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
                 }
               }
             }
+            // Even usage reconciliation follows durable retention. A failed
+            // source write leaves provider totals unknown; independently
+            // measured wire bytes are still settled for the attempted call.
+            auto usage_body = response_recorded ? json::parse(response_bytes) : Result<Json>(Error(Errc::Unavailable, "raw response not retained"));
+            usage.complete(prompt.size(), received_response_bytes, usage_body ? &*usage_body : nullptr, attempt);
             if (response_limited && attempt["status"] != "storage_failure") attempt["status"] = "response_limit";
             if (resp && resp->ok() && !response_limited && response_recorded) {
               auto body = json::parse(response_bytes);
@@ -1042,7 +1049,16 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     }
   }
   const std::set<std::string> graph_ids(direct_refs.begin(), direct_refs.end());
-  const auto retrieved = gather_context_candidates(store_, run, pack_, req, gt.evidence, direct_refs, candidate_channels_);
+  Json execution = execution_scope ? execution_scope->options() :
+      rt_.config().get("context_execution", Json::object());
+  execution.erase("_native_embedding_binding");
+  const Json method_settings = execution.value("method_registry", Json::object());
+  if (method_settings.is_object() && method_settings.value("enabled", false))
+    execution["_native_embedding_binding"] = install_provider_vector(*this, rt_, execution, execution_scope != nullptr);
+  LOOM_TRY_ASSIGN(auto methods, gather_method_candidates(rt_, store_, run, pack_, req,
+      gt.evidence, direct_refs, candidate_channels_, execution));
+  const auto retrieved = methods.enabled ? std::move(methods.candidates) :
+      gather_context_candidates(store_, run, pack_, req, gt.evidence, direct_refs, candidate_channels_);
   for (const auto& claim : retrieved.claims) {
     if (known_refs.insert(claim.id).second) add_goal_claim(claim, "", 0);
     direct_refs.push_back(claim.id);
@@ -1077,7 +1093,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     }
   }
   const bool extended = !req.claim_targets.empty() || req.include_counter_evidence ||
-      !req.candidate_channels.empty() || req.lexical_shadow;
+      !req.candidate_channels.empty() || req.lexical_shadow || methods.enabled;
   for (auto* band : {&project_b, &goal_b}) {
     for (auto& c : *band) {
       if (direct_ids.count(c.ref)) c.extra_factors["direct_goal_candidate"] = true;
@@ -1094,10 +1110,11 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
           c.base_relevance = 0.0;
         }
         merge_factors(c.extra_factors, channels->second);
-        for (const auto& signal : channels->second["candidate_channels"]) {
-          c.base_relevance = std::max(c.base_relevance, signal.value("selection_relevance", 0.0));
+        if (!methods.enabled) {
+          for (const auto& signal : channels->second["candidate_channels"])
+            c.base_relevance = std::max(c.base_relevance, signal.value("selection_relevance", 0.0));
+          c.why += "; independent candidate instrument (reciprocal rank signal)";
         }
-        c.why += "; independent candidate instrument (reciprocal rank signal)";
       }
     }
   }
@@ -1119,8 +1136,58 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   diagnostics["gathered_candidates"] = gathered;
   diagnostics["unique_candidates"] = unique.size();
   diagnostics["duplicate_candidates_merged"] = gathered - unique.size();
+  // Capture the actual selector inputs and controls before blending, scoring,
+  // diversity and budgeting. The optional graph version comes from the caller;
+  // old knowledge claims remain inputs, never newly produced selector results.
+  const double stable_share = gt.budget.count(ContextBand::Stable) ? gt.budget.at(ContextBand::Stable) : 0.15;
+  const double project_share = gt.budget.count(ContextBand::Project) ? gt.budget.at(ContextBand::Project) : 0.25;
+  const int stable_end = std::clamp(static_cast<int>(std::llround(stable_share * total_budget)), 0, total_budget);
+  const int project_end = std::clamp(static_cast<int>(std::llround((stable_share + project_share) * total_budget)), stable_end, total_budget);
+  if (methods.enabled) {
+    Json captured = Json::array();
+    for (const auto& [ref, c] : unique) {
+      const Resolution resolution = req.detail_resolution.value_or(resolution_for(gt, c.role));
+      const std::string text = c.is_principle ? c.content.pick(resolution) :
+          ctx::evidence_markdown(*pack_, c.evidence, c.origin, c.confidence,
+              c.content.pick(resolution), c.expected, c.basis, c.fill_query);
+      captured.push_back(Json{{"ref", ref}, {"ref_kind", std::string(model::to_string(c.ref_kind))},
+          {"band", std::string(model::to_string(c.band))},
+          {"role", c.role ? Json(std::string(model::to_string(*c.role))) : Json(nullptr)},
+          {"subject", c.subject}, {"date", c.date}, {"origin", std::string(model::to_string(c.origin))},
+          {"evidence", c.is_principle ? Json(nullptr) : Json(std::string(model::to_string(c.evidence)))},
+          {"confidence", c.confidence}, {"authority", ctx::authority_score(c.origin)},
+          {"freshness", ctx::freshness_score(c.date, anchor_date)}, {"base_relevance", c.base_relevance},
+          {"factors", c.extra_factors}, {"why", c.why},
+          {"content", Json{{"label", c.content.label}, {"summary", c.content.summary},
+                           {"full", c.content.full}, {"raw", c.content.raw}}},
+          {"premise_claims", c.premise_claims}, {"premise_principles", c.premise_principles},
+          {"resolution", std::string(model::to_string(resolution))},
+          {"rendered_text", text}, {"estimated_tokens", estimate_tokens(text)}});
+    }
+    LOOM_TRY(prepare_method_selection(methods, Json{{"candidates", captured},
+        {"fused_scores", methods.scores}, {"fusion_stage", methods.graph["stages"]["fusion"]}},
+        Json{{"request", req.to_json()}, {"goal_type", gt.to_json()}, {"pack_sha256", pack_->hash()},
+             {"effective_budget_tokens", total_budget}, {"anchor_date", anchor_date},
+             {"initial_band_tokens", Json::array({stable_end, project_end - stable_end, total_budget - project_end})},
+             {"score_operation", "relevance * authority * freshness * confidence"},
+             {"token_metric", "rendered_item_codepoints_div_4"}, {"includes_prompt_overhead", false},
+             {"evidence_encoding", pack_->file("policy/evidence_encoding.json")}}));
+  }
   for (auto& [ref, candidate] : unique) {
-    (void)ref;
+    if (methods.enabled && candidate.band != ContextBand::Stable) {
+      const auto score = methods.scores.find(ref);
+      const std::optional<double> measured = score == methods.scores.end() ? std::nullopt : std::optional<double>(score->second);
+      if (!measured && methods.settings.value("graph_blend_operation", "") == "method_only") {
+        excluded(ref, "method_registry", "no_measured_selected_method_result");
+        continue;
+      }
+      LOOM_TRY_ASSIGN(candidate.base_relevance,
+          blend_method_score(candidate.base_relevance, measured, methods.settings));
+      candidate.extra_factors["method_selection"] = Json{{"measured", measured ? Json(*measured) : Json(nullptr)},
+          {"resolution_sha256", methods.plan["resolution_sha256"]},
+          {"graph_blend_operation", methods.settings["graph_blend_operation"]}};
+      candidate.why += "; configured graph-method combination";
+    }
     (candidate.band == ContextBand::Stable ? stable : candidate.band == ContextBand::Project ? project_b : goal_b)
         .push_back(std::move(candidate));
   }
@@ -1129,16 +1196,13 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   score_all(stable, anchor_date);
   score_all(project_b, anchor_date);
   score_all(goal_b, anchor_date);
-  auto stable_d = diversify(std::move(stable));
-  auto project_d = diversify(std::move(project_b));
-  auto goal_d = diversify(std::move(goal_b));
+  const Json* method_diversity = methods.enabled ? &methods.settings : nullptr;
+  LOOM_TRY_ASSIGN(auto stable_d, diversify(std::move(stable), method_diversity));
+  LOOM_TRY_ASSIGN(auto project_d, diversify(std::move(project_b), method_diversity));
+  LOOM_TRY_ASSIGN(auto goal_d, diversify(std::move(goal_b), method_diversity));
 
   // Round cumulative boundaries, not independent shares: the capacities always
   // add up to the exact item budget, including budgets of one or two tokens.
-  const double stable_share = gt.budget.count(ContextBand::Stable) ? gt.budget.at(ContextBand::Stable) : 0.15;
-  const double project_share = gt.budget.count(ContextBand::Project) ? gt.budget.at(ContextBand::Project) : 0.25;
-  const int stable_end = std::clamp(static_cast<int>(std::llround(stable_share * total_budget)), 0, total_budget);
-  const int project_end = std::clamp(static_cast<int>(std::llround((stable_share + project_share) * total_budget)), stable_end, total_budget);
   std::array<int, 3> band_budget = {stable_end, project_end - stable_end, total_budget - project_end};
   std::array<int, 3> used = {0, 0, 0};
   int used_total = 0;
@@ -1360,6 +1424,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   if (!req.claim_targets.empty()) goal.params["claim_selection"] = evidence.requested;
   if (req.include_counter_evidence) goal.params["counter_evidence"] = evidence.counters;
   if (!retrieved.trace.empty()) goal.params["candidate_retrieval"] = retrieved.trace;
+  if (methods.enabled) goal.params["method_registry"] = Json{{"resolution", methods.plan}, {"result_graph", methods.graph}};
 
   model::ContextSet set;
   diagnostics["budget"]["final_band_tokens"] = band_budget;
@@ -1378,6 +1443,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   }
   set.items = std::move(accepted);
   set.dropped = std::move(dropped);
+  LOOM_TRY(finalize_method_selection(methods, set));
   if (extended) {
     set.id.clear();
     set.id = kb::stable_id("cx_", json::dump(Json{{"request", req.to_json()}, {"run", run}, {"context_set", set.to_json()}}));

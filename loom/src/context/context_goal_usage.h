@@ -56,6 +56,12 @@ class GoalTypingUsage {
     const Json usage = options.value("usage", Json::object());
     const auto model = json::get_string(attempt, "model");
     const std::string body_hash = Sha256::hex(request.body);
+    // A paused receipt binds the complete transport, including its account.
+    // Keep header ordering/duplicates; only the opaque digest is persisted.
+    Json headers = Json::array();
+    for (const auto& [name, value] : request.headers) headers.push_back(Json::array({name, value}));
+    const auto request_identity = Sha256::hex(json::canonical(Json{{"method", request.method}, {"url", request.url},
+        {"headers", headers}, {"body", request.body}, {"timeout_ms", request.timeout_ms}, {"stream", request.stream}}));
     operation_ = usage.contains("resume_operation_id") ? usage["resume_operation_id"].get<std::string>() : usage.contains("operation_id")
         ? usage["operation_id"].get<std::string>() + "/" + body_hash
         : "usage_goal_" + random_hex(32);
@@ -71,6 +77,7 @@ class GoalTypingUsage {
             {"output_tokens", options.value("estimated_output_tokens", Json(nullptr))},
             {"cost_usd", options.value("estimated_cost_usd", Json(nullptr))}}},
         {"instrument", "loom.context.goal_typing"}, {"model", model}, {"request_sha256", body_hash},
+        {"request_identity_sha256", request_identity},
         {"execution_budget", Json{{"max_requests", budget.max_requests}, {"max_input_bytes", budget.max_input_bytes},
             {"max_response_bytes", budget.max_response_bytes}, {"max_output_tokens", budget.max_output_tokens},
             {"timeout_ms", budget.timeout_ms}}},
