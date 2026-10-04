@@ -71,6 +71,12 @@ await check("unknown schema, operation, renderer and executable fields fail visi
   ]) { const raw = profile(); change(raw); assert.throws(() => m.registerProfile(registry(), raw), code(expected)); }
   const raw = profile(); Object.defineProperty(raw, "label", { get() { throw Error("Accessor executed"); }, enumerable: true });
   assert.throws(() => m.registerProfile(registry(), raw), code("contract"));
+  const sparseReplacement = new Array(1); sparseReplacement["00"] = "replaces-missing-index";
+  const hiddenLiteral = {}; Object.defineProperty(hiddenLiteral, "chosen", { value: "silently-lost", enumerable: false });
+  for (const literal of [sparseReplacement, hiddenLiteral]) {
+    const bad = profile(); bad.workflows[0].transitions[0].payload = { literal };
+    assert.throws(() => m.registerProfile(registry(), bad), code("contract"));
+  }
 });
 await check("extensions are installed by code while new targets and versions remain declarative", async () => {
   let observed;
@@ -183,10 +189,130 @@ await check("submit shortcuts preserve multiline input and IME composition", () 
   assert.equal(m.shouldSubmit("mod-enter", { key: "Enter" }), false);
   assert.equal(m.shouldSubmit("mod-enter", { key: "Enter", ctrlKey: true }), true);
   assert.equal(m.shouldSubmit("mod-enter", { key: "Enter", metaKey: true }), true);
-  for (const submit of ["enter", "mod-enter"]) {
+  assert.equal(m.shouldSubmit("unmodified-enter", { key: "Enter" }), true);
+  for (const modifier of ["ctrlKey", "metaKey", "altKey", "shiftKey"]) assert.equal(m.shouldSubmit("unmodified-enter", { key: "Enter", [modifier]: true }), false);
+  for (const submit of ["enter", "mod-enter", "unmodified-enter"]) {
     assert.equal(m.shouldSubmit(submit, { key: "Enter", ctrlKey: true, shiftKey: true }), false);
     assert.equal(m.shouldSubmit(submit, { key: "Enter", ctrlKey: true, isComposing: true }), false);
     assert.equal(m.shouldSubmit(submit, { key: "a", ctrlKey: true }), false);
   }
+  const r = registry(); const raw = profile(); raw.presentation.message_style = "user-bubble"; raw.composer.submit = "unmodified-enter";
+  assert.equal(m.registerProfile(r, raw).presentation.message_style, "user-bubble");
+});
+
+await check("declarative payloads bind inputs/context and selected result variables across workflow steps", async () => {
+  const calls = [];
+  const r = registry([{ operation: "chat.create", capability: "chat.create", execute: payload => { calls.push(payload); return { id: "generated-conversation", unrelated_native_request: { never: "AUTOMATICALLY_CAPTURED" }, handler: () => {} }; } },
+    { operation: "chat.send", capability: "chat.send", execute: payload => { calls.push(payload); return { answer: "not-persisted" }; } }]);
+  const raw = profile();
+  raw.workflows[0].transitions[0].payload = { object: { title: { from: "inputs", pointer: "/title" }, meta: { from: "context", pointer: "/meta" },
+    parts: { array: [{ literal: "first" }, { from: "inputs", pointer: "/nested/a~1b/~0key/1" }] } } };
+  raw.workflows[0].transitions[0].save = { conversation_id: { from: "result", pointer: "/id" },
+    receipt: { object: { source_title: { from: "inputs", pointer: "/title" }, origin: { literal: "explicit-profile-selection" } } } };
+  raw.workflows[0].transitions[1].payload = { object: { id: { from: "vars", pointer: "/conversation_id" }, request: { from: "inputs", pointer: "/request" } } };
+  const p = m.registerProfile(r, raw); const start = m.createProfileSession(p, r);
+  const inputs = { title: "Chosen title", nested: { "a/b": { "~key": [11, 22] } }, unselected: "PRIVATE_INPUT_NOT_CAPTURED" }; const before = structuredClone(inputs);
+  const created = await m.executeProfileAction(start, r, "new", { workflowId: "conversation", event: "create", bindings: { inputs, context: { meta: "chosen-context" } } });
+  assert.deepEqual(calls[0], { title: "Chosen title", meta: "chosen-context", parts: ["first", 22] }); assert.deepEqual(inputs, before);
+  assert.deepEqual(created.session.variables.conversation, { conversation_id: "generated-conversation", receipt: { source_title: "Chosen title", origin: "explicit-profile-selection" } });
+  const request = { message: "PRIVATE_NATIVE_REQUEST_NOT_CAPTURED", model: "chosen-by-owner" };
+  const sent = await m.executeProfileAction(created.session, r, "send", { workflowId: "conversation", event: "send", bindings: { inputs: { request } } });
+  assert.deepEqual(calls[1], { id: "generated-conversation", request }); assert.notEqual(calls[1].request, request);
+  const stored = m.serializeProfileSession(sent.session);
+  for (const text of ["PRIVATE_NATIVE_REQUEST_NOT_CAPTURED", "PRIVATE_INPUT_NOT_CAPTURED", "AUTOMATICALLY_CAPTURED", "not-persisted"]) assert.ok(!stored.includes(text));
+  assert.deepEqual(m.parseProfileSession(stored, p, r), sent.session);
+});
+
+await check("missing and unsafe bindings fail before adapter effects and payload overrides are explicit errors", async () => {
+  let calls = 0;
+  const r = registry([{ operation: "chat.create", capability: "chat.create", execute: () => { calls++; return { id: "c1" }; } },
+    { operation: "chat.send", capability: "chat.send", execute: () => true }]);
+  for (const [i, reference, bindings] of [
+    [0, { from: "inputs", pointer: "/missing" }, { inputs: {} }], [1, { from: "context", pointer: "/id" }, { context: null }],
+    [2, { from: "vars", pointer: "/not_created" }, {}], [3, { from: "inputs", pointer: "/request" }, { inputs: { request: { handler: () => {} } } }],
+    [4, { from: "inputs", pointer: "/toString" }, { inputs: {} }], [5, { from: "inputs", pointer: "/items/01" }, { inputs: { items: [1, 2] } }],
+  ]) {
+    const raw = profile({ id: `missing-binding-${i}` }); raw.workflows[0].transitions[0].payload = reference;
+    const p = m.registerProfile(r, raw); const s = m.createProfileSession(p, r);
+    await assert.rejects(m.executeProfileAction(s, r, "new", { workflowId: "conversation", event: "create", bindings }), code("binding"));
+    assert.equal(s.sequence, 0);
+  }
+  const raw = profile({ id: "declarative-override" }); raw.workflows[0].transitions[0].payload = { literal: {} };
+  raw.workflows[0].transitions[0].save = { selection: { from: "context", pointer: "/missing" } };
+  const p = m.registerProfile(r, raw); const s = m.createProfileSession(p, r);
+  await assert.rejects(m.executeProfileAction(s, r, "new", { workflowId: "conversation", event: "create", payload: {} }), code("binding"));
+  await assert.rejects(m.executeProfileAction(s, r, "new", { workflowId: "conversation", event: "create", bindings: { context: {} } }), code("binding"));
+  assert.equal(calls, 0);
+  for (const payload of [{ from: "result", pointer: "/id" }, { from: "settings", pointer: "/model" }, { from: "inputs", pointer: "#fragment" },
+    { from: "inputs", pointer: "/bad~2escape" }, { literal: 1, object: {} }, { script: "return globalThis" }]) {
+    const invalid = profile({ id: "invalid-expression" }); invalid.workflows[0].transitions[0].payload = payload;
+    assert.throws(() => m.registerProfile(r, invalid), m.ProfileError);
+  }
+});
+
+await check("selected unsafe outputs reject state advancement after native success; unrelated unsafe outputs stay unpersisted", async () => {
+  const cycle = {}; cycle.self = cycle;
+  const getter = {}; Object.defineProperty(getter, "field", { enumerable: true, get() { throw Error("Getter must not execute"); } });
+  const hidden = {}; Object.defineProperty(hidden, "field", { enumerable: false, value: "do-not-drop" });
+  const sparseReplacement = new Array(1); sparseReplacement["00"] = "do-not-replace-with-null";
+  const unsafe = [undefined, () => {}, Infinity, NaN, cycle, new Date(), getter, hidden, sparseReplacement, { nested: undefined }, [1, , 3], 1n];
+  for (let i = 0; i < unsafe.length; i++) {
+    let calls = 0;
+    const r = registry([{ operation: "chat.create", capability: "chat.create", execute: () => { calls++; return { chosen: unsafe[i] }; } },
+      { operation: "chat.send", capability: "chat.send", execute: () => true }]);
+    const raw = profile(); raw.workflows[0].transitions[0].save = { chosen: { from: "result", pointer: "/chosen" } };
+    const p = m.registerProfile(r, raw); const start = m.createProfileSession(p, r); const before = m.serializeProfileSession(start);
+    await assert.rejects(m.executeProfileAction(start, r, "new", { workflowId: "conversation", event: "create" }), m.ProfileError);
+    assert.equal(calls, 1); assert.equal(m.serializeProfileSession(start), before);
+  }
+  const r = registry(); const raw = profile(); raw.workflows[0].transitions[0].save = { missing: { from: "result", pointer: "/missing" } };
+  const p = m.registerProfile(r, raw); const s = m.createProfileSession(p, r);
+  await assert.rejects(m.executeProfileAction(s, r, "new", { workflowId: "conversation", event: "create" }), code("binding")); assert.equal(s.sequence, 0);
+});
+
+await check("selected variable receipts replay exactly; forged extras or cross-workflow values are rejected", async () => {
+  const r = registry(); const raw = profile(); raw.workflows[0].transitions[0].save = { id: { from: "result", pointer: "/id" } };
+  const p = m.registerProfile(r, raw); const result = await m.executeProfileAction(m.createProfileSession(p, r), r, "new", { workflowId: "conversation", event: "create" });
+  const stored = m.serializeProfileSession(result.session);
+  for (const mutate of [s => delete s.variables, s => delete s.history[0].variables, s => s.variables.conversation.id = "changed",
+    s => s.history[0].variables.extra = "unselected", s => s.variables.extra_workflow = { id: "fake" },
+    s => s.history[0].variables.id = () => {}, s => s.history[0].workflow = undefined]) {
+    const snapshot = JSON.parse(stored); mutate(snapshot); assert.throws(() => m.parseProfileSession(snapshot, p, r), m.ProfileError);
+  }
+  assert.deepEqual(m.parseProfileSession(stored, p, r), result.session);
+  const oldR = registry(); const oldP = m.registerProfile(oldR, profile()); const old = m.createProfileSession(oldP, oldR);
+  assert.equal(old.variables, undefined); assert.deepEqual(m.parseProfileSession(m.serializeProfileSession(old), oldP, oldR), old);
+  const protoRaw = profile({ id: "proto-safe-workflow" }); protoRaw.workflows[0].id = "__proto__";
+  protoRaw.workflows[0].transitions[0].save = JSON.parse('{"__proto__":{"from":"result","pointer":"/id"}}');
+  const protoP = m.registerProfile(r, protoRaw); const protoStep = await m.executeProfileAction(m.createProfileSession(protoP, r), r, "new", { workflowId: "__proto__", event: "create" });
+  assert.equal(protoStep.session.variables.__proto__.__proto__, "c1");
+  assert.deepEqual(m.parseProfileSession(m.serializeProfileSession(protoStep.session), protoP, r), protoStep.session);
+  assert.equal({}.id, undefined);
+  for (const workflowId of ["constructor", "toString", "__proto__"]) {
+    const reservedRaw = profile({ id: `workflow-${workflowId}` }); reservedRaw.workflows[0].id = workflowId;
+    reservedRaw.workflows[0].transitions[0].payload = { from: "vars", pointer: "" };
+    const reservedP = m.registerProfile(r, reservedRaw);
+    const explicitEmpty = JSON.parse(m.serializeProfileSession(m.createProfileSession(reservedP, r))); explicitEmpty.variables = {};
+    const restored = m.parseProfileSession(explicitEmpty, reservedP, r);
+    const selected = await m.executeProfileAction(restored, r, "new", { workflowId, event: "create" });
+    assert.equal(selected.session.sequence, 1);
+  }
+});
+
+await check("payload and non-result saved inputs are captured before asynchronous effects", async () => {
+  let release; let received;
+  const r = registry([{ operation: "chat.create", capability: "chat.create", execute: payload => { received = payload; return new Promise(resolve => { release = resolve; }); } },
+    { operation: "chat.send", capability: "chat.send", execute: () => true }]);
+  const raw = profile(); raw.workflows[0].transitions[0].payload = { from: "inputs", pointer: "/title" };
+  raw.workflows[0].transitions[0].save = { title: { from: "inputs", pointer: "/title" }, id: { from: "result", pointer: "/id" } };
+  const p = m.registerProfile(r, raw); const inputs = { title: { value: "before" } };
+  const mutableSession = JSON.parse(m.serializeProfileSession(m.createProfileSession(p, r)));
+  const running = m.executeProfileAction(mutableSession, r, "new", { workflowId: "conversation", event: "create", bindings: { inputs } });
+  inputs.title.value = "after"; received.value = "adapter-mutated-copy";
+  mutableSession.sequence = 500; mutableSession.history.push({ fake: true }); mutableSession.workflows.conversation = "answered";
+  release({ id: "c1" }); const result = await running;
+  assert.deepEqual(result.session.variables.conversation, { title: { value: "before" }, id: "c1" });
+  assert.equal(result.session.sequence, 1); assert.equal(result.session.history.length, 1); assert.equal(result.session.workflows.conversation, "ready");
+  assert.deepEqual(inputs, { title: { value: "after" } });
 });
 console.log(`[application-profile-state] ${groups}/${groups} groups passed; offline, zero model calls`);

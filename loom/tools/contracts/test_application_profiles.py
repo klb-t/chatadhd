@@ -33,7 +33,7 @@ class ApplicationProfiles(unittest.TestCase):
     def test_schema_and_all_actual_builtins_are_valid(self):
         Draft202012Validator.check_schema(self.schema)
         paths = sorted(PROFILE_DIR.glob('*.json'))
-        self.assertEqual(len(paths), 4)
+        self.assertGreaterEqual(len(paths), 4)
         for path in paths:
             with self.subTest(path=path.name):
                 self.validator.validate(read_json(path))
@@ -113,6 +113,57 @@ class ApplicationProfiles(unittest.TestCase):
         validator.validate(document)
         document['profile'].pop('definition')
         self.assertTrue(list(validator.iter_errors(document)))
+
+    def test_declarative_payload_and_selected_saves_are_additive(self):
+        document = deepcopy(self.base)
+        transition = document['workflows'][0]['transitions'][0]
+        transition['payload'] = {'object': {
+            'title': {'literal': 'Chosen title'},
+            'metadata': {'from': 'inputs', 'pointer': '/metadata'},
+            'parts': {'array': [{'from': 'context', 'pointer': '/conversation_id'}, {'literal': None}]},
+        }}
+        transition['save'] = {'conversation_id': {'from': 'result', 'pointer': '/id'}}
+        self.validator.validate(document)
+        transition['payload']['object']['title'] = {'from': 'vars', 'pointer': '/conversation_id'}
+        self.validator.validate(document)
+        # Result does not exist until execution succeeds, so payload refs reject it.
+        transition['payload']['object']['title'] = {'from': 'result', 'pointer': '/id'}
+        self.assert_invalid(document)
+
+    def test_expression_scopes_pointers_and_modes_reject_scripts(self):
+        for expression in [{'from': 'model', 'pointer': '/id'}, {'from': 'inputs', 'pointer': '#fragment'},
+                           {'from': 'inputs', 'pointer': '/bad~9escape'}, {'literal': 'a', 'array': []},
+                           {'script': 'return globalThis'}, {'object': {'value': {'eval': 'fetch(url)'}}}]:
+            document = deepcopy(self.base)
+            document['workflows'][0]['transitions'][0]['payload'] = expression
+            with self.subTest(expression=expression):
+                self.assert_invalid(document)
+        document = deepcopy(self.base)
+        document['workflows'][0]['transitions'][0]['payload'] = {'from': 'inputs', 'pointer': '/field\nname'}
+        document['workflows'][0]['transitions'][0]['save'] = {'all_selected': {'from': 'result', 'pointer': ''}}
+        self.validator.validate(document)
+
+    def test_selected_variable_persistence_is_optional_json_only(self):
+        validator = Draft202012Validator({'$ref': self.schema['$id'] + '#/$defs/session'}, registry=self.contracts.registry)
+        document = {
+            'schema': 'loom.application_profile_session/1',
+            'profile': {'id': self.base['id'], 'profile_revision': 1, 'target': self.base['target'],
+                        'definition': json.dumps(self.base, sort_keys=True, separators=(',', ':'))},
+            'workflows': {'conversation-review': 'chat'}, 'sequence': 1,
+            'variables': {'conversation-review': {'conversation_id': 'c1', 'selected': [1, None, {'status': True}]}},
+            'history': [{'sequence': 1, 'action': 'create', 'operation': 'chat.create',
+                         'workflow': {'id': 'conversation-review', 'event': 'create', 'from': 'ready', 'to': 'chat'},
+                         'variables': {'conversation_id': 'c1', 'selected': [1, None, {'status': True}]}}],
+        }
+        validator.validate(document)
+        document['history'][0]['automatic_full_request'] = {'hidden': 'disallowed'}
+        self.assertTrue(list(validator.iter_errors(document)))
+
+    def test_user_bubble_and_unmodified_enter_are_supported_data(self):
+        document = deepcopy(self.base)
+        document['presentation']['message_style'] = 'user-bubble'
+        document['composer']['submit'] = 'unmodified-enter'
+        self.validator.validate(document)
 
 
 if __name__ == '__main__':

@@ -55,12 +55,12 @@
           "properties": { "side": { "enum": ["left", "right"] }, "width": { "$ref": "#/$defs/pixels" } }
         },
         "content_width": { "$ref": "#/$defs/pixels" },
-        "message_style": { "enum": ["plain", "bubble"] }
+        "message_style": { "enum": ["plain", "bubble", "user-bubble"] }
       }
     },
     "composer": {
       "type": "object", "additionalProperties": false, "required": ["submit", "placeholder"],
-      "properties": { "submit": { "enum": ["enter", "mod-enter"] }, "placeholder": { "type": "string" } }
+      "properties": { "submit": { "enum": ["enter", "mod-enter", "unmodified-enter"] }, "placeholder": { "type": "string" } }
     },
     "actions": { "type": "array", "items": { "$ref": "#/$defs/action" }, "description": "Unique action IDs. Required actions block activation without their matching adapters; optional actions expose explicit gaps and reject execution." },
     "workflows": { "type": "array", "items": { "$ref": "#/$defs/workflow" }, "description": "Unique workflow IDs. State changes occur only after adapter success; runtime validates references, deterministic events, guards and restoration traces." }
@@ -76,6 +76,29 @@
     "nonempty": { "type": "string", "pattern": "\\S" },
     "hexColour": { "type": "string", "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$", "not": { "pattern": "\\s" }, "description": "Bounded CSS colour syntax, without executable or arbitrary CSS values." },
     "pixels": { "type": "number", "exclusiveMinimum": 0, "description": "Positive finite width in CSS pixels. No product-policy ceiling; responsive CSS can fit the viewport." },
+    "jsonValue": { "description": "Finite JSON-only values. Runtime rejects cycles, functions, accessors, hidden properties, noncanonical/sparse array indices, custom prototypes, undefined, non-finite numbers and symbols before binding/saving.",
+      "anyOf": [{ "type": ["null", "boolean", "number", "string"] },
+        { "type": "array", "items": { "$ref": "#/$defs/jsonValue" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/jsonValue" } }] },
+    "pointer": { "type": "string", "pattern": "^(|/[\\s\\S]*)$", "not": { "pattern": "~([^01]|$)" }, "description": "RFC6901 JSON pointer. Empty explicitly selects the root; ~0 and ~1 escape tilde and slash. Runtime traverses own data fields only, with canonical array indices and no getters." },
+    "payloadExpression": {
+      "description": "Pure declarative payload. Missing references fail before effects. No result exists before execution. The caller cannot also supply an imperative payload.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["literal"], "properties": { "literal": { "$ref": "#/$defs/jsonValue" } } },
+        { "type": "object", "additionalProperties": false, "required": ["from", "pointer"], "properties": { "from": { "enum": ["inputs", "context", "vars"] }, "pointer": { "$ref": "#/$defs/pointer" } } },
+        { "type": "object", "additionalProperties": false, "required": ["object"], "properties": { "object": { "type": "object", "propertyNames": { "$ref": "#/$defs/nonempty" }, "additionalProperties": { "$ref": "#/$defs/payloadExpression" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["array"], "properties": { "array": { "type": "array", "items": { "$ref": "#/$defs/payloadExpression" } } } }
+      ]
+    },
+    "saveExpression": {
+      "description": "Explicit selected-output expression. Non-result bindings are validated/captured before effects. Result selections are checked after adapter success; an invalid selection leaves session state unchanged but external effects cannot be rolled back. Nothing is persisted implicitly, including native requests, callbacks, inputs or full results.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["literal"], "properties": { "literal": { "$ref": "#/$defs/jsonValue" } } },
+        { "type": "object", "additionalProperties": false, "required": ["from", "pointer"], "properties": { "from": { "enum": ["inputs", "context", "vars", "result"] }, "pointer": { "$ref": "#/$defs/pointer" } } },
+        { "type": "object", "additionalProperties": false, "required": ["object"], "properties": { "object": { "type": "object", "propertyNames": { "$ref": "#/$defs/nonempty" }, "additionalProperties": { "$ref": "#/$defs/saveExpression" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["array"], "properties": { "array": { "type": "array", "items": { "$ref": "#/$defs/saveExpression" } } } }
+      ]
+    },
     "action": {
       "type": "object", "additionalProperties": false,
       "required": ["id", "label", "operation", "capability", "required"],
@@ -102,12 +125,14 @@
           }
         },
         "workflows": { "type": "object", "additionalProperties": { "$ref": "#/$defs/nonempty" } },
+        "variables": { "type": "object", "additionalProperties": { "type": "object", "additionalProperties": { "$ref": "#/$defs/jsonValue" } }, "description": "Optional additive /1 field. Workflow-scoped variables exactly replay selected receipt updates. Original sessions without variables remain valid." },
         "sequence": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
         "history": { "type": "array", "items": {
           "type": "object", "additionalProperties": false, "required": ["sequence", "action", "operation"],
           "properties": {
             "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
             "action": { "$ref": "#/$defs/nonempty" }, "operation": { "$ref": "#/$defs/nonempty" },
+            "variables": { "type": "object", "additionalProperties": { "$ref": "#/$defs/jsonValue" }, "description": "Only updates named by this transition.save, never automatic request/result capture." },
             "workflow": {
               "type": "object", "additionalProperties": false, "required": ["id", "event", "from", "to"],
               "properties": { "id": { "$ref": "#/$defs/nonempty" }, "event": { "$ref": "#/$defs/nonempty" },
@@ -128,7 +153,9 @@
           "properties": {
             "from": { "$ref": "#/$defs/nonempty" }, "event": { "$ref": "#/$defs/nonempty" },
             "action": { "$ref": "#/$defs/nonempty" }, "to": { "$ref": "#/$defs/nonempty" },
-            "requires": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" }, "description": "Declarative guard: all named capabilities must have actual registered adapters." }
+            "requires": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" }, "description": "Declarative guard: all named capabilities must have actual registered adapters." },
+            "payload": { "$ref": "#/$defs/payloadExpression" },
+            "save": { "type": "object", "propertyNames": { "$ref": "#/$defs/nonempty" }, "additionalProperties": { "$ref": "#/$defs/saveExpression" }, "description": "Optional additive /1 field. Values are selected atomically into the current workflow's vars scope after successful adapter execution and JSON validation. Selections use prior vars, not sibling saves from the same transition." }
           }
         } }
       }
