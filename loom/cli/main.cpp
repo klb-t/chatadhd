@@ -84,6 +84,7 @@ Commands:
          [--audit-scope all|active] [--audit-chars-per-token-low N] [--audit-chars-per-token-high N]
          [--audit-input-price USD_PER_MILLION --audit-output-price USD_PER_MILLION]
          [--audit-output-ratio N]          offline text/token/cost estimates; no model call
+                                        exit 0: complete; 4: partial report; 130: cancelled (receipt retained)
          [--usage-operation-id ID] [--usage-baseline-key KEY]
          [--usage-confirm-receipt RECEIPT --usage-confirmation-ref OWNER_REF]
                                         shared usage policy activates after thread 2 integration
@@ -528,7 +529,8 @@ int cmd_import(Runtime& rt, const Args& a) {
                    "  Text estimates exclude source JSON, attachments, OCR, prompt framing and provider overhead.\n";
     }
   }
-  return r.cancelled ? 130 : 0;
+  if (r.cancelled) return 130;
+  return r.export_report.is_object() && r.export_report.value("partial", false) ? 4 : 0;
 }
 
 int cmd_export(Runtime& rt, const Args& a) {
