@@ -4,6 +4,7 @@
 #include <cstdlib>
 
 #include "loom/log.h"
+#include "loom/usage_policy.h"
 #include "loom/util/fs.h"
 
 namespace loom {
@@ -215,6 +216,7 @@ const Json& loom_config_defaults() {
   static const Json kLoomDefaults = Json{
       {"loom_event_log_types", Json::array({"conv:created", "import:done", "graph:changed"})},
       {"loom_task_workers", 1},
+      {"loom_usage_policy", usage_policy_defaults()},
   };
   return kLoomDefaults;
 }
