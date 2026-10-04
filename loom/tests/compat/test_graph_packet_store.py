@@ -67,6 +67,102 @@ class GraphPacketStoreTests(CompatTestCase):
                 for source in compiled['diff']['sources']['add']:
                     self.assertEqual(source['observation']['attrs']['model_origin']['kind'], 'model')
 
+    def test_versioned_method_graph_reply_bindings_survive_native_store_replay(self):
+        fixture = json.loads((Path(__file__).resolve().parents[2] /
+                              'src/packet/tests/method-graph-fixture.json').read_text())
+        contract = fixture['contract']
+        bindings = contract['bindings']
+        predicates = contract['vocabulary']['predicates']
+        expected = fixture['expected']
+        library = self.store.library
+        library.loom_packet.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        library.loom_packet.restype = ctypes.c_void_p
+
+        def execute(request):
+            return self.store._take(library.loom_packet(
+                self.store.context, json.dumps(request, ensure_ascii=False).encode()))
+
+        base = execute(fixture['base_make_request'])
+        self.assertEqual(base['packet_id'], expected['base_packet_id'])
+        compiled = execute({'operation': 'compile_reply', 'packet': base,
+                            **fixture['reply_request']})
+        self.assertEqual(compiled['node_ids'], expected['node_ids'])
+        self.assertEqual(compiled['compilation_sha256'], expected['compilation_sha256'])
+        self.assertEqual(compiled['response_text'], expected['response_text'])
+        reply = execute({'operation': 'apply_compiled_reply', 'packet': base,
+                         'compilation': compiled, 'policy': fixture['apply_policy']})['packet']
+        self.assertEqual(reply['packet_id'], expected['reply_packet_id'])
+        applied = execute({'operation': 'apply', 'packet': reply,
+                           'diff': fixture['binding_diff'], 'policy': fixture['apply_policy']})
+        packet = applied['packet']
+        self.assertFalse(applied['receipt']['acceptance_establishes_content_truth'])
+        self.assertEqual(packet['packet_id'], expected['bound_packet_id'])
+        self.assertEqual(execute({'operation': 'validate', 'packet': packet}), packet)
+        self.assertEqual(execute({'operation': 'invert', 'packet': packet,
+                                  'receipt': applied['receipt']}), reply)
+
+        entities = {row['id']: row for row in packet['entities']}
+        claims = {row['id']: row for row in packet['claims']}
+        sources = {row['observation']['id']: row for row in packet['sources']}
+        for name in ('method_version', 'recipe_version', 'preset_version', 'combination_version'):
+            attrs = entities[bindings[name + '_id']]['attrs']
+            self.assertEqual(codec.digest(attrs['definition']), attrs['definition_sha256'])
+        prompt = entities[bindings['prompt_version_id']]['attrs']
+        self.assertEqual(hashlib.sha256(prompt['text'].encode()).hexdigest(),
+                         contract['definition_hashes']['prompt_bytes'])
+        trace = entities[bindings['run_id']]['attrs']
+        for name in ('effective_parameters', 'user_overrides', 'preset_sha256',
+                     'combination_sha256', 'prompt_sha256', 'recipe_sha256', 'measurements'):
+            self.assertEqual(trace[name], contract['trace'][name])
+        self.assertEqual(trace['projection_status'], 'response_projected')
+        self.assertEqual(trace['response_sha256'], compiled['raw_capture']['sha256'])
+        self.assertIsNone(trace['measurements']['accuracy'])
+        for result_id in compiled['node_ids'].values():
+            for role, target in (('produced_in_run', bindings['run_id']),
+                                 ('produced_by_method_version', bindings['method_version_id']),
+                                 ('projected_by_compiler', bindings['compiler_transform_id'])):
+                edges = [c for c in claims.values()
+                         if c['subject'] == result_id and c['predicate'] == predicates[role]]
+                self.assertEqual([edge['object'] for edge in edges], [target])
+                self.assertEqual(edges[0]['qualifiers']['extra']['confidence_scope'], 'structure_only')
+            origin = entities[result_id]['attrs']['model_origin']
+            self.assertEqual(origin['kind'], 'model')
+            self.assertEqual(origin['recipe_sha256'], trace['recipe_sha256'])
+        for source in compiled['diff']['sources']['add']:
+            self.assertEqual(sources[source['observation']['id']], source)
+        evaluation = claims[expected['evaluation_claim_id']]
+        self.assertEqual(evaluation['subject'], bindings['method_version_id'])
+        self.assertEqual(evaluation['qualifiers']['valid_from'], evaluation['value']['evaluated_at'])
+        self.assertEqual(evaluation['value']['measurement_status'], 'unavailable')
+        self.assertEqual(evaluation['assessment']['origin'], 'model_knowledge')
+        self.assertEqual(evaluation['qualifiers']['extra']['model_origin']['kind'], 'model')
+        self.assertEqual(evaluation['qualifiers']['extra']['content_verification'], 'unverified')
+        self.assertEqual(evaluation['assessment']['basis']['support'][0]['observation'],
+                         expected['source_ids'][-1])
+
+        bad = deepcopy(fixture['binding_diff'])
+        bad['claims']['add'][0]['object'] = 'missing-run-target'
+        rejected = execute({'operation': 'apply', 'packet': reply, 'diff': bad,
+                            'policy': fixture['apply_policy']})
+        self.assertIn('error', rejected)
+        self.assertEqual(rejected['error']['message'], 'graph_packet_unknown_claim_entity')
+        self.assertEqual(execute({'operation': 'validate', 'packet': reply}), reply)
+
+        selection = {name: [codec.record_id(name, row) for row in packet[name]]
+                     for name in ('entities', 'claims', 'sources')}
+        accepted = self.store.execute({'operation': 'accept', 'target': 'method-graph',
+            'packet': packet, 'selection': selection,
+            'expected_rows': {name: {id_: None for id_ in ids} for name, ids in selection.items()},
+            'explicitly_accepted': True})['receipt']
+        self.assertEqual(accepted['packet'], packet)
+        self.assertFalse(accepted['acceptance_establishes_content_truth'])
+        self.store.close()
+        self.store = NativeGraphStore(os.environ['LOOM_LIBRARY'], self.data)
+        self.addCleanup(self.store.close)
+        for result in (self.store.read(accepted['id']), self.store.replay(accepted['id'])):
+            self.assertEqual(result['receipt'], accepted)
+            self.assertTrue(result['row_drift']['matches'])
+
     def test_full_packet_history_and_metadata_survive_accept_read_replay_restart(self):
         diff = codec.empty_diff(self.packet, proposal_id='review', origin=MODEL)
         after = deepcopy(self.packet['claims'][0]); after['assessment']['status'] = 'contested'
