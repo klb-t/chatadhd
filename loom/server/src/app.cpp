@@ -245,6 +245,9 @@ void App::register_middleware() {
     if (!opts_.bearer_token.empty() && req.path.rfind("/api/", 0) == 0) {
       std::string want = "Bearer " + opts_.bearer_token;
       if (!constant_time_equal(req.get_header_value("Authorization"), want)) {
+        // This early handler runs before request-body consumption. Close the
+        // connection so rejected POST bytes cannot poison its next request.
+        res.set_header("Connection", "close");
         send_error(res, "auth", "missing or invalid bearer token", 401);
         return httplib::Server::HandlerResponse::Handled;
       }
@@ -936,6 +939,14 @@ void App::route_knowledge() {
     send_loom(res, loom_kb_runs(ctx_, limit));
   });
   post_json("/api/knowledge/query", loom_kb_query);
+  // Explicit selection/acceptance and immutable receipt read/replay retain
+  // their existing C ABI validation, transactions and error envelopes. Pass
+  // the original JSON bytes rather than reordering selected DTO object fields.
+  svr_.Post("/api/graph/packets/store", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+    send_loom(res, loom_graph_packet_store(ctx_, req.body.c_str()));
+  });
   post_json("/api/knowledge/judge", loom_kb_judge);
   post_json("/api/knowledge/materialize", loom_materialize);
   post_json("/api/knowledge/predict", loom_generalize_predict);

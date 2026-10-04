@@ -11,6 +11,36 @@ This is an exchange-packet storage boundary. It does not implement the complete
 GraphPacket transformation algebra in C++, make native CandidateGraph equivalent
 to GraphPacket, or automatically connect accepted tasks to retrieval plans.
 
+## HTTP profile bridge and exact projection
+
+The HTTP transport exposes the same operation at
+`POST /api/graph/packets/store`. The body is the existing accept/read/replay
+request; the bearer-authentication and native error envelopes are unchanged.
+After the server checks that the body is a JSON object, it passes original
+request bytes to the ABI. Unauthorized requests close the keepalive connection
+so a rejected unread POST body cannot corrupt the next authenticated request.
+The web `graphPacketStore` method is optional; current Android JNI dispatch does
+not implement it and does not advertise profile persistence.
+
+The application-profile serializer stores one profile entity plus its source
+Observation, with exact UTF-8 JSON text, raw/canonical hashes, locator and actor.
+The retained packet has empty transformation history rather than an invented
+history. Original UTF-8 BOM/exponent spelling/whitespace remain in source text;
+JSON parsing removes a leading BOM only in its semantic projection. Invalid
+UTF-8 is rejected at the import boundary. Native receipts still do not establish
+source authenticity, original-service fidelity or content truth.
+
+DTO projection and immutable identity comparison now ignore object-member
+order recursively. They preserve array order, member names/counts and exact
+numeric value. Signed/unsigned equality checks sign and range; integer/double
+comparison checks integral value and representable range before conversion.
+The boundary rejects integer narrowing and precision loss instead of accepting
+`uint64max → -1` or `9007199254740993 → 9007199254740992.0`.
+The fresh dedicated FFI suite has **18/18 tests**, including key permutation,
+field loss, array identity, narrowing, precision and lossless numeric conversion.
+Earlier 13/13 measurements below describe the original store increment.
+Fresh extended evidence belongs with the application profile verification.
+
 ## API and explicit selection
 
 The C ABI adds:

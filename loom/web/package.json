@@ -17,7 +17,8 @@
     "test:application-profiles-browser": "node e2e/application-profiles.mjs",
     "test:imported-message-content-state": "node e2e/imported-message-content-state.mjs",
     "test:imported-message-content-browser": "node e2e/imported-message-content-browser.mjs",
-    "test:imported-message-content-native": "node e2e/imported-message-content-native.mjs"
+    "test:imported-message-content-native": "node e2e/imported-message-content-native.mjs",
+    "test:application-profile-graph": "node e2e/application-profile-graph.mjs"
   },
   "dependencies": {
     "dompurify": "^3.2.4",

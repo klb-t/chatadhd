@@ -72,6 +72,114 @@ class GraphPacketStoreTests(CompatTestCase):
         rehash(packet)
         self.assertEqual(self.accept(packet)['receipt']['packet'], packet)
 
+    def test_object_key_order_is_not_native_content_loss_or_identity_change(self):
+        def permuted(value):
+            if isinstance(value, dict):
+                return {key: permuted(value[key]) for key in reversed(list(value))}
+            if isinstance(value, list):
+                return [permuted(item) for item in value]
+            return value
+
+        original = deepcopy(self.packet)
+        original['claims'][0]['qualifiers']['extra']['ordered'] = [1, 2]
+        original['provenance']['claims']['cl_test']['record_sha256'] = codec.digest(original['claims'][0])
+        rehash(original)
+        packet = permuted(original)
+        receipt = self.accept(packet)['receipt']
+        self.assertEqual(receipt['packet'], packet)
+        self.assertEqual(list(receipt['packet']['entities'][0]), list(packet['entities'][0]),
+                         'submitted packet object member order is retained in the receipt')
+        self.assertEqual(receipt['packet']['sources'][0]['observation']['text'],
+                         self.packet['sources'][0]['observation']['text'])
+        changed_request = self.accept(original, expected_rows=receipt['stored_row_sha256'])
+        self.assertEqual(changed_request['receipt']['packet'], original,
+                         'CAS preserves immutable semantic identity across member ordering')
+        for ordered in ([2, 1], [1, 2, 3]):
+            altered = deepcopy(original)
+            altered['claims'][0]['qualifiers']['extra']['ordered'] = ordered
+            altered['provenance']['claims']['cl_test']['record_sha256'] = codec.digest(altered['claims'][0])
+            rehash(altered)
+            with self.assertRaisesRegex(GraphStoreError, 'new record identity'):
+                self.accept(altered, expected_rows=changed_request['receipt']['stored_row_sha256'])
+        self.assertEqual(self.store.replay(changed_request['receipt']['id'])['receipt'],
+                         changed_request['receipt'], 'array changes cannot replace accepted content')
+
+    def test_member_order_tolerance_still_rejects_discarded_fields(self):
+        for collection in ('entities', 'sources'):
+            with self.subTest(collection=collection):
+                packet = deepcopy(self.packet)
+                row = packet[collection][0]
+                native = row['observation'] if collection == 'sources' else row
+                native['must_not_be_discarded'] = {'retained_bytes': 'synthetic'}
+                packet['provenance'][collection][native['id']]['record_sha256'] = codec.digest(row)
+                rehash(packet)
+                # Bypass the Python DTO gate deliberately to exercise the
+                # native boundary, as any HTTP/C ABI caller can do.
+                request = {'operation': 'accept', 'target': 'synthetic-discard-check', 'packet': packet,
+                           'selection': self.selection, 'expected_rows': self.expected,
+                           'explicitly_accepted': True}
+                result = self.store._take(self.store.library.loom_graph_packet_store(
+                    self.store.context, json.dumps(request, ensure_ascii=False).encode('utf-8')))
+                self.assertIn('projection would discard or change fields', result['error']['message'])
+
+    def test_oversized_unsigned_ordinal_rejects_without_native_writes(self):
+        for ordinal in (1 << 31, 1 << 63, (1 << 64) - 1):
+            with self.subTest(ordinal=ordinal):
+                packet = deepcopy(self.packet)
+                packet['sources'][0]['observation']['ordinal'] = ordinal
+                packet['provenance']['sources']['ob_test']['record_sha256'] = codec.digest(packet['sources'][0])
+                rehash(packet)
+                request = {'operation': 'accept', 'target': 'synthetic-unsigned-loss', 'packet': packet,
+                           'selection': self.selection, 'expected_rows': self.expected,
+                           'explicitly_accepted': True}
+                with self.assertRaisesRegex(GraphStoreError, 'projection would discard or change fields'):
+                    self.store.execute(request)
+                with self.database() as db:
+                    for table in ('loom_kb_observations', 'loom_kb_entities', 'loom_kb_claims',
+                                  'loom_kb_runs', 'loom_kb_graph_receipts'):
+                        if db.execute("SELECT 1 FROM sqlite_master WHERE name=?", (table,)).fetchone():
+                            self.assertEqual(db.execute('SELECT COUNT(*) FROM ' + table).fetchone()[0], 0)
+
+    def test_integer_to_float_precision_loss_rejects_without_native_writes(self):
+        for time in ((1 << 53) + 1, -((1 << 53) + 1), (1 << 64) - 1):
+            with self.subTest(time=time):
+                packet = deepcopy(self.packet)
+                for locator in (packet['sources'][0]['observation']['locator'],
+                                packet['claims'][0]['assessment']['basis']['support'][0]['locator']):
+                    locator['time_start'] = locator['time_end'] = time
+                for collection in ('sources', 'claims'):
+                    for row in packet[collection]:
+                        packet['provenance'][collection][codec.record_id(collection, row)]['record_sha256'] = codec.digest(row)
+                rehash(packet)
+                request = {'operation': 'accept', 'target': 'synthetic-double-loss', 'packet': packet,
+                           'selection': self.selection, 'expected_rows': self.expected,
+                           'explicitly_accepted': True}
+                with self.assertRaisesRegex(GraphStoreError, 'projection would discard or change fields'):
+                    self.store.execute(request)
+                with self.database() as db:
+                    self.assertFalse(db.execute("SELECT 1 FROM sqlite_master WHERE name='loom_kb_graph_receipts'").fetchone())
+
+    def test_lossless_numeric_normalization_preserves_large_json_attrs(self):
+        packet = deepcopy(self.packet)
+        packet['entities'][0]['confidence'] = 1  # Native DTO faithfully emits 1.0.
+        packet['entities'][0]['attrs']['exact_numbers'] = [
+            (1 << 64) - 1, -(1 << 63), (1 << 53) + 1, {'one': 1, 'true': True}]
+        packet['sources'][0]['observation']['ordinal'] = (1 << 31) - 1
+        for collection in ('sources', 'entities'):
+            for row in packet[collection]:
+                packet['provenance'][collection][codec.record_id(collection, row)]['record_sha256'] = codec.digest(row)
+        rehash(packet)
+        receipt = self.accept(packet)['receipt']
+        self.assertEqual(receipt['packet'], packet)
+        with self.database() as db:
+            entity = json.loads(db.execute('SELECT body FROM loom_kb_entities WHERE run_id=? AND id=?',
+                                           (receipt['run_id'], 'e_test_a')).fetchone()[0])
+            source = json.loads(db.execute('SELECT body FROM loom_kb_observations WHERE run_id=? AND id=?',
+                                           (receipt['run_id'], 'ob_test')).fetchone()[0])
+        self.assertEqual(entity['confidence'], 1.0)
+        self.assertEqual(entity['attrs']['exact_numbers'], packet['entities'][0]['attrs']['exact_numbers'])
+        self.assertEqual(source['ordinal'], (1 << 31) - 1)
+
     def test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry(self):
         receipt = self.accept()['receipt']
         with self.database() as db:

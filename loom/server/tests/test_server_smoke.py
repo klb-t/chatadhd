@@ -6,9 +6,11 @@ shapes/status codes loom/server/src/app.cpp promises. Registered as a ctest
 server build/route fails `ctest` the same way a broken C++ unit does.
 """
 import json
+import hashlib
 import os
 import shutil
 import socket
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -182,6 +184,90 @@ def test_knowledge(base: str, data_dir: str) -> None:
     print("OK: loom-server knowledge/catalog/context checks passed")
 
 
+def graph_packet_profile_request() -> dict:
+    """A fictional profile artifact, with exact source text and native rows."""
+    def digest(value):
+        raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+    profile = {"schema": "loom.application_profile/1", "id": "synthetic-http-profile", "profile_revision": 1,
+               "label": "Fikcyjny profil Żółć", "target": {"application_id": "fictional", "version": "3.7", "platform": "web"}}
+    raw_source = json.dumps(profile, ensure_ascii=False, indent=2) + "\n"
+    raw_hash = hashlib.sha256(raw_source.encode("utf-8")).hexdigest()
+    entity = {"id": "e_profile_http", "kind": "application_profile", "canonical_key": "synthetic-http-profile@1",
+              "label": profile["label"], "labels": {}, "aliases": [], "parent": "", "first_seen": "", "last_seen": "",
+              "evidence_class": "user", "origin": "user", "confidence": 1, "status": "active",
+              "attrs": {"raw_source": raw_source, "raw_sha256": raw_hash, "source_observation": "o_profile_http"}}
+    observation = {"id": "o_profile_http", "unit": "u_profile_http", "kind": "code_block", "text": raw_source,
+                   "locator": {"source": "synthetic:profile.json", "member": "", "json_pointer": "", "byte_start": 0,
+                               "byte_len": len(raw_source.encode("utf-8")), "time_start": None, "time_end": None, "line": None},
+                   "lang": "", "date": "", "ordinal": 0, "artifact_type": "application_profile_json",
+                   "speaker": "http-smoke-user", "attrs": {"raw_sha256": raw_hash}}
+    source = {"observation": observation, "known_at": None, "text_sha256": raw_hash}
+    origin = {"kind": "recorded", "actor": "http-smoke-user", "model": None, "recipe_sha256": None, "response_sha256": None}
+    packet = {"schema": "loom.graph_packet/1", "definitions": [], "entities": [entity], "claims": [], "sources": [source],
+              "task": {"operation": "explicit-profile-save", "transformation_history": "not_asserted"},
+              "provenance": {"definitions": {}, "claims": {},
+                             "entities": {entity["id"]: {"known_at": None, "origin": origin, "record_sha256": digest(entity)}},
+                             "sources": {observation["id"]: {"known_at": None, "origin": origin, "record_sha256": digest(source)}}},
+              "history": []}
+    packet["packet_id"] = digest(packet)
+    return {"operation": "accept", "target": "synthetic-http-profile-storage", "packet": packet,
+               "selection": {"entities": [entity["id"]], "claims": [], "sources": [observation["id"]]},
+               "expected_rows": {"entities": {entity["id"]: None}, "claims": {}, "sources": {observation["id"]: None}},
+               "explicitly_accepted": True}
+
+
+def test_graph_packets(base: str, data_dir: str) -> None:
+    """The HTTP facade keeps native acceptance, immutable receipts and drift."""
+    def digest(value):
+        raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+        return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+    def post(body, status=200):
+        response = requests.post(base + "/api/graph/packets/store", json=body, timeout=15)
+        assert response.status_code == status, (response.status_code, response.text)
+        return response.json()
+
+    for raw, code in (("{broken", "parse"), ("[]", "invalid_argument")):
+        response = requests.post(base + "/api/graph/packets/store", data=raw, timeout=5)
+        assert response.status_code == 400 and response.json()["error"]["code"] == code, response.text
+    assert post({"operation": "read", "receipt_id": "gpr_missing"}, 404)["error"]["code"] == "not_found"
+    request = graph_packet_profile_request()
+    packet = request["packet"]
+    entity = packet["entities"][0]
+    raw_source, raw_hash = entity["attrs"]["raw_source"], entity["attrs"]["raw_sha256"]
+    config_before = requests.get(base + "/api/config", timeout=5).json()
+    rejected = dict(request, explicitly_accepted=False)
+    assert post(rejected, 400)["error"]["code"] == "invalid_argument"
+    result = post(request)
+    receipt = result["receipt"]
+    assert receipt["packet"] == packet and not result["replayed"], result
+    assert receipt["acceptance_establishes_content_truth"] is False
+    assert "not_performed" in receipt["reversible_history_validation"]
+    readback = post({"operation": "read", "receipt_id": receipt["id"]})
+    assert readback["receipt"] == receipt and readback["row_drift"]["matches"], readback
+    assert post({"operation": "replay", "receipt_id": receipt["id"]})["receipt"] == receipt
+    assert post(request)["replayed"] is True, "exact acceptance retries use the immutable native receipt"
+    rows = requests.post(base + "/api/knowledge/query", json={"run": receipt["run_id"], "what": "entities", "kind": "application_profile"}, timeout=5).json()
+    assert rows["items"][0]["attrs"]["raw_source"] == raw_source
+    assert rows["items"][0]["attrs"]["raw_sha256"] == raw_hash
+    changed = json.loads(json.dumps(request))
+    changed["packet"]["task"]["revised"] = True
+    changed["packet"].pop("packet_id")
+    changed["packet"]["packet_id"] = digest(changed["packet"])
+    assert post(changed, 400)["error"]["code"] == "invalid_argument", "CAS is not silently overwritten by HTTP"
+    with sqlite3.connect(Path(data_dir) / "chatadhd.db") as database:
+        assert database.execute("SELECT COUNT(*) FROM loom_kb_graph_receipts").fetchone()[0] == 1
+        database.execute("UPDATE loom_kb_entities SET canonical_key='drift' WHERE run_id=? AND id=?", (receipt["run_id"], entity["id"]))
+    drift = post({"operation": "read", "receipt_id": receipt["id"]})
+    assert not drift["row_drift"]["matches"] and drift["receipt"] == receipt
+    assert post({"operation": "replay", "receipt_id": receipt["id"]}, 400)["error"]["code"] == "invalid_argument"
+    assert requests.get(base + "/api/config", timeout=5).json() == config_before
+    assert "sk-smoke" not in json.dumps(receipt), "existing secrets never enter the accepted profile artifact"
+    print("OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed")
+
+
 def main() -> int:
     server_bin = os.environ.get("LOOM_SERVER_BIN")
     if not server_bin or not os.path.exists(server_bin):
@@ -254,6 +340,7 @@ def main() -> int:
         assert r.status_code == 200 and isinstance(r.json(), list), r.text
 
         test_knowledge(base, data_dir)
+        test_graph_packets(base, data_dir)
 
         # SSE chat: no upstream configured, so this must fail cleanly with a
         # well-formed "error" chunk rather than hang or crash the server.
@@ -358,12 +445,34 @@ def test_auth(server_bin: str) -> None:
                              ("GET", "/api/catalog/units"), ("POST", "/api/knowledge/run"),
                              ("POST", "/api/knowledge/judge"), ("POST", "/api/catalog/import"),
                              ("POST", "/api/catalog/scan"), ("POST", "/api/catalog/select"),
-                             ("POST", "/api/context/build")):
+                             ("POST", "/api/context/build"), ("POST", "/api/graph/packets/store")):
             r = requests.request(method, base + path, json={}, timeout=5)
             assert r.status_code == 401 and r.json()["error"]["code"] == "auth", (path, r.text)
             assert token not in r.text
         r = requests.get(f"{base}/api/knowledge/runs", headers={"Authorization": f"Bearer {token}"}, timeout=5)
         assert r.status_code == 200 and r.json() == [], r.text
+
+        # Reuse a real client session after rejecting a POST with a body.
+        # No client-side Connection override may hide undrained body bytes.
+        request = graph_packet_profile_request()
+        headers = {"Authorization": f"Bearer {token}"}
+        with requests.Session() as client:
+            rejected = client.post(base + "/api/graph/packets/store", json=request, timeout=5)
+            assert rejected.status_code == 401 and rejected.json()["error"]["code"] == "auth", rejected.text
+            assert rejected.headers.get("Connection", "").lower() == "close"
+            assert token not in rejected.text
+            unchanged = client.get(base + "/api/knowledge/runs", headers=headers, timeout=5)
+            assert unchanged.status_code == 200 and unchanged.json() == [], unchanged.text
+            accepted = client.post(base + "/api/graph/packets/store", json=request, headers=headers, timeout=5)
+            assert accepted.status_code == 200, accepted.text
+            receipt = accepted.json()["receipt"]
+            assert receipt["packet"] == request["packet"]
+            readback = client.post(base + "/api/graph/packets/store",
+                                  json={"operation": "read", "receipt_id": receipt["id"]}, headers=headers, timeout=5)
+            assert readback.status_code == 200 and readback.json()["receipt"] == receipt, readback.text
+            retry = client.post(base + "/api/graph/packets/store", json=request, headers=headers, timeout=5)
+            assert retry.status_code == 200 and retry.json()["replayed"] is True, retry.text
+            assert retry.json()["receipt"] == receipt
 
         print("OK: loom-server auth checks passed")
     finally:

@@ -22,6 +22,7 @@ import type {
 } from "./types";
 import { isLoomError } from "./types";
 import type { KnowledgeApi } from "./knowledge";
+import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
 const TOKEN_KEY = "loom.auth_token";
 
@@ -35,6 +36,9 @@ class HttpError extends Error {
 
 export class LoomHttpApi implements LoomApi {
   private token: string | null = null;
+  graphPacketStore(request: GraphPacketStoreRequest): Promise<GraphPacketStoreResult> {
+    return this.req("POST", "/api/graph/packets/store", request);
+  }
   readonly knowledge: KnowledgeApi = {
     listRuns: () => this.req("GET", "/api/knowledge/runs"),
     query: (what, filters = {}) => this.req("POST", "/api/knowledge/query", { ...filters, what }),

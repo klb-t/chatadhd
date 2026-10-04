@@ -21,6 +21,7 @@ import type {
   Task,
 } from "./types";
 import type { KnowledgeApi } from "./knowledge";
+import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
 export interface SearchOptions {
   limit?: number;
@@ -59,6 +60,8 @@ export type Unsubscribe = () => void;
 export interface LoomApi {
   // Additive capability; older embedded hosts can leave it unavailable.
   readonly knowledge?: KnowledgeApi;
+  // Optional: older native embedded hosts do not dispatch this ABI yet.
+  graphPacketStore?(request: GraphPacketStoreRequest): Promise<GraphPacketStoreResult>;
   // Conversations
   listConversations(limit?: number): Promise<Conversation[]>;
   createConversation(title?: string): Promise<Conversation>;
