@@ -22,6 +22,7 @@ namespace context {
 // an explicit diagnostics_mapping_status in the knowledge channel report.
 // Options are caller policy, not product ceilings:
 //   budget_tokens (default request; 0 empty), include_knowledge (true),
+//   token_codepoints_per_token (4; finite positive, fractions supported),
 //   source_priority ([memory,knowledge,legacy_graph], within each band),
 //   section_labels ({stable,project,goal}), memory_max_chars (16000; 0 all),
 //   legacy_relation_hops (request.relation_hops; 0 seed nodes only),
@@ -31,6 +32,7 @@ namespace context {
 //   legacy_seed_ids ([]), analysis (optional).
 // Reach and source detail remain independent. No source row is rewritten and
 // stored/model/user statements are never silently promoted to established truth.
+// Unrepresentable token estimates return an explicit unavailable/overflow error.
 Result<Json> compile_unified_context(Database& db, const Config& cfg,
     GraphMemorySelector* graph, MemoryEngine* memory, const ContextRequest& request,
     Json knowledge_result, std::string_view conv_id, bool include_memory,

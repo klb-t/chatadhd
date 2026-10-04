@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <deque>
 #include <format>
 #include <limits>
@@ -47,9 +48,15 @@ Status boolean_option(const Json& options, std::string_view key) {
   return {};
 }
 
-std::size_t tokens(std::string_view text) {
+Result<std::size_t> tokens(std::string_view text, double codepoints_per_token) {
   const auto n = utf8::length(text);
-  return n / 4 + (n % 4 != 0);
+  if (codepoints_per_token == 4.0) return n / 4 + (n % 4 != 0);
+  const auto estimate = std::ceil(static_cast<long double>(n) / static_cast<long double>(codepoints_per_token));
+  const auto exclusive_bound = std::ldexp(1.0L, std::numeric_limits<std::size_t>::digits);
+  if (!std::isfinite(estimate) || estimate >= exclusive_bound) {
+    return Error(Errc::InvalidArgument, "unified context: token estimate unavailable (representation overflow)");
+  }
+  return static_cast<std::size_t>(estimate);
 }
 
 int band_rank(std::string_view band) {
@@ -194,6 +201,14 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
     bool include_graph, const Json& options) {
   if (!options.is_object()) return Error(Errc::InvalidArgument, "unified context options must be an object");
   for (const auto key : {"include_knowledge", "legacy_include_inactive", "legacy_include_current_conversation"}) LOOM_TRY(boolean_option(options, key));
+  double codepoints_per_token = 4.0;
+  if (const auto* configured = json::find(options, "token_codepoints_per_token")) {
+    if (!configured->is_number()) return Error(Errc::InvalidArgument, "unified context: token_codepoints_per_token must be a finite positive number");
+    codepoints_per_token = configured->get<double>();
+    if (!std::isfinite(codepoints_per_token) || codepoints_per_token <= 0.0) {
+      return Error(Errc::InvalidArgument, "unified context: token_codepoints_per_token must be a finite positive number");
+    }
+  }
   LOOM_TRY_ASSIGN(auto budget, count_option(options, "budget_tokens", req.budget_tokens > 0 ? static_cast<std::size_t>(req.budget_tokens) : 4000));
   LOOM_TRY_ASSIGN(auto memory_chars, count_option(options, "memory_max_chars", 16000));
   LOOM_TRY_ASSIGN(auto depth, count_option(options, "legacy_relation_hops", req.relation_hops < 0 ? 0 : static_cast<std::size_t>(req.relation_hops)));
@@ -473,7 +488,8 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
   for (const auto& row : unique) {
     auto trial = selected;
     trial.push_back(row);
-    if (tokens(render(trial, labels)) <= budget) selected.push_back(row);
+    LOOM_TRY_ASSIGN(auto trial_tokens, tokens(render(trial, labels), codepoints_per_token));
+    if (trial_tokens <= budget) selected.push_back(row);
     else {
       auto omission = row;
       omission["drop_reason"] = "rendered_prompt_budget";
@@ -482,27 +498,31 @@ Result<Json> compile_unified_context(Database& db, const Config& cfg,
   }
   auto annotated = selected;
   annotate(annotated);
-  while (!annotated.empty() && tokens(render(annotated, labels)) > budget) {
+  LOOM_TRY_ASSIGN(auto annotated_tokens, tokens(render(annotated, labels), codepoints_per_token));
+  while (!annotated.empty() && annotated_tokens > budget) {
     auto omission = selected.back();
     omission["drop_reason"] = "rendered_dependency_annotations_budget";
     dropped.push_back(std::move(omission));
     selected.pop_back();
     annotated = selected;
     annotate(annotated);
+    LOOM_TRY_ASSIGN(annotated_tokens, tokens(render(annotated, labels), codepoints_per_token));
   }
   const auto prompt = render(annotated, labels);
   std::vector<Json> prefix;
   std::size_t prefix_tokens = 0;
   for (auto& row : annotated) {
     prefix.push_back(row);
-    const auto full_tokens = tokens(render(prefix, labels));
+    LOOM_TRY_ASSIGN(auto full_tokens, tokens(render(prefix, labels), codepoints_per_token));
     // Marginal estimates include each heading/separator exactly once, and sum
     // to used_tokens even when ceil() would make per-item sums overestimate.
     row["prompt_tokens"] = full_tokens - prefix_tokens;
     prefix_tokens = full_tokens;
   }
-  Json result{{"schema", "loom.unified_context/1"}, {"prompt", prompt}, {"used_tokens", tokens(prompt)},
-      {"budget_tokens", budget}, {"token_metric", "ceil_rendered_prompt_codepoints_div_4"},
+  LOOM_TRY_ASSIGN(auto used_tokens, tokens(prompt, codepoints_per_token));
+  Json result{{"schema", "loom.unified_context/1"}, {"prompt", prompt}, {"used_tokens", used_tokens},
+      {"budget_tokens", budget}, {"token_metric", codepoints_per_token == 4.0 ? "ceil_rendered_prompt_codepoints_div_4" : "ceil_rendered_prompt_codepoints_div_configured"},
+      {"token_codepoints_per_token", codepoints_per_token},
       {"includes_prompt_headers", true}, {"selected", annotated}, {"dropped", dropped},
       {"selector_channels", channels}, {"knowledge_result", std::move(knowledge_result)},
       {"limitations", Json::array({"token_estimate_is_not_provider_tokenization", "knowledge_candidates_are_already_selected_upstream",
