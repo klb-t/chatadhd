@@ -78,3 +78,46 @@ python3 docs/reports/archive-import-2026-10-04-evidence/import/generate_provider
 
 Default capture requires space for the input, temporary blob copy, retained blob
 and database; plan capacity before running, particularly on shared workspaces.
+
+## Executed 2.15 GB import and recovery
+
+The same whitespace fixture was actually imported. The first run exhausted shared
+disk space after **1,477/2,047 conversations and 2,954 messages**, returning
+`completion=partial` (the historical CLI returned exit 0). Its complete negative
+stdout, error list and interrupted follow-up remain in [large-enospc/](large-enospc/).
+After reclaiming only this thread's temporary files, the existing partial database
+was resumed with the CLI from **9a8b88b29f3fd4754a01b329470372e87d24a8d3**.
+
+The [successful resume receipt](large-resume/) records **2,047 conversations,
+4,094 messages and 243,420 characters**, `resumed=true`, `completion=complete`
+and exit **0**. All earlier conversation/message IDs and the source ID remain.
+The retained source SHA-256/size, all 2,047 checkpoints, all message pointers,
+SQLite foreign keys and quick check pass. [fidelity.json](large-resume/fidelity.json)
+independently checks all raw messages/nodes, normalized messages, parent/root
+links and wrapper fields.
+
+Kernel CLI peak RSS was **19,272 KiB**, wall **168.599 s**. This is one recovery
+run without a matched baseline; later auxiliary-checkpoint fixes are not silently
+remeasured by this earlier binary. Temporary source capture used **2,148,031,323
+bytes of tmpfs**, outside the CLI's peak RSS; the already verified retained blob
+remained on disk. [resource-receipt.json](large-resume/resource-receipt.json)
+records this storage distinction. Source capture/provenance remained enabled.
+Whitespace traversal does not establish memory behavior for 2 GB of actual
+message text, one huge conversation, or unknown nested values.
+
+Large JSON outputs are losslessly gzip-compressed. SHA256.json in each run
+binds compressed files and their original bytes. The measured fidelity verifier
+is retained as **verify_synthetic_messages_measured.py**, SHA-256
+`b73fbf360004ced95507c459b368502d34835a83f96141024ec7a0abd54e8973`, matching
+fidelity.json exactly. The newer `verify_synthetic_messages.py` tightens JSON
+type comparison and has syntax/self-checks only; it did not generate that
+retained proof. The large inputs/databases were removed only after validation;
+the public generator reproduces the source bytes.
+
+For recovery measurements, `measure_provider_import.py --existing-data-dir PATH`
+requires a fresh output directory and records existing IDs before invoking the
+CLI. To exercise recovery locally, interrupt an import between committed
+records and then use that option on its existing data directory. Capacity failures
+and wall/RSS values depend on the host and are not exact reproducible timings.
+The CLI now returns **4** for `completion=partial`, preserving its JSON receipt;
+`verify_cli_completion_exit.py` checks complete/partial both with and without audit.
