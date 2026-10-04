@@ -1,0 +1,8 @@
+{
+  "schema": "loom.usage_policy/1",
+  "growth_factor": 10.0,
+  "baseline_window": 32,
+  "ledger_busy_timeout_ms": 30000,
+  "include_reservations": true,
+  "initial_baselines": {}
+}

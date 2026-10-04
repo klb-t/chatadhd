@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "check": "mismatched_name",
+      "rejected": true,
+      "error": "LastTest/JUnit names or order differ"
+    },
+    {
+      "check": "mismatched_outcome",
+      "rejected": true,
+      "error": "unit.test_archive: LastTest/JUnit outcome mismatch"
+    },
+    {
+      "check": "mismatched_duration",
+      "rejected": true,
+      "error": "unit.test_archive: LastTest/JUnit duration mismatch"
+    },
+    {
+      "check": "ambiguous_output_delimiter",
+      "rejected": true,
+      "error": "unit.test_archive: missing or ambiguous output delimiters"
+    },
+    {
+      "check": "illegal_control_character",
+      "rejected": true,
+      "error": "XML-illegal source characters"
+    },
+    {
+      "check": "mismatched_stdout",
+      "rejected": true,
+      "error": "unit.test_archive: original output is neither identical nor a matching capped prefix"
+    },
+    {
+      "check": "duplicate_junit_name",
+      "rejected": true,
+      "error": "missing or duplicate JUnit names"
+    },
+    {
+      "check": "mismatched_run_start",
+      "rejected": true,
+      "error": "LastTest/JUnit run start mismatch"
+    },
+    {
+      "check": "matching_failure_metadata_preserved",
+      "passed": true
+    }
+  ],
+  "junit_untouched_sha256": "eea272d0377a4abd214376624f4128bd80021c2f7675f0906b00f7a27a926c12"
+}

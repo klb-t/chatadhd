@@ -1,0 +1,171 @@
+{
+  "paths": {
+    "config_get": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "loom_config_defaults": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "effective": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "settings": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "default_open": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    }
+  },
+  "checked_preset": {
+    "schema": "loom.usage_policy/1",
+    "growth_factor": 10.0,
+    "baseline_window": 32,
+    "ledger_busy_timeout_ms": 30000,
+    "include_reservations": true,
+    "initial_baselines": {}
+  },
+  "compatibility_view": {
+    "schema": "loom.usage_policy/1",
+    "growth_factor": 10.0,
+    "baseline_window": 32,
+    "ledger_busy_timeout_ms": 30000,
+    "include_reservations": true,
+    "initial_baselines": {}
+  },
+  "all_paths_equal": true,
+  "provenance": {
+    "preset_source": "embedded_data",
+    "preset_document": {
+      "path": "loom/data/policy/usage_policy.pack",
+      "schema": "loom.usage_policy/1",
+      "encoding": "utf8_json",
+      "source_sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df"
+    },
+    "hashes": {
+      "algorithm": "sha256",
+      "representation": "loom.canonical_json",
+      "preset": "a8adbf007ded2ce699fb6673a9be1922edf4eb75222359df0fd7463f6de5096f",
+      "stored_override": null,
+      "effective": "a8adbf007ded2ce699fb6673a9be1922edf4eb75222359df0fd7463f6de5096f"
+    }
+  },
+  "stored_override_present": false,
+  "preset_written_to_config": false,
+  "config_file_exists_before": false,
+  "config_file_exists_after_reads": false,
+  "config_file_unchanged": true,
+  "overlay": {
+    "override": {
+      "growth_factor": 11.0,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 10.0
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "expected_effective": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 11.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 10.0
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "config_get_after_restart": {
+      "growth_factor": 11.0,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 10.0
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "effective_after_restart": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 11.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 10.0
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "settings_effective_after_restart": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 11.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 10.0
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "opened_options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 11.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 10.0
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "all_effective_paths_equal": true,
+    "shallow_initial_baselines_replaced": true,
+    "raw_override_preserved": true,
+    "config_file_unchanged_on_restart": true
+  },
+  "execution": "local_cpp_config_and_sqlite_only"
+}

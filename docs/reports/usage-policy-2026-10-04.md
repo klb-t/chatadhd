@@ -1,154 +1,157 @@
-# Thread 2 — usage policy and settings, 2026-10-04
+# Thread 2 — usage policy and authoritative preset, 2026-10-04
 
-Branch `gpt/usage-policy-2026-10-04`; draft [PR #10](https://github.com/klb-t/chatadhd/pull/10).
-Base/current main: `161cc22dfb84fe863389d6b90323bd44516a68dc`.
-Interface published first (`c794c3c`), implementation `682af21`, original
-receipt `34cc920`, settings continuation `03b0c4e`. Same branch, additive API.
-No main/STATE/README/web/profile implementation files edited. Paid calls and
-GitHub Actions executed: **0**. Readiness: **blocked by authoritative profile data**.
+Branch `gpt/usage-policy-2026-10-04`; [PR #10](https://github.com/klb-t/chatadhd/pull/10).
+Rebased and pushed on current main `7282437b1c88933977f64b3468b9f42f7b400494`.
+**Ready for W9's independent acceptance of the usage-policy increment.**
+The authoritative-preset dependency is resolved without waiting for W11.
+Renewed startup/config work remains a separate follow-up below.
 
 ## Delivered
 
-- Durable native `UsagePolicy`: estimates, rolling measured baselines, atomic
-  reservations, exact-receipt confirmation/rejection, actuals, cancellation and
-  inspection. Window, growth factor (preset ×10), seeds, reservation comparison
-  and SQLite lock waiting are settings. Resources/cohorts are caller data.
-  Unknown stays unknown; exact ×10, including `0.1 → 1.0`, requires confirmation.
-- Coherent settings and read-only `preview_settings`: preset, stored override,
-  effective values, source, replacement semantics and canonical SHA-256 hashes.
-  Preview never saves or opens the ledger. Existing config APIs validate policy
-  patches; historical defaults/file bytes/model choices remain unchanged.
-- Owner's method-in-graph clarification: opaque method/version/run references,
-  prompt hashes and parameters are receipt-bound estimate extensions. Actual
-  extensions remain in events. Added restart/conflict/confirmation regression;
-  graph entities/edges use the shared3/4 format. [API contract](../../loom/src/policy/README.md).
-- Reviewed W11's five renewed startup/config groups. The exact
-  [profile handoff](../../loom/src/policy/PROFILE_HANDOFF.md) contains six usage
-  values, twelve historical settings, path recipes and ownership/dependency
-  work. This proposal installs no authoritative data.
+- Durable native estimates, rolling measured baselines, atomic reservations,
+  exact-receipt confirmation/rejection, actuals, cancellation and inspection.
+  Growth factor, window, seeds, reservation comparison and SQLite waiting are
+  settings. Resource/cohort names remain caller data; declared estimates do not
+  train measured baselines. The unchanged preset requires confirmation at ×10.
+- Authoritative JSON preset profile
+  [`loom/data/policy/usage_policy.pack`](../../loom/data/policy/usage_policy.pack),
+  preserving all six historical values. `.pack` avoids changing the separate KB
+  manifest/recursive JSON validator outside this lane. The deterministic
+  generator embeds original bytes; `--check` rejects drift. No active manual
+  C++ copy remains. No total source-size ceiling was introduced.
+- One checked decoder feeds `Config::get` fallback, `loom_config_defaults`,
+  effective options, settings and default `UsagePolicy::open`. Existing stored
+  `loom_usage_policy` uses validated shallow replacement. Read-only snapshots
+  and previews report stored/preset/effective values, canonical hashes and the
+  source-byte hash. Reading defaults creates neither an override nor a config
+  file. Bad compiled presets return errors; legacy reference APIs throw rather
+  than substitute values.
+- Opaque graph method/version/run/prompt/parameter references remain bound to
+  receipts and recorded events; the actual graph contract belongs to W3/W4.
+  [API/settings contract](../../loom/src/policy/README.md).
+
+Code/data commit `a3b127c`; native tests, isolated replay tool and documentation
+`5a73a36`. Each commit was immediately pushed with `[skip ci]`. No main, STATE,
+root README, web, KB manifest or other lane's implementation was edited.
+Paid provider calls and Actions requested: **0**.
 
 ## Before / after
 
-| Check | Before continuation (`34cc920`, retained) | Fresh continuation |
+| Check | Previous W2 checkpoint | Authoritative-preset increment |
 |---|---:|---:|
-| Full CTest, server/CLI/shared enabled | 108/108 | 108/108 |
-| Focused actual-kernel policy groups | 19/19 | 24/24 |
-| Read-only settings command variants | 1 | 2 |
-| Canonical current-settings hash fields | 0 | 3 |
-| Usage-preset fields remaining in C++ | 6 | 6, blocked |
-| Renewed DIC startup/config groups migrated | 0/5 | 0/5, blocked |
+| Full CTest, server/CLI/shared enabled | 108/108 | 108/108, 274.38 s |
+| Focused actual-kernel policy groups | 24/24 | 25/25; original 19 retained |
+| Usage-preset fields initialized manually in C++ | 6 | 0 |
+| Default paths verified against edited data | — | 5/5 |
+| Isolated real-kernel source/validation variants | — | 4/4 |
+| Generator byte-preservation/drift cases | — | 5/5 |
+| Renewed startup/config groups migrated | 0/5 | 0/5, separate follow-up |
 | New paid provider calls | 0 | 0 |
 
-Original [receipt](../../loom/src/policy/tests/evidence/2026-10-04/manifest.json)
-remains unchanged. [Continuation receipt](../../loom/src/policy/tests/evidence/2026-10-04/settings/manifest.json).
-Focused tests link the actual
-built kernel; fake HTTP sentinels assert zero calls. WERROR, Debug/O0, assertions
-and bundled SQLite remain enabled; symbols disabled (`-g0`) for storage pressure.
-Standalone `.cc` groups supplement the unchanged 108 CTest entries.
+[New receipt and reproduction](../../loom/src/policy/tests/evidence/2026-10-04/preset/README.md).
+WERROR, Debug/O0, assertions, bundled SQLite and all existing thresholds remain
+enabled. Symbols use `-g0` for storage pressure. Dedicated RAM temporary files
+avoid shared-storage failures. Timings are observations, not a matched benchmark.
 
-Negative attempts remain complete: first full CTest **95/108** (11 generated
-helper permission failures and two 60-second research timeouts), serial retry
-**106/108** (same two timeouts), focused retry **1/2**. Diagnostic structure on
-full shared storage recorded ENOSPC; unchanged structure with RAM temporary
-files passed **859/859**. Contracts diagnostic passed **209/209 in 65.811 s**,
-exceeding the CTest gate and therefore not a green CTest result. Final CTest
-uses dedicated RAM `TMPDIR` and the helper's restored executable permission.
-No test, timeout or threshold changed. Timings are environmental observations,
-not a matched performance benchmark. Failed/interrupted build logs are retained.
+Actual case-count guard: **107 executed CTest entries, 659 native cases,
+24,465 assertions, 1,276 Python cases, zero Python skips**. The existing opt-in
+`unit.test_catalog_scale` entry is explicitly unexecuted. Original JUnit stdout
+was capped in 16 entries and its first coverage guard was rejected; both are
+retained. Matching full `LastTest.log` restored only those stdout fields, leaving
+test outcomes/metadata unchanged. The unchanged W8 guard accepts that full
+evidence. No test rerun or result rewriting was used to repair the capture.
+
+The source-edit proof recompiles the actual preset-consumer translation unit
+and links it before the fresh actual kernel archive. Synthetic edited values
+(12.5, window7, timeout123, reservations false, named/null baselines and an
+extension) reach all five paths. Config overlay replacement/save/restart works
+without rebuilding. Missing-field and factor1 presets produce four Result
+errors and three legacy exceptions, without creating config/ledger/ledger parent.
+Watched repository inputs and libraries remain unchanged throughout that proof.
+
+Earlier [original receipt](../../loom/src/policy/tests/evidence/2026-10-04/manifest.json)
+and [settings receipt](../../loom/src/policy/tests/evidence/2026-10-04/settings/manifest.json)
+remain intact, including failed/time-out/ENOSPC attempts. The complete pre-preset
+series is preserved at `archive/2026-10-04/usage-policy-before-preset` (`910a1d6`).
 
 ## Not delivered and why
 
-Preset source remains C++, honestly labelled `legacy_code_pending_pack_migration`.
-W11's reusable `RuntimeProfile` engine and authoritative usage/config/path
-profiles are absent from main. Removing the only current preset before that
-foundation arrives would leave default callers without data. The handoff reuses
-W11's loader and records required header/bootstrap ownership; no parallel loader
-or out-of-scope data/model changes were made. DIC-0325–0329 remain open.
+DIC-0325–0329 cover startup directory recipes/names, twelve legacy defaults,
+event-log/worker presets and origin metadata. W11 publishes config/runtime-path
+descriptors and its generic engine on its branch, not current main. Wiring also
+needs assigned `config.h`/runtime-bootstrap/storage ownership, which is outside
+W2's editable files. [Concrete handoff](../../loom/src/policy/PROFILE_HANDOFF.md).
+These follow-ups do not block the now independent usage-preset migration.
 
-The command is static-kernel only; public ABI/CTest registration is an ownership
-gap. Generic config writes lack CAS/rollback; save errors may retain RAM changes,
-so snapshot hashes do not prove persistence. Quantities are finite binary64,
-not exact-decimal billing records. Caller lanes own dispatch; accounting receipts
-do not ensure exactly-once execution or grant paid-call permission.
+The current user overlay is `config.json`'s `loom_usage_policy`; generic per-root
+RuntimeProfile file overlays are not claimed. Shared ABI/CTest registration
+needs its assigned header/build owner; current command is static-kernel only.
+Config writes lack CAS/rollback; hashes alone do not prove durable save. Finite
+binary64 quantities are not exact-decimal billing. Admission receipts neither
+grant paid-call permission nor ensure exactly-once dispatch/external cancellation.
 
 ## Other-lane awareness
 
-Fresh fetch reviewed W1 `f407a7c`, W3 `36ec2a8`, W4 `3caa6b4`, W5 `9a8b88b`,
-W6 `e0caa3b`, W9 `0bbea7b`, W10 `2f25145`, W11 `b88154c`. W4/5 consume the API. W10 now has HTTP/panel
-integration using `preview_settings`; its older pending report is not treated
-as current code. W9 archived the same-baseline research timeouts separately.
-No holdout/blind data was read. The starting [limits audit](../LIMITS_AND_WIRING_2026-10-01.md)
-is historical `33fb30a`, not proof another lane's latest limits remain unchanged.
-
-Post-evidence fetch: main stayed unchanged; W3 advanced to `ed9fe75` (embedding
-and goal-typing receipts), W4 to `fb859f5` (durable dispatch/settlement recovery),
-W9 to `125a043`. Their new implementation commits were inspected as dependencies,
-not relabelled as W2 integration-test results. Final rebase was up to date.
+Fresh final fetch: main remains `7282437`; W3 `15c0c08`, W4 `1377e20`,
+W11 `d3488a6`, W8 `a29534a`. Reviewed their reports/Do2 sections. W3/W4 keep
+the existing effective-options helper and `(ledger_path, options)` signatures;
+this increment preserves both. Their branches are not relabelled as merged W2
+integration results. No blind/holdout data was read.
 
 ## Do wątku 1
 
-Own extraction lower-only budgets, checkpoints and candidate-graph maxima as
-editable data/presets. Preserve evidence invariants; declared estimates do not
-train measured baselines.
+Own extraction/model budgets, checkpoints and candidate maxima as editable
+data/presets. Declared cost estimates must not train measured baselines.
 
 ## Do wątku 3
 
-Use the shared policy for embedding/model typing, index/context work and large
-rendering. Configure invocation/byte/token/time/concurrency presets. Dispatch
-only allowed status with authorization. Preserve method/version/run references
-in ledger extensions and write graph edges with4's shared format. Cohorts remain
-caller-defined; changing versions may change comparability.
+The builtin data preset is ready; retain existing Config/effective/open calls.
+Keep cohort/input-byte semantics stable and unknown quantities null. Dispatch
+only when status is allowed and authorized; write method provenance with W4's
+agreed graph format, preserving opaque references in estimates/actuals.
 
 ## Do wątku 4
 
-Keep the shared ledger, packet request hashes and graph-method/run references.
-Verify `fb859f5` against the integrator's archived unresolved-replay regression:
-unresolved may retain authorization for a held reservation, but its recovery
-status cannot permit another dispatch. W2 has not certified the new dispatcher.
-Own KB query/page presets and the shared graph-method provenance format. Usage
-data now proposes W11 RuntimeProfile, replacing the earlier usage-specific KB
-schema proposal.
+The shared data preset is ready without a W4 loader. Preserve actual root and
+explicit ledger path. Unresolved authorization can hold a reservation but cannot
+permit redispatch. Packet dispatch/cancellation atomicity remains your separate
+durable execution contract; this policy alone cannot abort external work.
 
 ## Do wątku 5
 
-Keep measured source-byte accounting and source/parser/options extensions with
-exact-receipt CLI confirmation. Audit estimates do not train measured baselines.
-Configure depth512/inline1,000,000-byte presets; preserve source/completeness and
-recovery evidence.
+Retain source-byte accounting and parser/options extensions with exact-receipt
+CLI confirmation. Audit estimates do not train baselines. Own configurable
+depth512/inline1,000,000-byte presets and checkpoint recovery evidence.
 
 ## Do wątku 6
 
-Own catalog stem/sketch/Bloom/hash/expansion presets, preserving truncation and
-coverage evidence. Lane2 did not inspect blind/holdout data.
+Own catalog stem/sketch/Bloom/hash/expansion presets and truncation/coverage
+evidence. W2 did not inspect blind/holdout data.
 
 ## Do wątku 9
 
-Assign public ABI/CTest registration, `config.h`, runtime bootstrap, config
-persistence/CAS/origin metadata and core first64 scheduling ownership; these gaps do not expand
-the integrator's implementation scope. Coordinate W11's foundation/data before
-W2's adapter, then return W2 for edited-data equivalence verification. Keep W2
-blocked until that migration is real. Record these handoffs in INDEX and preserve
-existing interface work.
+Take this usage-policy increment first through your fresh build/full CTest/web
+gate. Remove the obsolete authoritative-preset/W11 blocker from INDEX after
+independent acceptance. Keep renewed DIC startup/config work explicitly separate;
+assign config/header/bootstrap/origin/persistence/public ABI/CTest registration
+ownership. The complete older series is archived; no main changes were reverted.
 
 ## Do wątku 10
 
-Keep the new HTTP/panel integration. Show preset/source/hashes and replacement
-semantics; preview is advisory, `{}` restores values but remains configured.
-Approval binds the exact receipt; projection conflicts need a fresh request.
-Require allowed status plus authorization; unresolved/terminal replay is recovery.
-Shared/JNI needs the assigned ABI owner.
+Use settings/preview as before. Display `preset_source: embedded_data` and
+`preset_document` source-byte identity separately from canonical options hashes.
+`{}` restores current preset values while remaining a configured override.
+Preview is advisory; confirmation binds the exact receipt. Shared/JNI consumers
+still need the assigned ABI owner.
 
 ## Do wątku 11
 
-Publish the reusable profile foundation and usage/config/path descriptors from
-PROFILE_HANDOFF; regenerate existing embed and retain equality/schema gates.
-Return the dependency to2 for its adapter, preserving shallow stored overrides
-and nullable/open native validation. Own guard calls before search/index rebuild
-and memory render; coordinate embedding/context with3. Archive/search/semantic/
-media/GitHub/worker/net/CLI policy remains in your scope; provider-list/core
-scheduling ownership still needs9's assignment.
-
-Your renewed Config-origin request needs the assigned header/storage API.
-Historical `contains/all` includes defaults and cannot prove explicit intent;
-legacy serialized defaults have unknown intent. The concrete distinction is
-recorded in PROFILE_HANDOFF; it remains open with the shared-profile dependency.
+Current usage defaults already come from one authoritative W2 data profile.
+Your future `loom/data/runtime/usage_policy.pack` wrapper must derive from that
+source rather than maintain a second manual set of defaults. Preserve native
+nullable/open validation and shallow Config replacement when unifying loaders.
+Config/runtime_paths foundation and descriptors can enable the later DIC adapter
+after header/bootstrap ownership is assigned. Config preset, saved-file presence
+and explicit user choice require distinct origin metadata; legacy serialized
+default equality cannot establish intent. Archive/search/memory/worker/media/
+network limits and their guard wiring remain your scope.
