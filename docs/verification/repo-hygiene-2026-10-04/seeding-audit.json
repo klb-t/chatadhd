@@ -1,0 +1,242 @@
+{
+  "dependencies": [
+    {
+      "lines": [
+        232,
+        233,
+        234
+      ],
+      "observation": "CTest research.seeding invokes unittest discovery for every seeding test_*.py.",
+      "path": "loom/CMakeLists.txt"
+    },
+    {
+      "lines": [
+        66,
+        67,
+        68,
+        69
+      ],
+      "observation": "setUpClass reads predictions and scores of the V1, V2-first and V2-metadata-corrected saved runs.",
+      "path": "loom/tools/seeding/test_independent.py"
+    },
+    {
+      "lines": [
+        197,
+        198,
+        199
+      ],
+      "observation": "The ranking-control regression reads V3 saved predictions and scores.",
+      "path": "loom/tools/seeding/test_independent.py"
+    },
+    {
+      "lines": [
+        226,
+        227,
+        228,
+        229,
+        230
+      ],
+      "observation": "The application-alternatives regression reads V4 and compares V3 scores.",
+      "path": "loom/tools/seeding/test_independent.py"
+    },
+    {
+      "lines": [
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91
+      ],
+      "observation": "Frozen-file hashes and decompressed V1 source bytes are active assertions.",
+      "path": "loom/tools/seeding/test_independent.py"
+    }
+  ],
+  "files": [
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v1_first/policy_frozen.json",
+      "sha256": "6bbaa06339f4a430f3b59a92eeac11c4afa42a7ce213760295500261329fad2d",
+      "size_bytes": 372
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v1_first/predictions.json.gz",
+      "sha256": "a47fc2ca95b31ba8e164f587afd29d03811a92b191ca74ca338bcede5d4cb521",
+      "size_bytes": 2270705
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v1_first/protocol_frozen.md",
+      "sha256": "4bd275ade751ea71dc30f8bbd3cbfb7b6c41f221b877d2db23c940451b9e178b",
+      "size_bytes": 6077
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v1_first/prototype_frozen.py",
+      "sha256": "e302c063924d2a83f502579ce3e130788ac83a5df996b6100b9b4920ee573ad1",
+      "size_bytes": 15548
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v1_first/results.json.gz",
+      "sha256": "ec78b56e34c206458c46b32997d28c2bf048ac64c5cc8411309b7563ab65653a",
+      "size_bytes": 124352
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v1_first/uncompressed_sha256.txt",
+      "sha256": "82e4c438e6b3b2545ee5cfce291babda948a38b8d3f4434a8a1d601dbc32bc84",
+      "size_bytes": 162
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_first/policy_frozen.json",
+      "sha256": "f6f67fa048722d5707c3564177f315592478f7cd1e53674a47916dc3ab0dcbd3",
+      "size_bytes": 445
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_first/predictions.json.gz",
+      "sha256": "a2d5387d34328bb9805ede8fbd30e293fb404f1f930407402eda34784baa020b",
+      "size_bytes": 2266744
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_first/protocol_frozen.md",
+      "sha256": "e13fbb672886a07b16f01d8f7927d11854ef90383ff6de6099f95db371db345a",
+      "size_bytes": 2518
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_first/prototype_frozen.py",
+      "sha256": "34471e4ca05c94c2a8b4be219bf2dc3b69c68dbfd7001108c2f6e7a99d6cf1ce",
+      "size_bytes": 16863
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_first/results.json.gz",
+      "sha256": "cfb6cc4f3a84d9ee25bf4ba1ca569b4c9efcfb75810ddb9b4ddfe6fba5b7472a",
+      "size_bytes": 124366
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_metadata_corrected/policy_frozen.json",
+      "sha256": "f6f67fa048722d5707c3564177f315592478f7cd1e53674a47916dc3ab0dcbd3",
+      "size_bytes": 445
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_metadata_corrected/predictions.json.gz",
+      "sha256": "236510cbc0c131627e2f4e4adf1031318cd25a68d6b0a17a961515bb27fc56ab",
+      "size_bytes": 2307887
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_metadata_corrected/protocol_frozen.md",
+      "sha256": "01d2fc6358b65744c60ee00d31bfc457479b0ca7268013210ac6ed7b78c5a27c",
+      "size_bytes": 3347
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_metadata_corrected/prototype_frozen.py",
+      "sha256": "73c6d87845ff525f21f0e1a7e33fa0fa6db3c5d808d46c8ce9eb8de1fbce4ff7",
+      "size_bytes": 17244
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v2_metadata_corrected/results.json.gz",
+      "sha256": "e877dc55f423aebc4101fd00351ed1a8fc8da4845d5a94726c4b53a1b1cbd233",
+      "size_bytes": 124401
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v3_ranking_control_first/policy_frozen.json",
+      "sha256": "c51b740351d2110345ad441ad9182e3dc0d49aeeb6207b20fdf1dd8811004960",
+      "size_bytes": 537
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v3_ranking_control_first/predictions.json.gz",
+      "sha256": "aa19ae3e0195cb08db94fb14d8dc2a64f7077034f0c764846057250e2a7eeefe",
+      "size_bytes": 3044159
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v3_ranking_control_first/protocol_frozen.md",
+      "sha256": "ae4326c0819e973772ba114b41bf982a871a15d13de297516c32f18073a676c7",
+      "size_bytes": 2796
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v3_ranking_control_first/prototype_frozen.py",
+      "sha256": "c41f6a0e7b85ee5533ff290956fc561b56ca961c8389ed1a6ecfd528ca4a11e5",
+      "size_bytes": 17628
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v3_ranking_control_first/results.json.gz",
+      "sha256": "7d053ccb8b5d7fe9fc8e1814f294b1d25832f58bf29860ddc7981c8c69336b04",
+      "size_bytes": 128755
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v4_application_alternatives_first/policy_frozen.json",
+      "sha256": "df02c8387ffc2660b449848ab47c1ccc42d22fcc8eff2f2433cdf7744f734375",
+      "size_bytes": 549
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v4_application_alternatives_first/predictions.json.gz",
+      "sha256": "e0fd191946708430af6f3d886f86bb48dafa49c53829c09c559bb9fd202590b9",
+      "size_bytes": 3173334
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v4_application_alternatives_first/protocol_frozen.md",
+      "sha256": "b75ee6dab25113f94f9a9ea059c5d02ebff55d7a0d2a48ffae73b3346d241e26",
+      "size_bytes": 3142
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v4_application_alternatives_first/prototype_frozen.py",
+      "sha256": "5cede60257ff883ce83be8434cd8d7180c22cda7b0f020b2c5f03e1401474cc1",
+      "size_bytes": 19230
+    },
+    {
+      "path": "loom/tools/seeding/results/synthetic_lopo_v4_application_alternatives_first/results.json.gz",
+      "sha256": "021514174b3bb794c8f2f4650fc63236ade9cca0d1720512679077d6312c1260",
+      "size_bytes": 128755
+    }
+  ],
+  "inventory_after": {
+    "file_bytes": 13800361,
+    "files": 26
+  },
+  "inventory_before": {
+    "file_bytes": 13800361,
+    "files": 26
+  },
+  "inventory_digest": {
+    "algorithm": "sha256",
+    "encoding": "sorted result-relative path TAB decimal size TAB file sha256 LF",
+    "value": "e1672415ffe620faa6db54f8ddd5721be421f12033e80cf6ee7ca5344363ba07"
+  },
+  "measured_at_utc": "2026-10-04T14:29:28.307240+00:00",
+  "moved_bytes": 0,
+  "moved_files": 0,
+  "observation": "The results directories are active fixtures used by test_independent.py; the owner condition for moving unused results is not met. All result files and frozen inputs stay in place unchanged.",
+  "schema": "loom.repo_hygiene.seeding_audit/1",
+  "source_head": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "verification": {
+    "calls_to_paid_providers": 0,
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "loom/tools/seeding",
+      "-p",
+      "test_*.py",
+      "-v"
+    ],
+    "counts": {
+      "CounterexampleTests": 4,
+      "FrozenArtifactsTests": 9,
+      "PrototypeTests": 23
+    },
+    "cwd": "repository root",
+    "duration_seconds": 22.936,
+    "log": "docs/verification/repo-hygiene-2026-10-04/seeding-audit.txt",
+    "log_sha256": "c2a2a4fd08d8548a7f0c6ec9c1c67d4264b1aef2e540dcd50840893e1824b79e",
+    "result": "OK",
+    "returncode": 0,
+    "tests_run": 36
+  }
+}
