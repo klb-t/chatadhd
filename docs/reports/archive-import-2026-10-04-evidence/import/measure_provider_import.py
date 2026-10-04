@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Run one isolated offline CLI import and record elapsed/peak RSS/SQL correctness.
 
-Uses a new data directory per variant. --baseline omits newly added audit
+Uses a new data directory per variant unless --existing-data-dir selects a
+partial import for an actual resume measurement. Results must be fresh.
+Before/after ID and source-state verification is outside the timed CLI process.
+--baseline omits newly added audit
 planning price flags while retaining existing --audit behavior. --repeat checks
 the completed-source cache. Capture stdout to disk, not in Python memory.
 Kernel wait4 reports the CLI's peak RSS and CPU times; GNU time is not required.
@@ -31,6 +34,39 @@ def find_database(directory):
         except sqlite3.Error:
             pass
     raise RuntimeError("No Loom SQLite database found")
+
+
+def capture_existing_data(directory, fixture):
+    """Capture small synthetic benchmark identities, without writing the DB."""
+    path = find_database(directory)
+    with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
+        conversation_ids = [row[0] for row in db.execute("SELECT id FROM conversations ORDER BY id")]
+        message_ids = [row[0] for row in db.execute("SELECT id FROM messages ORDER BY id")]
+        rows = db.execute("SELECT id,blob_hash,size,metadata FROM loom_sources ORDER BY id").fetchall()
+        sources = [{"id": source_id, "blob_hash": blob_hash, "source_bytes": source_bytes,
+            "status": json.loads(metadata or "{}").get("import_status")}
+            for source_id, blob_hash, source_bytes, metadata in rows]
+    matched = [row for row in sources if row["blob_hash"] == fixture["sha256"]
+        and row["source_bytes"] == fixture["source_bytes"]]
+    return {"path": str(path), "conversations": len(conversation_ids), "messages": len(message_ids),
+        "conversation_ids": conversation_ids, "message_ids": message_ids,
+        "source_ids": [row["id"] for row in sources], "sources": sources,
+        "matched_source_ids": [row["id"] for row in matched],
+        "prior_partial": any(row["status"] == "partial" for row in matched)}
+
+
+def read_cli_summary(path):
+    """Read the small import receipt, preserving partial results as failures."""
+    try:
+        result = json.loads(path.read_text())
+        report = result.get("export_report") or {}
+        return {"source_id": result.get("source_id"), "resumed": result.get("resumed"),
+            "already_imported": result.get("already_imported"), "cancelled": result.get("cancelled"),
+            "messages": result.get("messages"),
+            "retained_conversation_count": result.get("retained_conversation_count"),
+            "export_error_count": len(report.get("errors") or [])}
+    except (OSError, ValueError, AttributeError, TypeError) as error:
+        return {"error": str(error)}
 
 
 def check_database(directory, fixture, baseline=False):
@@ -95,12 +131,19 @@ def main():
     parser.add_argument("--timeout", type=float, default=1800)
     parser.add_argument("--source-commit", default=None)
     parser.add_argument("--build-description", default=None)
+    parser.add_argument("--existing-data-dir", type=Path,
+        help="Resume a prior synthetic import in this data directory; ID checks are outside timing")
     args = parser.parse_args()
+    if args.result_dir.exists() and any(args.result_dir.iterdir()):
+        parser.error("result directory must be fresh and empty; previous evidence will not be overwritten")
     args.result_dir.mkdir(parents=True, exist_ok=True)
-    directory = args.result_dir / "data"
-    if directory.exists():
-        parser.error("result data directory already exists; choose a new result_dir")
+    directory = args.existing_data_dir if args.existing_data_dir is not None else args.result_dir / "data"
+    if args.existing_data_dir is not None and not directory.is_dir():
+        parser.error("existing data directory must already exist")
     fixture = json.loads(args.source.with_suffix(args.source.suffix + ".fixture.json").read_text())
+    existing_start = capture_existing_data(directory, fixture) if args.existing_data_dir is not None else None
+    if existing_start is not None:
+        (args.result_dir / "existing-data-start.json").write_text(json.dumps(existing_start, indent=2) + "\n")
     binary_digest = hashlib.sha256()
     with args.binary.open("rb") as binary_stream:
         for chunk in iter(lambda: binary_stream.read(1024 * 1024), b""):
@@ -147,12 +190,24 @@ def main():
             "collector": "os.wait4; kernel ru_maxrss", "peak_rss_kib": peak_rss_kib,
             "user_seconds": usage.ru_utime, "system_seconds": usage.ru_stime,
             "stdout_bytes": stdout.stat().st_size,
+            "stdout_result": read_cli_summary(stdout),
         })
         if exit_code != 0:
             break
     verification_started = time.monotonic()
     try:
         database = check_database(directory, fixture, args.baseline)
+        if existing_start is not None:
+            existing_end = capture_existing_data(directory, fixture)
+            checks = database["checks"]
+            checks["prior_conversation_ids_preserved"] = set(existing_start["conversation_ids"]).issubset(existing_end["conversation_ids"])
+            checks["prior_message_ids_preserved"] = set(existing_start["message_ids"]).issubset(existing_end["message_ids"])
+            checks["prior_source_ids_preserved"] = set(existing_start["source_ids"]).issubset(existing_end["source_ids"])
+            checks["matched_source_id_preserved"] = bool(existing_start["matched_source_ids"]) and set(existing_start["matched_source_ids"]).issubset(existing_end["matched_source_ids"])
+            checks["cli_matched_source_id"] = measurements[0]["stdout_result"].get("source_id") in existing_start["matched_source_ids"]
+            if existing_start["prior_partial"]:
+                checks["resumed_partial_source"] = measurements[0]["stdout_result"].get("resumed") is True
+            database["correct"] = all(checks.values())
     except (sqlite3.Error, RuntimeError) as error:
         database = {"correct": False, "error": str(error)}
     receipt = {"schema": "loom.offline_import_measurement/1", "command": command, "baseline": args.baseline,
@@ -160,6 +215,9 @@ def main():
         "fixture": fixture, "measurements": measurements, "database": database,
         "verification_elapsed_seconds": time.monotonic() - verification_started,
         "caveat": "Peak RSS is the CLI process including source snapshotting, interpretation, audit, and JSON report output; file-system page cache is excluded."}
+    if existing_start is not None:
+        receipt["existing_data_start_counts"] = existing_start
+        receipt["existing_data_dir"] = str(directory.resolve())
     (args.result_dir / "measurement.json").write_text(json.dumps(receipt, indent=2) + "\n")
     print(json.dumps(receipt, indent=2))
     return 0 if database["correct"] and all(run["exit_code"] == 0 for run in measurements) else 1
