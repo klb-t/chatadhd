@@ -1,0 +1,1622 @@
+{
+  "manifest": {
+    "protocol_version": "synthetic-custom-dimension-demo-v1",
+    "output_schema_version": "candidate-profile-projection-v3",
+    "evaluation_class": "development_corpus_lopo",
+    "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+    "hashes": {
+      "fixture": "bc4a79c4a684b87ec2b90984e72d8b772c9d947a41a0ad6e48e0c643312a76c0",
+      "protocol": "dbf8b83afafcc62fc1f2399c21ef4232dcb2c2273ea994ab1662301b05d190f3",
+      "policy": "61ba17ad8a03e3dbd4a80c70df14f733f2441fcecc56ccf4cc1b2e5bf0421828",
+      "code": "5576a7e5c09650318c05d5612c447c005ec902f0a6979205320b1c040e3dafba"
+    },
+    "profile": {
+      "schema": "loom.seeding.recipe/1",
+      "version": "synthetic-custom-dimension-demo-v1",
+      "source_files": [
+        {
+          "order": 0,
+          "role": "base",
+          "source_name": "base.json",
+          "frozen_path": "profile_frozen.json",
+          "sha256": "96c27cf9190f655a7aa6773d090de3a9f946e1bc8f466fad8edd7e9f62a1c8ce"
+        },
+        {
+          "order": 1,
+          "role": "overlay",
+          "source_name": "overlay-1.json",
+          "frozen_path": "profile_overlays/000.json",
+          "sha256": "ac0cb4a5775ee13b4ae4f5ca7729df7b938a890a91b7db580becc1c7d8f0d6d6"
+        },
+        {
+          "order": 2,
+          "role": "overlay",
+          "source_name": "overlay-2.json",
+          "frozen_path": "profile_overlays/001.json",
+          "sha256": "2b440728ab7d4a751f626189899db26b6e4bd63f4628dbaf6e4ac7bce70ac3f2"
+        }
+      ],
+      "effective_path": "effective_profile.json",
+      "effective_sha256": "4cd613140bb3a90ddf04eeca9a7b1005afcdcfdaefa893c7511ceef1b034604e",
+      "prediction_dimensions": [
+        "all"
+      ],
+      "property_key_encoding": "escaped-dimension-prefix-v1"
+    },
+    "modules": {
+      "modules_frozen/prototype.py": "5576a7e5c09650318c05d5612c447c005ec902f0a6979205320b1c040e3dafba",
+      "modules_frozen/recipe.py": "e76af458f8a850c454b19c11a891d46cee8e95798318f1075271faf84ee9befd",
+      "modules_frozen/__init__.py": "d1b9c3d2cd66b364f0b38efea6964dc3483dc88382aca1cd8c8639ee11d5cfb3",
+      "modules_frozen/profiles/default.json": "94e0894278bd424c535aed3b67d2f235eb6f1cbfbcf2cdc999f145575de4c1bb",
+      "modules_frozen/profiles/schema.json": "92da1edde97ac6060c2569b3e601ae88ed7fb605a5bc1602dd8f8d371b7d9f9a"
+    },
+    "method_graph_bridge": {
+      "status": "pending_agreed_contract"
+    },
+    "canonical_graph_mutated": false,
+    "paid_api_calls": 0
+  },
+  "scores": {
+    "beta/seam": {
+      "2": {
+        "partial_mapping": {
+          "tp": 0,
+          "emitted": 2,
+          "hidden_elements": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fp": 2,
+          "fn": 2,
+          "abstained_cases": 1,
+          "cases": 3,
+          "vocabulary_covered_hidden_elements": 0,
+          "errors": [
+            {
+              "case_id": "beta%2Fseam/all/000",
+              "expected": "second",
+              "proposed": [
+                "first"
+              ],
+              "false_negative": true,
+              "false_positive_labels": [
+                "first"
+              ]
+            },
+            {
+              "case_id": "beta%2Fseam/all/001",
+              "expected": "shared",
+              "proposed": [],
+              "false_negative": true,
+              "false_positive_labels": []
+            },
+            {
+              "case_id": "beta%2Fseam/all/002",
+              "expected": null,
+              "proposed": [
+                "first"
+              ],
+              "false_negative": false,
+              "false_positive_labels": [
+                "first"
+              ]
+            }
+          ]
+        },
+        "most_frequent": {
+          "tp": 1,
+          "emitted": 4,
+          "hidden_elements": 2,
+          "precision": 0.25,
+          "recall": 0.5,
+          "fp": 3,
+          "fn": 1,
+          "abstained_cases": 0,
+          "cases": 3,
+          "vocabulary_covered_hidden_elements": 1,
+          "errors": [
+            {
+              "case_id": "beta%2Fseam/all/000",
+              "expected": "second",
+              "proposed": [
+                "first"
+              ],
+              "false_negative": true,
+              "false_positive_labels": [
+                "first"
+              ]
+            },
+            {
+              "case_id": "beta%2Fseam/all/001",
+              "expected": "shared",
+              "proposed": [
+                "first",
+                "shared"
+              ],
+              "false_negative": false,
+              "false_positive_labels": [
+                "first"
+              ]
+            },
+            {
+              "case_id": "beta%2Fseam/all/002",
+              "expected": null,
+              "proposed": [
+                "first"
+              ],
+              "false_negative": false,
+              "false_positive_labels": [
+                "first"
+              ]
+            }
+          ]
+        },
+        "premise_filtered_frequency": {
+          "tp": 0,
+          "emitted": 2,
+          "hidden_elements": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "fp": 2,
+          "fn": 2,
+          "abstained_cases": 1,
+          "cases": 3,
+          "vocabulary_covered_hidden_elements": 0,
+          "errors": [
+            {
+              "case_id": "beta%2Fseam/all/000",
+              "expected": "second",
+              "proposed": [
+                "first"
+              ],
+              "false_negative": true,
+              "false_positive_labels": [
+                "first"
+              ]
+            },
+            {
+              "case_id": "beta%2Fseam/all/001",
+              "expected": "shared",
+              "proposed": [],
+              "false_negative": true,
+              "false_positive_labels": []
+            },
+            {
+              "case_id": "beta%2Fseam/all/002",
+              "expected": null,
+              "proposed": [
+                "first"
+              ],
+              "false_negative": false,
+              "false_positive_labels": [
+                "first"
+              ]
+            }
+          ]
+        },
+        "random_expected": {
+          "expected_tp": 1.0,
+          "emitted": 4,
+          "hidden_elements": 2,
+          "expected_precision": 0.25,
+          "expected_recall": 0.5,
+          "meaning": "exact expectation under uniform candidate ordering; fractional TP"
+        },
+        "random_repetitions": {
+          "7": {
+            "tp": 1,
+            "emitted": 4,
+            "hidden_elements": 2,
+            "precision": 0.25,
+            "recall": 0.5,
+            "fp": 3,
+            "fn": 1,
+            "abstained_cases": 0,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 1,
+            "errors": [
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "first",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "8": {
+            "tp": 1,
+            "emitted": 4,
+            "hidden_elements": 2,
+            "precision": 0.25,
+            "recall": 0.5,
+            "fp": 3,
+            "fn": 1,
+            "abstained_cases": 0,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 1,
+            "errors": [
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "first",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "score_groups": [
+    {
+      "kind": "all",
+      "id": null,
+      "scores": {
+        "2": {
+          "partial_mapping": {
+            "tp": 0,
+            "emitted": 4,
+            "hidden_elements": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 4,
+            "fn": 4,
+            "abstained_cases": 2,
+            "cases": 6,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "most_frequent": {
+            "tp": 2,
+            "emitted": 8,
+            "hidden_elements": 4,
+            "precision": 0.25,
+            "recall": 0.5,
+            "fp": 6,
+            "fn": 2,
+            "abstained_cases": 0,
+            "cases": 6,
+            "vocabulary_covered_hidden_elements": 2,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "second",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "first",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "premise_filtered_frequency": {
+            "tp": 0,
+            "emitted": 4,
+            "hidden_elements": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 4,
+            "fn": 4,
+            "abstained_cases": 2,
+            "cases": 6,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "random_expected": {
+            "expected_tp": 2.0,
+            "emitted": 8,
+            "hidden_elements": 4,
+            "expected_precision": 0.25,
+            "expected_recall": 0.5,
+            "meaning": "exact expectation under uniform candidate ordering; fractional TP"
+          },
+          "random_repetitions": {
+            "7": {
+              "tp": 2,
+              "emitted": 8,
+              "hidden_elements": 4,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 6,
+              "fn": 2,
+              "abstained_cases": 0,
+              "cases": 6,
+              "vocabulary_covered_hidden_elements": 2,
+              "errors": [
+                {
+                  "case_id": "all/all/000",
+                  "expected": "first",
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "shared",
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/000",
+                  "expected": "second",
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "first",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                }
+              ]
+            },
+            "8": {
+              "tp": 2,
+              "emitted": 8,
+              "hidden_elements": 4,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 6,
+              "fn": 2,
+              "abstained_cases": 0,
+              "cases": 6,
+              "vocabulary_covered_hidden_elements": 2,
+              "errors": [
+                {
+                  "case_id": "all/all/000",
+                  "expected": "first",
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "second",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/000",
+                  "expected": "second",
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "first",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "kind": "dimension",
+      "id": "all",
+      "scores": {
+        "2": {
+          "partial_mapping": {
+            "tp": 0,
+            "emitted": 4,
+            "hidden_elements": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 4,
+            "fn": 4,
+            "abstained_cases": 2,
+            "cases": 6,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "most_frequent": {
+            "tp": 2,
+            "emitted": 8,
+            "hidden_elements": 4,
+            "precision": 0.25,
+            "recall": 0.5,
+            "fp": 6,
+            "fn": 2,
+            "abstained_cases": 0,
+            "cases": 6,
+            "vocabulary_covered_hidden_elements": 2,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "second",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "first",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "premise_filtered_frequency": {
+            "tp": 0,
+            "emitted": 4,
+            "hidden_elements": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 4,
+            "fn": 4,
+            "abstained_cases": 2,
+            "cases": 6,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "random_expected": {
+            "expected_tp": 2.0,
+            "emitted": 8,
+            "hidden_elements": 4,
+            "expected_precision": 0.25,
+            "expected_recall": 0.5,
+            "meaning": "exact expectation under uniform candidate ordering; fractional TP"
+          },
+          "random_repetitions": {
+            "7": {
+              "tp": 2,
+              "emitted": 8,
+              "hidden_elements": 4,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 6,
+              "fn": 2,
+              "abstained_cases": 0,
+              "cases": 6,
+              "vocabulary_covered_hidden_elements": 2,
+              "errors": [
+                {
+                  "case_id": "all/all/000",
+                  "expected": "first",
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "shared",
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/000",
+                  "expected": "second",
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "first",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                }
+              ]
+            },
+            "8": {
+              "tp": 2,
+              "emitted": 8,
+              "hidden_elements": 4,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 6,
+              "fn": 2,
+              "abstained_cases": 0,
+              "cases": 6,
+              "vocabulary_covered_hidden_elements": 2,
+              "errors": [
+                {
+                  "case_id": "all/all/000",
+                  "expected": "first",
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "second",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/000",
+                  "expected": "second",
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "first",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "kind": "project",
+      "id": "all",
+      "scores": {
+        "2": {
+          "partial_mapping": {
+            "tp": 0,
+            "emitted": 2,
+            "hidden_elements": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 2,
+            "fn": 2,
+            "abstained_cases": 1,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              }
+            ]
+          },
+          "most_frequent": {
+            "tp": 1,
+            "emitted": 4,
+            "hidden_elements": 2,
+            "precision": 0.25,
+            "recall": 0.5,
+            "fp": 3,
+            "fn": 1,
+            "abstained_cases": 0,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 1,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "second",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              }
+            ]
+          },
+          "premise_filtered_frequency": {
+            "tp": 0,
+            "emitted": 2,
+            "hidden_elements": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 2,
+            "fn": 2,
+            "abstained_cases": 1,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "all/all/000",
+                "expected": "first",
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "second"
+                ]
+              },
+              {
+                "case_id": "all/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "all/all/002",
+                "expected": null,
+                "proposed": [
+                  "second"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "second"
+                ]
+              }
+            ]
+          },
+          "random_expected": {
+            "expected_tp": 1.0,
+            "emitted": 4,
+            "hidden_elements": 2,
+            "expected_precision": 0.25,
+            "expected_recall": 0.5,
+            "meaning": "exact expectation under uniform candidate ordering; fractional TP"
+          },
+          "random_repetitions": {
+            "7": {
+              "tp": 1,
+              "emitted": 4,
+              "hidden_elements": 2,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 3,
+              "fn": 1,
+              "abstained_cases": 0,
+              "cases": 3,
+              "vocabulary_covered_hidden_elements": 1,
+              "errors": [
+                {
+                  "case_id": "all/all/000",
+                  "expected": "first",
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "shared",
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                }
+              ]
+            },
+            "8": {
+              "tp": 1,
+              "emitted": 4,
+              "hidden_elements": 2,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 3,
+              "fn": 1,
+              "abstained_cases": 0,
+              "cases": 3,
+              "vocabulary_covered_hidden_elements": 1,
+              "errors": [
+                {
+                  "case_id": "all/all/000",
+                  "expected": "first",
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "second",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                },
+                {
+                  "case_id": "all/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "second"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "second"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "kind": "project",
+      "id": "beta/seam",
+      "scores": {
+        "2": {
+          "partial_mapping": {
+            "tp": 0,
+            "emitted": 2,
+            "hidden_elements": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 2,
+            "fn": 2,
+            "abstained_cases": 1,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "most_frequent": {
+            "tp": 1,
+            "emitted": 4,
+            "hidden_elements": 2,
+            "precision": 0.25,
+            "recall": 0.5,
+            "fp": 3,
+            "fn": 1,
+            "abstained_cases": 0,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 1,
+            "errors": [
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [
+                  "first",
+                  "shared"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "premise_filtered_frequency": {
+            "tp": 0,
+            "emitted": 2,
+            "hidden_elements": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "fp": 2,
+            "fn": 2,
+            "abstained_cases": 1,
+            "cases": 3,
+            "vocabulary_covered_hidden_elements": 0,
+            "errors": [
+              {
+                "case_id": "beta%2Fseam/all/000",
+                "expected": "second",
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": true,
+                "false_positive_labels": [
+                  "first"
+                ]
+              },
+              {
+                "case_id": "beta%2Fseam/all/001",
+                "expected": "shared",
+                "proposed": [],
+                "false_negative": true,
+                "false_positive_labels": []
+              },
+              {
+                "case_id": "beta%2Fseam/all/002",
+                "expected": null,
+                "proposed": [
+                  "first"
+                ],
+                "false_negative": false,
+                "false_positive_labels": [
+                  "first"
+                ]
+              }
+            ]
+          },
+          "random_expected": {
+            "expected_tp": 1.0,
+            "emitted": 4,
+            "hidden_elements": 2,
+            "expected_precision": 0.25,
+            "expected_recall": 0.5,
+            "meaning": "exact expectation under uniform candidate ordering; fractional TP"
+          },
+          "random_repetitions": {
+            "7": {
+              "tp": 1,
+              "emitted": 4,
+              "hidden_elements": 2,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 3,
+              "fn": 1,
+              "abstained_cases": 0,
+              "cases": 3,
+              "vocabulary_covered_hidden_elements": 1,
+              "errors": [
+                {
+                  "case_id": "beta%2Fseam/all/000",
+                  "expected": "second",
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "first",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                }
+              ]
+            },
+            "8": {
+              "tp": 1,
+              "emitted": 4,
+              "hidden_elements": 2,
+              "precision": 0.25,
+              "recall": 0.5,
+              "fp": 3,
+              "fn": 1,
+              "abstained_cases": 0,
+              "cases": 3,
+              "vocabulary_covered_hidden_elements": 1,
+              "errors": [
+                {
+                  "case_id": "beta%2Fseam/all/000",
+                  "expected": "second",
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": true,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/001",
+                  "expected": "shared",
+                  "proposed": [
+                    "first",
+                    "shared"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                },
+                {
+                  "case_id": "beta%2Fseam/all/002",
+                  "expected": null,
+                  "proposed": [
+                    "first"
+                  ],
+                  "false_negative": false,
+                  "false_positive_labels": [
+                    "first"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "ambiguous_score_aliases": [
+    "all"
+  ]
+}
