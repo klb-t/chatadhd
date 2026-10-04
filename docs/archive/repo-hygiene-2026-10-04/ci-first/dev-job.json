@@ -1,0 +1,35 @@
+{
+  "schema": "loom.github_job_evidence/1",
+  "repository": "klb-t/chatadhd",
+  "head_sha": "ee97311d6545ca19e19266d2f37514f2663f0aa9",
+  "tested_merge_sha": "295de864dc42507ce4f54a0bbd7adf42fd1bc9fa",
+  "run_id": 37210513736,
+  "job_id": 111460573878,
+  "preset": "dev",
+  "job_name": "dev (g++)",
+  "conclusion": "failure",
+  "failed_primary_step": "Require actual case execution and account for opt-in scenarios",
+  "source": "GitHub fetch_workflow_job_logs connector",
+  "url": "https://github.com/klb-t/chatadhd/actions/runs/37210513736/job/111460573878",
+  "log_file": "dev-job.log",
+  "raw_sha256": "3d1934bac83eb3d5503657bb87aa4396c6610c2f826e5d883df799d214805d5f",
+  "saved_sha256": "3d1934bac83eb3d5503657bb87aa4396c6610c2f826e5d883df799d214805d5f",
+  "redactions": [],
+  "ctest": {
+    "entry_count": 108,
+    "passed_entries": 108,
+    "failed_entries": 0,
+    "duration_seconds": 106.91,
+    "actual_case_counts": "Pending artifact download; outer pass alone does not prove inner execution"
+  },
+  "commands": [
+    "ctest --preset dev --show-only=json-v1 > build/dev/verification/ctest-manifest.json",
+    "ctest --preset dev --no-tests=error --test-output-size-passed 10485760 --test-output-size-failed 10485760 --output-junit build/dev/verification/ctest.xml",
+    "python .github/scripts/verify_ctest.py --manifest loom/build/dev/verification/ctest-manifest.json --junit loom/build/dev/verification/ctest.xml --preset dev --output loom/build/dev/verification/executed-cases.json"
+  ],
+  "primary_errors": [
+    "cannot validate input: [Errno 2] No such file or directory: 'loom/build/dev/verification/ctest.xml'"
+  ],
+  "proposed_fix": "Use absolute --output-junit path in workflow Test step because CTest preset selects binaryDir.",
+  "artifact_id": 11306138717
+}
