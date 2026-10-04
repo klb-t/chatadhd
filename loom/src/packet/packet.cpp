@@ -211,6 +211,8 @@ void content(const Json& p) {
     for (auto k : {"premises", "counter", "consequences"})
       for (const auto& ref : a[k]["claims"])
         if (!claims.count(ref.get<std::string>())) fail("graph_packet_unknown_claim_reference");
+    for (const auto& ref : a["counter"]["observations"])
+      if (!sources.count(ref.get<std::string>())) fail("graph_packet_missing_counter_observation");
     for (const auto& s : a["basis"]["support"]) {
       auto it = sources.find(s["observation"].get<std::string>());
       if (it == sources.end()) fail("graph_packet_missing_support_observation");
@@ -431,13 +433,13 @@ void history(const Json& p) {
     current = std::move(parent);
   }
 }
-Json apply(const Json& p, const Json& d, const Json& policy, bool accepted) {
+Json apply(const Json& p, const Json& d, const Json& policy, bool accepted, const Json& limits) {
   shape(policy, {"schema", "acceptance", "allow_source_tombstones"});
   if (policy["schema"] != "loom.graph_packet_apply_policy/1" ||
       (policy["acceptance"] != "preview" && policy["acceptance"] != "auto") ||
       !policy["allow_source_tombstones"].is_boolean())
     fail("graph_packet_apply_policy_invalid");
-  auto v = preview(p, d);
+  auto v = preview(p, d, limits);
   if (!d["sources"]["remove"].empty() && !policy["allow_source_tombstones"].get<bool>())
     fail("source_projection_tombstones_disabled_by_policy");
   bool take = policy["acceptance"] == "auto" || accepted;
@@ -453,7 +455,9 @@ Json apply(const Json& p, const Json& d, const Json& policy, bool accepted) {
                   {"canonical_store_written", false},
                   {"acceptance_establishes_content_truth", false}};
   receipt["receipt_sha256"] = digest(receipt);
-  return Json{{"packet", take ? c : p}, {"receipt", receipt}};
+  Json result{{"packet", take ? c : p}, {"receipt", receipt}};
+  resources(result, limits);
+  return result;
 }
 }  // namespace
 void shape(const Json& v, std::initializer_list<const char*> fields) {
@@ -508,7 +512,6 @@ void resources(const Json& v, const Json& limits) {
       fail("graph_packet_resource_policy_invalid");
     if (!it.value().is_null()) {
       integer(it.value(), true);
-      if (it.value() == 0) fail("graph_packet_resource_policy_invalid");
     }
   }
   auto cap = [&](const char* k, std::size_t n) {
@@ -629,13 +632,13 @@ Json empty_diff(const Json& p, const Json& proposal, const Json& o, const Json& 
       Json{{"critique", Json::array()}, {"questions", Json::array()}, {"operations", Json::array()}};
   return d;
 }
-Json preview(const Json& p, const Json& d) {
-  validate(p);
-  resources(d, Json::object());
+Json preview(const Json& p, const Json& d, const Json& limits) {
+  validate(p, limits);
+  resources(d, limits);
   diff_structure(p, d);
   auto c = candidate(p, d);
-  validate(c.first);
-  return Json{{"schema", "loom.graph_packet_preview/1"},
+  validate(c.first, limits);
+  Json result{{"schema", "loom.graph_packet_preview/1"},
               {"base_packet_id", p["packet_id"]},
               {"diff_sha256", digest(d)},
               {"candidate_packet", c.first},
@@ -643,6 +646,8 @@ Json preview(const Json& p, const Json& d) {
               {"annotations", d["annotations"]},
               {"canonical_store_written", false},
               {"acceptance_establishes_content_truth", false}};
+  resources(result, limits);
+  return result;
 }
 Result<Json> execute(const Json& r) {
   Json saved = nullptr;
@@ -663,23 +668,32 @@ Result<Json> execute(const Json& r) {
       saved = capture(raw);
     }
     const auto limits = r.value("resource_limits", Json::object());
-    if (op == "capture") return saved;
+    auto checked = [&](Json value) {
+      resources(value, limits);
+      return value;
+    };
+    if (op == "capture") return checked(saved);
     if (op == "capabilities")
-      return Json{{"schema", "loom.packet_capabilities/1"},
-                  {"operations", Json::array({"make", "validate", "encode", "decode", "empty_diff", "preview",
-                                              "apply", "invert", "capture", "compile_reply",
-                                              "validate_compilation", "apply_compiled_reply"})},
-                  {"packet_schema", "loom.graph_packet/1"},
-                  {"reply_schemas", Json::array({"loom.graph_reply/1", "loom.graph_reply/2"})},
-                  {"provider_calls", false},
-                  {"canonical_store_written", false},
-                  {"resource_limits",
-                   Json::array({"max_nodes", "max_depth", "max_string_bytes", "max_integer_bits"})},
-                  {"numeric_representation", "signed/unsigned 64-bit integers and finite binary64"}};
+      return checked(
+          Json{{"schema", "loom.packet_capabilities/1"},
+               {"operations",
+                Json::array({"make", "validate", "encode", "decode", "empty_diff", "preview",
+                             "apply", "invert", "capture", "compile_reply", "validate_compilation",
+                             "apply_compiled_reply", "reply_fragment"})},
+               {"packet_schema", "loom.graph_packet/1"},
+               {"reply_schemas", Json::array({"loom.graph_reply/1", "loom.graph_reply/2"})},
+               {"provider_calls", false},
+               {"canonical_store_written", false},
+               {"resource_limits",
+                Json::array({"max_nodes", "max_depth", "max_string_bytes", "max_integer_bits"})},
+               {"numeric_representation", "signed/unsigned 64-bit integers and finite binary64"},
+               {"native_record_numeric_validation",
+                "DTO field representation checked by lossless roundtrip; "
+                "widths may be narrower than JSON"}});
     if (op == "decode") {
       auto decoded = parse_strict(raw);
       validate(decoded, limits);
-      return decoded;
+      return checked(decoded);
     }
     if (op == "make") {
       const auto& o = r.at("origin");
@@ -704,44 +718,48 @@ Result<Json> execute(const Json& r) {
       }
       made["packet_id"] = digest(made);
       validate(made, limits);
-      return made;
+      return checked(made);
     }
     if (r.contains("diff")) resources(r["diff"], limits);
     if (r.contains("compilation")) resources(r["compilation"], limits);
     if (r.contains("receipt")) resources(r["receipt"], limits);
     const auto& p = r.at("packet");
     validate(p, limits);
-    if (op == "validate") return p;
-    if (op == "encode") return Json(json::canonical(p));
+    if (op == "validate") return checked(p);
+    if (op == "encode") return checked(Json(json::canonical(p)));
     if (op == "empty_diff")
-      return empty_diff(p, r.at("proposal_id"), r.at("origin"), r.value("known_at", Json(nullptr)));
-    if (op == "preview") return preview(p, r.at("diff"));
-    if (op == "apply") return apply(p, r.at("diff"), r.at("policy"), r.value("explicitly_accepted", false));
+      return checked(
+          empty_diff(p, r.at("proposal_id"), r.at("origin"), r.value("known_at", Json(nullptr))));
+    if (op == "preview") return preview(p, r.at("diff"), limits);
+    if (op == "apply")
+      return apply(p, r.at("diff"), r.at("policy"), r.value("explicitly_accepted", false), limits);
     if (op == "invert") {
       const auto& receipt = r.at("receipt");
-      shape(receipt, {"schema", "accepted", "policy", "explicitly_accepted", "before_packet", "diff",
-                      "candidate_packet_sha256", "after_packet_sha256", "canonical_store_written",
-                      "acceptance_establishes_content_truth", "receipt_sha256"});
+      shape(receipt,
+            {"schema", "accepted", "policy", "explicitly_accepted", "before_packet", "diff",
+             "candidate_packet_sha256", "after_packet_sha256", "canonical_store_written",
+             "acceptance_establishes_content_truth", "receipt_sha256"});
       if (receipt["schema"] != "loom.graph_packet_application/1" ||
           receipt["receipt_sha256"] != digest(payload(receipt, "receipt_sha256")))
         fail("graph_packet_application_receipt_drift");
       if (p["packet_id"] != receipt["after_packet_sha256"])
         fail("graph_packet_inverse_requires_current_application_head");
-      validate(receipt["before_packet"]);
+      validate(receipt["before_packet"], limits);
       auto replay = apply(receipt["before_packet"], receipt["diff"], receipt["policy"],
-                          receipt["explicitly_accepted"].get<bool>());
-      if (!same(replay["packet"], p)) fail("graph_packet_application_replay_mismatch");
-      return receipt["before_packet"];
+                          receipt["explicitly_accepted"].get<bool>(), limits);
+      if (!same(replay["packet"], p) || !same(replay["receipt"], receipt))
+        fail("graph_packet_application_replay_mismatch");
+      return checked(receipt["before_packet"]);
     }
     if (op == "compile_reply") {
       saved = capture(raw);
       return compile_reply(p, raw, r.at("host"), limits);
     }
-    if (op == "validate_compilation" || op == "apply_compiled_reply") {
+    if (op == "validate_compilation" || op == "apply_compiled_reply" || op == "reply_fragment") {
       const auto& c = r.at("compilation");
-      shape(c, {"schema", "base_packet_sha256", "raw_capture", "host", "response_text", "spans", "node_ids",
-                "turn_entity_id", "diff", "canonical_store_written", "acceptance_establishes_content_truth",
-                "compilation_sha256"});
+      shape(c, {"schema", "base_packet_sha256", "raw_capture", "host", "response_text", "spans",
+                "node_ids", "turn_entity_id", "diff", "canonical_store_written",
+                "acceptance_establishes_content_truth", "compilation_sha256"});
       saved = c["raw_capture"];
       if (c["schema"] != "loom.graph_reply_compilation/1" ||
           c["compilation_sha256"] != digest(payload(c, "compilation_sha256")))
@@ -750,16 +768,17 @@ Result<Json> execute(const Json& r) {
       extern std::string capture_bytes(const Json&);
       auto expected = compile_reply(p, capture_bytes(c["raw_capture"]), c["host"], limits);
       if (!same(expected, c)) fail("graph_reply_compilation_replay_mismatch");
-      if (op == "validate_compilation") return c;
-      return apply(p, c["diff"], r.at("policy"), r.value("explicitly_accepted", false));
+      if (op == "validate_compilation") return checked(c);
+      if (op == "reply_fragment") return checked(reply_fragment(c, r.at("address")));
+      return apply(p, c["diff"], r.at("policy"), r.value("explicitly_accepted", false), limits);
     }
     fail("graph_packet_unknown_operation");
   } catch (const std::exception& e) {
     const std::string message = e.what();
-    Json error = {
-        {"code", message == "graph_packet_native_integer_representation_unavailable" ? "unavailable"
-                                                                                     : "invalid_argument"},
-        {"message", message}};
+    Json error = {{"code", message == "graph_packet_native_integer_representation_unavailable"
+                               ? "unavailable"
+                               : "invalid_argument"},
+                  {"message", message}};
     if (!saved.is_null()) error["raw_capture"] = saved;
     return Json{{"error", error}};
   }
