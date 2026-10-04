@@ -7,6 +7,7 @@
 #include <fstream>
 #include <limits>
 #include <memory>
+#include <set>
 
 #include "loom/db.h"
 #include "loom/graph_packet_store.h"
@@ -17,6 +18,18 @@
 
 #ifdef LOOM_METHOD_REGISTRY_W4
 #include "packet.h"
+#include "chat/graph_reply.h"
+#include "context/context_execution.h"
+#include "context/context_usage_claim.h"
+#include "loom/provenance.h"
+#include "loom/providers.h"
+#include "loom/runtime.h"
+#if __has_include("loom/usage_policy.h")
+#include "loom/usage_policy.h"
+#define LOOM_METHOD_GOLDEN_HAS_USAGE 1
+#else
+#define LOOM_METHOD_GOLDEN_HAS_USAGE 0
+#endif
 #endif
 
 namespace {
@@ -492,6 +505,10 @@ TEST_CASE("method registry produces real result edges and immutable trace source
       {"measurements", Json{{"provider_calls", 0}, {"accuracy", nullptr}}}};
   const auto bound = must(f.registry.bind_results(applied["packet"], prepared["manifest"], rb, native_operation()));
   REQUIRE(packet::execute(Json{{"operation", "validate"}, {"packet", bound["packet"]}}));
+  CHECK(bound["manifest"]["trace"]["response_sha256"] == compilation["raw_capture"]["sha256"]);
+  CHECK(bound["manifest"]["trace"]["response_hash_scope"] == "compiler_input");
+  auto conflicting_response = rb; conflicting_response["response_sha256"] = std::string(64, '0');
+  CHECK_FALSE(f.registry.bind_results(applied["packet"], prepared["manifest"], conflicting_response, native_operation()));
   CHECK(bound["manifest"]["trace"]["request_bytes_sha256"] == Sha256::hex(json::canonical(rb["request"])));
   CHECK(bound["manifest"]["trace"]["requested_model"] == "synthetic/test-model");
   CHECK(bound["manifest"]["trace"]["actual_model"] == "synthetic/test-model-resolved-alias");
@@ -540,4 +557,263 @@ TEST_CASE("method registry produces real result edges and immutable trace source
     }
   CHECK_FALSE(f.registry.bind_results(missing_parameter_edge, prepared["manifest"], rb, native_operation()));
 }
+
+#if LOOM_METHOD_GOLDEN_HAS_USAGE && LOOM_CONTEXT_CLAIM_HAS_DURABLE_DIRECTORIES
+TEST_CASE("method registry shared golden executes checked recipe through W3 and reloads native W4 graph") {
+  // Single authoritative shared contract: packet/METHOD_GRAPH.md at the
+  // runner's pinned W4 revision. The original input is never rewritten.
+  const char* fixture_path = std::getenv("METHOD_REGISTRY_W4_FIXTURE");
+  REQUIRE(fixture_path != nullptr);
+  const std::string input_bytes = must(fsutil::read_file(fixture_path));
+  const auto fixture = must(json::parse(input_bytes));
+  const auto input_sha256 = Sha256::hex(input_bytes);
+  const char* artifact_path = std::getenv("METHOD_REGISTRY_W4_ARTIFACT");
+  if (artifact_path) REQUIRE_FALSE(std::filesystem::exists(artifact_path));
+
+  // This transport verifies the actual invocation before returning saved
+  // bytes. Execution remains the production W3 provider/postprocessor path.
+  struct CaptureTransport final : net::HttpTransport {
+    Json expected_request, expected_parameters;
+    std::string expected_prompt, wire;
+    std::vector<net::HttpRequest> requests;
+    bool invocation_verified = false;
+    Result<net::HttpResponse> send(const net::HttpRequest& request,
+        const net::StreamSink*, const CancelToken*) override {
+      requests.push_back(request);
+      auto parsed = json::parse(request.body);
+      if (!parsed || *parsed != expected_request || request.body != json::dump(expected_request) ||
+          request.method != "POST" || request.url != "https://method.golden.test/saved-response" || request.stream)
+        return Error(Errc::Conflict, "golden actual request differs from consumed recipe data");
+      if ((*parsed)["messages"][0]["content"] != expected_prompt)
+        return Error(Errc::Conflict, "golden actual prompt bytes differ from native prompt");
+      for (auto parameter = expected_parameters.begin(); parameter != expected_parameters.end(); ++parameter)
+        if (!parsed->contains(parameter.key()) || (*parsed)[parameter.key()] != parameter.value())
+          return Error(Errc::Conflict, "golden actual parameter differs from effective parameter set");
+      invocation_verified = true;
+      net::HttpResponse response; response.status = 200; response.body = wire;
+      return response;
+    }
+    std::string name() const override { return "offline_checked_method_golden"; }
+  };
+  fsutil::TempDir directory;
+  auto capture = std::make_shared<CaptureTransport>();
+  RuntimeOptions options;
+  options.data_dir = directory.path().string(); options.start_workers = false; options.http = capture;
+  auto runtime = must(Runtime::open(options));
+  runtime->config().set("loom_usage_policy", usage_policy_defaults());
+  REQUIRE(runtime->providers().load(Json::array({Json{{"id", "method_golden"}, {"display_name", "Offline checked golden"},
+      {"base_url", "https://method.golden.test"}, {"auth_scheme", "none"}, {"auth_secret", ""},
+      {"default_headers", Json::object()}, {"capabilities", Json::array({Json{{"resource", "llm"},
+          {"name", "chat.completions"}, {"constraints", Json::object()}}})},
+      {"metadata", Json{{"chat_completions_path", "/saved-response"}}}}})));
+  context::MethodRegistry registry(runtime->db());
+  const auto native = native_operation();
+  const auto base = must(native(fixture["base_make_request"]));
+  REQUIRE(base["packet_id"] == fixture["expected"]["base_packet_id"]);
+  const auto accepted_base = must(registry.accept(acceptance(base, "shared-golden-input")));
+  const auto& bindings = fixture["contract"]["bindings"];
+  Json selection{{"members", Json::array({Json{{"combination_version_id", bindings["combination_version_id"]}}})},
+      {"parameter_layers", Json::array({"preset", "recipe", "method", "parameter_set", "user"})},
+      {"user_overrides", fixture["contract"]["trace"]["user_overrides"]}};
+  const auto snapshot = must(registry.load(Json{{"vocabulary", fixture["contract"]["vocabulary"]}, {"selection", selection}},
+      {accepted_base["receipt"]["id"].get<std::string>()}));
+  Json available{{"execution", Json{{"offline_saved_response", Json{{"available", true},
+      {"implementation", "W3 postprocessor with checked offline HTTP transport"}}}}},
+      {"fusion", Json{{"ordered_single_member", Json{{"available", true}}}}}};
+  const auto resolved = must(registry.resolve(snapshot, Json::object(), available));
+  REQUIRE(resolved["leaves"].size() == 1);
+  const auto leaf = resolved["leaves"][0];
+  REQUIRE(leaf["available"] == true);
+  const auto prompt = leaf["prompt"]["attrs"]["text"].get<std::string>();
+  const auto model = leaf["recipe"]["attrs"]["definition"]["model"];
+  const auto parameters = leaf["effective_parameters"];
+  REQUIRE(parameters == fixture["contract"]["trace"]["effective_parameters"]);
+
+  // The shared fixture deliberately has no provider request. These caller data
+  // supply that missing protocol and are preserved in the effective native
+  // recipe definition/hash and exported diagnostic overlay.
+  Json request{{"model", model}, {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})}, {"stream", false}};
+  Json request_bindings = Json::array();
+  for (auto parameter = parameters.begin(); parameter != parameters.end(); ++parameter) {
+    request[parameter.key()] = parameter.value();
+    request_bindings.push_back(Json{{"target", Json::array({parameter.key()})},
+        {"source", Json::array({"effective_parameters", parameter.key()})}});
+  }
+  const Json recipe_overlay{{"request", request}, {"request_bindings", request_bindings}};
+  auto rc = run_context("shared_w3_w4_golden_run");
+  rc["base_packet"] = base; rc["recipe_overrides"] = recipe_overlay;
+  rc["input_sha256"] = h(Json{{"exact_input_fixture_sha256", input_sha256}, {"selection", selection}, {"recipe_overlay", recipe_overlay}});
+  rc["compiler_transform_id"] = bindings["compiler_transform_id"];
+  rc["model_identity_id"] = bindings["model_identity_id"];
+  rc["measurements"] = Json{{"provider_calls", nullptr}, {"money_usd", nullptr}, {"accuracy", nullptr}};
+  const auto prepared = must(registry.prepare(snapshot, leaf, rc, native));
+  const auto contract = prepared["manifest"];
+  REQUIRE(prepared["effective_recipe"]["request"] == request);
+  REQUIRE(prepared["effective_recipe"]["parameters"] == parameters);
+  REQUIRE(contract["trace"]["recipe_request_sha256"] == h(request));
+  REQUIRE(contract["definition_hashes"]["recipe"] != fixture["contract"]["definition_hashes"]["recipe"]);
+  REQUIRE(contract["bindings"]["combination_version_id"] != bindings["combination_version_id"]);
+
+  // Capture the full returned prepared manifest, including the instantiated
+  // request hash, as a new ordinary native Observation. No definition or reply
+  // compilation is rewritten; the request contains no packet-stamp binding.
+  const auto definition_source = observation("shared_prepared_manifest_" + h(contract), json::canonical(contract));
+  auto capture_diff = must(native(Json{{"operation", "empty_diff"}, {"packet", prepared["packet"]},
+      {"proposal_id", "shared-prepared-capture:" + h(contract)}, {"origin", origin()}, {"known_at", known}}));
+  capture_diff["sources"]["add"].push_back(definition_source);
+  const auto execution_base = must(native(Json{{"operation", "preview"}, {"packet", prepared["packet"]},
+      {"diff", capture_diff}}))["candidate_packet"];
+
+  const std::string original_reply_bytes = fixture["reply_request"]["raw"].get<std::string>();
+  auto projected_reply = must(json::parse(original_reply_bytes));
+  const auto original_reply_stamp = projected_reply["base_packet_sha256"];
+  projected_reply["base_packet_sha256"] = execution_base["packet_id"];
+  const auto output_bytes = json::canonical(projected_reply);
+  auto unchanged_content = projected_reply; unchanged_content["base_packet_sha256"] = original_reply_stamp;
+  REQUIRE(unchanged_content == must(json::parse(original_reply_bytes)));
+  capture->expected_request = request; capture->expected_parameters = parameters; capture->expected_prompt = prompt;
+  capture->wire = json::dump(Json{{"model", model}, {"choices", Json::array({Json{{"message", Json{{"content", output_bytes}}}}})}});
+
+  chat::GraphReplyServices services{runtime->paths().root, runtime->db(), runtime->config(), runtime->secrets(),
+      runtime->http(), &runtime->providers(), runtime->blobs(), runtime->provenance()};
+  const auto blob_bytes = [&](const Json& ref) { return must(runtime->blobs().read(ref["blob_hash"].get<std::string>())); };
+  bool binding_after_checked_invocation = false;
+  Json actual_result_bindings;
+  chat::GraphReplyCallbacks callbacks;
+  callbacks.operation = native;
+  callbacks.bind_results = [&](const Json& candidate, const Json& manifest, const Json& actual) -> Result<Json> {
+    REQUIRE(capture->invocation_verified); REQUIRE(capture->requests.size() == 1);
+    REQUIRE(capture->requests[0].body == json::dump(request));
+    REQUIRE(actual["request_bytes"] == capture->requests[0].body);
+    REQUIRE(actual["model_origin"]["model"] == model);
+    REQUIRE(actual["compiler_input_sha256"] == Sha256::hex(output_bytes));
+    REQUIRE(actual["raw_response_sha256"] == Sha256::hex(capture->wire));
+    REQUIRE(blob_bytes(actual["raw_response_source_ref"]) == capture->wire);
+    REQUIRE(actual["response_text_sha256"] == Sha256::hex(fixture["expected"]["response_text"].get<std::string>()));
+    REQUIRE(actual["instrumentation"]["usage"].is_object());
+    actual_result_bindings = actual;
+    actual_result_bindings["known_at"] = known;
+    actual_result_bindings["measurements"] = Json{{"provider_calls", capture->requests.size()},
+        {"response_bytes", capture->wire.size()}, {"money_usd", nullptr}, {"accuracy", nullptr}};
+    binding_after_checked_invocation = true;
+    return registry.bind_results(candidate, manifest, actual_result_bindings, native);
+  };
+  auto host = fixture["reply_request"]["host"];
+  host["recipe_sha256"] = contract["definition_hashes"]["recipe"];
+  auto invocation = must(chat::prepare_graph_reply(Json{{"mode", "separate_model_afterwards"},
+      {"apply_policy", fixture["apply_policy"]}, {"explicitly_accepted", true}}, execution_base, host,
+      prepared["effective_recipe"], contract, callbacks));
+  invocation.binding_origin = origin();
+  Json transport{{"provider_id", "method_golden"}, {"timeout_ms", 123456}, {"calls_authorized", true},
+      {"usage_estimate", Json{{"operation_id", "shared_golden_offline_invocation"}, {"baseline_key", "shared_golden_offline"},
+          {"resources", Json{{"output_tokens", nullptr}, {"response_bytes", nullptr}, {"cost_usd", nullptr}}}}}};
+  Json result;
+  {
+    context::ContextExecutionScope execution(Json::object());
+    result = chat::run_graph_reply_postprocess(services, invocation, invocation.request_patch, transport,
+        "primary display text preserved", nullptr);
+  }
+  INFO(json::dump(result));
+  REQUIRE(result["status"] == "candidate");
+  REQUIRE(binding_after_checked_invocation);
+  REQUIRE(capture->requests.size() == 1);
+  REQUIRE(blob_bytes(result["postprocess_first_response_ref"]) == capture->wire);
+  REQUIRE(result["compilation"]["response_text"] == fixture["expected"]["response_text"]);
+  REQUIRE(result["compilation"]["raw_capture"]["sha256"] == Sha256::hex(output_bytes));
+  REQUIRE(result["text"] == "primary display text preserved");
+  const auto final_packet = result["candidate_packet"];
+  const auto trace = result["manifest"]["trace"];
+  REQUIRE(trace["response_sha256"] == Sha256::hex(output_bytes));
+  REQUIRE(trace["raw_response_sha256"] == Sha256::hex(capture->wire));
+  REQUIRE(trace["response_text_sha256"] == Sha256::hex(fixture["expected"]["response_text"].get<std::string>()));
+  REQUIRE(trace["request_sha256"] == h(request));
+  REQUIRE(trace["request_bytes_sha256"] == Sha256::hex(capture->requests[0].body));
+  REQUIRE(trace["effective_parameters"] == parameters);
+  REQUIRE(trace["user_overrides"] == selection["user_overrides"]);
+  REQUIRE(trace["measurements"]["provider_calls"] == 1);
+  REQUIRE(trace["measurements"]["accuracy"].is_null());
+  REQUIRE(trace["measurements"]["money_usd"].is_null());
+  REQUIRE(result["execution_usage"].back()["actual"]["cost_usd"]["value"].is_null());
+  REQUIRE(result["execution_usage"].back()["actual"]["output_tokens"]["value"].is_null());
+
+  Json entities = Json::object();
+  for (const auto& row : final_packet["entities"]) entities[row["id"].get<std::string>()] = row;
+  const auto& bound = contract["bindings"];
+  for (auto record = contract["definition_records"].begin(); record != contract["definition_records"].end(); ++record)
+    REQUIRE(entities[bound[record.key()].get<std::string>()]["attrs"] == record.value());
+  const auto parameter_id = bound["parameter_set_version_id"].get<std::string>();
+  REQUIRE(entities[parameter_id]["attrs"]["definition"]["effective_parameters"] == parameters);
+  REQUIRE(entities[parameter_id]["attrs"]["definition"]["user_overrides"] == selection["user_overrides"]);
+  REQUIRE(entities[bound["prompt_version_id"].get<std::string>()]["attrs"]["text"] == prompt);
+  REQUIRE(entities[bound["recipe_version_id"].get<std::string>()]["attrs"]["definition"]["request"] == recipe_overlay["request"]);
+  const auto edge_exists = [&](const Json& a, const char* role, const Json& b) {
+    for (const auto& c : final_packet["claims"])
+      if (c["subject"] == a && c["predicate"] == contract["vocabulary"]["predicates"][role] && c["object"] == b) return true;
+    return false;
+  };
+  REQUIRE(edge_exists(bound["method_version_id"], "uses_parameter_set", parameter_id));
+  REQUIRE(edge_exists(bound["run_id"], "uses_parameter_set", parameter_id));
+  REQUIRE(edge_exists(bound["run_id"], "uses_combination", bound["combination_version_id"]));
+  REQUIRE(edge_exists(bound["combination_version_id"], "includes_method", bound["method_version_id"]));
+  Json result_ids = Json::array();
+  std::set<std::string> result_set, trace_result_set;
+  for (const auto& id : result["compilation"]["node_ids"]) {
+    REQUIRE(result_set.insert(id.get<std::string>()).second); result_ids.push_back(id);
+    REQUIRE(edge_exists(id, "produced_in_run", bound["run_id"]));
+    REQUIRE(edge_exists(id, "produced_by_method_version", bound["method_version_id"]));
+    REQUIRE(edge_exists(id, "projected_by_compiler", bound["compiler_transform_id"]));
+    REQUIRE(entities[id.get<std::string>()]["attrs"]["model_origin"]["response_sha256"] == trace["response_sha256"]);
+    REQUIRE(entities[id.get<std::string>()]["attrs"]["content_verification"] == "unverified");
+    REQUIRE(entities[id.get<std::string>()]["origin"] == "model_knowledge");
+  }
+  for (const auto& binding : trace["result_bindings"]) REQUIRE(trace_result_set.insert(binding["result_entity_id"].get<std::string>()).second);
+  REQUIRE(result_set == trace_result_set);
+  REQUIRE(result_ids.size() == fixture["expected"]["node_ids"].size());
+  std::string trace_source_id;
+  for (const auto& source : final_packet["sources"])
+    if (source["observation"]["text"] == json::canonical(trace)) trace_source_id = source["observation"]["id"].get<std::string>();
+  REQUIRE_FALSE(trace_source_id.empty());
+  const auto store_request = acceptance(final_packet, "shared-golden-output");
+  const auto stored = must(registry.accept(store_request));
+  const auto receipt = stored["receipt"];
+  REQUIRE(receipt["packet"] == final_packet);
+  REQUIRE(receipt["acceptance_establishes_content_truth"] == false);
+  runtime.reset();
+  auto restarted = must(Runtime::open(options));
+  kb::GraphPacketStore store(restarted->db());
+  for (const char* operation : {"read", "replay"}) {
+    const auto reloaded = must(store.execute(Json{{"operation", operation}, {"receipt_id", receipt["id"]}}));
+    REQUIRE(reloaded["receipt"] == receipt); REQUIRE(reloaded["row_drift"]["matches"] == true);
+  }
+  const auto retry = must(store.execute(store_request));
+  REQUIRE(retry["replayed"] == true); REQUIRE(retry["receipt"] == receipt);
+  REQUIRE(capture->requests.size() == 1);
+
+  const Json evidence{{"contract_reference", "loom/src/packet/METHOD_GRAPH.md"},
+      {"exact_input_fixture_sha256", input_sha256}, {"exact_input_fixture_bytes", input_bytes},
+      {"input_provider_request_status", "absent_in_shared_input"}, {"caller_recipe_overlay", recipe_overlay},
+      {"caller_selection", selection}, {"recipe_overlay_sha256", h(recipe_overlay)},
+      {"consumed_prompt_bytes", prompt}, {"consumed_prompt_sha256", Sha256::hex(prompt)},
+      {"consumed_parameters", parameters}, {"consumed_request", request},
+      {"consumed_request_bytes", capture->requests[0].body}, {"request_sha256", h(request)},
+      {"invocation_path", "MethodRegistry.prepare -> run_graph_reply_postprocess -> checked HttpTransport -> compile/apply -> MethodRegistry.bind_results"},
+      {"executor_invocations", 1}, {"fake_http_calls", 1}, {"paid_calls", 0},
+      {"invocation_verified_before_response", capture->invocation_verified}, {"binding_verified_after_invocation", binding_after_checked_invocation},
+      {"original_reply_bytes", original_reply_bytes}, {"original_reply_sha256", Sha256::hex(original_reply_bytes)},
+      {"compiler_input_bytes", output_bytes}, {"compiler_input_sha256", Sha256::hex(output_bytes)},
+      {"reply_projection", Json{{"operation", "replace_base_packet_sha256_and_canonical_serialize"},
+          {"original_base_packet_sha256", original_reply_stamp}, {"actual_base_packet_sha256", execution_base["packet_id"]},
+          {"remaining_reply_data_equal", true}}},
+      {"provider_wire_bytes", capture->wire}, {"provider_wire_sha256", Sha256::hex(capture->wire)},
+      {"response_text", result["compilation"]["response_text"]}, {"result_node_ids", result["compilation"]["node_ids"]},
+      {"native_restart_read_replay_retry_verified", true}, {"producer_execution_verified", true},
+      {"measurements", trace["measurements"]}};
+  const Json artifact{{"schema", "loom.method_graph_fixture/1"}, {"contract", contract}, {"trace", trace},
+      {"packet", final_packet}, {"result_entity_ids", result_ids},
+      {"definition_capture_source_id", definition_source["observation"]["id"]}, {"trace_capture_source_id", trace_source_id},
+      {"producer_evidence", evidence}};
+  REQUIRE(must(fsutil::read_file(fixture_path)) == input_bytes);
+  if (artifact_path) REQUIRE(fsutil::write_file(artifact_path, json::dump(artifact)));
+}
+#endif
 #endif

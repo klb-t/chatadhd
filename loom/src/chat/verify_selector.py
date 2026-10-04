@@ -39,7 +39,8 @@ def policy_objects(args: argparse.Namespace, root: Path, build: Path,
     if args.usage_policy_ref:
         components.append(("usage_policy", args.usage_policy_ref,
             ["loom/include/loom/usage_policy.h", "loom/src/core/config.cpp",
-             "loom/src/core/config_usage_policy.cpp", "loom/src/policy/usage_policy.cpp"]))
+             "loom/src/core/config_usage_policy.cpp", "loom/src/policy/usage_policy.cpp",
+             "loom/src/policy/usage_policy_preset.inc", "loom/data/policy/usage_policy.pack"]))
         selected += [root / "loom/src/context/context_engine.cpp", root / "loom/src/context/provider_vector.cpp"]
     if args.packet_ref:
         components.append(("packet", args.packet_ref,
@@ -96,11 +97,19 @@ def main() -> None:
     parser.add_argument("--compiler", default=shutil.which("c++") or "c++")
     parser.add_argument("--usage-policy-ref", help="local W2 Git commit/ref for a real combined policy smoke")
     parser.add_argument("--packet-ref", help="local W4 Git commit/ref for real compiler/store/provenance regressions")
+    parser.add_argument("--method-graph-artifact", type=Path,
+                        help="export the actual W3 golden execution for W4's native consumer")
     parser.add_argument("--jobs", type=int, default=2, help="parallel overlay compiles (preset: 2)")
     parser.add_argument("--debug-symbols", action="store_true", help="include debug symbols in verification artifacts")
     args = parser.parse_args()
     if args.jobs <= 0:
         parser.error("--jobs must be positive")
+    if args.method_graph_artifact:
+        if not args.usage_policy_ref or not args.packet_ref:
+            parser.error("method graph execution requires both actual W2 and W4")
+        args.method_graph_artifact = args.method_graph_artifact.resolve()
+        if args.method_graph_artifact.exists():
+            parser.error("method graph artifact must not exist; preserve earlier evidence")
     root, build = args.repo.resolve(), args.build_dir.resolve()
     loom = root / "loom"
     owned = {"selector.verify.cc", "provider_vector.verify.cc", "unified_context.verify.cc", "context_goal_usage.verify.cc",
@@ -157,11 +166,19 @@ def main() -> None:
             import os
             environment = os.environ.copy()
             environment["METHOD_REGISTRY_W4_FIXTURE"] = str(evidence / "source/loom/src/packet/tests/method-graph-fixture.json")
+            if args.method_graph_artifact:
+                environment["METHOD_REGISTRY_W4_ARTIFACT"] = str(args.method_graph_artifact)
         result = subprocess.run(test_command, text=True, capture_output=True, env=environment)
         (evidence / "tests.log").write_text(result.stdout + result.stderr)
         if result.returncode:
             print(result.stdout + result.stderr, end="")
             raise subprocess.CalledProcessError(result.returncode, test_command)
+        if args.method_graph_artifact:
+            artifact = json.loads(args.method_graph_artifact.read_text())
+            if artifact.get("schema") != "loom.method_graph_fixture/1":
+                raise ValueError("actual golden execution did not export the shared artifact")
+            manifest["method_graph_artifact"] = {
+                "path": str(args.method_graph_artifact), "sha256": digest(args.method_graph_artifact)}
         print((evidence / "tests.log").read_text(), end="")
     finally:
         (evidence / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
