@@ -40,8 +40,8 @@
 //     (Python m.lastindex), nullopt when no group participated.
 //   * sub(): replacement supports \1..\99, \g<N>, and escapes \n \t \\.
 //
-// Safety: every search is bounded by a step budget (default 10 million
-// backtracking steps). When exceeded the search reports no match and
+// Every search uses the runtime re profile's configurable step budget.
+// When exceeded the search reports no match and
 // last_search_hit_limit() becomes true; callers may log it.
 #pragma once
 
@@ -54,6 +54,7 @@
 #include <vector>
 
 #include "loom/result.h"
+#include "loom/runtime_profile.h"
 
 namespace loom::re {
 
@@ -99,6 +100,14 @@ class Regex {
  public:
   // Parse + compile. Syntax errors -> Errc::Parse with the offending offset.
   static Result<Regex> compile(std::string_view pattern_utf8, Flags flags = kNone);
+  static Result<Regex> compile(std::string_view pattern_utf8, Flags flags,
+                                const RuntimeProfile& profile);
+
+  // Independent copy of the compiled program with a validated recipe. Use
+  // the returned instance for one call or keep it for a caller's context;
+  // neither the source nor other copies acquire this profile.
+  Result<Regex> with_profile(const RuntimeProfile& profile) const;
+  Result<Json> profile_inspection() const;
 
   Regex(const Regex&) = default;
   Regex& operator=(const Regex&) = default;
@@ -125,13 +134,14 @@ class Regex {
   Flags flags() const noexcept;
 
   void set_step_limit(std::uint64_t steps) noexcept;
+  std::uint64_t step_limit() const noexcept;
   bool last_search_hit_limit() const noexcept;
 
   struct Program;  // compiled form (src/re/)
 
  private:
   explicit Regex(std::shared_ptr<Program> p) : prog_(std::move(p)) {}
-  std::shared_ptr<Program> prog_;  // immutable after compile; shared by copies
+  std::shared_ptr<Program> prog_;  // bytecode immutable; legacy budget/trace shared by copies
 };
 
 }  // namespace loom::re
