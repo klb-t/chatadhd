@@ -1,115 +1,116 @@
-# Thread 2 — authoritative runtime profile handoff
+# Thread 2 — data preset and future runtime-profile handoff
 
-This is a proposed integration contract, not an installed preset. At W2
-`03b0c4e`, usage defaults still come from C++; current main does not contain an
-authoritative usage profile. W11 `096028e` supplies the existing generic
-`RuntimeProfile` engine, schemas and generator. Reuse that engine; do not add a
-second loader or generator, and do not modify another thread's files from W2.
+W2 now carries a self-contained usage-preset migration based on current main.
+Its authoritative source is
+[`loom/data/policy/usage_policy.pack`](../../data/policy/usage_policy.pack),
+containing the exact six historical values, including floating JSON `10.0`.
+The owner instructed W2 to complete this migration without waiting for other
+lanes. No C++ initializer containing those six values remains.
 
-## Proposed usage descriptor
+The earlier proposal at W2 `03b0c4e`, based on W11 `096028e`, depended on adding
+a generic RuntimeProfile usage descriptor first. That was a proposed contract,
+not an installed profile. It no longer blocks the current migration. Future
+unification with W11's reusable engine remains separate work and must consume
+one authoritative usage source rather than maintaining parallel default values.
 
-W11 can add `loom/data/runtime/usage_policy.pack`, domain `usage_policy`, and
-regenerate its existing `loom/src/model/runtime_profiles_embedded.inc` with
-`loom/src/model/gen_runtime_profiles.py`. The `.pack` extension is intentional:
-KB Pack recursively validates `.json` documents against its separate schemas.
-This path needs no change to the KB manifest, loader or embedded KB pack.
+## Implemented canonical data path
 
-The following complete descriptor works with W11's current schema vocabulary:
+The `.pack` file contains UTF-8 JSON. Its extension avoids the KB loader's
+recursive validation of `.json` documents against separate KB schemas. This
+migration does not modify KB manifest, schemas, loader or embedded KB data.
 
-```json
-{
-  "schema": "loom.runtime_profile/1",
-  "domain": "usage_policy",
-  "revision": 1,
-  "description": "Usage admission preset. The consumer must additionally run validate_usage_policy_options on all effective values. baseline_window and baseline quantities retain their nullable native contract; unknown extension fields remain open.",
-  "defaults": {
-    "schema": "loom.usage_policy/1",
-    "growth_factor": 10.0,
-    "baseline_window": 32,
-    "ledger_busy_timeout_ms": 30000,
-    "include_reservations": true,
-    "initial_baselines": {}
-  },
-  "value_schema": {
-    "type": "object",
-    "required": ["schema", "growth_factor", "baseline_window", "ledger_busy_timeout_ms", "include_reservations", "initial_baselines"],
-    "additionalProperties": true,
-    "properties": {
-      "schema": {"type": "string", "enum": ["loom.usage_policy/1"]},
-      "growth_factor": {"type": "number", "minimum": 1, "x-setting": "/growth_factor", "x-consumer": "UsagePolicy"},
-      "ledger_busy_timeout_ms": {"type": "integer", "minimum": 0, "maximum": 2147483647, "x-setting": "/ledger_busy_timeout_ms", "x-unit": "milliseconds", "x-consumer": "SQLite usage ledger connection"},
-      "include_reservations": {"type": "boolean", "x-setting": "/include_reservations", "x-consumer": "UsagePolicy projection"},
-      "initial_baselines": {
-        "type": "object",
-        "additionalProperties": {"type": "object", "additionalProperties": true},
-        "x-setting": "/initial_baselines",
-        "x-consumer": "UsagePolicy declared baseline"
-      }
-    }
-  }
-}
+From the repository root:
+
+```bash
+python3 loom/src/policy/gen_usage_policy.py
+python3 loom/src/policy/gen_usage_policy.py --check
 ```
 
-W11 currently accepts a single `type` string, without nullable unions or
-`exclusiveMinimum`. Therefore `baseline_window` is required but intentionally
-not assigned an incompatible integer-only schema. The native W2 validator must
-check the complete loaded values before use: window is a positive int64 or
-`null`; factor is finite and greater than one; named baseline quantities are
-finite, nonnegative numbers or `null`; timeout fits SQLite's nonnegative int.
-Profile schema validation alone does not certify a valid usage policy. A later
-generic nullable-union extension belongs to W11 and its schema owner.
+The committed `loom/src/policy/usage_policy_preset.inc` embeds exact source
+bytes in independent chunks with octal byte escapes. This preserves BOM,
+CRLF and UTF-8 bytes independently of compiler character encoding and does not
+cap total document size. `--check` rejects a stale or missing embedding.
+`--source` and `--output` allow isolated source-change verification. The source
+identifier continues to name the canonical repository resource when using those
+comparison arguments. Generation checks JSON syntax and finite numeric
+representation; native validation checks the policy contract.
 
-Keep `10.0` as a floating JSON value to preserve existing serialized preset
-identity. There is no spending or quantity maximum. The timeout maximum is the
-adapter's integer representation, and the positive-window/factor checks define
-the implemented arithmetic. Resource names, cohort names and unknown extension
-fields remain data. Protocol identities and canonical hash algorithms remain
-engine contracts.
+`usage_policy_preset()` is the shared checked decoder: parse the embedded
+object, validate its known fields and require all six complete-preset fields.
+It returns an error for malformed compiled data. The compatibility reference
+`usage_policy_defaults()` throws on that error rather than resurrecting literal
+values. Config's absent-key fallback, `loom_config_defaults()`, effective
+options, settings and default ledger opening all use that decoder.
 
-## One W2 adapter, one default source
+`UsagePolicy::open(path)` has an empty-object default argument and loads the
+checked preset inside its `Result` path. Explicit options replace whole preset
+fields after validation. Config's stored `loom_usage_policy` object has the
+same shallow semantics: replacing `initial_baselines` must not restore removed
+cohorts or resources. Unknown fields and nullable native values survive.
+`Config::get` retains its raw stored-value behavior when a value exists;
+validated complete policy consumers use `effective_usage_policy_options()`.
+Reading the fallback neither stores the preset nor writes `config.json`.
 
-After the profile foundation and descriptor are available, W2 should use one
-checked helper in `core/config*` for every usage-preset consumer:
+Settings report `preset_source: "embedded_data"` and `preset_document` with
+`path`, `schema`, `encoding: "utf8_json"` and `source_sha256` of original source
+bytes. Their existing `hashes` remain canonical JSON hashes of preset, stored
+override and effective options. Formatting can change the source-byte hash
+without changing the canonical options hash. Neither hash grants execution.
+`preview_settings` stays advisory, nonpersistent and ledger-free. Reopen a
+policy instance to apply changed options; confirmation receipts continue to bind
+exact options, estimate, baseline and projection.
 
-1. Load `RuntimeProfile::load("usage_policy", data_root)`: embedded canonical
-   definition, then `<data_root>/profiles/usage_policy.pack` through the existing
-   profile overlay mechanism. Do not cache a mutable user-overlay file forever.
-2. Validate the complete resulting values with the native usage validator.
-   Required fields come from the descriptor; a missing descriptor or invalid
-   existing overlay returns an error instead of resurrecting C++ policy values.
-3. Read a coherent config snapshot. Replace whole top-level fields from stored
-   `loom_usage_policy`; do not pass that object into recursive profile merging.
-   In particular, replacing `initial_baselines` must not restore removed cohorts
-   or dimensions. Revalidate the final complete policy. Unknown fields survive.
-4. Use this helper for Config's absent-key fallback, effective options, settings
-   and settings previews, and ledger opening. `Config::get` may retain its
-   historical raw-stored-value semantics when an override is present; callers
-   requiring a complete policy use the effective helper. No separate hardcoded
-   preset may remain behind another entry point.
-5. Route default `UsagePolicy::open` through the checked loader inside its
-   `Result` path. Avoid a throwing default-argument expression. For a custom
-   ledger location, supply the actual profile/config data root explicitly;
-   do not assume it equals the ledger's parent without documenting that choice.
-6. Report the actual definition/domain/revision/effective profile hash and
-   canonical hashes of preset, stored override and effective policy. A profile
-   hash identifies both descriptor and effective profile values; W2's options
-   hash identifies canonical options only. Neither is an original-byte hash or
-   execution approval. Keep one snapshot coherent across values and source.
+The implemented owner overlay is `config.json`'s `loom_usage_policy`. There is
+no current `RuntimeProfile::load("usage_policy", data_root)` call or
+`<data-root>/profiles/usage_policy.pack` overlay in these consumers. Repository
+source edits take effect after generation and rebuilding; deployed binaries
+use their compiled canonical data rather than requiring a repository checkout.
 
-The existing `with_values()` profile API validates exact replacement values;
-it is suitable after W2's shallow config override. Profile-file `overrides`
-retain W11's recursive semantics and optional RFC 6902 `patch` for deletion.
-`preview_settings` remains advisory, nonpersistent and ledger-free. Reopen a
-policy instance to apply changed options; confirmations still bind exact
-options/baseline/projection receipts. Explicit complete operation options retain
-their precedence over presets.
+## Future generic runtime-profile unification
 
-`usage_policy_defaults()` can remain a compatibility view of the checked
-builtin profile. It must obtain its values from the same descriptor, with no
-literal growth/window/timeout/reservation fallback. Root-aware execution and
-settings paths must load the user profile rather than relying on that builtin
-view. Update the source label once this is real; until then retain the honest
-`legacy_code_pending_pack_migration` label.
+W11's inspected `096028e` foundation supplies a generic RuntimeProfile engine,
+schemas and generator. Integrate it when the dependency is available, using
+W2's canonical usage document as the authoritative values source. A generated
+RuntimeProfile wrapper may add domain/revision/schema metadata, but must derive
+its defaults from that document rather than introduce independently maintained
+values. Coordinate the generic generator/descriptor work with its owner; W2
+owns only its config/policy adapter and consumers.
+
+The adapter must preserve these contracts:
+
+1. Load the generic builtin definition and its per-root profile overlay through
+   the shared engine. Do not cache a mutable user-overlay file forever or invent
+   a fallback when an existing overlay is malformed.
+2. Validate complete loaded values with `validate_usage_policy_options()`.
+   Required fields are `schema`, `growth_factor`, `baseline_window`,
+   `ledger_busy_timeout_ms`, `include_reservations` and `initial_baselines`.
+   Resource/cohort names and unknown extension fields remain open.
+3. Read one coherent config snapshot, then replace whole top-level fields from
+   stored `loom_usage_policy`. Keep this operation separate from recursive
+   profile-file merging and revalidate the resulting complete policy.
+4. Route every root-aware default consumer through that checked adapter,
+   including Config fallback, settings/previews, effective options and ledger
+   opening. Retain a checked builtin compatibility view without literal values.
+   For a custom ledger path, pass the real config/profile root explicitly;
+   do not silently infer it from the ledger's parent.
+5. Report actual definition/domain/revision/profile provenance only after this
+   adapter exists. Preserve canonical options hashes and original canonical
+   source-byte identity as distinct values. A profile hash may identify both
+   descriptor and effective profile values; it is not execution approval.
+
+Native validation permits `baseline_window: null` or a positive int64, a finite
+factor greater than one, finite nonnegative baseline quantities or `null`, and
+a nonnegative SQLite signed-int timeout. W11's earlier inspected schema accepted
+a single `type` string without nullable unions or `exclusiveMinimum`; an
+integer-only nullable-field descriptor would change this contract. Coordinate
+schema capabilities with W11 and retain native validation regardless of generic
+schema support. The timeout bound is adapter representation, not a spending
+ceiling. There is no quantity or spending maximum.
+
+The generic engine's `with_values()` replacement operation can validate values
+after W2's shallow override; profile-file recursive `overrides` and optional
+RFC 6902 `patch` remain a separate layer. User-profile behavior requires its own
+root-aware verification and must not be inferred from the current Config overlay.
 
 ## DIC-0325–0329 — exact startup/config baseline
 
@@ -126,7 +127,7 @@ product restrictions. The proposed profile domains are `runtime_paths` and
 | DIC-0326 | Sentinel filename `.chatadhd_data`; exact created content `ChatADHD data directory\n` (one trailing LF). Initialization creates `attachments`, `exports`, `logs` in that order. |
 | DIC-0327 | DataPaths mapping below. |
 | DIC-0328 | The ordered historical 12-key config JSON below. |
-| DIC-0329 | Loom defaults: `loom_event_log_types` = `["conv:created", "import:done", "graph:changed"]`; `loom_task_workers` = `1`. Compose usage fallback from its own authoritative profile rather than duplicating it here. |
+| DIC-0329 | Loom defaults: `loom_event_log_types` = `["conv:created", "import:done", "graph:changed"]`; `loom_task_workers` = `1`. Compose usage fallback from its own authoritative data source rather than duplicating it here. |
 
 DataPaths currently joins each suffix to the selected root:
 
@@ -202,37 +203,51 @@ twelve materialized historical settings.
 
 - Compare builtin usage values against the historical six-field golden object,
   including `10.0`, and preserve the existing policy lifecycle groups.
-- Compare config key order/values, candidate ordering, sentinel bytes, all
-  DataPaths suffixes and file-write behavior against the baseline above.
-- Demonstrate source-data changes: alter a canonical profile in an isolated
-  test checkout, regenerate through W11's generator and rebuild. The same new
-  value must reach Config's fallback, default open, settings and effective
-  options. Restore the source afterward; retain original and changed receipts.
-- Independently edit the user profile overlay without rebuilding. Reopening
-  all root-aware entry points must expose changed options and source hashes.
-  A malformed existing profile must fail rather than use an invented fallback.
+- Run the current generator's equality check and demonstrate source changes in
+  an isolated build using `--source`/`--output` and the actual native config
+  implementation. New values must reach Config's fallback, default open,
+  settings and effective options, with the correct source-byte hash. Verify
+  malformed compiled policy data fails; retain original, variant and negative
+  receipts. Restore canonical data before the full build and gates.
 - Verify stored shallow overrides win; `baseline_window: null` and open
   extensions survive; replacing `initial_baselines` preserves deletions;
   preview neither persists data nor creates a ledger. Full CTest and focused
   policy checks must pass, without changing existing thresholds or tests.
+- For future DIC migrations, compare config key order/values, candidate order,
+  sentinel bytes, DataPaths suffixes and file-write behavior against the baseline
+  above. These checks do not claim the recorded startup presets have migrated.
+- For future RuntimeProfile integration, independently edit a user profile
+  without rebuilding. Reopening root-aware entry points must expose changed
+  options and actual profile provenance. A malformed existing profile must fail.
+
+Earlier committed verification receipts describe their recorded pre-migration
+source revisions. They do not establish that this new data migration passed;
+its gate results belong in the updated W2 report and new evidence receipt.
 
 ## Do wątku 11
 
-Publish the reusable RuntimeProfile foundation and proposed `usage_policy`
-descriptor as a small dependency commit, regenerate the existing embed and
-verify its source equality gate. Coordinate nullable schema support if desired;
-the descriptor above already preserves nullable values through native W2
-validation. Provide canonical `config`/`runtime_paths` descriptors with the
-exact values above so W2 can implement the renewed DIC tasks. W2 will implement
-only its adapter/owned consumers; this document creates none of those data files.
+Continue the reusable RuntimeProfile foundation. Future usage integration must
+derive its descriptor's defaults from W2's authoritative
+`loom/data/policy/usage_policy.pack`, preserving its numeric identity and native
+validation. Agree how the generic generator consumes that source, then retire
+the standalone embedding path when all consumers use the shared engine. Do not
+install a competing usage-default document or treat generic profile overlays as
+already implemented in W2. Coordinate nullable schema support as needed.
+
+Provide canonical `config`/`runtime_paths` descriptors with the exact DIC values
+above so W2 can implement those remaining tasks after ownership is assigned.
+The current usage-preset migration does not wait for that follow-up.
 
 ## Do wątku 9
 
-Assign and integrate the shared loader/data dependency before admitting W2's
-adapter; nominal lane order must not install code without its required default
-source. W2 cannot independently remove its only preset while the authoritative
-descriptor and loader are absent. Coordinate the `config.h`, runtime bootstrap
-and public-config-getter ownership where needed. Then rebase W2 on that actual
-dependency, run its full and focused gates plus the edited-data comparison, and
-update readiness status from verified results. No KB-pack or another lane's
+Admit the current self-contained usage migration only after its rebase, full
+and focused gates, generator equality check and edited-data comparison pass.
+Its canonical document and generated embedding travel with W2; the usage preset
+no longer depends on W11 integration. Set readiness from those actual results.
+
+Coordinate future generic-engine unification and the `config.h`, runtime
+bootstrap, Config-origin and public-config-getter ownership needed by DIC
+follow-ups. Public registration of `loom_usage_policy_json` and its shared ABI
+gate remains a separately assigned change in `loom.h` and ABI tests; linking the
+static kernel does not register that shared symbol. No KB-pack or another lane's
 implementation files are edited by this handoff.
