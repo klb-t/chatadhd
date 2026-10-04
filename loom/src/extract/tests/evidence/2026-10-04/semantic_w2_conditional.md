@@ -1,50 +1,55 @@
-# Conditional W1 semantic / actual W2 ledger proof
+# Conditional W1 semantic / latest W2 ledger proof
 
-The native offline fixture passed **5/5** cases with **0 paid calls**.
-`semantic_w2_conditional.json` pins the current W1 source hashes, exact public
-W2 Git blobs, compiler, object hashes, root archive and link order.
-`semantic_w2_conditional_raw.json` preserves the full synthetic API and ledger
-receipts. No fixture source was promoted to a production W2 file.
+The native offline fixture passed **6/6** cases with **0 paid calls** against
+actual W2 commit `bbc95f73672f3c9c4f2cd8153108da1513a80dc3`. The helper's
+default pin was updated only after the real six-case success.
+`semantic_w2_conditional.json` pins the W1 sources, exact public W2 Git blobs,
+compiler/objects, root archive and link order; `_raw.json` retains complete
+synthetic request/ledger receipts. W2 production source copies remain scratch
+only; no cherry-pick, mock policy or substituted config function was used.
 
-The fixture compiles W1 `semantic.cpp` against the actual W2 header first on
-the include path, and links its object plus the original W2 policy/config
-objects before W1's normal core archive. Runtime capability reports available.
-It installs the exact W2 default options as explicit caller config because W2's
-Config getter defaults and C ABI are still outside this source-level test.
+Five existing explicit-preset cases are preserved byte-for-byte: cold ledger
+admission; configured input-byte baseline 1 blocking all HTTP pending approval;
+correct receipt confirmation and one same-run dispatch/cache resume; reported
+actual output 2 settling the baseline; and missing token/cost usage remaining
+unknown with output cap as provenance. A sixth case leaves
+`loom_usage_policy` absent: the actual latest W2 effective-options/settings
+functions resolve the preset and canonical hash without opening a ledger, then
+the required semantic guard dispatches once and learns actual 2. The config key
+remains absent. This covers the new effective-options cold-config path. W2's
+separate `Config::get` fallback implementation and C ABI are not merged/tested.
 
-The cases cover cold admission; initial input-byte baseline 1 requiring owner
-confirmation before any HTTP; correct receipt confirmation and one same-run
-dispatch followed by cache resume; reported output actual 2 settling the token
-baseline; and absent token/cost usage remaining unknown. The configured output
-cap 1600 stays provenance and does not become an invented usage forecast.
-Exactly-once evidence covers the tested checkpoint/cache path, not concurrent
-dispatch locking. All model responses use ScriptedTransport; their usage/cost
-values are fixture inputs and do not represent paid provider spending.
+`loom/src/policy/usage_policy.cpp` is **byte-identical** between the historical
+W2 `34cc920dd3cdb0c0fca0a514569b19111429583f` and latest commit, SHA-256
+`790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9`. Thus
+null/baseline/reservation/admission/recovery behavior and the diagnostic
+`overrun=true` for a known actual replacing a null estimate are unchanged.
+That diagnostic is not evidence of an expected consumption increase.
 
-Reproduce from a repository version with the W1 source hashes in the summary,
-a completed normal `loom/build/dev` archive, and the pinned W2 Git commit
-available locally. Run the three sequential commands in `replay_commands`.
-Use a new scratch directory/result filename for each attempt. No tests, limits
-or unrelated production files are modified by the helper. After actual W2
-integration, the normal merged build and full CTest remain required.
+This source-level conditional build is not a full merged W2 build, public ABI
+test or CTest result. Exactly-once evidence covers the tested same-run
+checkpoint/cache path, not concurrent dispatch locking. Scripted usage/cost
+values are fixture inputs, not actual provider spending. W2 default values
+remain legacy C++ pending its authoritative profile migration; this passing
+behavior proof does not remove that W2 readiness blocker.
 
-Earlier source-race and linker resource failures executed zero fixture cases
-and remain separate scratch infrastructure history. They are not graph/model
-quality evidence and are not represented as successful integrations.
+The former **5/5** source/proof remains publicly reproducible at W1 commit
+`aed85b8d5b90db9c3055918e4864f8273bd3d411`, pinned to W2 `34cc920`, and is
+also preserved in scratch `precision-checks/semantic-w2-five-public-aed85b8`.
+Earlier source-race/link resource failures executed zero fixture cases and
+remain separate historical infrastructure evidence; they are not latest-W2
+quality results. Normal W1 production sources were unchanged by this replay.
 
-The original W2 ledger also sets `overrun=true` when a null token/cost estimate
-is settled to a known actual. The raw receipt retains this diagnostic; it is
-not evidence of an expected consumption increase or a new confirmation rule.
-This behavior belongs to W2 and was not changed by the fixture.
+From the matching W1 repository version and completed `loom/build/dev` core,
+run each phase sequentially using a fresh scratch directory:
 
-Fresh rebuild after the generated runtime-disabled W7 export passed **5/5**
-on full semantic source SHA `c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5`. The earlier
-`0acd0996` proof remains in the prior scratch directory; it was not reassigned
-to the new full source hash. The source body after the generated prefix is
-byte-identical, and both generator products passed `--check`.
+```sh
+TASK_SEMANTIC_W2_DIR=$(mktemp -d)
+python3 loom/src/extract/tests/semantic_w2_replay.py.fixture objects --scratch "$TASK_SEMANTIC_W2_DIR"
+python3 loom/src/extract/tests/semantic_w2_replay.py.fixture link --scratch "$TASK_SEMANTIC_W2_DIR" --core-dir loom/build/dev
+python3 loom/src/extract/tests/semantic_w2_replay.py.fixture run --scratch "$TASK_SEMANTIC_W2_DIR" --output "$TASK_SEMANTIC_W2_DIR/result.json"
+```
 
-The final root archive, including legacy analysis public headers, was relinked
-with these unchanged W2/semantic fixture objects and again passed **5/5**.
-The summary records its final archive/executable/raw hashes separately. The
-previous two proofs remain in scratch; no objects were recompiled for this
-last pass.
+The pinned public W2 commit must be available locally. `--w2-ref` selects an
+explicit successor whose actual source hashes are recorded independently.
+No provider transport, credential retrieval or paid call occurs.

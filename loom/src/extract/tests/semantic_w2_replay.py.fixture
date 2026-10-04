@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 import subprocess
 
-W2_PIN = "34cc920dd3cdb0c0fca0a514569b19111429583f"
+W2_PIN = "bbc95f73672f3c9c4f2cd8153108da1513a80dc3"
 SOURCES = {
     "include/loom/usage_policy.h": "loom/include/loom/usage_policy.h",
     "usage_policy.cpp": "loom/src/policy/usage_policy.cpp",

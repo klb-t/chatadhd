@@ -1,6 +1,7 @@
 // Conditional W1/W2 offline integration fixture. Link exact W2 policy/config
 // objects and freshly compiled semantic.cpp with W2's header before libloom_core.
 // No CTest registration or public ABI change is implied by this source file.
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -48,7 +49,7 @@ struct Fixture {
   std::optional<Json> resume;
   const std::string cohort = "offline/semantic/w2-integration";
 
-  Fixture() {
+  explicit Fixture(bool install_usage_preset = true) {
     RuntimeOptions options;
     options.data_dir = directory.path().string();
     options.start_workers = false;
@@ -58,9 +59,10 @@ struct Fixture {
     runtime->config().set("base_url", "https://semantic.invalid/v1/");
     runtime->config().set("semantic_analysis", true);
     runtime->secrets().set("api_key", "offline-fixture-key");
-    // This root build has not merged W2's Config::get default wiring. Install
-    // W2's exact public preset as explicit caller configuration, not a shim.
-    runtime->config().set("loom_usage_policy", usage_policy_defaults());
+    // Preserve the five original explicit-preset fixtures. The cold-config
+    // case leaves this setting absent and exercises W2's actual default path.
+    if (install_usage_preset)
+      runtime->config().set("loom_usage_policy", usage_policy_defaults());
     pack = take(runtime->knowledge().pack());
     normalizer = std::make_unique<kb::Normalizer>(*pack);
     config.llm = "auto";
@@ -261,6 +263,33 @@ Json cap_stays_unknown_without_usage() {
   return Json{{"result", result}, {"replay", replay}, {"ledger", inspection}, {"http_calls", 1}};
 }
 
+Json cold_config_without_preset_install() {
+  Fixture fixture(false);
+  const Json config_before = fixture.runtime->config().all();
+  check(!config_before.contains("loom_usage_policy"), "cold config has no stored or installed usage preset");
+  const Json options = take(effective_usage_policy_options(fixture.runtime->config()));
+  check(json::canonical(options) == json::canonical(usage_policy_defaults()), "actual W2 effective options resolve the absent setting to its preset");
+  const Json settings = take(usage_policy_settings(fixture.runtime->config()));
+  check(settings["stored_override"].is_null() && settings["source"] == "preset", "actual W2 settings reports absent override and preset source");
+  check(json::canonical(settings["effective"]) == json::canonical(options), "settings and execution share effective defaults");
+  check(settings["hashes"]["effective"] == Sha256::hex(json::canonical(options)), "settings hash binds the actual canonical effective options");
+  check(!std::filesystem::exists(fixture.runtime->paths().root / "usage-policy.sqlite"), "settings reads do not open the ledger");
+  fixture.reply(Json{{"prompt_tokens", 32}, {"completion_tokens", 2}, {"cost", 0.004}});
+  const Json result = fixture.call();
+  check(result["usage_policy"]["available"] == true && result["usage_policy"]["required"] == true, "cold config uses real required W2 capability");
+  check(result["requests"] == 1 && fixture.http->requests().size() == 1, "cold unset-config admission dispatches once");
+  const Json decision = result["usage_decisions"].at(0).at("decision");
+  check(decision["status"] == "allowed" && decision["authorized"] == true, "actual default path grants an allowed receipt");
+  check(json::canonical(decision["options"]) == json::canonical(options), "ledger admission uses the same resolved preset");
+  check(decision["estimate"]["resources"]["output_tokens"].is_null(), "cold output cap remains no forecast");
+  const Json inspection = fixture.inspect();
+  check(inspection["baseline"]["output_tokens"]["value"] == 2 && inspection["baseline"]["output_tokens"]["samples"] == 1, "cold preset ledger learns reported actual two tokens");
+  check(!fixture.runtime->config().all().contains("loom_usage_policy"), "opening and completing real policy never installs a config preset");
+  return Json{{"settings", settings}, {"effective_options", options},
+              {"config_usage_override_present", false}, {"result", result},
+              {"ledger", inspection}, {"http_calls", fixture.http->requests().size()}};
+}
+
 }  // namespace
 
 int main() {
@@ -269,7 +298,8 @@ int main() {
       {"initial baseline1 confirmation without HTTP", tenfold_no_http},
       {"owner-confirmed same-run dispatch once", confirm_and_retry_same_run},
       {"provider usage settles exact actual", provider_settles_actual},
-      {"configured cap stays provenance and actual unknown", cap_stays_unknown_without_usage}};
+      {"configured cap stays provenance and actual unknown", cap_stays_unknown_without_usage},
+      {"cold Config without artificial preset installation", cold_config_without_preset_install}};
   Json rows = Json::array();
   std::size_t passed = 0;
   for (const auto& [name, test] : tests) {
@@ -278,7 +308,7 @@ int main() {
   }
   std::cout << json::dump(Json{{"status", "conditional_actual_W2_ledger_with_W1_semantic_source_offline"},
       {"passed", passed}, {"total", tests.size()}, {"cases", rows}, {"paid_calls", 0},
-      {"limitations", Json::array({"W2 Config default getter and C ABI are not integrated into this root build; fixture installs exact W2 preset explicitly.",
+      {"limitations", Json::array({"Latest W2 effective-options cold-config path is tested; W2 Config::get fallback implementation and C ABI are not merged into this root build.",
         "ScriptedTransport usage is fixture evidence, not observed provider expenditure.",
         "Production integration still needs merged W2 header/objects and normal complete CTest."})}}, 2) << '\n';
   return passed == tests.size() ? 0 : 1;
