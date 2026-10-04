@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "loom/tools/seeding",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "measured_at_utc": "2026-10-04T17:45:51.172926+00:00",
+  "tests_run": 50,
+  "duration_seconds": 7.922,
+  "log_sha256": "0db24bd06700dfcc0442f408be2c9e79adbfdc80717a6b544d0bc691fe0b5652",
+  "counts": {
+    "unchanged_existing": 36,
+    "profile_migration": 14
+  }
+}

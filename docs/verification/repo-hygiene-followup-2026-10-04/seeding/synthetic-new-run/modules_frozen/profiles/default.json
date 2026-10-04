@@ -1,0 +1,383 @@
+{
+  "schema": "loom.seeding.recipe/1",
+  "version": "synthetic-projection-v1",
+  "dimensions": [
+    {
+      "id": "roles",
+      "predict": true,
+      "rows": {
+        "$op": "items",
+        "value": {
+          "$op": "get",
+          "value": {
+            "$ref": "project"
+          },
+          "key": "universal_roles",
+          "default": {}
+        }
+      },
+      "select": {
+        "$op": "nonempty",
+        "value": {
+          "$op": "get",
+          "value": {
+            "$ref": "item"
+          },
+          "key": "observed",
+          "default": []
+        }
+      },
+      "label": {
+        "$ref": "key"
+      },
+      "properties": {
+        "$op": "merge",
+        "items": [
+          {
+            "expected_properties": [
+              {
+                "relation": "has_universal_role",
+                "role": {
+                  "$ref": "label"
+                },
+                "specific_content": "unverified_on_target"
+              }
+            ]
+          },
+          {
+            "$op": "source_record",
+            "item": {
+              "units": {
+                "$op": "get",
+                "value": {
+                  "$ref": "item"
+                },
+                "key": "observed",
+                "default": []
+              }
+            },
+            "path": {
+              "$op": "format",
+              "template": "projects/{project}/universal_roles/{role}/observed",
+              "values": {
+                "project": {
+                  "$ref": "project/id"
+                },
+                "role": {
+                  "$ref": "label"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "capabilities",
+      "predict": true,
+      "rows": {
+        "$op": "items",
+        "value": {
+          "$op": "get",
+          "value": {
+            "$ref": "project"
+          },
+          "key": "decisions",
+          "default": []
+        }
+      },
+      "select": {
+        "$op": "nonempty",
+        "value": {
+          "$op": "get",
+          "value": {
+            "$ref": "item"
+          },
+          "key": "operator",
+          "default": null
+        }
+      },
+      "label": {
+        "$op": "get",
+        "value": {
+          "$ref": "item"
+        },
+        "key": "operator"
+      },
+      "bindings": {
+        "records": {
+          "$op": "collect",
+          "items": {
+            "$ref": "members"
+          },
+          "value": {
+            "$op": "source_record",
+            "item": {
+              "$ref": "item"
+            },
+            "path": {
+              "$op": "format",
+              "template": "projects/{project}/decisions/{id}",
+              "values": {
+                "project": {
+                  "$ref": "project/id"
+                },
+                "id": {
+                  "$ref": "item/id"
+                }
+              }
+            }
+          }
+        },
+        "definition": {
+          "$op": "get",
+          "value": {
+            "$ref": "operators"
+          },
+          "key": {
+            "$ref": "label"
+          }
+        }
+      },
+      "properties": {
+        "expected_properties": [
+          {
+            "relation": "applies_solution_class",
+            "solution": {
+              "$op": "get",
+              "value": {
+                "$ref": "definition"
+              },
+              "key": "solution"
+            },
+            "requires_validation": true
+          }
+        ],
+        "justifying_principles": {
+          "$op": "union",
+          "items": {
+            "$op": "collect",
+            "items": {
+              "$ref": "members"
+            },
+            "value": {
+              "$op": "get",
+              "value": {
+                "$ref": "item"
+              },
+              "key": "principle_evidence",
+              "default": []
+            }
+          }
+        },
+        "application_premise_alternatives": {
+          "$op": "collect",
+          "items": {
+            "$ref": "members"
+          },
+          "value": {
+            "principles": {
+              "$op": "union",
+              "items": [
+                {
+                  "$op": "get",
+                  "value": {
+                    "$ref": "item"
+                  },
+                  "key": "principle_evidence",
+                  "default": []
+                }
+              ]
+            },
+            "decision_id": {
+              "$ref": "item/id"
+            },
+            "application_source": {
+              "$op": "source_record",
+              "item": {
+                "$ref": "item"
+              },
+              "path": {
+                "$op": "format",
+                "template": "projects/{project}/decisions/{id}",
+                "values": {
+                  "project": {
+                    "$ref": "project/id"
+                  },
+                  "id": {
+                    "$ref": "item/id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operator_definition_path": {
+          "$op": "format",
+          "template": "operators/{operator}",
+          "values": {
+            "operator": {
+              "$ref": "label"
+            }
+          }
+        },
+        "oracle_path": {
+          "$op": "format",
+          "template": "projects/{project}/operator_applications/{operator}",
+          "values": {
+            "project": {
+              "$ref": "project/id"
+            },
+            "operator": {
+              "$ref": "label"
+            }
+          }
+        },
+        "source_locators": {
+          "$op": "flatten",
+          "items": {
+            "$op": "collect",
+            "items": {
+              "$ref": "records"
+            },
+            "value": {
+              "$op": "get",
+              "value": {
+                "$ref": "item"
+              },
+              "key": "source_locators",
+              "default": []
+            }
+          }
+        },
+        "known_at": null,
+        "known_at_status": "not_supplied_by_oracle",
+        "source_created_at_max": {
+          "$op": "max",
+          "items": {
+            "$op": "collect",
+            "items": {
+              "$ref": "records"
+            },
+            "value": {
+              "$op": "get",
+              "value": {
+                "$ref": "item"
+              },
+              "key": "source_created_at_max",
+              "default": null
+            }
+          }
+        }
+      },
+      "eligibility": {
+        "policy_key": "capability_mapping",
+        "support_dimension": "principles",
+        "union_property": "justifying_principles",
+        "alternatives_property": "application_premise_alternatives",
+        "member_property": "principles",
+        "application_id_property": "decision_id",
+        "application_source_property": "application_source",
+        "mapping_relation": "justifies_operator",
+        "mapping_label_key": "operator",
+        "mapping_witness_id_key": "donor_decision"
+      }
+    },
+    {
+      "id": "features",
+      "predict": true,
+      "rows": {
+        "$op": "items",
+        "value": {
+          "$op": "get",
+          "value": {
+            "$ref": "project"
+          },
+          "key": "features_status",
+          "default": []
+        }
+      },
+      "label": {
+        "$op": "get",
+        "value": {
+          "$ref": "item"
+        },
+        "key": "label"
+      },
+      "properties": {
+        "$op": "merge",
+        "items": [
+          {
+            "expected_properties": [
+              {
+                "relation": "has_feature",
+                "label": {
+                  "$ref": "label"
+                },
+                "implementation_status": "unverified_on_target"
+              }
+            ],
+            "donor_status_history": {
+              "$op": "get",
+              "value": {
+                "$ref": "item"
+              },
+              "key": "events",
+              "default": []
+            }
+          },
+          {
+            "$op": "source_record",
+            "item": {
+              "$ref": "item"
+            },
+            "path": {
+              "$op": "format",
+              "template": "projects/{project}/features_status/{id}",
+              "values": {
+                "project": {
+                  "$ref": "project/id"
+                },
+                "id": {
+                  "$ref": "item/id"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "principles",
+      "predict": false,
+      "rows": {
+        "$op": "items",
+        "value": {
+          "$op": "flatten",
+          "items": {
+            "$op": "collect",
+            "items": {
+              "$op": "get",
+              "value": {
+                "$ref": "project"
+              },
+              "key": "decisions",
+              "default": []
+            },
+            "value": {
+              "$op": "get",
+              "value": {
+                "$ref": "item"
+              },
+              "key": "principle_evidence",
+              "default": []
+            }
+          }
+        }
+      },
+      "label": {
+        "$ref": "item"
+      }
+    }
+  ]
+}
