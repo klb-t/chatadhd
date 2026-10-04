@@ -25,7 +25,12 @@
       "messages",
       "temperature",
       "max_tokens"
-    ]
+    ],
+    "headers": {
+      "Content-Type": "application/json",
+      "HTTP-Referer": "https://github.com/chatadhd",
+      "X-Title": "ChatADHD-Semantic"
+    }
   },
   "analysis_parameters": {},
   "output_schema": {

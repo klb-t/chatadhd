@@ -66,6 +66,13 @@ configurable UTF-8 codepoint clipping preset; `null` removes that clipping.
 `request_patch` overlays the final body. Explicit supplied messages do not
 require unused template bindings. `transport.body_field_order` controls wire
 serialization order without removing unlisted fields.
+The caller model is the initial body value; an explicit
+`request_parameters.model` replaces it, then `request_patch.model` wins last.
+Provider body patches do not change transport settings: use a contract or
+`prompt_patch.transport` for method, URL, headers, timeout or stream behavior.
+An explicit `transport.url` wins over the provider base and `transport.path`;
+otherwise trailing slashes are removed from the provider base before appending
+the path (preset `/chat/completions`).
 
 The prepared result includes `method`, `url`, `headers`, `body_json`, exact
 `body_bytes`, `transport`, `contract_hash`, `output_schema_hash` and
@@ -74,6 +81,10 @@ body bytes, transport, schema hash and validation mode. The registry does not
 inject authorization. Explicit owner headers remain explicit owner input;
 the semantic transport adds the runtime API key only when Authorization is
 absent. Do not store credentials in public prompt files or public previews.
+Canonical JSON is used for identities and the `input_json` binding. The actual
+provider `body_bytes` retains insertion order or explicit `body_field_order`,
+preserving historical wire bytes; it is not replaced by the canonical hash
+representation.
 
 ## Knowledge extraction configuration and preview
 
@@ -275,6 +286,16 @@ python3 loom/src/extract/gen_prompt_contracts.py --check
 The generator compiles only `.prompt` files into
 `loom/src/extract/prompt_contract_data.inc`; `.recipe` and this README are not
 compiled. This registry is independent of the KB Pack generator.
+It also refreshes the marked generated `#if 0` legacy export at the start of
+`loom/src/extract/semantic.cpp`. W7's current `live_pilot.native_prompt()` reads
+that exact `kGraphPrompt = R"PROMPT(...)PROMPT"` declaration with its existing
+source regex. The export contains the builtin occurrence-graph system prompt
+from data; it is excluded from compilation and does not select runtime or owner
+overlay behavior. Edit `.prompt` data and regenerate rather than editing the
+export. `--check` verifies both generated outputs without rewriting them.
+The fixed legacy raw-string delimiter must remain representable until W7's
+reader adopts the data/registry interface; the generator reports a delimiter
+collision explicitly.
 
 Offline fixtures live at
 `loom/src/extract/tests/prompt_contract_probe.cpp.fixture` and
