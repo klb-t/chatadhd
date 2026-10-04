@@ -136,4 +136,64 @@ TEST_SUITE("memory_engine") {
     CHECK(data["edges"][0]["src"] == p);
     CHECK(data["edges"][0]["dst"] == c);
   }
+
+  TEST_CASE("a new memory node type renders and sorts through the user recipe") {
+    fsutil::TempDir dir;
+    REQUIRE(fsutil::ensure_dir(dir.path() / "profiles"));
+    Json settings{{"renderers", {{"note", "{{indent}}NOTE: {{content}} ({{/metadata/category}}){{tags}}"}}},
+                  {"sort_priorities", {{"note", -1}}}, {"graph_label_chars", 4}, {"search_limit", 1}};
+    Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "memory"}, {"overrides", settings}};
+    REQUIRE(fsutil::write_file(dir.path() / "profiles/memory.pack", json::dump(overlay)));
+    MemoryEngine mem(dir.path() / "memory.json");
+    REQUIRE(mem.profile_status());
+    auto ordinary = mem.add_node("ordinary text");
+    auto folder = mem.add_node("folder", std::nullopt, "folder");
+    auto note = mem.add_node("custom note", std::nullopt, "note", Json{{"category", "audit"}}, {"todo"});
+    REQUIRE(ordinary);
+    REQUIRE(folder);
+    REQUIRE(note);
+    auto children = mem.get_children_checked();
+    REQUIRE(children);
+    REQUIRE(children->size() == 3);
+    CHECK((*children)[0].id == *note);
+    CHECK(mem.get_active_context() == "NOTE: custom note (audit) #todo\n[folder]\nordinary text");
+    CHECK(mem.get_graph_data()["nodes"][0]["label"] == "ordi");
+    CHECK(mem.search("").size() == 1);
+    CHECK(mem.search("", 10).size() == 3);
+    auto inspection = mem.profile_inspection();
+    REQUIRE(inspection);
+    CHECK_FALSE(inspection->at("is_builtin").get<bool>());
+  }
+
+  TEST_CASE("invalid existing overlay is explicit and never uses a default recipe") {
+    fsutil::TempDir dir;
+    REQUIRE(fsutil::ensure_dir(dir.path() / "profiles"));
+    REQUIRE(fsutil::write_file(dir.path() / "profiles/memory.pack", "{invalid"));
+    MemoryEngine mem(dir.path() / "memory.json");
+    CHECK_FALSE(mem.profile_status());
+    CHECK_FALSE(mem.profile_inspection());
+    CHECK_FALSE(mem.add_node("must not silently use defaults"));
+    CHECK_FALSE(mem.get_active_context_checked());
+    CHECK_THROWS(mem.get_active_context());
+    REQUIRE(fsutil::write_file(dir.path() / "profiles/memory.pack", json::dump(Json{
+      {"schema", "loom.runtime_profile_overlay/1"}, {"domain", "memory"}, {"overrides", Json::object()}})));
+    REQUIRE(mem.reload());
+    REQUIRE(mem.profile_status());
+    REQUIRE(mem.add_node("recovered"));
+    CHECK(mem.get_active_context() == "recovered");
+  }
+
+  TEST_CASE("missing template variable preserves source and reports rendering failure") {
+    fsutil::TempDir dir;
+    REQUIRE(fsutil::ensure_dir(dir.path() / "profiles"));
+    REQUIRE(fsutil::write_file(dir.path() / "profiles/memory.pack", json::dump(Json{
+      {"schema", "loom.runtime_profile_overlay/1"}, {"domain", "memory"},
+      {"overrides", {{"renderers", {{"note", "{{/metadata/required}}"}}}}}})));
+    MemoryEngine mem(dir.path() / "memory.json");
+    auto note = mem.add_node("original source", std::nullopt, "note");
+    REQUIRE(note);
+    auto result = mem.get_active_context_checked();
+    CHECK_FALSE(result);
+    CHECK(mem.get_node(*note)->content == "original source");
+  }
 }
