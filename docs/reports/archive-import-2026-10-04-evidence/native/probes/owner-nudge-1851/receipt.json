@@ -1,0 +1,280 @@
+{
+  "schema": "loom.import_checkpoint_replay_verification/1",
+  "provider_calls": 0,
+  "source_root": "/workspace/scratch/943af489e102/chatadhd-baseline",
+  "expected_source_commit": "4314976396e78ae7ca04ad62a0ef9ec64cef16e6",
+  "adaptation": {
+    "schema": "loom.import_checkpoint_probe_adaptation/1",
+    "original_archive": "archive/2026-10-04/integrator-import-checkpoint-replay",
+    "reviewed_commit": "c7972252a23cb13c54797f6b57df24de903c5296",
+    "executed_import_source_commit": "d77867517bb128b7e43236c436a2dc3a31e1ae46",
+    "adaptation": "Only append options.resume = true after ImportOptions options; library compatibility default is now false.",
+    "files": {
+      "probe.cpp": {
+        "original_sha256": "c67d2f96670e6eea33c6918d1bbf6ac103652c8ba7a64d61e9fd62b9718b6443",
+        "adapted_sha256": "2bfa39063a19d259220c8471cd7084d99282c9c3e3247a57bd769ec3b19ea405",
+        "original_bytes": 2784,
+        "adapted_bytes": 2809
+      },
+      "probe_link_failure.cpp": {
+        "original_sha256": "aeda949dc4c5766fc912717a8e2426aa8c2a4adebb89667fae0fe99c07bae6f7",
+        "adapted_sha256": "0eb34d40aae32cc1586b75e1ff26a926551e2781b8dc3134aa8742caaed9b9ee",
+        "original_bytes": 3103,
+        "adapted_bytes": 3128
+      }
+    }
+  },
+  "libraries_before": {
+    "/dev/shm/chatadhd-thread5/baseline-build/libloom_core.a": {
+      "bytes": 319165572,
+      "sha256": "f2002cbe0a527039bf9b1c03753c4707f5a85d0667da70b2cee805233f83a9c0"
+    },
+    "/dev/shm/chatadhd-thread5/baseline-build/libloom_sqlite3_amalgamation.a": {
+      "bytes": 1836182,
+      "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+    },
+    "/dev/shm/chatadhd-thread5/baseline-build/libloom_miniz.a": {
+      "bytes": 167828,
+      "sha256": "04f430e01025ed2dfdd51fb358bdb3fd91a309e31076c0bc52b3fa7fa5369a03"
+    }
+  },
+  "cmake_cache": {
+    "bytes": 18509,
+    "sha256": "cdfe2ecabdf5995c70e2dfe286ff3f9738e6fd663cea7238a3225ef419837970"
+  },
+  "compiler": "/usr/bin/c++",
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-pthread",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-I/workspace/scratch/943af489e102/chatadhd-baseline/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd-baseline/loom/src",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/miniz",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/cpp-httplib",
+        "/workspace/scratch/943af489e102/chatadhd/docs/reports/archive-import-2026-10-04-evidence/native/probes/probe.cpp",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_core.a",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_sqlite3_amalgamation.a",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_miniz.a",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-Wl,--no-keep-memory",
+        "-Wl,--reduce-memory-overheads",
+        "-o",
+        "/dev/shm/chatadhd-thread5/owner-nudge-probes-1851/probe"
+      ],
+      "exit_code": 0,
+      "log": "probe-compile.txt"
+    },
+    {
+      "command": [
+        "/dev/shm/chatadhd-thread5/owner-nudge-probes-1851/probe",
+        "/dev/shm/chatadhd-thread5/owner-nudge-probes-1851/probe-data"
+      ],
+      "exit_code": 0,
+      "log": "probe-run.txt"
+    },
+    {
+      "command": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-pthread",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-I/workspace/scratch/943af489e102/chatadhd-baseline/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd-baseline/loom/src",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/miniz",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd-baseline/loom/third_party/cpp-httplib",
+        "/workspace/scratch/943af489e102/chatadhd/docs/reports/archive-import-2026-10-04-evidence/native/probes/probe_link_failure.cpp",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_core.a",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_sqlite3_amalgamation.a",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_miniz.a",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-Wl,--no-keep-memory",
+        "-Wl,--reduce-memory-overheads",
+        "-o",
+        "/dev/shm/chatadhd-thread5/owner-nudge-probes-1851/probe_link_failure"
+      ],
+      "exit_code": 0,
+      "log": "probe_link_failure-compile.txt"
+    },
+    {
+      "command": [
+        "/dev/shm/chatadhd-thread5/owner-nudge-probes-1851/probe_link_failure",
+        "/dev/shm/chatadhd-thread5/owner-nudge-probes-1851/probe_link_failure-data"
+      ],
+      "exit_code": 0,
+      "log": "probe_link_failure-run.txt"
+    }
+  ],
+  "scenarios": {
+    "probe": {
+      "checks": {
+        "first_partial": true,
+        "first_errors_visible": true,
+        "same_source_id": true,
+        "second_resumed": true,
+        "conversation_ids_preserved": true,
+        "no_duplicate_conversation_or_message": true,
+        "database_integrity": true,
+        "first_stays_partial": true,
+        "first_not_completed_cache": true,
+        "second_stays_partial": true,
+        "second_errors_visible": true,
+        "second_not_completed_cache": true,
+        "third_stays_partial": true,
+        "third_errors_visible": true,
+        "third_not_completed_cache": true,
+        "source_stays_partial": true,
+        "no_fabricated_project_or_document": true
+      },
+      "passed": true,
+      "counts": {
+        "conversations": 1,
+        "messages": 1,
+        "project_nodes": 0,
+        "project_document_nodes": 0,
+        "project_document_links": 0,
+        "integrity_check": "ok",
+        "foreign_key_errors": 0
+      },
+      "source_id": "src_21cbcb13ef08",
+      "conversation_ids": [
+        "c_69d1040df6b5"
+      ],
+      "final_node_ids": [
+        "n_683dadcd2e32"
+      ],
+      "results": {
+        "bytes": 15503,
+        "sha256": "ba2bc7a65289fb966a05164bc37a9410a63d0bded6754745fdefffa659cb5170"
+      },
+      "source_zip": {
+        "bytes": 390,
+        "sha256": "f62af04233b76efc6ea8ea031328ad796b3a691c06b38c0853bcd225f9422c89"
+      },
+      "binary": {
+        "bytes": 7500992,
+        "sha256": "9439d2a7f3f3c76527af7639ea2a27af7422817cdc92316ecc02da16d5103693"
+      }
+    },
+    "probe_link_failure": {
+      "checks": {
+        "first_partial": true,
+        "first_errors_visible": true,
+        "same_source_id": true,
+        "second_resumed": true,
+        "conversation_ids_preserved": true,
+        "no_duplicate_conversation_or_message": true,
+        "database_integrity": true,
+        "second_complete": true,
+        "second_errors_empty": true,
+        "third_completed_source_cache": true,
+        "source_complete": true,
+        "project_restored": true,
+        "document_restored": true,
+        "link_restored": true
+      },
+      "passed": true,
+      "counts": {
+        "conversations": 1,
+        "messages": 1,
+        "project_nodes": 1,
+        "project_document_nodes": 1,
+        "project_document_links": 1,
+        "integrity_check": "ok",
+        "foreign_key_errors": 0
+      },
+      "source_id": "src_63fba31d54d3",
+      "conversation_ids": [
+        "c_23a3d7e4f823"
+      ],
+      "final_node_ids": [
+        "n_3d91328759df",
+        "n_7853b99f8e17",
+        "n_945ca96b8d14"
+      ],
+      "results": {
+        "bytes": 15182,
+        "sha256": "ccb9ff2be5dbf92fed72627d16f80e599ea9e11ef8a056aebaa80037b29802e9"
+      },
+      "source_zip": {
+        "bytes": 461,
+        "sha256": "c0c29915cb9282a4c2a759c50d48e66ccf75d4d82119184555af3be89b5d5e4c"
+      },
+      "binary": {
+        "bytes": 7501008,
+        "sha256": "1357beb26958aad07c68b38a8709ed1f37af123859921a1b03fc98079f7837b6"
+      }
+    }
+  },
+  "passed": true,
+  "source_commit_mismatches": [],
+  "libraries_after": {
+    "/dev/shm/chatadhd-thread5/baseline-build/libloom_core.a": {
+      "bytes": 319165572,
+      "sha256": "f2002cbe0a527039bf9b1c03753c4707f5a85d0667da70b2cee805233f83a9c0"
+    },
+    "/dev/shm/chatadhd-thread5/baseline-build/libloom_sqlite3_amalgamation.a": {
+      "bytes": 1836182,
+      "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+    },
+    "/dev/shm/chatadhd-thread5/baseline-build/libloom_miniz.a": {
+      "bytes": 167828,
+      "sha256": "04f430e01025ed2dfdd51fb358bdb3fd91a309e31076c0bc52b3fa7fa5369a03"
+    }
+  },
+  "inputs_stable": true,
+  "evidence": {
+    "probe-compile.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "probe-run.txt": {
+      "bytes": 261,
+      "sha256": "1341fc084235af5f795214f4359c4c79b73fc44b6e62723b6cab3051ccfed1dc"
+    },
+    "probe_link_failure-compile.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "probe_link_failure-run.txt": {
+      "bytes": 354,
+      "sha256": "be6a68921f8204969246f28829e0baedcff7cf6d0aab1bbe7b8dca26d7d3db36"
+    },
+    "source-after.json": {
+      "bytes": 31620,
+      "sha256": "53f35ad07076a984aab047527b5642bdb78b85fb58651ed89c64564cb3c76943"
+    },
+    "source-before.json": {
+      "bytes": 31620,
+      "sha256": "53f35ad07076a984aab047527b5642bdb78b85fb58651ed89c64564cb3c76943"
+    }
+  }
+}
