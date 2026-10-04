@@ -1,0 +1,84 @@
+{
+  "schema": "loom.packet_method_supplement_verification/1",
+  "task_date": "2026-10-04",
+  "recorded_at": "2026-10-04T16:48:11.513919+00:00",
+  "source_parent": "8e0e86bbfb2d58a15cccf9a985b8167fc7dcbb1e",
+  "main": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "source_sha256": {
+    "loom/src/packet/method-graph.schema.json": "76613d7e7586d28cdb28678372361c9120950cac85fb4ec20459cb1d7f3ccdd9",
+    "loom/src/packet/tests/method-graph-fixture.json": "eff380dce7b53d883eb0ed50fdda74c7254d33d2dc895e0e154618e5628ca10b",
+    "loom/tests/compat/test_graph_packet_store.py": "5873edcaf2bf4c60e4b7bfbaed6d4f8c530fedbcd601e394e8e3742742aabe90",
+    "loom/src/packet/tests/check_method_graph.py": "2e56ae5644f8846daa78403e6dbefe95dd7e2eb5f58020a13ab14472c32d5e7c",
+    "loom/src/packet/tests/reply-fixtures.json": "4d810c09ca39d74c70e32ee4c78a9b55b27b894362e05a15cd482086ef0902c3",
+    "loom/src/packet/METHOD_GRAPH.md": "5d1dfae1d14d8663dd2f36a3eae42bbb582a6dc55106be7bf9361b0f668a869d",
+    "loom/src/packet/README.md": "c395c69ac27c4849333bab6cf04fb5dbd7fd14a4d88a59f6d87d8cfafbbb44b4",
+    "docs/reports/native-graph-packet-2026-10-04.md": "4e318f1ffea692fbc9ed51c2d2a65d1b48cdf04864de24102409ff4c8ece65f7"
+  },
+  "unchanged_native_execution_source_sha256": {
+    "loom/include/loom/loom.h": "da65dbfdd3a460037ba841eb37c8c1897f8a3a484d1d6477cbb5a9ff77a05934",
+    "loom/src/capi/capi_packet.cpp": "b11a970e8bcbdbcba910c3e1dc49d69c4ff843e0afbbb838f40c281bf9c4a00b",
+    "loom/src/kb/graph_packet_store.cpp": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466",
+    "loom/src/packet/packet.h": "c1ffb4580ac99feb98bbc81006731b0bc8763ddb13c618e832aa675f30dc4bc7",
+    "loom/src/packet/packet.cpp": "f95574debd94ff675596807b7de7eff8a65b5aafc3360b9be2d513a335bfaf59",
+    "loom/src/packet/reply.cpp": "4575f44b4614888fa25166b6b3a2e58c59966b49021cb25b07c06aaf74fc091c",
+    "loom/tests/test_packet.cpp": "71b9770c984e9ef88a28249e14439d96aeacccadbdcb91f7a6057ecfe5be16c6",
+    "loom/server/src/app.cpp": "4dccba1284b22ba9c2ae59a43dea51a506acce1c36a6c4b1d373629fc9ea4806"
+  },
+  "library_sha256": {
+    "loom/build/dev/libloom.so.0.1.0": "42032e790fb5698f1059a6a0eb4b48c740ae9d15655a91debfbe888142e7542b"
+  },
+  "checks": {
+    "full_ctest": {
+      "command": "ctest --preset dev -j 1 --output-on-failure",
+      "passed": 110,
+      "discovered": 110,
+      "seconds": 341.71
+    },
+    "native_store": {
+      "cases": 23,
+      "passed": 23,
+      "ctest_seconds": 6.64
+    },
+    "method_schema": {
+      "passed": 14,
+      "checks": 14
+    },
+    "backward_shape_compatibility": "8e0e86b manifest and trace accepted by the additive current schema"
+  },
+  "fixture": {
+    "before_parent": "8e0e86b",
+    "before": {
+      "entities": 13,
+      "claims": 19,
+      "sources": 5,
+      "parameter_set_entities": 0,
+      "parameter_and_combination_edges": 0
+    },
+    "after": {
+      "entities": 14,
+      "claims": 22,
+      "sources": 5,
+      "parameter_set_entities": 1,
+      "parameter_and_combination_edges": 3
+    },
+    "result_provenance_edges_retained": 9,
+    "bound_packet_id": "66fb952b9eecd4435649d0a7d42157c6e18899996a486437a71afc2c821561df"
+  },
+  "retained_interrupted_attempt": {
+    "file": "ctest-interrupted-for-evaluator-origin-fix.txt",
+    "exit_code": 130,
+    "completed_passes": 38,
+    "reason": "Stopped after review found inherited synthetic evaluator recipe mismatch; fixed to unavailable/null before the final full gate."
+  },
+  "evidence_sha256": {
+    "ctest-interrupted-for-evaluator-origin-fix.txt": "a71c2ef72dc690ad0bb13b65f7df45832c2f6e60233cba2db2dc203e496b7a9f",
+    "ctest.txt": "092697335c4b08665a4545e6a7f43dceabb79110ba09d53399f90d1d1c77bd18",
+    "method-schema.txt": "137f47ac29b979741279f60b6bd79b0b084f5ec43334602cdd33413b336c23b3",
+    "store.txt": "8da6686fafb35aa693a609f6afe0eea3238d18375546e8e67588076ed6b1e6a4"
+  },
+  "paid_calls": 0,
+  "actions_runs": 0,
+  "timeouts_assertions_thresholds_changed": false,
+  "integration_gate": "W3 actual registry/execution adapter and joint W3 to native store regression remain open; builtin pack data belongs to producers. No production method execution is inferred from this synthetic packet.",
+  "native_implementation_and_shared_library_unchanged": true
+}

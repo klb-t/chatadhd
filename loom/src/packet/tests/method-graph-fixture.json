@@ -12,7 +12,8 @@
         "combination_version": "fixture.combination_version",
         "run": "fixture.run",
         "model_identity": "fixture.model_identity",
-        "compiler_transform": "fixture.compiler_transform"
+        "compiler_transform": "fixture.compiler_transform",
+        "parameter_set_version": "fixture.parameter_set_version"
       },
       "predicates": {
         "version_of": "fixture.version_of",
@@ -24,32 +25,36 @@
         "produced_in_run": "fixture.produced_in_run",
         "produced_by_method_version": "fixture.produced_by_method_version",
         "projected_by_compiler": "fixture.projected_by_compiler",
-        "evaluated_method_version": "fixture.evaluated_method_version"
+        "evaluated_method_version": "fixture.evaluated_method_version",
+        "uses_parameter_set": "fixture.uses_parameter_set",
+        "uses_combination": "fixture.uses_combination"
       }
     },
     "bindings": {
       "method_identity_id": "fx_method_saved_response",
-      "method_version_id": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+      "method_version_id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
       "prompt_version_id": "fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0",
       "recipe_version_id": "fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
       "preset_version_id": "fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
       "run_id": "fx_run_saved_response_1",
       "model_identity_id": "fx_model_synthetic",
       "compiler_transform_id": "fx_compiler_graph_reply_1",
-      "combination_version_id": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9"
+      "combination_version_id": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
+      "parameter_set_version_id": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
     },
     "definition_hashes": {
-      "method_version": "f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+      "method_version": "0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
       "prompt_bytes": "c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0",
       "recipe": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
       "preset": "fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
-      "combination": "72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9"
+      "combination": "5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
+      "parameter_set": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
     },
     "trace": {
       "schema": "loom.method_run_trace/1",
       "run_id": "fx_run_saved_response_1",
       "method_identity_id": "fx_method_saved_response",
-      "method_version_id": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+      "method_version_id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
       "model_identity_id": "fx_model_synthetic",
       "model": "synthetic/test-model",
       "recipe_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
@@ -60,8 +65,8 @@
       },
       "preset_version_id": "fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
       "preset_sha256": "fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
-      "combination_version_id": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
-      "combination_sha256": "72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
+      "combination_version_id": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
+      "combination_sha256": "5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
       "user_overrides": {
         "temperature": 0.4
       },
@@ -74,7 +79,85 @@
         "money_usd": 0,
         "accuracy": null
       },
-      "measurement_scope": "synthetic_local_projection_no_live_model_execution"
+      "measurement_scope": "synthetic_local_projection_no_live_model_execution",
+      "parameter_set_version_id": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+      "parameter_set_sha256": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
+    },
+    "definition_records": {
+      "method_identity_id": {
+        "method_key": "synthetic/saved-response"
+      },
+      "method_version_id": {
+        "definition": {
+          "method_key": "synthetic/saved-response",
+          "recipe_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
+          "preset_sha256": "fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
+          "execution_capability": "offline_saved_response",
+          "parameter_set_sha256": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
+        },
+        "definition_sha256": "0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab"
+      },
+      "prompt_version_id": {
+        "text": "Return the supplied synthetic response as an ordered graph. Aą🙂B",
+        "text_sha256": "c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0",
+        "encoding": "utf-8"
+      },
+      "recipe_version_id": {
+        "definition": {
+          "prompt_sha256": "c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0",
+          "model": "synthetic/test-model",
+          "parameters": {
+            "temperature": 0.4,
+            "reasoning": null
+          },
+          "output_schema": "loom.graph_reply/2"
+        },
+        "definition_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae"
+      },
+      "preset_version_id": {
+        "definition": {
+          "parameters": {
+            "temperature": 0.1,
+            "reasoning": null
+          },
+          "acceptance": "preview"
+        },
+        "definition_sha256": "fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741"
+      },
+      "model_identity_id": {
+        "model": "synthetic/test-model",
+        "capability": "synthetic_descriptor_no_provider"
+      },
+      "compiler_transform_id": {
+        "implementation": "loom.graph_reply_compiler/1",
+        "wire_schema": "loom.graph_reply/2",
+        "content_verification": "unverified"
+      },
+      "combination_version_id": {
+        "definition": {
+          "members": [
+            {
+              "method_version_id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
+              "weight": 1.0
+            }
+          ],
+          "composition": "ordered_single_member",
+          "parameters": {}
+        },
+        "definition_sha256": "5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df"
+      },
+      "parameter_set_version_id": {
+        "definition": {
+          "effective_parameters": {
+            "temperature": 0.4,
+            "reasoning": null
+          },
+          "user_overrides": {
+            "temperature": 0.4
+          }
+        },
+        "definition_sha256": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
+      }
     }
   },
   "base_make_request": {
@@ -107,10 +190,10 @@
         }
       },
       {
-        "id": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+        "id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
         "kind": "fixture.method_version",
-        "canonical_key": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
-        "label": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+        "canonical_key": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
+        "label": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
         "labels": {},
         "aliases": [],
         "parent": "",
@@ -125,9 +208,10 @@
             "method_key": "synthetic/saved-response",
             "recipe_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
             "preset_sha256": "fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
-            "execution_capability": "offline_saved_response"
+            "execution_capability": "offline_saved_response",
+            "parameter_set_sha256": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
           },
-          "definition_sha256": "f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e"
+          "definition_sha256": "0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab"
         }
       },
       {
@@ -203,10 +287,10 @@
         }
       },
       {
-        "id": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
+        "id": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
         "kind": "fixture.combination_version",
-        "canonical_key": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
-        "label": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
+        "canonical_key": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
+        "label": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
         "labels": {},
         "aliases": [],
         "parent": "",
@@ -220,14 +304,14 @@
           "definition": {
             "members": [
               {
-                "method_version_id": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+                "method_version_id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
                 "weight": 1.0
               }
             ],
             "composition": "ordered_single_member",
             "parameters": {}
           },
-          "definition_sha256": "72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9"
+          "definition_sha256": "5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df"
         }
       },
       {
@@ -248,7 +332,7 @@
           "schema": "loom.method_run_trace/1",
           "run_id": "fx_run_saved_response_1",
           "method_identity_id": "fx_method_saved_response",
-          "method_version_id": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+          "method_version_id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
           "model_identity_id": "fx_model_synthetic",
           "model": "synthetic/test-model",
           "recipe_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
@@ -259,8 +343,8 @@
           },
           "preset_version_id": "fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
           "preset_sha256": "fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
-          "combination_version_id": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
-          "combination_sha256": "72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
+          "combination_version_id": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
+          "combination_sha256": "5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
           "user_overrides": {
             "temperature": 0.4
           },
@@ -274,7 +358,9 @@
             "accuracy": null
           },
           "measurement_scope": "synthetic_local_projection_no_live_model_execution",
-          "projection_status": "prepared"
+          "projection_status": "prepared",
+          "parameter_set_version_id": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+          "parameter_set_sha256": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
         }
       },
       {
@@ -315,12 +401,39 @@
           "wire_schema": "loom.graph_reply/2",
           "content_verification": "unverified"
         }
+      },
+      {
+        "id": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+        "kind": "fixture.parameter_set_version",
+        "canonical_key": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+        "label": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "2026-10-04T14:00:00Z",
+        "last_seen": "2026-10-04T14:00:00Z",
+        "evidence_class": "user",
+        "origin": "user",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "definition": {
+            "effective_parameters": {
+              "temperature": 0.4,
+              "reasoning": null
+            },
+            "user_overrides": {
+              "temperature": 0.4
+            }
+          },
+          "definition_sha256": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
+        }
       }
     ],
     "claims": [
       {
         "id": "fx_profile_edge_0",
-        "subject": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+        "subject": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
         "predicate": "fixture.version_of",
         "object": "fx_method_saved_response",
         "value": null,
@@ -343,16 +456,16 @@
               {
                 "observation": "fx_source_profile",
                 "locator": {
-                  "source": "sha256:67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0",
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
                   "member": "method-profile.json",
                   "json_pointer": "",
                   "byte_start": 0,
-                  "byte_len": 3329,
+                  "byte_len": 5940,
                   "time_start": null,
                   "time_end": null,
                   "line": null
                 },
-                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_identity_id\":\"fx_model_synthetic\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"method_version\":\"f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
                 "extractor": "synthetic/fixture_projection",
                 "quality": 1.0
               }
@@ -417,16 +530,16 @@
               {
                 "observation": "fx_source_profile",
                 "locator": {
-                  "source": "sha256:67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0",
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
                   "member": "method-profile.json",
                   "json_pointer": "",
                   "byte_start": 0,
-                  "byte_len": 3329,
+                  "byte_len": 5940,
                   "time_start": null,
                   "time_end": null,
                   "line": null
                 },
-                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_identity_id\":\"fx_model_synthetic\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"method_version\":\"f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
                 "extractor": "synthetic/fixture_projection",
                 "quality": 1.0
               }
@@ -468,7 +581,7 @@
       },
       {
         "id": "fx_profile_edge_2",
-        "subject": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+        "subject": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
         "predicate": "fixture.uses_recipe",
         "object": "fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
         "value": null,
@@ -491,16 +604,16 @@
               {
                 "observation": "fx_source_profile",
                 "locator": {
-                  "source": "sha256:67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0",
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
                   "member": "method-profile.json",
                   "json_pointer": "",
                   "byte_start": 0,
-                  "byte_len": 3329,
+                  "byte_len": 5940,
                   "time_start": null,
                   "time_end": null,
                   "line": null
                 },
-                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_identity_id\":\"fx_model_synthetic\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"method_version\":\"f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
                 "extractor": "synthetic/fixture_projection",
                 "quality": 1.0
               }
@@ -542,7 +655,7 @@
       },
       {
         "id": "fx_profile_edge_3",
-        "subject": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+        "subject": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
         "predicate": "fixture.uses_preset",
         "object": "fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
         "value": null,
@@ -565,16 +678,16 @@
               {
                 "observation": "fx_source_profile",
                 "locator": {
-                  "source": "sha256:67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0",
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
                   "member": "method-profile.json",
                   "json_pointer": "",
                   "byte_start": 0,
-                  "byte_len": 3329,
+                  "byte_len": 5940,
                   "time_start": null,
                   "time_end": null,
                   "line": null
                 },
-                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_identity_id\":\"fx_model_synthetic\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"method_version\":\"f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
                 "extractor": "synthetic/fixture_projection",
                 "quality": 1.0
               }
@@ -616,9 +729,9 @@
       },
       {
         "id": "fx_profile_edge_4",
-        "subject": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
+        "subject": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
         "predicate": "fixture.includes_method",
-        "object": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+        "object": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
         "value": null,
         "qualifiers": {
           "valid_from": "",
@@ -639,16 +752,16 @@
               {
                 "observation": "fx_source_profile",
                 "locator": {
-                  "source": "sha256:67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0",
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
                   "member": "method-profile.json",
                   "json_pointer": "",
                   "byte_start": 0,
-                  "byte_len": 3329,
+                  "byte_len": 5940,
                   "time_start": null,
                   "time_end": null,
                   "line": null
                 },
-                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_identity_id\":\"fx_model_synthetic\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"method_version\":\"f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
                 "extractor": "synthetic/fixture_projection",
                 "quality": 1.0
               }
@@ -692,7 +805,7 @@
         "id": "fx_profile_edge_5",
         "subject": "fx_run_saved_response_1",
         "predicate": "fixture.requests_method_version",
-        "object": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+        "object": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
         "value": null,
         "qualifiers": {
           "valid_from": "",
@@ -713,16 +826,238 @@
               {
                 "observation": "fx_source_profile",
                 "locator": {
-                  "source": "sha256:67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0",
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
                   "member": "method-profile.json",
                   "json_pointer": "",
                   "byte_start": 0,
-                  "byte_len": 3329,
+                  "byte_len": 5940,
                   "time_start": null,
                   "time_end": null,
                   "line": null
                 },
-                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_identity_id\":\"fx_model_synthetic\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"method_version\":\"f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "extractor": "synthetic/fixture_projection",
+                "quality": 1.0
+              }
+            ],
+            "derivation": {
+              "operator": "synthetic/fixture_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "fx_profile_edge_6",
+        "subject": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
+        "predicate": "fixture.uses_parameter_set",
+        "object": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "1",
+          "branch": "",
+          "scope": "synthetic_method_graph_structure",
+          "lang": "",
+          "extra": {
+            "confidence_scope": "structure_only",
+            "content_verification": "unverified",
+            "acceptance_establishes_content_truth": false
+          }
+        },
+        "assessment": {
+          "basis": {
+            "support": [
+              {
+                "observation": "fx_source_profile",
+                "locator": {
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
+                  "member": "method-profile.json",
+                  "json_pointer": "",
+                  "byte_start": 0,
+                  "byte_len": 5940,
+                  "time_start": null,
+                  "time_end": null,
+                  "line": null
+                },
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "extractor": "synthetic/fixture_projection",
+                "quality": 1.0
+              }
+            ],
+            "derivation": {
+              "operator": "synthetic/fixture_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "fx_profile_edge_7",
+        "subject": "fx_run_saved_response_1",
+        "predicate": "fixture.uses_parameter_set",
+        "object": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "1",
+          "branch": "",
+          "scope": "synthetic_method_graph_structure",
+          "lang": "",
+          "extra": {
+            "confidence_scope": "structure_only",
+            "content_verification": "unverified",
+            "acceptance_establishes_content_truth": false
+          }
+        },
+        "assessment": {
+          "basis": {
+            "support": [
+              {
+                "observation": "fx_source_profile",
+                "locator": {
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
+                  "member": "method-profile.json",
+                  "json_pointer": "",
+                  "byte_start": 0,
+                  "byte_len": 5940,
+                  "time_start": null,
+                  "time_end": null,
+                  "line": null
+                },
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+                "extractor": "synthetic/fixture_projection",
+                "quality": 1.0
+              }
+            ],
+            "derivation": {
+              "operator": "synthetic/fixture_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "fx_profile_edge_8",
+        "subject": "fx_run_saved_response_1",
+        "predicate": "fixture.uses_combination",
+        "object": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "1",
+          "branch": "",
+          "scope": "synthetic_method_graph_structure",
+          "lang": "",
+          "extra": {
+            "confidence_scope": "structure_only",
+            "content_verification": "unverified",
+            "acceptance_establishes_content_truth": false
+          }
+        },
+        "assessment": {
+          "basis": {
+            "support": [
+              {
+                "observation": "fx_source_profile",
+                "locator": {
+                  "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
+                  "member": "method-profile.json",
+                  "json_pointer": "",
+                  "byte_start": 0,
+                  "byte_len": 5940,
+                  "time_start": null,
+                  "time_end": null,
+                  "line": null
+                },
+                "quote": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
                 "extractor": "synthetic/fixture_projection",
                 "quality": 1.0
               }
@@ -769,13 +1104,13 @@
           "id": "fx_source_profile",
           "unit": "fx_method_graph_unit",
           "kind": "field",
-          "text": "{\"bindings\":{\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_identity_id\":\"fx_model_synthetic\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"method_version\":\"f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
+          "text": "{\"bindings\":{\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_version_id\":\"fx_prompt_c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_version_id\":\"fx_recipe_cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"run_id\":\"fx_run_saved_response_1\"},\"definition_hashes\":{\"combination\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"method_version\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"parameter_set\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_bytes\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_records\":{\"combination_version_id\":{\"definition\":{\"composition\":\"ordered_single_member\",\"members\":[{\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"weight\":1.0}],\"parameters\":{}},\"definition_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\"},\"compiler_transform_id\":{\"content_verification\":\"unverified\",\"implementation\":\"loom.graph_reply_compiler/1\",\"wire_schema\":\"loom.graph_reply/2\"},\"method_identity_id\":{\"method_key\":\"synthetic/saved-response\"},\"method_version_id\":{\"definition\":{\"execution_capability\":\"offline_saved_response\",\"method_key\":\"synthetic/saved-response\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"},\"definition_sha256\":\"0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\"},\"model_identity_id\":{\"capability\":\"synthetic_descriptor_no_provider\",\"model\":\"synthetic/test-model\"},\"parameter_set_version_id\":{\"definition\":{\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"user_overrides\":{\"temperature\":0.4}},\"definition_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\"},\"preset_version_id\":{\"definition\":{\"acceptance\":\"preview\",\"parameters\":{\"reasoning\":null,\"temperature\":0.1}},\"definition_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\"},\"prompt_version_id\":{\"encoding\":\"utf-8\",\"text\":\"Return the supplied synthetic response as an ordered graph. Aą🙂B\",\"text_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"recipe_version_id\":{\"definition\":{\"model\":\"synthetic/test-model\",\"output_schema\":\"loom.graph_reply/2\",\"parameters\":{\"reasoning\":null,\"temperature\":0.4},\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\"},\"definition_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\"}},\"schema\":\"loom.method_graph/1\",\"trace\":{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}},\"vocabulary\":{\"kinds\":{\"combination_version\":\"fixture.combination_version\",\"compiler_transform\":\"fixture.compiler_transform\",\"method\":\"fixture.method\",\"method_version\":\"fixture.method_version\",\"model_identity\":\"fixture.model_identity\",\"parameter_set_version\":\"fixture.parameter_set_version\",\"preset_version\":\"fixture.preset_version\",\"prompt_version\":\"fixture.prompt_version\",\"recipe_version\":\"fixture.recipe_version\",\"run\":\"fixture.run\"},\"predicates\":{\"evaluated_method_version\":\"fixture.evaluated_method_version\",\"includes_method\":\"fixture.includes_method\",\"produced_by_method_version\":\"fixture.produced_by_method_version\",\"produced_in_run\":\"fixture.produced_in_run\",\"projected_by_compiler\":\"fixture.projected_by_compiler\",\"requests_method_version\":\"fixture.requests_method_version\",\"uses_combination\":\"fixture.uses_combination\",\"uses_parameter_set\":\"fixture.uses_parameter_set\",\"uses_preset\":\"fixture.uses_preset\",\"uses_prompt\":\"fixture.uses_prompt\",\"uses_recipe\":\"fixture.uses_recipe\",\"version_of\":\"fixture.version_of\"}}}",
           "locator": {
-            "source": "sha256:67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0",
+            "source": "sha256:79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63",
             "member": "method-profile.json",
             "json_pointer": "",
             "byte_start": 0,
-            "byte_len": 3329,
+            "byte_len": 5940,
             "time_start": null,
             "time_end": null,
             "line": null
@@ -797,12 +1132,12 @@
           }
         },
         "known_at": "2026-10-04T14:00:00Z",
-        "text_sha256": "67a3275a3b6fd467c65957e6115099eaf0f76891613681d51354d5284f8888b0"
+        "text_sha256": "79edabf932dacb6563f6af8dc4ef9eaf1ddfc2cbd72d9afc65d2753c03f99a63"
       }
     ]
   },
   "reply_request": {
-    "raw": "{\"base_packet_sha256\":\"34a2e74b0652f8673095d28a2d2cfd32002995289a9103393d0ca8a30b27f2c4\",\"links\":[],\"nodes\":[{\"children\":[\"idea\",\"tail\"],\"id\":\"reply\",\"role\":\"response\",\"text\":null},{\"children\":[],\"id\":\"idea\",\"role\":\"part\",\"text\":\"Aą🙂\"},{\"children\":[],\"id\":\"tail\",\"role\":\"part\",\"text\":\"B\"}],\"response_id\":\"reply\",\"schema\":\"loom.graph_reply/2\"}",
+    "raw": "{\"base_packet_sha256\":\"6f7109a0f9ae3d40f02d819f62f65fa4801f59a8e67cbbdd75a40867bbd4b36d\",\"links\":[],\"nodes\":[{\"children\":[\"idea\",\"tail\"],\"id\":\"reply\",\"role\":\"response\",\"text\":null},{\"children\":[],\"id\":\"idea\",\"role\":\"part\",\"text\":\"Aą🙂\"},{\"children\":[],\"id\":\"tail\",\"role\":\"part\",\"text\":\"B\"}],\"response_id\":\"reply\",\"schema\":\"loom.graph_reply/2\"}",
     "host": {
       "request_id": "fx-request-1",
       "turn_id": "fx-turn-1",
@@ -814,7 +1149,7 @@
   },
   "binding_diff": {
     "schema": "loom.graph_packet_diff/1",
-    "base_packet_sha256": "8e6526e36959a11e68011a7a17d47157fd679ab8a004ae96cb357a610d621b14",
+    "base_packet_sha256": "d8dec492eb8bce770f1afa8f9ebe5c482346e6d03c78d7bac3eda1ab7b1d2890",
     "proposal_id": "fx-bind-method-run",
     "origin": {
       "kind": "system",
@@ -834,7 +1169,7 @@
       "update": [
         {
           "id": "fx_run_saved_response_1",
-          "before_sha256": "2dd4583b54ddc470f4370f533146c9ba3de3e3f8dda3063663d4173d995945ab",
+          "before_sha256": "ad054fe25281f9237894715997ac658bb6a47d940be70b2b3d1c8ade944f55d9",
           "after": {
             "id": "fx_run_saved_response_1",
             "kind": "fixture.run",
@@ -853,7 +1188,7 @@
               "schema": "loom.method_run_trace/1",
               "run_id": "fx_run_saved_response_1",
               "method_identity_id": "fx_method_saved_response",
-              "method_version_id": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+              "method_version_id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
               "model_identity_id": "fx_model_synthetic",
               "model": "synthetic/test-model",
               "recipe_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
@@ -864,8 +1199,8 @@
               },
               "preset_version_id": "fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
               "preset_sha256": "fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741",
-              "combination_version_id": "fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
-              "combination_sha256": "72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9",
+              "combination_version_id": "fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
+              "combination_sha256": "5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df",
               "user_overrides": {
                 "temperature": 0.4
               },
@@ -880,8 +1215,10 @@
               },
               "measurement_scope": "synthetic_local_projection_no_live_model_execution",
               "projection_status": "response_projected",
-              "compilation_sha256": "00d6adce50fd2654bb9acc72ba2311ae0e1f3ac54fe117603bc826794a4f38fb",
-              "response_sha256": "3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee"
+              "compilation_sha256": "5ed322d6dc57f9c63eab987f3dbe9a914f37161b972403a0d29d670c94d24bce",
+              "response_sha256": "72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6",
+              "parameter_set_version_id": "fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616",
+              "parameter_set_sha256": "d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616"
             }
           }
         }
@@ -892,7 +1229,7 @@
       "add": [
         {
           "id": "fx_result_edge_0_produced_in_run",
-          "subject": "gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557",
+          "subject": "gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb",
           "predicate": "fixture.produced_in_run",
           "object": "fx_run_saved_response_1",
           "value": null,
@@ -915,16 +1252,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -966,9 +1303,9 @@
         },
         {
           "id": "fx_result_edge_0_produced_by_method_version",
-          "subject": "gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557",
+          "subject": "gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb",
           "predicate": "fixture.produced_by_method_version",
-          "object": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+          "object": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
           "value": null,
           "qualifiers": {
             "valid_from": "",
@@ -989,16 +1326,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1040,7 +1377,7 @@
         },
         {
           "id": "fx_result_edge_0_projected_by_compiler",
-          "subject": "gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557",
+          "subject": "gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb",
           "predicate": "fixture.projected_by_compiler",
           "object": "fx_compiler_graph_reply_1",
           "value": null,
@@ -1063,16 +1400,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1114,7 +1451,7 @@
         },
         {
           "id": "fx_result_edge_1_produced_in_run",
-          "subject": "gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b",
+          "subject": "gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd",
           "predicate": "fixture.produced_in_run",
           "object": "fx_run_saved_response_1",
           "value": null,
@@ -1137,16 +1474,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1188,9 +1525,9 @@
         },
         {
           "id": "fx_result_edge_1_produced_by_method_version",
-          "subject": "gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b",
+          "subject": "gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd",
           "predicate": "fixture.produced_by_method_version",
-          "object": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+          "object": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
           "value": null,
           "qualifiers": {
             "valid_from": "",
@@ -1211,16 +1548,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1262,7 +1599,7 @@
         },
         {
           "id": "fx_result_edge_1_projected_by_compiler",
-          "subject": "gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b",
+          "subject": "gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd",
           "predicate": "fixture.projected_by_compiler",
           "object": "fx_compiler_graph_reply_1",
           "value": null,
@@ -1285,16 +1622,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1336,7 +1673,7 @@
         },
         {
           "id": "fx_result_edge_2_produced_in_run",
-          "subject": "gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062",
+          "subject": "gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd",
           "predicate": "fixture.produced_in_run",
           "object": "fx_run_saved_response_1",
           "value": null,
@@ -1359,16 +1696,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1410,9 +1747,9 @@
         },
         {
           "id": "fx_result_edge_2_produced_by_method_version",
-          "subject": "gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062",
+          "subject": "gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd",
           "predicate": "fixture.produced_by_method_version",
-          "object": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+          "object": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
           "value": null,
           "qualifiers": {
             "valid_from": "",
@@ -1433,16 +1770,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1484,7 +1821,7 @@
         },
         {
           "id": "fx_result_edge_2_projected_by_compiler",
-          "subject": "gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062",
+          "subject": "gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd",
           "predicate": "fixture.projected_by_compiler",
           "object": "fx_compiler_graph_reply_1",
           "value": null,
@@ -1507,16 +1844,16 @@
                 {
                   "observation": "fx_source_run_trace",
                   "locator": {
-                    "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+                    "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
                     "member": "method-run-trace.json",
                     "json_pointer": "",
                     "byte_start": 0,
-                    "byte_len": 3196,
+                    "byte_len": 3359,
                     "time_start": null,
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062\",\"run_id\":\"fx_run_saved_response_1\"}",
+                  "quote": "{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd\",\"run_id\":\"fx_run_saved_response_1\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1558,16 +1895,16 @@
         },
         {
           "id": "fx_evaluation_claim",
-          "subject": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+          "subject": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
           "predicate": "fixture.evaluated_method_version",
           "object": "",
           "value": {
             "dataset_id": "synthetic-method-graph-fixture",
-            "dataset_sha256": "3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee",
+            "dataset_sha256": "72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6",
             "evaluated_at": "2026-10-04T14:00:00Z",
             "judgement": "synthetic provisional preference",
             "measurement_status": "unavailable",
-            "method_version_id": "fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e",
+            "method_version_id": "fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab",
             "model": "synthetic/test-model",
             "score": 0.6,
             "score_kind": "model_judgement_not_measured_accuracy"
@@ -1587,8 +1924,8 @@
                 "kind": "model",
                 "actor": "synthetic-evaluator",
                 "model": "synthetic/judge",
-                "recipe_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
-                "response_sha256": "a2ed131b16c38a4b192f2722f04f08148ac8558970a42d3bb29d8713ce342e6f"
+                "recipe_sha256": null,
+                "response_sha256": "b95d77dbe9cf29b04501611b894fc00d6441324d5b600fc1b54d890a26e33f2e"
               },
               "measurement_status": "unavailable"
             }
@@ -1599,7 +1936,7 @@
                 {
                   "observation": "fx_source_model_evaluation",
                   "locator": {
-                    "source": "sha256:a2ed131b16c38a4b192f2722f04f08148ac8558970a42d3bb29d8713ce342e6f",
+                    "source": "sha256:b95d77dbe9cf29b04501611b894fc00d6441324d5b600fc1b54d890a26e33f2e",
                     "member": "model-evaluation.json",
                     "json_pointer": "",
                     "byte_start": 0,
@@ -1608,7 +1945,7 @@
                     "time_end": null,
                     "line": null
                   },
-                  "quote": "{\"dataset_id\":\"synthetic-method-graph-fixture\",\"dataset_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\",\"evaluated_at\":\"2026-10-04T14:00:00Z\",\"judgement\":\"synthetic provisional preference\",\"measurement_status\":\"unavailable\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"score\":0.6,\"score_kind\":\"model_judgement_not_measured_accuracy\"}",
+                  "quote": "{\"dataset_id\":\"synthetic-method-graph-fixture\",\"dataset_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\",\"evaluated_at\":\"2026-10-04T14:00:00Z\",\"judgement\":\"synthetic provisional preference\",\"measurement_status\":\"unavailable\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"score\":0.6,\"score_kind\":\"model_judgement_not_measured_accuracy\"}",
                   "extractor": "synthetic/fixture_projection",
                   "quality": 1.0
                 }
@@ -1659,13 +1996,13 @@
             "id": "fx_source_run_trace",
             "unit": "fx_method_graph_unit",
             "kind": "field",
-            "text": "{\"combination_sha256\":\"72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"combination_version_id\":\"fx_combination_72e3a694ea2330eb93d609437831b09a8f1f95420f7e2e1633c36fd321813cb9\",\"compilation_sha256\":\"00d6adce50fd2654bb9acc72ba2311ae0e1f3ac54fe117603bc826794a4f38fb\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"projected_at\":\"2026-10-04T14:00:00Z\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\",\"result_bindings\":[{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557\",\"run_id\":\"fx_run_saved_response_1\"},{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b\",\"run_id\":\"fx_run_saved_response_1\"},{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\"},\"result_entity_id\":\"gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062\",\"run_id\":\"fx_run_saved_response_1\"}],\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}}",
+            "text": "{\"combination_sha256\":\"5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"combination_version_id\":\"fx_combination_5179500d543b351280e326af92c26b44f633cdf6efe957460627a01656d012df\",\"compilation_sha256\":\"5ed322d6dc57f9c63eab987f3dbe9a914f37161b972403a0d29d670c94d24bce\",\"effective_parameters\":{\"reasoning\":null,\"temperature\":0.4},\"execution_kind\":\"offline_replay_of_saved_synthetic_response\",\"input_sha256\":\"0f1a3e7b373ecaea50ac157f6eca317e18b17b8c29ca32e5100aae0b95137ce0\",\"measurement_scope\":\"synthetic_local_projection_no_live_model_execution\",\"measurements\":{\"accuracy\":null,\"money_usd\":0,\"provider_calls\":0},\"method_identity_id\":\"fx_method_saved_response\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"model_identity_id\":\"fx_model_synthetic\",\"parameter_set_sha256\":\"d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"parameter_set_version_id\":\"fx_parameter_set_d0dc9de6a7d7bc477b8bfb8483086fa058cf055b4431dc3cd2d7f2adcb4ef616\",\"prepared_at\":\"2026-10-04T14:00:00Z\",\"preset_sha256\":\"fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"preset_version_id\":\"fx_preset_fd249893002ea56773895734ef9d8fc06f9065b1092924ac000d8c59b7606741\",\"prompt_sha256\":\"c7300d94eae96dfdd41ae93978b32337f2d761bee9143b12be8a8a5a3656e6d0\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_provenance\":\"synthetic_saved_response\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\",\"result_bindings\":[{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb\",\"run_id\":\"fx_run_saved_response_1\"},{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd\",\"run_id\":\"fx_run_saved_response_1\"},{\"compiler_transform_id\":\"fx_compiler_graph_reply_1\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model_origin\":{\"actor\":\"synthetic-saved-response\",\"kind\":\"model\",\"model\":\"synthetic/test-model\",\"recipe_sha256\":\"cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae\",\"response_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\"},\"result_entity_id\":\"gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd\",\"run_id\":\"fx_run_saved_response_1\"}],\"run_id\":\"fx_run_saved_response_1\",\"schema\":\"loom.method_run_trace/1\",\"user_overrides\":{\"temperature\":0.4}}",
             "locator": {
-              "source": "sha256:fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08",
+              "source": "sha256:75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06",
               "member": "method-run-trace.json",
               "json_pointer": "",
               "byte_start": 0,
-              "byte_len": 3196,
+              "byte_len": 3359,
               "time_start": null,
               "time_end": null,
               "line": null
@@ -1687,16 +2024,16 @@
             }
           },
           "known_at": "2026-10-04T14:00:00Z",
-          "text_sha256": "fb641aef660a91e7b0af4dc9dc54b5772bcc79fddb23bbc23d62ab500a705e08"
+          "text_sha256": "75a1e0811e853682f26161a55afa780ccbd4f54bc41ad3bdbd316a60eb3def06"
         },
         {
           "observation": {
             "id": "fx_source_model_evaluation",
             "unit": "fx_method_graph_unit",
             "kind": "utterance",
-            "text": "{\"dataset_id\":\"synthetic-method-graph-fixture\",\"dataset_sha256\":\"3489043dbd5eebd865af71fedbca5fbd6b2d617ad3d3b98d2dc3fb56f98998ee\",\"evaluated_at\":\"2026-10-04T14:00:00Z\",\"judgement\":\"synthetic provisional preference\",\"measurement_status\":\"unavailable\",\"method_version_id\":\"fx_method_version_f68faea05b20a6af6ce77f3b6cfcc82502df4497c0faae82795fcc21fd76e52e\",\"model\":\"synthetic/test-model\",\"score\":0.6,\"score_kind\":\"model_judgement_not_measured_accuracy\"}",
+            "text": "{\"dataset_id\":\"synthetic-method-graph-fixture\",\"dataset_sha256\":\"72b5ee640c4b8980bb6a6328756f465a686238a02dc6fbf0d49a9b6de902d6b6\",\"evaluated_at\":\"2026-10-04T14:00:00Z\",\"judgement\":\"synthetic provisional preference\",\"measurement_status\":\"unavailable\",\"method_version_id\":\"fx_method_version_0d05b0b2adf25fa828fe39219a222edd1128d6163fd0b4631e5532c31755c0ab\",\"model\":\"synthetic/test-model\",\"score\":0.6,\"score_kind\":\"model_judgement_not_measured_accuracy\"}",
             "locator": {
-              "source": "sha256:a2ed131b16c38a4b192f2722f04f08148ac8558970a42d3bb29d8713ce342e6f",
+              "source": "sha256:b95d77dbe9cf29b04501611b894fc00d6441324d5b600fc1b54d890a26e33f2e",
               "member": "model-evaluation.json",
               "json_pointer": "",
               "byte_start": 0,
@@ -1716,14 +2053,14 @@
                 "kind": "model",
                 "actor": "synthetic-evaluator",
                 "model": "synthetic/judge",
-                "recipe_sha256": "cb27ff7a44d8b7f92984ece9c251873ab7d97d94ec3f770116e72045e54d2aae",
-                "response_sha256": "a2ed131b16c38a4b192f2722f04f08148ac8558970a42d3bb29d8713ce342e6f"
+                "recipe_sha256": null,
+                "response_sha256": "b95d77dbe9cf29b04501611b894fc00d6441324d5b600fc1b54d890a26e33f2e"
               },
               "observation_scope": "captured_synthetic_model_output_not_world_truth"
             }
           },
           "known_at": "2026-10-04T14:00:00Z",
-          "text_sha256": "a2ed131b16c38a4b192f2722f04f08148ac8558970a42d3bb29d8713ce342e6f"
+          "text_sha256": "b95d77dbe9cf29b04501611b894fc00d6441324d5b600fc1b54d890a26e33f2e"
         }
       ],
       "update": [],
@@ -1742,16 +2079,16 @@
     "allow_source_tombstones": false
   },
   "expected": {
-    "base_packet_id": "34a2e74b0652f8673095d28a2d2cfd32002995289a9103393d0ca8a30b27f2c4",
-    "reply_packet_id": "8e6526e36959a11e68011a7a17d47157fd679ab8a004ae96cb357a610d621b14",
-    "bound_packet_id": "5f4220bb27c2d9f521addcec06e0347ce6305c73b4304a5013a46a6f5fcefb22",
+    "base_packet_id": "6f7109a0f9ae3d40f02d819f62f65fa4801f59a8e67cbbdd75a40867bbd4b36d",
+    "reply_packet_id": "d8dec492eb8bce770f1afa8f9ebe5c482346e6d03c78d7bac3eda1ab7b1d2890",
+    "bound_packet_id": "66fb952b9eecd4435649d0a7d42157c6e18899996a486437a71afc2c821561df",
     "response_text": "Aą🙂B",
     "node_ids": {
-      "reply": "gr_node_e8df414d7f4a346ddef824467b05eb2ef34998ec5d97e738eb52ee2104e41557",
-      "idea": "gr_node_f1f9af91cdad5fbd0303d8636fbfbb8a9d82efb84979f157119107a74d2b152b",
-      "tail": "gr_node_ef05fe54f6e096a4f311173d12f93dc00f31b6db2e7e3aa763a412d4b51e6062"
+      "reply": "gr_node_69da839fa37e67057dcd15e3900095fc9b8a4b1384ae94112902f46a45b968eb",
+      "idea": "gr_node_0cb26f4cb3a80ac4924a95bfb330e621ad34b0a1bd1079d4dbcb36b72cf220dd",
+      "tail": "gr_node_c2f0167ba764eb3a54b1b11eb8a2a4166dd239157f14c88868a68c3fc0b9f1fd"
     },
-    "compilation_sha256": "00d6adce50fd2654bb9acc72ba2311ae0e1f3ac54fe117603bc826794a4f38fb",
+    "compilation_sha256": "5ed322d6dc57f9c63eab987f3dbe9a914f37161b972403a0d29d670c94d24bce",
     "evaluation_claim_id": "fx_evaluation_claim",
     "source_ids": [
       "fx_source_profile",
