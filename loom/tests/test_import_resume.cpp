@@ -183,6 +183,53 @@ TEST_SUITE("import_resume") {
     CHECK(fixture.count("conversations") == 0);
   }
 
+  TEST_CASE("in-place source mutation after first commit cannot change the admitted snapshot") {
+    ResumeFixture fixture;
+    const Json original = Json::array({resume_conversation(0), resume_conversation(1)});
+    Json changed = original;
+    changed[1]["chat_messages"][1]["text"] = "Mutant";
+    const auto original_bytes = original.dump();
+    const auto changed_bytes = changed.dump();
+    REQUIRE(changed_bytes.size() == original_bytes.size());
+    const auto path = fixture.write(original_bytes);
+    fixture.options.json_read_chunk_bytes = 1; // later bytes must be fetched after the callback
+    fixture.options.expected_source_hash = Sha256::hex(original_bytes);
+    fixture.options.expected_source_bytes = static_cast<std::int64_t>(original_bytes.size());
+    bool mutated = false;
+    fixture.options.progress = [&](auto, auto, std::string_view status) {
+      if (status != "export" || mutated) return;
+      // Rewrite the existing inode so an importer reading the mutable source
+      // with a tiny buffer would observe changed bytes on its next refill.
+      std::fstream writable(path, std::ios::in | std::ios::out | std::ios::binary);
+      REQUIRE(writable.is_open());
+      writable.write(changed_bytes.data(), static_cast<std::streamsize>(changed_bytes.size()));
+      writable.flush(); REQUIRE(writable.good()); mutated = true;
+    };
+    const auto result = unwrap(fixture.importer.import_file(path, fixture.options));
+    CHECK(mutated); REQUIRE(result.conversations.size() == 2);
+    CHECK_FALSE(result.export_report["partial"].get<bool>());
+    CHECK(result.blob_hash == Sha256::hex(original_bytes));
+    CHECK(unwrap(fsutil::read_file(path)) == changed_bytes);
+    CHECK(unwrap(fixture.blobs.read(result.blob_hash)) == original_bytes);
+    const auto source = unwrap(fixture.provenance.get_source(result.source_id));
+    REQUIRE(source); CHECK(source->blob_hash == result.blob_hash); CHECK(source->uri == path.string());
+    for (std::size_t conversation_index = 0; conversation_index < result.conversations.size(); ++conversation_index) {
+      const auto stored = unwrap(fixture.db->get_conv(result.conversations[conversation_index].id));
+      REQUIRE(stored);
+      CHECK(stored->metadata["export"]["fields"]["uuid"] == original[conversation_index]["uuid"]);
+      const auto messages = unwrap(fixture.db->get_msgs(stored->id, true));
+      REQUIRE(messages.size() == 2);
+      for (const auto& message : messages) {
+        const auto& metadata = message.metadata["export"];
+        const auto source_index = metadata["source_index"].get<std::size_t>();
+        CHECK(metadata["raw"] == original[conversation_index]["chat_messages"][source_index]);
+        const auto receipts = unwrap(fixture.provenance.for_subject(message.id));
+        REQUIRE(receipts.size() == 1); CHECK(receipts[0].locator["source"] == "sha256:" + result.blob_hash);
+        if (metadata["raw"]["uuid"] == "parent") CHECK(message.text == "Parent");
+      }
+    }
+  }
+
   TEST_CASE("two concurrent importer instances share source identity and item checkpoints") {
     ResumeFixture fixture;
     const auto path = fixture.write(Json::array({resume_conversation(0), resume_conversation(1)}).dump());
