@@ -8,6 +8,6 @@ test_nul_unicode (__main__.Extra.test_nul_unicode) ... ok
 test_rates_and_estimator (__main__.Extra.test_rates_and_estimator) ... ok
 
 ----------------------------------------------------------------------
-Ran 8 tests in 0.069s
+Ran 8 tests in 0.074s
 
 OK
