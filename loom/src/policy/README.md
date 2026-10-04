@@ -33,7 +33,8 @@ The current preset remains in `core/config_usage_policy.cpp`; settings report
 `preset_source: "legacy_code_pending_pack_migration"`. This is an explicit
 remaining data migration, not a claim that the preset already comes from the
 pack. Thread 2 owns config/policy code but does not own the pack loader,
-manifest or embedded data in `kb/`.
+manifest or embedded data in `kb/`. The newer reusable runtime-profile engine
+on thread 11's branch provides the proposed migration path described below.
 
 The growth factor, window, reservation comparison and initial baselines are
 settings. They are not maximum spending, context, corpus or model limits. There
@@ -144,28 +145,28 @@ on-disk file. The existing generic config API can retain an in-memory change
 after a save error. A settings hash identifies that active snapshot, not proof
 that a failed save persisted it.
 
-### Pack migration for thread 4
+### Authoritative profile dependency
 
-Use the existing pack infrastructure for the pending migration:
+Thread 11's `096028e` branch supplies a reusable `RuntimeProfile` loader and
+generator for `loom/data/runtime/*.pack`, with per-root user overlays in
+`<data-root>/profiles/`. This foundation and a usage descriptor are absent
+from current main. The concrete [profile handoff](PROFILE_HANDOFF.md) proposes
+`usage_policy.pack`, preserves the exact six values including `10.0`, and
+specifies the adapter and edited-data verification before admission.
 
-1. Add `loom/data/policy/usage_policy.json` with the identical six-field preset
-   above and declare schema `loom.usage_policy/1` in `loom/data/pack.json`.
-2. Make pack validation delegate that schema to
-   `validate_usage_policy_options()`, with the complete preset fields present.
-3. Regenerate `loom/src/kb/pack_embedded.inc` through `gen_kb_pack.py` and retain
-   the existing pack directory/embedded equality gate.
-4. Coordinate the config adapter with thread 2 so it consumes the built-in pack,
-   the existing `<data-root>/kb/` user overlay and then the stored
-   `loom_usage_policy` override, in that order. Expose the actual pack source and
-   hash instead of retaining the current legacy-source label.
+Coordinate that dependency through threads 11 and 9, then implement the
+root-aware config adapter in thread 2. All default consumers must share the
+authoritative descriptor. Apply stored policy fields with their existing
+top-level replacement semantics after loading the profile; the profile
+engine's recursive overlay merge is a different operation. Settings must then
+report actual profile provenance and hashes. Until the dependency and adapter
+are verified, the current legacy-source label and migration blocker remain.
 
-Keep `growth_factor` as the floating-point JSON value `10.0`, matching the
-current preset's canonical representation and hash as well as its behavior.
-
-Adding an unlisted JSON file alone fails the existing pack gate; new schemas
-also need loader support. No separate usage-data loader or generated duplicate
-pack is introduced here. The migration must compare effective defaults before
-and after and preserve the current top-level override semantics.
+The same handoff records the exact startup/path and historical config presets
+from thread 11's DIC-0325–0329 inventory, including header/bootstrap ownership
+needed for their migration. Runtime `.pack` documents use thread 11's existing
+loader; the KB manifest and schema remain separate. This replaces the earlier
+proposal to add a usage-specific KB schema.
 
 ## Comparable cohorts and measurements
 
@@ -195,6 +196,26 @@ The operation estimate is:
 idempotent; reusing the ID for a changed estimate is a conflict. Retrying a
 distinct operation requires its own identity and accounting, rather than
 silently reusing a previous authorization.
+
+### Method and run provenance in the graph
+
+Analysis methods, versions, recipes, prompt hashes, parameters and runs are
+graph entities under the owner's 2026-10-04 clarification. Execution adapters
+retain references to those entities in estimate extensions. The complete
+estimate, including nested extensions, is preserved and bound to its receipt.
+Changing a method version or its parameters under an existing operation ID is
+a conflict; a distinct execution needs its own operation ID and accounting.
+Actual extensions are retained in recorded `actual` events and can be read
+through `inspect().events[].payload`.
+
+Threads 3 and 4 own the shared graph format and result-to-method provenance
+edges. This ledger treats their references as opaque caller data and does not
+create graph nodes or edges. No second method registry or vocabulary is added
+here. Choose `baseline_key` deliberately when method versions or parameters
+change comparability; references do not automatically determine the cohort.
+The focused graph-provenance regression uses explicitly synthetic example
+fields, checks receipt binding and conflicts, and verifies retained estimate
+and actual-event references after restart.
 
 After execution, only `instrument_measured` and `provider_reported` quantities
 train the rolling baseline. `declared` quantities are retained as declarations

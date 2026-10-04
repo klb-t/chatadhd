@@ -42,6 +42,9 @@ class UsagePolicy {
   // estimate = {operation_id, baseline_key, resources:{name:number|null},
   //             ...caller provenance/extensions}. baseline_key names comparable
   // operations, e.g. task/provider/model/unit; it is not an automatic grouping.
+  // Graph method/version/run references and recipe/prompt hashes are opaque
+  // caller extensions. The complete estimate is retained and receipt-bound;
+  // this ledger does not define graph vocabulary or create provenance edges.
   // preview is read-only. request records its decision and atomically reserves
   // only when allowed. Repeat identical operation IDs are idempotent;
   // reusing an ID for a different estimate is a conflict.
@@ -56,6 +59,7 @@ class UsagePolicy {
 
   // actual = {resources:{name:number|null}, provenance:"instrument_measured"|
   //           "provider_reported"|"declared", ...extensions}.
+  // Actual extensions are retained in recorded events, visible through inspect.
   // Only measured/reported quantities train the rolling baseline. Unknown
   // dimensions keep their reservation until resolved by a later complete or
   // explicit cancel; cancellation never invents a zero measurement.
