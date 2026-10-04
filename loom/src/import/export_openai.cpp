@@ -765,7 +765,7 @@ std::string base_of(const std::string& rel) {
 
 void link_or_note(Env& env, const std::string& src, const std::string& dst, const char* type, Json meta = Json::object()) {
   auto r = env.db.create_link(src, dst, type, 1.0, meta);
-  if (!r) log::warn(kLog, "link {} -> {} failed: {}", src, dst, r.error().message);
+  if (!r) { env.write_error = r.error(); log::warn(kLog, "link {} -> {} failed: {}", src, dst, r.error().message); }
 }
 }  // namespace
 
@@ -812,9 +812,17 @@ bool import_openai_member(Env& env, OpenAiCtx& cx, const std::string& rel, const
         std::string nid = ent("export:feedback", label, rec.is_object() ? gets(rec, "content") : "", rec);
         rep.counts.feedback += 1;
         if (nid.empty() || !rec.is_object()) continue;
-        auto mit = cx.msg_db_id.find(gets(rec, "conversation_id") + '\x1f' + gets(rec, "message_id"));
-        if (mit != cx.msg_db_id.end()) {
-          link_or_note(env, nid, mit->second, "references");
+        std::string message;
+        if (const std::string conversation = conv_id_of(rec); !conversation.empty()) {
+          auto lock = env.db.lock();
+          auto found = env.db.conn().query_text(
+              "SELECT id FROM messages WHERE conv_id=? AND "
+              "(json_extract(metadata,'$.export.key')=? OR json_extract(metadata,'$.export.message_id')=?) "
+              "ORDER BY rowid DESC LIMIT 1", conversation, gets(rec, "message_id"), gets(rec, "message_id"));
+          if (found && *found) message = **found;
+        }
+        if (!message.empty()) {
+          link_or_note(env, nid, message, "references");
         } else {
           rep.warnings.push_back("feedback " + gets(rec, "id") + " references message " + gets(rec, "message_id") +
                                  " that is not in the export");

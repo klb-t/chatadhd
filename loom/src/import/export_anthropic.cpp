@@ -482,7 +482,7 @@ bool import_anthropic_member(Env& env, AnthropicCtx& cx, const std::string& rel,
   };
   auto link = [&](const std::string& a, const std::string& b, const char* t) {
     if (a.empty() || b.empty()) return;
-    if (auto r = env.db.create_link(a, b, t, 1.0, Json::object()); !r) log::warn(kLog, "link failed: {}", r.error().message);
+    if (auto r = env.db.create_link(a, b, t, 1.0, Json::object()); !r) { env.write_error = r.error(); log::warn(kLog, "link failed: {}", r.error().message); }
   };
   auto items_of = [&](const char* wrapper) -> std::vector<const Json*> {
     std::vector<const Json*> v;
