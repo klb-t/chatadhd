@@ -1,7 +1,7 @@
 # Wątek 8 — porządki repo, 2026-10-04
 
-Gałąź: `gpt/repo-hygiene-2026-10-04`, baza `161cc22` (aktualny `main`
-po pracy INTERFEJS). [PR #11](https://github.com/klb-t/chatadhd/pull/11) jest
+Gałąź: `gpt/repo-hygiene-2026-10-04`, baza po rebase `7282437` (aktualny `main`
+z opublikowanym indeksem integratora; wcześniejsze receipts pozostają przypięte do swoich źródeł). [PR #11](https://github.com/klb-t/chatadhd/pull/11) jest
 roboczy z jedną blokadą poza zakresem. Wątek 8 nie przesuwa `main`.
 
 ## Zrobione i pomiary
@@ -54,13 +54,23 @@ ten build nie jest dowodem testów. Lokalny produkcyjny build web przeszedł
 Nie wykonano płatnych wywołań, nie czytano klucza holdout ani ślepego korpusu.
 Nie przeniesiono aktywnych fixture seeding. Nie zmieniono STATE, istniejących
 README, UI ani kontraktów profili.
-Ostatni `fetch` nadal wskazuje `main=161cc22`; gałąź jest na tej bazie.
-Nie było zmiany bazy wymagającej powtórzenia rebase lub testów.
+Sesja wznowiona po szturchnięciu właściciela: wykonano `fetch`, odczytano
+indeks `7282437` oraz zadania W8. Rebase zakończony bez konfliktów; dawny
+tip `2544cf3` zachowany na `archive/repo-hygiene-before-rebase-2026-10-04`.
+Przyrost main zmienił wyłącznie dokumentację, bez zmian kodu/testów/CMake/web.
+W tej sesji trwa osobny przyrost DIC-0692 oraz polityki strażnika z danych;
+jego nowe dowody nie zastępują ani nie przemianowują wcześniejszych wyników CI.
 
 ## Do wątku 10
 
 Usuń nieużywane przechwycenia `[this]` z dwóch lambd tras `/api/logs` i
-`/api/version` w `loom/server/src/app.cpp:768,772` (najmniejsza poprawka: `[]`).
+`/api/version` w `loom/server/src/app.cpp:768,772` na main `7282437` (najmniejsza poprawka: `[]`).
+Na tipie W10 `2f25145` te same lambdy mają linie **835 i 839**.
+Dodatkowy przegląd źródłowy wskazuje wariant bez nagłówka W2: lambda
+`/api/usage-policy` na linii **515** używa `this` tylko wewnątrz
+`LOOM_SERVER_HAS_USAGE_POLICY`; sprawdź Clang zarówno z W2, jak i bez niego.
+Ten trzeci punkt jest wnioskiem ze źródła, nie wynikiem wykonanego builda.
+W8 zachowuje Clang, vendored SQLite i `WERROR=ON`; nie wycisza ostrzeżeń.
 Pełny log Clanga i dokładne polecenia są w
 `docs/archive/repo-hygiene-2026-10-04/ci-first/vendored-job.*`.
 
@@ -76,10 +86,12 @@ semantycznej. Metody analizy jako byty grafu opisano w roadmapie szkicu README
 jako wymaganie do uzgodnienia przez wątki 3 i 4, nie przyjętą funkcjonalność.
 Przeczytano nowy raport `data-in-code/thread-8.md` z `c21e664`: **DIC-0692**
 dotyczy wymiarów `roles/capabilities/features` i mapowania grafu w
-`loom/tools/seeding/prototype.py:24`. Zostaje otwarty jako `inventory_only`:
-zamrożony prototyp i jego wyniki zachowują dotychczasowe zachowanie/pochodzenie.
-Docelowy pack/nakładka użytkownika leży poza zakresem W8 i potrzebuje wspólnego
-formatu metod z W3/W4; nie wprowadzono drugiego, lokalnego formatu receptur.
+`loom/tools/seeding/prototype.py:24`. Wznowiono implementację profilu wymiarów/projekcji i walidowanej nakładki
+w `loom/tools/seeding` (zakres W8). Zachowujemy zamrożone moduły oraz wyniki
+bajt w bajt. Wspólna reprezentacja metod/przebiegów w grafie nadal wymaga
+kontraktu W3/W4; profil konfiguracji seeding nie zastępuje tego kontraktu.
+[Jawny inwentarz strażnika](repo-hygiene-evidence-policy-inventory-2026-10-04.md)
+rozdziela uniwersalne formaty dowodów od presetów dostępności; migracja w toku.
 
 ## Do wątku 9
 
@@ -96,6 +108,6 @@ formatu metod z W3/W4; nie wprowadzono drugiego, lokalnego formatu receptur.
 - Rejestracja CMake i centralny eksport ABI z raportów W2/W4 wymagają
   przydzielenia właściciela przez integratora. Wątek 8 ich nie edytuje.
 - Uzgodnij format metody / wersji / przebiegu i krawędź „wytworzony przez”
-  między W3 i W4 przed scaleniem. DIC-0692 z inwentarza W11 wymaga przypisania
-  właściciela packa/schema i późniejszego następcy zamrożonego prototypu seeding.
-  Świeży raport W10 (`ccc8bbf`) jeszcze nie potwierdza poprawki Clanga.
+  między W3 i W4 przed scaleniem. Profil/projekcje DIC-0692 są w implementacji W8; do uzgodnienia pozostaje
+  most do wspólnego grafu metod. Świeży tip W10 (`2f25145`) jeszcze nie
+  poprawia wskazanych przechwyceń Clanga. Po poprawce wymagana pełna macierz CI.
