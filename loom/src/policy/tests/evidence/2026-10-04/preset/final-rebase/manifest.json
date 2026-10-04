@@ -1,0 +1,200 @@
+{
+  "artifacts": {
+    "README.md": {
+      "bytes": 1896,
+      "sha256": "d17b8b7b5d043217becf5affd2b3dd3e6d40ccf1d6c1770079f7936e68405652"
+    },
+    "build.txt.json": {
+      "bytes": 611,
+      "sha256": "83ea4945bfbf3005d1cf4a41ba580b5fee1ae9de270a5801f752d373e9064617"
+    },
+    "ctest-full.xml.json": {
+      "bytes": 22203,
+      "sha256": "62c7a8424157deaa1f29822bd6e0803a3e5ed393dce71cd91dc0b7353a8f0ca4"
+    },
+    "ctest-list.json.json": {
+      "bytes": 4191,
+      "sha256": "bfc9e254f9e8a5fa68331c113bb3a0004528d74cde7c2d471d55fcbc7058ed90"
+    },
+    "ctest-original.xml.json": {
+      "bytes": 11166,
+      "sha256": "529ce18215f29e7db1a1df4f56d2500658510fb5933747f8ec7f26a3151f4696"
+    },
+    "ctest.txt.json": {
+      "bytes": 3309,
+      "sha256": "85949ecdc5b560a9592bc99dd8d245f81ed76eb1bae48996ebebb8107e70e600"
+    },
+    "guard-full.json": {
+      "bytes": 15894,
+      "sha256": "f796bb7c8dffae39e57f7b3f05076caca1c7ba57762a4a84e915032a06f1da0b"
+    },
+    "guard-original-negative.json": {
+      "bytes": 17477,
+      "sha256": "247dbbe0912d6c5b55b770b39e69b37d37195b6901219f2bc5cd7fd5c80b0a9c"
+    },
+    "identity.json": {
+      "bytes": 6573,
+      "sha256": "18bf3b31ddf5c2c62b358e766b17d46f65022cadfb818c33a679a9ddb75eae02"
+    },
+    "last-test.log.json": {
+      "bytes": 26034,
+      "sha256": "b0a5e1a433a809dfb919e58740dcd127e5c56dc9bfcb81cceb611833c0df384c"
+    },
+    "restoration.json": {
+      "bytes": 36928,
+      "sha256": "9f874b16c1ca346b14c9430b1c3a004d407e0e27ab578fe42da6f6954f67109d"
+    },
+    "verification-commands.json": {
+      "bytes": 4025,
+      "sha256": "0c85c283ed5b470e8c9cb907173bbdf4a3702a21f9a6a7c0ebc8aa0bd599f0ac"
+    }
+  },
+  "base_commit": "ba6eaf6244d2d4136fbb3534bc0d45a4900eeda1",
+  "base_delta": [
+    {
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "status": "M"
+    }
+  ],
+  "build": {
+    "assertions": true,
+    "build_type": "Debug",
+    "c_flags_debug": "-O0 -g0",
+    "cli": true,
+    "cxx_flags_debug": "-O0 -g0",
+    "exit_code": 0,
+    "log": "build.txt.json",
+    "preset": "dev",
+    "server": true,
+    "shared": true,
+    "sqlite": "bundled",
+    "tests": true,
+    "werror": true
+  },
+  "ctest": {
+    "command": [
+      "env",
+      "-u",
+      "PYTHONPATH",
+      "TMPDIR=/dev/shm/usage-policy-test-temp",
+      "PATH=/root/.local/bin:$PATH",
+      "ctest",
+      "--preset",
+      "dev",
+      "-j1",
+      "--output-junit",
+      "/dev/shm/usage-preset-final-rebase-ctest.xml"
+    ],
+    "complete_output_recovered_from": "matching same-run LastTest.log; original result metadata unchanged",
+    "coverage": {
+      "errors": [],
+      "executed_entries": 107,
+      "executed_native_assertions": 24465,
+      "executed_native_cases": 659,
+      "executed_python_cases": 1276,
+      "skipped_python_cases": 0,
+      "unexecuted_entries": [
+        "unit.test_catalog_scale"
+      ],
+      "valid": true
+    },
+    "elapsed_seconds": 292.08,
+    "exit_code": 0,
+    "guard_script_commit": "2544cf3a75c1477797213328f7279b3e8576579e",
+    "guard_script_path": ".github/scripts/verify_ctest.py",
+    "guard_script_sha256": "39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a",
+    "original_junit_guard_exit_code": 1,
+    "passed": 108,
+    "restored_junit_guard_exit_code": 0,
+    "stdout_restoration": {
+      "last_test_log_sha256": "10db85ac652bd4cb1bdf7a215cb8ee0d663bbcc9c3c40e2efe2ac0317ed3df69",
+      "original_junit_sha256": "3ae7f6d44943c7a76887ff5c1e6c2df690e33edd2ed77e71b4096e47c3608faa",
+      "replaced_entries": 16,
+      "restored_junit_sha256": "f9af08c9964bf7e23f04a86ec910861fc32993a6b63fbc36e5c5734ca2696266",
+      "run_end": "Oct 05 01:57 CST",
+      "run_start": "Oct 05 01:52 CST",
+      "unchanged_entries": 92
+    },
+    "test_thresholds_changed": false,
+    "tests_removed": false,
+    "total": 108
+  },
+  "focused_prior_receipts": {
+    "claim": "retained applicable proof; not rerun in this final-rebase receipt",
+    "condition_verified": true,
+    "groups": {
+      "before_migration": 24,
+      "generator_cases": 5,
+      "original_retained": 19,
+      "passed_after": 25,
+      "source_edit_native_variants": 4
+    },
+    "identity_condition": "all source, runtime binary and static link-library hashes unchanged",
+    "source_edit_manifest": "../source-edit/manifest.json",
+    "source_edit_manifest_sha256": "96cf611d7f38275bc05ce19e0eccc66292f07e83c72e828e4dcfdc5e6e0aceea"
+  },
+  "git_public_source_tree_verified": true,
+  "identity": "identity.json",
+  "limitations": [
+    "Inner-case evidence is established by full restored stdout and pinned guard, not the capped original JUnit.",
+    "Existing opt-in unit.test_catalog_scale remains explicitly unexecuted.",
+    "Previous focused/gen/source-edit results are inherited by exact hashes and are not described as newly executed.",
+    "Only W2 plus fresh main; unmerged other-lane code is not certified."
+  ],
+  "paid_provider_calls": 0,
+  "previous_base_commit": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "previous_public_source_tip": "2b401d0043f12400151cf45b07dfdd514cc006f9",
+  "previous_receipt": "../manifest.json",
+  "previous_receipt_sha256": "893680804b00c5fa4d4e787803929c17d3b04b7bb007d6c9c2503901729062a6",
+  "raw_logs": {
+    "build.txt": {
+      "bytes": 611,
+      "original_bytes": 839,
+      "original_sha256": "c6dfdb941782c9e0818156ca6f6281e8fe4488412d16b224eb1f37408a16cc32",
+      "sha256": "83ea4945bfbf3005d1cf4a41ba580b5fee1ae9de270a5801f752d373e9064617",
+      "stored": "build.txt.json"
+    },
+    "ctest-full.xml": {
+      "bytes": 22203,
+      "original_bytes": 182288,
+      "original_sha256": "f9af08c9964bf7e23f04a86ec910861fc32993a6b63fbc36e5c5734ca2696266",
+      "sha256": "62c7a8424157deaa1f29822bd6e0803a3e5ed393dce71cd91dc0b7353a8f0ca4",
+      "stored": "ctest-full.xml.json"
+    },
+    "ctest-list.json": {
+      "bytes": 4191,
+      "original_bytes": 79046,
+      "original_sha256": "c8b52de9269546255562728d5da299b012e812664dd794362da4a4b73b57e1c7",
+      "sha256": "bfc9e254f9e8a5fa68331c113bb3a0004528d74cde7c2d471d55fcbc7058ed90",
+      "stored": "ctest-list.json.json"
+    },
+    "ctest-original.xml": {
+      "bytes": 11166,
+      "original_bytes": 60075,
+      "original_sha256": "3ae7f6d44943c7a76887ff5c1e6c2df690e33edd2ed77e71b4096e47c3608faa",
+      "sha256": "529ce18215f29e7db1a1df4f56d2500658510fb5933747f8ec7f26a3151f4696",
+      "stored": "ctest-original.xml.json"
+    },
+    "ctest.txt": {
+      "bytes": 3309,
+      "original_bytes": 15033,
+      "original_sha256": "256ae817a1e8526b354dbefd3bee4fe0f457b4f09bcdb0a631084ede14f8255e",
+      "sha256": "85949ecdc5b560a9592bc99dd8d245f81ed76eb1bae48996ebebb8107e70e600",
+      "stored": "ctest.txt.json"
+    },
+    "last-test.log": {
+      "bytes": 26034,
+      "original_bytes": 239283,
+      "original_sha256": "10db85ac652bd4cb1bdf7a215cb8ee0d663bbcc9c3c40e2efe2ac0317ed3df69",
+      "sha256": "b0a5e1a433a809dfb919e58740dcd127e5c56dc9bfcb81cceb611833c0df384c",
+      "stored": "last-test.log.json"
+    }
+  },
+  "runtime_implementation_commit": "6255eeef88a0e3025b1373ba10843a4b1e107aa9",
+  "schema": "loom.usage_policy_verification/4",
+  "source_and_binary_identity_unchanged": true,
+  "verification_source_commit": "9125f27116a84516bb467ed048b943b6dd49f785",
+  "verified_source_tip": "950bf2fe92b4ae98b3ec1b710b64ce055c477493",
+  "verified_source_tree": "97a13e6c7ee49de06557bbef5d00b83089c7b6ae",
+  "work_date": "2026-10-04"
+}

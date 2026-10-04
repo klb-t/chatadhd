@@ -1,0 +1,53 @@
+[
+  {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "/tmp/usage-preset-verify-ctest.py",
+      "--manifest",
+      "/dev/shm/usage-preset-final-rebase-ctest-list.json",
+      "--junit",
+      "/dev/shm/usage-preset-final-rebase-ctest.xml",
+      "--preset",
+      "dev",
+      "--output",
+      "/dev/shm/usage-preset-final-rebase-guard-original-negative.json"
+    ],
+    "exit_code": 1,
+    "stderr": "unit.test_catalog_eval: truncated output cannot establish case coverage\nunit.test_catalog_eval: missing or ambiguous doctest summary\nunit.test_catalog_links: truncated output cannot establish case coverage\nunit.test_catalog_links: missing or ambiguous doctest summary\nunit.test_context_retrieval_dev: truncated output cannot establish case coverage\nunit.test_context_retrieval_dev: missing or ambiguous doctest summary\nunit.test_extract_eval: truncated output cannot establish case coverage\nunit.test_extract_eval: missing or ambiguous doctest summary\nunit.test_generalize_eval: truncated output cannot establish case coverage\nunit.test_generalize_eval: missing or ambiguous doctest summary\nunit.test_resolve_attribution: truncated output cannot establish case coverage\nunit.test_resolve_attribution: missing or ambiguous doctest summary\nunit.test_resolve_lineage: truncated output cannot establish case coverage\nunit.test_resolve_lineage: missing or ambiguous doctest summary\ncompat.test_chat_active_task_http: truncated output cannot establish case coverage\ncompat.test_chat_active_task_http: missing or ambiguous successful unittest summary\ncompat.test_chat_compat: truncated output cannot establish case coverage\ncompat.test_chat_compat: missing or ambiguous successful unittest summary\ncompat.test_db_compat: truncated output cannot establish case coverage\ncompat.test_db_compat: missing or ambiguous successful unittest summary\ncompat.test_graph_compat: truncated output cannot establish case coverage\ncompat.test_graph_compat: missing or ambiguous successful unittest summary\ncompat.test_graph_packet_store: truncated output cannot establish case coverage\ncompat.test_graph_packet_store: missing or ambiguous successful unittest summary\ncompat.test_import_compat: truncated output cannot establish case coverage\ncompat.test_import_compat: missing or ambiguous successful unittest summary\ncompat.test_semantic_recovery: truncated output cannot establish case coverage\ncompat.test_semantic_recovery: missing or ambiguous successful unittest summary\ncompat.test_util_compat: truncated output cannot establish case coverage\ncompat.test_util_compat: missing or ambiguous successful unittest summary\nresearch.structure: truncated output cannot establish case coverage\nresearch.structure: missing or ambiguous successful unittest summary\n",
+    "stdout": ""
+  },
+  {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/tests/restore_ctest_output.py",
+      "--junit",
+      "/dev/shm/usage-preset-final-rebase-ctest.xml",
+      "--last-test-log",
+      "/dev/shm/usage-preset-final-rebase-last-test.log",
+      "--output",
+      "/dev/shm/usage-preset-final-rebase-ctest-full.xml",
+      "--receipt",
+      "/dev/shm/usage-preset-final-rebase-restoration.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "restored 16/108 stdout fields; results preserved\n"
+  },
+  {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "/tmp/usage-preset-verify-ctest.py",
+      "--manifest",
+      "/dev/shm/usage-preset-final-rebase-ctest-list.json",
+      "--junit",
+      "/dev/shm/usage-preset-final-rebase-ctest-full.xml",
+      "--preset",
+      "dev",
+      "--output",
+      "/dev/shm/usage-preset-final-rebase-guard-full.json"
+    ],
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "Verified 107 executed CTest entries; 1 explicitly unexecuted entries.\n"
+  }
+]

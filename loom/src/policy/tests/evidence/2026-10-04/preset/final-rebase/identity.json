@@ -1,0 +1,151 @@
+{
+  "all_binaries_unchanged": true,
+  "all_link_libraries_unchanged": true,
+  "all_sources_unchanged": true,
+  "binaries": {
+    "loom/build/dev/cli/loom": {
+      "bytes": 32182400,
+      "prior_sha256": "40c852d5027807fba789bea37ebf0815c6c6b2301805dd29b045cb77e87b9175",
+      "sha256": "40c852d5027807fba789bea37ebf0815c6c6b2301805dd29b045cb77e87b9175",
+      "unchanged": true
+    },
+    "loom/build/dev/libloom.so.0.1.0": {
+      "bytes": 34451376,
+      "prior_sha256": "b88eadfec358522bda34c3637efc6180fcadb349ead8e70e6bb3b527bf0ef47d",
+      "sha256": "b88eadfec358522bda34c3637efc6180fcadb349ead8e70e6bb3b527bf0ef47d",
+      "unchanged": true
+    },
+    "loom/build/dev/libloom_core.a": {
+      "bytes": 325413278,
+      "prior_sha256": "f4bd09369b415411d5f0ca26436475e920f9207da9cab01747e7a281f878a2f4",
+      "sha256": "f4bd09369b415411d5f0ca26436475e920f9207da9cab01747e7a281f878a2f4",
+      "unchanged": true
+    },
+    "loom/build/dev/loom_compat_tool": {
+      "bytes": 32373152,
+      "prior_sha256": "728832e31ad3843fc299feee80524c947e9137d248ae73a3d6f1d953a08a0d69",
+      "sha256": "728832e31ad3843fc299feee80524c947e9137d248ae73a3d6f1d953a08a0d69",
+      "unchanged": true
+    },
+    "loom/build/dev/loom_tests": {
+      "bytes": 49449584,
+      "prior_sha256": "edf9e3fe2f6e09672f89a2f5b5b4061ad9c3316af4088dade9966f7dccdd502f",
+      "sha256": "edf9e3fe2f6e09672f89a2f5b5b4061ad9c3316af4088dade9966f7dccdd502f",
+      "unchanged": true
+    },
+    "loom/build/dev/server/loom-server": {
+      "bytes": 34738016,
+      "prior_sha256": "9d2ae07ea0e11a7f3e8db49f1a30d703d20bec58f3185fdaea8a59b39d83b07a",
+      "sha256": "9d2ae07ea0e11a7f3e8db49f1a30d703d20bec58f3185fdaea8a59b39d83b07a",
+      "unchanged": true
+    }
+  },
+  "link_libraries": {
+    "loom/build/dev/libloom_miniz.a": {
+      "bytes": 176756,
+      "prior_sha256": "460ab70758d029e869942b533c56fb3e5222e3aa06ce95a5014bed2d084ff0b0",
+      "sha256": "460ab70758d029e869942b533c56fb3e5222e3aa06ce95a5014bed2d084ff0b0",
+      "unchanged": true
+    },
+    "loom/build/dev/libloom_sqlite3_amalgamation.a": {
+      "bytes": 1836182,
+      "prior_sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b",
+      "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b",
+      "unchanged": true
+    }
+  },
+  "prior_manifest": "../manifest.json",
+  "prior_manifest_sha256": "893680804b00c5fa4d4e787803929c17d3b04b7bb007d6c9c2503901729062a6",
+  "sources": {
+    "loom/data/policy/usage_policy.pack": {
+      "bytes": 182,
+      "prior_sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+      "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+      "unchanged": true
+    },
+    "loom/include/loom/usage_policy.h": {
+      "bytes": 4555,
+      "prior_sha256": "9ab715b2b45cafcaf36b3cf7cee10e4300c99acd2731743ebd010c9954ed4a62",
+      "sha256": "9ab715b2b45cafcaf36b3cf7cee10e4300c99acd2731743ebd010c9954ed4a62",
+      "unchanged": true
+    },
+    "loom/src/capi/capi_config.cpp": {
+      "bytes": 3353,
+      "prior_sha256": "566fed065b1115b96e325c54f4fa9bb3ee1d40275b40990f2610566cfd24f4f2",
+      "sha256": "566fed065b1115b96e325c54f4fa9bb3ee1d40275b40990f2610566cfd24f4f2",
+      "unchanged": true
+    },
+    "loom/src/capi/capi_core.cpp": {
+      "bytes": 21248,
+      "prior_sha256": "3ff90b721f9d10d9f158a1a9acb4cecdede9130b944ed665c3143aabbeaaa31f",
+      "sha256": "3ff90b721f9d10d9f158a1a9acb4cecdede9130b944ed665c3143aabbeaaa31f",
+      "unchanged": true
+    },
+    "loom/src/core/config.cpp": {
+      "bytes": 9287,
+      "prior_sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+      "sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+      "unchanged": true
+    },
+    "loom/src/core/config_usage_policy.cpp": {
+      "bytes": 6180,
+      "prior_sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "unchanged": true
+    },
+    "loom/src/policy/gen_usage_policy.py": {
+      "bytes": 3612,
+      "prior_sha256": "26042dbe35495454a68e0dc828128d7701f5469d55470d8f6e0dada6bba856ef",
+      "sha256": "26042dbe35495454a68e0dc828128d7701f5469d55470d8f6e0dada6bba856ef",
+      "unchanged": true
+    },
+    "loom/src/policy/tests/negative_preset_probe.cc": {
+      "bytes": 3302,
+      "prior_sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+      "sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+      "unchanged": true
+    },
+    "loom/src/policy/tests/preset_paths_probe.cc": {
+      "bytes": 7100,
+      "prior_sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+      "sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+      "unchanged": true
+    },
+    "loom/src/policy/tests/restore_ctest_output.py": {
+      "bytes": 10560,
+      "prior_sha256": "6b9824e34de6d0739e3794cef6330d90b1cd9c53904620e80a7e5d8e6d32ac06",
+      "sha256": "6b9824e34de6d0739e3794cef6330d90b1cd9c53904620e80a7e5d8e6d32ac06",
+      "unchanged": true
+    },
+    "loom/src/policy/tests/test_gen_usage_policy.py": {
+      "bytes": 6039,
+      "prior_sha256": "1a28714ab7261674bd979d5f54f804a4a36ffa015da4a9a3820a6ed37a4bc427",
+      "sha256": "1a28714ab7261674bd979d5f54f804a4a36ffa015da4a9a3820a6ed37a4bc427",
+      "unchanged": true
+    },
+    "loom/src/policy/tests/test_usage_policy.cc": {
+      "bytes": 58268,
+      "prior_sha256": "bdd443610077030b28e0ac95f8f10a394e60c2b1204a83a8eee659ddef0aa2ed",
+      "sha256": "bdd443610077030b28e0ac95f8f10a394e60c2b1204a83a8eee659ddef0aa2ed",
+      "unchanged": true
+    },
+    "loom/src/policy/tests/verify_preset_paths.py": {
+      "bytes": 11091,
+      "prior_sha256": "c5b864e4fcd0f13ce1d2848b2d4f9fa0d0f5a496abb88d7e2c323116e4756ad0",
+      "sha256": "c5b864e4fcd0f13ce1d2848b2d4f9fa0d0f5a496abb88d7e2c323116e4756ad0",
+      "unchanged": true
+    },
+    "loom/src/policy/usage_policy.cpp": {
+      "bytes": 22804,
+      "prior_sha256": "d128c9c1eb48294ec14b905ef713e3e13e94099fecf4e2aa4e57f188634a45cb",
+      "sha256": "d128c9c1eb48294ec14b905ef713e3e13e94099fecf4e2aa4e57f188634a45cb",
+      "unchanged": true
+    },
+    "loom/src/policy/usage_policy_preset.inc": {
+      "bytes": 1087,
+      "prior_sha256": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf",
+      "sha256": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf",
+      "unchanged": true
+    }
+  }
+}

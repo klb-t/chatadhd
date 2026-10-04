@@ -1,7 +1,8 @@
 # Thread 2 — usage policy and authoritative preset, 2026-10-04
 
 Branch `gpt/usage-policy-2026-10-04`; [PR #10](https://github.com/klb-t/chatadhd/pull/10).
-Rebased and pushed on current main `7282437b1c88933977f64b3468b9f42f7b400494`.
+Rebased and pushed on current main `ba6eaf6244d2d4136fbb3534bc0d45a4900eeda1`,
+including the owner's R39–R41 documentation.
 **Ready for W9's independent acceptance of the usage-policy increment.**
 The authoritative-preset dependency is resolved without waiting for W11.
 Renewed startup/config work remains a separate follow-up below.
@@ -30,8 +31,11 @@ Renewed startup/config work remains a separate follow-up below.
   receipts and recorded events; the actual graph contract belongs to W3/W4.
   [API/settings contract](../../loom/src/policy/README.md).
 
-Code/data commit `a3b127c`; native tests, isolated replay tool and documentation
-`5a73a36`. Each commit was immediately pushed with `[skip ci]`. No main, STATE,
+Current code/data commit `6255eee`; native tests and isolated replay tool
+`9125f27`. Earlier receipts pin the identical pre-rebase `a3b127c` / `5a73a36`
+sources; the complete checkpoint is archived at
+`archive/2026-10-04/usage-policy-before-final-main-rebase` (`2b401d0`).
+Each commit was immediately pushed with `[skip ci]`. No main, STATE,
 root README, web, KB manifest or other lane's implementation was edited.
 Paid provider calls and Actions requested: **0**.
 
@@ -39,7 +43,7 @@ Paid provider calls and Actions requested: **0**.
 
 | Check | Previous W2 checkpoint | Authoritative-preset increment |
 |---|---:|---:|
-| Full CTest, server/CLI/shared enabled | 108/108 | 108/108, 274.38 s |
+| Full CTest, server/CLI/shared enabled | 108/108 | 108/108, 292.08 s after final rebase |
 | Focused actual-kernel policy groups | 24/24 | 25/25; original 19 retained |
 | Usage-preset fields initialized manually in C++ | 6 | 0 |
 | Default paths verified against edited data | — | 5/5 |
@@ -49,6 +53,12 @@ Paid provider calls and Actions requested: **0**.
 | New paid provider calls | 0 | 0 |
 
 [New receipt and reproduction](../../loom/src/policy/tests/evidence/2026-10-04/preset/README.md).
+[Final-main rebase receipt](../../loom/src/policy/tests/evidence/2026-10-04/preset/final-rebase/README.md).
+The first preset run (108/108, 274.38 s) is also retained. After the docs-only
+R39–R41 rebase, all15 recorded sources and all6 binaries plus static link
+dependencies remained byte-identical; the full CTest was nevertheless rerun.
+The focused25/generator5/native-variant4 proofs apply to those identical inputs
+and are not represented as repeated runs.
 WERROR, Debug/O0, assertions, bundled SQLite and all existing thresholds remain
 enabled. Symbols use `-g0` for storage pressure. Dedicated RAM temporary files
 avoid shared-storage failures. Timings are observations, not a matched benchmark.
@@ -86,13 +96,17 @@ These follow-ups do not block the now independent usage-preset migration.
 The current user overlay is `config.json`'s `loom_usage_policy`; generic per-root
 RuntimeProfile file overlays are not claimed. Shared ABI/CTest registration
 needs its assigned header/build owner; current command is static-kernel only.
+R40's shared graph layers and persistent exclusion markers are not implemented
+by this Config overlay; clearing an override restores defaults. Their common
+graph/profile format belongs to the coordinated W4/W11 follow-up.
 Config writes lack CAS/rollback; hashes alone do not prove durable save. Finite
 binary64 quantities are not exact-decimal billing. Admission receipts neither
 grant paid-call permission nor ensure exactly-once dispatch/external cancellation.
 
 ## Other-lane awareness
 
-Fresh final fetch: main remains `7282437`; W3 `15c0c08`, W4 `1377e20`,
+Fresh final fetch: main advanced from `7282437` to `ba6eaf6` with one documentation
+commit only; W3 `15c0c08`, W4 `1377e20`,
 W11 `d3488a6`, W8 `a29534a`. Reviewed their reports/Do2 sections. W3/W4 keep
 the existing effective-options helper and `(ledger_path, options)` signatures;
 this increment preserves both. Their branches are not relabelled as merged W2
@@ -116,6 +130,9 @@ The shared data preset is ready without a W4 loader. Preserve actual root and
 explicit ledger path. Unresolved authorization can hold a reservation but cannot
 permit redispatch. Packet dispatch/cancellation atomicity remains your separate
 durable execution contract; this policy alone cannot abort external work.
+
+Coordinate R40's graph-layer/exclusion format with W11; W2 will consume resolved
+effective policy values. This increment does not create a separate graph registry.
 
 ## Do wątku 5
 
@@ -150,6 +167,8 @@ Current usage defaults already come from one authoritative W2 data profile.
 Your future `loom/data/runtime/usage_policy.pack` wrapper must derive from that
 source rather than maintain a second manual set of defaults. Preserve native
 nullable/open validation and shallow Config replacement when unifying loaders.
+Coordinate the shared R40 layer/exclusion mechanism with W4, retaining permanent
+markers across pack updates; the current Config override is not that mechanism.
 Config/runtime_paths foundation and descriptors can enable the later DIC adapter
 after header/bootstrap ownership is assigned. Config preset, saved-file presence
 and explicit user choice require distinct origin metadata; legacy serialized
