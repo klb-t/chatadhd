@@ -1,0 +1,21 @@
+test_aggregated_outer_skip_and_invalid_xml_root_fail (test_verify_ctest.EvidenceGateTests.test_aggregated_outer_skip_and_invalid_xml_root_fail) ... ok
+test_asan_exception_does_not_allow_partial_or_other_skips (test_verify_ctest.EvidenceGateTests.test_asan_exception_does_not_allow_partial_or_other_skips) ... ok
+test_asan_existing_shared_library_unavailability_is_explicit (test_verify_ctest.EvidenceGateTests.test_asan_existing_shared_library_unavailability_is_explicit) ... ok
+test_asan_named_exception_requires_documented_unavailability (test_verify_ctest.EvidenceGateTests.test_asan_named_exception_requires_documented_unavailability) ... ok
+test_cli_writes_reviewable_evidence_and_nonzero_exit (test_verify_ctest.EvidenceGateTests.test_cli_writes_reviewable_evidence_and_nonzero_exit) ... ok
+test_empty_manifest_and_outer_failure_or_skip_fail (test_verify_ctest.EvidenceGateTests.test_empty_manifest_and_outer_failure_or_skip_fail) ... ok
+test_enabled_scale_must_have_real_assertions (test_verify_ctest.EvidenceGateTests.test_enabled_scale_must_have_real_assertions) ... ok
+test_historical_zero_success_is_rejected (test_verify_ctest.EvidenceGateTests.test_historical_zero_success_is_rejected) ... ok
+test_manifest_duplicate_missing_and_extra_entries_fail (test_verify_ctest.EvidenceGateTests.test_manifest_duplicate_missing_and_extra_entries_fail) ... ok
+test_missing_truncated_and_duplicate_summaries_fail (test_verify_ctest.EvidenceGateTests.test_missing_truncated_and_duplicate_summaries_fail) ... ok
+test_outer_suite_failure_counts_fail_even_without_child (test_verify_ctest.EvidenceGateTests.test_outer_suite_failure_counts_fail_even_without_child) ... ok
+test_positive_cases_with_no_assertions_do_not_establish_verification (test_verify_ctest.EvidenceGateTests.test_positive_cases_with_no_assertions_do_not_establish_verification) ... ok
+test_positive_inner_cases_are_counted_separately_from_entries (test_verify_ctest.EvidenceGateTests.test_positive_inner_cases_are_counted_separately_from_entries) ... ok
+test_python_zero_missing_and_unexpected_skips_fail (test_verify_ctest.EvidenceGateTests.test_python_zero_missing_and_unexpected_skips_fail) ... ok
+test_scale_opt_in_is_classified_unexecuted (test_verify_ctest.EvidenceGateTests.test_scale_opt_in_is_classified_unexecuted) ... ok
+test_smoke_explicit_skip_is_not_success (test_verify_ctest.EvidenceGateTests.test_smoke_explicit_skip_is_not_success) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.005s
+
+OK
