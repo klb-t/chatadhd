@@ -2,9 +2,11 @@
 // observations) and Layer B (entities, claims, assessments, models).
 #include <algorithm>
 #include <cmath>
+#include <exception>
 
 #include "loom/util/sha256.h"
 #include "model/model_json.h"
+#include "model/model_profile.h"
 
 namespace loom::model {
 
@@ -41,20 +43,27 @@ bool may_be_premise(EvidenceClass e) noexcept {
 }
 
 int authority_rank(Origin o) noexcept {
-  switch (o) {
-    case Origin::User:
-      return 5;
-    case Origin::Archive:
-    case Origin::Repo:
-      return 4;
-    case Origin::ExternalAuthority:
-      return 3;
-    case Origin::System:
-      return 2;
-    case Origin::ModelKnowledge:
-      return 1;
-  }
-  return 0;
+  struct Ranks { std::array<int, count<Origin>()> known{}; int unknown = 0; };
+  static const Ranks ranks = [] {
+    auto profile = RuntimeProfile::builtin("model");
+    // A malformed embedded descriptor is a build defect. noexcept cannot
+    // return an error, and inventing replacement arbitration would be wrong.
+    if (!profile) std::terminate();
+    Ranks out;
+    const auto& values = profile->values();
+    for (const auto origin : all<Origin>())
+      out.known[static_cast<std::size_t>(origin)] = json::find(values.at("authority_ranks"), to_string(origin))->get<int>();
+    out.unknown = values.at("unknown_origin_rank").get<int>();
+    return out;
+  }();
+  const auto index = static_cast<std::size_t>(o);
+  return index < ranks.known.size() ? ranks.known[index] : ranks.unknown;
+}
+
+Result<int> authority_rank(Origin o, const RuntimeProfile& profile) {
+  LOOM_TRY_ASSIGN(auto checked, detail::checked_model_profile(profile));
+  const auto* rank = json::find(checked.values().at("authority_ranks"), to_string(o));
+  return rank ? rank->get<int>() : checked.values().at("unknown_origin_rank").get<int>();
 }
 
 bool is_producible(EvidenceClass e) noexcept {

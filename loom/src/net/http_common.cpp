@@ -3,8 +3,13 @@
 // The real transport lives in http_default.cpp (wave 2 net).
 #include <algorithm>
 #include <cctype>
+#include <cmath>
+#include <cstdlib>
+#include <limits>
+#include <stdexcept>
 
 #include "loom/net/http.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/base64.h"
 #include "loom/util/ids.h"
 #include "loom/util/utf8.h"
@@ -42,7 +47,24 @@ Json HttpRequest::to_json() const {
 }
 
 Result<HttpRequest> HttpRequest::from_json(const Json& j) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::builtin("net"));
+  return from_json_with_profile(j, profile);
+}
+
+int builtin_http_timeout_ms() {
+  static const int value = [] {
+    auto profile = RuntimeProfile::builtin("net");
+    if (!profile) throw std::logic_error(profile.error().to_string());
+    return profile->values().at("default_timeout_ms").get<int>();
+  }();
+  return value;
+}
+
+Result<HttpRequest> HttpRequest::from_json_with_profile(const Json& j, const RuntimeProfile& profile) {
   if (!j.is_object()) return Error(Errc::InvalidArgument, "http request must be an object");
+  if (profile.domain() != "net") return Error(Errc::InvalidArgument, "expected net profile");
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("net"));
+  LOOM_TRY_ASSIGN(auto checked, builtin.with_values(profile.values()));
   HttpRequest r;
   r.method = json::get_string(j, "method", "GET");
   r.url = json::get_string(j, "url");
@@ -57,9 +79,48 @@ Result<HttpRequest> HttpRequest::from_json(const Json& j) {
   } else {
     r.body = json::get_string(j, "body");
   }
-  r.timeout_ms = static_cast<int>(json::get_int(j, "timeout_ms", 30000));
+  if (const auto* timeout = json::find(j, "timeout_ms"); timeout && timeout->is_number_integer()) {
+    if ((timeout->is_number_unsigned() && timeout->get<std::uint64_t>() > static_cast<std::uint64_t>(std::numeric_limits<int>::max())) ||
+        (!timeout->is_number_unsigned() && (timeout->get<std::int64_t>() < std::numeric_limits<int>::min() ||
+                                            timeout->get<std::int64_t>() > std::numeric_limits<int>::max())))
+      return Error(Errc::InvalidArgument, "http timeout exceeds native integer representation");
+  } else if (timeout && timeout->is_number_float()) {
+    const auto truncated = std::trunc(timeout->get<double>());
+    if (!std::isfinite(truncated) || truncated < std::numeric_limits<int>::min() ||
+        truncated > std::numeric_limits<int>::max())
+      return Error(Errc::InvalidArgument, "http timeout exceeds native integer representation");
+  }
+  r.timeout_ms = static_cast<int>(json::get_int(j, "timeout_ms", checked.values().at("default_timeout_ms").get<int>()));
   r.stream = json::get_bool(j, "stream", false);
   return r;
+}
+
+Result<HttpTransportPolicy> HttpTransportPolicy::for_request(const HttpRequest& request, const RuntimeProfile& profile,
+                                                           const EnvironmentLookup& lookup) {
+  if (profile.domain() != "net") return Error(Errc::InvalidArgument, "expected net profile");
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("net"));
+  LOOM_TRY_ASSIGN(auto checked, builtin.with_values(profile.values()));
+  LOOM_TRY_ASSIGN(auto url, parse_url(request.url));
+  const auto& values = checked.values();
+  auto first_environment = [&](const Json& names) -> std::optional<std::string> {
+    for (const auto& name : names) {
+      const auto& key = name.get_ref<const std::string&>();
+      std::optional<std::string> value;
+      if (lookup) value = lookup(key);
+      else if (const char* raw = std::getenv(key.c_str()); raw && *raw) value = std::string(raw);
+      if (value && !value->empty()) return value;
+    }
+    return std::nullopt;
+  };
+  HttpTransportPolicy out;
+  out.timeout_ms = request.timeout_ms > 0 ? request.timeout_ms : values.at("default_timeout_ms").get<int>();
+  out.follow_redirects = values.at("follow_redirects").get<bool>();
+  out.keep_alive = values.at("keep_alive").get<bool>();
+  out.ca_cert_path = first_environment(values.at("ca_environment"));
+  if (const auto* names = json::find(values.at("proxy_environment"), url.scheme))
+    out.proxy_url = first_environment(*names);
+  out.profile_hash = checked.hash();
+  return out;
 }
 
 Result<Json> HttpResponse::json() const { return json::parse(body); }
