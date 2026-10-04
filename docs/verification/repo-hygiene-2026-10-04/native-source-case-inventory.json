@@ -1,0 +1,410 @@
+{
+  "kind": "static source inventory, not executed cases",
+  "entries": [
+    {
+      "entry": "unit.test_archive",
+      "source": "loom/tests/test_archive.cpp",
+      "declared_case_macros": 18
+    },
+    {
+      "entry": "unit.test_batch_api",
+      "source": "loom/tests/test_batch_api.cpp",
+      "declared_case_macros": 8
+    },
+    {
+      "entry": "unit.test_capi",
+      "source": "loom/tests/test_capi.cpp",
+      "declared_case_macros": 12
+    },
+    {
+      "entry": "unit.test_capi_knowledge",
+      "source": "loom/tests/test_capi_knowledge.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_capi_knowledge_latest_run",
+      "source": "loom/tests/test_capi_knowledge_latest_run.cpp",
+      "declared_case_macros": 2
+    },
+    {
+      "entry": "unit.test_catalog",
+      "source": "loom/tests/test_catalog.cpp",
+      "declared_case_macros": 13
+    },
+    {
+      "entry": "unit.test_catalog_context",
+      "source": "loom/tests/test_catalog_context.cpp",
+      "declared_case_macros": 7
+    },
+    {
+      "entry": "unit.test_catalog_eval",
+      "source": "loom/tests/test_catalog_eval.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_catalog_links",
+      "source": "loom/tests/test_catalog_links.cpp",
+      "declared_case_macros": 4
+    },
+    {
+      "entry": "unit.test_catalog_retention",
+      "source": "loom/tests/test_catalog_retention.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_catalog_scale",
+      "source": "loom/tests/test_catalog_scale.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_chat_active_task",
+      "source": "loom/tests/test_chat_active_task.cpp",
+      "declared_case_macros": 19
+    },
+    {
+      "entry": "unit.test_chat_active_task_acceptance_audit",
+      "source": "loom/tests/test_chat_active_task_acceptance_audit.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_chat_active_task_acceptance_scale",
+      "source": "loom/tests/test_chat_active_task_acceptance_scale.cpp",
+      "declared_case_macros": 2
+    },
+    {
+      "entry": "unit.test_chat_active_task_acceptance_validation",
+      "source": "loom/tests/test_chat_active_task_acceptance_validation.cpp",
+      "declared_case_macros": 6
+    },
+    {
+      "entry": "unit.test_chat_active_task_concurrency",
+      "source": "loom/tests/test_chat_active_task_concurrency.cpp",
+      "declared_case_macros": 4
+    },
+    {
+      "entry": "unit.test_chat_active_task_durability",
+      "source": "loom/tests/test_chat_active_task_durability.cpp",
+      "declared_case_macros": 8
+    },
+    {
+      "entry": "unit.test_chat_active_task_durable_audit",
+      "source": "loom/tests/test_chat_active_task_durable_audit.cpp",
+      "declared_case_macros": 6
+    },
+    {
+      "entry": "unit.test_chat_active_task_exceptional",
+      "source": "loom/tests/test_chat_active_task_exceptional.cpp",
+      "declared_case_macros": 4
+    },
+    {
+      "entry": "unit.test_chat_active_task_history_aba",
+      "source": "loom/tests/test_chat_active_task_history_aba.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_chat_active_task_reference",
+      "source": "loom/tests/test_chat_active_task_reference.cpp",
+      "declared_case_macros": 7
+    },
+    {
+      "entry": "unit.test_chat_active_task_retention",
+      "source": "loom/tests/test_chat_active_task_retention.cpp",
+      "declared_case_macros": 11
+    },
+    {
+      "entry": "unit.test_chat_active_task_revisions",
+      "source": "loom/tests/test_chat_active_task_revisions.cpp",
+      "declared_case_macros": 10
+    },
+    {
+      "entry": "unit.test_chat_active_task_scope_identity",
+      "source": "loom/tests/test_chat_active_task_scope_identity.cpp",
+      "declared_case_macros": 2
+    },
+    {
+      "entry": "unit.test_chat_engine",
+      "source": "loom/tests/test_chat_engine.cpp",
+      "declared_case_macros": 15
+    },
+    {
+      "entry": "unit.test_chat_knowledge_context",
+      "source": "loom/tests/test_chat_knowledge_context.cpp",
+      "declared_case_macros": 15
+    },
+    {
+      "entry": "unit.test_chat_retrieval_plan",
+      "source": "loom/tests/test_chat_retrieval_plan.cpp",
+      "declared_case_macros": 8
+    },
+    {
+      "entry": "unit.test_config",
+      "source": "loom/tests/test_config.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_context_channel_integration",
+      "source": "loom/tests/test_context_channel_integration.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_context_controls",
+      "source": "loom/tests/test_context_controls.cpp",
+      "declared_case_macros": 9
+    },
+    {
+      "entry": "unit.test_context_counter",
+      "source": "loom/tests/test_context_counter.cpp",
+      "declared_case_macros": 4
+    },
+    {
+      "entry": "unit.test_context_diagnostics",
+      "source": "loom/tests/test_context_diagnostics.cpp",
+      "declared_case_macros": 9
+    },
+    {
+      "entry": "unit.test_context_engine",
+      "source": "loom/tests/test_context_engine.cpp",
+      "declared_case_macros": 18
+    },
+    {
+      "entry": "unit.test_context_eval",
+      "source": "loom/tests/test_context_eval.cpp",
+      "declared_case_macros": 2
+    },
+    {
+      "entry": "unit.test_context_native_consumer",
+      "source": "loom/tests/test_context_native_consumer.cpp",
+      "declared_case_macros": 6
+    },
+    {
+      "entry": "unit.test_context_plan",
+      "source": "loom/tests/test_context_plan.cpp",
+      "declared_case_macros": 15
+    },
+    {
+      "entry": "unit.test_context_retrieval",
+      "source": "loom/tests/test_context_retrieval.cpp",
+      "declared_case_macros": 13
+    },
+    {
+      "entry": "unit.test_context_retrieval_dev",
+      "source": "loom/tests/test_context_retrieval_dev.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_context_tfidf_reuse",
+      "source": "loom/tests/test_context_tfidf_reuse.cpp",
+      "declared_case_macros": 9
+    },
+    {
+      "entry": "unit.test_crypto",
+      "source": "loom/tests/test_crypto.cpp",
+      "declared_case_macros": 12
+    },
+    {
+      "entry": "unit.test_db",
+      "source": "loom/tests/test_db.cpp",
+      "declared_case_macros": 13
+    },
+    {
+      "entry": "unit.test_event_bus",
+      "source": "loom/tests/test_event_bus.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_extract",
+      "source": "loom/tests/test_extract.cpp",
+      "declared_case_macros": 15
+    },
+    {
+      "entry": "unit.test_extract_eval",
+      "source": "loom/tests/test_extract_eval.cpp",
+      "declared_case_macros": 6
+    },
+    {
+      "entry": "unit.test_fts",
+      "source": "loom/tests/test_fts.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_generalize",
+      "source": "loom/tests/test_generalize.cpp",
+      "declared_case_macros": 7
+    },
+    {
+      "entry": "unit.test_generalize_eval",
+      "source": "loom/tests/test_generalize_eval.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_github",
+      "source": "loom/tests/test_github.cpp",
+      "declared_case_macros": 19
+    },
+    {
+      "entry": "unit.test_graph",
+      "source": "loom/tests/test_graph.cpp",
+      "declared_case_macros": 8
+    },
+    {
+      "entry": "unit.test_import",
+      "source": "loom/tests/test_import.cpp",
+      "declared_case_macros": 23
+    },
+    {
+      "entry": "unit.test_import_export_fidelity",
+      "source": "loom/tests/test_import_export_fidelity.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_import_exports",
+      "source": "loom/tests/test_import_exports.cpp",
+      "declared_case_macros": 18
+    },
+    {
+      "entry": "unit.test_import_source_materialization",
+      "source": "loom/tests/test_import_source_materialization.cpp",
+      "declared_case_macros": 8
+    },
+    {
+      "entry": "unit.test_import_stream",
+      "source": "loom/tests/test_import_stream.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_kb_pack",
+      "source": "loom/tests/test_kb_pack.cpp",
+      "declared_case_macros": 14
+    },
+    {
+      "entry": "unit.test_knowledge",
+      "source": "loom/tests/test_knowledge.cpp",
+      "declared_case_macros": 18
+    },
+    {
+      "entry": "unit.test_knowledge_candidate_graph",
+      "source": "loom/tests/test_knowledge_candidate_graph.cpp",
+      "declared_case_macros": 10
+    },
+    {
+      "entry": "unit.test_knowledge_candidates",
+      "source": "loom/tests/test_knowledge_candidates.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_knowledge_flow",
+      "source": "loom/tests/test_knowledge_flow.cpp",
+      "declared_case_macros": 2
+    },
+    {
+      "entry": "unit.test_knowledge_semantic",
+      "source": "loom/tests/test_knowledge_semantic.cpp",
+      "declared_case_macros": 13
+    },
+    {
+      "entry": "unit.test_knowledge_semantic_graph",
+      "source": "loom/tests/test_knowledge_semantic_graph.cpp",
+      "declared_case_macros": 11
+    },
+    {
+      "entry": "unit.test_knowledge_store",
+      "source": "loom/tests/test_knowledge_store.cpp",
+      "declared_case_macros": 7
+    },
+    {
+      "entry": "unit.test_materialize",
+      "source": "loom/tests/test_materialize.cpp",
+      "declared_case_macros": 6
+    },
+    {
+      "entry": "unit.test_media",
+      "source": "loom/tests/test_media.cpp",
+      "declared_case_macros": 13
+    },
+    {
+      "entry": "unit.test_memory",
+      "source": "loom/tests/test_memory.cpp",
+      "declared_case_macros": 9
+    },
+    {
+      "entry": "unit.test_model",
+      "source": "loom/tests/test_model.cpp",
+      "declared_case_macros": 10
+    },
+    {
+      "entry": "unit.test_net_sse",
+      "source": "loom/tests/test_net_sse.cpp",
+      "declared_case_macros": 10
+    },
+    {
+      "entry": "unit.test_pack_model",
+      "source": "loom/tests/test_pack_model.cpp",
+      "declared_case_macros": 6
+    },
+    {
+      "entry": "unit.test_provenance",
+      "source": "loom/tests/test_provenance.cpp",
+      "declared_case_macros": 3
+    },
+    {
+      "entry": "unit.test_providers",
+      "source": "loom/tests/test_providers.cpp",
+      "declared_case_macros": 13
+    },
+    {
+      "entry": "unit.test_regex",
+      "source": "loom/tests/test_regex.cpp",
+      "declared_case_macros": 15
+    },
+    {
+      "entry": "unit.test_relations",
+      "source": "loom/tests/test_relations.cpp",
+      "declared_case_macros": 1
+    },
+    {
+      "entry": "unit.test_resolve",
+      "source": "loom/tests/test_resolve.cpp",
+      "declared_case_macros": 8
+    },
+    {
+      "entry": "unit.test_resolve_attribution",
+      "source": "loom/tests/test_resolve_attribution.cpp",
+      "declared_case_macros": 7
+    },
+    {
+      "entry": "unit.test_resolve_lineage",
+      "source": "loom/tests/test_resolve_lineage.cpp",
+      "declared_case_macros": 2
+    },
+    {
+      "entry": "unit.test_runtime",
+      "source": "loom/tests/test_runtime.cpp",
+      "declared_case_macros": 4
+    },
+    {
+      "entry": "unit.test_selector",
+      "source": "loom/tests/test_selector.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_semantic_llm",
+      "source": "loom/tests/test_semantic_llm.cpp",
+      "declared_case_macros": 11
+    },
+    {
+      "entry": "unit.test_semantic_worker",
+      "source": "loom/tests/test_semantic_worker.cpp",
+      "declared_case_macros": 9
+    },
+    {
+      "entry": "unit.test_tasks",
+      "source": "loom/tests/test_tasks.cpp",
+      "declared_case_macros": 5
+    },
+    {
+      "entry": "unit.test_util",
+      "source": "loom/tests/test_util.cpp",
+      "declared_case_macros": 10
+    }
+  ]
+}
