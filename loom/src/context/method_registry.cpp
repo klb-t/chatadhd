@@ -937,6 +937,20 @@ Result<Json> MethodRegistry::bind_results(const Json& candidate, const Json& ori
       trace["actual_model"] = trace["model"];
       trace["model_origin"] = actual_origins.size() == 1 ? actual_origins[0] : Json(nullptr);
       trace["actual_model_origins"] = actual_origins;
+      // The response identity in the method trace is the exact compiler input,
+      // as witnessed by validated native result origins. Wire and rendered
+      // response hashes remain separately captured observations.
+      Json response_hashes = Json::array();
+      bool all_response_hashes_known = true;
+      for (const auto& actual_origin : actual_origins) {
+        const auto response_hash = actual_origin.value("response_sha256", Json(nullptr));
+        if (!digest(response_hash)) all_response_hashes_known = false;
+        else if (std::find(response_hashes.begin(), response_hashes.end(), response_hash) == response_hashes.end()) response_hashes.push_back(response_hash);
+      }
+      trace["response_sha256"] = all_response_hashes_known && response_hashes.size() == 1 ? response_hashes[0] : Json(nullptr);
+      trace["response_hash_scope"] = "compiler_input";
+      if (rb.contains("response_sha256") && rb["response_sha256"] != trace["response_sha256"])
+        return conflict("caller response identity differs from actual native compiler inputs");
       if (trace.contains("requested_model") && trace["requested_model"] != trace["model"] && b.contains("model_identity_id")) {
         trace["requested_model_identity_id"] = b["model_identity_id"];
         manifest["bindings"]["model_identity_id"] = nullptr;
