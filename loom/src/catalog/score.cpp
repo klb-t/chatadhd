@@ -27,6 +27,7 @@
 #include <unordered_map>
 
 #include "catalog_internal.h"
+#include "semantic_candidates.h"
 #include "loom/db.h"
 #include "loom/runtime.h"
 #include "loom/sqlite.h"
@@ -75,6 +76,7 @@ struct Row {
   std::string trap_reason;
   Json features = Json::object();
   Json reasons = Json::array();
+  double linear_score = 0.0;
   double score = 0.0;
   std::string label = "irrelevant";
 };
@@ -305,6 +307,30 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     }
   }
   int N = static_cast<int>(rows.size());
+  // Validate supplied semantic evidence before any score/link writes. This
+  // channel sees every catalogued unit, including lexical misses. Disabled
+  // input preserves the original score-run identity and default decisions.
+  const Json candidate_config = rt_.config().get("catalog_semantic_candidates");
+  SemanticCandidates semantic_candidates;
+  {
+    std::vector<CatalogUnit> candidate_units;
+    const auto* enabled = json::find(candidate_config, "enabled");
+    if (enabled && enabled->is_boolean() && enabled->get<bool>()) {
+      candidate_units.reserve(rows.size());
+      for (const auto& row : rows) {
+        CatalogUnit candidate;
+        candidate.unit.id = row.unit.unit.id;
+        candidate.content_hash = row.unit.content_hash;
+        candidate_units.push_back(std::move(candidate));
+      }
+    }
+    LOOM_TRY_ASSIGN(semantic_candidates,
+                    evaluate_semantic_candidates(candidate_config, profile.input_hash, candidate_units));
+  }
+  if (semantic_candidates.enabled) {
+    fp["semantic_candidates"] = semantic_candidates.configuration_hash;
+    run_id = "run_" + Sha256::hex(json::canonical(fp)).substr(0, 16);
+  }
   double avg_len = 0.0;
   for (auto& r : rows) avg_len += static_cast<double>(std::max<std::int64_t>(1, r.sketch.n_chars));
   if (N > 0) avg_len /= N;
@@ -435,6 +461,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     row.reasons = reasons;
     row.features["lexical_score"] = round4(sigmoid(lexical_linear));
     row.features["semantic_score"] = round4(sigmoid(semantic_linear));
+    row.linear_score = linear;
     row.score = round4(sigmoid(linear));
     row.label = row.score >= tau_relevant ? "relevant" : (row.score >= tau_candidate ? "candidate" : "irrelevant");
   };
@@ -734,6 +761,39 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   link_result.stats["uncorroborated_sessions"] = uncorroborated_sessions;
   for (auto& row : rows) compute_linear_and_label(row);
 
+  // Apply the independently supplied channel after the legacy local-vector
+  // feedback, before labels reach selection. Union permits a semantic hit
+  // without a lexical endorsement; additive is an explicit caller option.
+  // Neither mode manufactures an identity alias or project membership.
+  for (auto& row : rows) {
+    auto hit = semantic_candidates.hits.find(row.unit.unit.id);
+    if (hit == semantic_candidates.hits.end()) continue;
+    const auto& candidate = hit->second;
+    row.features["sem_embed"] = candidate.cosine;
+    row.features["external_semantic_score"] = candidate.score;
+    row.features["external_semantic_relevant"] = candidate.score >= semantic_candidates.tau_relevant;
+    row.features["external_semantic_fusion"] = semantic_candidates.fusion;
+    row.features["external_semantic_threshold"] = semantic_candidates.tau_relevant;
+    row.features["external_semantic_evidence"] = candidate.evidence;
+    const double before = row.score;
+    if (semantic_candidates.fusion == "union") {
+      row.score = std::max(row.score, round4(candidate.score));
+      if (candidate.score >= semantic_candidates.tau_relevant) row.label = "relevant";
+    } else {
+      // Fuse before output rounding so a printed 0/1 does not become an
+      // artificial barrier to configurable evidence.
+      const long double linear = static_cast<long double>(row.linear_score) + semantic_candidates.bias +
+                                 static_cast<long double>(semantic_candidates.weight) * candidate.cosine;
+      const long double e = std::exp(linear >= 0.0L ? -linear : linear);
+      row.score = round4(static_cast<double>(linear >= 0.0L ? 1.0L / (1.0L + e) : e / (1.0L + e)));
+      row.label = row.score >= tau_relevant ? "relevant" : (row.score >= tau_candidate ? "candidate" : "irrelevant");
+    }
+    row.reasons.push_back(Json{{"feature", "semantic_candidate"}, {"channel", semantic_candidates.channel},
+                               {"fusion", semantic_candidates.fusion}, {"rank_delta", round4(row.score - before)},
+                               {"score_before", before}, {"score_after", row.score}, {"score_kind", "retrieval_rank"},
+                               {"evidence", candidate.evidence}});
+  }
+
   // ── Persist scores ───────────────────────────────────────────────────
   std::int64_t n_relevant = 0, n_candidate = 0, n_irrelevant = 0, n_traps = 0, n_identity_unavailable = 0;
   // Shadow audit between the independent channels (R27): the elements one
@@ -748,6 +808,24 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
     }
     channel_stats = Json{{"lexical_relevant", lex}, {"semantic_relevant", sem}, {"both", both},
                          {"lexical_only", lex_only}, {"semantic_only", sem_only}};
+    if (semantic_candidates.enabled) {
+      Json lexical_gap = Json::array(), semantic_only_units = Json::array();
+      std::int64_t external_relevant = 0, external_both = 0;
+      for (const auto& row : rows) {
+        const bool lexical = json::get_number(row.features, "lexical_score", 0.0) >= tau_relevant;
+        const bool supplied = semantic_candidates.hits.count(row.unit.unit.id) != 0;
+        const bool semantic = supplied && json::get_bool(row.features, "external_semantic_relevant");
+        external_relevant += semantic;
+        external_both += lexical && semantic;
+        if (lexical && !semantic)
+          lexical_gap.push_back(Json{{"unit_id", row.unit.unit.id}, {"semantic_scored", supplied},
+                                     {"status", supplied ? "below_channel_threshold" : "missing_semantic_evidence"}});
+        if (semantic && !lexical) semantic_only_units.push_back(row.unit.unit.id);
+      }
+      channel_stats["external_semantic"] = Json{{"relevant", external_relevant}, {"both", external_both},
+                                                {"lexical_only", lexical_gap}, {"semantic_only", semantic_only_units},
+                                                {"interpretation", "unverified channel gaps; missing input is not a negative judgement"}};
+    }
   }
   {
     auto lk = rt_.db().lock();
@@ -767,6 +845,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   }
 
   return Json{{"run_id", run_id},
+              {"profile", Json{{"id", profile.id}, {"input_hash", profile.input_hash}}},
               {"scoring_evidence_version", 3},
               {"legacy_combined_features", Json::array({"id_hits", "class_diversity", "code_evidence"})},
               {"identity_unavailable", n_identity_unavailable},
@@ -776,6 +855,13 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
               {"traps", n_traps},
               {"expanded_terms", expanded_terms_log},
               {"semantic", semantic_report},
+              {"external_semantic", Json{{"available", semantic_candidates.enabled},
+                                          {"method", semantic_candidates.method}, {"model", semantic_candidates.model},
+                                          {"channel", semantic_candidates.channel}, {"fusion", semantic_candidates.fusion},
+                                          {"configuration_hash", semantic_candidates.configuration_hash},
+                                          {"supplied_units", semantic_candidates.hits.size()},
+                                          {"missing_units", rows.size() - semantic_candidates.hits.size()},
+                                          {"score_kind", "retrieval_rank"}, {"provider_calls", 0}}},
               {"channels", channel_stats},
               {"links", static_cast<std::int64_t>(links.size())},
               {"link_stats", link_result.stats}};

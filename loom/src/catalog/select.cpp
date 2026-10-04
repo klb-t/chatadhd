@@ -25,6 +25,7 @@ struct UnitRow {
   std::string label;
   Json projects = Json::array();
   Json reasons = Json::array();
+  Json features = Json::object();
   std::string title;
   std::string lang;
   std::int64_t n_chars = 0;
@@ -84,7 +85,7 @@ Result<std::vector<Decision>> Catalog::select(std::string_view score_run) {
   {
     LOOM_TRY_ASSIGN(sql::Stmt st,
                     c.prepare("SELECT s.unit_id, s.score, s.label, s.projects, s.reasons, u.title, u.lang, u.bytes, "
-                              "u.date, u.body FROM loom_cat_scores s JOIN loom_cat_units u ON u.id = s.unit_id "
+                              "u.date, u.body, s.features FROM loom_cat_scores s JOIN loom_cat_units u ON u.id = s.unit_id "
                               "WHERE s.run_id = ?"));
     st.bind(1, run_id);
     while (true) {
@@ -100,6 +101,7 @@ Result<std::vector<Decision>> Catalog::select(std::string_view score_run) {
       u.lang = st.get_text(6);
       u.date = st.get_text(8);
       if (auto body = json::parse(st.get_text(9)); body) u.n_chars = json::get_int(*body, "n_chars");
+      if (auto features = json::parse(st.get_text(10)); features) u.features = *features;
       rows.push_back(std::move(u));
     }
   }
@@ -115,6 +117,11 @@ Result<std::vector<Decision>> Catalog::select(std::string_view score_run) {
     d.label = u.label;
     d.score = u.score;
     for (const auto& p : u.projects) if (p.is_string()) d.reasons.push_back(Json{{"project", p}});
+    if (const auto* evidence = json::find(u.features, "external_semantic_evidence")) {
+      d.reasons.push_back(Json{{"semantic_candidate", *evidence},
+                               {"fusion", json::get_string(u.features, "external_semantic_fusion")},
+                               {"meets_channel_threshold", json::get_bool(u.features, "external_semantic_relevant")}});
+    }
 
     auto override_action = c.query_text("SELECT action FROM loom_cat_overrides WHERE unit_id = ?", u.unit_id);
     if (!override_action) return override_action.error();
