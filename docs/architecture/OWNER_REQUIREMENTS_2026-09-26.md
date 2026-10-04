@@ -432,6 +432,54 @@ report) — **not in this repository**. Also supplied: a Gemini document on
 query optimisation for the classifier (research material, not a verified
 TypeSafe specification). (paraphrase)
 
+## R39 — Seeding a new user's graph; profile initialised as `unknown` (owner, 2026-10-04)
+Every new user starts with a seeded graph, not an empty one: the built-in pack
+contributes types, analysis methods, presets and the default working
+assumptions of the application. If the user imports archives, extraction
+methods seed projects, topics and preferences from them (marked as inferred,
+never as observation). The user profile exists from the start with its fields
+explicitly `unknown`. "Unknown" is a stated value, not a missing one, and has three states:
+`unknown` (not known yet, may ask), `declined` (user chose not to answer, do not
+ask again), `never` (never ask and never infer). Values are filled in by an
+onboarding wizard and later by ordinary use. The wizard is primarily a conversation in which
+the model actively interviews the user, summarises what it understood and asks for
+confirmation. A structured form saves the same data. Every part can be skipped, paused,
+resumed and repeated. The wizard covers who the user is, their work, how they want to be
+addressed, concrete examples of what the application should and should not know
+about them, and privacy choices: which categories of information may be stored
+and at what level of detail and sensitivity, what may be sent to which model
+provider, what may be inferred versus only recorded when stated explicitly, and
+retention. Everything lands in the graph with provenance (`user_stated`,
+`model_inferred` + confirmed/rejected, `form`). Privacy rules are graph nodes
+that the selector and knowledge writer respect. Later, the model may propose new
+preferences during ordinary chat; how they are stored (ask / candidate /
+automatic) is itself a setting. A "what the app knows about me" view allows
+editing and deletion with history. (paraphrase of owner's idea)
+
+## R40 — Defaults are layered graph nodes the user can override, disable or exclude forever (owner, 2026-10-04)
+A user who changes nothing still gets a working application: the default working
+assumptions live in the graph as nodes from the built-in layer. Each default can
+be overridden, disabled (kept but unused) or removed permanently when the user
+never wants it referred to. Permanent removal leaves a persistent exclusion
+marker, so that a later pack update cannot silently reintroduce it. Whether new
+defaults touching an excluded area arrive as proposals or are applied directly
+is a user setting. Resolution is explainable: for every effective value the system can
+show which layer it came from and why it applies. One layering/exclusion
+mechanism serves preferences, analysis methods, prompts, privacy consents and
+application profiles alike. (paraphrase)
+
+## R41 — Analysis methods are in the graph (owner, 2026-10-04)
+Following "everything in the graph": methods of semantic and structural analysis
+are graph entities. This covers lexical/regex, TF-IDF, BM25, vectors, Jev, cheap
+and frontier models and graph structure, together with their recipes, prompts
+(version + hash), parameters, presets and user-made combinations. Each result has a
+"produced by" edge to the exact method version and parameters. Assessments of
+methods (experiment results, model profiles, R37) are claims about these
+entities with evidence and date. A model receiving context can therefore see which methods exist
+and what is known about their strengths and weaknesses. The user may use any
+method in any combination and tune its parameters. Default methods are pack data, not code.
+(paraphrase)
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
