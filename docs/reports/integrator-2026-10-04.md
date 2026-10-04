@@ -49,22 +49,26 @@ integratora są publiczne lub syntetyczne; brak kluczy i prywatnych eksportów.
 
 ## Czego nie przyjęto i dlaczego
 
-2: autorytatywny preset nadal w kodzie. 3: nieukończony selektor/rejestr/graf.
-4: powtórzony unresolved dispatch z jednym rozliczeniem. 5: checkpoint pomija
-odzyskanie poprawnego projektu/dokumentu/linku po chwilowym błędzie DB.
-6:14 rzeczywistych pominięć pozostaje, autor wstrzymał po nieprzejściu jakości.
-7: poprawka orphan przyjęta w przeglądzie, reszta badań/raport/graf nadal w toku.
-8: pełna macierz CI niezielona przez Clang. 10/11: zakresy/bramki nieukończone;
-11 dodatkowo ukrywa błędy szablonów w materialize stage (wniosek z kodu).
-Pierwszy przyrost1 ma dodatnie branch metrics, ale czeka na kolejność2→3/4/5
-oraz własne bramki; nowe zadania promptów/metod pozostają otwarte.
+2: autorytatywny preset nadal w kodzie; autor910a1d6 jawnie wstrzymuje odbiór.
+3: pierwszy selektor ukończony, rozszerzony rejestr/graf i data defaults niegotowe.
+4: b8f29bf zawiera replay fix i packet-side graph-method contract; wspólny
+adapter/regresja3 nadal nie istnieją. 5: abade80 usuwa przyczynę błędnego
+checkpointu i naprawia stare journale; nowe regresje/finalny raport/bramki czekają.
+Poprawki4/5 oceniono źródłowo, nie przypisujemy im starego negatywu ani własnego
+niewykonanego pozytywnego rerunu. 6:14 pominięć, autor wstrzymał po jakości.
+7: orphan fix zweryfikowany, reszta badań/raport/graf w toku. 8: CI Clang blokuje.
+10/11: zakresy/bramki nieukończone; materialize nadal ukrywa błędy szablonów.
+1: aed85b8 podłącza production prompt registry; brakuje wspólnego grafu metod,
+legacy/public adapterów i końcowej weryfikacji z aktualnym2. Zapisane nowe
+receipts autora sprawdzono hashem. Kolejność2→3/4/5→reszta nadal obowiązuje.
 
 ## Do wątku N
 
 - **2:** preset z danych/profilu, jeden rzeczywisty loader i nakładka; nowy receipt24 grup.
 - **3/4:** wspólny kontrakt method/version/run/result w grafie, pack defaults,
   krawędzie pochodzenia i regresja obu API przed odbiorem.
-- **4/5:** naprawić przypięte reprodukcje i dodać regresje rzeczywistego wykonania/recovery.
+- **4/5:** wykonać niezależny replay nowych poprawek oraz pełne bramki po rebase;
+  5 końcowy raport i instrukcja właściciela.
 - **1/7:** prompty/przepisy/oceny jako wersjonowane byty i twierdzenia z dowodami;
   7 końcowy raport, rozliczenie i przygotowanie graph-reply vs tekst+JSON.
 - **6:** nowy wynik DEV, zachować negatyw i jednokrotnie wykorzystane pierwsze spojrzenie.

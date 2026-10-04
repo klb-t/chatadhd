@@ -191,8 +191,10 @@ packa/profilu, z nakładką użytkownika; nie z ręcznych presetów C++.
 
 W2 ma zielone niezależne bramki poprzedniego przyrostu (19/19 kontraktów,
 108/108 CTest,659 native/1276 Python, web85 modułów), ale nadal nie spełnia
-wymogu presetu jako danych. W4 powtarza unresolved dispatch przy jednym
-rozliczeniu; W5 może cache'ować nieudaną interpretację jako zakończony import.
+wymogu presetu jako danych. W4 iW5 po ostatnim fetch dostarczyły
+poprawki wykazanych błędów replay/checkpointu; przegląd kodu je potwierdza,
+ale niezależny rerun nowych regresji oraz bramki po rebase pozostają otwarte.
+W4 opublikował packet-side format metod, którego W3 jeszcze nie produkuje.
 W7 naprawił wykazany orphan-response błąd, lecz nie ukończył całego zakresu.
 W6 sam wstrzymał checkpoint po nieprzejściu jakości; negatyw jest w archive.
 W8 dev/ASan receipts są kompletne, vendored Clang wymaga poprawki w10.
