@@ -1,0 +1,886 @@
+{
+  "loom/CMakeLists.txt": {
+    "bytes": 12703,
+    "sha256": "c5169b02cf9d501adaba11d18f0bce4b7df3c6e2d2664e3a0269d7af38c6548c"
+  },
+  "loom/include/loom/archive.h": {
+    "bytes": 7038,
+    "sha256": "0d6aa0478aa28d3341ad1ade8555e0ab9723dae0788023d635fbde8b9f104748"
+  },
+  "loom/include/loom/batch_api.h": {
+    "bytes": 3220,
+    "sha256": "7bba0b06df3e63966e096b4fef537b859568b1401817280df142db073638f3ca"
+  },
+  "loom/include/loom/catalog.h": {
+    "bytes": 14103,
+    "sha256": "6416e888195404d65f480a39ae2992df8e2e247eb39a0908c25a4aa044456a45"
+  },
+  "loom/include/loom/chat_engine.h": {
+    "bytes": 8780,
+    "sha256": "a0174bb6e29eb7dc4f73af94e8dc3b9cc0430f45ffaa1f7ce4b9ae181bc52c11"
+  },
+  "loom/include/loom/config.h": {
+    "bytes": 5104,
+    "sha256": "6b8a8cc22bec961e989d30e047b22efea3271f1b9803cd304d005737eaf3ae28"
+  },
+  "loom/include/loom/context_engine.h": {
+    "bytes": 8332,
+    "sha256": "354d10dc6d635a87ab021a85228bf37d0bd660ff2e9fdb87349fb6b1dcace3a1"
+  },
+  "loom/include/loom/context_plan.h": {
+    "bytes": 1407,
+    "sha256": "ffe0acc0b4250e984d20496f122012888d194d878ad47bc361a6ee49ee70a2c7"
+  },
+  "loom/include/loom/context_retrieval.h": {
+    "bytes": 3020,
+    "sha256": "71a62eac829ad5a79b3b1c780d694d82bad26dca8e75ad8a21fba1896d0bea68"
+  },
+  "loom/include/loom/crypto.h": {
+    "bytes": 3552,
+    "sha256": "f7a5cfa5752c70adbdcdbde1b65dd4330d67ab91ca5fdfe4d4811a8b605dac9d"
+  },
+  "loom/include/loom/db.h": {
+    "bytes": 18874,
+    "sha256": "cb99e2ffb90775b8fdf9f221a3720813f09c00164959985fa065dafa815261c2"
+  },
+  "loom/include/loom/event_bus.h": {
+    "bytes": 4348,
+    "sha256": "f420a2e960c766e90aef220fbe332d340da7b3964eaba1b8a5716b87cde82afb"
+  },
+  "loom/include/loom/extract.h": {
+    "bytes": 9679,
+    "sha256": "e4057e2c77aa09f0d490ed645902458ee68637c1e619c7e491beb0e016112780"
+  },
+  "loom/include/loom/generalize.h": {
+    "bytes": 7817,
+    "sha256": "74c942f108c54dbe93f52171cd9fff78f576e4443afc52cd6b3c11f28e6bbafb"
+  },
+  "loom/include/loom/github_sync.h": {
+    "bytes": 5124,
+    "sha256": "d4afa30d2bf7adfb75ffa6abdd924ce321c2d272706074cdf163ed6e77cd8ba0"
+  },
+  "loom/include/loom/graph_engine.h": {
+    "bytes": 3068,
+    "sha256": "87c3496ccab89011f0abebd1baaa074d15b0356231a9a28526c113e8cc4ff457"
+  },
+  "loom/include/loom/graph_memory.h": {
+    "bytes": 4369,
+    "sha256": "ff481b0f8ebdf94c0f8333ec67c8fccb0435e5176ba223bca8787491df13e908"
+  },
+  "loom/include/loom/graph_packet_store.h": {
+    "bytes": 864,
+    "sha256": "54040432540358ac45479d4e19ce6fccbb757b2c89a926f684c408b3f59041fd"
+  },
+  "loom/include/loom/importer.h": {
+    "bytes": 20741,
+    "sha256": "32498025428eea26120df65050aae27d3678f3f08557cbd9f03bc2e741cc7d48"
+  },
+  "loom/include/loom/kb.h": {
+    "bytes": 19478,
+    "sha256": "0f8891a45ff619524315218452e15b23a808079d6e6f3cb84b0358153d131645"
+  },
+  "loom/include/loom/knowledge.h": {
+    "bytes": 8316,
+    "sha256": "19b369e174249b9afa89e8c39b24367d9e8a43fbc7861704bf01a1f0b09e8bfb"
+  },
+  "loom/include/loom/knowledge_candidate_graph.h": {
+    "bytes": 1932,
+    "sha256": "fca23892a95893e02b30fb40b4973f587280b8001ea946e7d02bb53f48b7f579"
+  },
+  "loom/include/loom/knowledge_semantic.h": {
+    "bytes": 1725,
+    "sha256": "9a6dbdb80a3e59a60826a7c2e43e5290c360e9f6882699e666f8064159da0c77"
+  },
+  "loom/include/loom/knowledge_store.h": {
+    "bytes": 14590,
+    "sha256": "8e756c97c54bf61aa4a91136da241c1230156bcc9ff78f312188d5deb3b5c430"
+  },
+  "loom/include/loom/log.h": {
+    "bytes": 2699,
+    "sha256": "3cea3665318d8c7fb2fe4fc81d37c25769431e9a567be04ceb49aec4ddc0de78"
+  },
+  "loom/include/loom/loom.h": {
+    "bytes": 28225,
+    "sha256": "9731a6fac44190a8c9ee568ca87c110c6959a7467b44d8dbab35a85cbe73eae1"
+  },
+  "loom/include/loom/materialize.h": {
+    "bytes": 4007,
+    "sha256": "968bc9dd3630582b6492812e90d5d19857f91cf982d7e2af40f861dccfe3baa7"
+  },
+  "loom/include/loom/media_providers.h": {
+    "bytes": 7388,
+    "sha256": "3085ebe4bb925a3cdd9ef69abe0b86d59c536b71e7640b148e27a56737235410"
+  },
+  "loom/include/loom/memory_engine.h": {
+    "bytes": 4375,
+    "sha256": "73761906ab31e326f21496e698b1824dbcacb1c728ce01bf67516a4975b78892"
+  },
+  "loom/include/loom/model.h": {
+    "bytes": 57989,
+    "sha256": "cbf8dfda1bbbdf9cca0ad6ac92a07e48049938551cf9777e327665a89e192dce"
+  },
+  "loom/include/loom/net/http.h": {
+    "bytes": 5996,
+    "sha256": "fe89573bbb01e44a2d642a4c485aa66756e59614f19a756bff4b4a8d6050e73e"
+  },
+  "loom/include/loom/net/sse.h": {
+    "bytes": 1733,
+    "sha256": "50b4a396d410f4fc2a47707488a5885a8610c57cb2d5b334e4d04888a3ef392c"
+  },
+  "loom/include/loom/provenance.h": {
+    "bytes": 5993,
+    "sha256": "150d811ccd7d583a959bb274dd83866d8f0f6d84ad77b8e4eba6439fb2f9c8a2"
+  },
+  "loom/include/loom/providers.h": {
+    "bytes": 5856,
+    "sha256": "f79b0aef7fcb112f10559f11b6d13233eb1585726f64e386881cffabcea50123"
+  },
+  "loom/include/loom/re/regex.h": {
+    "bytes": 6144,
+    "sha256": "885ec185e73a68735750b4d417decf595b954629cbcfbfa8bd7bb4282cb0bbd8"
+  },
+  "loom/include/loom/relations.h": {
+    "bytes": 2054,
+    "sha256": "bb650a1c535ceab1736e02678bb9930f78f45a1a1eb69a8c29e77a9d8d97d73b"
+  },
+  "loom/include/loom/resolve.h": {
+    "bytes": 17031,
+    "sha256": "636570070cdfc56dbd40c7422ca074375a4f4de73f1ec3ff4f8b6b38f43dcf98"
+  },
+  "loom/include/loom/result.h": {
+    "bytes": 5337,
+    "sha256": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553"
+  },
+  "loom/include/loom/runtime.h": {
+    "bytes": 4776,
+    "sha256": "c92ac45952d8adbc5daebb267eae00746a9c00f36c5e9368418ff71d2ba8f9c7"
+  },
+  "loom/include/loom/selector.h": {
+    "bytes": 2909,
+    "sha256": "ea79ba31b0dc9b9e77cb3b57020a802215a38c452cbcd4163d2a47ae9547e08c"
+  },
+  "loom/include/loom/semantic_analyzer.h": {
+    "bytes": 5762,
+    "sha256": "aa3c73b25a5a200b4a86a635665c4f8ee1a2927064ed5d8a289d61734608b416"
+  },
+  "loom/include/loom/semantic_llm.h": {
+    "bytes": 4041,
+    "sha256": "3102ac6422549fafb5eaad941f75680fc184870ad9eda80293ae3d61596de055"
+  },
+  "loom/include/loom/semantic_worker.h": {
+    "bytes": 4906,
+    "sha256": "efaedcd4beaa48cac37987587660c6c513a4032732bb3a1764af4644ae518275"
+  },
+  "loom/include/loom/sqlite.h": {
+    "bytes": 6003,
+    "sha256": "e5a62ad5f89030176f19b33c9419c9ad2da0d22883256b7f9f9a101c36b78685"
+  },
+  "loom/include/loom/tasks.h": {
+    "bytes": 6572,
+    "sha256": "329cacdcc83629483d9c0ebe89c81d4cec2aac5a2e37186449b8d075bf609254"
+  },
+  "loom/include/loom/util/base64.h": {
+    "bytes": 554,
+    "sha256": "e783f5dda320a1d0ae272f5569817a029119b9c70de3ade6f35af3e78b02d51b"
+  },
+  "loom/include/loom/util/cancel.h": {
+    "bytes": 707,
+    "sha256": "99b188e7c57e23e3210c613c53c90d9f88168b9c70221842e5c247861f9b435b"
+  },
+  "loom/include/loom/util/fs.h": {
+    "bytes": 2099,
+    "sha256": "5b1c9530be2a1cb19f4dc976411136e8d992f87d8f0ce5c8b3c67f7a9be6d93d"
+  },
+  "loom/include/loom/util/ids.h": {
+    "bytes": 1343,
+    "sha256": "63162ffded704ad2b199f519e5ac9828c4a47281108dc3125379ee565a92c876"
+  },
+  "loom/include/loom/util/json.h": {
+    "bytes": 2551,
+    "sha256": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de"
+  },
+  "loom/include/loom/util/random.h": {
+    "bytes": 443,
+    "sha256": "a49774652aad58f9937a1ccd45bf598ae4a109f950711041f4a5ab29470b67d3"
+  },
+  "loom/include/loom/util/sha256.h": {
+    "bytes": 1746,
+    "sha256": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d"
+  },
+  "loom/include/loom/util/time.h": {
+    "bytes": 975,
+    "sha256": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece"
+  },
+  "loom/include/loom/util/unicode.h": {
+    "bytes": 1715,
+    "sha256": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0"
+  },
+  "loom/include/loom/util/utf8.h": {
+    "bytes": 2142,
+    "sha256": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196"
+  },
+  "loom/src/archive/archive_internal.h": {
+    "bytes": 10815,
+    "sha256": "bb910528c24d40d50e14d5caf61c8ae571b664fc62751a76f421649a090fd41f"
+  },
+  "loom/src/archive/archive_runtime.h": {
+    "bytes": 3496,
+    "sha256": "e539d59030d834d8d2d5e904f922c3359f1dbbd3630c2eae815c9a9a90eaf2d3"
+  },
+  "loom/src/archive/cluster.cpp": {
+    "bytes": 3287,
+    "sha256": "00f89522b2eeb675998edfb2e72e8047589085a83c20e171ea3833557b7c9b04"
+  },
+  "loom/src/archive/ingest.cpp": {
+    "bytes": 43230,
+    "sha256": "66f32269e9ef0d541c9cfe255e8616037f6b7ad4a1f7adb2b1d75dccbd1a56d1"
+  },
+  "loom/src/archive/ingest_parse.cpp": {
+    "bytes": 34492,
+    "sha256": "243105d56d890c37e01ded1e9d9a450784427ac11acb89a7720218e08682155f"
+  },
+  "loom/src/archive/items.cpp": {
+    "bytes": 25301,
+    "sha256": "5e7dbc483a02f2c9af6da4e04a7d3f9042aa801f36b5982fccc66194a0018e81"
+  },
+  "loom/src/archive/pipeline.cpp": {
+    "bytes": 57450,
+    "sha256": "39281d2372bc6da5242ff675d9811a1801ca8127e6a332a6c995094621ad44a3"
+  },
+  "loom/src/archive/synth.cpp": {
+    "bytes": 49242,
+    "sha256": "e65b43ad0f5d81049722d4c1bd7c0087a5a5f5d4eec4b918e7c96c5fa110da52"
+  },
+  "loom/src/archive/text.cpp": {
+    "bytes": 21819,
+    "sha256": "357c58f29f9fefe739cbe05a217f9d69b797193392720337296151905c539044"
+  },
+  "loom/src/archive/vocab.cpp": {
+    "bytes": 10080,
+    "sha256": "20b2188c236f2a2a801fe6f6dfc1b3b8043c7749fccd981a4c4ddf8442ff73ef"
+  },
+  "loom/src/capi/capi_archive.cpp": {
+    "bytes": 5706,
+    "sha256": "eea3277ae452112155a84b0580243b7e541cb3a16781f54cb7bb6b1f2a8bb858"
+  },
+  "loom/src/capi/capi_catalog.cpp": {
+    "bytes": 5746,
+    "sha256": "e284a244d70cfa7ac7c6daa9af41e70c4f675d7049c99ff5e1398e0c351df21e"
+  },
+  "loom/src/capi/capi_chat.cpp": {
+    "bytes": 8520,
+    "sha256": "e0efd3bb287c251da2fce394725042a98cbc2649700df76a21fac9a0f099f915"
+  },
+  "loom/src/capi/capi_context.cpp": {
+    "bytes": 2628,
+    "sha256": "896ba2a0cd8320b5ba4ba1156d6c5af7545ada5ce47ded3304813c8ac26a97cb"
+  },
+  "loom/src/capi/capi_core.cpp": {
+    "bytes": 20836,
+    "sha256": "00bc411ad0c96cb1bd52239f12a5f1cb40075553141df77c4f094a34e6f28f53"
+  },
+  "loom/src/capi/capi_extract.cpp": {
+    "bytes": 2580,
+    "sha256": "1466a955974ad522f73fbe2fbd2d070d2219c4e6c73e324d54c22634f8bbc263"
+  },
+  "loom/src/capi/capi_generalize.cpp": {
+    "bytes": 3640,
+    "sha256": "ee9d24f98dad7aded1bdb9f0a7fa525ab8eac64c1d31239787a83d5380968b6b"
+  },
+  "loom/src/capi/capi_graph.cpp": {
+    "bytes": 8021,
+    "sha256": "25e89506076776ec14363cdbedafc724976325d049fd2bc2a361018f30ed4408"
+  },
+  "loom/src/capi/capi_graph_packet_store.cpp": {
+    "bytes": 506,
+    "sha256": "345b219b1cd09eed62e97eed5045cd66e76724c588039ff52ea345fb0b7b2cbc"
+  },
+  "loom/src/capi/capi_http.cpp": {
+    "bytes": 4289,
+    "sha256": "b790158038a27259f9ab0a0a65027077ca4e658c3f8b9001fa83da16bfc230c2"
+  },
+  "loom/src/capi/capi_import.cpp": {
+    "bytes": 1984,
+    "sha256": "f06483a53e51322b3ce3cb0ce4d0de4e2aad83cf570081371e0e0a6abbc905ce"
+  },
+  "loom/src/capi/capi_knowledge.cpp": {
+    "bytes": 9496,
+    "sha256": "697ef9fb1984cd92ad08174b67f579bfa4ed9457afb7bff6e44b078911b90094"
+  },
+  "loom/src/capi/capi_media.cpp": {
+    "bytes": 6726,
+    "sha256": "856f9f4843c2d2a85c61e56ac880997db0e8ce62cb48fae87e1a6052c32e4e06"
+  },
+  "loom/src/capi/context.h": {
+    "bytes": 4509,
+    "sha256": "fcdcf7b498b561d226c7b769495e29cb08e875304ed530814ad0c573c7136a54"
+  },
+  "loom/src/capi/shared_anchor.c": {
+    "bytes": 238,
+    "sha256": "9637fc17fb42ec233ad0150e6e53d629a053843aae356e5b2f06ad457cd2aa82"
+  },
+  "loom/src/catalog/alias.cpp": {
+    "bytes": 13865,
+    "sha256": "2361dcc0ce04d9e7285ffb6a512d00e9925f6fb50a0c3aed76b7f646f65eee1f"
+  },
+  "loom/src/catalog/catalog.cpp": {
+    "bytes": 18343,
+    "sha256": "66fa590bdf47553b15b5484fcb451330d716fcc86950a79ec138c814fe1c3884"
+  },
+  "loom/src/catalog/catalog_internal.h": {
+    "bytes": 18645,
+    "sha256": "1d6c0a644ab563d01e90a1652be8b4c467ebc40a02fa81fc7e1cd40a4022b55e"
+  },
+  "loom/src/catalog/extract_text.cpp": {
+    "bytes": 4429,
+    "sha256": "784a7a829f09f9a20ea50f34c810471ba18a3a0d5b5dc0d758af3055194b59aa"
+  },
+  "loom/src/catalog/import.cpp": {
+    "bytes": 15687,
+    "sha256": "093ff1939ddd9b2b659cea1f6cb5f36c72ecd956a330e2385316ab350b778720"
+  },
+  "loom/src/catalog/links.cpp": {
+    "bytes": 12792,
+    "sha256": "a70e129d5589b1560e136b9cf84b4588c489102e28f2494f58f8db23de5d7cb8"
+  },
+  "loom/src/catalog/profile.cpp": {
+    "bytes": 7036,
+    "sha256": "1e925f037954739e7e3e2eb955b703645e92c2f9a014e91107bb30fd34af3fb6"
+  },
+  "loom/src/catalog/query.cpp": {
+    "bytes": 13017,
+    "sha256": "34f3856bfb63d76545b627e8462463368c96f56127042b1cdedce9f928a8d113"
+  },
+  "loom/src/catalog/scan.cpp": {
+    "bytes": 21245,
+    "sha256": "db56cba46246f8e642c50902450e14f9c1cb6c765f4e2ad896c2ff175bbbc8dc"
+  },
+  "loom/src/catalog/schema.cpp": {
+    "bytes": 8195,
+    "sha256": "0237637bf3fef5862dc4ae134bddcf8471f599d49c02d9563cdb097795257e7e"
+  },
+  "loom/src/catalog/score.cpp": {
+    "bytes": 39994,
+    "sha256": "92c930927647dbe91e4c610315f9f89ca622232ad4fd5782f3504ba26c172de5"
+  },
+  "loom/src/catalog/select.cpp": {
+    "bytes": 6485,
+    "sha256": "e7163c32a5d8758ce4efc00d15896a2f3899dc883c34955ae08a103ed9a57ca6"
+  },
+  "loom/src/catalog/semantic.cpp": {
+    "bytes": 8648,
+    "sha256": "d323ddc3ff0f82e9bd183df95871988f37d201df7d03eff5774f72d7476969f6"
+  },
+  "loom/src/catalog/sketch.cpp": {
+    "bytes": 10119,
+    "sha256": "583eb8890fa671e1fcf85e60b84e0fa0b5059f9e371fe57bb4d8d19bd1116e60"
+  },
+  "loom/src/catalog/stream.cpp": {
+    "bytes": 5352,
+    "sha256": "1ed5d484d7c8579b7d0f99b52c4dffeea7eeb53d4fc33a07f6ed8b774719f29c"
+  },
+  "loom/src/chat/active_task_acceptance.cpp": {
+    "bytes": 17114,
+    "sha256": "53d6eb1c8cd1fd8dd41331be2b1504763557a6ee7db51e6e28d91933e5ea5717"
+  },
+  "loom/src/chat/active_task_acceptance.h": {
+    "bytes": 1160,
+    "sha256": "665e9fe55f77b06a3c140e2a186a7a835f4155f11a76b7c50005a0c01f82a97e"
+  },
+  "loom/src/chat/active_task_spec.cpp": {
+    "bytes": 16658,
+    "sha256": "8c3ebe32cd04a9d63a609b5da0fe2beac6539543abc31631000137991e9876e6"
+  },
+  "loom/src/chat/active_task_spec.h": {
+    "bytes": 655,
+    "sha256": "e6ab83172115b2863aec6c944a4b95f1995705695b58f6d8444ad3f218d77229"
+  },
+  "loom/src/chat/batch_api.cpp": {
+    "bytes": 12001,
+    "sha256": "7a7e1fba5e2947e1297c06d74ddc023cfc82e80000be38f28e124d7743cf08fc"
+  },
+  "loom/src/chat/chat_engine.cpp": {
+    "bytes": 45638,
+    "sha256": "67851f4fb130249b0d85f1c12bcee40dbfb7b7d3e819e3ab9979560d351e0e0c"
+  },
+  "loom/src/context/context_candidates.cpp": {
+    "bytes": 6583,
+    "sha256": "99514a62e75386167e31b261cadbb03923c7c3fef8ee20e006a9c5460b3a25eb"
+  },
+  "loom/src/context/context_candidates.h": {
+    "bytes": 590,
+    "sha256": "b017e199dac0a4d337eca41fdd64e125699dbb439282e36db377f5dcd57b9694"
+  },
+  "loom/src/context/context_diagnostics.cpp": {
+    "bytes": 3059,
+    "sha256": "ce0b4a2c3f1e99b94cb3c9bdc3582c47dc0f060d13c4aefb23ae60afed5c748f"
+  },
+  "loom/src/context/context_diagnostics.h": {
+    "bytes": 287,
+    "sha256": "9831ea4b0de8456e44a54f94438fd1ab3950bbd84f34c38c9f704d99bc83af3d"
+  },
+  "loom/src/context/context_engine.cpp": {
+    "bytes": 63421,
+    "sha256": "e1717c64438feee7e0c6c391373067da4e14f4329934b25a6757d8279b48a941"
+  },
+  "loom/src/context/context_evidence.cpp": {
+    "bytes": 4947,
+    "sha256": "c44cd5d0b6f561cd57da13c33936d0d08a06fc6bd63ba4a7ea0904b08e3e7a8e"
+  },
+  "loom/src/context/context_evidence.h": {
+    "bytes": 912,
+    "sha256": "665f776ba4d39e24032fa95ea49e402f886a39fd194c92093111bc938c400918"
+  },
+  "loom/src/context/context_plan.cpp": {
+    "bytes": 19238,
+    "sha256": "c4f34b68a6318fa1fd5c136b3f8469cd396460f20f157e3a009d130359bd2436"
+  },
+  "loom/src/context/context_request_ext.cpp": {
+    "bytes": 3050,
+    "sha256": "1ace8b95d52c5ad779653dd9fa34e35716a5b61c231610a159ad4dd30baebeb0"
+  },
+  "loom/src/context/context_request_ext.h": {
+    "bytes": 299,
+    "sha256": "ab072d83bc2c81d02766a8e6cc15820234eb5c217e09740d5f669f42dffc58d3"
+  },
+  "loom/src/context/ctx_common.cpp": {
+    "bytes": 5211,
+    "sha256": "27d0f04412cb37b26afc966aa4b304ef46a31d62527dfce0e657eb5204da5fb0"
+  },
+  "loom/src/context/ctx_common.h": {
+    "bytes": 2808,
+    "sha256": "daf291535068e411f05204a2c6ff8d8c70c17de2660c74e784332762a8c343f4"
+  },
+  "loom/src/context/retrieval.cpp": {
+    "bytes": 13857,
+    "sha256": "78b328ee5082aa91273e5b3a75846b9611fa784737878e848e2596f35b20d16d"
+  },
+  "loom/src/core/config.cpp": {
+    "bytes": 9202,
+    "sha256": "6c2018fc3e49598ccfde60df33d61c0a436eb9b2a25b88a463fc17c061b0a15b"
+  },
+  "loom/src/core/event_bus.cpp": {
+    "bytes": 2616,
+    "sha256": "40222dce81535b3e09f44cef5eb65bf1a6e39c8cf16991d325a8470575ae8f73"
+  },
+  "loom/src/core/provenance.cpp": {
+    "bytes": 16708,
+    "sha256": "e0b48f891d61c28ac9f18c003c9c5e00efcbde06d82a73216936f1f05ba9faba"
+  },
+  "loom/src/core/relations.cpp": {
+    "bytes": 8281,
+    "sha256": "f91185de23439eb0f8ac7c9bdd336fa4fa3fef6f432126feaff1bd3e15002a10"
+  },
+  "loom/src/core/tasks.cpp": {
+    "bytes": 17362,
+    "sha256": "9d8bb9366c0e05b515b4f76d1c0f94253a3588cad9679ed521ee57633b612e0f"
+  },
+  "loom/src/crypto/crypto.cpp": {
+    "bytes": 12694,
+    "sha256": "4491571ebceeed7998c482171feb09a520070bfe57381d8ed7c5ea1524c6b6ad"
+  },
+  "loom/src/db/annotations.cpp": {
+    "bytes": 16640,
+    "sha256": "6b448984ee75949ae6832560378aaf5d299d106b2e7d7425d809215ef3cae648"
+  },
+  "loom/src/db/db.cpp": {
+    "bytes": 42958,
+    "sha256": "afb515b6c4aaf4cb2f2c291fbd5cc396c1b936a282e8748448dbd311bb8fa3f7"
+  },
+  "loom/src/db/db_internal.h": {
+    "bytes": 1605,
+    "sha256": "9638db2afa63d93608f1570ffa622415ab4d3b185476edf2a18f84101910f501"
+  },
+  "loom/src/db/fts.cpp": {
+    "bytes": 15183,
+    "sha256": "8e5d61ed79c0131e76ce92ba290f951812336f0d03668fbc6dd06efc0bb7640e"
+  },
+  "loom/src/db/schema_sql.inc": {
+    "bytes": 2640,
+    "sha256": "920f52f18a11b1241412beddcb93d5c51d74c28db517de5bd73cf8f8d6e26bb9"
+  },
+  "loom/src/db/sqlite.cpp": {
+    "bytes": 9289,
+    "sha256": "c293a4bdcd67365b07220ff09730ea1aa5c618f284610ebe61a209c88302bb2a"
+  },
+  "loom/src/extract/candidate_graph.cpp": {
+    "bytes": 36766,
+    "sha256": "5beca05fef288acbdd24afa8897a8408fe07288a47d622e6772180b167626f2e"
+  },
+  "loom/src/extract/extract.cpp": {
+    "bytes": 30552,
+    "sha256": "09aeca56f605ee1fd37e67ed123bb64f5e09c6d98dd195c6f9d05e7e8bad4c4d"
+  },
+  "loom/src/extract/extract_internal.h": {
+    "bytes": 2416,
+    "sha256": "486143b2b85b866516c99a27f763ea4e95f1e8a337cc490425d6a69b53533948"
+  },
+  "loom/src/extract/extractors.cpp": {
+    "bytes": 87467,
+    "sha256": "8479d16807c03160edd158db8b2ba373ea41302c2600c16bf88bd90fdaa9bfcb"
+  },
+  "loom/src/extract/lexicon.cpp": {
+    "bytes": 16827,
+    "sha256": "9d9b0cf26c1459602e6639c96b45b839ec31f35c0ea035d5a1707a9e25fc6638"
+  },
+  "loom/src/extract/lexicon.h": {
+    "bytes": 6541,
+    "sha256": "140f4b46e7faf721f2b6e857052c558db25a7156e30dffe175363cdc83d030c0"
+  },
+  "loom/src/extract/semantic.cpp": {
+    "bytes": 51778,
+    "sha256": "385aadb8905eac8c611d0743bbb6aa03cf54c4387ea5d03640eba44551908313"
+  },
+  "loom/src/extract/sources.cpp": {
+    "bytes": 9743,
+    "sha256": "11ba9f5a8b2edb644d0e126a4215682ec4313a532a722cb14881bc5bfb5ffa1f"
+  },
+  "loom/src/extract/stage.cpp": {
+    "bytes": 13215,
+    "sha256": "fdd7ffae2c959b15fc5de7eb48d299c1640085a622a29747447da042fe1b1347"
+  },
+  "loom/src/generalize/common.cpp": {
+    "bytes": 45426,
+    "sha256": "7b0bd75af952929b8af9a3208a4c75487b9dc497e635c09431d591c4c32eca57"
+  },
+  "loom/src/generalize/evidence.cpp": {
+    "bytes": 2541,
+    "sha256": "10cc6fb48f0caa4c6705169810f58f8d8100dab54f9e80919e8d3d2f0b034750"
+  },
+  "loom/src/generalize/infer.cpp": {
+    "bytes": 19735,
+    "sha256": "c403db51aea7f91391109bd3c42519159dd165f5741a2357cda80a8fc7ed492f"
+  },
+  "loom/src/generalize/internal.h": {
+    "bytes": 12048,
+    "sha256": "7a023bab382055172744c3a6b0ecbc826ba168cd4a1c2c52c38b4656c258d34e"
+  },
+  "loom/src/generalize/match.cpp": {
+    "bytes": 29638,
+    "sha256": "aa07954aa131db40eefa735da26e4d4767bea88303c9d53def9f86c07306627f"
+  },
+  "loom/src/generalize/operators.cpp": {
+    "bytes": 18676,
+    "sha256": "96b0eb0e09c9e3cf57cadebe08037b6d238f7d3d4b8103e01c499b24233f98cf"
+  },
+  "loom/src/generalize/principles.cpp": {
+    "bytes": 24920,
+    "sha256": "7ebe190a3433084d5f8330e18f03f7f42a0ce0e70d2ae4096298eb4a6eec0cd3"
+  },
+  "loom/src/generalize/stage.cpp": {
+    "bytes": 11137,
+    "sha256": "d55619a77b89911c6e0a51150750e6056c58cc7645e63c867257a27f224dcd12"
+  },
+  "loom/src/github/github_sync.cpp": {
+    "bytes": 18002,
+    "sha256": "7df2bd344f80d60290ef9f2f236e23861c64c36cbf6fa0a5bc07e2c74a56c3c8"
+  },
+  "loom/src/graph/graph_engine.cpp": {
+    "bytes": 7690,
+    "sha256": "3fe0c3711f71d7eb0ad03e3cf7a436e23df1902652f3c8488a73fa0f71eacf93"
+  },
+  "loom/src/graph/graph_memory.cpp": {
+    "bytes": 9327,
+    "sha256": "87c762ef85fdd8e5699552086a1b09b5320db54d4981ae7ca07b5aa3eec13f7d"
+  },
+  "loom/src/import/export_anthropic.cpp": {
+    "bytes": 22523,
+    "sha256": "a13cc31f4b7125938c17fbba5f38c4bb6b5f71a79055c426696660c8de1eb3bc"
+  },
+  "loom/src/import/export_archive.cpp": {
+    "bytes": 37567,
+    "sha256": "bfd3544ad58db7f1696cf31257b984441a0c5e2db53b3a4cf54bfebe1ea9777f"
+  },
+  "loom/src/import/export_checkpoint.cpp": {
+    "bytes": 1692,
+    "sha256": "0a8ab50c9948cfae5e02ec2aabf907fead154cf453e3f46e854ab6a31176bb6c"
+  },
+  "loom/src/import/export_common.cpp": {
+    "bytes": 27889,
+    "sha256": "7e236221fbbc0aaa9bc70de081a15c25e75e1f234b8c3fbad61016798d406394"
+  },
+  "loom/src/import/export_internal.h": {
+    "bytes": 12635,
+    "sha256": "b53d179474a9e0913bb817914f582a587d9c2bd96fd35dbcc9d45a1ed5d0cdd6"
+  },
+  "loom/src/import/export_openai.cpp": {
+    "bytes": 34233,
+    "sha256": "26ff92bd94c32150ae65b0ddbebbe2f4d4ce4cf77b9baf2da9a689228e941b4d"
+  },
+  "loom/src/import/export_unknown.cpp": {
+    "bytes": 9040,
+    "sha256": "4bf29bdfb89aebe08306b7d89ec188719790aeec35dee8092136743a09beb7b6"
+  },
+  "loom/src/import/exporter.cpp": {
+    "bytes": 4263,
+    "sha256": "c0d3e97476fa04627085c7b9262e45f1ba91fdfc2ab54a5ebfe3bfb6b5d8a746"
+  },
+  "loom/src/import/import_audit.cpp": {
+    "bytes": 5671,
+    "sha256": "fb9dcaadb865823eb10a390ef76bdc6857a44a295a114cacadbeeaea9cb2ad40"
+  },
+  "loom/src/import/import_audit.h": {
+    "bytes": 743,
+    "sha256": "dadf6c91996ff52a6064265def64843989a27323dbedb7908ecaef660efc4e46"
+  },
+  "loom/src/import/import_usage.cpp": {
+    "bytes": 5181,
+    "sha256": "04fa104bf988d53d285dc30b12f212d79de9419a82714ad09ece198e5c29a471"
+  },
+  "loom/src/import/import_usage.h": {
+    "bytes": 944,
+    "sha256": "b45f4d92e14e0b2f3aba0a052dec9f4df2b870248f6a382386b85680ca014144"
+  },
+  "loom/src/import/importer_common.cpp": {
+    "bytes": 8213,
+    "sha256": "75dcbc391a918526c4621fde6768d73c971cc03597320215e232cc1bd2c833b2"
+  },
+  "loom/src/import/importer_core.cpp": {
+    "bytes": 26096,
+    "sha256": "11236bfe385b50382ac36f3acc6a823957b6bde6db853467e151e0a185f8c201"
+  },
+  "loom/src/import/importer_html.cpp": {
+    "bytes": 14786,
+    "sha256": "9c983460ae43918c2a1c915bde2e0dd405d6b260f61f9fb098c084388047ebca"
+  },
+  "loom/src/import/importer_internal.h": {
+    "bytes": 2912,
+    "sha256": "80e8e28de1036f6d4446e4f783649dcce18eb2be2db09f73549bbdf534d0726f"
+  },
+  "loom/src/import/importer_json.cpp": {
+    "bytes": 15973,
+    "sha256": "92703995941f4ce84ea4afded617bd9e9c8f5faa0c577bf8f201e82a506bb420"
+  },
+  "loom/src/import/importer_sqlite.cpp": {
+    "bytes": 5437,
+    "sha256": "50da21eb83bc7917de0874c53a5d092f93b090eecd8800ed5e496f5a038bc00f"
+  },
+  "loom/src/import/importer_text.cpp": {
+    "bytes": 14136,
+    "sha256": "ee80b1c15b209eae63a0bef4e6b1020593b1c59232c253e80a8c8da74e3b8718"
+  },
+  "loom/src/import/importer_zip.cpp": {
+    "bytes": 4104,
+    "sha256": "ba3ef148d9fc05b070bbed1fa55c507883ef6e44046c590df80a8c11b7495991"
+  },
+  "loom/src/kb/candidates.cpp": {
+    "bytes": 2202,
+    "sha256": "0e984ce4313ff9dcc1af5585d28689cf97b369a05f304d3f5e5e33509dd0dbd3"
+  },
+  "loom/src/kb/evidence.cpp": {
+    "bytes": 6084,
+    "sha256": "df1161f1cdc3e68eb760ccd9973e74e6b945170bc05d48d7e22a423a025deab1"
+  },
+  "loom/src/kb/graph_packet_store.cpp": {
+    "bytes": 21850,
+    "sha256": "d82f6fcb111b28d5302e0df9d3714b4fbc452ee2828d9068975b469de0b34f7f"
+  },
+  "loom/src/kb/normalize.cpp": {
+    "bytes": 12204,
+    "sha256": "02efccbef4d7f4f8902e8bd03c453bb9c992937339b1e8ab92338860f8b8fb37"
+  },
+  "loom/src/kb/pack.cpp": {
+    "bytes": 82867,
+    "sha256": "4e8122b32840fbd82d81c0f018d087e738e35d8cc98fb4f6e58b70daaae9ac2e"
+  },
+  "loom/src/kb/pack_embedded.inc": {
+    "bytes": 350166,
+    "sha256": "b4ba1dafead0e8c587257eab135a50f9305d155ddca61e72d683077fa14536a4"
+  },
+  "loom/src/kb/schema.cpp": {
+    "bytes": 18112,
+    "sha256": "6a3bad10da6e3beb4fb6b78ab674eb73acac63319041990ab72440e869d72240"
+  },
+  "loom/src/kb/stage_profile.h": {
+    "bytes": 1200,
+    "sha256": "9963f202d8c7181b324526101ab68554372b9fc89d2d01d89531d30ac62200f2"
+  },
+  "loom/src/kb/store.cpp": {
+    "bytes": 45314,
+    "sha256": "a15552c07d6777cad9fe43d87432eb9251d7887d21afa058caa8073f19baee90"
+  },
+  "loom/src/knowledge/engine.cpp": {
+    "bytes": 27946,
+    "sha256": "aaa0a8fc75c9dbce83a2f5f2d86fe75304c8ef4466d995f7be8e3655ed6a55fd"
+  },
+  "loom/src/materialize/materialize.cpp": {
+    "bytes": 25105,
+    "sha256": "538edce8356c96e0ab018e5d5506848203d1f2ebb857d59bb496ff5a703f8e0f"
+  },
+  "loom/src/media/media_providers.cpp": {
+    "bytes": 17488,
+    "sha256": "d4349b8d12e32002d97a5288ad8e47bfc90860f0685faf45716976024d139f7f"
+  },
+  "loom/src/memory/memory_engine.cpp": {
+    "bytes": 13416,
+    "sha256": "f02b9ad14cf9e86a2058b4de028e760daad4fd120fb7c50401455ccefbff89b8"
+  },
+  "loom/src/model/model_action.cpp": {
+    "bytes": 19289,
+    "sha256": "dd572f193aa466e2890003f0093e212d44977acbdfa1c58486085f61192de77f"
+  },
+  "loom/src/model/model_core.cpp": {
+    "bytes": 19683,
+    "sha256": "471064f6a047d6efa008e19c5e9fb35add09f8008108eb1961e1542933a3ee2e"
+  },
+  "loom/src/model/model_general.cpp": {
+    "bytes": 24295,
+    "sha256": "03df74670f2afc1bddccbf004ab2c1f003fc61a4b3904e6d6f17742f3e8cf5d6"
+  },
+  "loom/src/model/model_json.h": {
+    "bytes": 8225,
+    "sha256": "6323f818e112201552ffc3ea434841d61383befeb61abe8093e34c6be1e9ddde"
+  },
+  "loom/src/model/model_pack.cpp": {
+    "bytes": 7113,
+    "sha256": "65df284b70d956b41a33ce43483fdfdf5660a17250c4d19c055dc4be68f7815a"
+  },
+  "loom/src/net/http_common.cpp": {
+    "bytes": 9479,
+    "sha256": "ddecf23c4b730907302621fe68fc9d7619e00a325a2368bb61ab1a90b013f89b"
+  },
+  "loom/src/net/http_default.cpp": {
+    "bytes": 5392,
+    "sha256": "0df8e8f895e329605d8bd8e614c4d607c2fd51962397126995da4ffda5d12a82"
+  },
+  "loom/src/net/sse.cpp": {
+    "bytes": 3250,
+    "sha256": "9491adc32e7d182b5ba232eade12c37b639911d26ea45372e4d78446a59077b2"
+  },
+  "loom/src/providers/providers.cpp": {
+    "bytes": 16618,
+    "sha256": "3f5090ea1d5e7e6b11c895e3155c693ee6e3d19637330b00363466e86c7e68ab"
+  },
+  "loom/src/re/regex.cpp": {
+    "bytes": 38965,
+    "sha256": "0a92cb69cdd1369bc95b0e2ceef0e6e3c2e702af73727b3f8b0d2b71250d8888"
+  },
+  "loom/src/resolve/assess.cpp": {
+    "bytes": 9516,
+    "sha256": "2349a70c689845bc4d52d3f8a50e45a5832f1a2a7345b9469b2842ae141407cd"
+  },
+  "loom/src/resolve/attribution.cpp": {
+    "bytes": 33735,
+    "sha256": "a680f9ebbd30a04c1f66fa948a33de5d7ad5f3fb2a0e22d39b04ee7b9aa165eb"
+  },
+  "loom/src/resolve/lineage.cpp": {
+    "bytes": 16765,
+    "sha256": "45d08d56e8c48b62a7c82a10685aac6e2243d798198b2e90b90a968a92178684"
+  },
+  "loom/src/resolve/resolver.cpp": {
+    "bytes": 18409,
+    "sha256": "d5e3b8317e0180fcf013c69b54480ce9bdb0192f418bffc435d8428d265208a0"
+  },
+  "loom/src/resolve/stage.cpp": {
+    "bytes": 12129,
+    "sha256": "67a972f48d6596c476abe5aa1504bb723ba4adb2ef18845fc9874acb3ec53843"
+  },
+  "loom/src/resolve/vectors.cpp": {
+    "bytes": 7449,
+    "sha256": "1541910de0bce8a2ee6e8661760ca0e7f03ecd9b62d806c3d60813330f4388e9"
+  },
+  "loom/src/runtime.cpp": {
+    "bytes": 14955,
+    "sha256": "b5c022c78e8ac145dc1347603493982bbe230454f186b896b9c34aba7f13c477"
+  },
+  "loom/src/search/selector.cpp": {
+    "bytes": 9620,
+    "sha256": "815017c9f3a6662684c26f35ae723f36d369952b89f2c6c4f36c5ee29e6bb471"
+  },
+  "loom/src/semantic/analyzer.cpp": {
+    "bytes": 9360,
+    "sha256": "2e92591cab0bc87492779cf6ab7fefb43d7ca17dd9b9e4e7c71016c29745a209"
+  },
+  "loom/src/semantic/builtin_rules.json.inc": {
+    "bytes": 3873,
+    "sha256": "b96450e811520c6c4031e342a6aa35d8b0865f86030ac8dca384843f1c623781"
+  },
+  "loom/src/semantic/semantic_llm.cpp": {
+    "bytes": 8070,
+    "sha256": "2b93b269fc2a0a9c5cdcf624ce61bff99571fbab374351f6251ef321965c235c"
+  },
+  "loom/src/stub.h": {
+    "bytes": 626,
+    "sha256": "4732f13e5a2d6ce1fdad97a074c041e9a008d6c8f9c636767f54c166048c8e08"
+  },
+  "loom/src/util/base64.cpp": {
+    "bytes": 2829,
+    "sha256": "b680121d37ef16623f62f06d6186db48b29a7d6f0024b75d84754a0d4d1c5b22"
+  },
+  "loom/src/util/fs.cpp": {
+    "bytes": 5278,
+    "sha256": "ed3412eb6e87589009e63c3bd974a7c5d63bf104806d74a550986c305099ebdd"
+  },
+  "loom/src/util/json.cpp": {
+    "bytes": 8944,
+    "sha256": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d"
+  },
+  "loom/src/util/log.cpp": {
+    "bytes": 3724,
+    "sha256": "dc44f67cbe6868f041998a122747713109a56196eb7502b65bf5d9be35fd9fa2"
+  },
+  "loom/src/util/random_ids_time.cpp": {
+    "bytes": 4512,
+    "sha256": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586"
+  },
+  "loom/src/util/result.cpp": {
+    "bytes": 1359,
+    "sha256": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018"
+  },
+  "loom/src/util/sha256.cpp": {
+    "bytes": 7173,
+    "sha256": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c"
+  },
+  "loom/src/util/unicode.cpp": {
+    "bytes": 3274,
+    "sha256": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165"
+  },
+  "loom/src/util/unicode_tables.inc": {
+    "bytes": 80225,
+    "sha256": "aa19c84617ed20d2d3eaab5bfab834a88d4287d277ea8e7c3f0ea82ecfdea240"
+  },
+  "loom/src/util/utf8.cpp": {
+    "bytes": 7174,
+    "sha256": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902"
+  },
+  "loom/src/worker/semantic_worker.cpp": {
+    "bytes": 14042,
+    "sha256": "5f22795e96214d652365e0f6f8c1d5c05514a550e1be6e566f766f404882b7da"
+  },
+  "loom/third_party/miniz/LICENSE": {
+    "bytes": 1184,
+    "sha256": "0115478d567121238cf6cc1c0c361926cf07a49d9e4c9e66da97fac6a01646b3"
+  },
+  "loom/third_party/miniz/miniz.c": {
+    "bytes": 322549,
+    "sha256": "0fcdc9888cb3a29ca8f176bac087e5fe6c7258a6ab06b1c271c1e109a11d3740"
+  },
+  "loom/third_party/miniz/miniz.h": {
+    "bytes": 71120,
+    "sha256": "295d1a0041aea09609598c0f1f35c1977ca05ad662acbadcfdaac44c140af37b"
+  },
+  "loom/third_party/nlohmann/LICENSE.MIT": {
+    "bytes": 1076,
+    "sha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14"
+  },
+  "loom/third_party/nlohmann/nlohmann/json.hpp": {
+    "bytes": 919975,
+    "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+  },
+  "loom/third_party/sqlite/LICENSE.md": {
+    "bytes": 401,
+    "sha256": "4d8d19bec7a44b0471c525d8d38387b187b17ffd0f3338265459439af499e01f"
+  },
+  "loom/third_party/sqlite/sqlite3.c": {
+    "bytes": 9196373,
+    "sha256": "06c3bf23ecb30c91587e0f96d2fea71f3e5acc8305cda0bb8d23ee29d522745f"
+  },
+  "loom/third_party/sqlite/sqlite3.h": {
+    "bytes": 651186,
+    "sha256": "b4b4cbcc2bd6dda8eaf348103c330c971676a59b3732cca068098f574de43994"
+  },
+  "loom/third_party/sqlite/sqlite3ext.h": {
+    "bytes": 38149,
+    "sha256": "b184dd1586d935133d37ad76fa353faf0a1021ff2fdedeedcc3498fff74bbb94"
+  }
+}
