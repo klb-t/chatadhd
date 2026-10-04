@@ -4,6 +4,7 @@ import ctypes
 import hashlib
 import json
 import os
+from pathlib import Path
 import sqlite3
 import unittest
 
@@ -36,6 +37,36 @@ class GraphPacketStoreTests(CompatTestCase):
     def database(self):
         return sqlite3.connect(self.data / 'chatadhd.db')
 
+    def test_native_compiled_reply_history_and_model_sources_survive_acceptance(self):
+        fixtures = json.loads((Path(__file__).resolve().parents[2] /
+                               'src/packet/tests/reply-fixtures.json').read_text())['cases']
+        library = self.store.library
+        library.loom_packet.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        library.loom_packet.restype = ctypes.c_void_p
+        for i, fixture in enumerate(fixtures):
+            with self.subTest(fixture=i):
+                compiled = self.store._take(library.loom_packet(
+                    self.store.context, json.dumps(fixture['request'], ensure_ascii=False).encode()))
+                self.assertEqual(compiled, fixture['expected'])
+                applied = self.store._take(library.loom_packet(self.store.context, json.dumps(
+                    {'operation': 'apply_compiled_reply', 'packet': fixture['request']['packet'],
+                     'compilation': compiled, 'policy': AUTO}, ensure_ascii=False).encode()))
+                self.assertNotIn('error', applied)
+                packet = applied['packet']
+                selection = {name: [codec.record_id(name, row) for row in packet[name]]
+                             for name in ('entities', 'claims', 'sources')}
+                expected = {name: {id_: None for id_ in ids} for name, ids in selection.items()}
+                accepted = self.store.execute({'operation': 'accept', 'target': 'compiled-' + str(i),
+                    'packet': packet, 'selection': selection, 'expected_rows': expected,
+                    'explicitly_accepted': True})
+                receipt = accepted['receipt']
+                self.assertEqual(receipt['packet'], packet)
+                self.assertEqual(self.store.replay(receipt['id'])['receipt'], receipt)
+                self.assertEqual(self.store.read(receipt['id'])['receipt']['packet']['sources'],
+                                 packet['sources'])
+                for source in compiled['diff']['sources']['add']:
+                    self.assertEqual(source['observation']['attrs']['model_origin']['kind'], 'model')
+
     def test_full_packet_history_and_metadata_survive_accept_read_replay_restart(self):
         diff = codec.empty_diff(self.packet, proposal_id='review', origin=MODEL)
         after = deepcopy(self.packet['claims'][0]); after['assessment']['status'] = 'contested'
@@ -46,7 +77,8 @@ class GraphPacketStoreTests(CompatTestCase):
         receipt = result['receipt']
         self.assertEqual(receipt['packet'], packet)
         self.assertFalse(receipt['acceptance_establishes_content_truth'])
-        self.assertIn('not_performed', receipt['reversible_history_validation'])
+        self.assertEqual(receipt['reversible_history_validation'],
+                         'native_codec_backwards_and_forwards_history_replay')
         self.assertFalse(result['replayed'])
         self.assertEqual(self.accept(packet)['receipt'], receipt)
         with self.database() as db:
@@ -60,6 +92,54 @@ class GraphPacketStoreTests(CompatTestCase):
         self.addCleanup(self.store.close)
         self.assertEqual(self.store.read(receipt['id'])['receipt'], receipt)
         self.assertEqual(self.store.replay(receipt['id'])['receipt'], receipt)
+
+    def test_retry_preserves_exact_receipt_without_a_second_insertion(self):
+        result = self.accept()
+        receipt = result['receipt']
+        with self.database() as db:
+            body = db.execute('SELECT body FROM loom_kb_graph_receipts WHERE id=?',
+                              (receipt['id'],)).fetchone()[0]
+        retry = self.accept()
+        self.assertTrue(retry['replayed'])
+        self.assertEqual(retry['receipt'], receipt)
+        with self.database() as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_graph_receipts').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_runs').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT body FROM loom_kb_graph_receipts WHERE id=?',
+                                        (receipt['id'],)).fetchone()[0], body)
+
+    def test_legacy_receipt_keeps_original_validation_scope_on_read_replay_and_retry(self):
+        # Reconstruct a synthetic pre-upgrade receipt table before its immutable
+        # triggers are installed. The native rows/snapshots and request identity
+        # are the same as today; only the historical validation receipt differs.
+        legacy = deepcopy(self.accept()['receipt'])
+        legacy['native_validation_scope'] = (
+            'packet_head_and_provenance_hashes_selected_native_rows_entity_claim_'
+            'observation_reference_closure_source_hashes_quotes_utf8_subspans')
+        legacy['reversible_history_validation'] = (
+            'not_performed_by_native_adapter_use_graph_packet_codec')
+        legacy.pop('packet_codec_validation', None)
+        legacy.pop('receipt_sha256')
+        legacy['receipt_sha256'] = codec.digest(legacy)
+        original_body = json.dumps(legacy, ensure_ascii=False, indent=2)
+        self.store.close()
+        with self.database() as db:
+            db.execute('DROP TABLE loom_kb_graph_receipts')
+            db.execute('CREATE TABLE loom_kb_graph_receipts '
+                       '(id TEXT PRIMARY KEY, run_id TEXT NOT NULL, body TEXT NOT NULL)')
+            db.execute('INSERT INTO loom_kb_graph_receipts (id,run_id,body) VALUES (?,?,?)',
+                       (legacy['id'], legacy['run_id'], original_body))
+        self.store = NativeGraphStore(os.environ['LOOM_LIBRARY'], self.data)
+        self.addCleanup(self.store.close)
+        for result in (self.store.read(legacy['id']), self.store.replay(legacy['id']), self.accept()):
+            self.assertEqual(result['receipt'], legacy)
+            self.assertNotIn('packet_codec_validation', result['receipt'])
+            self.assertTrue(result['row_drift']['matches'])
+        with self.database() as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_graph_receipts').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_runs').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT body FROM loom_kb_graph_receipts WHERE id=?',
+                                        (legacy['id'],)).fetchone()[0], original_body)
 
     def test_utf8_subspan_projection_does_not_rewrite_quote_or_locator(self):
         packet = deepcopy(self.packet)
@@ -272,6 +352,47 @@ class GraphPacketStoreTests(CompatTestCase):
         packet['history'] = [{'forged': True}]
         rehash(packet)
         with self.assertRaises(ValueError): self.accept(packet)
+
+    def test_direct_abi_rejects_rehashed_corrupt_history_without_any_native_writes(self):
+        diff = codec.empty_diff(self.packet, proposal_id='native-history', origin=MODEL)
+        after = deepcopy(self.packet['claims'][0])
+        after['assessment']['status'] = 'contested'
+        diff['claims']['update'].append({'id': after['id'],
+            'before_sha256': codec.digest(self.packet['claims'][0]), 'after': after})
+        valid, _ = codec.apply_diff(self.packet, diff, AUTO)
+        for mutation, error in (
+                ('event_hash', 'graph_packet_history_hash_drift'),
+                ('parent', 'graph_packet_history_parent_hash_mismatch'),
+                ('forward', 'graph_packet_history_forward_replay_mismatch')):
+            with self.subTest(mutation=mutation):
+                packet = deepcopy(valid)
+                event = packet['history'][0]
+                if mutation == 'event_hash':
+                    event['application_id'] = '0' * 64
+                elif mutation == 'parent':
+                    event['previous_task']['fabricated_earlier_task'] = True
+                else:
+                    event['diff']['claims']['update'][0]['after']['assessment']['status'] = 'rejected'
+                if mutation != 'event_hash':
+                    event['application_id'] = codec.digest(
+                        {key: value for key, value in event.items() if key != 'application_id'})
+                # Rehash the outer head too: rejection must come from full
+                # history replay, not the existing packet-head hash gate.
+                rehash(packet)
+                request = {'operation': 'accept', 'target': 'corrupt-history-' + mutation,
+                           'packet': packet, 'selection': self.selection,
+                           'expected_rows': self.expected, 'explicitly_accepted': True}
+                # Bypass acceptance_request/Python validation, just like a
+                # direct HTTP or C ABI client supplying an exchange packet.
+                result = self.store._take(self.store.library.loom_graph_packet_store(
+                    self.store.context, json.dumps(request, ensure_ascii=False).encode('utf-8')))
+                self.assertEqual(result['error']['code'], 'invalid_argument')
+                self.assertIn(error, result['error']['message'])
+                with self.database() as db:
+                    for table in ('loom_kb_observations', 'loom_kb_entities', 'loom_kb_claims',
+                                  'loom_kb_runs', 'loom_kb_graph_receipts'):
+                        if db.execute('SELECT 1 FROM sqlite_master WHERE name=?', (table,)).fetchone():
+                            self.assertEqual(db.execute('SELECT COUNT(*) FROM ' + table).fetchone()[0], 0)
 
     def test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4(self):
         receipt = self.accept(target='v2-existing')['receipt']

@@ -165,6 +165,136 @@ class PacketTest(unittest.TestCase):
         self.assertIn('error',self.invoke({'operation':'validate','packet':p,'resource_limits':{'max_nodes':2}}))
         self.assertEqual(self.ok({'operation':'validate','packet':p,'resource_limits':{'max_nodes':None,'max_depth':None}}),p)
         self.assertIn('error',self.invoke({'operation':'validate','packet':p,'resource_limits':{'max_depth':0}}))
+        self.assertEqual(self.ok({'operation':'validate','packet':p,'resource_limits':{'max_integer_bits':0}}),p)
+        zero=self.invoke({'operation':'validate','packet':p,'resource_limits':{'max_nodes':0}})
+        self.assertEqual(zero['error']['message'],'graph_packet_configured_resource_limit')
+
+    def test_inverse_rejects_rehashed_contradictory_receipt(self):
+        p=self.packet()
+        d=graph.empty_diff(p,proposal_id='receipt-consistency',origin=ORIGIN)
+        d['task']={'before_sha256':graph.digest(p['task']),'after':{'accepted-step':1}}
+        for acceptance in ['auto','preview']:
+            policy={**POLICY,'acceptance':acceptance}
+            applied=self.ok({'operation':'apply','packet':p,'diff':d,'policy':policy})
+            receipt=applied['receipt']
+            self.assertEqual(self.ok({'operation':'invert','packet':applied['packet'],'receipt':receipt}),p)
+            mutations={
+                'accepted':not receipt['accepted'],
+                'candidate_packet_sha256':'0'*64,
+                'canonical_store_written':True,
+                'acceptance_establishes_content_truth':True,
+            }
+            for field,value in mutations.items():
+                with self.subTest(acceptance=acceptance,field=field):
+                    bad=copy.deepcopy(receipt)
+                    bad[field]=value
+                    bad['receipt_sha256']=graph.digest({k:v for k,v in bad.items() if k!='receipt_sha256'})
+                    self.assertIn('error',self.invoke({'operation':'invert','packet':applied['packet'],'receipt':bad}))
+
+    def test_generated_projections_respect_explicit_resource_limits(self):
+        def string_bytes(value):
+            if isinstance(value,str):return len(value.encode('utf-8'))
+            if isinstance(value,list):return sum(string_bytes(v) for v in value)
+            if isinstance(value,dict):return sum(string_bytes(k)+string_bytes(v) for k,v in value.items())
+            return 0
+
+        p=self.packet()
+        d=graph.empty_diff(p,proposal_id='generated-resource-limit',origin=ORIGIN)
+        d['task']={'before_sha256':graph.digest(p['task']),'after':{'padding':'x'*100}}
+        preview_request={'operation':'preview','packet':p,'diff':d}
+        candidate=self.ok(preview_request)['candidate_packet']
+        # The complete command fits; its retained history makes the candidate grow.
+        cap=string_bytes(preview_request)+200
+        self.assertGreater(string_bytes(candidate),cap)
+        for operation in ['preview','apply']:
+            request={**preview_request,'operation':operation}
+            if operation=='apply':request['policy']=POLICY
+            request['resource_limits']={'max_string_bytes':cap}
+            self.assertLessEqual(string_bytes(request),cap)
+            with self.subTest(operation=operation):
+                self.assertIn('error',self.invoke(request))
+            request['resource_limits']={'max_string_bytes':None}
+            self.ok(request)
+
+        request=copy.deepcopy(self.fixtures[0]['request'])
+        compilation=self.ok(request)
+        cap=string_bytes(request)+100
+        request['resource_limits']={'max_string_bytes':cap}
+        self.assertLessEqual(string_bytes(request),cap)
+        self.assertGreater(string_bytes(compilation['diff']),cap)
+        self.assertIn('error',self.invoke(request))
+        request['resource_limits']={'max_string_bytes':None}
+        self.assertEqual(self.ok(request),compilation)
+
+    def test_counter_observation_references_require_existing_sources(self):
+        fixture=self.fixtures[0]
+        diff=fixture['expected']['diff']
+        request={'operation':'make','origin':diff['origin']}
+        for collection in graph.COLLECTIONS:
+            request[collection]=copy.deepcopy(diff[collection]['add'])
+        source_id=request['sources'][0]['observation']['id']
+        counter=request['claims'][0]['assessment']['counter']
+        counter['observations']=[source_id]
+        valid=self.ok(request)
+        self.assertEqual(valid['claims'][0]['assessment']['counter']['observations'],[source_id])
+        for missing in ['missing-source','']:
+            with self.subTest(reference=missing):
+                bad=copy.deepcopy(request)
+                bad['claims'][0]['assessment']['counter']['observations']=[missing]
+                self.assertIn('error',self.invoke(bad))
+
+    def test_reply_fragment_addresses_preserve_unicode_ranges(self):
+        for fixture_index,fixture in enumerate(self.fixtures):
+            p=fixture['request']['packet']
+            c=fixture['expected']
+            response=c['response_text']
+            response_bytes=response.encode('utf-8')
+            sources={s['observation']['id']:s['observation'] for s in c['diff']['sources']['add']}
+            entities={e['id']:e for e in c['diff']['entities']['add']}
+            for local_id,span in c['spans'].items():
+                with self.subTest(fixture=fixture_index,local_id=local_id):
+                    node_id=c['node_ids'][local_id]
+                    request={'operation':'reply_fragment','packet':p,'compilation':c}
+                    by_local=self.ok({**request,'address':{'local_id':local_id}})
+                    by_node=self.ok({**request,'address':{'node_id':node_id}})
+                    self.assertEqual(by_local,by_node)
+                    self.assertEqual(by_local['schema'],'loom.graph_reply_fragment/1')
+                    self.assertEqual(by_local['local_id'],local_id)
+                    self.assertEqual(by_local['node_id'],node_id)
+                    self.assertEqual(by_local['turn_entity_id'],c['turn_entity_id'])
+                    self.assertEqual(by_local['compilation_sha256'],c['compilation_sha256'])
+                    self.assertEqual(by_local['span'],span)
+                    byte_slice=response_bytes[span['byte_start']:span['byte_start']+span['byte_len']]
+                    char_slice=response[span['char_start']:span['char_start']+span['char_len']]
+                    self.assertEqual(by_local['text'],byte_slice.decode('utf-8'))
+                    self.assertEqual(by_local['text'],char_slice)
+                    node=entities[node_id]
+                    source_id=node['attrs']['source_observation_id']
+                    self.assertEqual(by_local['source_observation_id'],source_id)
+                    locator=copy.deepcopy(sources[source_id]['locator'])
+                    locator['byte_start']=span['byte_start']
+                    locator['byte_len']=span['byte_len']
+                    self.assertEqual(by_local['source_locator'],locator)
+                    self.assertEqual(by_local['model_origin'],node['attrs']['model_origin'])
+                    self.assertEqual(by_local['model_origin']['kind'],'model')
+
+    def test_reply_fragment_rejects_unknown_ambiguous_and_forged_addresses(self):
+        fixture=self.fixtures[0]
+        p=fixture['request']['packet']
+        c=fixture['expected']
+        local_id=next(iter(c['node_ids']))
+        node_id=c['node_ids'][local_id]
+        request={'operation':'reply_fragment','packet':p,'compilation':c}
+        addresses=[{}, {'local_id':'missing'}, {'node_id':'missing'},
+                   {'local_id':local_id,'node_id':node_id}, {'local_id':None},
+                   {'local_id':local_id,'extra':True}]
+        for address in addresses:
+            with self.subTest(address=address):
+                self.assertIn('error',self.invoke({**request,'address':address}))
+        bad=copy.deepcopy(c)
+        bad['response_text']='forged'
+        bad['compilation_sha256']=graph.digest({k:v for k,v in bad.items() if k!='compilation_sha256'})
+        self.assertIn('error',self.invoke({**request,'compilation':bad,'address':{'local_id':local_id}}))
 
     def test_preview_is_not_acceptance(self):
         p=self.packet();d=graph.empty_diff(p,proposal_id='d',origin=ORIGIN)
