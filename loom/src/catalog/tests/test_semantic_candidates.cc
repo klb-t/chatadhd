@@ -12,6 +12,7 @@
 
 #include "../semantic_candidates.h"
 #ifndef LOOM_SEMANTIC_CANDIDATES_MODULE_ONLY
+#include "../relevance_recipe.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/knowledge.h"
@@ -141,6 +142,19 @@ struct NativeFixture {
       value["records"].push_back(Json{{"unit_id", unit.unit.id}, {"content_hash", unit.content_hash}, {"vector", vector}});
     }
     return value;
+  }
+
+  Json relevance() const {
+    return take(rt->knowledge().pack())->policy("relevance");
+  }
+
+  void replace_relevance(const Json& document) {
+    const auto base = take(rt->knowledge().pack());
+    std::map<std::string, Json> documents;
+    for (const auto& file : base->files()) documents[file] = base->file(file);
+    documents["policy/relevance.json"] = document;
+    auto changed = take(kb::Pack::from_documents(std::move(documents)));
+    cat = std::make_unique<Catalog>(*rt, std::move(changed));
   }
 
   Result<Json> score() {
@@ -535,5 +549,73 @@ TEST_CASE("native invalid semantic configuration cannot change persisted scores 
     CHECK_FALSE(result.has_value());
     CHECK(fixture.persisted_scoring() == baseline_snapshot);
   }
+}
+
+TEST_CASE("native relevance recipe reports effective data and a changed pack gets a distinct run") {
+  NativeFixture fixture;
+  const auto original = fixture.relevance();
+  const auto before = take(fixture.score());
+  const auto parameters = take(load_relevance_recipe(original)).snapshot;
+  REQUIRE(before.contains("relevance_recipe"));
+  CHECK(before["relevance_recipe"]["parameters"] == parameters);
+  CHECK(before["relevance_recipe"]["sha256"] == Sha256::hex(json::canonical(parameters)));
+  CHECK(before["relevance_recipe"]["graph_persistence"] == false);
+  const auto original_rows = fixture.score_rows(before["run_id"].get<std::string>());
+  auto changed = original;
+  changed["bias"] = original["bias"].get<double>() + 0.1;
+  fixture.replace_relevance(changed);
+  const auto after = take(fixture.score());
+  CHECK(after["run_id"] != before["run_id"]);
+  CHECK(after["relevance_recipe"]["sha256"] != before["relevance_recipe"]["sha256"]);
+  CHECK(after["relevance_recipe"]["parameters"]["bias"] == changed["bias"]);
+  CHECK(json::canonical(after["relevance_recipe"]["parameters"]["weights"]) == json::canonical(original["weights"]));
+  fixture.replace_relevance(original);
+  const auto restored = take(fixture.score());
+  CHECK(restored["run_id"] == before["run_id"]);
+  CHECK(restored["relevance_recipe"] == before["relevance_recipe"]);
+  CHECK(fixture.score_rows(restored["run_id"].get<std::string>()) == original_rows);
+}
+
+TEST_CASE("native incomplete relevance data cannot replace persisted scoring or profile terms") {
+  NativeFixture fixture;
+  const auto original = fixture.relevance();
+  const auto baseline = take(fixture.score());
+  fixture.decisions(baseline["run_id"].get<std::string>());
+  const auto saved = fixture.persisted_scoring();
+  for (const auto* field : {"normalise_percentile", "expansion"}) {
+    auto changed = original;
+    if (std::string(field) == "expansion") changed["term_class_weights"].erase(field);
+    else changed["bm25"].erase(field);
+    fixture.replace_relevance(changed);
+    const auto scored = fixture.score();
+    CHECK_FALSE(scored.has_value());
+    CHECK(fixture.persisted_scoring() == saved);
+    auto lock = fixture.rt->db().lock();
+    const auto profiles_before = take(fixture.rt->db().conn().query_text("SELECT body FROM loom_cat_profiles ORDER BY id"));
+    const auto added = fixture.cat->add_profile_terms(Json::array({"new term"}));
+    CHECK_FALSE(added.has_value());
+    CHECK(take(fixture.rt->db().conn().query_text("SELECT body FROM loom_cat_profiles ORDER BY id")) == profiles_before);
+  }
+}
+
+TEST_CASE("native profile expansion uses the same data weight as catalog scoring") {
+  NativeFixture fixture;
+  auto changed = fixture.relevance();
+  changed["term_class_weights"]["expansion"] = 2.5;
+  fixture.replace_relevance(changed);
+  REQUIRE(fixture.cat->add_profile_terms(Json::array({"universal expansion probe"})).has_value());
+  auto lock = fixture.rt->db().lock();
+  auto statement = take(fixture.rt->db().conn().prepare("SELECT body FROM loom_cat_profiles ORDER BY id"));
+  int matches = 0;
+  while (take(statement.step())) {
+    const auto profile_body = json::parse_or(statement.get_text(0), Json::object());
+    for (const auto& term : profile_body.at("terms")) {
+      if (json::get_string(term, "term") != "universal expansion probe") continue;
+      ++matches;
+      CHECK(json::get_string(term, "class") == "expansion");
+      CHECK(term.at("weight").get<double>() == 2.5);
+    }
+  }
+  CHECK(matches == 1);
 }
 #endif

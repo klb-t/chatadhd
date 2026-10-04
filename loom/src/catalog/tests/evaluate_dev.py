@@ -188,6 +188,16 @@ def run(arguments: argparse.Namespace) -> dict:
         raise ValueError("duplicate DEV conversation IDs")
     sources = [FIXTURE / "chatgpt_export.zip", FIXTURE / "claude_export.zip"]
     patch = {}
+    relevance_overlay = None
+    if getattr(arguments, "relevance_overlay", None):
+        overlay_path = arguments.relevance_overlay.resolve()
+        overlay_bytes = overlay_path.read_bytes()
+        overlay_document = json.loads(overlay_bytes)
+        validate_replay(overlay_document)
+        if not isinstance(overlay_document, dict) or overlay_document.get("schema") != "loom.kb.relevance/1":
+            raise ValueError("relevance overlay must be a complete loom.kb.relevance/1 document")
+        relevance_overlay = {"path": str(overlay_path), "sha256": hashlib.sha256(overlay_bytes).hexdigest(),
+                             "document": overlay_document, "mode": "existing pack file replacement"}
     semantic_receipt = None
     if arguments.semantic_input:
         semantic_path = arguments.semantic_input.resolve()
@@ -212,11 +222,16 @@ def run(arguments: argparse.Namespace) -> dict:
                 "semantic_input": semantic_receipt,
                 "boundaries": {"corpus": "synthetic_dev_only", "holdout_read": False,
                                "blind_read": False, "provider_calls": 0, "core_import": False}}
+    if relevance_overlay:
+        snapshot["relevance_overlay"] = relevance_overlay
     inputs_path = arguments.output.with_name(arguments.output.stem + ".inputs.json")
     write_json(inputs_path, snapshot)
     native = Native(library)
     with tempfile.TemporaryDirectory(prefix="loom-catalog-dev-") as temporary:
         options = {"data_dir": str(Path(temporary) / "runtime"), "start_workers": False}
+        if relevance_overlay:
+            target = Path(options["data_dir"]) / "kb/policy/relevance.json"
+            write_json(target, relevance_overlay["document"])
         context = native.open(options)
         try:
             snapshot["runtime_options"] = options
@@ -229,6 +244,7 @@ def run(arguments: argparse.Namespace) -> dict:
             snapshot["native_pack"] = native.call("loom_kb_pack", context)
             thresholds = native.call("loom_kb_policy", context, "thresholds")
             snapshot["native_thresholds"] = thresholds
+            snapshot["native_relevance"] = native.call("loom_kb_policy", context, "relevance")
             write_json(inputs_path, snapshot)  # Freeze exact inputs before scanning/scoring.
             stage = native.call("loom_knowledge_run", context, config, progress=True)
             if stage.get("status") != "done":
@@ -291,6 +307,8 @@ def main() -> None:
     parser.add_argument("--library", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--semantic-input", type=Path)
+    parser.add_argument("--relevance-overlay", type=Path,
+                        help="Full saved relevance policy installed through the existing native pack overlay")
     arguments = parser.parse_args()
     report = run(arguments)
     print(json.dumps(report["summary"], ensure_ascii=False, sort_keys=True))
