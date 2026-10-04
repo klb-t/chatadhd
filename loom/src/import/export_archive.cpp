@@ -722,6 +722,10 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
     if (st.invalid || st.too_deep || st.truncated) {
       run.note_stats(member, st);
       run.rep.partial = true; report_out = run.rep.to_json();
+      // A malformed standalone value has no stream of committed elements to
+      // retain. Preserve the structured parse error of the bare-file API.
+      if (!L.top_is_array && !L.wrapper)
+        return Error(Errc::Parse, st.message.empty() ? "invalid or truncated JSON" : st.message);
       return std::optional<std::vector<Conversation>>(std::move(run.convs));
     }
     // No provider evidence: retain generic legacy interpretation for valid input.
