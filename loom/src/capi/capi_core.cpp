@@ -9,6 +9,7 @@
 #include "loom/media_providers.h"
 #include "loom/provenance.h"
 #include "loom/tasks.h"
+#include "loom/usage_policy.h"
 
 using namespace loom;
 using namespace loom::capi;
@@ -383,6 +384,12 @@ LOOM_API void loom_set_config(LoomContext* ctx, const char* key, const char* val
   guard_void("loom_set_config", [&] {
     if (!live(ctx) || !key || !*key) return;
     Json v = value ? json::parse_or(value, Json(std::string(value))) : Json(nullptr);
+    if (std::string_view(key) == "loom_usage_policy") {
+      if (auto st = validate_usage_policy_options(v); !st) {
+        log::error("loom.capi", "loom_set_config: invalid usage policy");
+        return;
+      }
+    }
     auto& cfg = ctx->rt->config();
     cfg.set(key, std::move(v));
     if (auto st = cfg.save(); !st) log::error("loom.capi", "loom_set_config: save failed: {}", st.error().message);
@@ -395,6 +402,9 @@ LOOM_API int loom_set_config_json(LoomContext* ctx, const char* patch_json) {
     auto pj = parse_arg(patch_json, Json(nullptr));
     if (!pj) return code(pj.error());
     if (!pj->is_object()) return LOOM_E_INVALID_ARGUMENT;
+    if (auto it = pj->find("loom_usage_policy"); it != pj->end()) {
+      if (auto st = validate_usage_policy_options(*it); !st) return code(st.error());
+    }
     auto& cfg = ctx->rt->config();
     for (auto it = pj->begin(); it != pj->end(); ++it) cfg.set(it.key(), it.value());
     return code(cfg.save());
