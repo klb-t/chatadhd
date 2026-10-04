@@ -1,0 +1,509 @@
+{
+  "baseline_report_sha256": "3140396c63e0a1b94d42426def24bcffdb20094b0c22d93a244e747133df0eae",
+  "disclosure": "The 14 matching vectors are deliberately assigned from known DEV labels. These are synthetic mechanism fixtures, not saved model responses. No improved model recall or model specificity is measured; the observed retrieval baseline remains 31/45 with 0/20 selected noise conversations.",
+  "fixture_sha256": {
+    "chatgpt_export.zip": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+    "claude_export.zip": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+    "ground_truth.json": "2b8bcfc156662ca05e04e8103990fc72cc7398a9fac4b4ec651806b2e7574e0c"
+  },
+  "inventory_sha256": "4326bf833190f46a260aa190dfd53822ec235d96f2b26139b3f2e02fa55a5d01",
+  "knowledge_config": {
+    "llm": "off",
+    "sources": [
+      "/workspace/scratch/73a479acdbc0/chatadhd/loom/tests/fixtures/eval/synthetic_dev/chatgpt_export.zip",
+      "/workspace/scratch/73a479acdbc0/chatadhd/loom/tests/fixtures/eval/synthetic_dev/claude_export.zip"
+    ],
+    "stage_params": {
+      "catalog": {
+        "import": {
+          "dry_run": true,
+          "import_messages": false
+        },
+        "profile": {
+          "extra_terms": [
+            "NoteFlow",
+            "appka od notatek",
+            "note-app",
+            "ta apka z notatkami i czatem",
+            "notatnik",
+            "Reeltime",
+            "generator reelsow",
+            "ten pipeline do wideo",
+            "reels-gen",
+            "generator klipow",
+            "Stroz",
+            "Watchdog-skrypt",
+            "ten pilnujacy skrypt",
+            "CodeWatchdog",
+            "stroz.py",
+            "sprawa z Kwiatowej",
+            "sprawa najmu",
+            "sprawa z Zenonem",
+            "sprawa o kaucje",
+            "Lokatorka-sprawa",
+            "Analog Ghosts",
+            "plyta",
+            "EP",
+            "projekt muzyczny",
+            "te nagrania"
+          ]
+        },
+        "scan": {
+          "threads": 1
+        },
+        "score": {
+          "llm": "off"
+        }
+      }
+    },
+    "stages": [
+      "catalog"
+    ]
+  },
+  "library": {
+    "path": "/dev/shm/chatadhd-catalog-audit-delivery-libloom.so",
+    "sha256": "5ded94c8771d79105c32d8b7de38c80a7500ec7cb475198e49148a9bb49a1fe5"
+  },
+  "mock_envelope": {
+    "channel": "synthetic_mechanism_fixture",
+    "enabled": true,
+    "method": "synthetic_mechanism_fixture",
+    "model": "test-mock-not-model-quality",
+    "policy": {
+      "bias": -3,
+      "fusion": "union",
+      "tau_relevant": 0.7,
+      "weight": 8
+    },
+    "profile_input_hash": "127d8478d616e3c62662685c8c69286edea11aaa0a3c64029050c820981ef463",
+    "query": [
+      1,
+      0
+    ],
+    "records": [
+      {
+        "content_hash": "b8cb2362f8ee19ccad9f46e8cd8ec436f3a93577246e1a0c18305cb88eeb5ed6",
+        "unit_id": "un_4384d4445216955a",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "9d4a64d912d477fa11ea62f08f4a4333ee37e6a2305ef456e9a2fff94b17bcac",
+        "unit_id": "un_4192649ecc19f13b",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "014ffa90035cff9514b1732abf58087e469466ad5025bbf5a7d52b1370fca435",
+        "unit_id": "un_07ab9155906cd7e4",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "b88fc84f06b51ef265c7e5ecbbd2edb5259e4ac1e5cef1975c0d9c61cbf9b02d",
+        "unit_id": "un_289362a2a57eb883",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "f234acd80cd0ad0e76e89e4c5669e03c3d14cfdaf606ce007ecdecd1c0358b1d",
+        "unit_id": "un_7355396778b1e111",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "ce6b7229d482e9094cc64abf6c1c6cdc47929c03ec811350e73038c052eaea43",
+        "unit_id": "un_366b6fda881ecd0e",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "f91377a0d9b300f43026f42c08ee3171119bbeb4767a880cc5b7e3514ac50fbd",
+        "unit_id": "un_8841b8c6d66c271e",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "353b9a48ed5ae30b926da8778e4d6590a88b9b2481bdae64ab35ba68b62f5aac",
+        "unit_id": "un_b62e81cc8c8f0ac4",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "c5a5d0297bb79434d5fde2442ce535cb5ba6deee3e9b592bea1191bd92f1d7c3",
+        "unit_id": "un_2f610822f4fd7505",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "ba817db74f872bb297d2da4f5162fca518d97224d5046eab05e8c5babfbe03ca",
+        "unit_id": "un_bd10bee315aaab35",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "eebe2b93b528364bc9a2fd85df42ca14f0c72d6785cb1e299eaaaa7a165a9cac",
+        "unit_id": "un_4b1b98e2bcd92025",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "001c21f3c139bc8e85de80ecbf295b4503c8a43392b183ae6238a13e9b094f45",
+        "unit_id": "un_e05a7aff7e0005b7",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "326185175bdd59dedf7a1d52793ea20d8eb4dabbbfa12fe80f4491e574c6f5b4",
+        "unit_id": "un_cae246a71b8db0af",
+        "vector": [
+          1,
+          0
+        ]
+      },
+      {
+        "content_hash": "30d50844aedf4a03ca4f32bc00c077f1b7f6da0a750e242cb0fc601f815bcb7e",
+        "unit_id": "un_31be95f019852809",
+        "vector": [
+          1,
+          0
+        ]
+      }
+    ],
+    "schema": "loom.catalog_semantic_candidates/1"
+  },
+  "mock_vector_origin": "deliberately_label_derived_mechanism_fixture",
+  "native_commit": "1fb25ae7a826fbc9897897cc69ea6ccb94f052a6",
+  "native_pack": {
+    "files": [
+      {
+        "path": "artifact_types/brainstorm.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "eedd323f5397aaad523bafe7748207abd6efd8c3b75acb4a13850f5681c55a0a"
+      },
+      {
+        "path": "artifact_types/codebase.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "c359d2910722395cf9680e03c58e34c37a84a9dafe879ef369ee12288bb2abed"
+      },
+      {
+        "path": "artifact_types/commit.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "819766741cbe8cc8c6e143482a8864a95fc747360c4a636596fe346345546daf"
+      },
+      {
+        "path": "artifact_types/conversation.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "aad43b40131430e016aa0ef757da9700770f6ec3351fdd05da60916b4a5bc84b"
+      },
+      {
+        "path": "artifact_types/email.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "2ac7bb6c188a319f10eae2b975511a24f665991f91fc1f0dd7cf7ded9896145a"
+      },
+      {
+        "path": "artifact_types/pleading.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "fb081009de0e6e0048fc1f54bdb042e37802cb5d23cad9ca40160465972fc10b"
+      },
+      {
+        "path": "artifact_types/recording_transcript.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "a56d2c0c476b82bde6ff11f88e3d5a7ed7b0b8b35441f975f0c8a321872611c6"
+      },
+      {
+        "path": "artifact_types/screenplay.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "8020bab2f0e5e0d6c44632c8bc915dcc7c580dec735ac679557cfc8e979e4df3"
+      },
+      {
+        "path": "artifact_types/specification.json",
+        "schema": "loom.kb.artifact_type/1",
+        "sha256": "8868a203c7263f2bed6c56868c227db0824e6d6b4ca6cf6965be179559449cbc"
+      },
+      {
+        "path": "facets/agent.json",
+        "schema": "loom.kb.facet/1",
+        "sha256": "61c6b2543397ba541d6c5276795010477589c8f2f21aaf653eaa8b42d4a24ce4"
+      },
+      {
+        "path": "facets/multiplatform.json",
+        "schema": "loom.kb.facet/1",
+        "sha256": "0805191fff03112cb2ffc6109ee15059d7d08f591a78ae54703b27df6b486499"
+      },
+      {
+        "path": "facets/staged_transformation.json",
+        "schema": "loom.kb.facet/1",
+        "sha256": "f8b09f55f770d8e91a4473b4e768a886d25b79aeb269b8f3ea7b3b6210818ba4"
+      },
+      {
+        "path": "goals/goal_types.json",
+        "schema": "loom.kb.goal_types/1",
+        "sha256": "b04b19c5ee6e5ea8588b55b94a50d3a51097875c8d9f83201c88254b21e49e33"
+      },
+      {
+        "path": "lexicons/cues.json",
+        "schema": "loom.kb.cues/1",
+        "sha256": "2db36f66cc0654de59ad5c5eb3eeb0518f56358460530760295517add99fd2a8"
+      },
+      {
+        "path": "lexicons/gazetteer.json",
+        "schema": "loom.kb.gazetteer/1",
+        "sha256": "21dbf3ae1671fa8739ce4346e0e3e2a4b934f75dfd412afc6221db61a205f8b6"
+      },
+      {
+        "path": "lexicons/glossary.json",
+        "schema": "loom.kb.glossary/1",
+        "sha256": "0e2d23a6f8e1ff37847bf2db84b6ce73c627495493e2f9d7a18e06e659979364"
+      },
+      {
+        "path": "lexicons/item_cues.json",
+        "schema": "loom.kb.item_cues/1",
+        "sha256": "e3b234a766beffe3ae2d01c4bcada87b90e81208571357c1fb8e3b115bb4b152"
+      },
+      {
+        "path": "lexicons/relation_patterns.json",
+        "schema": "loom.kb.relation_patterns/1",
+        "sha256": "f7897d2b48c6a1b1440546ee032a5dba40e096f31ca53c63449f355e1ae40bfc"
+      },
+      {
+        "path": "lexicons/stemming.json",
+        "schema": "loom.kb.stemming/1",
+        "sha256": "9247890a32680412edd8d96b359405563abcb76499a33edebe00cc66056be3df"
+      },
+      {
+        "path": "lexicons/stopwords.json",
+        "schema": "loom.kb.stopwords/1",
+        "sha256": "0f4c3b07351df96d178d4295eab2a33116dfde6c71b07205b1909bbcc4dac6c2"
+      },
+      {
+        "path": "lexicons/stopwords_base.json",
+        "schema": "loom.kb.stopwords/1",
+        "sha256": "6491768f4e45e8b991f9d5a98b4148afa3376edb05c8ea0176ba0c83ec624d49"
+      },
+      {
+        "path": "lexicons/version_patterns.json",
+        "schema": "loom.kb.version_patterns/1",
+        "sha256": "0e8b8cb2d9af81693323d31b6559d8d239db6cdc6c85df11c8a8e85e0e0e9be7"
+      },
+      {
+        "path": "morphisms/anchoring.json",
+        "schema": "loom.kb.anchoring/1",
+        "sha256": "98880de9e75c1df990ea1f3708bae11b482cf9432b91433ef851a5b09408f0d1"
+      },
+      {
+        "path": "morphisms/transfer.json",
+        "schema": "loom.kb.morphisms/1",
+        "sha256": "38df1d0235ec3d84f9bd35e87c721ab2bba42c76b8502a6f4956154bceb89c82"
+      },
+      {
+        "path": "pack.json",
+        "schema": "loom.kb.pack/1",
+        "sha256": "357a7b803e17161a7b9a8a54591cb1c7696b79cdec457054c34c10387eaefa98"
+      },
+      {
+        "path": "philosophy/operators.json",
+        "schema": "loom.kb.operators/1",
+        "sha256": "cec19655decd3b74016770c828309ea9e04c6e7e2205081a593c0f65b15a7467"
+      },
+      {
+        "path": "philosophy/principles.json",
+        "schema": "loom.kb.principles/2",
+        "sha256": "975e769ae3d5171aeb45836f0343383510149168b7c616d27c245af31d5f3b84"
+      },
+      {
+        "path": "policy/calibration.json",
+        "schema": "loom.kb.calibration/1",
+        "sha256": "9e8613b8186e9c7ca8532fb66a1af0603be6470a8281a2f98be95921a42347bd"
+      },
+      {
+        "path": "policy/candidate_graph.json",
+        "schema": "loom.candidate_graph_vocabulary/1",
+        "sha256": "f33def580179dfb84fe69143d81c5c0b7e6e0f4eb832caf4f4eae48abc386319"
+      },
+      {
+        "path": "policy/evidence_encoding.json",
+        "schema": "loom.kb.evidence_encoding/1",
+        "sha256": "df1cd4dd0742ab152336b6aa7c6f01611dae1f1cd945a42ceaf0f0ddee91fb49"
+      },
+      {
+        "path": "policy/relevance.json",
+        "schema": "loom.kb.relevance/1",
+        "sha256": "289413ceaff1c7ab0219ae61e5b28b0b8653f1930d72055bd473cfaf7304b8a3"
+      },
+      {
+        "path": "policy/selection_rules.json",
+        "schema": "loom.kb.selection_rules/1",
+        "sha256": "b897bed5489f3b9380d1ae529032cb4b65d94d80de0960010de78d6e595f4b36"
+      },
+      {
+        "path": "policy/thresholds.json",
+        "schema": "loom.kb.thresholds/1",
+        "sha256": "2469f019d9ba8b512a7cb75794562ee92167e5118b5cd95384bc707085e3c766"
+      },
+      {
+        "path": "profiles/self.json",
+        "schema": "loom.kb.profile/1",
+        "sha256": "4a2c3ab25a2144e1474f79c18481010b014064fadc44473294076d16903a4b47"
+      },
+      {
+        "path": "project_kinds/film.json",
+        "schema": "loom.kb.project_kind/1",
+        "sha256": "2b44a7c6b6a6aeef70d1c4e59bb1e5847308cee4c81213a099e4c33c77ccc29a"
+      },
+      {
+        "path": "project_kinds/legal_case.json",
+        "schema": "loom.kb.project_kind/1",
+        "sha256": "79aad6d670d8275173b7eaa32acb29b3fe33872e452093732180ffc21b8701c8"
+      },
+      {
+        "path": "project_kinds/music.json",
+        "schema": "loom.kb.project_kind/1",
+        "sha256": "227423b136da06fee32c86d1b0ac793150092db5868b4b7e0a2d38d574e360e4"
+      },
+      {
+        "path": "project_kinds/research.json",
+        "schema": "loom.kb.project_kind/1",
+        "sha256": "9404ec6f506782e4b43b06598fe9fd0711851cf5f540ebb334798038fc45c745"
+      },
+      {
+        "path": "project_kinds/software_app.json",
+        "schema": "loom.kb.project_kind/1",
+        "sha256": "eb322e39f99ea2948f67a75d2c0922c42179b3c532b62dffe7ca6681353e138d"
+      },
+      {
+        "path": "rules/checks.json",
+        "schema": "loom.kb.checks/1",
+        "sha256": "e973785fc4ab0c4055611dc85d3fdc3f2ac6290b12af19e1e6423694c5a271fa"
+      },
+      {
+        "path": "rules/inference_rules.json",
+        "schema": "loom.kb.rules/2",
+        "sha256": "b501309941b0f10a9de0f5cd04a9618f4b7e03f883ea4f60b87fda785a4768c7"
+      },
+      {
+        "path": "schema/types.json",
+        "schema": "loom.kb.types/1",
+        "sha256": "f71f58d6ea7d70b8bea689b677352341e6cc080ad97358e0b4b46d9b3ea6cead"
+      }
+    ],
+    "hash": "b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759",
+    "id": "builtin",
+    "version": 2
+  },
+  "recorded_at": "2026-10-04T15:08:42.575330+00:00",
+  "runtime_config_before": {
+    "auto_title": true,
+    "base_url": "https://openrouter.ai/api/v1",
+    "default_model": "anthropic/claude-sonnet-4-20250514",
+    "graph_memory_depth": 2,
+    "graph_memory_max_nodes": 20,
+    "loom_event_log_types": [
+      "conv:created",
+      "import:done",
+      "graph:changed"
+    ],
+    "loom_task_workers": 1,
+    "max_tokens": 4096,
+    "semantic_analysis": true,
+    "semantic_model": "",
+    "stream": true,
+    "system_prompt": "You are a helpful assistant with access to the user's hierarchical memory.",
+    "temperature": 0.7,
+    "theme": "dark"
+  },
+  "source_manifest": {
+    "loom/data/artifact_types/brainstorm.json": "e01b310bcbe6e2c0c940649938e8fa29d6016cacb8219d78e1b12eb29a98c9ed",
+    "loom/data/artifact_types/codebase.json": "957e849ad04264e9c05b0a4681a875a4fe42d334e4ae1a438634fc5410476fbe",
+    "loom/data/artifact_types/commit.json": "fba15bc0b6008e581f0ccbebd456b76c3838b546fb10e5f94552b1a7f05bc026",
+    "loom/data/artifact_types/conversation.json": "4279589ee37a8d5684cf90088edd212742c4921f56284e0fa319c16f78f48f0a",
+    "loom/data/artifact_types/email.json": "de516ceb97464007a5b13c2724d55e3489bbdc88043180b4eb9c67c4bb24ac2b",
+    "loom/data/artifact_types/pleading.json": "ccae036a8c2d551760ec6e581fb88413c802d7d535f60e1ec93c4512afbf06c4",
+    "loom/data/artifact_types/recording_transcript.json": "811090ab1925ecfe2a7c310abf9d66fc9eceff62b6322136ec64b480687d0eb9",
+    "loom/data/artifact_types/screenplay.json": "57cf5c0c592f977fda8e93d61b5dccdbc5759646f4aa63518ffef3fdb5c2c825",
+    "loom/data/artifact_types/specification.json": "2f743f828efa3b9d0c886f00b57f6455c3409e6b455531a3d35c5b18692adb21",
+    "loom/data/facets/agent.json": "8b202d700de4f6f4bb87873dc6dd6e821406cc25a1cd85c5a431e05e46532651",
+    "loom/data/facets/multiplatform.json": "7b7c346e6a7af2fb175b1e85df334e75db79089ecb5a658acfdeb5ceadd9c642",
+    "loom/data/facets/staged_transformation.json": "1bd01cf124acd9087999df2a9bd4c8a2c61d3b161caef234468a30a6019d3a71",
+    "loom/data/goals/goal_types.json": "e11360763acf339eeaf2cee7ac2dd1641fcf6ad09a8eb07110f9155669ba4720",
+    "loom/data/lexicons/cues.json": "ec964d3a90d7295540be7aee580521e5822518f5397ec683b8d3bfe4e460031a",
+    "loom/data/lexicons/gazetteer.json": "bb1a07e053bcf5d44b0a527073360e537a3ca80ae12b33dfc45ba975b927aac7",
+    "loom/data/lexicons/glossary.json": "fea9b59f69ba648cc30bb5e407afdd690b569f7c89a118bed63bf1aa45eb3d45",
+    "loom/data/lexicons/item_cues.json": "ac0c7229a80d922f0876d347701c537cc3bf6842f16f39832f88939bbaf995b5",
+    "loom/data/lexicons/relation_patterns.json": "0e5cc0f7d0a3135d9c66a85e9174d720b15678cbf0810a46674807cc99a04fdc",
+    "loom/data/lexicons/stemming.json": "2c4720550ddec5d907c5d746d165787dfd2079b6ca4a22ef317d3323dadc776c",
+    "loom/data/lexicons/stopwords.json": "e6e7055bf6c65dd02bdfe705967a14e817075f934a6091be9e978bc482897fa4",
+    "loom/data/lexicons/stopwords_base.json": "88baf0cb84152444cc9d35cfbac0582fa75142dcc19d643fe47be13a6d221303",
+    "loom/data/lexicons/version_patterns.json": "3198c87e2f8b8ed64fe4e4723932e7b936fb620b406059a877d3d05bba61691e",
+    "loom/data/morphisms/anchoring.json": "4c0e32b9dd85ca43664b7ff6b8f0832745c77eee27be42c1ab12832b01e9404e",
+    "loom/data/morphisms/transfer.json": "c490e3e198806a0e466ba196bedbd079a6f5b30b4745b40776736c4c2f2c922f",
+    "loom/data/pack.json": "098333d6008346ce8d3aa7ce477433309bd39a0155e7fc93dea1684eb3f4ace4",
+    "loom/data/philosophy/operators.json": "00bb69784f3afb3b4ec48567e01af00c173840ec53410b451b1542617c6a08e1",
+    "loom/data/philosophy/principles.json": "a765d02b320e4fe493fe7d34869be31ed7ce90f5abb08ce4986de55e0d2ac40f",
+    "loom/data/policy/calibration.json": "0d5c1b99b57b97f0f707ac270ca60cb3efe65e2085271b6833992bf56dda1f71",
+    "loom/data/policy/candidate_graph.json": "8f1fc07eeea427d71ef4f05e646709b23ed744141ff61f4014781ea1f614e736",
+    "loom/data/policy/evidence_encoding.json": "17815a292efbb4fa1ff1d39381ae11ef59bfade1b5ebfe464bf8b68419671fc3",
+    "loom/data/policy/relevance.json": "992aa0a4ca657ea4b0ccd32039ea0a93639d228b064f44f0ff81f24de4cb387f",
+    "loom/data/policy/selection_rules.json": "b98da5d1c509e8bbafee8f13fc6c5fe4230217bb14300ffc1281803109189685",
+    "loom/data/policy/thresholds.json": "b527c94ca4ff65651f46505420f236f958313524754b611e9a418013bdc72451",
+    "loom/data/profiles/self.json": "338299e23bc6b8974601d72afb543d5bd19d5a7ca9fec4b6e1c4e3ea0cc3b155",
+    "loom/data/project_kinds/film.json": "a2086da993ccc7779e0bb4c4e45ac60011793a9eb8149fd8c18f2b4ee038db70",
+    "loom/data/project_kinds/legal_case.json": "719f0d23a753d607fa54328054ef23f5f8e2f2580e4dede7a5166a9b09851e3c",
+    "loom/data/project_kinds/music.json": "bc409ef5a64c533f5a014f47e2b8d180c1e1b20aac3deb121d1aa980be5991ec",
+    "loom/data/project_kinds/research.json": "b3b1edf3fa55627fd0bc0e0e9f7036e87ee70277f10994ff72f88f54f1cfbd83",
+    "loom/data/project_kinds/software_app.json": "42cc9f8d8c78daff942d1dbf907d713ae0692d71b43b578dd3b6bdffc8bbd6e7",
+    "loom/data/rules/checks.json": "d92359e21af79368c9f3a53cbd3ee0b373f1b26835da049540f4a91b962ee387",
+    "loom/data/rules/inference_rules.json": "400505281ea522d2945f44946169f8281634b80caf671fe4a1d52806758b60a0",
+    "loom/data/schema/types.json": "7198c1c72571b1edb3ede3d49ff30332a6f3943eabbfb40d16d86f50b0753084",
+    "loom/include/loom/catalog.h": "6416e888195404d65f480a39ae2992df8e2e247eb39a0908c25a4aa044456a45",
+    "loom/include/loom/loom.h": "9731a6fac44190a8c9ee568ca87c110c6959a7467b44d8dbab35a85cbe73eae1",
+    "loom/src/capi/capi_catalog.cpp": "e284a244d70cfa7ac7c6daa9af41e70c4f675d7049c99ff5e1398e0c351df21e",
+    "loom/src/catalog/SEMANTIC_CANDIDATES.md": "90493bbb58c8d88e2b0af5f7e6e19a89ad9fae0d2f17c70fef08357e7d60dc3b",
+    "loom/src/catalog/alias.cpp": "2361dcc0ce04d9e7285ffb6a512d00e9925f6fb50a0c3aed76b7f646f65eee1f",
+    "loom/src/catalog/catalog.cpp": "66fa590bdf47553b15b5484fcb451330d716fcc86950a79ec138c814fe1c3884",
+    "loom/src/catalog/catalog_internal.h": "1d6c0a644ab563d01e90a1652be8b4c467ebc40a02fa81fc7e1cd40a4022b55e",
+    "loom/src/catalog/extract_text.cpp": "784a7a829f09f9a20ea50f34c810471ba18a3a0d5b5dc0d758af3055194b59aa",
+    "loom/src/catalog/import.cpp": "093ff1939ddd9b2b659cea1f6cb5f36c72ecd956a330e2385316ab350b778720",
+    "loom/src/catalog/links.cpp": "a70e129d5589b1560e136b9cf84b4588c489102e28f2494f58f8db23de5d7cb8",
+    "loom/src/catalog/profile.cpp": "1e925f037954739e7e3e2eb955b703645e92c2f9a014e91107bb30fd34af3fb6",
+    "loom/src/catalog/query.cpp": "34f3856bfb63d76545b627e8462463368c96f56127042b1cdedce9f928a8d113",
+    "loom/src/catalog/scan.cpp": "db56cba46246f8e642c50902450e14f9c1cb6c765f4e2ad896c2ff175bbbc8dc",
+    "loom/src/catalog/schema.cpp": "0237637bf3fef5862dc4ae134bddcf8471f599d49c02d9563cdb097795257e7e",
+    "loom/src/catalog/score.cpp": "ea8c81a0ae6cfcdc0e88e6f2dee964071adb412db3d423eb1957cc690b63992d",
+    "loom/src/catalog/select.cpp": "1351f7ffe0a454d6a5dd598cc33d001398e434bbe302f53cd28dce9b23328c7f",
+    "loom/src/catalog/semantic.cpp": "d323ddc3ff0f82e9bd183df95871988f37d201df7d03eff5774f72d7476969f6",
+    "loom/src/catalog/semantic_candidates.cpp": "53f2783e67932aa54a6e843e1835f82370407f0629dc0e9fa8238b621ba3d6c2",
+    "loom/src/catalog/semantic_candidates.h": "2c1330e382e0cd2a691fb74630a2e4b86f7b5ad2313fa24cafda6fadfab308e8",
+    "loom/src/catalog/sketch.cpp": "583eb8890fa671e1fcf85e60b84e0fa0b5059f9e371fe57bb4d8d19bd1116e60",
+    "loom/src/catalog/stream.cpp": "1ed5d484d7c8579b7d0f99b52c4dffeea7eeb53d4fc33a07f6ed8b774719f29c",
+    "loom/src/catalog/tests/dev_regressions.json": "4326bf833190f46a260aa190dfd53822ec235d96f2b26139b3f2e02fa55a5d01",
+    "loom/src/catalog/tests/evaluate_dev.py": "321b706f3e017a3240fe71aa3a3a79da741011039dcf0be9324dc4e50869f1e0",
+    "loom/src/catalog/tests/run_native.sh": "04818de4c1997a006f9ddf0a97c821f77021e46231c2d74c67dee4f3ec483720",
+    "loom/src/catalog/tests/test_catalog_replay.py": "8bd7ebd7c7427989c036f64cdeb54a4c64c4c45eefb214e748de6b357d4a44ce",
+    "loom/src/catalog/tests/test_semantic_candidates.cc": "25225c9f54fbbf89a060200e05c13aaf528043a07fddbfb3cf2b66baf9f7a732"
+  }
+}

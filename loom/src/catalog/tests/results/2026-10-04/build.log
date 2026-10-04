@@ -1,0 +1,7 @@
+[0/2] Re-checking globbed directories...
+[1/7] Linking CXX shared library libloom.so.0.1.0
+[2/7] Creating library symlink libloom.so.0 libloom.so
+[3/7] Linking CXX executable loom_tests
+[4/7] Linking CXX executable loom_compat_tool
+[5/7] Linking CXX executable loom_candidate_graph_native_tool
+[6/7] Linking CXX executable cli/loom
