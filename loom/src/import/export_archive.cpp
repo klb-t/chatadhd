@@ -612,7 +612,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         if (r) {
           for (auto& c : r->conversations) run.convs.push_back(std::move(c));
           if (r->cancelled || (r->export_report.is_object() && r->export_report.value("partial", false))) run.rep.partial = true;
-          run.rep.parts.push_back(Json{{"member", m->rel}, {"report", r->export_report}});
+          run.rep.parts.push_back(Json{{"member", m->rel}, {"source_id", r->source_id}, {"report", r->export_report}});
           disp(*m, "nested_archive");
         } else {
           disp(*m, "nested_archive_failed");
@@ -656,7 +656,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
           if (r->cancelled || (r->export_report.is_object() && r->export_report.value("partial", false))) rep.partial = true;
           const Json* pv = json::find(r->export_report, "provider");
           if (pv && pv->is_string() && (pv->get<std::string>() == "openai" || pv->get<std::string>() == "anthropic")) any_provider_part = true;
-          rep.parts.push_back(Json{{"member", e.rel}, {"report", r->export_report}});
+          rep.parts.push_back(Json{{"member", e.rel}, {"source_id", r->source_id}, {"report", r->export_report}});
         }
         for (auto& c : r->conversations) run.convs.push_back(std::move(c));
         disp(e, "nested_archive");
