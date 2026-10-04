@@ -1,0 +1,5 @@
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (3.7s)
+-- Generating done (0.3s)
+-- Build files have been written to: /workspace/scratch/b189e486f506/chatadhd/loom/build/dev

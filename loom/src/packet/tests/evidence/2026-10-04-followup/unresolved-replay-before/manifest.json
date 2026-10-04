@@ -1,0 +1,168 @@
+{
+  "w2_commit": "34cc920dd3cdb0c0fca0a514569b19111429583f",
+  "w4_commit": "3caa6b4dcfb6412294bf816c1105bcf99afacdbc",
+  "isolation": "W2 policy + W4 packet C API overlay, W4 static core; explicit Config preset",
+  "paid_calls": 0,
+  "network_calls": 0,
+  "commands": [
+    [
+      "git",
+      "show",
+      "34cc920dd3cdb0c0fca0a514569b19111429583f:loom/include/loom/usage_policy.h"
+    ],
+    [
+      "git",
+      "show",
+      "34cc920dd3cdb0c0fca0a514569b19111429583f:loom/src/policy/usage_policy.cpp"
+    ],
+    [
+      "git",
+      "show",
+      "34cc920dd3cdb0c0fca0a514569b19111429583f:loom/src/core/config_usage_policy.cpp"
+    ],
+    [
+      "git",
+      "show",
+      "3caa6b4dcfb6412294bf816c1105bcf99afacdbc:loom/src/capi/capi_packet.cpp"
+    ],
+    [
+      "git",
+      "show",
+      "3caa6b4dcfb6412294bf816c1105bcf99afacdbc:loom/src/packet/packet.h"
+    ],
+    [
+      "g++",
+      "-std=c++20",
+      "-fPIC",
+      "-fvisibility=hidden",
+      "-I/tmp/packet-wiring-negative-audit/evidence/include",
+      "-I/tmp/packet-wiring-negative-audit/evidence/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/include",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src/capi",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/nlohmann",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/sqlite",
+      "-c",
+      "/tmp/packet-wiring-negative-audit/evidence/src/usage_policy.cpp",
+      "-o",
+      "/tmp/packet-wiring-negative-audit/evidence/usage_policy.o"
+    ],
+    [
+      "g++",
+      "-std=c++20",
+      "-fPIC",
+      "-fvisibility=hidden",
+      "-I/tmp/packet-wiring-negative-audit/evidence/include",
+      "-I/tmp/packet-wiring-negative-audit/evidence/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/include",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src/capi",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/nlohmann",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/sqlite",
+      "-c",
+      "/tmp/packet-wiring-negative-audit/evidence/src/config_usage_policy.cpp",
+      "-o",
+      "/tmp/packet-wiring-negative-audit/evidence/config_usage_policy.o"
+    ],
+    [
+      "g++",
+      "-std=c++20",
+      "-fPIC",
+      "-fvisibility=hidden",
+      "-I/tmp/packet-wiring-negative-audit/evidence/include",
+      "-I/tmp/packet-wiring-negative-audit/evidence/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/include",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src/capi",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/nlohmann",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/sqlite",
+      "-c",
+      "/tmp/packet-wiring-negative-audit/evidence/src/capi_packet.cpp",
+      "-o",
+      "/tmp/packet-wiring-negative-audit/evidence/capi_packet.o"
+    ],
+    [
+      "g++",
+      "-std=c++20",
+      "-I/tmp/packet-wiring-negative-audit/evidence/include",
+      "-I/tmp/packet-wiring-negative-audit/evidence/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/include",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src",
+      "-I/workspace/scratch/b189e486f506/chatadhd/loom/src/capi",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/nlohmann",
+      "-isystem",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/third_party/sqlite",
+      "/tmp/packet-wiring-negative-audit/evidence/harness.cc",
+      "/tmp/packet-wiring-negative-audit/evidence/usage_policy.o",
+      "/tmp/packet-wiring-negative-audit/evidence/config_usage_policy.o",
+      "/tmp/packet-wiring-negative-audit/evidence/capi_packet.o",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_core.a",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+      "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_miniz.a",
+      "-lssl",
+      "-lcrypto",
+      "-lpthread",
+      "-ldl",
+      "-o",
+      "/tmp/packet-wiring-negative-audit/evidence/reproduce"
+    ],
+    [
+      "/tmp/packet-wiring-negative-audit/evidence/reproduce",
+      "/tmp/packet-wiring-negative-audit/evidence/synthetic-data-mvpyvar0"
+    ]
+  ],
+  "sources": {
+    "include/loom/usage_policy.h": {
+      "git_source": "34cc920dd3cdb0c0fca0a514569b19111429583f:loom/include/loom/usage_policy.h",
+      "sha256": "89dfad23470928a45900ff00c2cb6197fa183f9c2a7ab96f89bb832cb99273ca"
+    },
+    "src/usage_policy.cpp": {
+      "git_source": "34cc920dd3cdb0c0fca0a514569b19111429583f:loom/src/policy/usage_policy.cpp",
+      "sha256": "790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9"
+    },
+    "src/config_usage_policy.cpp": {
+      "git_source": "34cc920dd3cdb0c0fca0a514569b19111429583f:loom/src/core/config_usage_policy.cpp",
+      "sha256": "ddc7fdb8e9215aa3e29b90af9c04eab42f421267ee1f9b493b6ad55a425456f4"
+    },
+    "src/capi_packet.cpp": {
+      "git_source": "3caa6b4dcfb6412294bf816c1105bcf99afacdbc:loom/src/capi/capi_packet.cpp",
+      "sha256": "1cc62020f1552aa83b49e691765f4e23ea776fcc8a6fe9aa522439da03338e2a"
+    },
+    "src/packet/packet.h": {
+      "git_source": "3caa6b4dcfb6412294bf816c1105bcf99afacdbc:loom/src/packet/packet.h",
+      "sha256": "d82162f0380f4e8164b056dcf2649412083ecbfd80232b918937832882229c5d"
+    },
+    "harness.cc": {
+      "sha256": "c619e56aad29223ac0ff6de202dc422ae6733762b15e961926a509734cb30894"
+    },
+    "run.py": {
+      "sha256": "a1f47d9f9bbfff458955b950f3d0d4cb0bbcc64a3e92a52ad8fa1909b5feab01"
+    }
+  },
+  "artifacts": {
+    "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_core.a": {
+      "sha256": "01d755285b953b1be2478508834eb2a657dd94e3f072467a179396d475928443",
+      "bytes": 812823670
+    },
+    "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a": {
+      "sha256": "892255dce868b2454f56592e3bc9687362146d7e7def50bc4e5c4bfd51f74701",
+      "bytes": 3509494
+    },
+    "/workspace/scratch/b189e486f506/chatadhd/loom/build/dev/libloom_miniz.a": {
+      "sha256": "aaeab4694306ad3885b4fa5da4d3dc56e106966f165a680669a66505638d6217",
+      "bytes": 360332
+    },
+    "reproduce": {
+      "sha256": "50609eb95e76e9a3322089ab9cf1b4503f84f171cc5a242f38059fd115e3b407"
+    }
+  },
+  "result": "reproduced: two executed operations, one calls sample of 1",
+  "result_sha256": "3fe55238e5c41e32bcadcf5dfeed3958481b73cdecbebfc69ecbabbe679ae77d"
+}
