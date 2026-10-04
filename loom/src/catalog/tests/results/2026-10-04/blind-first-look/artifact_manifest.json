@@ -1,0 +1,35 @@
+{
+  "annotation": "pierwsze spojrzenie",
+  "corpus_hashes": "inputs_receipt.json: fixture_sha256; derived from the single original blob reads, not reopened",
+  "files": {
+    "ATTEMPT_ONCE": {
+      "bytes": 33,
+      "sha256": "27bef1db06584b0d80798432a83696c14ec8d9f54e624dfa31d7cbeb0a566276"
+    },
+    "README.md": {
+      "bytes": 2816,
+      "sha256": "11f5cdc4d0964e03a02ae1c0e29cc066ef3c346b98878a497601e2bbfa8a9ab1"
+    },
+    "evaluate_first_look.py": {
+      "bytes": 14618,
+      "sha256": "11ee7780b9642a4fbc413a8307ec942117384b5c73c84b2b86bfaf13aa9e719c"
+    },
+    "inputs_receipt.json": {
+      "bytes": 22934,
+      "sha256": "2fd5a0a6888969d4a57a14dbf2071a33d12fe4a522e7c7ded46149fcc46cfbaf"
+    },
+    "predictions_before_gold.json": {
+      "bytes": 275118,
+      "sha256": "7975012af3b7650ba57ac0084991ea3e6f3cfd6fa8d74bc89971400733c337b2"
+    },
+    "report.json": {
+      "bytes": 222225,
+      "sha256": "97ae30a0dcb8c463bbc0edca525d30eb372f5cb403551d29c49a81794355e3af"
+    },
+    "run.log": {
+      "bytes": 957,
+      "sha256": "ba06712ff1c6d811ab929c02b262fc0ad13567d49dfb9f8db7d945474cfbbd34"
+    }
+  },
+  "schema": "loom.catalog_blind_first_look_artifacts/1"
+}
