@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:loom:method-graph-schema:1",
+  "title": "Loom method graph manifest and run trace, version 1",
+  "description": "Client data contracts composed with existing native GraphPacket operations. This schema validates shape and SHA-256 representation; native graph validation and the caller must verify references, real provenance edges, exact captured bytes, hash equality and effective settings. Declared names never select or implement execution mechanisms.",
+  "oneOf": [
+    { "$ref": "#/$defs/methodGraph" },
+    { "$ref": "#/$defs/methodRunTrace" }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+      "description": "Canonical lowercase hexadecimal SHA-256. The fixed representation is not an operation or resource limit."
+    },
+    "nullableSha256": {
+      "anyOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "type": "null" }
+      ]
+    },
+    "entityId": {
+      "type": "string",
+      "description": "Caller-supplied native entity ID. Native packet validation establishes existence and identity; no domain name registry is defined here."
+    },
+    "nullableEntityId": {
+      "anyOf": [
+        { "$ref": "#/$defs/entityId" },
+        { "type": "null" }
+      ],
+      "description": "An optional role may be absent or explicitly null when inapplicable or unknown; clients must not fabricate an entity."
+    },
+    "vocabulary": {
+      "type": "object",
+      "required": ["kinds", "predicates"],
+      "properties": {
+        "kinds": {
+          "type": "object",
+          "required": ["method", "method_version", "run"],
+          "additionalProperties": { "type": "string" },
+          "description": "Standard semantic roles are keys, not a closed entity-kind vocabulary. Every value, including values under additional caller roles, is arbitrary client data."
+        },
+        "predicates": {
+          "type": "object",
+          "required": [
+            "version_of", "requests_method_version", "produced_in_run",
+            "produced_by_method_version"
+          ],
+          "additionalProperties": { "type": "string" },
+          "description": "Client predicate strings for actual native Claims; additional relation roles are unrestricted strings."
+        }
+      },
+      "additionalProperties": true
+    },
+    "bindings": {
+      "type": "object",
+      "required": ["method_identity_id", "method_version_id", "run_id"],
+      "properties": {
+        "method_identity_id": { "$ref": "#/$defs/entityId" },
+        "method_version_id": { "$ref": "#/$defs/entityId" },
+        "run_id": { "$ref": "#/$defs/entityId" },
+        "prompt_version_id": { "$ref": "#/$defs/nullableEntityId" },
+        "recipe_version_id": { "$ref": "#/$defs/nullableEntityId" },
+        "preset_version_id": { "$ref": "#/$defs/nullableEntityId" },
+        "combination_version_id": { "$ref": "#/$defs/nullableEntityId" },
+        "model_identity_id": { "$ref": "#/$defs/nullableEntityId" },
+        "compiler_transform_id": { "$ref": "#/$defs/nullableEntityId" }
+      },
+      "additionalProperties": { "$ref": "#/$defs/nullableEntityId" },
+      "description": "Client binding map. Only method identity, exact method version and concrete run are universal. Prompt/model/recipe/preset/combination/compiler roles may be omitted or null when inapplicable or unknown. Additional methods or versions may supply additional bindings; the schema does not cap their number."
+    },
+    "definitionHashes": {
+      "type": "object",
+      "required": ["method_version"],
+      "properties": {
+        "method_version": { "$ref": "#/$defs/sha256" },
+        "prompt_bytes": { "$ref": "#/$defs/nullableSha256" },
+        "recipe": { "$ref": "#/$defs/nullableSha256" },
+        "preset": { "$ref": "#/$defs/nullableSha256" },
+        "combination": { "$ref": "#/$defs/nullableSha256" }
+      },
+      "additionalProperties": { "$ref": "#/$defs/nullableSha256" },
+      "description": "Client hash map with a required immutable method-version hash. Other definition roles may be absent or null when inapplicable or unknown. Definitions use the native json::canonical encoder; applicable prompt_bytes covers exact UTF-8 bytes. Equality to the captured bytes is verified outside JSON Schema."
+    },
+    "measurements": {
+      "type": "object",
+      "additionalProperties": { "type": ["number", "null"] },
+      "description": "Caller-named numeric measurements with no closed metric vocabulary, count cap, bounds or presets. Unknown or unavailable quantities are null, never invented zero. An empty map records no measurements; measurement_scope identifies the instrumentation scope."
+    },
+    "modelOrigin": {
+      "type": "object",
+      "required": ["kind", "actor", "model", "recipe_sha256", "response_sha256"],
+      "properties": {
+        "kind": { "type": "string" },
+        "actor": { "type": "string" },
+        "model": { "type": ["string", "null"] },
+        "recipe_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "response_sha256": { "$ref": "#/$defs/nullableSha256" }
+      },
+      "additionalProperties": true,
+      "description": "Retained native model-origin fields. Native codec origin semantics still apply; this data schema adds no domain vocabulary or evidence truth assertion."
+    },
+    "resultBinding": {
+      "type": "object",
+      "required": ["result_entity_id", "run_id", "method_version_id"],
+      "properties": {
+        "result_entity_id": { "$ref": "#/$defs/entityId" },
+        "run_id": { "$ref": "#/$defs/entityId" },
+        "method_version_id": { "$ref": "#/$defs/entityId" },
+        "compiler_transform_id": { "$ref": "#/$defs/nullableEntityId" },
+        "model_origin": {
+          "anyOf": [
+            { "$ref": "#/$defs/modelOrigin" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "additionalProperties": true,
+      "description": "A captured result binding. Actual native Claims to the run and exact method version are required; a JSON reference alone is not an edge. Compiler-transform edges and preserved model origin apply when those mechanisms contributed to this result. Lexical results need neither invented compiler nor model records."
+    },
+    "methodRunTrace": {
+      "type": "object",
+      "required": [
+        "schema", "run_id", "method_identity_id", "method_version_id",
+        "effective_parameters", "input_sha256"
+      ],
+      "properties": {
+        "schema": { "const": "loom.method_run_trace/1" },
+        "run_id": { "$ref": "#/$defs/entityId" },
+        "method_identity_id": { "$ref": "#/$defs/entityId" },
+        "method_version_id": { "$ref": "#/$defs/entityId" },
+        "model_identity_id": { "$ref": "#/$defs/nullableEntityId" },
+        "model": { "type": ["string", "null"] },
+        "recipe_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "prompt_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "effective_parameters": {
+          "description": "Exact effective client parameters as arbitrary JSON data, including nested objects, arrays, numbers, booleans and null. The schema assigns no parameter names, ranges, counts or preset values."
+        },
+        "preset_version_id": { "$ref": "#/$defs/nullableEntityId" },
+        "preset_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "combination_version_id": { "$ref": "#/$defs/nullableEntityId" },
+        "combination_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "compiler_transform_id": { "$ref": "#/$defs/nullableEntityId" },
+        "user_overrides": {
+          "description": "Captured caller overlays or one-call changes as arbitrary JSON data; the effective result is separately recorded in effective_parameters."
+        },
+        "input_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "prepared_at": { "type": ["string", "null"], "format": "date-time" },
+        "execution_kind": { "type": ["string", "null"] },
+        "response_provenance": { "type": ["string", "null"] },
+        "measurements": {
+          "anyOf": [
+            { "$ref": "#/$defs/measurements" },
+            { "type": "null" }
+          ]
+        },
+        "measurement_scope": { "type": ["string", "null"] },
+        "projected_at": { "type": ["string", "null"], "format": "date-time" },
+        "response_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "compilation_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "result_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/resultBinding" }
+        }
+      },
+      "additionalProperties": true,
+      "description": "Concrete provenance and instrumentation trace, not an execution request. Its universal minimum identifies method, version, run, effective parameters and input hash (null explicitly means unavailable). All model/prompt/recipe/preset/combination/compiler fields are optional and nullable; declared values retain their native types. Prepared traces need no projected output. Projected model traces preserve applicable result/model/compiler provenance without changing graph-reply host fields."
+    },
+    "methodGraph": {
+      "type": "object",
+      "required": ["schema", "vocabulary", "bindings", "definition_hashes", "trace"],
+      "properties": {
+        "schema": { "const": "loom.method_graph/1" },
+        "vocabulary": { "$ref": "#/$defs/vocabulary" },
+        "bindings": { "$ref": "#/$defs/bindings" },
+        "definition_hashes": { "$ref": "#/$defs/definitionHashes" },
+        "trace": { "$ref": "#/$defs/methodRunTrace" }
+      },
+      "additionalProperties": true,
+      "description": "Versioned client manifest for ordinary native Entity/Claim/Observation records and diffs. Method identity, immutable method version, concrete run, model content and compiler transformation retain distinct roles."
+    }
+  }
+}
