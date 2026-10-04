@@ -1,0 +1,21 @@
+{
+  "schema": "loom.local_resource_interruption/1",
+  "reason": "Second invocation attempted to resume the partial first import and was stopped while a temporary source recapture plus workspace transfer copies exhausted disk; it was not a completed-source cache hit.",
+  "exec_exit_code": 130,
+  "first_result_preserved": true,
+  "retained_temp_inventory": [
+    {
+      "relative": ".stream.a1ee6550611e.part.MdCj1Y",
+      "bytes": 1739063296
+    },
+    {
+      "relative": "stream.c4b147cbfdb4.part",
+      "bytes": 1013055488
+    },
+    {
+      "relative": ".rsync-tmp/.stream.a1ee6550611e.part.MdCj1Y.Xg9ljX",
+      "bytes": 14090240
+    }
+  ],
+  "partial_temp_deleted": true
+}

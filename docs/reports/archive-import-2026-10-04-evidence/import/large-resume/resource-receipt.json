@@ -1,0 +1,10 @@
+{
+  "benchmark_exit_code": 0,
+  "source_capture": true,
+  "data_root": "/workspace/scratch/943af489e102/bench/thread5-large-after/data",
+  "temporary_blob_copy_directory": "/dev/thread5-source-copy",
+  "temporary_blob_storage_medium": "tmpfs in the same invocation; existing verified captured blob remains on overlay disk",
+  "storage_bytes_excluded_from_CLI_peak_RSS": 2148031323,
+  "reason": "avoid transient duplicate transfer copies in shared scratch; no source bytes or provenance disabled",
+  "existing_captured_blob_sha256": "5084c949b6765d95bf7f15d0fbc09435e2dec5e29a1694ba3ce43cfd085917f2"
+}
