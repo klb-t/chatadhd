@@ -21,7 +21,8 @@ struct ServerOptions {
 
 // Owns the LoomContext and the httplib::Server, and wires every /api/*
 // route to one or more loom_* C ABI calls. Nothing in this class (or in
-// app.cpp) touches Loom internals directly — only include/loom/loom.h.
+// app.cpp) touches Loom internals directly — only public JSON C ABI headers.
+// The optional usage-policy adapter links the public static-kernel dispatcher.
 class App {
  public:
   explicit App(ServerOptions opts);

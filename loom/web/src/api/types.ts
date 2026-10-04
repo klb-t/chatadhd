@@ -68,6 +68,11 @@ export interface ChatRequest {
 // Only fields supported by the native ContextRequest. Omitting text uses the
 // current message. Graph reach and representation detail are independent.
 export interface ChatKnowledgeContextRequest {
+  claim_targets?: string[];
+  include_counter_evidence?: boolean;
+  candidate_channels?: CandidateChannelRequest[];
+  candidate_scan_limit?: number;
+  lexical_shadow?: boolean;
   text?: string;
   targets?: string[];
   project?: string;
@@ -78,6 +83,12 @@ export interface ChatKnowledgeContextRequest {
   relation_hops?: number;
   detail_resolution?: "label" | "summary" | "full" | "raw" | null;
   plan?: ChatContextPlan | null;
+}
+
+export interface CandidateChannelRequest {
+  id: string;
+  limit?: number;
+  min_score?: number;
 }
 
 // Explicit retrieval instructions supplied by the caller, not inferred tasks.
