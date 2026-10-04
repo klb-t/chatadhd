@@ -1,0 +1,55 @@
+{
+  "schema": "loom.post_gate_tool_versions/1",
+  "utc": "2026-10-04T19:46:33.202979+00:00",
+  "scope": "Read-only version commands after the successful full run; not retroactively inserted into its receipt.",
+  "commands": [
+    {
+      "argv": [
+        "/root/.local/bin/cmake",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "cmake version 4.4.4\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+    },
+    {
+      "argv": [
+        "/root/.local/bin/ctest",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "ctest version 4.4.4\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/cc",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "cc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+    },
+    {
+      "argv": [
+        "/root/.local/bin/ninja",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "1.13.2.git.kitware.jobserver-pipe-1\n"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "Python 3.12.14\n"
+    }
+  ]
+}

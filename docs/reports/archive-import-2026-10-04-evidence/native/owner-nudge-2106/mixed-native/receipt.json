@@ -1,0 +1,130 @@
+{
+  "schema": "loom.mixed_import_verification/1",
+  "status": "passed",
+  "source_code_commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+  "main_commit": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+  "profile": "GCC Release -O0 -DNDEBUG WERROR vendored SQLite OpenSSL shared/CLI/server/tests",
+  "removed_external_environment_keys": [],
+  "commands": [
+    {
+      "label": "build-final",
+      "argv": [
+        "/root/.local/bin/cmake",
+        "--build",
+        "/workspace/scratch/943af489e102/thread5-mixed-build",
+        "--parallel",
+        "2"
+      ],
+      "exit_code": 0,
+      "seconds": 0.15362456900038524,
+      "log": "build-final.txt",
+      "log_sha256": "c2ed93ffd93c840755c0e91392ae593b1b52de9b7aaf6c208123feaceb1dde2e"
+    },
+    {
+      "label": "ctest-registration",
+      "argv": [
+        "/root/.local/bin/ctest",
+        "--test-dir",
+        "/workspace/scratch/943af489e102/thread5-mixed-build",
+        "--show-only=json-v1"
+      ],
+      "exit_code": 0,
+      "seconds": 0.15529352799785556,
+      "log": "ctest-registration.txt",
+      "log_sha256": "910181e3da11f083156d96075379ae3718d633f0762624e19c6acd42829b2dc7"
+    },
+    {
+      "label": "ctest-full",
+      "argv": [
+        "/root/.local/bin/ctest",
+        "--test-dir",
+        "/workspace/scratch/943af489e102/thread5-mixed-build",
+        "-V",
+        "--output-on-failure",
+        "--no-tests=error",
+        "--parallel",
+        "1"
+      ],
+      "exit_code": 0,
+      "seconds": 290.60128235199954,
+      "log": "ctest-full.txt",
+      "log_sha256": "4df3d75e30a18fede43b0e78c7702b12c6f0f9b95781f8cc2ce0d63afd91fe34"
+    }
+  ],
+  "live_provider_calls": 0,
+  "build_was_configured_before_runner": true,
+  "failure": null,
+  "executed_runner_sha256": "acd608fbf83c8d8e48565edc742c401387ef5623c29294a8be8052ecd88c29fc",
+  "source_commit_mismatches": [],
+  "cmake_cache_sha256": "7fc0e64686bbc03eeec5ca1abed9fc113fe27050cd2534337732d275e4a0708f",
+  "binary_sha256": {
+    "libloom_core.a": "d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028",
+    "libloom_miniz.a": "04f430e01025ed2dfdd51fb358bdb3fd91a309e31076c0bc52b3fa7fa5369a03",
+    "libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b",
+    "libloom.so": "a7f79279183468514bc8c01ecf369dece6a07d97083b460590a7699a8880560c",
+    "loom_tests": "57408e328b37563f6cf7d5933ade50fe8f8080b7ad6fb3c690e5aa903ff55d73",
+    "loom_compat_tool": "b1485e8cc578c1a458a3df48ec87de300430d1505efdc91b74726b2961843b83",
+    "loom_candidate_graph_native_tool": "29fd17551577cc8bf590642655eff4d96a28987d7e4842340402705b72b3c37e",
+    "cli/loom": "f70b79472ca69abf60b7e80b37c33dd397d53032000997019dd123b042cbf85c",
+    "server/loom-server": "cc8804bb4be6225b0518103b5ebaa4318f3e1ba3b67038da22f9594cc65f52c4"
+  },
+  "registered_ctest_entries": 115,
+  "full_ctest": {
+    "executed": 115,
+    "failed": 0,
+    "passed": 115
+  },
+  "native": {
+    "groups": 87,
+    "cases": 706,
+    "failed": 0,
+    "assertions": 26375,
+    "zero_case_groups": [
+      "unit.test_catalog_scale"
+    ]
+  },
+  "python": {
+    "unittest_groups": 26,
+    "cases": 1295,
+    "skips": 0
+  },
+  "new_group_counts": {
+    "unit.test_import_screenshot": {
+      "cases": 6,
+      "failed": 0,
+      "assertions": 872
+    },
+    "unit.test_import_aux_depth": {
+      "cases": 2,
+      "failed": 0,
+      "assertions": 106
+    },
+    "unit.test_db_annotations": {
+      "cases": 11,
+      "failed": 0,
+      "assertions": 189
+    },
+    "unit.test_import_resume": {
+      "cases": 23,
+      "failed": 0,
+      "assertions": 696
+    },
+    "unit.test_import_audit": {
+      "cases": 3,
+      "failed": 0,
+      "assertions": 28
+    },
+    "unit.test_import_usage": {
+      "cases": 2,
+      "failed": 0,
+      "assertions": 19
+    },
+    "compat.test_archive_cost": {
+      "cases": 19
+    }
+  },
+  "source_manifest_sha256": "f52e19ef60b8e19f0954c929c13e5c134a51d0df87a38720a1e7be52f16135f6",
+  "source_files": 1203,
+  "sources_stable": true,
+  "binaries_stable": true
+}

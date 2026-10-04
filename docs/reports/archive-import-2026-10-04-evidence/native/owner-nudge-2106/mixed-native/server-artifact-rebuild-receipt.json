@@ -1,0 +1,36 @@
+{
+  "schema": "loom.generated_server_rebuild/1",
+  "started_utc": "2026-10-04T19:38:34.263932+00:00",
+  "core_before": "d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028",
+  "server_before": {
+    "sha256": "e6cd27065ec3b7f3832ae1a2139580444b4e7cb219323ae1e0f30228a73524d4",
+    "bytes": 32629112,
+    "mode": "0o755",
+    "all_zero": false
+  },
+  "source_changes": 0,
+  "command": {
+    "argv": [
+      "/root/.local/bin/cmake",
+      "--build",
+      "/workspace/scratch/943af489e102/thread5-mixed-build",
+      "--target",
+      "loom-server",
+      "--parallel",
+      "2"
+    ],
+    "exit_code": 0,
+    "seconds": 3.273947866000526,
+    "log_sha256": "586e466c8980c3996bcfdbe7e7d9efa14f8c7bb31d6269c1fb993cfe77232635"
+  },
+  "server_after": {
+    "sha256": "cc8804bb4be6225b0518103b5ebaa4318f3e1ba3b67038da22f9594cc65f52c4",
+    "bytes": 32631544,
+    "mode": "0o755",
+    "is_elf": true,
+    "executable": true
+  },
+  "core_after": "d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028",
+  "core_unchanged": true,
+  "passed": true
+}

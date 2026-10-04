@@ -1,0 +1,9 @@
+{
+  "code_commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+  "main": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+  "manifest_sha256": "f52e19ef60b8e19f0954c929c13e5c134a51d0df87a38720a1e7be52f16135f6",
+  "files": 1203,
+  "build_fresh": true,
+  "profile": "Release -O0 -DNDEBUG WERROR vendored SQLite shared/CLI/server/tests",
+  "provider_calls": 0
+}

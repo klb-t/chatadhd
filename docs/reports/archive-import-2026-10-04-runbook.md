@@ -8,6 +8,15 @@ na main `30ad7d37337d6641cb7714b03e9feff0e6e25d25`
 Wszystkie dotychczasowe pomiary są offline i dotyczą danych syntetycznych;
 nie wykonano płatnych wywołań modeli.
 
+Aktualny przyrost jest gotowy do odbioru: pełny CTest **115/115,290,39 s**,
+native **706/26 375**, Python **1295/0skips**, web **85 modułów**.
+Nowe native6 grup **47/1910**, regularny audyt **19/19**; niezależne replaye
+OCR **3/3 i22/22** oraz checkpointy **2/2 i31/31**.
+[Pokwitowanie, dokładny runner i pełne logi](archive-import-2026-10-04-evidence/native/owner-nudge-2106/mixed-native/README.md)
+wiążą źródło4e8c3de/main30ad7d3 i stabilne binaria. Pierwszy negatyw113/115
+po uszkodzeniu wygenerowanego artefaktu serwera zachowany osobno; ponowne
+linkowanie nie zmieniło kodu ani core. Opcjonalny catalog_scale nadal0 przypadków.
+
 ## Import u właściciela
 
 Eksporty i katalog danych trzymaj poza publicznym repozytorium. Istniejący
@@ -290,7 +299,7 @@ Tymczasowa kopia 2,15 GB korzystała z tmpfs poza RSS procesu, zachowany blob
 pozostał na dysku. [Pełne pokwitowania i granice pomiaru](archive-import-2026-10-04-evidence/import/README.md#executed-215-gb-import-and-recovery)
 zachowują też wynik ENOSPC i dokładną wersję uruchomionego weryfikatora.
 
-### Stan odbioru natywnego
+### Historyczny odbiór natywny przed przyjęciem W2 z danych
 
 Pierwszy pełny CTest uruchomił 112 pozycji: **110 przeszło, 2 nie przeszły**
 (`test_import_exports`, `test_import_source_materialization`), 359,99 s.
@@ -435,5 +444,5 @@ Konkretne kolejne zadania W5 z W11:
   `worker/**` ani kopiować autorytatywnych defaults do drugiego miejsca.
 
 To otwarte dalsze przyrosty, nie blokery odtworzonej poprawki checkpointów.
-Nowa sesja potwierdza gotowość wskazanego przyrostu import/adnotacje po pełnych
-bramkach; nie deklaruje migracji wszystkich 52 grup inwentarza.
+Aktualna sesja21:06 potwierdza gotowość source4e8c3de po pełnych bramkach115/115
+i web85 na main30ad7d3. Nie deklaruje migracji wszystkich52 grup inwentarza.

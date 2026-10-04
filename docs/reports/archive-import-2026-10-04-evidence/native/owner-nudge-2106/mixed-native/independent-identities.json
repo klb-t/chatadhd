@@ -1,0 +1,73 @@
+{
+  "schema": "loom.independent_post_gate_identity_check/1",
+  "utc": "2026-10-04T19:45:36.842617+00:00",
+  "derivation": "Independent read-only verification after the runner completed; original receipt and logs remain byte-identical.",
+  "receipt_sha256": "d2fa17ec060ff6fc4cddcd41010312ac8cd1525c3653f5eaeb8605aa4cb02530",
+  "source_files": 1203,
+  "source_manifest_sha256": "f52e19ef60b8e19f0954c929c13e5c134a51d0df87a38720a1e7be52f16135f6",
+  "source_before_after_identical": true,
+  "current_scope_has_exactly_captured_names": true,
+  "current_sources_match_captured_after": true,
+  "current_binary_identities": {
+    "libloom_core.a": {
+      "sha256": "d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028",
+      "bytes": 327052552,
+      "mode": "0o644",
+      "matches_original_receipt": true
+    },
+    "libloom_miniz.a": {
+      "sha256": "04f430e01025ed2dfdd51fb358bdb3fd91a309e31076c0bc52b3fa7fa5369a03",
+      "bytes": 167828,
+      "mode": "0o644",
+      "matches_original_receipt": true
+    },
+    "libloom_sqlite3_amalgamation.a": {
+      "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b",
+      "bytes": 1836182,
+      "mode": "0o644",
+      "matches_original_receipt": true
+    },
+    "libloom.so": {
+      "sha256": "a7f79279183468514bc8c01ecf369dece6a07d97083b460590a7699a8880560c",
+      "bytes": 32425048,
+      "mode": "0o755",
+      "matches_original_receipt": true
+    },
+    "loom_tests": {
+      "sha256": "57408e328b37563f6cf7d5933ade50fe8f8080b7ad6fb3c690e5aa903ff55d73",
+      "bytes": 46589424,
+      "mode": "0o755",
+      "matches_original_receipt": true
+    },
+    "loom_compat_tool": {
+      "sha256": "b1485e8cc578c1a458a3df48ec87de300430d1505efdc91b74726b2961843b83",
+      "bytes": 30394016,
+      "mode": "0o755",
+      "matches_original_receipt": true
+    },
+    "loom_candidate_graph_native_tool": {
+      "sha256": "29fd17551577cc8bf590642655eff4d96a28987d7e4842340402705b72b3c37e",
+      "bytes": 1897608,
+      "mode": "0o755",
+      "matches_original_receipt": true
+    },
+    "cli/loom": {
+      "sha256": "f70b79472ca69abf60b7e80b37c33dd397d53032000997019dd123b042cbf85c",
+      "bytes": 30724280,
+      "mode": "0o755",
+      "matches_original_receipt": true
+    },
+    "server/loom-server": {
+      "sha256": "cc8804bb4be6225b0518103b5ebaa4318f3e1ba3b67038da22f9594cc65f52c4",
+      "bytes": 32631544,
+      "mode": "0o755",
+      "matches_original_receipt": true
+    }
+  },
+  "current_binary_matches": 9,
+  "cmake_cache_sha256": "7fc0e64686bbc03eeec5ca1abed9fc113fe27050cd2534337732d275e4a0708f",
+  "server_header_is_elf": true,
+  "executed_runner_sha256": "acd608fbf83c8d8e48565edc742c401387ef5623c29294a8be8052ecd88c29fc",
+  "imported_helper_sha256": "4b9df5a68e38432c2c05bd5a98f63e2aa43c1c16cb6e75423882f3a80dd0bf82",
+  "imported_helper_matches_code_commit": true
+}

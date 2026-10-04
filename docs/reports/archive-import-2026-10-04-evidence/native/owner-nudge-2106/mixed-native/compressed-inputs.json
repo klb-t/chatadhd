@@ -1,0 +1,51 @@
+{
+  "ctest-full.txt.gz": {
+    "original_name": "ctest-full.txt",
+    "original_bytes": 231163,
+    "original_sha256": "4df3d75e30a18fede43b0e78c7702b12c6f0f9b95781f8cc2ce0d63afd91fe34",
+    "compressed_bytes": 23188,
+    "compressed_sha256": "78a83c30847f02b39a0980d0504780166e600d4b7090c957671df6bcb8d831ec"
+  },
+  "ctest-registration.txt.gz": {
+    "original_name": "ctest-registration.txt",
+    "original_bytes": 82791,
+    "original_sha256": "910181e3da11f083156d96075379ae3718d633f0762624e19c6acd42829b2dc7",
+    "compressed_bytes": 3142,
+    "compressed_sha256": "ade4dbbcd0e14a92563360ece3795e719a05d47df86079a1911629a87939a496"
+  },
+  "source-before.json.gz": {
+    "original_name": "source-before.json",
+    "original_bytes": 148277,
+    "original_sha256": "7f55fa3d02a0c8d4c4e12280843d1580c7844c9ec48eb08a28a25594ca05c1b4",
+    "compressed_bytes": 58562,
+    "compressed_sha256": "f80a2f17a47960d392fbbc72d2f9058d4546f27e80d747c26b3fd3d62694c268"
+  },
+  "source-after.json.gz": {
+    "original_name": "source-after.json",
+    "original_bytes": 148277,
+    "original_sha256": "7f55fa3d02a0c8d4c4e12280843d1580c7844c9ec48eb08a28a25594ca05c1b4",
+    "compressed_bytes": 58562,
+    "compressed_sha256": "f80a2f17a47960d392fbbc72d2f9058d4546f27e80d747c26b3fd3d62694c268"
+  },
+  "build-first.txt.gz": {
+    "original_name": "build-first.txt",
+    "original_bytes": 21018,
+    "original_sha256": "32b2e0bd9f4b07ee8df5f5a483ae23423241648226a18acbca8effea6ccc828e",
+    "compressed_bytes": 2592,
+    "compressed_sha256": "32ee02e1f0c07ff17e8eb0b5ef7b5f1f21f4c6d8e4de78657f07cda712273845"
+  },
+  "preconfigure-source-before.json.gz": {
+    "original_name": "preconfigure-source-before.json",
+    "original_bytes": 148277,
+    "original_sha256": "7f55fa3d02a0c8d4c4e12280843d1580c7844c9ec48eb08a28a25594ca05c1b4",
+    "compressed_bytes": 58562,
+    "compressed_sha256": "f80a2f17a47960d392fbbc72d2f9058d4546f27e80d747c26b3fd3d62694c268"
+  },
+  "CMakeCache.txt.gz": {
+    "original_name": "CMakeCache.txt",
+    "original_bytes": 18535,
+    "original_sha256": "7fc0e64686bbc03eeec5ca1abed9fc113fe27050cd2534337732d275e4a0708f",
+    "compressed_bytes": 3781,
+    "compressed_sha256": "08faee8967f14710abeac68d4a80ff0c4ce94da37e9f2afdc18b01abd34674d9"
+  }
+}

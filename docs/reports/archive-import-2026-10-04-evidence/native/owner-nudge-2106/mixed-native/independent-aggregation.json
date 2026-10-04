@@ -1,0 +1,81 @@
+{
+  "schema": "loom.independent_ctest_log_aggregation/1",
+  "derivation": "Computed after the run from immutable logs and registration; not part of the original runner receipt.",
+  "log_sha256": "4df3d75e30a18fede43b0e78c7702b12c6f0f9b95781f8cc2ce0d63afd91fe34",
+  "registration_sha256": "910181e3da11f083156d96075379ae3718d633f0762624e19c6acd42829b2dc7",
+  "ctest": {
+    "registered": 115,
+    "executed": 115,
+    "passed": 115,
+    "failed": 0,
+    "failed_groups": []
+  },
+  "native": {
+    "groups": 87,
+    "cases": 706,
+    "passed": 706,
+    "failed": 0,
+    "assertions": 26375,
+    "assertions_passed": 26375,
+    "assertions_failed": 0,
+    "zero_case_groups": [
+      "unit.test_catalog_scale"
+    ]
+  },
+  "python": {
+    "unittest_groups": 26,
+    "attempted_cases": 1295,
+    "cases_in_passed_ctest_groups": 1295,
+    "skips": 0,
+    "failed_unittest_groups": []
+  },
+  "new_groups": {
+    "unit.test_import_screenshot": {
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "assertions": 872,
+      "ctest_status": "Passed"
+    },
+    "unit.test_import_aux_depth": {
+      "cases": 2,
+      "passed": 2,
+      "failed": 0,
+      "assertions": 106,
+      "ctest_status": "Passed"
+    },
+    "unit.test_db_annotations": {
+      "cases": 11,
+      "passed": 11,
+      "failed": 0,
+      "assertions": 189,
+      "ctest_status": "Passed"
+    },
+    "unit.test_import_resume": {
+      "cases": 23,
+      "passed": 23,
+      "failed": 0,
+      "assertions": 696,
+      "ctest_status": "Passed"
+    },
+    "unit.test_import_audit": {
+      "cases": 3,
+      "passed": 3,
+      "failed": 0,
+      "assertions": 28,
+      "ctest_status": "Passed"
+    },
+    "unit.test_import_usage": {
+      "cases": 2,
+      "passed": 2,
+      "failed": 0,
+      "assertions": 19,
+      "ctest_status": "Passed"
+    },
+    "compat.test_archive_cost": {
+      "cases": 19,
+      "ctest_status": "Passed"
+    }
+  },
+  "prefixed_permission_error_groups": []
+}

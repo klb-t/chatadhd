@@ -2,12 +2,23 @@
 
 Gałąź: `gpt/archive-import-2026-10-04`; świeży rebase na main **30ad7d3**
 (przyjęty W2 z danych i wymagania R39–R41), opublikowany jako **a343a8c**.
-Historyczny zmierzony kod: **1474b260582a80f006f99953baaad1b3253ca6e1**.
+Aktualny zweryfikowany kod: **4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2**.
+Późniejsze commity zmieniają tylko raporty/dowody. Historyczny kod pomiarów
+wydajności: **1474b260582a80f006f99953baaad1b3253ca6e1**.
 Zakres 5, dane syntetyczne/publiczne, offline: **zero płatnych wywołań**.
 
-**Poprawki blokera gotowe; pełna bramka po szturchnięciu 21:06 trwa.**
-Integrator wykazał MIME **1/3**: oba importy z provenance czytają niezmienne
-bajty, ale tracą rozszerzenie obrazu. Poprawka zachowuje deklarowany format
+**Gotowy do odbioru przyrost W5 po szturchnięciu 21:06.**
+Świeży fetch/rebase: main30ad7d3 bez zmian. Pełny build/WERROR i CTest
+**115/115,290,39 s**, **706 przypadków/26 375 asercji native**,
+**1295 Python/0 skips**. Nowe6 grup native: **47/47 i1910/1910**;
+regularny audyt Python **19/19**. Web offline: **85 modułów**.
+Niezależne replaye: **OCR MIME3/3,22/22 kontroli** oraz **checkpointy2/2,31/31**.
+1203 pliki źródeł i9 binariów mają stabilne hashe przed/po pełnej bramce.
+[Pełny aktualny dowód](archive-import-2026-10-04-evidence/native/owner-nudge-2106/mixed-native/README.md).
+Istniejący opcjonalny `catalog_scale` wykonał0 przypadków; nie oznaczamy
+tego benchmarku jako wykonanego. Brak migracji wszystkich52 grup do profili.
+Na starym źródle03cd52e integrator wykazał MIME **1/3**: oba importy z provenance
+czytały niezmienne bajty, ale traciły rozszerzenie obrazu. Poprawka zachowuje deklarowany format
 osobno od blobu; media API ma już `ocr_bytes`, więc nie trzeba zmian w W11.
 Naprawiono kontrolę wersji migracji wewnątrz `BEGIN IMMEDIATE`
 i włączono 8 regresji audytu do istniejącego CTest discovery bez zmian CMake.
@@ -23,7 +34,7 @@ build/CTest **112/112 w 307,19 s**, **696/25 341** natywnych przypadków/asercji
 i [niezależny replay](archive-import-2026-10-04-evidence/native/probes/owner-nudge-1851/receipt.json).
 Kod/header bytes 4314976 nadal odpowiadają zmierzonemu 1474b260; nowy pełny
 build potwierdził brak pracy, a źródła/binaria mają niezmienione hashe.
-To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
+Była to historyczna gotowość, potem cofnięta po negatywie OCR integratora.
 
 ## Poprawki po szturchnięciu 21:06
 
@@ -64,7 +75,8 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
 
 [Publiczne dowody nowych prób](archive-import-2026-10-04-evidence/native/owner-nudge-2106/README.md)
 zachowują pełne red/green, dokładne polecenia/hashe i osobny web build
-(85 modułów, 79 niezmienionych źródeł). Nie zastępują pełnych mixed bramek.
+(85 modułów, 79 niezmienionych źródeł). Ukierunkowane próby są uzupełnieniem
+osobnej pełnej bramki na rzeczywistym świeżym buildzie.
 Niezależne replaye na rzeczywistym świeżym rdzeniu W2+W5 **4e8c3de**
 (core SHA256 `d4093c76c886d1b2b30b8bac4f9dc6eeeee5e994dce316dfc7ecc81ff56b2028`):
 **OCR MIME3/3,22/22 kontroli**, bez zmiany oryginalnego probe;
@@ -79,7 +91,9 @@ pliku zerowe, przyczyna uszkodzenia nieustalona. Ponowne linkowanie wyłącznie
 serwera z niezmienionych obiektów/bibliotek dało poprawny ELF i **2/2**
 ukierunkowanych testów. Core SHA i wszystkie źródła bez zmian; testów nie zmieniono.
 [Pierwszy negatyw i odtworzenie](archive-import-2026-10-04-evidence/native/owner-nudge-2106/mixed-native-first-failure/README.md).
-Nowy pełny przebieg115 trwa; gotowości jeszcze nie deklarujemy.
+Nowy pełny przebieg zakończył się **115/115,290,39 s**. Niezależna agregacja
+potwierdza wykonane mianowniki, źródła i9 binariów; nie łączymy zaliczonych
+fragmentów pierwszego negatywu z drugim przebiegiem.
 Nowy fetch po wszystkich4 poprawkach: main30ad7d3 bez zmian, rebase up to date.
 
 ## Wdrożone
@@ -113,11 +127,13 @@ tekstów całego archiwum.
 | Python, 600 tys. wiadomości: RSS | 190 512 KiB | 28 072 KiB (−85,3%) |
 | Czas audytu Python | 2,155 s | 6,483 s (3,0× dłużej) |
 | Surowe wiersze | 480 tys., bez deleted | 600 tys., wszystkie statusy |
-| Regresje Python | 11 istniejących | 11/11 + 8/8 nowych |
+| Regresje Python | 11 istniejących, nowe8 tylko w evidence | 19/19 w zwykłej suite i pełnym CTest |
 | Wrapper 64 MiB: RSS / czas | 155 844 KiB / 109,927 s | 25 556 KiB / 49,847 s |
 | Tablica 64 MiB: RSS / czas | 24 328 KiB / 69,626 s | 25 920 KiB / 60,149 s |
-| Pełny CTest | Osobny dowód W2: 108/108 | 112/112, 316,20 s; natywne 696/25 341 asercji |
-| Nowe grupy natywne | — | 37/37 przypadków, 876/876 asercji |
+| Pełny CTest | Historyczne W5:112/112, źródło1474b260 | Aktualne W2+W5:115/115,290,39 s; native706/26 375; Python1295/0skip |
+| Nowe grupy natywne | Historyczne37/37,876/876 | Aktualne47/47,1910/1910 |
+| OCR reproduktor integratora | MIME1/3 | MIME3/3,22/22 kontroli na actual mixed core |
+| Wyścig wersji migracji | 6 błędów (oba klucze) | Unsupported; brak downgrade/DDL,11/11 i189/189 |
 | Oryginalne scenariusze checkpointów integratora | Negatyw w archive | 2/2 scenariusze, 31/31 kontroli |
 | Rzeczywisty historyczny W2×W5 | 3/3, 44 asercje | 3/3, 47/47 asercji |
 
@@ -184,8 +200,14 @@ sam JSON diagnostyczny W5 tego nie realizuje. Wspólna regresja3/4 nadal wymagan
 ## Do wątku 9
 
 **Odebrano aktualny INDEX/main30ad7d3 i nowy negatyw OCR6e4bf03.**
-OCR/migrację poprawiono, regresje audit są zwykłymi testami; auxiliary/repair
-honorują caller depth. Gotowość pozostaje cofnięta do nowej pełnej bramki.
+**Gotowy do odbioru ten przyrost:** OCR/migrację poprawiono, regresje audit są
+zwykłymi testami; auxiliary/repair honorują caller depth. Pełny CTest115/115,
+web85 oraz niezależne replaye3/22 i2/31 zielone na source4e8c3de/main30ad7d3.
+Receipt w `native/owner-nudge-2106/mixed-native/receipt.json` przypina dokładne
+źródła/core/binaria; current full log SHA256
+`4df3d75e30a18fede43b0e78c7702b12c6f0f9b95781f8cc2ce0d63afd91fe34`.
+Kod nie zmienił się po bramkach; tylko raporty/dowody. Pierwszy nieudany
+mixed przebieg i naprawa wygenerowanego serwera zachowane osobno.
 Rebase37 commitów czysty, każdy opublikowany;
 oryginalny03cd52e zachowany w archiwum. INDEX/main/STATE pozostają własnością9.
 
