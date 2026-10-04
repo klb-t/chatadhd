@@ -1,0 +1,80 @@
+{
+  "schema": "loom.repo_hygiene_local_checks/1",
+  "source_base": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "native_local_build_completed": false,
+  "native_local_ctest_executed": false,
+  "native_local_failures": [
+    "two No space left on device failures",
+    "subsequent empty fts.cpp.o linker failure"
+  ],
+  "local_web": [
+    {
+      "command": "npm run build",
+      "log": "web-build.log",
+      "bytes": 500,
+      "sha256": "a2e29e04a7228a4ef907dc3321d24614a6650a8241a9a9d64a58e573ce3d9422"
+    },
+    {
+      "command": "npm run test:transport",
+      "log": "web-transport.log",
+      "bytes": 267,
+      "sha256": "d409b26b97e75056499e9f108c241eb4b910b1b768c64d60ed73edf33efa104c"
+    },
+    {
+      "command": "npm run test:workspace-state",
+      "log": "web-workspace-state.log",
+      "bytes": 819,
+      "sha256": "9068603797569bfe756143c649634a800023a8d64bc009bb13a98be936fb9bc6"
+    },
+    {
+      "command": "npm run test:context-plan",
+      "log": "web-context-plan.log",
+      "bytes": 322,
+      "sha256": "adcf44e7ca9569a4e123307f5bcd7f56e0671c48bc484e684dc467f89df42634"
+    },
+    {
+      "command": "npm run test:application-profiles",
+      "log": "web-application-profiles.log",
+      "bytes": 2727,
+      "sha256": "58e45be3ecd61e9789f4d53188403c03bf88aa96862bc86d54bc3dc8cc67bebc"
+    },
+    {
+      "command": "npm run test:imported-message-content-state",
+      "log": "web-imported-message-content-state.log",
+      "bytes": 937,
+      "sha256": "37da7a890f6c67af70b29a3c202a4088bf42d7507b2ea1c53813c377e3430358"
+    }
+  ],
+  "failed_artifacts": [
+    {
+      "path": "docs/archive/repo-hygiene-2026-10-04/local-build/build-first-no-space.log",
+      "bytes": 3132,
+      "sha256": "484f2ef40ec500f79ff9ebe462c6cf09607c1ef9ccab4417dc908c5fbdfdf024"
+    },
+    {
+      "path": "docs/archive/repo-hygiene-2026-10-04/local-build/build-fourth-invalid-object.log",
+      "bytes": 712,
+      "sha256": "a51d0831344ad259b99b0d7e9b04079fa11f518b98bd3321ed0ab343b415c224"
+    },
+    {
+      "path": "docs/archive/repo-hygiene-2026-10-04/local-build/build-second-no-space.log",
+      "bytes": 9044,
+      "sha256": "3a3ef2d9f342dd07a6cefa126c19710b1a35d91547a663a4cde6d7d7940c9a23"
+    },
+    {
+      "path": "docs/archive/repo-hygiene-2026-10-04/local-build/build-third-invalid-object.log",
+      "bytes": 4232,
+      "sha256": "f3cebc6b8935940266804931ac70244a1ca2a4678f19874da1a923c9f42b7bd1"
+    },
+    {
+      "path": "docs/archive/repo-hygiene-2026-10-04/local-build/build.log",
+      "bytes": 712,
+      "sha256": "a51d0831344ad259b99b0d7e9b04079fa11f518b98bd3321ed0ab343b415c224"
+    },
+    {
+      "path": "docs/archive/repo-hygiene-2026-10-04/local-build/configure.log",
+      "bytes": 1238,
+      "sha256": "ed0f3c0f3de0002d59f1fd93aff35d8d016595c6e75217eec1354926f3521b87"
+    }
+  ]
+}
