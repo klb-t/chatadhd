@@ -1,7 +1,10 @@
 // Standalone thread-2 contract regression tests. Deliberately .cc: the kernel
 // source glob must not pull a test main() into libloom_core.
 #include "loom/usage_policy.h"
+#include "loom/config.h"
 #include "loom/sqlite.h"
+#include "loom/util/fs.h"
+#include "loom/util/sha256.h"
 
 #include <algorithm>
 #include <barrier>
@@ -612,6 +615,174 @@ void c_api_settings_preset_override_and_atomic_patch() {
   check(f.http_calls == 0, "settings checks remain entirely offline");
 }
 
+void settings_default_identity_and_canonical_hashes() {
+  TemporaryDirectory directory;
+  loom::Config config(directory.path / "config.json");
+  const Json historical_preset{{"schema", "loom.usage_policy/1"},
+                               {"growth_factor", 10.0},
+                               {"baseline_window", 32},
+                               {"ledger_busy_timeout_ms", 30000},
+                               {"include_reservations", true},
+                               {"initial_baselines", Json::object()}};
+  auto settings = take(loom::usage_policy_settings(config), "C++ settings");
+  check(settings.at("preset").size() == 6 && settings.at("preset") == historical_preset,
+        "settings preserve exactly the six historical preset values");
+  check(loom::usage_policy_defaults() == historical_preset,
+        "historical default behavior remains identical");
+  check(settings.at("effective") == historical_preset &&
+            settings.at("stored_override").is_null() && settings.at("source") == "preset",
+        "fresh C++ settings have no synthetic persistent override");
+  check(settings.at("preset_source") == "legacy_code_pending_pack_migration",
+        "preset source identifies pending data-pack migration");
+  check(settings.at("override_semantics") == "replace_top_level_fields",
+        "settings state replacement semantics");
+  const auto& hashes = settings.at("hashes");
+  const auto expected = loom::Sha256::hex(loom::json::canonical(historical_preset));
+  check(hashes.at("algorithm") == "sha256" &&
+            hashes.at("representation") == "loom.canonical_json",
+        "settings identify canonical hash representation");
+  check(hashes.at("preset") == expected && hashes.at("effective") == expected &&
+            hashes.at("stored_override").is_null(),
+        "settings hashes independently match canonical historical data");
+
+  Json stored{{"growth_factor", 25.0},
+              {"caller_extension", {{"z", 2}, {"a", Json{{"second", 4}, {"first", 3}}}}}};
+  config.set("loom_usage_policy", stored);
+  check(static_cast<bool>(config.save()), "save hash fixture override");
+  const auto bytes = take(loom::fsutil::read_file(config.path()), "read hash fixture config");
+  Json reordered{{"caller_extension", {{"a", Json{{"first", 3}, {"second", 4}}}, {"z", 2}}},
+                 {"growth_factor", 25.0}};
+  auto candidate = take(loom::usage_policy_settings(config, &reordered), "C++ reordered preview");
+  check(candidate.at("hashes").at("stored_override") ==
+            loom::Sha256::hex(loom::json::canonical(stored)),
+        "stored override hash independently matches canonical data");
+  check(candidate.at("preview").at("hashes").at("override") ==
+            loom::Sha256::hex(loom::json::canonical(reordered)),
+        "preview override hash independently matches canonical data");
+  check(candidate.at("hashes").at("stored_override") ==
+            candidate.at("preview").at("hashes").at("override"),
+        "nested and top-level key order does not change canonical hash");
+  check(candidate.at("preview").at("hashes").at("effective") ==
+            loom::Sha256::hex(loom::json::canonical(candidate.at("preview").at("effective"))),
+        "prospective effective hash independently matches canonical data");
+  check(candidate.at("preview").at("effective_changed") == false,
+        "equivalent key order does not report an effective change");
+  check(candidate.at("preview").at("persisted") == false &&
+            take(loom::fsutil::read_file(config.path()), "read unchanged hash fixture config") == bytes,
+        "C++ settings preview does not persist its candidate");
+  check(!std::filesystem::exists(directory.path / "usage-policy.sqlite"),
+        "C++ settings do not create a ledger");
+}
+
+void c_api_settings_preview_reset_and_shallow_replacement() {
+  CApiFixture f;
+  Json stored{{"growth_factor", 40.0},
+              {"initial_baselines", {{"old/cohort", {{"money_usd", 7.0}, {"old:units", 3}}}}},
+              {"old_extension", {{"source", "saved"}}}};
+  check(f.patch({{"loom_usage_policy", stored}}) == LOOM_OK, "save preview replacement fixture");
+  const auto before = f.config();
+  const auto bytes = take(loom::fsutil::read_file(f.directory.path / "config.json"),
+                          "read preview replacement config");
+  auto reset = f.command({{"action", "preview_settings"}, {"override", Json::object()}});
+  check(!reset.contains("error"), "empty settings candidate is valid");
+  check(reset.at("stored_override") == stored && reset.at("effective").at("growth_factor") == 40.0,
+        "settings preview retains the active saved snapshot");
+  check(reset.at("preview").at("override").empty() &&
+            reset.at("preview").at("effective") == reset.at("preset"),
+        "empty candidate prospectively resets all fields to the preset");
+  check(reset.at("preview").at("effective_changed") == true &&
+            reset.at("preview").at("persisted") == false,
+        "prospective reset reports change without persistence");
+
+  Json replacement{{"initial_baselines", {{"new/cohort", {{"future:units", 1e100}}}}}};
+  auto shallow = f.command({{"action", "preview_settings"}, {"override", replacement}});
+  check(!shallow.contains("error"), "shallow replacement candidate is valid");
+  const auto& proposed = shallow.at("preview").at("effective");
+  check(proposed.at("initial_baselines") == replacement.at("initial_baselines") &&
+            !proposed.at("initial_baselines").contains("old/cohort"),
+        "candidate replaces the complete initial_baselines top-level field");
+  check(proposed.at("growth_factor") == 10.0 && !proposed.contains("old_extension"),
+        "candidate is based on preset instead of merging the stored override");
+  check(f.config() == before &&
+            take(loom::fsutil::read_file(f.directory.path / "config.json"),
+                 "read unchanged preview replacement config") == bytes,
+        "reset and shallow preview leave both memory and config bytes unchanged");
+  check(f.command({{"action", "settings"}}).at("stored_override") == stored,
+        "empty preview does not delete the persistent override");
+  check(!std::filesystem::exists(f.directory.path / "usage-policy.sqlite"),
+        "settings previews do not create a ledger");
+  check(f.http_calls == 0, "replacement previews remain entirely offline");
+}
+
+void c_api_invalid_settings_preview_is_read_only() {
+  CApiFixture f;
+  check(f.patch({{"loom_usage_policy", {{"growth_factor", 25.0}}}}) == LOOM_OK,
+        "save invalid preview fixture");
+  const auto before = f.config();
+  const auto bytes = take(loom::fsutil::read_file(f.directory.path / "config.json"),
+                          "read invalid preview config");
+  std::vector<Json> invalid{
+      Json{{"action", "preview_settings"}},
+      Json{{"action", "preview_settings"}, {"override", nullptr}},
+      Json{{"action", "preview_settings"}, {"override", Json::array()}},
+      Json{{"action", "preview_settings"}, {"override", "not-an-object"}},
+      Json{{"action", "preview_settings"}, {"override", {{"growth_factor", 1.0}}}},
+      Json{{"action", "preview_settings"}, {"override", {{"baseline_window", 0}}}},
+      Json{{"action", "preview_settings"},
+           {"override", {{"initial_baselines", {{"cohort", {{"money_usd", -1}}}}}}}},
+  };
+  for (const auto& command : invalid) {
+    auto refused = f.command(command);
+    check(refused.contains("error") && refused.at("error").at("code") == "invalid_argument",
+          "malformed settings preview returns an argument error");
+    check(f.config() == before &&
+              take(loom::fsutil::read_file(f.directory.path / "config.json"),
+                   "read refused preview config") == bytes,
+          "malformed settings preview cannot mutate any config value or file byte");
+    check(!std::filesystem::exists(f.directory.path / "usage-policy.sqlite"),
+          "malformed settings preview does not open a ledger");
+  }
+  check(f.http_calls == 0, "malformed previews remain entirely offline");
+}
+
+void c_api_settings_preview_matches_save_and_restart() {
+  CApiFixture f;
+  Json override{{"growth_factor", 1e100}, {"baseline_window", nullptr},
+                {"ledger_busy_timeout_ms", 0}, {"include_reservations", false},
+                {"initial_baselines", {{"future/cohort", {{"future:units", 1e200},
+                                                            {"unknown:units", nullptr}}}}},
+                {"future_extension", {{"huge_valid_value", 1e250},
+                                       {"arbitrary_variants", Json::array({"caller-a", "caller-b"})}}}};
+  const auto before = f.config();
+  auto preview = f.command({{"action", "preview_settings"}, {"override", override}});
+  check(!preview.contains("error"), "large open settings candidate is valid");
+  check(preview.at("preview").at("override") == override &&
+            preview.at("preview").at("effective").at("future_extension") == override.at("future_extension"),
+        "arbitrary extension data and large finite values survive preview exactly");
+  check(preview.at("preview").at("hashes").at("override") ==
+            loom::Sha256::hex(loom::json::canonical(override)),
+        "large extension candidate hash independently matches canonical data");
+  check(f.config() == before && !std::filesystem::exists(f.directory.path / "usage-policy.sqlite"),
+        "large settings candidate remains read-only");
+  check(f.patch({{"loom_usage_policy", override}}) == LOOM_OK, "save the previewed candidate");
+  auto saved = f.command({{"action", "settings"}});
+  check(saved.at("stored_override") == override &&
+            saved.at("effective") == preview.at("preview").at("effective"),
+        "preview computes exactly the subsequently saved effective options");
+  check(saved.at("hashes").at("effective") == preview.at("preview").at("hashes").at("effective") &&
+            saved.at("hashes").at("stored_override") == preview.at("preview").at("hashes").at("override"),
+        "save preserves both prospective canonical hashes");
+  f.reopen();
+  auto restarted = f.command({{"action", "settings"}});
+  check(restarted.at("effective") == saved.at("effective") &&
+            restarted.at("hashes") == saved.at("hashes"),
+        "previewed effective options and hashes survive a fresh runtime");
+  auto consumed = f.command({{"action", "inspect"}, {"baseline_key", "future/cohort"}});
+  check(!consumed.contains("error") && consumed.at("options") == preview.at("preview").at("effective"),
+        "fresh policy consumes exactly the previewed and saved effective options");
+  check(f.http_calls == 0, "preview, save, restart and local consumption remain entirely offline");
+}
+
 void c_api_receipt_lifecycle_dispatcher() {
   CApiFixture f;
   Json options{{"initial_baselines", {{"contract", {{"money_usd", 10.0}}}}}};
@@ -696,6 +867,10 @@ int main() {
       {"finite aggregate overflow rollback", finite_aggregate_overflow_rejects_without_mutation},
       {"invalid quantities and configurable presets", invalid_amounts_options_and_unbounded_presets},
       {"C API settings and atomic policy patch", c_api_settings_preset_override_and_atomic_patch},
+      {"settings default identity and canonical hashes", settings_default_identity_and_canonical_hashes},
+      {"C API settings reset and shallow replacement preview", c_api_settings_preview_reset_and_shallow_replacement},
+      {"C API invalid settings preview is read-only", c_api_invalid_settings_preview_is_read_only},
+      {"C API settings preview matches save and restart", c_api_settings_preview_matches_save_and_restart},
       {"C API receipt lifecycle dispatcher", c_api_receipt_lifecycle_dispatcher},
       {"corrupt record returns Result error", corrupt_record_returns_result_error_without_exception},
   };

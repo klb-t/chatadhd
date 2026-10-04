@@ -1,10 +1,22 @@
 #include "loom/config.h"
 #include "loom/usage_policy.h"
+#include "loom/util/sha256.h"
 
 #include <cmath>
 #include <limits>
 
 namespace loom {
+namespace {
+Result<Json> apply_override(const Json& preset, const Json& override) {
+  LOOM_TRY(validate_usage_policy_options(override));
+  Json effective = preset;
+  for (auto it = override.begin(); it != override.end(); ++it) effective[it.key()] = it.value();
+  return effective;
+}
+
+std::string policy_hash(const Json& value) { return Sha256::hex(json::canonical(value)); }
+}  // namespace
+
 const Json& usage_policy_defaults() {
   static const Json preset{{"schema", "loom.usage_policy/1"},
                            {"growth_factor", 10.0},
@@ -57,10 +69,32 @@ Status validate_usage_policy_options(const Json& options) {
 }
 
 Result<Json> effective_usage_policy_options(const Config& config) {
-  Json override = config.get("loom_usage_policy");
-  LOOM_TRY(validate_usage_policy_options(override));
-  Json effective = usage_policy_defaults();
-  for (auto it = override.begin(); it != override.end(); ++it) effective[it.key()] = it.value();
-  return effective;
+  // Execution callers only need this setting, not a copy of unrelated config.
+  return apply_override(usage_policy_defaults(),
+                        config.JsonStore::get("loom_usage_policy", Json::object()));
+}
+
+Result<Json> usage_policy_settings(const Config& config, const Json* proposed_override) {
+  // Read once so the reported source, value and hashes cannot describe
+  // different concurrent config revisions.
+  const auto stored = config.all();
+  const auto* override = json::find(stored, "loom_usage_policy");
+  const auto& preset = usage_policy_defaults();
+  LOOM_TRY_ASSIGN(auto effective, apply_override(preset, override ? *override : Json::object()));
+  Json snapshot{{"preset", preset}, {"stored_override", override ? *override : Json(nullptr)},
+                {"effective", effective}, {"source", override ? "configured" : "preset"},
+                {"preset_source", "legacy_code_pending_pack_migration"},
+                {"override_semantics", "replace_top_level_fields"},
+                {"hashes", Json{{"algorithm", "sha256"}, {"representation", "loom.canonical_json"},
+                  {"preset", policy_hash(preset)},
+                  {"stored_override", override ? Json(policy_hash(*override)) : Json(nullptr)},
+                  {"effective", policy_hash(effective)}}}};
+  if (proposed_override) {
+    LOOM_TRY_ASSIGN(auto proposed, apply_override(preset, *proposed_override));
+    snapshot["preview"] = Json{{"override", *proposed_override}, {"effective", proposed},
+      {"hashes", Json{{"override", policy_hash(*proposed_override)}, {"effective", policy_hash(proposed)}}},
+      {"effective_changed", json::canonical(effective) != json::canonical(proposed)}, {"persisted", false}};
+  }
+  return snapshot;
 }
 }  // namespace loom
