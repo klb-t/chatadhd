@@ -1,0 +1,220 @@
+{
+  "schema": "loom.archived_negative_prompt_replay_result/1",
+  "status": "expected_negative_results_reproduced",
+  "completed_utc": "2026-10-04T16:05:38.409403+00:00",
+  "paid_calls": 0,
+  "live_provider_calls": 0,
+  "production_files_modified": false,
+  "new_core_build": false,
+  "observations": {
+    "legacy_wire": {
+      "expected_negative_reproduced": true,
+      "contract_hash": "fb31e66cf09406d0f29ab1bad19290507c3df67b59e63785824788fde849dac2",
+      "wire_bytes_equal": 0,
+      "body_semantics_equal": 3,
+      "content_bytes_equal": 3,
+      "comparison": "entire new receipt equals historical receipt, including all six request body hashes",
+      "quality_result": "rejected exact-wire compatibility; not an accepted default"
+    },
+    "ordered_json_oracle": {
+      "expected_negative_reproduced": true,
+      "cases": [
+        16,
+        15,
+        1
+      ],
+      "assertions": [
+        242,
+        240,
+        2
+      ],
+      "quality_result": "rejected order-sensitive fixture oracle; not native field/raw-output loss"
+    }
+  },
+  "invocations": [
+    {
+      "label": "legacy-registry-compile",
+      "argv": [
+        "c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-I/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/registry/include",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/include",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/src",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/nlohmann",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/doctest",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/miniz",
+        "-x",
+        "c++",
+        "-c",
+        "/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/registry/prompt_contract_legacy.cpp.fixture",
+        "-o",
+        "/workspace/scratch/98e6ad903811/prompt-negative-replay-observed/historical_registry.o"
+      ],
+      "exit_code": 0,
+      "stdout": "legacy-registry-compile.stdout.txt",
+      "stderr": "legacy-registry-compile.stderr.txt"
+    },
+    {
+      "label": "legacy-probe-link",
+      "argv": [
+        "c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/include",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/src",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/nlohmann",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/doctest",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/miniz",
+        "-x",
+        "c++",
+        "/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/legacy_shared_builder_probe.cpp.fixture",
+        "-x",
+        "none",
+        "/workspace/scratch/98e6ad903811/prompt-negative-replay-observed/historical_registry.o",
+        "-Wl,--no-keep-memory",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_core.a",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_miniz.a",
+        "-pthread",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-o",
+        "/workspace/scratch/98e6ad903811/prompt-negative-replay-observed/legacy_wire_probe"
+      ],
+      "exit_code": 0,
+      "stdout": "legacy-probe-link.stdout.txt",
+      "stderr": "legacy-probe-link.stderr.txt"
+    },
+    {
+      "label": "legacy-wire-run",
+      "argv": [
+        "/workspace/scratch/98e6ad903811/prompt-negative-replay-observed/legacy_wire_probe",
+        "/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/recovered_analysis.prompt"
+      ],
+      "exit_code": 0,
+      "stdout": "legacy-wire-run.stdout.txt",
+      "stderr": "legacy-wire-run.stderr.txt"
+    },
+    {
+      "label": "ordered-oracle-link",
+      "argv": [
+        "c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/include",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/src",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/nlohmann",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/doctest",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/miniz",
+        "-x",
+        "c++",
+        "/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/ordered-json-oracle/semantic_prompt_integration.cpp.fixture",
+        "-x",
+        "none",
+        "-Wl,--no-keep-memory",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_core.a",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_miniz.a",
+        "-pthread",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-o",
+        "/workspace/scratch/98e6ad903811/prompt-negative-replay-observed/ordered_json_oracle_probe"
+      ],
+      "exit_code": 0,
+      "stdout": "ordered-oracle-link.stdout.txt",
+      "stderr": "ordered-oracle-link.stderr.txt"
+    },
+    {
+      "label": "ordered-oracle-run",
+      "argv": [
+        "/workspace/scratch/98e6ad903811/prompt-negative-replay-observed/ordered_json_oracle_probe",
+        "--no-colors=1"
+      ],
+      "exit_code": 1,
+      "stdout": "ordered-oracle-run.stdout.txt",
+      "stderr": "ordered-oracle-run.stderr.txt"
+    }
+  ],
+  "archive_sources": [
+    {
+      "path": "README.md",
+      "sha256": "6c9f4221ada8c16307870b8dd80113680bdfb8875754f1d1ac1f10c3638922be"
+    },
+    {
+      "path": "legacy-analysis-wire-order/first_receipt.json",
+      "sha256": "b6736c2d19d1441b8469609eb6764b281bef4f13df5f3fd463760fc279134ce1"
+    },
+    {
+      "path": "legacy-analysis-wire-order/legacy_shared_builder_probe.cpp.fixture",
+      "sha256": "e3d4bc94404f42463f28395c3ed7cc34dcee41c6d050d3a7eca7e7da9692a071"
+    },
+    {
+      "path": "legacy-analysis-wire-order/recovered_analysis.prompt",
+      "sha256": "54169c26dc75c827810f107345f48a74623b620c3c0aeaf3023d02957954ee78"
+    },
+    {
+      "path": "legacy-analysis-wire-order/registry/include/extract/prompt_contract.h",
+      "sha256": "41428317875ef45d0e668827a673d3fb4ce73303923e0aafe048925f2bd66d8f"
+    },
+    {
+      "path": "legacy-analysis-wire-order/registry/include/extract/prompt_contract_data.inc",
+      "sha256": "3898ef9aac59ba7111b6802a1b32a9cccd53c8b1cab3712ad001f0b82b1aa86c"
+    },
+    {
+      "path": "legacy-analysis-wire-order/registry/prompt_contract_legacy.cpp.fixture",
+      "sha256": "540480ec7e7e31b75f7ad2bac4b26780f37da4bbd9d7a41126c6065c06913995"
+    },
+    {
+      "path": "legacy-analysis-wire-order/registry_delta.patch",
+      "sha256": "977d5cf7e6a009fb7be6ba1eaa57514d724b9091383ac2a5f5bb942a8f1240af"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "a6f28b471603ec140068cd04638a928c75ef35e1f60fdfd09ba51d94b2c7438c"
+    },
+    {
+      "path": "ordered-json-oracle/first_run.txt",
+      "sha256": "f2211ee2d0a5ee9e1968bd87f413e56723a644b60467879b1a924550412beeec"
+    },
+    {
+      "path": "ordered-json-oracle/semantic_prompt_integration.cpp.fixture",
+      "sha256": "d53b7cc6cdbcb5e3ee9ee8594f568f56150b6ba62703ff4cf913cb6fa95a616d"
+    },
+    {
+      "path": "replay_negative_prompts.py",
+      "sha256": "0fb68bfe7e79ef84e8f72a9e201c6b401bdd9b4e4c1ae89ab6b2d199e37f12cf"
+    }
+  ],
+  "linked_libraries": [
+    {
+      "path": "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_core.a",
+      "sha256": "e19f430a9675ba7fad8dcd51eaa79e042ea2ca73f10b1ee39db4936e5f88dad2",
+      "bytes": 362359132
+    },
+    {
+      "path": "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+      "sha256": "c70ac638ea6ca708e5a4745f682ba0044c584a98c52e908a036318b51235d5b1",
+      "bytes": 3509494
+    },
+    {
+      "path": "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_miniz.a",
+      "sha256": "a4c37f1f96334ba9fc9c7e7a734f3e84137882883e5649e812f74bcfbc587a06",
+      "bytes": 360332
+    }
+  ]
+}

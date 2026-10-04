@@ -1,0 +1,48 @@
+{
+  "status": "native_shared_builder_source_equivalent_comparison_no_HTTP",
+  "prompt_contract_hash": "fb31e66cf09406d0f29ab1bad19290507c3df67b59e63785824788fde849dac2",
+  "source_prefix_sha256": "f57d7f2c563b4a745d177023ae189dc28e4b715dde8f370529617139f202aaf3",
+  "fixtures": [
+    {
+      "fixture": "ascii",
+      "original_codepoints": 63,
+      "sent_codepoints": 63,
+      "old_content_sha256": "a0d40b9d232edd13cc995a6fcc3de1dc05cc128e9bb37c4ba74cf5cc4e40e1ef",
+      "shared_builder_content_sha256": "a0d40b9d232edd13cc995a6fcc3de1dc05cc128e9bb37c4ba74cf5cc4e40e1ef",
+      "equal_content_bytes": true,
+      "old_request_body_sha256": "b406b723070952afe6893c07246c6db05447a29b4366e4996e81a15fd4e8bf8b",
+      "shared_builder_request_body_sha256": "db2083dc0aac8ee3c92d23f4a118b73febec043810dff0467a89aa54500c3d1d",
+      "equal_request_body_bytes": false,
+      "equal_body_semantics": true
+    },
+    {
+      "fixture": "unicode",
+      "original_codepoints": 50,
+      "sent_codepoints": 50,
+      "old_content_sha256": "b52052759f11bd2608f7692028de3bf33a63b269b499d3901def5ae0292feb59",
+      "shared_builder_content_sha256": "b52052759f11bd2608f7692028de3bf33a63b269b499d3901def5ae0292feb59",
+      "equal_content_bytes": true,
+      "old_request_body_sha256": "efb8b553a751286c18d4d5e9d0944c2c48f62021600743d727d5e7cdefde305f",
+      "shared_builder_request_body_sha256": "712a7efc509befdfd0013f866221d0e80dc7d9f6993f2a215af5a76de8bca5ee",
+      "equal_request_body_bytes": false,
+      "equal_body_semantics": true
+    },
+    {
+      "fixture": "unicode_over_window",
+      "original_codepoints": 3300,
+      "sent_codepoints": 3000,
+      "old_content_sha256": "30964644eda7d17ea92bfb999309023f38d06c269a465a4f5514d2c2c5a833bc",
+      "shared_builder_content_sha256": "30964644eda7d17ea92bfb999309023f38d06c269a465a4f5514d2c2c5a833bc",
+      "equal_content_bytes": true,
+      "old_request_body_sha256": "63e23d9558720cf4c0e5c5b889cc3200637a8417a68c685f9017ae01c0672461",
+      "shared_builder_request_body_sha256": "3abddc12dbccddd0b014f0eda56e7300c3eb91e7b79a0da43223c13d7a752d56",
+      "equal_request_body_bytes": false,
+      "equal_body_semantics": true
+    }
+  ],
+  "equal_content_count": 3,
+  "equal_body_bytes_count": 0,
+  "equal_body_semantics_count": 3,
+  "fixture_count": 3,
+  "paid_calls": 0
+}

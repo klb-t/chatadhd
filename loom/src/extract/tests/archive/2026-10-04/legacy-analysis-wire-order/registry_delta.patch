@@ -1,0 +1,25 @@
+--- production/prompt_contract.cpp
++++ archive/prompt_contract_legacy.cpp.fixture
+@@ -257,7 +257,7 @@
+ }
+ 
+ Status contract_syntax(const Json& definition) {
+-  LOOM_TRY(exact_keys(definition, {"schema", "id", "version", "messages", "request_parameters", "transport", "analysis_parameters", "output_schema", "validation_mode", "description", "title", "extensions"}, "prompt contract"));
++  LOOM_TRY(exact_keys(definition, {"schema", "id", "version", "messages", "request_parameters", "transport", "analysis_parameters", "output_schema", "validation_mode", "description", "title", "extensions", "preserve_unknown_fields"}, "prompt contract"));
+   if (json::get_string(definition, "schema") != "loom.analysis_prompt/1" || json::get_string(definition, "id").empty() ||
+       !definition.contains("version") || !definition["version"].is_number_integer() || definition["version"].get<double>() < 0)
+     return invalid("prompt contract: schema/id/version is missing or invalid");
+@@ -299,8 +299,11 @@
+   if (mode != "strict" && mode != "lenient" && mode != "off") return invalid("prompt validation_mode must be strict, lenient or off");
+   if (!definition.contains("output_schema") || (!definition["output_schema"].is_object() && !definition["output_schema"].is_boolean()))
+     return invalid("prompt output_schema must be an object or boolean");
+-  if (definition.contains("preserve_unknown_fields") && !definition["preserve_unknown_fields"].is_boolean())
+-    return invalid("preserve_unknown_fields must be boolean");
++  // ARCHIVED NEGATIVE REPLAY ONLY: accept the historical true metadata field.
++  // It never controlled stripping/retention and is not a production setting.
++  if (definition.contains("preserve_unknown_fields") &&
++      (!definition["preserve_unknown_fields"].is_boolean() || definition["preserve_unknown_fields"] != Json(true)))
++    return invalid("archived preserve_unknown_fields is allowed only as historical true");
+   if (mode == "strict") {
+     Json problems = Json::array();
+     schema_syntax(definition["output_schema"], "/output_schema", problems);

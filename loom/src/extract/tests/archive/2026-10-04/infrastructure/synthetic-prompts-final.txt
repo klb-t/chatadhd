@@ -1,0 +1,86 @@
+evaluation failed: [Errno 2] No such file or directory: 'loom/tools/eval/synthetic_floors.json'
+# Knowledge-layer scorecard — synthetic_dev (cut 2026-05-01)
+
+## catalog
+- recall: 0.6889
+- precision: 1.0
+- precision_population: labeled_conversations
+- trap_fpr: 0.0
+- generic_selected: 0
+- selected: 34
+- labeled_selected: 31
+- unlabeled_selected: 3
+
+## resolve
+- project_recall: 1.0
+- alias_recall_on_canonical: 0.24
+- fragmented_extra_entities: 1
+- spurious_projects: 0
+- per_project: {"proj.noteflow": {"entities": 2, "aliases_on_best": 2, "aliases": 5}, "proj.reeltime": {"entities": 1, "aliases_on_best": 1, "aliases": 5}, "proj.watchdog": {"entities": 1, "aliases_on_best": 1, "aliases": 5}, "proj.lokatorka": {"entities": 1, "aliases_on_best": 1, "aliases": 5}, "proj.analogghosts": {"entities": 1, "aliases_on_best": 1, "aliases": 5}}
+
+## extract
+- version_recall_chat: 0.6818
+- versions_total_chat: 22
+- decision_recall: 0.3333
+- chosen_accuracy: 0.1429
+- supersession_recall: 0.0
+- decisions_total: 21
+- decisions_found: 12
+- fork_recall: 1.0
+- forks_found: 4
+- status_event_recall: 0.5484
+- status_events_total: 31
+- oscillating_features_gt: 2
+- oscillating_entities_found: 0
+- status_records: 35
+- open_question_recall: 0.2
+- area_recall: 1.0
+- areas_found: 6
+- inferred_members: 0
+
+## assess
+- contradiction_recall: 0.0
+- contested_claims: 3
+
+## generalize
+- principle_recall: 0.7692
+- level_accuracy: 0.9
+- form_accuracy: 0.8
+- principles_with_evidence: 56
+- principle_precision: 0.5
+- principles_total: 56
+- operator_recall: 0.0
+- operators_found: 10
+
+## retrospective_consistency
+- solution_class_match_rate: 0.0
+- protocol: retrospective_full_corpus_with_cut_priors
+- benchmark_valid_for_prediction: False
+- predictive_accuracy: None
+- limitation: Post-cutoff examples are visible during operator construction; matches measure retrospective consistency.
+- predictions_made: 16
+- outcomes: {"pending": 16}
+- negative_control_false_positives: 0
+- negative_controls: 1
+- detail: [{"id": "pred.op.new_source_new_adapter", "predicted_from_before_T_decision": true, "held_on_actual_decision": false}, {"id": "pred.op.new_artifact_shared_structure", "predicted_from_before_T_decision": true, "held_on_actual_decision": false}, {"id": "pred.op.observe_before_automate", "predicted_from_before_T_decision": true, "held_on_actual_decision": false}, {"id": "pred.op.uncertainty_keep_alternatives", "predicted_from_before_T_decision": false, "held_on_actual_decision": false}, {"id": "pred.op.impl_detail_not_propagated", "predicted_from_before_T_decision": true, "held_on_actual_decision": false}, {"id": "pred.op.cost_gate_on_irreversibility", "predicted_from_before_T_decision": false, "held_on_actual_decision": false}]
+
+## epistemic
+- false_certainty_rate: 0.0
+- claims_with_structural_violations: 0
+- claims_evaluated: 255
+- observed_without_support: 0
+- observed_quote_not_in_observation: 0
+- inferred_without_expected_property: 0
+- extrapolated_or_absent_premises: 0
+- claims_by_evidence_class: {"absent": 34, "derived": 2, "observed": 219}
+- expected_property_states: {}
+
+## determinism
+- stage_hashes_identical: True
+- differing_stages: []
+- products_byte_identical: True
+- run_ids_identical: True
+- products: 65
+
+- calibration_ece: None (not measured: no per-claim correctness labels yet)
+

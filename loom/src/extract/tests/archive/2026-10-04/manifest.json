@@ -1,0 +1,212 @@
+{
+  "schema": "loom.archived_negative_prompt_replay/1",
+  "status": "expected_negative_results_reproduced",
+  "paid_calls": 0,
+  "intended_git_scope": [
+    "loom/src/extract/tests/archive/2026-10-04/",
+    "docs/reports/knowledge-precision-prompts-negative-2026-10-04.md"
+  ],
+  "case_a": {
+    "expected_cases": 16,
+    "expected_passed_cases": 15,
+    "expected_failed_cases": 1,
+    "expected_assertions": 242,
+    "expected_passed_assertions": 240,
+    "expected_failed_assertions": 2,
+    "expected_exit_code": 1,
+    "interpretation": "Rejected order-sensitive fixture oracle; canonical fields/values were identical, original raw bytes were not lost."
+  },
+  "case_b": {
+    "contract_hash": "fb31e66cf09406d0f29ab1bad19290507c3df67b59e63785824788fde849dac2",
+    "expected_body_bytes_equal": 0,
+    "expected_body_semantics_equal": 3,
+    "expected_content_bytes_equal": 3,
+    "expected_fixtures": 3,
+    "expected_helper_exit_code": 0,
+    "interpretation": "Rejected exact-wire compatibility: same content and JSON values, different serialized key order. The helper exit0 checks only content/semantics, not the rejected wire-byte gate."
+  },
+  "source_production_registry": {
+    "path": "loom/src/extract/prompt_contract.cpp",
+    "sha256": "73b7d5e4615725f0d119e6bfd1bf87ad794113650a7627d744222f2967ff5ac5"
+  },
+  "archive_files": [
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/README.md",
+      "sha256": "5bc7cb3482e4e8a4bf198fab1a49d6dffa69ef7715db79bd88341fbfaa9dc243",
+      "bytes": 3531
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/infrastructure/README.md",
+      "sha256": "25bcd812667fd8361924c2b8e99cf6c7d78495a1389c8be78b7923e2a662f1c9",
+      "bytes": 712
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/infrastructure/prompt-ctest-complete.txt",
+      "sha256": "dbadf76b8e5cee9b479c96fe07c36024c291a3db5d963be3d3ad95860aaff4d5",
+      "bytes": 2495
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/infrastructure/prompt-ctest-final.txt",
+      "sha256": "322db1bd953ced4cca6f44af5b7a3c7af76f1278437c779eb918cac52fcdb888",
+      "bytes": 986
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/infrastructure/prompt-ctest-serial-final.txt",
+      "sha256": "3fb17dcad31d03c3b4df4013ba2863c45d1db2a5538912c708e1ec73626009a9",
+      "bytes": 55223
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/infrastructure/prompt-final-build.log",
+      "sha256": "bfc5e511d47d1f0a6271622efe7b9dbb1b27f7ef375f57873329c94631108f27",
+      "bytes": 652
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/infrastructure/prompt-shared-restore.log",
+      "sha256": "1ca98db7913cfd8bc4b4925483a958cb370365bbb04321d4fea1b6e9a75184cf",
+      "bytes": 592
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/infrastructure/synthetic-prompts-final.txt",
+      "sha256": "28951b2efc0081a2a96cc7d7a91da008c1b848ad30d18566c1b1c734200b5faf",
+      "bytes": 3307
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/first_receipt.json",
+      "sha256": "b6736c2d19d1441b8469609eb6764b281bef4f13df5f3fd463760fc279134ce1",
+      "bytes": 2324
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/legacy_shared_builder_probe.cpp.fixture",
+      "sha256": "e3d4bc94404f42463f28395c3ed7cc34dcee41c6d050d3a7eca7e7da9692a071",
+      "bytes": 3903
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/recovered_analysis.prompt",
+      "sha256": "54169c26dc75c827810f107345f48a74623b620c3c0aeaf3023d02957954ee78",
+      "bytes": 2960
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/registry/include/extract/prompt_contract.h",
+      "sha256": "41428317875ef45d0e668827a673d3fb4ce73303923e0aafe048925f2bd66d8f",
+      "bytes": 2383
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/registry/include/extract/prompt_contract_data.inc",
+      "sha256": "3898ef9aac59ba7111b6802a1b32a9cccd53c8b1cab3712ad001f0b82b1aa86c",
+      "bytes": 11930
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/registry/prompt_contract_legacy.cpp.fixture",
+      "sha256": "540480ec7e7e31b75f7ad2bac4b26780f37da4bbd9d7a41126c6065c06913995",
+      "bytes": 26911
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/legacy-analysis-wire-order/registry_delta.patch",
+      "sha256": "977d5cf7e6a009fb7be6ba1eaa57514d724b9091383ac2a5f5bb942a8f1240af",
+      "bytes": 2082
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/ordered-json-oracle/first_run.txt",
+      "sha256": "f2211ee2d0a5ee9e1968bd87f413e56723a644b60467879b1a924550412beeec",
+      "bytes": 14326
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/ordered-json-oracle/semantic_prompt_integration.cpp.fixture",
+      "sha256": "d53b7cc6cdbcb5e3ee9ee8594f568f56150b6ba62703ff4cf913cb6fa95a616d",
+      "bytes": 28524
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/legacy-probe-link.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/legacy-probe-link.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/legacy-registry-compile.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/legacy-registry-compile.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/legacy-wire-run.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/legacy-wire-run.stdout.txt",
+      "sha256": "b6736c2d19d1441b8469609eb6764b281bef4f13df5f3fd463760fc279134ce1",
+      "bytes": 2324
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/ordered-oracle-link.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/ordered-oracle-link.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/ordered-oracle-run.stderr.txt",
+      "sha256": "7149182cc1c33d5ed5dfd9d5057c499aa214bdf9217cbcca6d867a21d189c93e",
+      "bytes": 11753
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/ordered-oracle-run.stdout.txt",
+      "sha256": "932cba4d16d975dd763549e616ff60841aa569cced700ff42951b9b305d9e088",
+      "bytes": 2858
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay-evidence/replay_receipt.json",
+      "sha256": "f55198bfe8326e8a4225219a82836cd29a4d6e9e8243566b5d7cb028e66d485b",
+      "bytes": 8653
+    },
+    {
+      "path": "loom/src/extract/tests/archive/2026-10-04/replay_negative_prompts.py",
+      "sha256": "0fb68bfe7e79ef84e8f72a9e201c6b401bdd9b4e4c1ae89ab6b2d199e37f12cf",
+      "bytes": 6949
+    }
+  ],
+  "actual_replay": {
+    "receipt": "replay-evidence/replay_receipt.json",
+    "receipt_sha256": "f55198bfe8326e8a4225219a82836cd29a4d6e9e8243566b5d7cb028e66d485b",
+    "completed_utc": "2026-10-04T16:05:38.409403+00:00",
+    "observations": {
+      "legacy_wire": {
+        "expected_negative_reproduced": true,
+        "contract_hash": "fb31e66cf09406d0f29ab1bad19290507c3df67b59e63785824788fde849dac2",
+        "wire_bytes_equal": 0,
+        "body_semantics_equal": 3,
+        "content_bytes_equal": 3,
+        "comparison": "entire new receipt equals historical receipt, including all six request body hashes",
+        "quality_result": "rejected exact-wire compatibility; not an accepted default"
+      },
+      "ordered_json_oracle": {
+        "expected_negative_reproduced": true,
+        "cases": [
+          16,
+          15,
+          1
+        ],
+        "assertions": [
+          242,
+          240,
+          2
+        ],
+        "quality_result": "rejected order-sensitive fixture oracle; not native field/raw-output loss"
+      }
+    },
+    "paid_calls": 0,
+    "live_provider_calls": 0
+  },
+  "infrastructure_history_note": "Complete diagnostic logs; no arbitrary-host reproducibility or model-quality score claimed."
+}

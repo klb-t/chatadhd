@@ -1,0 +1,19 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/ordered-json-oracle/semantic_prompt_integration.cpp.fixture:361:
+TEST SUITE: semantic_prompt_integration
+TEST CASE:  lenient and off keep invalid grounding without observed evidence
+
+/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/ordered-json-oracle/semantic_prompt_integration.cpp.fixture:367: ERROR: CHECK( candidate["proposal"]["unvalidated_output"]==bad ) is NOT correct!
+  values: CHECK( {"claim":{"assessment":{"basis":{"support":[{"byte_len":30,"byte_start":0,"observation":"ob_1","quote":"Parser preserves source bytes."}]},"premises":{"claims":[]}},"object":"","predicate":"states_requirement","qualifiers":{"extra":{"assertion_context":"asserted","polarity":"positive","topic":"parser"}},"subject":"e_invented","value":"Parser preserves source bytes."},"kind":"structure","unknowns":[]} == {"kind":"structure","unknowns":[],"claim":{"subject":"e_invented","predicate":"states_requirement","object":"","value":"Parser preserves source bytes.","qualifiers":{"extra":{"polarity":"positive","assertion_context":"asserted","topic":"parser"}},"assessment":{"basis":{"support":[{"observation":"ob_1","quote":"Parser preserves source bytes.","byte_start":0,"byte_len":30}]},"premises":{"claims":[]}}}} )
+  logged: mode := lenient
+
+/workspace/scratch/98e6ad903811/prompt-negative-archive/loom/src/extract/tests/archive/2026-10-04/ordered-json-oracle/semantic_prompt_integration.cpp.fixture:367: ERROR: CHECK( candidate["proposal"]["unvalidated_output"]==bad ) is NOT correct!
+  values: CHECK( {"claim":{"assessment":{"basis":{"support":[{"byte_len":30,"byte_start":0,"observation":"ob_1","quote":"Parser preserves source bytes."}]},"premises":{"claims":[]}},"object":"","predicate":"states_requirement","qualifiers":{"extra":{"assertion_context":"asserted","polarity":"positive","topic":"parser"}},"subject":"e_invented","value":"Parser preserves source bytes."},"kind":"structure","unknowns":[]} == {"kind":"structure","unknowns":[],"claim":{"subject":"e_invented","predicate":"states_requirement","object":"","value":"Parser preserves source bytes.","qualifiers":{"extra":{"polarity":"positive","assertion_context":"asserted","topic":"parser"}},"assessment":{"basis":{"support":[{"observation":"ob_1","quote":"Parser preserves source bytes.","byte_start":0,"byte_len":30}]},"premises":{"claims":[]}}}} )
+  logged: mode := off
+
+===============================================================================
+[doctest] test cases:  16 |  15 passed | 1 failed | 0 skipped
+[doctest] assertions: 242 | 240 passed | 2 failed |
+[doctest] Status: FAILURE!

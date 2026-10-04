@@ -1,0 +1,100 @@
+{
+  "schema": "loom.analysis_prompt/1",
+  "id": "semantic.analysis",
+  "version": 1,
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        "Analyse the following chat message. Return ONLY valid JSON (no markdown, no backticks).\n\n{\n  \"entities\": [{\"name\": \"...\", \"kind\": \"person|org|place|code|file|concept|product|event\", \"relevance\": 0.0-1.0}],\n  \"topics\": [{\"label\": \"...\", \"confidence\": 0.0-1.0}],\n  \"relations\": [{\"subject\": \"...\", \"predicate\": \"mentions|depends_on|references|contradicts|implements|part_of\", \"object\": \"...\"}],\n  \"summary\": \"one line summary\",\n  \"sentiment\": \"positive|negative|neutral|mixed\"\n}\n\nRules:\n- Extract ALL named entities (people, orgs, code modules, files, concepts).\n- Topics should be domain labels (legal, finance, tech, ai, security, health, project, personal).\n- Relations connect entities mentioned in the text.\n- Be precise. Fewer high-confidence items > many low-confidence ones.\n- If the message is trivial (greetings, \"ok\", etc.) return empty arrays.\n\nMessage:\n",
+        {
+          "binding": "text",
+          "max_codepoints": 3000
+        }
+      ]
+    }
+  ],
+  "request_parameters": {
+    "temperature": 0.1,
+    "max_tokens": 800
+  },
+  "transport": {
+    "timeout_ms": 30000
+  },
+  "analysis_parameters": {},
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "entities": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "relevance": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "topics": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": true
+            }
+          ]
+        }
+      },
+      "relations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string"
+            },
+            "predicate": {
+              "type": "string"
+            },
+            "object": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "summary": {
+        "type": "string"
+      },
+      "sentiment": {
+        "type": "string"
+      },
+      "source": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": true
+  },
+  "validation_mode": "off",
+  "preserve_unknown_fields": true
+}

@@ -1,0 +1,64 @@
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "extract/prompt_contract.h"
+#include "loom/semantic_llm.h"
+#include "loom/util/sha256.h"
+#include "loom/util/utf8.h"
+
+int main(int argc, char** argv) {
+  using namespace loom;
+  if (argc != 2) { std::cerr << "usage: legacy_shared_builder_probe <recovered.prompt>\n"; return 2; }
+  std::ifstream file(argv[1], std::ios::binary);
+  if (!file) { std::cerr << "cannot read recovered prompt\n"; return 2; }
+  std::ostringstream buffer; buffer << file.rdbuf();
+  auto definition = json::parse(buffer.str());
+  if (!definition) { std::cerr << definition.error().message << '\n'; return 2; }
+  auto contract = extract::prompts::from_snapshot(*definition);
+  if (!contract) { std::cerr << contract.error().message << '\n'; return 1; }
+  std::string long_unicode;
+  for (int i = 0; i < 1100; ++i) long_unicode += "ą🚀Ż";
+  const std::vector<std::pair<std::string, std::string>> fixtures{
+      {"ascii", "This message is definitely long enough to trigger the LLM path."},
+      {"unicode", "Zażółć gęślą jaźń. 🚀 Źródłowa wiadomość bez zmian."},
+      {"unicode_over_window", long_unicode}};
+  Json rows = Json::array();
+  std::size_t same_content = 0, same_body = 0, same_body_semantics = 0;
+  for (const auto& [id, input] : fixtures) {
+    // Exact ordered_json construction currently in SemanticLLM::call_llm,
+    // with its linked historical prompt constant and actual UTF-8 helper.
+    const std::string original_content = std::string(kAnalysisPrompt) + std::string(utf8::prefix(input, 3000));
+    const Json original_body{{"model", "offline/fixture"},
+        {"messages", Json::array({Json{{"role", "user"}, {"content", original_content}}})},
+        {"temperature", 0.1}, {"max_tokens", 800}};
+    auto prepared = extract::prompts::prepare_request(*contract, "offline/fixture", "https://offline.invalid",
+                                                     Json{{"text", input}});
+    if (!prepared) { std::cerr << prepared.error().message << '\n'; return 1; }
+    const Json& generated_body = prepared->at("body_json");
+    const std::string generated_content = generated_body.at("messages").at(0).at("content").get<std::string>();
+    const std::string original_bytes = json::dump(original_body);
+    const std::string generated_bytes = prepared->at("body_bytes").get<std::string>();
+    const bool content_equal = original_content == generated_content;
+    const bool body_equal = original_bytes == generated_bytes;
+    const bool body_semantics_equal = json::canonical(original_body) == json::canonical(generated_body);
+    same_content += content_equal; same_body += body_equal; same_body_semantics += body_semantics_equal;
+    rows.push_back(Json{{"fixture", id}, {"original_codepoints", utf8::length(input)},
+        {"sent_codepoints", utf8::length(utf8::prefix(input, 3000))},
+        {"old_content_sha256", Sha256::hex(original_content)},
+        {"shared_builder_content_sha256", Sha256::hex(generated_content)},
+        {"equal_content_bytes", content_equal},
+        {"old_request_body_sha256", Sha256::hex(original_bytes)},
+        {"shared_builder_request_body_sha256", Sha256::hex(generated_bytes)},
+        {"equal_request_body_bytes", body_equal}, {"equal_body_semantics", body_semantics_equal}});
+  }
+  std::cout << json::dump(Json{{"status", "native_shared_builder_source_equivalent_comparison_no_HTTP"},
+      {"prompt_contract_hash", contract->hash}, {"source_prefix_sha256", Sha256::hex(kAnalysisPrompt)},
+      {"fixtures", rows}, {"equal_content_count", same_content}, {"equal_body_bytes_count", same_body},
+      {"equal_body_semantics_count", same_body_semantics}, {"fixture_count", fixtures.size()},
+      {"paid_calls", 0}}, 2) << '\n';
+  return same_content == fixtures.size() && same_body_semantics == fixtures.size() ? 0 : 1;
+}

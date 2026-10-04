@@ -1,0 +1,8 @@
+[0/2] Re-checking globbed directories...
+[1/131] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[2/131] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[3/131] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[4/131] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[5/131] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[6/131] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[7/131] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o

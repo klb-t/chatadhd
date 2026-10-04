@@ -1,0 +1,736 @@
+Test project /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev
+        Start   1: unit.test_archive
+  1/108 Test   #1: unit.test_archive ..................................   Passed    1.31 sec
+        Start   2: unit.test_batch_api
+  2/108 Test   #2: unit.test_batch_api ................................   Passed    0.09 sec
+        Start   3: unit.test_capi
+  3/108 Test   #3: unit.test_capi .....................................   Passed    4.03 sec
+        Start   4: unit.test_capi_knowledge
+  4/108 Test   #4: unit.test_capi_knowledge ...........................   Passed    1.24 sec
+        Start   5: unit.test_capi_knowledge_latest_run
+  5/108 Test   #5: unit.test_capi_knowledge_latest_run ................   Passed    2.10 sec
+        Start   6: unit.test_catalog
+  6/108 Test   #6: unit.test_catalog ..................................   Passed    2.96 sec
+        Start   7: unit.test_catalog_context
+  7/108 Test   #7: unit.test_catalog_context ..........................   Passed    3.80 sec
+        Start   8: unit.test_catalog_eval
+  8/108 Test   #8: unit.test_catalog_eval .............................   Passed    1.98 sec
+        Start   9: unit.test_catalog_links
+  9/108 Test   #9: unit.test_catalog_links ............................   Passed   10.58 sec
+        Start  10: unit.test_catalog_retention
+ 10/108 Test  #10: unit.test_catalog_retention ........................   Passed    2.35 sec
+        Start  11: unit.test_catalog_scale
+ 11/108 Test  #11: unit.test_catalog_scale ............................   Passed    0.02 sec
+        Start  12: unit.test_chat_active_task
+ 12/108 Test  #12: unit.test_chat_active_task .........................   Passed    2.88 sec
+        Start  13: unit.test_chat_active_task_acceptance_audit
+ 13/108 Test  #13: unit.test_chat_active_task_acceptance_audit ........   Passed    0.72 sec
+        Start  14: unit.test_chat_active_task_acceptance_scale
+ 14/108 Test  #14: unit.test_chat_active_task_acceptance_scale ........   Passed   10.00 sec
+        Start  15: unit.test_chat_active_task_acceptance_validation
+ 15/108 Test  #15: unit.test_chat_active_task_acceptance_validation ...   Passed    1.88 sec
+        Start  16: unit.test_chat_active_task_concurrency
+ 16/108 Test  #16: unit.test_chat_active_task_concurrency .............   Passed    0.35 sec
+        Start  17: unit.test_chat_active_task_durability
+ 17/108 Test  #17: unit.test_chat_active_task_durability ..............   Passed    0.73 sec
+        Start  18: unit.test_chat_active_task_durable_audit
+ 18/108 Test  #18: unit.test_chat_active_task_durable_audit ...........   Passed   17.26 sec
+        Start  19: unit.test_chat_active_task_exceptional
+ 19/108 Test  #19: unit.test_chat_active_task_exceptional .............   Passed    0.42 sec
+        Start  20: unit.test_chat_active_task_history_aba
+ 20/108 Test  #20: unit.test_chat_active_task_history_aba .............   Passed    0.06 sec
+        Start  21: unit.test_chat_active_task_reference
+ 21/108 Test  #21: unit.test_chat_active_task_reference ...............   Passed    0.03 sec
+        Start  22: unit.test_chat_active_task_retention
+ 22/108 Test  #22: unit.test_chat_active_task_retention ...............   Passed    1.17 sec
+        Start  23: unit.test_chat_active_task_revisions
+ 23/108 Test  #23: unit.test_chat_active_task_revisions ...............   Passed    2.83 sec
+        Start  24: unit.test_chat_active_task_scope_identity
+ 24/108 Test  #24: unit.test_chat_active_task_scope_identity ..........   Passed    0.59 sec
+        Start  25: unit.test_chat_engine
+ 25/108 Test  #25: unit.test_chat_engine ..............................   Passed    0.28 sec
+        Start  26: unit.test_chat_knowledge_context
+ 26/108 Test  #26: unit.test_chat_knowledge_context ...................   Passed   11.05 sec
+        Start  27: unit.test_chat_retrieval_plan
+ 27/108 Test  #27: unit.test_chat_retrieval_plan ......................   Passed    4.44 sec
+        Start  28: unit.test_config
+ 28/108 Test  #28: unit.test_config ...................................   Passed    0.09 sec
+        Start  29: unit.test_context_channel_integration
+ 29/108 Test  #29: unit.test_context_channel_integration ..............   Passed    2.15 sec
+        Start  30: unit.test_context_controls
+ 30/108 Test  #30: unit.test_context_controls .........................   Passed    3.78 sec
+        Start  31: unit.test_context_counter
+ 31/108 Test  #31: unit.test_context_counter ..........................   Passed    2.44 sec
+        Start  32: unit.test_context_diagnostics
+ 32/108 Test  #32: unit.test_context_diagnostics ......................   Passed   19.74 sec
+        Start  33: unit.test_context_engine
+ 33/108 Test  #33: unit.test_context_engine ...........................   Passed   21.99 sec
+        Start  34: unit.test_context_eval
+ 34/108 Test  #34: unit.test_context_eval .............................   Passed    2.00 sec
+        Start  35: unit.test_context_native_consumer
+ 35/108 Test  #35: unit.test_context_native_consumer ..................   Passed    2.69 sec
+        Start  36: unit.test_context_plan
+ 36/108 Test  #36: unit.test_context_plan .............................   Passed    4.87 sec
+        Start  37: unit.test_context_retrieval
+ 37/108 Test  #37: unit.test_context_retrieval ........................   Passed    1.24 sec
+        Start  38: unit.test_context_retrieval_dev
+ 38/108 Test  #38: unit.test_context_retrieval_dev ....................   Passed    2.28 sec
+        Start  39: unit.test_context_tfidf_reuse
+ 39/108 Test  #39: unit.test_context_tfidf_reuse ......................   Passed   14.51 sec
+        Start  40: unit.test_crypto
+ 40/108 Test  #40: unit.test_crypto ...................................   Passed   12.61 sec
+        Start  41: unit.test_db
+ 41/108 Test  #41: unit.test_db .......................................   Passed    2.51 sec
+        Start  42: unit.test_event_bus
+ 42/108 Test  #42: unit.test_event_bus ................................   Passed    0.09 sec
+        Start  43: unit.test_extract
+ 43/108 Test  #43: unit.test_extract ..................................   Passed   11.61 sec
+        Start  44: unit.test_extract_eval
+ 44/108 Test  #44: unit.test_extract_eval .............................   Passed    6.57 sec
+        Start  45: unit.test_fts
+ 45/108 Test  #45: unit.test_fts ......................................   Passed    0.14 sec
+        Start  46: unit.test_generalize
+ 46/108 Test  #46: unit.test_generalize ...............................   Passed    5.50 sec
+        Start  47: unit.test_generalize_eval
+ 47/108 Test  #47: unit.test_generalize_eval ..........................   Passed    3.68 sec
+        Start  48: unit.test_github
+ 48/108 Test  #48: unit.test_github ...................................   Passed    0.09 sec
+        Start  49: unit.test_graph
+ 49/108 Test  #49: unit.test_graph ....................................   Passed    0.24 sec
+        Start  50: unit.test_import
+ 50/108 Test  #50: unit.test_import ...................................   Passed    0.47 sec
+        Start  51: unit.test_import_export_fidelity
+ 51/108 Test  #51: unit.test_import_export_fidelity ...................   Passed    0.45 sec
+        Start  52: unit.test_import_exports
+ 52/108 Test  #52: unit.test_import_exports ...........................   Passed    5.33 sec
+        Start  53: unit.test_import_source_materialization
+ 53/108 Test  #53: unit.test_import_source_materialization ............   Passed    0.55 sec
+        Start  54: unit.test_import_stream
+ 54/108 Test  #54: unit.test_import_stream ............................   Passed  101.46 sec
+        Start  55: unit.test_kb_pack
+ 55/108 Test  #55: unit.test_kb_pack ..................................   Passed   11.38 sec
+        Start  56: unit.test_knowledge
+ 56/108 Test  #56: unit.test_knowledge ................................   Passed    8.00 sec
+        Start  57: unit.test_knowledge_candidate_graph
+ 57/108 Test  #57: unit.test_knowledge_candidate_graph ................   Passed    0.35 sec
+        Start  58: unit.test_knowledge_candidates
+ 58/108 Test  #58: unit.test_knowledge_candidates .....................   Passed    0.03 sec
+        Start  59: unit.test_knowledge_flow
+ 59/108 Test  #59: unit.test_knowledge_flow ...........................   Passed    1.76 sec
+        Start  60: unit.test_knowledge_semantic
+ 60/108 Test  #60: unit.test_knowledge_semantic .......................   Passed   13.00 sec
+        Start  61: unit.test_knowledge_semantic_graph
+ 61/108 Test  #61: unit.test_knowledge_semantic_graph .................   Passed    8.76 sec
+        Start  62: unit.test_knowledge_store
+ 62/108 Test  #62: unit.test_knowledge_store ..........................   Passed    0.76 sec
+        Start  63: unit.test_materialize
+ 63/108 Test  #63: unit.test_materialize ..............................   Passed    3.28 sec
+        Start  64: unit.test_media
+ 64/108 Test  #64: unit.test_media ....................................   Passed    0.02 sec
+        Start  65: unit.test_memory
+ 65/108 Test  #65: unit.test_memory ...................................   Passed    0.03 sec
+        Start  66: unit.test_model
+ 66/108 Test  #66: unit.test_model ....................................   Passed    0.06 sec
+        Start  67: unit.test_net_sse
+ 67/108 Test  #67: unit.test_net_sse ..................................   Passed    0.02 sec
+        Start  68: unit.test_pack_model
+ 68/108 Test  #68: unit.test_pack_model ...............................   Passed    2.10 sec
+        Start  69: unit.test_provenance
+ 69/108 Test  #69: unit.test_provenance ...............................   Passed    0.12 sec
+        Start  70: unit.test_providers
+ 70/108 Test  #70: unit.test_providers ................................   Passed    0.04 sec
+        Start  71: unit.test_regex
+ 71/108 Test  #71: unit.test_regex ....................................   Passed    0.04 sec
+        Start  72: unit.test_relations
+ 72/108 Test  #72: unit.test_relations ................................   Passed    0.06 sec
+        Start  73: unit.test_resolve
+ 73/108 Test  #73: unit.test_resolve ..................................   Passed    0.90 sec
+        Start  74: unit.test_resolve_attribution
+ 74/108 Test  #74: unit.test_resolve_attribution ......................   Passed    8.86 sec
+        Start  75: unit.test_resolve_lineage
+ 75/108 Test  #75: unit.test_resolve_lineage ..........................   Passed   10.37 sec
+        Start  76: unit.test_runtime
+ 76/108 Test  #76: unit.test_runtime ..................................   Passed    0.09 sec
+        Start  77: unit.test_selector
+ 77/108 Test  #77: unit.test_selector .................................   Passed    0.02 sec
+        Start  78: unit.test_semantic_llm
+ 78/108 Test  #78: unit.test_semantic_llm .............................   Passed    0.13 sec
+        Start  79: unit.test_semantic_worker
+ 79/108 Test  #79: unit.test_semantic_worker ..........................   Passed    0.49 sec
+        Start  80: unit.test_tasks
+ 80/108 Test  #80: unit.test_tasks ....................................   Passed    0.22 sec
+        Start  81: unit.test_util
+ 81/108 Test  #81: unit.test_util .....................................   Passed    0.17 sec
+        Start  82: compat.test_abi_compat
+ 82/108 Test  #82: compat.test_abi_compat .............................***Failed    0.20 sec
+test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ERROR
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ERROR
+
+======================================================================
+ERROR: test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_abi_compat.py", line 89, in test_ctypes_smoke
+    lib = ctypes.CDLL(lib_path)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_abi_compat.py", line 81, in test_shared_library_exports_exactly_the_declared_api
+    out = subprocess.run(["nm", "-D", "--defined-only", lib], capture_output=True, text=True, check=True).stdout
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['nm', '-D', '--defined-only', '/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0']' returned non-zero exit status 1.
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.014s
+
+FAILED (errors=2)
+
+        Start  83: compat.test_active_task_compiler_compat
+ 83/108 Test  #83: compat.test_active_task_compiler_compat ............   Passed    2.93 sec
+        Start  84: compat.test_candidate_graph_native
+ 84/108 Test  #84: compat.test_candidate_graph_native .................   Passed    3.55 sec
+        Start  85: compat.test_chat_active_task_http
+ 85/108 Test  #85: compat.test_chat_active_task_http ..................***Failed    0.49 sec
+test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not) ... ERROR
+test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding (__main__.ActiveTaskRevisionHttpTest.test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding) ... ERROR
+test_selective_v2_v3_latest_replay_and_stale_rejection (__main__.ActiveTaskRevisionHttpTest.test_selective_v2_v3_latest_replay_and_stale_rejection) ... ERROR
+test_trace_off_provider_failure_retains_product_across_runtime_restart (__main__.ActiveTaskRevisionHttpTest.test_trace_off_provider_failure_retains_product_across_runtime_restart) ... ERROR
+
+======================================================================
+ERROR: test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_chat_active_task_http.py", line 23, in test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not
+    lib = ctypes.CDLL(library)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding (__main__.ActiveTaskRevisionHttpTest.test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_chat_active_task_http.py", line 155, in setUp
+    self.lib = ctypes.CDLL(library)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_selective_v2_v3_latest_replay_and_stale_rejection (__main__.ActiveTaskRevisionHttpTest.test_selective_v2_v3_latest_replay_and_stale_rejection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_chat_active_task_http.py", line 155, in setUp
+    self.lib = ctypes.CDLL(library)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_trace_off_provider_failure_retains_product_across_runtime_restart (__main__.ActiveTaskRevisionHttpTest.test_trace_off_provider_failure_retains_product_across_runtime_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_chat_active_task_http.py", line 155, in setUp
+    self.lib = ctypes.CDLL(library)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.007s
+
+FAILED (errors=4)
+
+        Start  86: compat.test_chat_compat
+ 86/108 Test  #86: compat.test_chat_compat ............................   Passed    9.88 sec
+        Start  87: compat.test_config_compat
+ 87/108 Test  #87: compat.test_config_compat ..........................   Passed    0.85 sec
+        Start  88: compat.test_crypto_compat
+ 88/108 Test  #88: compat.test_crypto_compat ..........................   Passed   29.07 sec
+        Start  89: compat.test_db_compat
+ 89/108 Test  #89: compat.test_db_compat ..............................   Passed    3.61 sec
+        Start  90: compat.test_github_sync_defaults
+ 90/108 Test  #90: compat.test_github_sync_defaults ...................   Passed    0.64 sec
+        Start  91: compat.test_graph_compat
+ 91/108 Test  #91: compat.test_graph_compat ...........................   Passed    8.95 sec
+        Start  92: compat.test_graph_packet_store
+ 92/108 Test  #92: compat.test_graph_packet_store .....................***Failed    0.29 sec
+test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity (__main__.GraphPacketStoreTests.test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity) ... ERROR
+test_cas_mismatch_rolls_back_new_packet_and_receipt (__main__.GraphPacketStoreTests.test_cas_mismatch_rolls_back_new_packet_and_receipt) ... ERROR
+test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation (__main__.GraphPacketStoreTests.test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation) ... ERROR
+test_existing_owner_judgement_remains_authoritative_after_later_acceptance (__main__.GraphPacketStoreTests.test_existing_owner_judgement_remains_authoritative_after_later_acceptance) ... ERROR
+test_explicit_acceptance_and_closed_selection_are_required (__main__.GraphPacketStoreTests.test_explicit_acceptance_and_closed_selection_are_required) ... ERROR
+test_full_packet_history_and_metadata_survive_accept_read_replay_restart (__main__.GraphPacketStoreTests.test_full_packet_history_and_metadata_survive_accept_read_replay_restart) ... ERROR
+test_integer_to_float_precision_loss_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_integer_to_float_precision_loss_rejects_without_native_writes) ... ERROR
+test_late_sql_error_rolls_back_rows_run_and_receipt (__main__.GraphPacketStoreTests.test_late_sql_error_rolls_back_rows_run_and_receipt) ... ERROR
+test_lossless_numeric_normalization_preserves_large_json_attrs (__main__.GraphPacketStoreTests.test_lossless_numeric_normalization_preserves_large_json_attrs) ... ERROR
+test_member_order_tolerance_still_rejects_discarded_fields (__main__.GraphPacketStoreTests.test_member_order_tolerance_still_rejects_discarded_fields) ... ERROR
+test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry (__main__.GraphPacketStoreTests.test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry) ... ERROR
+test_object_key_order_is_not_native_content_loss_or_identity_change (__main__.GraphPacketStoreTests.test_object_key_order_is_not_native_content_loss_or_identity_change) ... ERROR
+test_oversized_unsigned_ordinal_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_oversized_unsigned_ordinal_rejects_without_native_writes) ... ERROR
+test_python_caller_rejects_forged_reversible_history_before_native_write (__main__.GraphPacketStoreTests.test_python_caller_rejects_forged_reversible_history_before_native_write) ... ERROR
+test_receipt_updates_and_deletes_are_rejected_by_database (__main__.GraphPacketStoreTests.test_receipt_updates_and_deletes_are_rejected_by_database) ... ERROR
+test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references (__main__.GraphPacketStoreTests.test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references) ... ERROR
+test_utf8_subspan_projection_does_not_rewrite_quote_or_locator (__main__.GraphPacketStoreTests.test_utf8_subspan_projection_does_not_rewrite_quote_or_locator) ... ERROR
+test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4 (__main__.GraphPacketStoreTests.test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4) ... ERROR
+
+======================================================================
+ERROR: test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity (__main__.GraphPacketStoreTests.test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_cas_mismatch_rolls_back_new_packet_and_receipt (__main__.GraphPacketStoreTests.test_cas_mismatch_rolls_back_new_packet_and_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation (__main__.GraphPacketStoreTests.test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_existing_owner_judgement_remains_authoritative_after_later_acceptance (__main__.GraphPacketStoreTests.test_existing_owner_judgement_remains_authoritative_after_later_acceptance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_explicit_acceptance_and_closed_selection_are_required (__main__.GraphPacketStoreTests.test_explicit_acceptance_and_closed_selection_are_required)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_full_packet_history_and_metadata_survive_accept_read_replay_restart (__main__.GraphPacketStoreTests.test_full_packet_history_and_metadata_survive_accept_read_replay_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_integer_to_float_precision_loss_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_integer_to_float_precision_loss_rejects_without_native_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_late_sql_error_rolls_back_rows_run_and_receipt (__main__.GraphPacketStoreTests.test_late_sql_error_rolls_back_rows_run_and_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_lossless_numeric_normalization_preserves_large_json_attrs (__main__.GraphPacketStoreTests.test_lossless_numeric_normalization_preserves_large_json_attrs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_member_order_tolerance_still_rejects_discarded_fields (__main__.GraphPacketStoreTests.test_member_order_tolerance_still_rejects_discarded_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry (__main__.GraphPacketStoreTests.test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_object_key_order_is_not_native_content_loss_or_identity_change (__main__.GraphPacketStoreTests.test_object_key_order_is_not_native_content_loss_or_identity_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_oversized_unsigned_ordinal_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_oversized_unsigned_ordinal_rejects_without_native_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_python_caller_rejects_forged_reversible_history_before_native_write (__main__.GraphPacketStoreTests.test_python_caller_rejects_forged_reversible_history_before_native_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_receipt_updates_and_deletes_are_rejected_by_database (__main__.GraphPacketStoreTests.test_receipt_updates_and_deletes_are_rejected_by_database)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references (__main__.GraphPacketStoreTests.test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_utf8_subspan_projection_does_not_rewrite_quote_or_locator (__main__.GraphPacketStoreTests.test_utf8_subspan_projection_does_not_rewrite_quote_or_locator)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+======================================================================
+ERROR: test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4 (__main__.GraphPacketStoreTests.test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tests/compat/test_graph_packet_store.py", line 23, in setUp
+    self.store = NativeGraphStore(library, self.data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/coordination/graph_store.py", line 37, in __init__
+    self.library = ctypes.CDLL(str(library_path))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom.so.0.1.0: cannot open shared object file: No such file or directory
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.024s
+
+FAILED (errors=18)
+
+        Start  93: compat.test_import_compat
+ 93/108 Test  #93: compat.test_import_compat ..........................   Passed    1.63 sec
+        Start  94: compat.test_memory_compat
+ 94/108 Test  #94: compat.test_memory_compat ..........................   Passed    4.71 sec
+        Start  95: compat.test_selector_compat
+ 95/108 Test  #95: compat.test_selector_compat ........................   Passed    0.19 sec
+        Start  96: compat.test_semantic_compat
+ 96/108 Test  #96: compat.test_semantic_compat ........................   Passed    7.91 sec
+        Start  97: compat.test_semantic_recovery
+ 97/108 Test  #97: compat.test_semantic_recovery ......................   Passed    4.41 sec
+        Start  98: compat.test_util_compat
+ 98/108 Test  #98: compat.test_util_compat ............................   Passed    4.05 sec
+        Start  99: research.structure
+ 99/108 Test  #99: research.structure .................................***Failed   41.19 sec
+.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................E.FFF..EE.E..........................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a pre-existing freeze; cannot create it in the same invocation
+..............................................................................................................................................................
+======================================================================
+ERROR: test_actual_run_preserves_all_32_bodies_and_excludes_all_six_attempts (test_live_pilot.ContinuationTests.test_actual_run_preserves_all_32_bodies_and_excludes_all_six_attempts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 131, in test_actual_run_preserves_all_32_bodies_and_excludes_all_six_attempts
+    plan, manifest = self.prepare()
+                     ^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 120, in prepare
+    plan = pilot.prepare(request_value or self.req, output,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 317, in prepare
+    body = {"model": choice["id"], "messages": messages_for(case, method),
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 97, in messages_for
+    prompt = native_prompt()
+             ^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 77, in native_prompt
+    raise ValueError("native prompt could not be identified uniquely")
+ValueError: native prompt could not be identified uniquely
+
+======================================================================
+ERROR: test_ledger_and_response_tampering_fail_before_scoring (test_live_pilot.LivePilotTests.test_ledger_and_response_tampering_fail_before_scoring)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 86, in test_ledger_and_response_tampering_fail_before_scoring
+    plan = pilot.prepare(request(), out, endpoint_loader=endpoint)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 317, in prepare
+    body = {"model": choice["id"], "messages": messages_for(case, method),
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 97, in messages_for
+    prompt = native_prompt()
+             ^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 77, in native_prompt
+    raise ValueError("native prompt could not be identified uniquely")
+ValueError: native prompt could not be identified uniquely
+
+======================================================================
+ERROR: test_missing_results_stay_in_denominator_report_immutable (test_live_pilot.LivePilotTests.test_missing_results_stay_in_denominator_report_immutable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 72, in test_missing_results_stay_in_denominator_report_immutable
+    plan = pilot.prepare(request(), out, endpoint_loader=endpoint)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 317, in prepare
+    body = {"model": choice["id"], "messages": messages_for(case, method),
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 97, in messages_for
+    prompt = native_prompt()
+             ^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 77, in native_prompt
+    raise ValueError("native prompt could not be identified uniquely")
+ValueError: native prompt could not be identified uniquely
+
+======================================================================
+ERROR: test_prepare_never_reads_gold_and_hashes_native_prompt (test_live_pilot.LivePilotTests.test_prepare_never_reads_gold_and_hashes_native_prompt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 43, in test_prepare_never_reads_gold_and_hashes_native_prompt
+    plan = pilot.prepare(request(), out, endpoint_loader=endpoint)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 317, in prepare
+    body = {"model": choice["id"], "messages": messages_for(case, method),
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 97, in messages_for
+    prompt = native_prompt()
+             ^^^^^^^^^^^^^^^
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/live_pilot.py", line 77, in native_prompt
+    raise ValueError("native prompt could not be identified uniquely")
+ValueError: native prompt could not be identified uniquely
+
+======================================================================
+FAIL: test_duplicate_and_symlink_zip_entries_refused (test_live_pilot.ContinuationTests.test_duplicate_and_symlink_zip_entries_refused) (variant='duplicate')
+----------------------------------------------------------------------
+ValueError: native prompt could not be identified uniquely
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 204, in test_duplicate_and_symlink_zip_entries_refused
+    with self.subTest(variant=variant), self.assertRaisesRegex(ValueError, "unsafe"):
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "unsafe" does not match "native prompt could not be identified uniquely"
+
+======================================================================
+FAIL: test_duplicate_and_symlink_zip_entries_refused (test_live_pilot.ContinuationTests.test_duplicate_and_symlink_zip_entries_refused) (variant='symlink')
+----------------------------------------------------------------------
+ValueError: native prompt could not be identified uniquely
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 204, in test_duplicate_and_symlink_zip_entries_refused
+    with self.subTest(variant=variant), self.assertRaisesRegex(ValueError, "unsafe"):
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "unsafe" does not match "native prompt could not be identified uniquely"
+
+======================================================================
+FAIL: test_request_drift_and_capacity_refused (test_live_pilot.ContinuationTests.test_request_drift_and_capacity_refused)
+----------------------------------------------------------------------
+ValueError: native prompt could not be identified uniquely
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/scratch/98e6ad903811/chatadhd/loom/tools/structure/test_live_pilot.py", line 155, in test_request_drift_and_capacity_refused
+    with self.assertRaisesRegex(ValueError, "body changed"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "body changed" does not match "native prompt could not be identified uniquely"
+
+----------------------------------------------------------------------
+Ran 859 tests in 40.438s
+
+FAILED (failures=3, errors=4)
+{"attempts": 1, "stopped_reason": "fixture-stop"}
+
+        Start 100: research.independent_protocol
+100/108 Test #100: research.independent_protocol ......................   Passed    0.22 sec
+        Start 101: research.graph_native_protocol
+101/108 Test #101: research.graph_native_protocol .....................   Passed    1.56 sec
+        Start 102: research.candidate_graph_protocol
+102/108 Test #102: research.candidate_graph_protocol ..................   Passed    0.81 sec
+        Start 103: research.contracts
+103/108 Test #103: research.contracts .................................***Timeout  60.04 sec
+
+        Start 104: research.seeding
+104/108 Test #104: research.seeding ...................................   Passed   25.94 sec
+        Start 105: server.smoke
+105/108 Test #105: server.smoke .......................................   Passed    7.36 sec
+        Start 106: server.chat_active_task
+106/108 Test #106: server.chat_active_task ............................   Passed    2.82 sec
+        Start 107: cli.smoke
+107/108 Test #107: cli.smoke ..........................................   Passed    7.28 sec
+        Start 108: eval.harness
+108/108 Test #108: eval.harness .......................................   Passed    2.45 sec
+
+95% tests passed, 5 tests failed out of 108
+
+Total Test time (real) = 618.58 sec
+
+The following tests FAILED:
+	 82 - compat.test_abi_compat (Failed)
+	 85 - compat.test_chat_active_task_http (Failed)
+	 92 - compat.test_graph_packet_store (Failed)
+	 99 - research.structure (Failed)
+	103 - research.contracts (Timeout)

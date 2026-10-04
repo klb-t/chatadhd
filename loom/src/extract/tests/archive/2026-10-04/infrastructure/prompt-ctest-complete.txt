@@ -1,0 +1,37 @@
+Test project /workspace/scratch/98e6ad903811/chatadhd/loom/build/dev
+        Start  82: compat.test_abi_compat
+        Start  85: compat.test_chat_active_task_http
+  1/108 Test  #82: compat.test_abi_compat .............................   Passed    0.30 sec
+        Start  92: compat.test_graph_packet_store
+  2/108 Test  #92: compat.test_graph_packet_store .....................   Passed    1.16 sec
+        Start  99: research.structure
+  3/108 Test  #85: compat.test_chat_active_task_http ..................   Passed    3.13 sec
+        Start 103: research.contracts
+  4/108 Test #103: research.contracts .................................   Passed   38.33 sec
+        Start  54: unit.test_import_stream
+  5/108 Test  #99: research.structure .................................   Passed   44.94 sec
+        Start  88: compat.test_crypto_compat
+  6/108 Test  #88: compat.test_crypto_compat ..........................   Passed   20.09 sec
+        Start 104: research.seeding
+  7/108 Test #104: research.seeding ...................................   Passed    9.27 sec
+        Start  33: unit.test_context_engine
+  8/108 Test  #54: unit.test_import_stream ............................   Passed   44.69 sec
+        Start  32: unit.test_context_diagnostics
+  9/108 Test  #33: unit.test_context_engine ...........................   Passed   15.00 sec
+        Start  18: unit.test_chat_active_task_durable_audit
+ 10/108 Test  #18: unit.test_chat_active_task_durable_audit ...........   Passed   10.96 sec
+        Start  39: unit.test_context_tfidf_reuse
+ 11/108 Test  #32: unit.test_context_diagnostics ......................   Passed   16.10 sec
+        Start  60: unit.test_knowledge_semantic
+ 12/108 Test  #60: unit.test_knowledge_semantic .......................   Passed    5.47 sec
+        Start  40: unit.test_crypto
+ 13/108 Test  #39: unit.test_context_tfidf_reuse ......................   Passed    9.31 sec
+        Start  43: unit.test_extract
+ 14/108 Test  #43: unit.test_extract ..................................   Passed    5.44 sec
+        Start  55: unit.test_kb_pack
+ 15/108 Test  #40: unit.test_crypto ...................................   Passed   11.65 sec
+        Start  26: unit.test_chat_knowledge_context
+ 16/108 Test  #26: unit.test_chat_knowledge_context ...................   Passed    5.46 sec
+        Start   9: unit.test_catalog_links
+ 17/108 Test  #55: unit.test_kb_pack ..................................   Passed   12.74 sec
+        Start  75: unit.test_resolve_lineage

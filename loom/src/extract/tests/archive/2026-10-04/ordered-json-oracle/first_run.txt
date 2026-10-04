@@ -1,0 +1,203 @@
+23:25:00 [INFO ] loom.config: config.json not found - using defaults
+23:25:00 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:00 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:00 [INFO ] loom.db: Database opened: /tmp/loom_49d9bb969d90/chatadhd.db
+23:25:00 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:00 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_49d9bb969d90)
+23:25:01 [INFO ] loom.db: Database closed
+23:25:01 [INFO ] loom.runtime: Loom runtime shut down
+23:25:01 [INFO ] loom.config: config.json not found - using defaults
+23:25:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:01 [INFO ] loom.db: Database opened: /tmp/loom_f6eb272283f3/chatadhd.db
+23:25:01 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:01 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_f6eb272283f3)
+23:25:01 [INFO ] loom.db: Database closed
+23:25:01 [INFO ] loom.runtime: Loom runtime shut down
+23:25:01 [INFO ] loom.config: config.json not found - using defaults
+23:25:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:01 [INFO ] loom.db: Database opened: /tmp/loom_f0768dbedaf3/chatadhd.db
+23:25:01 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:01 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_f0768dbedaf3)
+23:25:01 [INFO ] loom.db: Database closed
+23:25:01 [INFO ] loom.runtime: Loom runtime shut down
+23:25:01 [INFO ] loom.config: config.json not found - using defaults
+23:25:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:01 [INFO ] loom.db: Database opened: /tmp/loom_7d6a73e8fd02/chatadhd.db
+23:25:01 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:01 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_7d6a73e8fd02)
+23:25:02 [INFO ] loom.db: Database closed
+23:25:02 [INFO ] loom.runtime: Loom runtime shut down
+23:25:02 [INFO ] loom.config: config.json not found - using defaults
+23:25:02 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:02 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:02 [INFO ] loom.db: Database opened: /tmp/loom_f7d36de79798/chatadhd.db
+23:25:02 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:02 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_f7d36de79798)
+23:25:03 [INFO ] loom.db: Database closed
+23:25:03 [INFO ] loom.runtime: Loom runtime shut down
+23:25:03 [INFO ] loom.config: config.json not found - using defaults
+23:25:03 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:03 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:03 [INFO ] loom.db: Database opened: /tmp/loom_94e00f4dd27e/chatadhd.db
+23:25:03 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:03 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_94e00f4dd27e)
+23:25:03 [INFO ] loom.db: Database closed
+23:25:03 [INFO ] loom.runtime: Loom runtime shut down
+23:25:03 [INFO ] loom.config: config.json not found - using defaults
+23:25:03 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:03 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:03 [INFO ] loom.db: Database opened: /tmp/loom_4b1b8687e89f/chatadhd.db
+23:25:03 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:03 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_4b1b8687e89f)
+23:25:03 [INFO ] loom.db: Database closed
+23:25:03 [INFO ] loom.runtime: Loom runtime shut down
+23:25:03 [INFO ] loom.config: config.json not found - using defaults
+23:25:03 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:03 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:03 [INFO ] loom.db: Database opened: /tmp/loom_4eb19b80db75/chatadhd.db
+23:25:03 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:03 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_4eb19b80db75)
+23:25:04 [INFO ] loom.db: Database closed
+23:25:04 [INFO ] loom.runtime: Loom runtime shut down
+23:25:04 [INFO ] loom.config: config.json not found - using defaults
+23:25:04 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:04 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:04 [INFO ] loom.db: Database opened: /tmp/loom_2d1084d7d44b/chatadhd.db
+23:25:04 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:04 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_2d1084d7d44b)
+23:25:05 [INFO ] loom.db: Database closed
+23:25:05 [INFO ] loom.runtime: Loom runtime shut down
+23:25:05 [INFO ] loom.config: config.json not found - using defaults
+23:25:05 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:05 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:05 [INFO ] loom.db: Database opened: /tmp/loom_c8cfed897041/chatadhd.db
+23:25:05 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:05 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_c8cfed897041)
+23:25:05 [INFO ] loom.db: Database closed
+23:25:05 [INFO ] loom.runtime: Loom runtime shut down
+23:25:05 [INFO ] loom.config: config.json not found - using defaults
+23:25:05 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:05 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:05 [INFO ] loom.db: Database opened: /tmp/loom_5d9aa9aacc3a/chatadhd.db
+23:25:05 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:05 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_5d9aa9aacc3a)
+23:25:05 [INFO ] loom.db: Database closed
+23:25:05 [INFO ] loom.runtime: Loom runtime shut down
+23:25:05 [INFO ] loom.config: config.json not found - using defaults
+23:25:05 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:05 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:05 [INFO ] loom.db: Database opened: /tmp/loom_3824e02066ce/chatadhd.db
+23:25:05 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:05 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_3824e02066ce)
+23:25:06 [INFO ] loom.db: Database closed
+23:25:06 [INFO ] loom.runtime: Loom runtime shut down
+23:25:06 [INFO ] loom.config: config.json not found - using defaults
+23:25:06 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:06 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:06 [INFO ] loom.db: Database opened: /tmp/loom_bab5589c8f02/chatadhd.db
+23:25:06 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:06 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_bab5589c8f02)
+23:25:06 [INFO ] loom.db: Database closed
+23:25:06 [INFO ] loom.runtime: Loom runtime shut down
+23:25:06 [INFO ] loom.config: config.json not found - using defaults
+23:25:06 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:06 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:06 [INFO ] loom.db: Database opened: /tmp/loom_93915c53e78d/chatadhd.db
+23:25:06 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:06 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_93915c53e78d)
+23:25:07 [INFO ] loom.db: Database closed
+23:25:07 [INFO ] loom.runtime: Loom runtime shut down
+23:25:07 [INFO ] loom.config: config.json not found - using defaults
+23:25:07 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:07 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:07 [INFO ] loom.db: Database opened: /tmp/loom_cdb000e22d26/chatadhd.db
+23:25:07 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:07 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_cdb000e22d26)
+23:25:07 [INFO ] loom.db: Database closed
+23:25:07 [INFO ] loom.runtime: Loom runtime shut down
+23:25:07 [INFO ] loom.config: config.json not found - using defaults
+23:25:07 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:07 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:07 [INFO ] loom.db: Database opened: /tmp/loom_b879d073cc3a/chatadhd.db
+23:25:07 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:07 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_b879d073cc3a)
+23:25:08 [INFO ] loom.db: Database closed
+23:25:08 [INFO ] loom.runtime: Loom runtime shut down
+23:25:08 [INFO ] loom.config: config.json not found - using defaults
+23:25:08 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:08 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:08 [INFO ] loom.db: Database opened: /tmp/loom_3e7729fd756b/chatadhd.db
+23:25:08 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:08 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_3e7729fd756b)
+23:25:08 [INFO ] loom.db: Database closed
+23:25:08 [INFO ] loom.runtime: Loom runtime shut down
+23:25:08 [INFO ] loom.config: config.json not found - using defaults
+23:25:08 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:08 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:08 [INFO ] loom.db: Database opened: /tmp/loom_3f2373047828/chatadhd.db
+23:25:08 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:08 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_3f2373047828)
+23:25:09 [INFO ] loom.db: Database closed
+23:25:09 [INFO ] loom.runtime: Loom runtime shut down
+23:25:09 [INFO ] loom.config: config.json not found - using defaults
+23:25:09 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:09 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:09 [INFO ] loom.db: Database opened: /tmp/loom_9644c9a02399/chatadhd.db
+23:25:09 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:09 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_9644c9a02399)
+23:25:09 [INFO ] loom.db: Database closed
+23:25:09 [INFO ] loom.runtime: Loom runtime shut down
+23:25:09 [INFO ] loom.config: config.json not found - using defaults
+23:25:09 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:09 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:09 [INFO ] loom.db: Database opened: /tmp/loom_e91e09cd0816/chatadhd.db
+23:25:09 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:09 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_e91e09cd0816)
+23:25:10 [INFO ] loom.db: Database closed
+23:25:10 [INFO ] loom.runtime: Loom runtime shut down
+23:25:10 [INFO ] loom.config: config.json not found - using defaults
+23:25:10 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:10 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:10 [INFO ] loom.db: Database opened: /tmp/loom_4b0df0b7189f/chatadhd.db
+23:25:10 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:10 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_4b0df0b7189f)
+23:25:10 [INFO ] loom.db: Database closed
+23:25:10 [INFO ] loom.runtime: Loom runtime shut down
+23:25:10 [INFO ] loom.config: config.json not found - using defaults
+23:25:10 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:10 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:10 [INFO ] loom.db: Database opened: /tmp/loom_e6bd40375ecf/chatadhd.db
+23:25:10 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:10 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_e6bd40375ecf)
+23:25:10 [INFO ] loom.db: Database closed
+23:25:10 [INFO ] loom.runtime: Loom runtime shut down
+23:25:10 [INFO ] loom.config: config.json not found - using defaults
+23:25:10 [INFO ] loom.config: secrets.json not found - using defaults
+23:25:10 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:25:10 [INFO ] loom.db: Database opened: /tmp/loom_4e5b8cc17614/chatadhd.db
+23:25:10 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:25:10 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_4e5b8cc17614)
+23:25:11 [INFO ] loom.db: Database closed
+23:25:11 [INFO ] loom.runtime: Loom runtime shut down
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+loom/src/extract/tests/semantic_prompt_integration.cpp.fixture:361:
+TEST SUITE: semantic_prompt_integration
+TEST CASE:  lenient and off keep invalid grounding without observed evidence
+
+loom/src/extract/tests/semantic_prompt_integration.cpp.fixture:367: ERROR: CHECK( candidate["proposal"]["unvalidated_output"]==bad ) is NOT correct!
+  values: CHECK( {"claim":{"assessment":{"basis":{"support":[{"byte_len":30,"byte_start":0,"observation":"ob_1","quote":"Parser preserves source bytes."}]},"premises":{"claims":[]}},"object":"","predicate":"states_requirement","qualifiers":{"extra":{"assertion_context":"asserted","polarity":"positive","topic":"parser"}},"subject":"e_invented","value":"Parser preserves source bytes."},"kind":"structure","unknowns":[]} == {"kind":"structure","unknowns":[],"claim":{"subject":"e_invented","predicate":"states_requirement","object":"","value":"Parser preserves source bytes.","qualifiers":{"extra":{"polarity":"positive","assertion_context":"asserted","topic":"parser"}},"assessment":{"basis":{"support":[{"observation":"ob_1","quote":"Parser preserves source bytes.","byte_start":0,"byte_len":30}]},"premises":{"claims":[]}}}} )
+  logged: mode := lenient
+
+loom/src/extract/tests/semantic_prompt_integration.cpp.fixture:367: ERROR: CHECK( candidate["proposal"]["unvalidated_output"]==bad ) is NOT correct!
+  values: CHECK( {"claim":{"assessment":{"basis":{"support":[{"byte_len":30,"byte_start":0,"observation":"ob_1","quote":"Parser preserves source bytes."}]},"premises":{"claims":[]}},"object":"","predicate":"states_requirement","qualifiers":{"extra":{"assertion_context":"asserted","polarity":"positive","topic":"parser"}},"subject":"e_invented","value":"Parser preserves source bytes."},"kind":"structure","unknowns":[]} == {"kind":"structure","unknowns":[],"claim":{"subject":"e_invented","predicate":"states_requirement","object":"","value":"Parser preserves source bytes.","qualifiers":{"extra":{"polarity":"positive","assertion_context":"asserted","topic":"parser"}},"assessment":{"basis":{"support":[{"observation":"ob_1","quote":"Parser preserves source bytes.","byte_start":0,"byte_len":30}]},"premises":{"claims":[]}}}} )
+  logged: mode := off
+
+===============================================================================
+[doctest] test cases:  16 |  15 passed | 1 failed | 0 skipped
+[doctest] assertions: 242 | 240 passed | 2 failed |
+[doctest] Status: FAILURE!

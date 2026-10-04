@@ -1,0 +1,495 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
+#include "loom/config.h"
+#include "loom/db.h"
+#include "loom/knowledge.h"
+#include "loom/knowledge_semantic.h"
+#include "loom/net/http.h"
+#include "loom/runtime.h"
+#include "loom/sqlite.h"
+#include "loom/util/sha256.h"
+#include "test_helpers.h"
+#include "extract/prompt_contract.h"
+#include "extract/semantic_usage.h"
+#include <fstream>
+
+using namespace loom;
+using loom::test::unwrap;
+
+namespace {
+
+struct Fixture {
+  fsutil::TempDir dir;
+  std::shared_ptr<net::ScriptedTransport> http = std::make_shared<net::ScriptedTransport>();
+  std::unique_ptr<Runtime> rt;
+  std::shared_ptr<const kb::Pack> pack;
+  std::unique_ptr<kb::Normalizer> norm;
+  knowledge::KnowledgeConfig cfg;
+  std::string run_id;
+  std::vector<model::Observation> observations;
+  std::vector<model::Entity> entities;
+  std::vector<model::Claim> claims;
+  bool stopped = false;
+  std::optional<Json> resume;
+  Json saved_checkpoint;
+
+  Fixture() {
+    RuntimeOptions opts;
+    opts.data_dir = dir.path().string();
+    opts.start_workers = false;
+    opts.http = http;  // unmatched requests fail; never a live transport
+    rt = unwrap(Runtime::open(opts));
+    rt->config().set("semantic_model", "cheap/semantic-model");
+    rt->config().set("default_model", "expensive/conversation-model");
+    rt->config().set("base_url", "https://semantic.test/v1/");
+    rt->secrets().set("api_key", "test-only-key");
+    pack = unwrap(rt->knowledge().pack());
+    norm = std::make_unique<kb::Normalizer>(*pack);
+    cfg.llm = "auto";
+    run_id = unwrap(rt->knowledge().store().begin_run(pack->hash(), Json{{"test", "semantic"}})).id;
+    add("ob_1", "Parser preserves source bytes.", 1, "main");
+    model::Claim c;
+    c.subject = entities[0].id;
+    c.predicate = "source_statement";
+    c.value = observations[0].text;
+    c.assessment.origin = model::Origin::Archive;
+    c.assessment.evidence = model::EvidenceClass::Observed;
+    c.assessment.confidence = 0.8;
+    model::Support s;
+    s.observation = observations[0].id;
+    s.quote = observations[0].text;
+    s.locator = observations[0].locator;
+    s.extractor = "test@1";
+    c.assessment.support = {s};
+    c.id = model::Claim::make_id(c.subject, c.predicate, c.object, c.value, c.qualifiers);
+    claims.push_back(c);
+    unwrap(rt->knowledge().store().put_observations(run_id, observations));
+    unwrap(rt->knowledge().store().put_entities(run_id, entities));
+    unwrap(rt->knowledge().store().put_claims(run_id, claims));
+  }
+
+  void add(std::string id, std::string text, int ordinal, std::string branch) {
+    model::Observation o;
+    o.id = std::move(id);
+    o.unit = "un_conversation";
+    o.text = std::move(text);
+    o.ordinal = ordinal;
+    o.locator.source = "sha256:" + Sha256::hex("source fixture bytes");
+    o.locator.member = "conversation.json";
+    o.locator.json_pointer = "/messages/" + std::to_string(ordinal);
+    o.attrs = Json{{"branch", branch}, {"seq", ordinal}, {"node", "node_" + std::to_string(ordinal)}};
+    observations.push_back(o);
+    model::Entity e;
+    e.kind = "component";
+    e.label = "Parser " + std::to_string(ordinal);
+    e.canonical_key = "parser_" + std::to_string(ordinal);
+    e.id = model::Entity::make_id(e.kind, e.canonical_key);
+    e.attrs = Json{{"observations", Json::array({o.id})}, {"units", Json::array({o.unit})}};
+    entities.push_back(e);
+  }
+
+  Json proposal(std::size_t index = 0) const {
+    const auto& o = observations[index];
+    return Json{{"kind", "structure"}, {"unknowns", Json::array()},
+                {"claim", Json{{"subject", entities[index].id}, {"predicate", "states_requirement"},
+                               {"object", ""}, {"value", o.text},
+                               {"qualifiers", Json{{"extra", Json{{"polarity", "positive"}, {"assertion_context", "asserted"},
+                                                                    {"topic", "parser"}}}}},
+                               {"assessment", Json{{"basis", Json{{"support", Json::array({Json{{"observation", o.id},
+                                                                                                {"quote", o.text}, {"byte_start", 0},
+                                                                                                {"byte_len", o.text.size()}}})}}},
+                                                    {"premises", Json{{"claims", Json::array()}}}}}}}};
+  }
+
+  void reply(const Json& proposals) {
+    Json content{{"schema_version", 1}, {"proposals", proposals}};
+    http->expect("POST", "https://semantic.test/v1/chat/completions",
+                 net::ScriptedTransport::Reply::json(200, Json{{"choices", Json::array({Json{{"message", Json{{"content", json::dump(content)}}}}})}}));
+  }
+
+  Result<Json> call(Json params = Json::object()) {
+    knowledge::StageContext ctx{*rt, rt->knowledge().store(), pack, *norm, cfg, run_id, "extract", std::move(params),
+                                Json::object(), cfg.prior_filter(), {}, [this] { return stopped; },
+                                [this](const Json& j) -> Status { saved_checkpoint = j; return {}; }, resume};
+    return extract::propose_semantics(ctx, observations, entities, claims);
+  }
+
+  std::int64_t count(std::string_view table) {
+    auto lock = rt->db().lock();
+    return unwrap(rt->db().conn().query_int("SELECT COUNT(*) FROM " + std::string(table))).value_or(0);
+  }
+
+  Json candidate() {
+    auto lock = rt->db().lock();
+    return unwrap(json::parse(unwrap(rt->db().conn().query_text("SELECT payload FROM loom_kb_candidates ORDER BY id LIMIT 1")).value()));
+  }
+};
+
+
+Json first_old_input(const Fixture& f, bool graph = false) {
+  const auto& o=f.observations[0]; const auto& e=f.entities[0]; const auto& c=f.claims[0];
+  const Json group{{"unit",o.unit},{"source",o.locator.source},{"member",o.locator.member},
+      {"branch",o.attrs["branch"]},{"unknown_branch_node",""}};
+  if (graph) {
+    Json packet{{"schema","loom.source_packet/1"},{"observations",Json::array({o.to_json()})},
+      {"entities",Json::array({e.to_json()})},{"claims",Json::array({c.to_json()})},
+      {"metadata",Json{{"group",group},{"context_selection",Json{{"claim_rule","all_direct_support_local"},
+        {"entity_rule","endpoint_or_local_observation_reference"},
+        {"retained_metadata","opaque_context_not_chronologically_verified"},
+        {"external_known_references",Json::object()},{"external_known_reference_counts",Json::object()},
+        {"external_references_are_observation_evidence",false},
+        {"supplied_entities",1},{"selected_entities",1},{"supplied_claims",1},{"selected_claims",1}}}}}};
+    packet["snapshot_id"]="sc_"+Sha256::hex(json::canonical(packet));
+    return Json{{"packet_hash",Sha256::hex(json::canonical(packet))},{"source_packet",packet}};
+  }
+  Json input{{"group",group},{"observations",Json::array({Json{{"id",o.id},{"text",o.text},
+      {"ordinal",o.ordinal},{"speaker",o.speaker},{"date",o.date},{"locator",o.locator.to_json()},
+      {"seq",o.attrs["seq"]}}})},
+      {"entities",Json::array({Json{{"id",e.id},{"kind",e.kind},{"label",e.label}}})},
+      {"claims",Json::array({Json{{"id",c.id},{"subject",c.subject},{"predicate",c.predicate},
+        {"object",c.object},{"value",c.value},{"qualifiers",c.qualifiers.to_json()}}})}};
+  input["chunk_id"]="sc_"+Sha256::hex(json::canonical(input));
+  return input;
+}
+
+void reply_content(Fixture& f, std::string content) {
+  f.http->expect("POST","https://semantic.test/v1/chat/completions",
+    net::ScriptedTransport::Reply::json(200,Json{{"choices",Json::array({Json{{"message",Json{{"content",content}}}}})}}));
+}
+
+Json eval_first(Fixture& f) {
+  auto lock=f.rt->db().lock();
+  auto raw=unwrap(f.rt->db().conn().query_text("SELECT eval FROM loom_kb_candidates ORDER BY id LIMIT 1"));
+  REQUIRE(raw.has_value()); return unwrap(json::parse(*raw));
+}
+
+Json message_patch(std::string text) {
+  return Json{{"messages",Json::array({Json{{"role","system"},{"content",Json::array({text})}},
+    Json{{"role","user"},{"content",Json::array({Json{{"binding","input_json"}}})}}})}};
+}
+
+Json preview(Fixture& f, Json options=Json::object()) {
+  options["preview"]=true;
+  return unwrap(f.call(Json{{"semantic",options}}));
+}
+} // namespace
+
+TEST_SUITE("semantic_prompt_integration") {
+  TEST_CASE("preview stays offline and does not persist or checkpoint") {
+    Fixture f;
+    const auto candidates=f.count("loom_kb_candidates"), cache=f.count("loom_kb_llm_cache");
+    const auto sources=f.count("loom_sources"), claims=f.count("loom_kb_claims");
+    const auto config=f.rt->config().all();
+    f.rt->secrets().erase("api_key");
+    f.rt->config().set("semantic_model","");
+    f.rt->config().set("semantic_analysis",false);
+    const auto before=f.rt->config().all();
+    const auto result=preview(f);
+    CHECK(result["status"]=="preview"); CHECK(result["requests"]==0);
+    REQUIRE(result["request_previews"].size()==1);
+    CHECK(f.http->requests().empty()); CHECK(f.saved_checkpoint.is_null());
+    CHECK(f.count("loom_kb_candidates")==candidates); CHECK(f.count("loom_kb_llm_cache")==cache);
+    CHECK(f.count("loom_sources")==sources); CHECK(f.count("loom_kb_claims")==claims);
+    CHECK(f.rt->config().all()==before);
+    const auto wire=result["request_previews"][0];
+    CHECK(!wire["headers"].contains("Authorization"));
+    CHECK(json::dump(result).find("test-only-key")==std::string::npos);
+    CHECK(!config.is_null());
+  }
+
+  TEST_CASE("relation default preview and execution match frozen old wire bytes") {
+    Fixture f;
+    const auto contract=unwrap(extract::prompts::resolve("semantic.relation"));
+    const auto text=contract.definition["messages"][0]["content"][0].get<std::string>();
+    CHECK(text.size()==1998); CHECK(Sha256::hex(text)=="d8a6189156f49dcf1d11fe3bd112a85cc3d6000ba200404f7140da39eed18837");
+    const Json expected{{"model","cheap/semantic-model"},{"temperature",0},{"max_tokens",1600},
+      {"messages",Json::array({Json{{"role","system"},{"content",text}},
+        Json{{"role","user"},{"content",json::canonical(first_old_input(f))}}})}};
+    const auto wire=preview(f)["request_previews"][0];
+    CHECK(wire["body_bytes"]==json::dump(expected));
+    CHECK(wire["method"]=="POST"); CHECK(wire["url"]=="https://semantic.test/v1/chat/completions");
+    f.reply(Json::array({f.proposal()})); const auto out=unwrap(f.call());
+    CHECK(out["accepted"]==1); REQUIRE(f.http->requests().size()==1);
+    CHECK(f.http->requests()[0].body==json::dump(expected));
+    CHECK(f.http->requests()[0].method==wire["method"].get<std::string>());
+    CHECK(f.http->requests()[0].url==wire["url"].get<std::string>());
+    CHECK(f.candidate()["provenance"]["request_hash"]==wire["request_hash"]);
+    CHECK(f.candidate()["provenance"]["contract_hash"]==wire["contract_hash"]);
+    const auto first_capture=out["captured_responses"][0];
+    f.resume=f.saved_checkpoint;
+    const auto replay=unwrap(f.call());
+    CHECK(replay["requests"]==0); CHECK(replay["cache_hits"]==1);
+    CHECK(replay["candidate_ids"]==out["candidate_ids"]); CHECK(f.count("loom_kb_candidates")==1);
+    REQUIRE(replay["captured_responses"].size()==2);
+    CHECK(replay["captured_responses"][0]==first_capture);
+    CHECK(replay["captured_responses"][1]["from_cache"]==true);
+    CHECK(replay["captured_responses"][1]["body_kind"]=="model_content");
+    CHECK(replay["captured_responses"][1]["operation_id"].is_null());
+    CHECK(f.saved_checkpoint["semantic"]["captured_responses"][0]==first_capture);
+    f.resume=f.saved_checkpoint;
+    const auto repeated=unwrap(f.call());
+    CHECK(repeated["captured_responses"]==replay["captured_responses"]);
+    CHECK(repeated["candidate_ids"]==out["candidate_ids"]);
+    CHECK(f.http->requests().size()==1);
+  }
+
+  TEST_CASE("occurrence graph default preserves frozen input projection and wire bytes") {
+    Fixture f;
+    const auto contract=unwrap(extract::prompts::resolve("semantic.occurrence_graph"));
+    const auto text=contract.definition["messages"][0]["content"][0].get<std::string>();
+    CHECK(text.size()==4208); CHECK(Sha256::hex(text)=="7527ac8c051e53bc5d6cbd51ca92ac9ead6334381d03e4e6924582797df43a1a");
+    const Json input=first_old_input(f,true);
+    const Json expected{{"model","cheap/semantic-model"},{"temperature",0},{"max_tokens",1600},
+      {"messages",Json::array({Json{{"role","system"},{"content",text}},
+        Json{{"role","user"},{"content",json::canonical(input)}}})}};
+    const Json options{{"representation","occurrence_graph_v1"}};
+    const auto wire=preview(f,options)["request_previews"][0];
+    CHECK(wire["body_bytes"]==json::dump(expected));
+    reply_content(f,json::dump(Json{{"schema_version",2},{"packet_hash",input["packet_hash"]},{"bundles",Json::array()}}));
+    const auto out=unwrap(f.call(Json{{"semantic",options}}));
+    CHECK(out["status"]=="completed"); CHECK(out["abstentions"]==1);
+    REQUIRE(f.http->requests().size()==1); CHECK(f.http->requests()[0].body==json::dump(expected));
+  }
+
+  TEST_CASE("one-call override addresses one chunk and does not leak or alter config") {
+    Fixture f; f.add("ob_2","Film lighting has a different scope.",2,"side");
+    const auto before_config=f.rt->config().all();
+    const auto original=preview(f)["request_previews"];
+    REQUIRE(original.size()==2);
+    const auto addressed=original[0]["chunk"].get<std::string>();
+    const Json options{{"call_overrides",Json{{addressed,Json{{"prompt_patch",message_patch("one-call marker")}}}}}};
+    const auto changed=preview(f,options)["request_previews"];
+    CHECK(changed[0]["body_json"]["messages"][0]["content"]=="one-call marker");
+    CHECK(changed[0]["request_hash"]!=original[0]["request_hash"]);
+    CHECK(changed[0]["contract_hash"]!=original[0]["contract_hash"]);
+    CHECK(changed[1]["body_bytes"]==original[1]["body_bytes"]);
+    CHECK(changed[1]["request_hash"]==original[1]["request_hash"]);
+    f.reply(Json::array({f.proposal()})); f.reply(Json::array({f.proposal(1)}));
+    const auto out=unwrap(f.call(Json{{"semantic",options}}));
+    CHECK(out["accepted"]==2); REQUIRE(f.http->requests().size()==2);
+    CHECK(f.http->requests()[0].body==changed[0]["body_bytes"].get<std::string>());
+    CHECK(f.http->requests()[1].body==original[1]["body_bytes"].get<std::string>());
+    const auto restored=preview(f)["request_previews"];
+    REQUIRE(restored.size()==original.size());
+    for(std::size_t i=0;i<original.size();++i) {
+      CHECK(restored[i]["body_bytes"]==original[i]["body_bytes"]);
+      CHECK(restored[i]["request_hash"]==original[i]["request_hash"]);
+    }
+    CHECK(f.rt->config().all()==before_config);
+    f.reply(Json::array({f.proposal()}));
+    const auto normal=unwrap(f.call()); CHECK(normal["requests"]==1); CHECK(normal["cache_hits"]==1);
+    REQUIRE(f.http->requests().size()==3); CHECK(f.http->requests()[2].body==original[0]["body_bytes"].get<std::string>());
+  }
+
+  TEST_CASE("owner directory overlay and config patch are explicit and inspectable") {
+    Fixture f; const auto original=preview(f)["request_previews"][0];
+    const auto directory=f.dir.path()/"owner-prompts"; std::filesystem::create_directory(directory);
+    {std::ofstream file(directory/"custom.prompt"); file<<json::dump(extract::prompts::overlay(
+      Json{{"id","semantic.relation"}},message_patch("owner directory marker")));}
+    f.rt->config().set("analysis_prompt_dir",directory.string());
+    const auto directory_wire=preview(f)["request_previews"][0];
+    CHECK(directory_wire["body_json"]["messages"][0]["content"]=="owner directory marker");
+    CHECK(directory_wire["contract_hash"]!=original["contract_hash"]);
+    f.rt->config().set("analysis_prompt_overrides",Json{{"semantic.relation",message_patch("config marker")}});
+    const auto configured=preview(f)["request_previews"][0];
+    CHECK(configured["body_json"]["messages"][0]["content"]=="config marker");
+    CHECK(configured["request_hash"]!=directory_wire["request_hash"]);
+    const auto local=preview(f,Json{{"prompt_patch",message_patch("stage marker")}})["request_previews"][0];
+    CHECK(local["body_json"]["messages"][0]["content"]=="stage marker");
+    CHECK(f.http->requests().empty());
+  }
+
+  TEST_CASE("explicit snapshot ignores later durable overlay changes") {
+    Fixture f;
+    const auto before=preview(f);
+    const auto snapshot=before["identity"]["prompt_contract"];
+    f.rt->config().set("analysis_prompt_overrides",Json{{"semantic.relation",message_patch("later durable change")}});
+    const auto changed=preview(f)["request_previews"][0];
+    CHECK(changed["body_bytes"]!=before["request_previews"][0]["body_bytes"]);
+    const auto pinned=preview(f,Json{{"prompt_snapshot",snapshot}})["request_previews"][0];
+    CHECK(pinned["body_bytes"]==before["request_previews"][0]["body_bytes"]);
+    CHECK(pinned["contract_hash"]==before["request_previews"][0]["contract_hash"]);
+    CHECK(pinned["request_hash"]==before["request_previews"][0]["request_hash"]);
+    CHECK(f.http->requests().empty());
+  }
+
+  TEST_CASE("configured transport and request model reach exact wire and cache identity") {
+    Fixture f;
+    const Json options{{"prompt_patch",Json{{"transport",Json{{"method","PUT"},{"path","/alternate"},
+      {"headers",Json{{"X-Probe","owner-marker"}}}}}}}, {"request_patch",Json{{"model","owner/model"},{"temperature",0.3}}}};
+    const auto wire=preview(f,options)["request_previews"][0];
+    CHECK(wire["method"]=="PUT"); CHECK(wire["url"]=="https://semantic.test/v1/alternate");
+    CHECK(wire["body_json"]["model"]=="owner/model");
+    f.http->expect("PUT","https://semantic.test/v1/alternate",net::ScriptedTransport::Reply::json(200,
+      Json{{"choices",Json::array({Json{{"message",Json{{"content",json::dump(Json{{"schema_version",1},
+        {"proposals",Json::array({f.proposal()})}})}}}}})}}));
+    const auto first=unwrap(f.call(Json{{"semantic",options}})); CHECK(first["accepted"]==1);
+    REQUIRE(f.http->requests().size()==1); const auto sent=f.http->requests()[0];
+    CHECK(sent.method=="PUT"); CHECK(sent.url==wire["url"].get<std::string>()); CHECK(sent.body==wire["body_bytes"].get<std::string>());
+    CHECK(net::header_value(sent.headers,"X-Probe")=="owner-marker");
+    CHECK(f.candidate()["provenance"]["model"]=="owner/model");
+    CHECK(f.candidate()["provenance"]["provider"]==wire["url"]);
+    const auto second=unwrap(f.call(Json{{"semantic",options}})); CHECK(second["cache_hits"]==1); CHECK(second["requests"]==0);
+    CHECK(f.rt->config().get("semantic_model")=="cheap/semantic-model");
+    CHECK(f.http->requests().size()==1);
+  }
+
+  TEST_CASE("strict lenient and off retain their actual schema status and authority") {
+    for (const std::string mode : {"strict","lenient","off"}) {
+      CAPTURE(mode); Fixture f; const auto canonical=f.claims[0].to_json();
+      const std::string raw=json::dump(Json{{"unexpected","source-preserved marker"}});
+      reply_content(f,raw);
+      const auto out=unwrap(f.call(Json{{"semantic",Json{{"validation_mode",mode}}}}));
+      CHECK(f.count("loom_kb_claims")==1); CHECK(f.count("loom_kb_llm_cache")==0);
+      CHECK(unwrap(f.rt->knowledge().store().get_claim(f.run_id,f.claims[0].id))->to_json()==canonical);
+      if(mode=="strict") { CHECK(out["failed"]==1); CHECK(f.count("loom_kb_candidates")==0); }
+      else {
+        CHECK(out["accepted"]==1); const auto candidate=f.candidate();
+        CHECK(candidate["proposal"]["raw_response"]==raw);
+        CHECK(candidate["native_validation"]["valid"]==false);
+        CHECK(candidate["provenance"]["response_hash"]==Sha256::hex(raw));
+        CHECK(candidate["provenance"]["validation_mode"]==mode);
+        CHECK(candidate["output_validation"]["checked"]==(mode=="lenient"));
+        if(mode=="lenient") CHECK(candidate["output_validation"]["schema_valid"]==false);
+        else CHECK(candidate["output_validation"]["schema_valid"].is_null());
+        CHECK(eval_first(f)["grounding"]=="unvalidated_model_output"); CHECK(eval_first(f)["promoted"]==false);
+      }
+    }
+  }
+
+  TEST_CASE("lenient and off keep invalid grounding without observed evidence") {
+    for(const std::string mode : {"lenient","off"}) {
+      CAPTURE(mode); Fixture f; auto bad=f.proposal(); bad["claim"]["subject"]="e_invented";
+      f.reply(Json::array({bad})); const auto out=unwrap(f.call(Json{{"semantic",Json{{"validation_mode",mode}}}}));
+      CHECK(out["accepted"]==1); CHECK(f.count("loom_kb_claims")==1); CHECK(f.count("loom_kb_llm_cache")==0);
+      const auto candidate=f.candidate(); CHECK(candidate["native_validation"]["valid"]==false);
+      CHECK(candidate["proposal"]["unvalidated_output"]==bad);
+      CHECK(eval_first(f)["grounding"]=="unvalidated_model_output"); CHECK(eval_first(f)["promoted"]==false);
+    }
+  }
+
+  TEST_CASE("owner schema warnings preserve native support without checked-cache reuse") {
+    for(const std::string mode : {"strict","lenient","off"}) {
+      CAPTURE(mode); Fixture f; f.reply(Json::array({f.proposal()}));
+      const Json options{{"validation_mode",mode},{"prompt_patch",Json{{"output_schema",false}}}};
+      const auto out=unwrap(f.call(Json{{"semantic",options}}));
+      CHECK(f.count("loom_kb_claims")==1);
+      if(mode=="strict") {
+        CHECK(out["failed"]==1); CHECK(f.count("loom_kb_candidates")==0); CHECK(f.count("loom_kb_llm_cache")==0);
+      } else {
+        CHECK(out["accepted"]==1); const auto candidate=f.candidate();
+        CHECK(candidate["native_validation"]["valid"]==true);
+        CHECK(eval_first(f)["grounding"]=="exact_observation_bytes"); CHECK(eval_first(f)["promoted"]==false);
+        CHECK(candidate["output_validation"]["checked"]==(mode=="lenient"));
+        if(mode=="lenient") {
+          CHECK(out["status"]=="partial"); CHECK(candidate["output_validation"]["schema_valid"]==false);
+          CHECK(f.count("loom_kb_llm_cache")==0);
+        } else {
+          CHECK(out["status"]=="completed"); CHECK(candidate["output_validation"]["schema_valid"].is_null());
+          CHECK(f.count("loom_kb_llm_cache")==1);
+          const auto replay=unwrap(f.call(Json{{"semantic",options}})); CHECK(replay["requests"]==0); CHECK(replay["cache_hits"]==1);
+          CHECK(replay["candidate_ids"]==out["candidate_ids"]); CHECK(f.http->requests().size()==1);
+        }
+      }
+    }
+  }
+
+  TEST_CASE("lenient and off retain unparseable raw model bytes") {
+    for(const std::string mode : {"lenient","off"}) {
+      CAPTURE(mode); Fixture f; const std::string raw="not JSON; keep first raw text";
+      reply_content(f,raw); const auto out=unwrap(f.call(Json{{"semantic",Json{{"validation_mode",mode}}}}));
+      CHECK(out["accepted"]==1); CHECK(f.candidate()["proposal"]["raw_response"]==raw);
+      CHECK(f.candidate()["provenance"]["response_hash"]==Sha256::hex(raw));
+      CHECK(f.count("loom_kb_llm_cache")==0); CHECK(f.count("loom_kb_claims")==1);
+    }
+  }
+
+  TEST_CASE("strict rejection retains first HTTP bytes before decoding") {
+    Fixture f;
+    const std::string envelope=json::dump(Json{{"choices",Json::array({Json{{"message",Json{{"content","invalid JSON model output"}}}}})}});
+    f.http->expect("POST","https://semantic.test/v1/chat/completions",
+      net::ScriptedTransport::Reply::text(200,envelope));
+    const auto out=unwrap(f.call());
+    CHECK(out["failed"]==1); CHECK(f.count("loom_kb_candidates")==0); CHECK(f.count("loom_kb_llm_cache")==0);
+    REQUIRE(out["captured_responses"].size()==1);
+    const auto capture=out["captured_responses"][0];
+    CHECK(capture["body"]==envelope); CHECK(capture["response_hash"]==Sha256::hex(envelope));
+    CHECK(capture["from_cache"]==false); CHECK(capture["http_status"]==200);
+    CHECK(capture["capture_truncated"]==false);
+    CHECK(f.saved_checkpoint["semantic"]["captured_responses"]==out["captured_responses"]);
+    f.resume=f.saved_checkpoint;
+    const auto replay=unwrap(f.call()); CHECK(replay["requests"]==0); CHECK(f.http->requests().size()==1);
+    REQUIRE(replay["captured_responses"].size()==1);
+    CHECK(replay["captured_responses"][0]==capture);
+  }
+
+  TEST_CASE("HTTP failure retains its envelope and does not populate checked cache") {
+    Fixture f; const std::string envelope="{\"error\":\"offline provider unavailable\"}";
+    f.http->expect("POST","https://semantic.test/v1/chat/completions",
+      net::ScriptedTransport::Reply::text(503,envelope));
+    const auto out=unwrap(f.call());
+    CHECK(out["failed"]==1); CHECK(f.count("loom_kb_candidates")==0); CHECK(f.count("loom_kb_llm_cache")==0);
+    REQUIRE(out["captured_responses"].size()==1);
+    CHECK(out["captured_responses"][0]["http_status"]==503);
+    CHECK(out["captured_responses"][0]["body"]==envelope);
+    CHECK(out["captured_responses"][0]["response_hash"]==Sha256::hex(envelope));
+    CHECK(f.saved_checkpoint["semantic"]["captured_responses"]==out["captured_responses"]);
+  }
+
+  TEST_CASE("response cap retains the available prefix across chunk boundaries") {
+    for(const bool split : {false,true}) {
+      CAPTURE(split); Fixture f; const std::string envelope="prefix:"+std::string(100,'x');
+      net::ScriptedTransport::Reply reply; reply.status=200;
+      reply.chunks=split ? std::vector<std::string>{envelope.substr(0,9),envelope.substr(9)} : std::vector<std::string>{envelope};
+      f.http->expect("POST","https://semantic.test/v1/chat/completions",std::move(reply));
+      const auto out=unwrap(f.call(Json{{"semantic",Json{{"max_response_bytes",32}}}}));
+      CHECK(out["failed"]==1); CHECK(f.count("loom_kb_candidates")==0); CHECK(f.count("loom_kb_llm_cache")==0);
+      REQUIRE(out["captured_responses"].size()==1);
+      const auto capture=out["captured_responses"][0]; const std::string prefix=envelope.substr(0,32);
+      CHECK(capture["body"]==prefix); CHECK(capture["response_hash"]==Sha256::hex(prefix));
+      CHECK(capture["capture_truncated"]==true); CHECK(capture["transport_error"].is_string());
+      CHECK(f.saved_checkpoint["semantic"]["captured_responses"]==out["captured_responses"]);
+    }
+  }
+
+  TEST_CASE("lifting configurable request bound retains complete resumable coverage") {
+    Fixture f;
+    CHECK(!f.call(Json{{"semantic",Json{{"max_requests",9}}}})); CHECK(f.http->requests().empty());
+    for(int i=2;i<=9;++i) f.add("ob_"+std::to_string(i),"Parser source unit "+std::to_string(i),i,"branch_"+std::to_string(i));
+    const Json options{{"max_requests",9},{"prompt_patch",Json{{"analysis_parameters",Json{{"limit_bounds",Json{{"max_requests",nullptr}}}}}}}};
+    const auto wires=preview(f,options)["request_previews"]; REQUIRE(wires.size()==9);
+    for(const auto& wire:wires) {
+      const auto input=unwrap(json::parse(wire["body_json"]["messages"][1]["content"].get<std::string>()));
+      const auto id=input["observations"][0]["id"].get<std::string>();
+      const auto index=static_cast<std::size_t>(std::stoi(id.substr(3))-1);
+      f.reply(Json::array({f.proposal(index)}));
+    }
+    const auto first=unwrap(f.call(Json{{"semantic",options}})); CHECK(first["requests"]==9); CHECK(first["accepted"]==9);
+    f.resume=f.saved_checkpoint; const auto second=unwrap(f.call(Json{{"semantic",options}}));
+    CHECK(second["requests"]==0); CHECK(second["cache_hits"]==9); CHECK(second["candidate_ids"]==first["candidate_ids"]);
+    CHECK(f.http->requests().size()==9);
+  }
+
+#if !__has_include("loom/usage_policy.h")
+  TEST_CASE("explicitly required missing shared usage policy blocks dispatch") {
+    Fixture f;
+    auto adapter=unwrap(extract::detail::SemanticUsage::open(*f.rt));
+    CHECK(!adapter->available());
+    const Json estimate{{"operation_id","offline-test-op"},{"baseline_key","fixture/model/input-bytes-v1"},
+      {"resources",Json{{"input_bytes",100}}}};
+    const auto compatibility=unwrap(adapter->request(estimate));
+    CHECK(compatibility["status"]=="unavailable"); CHECK(compatibility["authorized"]==false);
+    CHECK(compatibility["guard_applied"]==false); CHECK(compatibility["receipt_id"].is_null());
+    CHECK(compatibility["legacy_execution_allowed"]==true);
+    f.rt->config().set("loom_semantic_usage_policy_required",true);
+    adapter=unwrap(extract::detail::SemanticUsage::open(*f.rt));
+    CHECK(unwrap(adapter->request(estimate))["legacy_execution_allowed"]==false);
+    const auto out=f.call();
+    if(out) CHECK((*out)["requests"]==0);
+    else CHECK(out.error().code==Errc::Unavailable);
+    CHECK(f.http->requests().empty()); CHECK(f.count("loom_kb_candidates")==0);
+    CHECK(!std::filesystem::exists(f.dir.path()/"usage-policy.sqlite"));
+  }
+#endif
+}
