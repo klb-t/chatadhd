@@ -109,6 +109,20 @@ TEST_SUITE("runtime_profile") {
     CHECK_FALSE(unwrap(unbounded.with_overrides(Json{{"count", std::numeric_limits<std::uint64_t>::max()}})).is_builtin());
   }
 
+  TEST_CASE("nullable bounds are a declared type union with explicit validation") {
+    auto doc = definition();
+    doc["defaults"]["count"] = nullptr;
+    doc["value_schema"]["properties"]["count"]["type"] = Json::array({"integer", "null"});
+    auto nullable = unwrap(RuntimeProfile::from_definition(doc));
+    CHECK(nullable.values()["count"].is_null());
+    CHECK(nullable.with_overrides(Json{{"count", 42}}));
+    CHECK_FALSE(nullable.with_overrides(Json{{"count", "unlimited"}}));
+    doc["value_schema"]["properties"]["count"]["type"] = Json::array();
+    CHECK_FALSE(RuntimeProfile::from_definition(doc));
+    doc["value_schema"]["properties"]["count"]["type"] = Json::array({"integer", "unknown"});
+    CHECK_FALSE(RuntimeProfile::from_definition(doc));
+  }
+
   TEST_CASE("effective definitions match the canonical data source") {
     auto dir = std::filesystem::path(LOOM_TEST_FIXTURES).parent_path().parent_path() / "data/runtime";
     std::vector<std::string> disk;

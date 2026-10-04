@@ -1,0 +1,45 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "model",
+  "revision": 1,
+  "description": "Model policy defaults for origin authority ranks, status-history classification and anchoring rationale formatting. Ranks and class membership do not rewrite recorded Origin, EvidenceClass or StatusValue. Evidence/premise protections remain engine invariants. Anchoring identity and exact role-binding confidence are unchanged. If status classes overlap, loss classification takes precedence, matching the history state machine's branch order.",
+  "defaults": {
+    "authority_ranks": {"archive": 4, "repo": 4, "user": 5, "external_authority": 3, "model_knowledge": 1, "system": 2},
+    "unknown_origin_rank": 0,
+    "status_history": {"present": ["implemented", "partial", "restored"], "lost": ["lost"]},
+    "anchoring_rationale": "domain kind '{{kind}}' plays the universal role '{{role}}'"
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["authority_ranks", "unknown_origin_rank", "status_history", "anchoring_rationale"],
+    "additionalProperties": false,
+    "properties": {
+      "authority_ranks": {
+        "type": "object",
+        "required": ["archive", "repo", "user", "external_authority", "model_knowledge", "system"],
+        "additionalProperties": false,
+        "properties": {
+          "archive": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+          "repo": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+          "user": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+          "external_authority": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+          "model_knowledge": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+          "system": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647}
+        },
+        "x-setting": "authority_ranks.<origin>",
+        "x-consumer": "model authority lookup"
+      },
+      "unknown_origin_rank": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647, "x-setting": "unknown_origin_rank", "x-consumer": "model authority lookup"},
+      "status_history": {
+        "type": "object",
+        "required": ["present", "lost"],
+        "additionalProperties": false,
+        "properties": {
+          "present": {"type": "array", "items": {"type": "string", "enum": ["implemented", "partial", "planned", "abandoned", "superseded", "lost", "restored"]}, "x-setting": "status_history.present", "x-consumer": "status history state machine"},
+          "lost": {"type": "array", "items": {"type": "string", "enum": ["implemented", "partial", "planned", "abandoned", "superseded", "lost", "restored"]}, "x-setting": "status_history.lost", "x-consumer": "status history state machine"}
+        }
+      },
+      "anchoring_rationale": {"type": "string", "x-setting": "anchoring_rationale", "x-consumer": "anchoring morphism renderer"}
+    }
+  }
+}

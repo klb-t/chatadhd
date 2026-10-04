@@ -71,7 +71,9 @@
         "x-setting": "idle_poll_ms",
         "x-consumer": "worker/media/github",
         "type": "integer",
-        "minimum": 0
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
       },
       "llm_rate_limit": {
         "x-setting": "llm_rate_limit",
@@ -83,13 +85,17 @@
         "x-setting": "startup_delay_ms",
         "x-consumer": "worker/media/github",
         "type": "integer",
-        "minimum": 0
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
       },
       "batch_threshold": {
         "x-setting": "batch_threshold",
         "x-consumer": "worker/media/github",
         "type": "integer",
-        "minimum": 0
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "messages"
       },
       "batch_max_messages": {
         "x-setting": "batch_max_messages",
@@ -107,13 +113,17 @@
         "x-setting": "pause_poll_ms",
         "x-consumer": "worker/media/github",
         "type": "integer",
-        "minimum": 0
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
       },
       "error_backoff_ms": {
         "x-setting": "error_backoff_ms",
         "x-consumer": "worker/media/github",
         "type": "integer",
-        "minimum": 0
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
       },
       "rate_elapsed_floor": {
         "x-setting": "rate_elapsed_floor",

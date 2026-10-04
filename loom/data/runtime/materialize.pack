@@ -86,7 +86,7 @@
       "lost": "- {{label}} (branch {{branch}}): lost as of {{date}}{{oscillation}}\n",
       "missing_branch": "main",
       "backlog_title": "Backlog",
-      "extrapolated_header": "# Extrapolated spec: {{label}}\n\nProposals only — never facts (I3).\n\n## Proposals\n\n",
+      "extrapolated_header": "# Extrapolated spec: {{label}}\n\nProposals only \u2014 never facts (I3).\n\n## Proposals\n\n",
       "extrapolated_title": "Extrapolated spec: {{label}}",
       "no_proposals": "(none)\n",
       "detail_header": "{{count}} hit(s): ",
@@ -94,7 +94,29 @@
       "detail_ellipsis": "...",
       "detail_no_hits": "no hits",
       "array_literal": "literal string array (>= {{count}} entries)"
-    }
+    },
+    "products": [
+      {
+        "renderer": "self_description",
+        "enabled": true,
+        "on_error": "error"
+      },
+      {
+        "renderer": "dossier",
+        "enabled": true,
+        "on_error": "omit"
+      },
+      {
+        "renderer": "extrapolated_spec",
+        "enabled": true,
+        "on_error": "omit"
+      },
+      {
+        "renderer": "backlog",
+        "enabled": true,
+        "on_error": "error"
+      }
+    ]
   },
   "value_schema": {
     "type": "object",
@@ -413,6 +435,37 @@
           "array_literal"
         ],
         "additionalProperties": false
+      },
+      "products": {
+        "type": "array",
+        "description": "Ordered renderer recipe. Only enabled entries execute. Consecutive enabled instance renderers form a group executed in listed order for each instance; run renderers partition groups. Names select trusted registered executable capabilities; unknown names fail before artifact writes, even if disabled.",
+        "items": {
+          "type": "object",
+          "required": [
+            "renderer",
+            "enabled",
+            "on_error"
+          ],
+          "properties": {
+            "renderer": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "on_error": {
+              "type": "string",
+              "enum": [
+                "error",
+                "omit"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "x-setting": "products",
+        "x-consumer": "materialize::run_stage"
       }
     },
     "required": [
@@ -423,7 +476,8 @@
       "detectors",
       "outputs",
       "mime",
-      "templates"
+      "templates",
+      "products"
     ],
     "additionalProperties": false
   }
