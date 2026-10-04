@@ -184,6 +184,20 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
         // partial representation must never become a successful cache hit.
         if (s.parser != "loom.importer." + std::string(fmt) + std::string(parser_suffix) ||
             json::get_string(s.metadata, "import_status") != "complete") continue;
+        // The first member journal reused interpretation's -1 key for raw
+        // fallback retention. Its own unknown-member delta identifies that
+        // legacy phase unambiguously; it cannot prove interpretation complete.
+        LOOM_TRY_ASSIGN(auto legacy_raw, db_.conn().query_int(
+            "SELECT COUNT(*) FROM loom_import_checkpoints c WHERE c.source_id=? AND c.source_index=-1 "
+            "AND EXISTS(SELECT 1 FROM json_each(c.metadata,'$.report.unknown_members') u WHERE u.value=c.member)",
+            s.id));
+        if (legacy_raw.value_or(0) != 0) {
+          Json metadata = s.metadata;
+          metadata["import_status"] = "partial";
+          metadata["member_checkpoint_repair"] = "separate_raw_retention";
+          LOOM_TRY(db_.conn().run("UPDATE loom_sources SET metadata=? WHERE id=?", json::py_dumps(metadata), s.id));
+          continue;
+        }
         const Json* ids = json::find(s.metadata, "conversation_ids");
         if (!ids || !ids->is_array()) continue;
         std::vector<Conversation> convs;
@@ -198,6 +212,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
         }
         if (!intact) continue;
         ctx.source_id = s.id;
+        LOOM_TRY(source_transaction.commit());
         return std::optional<std::vector<Conversation>>(std::move(convs));
       }
       LOOM_TRY_ASSIGN(auto records, db_.conn().prepare(
@@ -212,6 +227,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
       }
       if (!convs.empty()) {
         ctx.source_id = s.id;
+        LOOM_TRY(source_transaction.commit());
         return std::optional<std::vector<Conversation>>(std::move(convs));
       }
     }
@@ -226,6 +242,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
       ctx.source_id = source.id;
       ctx.source_filename = fs::path(source.uri).filename().string();
       ctx.resumed = true;
+      LOOM_TRY(source_transaction.commit());
       return std::optional<std::vector<Conversation>>{};
     }
   }

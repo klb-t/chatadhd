@@ -136,6 +136,141 @@ TEST_SUITE("import_resume") {
     CHECK(fixture.count("loom_import_checkpoints") == 2); CHECK(repaired.export_report["partial"] == false);
   }
 
+  TEST_CASE("failed project interpretation retains raw bytes without suppressing a valid retry") {
+    ResumeFixture fixture;
+    const auto archive = fixture.temporary.path() / "projects.zip";
+    const Json project{{"uuid", "project"}, {"name", "A project"}, {"docs", Json::array({
+      Json{{"uuid", "document"}, {"filename", "Synthetic.txt"}, {"content", "Synthetic document"}}})}};
+    resume_zip(archive, {{"conversations.json", Json::array({resume_conversation(0)}).dump()},
+                        {"memories.json", Json{{"project_memories", Json{{"project", "Synthetic memory"}}}}.dump()},
+                        {"projects.json", Json::array({project}).dump()}});
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("CREATE TRIGGER fail_project_link BEFORE INSERT ON links "
+      "WHEN NEW.link_type='part_of' BEGIN SELECT RAISE(FAIL,'injected project link failure'); END;"));
+    const auto failed = unwrap(fixture.importer.import_file(archive, fixture.options));
+    REQUIRE(failed.conversations.size() == 1);
+    CHECK(failed.export_report["partial"] == true);
+    CHECK(failed.export_report["counts"]["project"] == 0);
+    CHECK(failed.export_report["counts"]["project_doc"] == 0);
+    CHECK(failed.export_report["counts"]["memory"] == 0);
+    CHECK(fixture.count("nodes") == 2); // only independently retained raw members
+    CHECK(fixture.count("links") == 0);
+    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
+      "WHERE member='projects.json' AND source_index=-1")).value_or(-1) == 0);
+    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
+      "WHERE member='projects.json' AND source_index=-2")).value_or(-1) == 1);
+    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
+      "WHERE member='memories.json' AND source_index=-1")).value_or(-1) == 0);
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("DROP TRIGGER fail_project_link"));
+    const auto repaired = unwrap(fixture.importer.import_file(archive, fixture.options));
+    REQUIRE(repaired.conversations.size() == 1);
+    CHECK(repaired.resumed); CHECK_FALSE(repaired.already_imported);
+    CHECK(repaired.source_id == failed.source_id);
+    CHECK(repaired.conversations[0].id == failed.conversations[0].id);
+    CHECK(repaired.export_report["partial"] == false);
+    CHECK(repaired.export_report["counts"]["project"] == 1);
+    CHECK(repaired.export_report["counts"]["project_doc"] == 1);
+    CHECK(repaired.export_report["counts"]["memory"] == 1);
+    CHECK(fixture.count("conversations") == 1); CHECK(fixture.count("nodes") == 5);
+    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM links l "
+      "JOIN nodes d ON d.id=l.src JOIN nodes p ON p.id=l.dst "
+      "WHERE l.link_type='part_of' AND d.kind='export:project_doc' AND p.kind='export:project'"))
+      .value_or(-1) == 1);
+    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM links l "
+      "JOIN nodes m ON m.id=l.src JOIN nodes p ON p.id=l.dst "
+      "WHERE l.link_type='part_of' AND m.kind='export:memory' AND p.kind='export:project'"))
+      .value_or(-1) == 1);
+    const auto project_id = unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:project'"));
+    const auto document_id = unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:project_doc'"));
+    REQUIRE(project_id); REQUIRE(document_id);
+    const auto cached = unwrap(fixture.importer.import_file(archive, fixture.options));
+    CHECK(cached.already_imported); CHECK(cached.export_report["partial"] == false);
+    CHECK(cached.conversations[0].id == failed.conversations[0].id);
+    CHECK(unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:project'")) == project_id);
+    CHECK(unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:project_doc'")) == document_id);
+    CHECK(fixture.count("nodes") == 5); CHECK(fixture.count("links") == 2);
+  }
+
+  TEST_CASE("legacy raw journal cannot hide missing project records behind a completed source cache") {
+    ResumeFixture fixture;
+    const auto archive = fixture.temporary.path() / "legacy-projects.zip";
+    const Json project{{"uuid", "project"}, {"name", "A project"}, {"docs", Json::array({
+      Json{{"uuid", "document"}, {"filename", "Synthetic.txt"}, {"content", "Synthetic document"}}})}};
+    resume_zip(archive, {{"conversations.json", Json::array({resume_conversation(0)}).dump()},
+                        {"projects.json", Json::array({project}).dump()}});
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("CREATE TRIGGER fail_project_link BEFORE INSERT ON links "
+      "WHEN NEW.link_type='part_of' BEGIN SELECT RAISE(FAIL,'injected project link failure'); END;"));
+    const auto failed = unwrap(fixture.importer.import_file(archive, fixture.options));
+    REQUIRE(failed.conversations.size() == 1); CHECK(failed.export_report["partial"] == true);
+    const auto raw_id = unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:member'"));
+    REQUIRE(raw_id);
+    // Reproduce the original writer's shared-phase marker and false completed
+    // cache using its real raw node/report, without changing source identities.
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("DROP TRIGGER fail_project_link; "
+      "UPDATE loom_import_checkpoints SET source_index=-1,metadata=json_set(metadata,'$.kind','member') "
+      "WHERE member='projects.json' AND source_index=-2;"));
+    auto source = unwrap(fixture.provenance.get_source(failed.source_id));
+    REQUIRE(source);
+    source->metadata["import_status"] = "complete";
+    source->metadata["export_report"]["partial"] = false;
+    source->metadata["export_report"]["errors"] = Json::array();
+    LOOM_REQUIRE_OK(fixture.db->conn().run("UPDATE loom_sources SET metadata=? WHERE id=?",
+                                         json::py_dumps(source->metadata), source->id));
+
+    auto reopened = open_db(fixture.temporary.path() / "source.db");
+    EventBus bus;
+    BlobStore blobs{fixture.temporary.path() / "blobs", *reopened};
+    ProvenanceStore provenance{*reopened};
+    ConversationImporter importer{*reopened, bus, &blobs, &provenance};
+    const auto repaired = unwrap(importer.import_file(archive, fixture.options));
+    CHECK_FALSE(repaired.already_imported); CHECK(repaired.resumed);
+    REQUIRE(repaired.conversations.size() == 1);
+    CHECK(repaired.source_id == failed.source_id);
+    CHECK(repaired.conversations[0].id == failed.conversations[0].id);
+    CHECK(repaired.export_report["partial"] == false);
+    CHECK(repaired.export_report["counts"]["project"] == 1);
+    CHECK(repaired.export_report["counts"]["project_doc"] == 1);
+    CHECK(fixture.count("nodes") == 3); CHECK(fixture.count("links") == 1);
+    CHECK(unwrap(reopened->conn().query_text("SELECT id FROM nodes WHERE kind='export:member'")) == raw_id);
+    CHECK(unwrap(reopened->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
+      "WHERE member='projects.json' AND source_index=-2 AND json_extract(metadata,'$.kind')='raw_member'"))
+      .value_or(-1) == 1);
+    CHECK(unwrap(reopened->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
+      "WHERE member='projects.json' AND source_index=-1 "
+      "AND json_array_length(metadata,'$.report.unknown_members')=0")).value_or(-1) == 1);
+    source = unwrap(provenance.get_source(repaired.source_id));
+    REQUIRE(source); CHECK(source->metadata["import_status"] == "complete");
+    const auto cached = unwrap(importer.import_file(archive, fixture.options));
+    CHECK(cached.already_imported); CHECK(cached.export_report["partial"] == false);
+    CHECK(cached.conversations[0].id == failed.conversations[0].id);
+    CHECK(fixture.count("nodes") == 3); CHECK(fixture.count("links") == 1);
+  }
+
+  TEST_CASE("malformed known provider member remains partial across raw-retention replay") {
+    ResumeFixture fixture;
+    const auto archive = fixture.temporary.path() / "malformed-projects.zip";
+    resume_zip(archive, {{"conversations.json", Json::array({resume_conversation(0)}).dump()},
+                        {"projects.json", "[{\"uuid\":\"unfinished\""}});
+    std::string source_id, conversation_id;
+    for (int attempt = 0; attempt < 3; ++attempt) {
+      const auto result = unwrap(fixture.importer.import_file(archive, fixture.options));
+      REQUIRE(result.conversations.size() == 1);
+      CHECK_FALSE(result.already_imported); CHECK(result.export_report["partial"] == true);
+      CHECK_FALSE(result.export_report["errors"].empty());
+      if (attempt == 0) { source_id = result.source_id; conversation_id = result.conversations[0].id; }
+      else {
+        CHECK(result.resumed); CHECK(result.source_id == source_id);
+        CHECK(result.conversations[0].id == conversation_id);
+        CHECK(result.export_report["resumed_members"] == 1);
+      }
+      const auto source = unwrap(fixture.provenance.get_source(result.source_id));
+      REQUIRE(source); CHECK(source->metadata["import_status"] == "partial");
+      CHECK(fixture.count("nodes") == 1); CHECK(fixture.count("links") == 0);
+      CHECK(fixture.count("conversations") == 1); CHECK(fixture.count("loom_import_checkpoints") == 2);
+      CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
+        "WHERE member='projects.json' AND source_index=-1")).value_or(-1) == 0);
+    }
+  }
+
   TEST_CASE("cancelled provider import resumes committed IDs and completed source cache") {
     ResumeFixture fixture;
     const auto path = fixture.write(Json::array({resume_conversation(0), resume_conversation(1), resume_conversation(2)}).dump());
