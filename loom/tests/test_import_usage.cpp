@@ -52,6 +52,10 @@ TEST_SUITE("import.usage") {
     const auto one = unwrap(runtime->importer().import_file(small, options));
     LOOM_REQUIRE_OK(first->complete(one));
     CHECK(first->receipt()["status"] == "completed");
+    const auto replay = first->request(small, options, "first", cohort);
+    REQUIRE_FALSE(replay);
+    CHECK(replay.error().code == Errc::Conflict);
+    CHECK(unwrap(runtime->db().conn().query_int("SELECT COUNT(*) FROM conversations")).value() == 1);
     auto second = unwrap(ImportUsageSession::open(runtime->config(), temp.path()));
     CHECK_FALSE(second->request(large, options, "second", cohort));
     CHECK(second->requires_confirmation());
