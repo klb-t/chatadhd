@@ -1,0 +1,62 @@
+{
+  "schema": "loom.screenshot_derivative_source_binding/1",
+  "description": "Post-measurement Git lookup of the four source bytes already pinned by the unchanged measured receipt. This is not a header/toolchain/full-CTest manifest.",
+  "bindings": [
+    {
+      "path": "loom/tests/main.cpp",
+      "measured_sha256": "f3ec52fb13e6028ab6cb10a25ecdce0db57486809b09a7f65d1661bc6e1ca4d0",
+      "public_git_matches": [
+        {
+          "commit": "bf8b620262853a789f2e274acba67e3f62ae8bd6",
+          "sha256": "f3ec52fb13e6028ab6cb10a25ecdce0db57486809b09a7f65d1661bc6e1ca4d0"
+        },
+        {
+          "commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+          "sha256": "f3ec52fb13e6028ab6cb10a25ecdce0db57486809b09a7f65d1661bc6e1ca4d0"
+        }
+      ]
+    },
+    {
+      "path": "loom/tests/test_import_screenshot.cpp",
+      "measured_sha256": "f8c7c419c4a719b2e61e16cef6080f76a754a3ece8c63b867e4c6ffb24949722",
+      "public_git_matches": [
+        {
+          "commit": "bf8b620262853a789f2e274acba67e3f62ae8bd6",
+          "sha256": "f8c7c419c4a719b2e61e16cef6080f76a754a3ece8c63b867e4c6ffb24949722"
+        },
+        {
+          "commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+          "sha256": "f8c7c419c4a719b2e61e16cef6080f76a754a3ece8c63b867e4c6ffb24949722"
+        }
+      ]
+    },
+    {
+      "path": "loom/src/import/importer_core.cpp",
+      "measured_sha256": "ee10e549f578d1dc510e67df8d04435000392dd5c3fefe89475b5b5099a91310",
+      "public_git_matches": [
+        {
+          "commit": "bf8b620262853a789f2e274acba67e3f62ae8bd6",
+          "sha256": "ee10e549f578d1dc510e67df8d04435000392dd5c3fefe89475b5b5099a91310"
+        },
+        {
+          "commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+          "sha256": "ee10e549f578d1dc510e67df8d04435000392dd5c3fefe89475b5b5099a91310"
+        }
+      ]
+    },
+    {
+      "path": "loom/src/import/importer_text.cpp",
+      "measured_sha256": "c2ccb16be9f4426f2551b8b2009910937453f2b1f238abb8ded0080ddd4f2a50",
+      "public_git_matches": [
+        {
+          "commit": "bf8b620262853a789f2e274acba67e3f62ae8bd6",
+          "sha256": "c2ccb16be9f4426f2551b8b2009910937453f2b1f238abb8ded0080ddd4f2a50"
+        },
+        {
+          "commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+          "sha256": "c2ccb16be9f4426f2551b8b2009910937453f2b1f238abb8ded0080ddd4f2a50"
+        }
+      ]
+    }
+  ]
+}

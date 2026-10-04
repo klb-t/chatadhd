@@ -1,0 +1,114 @@
+{
+  "format": "loom.evidence-files/1",
+  "measurement": "focused derivative; not clean-source integration",
+  "files": [
+    {
+      "original_name": "run.py",
+      "stored_name": "run.py",
+      "encoding": "identity",
+      "original_bytes": 4626,
+      "original_sha256": "08cdca59665e736a2174fd75327e81f1c1c9959e2b2ed77eda0aad81ac73a893",
+      "stored_bytes": 4626,
+      "stored_sha256": "08cdca59665e736a2174fd75327e81f1c1c9959e2b2ed77eda0aad81ac73a893"
+    },
+    {
+      "original_name": "receipt.json",
+      "stored_name": "receipt.json",
+      "encoding": "identity",
+      "original_bytes": 8833,
+      "original_sha256": "88b7a4be771e3340472cf7279a36badd22ae9eb501d3f258720b95cf24771524",
+      "stored_bytes": 8833,
+      "stored_sha256": "88b7a4be771e3340472cf7279a36badd22ae9eb501d3f258720b95cf24771524"
+    },
+    {
+      "original_name": "annotations-before.cpp",
+      "stored_name": "annotations-before.cpp",
+      "encoding": "identity",
+      "original_bytes": 16640,
+      "original_sha256": "6b448984ee75949ae6832560378aaf5d299d106b2e7d7425d809215ef3cae648",
+      "stored_bytes": 16640,
+      "stored_sha256": "6b448984ee75949ae6832560378aaf5d299d106b2e7d7425d809215ef3cae648"
+    },
+    {
+      "original_name": "compile-main.log",
+      "stored_name": "compile-main.log",
+      "encoding": "identity",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_name": "compile-test.log",
+      "stored_name": "compile-test.log",
+      "encoding": "identity",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_name": "compile-annotations-before.log",
+      "stored_name": "compile-annotations-before.log",
+      "encoding": "identity",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_name": "compile-annotations-after.log",
+      "stored_name": "compile-annotations-after.log",
+      "encoding": "identity",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_name": "link-before.log",
+      "stored_name": "link-before.log",
+      "encoding": "identity",
+      "original_bytes": 289,
+      "original_sha256": "f8efd18a6df0a11240274b4411cfdd3313c83fcda3947e41cc505e3c70bb40a2",
+      "stored_bytes": 289,
+      "stored_sha256": "f8efd18a6df0a11240274b4411cfdd3313c83fcda3947e41cc505e3c70bb40a2"
+    },
+    {
+      "original_name": "link-after.log",
+      "stored_name": "link-after.log",
+      "encoding": "identity",
+      "original_bytes": 288,
+      "original_sha256": "3bce0c3ce77d29c6cb0d69c3054b5cccd7bbd12b908c770802e0760167917a57",
+      "stored_bytes": 288,
+      "stored_sha256": "3bce0c3ce77d29c6cb0d69c3054b5cccd7bbd12b908c770802e0760167917a57"
+    },
+    {
+      "original_name": "test-before.log",
+      "stored_name": "test-before.log.gz",
+      "encoding": "gzip",
+      "original_bytes": 6188,
+      "original_sha256": "97ca1d6d83b676b3b9b83e662b4093f7bf42d0f82d92cf87e115cf5a83261225",
+      "stored_bytes": 821,
+      "stored_sha256": "4a2828e938fc92e4dac7ad420d001433b6d6d309aa7e1f7b7e1254a884c4a083"
+    },
+    {
+      "original_name": "test-after.log",
+      "stored_name": "test-after.log.gz",
+      "encoding": "gzip",
+      "original_bytes": 45020,
+      "original_sha256": "83d9c00f3046c15ef4088d5a607b34893794d6695f4bc41dac6af6bc2e302d87",
+      "stored_bytes": 3915,
+      "stored_sha256": "0d32100db9f4b08bc4d683690f763a67e16abb9f498c17bcf4218f2141a40224"
+    },
+    {
+      "original_name": "README.md",
+      "stored_name": "README.md",
+      "encoding": "identity",
+      "original_bytes": 2483,
+      "original_sha256": "c381dbfcb5c8d4ac7252999fef399a656bb1c3013a98848bea871ef135e84d41",
+      "stored_bytes": 2483,
+      "stored_sha256": "c381dbfcb5c8d4ac7252999fef399a656bb1c3013a98848bea871ef135e84d41"
+    }
+  ]
+}

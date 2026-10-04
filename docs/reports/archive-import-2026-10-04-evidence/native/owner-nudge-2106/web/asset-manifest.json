@@ -1,0 +1,18 @@
+{
+  "assets/index-BPjvN4n9.js": {
+    "bytes": 438503,
+    "sha256": "43bd9e4f4f1a22fd8166659c92f9b8391dada1ae100a1291a6420e52fbd929b5"
+  },
+  "assets/index-BPjvN4n9.js.map": {
+    "bytes": 1166246,
+    "sha256": "5746c801b63488ca00e076cc441473dcf6b07be36ed2bd7fa63fd47298a5f2e7"
+  },
+  "assets/index-N8mBI43N.css": {
+    "bytes": 17643,
+    "sha256": "829a8307119a4fdf24d89cc6fb38cd9e4a809d33463560c32bfe6d355343be4b"
+  },
+  "index.html": {
+    "bytes": 579,
+    "sha256": "dd78623b9fc6b943e433b5f74bb5e203c3005af2a3c00a816758f00261235d1f"
+  }
+}

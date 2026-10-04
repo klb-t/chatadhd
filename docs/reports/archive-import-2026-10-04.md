@@ -62,6 +62,11 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
    Legacy JSON/JSONL i heurystyka generic finder nadal mają osobne mechanizmy;
    nie jest to claim kompletnej migracji wszystkich 52 grup.
 
+[Publiczne dowody nowych prób](archive-import-2026-10-04-evidence/native/owner-nudge-2106/README.md)
+zachowują pełne red/green, dokładne polecenia/hashe i osobny web build
+(85 modułów, 79 niezmienionych źródeł). Nie zastępują pełnych mixed bramek.
+Nowy fetch po wszystkich4 poprawkach: main30ad7d3 bez zmian, rebase up to date.
+
 ## Wdrożone
 
 JSON/ZIP dostawców przetwarza rozmowy strumieniowo, zachowując źródłowe bajty,

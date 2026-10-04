@@ -1,0 +1,107 @@
+{
+  "schema": "loom.offline_isolated_web_build/1",
+  "source_directory": "/workspace/scratch/943af489e102/chatadhd/loom/web",
+  "isolated_directory": "/workspace/scratch/943af489e102/thread5-web-check/web",
+  "versions": {
+    "node": {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "version": "v24.19.0"
+    },
+    "npm": {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/npm",
+      "version": "11.9.0"
+    }
+  },
+  "source_file_count": 79,
+  "source_before_sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6",
+  "lockfile": {
+    "bytes": 62076,
+    "sha256": "0b798e47b48182c528f6bc50db7b275d8d90a873e21ebab2147fd42e83387e53"
+  },
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "ci",
+        "--offline",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "instrumented_command": [
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/workspace/scratch/943af489e102/thread5-web-check/evidence/npm-ci.network.txt",
+        "npm",
+        "ci",
+        "--offline",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 0.045492723998904694,
+      "internet_syscalls": 0,
+      "stdout": "npm-ci.stdout.txt",
+      "stderr": "npm-ci.stderr.txt",
+      "network_trace": "npm-ci.network.txt"
+    }
+  ],
+  "passed": false,
+  "source_unchanged": true,
+  "isolated_input_unchanged": true,
+  "generated_input_sidecars": [],
+  "built_assets": {},
+  "asset_count": 0,
+  "network_observation": "strace -f trace=network; AF_INET/AF_INET6 syscall lines counted; npm offline enforced, install lifecycle scripts disabled",
+  "browser_ui_test_performed": false,
+  "evidence": {
+    "node-version.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "node-version.stdout.txt": {
+      "bytes": 9,
+      "sha256": "b7677d3ec37ee1897ba07dc2cfe8292fe421c9ac93396cca5bbece486d1a2a41"
+    },
+    "npm-ci.network.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "npm-ci.stderr.txt": {
+      "bytes": 247,
+      "sha256": "01c79a7d47475a07737aecab58d739206fd0dcf4a572f2efdab84f037f393c00"
+    },
+    "npm-ci.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "npm-version.stderr.txt": {
+      "bytes": 99,
+      "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+    },
+    "npm-version.stdout.txt": {
+      "bytes": 7,
+      "sha256": "d9f29f5aab43c8c1a8d6acc856e258b89735f541aa5e1f07b39a62f28bfa8d06"
+    },
+    "package-lock.json": {
+      "bytes": 62076,
+      "sha256": "0b798e47b48182c528f6bc50db7b275d8d90a873e21ebab2147fd42e83387e53"
+    },
+    "package.json": {
+      "bytes": 1455,
+      "sha256": "f1479604ef79c37dd4b7d16b2eb86f6f02211cf70aec9d8eb2578e1cdf7e3331"
+    },
+    "source-after.json": {
+      "bytes": 11239,
+      "sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+    },
+    "source-before.json": {
+      "bytes": 11239,
+      "sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "README.md": {
+    "bytes": 1121,
+    "sha256": "ef62512acb474c93e567ee9a3ecaa9a4537a8a018a97077141dd8812a509ed6a"
+  },
+  "receipt.json": {
+    "bytes": 1525,
+    "sha256": "6c3cbc20cf04b1b0b1a2d291225113bafd0b73261ca3f83000717a01d4378c7a"
+  },
+  "unittest.stderr.txt": {
+    "bytes": 2407,
+    "sha256": "22cffcb129e92a670632dd6bd2accd7786767fa14068963e5c6a76963fdb7d7f"
+  },
+  "unittest.stdout.txt": {
+    "bytes": 4781,
+    "sha256": "308779cc63bf7d460ec2bbc82dce35401cd0d48d97511b732a0a77235678ac2c"
+  }
+}

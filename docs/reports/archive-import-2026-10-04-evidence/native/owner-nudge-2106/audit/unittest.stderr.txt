@@ -1,0 +1,24 @@
+test_bad_estimator_cache (archive_cost_regular_tests.ArchiveCostRegressionTest.test_bad_estimator_cache) ... ok
+test_complete (archive_cost_regular_tests.ArchiveCostRegressionTest.test_complete) ... ok
+test_empty (archive_cost_regular_tests.ArchiveCostRegressionTest.test_empty) ... ok
+test_exact_projection_conversations (archive_cost_regular_tests.ArchiveCostRegressionTest.test_exact_projection_conversations) ... ok
+test_file_identical (archive_cost_regular_tests.ArchiveCostRegressionTest.test_file_identical) ... ok
+test_no_rates (archive_cost_regular_tests.ArchiveCostRegressionTest.test_no_rates) ... ok
+test_nul_unicode (archive_cost_regular_tests.ArchiveCostRegressionTest.test_nul_unicode) ... ok
+test_rates_and_estimator (archive_cost_regular_tests.ArchiveCostRegressionTest.test_rates_and_estimator) ... ok
+test_db_opened_read_only (archive_cost_regular_tests.ArchiveCostTest.test_db_opened_read_only) ... ok
+test_estimate_arithmetic (archive_cost_regular_tests.ArchiveCostTest.test_estimate_arithmetic) ... ok
+test_even_conversation_median_uses_both_middle_sizes (archive_cost_regular_tests.ArchiveCostTest.test_even_conversation_median_uses_both_middle_sizes) ... ok
+test_fraction_and_versions (archive_cost_regular_tests.ArchiveCostTest.test_fraction_and_versions) ... ok
+test_invalid_counts_and_prices_rejected (archive_cost_regular_tests.ArchiveCostTest.test_invalid_counts_and_prices_rejected) ... ok
+test_invalid_parameters_rejected_before_cost (archive_cost_regular_tests.ArchiveCostTest.test_invalid_parameters_rejected_before_cost) ... ok
+test_large_finite_budget_supported_overflow_rejected (archive_cost_regular_tests.ArchiveCostTest.test_large_finite_budget_supported_overflow_rejected) ... ok
+test_missing_database_is_not_created (archive_cost_regular_tests.ArchiveCostTest.test_missing_database_is_not_created) ... ok
+test_reserved_uri_characters_open_exact_file_without_creating_sibling (archive_cost_regular_tests.ArchiveCostTest.test_reserved_uri_characters_open_exact_file_without_creating_sibling) ... ok
+test_stats_split_by_status (archive_cost_regular_tests.ArchiveCostTest.test_stats_split_by_status) ... ok
+test_unknown_status_counted_explicitly_and_configurable (archive_cost_regular_tests.ArchiveCostTest.test_unknown_status_counted_explicitly_and_configurable) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.168s
+
+OK

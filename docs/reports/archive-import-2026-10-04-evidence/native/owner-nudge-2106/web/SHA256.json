@@ -1,0 +1,118 @@
+{
+  "README.md": {
+    "bytes": 2496,
+    "sha256": "881d5309a63dfd1ae4cda111e9ef7167a4993d9ae19215215c973bd508fe0c77"
+  },
+  "asset-manifest.json": {
+    "bytes": 547,
+    "sha256": "b13860a4eab6dcdb36812d5dca8698f21a9281a565ea40c452c314922dd7f324"
+  },
+  "node-version.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "node-version.stdout.txt": {
+    "bytes": 9,
+    "sha256": "b7677d3ec37ee1897ba07dc2cfe8292fe421c9ac93396cca5bbece486d1a2a41"
+  },
+  "npm-build.stderr.txt": {
+    "bytes": 99,
+    "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+  },
+  "npm-build.stdout.txt": {
+    "bytes": 401,
+    "sha256": "4965559928e8c0a82f8219f544951903da77ef85b152a3e9a3258ad358f746ed"
+  },
+  "npm-ci.stderr.txt": {
+    "bytes": 99,
+    "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+  },
+  "npm-ci.stdout.txt": {
+    "bytes": 25,
+    "sha256": "5613246048afac63321666f89d3ea3a80716eef56123ed37836cf9221f14570f"
+  },
+  "npm-version.stderr.txt": {
+    "bytes": 99,
+    "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+  },
+  "npm-version.stdout.txt": {
+    "bytes": 7,
+    "sha256": "d9f29f5aab43c8c1a8d6acc856e258b89735f541aa5e1f07b39a62f28bfa8d06"
+  },
+  "package-lock.json": {
+    "bytes": 62076,
+    "sha256": "0b798e47b48182c528f6bc50db7b275d8d90a873e21ebab2147fd42e83387e53"
+  },
+  "package.json": {
+    "bytes": 1455,
+    "sha256": "f1479604ef79c37dd4b7d16b2eb86f6f02211cf70aec9d8eb2578e1cdf7e3331"
+  },
+  "receipt.json": {
+    "bytes": 4340,
+    "sha256": "b0561e706abb1b5eb73b457cc727e5a8633ced2ff8caec516e14bcaa5a0e9dbe"
+  },
+  "source-after.json.gz": {
+    "bytes": 4386,
+    "sha256": "c08f9fcfeb9e269272f84c290d1fefa9935dcb4d51a7ad216bd75887e30a1a9b",
+    "uncompressed_bytes": 11239,
+    "uncompressed_sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+  },
+  "source-before.json.gz": {
+    "bytes": 4386,
+    "sha256": "c08f9fcfeb9e269272f84c290d1fefa9935dcb4d51a7ad216bd75887e30a1a9b",
+    "uncompressed_bytes": 11239,
+    "uncompressed_sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+  },
+  "strace-negative-setup/node-version.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "strace-negative-setup/node-version.stdout.txt": {
+    "bytes": 9,
+    "sha256": "b7677d3ec37ee1897ba07dc2cfe8292fe421c9ac93396cca5bbece486d1a2a41"
+  },
+  "strace-negative-setup/npm-ci.network.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "strace-negative-setup/npm-ci.stderr.txt": {
+    "bytes": 247,
+    "sha256": "01c79a7d47475a07737aecab58d739206fd0dcf4a572f2efdab84f037f393c00"
+  },
+  "strace-negative-setup/npm-ci.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "strace-negative-setup/npm-version.stderr.txt": {
+    "bytes": 99,
+    "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+  },
+  "strace-negative-setup/npm-version.stdout.txt": {
+    "bytes": 7,
+    "sha256": "d9f29f5aab43c8c1a8d6acc856e258b89735f541aa5e1f07b39a62f28bfa8d06"
+  },
+  "strace-negative-setup/package-lock.json": {
+    "bytes": 62076,
+    "sha256": "0b798e47b48182c528f6bc50db7b275d8d90a873e21ebab2147fd42e83387e53"
+  },
+  "strace-negative-setup/package.json": {
+    "bytes": 1455,
+    "sha256": "f1479604ef79c37dd4b7d16b2eb86f6f02211cf70aec9d8eb2578e1cdf7e3331"
+  },
+  "strace-negative-setup/receipt.json": {
+    "bytes": 3359,
+    "sha256": "d9376fd6056de735adfeedcea086245881ac949e26fc54cfad08809c8a7e3837"
+  },
+  "strace-negative-setup/source-after.json.gz": {
+    "bytes": 4386,
+    "sha256": "c08f9fcfeb9e269272f84c290d1fefa9935dcb4d51a7ad216bd75887e30a1a9b",
+    "uncompressed_bytes": 11239,
+    "uncompressed_sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+  },
+  "strace-negative-setup/source-before.json.gz": {
+    "bytes": 4386,
+    "sha256": "c08f9fcfeb9e269272f84c290d1fefa9935dcb4d51a7ad216bd75887e30a1a9b",
+    "uncompressed_bytes": 11239,
+    "uncompressed_sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+  }
+}

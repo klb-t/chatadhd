@@ -1,0 +1,186 @@
+{
+  "schema": "loom.evidence_files/1",
+  "description": "All retained files are small, uncompressed originals; this manifest excludes its own bytes. No executed runner-file hash existed at measurement: executed_runner.py retains the exact stdin source after measurement.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3388,
+      "sha256": "e422d51aaffa641810c7afcddd6afcaba0422d3189caece5ea4e4d24008b0c67",
+      "original_bytes": 3388,
+      "original_sha256": "e422d51aaffa641810c7afcddd6afcaba0422d3189caece5ea4e4d24008b0c67",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "SOURCE_BINDINGS.json",
+      "bytes": 2399,
+      "sha256": "4ad88c426dbece57da88d9c4dfd31692568f68a162ea7dd3a5daca0c1bf8f5db",
+      "original_bytes": 2399,
+      "original_sha256": "4ad88c426dbece57da88d9c4dfd31692568f68a162ea7dd3a5daca0c1bf8f5db",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-importer_core.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-importer_core.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-importer_text.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-importer_text.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-main.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-main.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-test_import_screenshot.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "compile-test_import_screenshot.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "executed_runner.py",
+      "bytes": 3124,
+      "sha256": "d412e5f6a191127b5823dcd04bfd7f3de80a103af4c90afda23db9a02874dd87",
+      "original_bytes": 3124,
+      "original_sha256": "d412e5f6a191127b5823dcd04bfd7f3de80a103af4c90afda23db9a02874dd87",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "link-green.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "link-green.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "link-red.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "link-red.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "receipt.json",
+      "bytes": 8982,
+      "sha256": "a03eb77652eaa6c739b8fc3b8fbde483f0826b03c900247a9299cfa360fa394c",
+      "original_bytes": 8982,
+      "original_sha256": "a03eb77652eaa6c739b8fc3b8fbde483f0826b03c900247a9299cfa360fa394c",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "run-green.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "run-green.stdout",
+      "bytes": 221,
+      "sha256": "9507a3cb492e992751ff13edbd9b04e5edb01326438defd8a3816206d4fc971d",
+      "original_bytes": 221,
+      "original_sha256": "9507a3cb492e992751ff13edbd9b04e5edb01326438defd8a3816206d4fc971d",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "run-red.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "original_bytes": 0,
+      "original_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compression": "none",
+      "compressed_sha256": null
+    },
+    {
+      "path": "run-red.stdout",
+      "bytes": 4236,
+      "sha256": "3da9f466946bf10221bfb52d598431bd2647ccf9fa8d4c457e63d9e0153cd644",
+      "original_bytes": 4236,
+      "original_sha256": "3da9f466946bf10221bfb52d598431bd2647ccf9fa8d4c457e63d9e0153cd644",
+      "compression": "none",
+      "compressed_sha256": null
+    }
+  ]
+}

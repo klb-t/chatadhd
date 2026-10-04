@@ -1,0 +1,80 @@
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:197:
+TEST SUITE: import_screenshot
+TEST CASE:  import_file preserves declared screenshot formats with source provenance
+  png
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:214:
+TEST SUITE: import_screenshot
+TEST CASE:  direct screenshot import preserves declared format with source provenance
+  png
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:255:
+TEST SUITE: import_screenshot
+TEST CASE:  tiny PNG screenshot replay preserves exact bytes on all original routes
+
+DEEPEST SUBCASE STACK REACHED (DIFFERENT FROM THE CURRENT ONE):
+  import_file with provenance
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:255:
+TEST SUITE: import_screenshot
+TEST CASE:  tiny PNG screenshot replay preserves exact bytes on all original routes
+
+DEEPEST SUBCASE STACK REACHED (DIFFERENT FROM THE CURRENT ONE):
+  import_screenshot with provenance
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:273:
+TEST SUITE: import_screenshot
+TEST CASE:  screenshot dispatch reads admitted snapshot after original replacement or removal
+
+DEEPEST SUBCASE STACK REACHED (DIFFERENT FROM THE CURRENT ONE):
+  import_file original overwritten
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:273:
+TEST SUITE: import_screenshot
+TEST CASE:  screenshot dispatch reads admitted snapshot after original replacement or removal
+
+DEEPEST SUBCASE STACK REACHED (DIFFERENT FROM THE CURRENT ONE):
+  import_file original removed
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:273:
+TEST SUITE: import_screenshot
+TEST CASE:  screenshot dispatch reads admitted snapshot after original replacement or removal
+
+DEEPEST SUBCASE STACK REACHED (DIFFERENT FROM THE CURRENT ONE):
+  import_screenshot original overwritten
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp:273:
+TEST SUITE: import_screenshot
+TEST CASE:  screenshot dispatch reads admitted snapshot after original replacement or removal
+
+DEEPEST SUBCASE STACK REACHED (DIFFERENT FROM THE CURRENT ONE):
+  import_screenshot original removed
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: All OCR providers failed
+
+===============================================================================
+[doctest] test cases:   6 |   2 passed | 4 failed | 0 skipped
+[doctest] assertions: 224 | 216 passed | 8 failed |
+[doctest] Status: FAILURE!

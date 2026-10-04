@@ -1,0 +1,138 @@
+{
+  "schema": "loom.offline_isolated_web_build/1",
+  "source_directory": "/workspace/scratch/943af489e102/chatadhd/loom/web",
+  "isolated_directory": "/workspace/scratch/943af489e102/thread5-web-check/web",
+  "versions": {
+    "node": {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "version": "v24.19.0"
+    },
+    "npm": {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/npm",
+      "version": "11.9.0"
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "package_json_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    "vite": {
+      "version": "5.4.21",
+      "package_json_sha256": "e9802045cdc313b6da55ec2e2dd79312074645816089d64f6021f567c10c0a03"
+    }
+  },
+  "source_file_count": 79,
+  "lockfile": {
+    "bytes": 62076,
+    "sha256": "0b798e47b48182c528f6bc50db7b275d8d90a873e21ebab2147fd42e83387e53"
+  },
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "ci",
+        "--offline",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.928927425004076,
+      "stdout": "npm-ci.stdout.txt",
+      "stderr": "npm-ci.stderr.txt"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 15.435302428006253,
+      "stdout": "npm-build.stdout.txt",
+      "stderr": "npm-build.stderr.txt"
+    }
+  ],
+  "passed": true,
+  "network_mode": "NPM_CONFIG_OFFLINE=true plus npm ci --offline; installation lifecycle scripts disabled",
+  "network_syscall_count": null,
+  "network_instrumentation": "unavailable: container blocks ptrace; original tracer failure preserved in ../evidence",
+  "provider_calls": 0,
+  "browser_ui_test_performed": false,
+  "source_unchanged": true,
+  "isolated_input_unchanged": true,
+  "generated_input_sidecars": [
+    "tsconfig.node.tsbuildinfo",
+    "tsconfig.tsbuildinfo",
+    "vite.config.d.ts",
+    "vite.config.js"
+  ],
+  "built_assets": {
+    "assets/index-BPjvN4n9.js": {
+      "bytes": 438503,
+      "sha256": "43bd9e4f4f1a22fd8166659c92f9b8391dada1ae100a1291a6420e52fbd929b5"
+    },
+    "assets/index-BPjvN4n9.js.map": {
+      "bytes": 1166246,
+      "sha256": "5746c801b63488ca00e076cc441473dcf6b07be36ed2bd7fa63fd47298a5f2e7"
+    },
+    "assets/index-N8mBI43N.css": {
+      "bytes": 17643,
+      "sha256": "829a8307119a4fdf24d89cc6fb38cd9e4a809d33463560c32bfe6d355343be4b"
+    },
+    "index.html": {
+      "bytes": 579,
+      "sha256": "dd78623b9fc6b943e433b5f74bb5e203c3005af2a3c00a816758f00261235d1f"
+    }
+  },
+  "asset_count": 4,
+  "evidence": {
+    "node-version.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "node-version.stdout.txt": {
+      "bytes": 9,
+      "sha256": "b7677d3ec37ee1897ba07dc2cfe8292fe421c9ac93396cca5bbece486d1a2a41"
+    },
+    "npm-build.stderr.txt": {
+      "bytes": 99,
+      "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+    },
+    "npm-build.stdout.txt": {
+      "bytes": 401,
+      "sha256": "4965559928e8c0a82f8219f544951903da77ef85b152a3e9a3258ad358f746ed"
+    },
+    "npm-ci.stderr.txt": {
+      "bytes": 99,
+      "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+    },
+    "npm-ci.stdout.txt": {
+      "bytes": 25,
+      "sha256": "5613246048afac63321666f89d3ea3a80716eef56123ed37836cf9221f14570f"
+    },
+    "npm-version.stderr.txt": {
+      "bytes": 99,
+      "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+    },
+    "npm-version.stdout.txt": {
+      "bytes": 7,
+      "sha256": "d9f29f5aab43c8c1a8d6acc856e258b89735f541aa5e1f07b39a62f28bfa8d06"
+    },
+    "package-lock.json": {
+      "bytes": 62076,
+      "sha256": "0b798e47b48182c528f6bc50db7b275d8d90a873e21ebab2147fd42e83387e53"
+    },
+    "package.json": {
+      "bytes": 1455,
+      "sha256": "f1479604ef79c37dd4b7d16b2eb86f6f02211cf70aec9d8eb2578e1cdf7e3331"
+    },
+    "source-after.json": {
+      "bytes": 11239,
+      "sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+    },
+    "source-before.json": {
+      "bytes": 11239,
+      "sha256": "ec3cf5093fbd64854a00fffd8451a1d03b1f67263a9b009c3bce353a91076ff6"
+    }
+  }
+}

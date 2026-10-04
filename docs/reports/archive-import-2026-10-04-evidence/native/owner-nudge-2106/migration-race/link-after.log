@@ -1,0 +1,2 @@
+/usr/bin/ld: /dev/shm/chatadhd-thread5/extension-migration-race/annotations-after.o: definition of _ZN4loom8Database26migrate_message_extensionsEv
+/usr/bin/ld: /dev/shm/chatadhd-thread5/baseline-build/libloom_core.a(db.cpp.o): reference to _ZN4loom8Database26migrate_message_extensionsEv
