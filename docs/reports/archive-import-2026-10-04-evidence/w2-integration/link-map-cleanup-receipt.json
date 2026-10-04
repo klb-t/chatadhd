@@ -1,0 +1,17 @@
+{
+  "removed_only": "two own reproducible link.map files",
+  "checks": [
+    {
+      "directory": "output-first-success",
+      "map_sha256": "526754e1022d3b593d6517984bb1eacdd3c955c7dd2325783af80c7c3f544e99",
+      "verified_bytes": 144385296,
+      "base_objects_not_pulled": true
+    },
+    {
+      "directory": "output",
+      "map_sha256": "921bec631bef1d30173b29bdc69fbe801638f8c7776565520e6582b0924760c4",
+      "verified_bytes": 144391873,
+      "base_objects_not_pulled": true
+    }
+  ]
+}

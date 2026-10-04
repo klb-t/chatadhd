@@ -1,0 +1,497 @@
+{
+  "provider_calls": 0,
+  "first_admission": {
+    "schema": "loom.usage_decision/1",
+    "operation_id": "first",
+    "baseline_key": "external-integration/import/source-bytes",
+    "estimate": {
+      "operation_id": "first",
+      "baseline_key": "external-integration/import/source-bytes",
+      "resources": {
+        "source_bytes": 81
+      },
+      "source_hash": "c4b2e33b98ba07a860a0fd53f2e5b5a0ca514dd39336cddf11317937615504b8",
+      "parser_version": "export-3",
+      "import_options": {
+        "export_mode": "on",
+        "force": false,
+        "resume": true
+      }
+    },
+    "options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "status": "allowed",
+    "authorized": true,
+    "resources": {
+      "source_bytes": {
+        "estimate": 81,
+        "baseline": null,
+        "baseline_source": "unavailable",
+        "baseline_samples": 0,
+        "reserved": 0.0,
+        "projected": 81.0,
+        "ratio": null,
+        "reserved_lower_bound": 0.0,
+        "projected_lower_bound": 81.0,
+        "projection_status": "estimated",
+        "baseline_status": "unavailable",
+        "requires_confirmation": false
+      }
+    },
+    "receipt_id": "usage_685f0f372b04110b86062b5435b65e0dc64d947334f38f24cfa04d211038ce0e",
+    "remaining": {
+      "source_bytes": 81
+    },
+    "actual": {}
+  },
+  "pause": {
+    "schema": "loom.usage_decision/1",
+    "operation_id": "growth",
+    "baseline_key": "external-integration/import/source-bytes",
+    "estimate": {
+      "operation_id": "growth",
+      "baseline_key": "external-integration/import/source-bytes",
+      "resources": {
+        "source_bytes": 10076
+      },
+      "source_hash": "4648119ff5a1f4e3d8373fdd4b33c717c0473cba7d41b93c63e2ebba57b06d26",
+      "parser_version": "export-3",
+      "import_options": {
+        "export_mode": "on",
+        "force": false,
+        "resume": true
+      }
+    },
+    "options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "status": "requires_confirmation",
+    "authorized": false,
+    "resources": {
+      "source_bytes": {
+        "estimate": 10076,
+        "baseline": 81.0,
+        "baseline_source": "measured",
+        "baseline_samples": 1,
+        "reserved": 0.0,
+        "projected": 10076.0,
+        "ratio": 124.39506172839506,
+        "reserved_lower_bound": 0.0,
+        "projected_lower_bound": 10076.0,
+        "projection_status": "estimated",
+        "baseline_status": "available",
+        "requires_confirmation": true
+      }
+    },
+    "receipt_id": "usage_1fb4e59b0e8f92cc0eb531b950282eac08f6d66a6e44b98b76352e16eb6b7e98",
+    "remaining": {},
+    "actual": {}
+  },
+  "mismatched_confirmation_error": "conflict: confirmation receipt does not match",
+  "confirmed": {
+    "schema": "loom.usage_decision/1",
+    "operation_id": "growth",
+    "baseline_key": "external-integration/import/source-bytes",
+    "estimate": {
+      "operation_id": "growth",
+      "baseline_key": "external-integration/import/source-bytes",
+      "resources": {
+        "source_bytes": 10076
+      },
+      "source_hash": "4648119ff5a1f4e3d8373fdd4b33c717c0473cba7d41b93c63e2ebba57b06d26",
+      "parser_version": "export-3",
+      "import_options": {
+        "export_mode": "on",
+        "force": false,
+        "resume": true
+      }
+    },
+    "options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "status": "allowed",
+    "authorized": true,
+    "resources": {
+      "source_bytes": {
+        "estimate": 10076,
+        "baseline": 81.0,
+        "baseline_source": "measured",
+        "baseline_samples": 1,
+        "reserved": 0.0,
+        "projected": 10076.0,
+        "ratio": 124.39506172839506,
+        "reserved_lower_bound": 0.0,
+        "projected_lower_bound": 10076.0,
+        "projection_status": "estimated",
+        "baseline_status": "available",
+        "requires_confirmation": true
+      }
+    },
+    "receipt_id": "usage_1fb4e59b0e8f92cc0eb531b950282eac08f6d66a6e44b98b76352e16eb6b7e98",
+    "remaining": {
+      "source_bytes": 10076
+    },
+    "actual": {},
+    "confirmation": {
+      "approved": true,
+      "ref": "synthetic-owner-confirmation"
+    }
+  },
+  "completed": {
+    "schema": "loom.usage_decision/1",
+    "operation_id": "growth",
+    "baseline_key": "external-integration/import/source-bytes",
+    "estimate": {
+      "operation_id": "growth",
+      "baseline_key": "external-integration/import/source-bytes",
+      "resources": {
+        "source_bytes": 10076
+      },
+      "source_hash": "4648119ff5a1f4e3d8373fdd4b33c717c0473cba7d41b93c63e2ebba57b06d26",
+      "parser_version": "export-3",
+      "import_options": {
+        "export_mode": "on",
+        "force": false,
+        "resume": true
+      }
+    },
+    "options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "status": "completed",
+    "authorized": false,
+    "resources": {
+      "source_bytes": {
+        "estimate": 10076,
+        "baseline": 81.0,
+        "baseline_source": "measured",
+        "baseline_samples": 1,
+        "reserved": 0.0,
+        "projected": 10076.0,
+        "ratio": 124.39506172839506,
+        "reserved_lower_bound": 0.0,
+        "projected_lower_bound": 10076.0,
+        "projection_status": "estimated",
+        "baseline_status": "available",
+        "requires_confirmation": true
+      }
+    },
+    "receipt_id": "usage_1fb4e59b0e8f92cc0eb531b950282eac08f6d66a6e44b98b76352e16eb6b7e98",
+    "remaining": {},
+    "actual": {
+      "source_bytes": {
+        "value": 10076,
+        "provenance": "instrument_measured"
+      }
+    },
+    "confirmation": {
+      "approved": true,
+      "ref": "synthetic-owner-confirmation"
+    },
+    "overrun": false
+  },
+  "durable_inspection": {
+    "baseline_key": "external-integration/import/source-bytes",
+    "options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10.0,
+      "baseline_window": 32,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {}
+    },
+    "baseline": {
+      "source_bytes": {
+        "value": 5078.5,
+        "samples": 2,
+        "source": "measured"
+      }
+    },
+    "reservations": {},
+    "operations": [
+      {
+        "schema": "loom.usage_decision/1",
+        "operation_id": "first",
+        "baseline_key": "external-integration/import/source-bytes",
+        "estimate": {
+          "operation_id": "first",
+          "baseline_key": "external-integration/import/source-bytes",
+          "resources": {
+            "source_bytes": 81
+          },
+          "source_hash": "c4b2e33b98ba07a860a0fd53f2e5b5a0ca514dd39336cddf11317937615504b8",
+          "parser_version": "export-3",
+          "import_options": {
+            "export_mode": "on",
+            "force": false,
+            "resume": true
+          }
+        },
+        "options": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10.0,
+          "baseline_window": 32,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {}
+        },
+        "status": "completed",
+        "authorized": false,
+        "resources": {
+          "source_bytes": {
+            "estimate": 81,
+            "baseline": null,
+            "baseline_source": "unavailable",
+            "baseline_samples": 0,
+            "reserved": 0.0,
+            "projected": 81.0,
+            "ratio": null,
+            "reserved_lower_bound": 0.0,
+            "projected_lower_bound": 81.0,
+            "projection_status": "estimated",
+            "baseline_status": "unavailable",
+            "requires_confirmation": false
+          }
+        },
+        "receipt_id": "usage_685f0f372b04110b86062b5435b65e0dc64d947334f38f24cfa04d211038ce0e",
+        "remaining": {},
+        "actual": {
+          "source_bytes": {
+            "value": 81,
+            "provenance": "instrument_measured"
+          }
+        },
+        "overrun": false
+      },
+      {
+        "schema": "loom.usage_decision/1",
+        "operation_id": "growth",
+        "baseline_key": "external-integration/import/source-bytes",
+        "estimate": {
+          "operation_id": "growth",
+          "baseline_key": "external-integration/import/source-bytes",
+          "resources": {
+            "source_bytes": 10076
+          },
+          "source_hash": "4648119ff5a1f4e3d8373fdd4b33c717c0473cba7d41b93c63e2ebba57b06d26",
+          "parser_version": "export-3",
+          "import_options": {
+            "export_mode": "on",
+            "force": false,
+            "resume": true
+          }
+        },
+        "options": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10.0,
+          "baseline_window": 32,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {}
+        },
+        "status": "completed",
+        "authorized": false,
+        "resources": {
+          "source_bytes": {
+            "estimate": 10076,
+            "baseline": 81.0,
+            "baseline_source": "measured",
+            "baseline_samples": 1,
+            "reserved": 0.0,
+            "projected": 10076.0,
+            "ratio": 124.39506172839506,
+            "reserved_lower_bound": 0.0,
+            "projected_lower_bound": 10076.0,
+            "projection_status": "estimated",
+            "baseline_status": "available",
+            "requires_confirmation": true
+          }
+        },
+        "receipt_id": "usage_1fb4e59b0e8f92cc0eb531b950282eac08f6d66a6e44b98b76352e16eb6b7e98",
+        "remaining": {},
+        "actual": {
+          "source_bytes": {
+            "value": 10076,
+            "provenance": "instrument_measured"
+          }
+        },
+        "confirmation": {
+          "approved": true,
+          "ref": "synthetic-owner-confirmation"
+        },
+        "overrun": false
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "operation_id": "first",
+        "kind": "request",
+        "payload": {
+          "schema": "loom.usage_decision/1",
+          "operation_id": "first",
+          "baseline_key": "external-integration/import/source-bytes",
+          "estimate": {
+            "operation_id": "first",
+            "baseline_key": "external-integration/import/source-bytes",
+            "resources": {
+              "source_bytes": 81
+            },
+            "source_hash": "c4b2e33b98ba07a860a0fd53f2e5b5a0ca514dd39336cddf11317937615504b8",
+            "parser_version": "export-3",
+            "import_options": {
+              "export_mode": "on",
+              "force": false,
+              "resume": true
+            }
+          },
+          "options": {
+            "schema": "loom.usage_policy/1",
+            "growth_factor": 10.0,
+            "baseline_window": 32,
+            "ledger_busy_timeout_ms": 30000,
+            "include_reservations": true,
+            "initial_baselines": {}
+          },
+          "status": "allowed",
+          "authorized": true,
+          "resources": {
+            "source_bytes": {
+              "estimate": 81,
+              "baseline": null,
+              "baseline_source": "unavailable",
+              "baseline_samples": 0,
+              "reserved": 0.0,
+              "projected": 81.0,
+              "ratio": null,
+              "reserved_lower_bound": 0.0,
+              "projected_lower_bound": 81.0,
+              "projection_status": "estimated",
+              "baseline_status": "unavailable",
+              "requires_confirmation": false
+            }
+          },
+          "receipt_id": "usage_685f0f372b04110b86062b5435b65e0dc64d947334f38f24cfa04d211038ce0e",
+          "remaining": {
+            "source_bytes": 81
+          },
+          "actual": {}
+        },
+        "recorded_at": "2026-10-04 15:22:31"
+      },
+      {
+        "sequence": 2,
+        "operation_id": "first",
+        "kind": "actual",
+        "payload": {
+          "resources": {
+            "source_bytes": 81
+          },
+          "provenance": "instrument_measured",
+          "measurement": "source bytes verified against admitted blob size/hash; excludes storage expansion/CPU/model tokens",
+          "cancelled": false
+        },
+        "recorded_at": "2026-10-04 15:22:31"
+      },
+      {
+        "sequence": 3,
+        "operation_id": "growth",
+        "kind": "request",
+        "payload": {
+          "schema": "loom.usage_decision/1",
+          "operation_id": "growth",
+          "baseline_key": "external-integration/import/source-bytes",
+          "estimate": {
+            "operation_id": "growth",
+            "baseline_key": "external-integration/import/source-bytes",
+            "resources": {
+              "source_bytes": 10076
+            },
+            "source_hash": "4648119ff5a1f4e3d8373fdd4b33c717c0473cba7d41b93c63e2ebba57b06d26",
+            "parser_version": "export-3",
+            "import_options": {
+              "export_mode": "on",
+              "force": false,
+              "resume": true
+            }
+          },
+          "options": {
+            "schema": "loom.usage_policy/1",
+            "growth_factor": 10.0,
+            "baseline_window": 32,
+            "ledger_busy_timeout_ms": 30000,
+            "include_reservations": true,
+            "initial_baselines": {}
+          },
+          "status": "requires_confirmation",
+          "authorized": false,
+          "resources": {
+            "source_bytes": {
+              "estimate": 10076,
+              "baseline": 81.0,
+              "baseline_source": "measured",
+              "baseline_samples": 1,
+              "reserved": 0.0,
+              "projected": 10076.0,
+              "ratio": 124.39506172839506,
+              "reserved_lower_bound": 0.0,
+              "projected_lower_bound": 10076.0,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            }
+          },
+          "receipt_id": "usage_1fb4e59b0e8f92cc0eb531b950282eac08f6d66a6e44b98b76352e16eb6b7e98",
+          "remaining": {},
+          "actual": {}
+        },
+        "recorded_at": "2026-10-04 15:22:31"
+      },
+      {
+        "sequence": 4,
+        "operation_id": "growth",
+        "kind": "confirmation",
+        "payload": {
+          "approved": true,
+          "ref": "synthetic-owner-confirmation"
+        },
+        "recorded_at": "2026-10-04 15:22:31"
+      },
+      {
+        "sequence": 5,
+        "operation_id": "growth",
+        "kind": "actual",
+        "payload": {
+          "resources": {
+            "source_bytes": 10076
+          },
+          "provenance": "instrument_measured",
+          "measurement": "source bytes verified against admitted blob size/hash; excludes storage expansion/CPU/model tokens",
+          "cancelled": false
+        },
+        "recorded_at": "2026-10-04 15:22:31"
+      }
+    ]
+  }
+}
