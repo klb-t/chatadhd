@@ -210,10 +210,11 @@ UsagePolicy::~UsagePolicy() = default;
 
 Result<std::unique_ptr<UsagePolicy>> UsagePolicy::open(const std::filesystem::path& path, const Json& options) {
   LOOM_TRY(validate_usage_policy_options(options));
+  LOOM_TRY_ASSIGN(auto preset, usage_policy_preset());
   if (path.empty()) return Error(Errc::InvalidArgument, "ledger path is required");
   if (path.has_parent_path()) LOOM_TRY(fsutil::ensure_dir(path.parent_path()));
   auto impl = std::make_unique<Impl>();
-  impl->options = usage_policy_defaults();
+  impl->options = std::move(preset);
   for (auto it = options.begin(); it != options.end(); ++it) impl->options[it.key()] = it.value();
   sql::OpenOptions sql_options;
   sql_options.busy_timeout_ms = impl->options["ledger_busy_timeout_ms"].get<int>();
