@@ -1,0 +1,43 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 test:application-profiles-browser
+> node e2e/application-profiles.mjs
+
+[application-profiles] PASS profile changes preserve explicit model and native context selection
+[application-profiles] PASS two simultaneous application views keep independent profile/model/context settings
+[application-profiles] PASS pinned clone versions expose source-mapped layout and composer behavior
+[application-profiles] PASS profile Send reaches native completion and both views show the same saved conversation
+[application-profiles] PASS profile edit and restore use native message versions and refresh both views
+[application-profiles] PASS arbitrary versioned profile imports exact UTF-8 bytes with right sidebar and explicit shortcut
+[application-profiles] PASS invalid UTF-8 profile bytes cannot be silently repaired into accepted source
+[application-profiles] PASS a declared required capability without a real adapter cannot activate
+19:49:55 [INFO ] loom.config: config.json not found - using defaults
+19:49:55 [INFO ] loom.config: secrets.json not found - using defaults
+19:49:55 [INFO ] loom.db: Schema upgraded: v0 -> v4
+19:49:55 [INFO ] loom.db: Database opened: /tmp/loom-application-profiles-jQYrrh/chatadhd.db
+19:49:55 [INFO ] loom.models: Loaded 2 cached models
+19:49:55 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+19:49:55 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-application-profiles-jQYrrh)
+loom-server: listening on 127.0.0.1:45319 (static: /workspace/scratch/0cbc86506fa3/chatadhd/loom/web/dist)
+19:49:58 [INFO ] loom.semantic_worker: Semantic: 4 done (regex, 400.0/s, 0 left)
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Profile conversation/. Input:
+
+'New Chat\n10/4/2026, 7:49:59 PM\n×'
+
+    at file:///workspace/scratch/0cbc86506fa3/chatadhd/loom/web/e2e/application-profiles.mjs:346:95
+    at async check (file:///workspace/scratch/0cbc86506fa3/chatadhd/loom/web/e2e/application-profiles.mjs:91:3)
+    at async file:///workspace/scratch/0cbc86506fa3/chatadhd/loom/web/e2e/application-profiles.mjs:331:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'New Chat\n10/4/2026, 7:49:59 PM\n×',
+  expected: /Profile conversation/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

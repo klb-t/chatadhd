@@ -1,0 +1,9 @@
+Test project /workspace/scratch/0cbc86506fa3/chatadhd/loom/build/dev
+    Start 107: cli.smoke
+1/2 Test #107: cli.smoke ........................   Passed    2.74 sec
+    Start 108: eval.harness
+2/2 Test #108: eval.harness .....................   Passed    0.98 sec
+
+100% tests passed out of 2
+
+Total Test time (real) =   3.74 sec

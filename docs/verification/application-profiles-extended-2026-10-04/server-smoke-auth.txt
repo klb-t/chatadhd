@@ -1,0 +1,10 @@
+OK: loom-server knowledge/catalog/context checks passed
+Traceback (most recent call last):
+  File "/workspace/scratch/0cbc86506fa3/chatadhd/loom/server/tests/test_server_smoke.py", line 459, in <module>
+    rc = main()
+         ^^^^^^
+  File "/workspace/scratch/0cbc86506fa3/chatadhd/loom/server/tests/test_server_smoke.py", line 335, in main
+    test_graph_packets(base, data_dir)
+  File "/workspace/scratch/0cbc86506fa3/chatadhd/loom/server/tests/test_server_smoke.py", line 254, in test_graph_packets
+    database.execute("UPDATE loom_kb_entities SET label='drift' WHERE run_id=? AND id=?", (receipt["run_id"], entity["id"]))
+sqlite3.OperationalError: no such column: label

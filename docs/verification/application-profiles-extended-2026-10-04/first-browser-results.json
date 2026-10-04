@@ -1,0 +1,387 @@
+{
+  "groups": [
+    "profile changes preserve explicit model and native context selection",
+    "two simultaneous application views keep independent profile/model/context settings",
+    "pinned clone versions expose source-mapped layout and composer behavior",
+    "profile Send reaches native completion and both views show the same saved conversation",
+    "profile edit and restore use native message versions and refresh both views",
+    "arbitrary versioned profile imports exact UTF-8 bytes with right sidebar and explicit shortcut",
+    "invalid UTF-8 profile bytes cannot be silently repaired into accepted source",
+    "a declared required capability without a real adapter cannot activate"
+  ],
+  "counts": {
+    "passed_groups": 8,
+    "local_provider_calls": 3,
+    "remote_calls": 0
+  },
+  "synthetic_fixture": "synthetic_dev/chatgpt_export.zip",
+  "provider": "local fake only",
+  "browser_chat_requests": [
+    {
+      "message": "PROFILE_SHARED_ORIGINAL_4517",
+      "conv_id": "c_2531d27b5c90",
+      "model": "mock/view-one",
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "knowledge_context": {
+        "text": "SYNTHETIC_PROFILE_CONTEXT",
+        "targets": [
+          "e_575a1716bd88d8b9"
+        ],
+        "budget_tokens": 1337,
+        "run": "kr_fe6da2dd927281a9",
+        "relation_hops": 2,
+        "detail_resolution": "full"
+      }
+    },
+    {
+      "message": "PROFILE_CUSTOM_SHORTCUT_7198",
+      "conv_id": "c_2531d27b5c90",
+      "model": "mock/view-one",
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "knowledge_context": {
+        "text": "SYNTHETIC_PROFILE_CONTEXT",
+        "targets": [
+          "e_575a1716bd88d8b9"
+        ],
+        "budget_tokens": 1337,
+        "run": "kr_fe6da2dd927281a9",
+        "relation_hops": 2,
+        "detail_resolution": "full"
+      }
+    },
+    {
+      "message": "PROFILE_INDEPENDENT_VIEW_6413",
+      "conv_id": "c_2531d27b5c90",
+      "model": "mock/view-two"
+    }
+  ],
+  "captured_provider_requests": [
+    {
+      "model": "mock/view-one",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **Storyboard mentioned_in un_c15910292b0349f6 — \"storyboard\"**  <!-- why: one hop from 'Storyboard' via 'mentioned_in' -->\n"
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_SHARED_ORIGINAL_4517"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/view-one",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **Storyboard mentioned_in un_c15910292b0349f6 — \"storyboard\"**  <!-- why: one hop from 'Storyboard' via 'mentioned_in' -->\n"
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_CUSTOM_SHORTCUT_7198"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/view-two",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_SHARED_ORIGINAL_4517"
+        },
+        {
+          "role": "assistant",
+          "content": "Local profile reply 1: native streaming completed."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_CUSTOM_SHORTCUT_7198"
+        },
+        {
+          "role": "assistant",
+          "content": "Local profile reply 2: native streaming completed."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_INDEPENDENT_VIEW_6413"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    }
+  ],
+  "native_mutations": [
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_SHARED_ORIGINAL_4517",
+        "conv_id": "c_2531d27b5c90",
+        "model": "mock/view-one",
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "knowledge_context": {
+          "text": "SYNTHETIC_PROFILE_CONTEXT",
+          "targets": [
+            "e_575a1716bd88d8b9"
+          ],
+          "budget_tokens": 1337,
+          "run": "kr_fe6da2dd927281a9",
+          "relation_hops": 2,
+          "detail_resolution": "full"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/messages/m_7315ffc5d5b9/edit",
+      "body": {
+        "text": "PROFILE_SHARED_EDITED_8321"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/messages/m_7315ffc5d5b9/restore",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_CUSTOM_SHORTCUT_7198",
+        "conv_id": "c_2531d27b5c90",
+        "model": "mock/view-one",
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "knowledge_context": {
+          "text": "SYNTHETIC_PROFILE_CONTEXT",
+          "targets": [
+            "e_575a1716bd88d8b9"
+          ],
+          "budget_tokens": 1337,
+          "run": "kr_fe6da2dd927281a9",
+          "relation_hops": 2,
+          "detail_resolution": "full"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_INDEPENDENT_VIEW_6413",
+        "conv_id": "c_2531d27b5c90",
+        "model": "mock/view-two"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "body": {
+        "title": "Profile conversation"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "entities"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "claims"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "principles"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "operators"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "instances"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "products"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "entities"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "claims"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "principles"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "operators"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "instances"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "products"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "entities"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "claims"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "principles"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "operators"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "instances"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "products"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "body": {}
+    }
+  ],
+  "page_errors": [],
+  "external_requests": []
+}

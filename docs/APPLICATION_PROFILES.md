@@ -169,7 +169,7 @@ Next additions should demonstrate a specific target version against evidence:
    views; preserve existing unlimited graph panes and detachable couplings.
 
 Build/test commands and measured results belong in
-[the dated verification](verification/application-profiles-2026-10-04/RESULTS.md).
+[the dated extended verification](verification/application-profiles-extended-2026-10-04/RESULTS.md).
 Fresh verification for this extended increment is separate from the earlier
 prototype and historical CTest reports. Native projection validation now ignores
 object-key order while retaining array order and exact numeric value checks.

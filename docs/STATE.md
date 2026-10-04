@@ -1,14 +1,15 @@
 # STATE — ChatADHD / Loom
 
-Updated 2026-10-04. **Claude owns the next development and integration cycle.**
-The owner explicitly requested the application profile increment described below.
+Updated 2026-10-04. **The owner authorized autonomous development and integration
+of the application profile cycle described below.** Claude retains the broader
+next-cycle handoff outside this owner-requested scope.
 The owner additionally requested cheap-model analysis experiments in this
 recovery session. [432 paired requests are prepared](research/analysis_optimization_2026-10-02/README.md),
 with zero new model calls; restoring this programme's credential is the live
 execution blocker. This temporary research task is distinct from a permanent
 GPT integration/helper assignment.
 **The recovered base is published on `main` in the existing public
-`klb-t/chatadhd` repository; the profile increment is separately reviewable.**
+`klb-t/chatadhd` repository, together with the verified profile increments.**
 The first integration `ab581923` directly continues original main `b5f7eac`
 with one parent; N3 is a later increment on that line. The 40 original
 main-line commits retain their identities. Read
@@ -29,8 +30,9 @@ main-line commits retain their identities. Read
   35 archived branches in total, all original tips preserved. Four active or
   supporting branches and two isolated evaluation branches remain separate.
   No remote branch has been deleted or force-pushed by this recovery.
-- No GPT helper has an ongoing assignment from this recovery. Claude chooses
-  any later helper's scope, branch, deadline and integration boundary.
+- The owner-requested profile cycle is complete. No GPT helper has an ongoing
+  assignment from this recovery; Claude chooses any broader later helper's
+  scope, branch, deadline and integration boundary.
 - The owner explicitly keeps the existing repository public. Historical
   author/committer metadata still contains the contact finding in 26 commits;
   this integration does not rewrite or hide it. The selected source contains
@@ -43,21 +45,44 @@ main-line commits retain their identities. Read
 
 ### Owner-requested application profile increment (2026-10-04)
 
-Base: public main `421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd`.
-The new work is on `gpt/application-profiles-2026-10-04`, separately reviewable
-from that main. [Application profile contract and handoff](APPLICATION_PROFILES.md)
-describe versioned JSON profiles, actual Loom operation adapters, simultaneous
-chat views, custom profile import, capability gaps and persisted local workflows.
-Changing a view preserves model/context controls. Original application versions
-in the bundled inspired examples are explicitly unverified. Typed source blocks,
-native graph profile persistence and complete source-service workflows remain
-open; existing core/KB schema and C ABI are unchanged. This owner request does
-not reassign ongoing integration ownership.
+The first increment directly continued public main
+`421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd` and was integrated as
+`9d15d2dd0733274356f768816e207e26e13845e4` through
+[PR8](https://github.com/klb-t/chatadhd/pull/8). The autonomous extension follows
+that commit through [PR9](https://github.com/klb-t/chatadhd/pull/9).
+Its measured implementation commit is
+`95e5049382a6025ca0c591e9b6dba49f90af3946`; subsequent documentation commits
+retain that implementation. Main advances without rewriting prior history.
 
-Measured checks are recorded in
-[the profile verification](verification/application-profiles-2026-10-04/RESULTS.md).
-The native 108/108 CTest measurement below remains historical to its pinned
-source. No paid provider calls or GitHub Actions runs are required by this work.
+[Application profile contract and handoff](APPLICATION_PROFILES.md) describe
+versioned JSON profiles, simultaneous views, actual Loom adapters and declarative
+workflow inputs/result bindings. Revision-1 examples remain intact; revision-2
+workflows retain created conversation IDs. Separate source-backed profiles pin
+LibreChat 0.8.8 and NextChat 2.16.1. These are partial mappings; original service
+and arbitrary historical-version fidelity are not established.
+
+Imported source blocks are inspectable separately from current edited text,
+including excluded rows and saved versions. Exact valid UTF-8 profile source,
+including BOM/whitespace, can be explicitly accepted through the existing native
+GraphPacket store, read back with receipt/drift checks and restored after client
+storage loss. Existing core/KB schema and C ABI are unchanged. Native object
+comparison now ignores key order but preserves arrays and exact numeric values;
+unauthorized POST responses close the connection to prevent reused-body failures.
+
+Changing a view preserves explicit model/context controls. Saving a profile
+creates a completed canonical knowledge run, so automatic latest-run queries
+may select it; that write effect is disclosed in the UI and contract. Android
+JNI storage, specialized media/artifact views, complete descendant navigation,
+individually queryable capability links and durable server workflow recovery
+remain explicit gaps. Local view/workflow persistence is not cross-device sync.
+
+Fresh measured checks are recorded in
+[the extended verification](verification/application-profiles-extended-2026-10-04/RESULTS.md):
+108 CTest entries covered across 106 + 2 stages, native-store FFI 18/18,
+Python contracts 209/209, runtime 19/19, adapters 9/9, native graph 11/11,
+profile browser 15/15, native imported-source display 4/4 and existing browser
+16/16. The earlier prototype and historical native measurements remain separate.
+No paid provider calls or GitHub Actions runs were used.
 
 ### Previously integrated on public main
 
@@ -83,7 +108,9 @@ repository retains the original commit identities.
 
 ## Fresh verification
 
-The final measured results and exact command/binary hashes are recorded in
+The latest profile-cycle measurements and exact source/binary hashes are in
+[verification/application-profiles-extended-2026-10-04/RESULTS.md](verification/application-profiles-extended-2026-10-04/RESULTS.md).
+The preceding recovery measurements remain pinned to their source in
 [verification/current-2026-10-03/RESULTS.md](verification/current-2026-10-03/RESULTS.md):
 108/108 CTest entries and 13/13 actual native-store FFI regressions. The initial
 15 environment failures and their passing rerun are retained. Previous web

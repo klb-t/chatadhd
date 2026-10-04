@@ -1,0 +1,6 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 test:imported-message-content-browser
+> node e2e/imported-message-content-browser.mjs
+
+[imported-message-content-browser] 1/1 group passed: current edited Markdown, native source blocks, unknown JSON, inert artifacts, zero remote media requests

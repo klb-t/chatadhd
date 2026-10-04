@@ -1,0 +1,41 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 e2e
+> node e2e/run.mjs
+
+[e2e] data dir: /tmp/loom-e2e-data-ys7qRx
+[e2e] mock LLM: http://127.0.0.1:40095  loom-server: http://127.0.0.1:39085
+[loom-server] 19:38:29 [INFO ] loom.config: config.json not found - using defaults
+19:38:29 [INFO ] loom.config: secrets.json not found - using defaults
+[loom-server] 19:38:29 [INFO ] loom.db: Schema upgraded: v0 -> v4
+19:38:29 [INFO ] loom.db: Database opened: /tmp/loom-e2e-data-ys7qRx/chatadhd.db
+[loom-server] 19:38:29 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+[loom-server] 19:38:29 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-e2e-data-ys7qRx)
+[loom-server] loom-server: listening on 127.0.0.1:39085 (static: /workspace/scratch/0cbc86506fa3/chatadhd/loom/web/dist)
+[e2e] loom-server is up
+[e2e] PASS  load app
+[e2e] PASS  configure model + API key via Settings panel
+[e2e] PASS  create a new conversation
+[e2e] PASS  send a message and see streamed reply + reasoning
+[e2e] PASS  edit a message and switch versions
+[e2e] PASS  markdown XSS payloads are sanitized, not executed
+[loom-server] 19:38:36 [INFO ] loom.db: Batch inserted 4 messages into c_1a0349b0bae5
+[loom-server] 19:38:36 [INFO ] loom.import: Imported 4 messages into 'req_6798909041254_3'
+[loom-server] 19:38:36 [INFO ] loom.semantic_worker: Semantic: 3 done (regex, 300.0/s, 2 left)
+[e2e] PASS  import a fixture and see it complete
+[e2e] graph counts: 11 nodes · 5 edges
+[e2e] PASS  graph renders nodes for the active conversation
+[e2e] PASS  context slider shows a live preview
+[e2e] PASS  toggle semantic pause/resume
+[e2e] PASS  change a setting (theme) and confirm it persists across reload
+[e2e] PASS  knowledge analysis runs from UI and exposes actual claims with provenance
+[e2e] PASS  coordinated graph views remain open together with independent filters
+[e2e] PASS  knowledge context preview explains inclusion and flags stale inputs
+[e2e] PASS  catalog displays real source units and requires a reviewed import
+[e2e] PASS  phone layout renders and is navigable
+[loom-server] loom-server: stopped
+[loom-server] 19:38:44 [INFO ] loom.db: Database closed
+19:38:44 [INFO ] loom.runtime: Loom runtime shut down
+
+[e2e] 16/16 steps passed
+[e2e] all steps passed; screenshots in /workspace/scratch/0cbc86506fa3/chatadhd/loom/web/e2e/screenshots

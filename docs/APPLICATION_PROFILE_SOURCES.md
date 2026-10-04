@@ -64,8 +64,11 @@ Return binds that saved ID to `chat.select`; the user need not manually copy a
 UUID between steps. Failure must not advance the FSM. Workflow variables and
 their trace identify this local execution, not a source application's session.
 
-Normal create/select/send/stop/rename/edit controls invoke the existing Loom
-adapters. Selection of this UI profile neither creates a source account nor
+The create/select/send/stop/rename/edit declarations name installed Loom
+adapters. Send/stop/edit have chat controls, and the bound workflow provides
+create/select actions alongside the shared host sidebar. Rename is callable by
+custom workflow data or an adapter caller; a source-style inline rename form is
+not yet part of this chat renderer. Selection of this UI profile neither creates a source account nor
 installs the clone backend. Source authentication, storage, context compression,
 agent execution, artifacts, tools, provider protocol details and recovery rules
 require separately tested adapters. The profile cannot reproduce unavailable

@@ -1,0 +1,464 @@
+{
+  "groups": [
+    "deterministic complete raw-source projection passes the actual Python GraphPacket codec",
+    "raw whitespace or recorded source changes use distinct immutable observation identities",
+    "leading UTF-8 BOM remains exact source evidence while profile parsing preserves its semantic definition",
+    "missing dates and transformation history stay unknown; explicit dates and CAS expectations survive",
+    "source mismatch, malformed JSON, invalid timestamps and malformed Unicode are rejected",
+    "receipt restoration validates projection, acceptance identity and drift before registration",
+    "actual HTTP adapter preserves named endpoint, request, bearer authentication and error semantics"
+  ],
+  "counts": {
+    "passed_groups": 7,
+    "model_provider_calls": 0
+  },
+  "offline_only": false,
+  "native_requests": [
+    {
+      "endpoint": "/api/config",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "endpoint": "/api/graph/packets/store",
+      "method": "POST",
+      "body": {
+        "operation": "accept",
+        "target": "application_profile:151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+        "packet": {
+          "schema": "loom.graph_packet/1",
+          "definitions": [],
+          "entities": [
+            {
+              "id": "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+              "kind": "application_profile",
+              "canonical_key": "application_profile:151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+              "label": "Fikcyjny profil Żółć / 日本語 / 🧠",
+              "labels": {},
+              "aliases": [],
+              "parent": "",
+              "first_seen": "",
+              "last_seen": "",
+              "evidence_class": "user",
+              "origin": "user",
+              "confidence": 1,
+              "status": "active",
+              "attrs": {
+                "serializer": "loom.application_profile_graph/1",
+                "profile_id": "synthetic.graph.profile",
+                "profile_revision": 1,
+                "target": {
+                  "application_id": "fictional",
+                  "version": "2099.β",
+                  "platform": "web"
+                },
+                "definition_sha256": "78055a4666f7ee56e926f71ab86e835ca2d07ecd75d9143e23f8900fbde4f35b",
+                "raw_source": "{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"synthetic.graph.profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Fikcyjny profil Żółć / 日本語 / 🧠\",\n  \"target\": {\n    \"application_id\": \"fictional\",\n    \"version\": \"2099.β\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"inspired\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic fixture; original-application parity has not been established.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#999\",\n      \"accent\": \"#aaa\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 1e-6\n    },\n    \"content_width\": 0.333,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"mod-enter\",\n    \"placeholder\": \"Wiadomość 🧠\\nSecond line\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"send\",\n      \"label\": \"Send\",\n      \"operation\": \"chat.send\",\n      \"capability\": \"chat.send\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"complete\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"submit\",\n          \"action\": \"send\",\n          \"to\": \"complete\",\n          \"payload\": {\n            \"object\": {\n              \"request\": {\n                \"from\": \"inputs\",\n                \"pointer\": \"/request\"\n              }\n            }\n          },\n          \"save\": {\n            \"messageId\": {\n              \"from\": \"result\",\n              \"pointer\": \"/message_id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+                "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+                "source_observation": "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048"
+              }
+            }
+          ],
+          "claims": [],
+          "sources": [
+            {
+              "observation": {
+                "id": "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048",
+                "unit": "u_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048",
+                "kind": "code_block",
+                "text": "{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"synthetic.graph.profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Fikcyjny profil Żółć / 日本語 / 🧠\",\n  \"target\": {\n    \"application_id\": \"fictional\",\n    \"version\": \"2099.β\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"inspired\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic fixture; original-application parity has not been established.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#999\",\n      \"accent\": \"#aaa\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 1e-6\n    },\n    \"content_width\": 0.333,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"mod-enter\",\n    \"placeholder\": \"Wiadomość 🧠\\nSecond line\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"send\",\n      \"label\": \"Send\",\n      \"operation\": \"chat.send\",\n      \"capability\": \"chat.send\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"complete\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"submit\",\n          \"action\": \"send\",\n          \"to\": \"complete\",\n          \"payload\": {\n            \"object\": {\n              \"request\": {\n                \"from\": \"inputs\",\n                \"pointer\": \"/request\"\n              }\n            }\n          },\n          \"save\": {\n            \"messageId\": {\n              \"from\": \"result\",\n              \"pointer\": \"/message_id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+                "locator": {
+                  "source": "synthetic:Żółć/profile-🧠.json",
+                  "member": "",
+                  "json_pointer": "",
+                  "byte_start": 0,
+                  "byte_len": 1675,
+                  "time_start": null,
+                  "time_end": null,
+                  "line": null
+                },
+                "lang": "",
+                "date": "",
+                "ordinal": 0,
+                "artifact_type": "application_profile_json",
+                "speaker": "synthetic-test-user",
+                "attrs": {
+                  "serializer": "loom.application_profile_graph/1",
+                  "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+                  "profile_entity": "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa"
+                }
+              },
+              "known_at": null,
+              "text_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6"
+            }
+          ],
+          "task": {
+            "operation": "application.profile.persist",
+            "profile_identity": {
+              "id": "synthetic.graph.profile",
+              "profile_revision": 1,
+              "target": {
+                "application_id": "fictional",
+                "version": "2099.β",
+                "platform": "web"
+              },
+              "definition_sha256": "78055a4666f7ee56e926f71ab86e835ca2d07ecd75d9143e23f8900fbde4f35b"
+            },
+            "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+            "source_ref": "synthetic:Żółć/profile-🧠.json",
+            "transformation_history": "not_asserted"
+          },
+          "provenance": {
+            "definitions": {},
+            "entities": {
+              "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa": {
+                "known_at": null,
+                "origin": {
+                  "kind": "recorded",
+                  "actor": "synthetic-test-user",
+                  "model": null,
+                  "recipe_sha256": null,
+                  "response_sha256": null
+                },
+                "record_sha256": "46a4c003dd0bb6510a7efed15c9aa531d62c7028208c1b32f2770e55e87c085e"
+              }
+            },
+            "claims": {},
+            "sources": {
+              "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048": {
+                "known_at": null,
+                "origin": {
+                  "kind": "recorded",
+                  "actor": "synthetic-test-user",
+                  "model": null,
+                  "recipe_sha256": null,
+                  "response_sha256": null
+                },
+                "record_sha256": "691f9875e2b19ab62db32a38478477039a2bc67e1bf88d0076ba12dc67ca757c"
+              }
+            }
+          },
+          "history": [],
+          "packet_id": "726bbae520b120eac6ab4daf8a5f7a918e44beaf8b361af69d7f78ad72906277"
+        },
+        "selection": {
+          "entities": [
+            "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa"
+          ],
+          "claims": [],
+          "sources": [
+            "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048"
+          ]
+        },
+        "expected_rows": {
+          "entities": {
+            "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa": null
+          },
+          "claims": {},
+          "sources": {
+            "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048": null
+          }
+        },
+        "explicitly_accepted": true
+      },
+      "status": 401,
+      "response": "{\"error\":{\"code\":\"auth\",\"message\":\"missing or invalid bearer token\"}}"
+    },
+    {
+      "endpoint": "/api/graph/packets/store",
+      "method": "POST",
+      "body": {
+        "operation": "accept",
+        "target": "application_profile:151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+        "packet": {
+          "schema": "loom.graph_packet/1",
+          "definitions": [],
+          "entities": [
+            {
+              "id": "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+              "kind": "application_profile",
+              "canonical_key": "application_profile:151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+              "label": "Fikcyjny profil Żółć / 日本語 / 🧠",
+              "labels": {},
+              "aliases": [],
+              "parent": "",
+              "first_seen": "",
+              "last_seen": "",
+              "evidence_class": "user",
+              "origin": "user",
+              "confidence": 1,
+              "status": "active",
+              "attrs": {
+                "serializer": "loom.application_profile_graph/1",
+                "profile_id": "synthetic.graph.profile",
+                "profile_revision": 1,
+                "target": {
+                  "application_id": "fictional",
+                  "version": "2099.β",
+                  "platform": "web"
+                },
+                "definition_sha256": "78055a4666f7ee56e926f71ab86e835ca2d07ecd75d9143e23f8900fbde4f35b",
+                "raw_source": "{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"synthetic.graph.profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Fikcyjny profil Żółć / 日本語 / 🧠\",\n  \"target\": {\n    \"application_id\": \"fictional\",\n    \"version\": \"2099.β\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"inspired\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic fixture; original-application parity has not been established.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#999\",\n      \"accent\": \"#aaa\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 1e-6\n    },\n    \"content_width\": 0.333,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"mod-enter\",\n    \"placeholder\": \"Wiadomość 🧠\\nSecond line\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"send\",\n      \"label\": \"Send\",\n      \"operation\": \"chat.send\",\n      \"capability\": \"chat.send\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"complete\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"submit\",\n          \"action\": \"send\",\n          \"to\": \"complete\",\n          \"payload\": {\n            \"object\": {\n              \"request\": {\n                \"from\": \"inputs\",\n                \"pointer\": \"/request\"\n              }\n            }\n          },\n          \"save\": {\n            \"messageId\": {\n              \"from\": \"result\",\n              \"pointer\": \"/message_id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+                "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+                "source_observation": "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048"
+              }
+            }
+          ],
+          "claims": [],
+          "sources": [
+            {
+              "observation": {
+                "id": "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048",
+                "unit": "u_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048",
+                "kind": "code_block",
+                "text": "{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"synthetic.graph.profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Fikcyjny profil Żółć / 日本語 / 🧠\",\n  \"target\": {\n    \"application_id\": \"fictional\",\n    \"version\": \"2099.β\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"inspired\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic fixture; original-application parity has not been established.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#999\",\n      \"accent\": \"#aaa\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 1e-6\n    },\n    \"content_width\": 0.333,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"mod-enter\",\n    \"placeholder\": \"Wiadomość 🧠\\nSecond line\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"send\",\n      \"label\": \"Send\",\n      \"operation\": \"chat.send\",\n      \"capability\": \"chat.send\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"complete\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"submit\",\n          \"action\": \"send\",\n          \"to\": \"complete\",\n          \"payload\": {\n            \"object\": {\n              \"request\": {\n                \"from\": \"inputs\",\n                \"pointer\": \"/request\"\n              }\n            }\n          },\n          \"save\": {\n            \"messageId\": {\n              \"from\": \"result\",\n              \"pointer\": \"/message_id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+                "locator": {
+                  "source": "synthetic:Żółć/profile-🧠.json",
+                  "member": "",
+                  "json_pointer": "",
+                  "byte_start": 0,
+                  "byte_len": 1675,
+                  "time_start": null,
+                  "time_end": null,
+                  "line": null
+                },
+                "lang": "",
+                "date": "",
+                "ordinal": 0,
+                "artifact_type": "application_profile_json",
+                "speaker": "synthetic-test-user",
+                "attrs": {
+                  "serializer": "loom.application_profile_graph/1",
+                  "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+                  "profile_entity": "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa"
+                }
+              },
+              "known_at": null,
+              "text_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6"
+            }
+          ],
+          "task": {
+            "operation": "application.profile.persist",
+            "profile_identity": {
+              "id": "synthetic.graph.profile",
+              "profile_revision": 1,
+              "target": {
+                "application_id": "fictional",
+                "version": "2099.β",
+                "platform": "web"
+              },
+              "definition_sha256": "78055a4666f7ee56e926f71ab86e835ca2d07ecd75d9143e23f8900fbde4f35b"
+            },
+            "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+            "source_ref": "synthetic:Żółć/profile-🧠.json",
+            "transformation_history": "not_asserted"
+          },
+          "provenance": {
+            "definitions": {},
+            "entities": {
+              "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa": {
+                "known_at": null,
+                "origin": {
+                  "kind": "recorded",
+                  "actor": "synthetic-test-user",
+                  "model": null,
+                  "recipe_sha256": null,
+                  "response_sha256": null
+                },
+                "record_sha256": "46a4c003dd0bb6510a7efed15c9aa531d62c7028208c1b32f2770e55e87c085e"
+              }
+            },
+            "claims": {},
+            "sources": {
+              "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048": {
+                "known_at": null,
+                "origin": {
+                  "kind": "recorded",
+                  "actor": "synthetic-test-user",
+                  "model": null,
+                  "recipe_sha256": null,
+                  "response_sha256": null
+                },
+                "record_sha256": "691f9875e2b19ab62db32a38478477039a2bc67e1bf88d0076ba12dc67ca757c"
+              }
+            }
+          },
+          "history": [],
+          "packet_id": "726bbae520b120eac6ab4daf8a5f7a918e44beaf8b361af69d7f78ad72906277"
+        },
+        "selection": {
+          "entities": [
+            "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa"
+          ],
+          "claims": [],
+          "sources": [
+            "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048"
+          ]
+        },
+        "expected_rows": {
+          "entities": {
+            "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa": null
+          },
+          "claims": {},
+          "sources": {
+            "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048": null
+          }
+        },
+        "explicitly_accepted": false
+      },
+      "status": 400,
+      "response": "{\"error\":{\"code\":\"invalid_argument\",\"message\":\"graph store: explicit acceptance required\"}}"
+    },
+    {
+      "endpoint": "/api/graph/packets/store",
+      "method": "POST",
+      "body": {
+        "operation": "accept",
+        "target": "application_profile:151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+        "packet": {
+          "schema": "loom.graph_packet/1",
+          "definitions": [],
+          "entities": [
+            {
+              "id": "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+              "kind": "application_profile",
+              "canonical_key": "application_profile:151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa",
+              "label": "Fikcyjny profil Żółć / 日本語 / 🧠",
+              "labels": {},
+              "aliases": [],
+              "parent": "",
+              "first_seen": "",
+              "last_seen": "",
+              "evidence_class": "user",
+              "origin": "user",
+              "confidence": 1,
+              "status": "active",
+              "attrs": {
+                "serializer": "loom.application_profile_graph/1",
+                "profile_id": "synthetic.graph.profile",
+                "profile_revision": 1,
+                "target": {
+                  "application_id": "fictional",
+                  "version": "2099.β",
+                  "platform": "web"
+                },
+                "definition_sha256": "78055a4666f7ee56e926f71ab86e835ca2d07ecd75d9143e23f8900fbde4f35b",
+                "raw_source": "{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"synthetic.graph.profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Fikcyjny profil Żółć / 日本語 / 🧠\",\n  \"target\": {\n    \"application_id\": \"fictional\",\n    \"version\": \"2099.β\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"inspired\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic fixture; original-application parity has not been established.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#999\",\n      \"accent\": \"#aaa\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 1e-6\n    },\n    \"content_width\": 0.333,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"mod-enter\",\n    \"placeholder\": \"Wiadomość 🧠\\nSecond line\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"send\",\n      \"label\": \"Send\",\n      \"operation\": \"chat.send\",\n      \"capability\": \"chat.send\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"complete\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"submit\",\n          \"action\": \"send\",\n          \"to\": \"complete\",\n          \"payload\": {\n            \"object\": {\n              \"request\": {\n                \"from\": \"inputs\",\n                \"pointer\": \"/request\"\n              }\n            }\n          },\n          \"save\": {\n            \"messageId\": {\n              \"from\": \"result\",\n              \"pointer\": \"/message_id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+                "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+                "source_observation": "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048"
+              }
+            }
+          ],
+          "claims": [],
+          "sources": [
+            {
+              "observation": {
+                "id": "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048",
+                "unit": "u_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048",
+                "kind": "code_block",
+                "text": "{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"synthetic.graph.profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Fikcyjny profil Żółć / 日本語 / 🧠\",\n  \"target\": {\n    \"application_id\": \"fictional\",\n    \"version\": \"2099.β\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"inspired\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic fixture; original-application parity has not been established.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#999\",\n      \"accent\": \"#aaa\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 1e-6\n    },\n    \"content_width\": 0.333,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"mod-enter\",\n    \"placeholder\": \"Wiadomość 🧠\\nSecond line\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"send\",\n      \"label\": \"Send\",\n      \"operation\": \"chat.send\",\n      \"capability\": \"chat.send\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"complete\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"submit\",\n          \"action\": \"send\",\n          \"to\": \"complete\",\n          \"payload\": {\n            \"object\": {\n              \"request\": {\n                \"from\": \"inputs\",\n                \"pointer\": \"/request\"\n              }\n            }\n          },\n          \"save\": {\n            \"messageId\": {\n              \"from\": \"result\",\n              \"pointer\": \"/message_id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+                "locator": {
+                  "source": "synthetic:Żółć/profile-🧠.json",
+                  "member": "",
+                  "json_pointer": "",
+                  "byte_start": 0,
+                  "byte_len": 1675,
+                  "time_start": null,
+                  "time_end": null,
+                  "line": null
+                },
+                "lang": "",
+                "date": "",
+                "ordinal": 0,
+                "artifact_type": "application_profile_json",
+                "speaker": "synthetic-test-user",
+                "attrs": {
+                  "serializer": "loom.application_profile_graph/1",
+                  "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+                  "profile_entity": "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa"
+                }
+              },
+              "known_at": null,
+              "text_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6"
+            }
+          ],
+          "task": {
+            "operation": "application.profile.persist",
+            "profile_identity": {
+              "id": "synthetic.graph.profile",
+              "profile_revision": 1,
+              "target": {
+                "application_id": "fictional",
+                "version": "2099.β",
+                "platform": "web"
+              },
+              "definition_sha256": "78055a4666f7ee56e926f71ab86e835ca2d07ecd75d9143e23f8900fbde4f35b"
+            },
+            "raw_sha256": "f0099715d5ab1237d88e5cd5c887fa047d664d5e2c60ade4bf70bac1f920bdd6",
+            "source_ref": "synthetic:Żółć/profile-🧠.json",
+            "transformation_history": "not_asserted"
+          },
+          "provenance": {
+            "definitions": {},
+            "entities": {
+              "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa": {
+                "known_at": null,
+                "origin": {
+                  "kind": "recorded",
+                  "actor": "synthetic-test-user",
+                  "model": null,
+                  "recipe_sha256": null,
+                  "response_sha256": null
+                },
+                "record_sha256": "46a4c003dd0bb6510a7efed15c9aa531d62c7028208c1b32f2770e55e87c085e"
+              }
+            },
+            "claims": {},
+            "sources": {
+              "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048": {
+                "known_at": null,
+                "origin": {
+                  "kind": "recorded",
+                  "actor": "synthetic-test-user",
+                  "model": null,
+                  "recipe_sha256": null,
+                  "response_sha256": null
+                },
+                "record_sha256": "691f9875e2b19ab62db32a38478477039a2bc67e1bf88d0076ba12dc67ca757c"
+              }
+            }
+          },
+          "history": [],
+          "packet_id": "726bbae520b120eac6ab4daf8a5f7a918e44beaf8b361af69d7f78ad72906277"
+        },
+        "selection": {
+          "entities": [
+            "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa"
+          ],
+          "claims": [],
+          "sources": [
+            "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048"
+          ]
+        },
+        "expected_rows": {
+          "entities": {
+            "e_ap_151d51fa5bb00ba11d27c8043040e0d9c3efa69633cc7b6180194b732c73dcfa": null
+          },
+          "claims": {},
+          "sources": {
+            "o_ap_de64efa5a9978e9836fbec38024fb33933768ededa642c03a1e7324ab7796048": null
+          }
+        },
+        "explicitly_accepted": true
+      },
+      "status": 400,
+      "response": ""
+    }
+  ],
+  "persisted": [],
+  "failure": {
+    "message": "HTTP 400",
+    "stack": "Error: HTTP 400\n    at LoomHttpApi.req (../src/api/loom-http.ts:65:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/scratch/0cbc86506fa3/chatadhd/loom/web/e2e/application-profile-graph.mjs:308:24\n    at async check (file:///workspace/scratch/0cbc86506fa3/chatadhd/loom/web/e2e/application-profile-graph.mjs:62:34)\n    at async file:///workspace/scratch/0cbc86506fa3/chatadhd/loom/web/e2e/application-profile-graph.mjs:302:5"
+  },
+  "config_unchanged": false
+}

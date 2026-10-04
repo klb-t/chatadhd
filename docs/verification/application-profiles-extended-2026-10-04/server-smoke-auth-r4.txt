@@ -1,0 +1,4 @@
+OK: loom-server knowledge/catalog/context checks passed
+OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed
+OK: all loom-server smoke checks passed
+OK: loom-server auth checks passed

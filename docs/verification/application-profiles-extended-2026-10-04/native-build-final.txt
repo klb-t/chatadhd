@@ -1,0 +1,9 @@
+[0/2] Re-checking globbed directories...
+[1/9] Building CXX object CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o
+[2/9] Linking CXX static library libloom_core.a
+[3/9] Linking CXX shared library libloom.so.0.1.0
+[4/9] Creating library symlink libloom.so.0 libloom.so
+[5/9] Linking CXX executable loom_tests
+[6/9] Linking CXX executable loom_compat_tool
+[7/9] Linking CXX executable loom_candidate_graph_native_tool
+[8/9] Linking CXX executable server/loom-server
