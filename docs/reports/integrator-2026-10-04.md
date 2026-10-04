@@ -9,7 +9,7 @@ are retained. No implementation file outside an accepted lane is edited here.
 
 | Lane | Reviewed source | Decision |
 |---|---|---|
-| 2 | 34cc920 | Ready infrastructure; awaiting integrator full gates |
+| 2 | 34cc920 | Held under new mandate: authoritative usage preset still in C++ |
 | 3 | 36ec2a8 | In progress; embedding adapter only, no finished selector |
 | 4 | 3caa6b4 | Held: confirmed replay accounting defect |
 | 5 | f2af0a8 | Held: failed interpretation checkpoint can replay as complete |
@@ -35,6 +35,8 @@ disk-full and linker-OOM failures. The successful local build uses low-memory
 GNU linker flags, `-O0 -g0`, bundled SQLite and GNU thin static archives; all
 129 actual core archive members are hashed. Assertions, tests and thresholds
 are unchanged. No paid calls or Actions were started by this integrator.
+Full original execution evidence is preserved on the
+[baseline timeout archive](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-baseline-timeouts/docs/reports/integrator-baseline-timeouts-2026-10-04.md).
 
 ## Concrete returns to lane authors
 
@@ -70,6 +72,13 @@ The active W7 branch is unchanged.
 
 ## Admission boundaries
 
+The expanded owner rule changes W2's admission decision: its new
+`usage_policy_defaults()` embeds growth10/window32/timeout30000/reservation
+policy in C++. Those overrideable values must come from authoritative preset
+data or a profile with an actual loader before admission. Existing tests still
+prove the reviewed implementation's behavior; they do not prove compliance with
+this new requirement. This is returned to W2, not repaired in another lane.
+
 W2 supplies rolling baselines, durable decisions/reservations and configurable
 default ×10 admission. Its 19 new contract groups are standalone, outside CTest;
 they must be run separately. Its JSON command is static-kernel only, with no new
@@ -104,6 +113,9 @@ The sealed answer key and the blind catalog corpus are not integration inputs.
   publish the final research/billing report and recipes for1.
 - **1/2:** renewed assignments are published in INDEX from lane11's pinned
   inventory: prompt/graph methods for1 and startup/config presets for2.
+- **2:** move new usage-policy preset to authoritative data/profile; share one
+  actual default loader across Config/get/open/settings/effective paths, preserve
+  owner overlay and19 groups, demonstrate that edited data changes options.
 - **6/8/10:** publish final readiness reports and full receipts; scope-specific
   pending work and dependencies are tracked in INDEX.
 - **10:** repair unused captures for /api/logs and /api/version reported by8;

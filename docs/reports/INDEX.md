@@ -10,7 +10,7 @@ rebase, pełnego CTest z kontrolą wykonanych przypadków, build web i fast-forw
 | Wątek | Gałąź / sprawdzony commit | Raport lub dowód | Status i otwarte przekazania |
 |---|---|---|---|
 | 1 | `gpt/knowledge-precision-2026-10-04` / `a042ab7` | [raport W1](https://github.com/klb-t/chatadhd/blob/a042ab7b45d9cc908154cf0252fbae4bca451d3c/docs/reports/knowledge-precision-2026-10-04.md) | Pierwszy przyrost precyzji gotowy do bramek; w kolejce po 3/4/5. Ponowne zadanie: prompty jako dane i węzły metod, nakładka, podgląd/zmiana wywołania, tryby walidacji; uzgodnić z 11 przeniesienie `semantic_llm` i z7 presety. |
-| 2 | `gpt/usage-policy-2026-10-04` / `34cc920` | [raport W2](https://github.com/klb-t/chatadhd/blob/34cc920dd3cdb0c0fca0a514569b19111429583f/docs/reports/usage-policy-2026-10-04.md) | Gotowa infrastruktura, bramki integratora trwają. Do3/4/5: jawnie adoptować lifecycle; do 10: konfiguracja i JSON API są opisane, nowy dispatcher tylko static-kernel. Nie daje exactly-once wykonania. |
+| 2 | `gpt/usage-policy-2026-10-04` / `34cc920` | [raport W2](https://github.com/klb-t/chatadhd/blob/34cc920dd3cdb0c0fca0a514569b19111429583f/docs/reports/usage-policy-2026-10-04.md) | **Wstrzymany po nowym poleceniu właściciela:** preset policy nadal literalnie w C++. Native/web build i19/19 świeżych kontraktów przechodzą; pełny CTest trwa. Do2: autorytatywny preset do danych/profilu z rzeczywistym loaderem i nakładką. Do3/4/5: jawnie adoptować lifecycle; do10: JSON API tylko static-kernel. Nie daje exactly-once wykonania. |
 | 3 | `gpt/chat-selector-2026-10-04` / `36ec2a8` | [raport W3](https://github.com/klb-t/chatadhd/blob/36ec2a8f6340ba3d7873d3c4864e3af23178bcd6/docs/reports/chat-selector-2026-10-04.md) | W toku, adapter embed nie kończy selektora. Do4: wspólny format metod/wersji/przebiegów i krawędzi pochodzenia **przed integracją**. Do10: wystawić capability/ustawienia/rejestr i tryby odpowiedzi grafowej. |
 | 4 | `gpt/native-graph-packet-2026-10-04` / `3caa6b4` | [raport W4](https://github.com/klb-t/chatadhd/blob/3caa6b4dcfb6412294bf816c1105bcf99afacdbc/docs/reports/native-graph-packet-2026-10-04.md), [reprodukcja](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-packet-unresolved-replay/docs/reports/integrator-packet-replay-2026-10-04.md) | Wstrzymany: powtórzenie unresolved wykonuje operację drugi raz przy jednym rozliczeniu. Do4: poprawka/regresja; do3: format metody/wersji/przebiegu w GraphPacket. Oryginalny kod i wynik negatywny zachowane w archive. |
 | 5 | `gpt/archive-import-2026-10-04` / `f2af0a8` | [dowód audytu](https://github.com/klb-t/chatadhd/blob/c7972252a23cb13c54797f6b57df24de903c5296/docs/reports/archive-import-2026-10-04-evidence/audit/README.md), [reprodukcja checkpointu](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-import-checkpoint-replay/docs/reports/integrator-import-checkpoint-2026-10-04.md) | Wstrzymany: c797225 po błędzie znanego pliku pomocniczego pomija interpretację przy wznowieniu i oznacza źródło complete. Poprawny projekt z dokumentem kończy z 0/0 węzłów po usunięciu chwilowego błędu DB. f2af0a8 poprawia replay terminalnego usage receipt, bez zmiany wadliwego checkpointu interpretacji. Do5: poprawka/regresje, końcowy raport, receipt i instrukcja właściciela. |
@@ -32,7 +32,7 @@ Właściciele muszą sprawdzić lokalizacje na własnym aktualnym kodzie.
 | Adresat | Grupy / przypięty raport | Przekazane zadanie / stan |
 |---|---|---|
 | 1 | 127 / [thread-1](https://github.com/klb-t/chatadhd/blob/c21e664c8145568e0505f9218fda67a75616056f/docs/reports/data-in-code/thread-1.md) | **Ponowny przydział** po pierwszym przyroście: prompty/receptury jako wersje metod w grafie, reguły i parametry jako dane; uzgodnić granicę semantic_llm z 11. Odbiór nowego zadania niepotwierdzony. |
-| 2 | 5 / [thread-2](https://github.com/klb-t/chatadhd/blob/c21e664c8145568e0505f9218fda67a75616056f/docs/reports/data-in-code/thread-2.md) | **Ponowny przydział** po pierwszym przyroście: DIC0325–0329, startup/config/path/model/log/worker presety z nakładką, identyczne defaults i porównanie przed/po. Odbiór niepotwierdzony. |
+| 2 | 5 / [thread-2](https://github.com/klb-t/chatadhd/blob/c21e664c8145568e0505f9218fda67a75616056f/docs/reports/data-in-code/thread-2.md) | **Ponowny przydział** po pierwszym przyroście: DIC0325–0329, startup/config/path/model/log/worker presety z nakładką, identyczne defaults i porównanie przed/po. Przed odbiorem backendu dodatkowo wynieść nowy usage_policy_defaults do autorytatywnych danych. Odbiór niepotwierdzony. |
 | 3 | 51 / [thread-3](https://github.com/klb-t/chatadhd/blob/c21e664c8145568e0505f9218fda67a75616056f/docs/reports/data-in-code/thread-3.md) | Presety selektora/typowania, kombinacje i fallback; rejestr i ślad w grafie, z 4. Ogólne providery poza embed nie rozszerzają automatycznie zakresu 3. |
 | 4 | 27 / [thread-4](https://github.com/klb-t/chatadhd/blob/c21e664c8145568e0505f9218fda67a75616056f/docs/reports/data-in-code/thread-4.md) | KB/pack/store w aktualnym rozszerzonym zakresie 4; format method/version/run GraphPacket z 3. Capi_knowledge poza literalnym capi_packet pozostaje granicą do przydziału. |
 | 5 | 52 / [thread-5](https://github.com/klb-t/chatadhd/blob/c21e664c8145568e0505f9218fda67a75616056f/docs/reports/data-in-code/thread-5.md) | Profile formatów i ról, DB/FTS/audit defaults; najpierw naprawa checkpointu interpretacji. Import/audit w cli/main.cpp należy do 5. |
@@ -58,6 +58,23 @@ parametry/preset/kombinację użytkownika; przebieg i krawędź wyniku do konkre
 wersji metody. Oceny modeli/metod są datowanymi twierdzeniami z dowodami.
 Sam JSON śladu poza grafem nie spełnia nowego polecenia właściciela.
 Integrator sprawdza uzgodniony kontrakt; jego autorami pozostają 3 i 4.
+
+## Do wątku 2 — warunek odbioru po nowym poleceniu
+
+`loom/src/core/config_usage_policy.cpp::usage_policy_defaults()` tworzy preset
+×10/window32/timeout30000/include_reservations=true w wykonywalnym źródle.
+Możliwość nadpisania nie spełnia zasady, że polityka pochodzi z danych.
+Przenieść autorytatywny dokument do `loom/data/policy/usage_policy.json` albo
+uzgodnionego profilu; rzeczywiście go odczytywać we wszystkich default paths
+(`Config::get`, `UsagePolicy::open`, `settings`, effective options), zachowując
+nakładkę `loom_usage_policy` i walidację. Sam plik JSON obok ręcznej kopii C++
+nie wystarczy. Generowane osadzenie danych jest zgodne z poleceniem.
+
+Wymagany dowód: zmiana danych presetu oraz nakładki zmienia effective options,
+bez zmiany domyślnej zgodności ani usuwania19 kontraktów. Jeśli generator/manifest
+packa wymaga zmiany poza zakresem2, przekazać konkretną zależność.
+Identyfikatory protokołu, stany lifecycle, integralność pokwitowań i sprawdzanie
+reprezentowalności pozostają uniwersalnymi operacjami w kodzie.
 
 ## Do wątku N
 
