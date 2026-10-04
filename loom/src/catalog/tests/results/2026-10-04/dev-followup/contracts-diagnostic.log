@@ -1,0 +1,31 @@
+Command: ['/root/.local/lib/python3.12/site-packages/cmake/data/bin/ctest', '--test-dir', 'loom/build/dev', '-R', '^research.contracts$', '--verbose', '--parallel', '1']
+UpdateCTestConfiguration  from :/workspace/scratch/73a479acdbc0/chatadhd/loom/build/dev/DartConfiguration.tcl
+Test project /workspace/scratch/73a479acdbc0/chatadhd/loom/build/dev
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 103
+    Start 103: research.contracts
+
+103: Test command: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12 "-m" "unittest" "discover" "-s" "/workspace/scratch/73a479acdbc0/chatadhd/loom/tools/contracts" "-p" "test_*.py"
+103: Working Directory: /workspace/scratch/73a479acdbc0/chatadhd/loom/build/dev
+103: Environment variables: 
+103:  PYTHONPATH=/workspace/scratch/73a479acdbc0/chatadhd/loom/..
+103:  PYTHONDONTWRITEBYTECODE=1
+103: Test timeout computed to be: 60
+103: .................................................................................................................................................................................................................
+103: ----------------------------------------------------------------------
+103: Ran 209 tests in 57.766s
+103: 
+103: OK
+1/1 Test #103: research.contracts ...............   Passed   58.82 sec
+
+The following tests passed:
+	research.contracts
+
+100% tests passed out of 1
+
+Total Test time (real) =  58.83 sec

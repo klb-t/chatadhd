@@ -1,0 +1,4 @@
+[0/2] Re-checking globbed directories...
+[1/4] Building CXX object server/CMakeFiles/loom-server.dir/src/main.cpp.o
+[2/4] Building CXX object server/CMakeFiles/loom-server.dir/src/app.cpp.o
+[3/4] Linking CXX executable server/loom-server

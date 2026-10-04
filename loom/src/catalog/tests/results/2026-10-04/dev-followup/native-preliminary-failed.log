@@ -1,0 +1,123 @@
+Compiling owned catalog regressions into /workspace/scratch/73a479acdbc0/catalog-native-resumed
+03:04:17 [INFO ] loom.config: config.json not found - using defaults
+03:04:17 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:17 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:17 [INFO ] loom.db: Database opened: /tmp/loom_d7cb603d3a7e/chatadhd.db
+03:04:17 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:17 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_d7cb603d3a7e)
+03:04:17 [INFO ] loom.db: Database closed
+03:04:17 [INFO ] loom.runtime: Loom runtime shut down
+03:04:17 [INFO ] loom.config: config.json not found - using defaults
+03:04:17 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:17 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:17 [INFO ] loom.db: Database opened: /tmp/loom_0d2c12c77650/chatadhd.db
+03:04:17 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:17 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_0d2c12c77650)
+03:04:18 [INFO ] loom.db: Database closed
+03:04:18 [INFO ] loom.runtime: Loom runtime shut down
+03:04:18 [INFO ] loom.config: config.json not found - using defaults
+03:04:18 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:18 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:18 [INFO ] loom.db: Database opened: /tmp/loom_98d6e97132d0/chatadhd.db
+03:04:18 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:18 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_98d6e97132d0)
+03:04:18 [INFO ] loom.db: Database closed
+03:04:18 [INFO ] loom.runtime: Loom runtime shut down
+03:04:18 [INFO ] loom.config: config.json not found - using defaults
+03:04:18 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:18 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:18 [INFO ] loom.db: Database opened: /tmp/loom_661d50074a3d/chatadhd.db
+03:04:18 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:18 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_661d50074a3d)
+03:04:18 [INFO ] loom.db: Database closed
+03:04:18 [INFO ] loom.runtime: Loom runtime shut down
+03:04:18 [INFO ] loom.config: config.json not found - using defaults
+03:04:18 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:18 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:18 [INFO ] loom.db: Database opened: /tmp/loom_70ac82636c8b/chatadhd.db
+03:04:18 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:18 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_70ac82636c8b)
+03:04:19 [INFO ] loom.db: Database closed
+03:04:19 [INFO ] loom.runtime: Loom runtime shut down
+03:04:19 [INFO ] loom.config: config.json not found - using defaults
+03:04:19 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:19 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:19 [INFO ] loom.db: Database opened: /tmp/loom_64ff6061743c/chatadhd.db
+03:04:19 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:19 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_64ff6061743c)
+03:04:19 [INFO ] loom.db: Database closed
+03:04:19 [INFO ] loom.runtime: Loom runtime shut down
+03:04:19 [INFO ] loom.config: config.json not found - using defaults
+03:04:19 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:19 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:19 [INFO ] loom.db: Database opened: /tmp/loom_879ea6167cc7/chatadhd.db
+03:04:19 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:19 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_879ea6167cc7)
+03:04:19 [INFO ] loom.db: Database closed
+03:04:19 [INFO ] loom.runtime: Loom runtime shut down
+03:04:19 [INFO ] loom.config: config.json not found - using defaults
+03:04:19 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:19 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:19 [INFO ] loom.db: Database opened: /tmp/loom_327691872b69/chatadhd.db
+03:04:19 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:19 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_327691872b69)
+03:04:20 [INFO ] loom.db: Database closed
+03:04:20 [INFO ] loom.runtime: Loom runtime shut down
+03:04:20 [INFO ] loom.config: config.json not found - using defaults
+03:04:20 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:20 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:20 [INFO ] loom.db: Database opened: /tmp/loom_fd3a9be7e817/chatadhd.db
+03:04:20 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:20 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_fd3a9be7e817)
+03:04:20 [INFO ] loom.db: Database closed
+03:04:20 [INFO ] loom.runtime: Loom runtime shut down
+03:04:20 [INFO ] loom.config: config.json not found - using defaults
+03:04:20 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:20 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:20 [INFO ] loom.db: Database opened: /tmp/loom_cf755f62e467/chatadhd.db
+03:04:20 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:20 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_cf755f62e467)
+03:04:21 [INFO ] loom.db: Database closed
+03:04:21 [INFO ] loom.runtime: Loom runtime shut down
+03:04:21 [INFO ] loom.config: config.json not found - using defaults
+03:04:21 [INFO ] loom.config: secrets.json not found - using defaults
+03:04:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:04:21 [INFO ] loom.db: Database opened: /tmp/loom_72c8f1c9d014/chatadhd.db
+03:04:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:04:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_72c8f1c9d014)
+03:04:21 [INFO ] loom.db: Database closed
+03:04:21 [INFO ] loom.runtime: Loom runtime shut down
+===============================================================================
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:554:
+TEST CASE:  native relevance recipe reports effective data and a changed pack gets a distinct run
+
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:571: ERROR: CHECK( after["relevance_recipe"]["parameters"]["weights"] == original["weights"] ) is NOT correct!
+  values: CHECK( {"bm25_phil":1.0,"bm25_self":1.4,"class_diversity":0.6,"code_evidence":1.2,"consensus":1.0,"date_prior":0.3,"id_hits":2.2,"link":1.0,"neg_context":-2.5,"project_member":1.0,"sem_ngram":2.0,"sem_word":1.5,"title":0.2,"version_mention":0.8} == {"id_hits":2.2,"bm25_self":1.4,"bm25_phil":1.0,"class_diversity":0.6,"code_evidence":1.2,"version_mention":0.8,"project_member":1.0,"date_prior":0.3,"neg_context":-2.5,"link":1.0,"consensus":1.0,"title":0.2,"sem_word":1.5,"sem_ngram":2.0} )
+
+===============================================================================
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:579:
+TEST CASE:  native incomplete relevance data cannot replace persisted scoring or profile terms
+
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:596: ERROR: CHECK_FALSE( added.has_value() ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:597: ERROR: CHECK( take(fixture.rt->db().conn().query_text("SELECT body FROM loom_cat_profiles ORDER BY id")) == profiles_before ) is NOT correct!
+  values: CHECK( {?} == {?} )
+
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:596: ERROR: CHECK_FALSE( added.has_value() ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:597: ERROR: CHECK( take(fixture.rt->db().conn().query_text("SELECT body FROM loom_cat_profiles ORDER BY id")) == profiles_before ) is NOT correct!
+  values: CHECK( {?} == {?} )
+
+===============================================================================
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:601:
+TEST CASE:  native profile expansion uses the same data weight as catalog scoring
+
+/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/test_semantic_candidates.cc:616: ERROR: CHECK( term.at("weight").get<double>() == 2.5 ) is NOT correct!
+  values: CHECK( 0.8 == 2.5 )
+
+===============================================================================
+[doctest] test cases:  18 |  15 passed | 3 failed | 0 skipped
+[doctest] assertions: 260 | 254 passed | 6 failed |
+[doctest] Status: FAILURE!

@@ -1,0 +1,58 @@
+[
+  {
+    "path": "/dev/shm/chatadhd-catalog-previous-native",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-previous-native",
+    "files": 9,
+    "bytes": 83175132,
+    "all_hashes_equal": true
+  },
+  {
+    "path": "/dev/shm/chatadhd-catalog-final-native",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-final-native",
+    "files": 2,
+    "bytes": 38379224,
+    "all_hashes_equal": true
+  },
+  {
+    "path": "/dev/shm/chatadhd-catalog-test-tmp",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-test-tmp",
+    "files": 98,
+    "bytes": 97342,
+    "all_hashes_equal": true
+  },
+  {
+    "path": "/dev/shm/chatadhd-catalog-audit-delivery-libloom.so",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-audit-delivery-libloom.so",
+    "files": 1,
+    "bytes": 35543200,
+    "all_hashes_equal": true
+  },
+  {
+    "path": "/dev/shm/chatadhd-catalog-audit-verified-final-libloom.so",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-audit-verified-final-libloom.so",
+    "files": 1,
+    "bytes": 43552152,
+    "all_hashes_equal": true
+  },
+  {
+    "path": "/dev/shm/chatadhd-catalog-audit-final-libloom.so",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-audit-final-libloom.so",
+    "files": 1,
+    "bytes": 40263304,
+    "all_hashes_equal": true
+  },
+  {
+    "path": "/dev/shm/chatadhd-catalog-audit-libloom.so",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-audit-libloom.so",
+    "files": 1,
+    "bytes": 34354152,
+    "all_hashes_equal": true
+  },
+  {
+    "path": "/dev/shm/chatadhd-catalog-work",
+    "disk_target": "/workspace/scratch/73a479acdbc0/catalog-tmpfs-relocated/chatadhd-catalog-work",
+    "files": 131,
+    "bytes": 952895902,
+    "all_hashes_equal": true
+  }
+]
