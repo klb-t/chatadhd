@@ -192,15 +192,16 @@ async function main() {
     await step("send a message and see streamed reply + reasoning", async () => {
       await page.fill('[data-testid="chat-input"]', chatText);
       await page.click('[data-testid="send-chat"]');
-      await page.waitForSelector('[data-testid="streaming-message"] .reasoning-text');
-      const reasoningText = await page.textContent('[data-testid="streaming-message"] .reasoning-text');
-      assert(reasoningText && reasoningText.includes("archive graph"), `reasoning text streamed, got: ${reasoningText}`);
+      // Check the transient stream in one browser poll: it can finish between
+      // separate selector and text queries on a loaded shared runner.
+      await page.waitForFunction(() => document.querySelector('[data-testid="streaming-message"] .reasoning-text')?.textContent?.includes("archive graph"));
       // Wait for the stream to finish and the canonical message list to reload.
       await page.waitForSelector('[data-testid="streaming-message"]', { state: "detached", timeout: 15000 });
       const assistantMsg = page.locator('[data-testid="message"][data-role="assistant"]').last();
       await assistantMsg.waitFor({ state: "visible" });
       const assistantText = await assistantMsg.locator(".body").textContent();
       assert(assistantText && assistantText.includes("Streaming works end to end"), `assistant text saved, got: ${assistantText}`);
+      assert((await assistantMsg.locator(".reasoning-text").textContent())?.includes("archive graph"), "streamed reasoning is also retained in the canonical message");
       const userMsg = page.locator('[data-testid="message"][data-role="user"]').last();
       await userMsg.waitFor({ state: "visible" });
     });
