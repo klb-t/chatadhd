@@ -54,6 +54,11 @@ Status ImportUsageSession::request(const std::filesystem::path& source, const Im
                           options.export_mode == ExportMode::Off ? "off" : "auto"},
                           {"force", options.force}, {"resume", options.resume}}}};
   LOOM_TRY_ASSIGN(impl_->receipt, impl_->policy->request(estimate));
+  // A terminal receipt records a past operation; it is not another dispatch
+  // grant. A new import attempt needs its own operation identity/accounting.
+  const auto status = impl_->receipt.value("status", "");
+  if (status == "completed" || status == "cancelled" || status == "rejected")
+    return Error(Errc::Conflict, "usage operation is terminal; use a new operation ID for another import");
   if (!confirm_receipt.empty()) {
     if (operation_id.empty() || confirmation_ref.empty())
       return Error(Errc::InvalidArgument, "confirmation requires explicit operation ID and confirmation reference");
