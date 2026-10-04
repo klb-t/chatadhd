@@ -1,0 +1,22 @@
+[
+  {
+    "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/model/model_core.cpp.o",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/model/model_action.cpp.o",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

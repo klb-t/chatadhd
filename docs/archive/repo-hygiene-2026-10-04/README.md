@@ -67,3 +67,8 @@ installed Ninja path when reproducing. A resumed attempt used a task-owned
 `fts.cpp.o`. The incomplete build and inactive compiler temporaries were
 removed after preserving logs; no other thread's files were removed. Disk
 exhaustion is an environment failure, not a test result or demonstrated source bug.
+
+The earlier derived `ci-first/dev/last-test-counts-before-archive-path-update.json`
+retains its original verification-directory path strings. Its observations are
+identical to `last-test-counts.json`; only the input paths were updated when
+archiving. It is not an additional run or an original JUnit receipt.
