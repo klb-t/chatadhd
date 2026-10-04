@@ -56,4 +56,22 @@ source ID and conversation ID remained stable in each scenario.
 [Logs, JSON results, synthetic inputs and byte manifest](phase1/) preserve this
 execution separately. No database, binary or original negative archive is copied
 here. This phase-1 result does **not** cover subsequent phase-2 legacy OpenAI or
-memory corrections. A final rerun remains required after the final build.
+memory corrections; its receipt remains separate from the final rerun below.
+
+## Retained final result
+
+The [final receipt](final/receipt.json) passed both scenarios against actual
+source/header bytes matching `1474b260582a80f006f99953baaad1b3253ca6e1`, rebased
+on documentation-only main `7282437b1c88933977f64b3468b9f42f7b400494`.
+Source/library snapshots remained stable, and the expected-commit comparison
+reported no mismatch. The actual core SHA-256 was
+`f2002cbe0a527039bf9b1c03753c4707f5a85d0667da70b2cee805233f83a9c0`.
+
+The malformed member passed **17/17 checks**, retaining partial/errors through
+all three imports with no completed-source cache hit. The valid project case
+passed **14/14 checks**, restored one project, one document and one `part_of`
+link after removal of the trigger, then used the completed-source cache.
+Both scenarios preserved source and conversation IDs and passed database
+integrity checks. [Final hashes and retained inputs/results/logs](final/SHA256.json)
+bind this execution. The two scenarios do not replace the separate full CTest
+gate or its actual case/assertion counts.
