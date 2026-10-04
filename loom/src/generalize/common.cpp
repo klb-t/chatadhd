@@ -62,7 +62,10 @@ Index::Index(const Evidence& e) : ev(e) {
     claim.emplace(c.id, &c);
     by_subject[c.subject].push_back(&c);
     for (const auto& s : c.assessment.support) {
-      if (auto it = obs.find(s.observation); it != obs.end()) subject_units[c.subject].insert(it->second->unit);
+      if (auto it = obs.find(s.observation); it != obs.end()) {
+        subject_units[c.subject].insert(it->second->unit);
+        if (observed_grade(c)) subject_obs[c.subject].insert(s.observation);
+      }
     }
     if (c.predicate == "mentioned_in" && c.value.is_string()) subject_units[c.subject].insert(c.value.get<std::string>());
   }
@@ -240,25 +243,32 @@ PreparedCues::PreparedCues(const kb::Normalizer& norm, const Json& cls) {
   }
 }
 
+bool PreparedCues::hits(const Phrase& p, const FoldedText& t) const {
+  if (p.symbolic) return t.folded.find(p.text) != std::string::npos;
+  if (p.toks.size() > t.toks.size()) return false;
+  for (std::size_t i = 0; i + p.toks.size() <= t.toks.size(); ++i) {
+    bool ok = true;
+    for (std::size_t k = 0; k < p.toks.size() && ok; ++k) {
+      bool last = k + 1 == p.toks.size();
+      ok = (last && p.star) ? starts_with(t.toks[i + k], p.toks[k]) : t.toks[i + k] == p.toks[k];
+    }
+    if (ok) return true;
+  }
+  return false;
+}
+
 double PreparedCues::score(const FoldedText& t) const {
   double s = 0.0;
   for (const auto& p : phrases_) {
-    bool hit = false;
-    if (p.symbolic) {
-      hit = t.folded.find(p.text) != std::string::npos;
-    } else if (p.toks.size() <= t.toks.size()) {
-      for (std::size_t i = 0; i + p.toks.size() <= t.toks.size() && !hit; ++i) {
-        bool ok = true;
-        for (std::size_t k = 0; k < p.toks.size() && ok; ++k) {
-          bool last = k + 1 == p.toks.size();
-          ok = (last && p.star) ? starts_with(t.toks[i + k], p.toks[k]) : t.toks[i + k] == p.toks[k];
-        }
-        hit = ok;
-      }
-    }
-    if (hit) s += p.w;
+    if (hits(p, t)) s += p.w;
   }
   return s;
+}
+
+void PreparedCues::hit_phrases(const FoldedText& t, std::set<std::size_t>& seen) const {
+  for (std::size_t i = 0; i < phrases_.size(); ++i) {
+    if (hits(phrases_[i], t)) seen.insert(i);
+  }
 }
 
 double cue_score(const kb::Normalizer& norm, std::string_view text, const Json& cls) {
