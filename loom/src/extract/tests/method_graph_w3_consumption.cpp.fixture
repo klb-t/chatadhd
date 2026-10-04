@@ -1,0 +1,166 @@
+// Explicit source-only replay; this suffix is outside the core *.cpp glob.
+// The runner exports the actual pinned W3 consumer into scratch, never the repo.
+#include <filesystem>
+#include <iostream>
+#include <stdexcept>
+#include <string>
+
+#include "extract/prompt_method_graph.h"
+#include "loom/db.h"
+#include "loom/knowledge_semantic.h"
+#include "method_registry.h"
+
+using namespace loom;
+namespace prompts = loom::extract::prompts;
+namespace methods = loom::extract::prompts::method_graph;
+
+namespace {
+Json take(Result<Json> result) {
+  if (!result) throw std::runtime_error(result.error().to_string());
+  return std::move(*result);
+}
+bool same(const Json& left, const Json& right) {
+  return json::canonical(left) == json::canonical(right);
+}
+Json entity(const Json& profile, const Json& identity) {
+  for (const auto& row : profile.at("entities")) if (row.at("id") == identity) return row;
+  throw std::runtime_error("missing native entity " + json::dump(identity));
+}
+Json indexed(const Json& rows, bool sources) {
+  Json result = Json::object();
+  for (const auto& row : rows) {
+    const auto id = sources ? row.at("observation").at("id") : row.at("id");
+    result[id.get<std::string>()] = row;
+  }
+  return result;
+}
+Json bindings() {
+  return Json{{"input_json", Json{{"text", "Zażółć 🙂 — źródło jest danymi"}, {"n", 3}}},
+              {"text", "Zażółć 🙂 — źródło jest danymi"}};
+}
+// Exact root semantic.cpp shape, rather than a convenient but different layout.
+Json parameters(const prompts::Contract& contract, const Json& prepared) {
+  Json controls = prepared.at("body_json");
+  controls.erase("messages");
+  controls.erase("model");
+  return Json{{"request_parameters", controls},
+      {"analysis_parameters", contract.definition.at("analysis_parameters")},
+      {"validation_mode", contract.definition.at("validation_mode")},
+      {"output_schema_hash", prepared.at("output_schema_hash")},
+      {"transport", prepared.at("transport")},
+      {"model", prepared.at("body_json").at("model")},
+      {"provider_url", prepared.at("url")},
+      {"implementation_version", std::string(loom::extract::kKnowledgeSemanticVersion)}};
+}
+Json capabilities() {
+  return Json{{"execution", Json{
+      {"loom.extract.semantic", Json{{"available", true},
+          {"availability_scope", "host declaration only; no dispatch in this fixture"}}},
+      {"loom.analysis.adapter_required", Json{{"available", false},
+          {"reason", "legacy analysis executor unavailable in this fixture"}}}}},
+      {"fusion", Json::object()}};
+}
+}  // namespace
+
+int main(int argc, char** argv) {
+  Json evidence{{"schema", "loom.method_graph_w3_consumption_fixture/1"},
+      {"scope", "actual W3 source load/resolve only; no dispatch, prepare, bind or acceptance"},
+      {"provider_calls", 0}, {"paid_calls", 0}, {"producer_execution_verified", false},
+      {"w3_joint_execution_verified", false}, {"w4_joint_gate_verified", false},
+      {"checks", Json::array()}, {"prompt_cases", Json::array()}};
+  auto check = [&](bool condition, const std::string& label) {
+    evidence["checks"].push_back(Json{{"label", label}, {"passed", condition}});
+  };
+  int exit_code = 0;
+  try {
+    if (argc != 2) throw std::runtime_error("usage: fixture <scratch-database>");
+    DbOptions database_options;
+    database_options.enable_fts = false;
+    auto opened = Database::open(std::filesystem::path(argv[1]), database_options);
+    if (!opened) throw std::runtime_error(opened.error().to_string());
+    auto database = std::move(*opened);
+    context::MethodRegistry registry(*database);
+    const Json host_capabilities = capabilities();
+    evidence["host_declared_capabilities"] = host_capabilities;
+    for (const std::string id : {"semantic.relation", "semantic.occurrence_graph", "semantic.analysis"}) {
+      auto selected = prompts::resolve(id);
+      if (!selected) throw std::runtime_error(selected.error().to_string());
+      const Json prepared = take(prompts::prepare_request(*selected, "offline/requested-model",
+          "https://example.invalid", bindings()));
+      const Json effective = parameters(*selected, prepared);
+      const Json user_overrides{{"stage_options", Json::object()},
+          {"request_patch", Json::object()}, {"one_call", Json::object()},
+          {"contract_patch", Json::array()}};
+      const Json profile = take(methods::method_profile(*selected, prepared, effective,
+          user_overrides, Json{{"known_at", nullptr}}));
+      const Json snapshot = take(registry.load(profile));
+      check(snapshot.at("receipts").empty(), id + ": loads caller DTOs without accepted receipts");
+      check(same(snapshot.at("entities"), indexed(profile.at("entities"), false)) &&
+          same(snapshot.at("claims"), indexed(profile.at("claims"), false)) &&
+          same(snapshot.at("sources"), indexed(profile.at("sources"), true)),
+          id + ": actual W3 lossless DTO/hash/closure gate preserves every producer row");
+      bool exact_sources = !snapshot.at("definition_source_status").empty();
+      for (const auto& status : snapshot.at("definition_source_status"))
+        exact_sources = exact_sources && status.at("status") == "exact_bytes_recorded" &&
+            !status.at("source_ids").empty();
+      check(exact_sources, id + ": all immutable definitions have exact source bytes");
+      const Json resolution = take(registry.resolve(snapshot, Json::object(), host_capabilities));
+      check(resolution.at("leaves").size() == 1, id + ": resolves exactly one visible leaf");
+      const Json& leaf = resolution.at("leaves").at(0);
+      const Json producer_parameters = entity(profile,
+          profile.at("bindings").at("parameter_set_version_id")).at("attrs").at("definition");
+      check(same(leaf.at("effective_parameters"), effective) &&
+          same(leaf.at("effective_parameters"), producer_parameters.at("effective_parameters")),
+          id + ": layered consumed parameters equal the actual producer parameter node");
+      check(same(leaf.at("parameter_set").at("attrs").at("definition"), producer_parameters),
+          id + ": producer effective parameters and user provenance remain exact");
+      check(same(leaf.at("parameter_layers"), profile.at("selection").at("parameter_layers")),
+          id + ": data-defined default merge precedence is consumed unchanged");
+      check(leaf.at("method_version_id") == profile.at("bindings").at("method_version_id") &&
+          leaf.at("recipe").at("id") == profile.at("bindings").at("recipe_version_id") &&
+          leaf.at("prompt").at("id") == profile.at("bindings").at("prompt_version_id") &&
+          leaf.at("preset").at("id") == profile.at("bindings").at("preset_version_id"),
+          id + ": method and template/recipe/preset identities resolve through actual Claims");
+      const bool semantic = id != "semantic.analysis";
+      check(leaf.at("available") == semantic &&
+          (semantic ? leaf.at("unavailable_reasons").empty() :
+           (!leaf.at("unavailable_reasons").empty() && leaf.at("capability").at("available") == false)),
+          id + ": host capability declaration controls availability without dispatch");
+      evidence["prompt_cases"].push_back(Json{{"id", id}, {"producer_profile", profile},
+          {"expected_effective_parameters", effective}, {"w3_snapshot", snapshot},
+          {"w3_resolution", resolution}});
+    }
+    const Json recipe = take(methods::recipe_profile("jev.active_refute_v2"));
+    const Json snapshot = take(registry.load(recipe));
+    check(same(snapshot.at("entities"), indexed(recipe.at("entities"), false)) &&
+        same(snapshot.at("claims"), indexed(recipe.at("claims"), false)) &&
+        same(snapshot.at("sources"), indexed(recipe.at("sources"), true)),
+        "Jev: actual W3 loads the complete descriptor-only profile as native closed rows");
+    const auto result = registry.resolve(snapshot, Json::object(), host_capabilities);
+    Json negative{{"producer_profile", recipe}, {"w3_snapshot", snapshot},
+        {"expected_limitation", "W3 string-only execution_capability extraction rejects explicit null"},
+        {"expected_resolution", "descriptor-only unavailable leaf; no fabricated executable capability"}};
+    if (result) {
+      negative["actual_resolution"] = *result;
+      negative["reproduced"] = false;
+    } else {
+      negative["actual_error"] = Json{{"code", std::string(errc_name(result.error().code))},
+          {"message", result.error().message}};
+      negative["reproduced"] = result.error().code == Errc::InvalidArgument &&
+          result.error().message.find("type must be string, but is null") != std::string::npos;
+    }
+    check(negative.at("reproduced").get<bool>(),
+        "Jev: exact foreign null-capability limitation is reproduced and retained, not fixed or masked");
+    evidence["known_negative_jev_resolution"] = std::move(negative);
+  } catch (const std::exception& failure) {
+    evidence["unexpected_failure"] = failure.what();
+    exit_code = 1;
+  }
+  std::size_t passed = 0;
+  for (const auto& row : evidence.at("checks")) if (row.at("passed").get<bool>()) ++passed;
+  evidence["executed_checks"] = evidence.at("checks").size();
+  evidence["passed_checks"] = passed;
+  evidence["success"] = exit_code == 0 && passed == evidence.at("checks").size();
+  std::cout << json::dump(evidence, 2) << '\n';
+  return evidence.at("success").get<bool>() ? 0 : 1;
+}

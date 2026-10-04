@@ -32,6 +32,7 @@ coverage records={support:[span],status:"represented|partial|unsupported|ambiguo
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
 #include "extract/prompt_contract.h"
+#include "extract/prompt_method_graph.h"
 #include "extract/semantic_usage.h"
 
 namespace loom::extract {
@@ -77,12 +78,28 @@ Json semantic_options(const Json& params) {
   return Json::object();
 }
 
-Result<prompts::Contract> resolve_contract(Runtime& rt, const Json& params, bool graph_mode) {
+Result<Json> resolve_method_data(Runtime& rt, const Json& options);
+
+Result<prompts::Contract> resolve_contract(Runtime& rt, const Json& params, bool graph_mode, bool active_methods = false) {
   const Json options = semantic_options(params);
   if (!options.is_object()) return Error(Errc::InvalidArgument, "extract.semantic must be an object");
   const Json* snapshot = json::find(options, "prompt_snapshot");
-  const std::string id = json::get_string(options, "prompt_id", snapshot ? json::get_string(*snapshot, "id") :
-      graph_mode ? "semantic.occurrence_graph" : "semantic.relation");
+  std::string id;
+  if (options.contains("prompt_id")) {
+    if (!options["prompt_id"].is_string()) return Error(Errc::InvalidArgument, "semantic.prompt_id must be a string");
+    id = options["prompt_id"].get<std::string>();
+  } else if (snapshot) id = json::get_string(*snapshot, "id");
+  else {
+    Json methods = prompts::method_graph::builtin_method_data();
+    if (active_methods) {
+      LOOM_TRY_ASSIGN(auto effective, resolve_method_data(rt, options));
+      methods = std::move(effective);
+    }
+    const Json* defaults = json::find(methods, "default_prompt_ids");
+    if (!defaults || !defaults->is_object()) return Error(Errc::InvalidArgument, "method data default_prompt_ids missing");
+    id = json::get_string(*defaults, graph_mode ? kGraphRepresentation : kRelationRepresentation);
+  }
+  if (id.empty()) return Error(Errc::InvalidArgument, "semantic prompt id missing from effective method data");
   if (snapshot) {
     if (json::get_string(*snapshot, "id") != id) return Error(Errc::InvalidArgument, "prompt snapshot id mismatch");
     Json explicit_patch = Json::object();
@@ -117,10 +134,24 @@ Json effective_params(const Json& params, const prompts::Contract& contract) {
   for (auto it = options.begin(); it != options.end(); ++it) {
     if (it.key() == "prompt_id" || it.key() == "prompt_patch" || it.key() == "prompt_snapshot" || it.key() == "validation_mode" ||
         it.key() == "preview" || it.key() == "request_patch" || it.key() == "call_overrides" || it.key() == "require_usage_policy" ||
-        it.key() == "usage_estimate") continue;
+        it.key() == "usage_estimate" || it.key() == "method_graph_patch" || it.key() == "method_graph_snapshot") continue;
     out[it.key()] = it.value();
   }
   return out;
+}
+
+Result<Json> resolve_method_data(Runtime& rt, const Json& options) {
+  Json patch = options.value("method_graph_patch", Json::object());
+  if (!patch.is_object()) return Error(Errc::InvalidArgument, "semantic.method_graph_patch must be object");
+  if (const Json* snapshot = json::find(options, "method_graph_snapshot")) {
+    if (!snapshot->is_object()) return Error(Errc::InvalidArgument, "semantic.method_graph_snapshot must be object");
+    return prompts::overlay(*snapshot, patch);
+  }
+  const Json directory = rt.config().get("analysis_prompt_dir", (rt.paths().root / "prompts").string());
+  if (!directory.is_string()) return Error(Errc::InvalidArgument, "analysis_prompt_dir must be a string");
+  const Json configured = rt.config().get("analysis_method_overrides", Json::object());
+  if (!configured.is_object()) return Error(Errc::InvalidArgument, "analysis_method_overrides must be object");
+  return prompts::method_graph::resolve_method_data(directory.get<std::string>(), prompts::overlay(configured, patch));
 }
 
 Result<Limits> read_limits(const Json& j, const Json& bounds) {
@@ -483,13 +514,20 @@ Json semantic_fingerprint(Runtime& rt, const Json& params, std::string_view mode
   const Json options = semantic_options(params);
   Json representation = options.is_object() ? options.value("representation", Json(std::string(kRelationRepresentation))) : Json(std::string(kRelationRepresentation));
   const bool graph_mode = representation == std::string(kGraphRepresentation);
-  auto contract = resolve_contract(rt, params, graph_mode);
+  auto contract = resolve_contract(rt, params, graph_mode, mode == "auto");
   Json limits = contract ? effective_params(params, *contract) : Json::object();
   if (limits.is_object()) limits.erase("representation");
   Json j{{"version", std::string(kKnowledgeSemanticVersion)}, {"requested", mode == "auto"},
          {"limits", limits}, {"representation", representation}};
   if (!contract) { j["prompt_error"] = contract.error().message; return j; }
   if (mode != "auto") return j;
+  auto method_data = resolve_method_data(rt, options);
+  if (!method_data) { j["prompt_error"] = method_data.error().message; return j; }
+  j["method_graph_snapshot"] = *method_data;
+  j["method_graph_data_hash"] = Sha256::hex(json::canonical(*method_data));
+  // Exact effective definitions are a snapshot, including durable overlays.
+  // They must not be silently replaced when a paused run is resumed.
+  j["method_graph_overrides"] = options.value("method_graph_patch", Json::object());
   j["prompt_contract"] = contract->definition;
   j["contract_hash"] = contract->hash;
   j["output_schema_hash"] = Sha256::hex(json::canonical(contract->definition["output_schema"]));
@@ -527,7 +565,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
     return Error(Errc::Conflict, "semantic configuration changed since run snapshot; start a new knowledge run");
   if (identity.contains("prompt_error")) return Error(Errc::InvalidArgument, json::get_string(identity, "prompt_error"));
   LOOM_TRY_ASSIGN(auto contract, identity.contains("prompt_contract") ? prompts::from_snapshot(identity["prompt_contract"]) :
-      resolve_contract(ctx.rt, ctx.params, identity["representation"] == std::string(kGraphRepresentation)));
+      resolve_contract(ctx.rt, ctx.params, identity["representation"] == std::string(kGraphRepresentation), ctx.config.llm == "auto"));
   LOOM_TRY_ASSIGN(Limits limits, read_limits(identity["limits"], contract.definition["analysis_parameters"]["limit_bounds"]));
   LOOM_TRY_ASSIGN(std::string representation, read_representation(identity["representation"]));
   const bool graph_mode = representation == kGraphRepresentation;
@@ -557,6 +595,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
              {"representation", representation}, {"accepted_bundles", 0}, {"entity_drafts", 0},
              {"claim_drafts", 0}, {"abstentions", 0}, {"response_outcomes", Json::array()}};
   if (ctx.config.llm != "auto") return finish(std::move(stats), identity);
+  stats["method_graphs"] = Json::object();
   if (graph_mode) {
     const Json policy_validation = validate_candidate_graph_vocabulary(vocabulary);
     if (!json::get_bool(policy_validation, "valid"))
@@ -662,6 +701,16 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       }
       stats["captured_responses"] = *captures;
     }
+    if (const Json* graphs = json::find(resume, "method_graphs")) {
+      if (!graphs->is_object()) return Error(Errc::Conflict, "invalid semantic method graph checkpoint");
+      // Values are immutable JSON snapshots. Their native DTO/hash/closure
+      // checks also run at the explicit GraphPacket acceptance boundary.
+      for (const auto& graph : *graphs) {
+        const auto valid = prompts::method_graph::validate_graph(graph);
+        if (!valid) return Error(Errc::Conflict, "invalid semantic method graph checkpoint: " + valid.error().message);
+      }
+      stats["method_graphs"] = *graphs;
+    }
     if (graph_mode) {
       const Json* counts = json::find(resume, "graph_counts");
       const Json* empty = json::find(resume, "empty_graph_responses");
@@ -701,6 +750,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       semantic["empty_graph_responses"] = empty_responses;
     }
     semantic["captured_responses"] = stats["captured_responses"];
+    semantic["method_graphs"] = stats["method_graphs"];
     return ctx.checkpoint(Json{{"semantic", semantic}});
   };
   auto capture_response = [&](Json capture) {
@@ -747,8 +797,8 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
     Json request_patch = identity.value("request_patch", Json::object());
     const Json overrides = identity.value("call_overrides", Json::object());
     if (const Json* single = json::find(overrides, in.chunk_id)) {
-      if (!single->is_object() || !keys(*single, {"prompt_patch", "request_patch", "validation_mode"}))
-        return Error(Errc::InvalidArgument, "semantic call override must contain prompt_patch/request_patch/validation_mode");
+      if (!single->is_object() || !keys(*single, {"prompt_patch", "request_patch", "validation_mode", "method_graph_patch"}))
+        return Error(Errc::InvalidArgument, "semantic call override must contain prompt_patch/request_patch/validation_mode/method_graph_patch");
       Json definition = call_contract.definition;
       if (const Json* patch = json::find(*single, "prompt_patch")) {
         if (!patch->is_object()) return Error(Errc::InvalidArgument, "call prompt_patch must be object");
@@ -796,12 +846,56 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
     stats["selected_chunks"].push_back(chunk_reference(chunk, in.chunk_id, "selected"));
     const std::string wire_model = json::get_string(prepared["body_json"], "model", model);
     const std::string operation_id = "semantic_" + Sha256::hex(ctx.run + "|" + in.chunk_id + "|" + json::get_string(prepared, "request_hash"));
+    Json method_data = identity["method_graph_snapshot"];
+    if (const Json* single = json::find(overrides, in.chunk_id)) {
+      if (const Json* patch = json::find(*single, "method_graph_patch")) {
+        if (!patch->is_object()) return Error(Errc::InvalidArgument, "call method_graph_patch must be object");
+        method_data = prompts::overlay(method_data, *patch);
+      }
+    }
+    Json request_parameters = prepared["body_json"];
+    request_parameters.erase("messages");
+    request_parameters.erase("model");
+    Json analysis_parameters = call_contract.definition["analysis_parameters"];
+    analysis_parameters["limits"] = local_limits;
+    Json method_options{{"method_data_snapshot", method_data}, {"known_at", nullptr}};
+    if (request_patch.contains("messages") || call_contract.definition["request_parameters"].contains("messages"))
+      method_options["prompt_messages_snapshot"] = prepared["body_json"]["messages"];
+    auto builtin_preset = prompts::resolve(json::get_string(call_contract.definition, "id"));
+    if (builtin_preset) method_options["preset_snapshot"] = builtin_preset->definition;
+    Json applicable_options = options;
+    // An override for another chunk and execution bookkeeping do not change
+    // this chunk's immutable recipe. Exact run identity retains the full
+    // requested options separately in the checkpoint's semantic identity.
+    for (const char* key : {"call_overrides", "preview", "usage_estimate", "require_usage_policy",
+                           "method_graph_snapshot", "method_graph_patch", "prompt_snapshot"}) applicable_options.erase(key);
+    Json one_call = overrides.value(in.chunk_id, Json::object());
+    one_call.erase("method_graph_patch");
+    Json user_overrides{{"stage_options", applicable_options}, {"request_patch", request_patch}, {"one_call", one_call}};
+    if (builtin_preset) user_overrides["contract_patch"] = Json::diff(builtin_preset->definition, call_contract.definition);
+    const Json effective_parameters{{"request_parameters", request_parameters}, {"analysis_parameters", analysis_parameters},
+      {"validation_mode", call_contract.definition["validation_mode"]}, {"output_schema_hash", prepared["output_schema_hash"]},
+      {"transport", prepared["transport"]}, {"model", wire_model}, {"provider_url", prepared["url"]},
+      {"implementation_version", std::string(kKnowledgeSemanticVersion)}};
+    LOOM_TRY_ASSIGN(auto method_profile, prompts::method_graph::method_profile(call_contract, prepared,
+        effective_parameters, user_overrides, method_options));
+    Json run_known_at = timeutil::utc_now_iso();
+    if (const Json* previous = json::find(stats["method_graphs"], in.chunk_id))
+      if (const Json* trace = json::find(*previous, "trace"))
+        if (const Json* date = json::find(*trace, "prepared_at"); date && date->is_string()) run_known_at = *date;
+    LOOM_TRY_ASSIGN(auto method_graph, prompts::method_graph::prepare_graph(method_profile,
+        Json{{"run_id", operation_id}, {"input_sha256", Sha256::hex(json::canonical(in.body))},
+          {"known_at", run_known_at}, {"knowledge_run_id", ctx.run}, {"measurements", nullptr},
+          {"measurement_scope", "preparation_only; execution_measurements_not_attached"}}));
+    stats["method_graphs"][in.chunk_id] = method_graph;
+    const auto prepared_graph_bytes = json::canonical(method_graph).size();
     const std::string cohort = "extract.semantic/" + representation + "/" + json::get_string(prepared, "url") + "/" + wire_model + "/request-v1";
     Json estimate{{"operation_id", operation_id}, {"baseline_key", cohort},
       {"resources", Json{{"requests", 1}, {"input_bytes", bytes}, {"input_tokens", nullptr},
-        {"output_tokens", nullptr}, {"money_usd", nullptr}}},
+        {"output_tokens", nullptr}, {"money_usd", nullptr}, {"method_graph_json_bytes", prepared_graph_bytes}}},
       {"provenance", Json{{"request_hash", prepared["request_hash"]}, {"contract_hash", wire_contract.hash},
         {"input_bytes_basis", "rendered_message_content_bytes"}, {"output_tokens_basis", "unknown_without_forecast"},
+        {"method_graph_json_bytes_basis", "prepared_graph_serialized_bytes; final_candidate_bindings_unknown"},
         {"output_tokens_cap", prepared["body_json"].value("max_tokens", Json(nullptr))}, {"unknown_cost", true}}}};
     estimate = prompts::overlay(estimate, identity.value("usage_estimate", Json::object()));
     if (json::get_string(estimate, "operation_id") != operation_id)
@@ -812,6 +906,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       prepared["source"] = chunk_reference(chunk, in.chunk_id, "preview");
       prepared["validation_mode"] = call_contract.definition["validation_mode"];
       prepared["usage_policy"] = std::move(decision);
+      prepared["method_graph"] = method_graph;
       stats["request_previews"].push_back(std::move(prepared));
       continue;
     }
@@ -832,9 +927,19 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
     LOOM_TRY_ASSIGN(auto hit, cached(ctx.rt, hash, wire_model));
     std::string raw;
     std::string finish_reason;
+    Json provider_reported_model = nullptr;
+    Json provider_reported_usage = nullptr;
     bool from_cache = hit.has_value();
     if (from_cache) {
       raw = *hit;
+      // A checked-cache replay is a different instrumented invocation from
+      // the original dispatch, which may predate method-graph captures.
+      LOOM_TRY_ASSIGN(auto replay_graph, prompts::method_graph::prepare_graph(method_profile,
+          Json{{"run_id", operation_id + "_cache"}, {"input_sha256", Sha256::hex(json::canonical(in.body))},
+            {"known_at", run_known_at}, {"knowledge_run_id", ctx.run}, {"measurements", nullptr},
+            {"execution_kind", "cache_replay"}, {"measurement_scope", "cache_replay_not_model_dispatch"}}));
+      method_graph = std::move(replay_graph);
+      stats["method_graphs"][in.chunk_id] = method_graph;
     } else {
       if (attempted.count(hash)) {
         ++failed;
@@ -903,7 +1008,8 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
         {"body", response_bytes}, {"response_hash", Sha256::hex(response_bytes)}, {"capture_truncated", response_limit_reached}});
       LOOM_TRY(checkpoint());
       auto measured = usage->complete(operation_id, Json{{"resources", Json{{"requests", 1}, {"input_bytes", bytes},
-        {"input_tokens", nullptr}, {"output_tokens", nullptr}, {"money_usd", nullptr}}}, {"provenance", "instrument_measured"}});
+        {"input_tokens", nullptr}, {"output_tokens", nullptr}, {"money_usd", nullptr},
+        {"method_graph_json_bytes", nullptr}}}, {"provenance", "instrument_measured"}});
       if (measured) stats["usage_decisions"].back()["completion"] = std::move(*measured);
       else {
         stats["accounting_error"] = true;
@@ -924,7 +1030,9 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       }
       auto parsed = json::parse(response_bytes);
       if (parsed && parsed->is_object()) {
+        if (const Json* observed = json::find(*parsed, "model"); observed && observed->is_string()) provider_reported_model = *observed;
         if (const Json* reported = json::find(*parsed, "usage"); reported && reported->is_object()) {
+          provider_reported_usage = *reported;
           Json amounts{{"input_tokens", reported->value("prompt_tokens", Json(nullptr))},
                        {"output_tokens", reported->value("completion_tokens", Json(nullptr))},
                        {"money_usd", reported->value("cost", Json(nullptr))}};
@@ -1072,8 +1180,33 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
     // native-valid entries remain explicitly unchecked under their own key.
     // Partial accepted proposals
     // remain reversible candidates; malformed/failed responses are never cached.
+    LOOM_TRY_ASSIGN(auto bound_graph, prompts::method_graph::bind_candidates(method_graph, candidates,
+        Json{{"raw_model_content", raw}, {"known_at", timeutil::utc_now_iso()}, {"from_cache", from_cache},
+          {"response_provenance", from_cache ? "checked_cache_model_content" : "captured_model_content"},
+          {"model", wire_model},
+          {"instrumentation", Json{{"requested_model", wire_model}, {"provider_reported_model", provider_reported_model},
+            {"provider_reported_usage", provider_reported_usage}, {"original_producer_run_id", nullptr}}},
+          {"measurements", Json{{"requests", from_cache ? 0 : 1}, {"input_bytes", from_cache ? 0 : bytes},
+            {"input_tokens", nullptr}, {"output_tokens", nullptr}, {"money_usd", nullptr}}},
+          {"measurement_scope", "current_invocation_instrumented_transport_only"}}));
+    stats["method_graphs"][in.chunk_id] = bound_graph;
+    // Preserve queue identities: the graph augments a proposal after its
+    // original ID was calculated. These are real native graph records pending
+    // explicit packet acceptance, never a hidden canonical store side-write.
+    for (auto& candidate : candidates) candidate["payload"]["method_graph"] = bound_graph;
     if (ctx.should_stop && ctx.should_stop()) return Error(Errc::Paused, "semantic proposal extraction paused before persistence");
     LOOM_TRY(persist(ctx.rt, hash, wire_model, raw, !from_cache && chunk_rejections == 0, candidates));
+    if (!from_cache) {
+      auto graph_measurement = usage->complete(operation_id, Json{{"resources", Json{
+          {"method_graph_json_bytes", json::canonical(bound_graph).size()}}},
+        {"provenance", "instrument_measured"},
+        {"measurement_scope", "serialized_graph; not_physical_disk_bytes"}});
+      if (graph_measurement) stats["usage_decisions"].back()["method_graph_completion"] = *graph_measurement;
+      else {
+        stats["accounting_error"] = true;
+        stats["usage_decisions"].back()["method_graph_completion_error"] = graph_measurement.error().message;
+      }
+    }
     LOOM_TRY(checkpoint());
     if (from_cache) stats["cache_hits"] = json::get_int(stats, "cache_hits") + 1;
   }

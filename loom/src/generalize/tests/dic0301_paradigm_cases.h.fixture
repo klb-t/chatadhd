@@ -1,0 +1,80 @@
+// Reuses the 16 public, synthetic DEV cases preserved in the W1 report.
+// This fixture does not inspect blind or sealed inputs.
+#pragma once
+namespace dic0301_paradigm {
+using namespace loom;
+using namespace loom::generalize;
+Json source_cues;
+struct Builder {
+  Evidence e; int ordinal=0;
+  std::string subject(const std::string& key) {
+    model::Entity entity; entity.kind="project"; entity.canonical_key=key; entity.label=key;
+    entity.id=model::Entity::make_id(entity.kind,key); e.entities.push_back(entity); return entity.id;
+  }
+  std::string obs(const std::string& text,const std::string& unit="u") {
+    model::Observation o; o.unit=unit; o.text=text; o.ordinal=ordinal++; o.kind=model::ObservationKind::Sentence;
+    o.locator.source="sha256:probe"; o.locator.json_pointer="/"+std::to_string(o.ordinal);
+    o.id=model::Observation::make_id(unit,o.locator,text); e.observations.push_back(o); return o.id;
+  }
+  void support(const std::string& subject,const std::string& observation, model::EvidenceClass evidence=model::EvidenceClass::Observed,
+               model::ClaimStatus status=model::ClaimStatus::Active) {
+    model::Claim c; c.subject=subject; c.predicate="mentioned_in"; c.value=e.observations.back().unit;
+    c.qualifiers.scope=observation; c.assessment.evidence=evidence; c.assessment.status=status; c.assessment.confidence=.8;
+    c.assessment.support.push_back(model::Support{observation,{},"","test@1",1.0});
+    c.id=model::Claim::make_id(c.subject,c.predicate,c.object,c.value,c.qualifiers); e.claims.push_back(c);
+  }
+};
+std::shared_ptr<const kb::Pack> pack(const std::string& mode){
+  auto base=kb::Pack::load_builtin(); if(!base){std::cerr<<base.error().message<<"\n"; exit(2);}
+  std::map<std::string,Json> docs; for(const auto& path:(*base)->files()) docs[path]=(*base)->file(path);
+  if (!source_cues.is_null()) docs["lexicons/cues.json"] = source_cues;
+  auto& anchors=docs["lexicons/cues.json"]["anchor_policy"];
+  anchors=Json::object();
+  if(mode!="legacy") {
+    bool dominant=mode.find("dominant")==0;
+    int window=mode.find("window2")!=std::string::npos?2:1;
+    bool accepted=mode=="accepted" || mode=="accepted_per_unit";
+    bool across=accepted || mode.find("across")!=std::string::npos;
+    double music_weight=accepted?2.5:3.0;
+    double research_weight=accepted || mode.find("35")!=std::string::npos?3.5:5.0;
+    if(accepted) { dominant=false; window=2; }
+    std::string aggregation=mode=="accepted_per_unit" || !across?"per_unit":"distinct_across_units";
+    anchors["paradigm.music"]=Json{{"min_weight",music_weight},{"window",window},{"dominant_context",dominant},{"aggregation",aggregation}};
+    anchors["paradigm.research"]=Json{{"min_weight",research_weight},{"window",accepted?1:window},{"dominant_context",dominant},{"aggregation",aggregation}};
+  }
+  auto p=kb::Pack::from_documents(std::move(docs)); if(!p){std::cerr<<p.error().message<<"\n"; exit(2);} return *p;
+}
+bool matches(const std::shared_ptr<const kb::Pack>& p,const Builder& b,const std::string& id,Json* trace,const std::string& paradigm="music"){
+  auto ms=ParadigmMatcher(p).match_projects(b.e); if(!ms){std::cerr<<ms.error().message<<"\n";exit(2);}
+  for(auto& m:*ms) if(m.instance.paradigm==paradigm && m.instance.subject==id){if(trace)*trace=m.reasons;return true;} return false;
+}
+Json paradigm_cases(){
+  Json out=Json::array();
+  for(const std::string mode:{"legacy","accepted"}) {
+    auto p=pack(mode);
+    auto run=[&](const std::string& name,Builder b,const std::string& subject,bool expected,const std::string& paradigm="music"){
+      Json trace; bool result=matches(p,b,subject,&trace,paradigm);
+      out.push_back(Json{{"mode",mode},{"paradigm",paradigm},{"case",name},{"expected",expected},{"actual",result},{"correct",result==expected},{"trace",trace}});
+    };
+    {Builder b; auto s=b.subject("Software"); for(int i=0;i<30;++i){auto o=b.obs("Software: keep track of the master branch");b.support(s,o);} run("repeated_ambiguous_tokens",b,s,false);}
+    {Builder b; auto s=b.subject("Song"); auto o=b.obs("Song: chorus, verse, bpm");b.support(s,o); run("single_observation_distinct_music",b,s,true);}
+    {Builder b; auto s=b.subject("Song");auto o=b.obs("Song arrangement");b.support(s,o);b.obs("chorus");b.obs("verse");run("subject_owns_unit_neighbour_cues",b,s,true);}
+    {Builder b; auto s=b.subject("Software"); auto m=b.subject("Song");auto o=b.obs("Software module");b.support(s,o);for(int i=0;i<4;++i)b.obs("neutral filler");o=b.obs("Song chorus");b.support(m,o);b.obs("verse bpm");run("mixed_subject_wrong_domain",b,s,false);run("mixed_subject_true_domain",b,m,true);}
+    {Builder b;auto s=b.subject("Software");for(int i=0;i<20;++i){auto o=b.obs("chorus");b.support(s,o);}run("repeated_one_strong_cue",b,s,false);}
+    {Builder b;auto s=b.subject("SongAcrossUnits");auto o=b.obs("chorus","u1");b.support(s,o);o=b.obs("verse","u2");b.support(s,o);run("cross_unit_valid_subject_evidence",b,s,true);}
+
+    {Builder b;auto s=b.subject("Software");auto o=b.obs("Software module implementation","u1");b.support(s,o);b.obs("chorus verse bpm","unrelated");b.obs("chorus verse bpm","unrelated");run("unrelated_units_not_pooled",b,s,false);}
+    {Builder b;auto s=b.subject("Software");auto o=b.obs("chorus verse bpm");b.support(s,o,model::EvidenceClass::Observed,model::ClaimStatus::Rejected);b.obs("chorus verse bpm");run("rejected_support_not_an_anchor",b,s,false);}
+    {Builder b;auto s=b.subject("Software");auto o=b.obs("chorus verse bpm");b.support(s,o,model::EvidenceClass::Inferred);b.obs("chorus verse bpm");run("inferred_support_not_an_anchor",b,s,false);}
+    {Builder b;auto s=b.subject("OwnerMusic");b.e.entities.front().attrs=Json{{"kind_hint","music"}};auto o=b.obs("master branch");b.support(s,o);run("explicit_kind_hint_preserved",b,s,true);}
+    {Builder b;auto s=b.subject("Software");auto o=b.obs("Software documentation");b.support(s,o);for(int i=0;i<4;++i)b.obs("neutral filler");b.obs("meta-model example table: music | chorus | verse");b.obs("meta-model example table: bpm");run("dominant_mixed_domain_table",b,s,false);}
+    {Builder b;auto s=b.subject("Petri");auto o=b.obs("Petri hypothesis is testable");b.support(s,o);o=b.obs("Petri experiment will test the hypothesis");b.support(s,o);run("unhinted_research_two_clear_cues",b,s,true,"research");}
+    {Builder b;auto s=b.subject("Petri");auto o=b.obs("Petri hypothesis; an experiment tests it");b.support(s,o);run("unhinted_research_one_observation",b,s,true,"research");}
+    {Builder b;auto s=b.subject("Software");auto o=b.obs("Software function takes a dataset parameter");b.support(s,o);o=b.obs("Software has an experiment flag option");b.support(s,o);run("ambiguous_research_implementation_tokens",b,s,false,"research");}
+    {Builder b;auto s=b.subject("Petri");auto o=b.obs("Petri hypothesis and experiment, using a dataset to falsify our predictions");b.support(s,o);run("unhinted_research_full_vocabulary",b,s,true,"research");}
+
+  }
+  return out;
+}
+
+} // namespace dic0301_paradigm

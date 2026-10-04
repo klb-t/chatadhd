@@ -1,0 +1,71 @@
+{
+ "schema": "loom.test.dic0301/1",
+ "base_pin": "50e6bb9f80b0cd855e4dd1efedaf3399cac5e4e6",
+ "repository_head": "50e6bb9f80b0cd855e4dd1efedaf3399cac5e4e6",
+ "before_counts": {
+  "exact_classes": 7,
+  "classes": 7,
+  "phrases": 120,
+  "deletion_no_resurrection": 0,
+  "empty_pack_rejected": 7,
+  "replacement_only": 7
+ },
+ "after_counts": {
+  "exact_classes": 7,
+  "classes": 7,
+  "phrases": 120,
+  "deletion_no_resurrection": 7,
+  "empty_pack_rejected": 7,
+  "replacement_only": 7
+ },
+ "preservation": {
+  "defaults": true,
+  "dev_principles": true,
+  "dev_paradigms": true,
+  "empty_pack_override": true,
+  "replacement": true
+ },
+ "typed_phrase_samples": 134,
+ "dev_principles": 30,
+ "legacy_dev_cases": 16,
+ "accepted_dev_cases": 16,
+ "accepted_dev_correct": 16,
+ "input_hashes_stable_during_replay": true,
+ "limitations": [
+  "Empty phrases[] is rejected by the unchanged foreign Pack schema; deletion disables a class.",
+  "Replay pairs exact Git-pinned/current common+principles modules and explicit old/current cues through Pack::from_documents against the same prebuilt archives.",
+  "This focused replay does not verify that the prebuilt archive embeds the new data; full test_kb_pack does that after regeneration/build.",
+  "Synthetic DEV source only; this is preservation/configuration evidence, not a new precision gain or full CTest."
+ ],
+ "sha256": {
+  "loom/src/generalize/tests/dic0301.cpp.fixture": "09921f6576f80fffe1a5ee8535afcb33ac2a02ecc13edb3fd8dabc99486e3e03",
+  "loom/src/generalize/tests/dic0301_legacy_classes.json.fixture": "e80e0f650415f97a49873c6102120ee36ef105a99c97991ff8818e9c503db57a",
+  "loom/src/generalize/tests/dic0301_paradigm_cases.h.fixture": "5584f31769a8bc1f28bd49be98a9972c633fd2843b6924b57ee27f349cb84e73",
+  "loom/src/generalize/tests/dic0301_replay.py": "8fc9553fac08e738b1068810158c440ca0c2288ae0db9e86d9ccb5ac3a01c163",
+  "loom/src/generalize/common.cpp": "d1c87a57e898e04a7844241935ea4634fd9d811ff69c5222121d0510291799b9",
+  "loom/src/generalize/principles.cpp": "6c773bc2c9d0a2919bab5102d1c89330e4c68dac59805d6c7f302496c46c17aa",
+  "loom/src/generalize/internal.h": "163b546a287707d683f95a3c602710e740cc190d1affdd54158725c5e06799fa",
+  "loom/data/lexicons/cues.json": "c8beaca2cb675e88d522f14cc84fe5fb4cb97f8143f9c7e3704943c45b51d8a1",
+  "loom/src/kb/pack_embedded.inc": "11aef91bab819dc9aedff1a975f3abc1ec64053db64534daba008711e62973e7",
+  "loom/build/dev/libloom_core.a": "e19f430a9675ba7fad8dcd51eaa79e042ea2ca73f10b1ee39db4936e5f88dad2",
+  "loom/build/dev/libloom_sqlite3_amalgamation.a": "c70ac638ea6ca708e5a4745f682ba0044c584a98c52e908a036318b51235d5b1",
+  "loom/build/dev/libloom_miniz.a": "a4c37f1f96334ba9fc9c7e7a734f3e84137882883e5649e812f74bcfbc587a06",
+  "legacy/common.cpp": "5804b0d5e3976ff14f4ffba5240898f2c663009b51f6da92b1232859df333042",
+  "legacy/principles.cpp": "7ebe190a3433084d5f8330e18f03f7f42a0ce0e70d2ae4096298eb4a6eec0cd3",
+  "legacy/internal.h": "23e3764abda76172fab4458fe317a5fed48a1847887e7c6430fc19890a75e025",
+  "legacy/cues.json": "ae6b07bd47264375434906e91cd62f3a33e4dd91d117fde2e23c625e72aaa638",
+  "current/common.cpp": "d1c87a57e898e04a7844241935ea4634fd9d811ff69c5222121d0510291799b9",
+  "current/principles.cpp": "6c773bc2c9d0a2919bab5102d1c89330e4c68dac59805d6c7f302496c46c17aa",
+  "current/internal.h": "163b546a287707d683f95a3c602710e740cc190d1affdd54158725c5e06799fa",
+  "current/cues.json": "c8beaca2cb675e88d522f14cc84fe5fb4cb97f8143f9c7e3704943c45b51d8a1",
+  "before_common.o": "0f1000b30bb0460945267b93a7f4e5fbdf6d876659bf4941948a668dee995e60",
+  "before_principles.o": "d4aa8a8e075a377ce5d6ce88589d70e5d428a2c9347d28ddc56fc8fc2d175053",
+  "after_common.o": "1c3f3309eb3087a9c7385fb810fe552d3416aad81348dddf4559384ec6e970e4",
+  "after_principles.o": "1f032313d3d17cd93a3af5de8207b9c407372fd7f20bf5c22e05ce5db47d49c8",
+  "dic0301_before": "9447cbcc4e0ff49ac1a127213f82892ae2a53dffc844f05f008a85606add3992",
+  "dic0301_after": "8b110651f3d8c75633ec68e1554ea8dd0abb78049b42044c3597ad28ec2a7936",
+  "before.json": "c41d2b2b853f3651be35b8b29a29d09f1a3a8abb607b326cc9b149f434b40321",
+  "after.json": "d684dbb09105b26d244d751bf3d7c90efe84dabade5ea3aba3510221c3a4abeb"
+ },
+ "passed": true
+}

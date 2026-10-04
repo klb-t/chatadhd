@@ -1,0 +1,8099 @@
+{
+ "defaults": [
+  {
+   "name": "generalize.generalization",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "ważniejsz* niż",
+      "w": 2.0
+     },
+     {
+      "p": "more important than",
+      "w": 2.0
+     },
+     {
+      "p": "matters more",
+      "w": 2.0
+     },
+     {
+      "p": "na pierwszym miejscu",
+      "w": 2.0
+     },
+     {
+      "p": "wolę",
+      "w": 1.5
+     },
+     {
+      "p": "prefer*",
+      "w": 1.5
+     },
+     {
+      "p": "reguł*",
+      "w": 2.0
+     },
+     {
+      "p": "zasad*",
+      "w": 2.0
+     },
+     {
+      "p": "rule",
+      "w": 1.5
+     },
+     {
+      "p": "jak zawsze",
+      "w": 2.0
+     },
+     {
+      "p": "za każdym razem",
+      "w": 2.0
+     },
+     {
+      "p": "u mnie",
+      "w": 1.5
+     },
+     {
+      "p": "po pierwsze",
+      "w": 2.0
+     },
+     {
+      "p": "po drugie",
+      "w": 2.0
+     },
+     {
+      "p": "po trzecie",
+      "w": 2.0
+     },
+     {
+      "p": "nie kasuj*",
+      "w": 2.0
+     },
+     {
+      "p": "never delete",
+      "w": 2.0
+     },
+     {
+      "p": "wygrywa",
+      "w": 2.0
+     },
+     {
+      "p": "wins",
+      "w": 1.5
+     },
+     {
+      "p": "ten sam wzorzec",
+      "w": 2.0
+     },
+     {
+      "p": "same pattern",
+      "w": 2.0
+     },
+     {
+      "p": "kiedy",
+      "w": 1.0
+     },
+     {
+      "p": "gdy",
+      "w": 1.0
+     },
+     {
+      "p": "whenever",
+      "w": 1.5
+     },
+     {
+      "p": "zamiast",
+      "w": 1.0
+     },
+     {
+      "p": "instead of",
+      "w": 1.0
+     },
+     {
+      "p": "nie nowy",
+      "w": 1.5
+     },
+     {
+      "p": "nie nową",
+      "w": 1.5
+     },
+     {
+      "p": "not a new",
+      "w": 1.5
+     },
+     {
+      "p": "zanim",
+      "w": 1.0
+     },
+     {
+      "p": "before",
+      "w": 0.5
+     },
+     {
+      "p": "najpierw",
+      "w": 1.0
+     },
+     {
+      "p": "dopiero",
+      "w": 1.0
+     },
+     {
+      "p": "nie zmienia",
+      "w": 1.0
+     },
+     {
+      "p": "zero zmian",
+      "w": 1.0
+     },
+     {
+      "p": "nie zapisuj*",
+      "w": 1.0
+     },
+     {
+      "p": "zostawiam",
+      "w": 1.0
+     },
+     {
+      "p": "odwracaln*",
+      "w": 1.5
+     },
+     {
+      "p": "reversible",
+      "w": 1.5
+     },
+     {
+      "p": "wprost",
+      "w": 1.0
+     },
+     {
+      "p": "czemu odpadł*",
+      "w": 1.5
+     },
+     {
+      "p": "dokładnie tak jak",
+      "w": 1.0
+     }
+    ]
+   },
+   "exact": true,
+   "samples": [
+    {
+     "text": "ważniejsz* niż",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "ważniejsz* niż"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "more important than",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "more important than"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "matters more",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "matters more"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "na pierwszym miejscu",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "na pierwszym miejscu"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wolę",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wolę"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "prefer*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "prefer*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "reguł*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "reguł*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zasad*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zasad*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "rule",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "rule"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "jak zawsze",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "jak zawsze"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "za każdym razem",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "za każdym razem"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "u mnie",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "u mnie"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "po pierwsze",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "po pierwsze"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "po drugie",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "po drugie"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "po trzecie",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "po trzecie"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie kasuj*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie kasuj*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "never delete",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "never delete"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wygrywa",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wygrywa"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wins",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wins"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "ten sam wzorzec",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "ten sam wzorzec"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "same pattern",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "same pattern"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "kiedy",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "kiedy"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "gdy",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "gdy"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "whenever",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "whenever"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zamiast",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zamiast"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "instead of",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "instead of"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie nowy",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie nowy"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie nową",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie nową"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "not a new",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "not a new"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zanim",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zanim"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "before",
+     "score": 0.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "before"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "najpierw",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "najpierw"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dopiero",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dopiero"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie zmienia",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie zmienia"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zero zmian",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zero zmian"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie zapisuj*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie zapisuj*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zostawiam",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zostawiam"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "odwracaln*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "odwracaln*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "reversible",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "reversible"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wprost",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wprost"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "czemu odpadł*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "czemu odpadł*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dokładnie tak jak",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dokładnie tak jak"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dic0301unrelatedtoken",
+     "score": 0.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dic0301unrelatedtoken"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "ważniejsz* niż . more important than . matters more . na pierwszym miejscu . wolę . prefer* . reguł* . zasad* . rule . jak zawsze . za każdym razem . u mnie . po pierwsze . po drugie . po trzecie . nie kasuj* . never delete . wygrywa . wins . ten sam wzorzec . same pattern . kiedy . gdy . whenever . zamiast . instead of . nie nowy . nie nową . not a new . zanim . before . najpierw . dopiero . nie zmienia . zero zmian . nie zapisuj* . zostawiam . odwracaln* . reversible . wprost . czemu odpadł* . dokładnie tak jak . ",
+     "score": 63.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "ważniejsz* niż . more important than . matters more . na pierwszym miejscu . wolę . prefer* . reguł* . zasad* . rule . jak zawsze . za każdym razem . u mnie . po pierwsze . po drugie . po trzecie . nie kasuj* . never delete . wygrywa . wins . ten sam wzorzec . same pattern . kiedy . gdy . whenever . zamiast . instead of . nie nowy . nie nową . not a new . zanim . before . najpierw . dopiero . nie zmienia . zero zmian . nie zapisuj* . zostawiam . odwracaln* . reversible . wprost . czemu odpadł* . dokładnie tak jak . "
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "principle.level.value",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "ważniejsz* niż",
+      "w": 2.0
+     },
+     {
+      "p": "more important than",
+      "w": 2.0
+     },
+     {
+      "p": "matters more",
+      "w": 2.0
+     },
+     {
+      "p": "na pierwszym miejscu",
+      "w": 2.0
+     },
+     {
+      "p": "wartoś*",
+      "w": 1.5
+     },
+     {
+      "p": "value*",
+      "w": 1.0
+     },
+     {
+      "p": "opcjonalnoś*",
+      "w": 1.5
+     },
+     {
+      "p": "optionality",
+      "w": 1.5
+     },
+     {
+      "p": "prawd*",
+      "w": 1.0
+     },
+     {
+      "p": "truth",
+      "w": 1.0
+     },
+     {
+      "p": "wprost",
+      "w": 2.5
+     },
+     {
+      "p": "honest*",
+      "w": 1.5
+     },
+     {
+      "p": "autonomi*",
+      "w": 1.5
+     },
+     {
+      "p": "tempa",
+      "w": 1.5
+     },
+     {
+      "p": "tempo",
+      "w": 1.5
+     },
+     {
+      "p": "momentum",
+      "w": 1.5
+     },
+     {
+      "p": "przejrzyst*",
+      "w": 1.5
+     },
+     {
+      "p": "transparen*",
+      "w": 1.5
+     }
+    ]
+   },
+   "exact": true,
+   "samples": [
+    {
+     "text": "ważniejsz* niż",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "ważniejsz* niż"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "more important than",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "more important than"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "matters more",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "matters more"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "na pierwszym miejscu",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "na pierwszym miejscu"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wartoś*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wartoś*"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "value*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "value*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "opcjonalnoś*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "opcjonalnoś*"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "optionality",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "optionality"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "prawd*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "prawd*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "truth",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "truth"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wprost",
+     "score": 2.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wprost"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "honest*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "honest*"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "autonomi*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "autonomi*"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "tempa",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "tempa"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "tempo",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "tempo"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "momentum",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "momentum"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "przejrzyst*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "przejrzyst*"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "transparen*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "transparen*"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dic0301unrelatedtoken",
+     "score": 0.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dic0301unrelatedtoken"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "ważniejsz* niż . more important than . matters more . na pierwszym miejscu . wartoś* . value* . opcjonalnoś* . optionality . prawd* . truth . wprost . honest* . autonomi* . tempa . tempo . momentum . przejrzyst* . transparen* . ",
+     "score": 28.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "ważniejsz* niż . more important than . matters more . na pierwszym miejscu . wartoś* . value* . opcjonalnoś* . optionality . prawd* . truth . wprost . honest* . autonomi* . tempa . tempo . momentum . przejrzyst* . transparen* . "
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "principle.level.epistemic",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "nie wiem",
+      "w": 2.0
+     },
+     {
+      "p": "know",
+      "w": 1.0
+     },
+     {
+      "p": "zapisuj*",
+      "w": 1.5
+     },
+     {
+      "p": "record*",
+      "w": 1.0
+     },
+     {
+      "p": "notatk*",
+      "w": 1.0
+     },
+     {
+      "p": "note*",
+      "w": 0.5
+     },
+     {
+      "p": "kontrprzykład*",
+      "w": 2.0
+     },
+     {
+      "p": "counterexample*",
+      "w": 2.0
+     },
+     {
+      "p": "dowod*",
+      "w": 1.5
+     },
+     {
+      "p": "evidence",
+      "w": 1.5
+     },
+     {
+      "p": "utknęł*",
+      "w": 1.5
+     },
+     {
+      "p": "utkn*",
+      "w": 1.0
+     },
+     {
+      "p": "stuck",
+      "w": 1.5
+     },
+     {
+      "p": "opisuj*",
+      "w": 1.0
+     },
+     {
+      "p": "z opisem",
+      "w": 1.5
+     },
+     {
+      "p": "czemu",
+      "w": 1.0
+     },
+     {
+      "p": "porzucon*",
+      "w": 1.0
+     },
+     {
+      "p": "nie kasuj*",
+      "w": 1.5
+     },
+     {
+      "p": "gałęzi",
+      "w": 1.0
+     },
+     {
+      "p": "branch",
+      "w": 1.0
+     },
+     {
+      "p": "ręczn*",
+      "w": 0.5
+     }
+    ]
+   },
+   "exact": true,
+   "samples": [
+    {
+     "text": "nie wiem",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie wiem"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "know",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "know"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zapisuj*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zapisuj*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "record*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "record*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "notatk*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "notatk*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "note*",
+     "score": 0.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "note*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "kontrprzykład*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "kontrprzykład*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "counterexample*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "counterexample*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dowod*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dowod*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "evidence",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "evidence"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "utknęł*",
+     "score": 2.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "utknęł*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "utkn*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "utkn*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "stuck",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "stuck"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "opisuj*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "opisuj*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "z opisem",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "z opisem"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "czemu",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "czemu"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "porzucon*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "porzucon*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie kasuj*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie kasuj*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "gałęzi",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "gałęzi"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "branch",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "branch"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "ręczn*",
+     "score": 0.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "ręczn*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dic0301unrelatedtoken",
+     "score": 0.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dic0301unrelatedtoken"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie wiem . know . zapisuj* . record* . notatk* . note* . kontrprzykład* . counterexample* . dowod* . evidence . utknęł* . utkn* . stuck . opisuj* . z opisem . czemu . porzucon* . nie kasuj* . gałęzi . branch . ręczn* . ",
+     "score": 26.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie wiem . know . zapisuj* . record* . notatk* . note* . kontrprzykład* . counterexample* . dowod* . evidence . utknęł* . utkn* . stuck . opisuj* . z opisem . czemu . porzucon* . nie kasuj* . gałęzi . branch . ręczn* . "
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "principle.form.invariant",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "nigdy",
+      "w": 2.0
+     },
+     {
+      "p": "never",
+      "w": 2.0
+     },
+     {
+      "p": "nie kasuj*",
+      "w": 2.0
+     },
+     {
+      "p": "po pierwsze",
+      "w": 1.5
+     },
+     {
+      "p": "po drugie",
+      "w": 1.5
+     },
+     {
+      "p": "na pierwszym miejscu",
+      "w": 1.5
+     },
+     {
+      "p": "wprost",
+      "w": 1.0
+     },
+     {
+      "p": "dalej",
+      "w": 0.5
+     }
+    ]
+   },
+   "exact": true,
+   "samples": [
+    {
+     "text": "nigdy",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nigdy"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "never",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "never"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nie kasuj*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nie kasuj*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "po pierwsze",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "po pierwsze"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "po drugie",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "po drugie"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "na pierwszym miejscu",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "na pierwszym miejscu"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wprost",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wprost"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dalej",
+     "score": 0.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dalej"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dic0301unrelatedtoken",
+     "score": 0.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dic0301unrelatedtoken"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "nigdy . never . nie kasuj* . po pierwsze . po drugie . na pierwszym miejscu . wprost . dalej . ",
+     "score": 12.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "nigdy . never . nie kasuj* . po pierwsze . po drugie . na pierwszym miejscu . wprost . dalej . "
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "principle.form.conflict_resolution",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "kłóc*",
+      "w": 2.5
+     },
+     {
+      "p": "konflikt*",
+      "w": 2.5
+     },
+     {
+      "p": "conflict*",
+      "w": 2.5
+     },
+     {
+      "p": "wygrywa",
+      "w": 2.5
+     },
+     {
+      "p": "wins",
+      "w": 2.0
+     },
+     {
+      "p": "zgod*",
+      "w": 2.0
+     },
+     {
+      "p": "consent",
+      "w": 2.0
+     },
+     {
+      "p": "potwierdz*",
+      "w": 1.5
+     },
+     {
+      "p": "confirm*",
+      "w": 1.5
+     },
+     {
+      "p": "koszt",
+      "w": 1.0
+     }
+    ]
+   },
+   "exact": true,
+   "samples": [
+    {
+     "text": "kłóc*",
+     "score": 2.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "kłóc*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "konflikt*",
+     "score": 2.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "konflikt*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "conflict*",
+     "score": 2.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "conflict*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wygrywa",
+     "score": 2.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wygrywa"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wins",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wins"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zgod*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zgod*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "consent",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "consent"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "potwierdz*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "potwierdz*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "confirm*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "confirm*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "koszt",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "koszt"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dic0301unrelatedtoken",
+     "score": 0.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dic0301unrelatedtoken"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "kłóc* . konflikt* . conflict* . wygrywa . wins . zgod* . consent . potwierdz* . confirm* . koszt . ",
+     "score": 20.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "kłóc* . konflikt* . conflict* . wygrywa . wins . zgod* . consent . potwierdz* . confirm* . koszt . "
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "conflict_resolution",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "principle.form.meta",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "reguł*",
+      "w": 2.5
+     },
+     {
+      "p": "zasad*",
+      "w": 2.0
+     },
+     {
+      "p": "rule",
+      "w": 2.0
+     },
+     {
+      "p": "principle",
+      "w": 2.0
+     },
+     {
+      "p": "za drugim razem",
+      "w": 2.0
+     },
+     {
+      "p": "second time",
+      "w": 2.0
+     },
+     {
+      "p": "kontrprzykład*",
+      "w": 1.0
+     }
+    ]
+   },
+   "exact": true,
+   "samples": [
+    {
+     "text": "reguł*",
+     "score": 2.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "reguł*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "zasad*",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "zasad*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "rule",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "rule"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "principle",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "principle"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "za drugim razem",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "za drugim razem"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "second time",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "second time"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "kontrprzykład*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "kontrprzykład*"
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dic0301unrelatedtoken",
+     "score": 0.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dic0301unrelatedtoken"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "reguł* . zasad* . rule . principle . za drugim razem . second time . kontrprzykład* . ",
+     "score": 13.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "reguł* . zasad* . rule . principle . za drugim razem . second time . kontrprzykład* . "
+      },
+      "phrasings": [],
+      "level": "epistemic",
+      "form": "meta",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    }
+   ]
+  },
+  {
+   "name": "principle.form.default",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "na razie",
+      "w": 1.5
+     },
+     {
+      "p": "for now",
+      "w": 1.5
+     },
+     {
+      "p": "domyślnie",
+      "w": 2.0
+     },
+     {
+      "p": "by default",
+      "w": 2.0
+     },
+     {
+      "p": "na start*",
+      "w": 1.5
+     },
+     {
+      "p": "wolę",
+      "w": 1.0
+     },
+     {
+      "p": "prefer*",
+      "w": 1.0
+     },
+     {
+      "p": "decyduj*",
+      "w": 1.5
+     },
+     {
+      "p": "szybko",
+      "w": 1.5
+     },
+     {
+      "p": "małe",
+      "w": 1.0
+     },
+     {
+      "p": "kroki",
+      "w": 1.5
+     },
+     {
+      "p": "steps",
+      "w": 1.0
+     },
+     {
+      "p": "tempa",
+      "w": 1.5
+     },
+     {
+      "p": "momentum",
+      "w": 1.0
+     }
+    ]
+   },
+   "exact": true,
+   "samples": [
+    {
+     "text": "na razie",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "na razie"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "for now",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "for now"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "domyślnie",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "domyślnie"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "by default",
+     "score": 2.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "by default"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "na start*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "na start*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "wolę",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "wolę"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "prefer*",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "prefer*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "decyduj*",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "decyduj*"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "szybko",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "szybko"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "małe",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "małe"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "kroki",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "kroki"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "steps",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "steps"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "tempa",
+     "score": 1.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "tempa"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "momentum",
+     "score": 1.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "momentum"
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "invariant",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "dic0301unrelatedtoken",
+     "score": 0.0,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "dic0301unrelatedtoken"
+      },
+      "phrasings": [],
+      "level": "strategy",
+      "form": "heuristic",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    },
+    {
+     "text": "na razie . for now . domyślnie . by default . na start* . wolę . prefer* . decyduj* . szybko . małe . kroki . steps . tempa . momentum . ",
+     "score": 19.5,
+     "typed": {
+      "id": "p_dic0301",
+      "statement": {
+       "pl": "na razie . for now . domyślnie . by default . na start* . wolę . prefer* . decyduj* . szybko . małe . kroki . steps . tempa . momentum . "
+      },
+      "phrasings": [],
+      "level": "value",
+      "form": "default",
+      "scope": {
+       "project_kinds": [],
+       "facets": [],
+       "artifact_types": [],
+       "areas": [],
+       "products": [],
+       "conditions": []
+      },
+      "protects": [],
+      "derived_from": [],
+      "evidence_for": [],
+      "counterexamples": [],
+      "exceptions": [],
+      "confidence": 0.5,
+      "predicts": [],
+      "conflicts_with": [],
+      "supersedes": [],
+      "validation_status": "candidate",
+      "owner": "",
+      "origin": "archive",
+      "sources": [],
+      "checks": [],
+      "value_constraints": {}
+     }
+    }
+   ]
+  }
+ ],
+ "deletion": [
+  {
+   "name": "generalize.generalization",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "ważniejsz* niż",
+      "w": 2.0
+     },
+     {
+      "p": "more important than",
+      "w": 2.0
+     },
+     {
+      "p": "matters more",
+      "w": 2.0
+     },
+     {
+      "p": "na pierwszym miejscu",
+      "w": 2.0
+     },
+     {
+      "p": "wolę",
+      "w": 1.5
+     },
+     {
+      "p": "prefer*",
+      "w": 1.5
+     },
+     {
+      "p": "reguł*",
+      "w": 2.0
+     },
+     {
+      "p": "zasad*",
+      "w": 2.0
+     },
+     {
+      "p": "rule",
+      "w": 1.5
+     },
+     {
+      "p": "jak zawsze",
+      "w": 2.0
+     },
+     {
+      "p": "za każdym razem",
+      "w": 2.0
+     },
+     {
+      "p": "u mnie",
+      "w": 1.5
+     },
+     {
+      "p": "po pierwsze",
+      "w": 2.0
+     },
+     {
+      "p": "po drugie",
+      "w": 2.0
+     },
+     {
+      "p": "po trzecie",
+      "w": 2.0
+     },
+     {
+      "p": "nie kasuj*",
+      "w": 2.0
+     },
+     {
+      "p": "never delete",
+      "w": 2.0
+     },
+     {
+      "p": "wygrywa",
+      "w": 2.0
+     },
+     {
+      "p": "wins",
+      "w": 1.5
+     },
+     {
+      "p": "ten sam wzorzec",
+      "w": 2.0
+     },
+     {
+      "p": "same pattern",
+      "w": 2.0
+     },
+     {
+      "p": "kiedy",
+      "w": 1.0
+     },
+     {
+      "p": "gdy",
+      "w": 1.0
+     },
+     {
+      "p": "whenever",
+      "w": 1.5
+     },
+     {
+      "p": "zamiast",
+      "w": 1.0
+     },
+     {
+      "p": "instead of",
+      "w": 1.0
+     },
+     {
+      "p": "nie nowy",
+      "w": 1.5
+     },
+     {
+      "p": "nie nową",
+      "w": 1.5
+     },
+     {
+      "p": "not a new",
+      "w": 1.5
+     },
+     {
+      "p": "zanim",
+      "w": 1.0
+     },
+     {
+      "p": "before",
+      "w": 0.5
+     },
+     {
+      "p": "najpierw",
+      "w": 1.0
+     },
+     {
+      "p": "dopiero",
+      "w": 1.0
+     },
+     {
+      "p": "nie zmienia",
+      "w": 1.0
+     },
+     {
+      "p": "zero zmian",
+      "w": 1.0
+     },
+     {
+      "p": "nie zapisuj*",
+      "w": 1.0
+     },
+     {
+      "p": "zostawiam",
+      "w": 1.0
+     },
+     {
+      "p": "odwracaln*",
+      "w": 1.5
+     },
+     {
+      "p": "reversible",
+      "w": 1.5
+     },
+     {
+      "p": "wprost",
+      "w": 1.0
+     },
+     {
+      "p": "czemu odpadł*",
+      "w": 1.5
+     },
+     {
+      "p": "dokładnie tak jak",
+      "w": 1.0
+     }
+    ]
+   },
+   "score": 63.5,
+   "no_resurrection": false,
+   "typed": {
+    "id": "p_dic0301",
+    "statement": {
+     "pl": "ważniejsz* niż . more important than . matters more . na pierwszym miejscu . wolę . prefer* . reguł* . zasad* . rule . jak zawsze . za każdym razem . u mnie . po pierwsze . po drugie . po trzecie . nie kasuj* . never delete . wygrywa . wins . ten sam wzorzec . same pattern . kiedy . gdy . whenever . zamiast . instead of . nie nowy . nie nową . not a new . zanim . before . najpierw . dopiero . nie zmienia . zero zmian . nie zapisuj* . zostawiam . odwracaln* . reversible . wprost . czemu odpadł* . dokładnie tak jak . "
+    },
+    "phrasings": [],
+    "level": "value",
+    "form": "meta",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  },
+  {
+   "name": "principle.level.value",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "ważniejsz* niż",
+      "w": 2.0
+     },
+     {
+      "p": "more important than",
+      "w": 2.0
+     },
+     {
+      "p": "matters more",
+      "w": 2.0
+     },
+     {
+      "p": "na pierwszym miejscu",
+      "w": 2.0
+     },
+     {
+      "p": "wartoś*",
+      "w": 1.5
+     },
+     {
+      "p": "value*",
+      "w": 1.0
+     },
+     {
+      "p": "opcjonalnoś*",
+      "w": 1.5
+     },
+     {
+      "p": "optionality",
+      "w": 1.5
+     },
+     {
+      "p": "prawd*",
+      "w": 1.0
+     },
+     {
+      "p": "truth",
+      "w": 1.0
+     },
+     {
+      "p": "wprost",
+      "w": 2.5
+     },
+     {
+      "p": "honest*",
+      "w": 1.5
+     },
+     {
+      "p": "autonomi*",
+      "w": 1.5
+     },
+     {
+      "p": "tempa",
+      "w": 1.5
+     },
+     {
+      "p": "tempo",
+      "w": 1.5
+     },
+     {
+      "p": "momentum",
+      "w": 1.5
+     },
+     {
+      "p": "przejrzyst*",
+      "w": 1.5
+     },
+     {
+      "p": "transparen*",
+      "w": 1.5
+     }
+    ]
+   },
+   "score": 28.5,
+   "no_resurrection": false,
+   "typed": {
+    "id": "p_dic0301",
+    "statement": {
+     "pl": "ważniejsz* niż . more important than . matters more . na pierwszym miejscu . wartoś* . value* . opcjonalnoś* . optionality . prawd* . truth . wprost . honest* . autonomi* . tempa . tempo . momentum . przejrzyst* . transparen* . "
+    },
+    "phrasings": [],
+    "level": "value",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  },
+  {
+   "name": "principle.level.epistemic",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "nie wiem",
+      "w": 2.0
+     },
+     {
+      "p": "know",
+      "w": 1.0
+     },
+     {
+      "p": "zapisuj*",
+      "w": 1.5
+     },
+     {
+      "p": "record*",
+      "w": 1.0
+     },
+     {
+      "p": "notatk*",
+      "w": 1.0
+     },
+     {
+      "p": "note*",
+      "w": 0.5
+     },
+     {
+      "p": "kontrprzykład*",
+      "w": 2.0
+     },
+     {
+      "p": "counterexample*",
+      "w": 2.0
+     },
+     {
+      "p": "dowod*",
+      "w": 1.5
+     },
+     {
+      "p": "evidence",
+      "w": 1.5
+     },
+     {
+      "p": "utknęł*",
+      "w": 1.5
+     },
+     {
+      "p": "utkn*",
+      "w": 1.0
+     },
+     {
+      "p": "stuck",
+      "w": 1.5
+     },
+     {
+      "p": "opisuj*",
+      "w": 1.0
+     },
+     {
+      "p": "z opisem",
+      "w": 1.5
+     },
+     {
+      "p": "czemu",
+      "w": 1.0
+     },
+     {
+      "p": "porzucon*",
+      "w": 1.0
+     },
+     {
+      "p": "nie kasuj*",
+      "w": 1.5
+     },
+     {
+      "p": "gałęzi",
+      "w": 1.0
+     },
+     {
+      "p": "branch",
+      "w": 1.0
+     },
+     {
+      "p": "ręczn*",
+      "w": 0.5
+     }
+    ]
+   },
+   "score": 26.5,
+   "no_resurrection": false,
+   "typed": {
+    "id": "p_dic0301",
+    "statement": {
+     "pl": "nie wiem . know . zapisuj* . record* . notatk* . note* . kontrprzykład* . counterexample* . dowod* . evidence . utknęł* . utkn* . stuck . opisuj* . z opisem . czemu . porzucon* . nie kasuj* . gałęzi . branch . ręczn* . "
+    },
+    "phrasings": [],
+    "level": "epistemic",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  },
+  {
+   "name": "principle.form.invariant",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "nigdy",
+      "w": 2.0
+     },
+     {
+      "p": "never",
+      "w": 2.0
+     },
+     {
+      "p": "nie kasuj*",
+      "w": 2.0
+     },
+     {
+      "p": "po pierwsze",
+      "w": 1.5
+     },
+     {
+      "p": "po drugie",
+      "w": 1.5
+     },
+     {
+      "p": "na pierwszym miejscu",
+      "w": 1.5
+     },
+     {
+      "p": "wprost",
+      "w": 1.0
+     },
+     {
+      "p": "dalej",
+      "w": 0.5
+     }
+    ]
+   },
+   "score": 12.0,
+   "no_resurrection": false,
+   "typed": {
+    "id": "p_dic0301",
+    "statement": {
+     "pl": "nigdy . never . nie kasuj* . po pierwsze . po drugie . na pierwszym miejscu . wprost . dalej . "
+    },
+    "phrasings": [],
+    "level": "value",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  },
+  {
+   "name": "principle.form.conflict_resolution",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "kłóc*",
+      "w": 2.5
+     },
+     {
+      "p": "konflikt*",
+      "w": 2.5
+     },
+     {
+      "p": "conflict*",
+      "w": 2.5
+     },
+     {
+      "p": "wygrywa",
+      "w": 2.5
+     },
+     {
+      "p": "wins",
+      "w": 2.0
+     },
+     {
+      "p": "zgod*",
+      "w": 2.0
+     },
+     {
+      "p": "consent",
+      "w": 2.0
+     },
+     {
+      "p": "potwierdz*",
+      "w": 1.5
+     },
+     {
+      "p": "confirm*",
+      "w": 1.5
+     },
+     {
+      "p": "koszt",
+      "w": 1.0
+     }
+    ]
+   },
+   "score": 20.0,
+   "no_resurrection": false,
+   "typed": {
+    "id": "p_dic0301",
+    "statement": {
+     "pl": "kłóc* . konflikt* . conflict* . wygrywa . wins . zgod* . consent . potwierdz* . confirm* . koszt . "
+    },
+    "phrasings": [],
+    "level": "strategy",
+    "form": "conflict_resolution",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  },
+  {
+   "name": "principle.form.meta",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "reguł*",
+      "w": 2.5
+     },
+     {
+      "p": "zasad*",
+      "w": 2.0
+     },
+     {
+      "p": "rule",
+      "w": 2.0
+     },
+     {
+      "p": "principle",
+      "w": 2.0
+     },
+     {
+      "p": "za drugim razem",
+      "w": 2.0
+     },
+     {
+      "p": "second time",
+      "w": 2.0
+     },
+     {
+      "p": "kontrprzykład*",
+      "w": 1.0
+     }
+    ]
+   },
+   "score": 13.5,
+   "no_resurrection": false,
+   "typed": {
+    "id": "p_dic0301",
+    "statement": {
+     "pl": "reguł* . zasad* . rule . principle . za drugim razem . second time . kontrprzykład* . "
+    },
+    "phrasings": [],
+    "level": "epistemic",
+    "form": "meta",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  },
+  {
+   "name": "principle.form.default",
+   "lookup": {
+    "phrases": [
+     {
+      "p": "na razie",
+      "w": 1.5
+     },
+     {
+      "p": "for now",
+      "w": 1.5
+     },
+     {
+      "p": "domyślnie",
+      "w": 2.0
+     },
+     {
+      "p": "by default",
+      "w": 2.0
+     },
+     {
+      "p": "na start*",
+      "w": 1.5
+     },
+     {
+      "p": "wolę",
+      "w": 1.0
+     },
+     {
+      "p": "prefer*",
+      "w": 1.0
+     },
+     {
+      "p": "decyduj*",
+      "w": 1.5
+     },
+     {
+      "p": "szybko",
+      "w": 1.5
+     },
+     {
+      "p": "małe",
+      "w": 1.0
+     },
+     {
+      "p": "kroki",
+      "w": 1.5
+     },
+     {
+      "p": "steps",
+      "w": 1.0
+     },
+     {
+      "p": "tempa",
+      "w": 1.5
+     },
+     {
+      "p": "momentum",
+      "w": 1.0
+     }
+    ]
+   },
+   "score": 19.5,
+   "no_resurrection": false,
+   "typed": {
+    "id": "p_dic0301",
+    "statement": {
+     "pl": "na razie . for now . domyślnie . by default . na start* . wolę . prefer* . decyduj* . szybko . małe . kroki . steps . tempa . momentum . "
+    },
+    "phrasings": [],
+    "level": "value",
+    "form": "default",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  }
+ ],
+ "empty_pack_override": [
+  {
+   "name": "generalize.generalization",
+   "loader_rejected": true,
+   "generic_empty_matcher_score": 0.0
+  },
+  {
+   "name": "principle.level.value",
+   "loader_rejected": true,
+   "generic_empty_matcher_score": 0.0
+  },
+  {
+   "name": "principle.level.epistemic",
+   "loader_rejected": true,
+   "generic_empty_matcher_score": 0.0
+  },
+  {
+   "name": "principle.form.invariant",
+   "loader_rejected": true,
+   "generic_empty_matcher_score": 0.0
+  },
+  {
+   "name": "principle.form.conflict_resolution",
+   "loader_rejected": true,
+   "generic_empty_matcher_score": 0.0
+  },
+  {
+   "name": "principle.form.meta",
+   "loader_rejected": true,
+   "generic_empty_matcher_score": 0.0
+  },
+  {
+   "name": "principle.form.default",
+   "loader_rejected": true,
+   "generic_empty_matcher_score": 0.0
+  }
+ ],
+ "replacement": [
+  {
+   "name": "generalize.generalization",
+   "replacement_only": true
+  },
+  {
+   "name": "principle.level.value",
+   "replacement_only": true
+  },
+  {
+   "name": "principle.level.epistemic",
+   "replacement_only": true
+  },
+  {
+   "name": "principle.form.invariant",
+   "replacement_only": true
+  },
+  {
+   "name": "principle.form.conflict_resolution",
+   "replacement_only": true
+  },
+  {
+   "name": "principle.form.meta",
+   "replacement_only": true
+  },
+  {
+   "name": "principle.form.default",
+   "replacement_only": true
+  }
+ ],
+ "dev_principles": {
+  "principles": [
+   {
+    "id": "p.presets_are_data",
+    "statement": {
+     "en": "A preset is information, not code; agent roles are policy bundles, not classes",
+     "pl": "Preset = informacja, nie kod; role agentów to pakiety polityk, nie klasy"
+    },
+    "phrasings": [
+     "System prompt presets",
+     "preset = informacja, nie kod",
+     "role/preset jako dane",
+     "role/policy bundles, nie klasy zaszyte w kodzie",
+     "i po trzecie, na razie tylko dla presetów/configów: to dane, nie nowa gałąź kodu."
+    ],
+    "level": "strategy",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [
+      "agent"
+     ],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [
+     "p.kod_ne_dane"
+    ],
+    "evidence_for": [
+     "ob_2fa0c9ea2535e2d2"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.8600000000000001,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "",
+    "origin": "archive",
+    "sources": [
+     {
+      "doc": "docs/history/CHATADHD_PELNY_RAPORT_HISTORYCZNY.md",
+      "section": "Sesja 2 'System prompt edytowalny z kilkoma presetami'",
+      "date": "2026-01-23",
+      "claim": "",
+      "observation": "",
+      "note": ""
+     },
+     {
+      "doc": "docs/architecture/MEGA_MASTER_2026-09-16.md",
+      "section": "§4.7, §11",
+      "date": "2026-09-16",
+      "claim": "",
+      "observation": "",
+      "note": ""
+     }
+    ],
+    "checks": [],
+    "value_constraints": {
+     "roles": {
+      "defined_in": "data"
+     }
+    }
+   },
+   {
+    "id": "p_080effcbb3de7645",
+    "statement": {
+     "pl": "zanim zacznę cokolwiek kodować w tym roku, zapisuję sobie parę rzeczy, żeby nie musieć ich za każdym razem wymyślać od nowa."
+    },
+    "phrasings": [
+     "zanim zacznę cokolwiek kodować w tym roku, zapisuję sobie parę rzeczy, żeby nie musieć ich za każdym razem wymyślać od nowa."
+    ],
+    "level": "epistemic",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_c49404f0149652da"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.6000000000000001,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_0c2b3b04100e4bd2",
+    "statement": {
+     "pl": "nie, zostawiam demo jak jest, opisuje czemu odpadlo, moze kiedys do tego wroce"
+    },
+    "phrasings": [
+     "nie, zostawiam demo jak jest, opisuje czemu odpadlo, moze kiedys do tego wroce"
+    ],
+    "level": "epistemic",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Analog Ghosts"
+     ]
+    },
+    "protects": [],
+    "derived_from": [
+     "p_e7e0d10572bb9b16"
+    ],
+    "evidence_for": [
+     "ob_2d25627b12a2b369"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.55,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_0ca82afa97c0f8f8",
+    "statement": {
+     "pl": "Docelowo telefon i desktop, jeden core. Zero telemetrii domyslnie, dziala offline, a jak juz musi cos wyjsc na zewnatrz to tylko po mojej wyraznej zgodzie."
+    },
+    "phrasings": [
+     "Docelowo telefon i desktop, jeden core. Zero telemetrii domyslnie, dziala offline, a jak juz musi cos wyjsc na zewnatrz to tylko po mojej wyraznej zgodzie."
+    ],
+    "level": "strategy",
+    "form": "conflict_resolution",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in NoteFlow"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_825a7e7f009ae3f1"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_1dd19dd8a5cbcdba",
+    "statement": {
+     "pl": "burza mozgow: wszystko o etapach pipeline'u: storyboard z tekstu, potem keyframe'y, potem generowanie klipow, na koncu compose/montaz - kazdy etap drozszy niz poprzedni, wiec tanie najpierw, drogie na koncu, i pytam zanim odpale drogi etap."
+    },
+    "phrasings": [
+     "burza mozgow: wszystko o etapach pipeline'u: storyboard z tekstu, potem keyframe'y, potem generowanie klipow, na koncu compose/montaz - kazdy etap drozszy niz poprzedni, wiec tanie najpierw, drogie na koncu, i pytam zanim odpale drogi etap."
+    ],
+    "level": "strategy",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Reeltime"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_b72accb66f544872"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_214d69bc83267861",
+    "statement": {
+     "pl": "tak, tak to widze, nawet jesli compose nigdy nie powstanie to schemat juz jest gotowy"
+    },
+    "phrasings": [
+     "tak, tak to widze, nawet jesli compose nigdy nie powstanie to schemat juz jest gotowy"
+    ],
+    "level": "strategy",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Reeltime"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_4e31f69fdeb55b99"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_231595376cdf4c41",
+    "statement": {
+     "pl": "to w sumie ta sama regula w szerszej wersji: kiedy dwie wartosci sie kloca, wygrywa ta opcja, ktora latwiej cofnac - pieniadze to tylko jeden szczegolny przypadek nieodwracalnosci"
+    },
+    "phrasings": [
+     "to w sumie ta sama regula w szerszej wersji: kiedy dwie wartosci sie kloca, wygrywa ta opcja, ktora latwiej cofnac - pieniadze to tylko jeden szczegolny przypadek nieodwracalnosci"
+    ],
+    "level": "strategy",
+    "form": "conflict_resolution",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_3cbd5a27cfb4f2fc"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.8,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_4b48be69aa2f49d2",
+    "statement": {
+     "pl": "po pierwsze: opcjonalność jest ważniejsza niż tymczasowa szybkość - wolę zostawić sobie drogę odwrotu niż zaoszczędzić dzień teraz."
+    },
+    "phrasings": [
+     "po pierwsze: opcjonalność jest ważniejsza niż tymczasowa szybkość - wolę zostawić sobie drogę odwrotu niż zaoszczędzić dzień teraz."
+    ],
+    "level": "value",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_535198b8d502dda7"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.6000000000000001,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_57a4844d39c09722",
+    "statement": {
+     "pl": "poprawka pytania: no dobra, prawda jest taka ze ja po prostu decyduje szybko na tym co wiem, a potem koryguje jak sie cos zmieni - nie czekam na pewnosc, bo pewnosci nigdy nie ma"
+    },
+    "phrasings": [
+     "poprawka pytania: no dobra, prawda jest taka ze ja po prostu decyduje szybko na tym co wiem, a potem koryguje jak sie cos zmieni - nie czekam na pewnosc, bo pewnosci nigdy nie ma"
+    ],
+    "level": "strategy",
+    "form": "default",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_83c037e39baa9229"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_599da6dc0ad9146d",
+    "statement": {
+     "pl": "no i przy okazji: python-quick zostawiam jako branch, nie kasuje, dopisuje tylko czemu przegral - a regule zapisuje sobie dopiero jak zobacze ten sam wzorzec w co najmniej dwoch roznych projektach, nie po jednym razie"
+    },
+    "phrasings": [
+     "no i przy okazji: python-quick zostawiam jako branch, nie kasuje, dopisuje tylko czemu przegral - a regule zapisuje sobie dopiero jak zobacze ten sam wzorzec w co najmniej dwoch roznych projektach, nie po jednym razie"
+    ],
+    "level": "epistemic",
+    "form": "meta",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_cb030cc9aa29cc2c"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.8,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_6a4712d007a1c791",
+    "statement": {
+     "pl": "tak: kazdy termin musi byc powiazany z konkretna podstawa prawna, inaczej to sie nie liczy. i burza mozgow: wszystko co dotyczy terminow: liczone od dostarczenia pisma, zawsze plus dwa dni zapasu, zawsze zapisana podstawa prawna."
+    },
+    "phrasings": [
+     "tak: kazdy termin musi byc powiazany z konkretna podstawa prawna, inaczej to sie nie liczy. i burza mozgow: wszystko co dotyczy terminow: liczone od dostarczenia pisma, zawsze plus dwa dni zapasu, zawsze zapisana podstawa prawna."
+    ],
+    "level": "strategy",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Sprawa Kwiatowa (Lokatorka)"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_ada79bb7a688f43d"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_702664949033fe42",
+    "statement": {
+     "pl": "Zenon pisze, ze nigdy przed marcem nie zglaszalam zadnej plesni"
+    },
+    "phrasings": [
+     "Zenon pisze, ze nigdy przed marcem nie zglaszalam zadnej plesni"
+    ],
+    "level": "strategy",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Sprawa Kwiatowa (Lokatorka)"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_3b78d595c80c2bde"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_749fcb7bd1357243",
+    "statement": {
+     "pl": "po dwoch, jak zawsze - u mnie regula staje sie regula dopiero za drugim razem, nie za pierwszym"
+    },
+    "phrasings": [
+     "po dwoch, jak zawsze - u mnie regula staje sie regula dopiero za drugim razem, nie za pierwszym"
+    ],
+    "level": "strategy",
+    "form": "meta",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [
+     "p_599da6dc0ad9146d"
+    ],
+    "evidence_for": [
+     "ob_27eb77ac0baaea40"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.8,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_75142a64a0385483",
+    "statement": {
+     "pl": "opcjonalnosc dalej na pierwszym miejscu - wole zaplacic troche czasu teraz zeby nie zamykac sobie drzwi pozniej"
+    },
+    "phrasings": [
+     "opcjonalnosc dalej na pierwszym miejscu - wole zaplacic troche czasu teraz zeby nie zamykac sobie drzwi pozniej"
+    ],
+    "level": "value",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_4bf2b8ab577659cb"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.65,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_79e225e9953c4615",
+    "statement": {
+     "pl": "presety/config jako dane - to zostaje, ale podobno niektorzy robia WSZYSTKO jako dane, az do logiki wlacznie. ja bym sie az tak daleko nie posunela, algorytmy i UI zostaja u mnie w kodzie"
+    },
+    "phrasings": [
+     "presety/config jako dane - to zostaje, ale podobno niektorzy robia WSZYSTKO jako dane, az do logiki wlacznie. ja bym sie az tak daleko nie posunela, algorytmy i UI zostaja u mnie w kodzie"
+    ],
+    "level": "strategy",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_7cdaa46183e1d4ee"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_8654c1ed489e8d32",
+    "statement": {
+     "pl": "i zanim cos nazwe 'zasada u mnie' to naprawde szukam kontrprzykladu z ostatnich dwoch tygodni, zeby sie nie oszukiwac"
+    },
+    "phrasings": [
+     "i zanim cos nazwe 'zasada u mnie' to naprawde szukam kontrprzykladu z ostatnich dwoch tygodni, zeby sie nie oszukiwac"
+    ],
+    "level": "epistemic",
+    "form": "meta",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_b4fabce58ee7ba54"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.8,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_962c0010c407c989",
+    "statement": {
+     "pl": "tak, dodaje bramke: przed duzym uploadem zawsze pytam / pokazuje estymowany koszt i czekam na potwierdzenie, zanim system dziala dalej"
+    },
+    "phrasings": [
+     "tak, dodaje bramke: przed duzym uploadem zawsze pytam / pokazuje estymowany koszt i czekam na potwierdzenie, zanim system dziala dalej"
+    ],
+    "level": "strategy",
+    "form": "conflict_resolution",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in NoteFlow"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "cl_7f9bc49c56473dd6",
+     "ob_39527751ff2f0e65"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_990b368a223a80e9",
+    "statement": {
+     "pl": "no wlasnie to mi uswiadomilo cos ogolniejszego: jak koszt (pieniadze, czas, nieodwracalnosc) rosnie, to zawsze musze pytac / zapisywac zgode zanim cokolwiek dzieje sie dalej - to nie jest tylko regula dla notatnika"
+    },
+    "phrasings": [
+     "no wlasnie to mi uswiadomilo cos ogolniejszego: jak koszt (pieniadze, czas, nieodwracalnosc) rosnie, to zawsze musze pytac / zapisywac zgode zanim cokolwiek dzieje sie dalej - to nie jest tylko regula dla notatnika"
+    ],
+    "level": "strategy",
+    "form": "conflict_resolution",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_ef1934479c85e19b"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.8,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_abe6a17b8c730736",
+    "statement": {
+     "pl": "tak, checklist to zwykla notatka z dodatkowym polem items w danych, nie nowy typ/klasa"
+    },
+    "phrasings": [
+     "tak, checklist to zwykla notatka z dodatkowym polem items w danych, nie nowy typ/klasa"
+    ],
+    "level": "epistemic",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in NoteFlow"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "cl_1376afa07e3c4971",
+     "ob_11764afc49fba5ce"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_b7552f556fbfe41a",
+    "statement": {
+     "pl": "nic wielkiego na raz - male odwracalne kroki jak zawsze, zero wielkich przepisywan bez potrzeby"
+    },
+    "phrasings": [
+     "nic wielkiego na raz - male odwracalne kroki jak zawsze, zero wielkich przepisywan bez potrzeby"
+    ],
+    "level": "strategy",
+    "form": "default",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Sprawa Kwiatowa (Lokatorka)"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_59311d64fac2fdeb"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.7,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_db3c63210eee0c93",
+    "statement": {
+     "pl": "no i wlasnie widze teraz ze to jest ten sam problem co ze stroziem - nie zapisuje na czym utknelam zanim przeskocze do czegos innego, robie to caly czas i sie potem gubie"
+    },
+    "phrasings": [
+     "no i wlasnie widze teraz ze to jest ten sam problem co ze stroziem - nie zapisuje na czym utknelam zanim przeskocze do czegos innego, robie to caly czas i sie potem gubie"
+    ],
+    "level": "epistemic",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_d8a3884f6024ac61"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_e15b8815620c0fb8",
+    "statement": {
+     "pl": "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+    },
+    "phrasings": [
+     "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+    ],
+    "level": "strategy",
+    "form": "conflict_resolution",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Reeltime"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "cl_322c3b509d4dad05",
+     "ob_6d3183966fef32bb"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.55,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_e3a2d7988454a4aa",
+    "statement": {
+     "pl": "po drugie: mówię wprost czego nie wiem albo czego nie zrobiłam, zamiast to ładnie opakowywać - i to dotyczy też rozmów z modelem, nie tylko z ludźmi."
+    },
+    "phrasings": [
+     "po drugie: mówię wprost czego nie wiem albo czego nie zrobiłam, zamiast to ładnie opakowywać - i to dotyczy też rozmów z modelem, nie tylko z ludźmi."
+    ],
+    "level": "value",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_7de2f94deba776a3"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.7,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_e66cb9555d9726d3",
+    "statement": {
+     "pl": "wcale nie jestem pewna, wiec bioce cyfrowy multitrack - latwiej cofnac bledy, jak dwie rzeczy sie kloca to wygrywa ta latwiejsza do cofniecia"
+    },
+    "phrasings": [
+     "wcale nie jestem pewna, wiec bioce cyfrowy multitrack - latwiej cofnac bledy, jak dwie rzeczy sie kloca to wygrywa ta latwiejsza do cofniecia"
+    ],
+    "level": "strategy",
+    "form": "conflict_resolution",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Analog Ghosts"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "cl_4f0d094a11c5aa33",
+     "ob_5d01a3e38fa26f62"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_e7e0d10572bb9b16",
+    "statement": {
+     "pl": "decyzja: bierzemy cpp-core. Python-quick zostaje porzucona, nie kasuje brancha, tylko opisuje czemu odpadl i zostawiam go jak jest."
+    },
+    "phrasings": [
+     "decyzja: bierzemy cpp-core. Python-quick zostaje porzucona, nie kasuje brancha, tylko opisuje czemu odpadl i zostawiam go jak jest."
+    ],
+    "level": "epistemic",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in NoteFlow"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "cl_525783d712d848bf",
+     "ob_4b227cc52c437332"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.75,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_ed5648d217ad1b90",
+    "statement": {
+     "pl": "przy okazji zamienilam recznie pisany diff na biblioteczny (Myers-style) do historii wersji notatek - to czysto wewnetrzne, nie zmienia kontraktu na zewnatrz, nie zapisuje tego jako architecture decision."
+    },
+    "phrasings": [
+     "przy okazji zamienilam recznie pisany diff na biblioteczny (Myers-style) do historii wersji notatek - to czysto wewnetrzne, nie zmienia kontraktu na zewnatrz, nie zapisuje tego jako architecture decision."
+    ],
+    "level": "epistemic",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in NoteFlow"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "cl_41973e927f5fe142",
+     "ob_5fa8d2e1d415cab9"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_edb345e867737db9",
+    "statement": {
+     "pl": "wkurza mnie jak sama sobie wmawiam ze cos jest 'prawie gotowe' zamiast powiedziec wprost ze utknelam - zawsze konczy sie gorzej"
+    },
+    "phrasings": [
+     "wkurza mnie jak sama sobie wmawiam ze cos jest 'prawie gotowe' zamiast powiedziec wprost ze utknelam - zawsze konczy sie gorzej"
+    ],
+    "level": "value",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": []
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_92a6dae1b7b94ecc"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.55,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_f667213f9a8c3de7",
+    "statement": {
+     "pl": "burza mozgow: wszystko co dotyczy alertow: powiadomienie na pulpit, wpis do logu, opcjonalnie mail - zawsze najpierw lokalnie."
+    },
+    "phrasings": [
+     "burza mozgow: wszystko co dotyczy alertow: powiadomienie na pulpit, wpis do logu, opcjonalnie mail - zawsze najpierw lokalnie."
+    ],
+    "level": "strategy",
+    "form": "heuristic",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Stroz (Watchdog)"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_9b654943e731a05d"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.44999999999999996,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_f99f959d4fd95d5b",
+    "statement": {
+     "pl": "a przy okazji refaktoru UI kolejny raz zgubily sie checklisty, trzeci raz z rzedu cos im sie dzieje przy duzych zmianach - zostawiam jak jest, zaznaczam lost, nie kasuje kodu ktory je robil"
+    },
+    "phrasings": [
+     "a przy okazji refaktoru UI kolejny raz zgubily sie checklisty, trzeci raz z rzedu cos im sie dzieje przy duzych zmianach - zostawiam jak jest, zaznaczam lost, nie kasuje kodu ktory je robil"
+    ],
+    "level": "epistemic",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in NoteFlow"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_1e2e92c053c6ff42"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.6000000000000001,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   },
+   {
+    "id": "p_ff1334de11c1b538",
+    "statement": {
+     "pl": "tak, nie kasuje, tylko oznaczam jako rejected"
+    },
+    "phrasings": [
+     "tak, nie kasuje, tylko oznaczam jako rejected"
+    ],
+    "level": "epistemic",
+    "form": "invariant",
+    "scope": {
+     "project_kinds": [],
+     "facets": [],
+     "artifact_types": [],
+     "areas": [],
+     "products": [],
+     "conditions": [
+      "observed only in Analog Ghosts"
+     ]
+    },
+    "protects": [],
+    "derived_from": [],
+    "evidence_for": [
+     "ob_ba59dda2afac6291"
+    ],
+    "counterexamples": [],
+    "exceptions": [],
+    "confidence": 0.5,
+    "predicts": [],
+    "conflicts_with": [],
+    "supersedes": [],
+    "validation_status": "candidate",
+    "owner": "user",
+    "origin": "archive",
+    "sources": [],
+    "checks": [],
+    "value_constraints": {}
+   }
+  ],
+  "seed_status": {
+   "p.abandoned_not_unimportant": "seed_only",
+   "p.atomic_writes": "seed_only",
+   "p.avoid_overgeneralisation": "seed_only",
+   "p.capability_honesty": "seed_only",
+   "p.capability_not_enum": "seed_only",
+   "p.code_is_knowledge": "seed_only",
+   "p.context_by_goal": "seed_only",
+   "p.data_is_variety": "seed_only",
+   "p.decision_classes": "seed_only",
+   "p.defer_decisions": "seed_only",
+   "p.edit_is_branch": "seed_only",
+   "p.errors_are_values": "seed_only",
+   "p.explicit_uncertainty": "seed_only",
+   "p.fact_not_inference": "seed_only",
+   "p.generator_not_history": "seed_only",
+   "p.honest_extensibility": "seed_only",
+   "p.keep_alternatives": "seed_only",
+   "p.kod_ne_dane": "seed_only",
+   "p.later_explicit_decision_wins": "seed_only",
+   "p.learning_track": "seed_only",
+   "p.local_first": "seed_only",
+   "p.memory_is_everything": "seed_only",
+   "p.modular_code": "seed_only",
+   "p.no_speculative_generality": "seed_only",
+   "p.no_telemetry": "seed_only",
+   "p.not_everything_yaml": "seed_only",
+   "p.one_system": "seed_only",
+   "p.owner_sources_over_general_knowledge": "seed_only",
+   "p.pref.ascii_icons": "seed_only",
+   "p.pref.flat_zip": "seed_only",
+   "p.pref.no_placeholders": "seed_only",
+   "p.pref.single_file": "seed_only",
+   "p.pref.sortable_versions": "seed_only",
+   "p.presets_are_data": "found",
+   "p.provenance": "seed_only",
+   "p.raw_immutable": "seed_only",
+   "p.renderer_is_adapter": "seed_only",
+   "p.resumable_auditable": "seed_only",
+   "p.seek_counterexamples": "seed_only",
+   "p.serialization_not_architecture": "seed_only",
+   "p.titles_weak_signal": "seed_only",
+   "p.update_on_data": "seed_only",
+   "p.user_override_wins": "seed_only",
+   "p.value.autonomy": "seed_only",
+   "p.value.honesty": "seed_only",
+   "p.value.information_preservation": "seed_only",
+   "p.value.minimal_arbitrariness": "seed_only",
+   "p.value.optionality": "seed_only",
+   "p.value.transparency": "seed_only",
+   "p.value.truth": "seed_only",
+   "p.zero_knowledge": "seed_only"
+  }
+ },
+ "dev_paradigms": [
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "repeated_ambiguous_tokens",
+   "expected": false,
+   "actual": true,
+   "correct": false,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "single_observation_distinct_music",
+   "expected": true,
+   "actual": false,
+   "correct": false,
+   "trace": null
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "subject_owns_unit_neighbour_cues",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "mixed_subject_wrong_domain",
+   "expected": false,
+   "actual": true,
+   "correct": false,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "mixed_subject_true_domain",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "repeated_one_strong_cue",
+   "expected": false,
+   "actual": true,
+   "correct": false,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "cross_unit_valid_subject_evidence",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "unrelated_units_not_pooled",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "rejected_support_not_an_anchor",
+   "expected": false,
+   "actual": true,
+   "correct": false,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "inferred_support_not_an_anchor",
+   "expected": false,
+   "actual": true,
+   "correct": false,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "explicit_kind_hint_preserved",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "kind_hint",
+     "op": {
+      "op": "kind_hint",
+      "value": "music"
+     },
+     "score": 1.0
+    },
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 0.25
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "music",
+   "case": "dominant_mixed_domain_table",
+   "expected": false,
+   "actual": true,
+   "correct": false,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "research",
+   "case": "unhinted_research_two_clear_cues",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.research",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "research",
+   "case": "unhinted_research_one_observation",
+   "expected": true,
+   "actual": false,
+   "correct": false,
+   "trace": null
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "research",
+   "case": "ambiguous_research_implementation_tokens",
+   "expected": false,
+   "actual": true,
+   "correct": false,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.research",
+      "min": 2
+     },
+     "score": 1.0
+    }
+   ]
+  },
+  {
+   "mode": "legacy",
+   "paradigm": "research",
+   "case": "unhinted_research_full_vocabulary",
+   "expected": true,
+   "actual": false,
+   "correct": false,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "repeated_ambiguous_tokens",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "single_observation_distinct_music",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0,
+     "evidence": {
+      "class": "paradigm.music",
+      "min_weight": 2.5,
+      "distinct_weight": 5.5,
+      "distinct_phrases": 3,
+      "unit": "",
+      "window": 2,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_dada0222b861946b"
+      ],
+      "observations_by_unit": {
+       "u": [
+        "ob_dada0222b861946b"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "subject_owns_unit_neighbour_cues",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0,
+     "evidence": {
+      "class": "paradigm.music",
+      "min_weight": 2.5,
+      "distinct_weight": 3.5,
+      "distinct_phrases": 2,
+      "unit": "",
+      "window": 2,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_98b4db35ba0c1945",
+       "ob_cdf4da3570e6e9ff"
+      ],
+      "observations_by_unit": {
+       "u": [
+        "ob_98b4db35ba0c1945",
+        "ob_cdf4da3570e6e9ff"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "mixed_subject_wrong_domain",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "mixed_subject_true_domain",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0,
+     "evidence": {
+      "class": "paradigm.music",
+      "min_weight": 2.5,
+      "distinct_weight": 5.5,
+      "distinct_phrases": 3,
+      "unit": "",
+      "window": 2,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_7af666a4ffbc4a3c",
+       "ob_fe6e25525031cec5"
+      ],
+      "observations_by_unit": {
+       "u": [
+        "ob_7af666a4ffbc4a3c",
+        "ob_fe6e25525031cec5"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "repeated_one_strong_cue",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "cross_unit_valid_subject_evidence",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 1.0,
+     "evidence": {
+      "class": "paradigm.music",
+      "min_weight": 2.5,
+      "distinct_weight": 3.5,
+      "distinct_phrases": 2,
+      "unit": "",
+      "window": 2,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_1c3cc5c3b9955cd1",
+       "ob_cd3ddc2f0f63ec27"
+      ],
+      "observations_by_unit": {
+       "u1": [
+        "ob_1c3cc5c3b9955cd1"
+       ],
+       "u2": [
+        "ob_cd3ddc2f0f63ec27"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "unrelated_units_not_pooled",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "rejected_support_not_an_anchor",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "inferred_support_not_an_anchor",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "explicit_kind_hint_preserved",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "kind_hint",
+     "op": {
+      "op": "kind_hint",
+      "value": "music"
+     },
+     "score": 1.0
+    },
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.music",
+      "min": 2
+     },
+     "score": 0.2,
+     "evidence": {
+      "class": "paradigm.music",
+      "min_weight": 2.5,
+      "distinct_weight": 1.0,
+      "distinct_phrases": 1,
+      "unit": "",
+      "window": 2,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_4628fdbb4ff69837"
+      ],
+      "observations_by_unit": {
+       "u": [
+        "ob_4628fdbb4ff69837"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "music",
+   "case": "dominant_mixed_domain_table",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "research",
+   "case": "unhinted_research_two_clear_cues",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.research",
+      "min": 2
+     },
+     "score": 1.0,
+     "evidence": {
+      "class": "paradigm.research",
+      "min_weight": 3.5,
+      "distinct_weight": 3.5,
+      "distinct_phrases": 2,
+      "unit": "",
+      "window": 1,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_70baee6d931d9f33",
+       "ob_90c0f81059211f4f"
+      ],
+      "observations_by_unit": {
+       "u": [
+        "ob_70baee6d931d9f33",
+        "ob_90c0f81059211f4f"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "research",
+   "case": "unhinted_research_one_observation",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.research",
+      "min": 2
+     },
+     "score": 1.0,
+     "evidence": {
+      "class": "paradigm.research",
+      "min_weight": 3.5,
+      "distinct_weight": 3.5,
+      "distinct_phrases": 2,
+      "unit": "",
+      "window": 1,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_a6ff7015d448b5c4"
+      ],
+      "observations_by_unit": {
+       "u": [
+        "ob_a6ff7015d448b5c4"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "research",
+   "case": "ambiguous_research_implementation_tokens",
+   "expected": false,
+   "actual": false,
+   "correct": true,
+   "trace": null
+  },
+  {
+   "mode": "accepted",
+   "paradigm": "research",
+   "case": "unhinted_research_full_vocabulary",
+   "expected": true,
+   "actual": true,
+   "correct": true,
+   "trace": [
+    {
+     "anchor": "cue",
+     "op": {
+      "op": "cue",
+      "class": "paradigm.research",
+      "min": 2
+     },
+     "score": 1.0,
+     "evidence": {
+      "class": "paradigm.research",
+      "min_weight": 3.5,
+      "distinct_weight": 6.5,
+      "distinct_phrases": 4,
+      "unit": "",
+      "window": 1,
+      "dominant_context": false,
+      "whole_unit": false,
+      "aggregation": "distinct_across_units",
+      "observations": [
+       "ob_261b32a87e59c977"
+      ],
+      "observations_by_unit": {
+       "u": [
+        "ob_261b32a87e59c977"
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "counts": {
+  "exact_classes": 7,
+  "classes": 7,
+  "phrases": 120,
+  "deletion_no_resurrection": 0,
+  "empty_pack_rejected": 7,
+  "replacement_only": 7
+ }
+}

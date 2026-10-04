@@ -1,0 +1,311 @@
+// Explicit scratch compilation only; this suffix is outside the core *.cpp glob.
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <set>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+#include "extract/prompt_method_graph.h"
+#include "loom/model.h"
+#include "loom/util/sha256.h"
+
+using namespace loom;
+namespace prompts = loom::extract::prompts;
+namespace methods = loom::extract::prompts::method_graph;
+
+namespace {
+Json take(Result<Json> result) {
+  if (!result) throw std::runtime_error(result.error().message);
+  return std::move(*result);
+}
+prompts::Contract contract(std::string_view id, const std::filesystem::path& directory = {},
+                           const Json& patch = Json::object()) {
+  auto result = prompts::resolve(id, directory, patch);
+  if (!result) throw std::runtime_error(result.error().message);
+  return std::move(*result);
+}
+bool same(const Json& left, const Json& right) {
+  return json::canonical(left) == json::canonical(right);
+}
+Json entity(const Json& profile, const Json& id) {
+  for (const auto& row : profile["entities"]) if (row["id"] == id) return row;
+  throw std::runtime_error("native entity missing " + json::dump(id));
+}
+bool edge(const Json& profile, const Json& subject, const char* role, const Json& object) {
+  const auto& predicates = profile["vocabulary"]["predicates"];
+  if (!predicates.contains(role)) return false;
+  for (const auto& row : profile["claims"])
+    if (row["subject"] == subject && row["predicate"] == predicates[role] &&
+        row["object"] == object && row["value"].is_null()) return true;
+  return false;
+}
+bool definition_hashes(const Json& profile) {
+  for (const auto& row : profile["entities"]) {
+    const auto& attrs = row["attrs"];
+    if (attrs.contains("definition_sha256") &&
+        attrs["definition_sha256"] != Sha256::hex(json::canonical(attrs["definition"]))) return false;
+    if (attrs.contains("text_sha256") &&
+        attrs["text_sha256"] != Sha256::hex(attrs["text"].get<std::string>())) return false;
+  }
+  return true;
+}
+bool native_rows(const Json& profile) {
+  std::set<std::string> entities, claims, sources;
+  for (const auto& row : profile["entities"]) {
+    const auto parsed = model::Entity::from_json(row);
+    if (!parsed || !same(row, parsed->to_json()) || !entities.insert(parsed->id).second) return false;
+  }
+  for (const auto& row : profile["claims"]) {
+    const auto parsed = model::Claim::from_json(row);
+    if (!parsed || !same(row, parsed->to_json()) || !parsed->validate() ||
+        !claims.insert(parsed->id).second) return false;
+  }
+  for (const auto& row : profile["sources"]) {
+    const auto parsed = model::Observation::from_json(row["observation"]);
+    if (!parsed || !same(row["observation"], parsed->to_json()) ||
+        row["text_sha256"] != Sha256::hex(parsed->text) || !sources.insert(parsed->id).second) return false;
+  }
+  for (const auto& row : profile["entities"])
+    if (row["parent"] != "" && !entities.count(row["parent"].get<std::string>())) return false;
+  for (const auto& row : profile["claims"]) {
+    if (!entities.count(row["subject"].get<std::string>()) ||
+        (row["object"] != "" && !entities.count(row["object"].get<std::string>()))) return false;
+    for (const auto& support : row["assessment"]["basis"]["support"])
+      if (!sources.count(support["observation"].get<std::string>())) return false;
+  }
+  return true;
+}
+Json bindings() {
+  return Json{{"input_json", Json{{"text", "Zażółć 🙂 — źródło jest danymi"}, {"n", 3}}},
+              {"text", "Zażółć 🙂 — źródło jest danymi"}};
+}
+Json request(const prompts::Contract& selected, const Json& patch = Json::object()) {
+  return take(prompts::prepare_request(selected, "offline/requested-model",
+      "https://example.invalid", bindings(), patch));
+}
+Json parameters(const prompts::Contract& selected, const Json& prepared) {
+  Json controls = prepared["body_json"];
+  controls.erase("messages");
+  controls.erase("model");
+  return Json{{"request_parameters", controls}, {"transport", prepared["transport"]},
+      {"analysis_parameters", selected.definition["analysis_parameters"]},
+      {"validation_mode", selected.definition["validation_mode"]},
+      {"output_schema", selected.definition["output_schema"]}};
+}
+const char* const known_at = "2026-10-04T19:00:00Z";
+Json run_context(std::string id, const Json& prepared) {
+  return Json{{"run_id", std::move(id)}, {"knowledge_run_id", "kr_offline_fixture"},
+      {"input_sha256", Sha256::hex(json::canonical(bindings()))}, {"known_at", known_at},
+      {"measurements", Json{{"requests", 0}, {"input_bytes", prepared["body_bytes"].get<std::string>().size()},
+                           {"output_tokens", nullptr}, {"money_usd", nullptr}}},
+      {"measurement_scope", "offline_fixture_rendered_bytes_only"}};
+}
+Json candidates() {
+  return Json::array({
+      Json{{"id", "ca_offline_first"}, {"payload", Json{{"run_id", "kr_offline_fixture"},
+        {"proposal", Json{{"claim", Json{{"id", "cl_not_a_native_result"}, {"value", "synthetic draft"}}}}},
+        {"provenance", Json{{"origin", "model"}}}}}},
+      Json{{"id", "ca_offline_second"}, {"payload", Json{{"run_id", "kr_offline_fixture"},
+        {"proposal", Json{{"entity_drafts", Json::array({Json{{"handle", "@local_draft"}}})}}},
+        {"provenance", Json{{"origin", "model"}}}}}}});
+}
+Json provenance(bool from_cache = false) {
+  return Json{{"raw_model_content", "{\"fixture\":\"synthetic output 🙂\"}"},
+      {"known_at", known_at}, {"from_cache", from_cache},
+      {"response_provenance", from_cache ? "checked_cache_replay" : "synthetic_offline_fixture"},
+      {"measurements", Json{{"requests", 0}, {"money_usd", nullptr}}},
+      {"measurement_scope", "offline_fixture_no_provider_calls"}};
+}
+bool uncertain_results(const Json& graph) {
+  for (const auto& id : graph["result_entity_ids"]) {
+    const auto row = entity(graph["profile"], id);
+    if (row["origin"] != "model_knowledge" || row["attrs"].value("content_verification", "") != "unverified")
+      return false;
+  }
+  return graph["canonical_store_written"] == false;
+}
+}  // namespace
+
+int main(int argc, char** argv) {
+  try {
+    int checks = 0;
+    auto check = [&](bool condition, std::string label) {
+      ++checks;
+      if (!condition) throw std::runtime_error("FAIL " + label);
+      std::cout << "PASS " << label << '\n';
+    };
+    Json artifact{{"schema", "loom.prompt_method_graph_fixture/1"}, {"graphs", Json::array()},
+                  {"provider_calls", 0}, {"producer_execution_verified", false}};
+    for (const auto* id : {"semantic.relation", "semantic.occurrence_graph", "semantic.analysis"}) {
+      const auto selected = contract(id);
+      const Json prepared = request(selected);
+      const Json before_request = prepared;
+      const Json consumed = parameters(selected, prepared);
+      const Json profile = take(methods::method_profile(selected, prepared, consumed, Json::object(),
+          Json{{"known_at", known_at}, {"preset_snapshot", selected.definition}}));
+      check(profile["bindings"].contains("method_identity_id") && profile["bindings"].contains("method_version_id"),
+            std::string(id) + ": data selects distinct native method/version bindings");
+      check(native_rows(profile), std::string(id) + ": definition DTOs are lossless and closed");
+      check(definition_hashes(profile), std::string(id) + ": version definitions and byte hashes verify");
+      const auto prompt = entity(profile, profile["bindings"]["prompt_version_id"]);
+      check(prompt["attrs"]["text"] == json::canonical(selected.definition["messages"]),
+            std::string(id) + ": complete roles/bindings/order survive prompt-template capture");
+      const auto parameter_set = entity(profile, profile["bindings"]["parameter_set_version_id"]);
+      check(same(parameter_set["attrs"]["definition"]["effective_parameters"], consumed) &&
+            same(parameter_set["attrs"]["definition"]["user_overrides"], Json::object()),
+            std::string(id) + ": parameter node records exactly consumed controls");
+      const auto recipe = entity(profile, profile["bindings"]["recipe_version_id"]);
+      check(recipe["attrs"]["definition"].value("model", Json(nullptr)) == prepared["body_json"]["model"],
+            std::string(id) + ": recipe model comes from actual prepared request");
+      const auto preset = entity(profile, profile["bindings"]["preset_version_id"]);
+      check(same(preset["attrs"]["definition"]["analysis_prompt"], selected.definition) &&
+            preset["attrs"]["definition"].contains("parameters"),
+            std::string(id) + ": preset retains the original contract and graph-consumable default parameters");
+      const Json graph = take(methods::prepare_graph(profile, run_context("semantic_fixture_" + std::string(id), prepared)));
+      const auto& run_bindings = graph["manifest"]["bindings"];
+      check(edge(graph["profile"], run_bindings["run_id"], "requests_method_version", run_bindings["method_version_id"]) &&
+            edge(graph["profile"], run_bindings["run_id"], "uses_parameter_set", run_bindings["parameter_set_version_id"]),
+            std::string(id) + ": prepared run has real version and parameter edges");
+      const Json bound = take(methods::bind_candidates(graph, candidates(), provenance()));
+      check(native_rows(bound["profile"]), std::string(id) + ": bound result DTOs and support sources are lossless/closed");
+      bool wrappers = bound["result_entity_ids"].size() == candidates().size();
+      for (const auto& candidate : candidates()) {
+        bool found = false;
+        for (const auto& result_id : bound["result_entity_ids"]) {
+          const auto result = entity(bound["profile"], result_id);
+          if (result["attrs"].value("candidate_id", "") != candidate["id"].get<std::string>()) continue;
+          found = result_id != candidate["id"] && result_id ==
+              model::Entity::make_id(result["kind"].get<std::string>(), candidate["id"].get<std::string>());
+        }
+        wrappers &= found;
+      }
+      check(wrappers, std::string(id) + ": queue IDs map to distinct native result wrappers");
+      bool produced = true;
+      for (const auto& result_id : bound["result_entity_ids"])
+        produced &= edge(bound["profile"], result_id, "produced_in_run", run_bindings["run_id"]) &&
+                    edge(bound["profile"], result_id, "produced_by_method_version", run_bindings["method_version_id"]);
+      check(produced, std::string(id) + ": every result has actual produced-by/in-run Claims");
+      check(uncertain_results(bound), std::string(id) + ": model output remains unverified and unaccepted");
+      check(same(prepared, before_request), std::string(id) + ": graph projection preserves full prepared wire request");
+      artifact["graphs"].push_back(Json{{"id", id}, {"definition_profile", profile},
+          {"prepared_graph", graph}, {"bound_graph", bound}, {"request_body_bytes", prepared["body_bytes"]}});
+    }
+
+    const auto base = contract("semantic.relation");
+    const Json base_request = request(base);
+    const Json base_profile = take(methods::method_profile(base, base_request, parameters(base, base_request), Json::object()));
+    const auto changed = contract("semantic.relation", {}, Json{{"request_parameters", Json{{"temperature", 0.7}}}});
+    const Json changed_request = request(changed);
+    const Json override{{"request_parameters", Json{{"temperature", 0.7}}}};
+    const Json changed_profile = take(methods::method_profile(changed, changed_request,
+        parameters(changed, changed_request), override, Json{{"preset_snapshot", base.definition}}));
+    check(base_profile["bindings"]["method_identity_id"] == changed_profile["bindings"]["method_identity_id"] &&
+          base_profile["bindings"]["method_version_id"] != changed_profile["bindings"]["method_version_id"],
+          "user overlay retains method identity and creates a new effective method version");
+    check(base_profile["bindings"]["preset_version_id"] == changed_profile["bindings"]["preset_version_id"],
+          "user overlay preserves the original preset version");
+    const auto changed_parameter = entity(changed_profile, changed_profile["bindings"]["parameter_set_version_id"]);
+    check(changed_parameter["attrs"]["definition"]["user_overrides"] == override,
+          "user overrides are retained separately from effective parameter values");
+    const Json patched_request = request(base, Json{{"model", "offline/one-call-model"}, {"temperature", 0.9}});
+    const Json patched_profile = take(methods::method_profile(base, patched_request,
+        parameters(base, patched_request), Json{{"request_patch", Json{{"model", "offline/one-call-model"}, {"temperature", 0.9}}}}));
+    check(base.hash == contract("semantic.relation").hash &&
+          base_profile["bindings"]["method_version_id"] != patched_profile["bindings"]["method_version_id"],
+          "request-only override changes method version even with unchanged contract hash");
+    check(entity(patched_profile, patched_profile["bindings"]["recipe_version_id"])["attrs"]["definition"]["model"] == "offline/one-call-model",
+          "request-only model override records the actual selected model");
+    Json messages = base.definition["messages"];
+    messages[0]["content"].push_back(Json{{"binding", "text"}});
+    messages[0]["content"].push_back("tail 🙂");
+    const auto reordered = contract("semantic.relation", {}, Json{{"messages", messages}});
+    const Json reordered_request = request(reordered);
+    const Json reordered_profile = take(methods::method_profile(reordered, reordered_request,
+        parameters(reordered, reordered_request), Json::object()));
+    check(entity(reordered_profile, reordered_profile["bindings"]["prompt_version_id"])["attrs"]["text"] == json::canonical(messages) &&
+          reordered_profile["bindings"]["prompt_version_id"] != base_profile["bindings"]["prompt_version_id"],
+          "multiple content parts retain exact bindings and role/order in a new prompt version");
+    const Json prepared_graph = take(methods::prepare_graph(base_profile, run_context("semantic_cache_fixture", base_request)));
+    const Json cached_graph = take(methods::bind_candidates(prepared_graph, candidates(), provenance(true)));
+    check(cached_graph["trace"].value("invocation_kind", "") == "cache_replay" &&
+          cached_graph["trace"]["measurements"]["requests"] == 0,
+          "cache replay is explicit and creates no fictional provider request");
+    check(cached_graph["trace"].value("original_producer_run_id", Json(nullptr)).is_null(),
+          "unknown cached producer run remains explicitly unknown");
+    const Json empty_graph = take(methods::bind_candidates(prepared_graph, Json::array(), provenance()));
+    check(empty_graph["result_entity_ids"].empty() && empty_graph["trace"]["result_bindings"].empty(),
+          "abstention binds an empty output set without a fictitious result");
+    check(!methods::prepare_graph(base_profile, Json{{"run_id", "missing-input"}, {"known_at", known_at}}),
+          "missing input identity cannot be silently invented");
+    check(!methods::method_profile(base, base_request, parameters(base, base_request), Json::object(),
+        Json{{"method_data_snapshot", Json::object()}}),
+          "invalid method-data snapshot returns an explicit error");
+    auto stale_contract = base;
+    stale_contract.hash = std::string(64, '0');
+    check(!methods::method_profile(stale_contract, base_request, Json::object(), Json::object()),
+          "a stale prompt contract cannot acquire a method graph");
+    Json drifted_body = base_request;
+    drifted_body["body_json"]["temperature"] = 42;
+    check(!methods::method_profile(base, drifted_body, Json::object(), Json::object()),
+          "prepared body JSON must equal its captured exact wire bytes");
+    Json drifted_envelope = base_request;
+    drifted_envelope["request_hash"] = std::string(64, '0');
+    check(!methods::method_profile(base, drifted_envelope, Json::object(), Json::object()),
+          "prepared request-envelope hash is recomputed before projection");
+    Json drifted_schema = base_request;
+    drifted_schema["output_schema_hash"] = std::string(64, '0');
+    check(!methods::method_profile(base, drifted_schema, Json::object(), Json::object()),
+          "prepared output-schema hash identifies the actual contract schema");
+    if (argc > 1) {
+      const std::filesystem::path directory(argv[1]);
+      std::filesystem::create_directories(directory);
+      { std::ofstream file(directory / "owner.prompt"); file << json::dump(Json{{"id", "semantic.relation"},
+          {"request_parameters", Json{{"temperature", 0.35}}}}); }
+      const auto from_file = contract("semantic.relation", directory);
+      const Json file_request = request(from_file);
+      const Json file_profile = take(methods::method_profile(from_file, file_request,
+          parameters(from_file, file_request), Json{{"source", "owner overlay"}}, Json{{"preset_snapshot", base.definition}}));
+      check(file_profile["bindings"]["method_version_id"] != base_profile["bindings"]["method_version_id"] &&
+            file_request["body_json"]["temperature"] == 0.35,
+            "real overlay-directory values produce a distinct native method version");
+    }
+    const Json historical = take(methods::recipe_profile("jev.active_refute_v2"));
+    check(native_rows(historical) && definition_hashes(historical) && historical["entities"].size() == 5,
+          "Jev registration creates five lossless native descriptor entities and source hashes");
+    const auto& historical_bindings = historical["bindings"];
+    check(historical["execution_available"] == false && historical_bindings["prompt_version_id"].is_null() &&
+          historical_bindings["model_identity_id"].is_null() && !historical_bindings.contains("run_id"),
+          "Jev registration invents no prompt/model/run or executable adapter");
+    const auto historical_recipe = entity(historical, historical_bindings["recipe_version_id"]);
+    bool source_exact = false;
+    if (argc > 2) {
+      std::ifstream stream(argv[2], std::ios::binary);
+      std::string bytes((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
+      const Json original = take(json::parse(bytes));
+      source_exact = same(historical_recipe["attrs"]["definition"]["recipe_data"], original) &&
+          historical["recipe_source_hash"] == Sha256::hex(bytes);
+    }
+    check(source_exact, "Jev graph preserves the exact historical recipe file and original byte hash");
+    const Json changed_recipe = take(methods::recipe_profile("jev.active_refute_v2",
+        Json{{"request_template", Json{{"timeout_ms", 4444}}}}));
+    check(changed_recipe["bindings"]["method_identity_id"] == historical_bindings["method_identity_id"] &&
+          changed_recipe["bindings"]["method_version_id"] != historical_bindings["method_version_id"] &&
+          changed_recipe["bindings"]["preset_version_id"] == historical_bindings["preset_version_id"],
+          "a Jev recipe overlay creates a new method version while retaining method/preset identities");
+    bool no_quality_claims = true;
+    for (const auto& row : historical["claims"]) no_quality_claims &= row["value"].is_null();
+    for (const auto& row : changed_recipe["claims"]) no_quality_claims &= row["value"].is_null();
+    check(no_quality_claims && changed_recipe["execution_available"] == false,
+          "Jev registration does not fabricate a new measured quality claim or execution");
+    artifact["graphs"].push_back(Json{{"id", "jev.active_refute_v2"},
+        {"bound_graph", Json{{"profile", historical}, {"canonical_store_written", false}}}});
+    std::cout << "ARTIFACT " << json::dump(artifact) << '\n';
+    std::cout << "checks " << checks << '/' << checks << '\n';
+    return 0;
+  } catch (const std::exception& error) {
+    std::cerr << error.what() << '\n';
+    return 1;
+  }
+}

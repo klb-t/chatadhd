@@ -1,0 +1,63 @@
+{
+  "schema": "loom.analysis_methods/1",
+  "default_prompt_ids": {
+    "relation_v1": "semantic.relation",
+    "occurrence_graph_v1": "semantic.occurrence_graph"
+  },
+  "vocabulary": {
+    "kinds": {
+      "method": "analysis.method",
+      "method_version": "analysis.method_version",
+      "parameter_set_version": "analysis.parameter_set_version",
+      "prompt_version": "analysis.prompt_version",
+      "recipe_version": "analysis.recipe_version",
+      "preset_version": "analysis.preset_version",
+      "run": "analysis.run",
+      "result": "analysis.model_proposal",
+      "model_identity": "analysis.model_identity"
+    },
+    "predicates": {
+      "version_of": "analysis.version_of",
+      "uses_recipe": "analysis.uses_recipe",
+      "uses_prompt": "analysis.uses_prompt",
+      "uses_preset": "analysis.uses_preset",
+      "uses_parameter_set": "analysis.uses_parameter_set",
+      "requests_method_version": "analysis.requests_method_version",
+      "produced_in_run": "analysis.produced_in_run",
+      "produced_by_method_version": "analysis.produced_by_method_version"
+    }
+  },
+  "structural_assessment": {"confidence": 1.0, "support_quality": 1.0},
+  "result_assessment": {"confidence": 0.0},
+  "methods": {
+    "semantic.relation": {
+      "method_key": "loom.extract.semantic.relation",
+      "label": "Source-grounded relation proposals",
+      "execution_capability": "loom.extract.semantic",
+      "source_type": "prompt_contract"
+    },
+    "semantic.occurrence_graph": {
+      "method_key": "loom.extract.semantic.occurrence_graph",
+      "label": "Source-grounded occurrence graph proposals",
+      "execution_capability": "loom.extract.semantic",
+      "source_type": "prompt_contract"
+    },
+    "semantic.analysis": {
+      "method_key": "loom.extract.semantic.analysis",
+      "label": "Legacy analysis request contract",
+      "execution_capability": "loom.analysis.adapter_required",
+      "source_type": "prompt_contract"
+    },
+    "jev.active_refute_v2": {
+      "method_key": "loom.analysis.jev.active_refute_v2",
+      "label": "Historical Jev active-refutation recipe",
+      "execution_capability": null,
+      "source_type": "recipe_data",
+      "execution_status": "adapter_required",
+      "description": "Versioned recipe data; no execution or new quality measurement is implemented by registration."
+    }
+  },
+  "selection": {
+    "parameter_layers": ["preset", "recipe", "method", "parameter_set"]
+  }
+}

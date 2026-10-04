@@ -1,0 +1,155 @@
+{
+  "schema": "loom.prompt_method_generator_guards/1",
+  "cases": 6,
+  "passed": 6,
+  "production_files_unchanged": true,
+  "paid_calls": 0,
+  "provider_calls": 0,
+  "source_sha256": {
+    "loom/src/extract/gen_prompt_methods.py": "00e8fd2ec39d2e6f40a61ab0bd84c8ad58907a770fa0fea647344d45ee3af90e",
+    "loom/src/extract/tests/test_prompt_methods_generator.py": "504e8d619970787547f5dc42f768b22cc336520e1f1a9de94ea39bdd2eebc422",
+    "loom/src/extract/prompt_method_data.inc": "c9b87d569afe061605b1d61585a49880093d7bb58657d54203f62b42c23d2268",
+    "loom/data/prompts/analysis_methods.pack": "f76bac2ab51b64e5bee7249658ff07ba5c8a4d02f7b5a5315e375db1d89410fe",
+    "loom/data/prompts/jev_active_refute_v2.recipe": "8d2f0ddb12fed0bdefa6e98e3e733f608eedbca698a2731984b7a546516da33a",
+    "loom/src/extract/prompt_method_graph.cpp": "774c95b7fd127b26e70b356ddeaf970993a5ac5f814f1ff878e12ef962941a8d",
+    "loom/src/extract/prompt_method_graph.h": "e3caf3102ff02c917e07006c45ac3aaa9a4c566efad929de4f44dd9587e5c202"
+  },
+  "checks": [
+    {
+      "id": "pack_nan",
+      "passed": true,
+      "exit_code": 1,
+      "expected_error": "nonfinite JSON constant: NaN",
+      "target_unchanged": true,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/loom-method-generator-guards-1iethfp2/pack_nan/loom/src/extract/gen_prompt_methods.py\", line 69, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/pack_nan/loom/src/extract/gen_prompt_methods.py\", line 49, in main\n    text = generated()\n           ^^^^^^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/pack_nan/loom/src/extract/gen_prompt_methods.py\", line 20, in generated\n    data = json.loads(raw.decode('utf-8'), parse_constant=reject_constant)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 359, in loads\n    return cls(**kw).decode(s)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 354, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/pack_nan/loom/src/extract/gen_prompt_methods.py\", line 15, in reject_constant\n    raise ValueError('nonfinite JSON constant: ' + value)\nValueError: nonfinite JSON constant: NaN\n",
+      "inputs": {
+        "analysis_methods.pack": {
+          "sha256": "c17668a3c56b7b17c11518502a6b88a5175455c34fbf129d09d60f635f3e6588",
+          "bytes": 49
+        }
+      },
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "<copied-temp-generator>"
+      ]
+    },
+    {
+      "id": "recipe_infinity",
+      "passed": true,
+      "exit_code": 1,
+      "expected_error": "nonfinite JSON constant: Infinity",
+      "target_unchanged": true,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_infinity/loom/src/extract/gen_prompt_methods.py\", line 69, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_infinity/loom/src/extract/gen_prompt_methods.py\", line 49, in main\n    text = generated()\n           ^^^^^^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_infinity/loom/src/extract/gen_prompt_methods.py\", line 27, in generated\n    doc = json.loads(raw.decode('utf-8'), parse_constant=reject_constant)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 359, in loads\n    return cls(**kw).decode(s)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 354, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_infinity/loom/src/extract/gen_prompt_methods.py\", line 15, in reject_constant\n    raise ValueError('nonfinite JSON constant: ' + value)\nValueError: nonfinite JSON constant: Infinity\n",
+      "inputs": {
+        "a.recipe": {
+          "sha256": "6aea7dca296a1eeba6211493a4ddd13985619087ab31063534e75d4e09abc2b4",
+          "bytes": 38
+        },
+        "analysis_methods.pack": {
+          "sha256": "a4c3f6915ee7e95cdea8dc9bdff1b2081da7f5b74a086f320d0bef395fe3032f",
+          "bytes": 37
+        }
+      },
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "<copied-temp-generator>"
+      ]
+    },
+    {
+      "id": "recipe_missing_id",
+      "passed": true,
+      "exit_code": 1,
+      "expected_error": "missing or duplicate recipe id",
+      "target_unchanged": true,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_missing_id/loom/src/extract/gen_prompt_methods.py\", line 69, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_missing_id/loom/src/extract/gen_prompt_methods.py\", line 49, in main\n    text = generated()\n           ^^^^^^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_missing_id/loom/src/extract/gen_prompt_methods.py\", line 30, in generated\n    raise ValueError(f'{path}: missing or duplicate recipe id')\nValueError: /tmp/loom-method-generator-guards-1iethfp2/recipe_missing_id/loom/data/prompts/a.recipe: missing or duplicate recipe id\n",
+      "inputs": {
+        "a.recipe": {
+          "sha256": "1ff08a1e1ba71120fd96aa044bb85bf943dd8a478f7a465ff4f7ba361ff36af7",
+          "bytes": 36
+        },
+        "analysis_methods.pack": {
+          "sha256": "a4c3f6915ee7e95cdea8dc9bdff1b2081da7f5b74a086f320d0bef395fe3032f",
+          "bytes": 37
+        }
+      },
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "<copied-temp-generator>"
+      ]
+    },
+    {
+      "id": "recipe_duplicate_id",
+      "passed": true,
+      "exit_code": 1,
+      "expected_error": "missing or duplicate recipe id",
+      "target_unchanged": true,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_duplicate_id/loom/src/extract/gen_prompt_methods.py\", line 69, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_duplicate_id/loom/src/extract/gen_prompt_methods.py\", line 49, in main\n    text = generated()\n           ^^^^^^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/recipe_duplicate_id/loom/src/extract/gen_prompt_methods.py\", line 30, in generated\n    raise ValueError(f'{path}: missing or duplicate recipe id')\nValueError: /tmp/loom-method-generator-guards-1iethfp2/recipe_duplicate_id/loom/data/prompts/b.recipe: missing or duplicate recipe id\n",
+      "inputs": {
+        "a.recipe": {
+          "sha256": "9422095fc3337a88c400520ce7a0eee4f3722bdbdbbb9aa7c681f725a6398a7e",
+          "bytes": 21
+        },
+        "analysis_methods.pack": {
+          "sha256": "a4c3f6915ee7e95cdea8dc9bdff1b2081da7f5b74a086f320d0bef395fe3032f",
+          "bytes": 37
+        },
+        "b.recipe": {
+          "sha256": "9422095fc3337a88c400520ce7a0eee4f3722bdbdbbb9aa7c681f725a6398a7e",
+          "bytes": 21
+        }
+      },
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "<copied-temp-generator>"
+      ]
+    },
+    {
+      "id": "literal_delimiter_collision",
+      "passed": true,
+      "exit_code": 1,
+      "expected_error": "raw-literal delimiter collision",
+      "target_unchanged": true,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/tmp/loom-method-generator-guards-1iethfp2/literal_delimiter_collision/loom/src/extract/gen_prompt_methods.py\", line 69, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/literal_delimiter_collision/loom/src/extract/gen_prompt_methods.py\", line 49, in main\n    text = generated()\n           ^^^^^^^^^^^\n  File \"/tmp/loom-method-generator-guards-1iethfp2/literal_delimiter_collision/loom/src/extract/gen_prompt_methods.py\", line 40, in generated\n    raise ValueError('raw-literal delimiter collision')\nValueError: raw-literal delimiter collision\n",
+      "inputs": {
+        "analysis_methods.pack": {
+          "sha256": "577866b9e59f60cf81f24c462b63d5cfe9cc2f26a4c15645daa0c4005db36365",
+          "bytes": 68
+        }
+      },
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "<copied-temp-generator>"
+      ]
+    },
+    {
+      "id": "valid_data_matches_frozen_include",
+      "passed": true,
+      "exit_code": 0,
+      "expected_error": null,
+      "target_unchanged": true,
+      "stdout": "",
+      "stderr": "",
+      "inputs": {
+        "analysis_methods.pack": {
+          "sha256": "f76bac2ab51b64e5bee7249658ff07ba5c8a4d02f7b5a5315e375db1d89410fe",
+          "bytes": 2452
+        },
+        "jev_active_refute_v2.recipe": {
+          "sha256": "8d2f0ddb12fed0bdefa6e98e3e733f608eedbca698a2731984b7a546516da33a",
+          "bytes": 21985
+        }
+      },
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "<copied-temp-generator>",
+        "--check"
+      ]
+    }
+  ],
+  "scope": "strict JSON and generation guards in independent copied temporary layouts"
+}

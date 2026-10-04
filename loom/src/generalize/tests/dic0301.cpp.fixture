@@ -1,0 +1,152 @@
+// Offline DIC-0301 replay: exact historic lookup/score/typing preservation,
+// actual DEV principle discovery and paradigm matching, and absent overrides.
+// No live provider, no sealed/holdout input, no CMake registration.
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
+#include "../internal.h"
+#include "test_generalize_fixture.h"
+
+#ifdef DIC0301_BEFORE
+namespace loom::generalize::detail {
+// The old helper is supplied by exact Git-pinned common.cpp, never emulated.
+Json cue_class_or_default(const kb::Pack&, std::string_view);
+}
+#endif
+
+#include "dic0301_paradigm_cases.h.fixture"
+
+using namespace loom;
+using namespace loom::generalize;
+
+namespace {
+Json read_json(const char* path) {
+  std::ifstream input(path, std::ios::binary);
+  if (!input) { std::cerr << "cannot read " << path << '\n'; std::exit(2); }
+  std::stringstream buffer; buffer << input.rdbuf();
+  auto parsed = json::parse(buffer.str());
+  if (!parsed) { std::cerr << parsed.error().message << '\n'; std::exit(2); }
+  return *parsed;
+}
+
+Json lookup(const kb::Pack& pack, const std::string& name) {
+#ifdef DIC0301_BEFORE
+  return detail::cue_class_or_default(pack, name);
+#else
+  return detail::cue_class(pack, name);
+#endif
+}
+
+using Documents = std::map<std::string, Json>;
+Documents documents(const kb::Pack& pack) {
+  Documents result;
+  for (const auto& file : pack.files()) result[file] = pack.file(file);
+  return result;
+}
+
+std::shared_ptr<const kb::Pack> checked_pack(Documents docs) {
+  auto pack = kb::Pack::from_documents(std::move(docs));
+  if (!pack) { std::cerr << pack.error().message << '\n'; std::exit(2); }
+  return *pack;
+}
+
+Json typed(const kb::Pack& pack, const std::string& text) {
+  model::Principle p;
+  p.id = "p_dic0301";
+  p.statement["pl"] = text;
+  Evidence empty;
+  auto status = type_principle(pack, p, empty);
+  if (!status) { std::cerr << status.error().message << '\n'; std::exit(2); }
+  return p.to_json();
+}
+} // namespace
+
+int main(int argc, char** argv) {
+  if (argc != 2 && argc != 3) {
+    std::cerr << "usage: dic0301 exact-legacy-classes.json [before-cues.json]\n";
+    return 2;
+  }
+  const Json oracle = read_json(argv[1]);
+  auto builtin = kb::Pack::load_builtin();
+  if (!builtin) { std::cerr << builtin.error().message << '\n'; return 2; }
+  Documents docs = documents(**builtin);
+  if (argc == 3) docs["lexicons/cues.json"] = read_json(argv[2]);
+  auto pack = checked_pack(docs);
+  dic0301_paradigm::source_cues = docs["lexicons/cues.json"];
+  kb::Normalizer normalizer(*pack);
+  Json output = Json::object();
+  output["defaults"] = Json::array();
+  output["deletion"] = Json::array();
+  output["empty_pack_override"] = Json::array();
+  output["replacement"] = Json::array();
+  int exact = 0, absent = 0, empty_rejected = 0, replaced = 0, phrase_count = 0;
+
+  for (const auto& [name, expected] : oracle.items()) {
+    Json current = lookup(*pack, name);
+    exact += current == expected;
+    Json samples = Json::array();
+    std::string all_phrases;
+    for (const auto& phrase : expected["phrases"]) {
+      std::string text = phrase["p"].get<std::string>();
+      all_phrases += text + " . ";
+      samples.push_back(Json{{"text", text}, {"score", detail::cue_score(normalizer, text, current)},
+                             {"typed", typed(*pack, text)}});
+      ++phrase_count;
+    }
+    samples.push_back(Json{{"text", "dic0301unrelatedtoken"},
+                           {"score", detail::cue_score(normalizer, "dic0301unrelatedtoken", current)},
+                           {"typed", typed(*pack, "dic0301unrelatedtoken")}});
+    samples.push_back(Json{{"text", all_phrases},
+                           {"score", detail::cue_score(normalizer, all_phrases, current)},
+                           {"typed", typed(*pack, all_phrases)}});
+    output["defaults"].push_back(Json{{"name", name}, {"lookup", current}, {"exact", current == expected},
+                                      {"samples", samples}});
+
+    Documents removed = docs;
+    removed["lexicons/cues.json"]["classes"].erase(name);
+    auto deleted = checked_pack(std::move(removed));
+    Json missing = lookup(*deleted, name);
+    double deleted_score = detail::cue_score(normalizer, all_phrases, missing);
+    absent += missing.is_null() && deleted_score == 0.0;
+    output["deletion"].push_back(Json{{"name", name}, {"lookup", missing}, {"score", deleted_score},
+                                      {"no_resurrection", missing.is_null() && deleted_score == 0.0},
+                                      {"typed", typed(*deleted, all_phrases)}});
+
+    Documents empty = docs;
+    empty["lexicons/cues.json"]["classes"][name] = Json{{"phrases", Json::array()}};
+    auto invalid = kb::Pack::from_documents(std::move(empty));
+    bool rejected = !invalid;
+    empty_rejected += rejected;
+    // Current foundation schema forbids empty cue lists. Report rejection;
+    // do not claim a successful disabled empty pack or substitute a pack.
+    output["empty_pack_override"].push_back(Json{{"name", name}, {"loader_rejected", rejected},
+        {"generic_empty_matcher_score", detail::cue_score(normalizer, all_phrases, Json{{"phrases", Json::array()}})}});
+
+    Documents custom = docs;
+    Json replacement{{"phrases", Json::array({Json{{"p", "dic0301customtoken"}, {"w", 3.125}}})}};
+    custom["lexicons/cues.json"]["classes"][name] = replacement;
+    auto changed = checked_pack(std::move(custom));
+    Json selected = lookup(*changed, name);
+    bool replacement_ok = selected == replacement &&
+        detail::cue_score(normalizer, "dic0301customtoken", selected) == 3.125 &&
+        detail::cue_score(normalizer, all_phrases, selected) == 0.0;
+    replaced += replacement_ok;
+    output["replacement"].push_back(Json{{"name", name}, {"replacement_only", replacement_ok}});
+  }
+
+  auto fixture = test::gfix::load(*pack); // Public fictional synthetic_dev only.
+  auto philosophy = discover_principles(*pack, fixture.ev, model::PriorFilter{});
+  if (!philosophy) { std::cerr << philosophy.error().message << '\n'; return 2; }
+  output["dev_principles"] = philosophy->to_json();
+  output["dev_paradigms"] = dic0301_paradigm::paradigm_cases();
+  output["counts"] = Json{{"exact_classes", exact}, {"classes", oracle.size()}, {"phrases", phrase_count},
+      {"deletion_no_resurrection", absent}, {"empty_pack_rejected", empty_rejected}, {"replacement_only", replaced}};
+  std::cout << output.dump(1) << '\n';
+  bool good = exact == 7 && phrase_count == 120 && empty_rejected == 7 && replaced == 7;
+#ifndef DIC0301_BEFORE
+  good = good && absent == 7;
+#endif
+  return good ? 0 : 1;
+}

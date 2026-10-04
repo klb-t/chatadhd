@@ -152,7 +152,7 @@ struct TypingContext {
   std::map<std::string, std::set<std::string>, std::less<>> project_subjects_of_unit;  // unit -> project entity ids
 
   TypingContext(const kb::Pack& pack, const kb::Normalizer& n, const Index& index) : norm(n), ix(index) {
-    auto prep = [&](std::string_view cls) { return PreparedCues(norm, detail::cue_class_or_default(pack, cls)); };
+    auto prep = [&](std::string_view cls) { return PreparedCues(norm, detail::cue_class(pack, cls)); };
     value = prep("principle.level.value");
     epistemic = prep("principle.level.epistemic");
     conflict = prep("principle.form.conflict_resolution");
@@ -304,8 +304,8 @@ Result<PrincipleReport> discover_principles(const kb::Pack& pack, const Evidence
   const int min_units = static_cast<int>(detail::threshold(pack, "principles", "min_units", 2));
   const int min_dates = static_cast<int>(detail::threshold(pack, "principles", "min_distinct_dates", 2));
   const double tau_statement = detail::threshold(pack, "principles", "min_cue_score", 1.5);
-  const PreparedCues normative(norm, detail::cue_class_or_default(pack, "normative"));
-  const PreparedCues general(norm, detail::cue_class_or_default(pack, "generalize.generalization"));
+  const PreparedCues normative(norm, detail::cue_class(pack, "normative"));
+  const PreparedCues general(norm, detail::cue_class(pack, "generalize.generalization"));
 
   // 1. Candidate statements.
   std::optional<prof::Scope> ph(std::in_place, "generalize.principles.statements");

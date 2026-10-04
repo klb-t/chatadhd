@@ -1,0 +1,290 @@
+// Preserve all earlier semantic cases verbatim, adding actual W1 graph-path checks.
+#include "semantic_prompt_integration.cpp.fixture"
+#include "extract/prompt_method_graph.h"
+
+namespace {
+Json method_graph_entity(const Json& graph, const Json& id) {
+  for (const auto& row : graph["profile"]["entities"]) if (row["id"] == id) return row;
+  throw std::runtime_error("method graph entity missing " + json::dump(id));
+}
+bool method_graph_edge(const Json& graph, const Json& subject, const char* role, const Json& object) {
+  const auto& predicates = graph["profile"]["vocabulary"]["predicates"];
+  if (!predicates.contains(role)) return false;
+  for (const auto& row : graph["profile"]["claims"])
+    if (row["subject"] == subject && row["predicate"] == predicates[role] &&
+        row["object"] == object && row["value"].is_null()) return true;
+  return false;
+}
+Json first_method_graph(const Json& result) {
+  REQUIRE(result["method_graphs"].is_object());
+  REQUIRE(result["method_graphs"].size() == 1);
+  return result["method_graphs"].begin().value();
+}
+}  // namespace
+
+TEST_SUITE("method_graph_semantic_integration") {
+  TEST_CASE("preview captures full method template without dispatch or canonical writes; off remains off") {
+    Fixture f;
+    const auto candidate_rows = f.count("loom_kb_candidates");
+    const auto entity_rows = f.count("loom_kb_entities");
+    const auto claim_rows = f.count("loom_kb_claims");
+    const auto source_rows = f.count("loom_kb_observations");
+    const auto output = preview(f);
+    REQUIRE(output["request_previews"].size() == 1);
+    const auto graph = output["request_previews"][0]["method_graph"];
+    CHECK(json::canonical(graph) == json::canonical(first_method_graph(output)));
+    CHECK(graph["manifest"]["schema"] == "loom.method_graph/1");
+    CHECK(graph["trace"]["schema"] == "loom.method_run_trace/1");
+    CHECK(graph["canonical_store_written"] == false);
+    CHECK(graph["result_entity_ids"].empty());
+    const auto selected = unwrap(extract::prompts::resolve("semantic.relation"));
+    const auto prompt = method_graph_entity(graph, graph["manifest"]["bindings"]["prompt_version_id"]);
+    CHECK(prompt["attrs"]["text"] == json::canonical(selected.definition["messages"]));
+    CHECK(f.http->requests().empty());
+    CHECK(f.count("loom_kb_candidates") == candidate_rows);
+    CHECK(f.count("loom_kb_entities") == entity_rows);
+    CHECK(f.count("loom_kb_claims") == claim_rows);
+    CHECK(f.count("loom_kb_observations") == source_rows);
+    CHECK(f.saved_checkpoint.is_null());
+    CHECK(json::dump(graph).find("test-only-key") == std::string::npos);
+    Fixture offline;
+    offline.cfg.llm = "off";
+    const auto before = offline.count("loom_kb_entities");
+    const auto off = unwrap(offline.call());
+    CHECK(off["status"] == "off");
+    CHECK_FALSE(off.contains("method_graphs"));
+    CHECK(offline.http->requests().empty());
+    CHECK(offline.count("loom_kb_candidates") == 0);
+    CHECK(offline.count("loom_kb_entities") == before);
+  }
+
+  TEST_CASE("actual model call stores candidate graph with unchanged queue ID and real edges, pending acceptance") {
+    Fixture f;
+    const auto entity_rows = f.count("loom_kb_entities");
+    const auto claim_rows = f.count("loom_kb_claims");
+    const auto source_rows = f.count("loom_kb_observations");
+    f.reply(Json::array({f.proposal()}));
+    const auto output = unwrap(f.call());
+    REQUIRE(output["accepted"] == 1);
+    REQUIRE(output["candidate_ids"].size() == 1);
+    REQUIRE(f.http->requests().size() == 1);
+    const Json payload = f.candidate();
+    const Json graph = payload["method_graph"];
+    CHECK(json::canonical(graph) == json::canonical(first_method_graph(output)));
+    Json original_payload = payload;
+    original_payload.erase("method_graph");
+    Json original_identity = original_payload;
+    original_identity["provenance"].erase("response_hash");
+    original_identity["provenance"].erase("usage_operation_id");
+    const auto queue_id = "ca_" + Sha256::hex("semantic_structure|" + json::canonical(original_identity));
+    CHECK(output["candidate_ids"][0] == queue_id);
+    REQUIRE(graph["result_entity_ids"].size() == 1);
+    const auto result_id = graph["result_entity_ids"][0];
+    const auto result = method_graph_entity(graph, result_id);
+    CHECK(result["attrs"]["candidate_id"] == queue_id);
+    CHECK(result["attrs"]["proposal"] == original_payload);
+    CHECK(result_id != output["candidate_ids"][0]);
+    CHECK(result["origin"] == "model_knowledge");
+    CHECK(result["attrs"]["content_verification"] == "unverified");
+    CHECK(graph["canonical_store_written"] == false);
+    const auto& bindings = graph["manifest"]["bindings"];
+    CHECK(method_graph_edge(graph, result_id, "produced_by_method_version", bindings["method_version_id"]));
+    CHECK(method_graph_edge(graph, result_id, "produced_in_run", bindings["run_id"]));
+    CHECK(method_graph_edge(graph, bindings["run_id"], "uses_parameter_set", bindings["parameter_set_version_id"]));
+    CHECK(f.count("loom_kb_entities") == entity_rows);
+    CHECK(f.count("loom_kb_claims") == claim_rows);
+    CHECK(f.count("loom_kb_observations") == source_rows);
+    CHECK(f.saved_checkpoint["semantic"]["method_graphs"] == output["method_graphs"]);
+    CHECK_FALSE(output.value("accounting_error", false));
+    REQUIRE(output["usage_decisions"].size() == 1);
+    const auto& admission = output["usage_decisions"][0];
+    REQUIRE(admission.contains("completion"));
+    REQUIRE(admission.contains("method_graph_completion"));
+    const auto& before_graph = admission["completion"]["actual"];
+    const auto& after_graph = admission["method_graph_completion"]["actual"];
+    CHECK(before_graph["method_graph_json_bytes"]["value"].is_null());
+    CHECK(after_graph["requests"]["value"] == 1);
+    CHECK(after_graph["input_bytes"] == before_graph["input_bytes"]);
+    CHECK(after_graph["input_bytes"]["value"] == graph["trace"]["measurements"]["input_bytes"]);
+    CHECK(after_graph["method_graph_json_bytes"]["value"] == json::canonical(graph).size());
+    for (const auto* resource : {"requests", "input_bytes", "method_graph_json_bytes"})
+      CHECK(after_graph[resource]["provenance"] == "instrument_measured");
+    Json footprint{{"prior_candidate_payload_json_bytes", json::canonical(original_payload).size()},
+        {"new_candidate_payload_json_bytes", json::canonical(payload).size()},
+        {"bound_graph_json_bytes", json::canonical(graph).size()},
+        {"stats_json_bytes", json::canonical(output).size()},
+        {"checkpoint_json_bytes", json::canonical(f.saved_checkpoint).size()},
+        {"physical_disk_bytes_measured", false}};
+    {
+      auto lock = f.rt->db().lock();
+      footprint["candidate_payload_sql_bytes"] = unwrap(f.rt->db().conn().query_int(
+          "SELECT COALESCE(SUM(LENGTH(CAST(payload AS BLOB))),0) FROM loom_kb_candidates")).value_or(0);
+      footprint["cache_content_sql_bytes"] = unwrap(f.rt->db().conn().query_int(
+          "SELECT COALESCE(SUM(LENGTH(CAST(response AS BLOB))),0) FROM loom_kb_llm_cache")).value_or(0);
+    }
+    CHECK(footprint["candidate_payload_sql_bytes"] == footprint["new_candidate_payload_json_bytes"]);
+    std::cout << "ACTUAL_METHOD_GRAPH " << json::dump(Json{{"id", "actual_semantic_relation"},
+        {"bound_graph", graph}, {"queue_id", queue_id}, {"footprint", footprint},
+        {"captured_request_body", f.http->requests()[0].body}}) << '\n';
+  }
+
+  TEST_CASE("cache replay retains queue identity and marks zero current provider calls") {
+    Fixture f;
+    f.reply(Json::array({f.proposal()}));
+    const auto first = unwrap(f.call());
+    f.resume = f.saved_checkpoint;
+    const auto replay = unwrap(f.call());
+    CHECK(replay["candidate_ids"] == first["candidate_ids"]);
+    CHECK(replay["requests"] == 0);
+    CHECK(replay["cache_hits"] == 1);
+    CHECK(f.http->requests().size() == 1);
+    const auto graph = first_method_graph(replay);
+    const auto original_graph = first_method_graph(first);
+    CHECK(graph["manifest"]["bindings"]["run_id"] != original_graph["manifest"]["bindings"]["run_id"]);
+    CHECK(graph["trace"]["from_cache"] == true);
+    CHECK(graph["trace"]["execution_kind"] == "cache_replay");
+    CHECK(graph["trace"]["invocation_kind"] == "cache_replay");
+    CHECK(graph["trace"]["measurements"]["requests"] == 0);
+    CHECK(graph["trace"].value("original_producer_run_id", Json(nullptr)).is_null());
+    CHECK(f.count("loom_kb_candidates") == 1);
+    const auto stored = f.candidate()["method_graph"];
+    CHECK(stored["trace"]["from_cache"] == false);
+  }
+
+  TEST_CASE("strict malformed response retains prepared graph without inventing a result") {
+    Fixture f;
+    reply_content(f, "{\"schema_version\":99,\"proposals\":[]}");
+    const auto output = unwrap(f.call());
+    CHECK(output["accepted"] == 0);
+    CHECK(output["failed"] == 1);
+    CHECK(f.count("loom_kb_candidates") == 0);
+    REQUIRE(f.http->requests().size() == 1);
+    const auto graph = first_method_graph(output);
+    CHECK(graph["result_entity_ids"].empty());
+    CHECK(graph["trace"].value("result_bindings", Json::array()).empty());
+    const auto result_kind = graph["profile"]["vocabulary"]["kinds"]["result"];
+    for (const auto& row : graph["profile"]["entities"]) CHECK(row["kind"] != result_kind);
+    CHECK(graph["canonical_store_written"] == false);
+    CHECK(output["captured_responses"].size() == 1);
+  }
+
+  TEST_CASE("method-data override changes identity and actual produced-by predicate as owner data") {
+    Fixture f;
+    const auto defaults = first_method_graph(preview(f));
+    const Json options{{"method_graph_patch", Json{
+        {"vocabulary", Json{{"predicates", Json{{"produced_by_method_version", "owner.produced_by"}}}}},
+        {"methods", Json{{"semantic.relation", Json{{"method_key", "owner.semantic.method"}}}}}}}};
+    f.reply(Json::array({f.proposal()}));
+    const auto output = unwrap(f.call(Json{{"semantic", options}}));
+    const auto graph = first_method_graph(output);
+    CHECK(graph["manifest"]["bindings"]["method_identity_id"] != defaults["manifest"]["bindings"]["method_identity_id"]);
+    CHECK(graph["manifest"]["bindings"]["method_version_id"] != defaults["manifest"]["bindings"]["method_version_id"]);
+    REQUIRE(graph["result_entity_ids"].size() == 1);
+    const auto& result_id = graph["result_entity_ids"][0];
+    bool actual_owner_edge = false;
+    for (const auto& row : graph["profile"]["claims"])
+      if (row["subject"] == result_id && row["predicate"] == "owner.produced_by" &&
+          row["object"] == graph["manifest"]["bindings"]["method_version_id"]) actual_owner_edge = true;
+    CHECK(actual_owner_edge);
+    CHECK(f.http->requests().size() == 1);
+    CHECK(graph["canonical_store_written"] == false);
+  }
+
+  TEST_CASE("corrupt method graph resume rejects before transport or queue overwrite") {
+    Fixture f;
+    f.reply(Json::array({f.proposal()}));
+    const auto first = unwrap(f.call());
+    REQUIRE(first["accepted"] == 1);
+    f.resume = f.saved_checkpoint;
+    auto& graphs = (*f.resume)["semantic"]["method_graphs"];
+    REQUIRE(graphs.size() == 1);
+    auto& graph = graphs.begin().value();
+    REQUIRE(!graph["profile"]["sources"].empty());
+    graph["profile"]["sources"][0]["text_sha256"] = std::string(64, '0');
+    const auto refused = f.call();
+    CHECK(!refused);
+    if (!refused) CHECK(refused.error().code == Errc::Conflict);
+    CHECK(f.http->requests().size() == 1);
+    CHECK(f.count("loom_kb_candidates") == 1);
+  }
+
+  TEST_CASE("complete request-message override creates the actually consumed prompt template") {
+    Fixture f;
+    const Json messages = Json::array({
+        Json{{"role", "system"}, {"content", "Owner replacement 🙂"}},
+        Json{{"role", "user"}, {"content", "Exact fixture source input"}},
+        Json{{"role", "developer"}, {"content", "Retain all source boundaries"}}});
+    const Json expected_template = messages;
+    f.reply(Json::array({f.proposal()}));
+    const auto output = unwrap(f.call(Json{{"semantic", Json{{"request_patch", Json{{"messages", messages}}}}}}));
+    REQUIRE(output["accepted"] == 1);
+    REQUIRE(f.http->requests().size() == 1);
+    const auto sent = unwrap(json::parse(f.http->requests()[0].body));
+    CHECK(sent["messages"] == messages);
+    const auto graph = first_method_graph(output);
+    const auto prompt = method_graph_entity(graph, graph["manifest"]["bindings"]["prompt_version_id"]);
+    CHECK(prompt["attrs"]["text"] == json::canonical(expected_template));
+    const auto recipe = method_graph_entity(graph, graph["manifest"]["bindings"]["recipe_version_id"]);
+    CHECK(recipe["attrs"]["definition"]["request_template"]["messages"] == expected_template);
+    CHECK(graph["profile"]["prepared_request"]["body_bytes"] == f.http->requests()[0].body);
+  }
+
+  TEST_CASE("forged prepared request and output-schema hashes are rejected before graph projection") {
+    const auto selected = unwrap(extract::prompts::resolve("semantic.relation"));
+    const auto prepared = unwrap(extract::prompts::prepare_request(selected, "offline/model",
+        "https://example.invalid", Json{{"input_json", Json{{"fixture", "source"}}}}));
+    Json forged_request = prepared;
+    forged_request["request_hash"] = std::string(64, '0');
+    CHECK_FALSE(extract::prompts::method_graph::method_profile(selected, forged_request, Json::object(), Json::object()));
+    Json forged_schema = prepared;
+    forged_schema["output_schema_hash"] = std::string(64, '0');
+    CHECK_FALSE(extract::prompts::method_graph::method_profile(selected, forged_schema, Json::object(), Json::object()));
+  }
+
+  TEST_CASE("one-call override changes only its chunk recipe and preview matches actual versions") {
+    Fixture f;
+    f.add("ob_sibling", "Sibling branch retains its own source boundary.", 2, "sibling");
+    const auto baseline = preview(f);
+    REQUIRE(baseline["request_previews"].size() == 2);
+    std::string main_chunk, sibling_chunk;
+    for (const auto& request : baseline["request_previews"]) {
+      const auto input = unwrap(json::parse(request["body_json"]["messages"].back()["content"].get<std::string>()));
+      const auto chunk = request["chunk"].get<std::string>();
+      if (input["group"]["branch"] == "main") main_chunk = chunk;
+      if (input["group"]["branch"] == "sibling") sibling_chunk = chunk;
+    }
+    REQUIRE(!main_chunk.empty());
+    REQUIRE(!sibling_chunk.empty());
+    const Json options{{"call_overrides", Json{{sibling_chunk,
+        Json{{"request_patch", Json{{"temperature", 0.75}}}}}}}};
+    const auto changed = preview(f, options);
+    REQUIRE(changed["request_previews"].size() == 2);
+    const auto& base_graphs = baseline["method_graphs"];
+    const auto& changed_graphs = changed["method_graphs"];
+    CHECK(changed_graphs[main_chunk]["manifest"]["bindings"]["method_version_id"] ==
+          base_graphs[main_chunk]["manifest"]["bindings"]["method_version_id"]);
+    CHECK(changed_graphs[main_chunk]["manifest"]["definition_hashes"]["method_version"] ==
+          base_graphs[main_chunk]["manifest"]["definition_hashes"]["method_version"]);
+    CHECK(changed_graphs[sibling_chunk]["manifest"]["bindings"]["method_version_id"] !=
+          base_graphs[sibling_chunk]["manifest"]["bindings"]["method_version_id"]);
+    CHECK(changed_graphs[sibling_chunk]["manifest"]["definition_hashes"]["method_version"] !=
+          base_graphs[sibling_chunk]["manifest"]["definition_hashes"]["method_version"]);
+    CHECK(f.http->requests().empty());
+    for (const auto& request : changed["request_previews"])
+      f.reply(Json::array({f.proposal(request["chunk"] == sibling_chunk ? 1 : 0)}));
+    const auto actual = unwrap(f.call(Json{{"semantic", options}}));
+    REQUIRE(actual["accepted"] == 2);
+    REQUIRE(actual["method_graphs"].size() == 2);
+    REQUIRE(f.http->requests().size() == 2);
+    for (const auto& chunk : {main_chunk, sibling_chunk}) {
+      const auto& expected = changed_graphs[chunk]["manifest"];
+      const auto& produced = actual["method_graphs"][chunk]["manifest"];
+      CHECK(produced["bindings"]["method_version_id"] == expected["bindings"]["method_version_id"]);
+      CHECK(produced["definition_hashes"] == expected["definition_hashes"]);
+      CHECK(produced["bindings"]["parameter_set_version_id"] == expected["bindings"]["parameter_set_version_id"]);
+    }
+    for (std::size_t i = 0; i < f.http->requests().size(); ++i)
+      CHECK(f.http->requests()[i].body == changed["request_previews"][i]["body_bytes"].get<std::string>());
+    CHECK_FALSE(actual.value("accounting_error", false));
+  }
+}

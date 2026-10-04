@@ -63,9 +63,6 @@ bool cue_hit(const kb::Normalizer& norm, std::string_view folded_text, std::stri
 double cue_score(const kb::Normalizer& norm, std::string_view text, const Json& cls);
 // lexicons/cues.json class by name (null when absent).
 const Json& cue_class(const kb::Pack& pack, std::string_view name);
-// A cue class from the pack when present, else the built-in default of this
-// area (documented in generalize.h; promotion into the pack is a lead edit).
-Json cue_class_or_default(const kb::Pack& pack, std::string_view name);
 
 // A text folded and tokenized once: the input of cue matching. Cue matching
 // of one text against several classes (or of one observation for several
