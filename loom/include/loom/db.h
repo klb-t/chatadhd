@@ -39,6 +39,8 @@ namespace loom {
 
 inline constexpr int kSchemaVersion = 4;       // Python _SCHEMA_VERSION
 inline constexpr int kLoomSchemaVersion = 1;   // _meta.loom_schema_version
+inline constexpr int kMessageAnnotationSchemaVersion = 1;  // independent, additive extension
+inline constexpr int kImportCheckpointSchemaVersion = 1;   // independent, additive extension
 
 // Message.status values (Python set_msg_status whitelist).
 namespace msg_status {
@@ -235,6 +237,74 @@ struct DbOptions {
   int busy_timeout_ms = 30000;
 };
 
+// Immutable full-message source, deduplicated by message ID + full record hash.
+// Survives deletion of the mutable message. The original text, attachments,
+// metadata and version identifiers remain in `message`.
+struct MessageAnnotationSource {
+  std::string id;
+  std::string message_id;
+  std::string text_hash;    // SHA-256 of exact UTF-8 text bytes
+  std::string record_hash;  // SHA-256 of persisted full-message JSON bytes
+  Json message = Json::object();
+  std::string created;
+  Json to_json() const;
+};
+
+// Ranges are half-open Unicode codepoint indices, not grapheme clusters or
+// UTF-8 byte indices. Derived byte offsets/excerpt always refer to the immutable
+// source, even after a direct update_msg or a deletion of the current message.
+// Every correction/retraction appends a revision; old provenance is retained.
+struct MessageAnnotation {
+  std::string id;
+  std::int64_t revision = 1;
+  std::string source_snapshot_id;
+  std::string message_id;
+  std::string node_id;
+  std::int64_t start_char = 0;
+  std::int64_t end_char = 0;
+  std::int64_t start_byte = 0;
+  std::int64_t end_byte = 0;
+  std::string origin = "recorded";  // recorded | model | user
+  std::string state = "active";     // active | retracted
+  Json metadata = Json::object();
+  std::string created;
+  std::string text_hash;
+  std::string excerpt;
+  bool message_exists = false;
+  bool source_matches_current = false;  // exact text match, false when missing
+  bool node_exists = false;
+  Json to_json() const;
+};
+
+struct NewMessageAnnotation {
+  std::string message_id;
+  std::string node_id;
+  std::int64_t start_char = 0;
+  std::int64_t end_char = 0;
+  std::string origin = "recorded";
+  Json metadata = Json::object();
+  // Optional optimistic source binding: mismatch => Conflict, no writes.
+  std::optional<std::string> expected_text_hash;
+};
+
+struct MessageAnnotationPatch {
+  std::optional<std::string> node_id;
+  std::optional<std::int64_t> start_char;
+  std::optional<std::int64_t> end_char;
+  std::optional<std::string> origin;
+  std::optional<std::string> state;
+  std::optional<Json> metadata;
+};
+
+struct MessageAnnotationListOptions {
+  // Preset, caller may choose any nonnegative limit; nullopt means unbounded.
+  std::optional<std::int64_t> limit = 100;
+  // Stable ID order; pass the last returned ID to obtain the next page.
+  std::optional<std::string> after_id;
+  std::optional<std::string> node_id;
+  bool include_retracted = false;
+};
+
 class Database {
  public:
   // Opens (creating if needed) and migrates: Python _init_schema + _migrate,
@@ -283,6 +353,20 @@ class Database {
   Result<std::optional<std::string>> edit_msg(std::string_view mid, std::string_view new_text);
   // Makes `mid` the active version of its group. false if mid does not exist.
   Result<bool> restore_version(std::string_view mid);
+
+  // ── Message → node annotations (Loom extension) ──────────────────
+  // Node/message must exist on creation. Source snapshots and revision rows
+  // have no cascading FK to mutable core rows: deletion cannot erase evidence.
+  Result<MessageAnnotation> create_message_annotation(const NewMessageAnnotation& annotation);
+  Result<std::optional<MessageAnnotation>> get_message_annotation(std::string_view annotation_id);
+  Result<std::vector<MessageAnnotation>> list_message_annotations(
+      std::string_view message_id, const MessageAnnotationListOptions& opts = {});
+  // expected_revision prevents lost updates; source identity is never retargeted.
+  Result<MessageAnnotation> revise_message_annotation(std::string_view annotation_id,
+      std::int64_t expected_revision, const MessageAnnotationPatch& patch);
+  Result<std::vector<MessageAnnotation>> get_message_annotation_history(std::string_view annotation_id,
+      std::int64_t after_revision = 0, std::optional<std::int64_t> limit = 100);
+  Result<std::optional<MessageAnnotationSource>> get_message_annotation_source(std::string_view snapshot_id);
 
   // ── Links (graph edges) ───────────────────────────────────────────
   // Upsert on (src, dst, link_type): existing row gets weight+metadata
@@ -334,6 +418,7 @@ class Database {
   Status init_schema();
   Status migrate();
   Status migrate_loom();
+  Status migrate_message_extensions();
   Status update_conv_locked(std::string_view cid, const ConvPatch& patch);
   Result<std::optional<Node>> node_query(std::string_view sql, std::string_view a, std::optional<std::string_view> b);
 
