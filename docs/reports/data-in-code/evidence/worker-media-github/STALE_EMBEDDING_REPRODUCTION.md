@@ -1,0 +1,13 @@
+# Odtworzenie pomocniczego błędu starego osadzenia
+
+To nie jest wynik ewaluacji modeli ani awaria poprawnego pełnego buildu. Użyto nowego `TempDir()` i aktualnych nagłówków/fs, lecz wcześniejszego obiektu `runtime_profile.o` z tabelą bez świeżo dodanego `util`. Konstruktor kompatybilny TempDir nie zwraca Result: gdy builtin domena nie istnieje, ścieżka pozostaje pusta. Fixtures pisały względnie; później niewłaściwy `unwrap` po błędzie dostawcy zakończył proces SIGSEGV. W logu zachowano wszystkie wykonane asercje (23 przypadki: 11 przejść/12 błędów, 27 nie wykonano).
+
+Bezpieczna procedura reprodukcji, wyłącznie w nowym izolowanym checkout/worktree i pustym katalogu roboczym:
+
+1. Zachowaj aktualny zestaw konsumentów oraz dane. W kopii checkout wygeneruj `runtime_profiles_embedded.inc` z tych samych canonical packów **z pominięciem tylko domeny util**. Można tymczasowo zmienić rozszerzenie `loom/data/runtime/util.pack` na `.disabled`, uruchomić generator, po czym przywrócić `.pack`. Nie rób tego w aktywnym checkout.
+2. Przebuduj `runtime_profile.cpp` ze starą, pozbawioną util tabelą; `fs.cpp` i nagłówki muszą być aktualne. Pozostałe konsumowane klasy również muszą mieć zgodny ABI, więc najczytelniejszy jest pełny build takiej celowo niespójnej kopii.
+3. Uruchom `loom_tests --test-suite=github_sync,media,semantic_worker` z osobnego pustego katalogu scratch, poza repo. Błąd podstawowy można potwierdzić bez pisania plików: `RuntimeProfile::builtin("util")` zwraca NotFound, a `fsutil::TempDir{}.path().empty()` jest true. To jest deterministyczna przyczyna; dokładna liczba kolejnych awarii/losowanie kolejności suite może zależeć od harnessu.
+4. Oryginalny pomocniczy harness zestawiał dokładnie trzy pliki testów: `test_media.cpp`, `test_github.cpp`, `test_semantic_worker.cpp`, ze standalone doctest main, obiektami migracji i biblioteką pomocniczą 9d15. Użyto `c++ -std=c++20 -O0 -g0`, pthread/dl/m/ssl/crypto. Ten wariant nie tworzył starego Runtime. Pełny surowy log: `worker-media-github-tests-stale-profile.log`.
+5. Naprawa: wygeneruj tabelę z **wszystkimi** packami i przebuduj framework/fs wraz ze zmienionymi konsumentami. `gen_runtime_profiles.py --check` musi przejść. Probe sprawdza teraz pustą ścieżkę TempDir przed pierwszym zapisem, a pomocnicze programy działają poza checkout. Końcowy helper wynik: 50/50 przypadków i 333/333 asercji; JSON porównania ma identyczne 604681 bajtów.
+
+Znane syntetyczne pliki starego runu (`probe.db`, `probe.fts.db`, `github_sync.json`, `profiles/media.pack`, `profiles/github.pack`) usunięto. Nie odczytano rzeczywistych sekretów ani danych holdout. Pełny aktualny build i porównanie z dokładnym 161cc22 są osobnym dowodem, w katalogu `../baseline161` po stronie bazowej.
