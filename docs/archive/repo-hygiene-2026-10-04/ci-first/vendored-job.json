@@ -1,0 +1,40 @@
+{
+  "schema": "loom.github_job_evidence/1",
+  "repository": "klb-t/chatadhd",
+  "head_sha": "ee97311d6545ca19e19266d2f37514f2663f0aa9",
+  "tested_merge_sha": "295de864dc42507ce4f54a0bbd7adf42fd1bc9fa",
+  "run_id": 37210513736,
+  "job_id": 111460573887,
+  "preset": "vendored",
+  "job_name": "vendored (clang++)",
+  "conclusion": "failure",
+  "failed_primary_step": "Build",
+  "source": "GitHub fetch_workflow_job_logs connector",
+  "url": "https://github.com/klb-t/chatadhd/actions/runs/37210513736/job/111460573887",
+  "log_file": "vendored-job.log",
+  "raw_sha256": "0199c59d591470c2aa6c5c39c92d248fe2e40aa194ff26c6aecc5b43a944d7a2",
+  "saved_sha256": "0199c59d591470c2aa6c5c39c92d248fe2e40aa194ff26c6aecc5b43a944d7a2",
+  "redactions": [],
+  "commands": [
+    "cmake --preset vendored -DLOOM_BUILD_SERVER=ON -DLOOM_SHARED=ON -DPython3_EXECUTABLE=\"$(which python)\"",
+    "cmake --build --preset vendored --parallel 2"
+  ],
+  "primary_errors": [
+    {
+      "file": "loom/server/src/app.cpp",
+      "line": 768,
+      "column": 26,
+      "message": "lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]"
+    },
+    {
+      "file": "loom/server/src/app.cpp",
+      "line": 772,
+      "column": 29,
+      "message": "lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]"
+    }
+  ],
+  "secondary_errors": [
+    "CTest did not execute after failed Build; evidence guard failed on missing ctest-manifest.json"
+  ],
+  "proposed_fix": "Remove unused this capture in the two route lambdas; source file is outside W8 scope."
+}
