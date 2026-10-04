@@ -5,17 +5,17 @@ Gałąź: `gpt/archive-import-2026-10-04`; świeży rebase na main **30ad7d3**
 Historyczny zmierzony kod: **1474b260582a80f006f99953baaad1b3253ca6e1**.
 Zakres 5, dane syntetyczne/publiczne, offline: **zero płatnych wywołań**.
 
-**Wstrzymany po nowym niezależnym blokerze OCR (szturchnięcie 21:06).**
+**Poprawki blokera gotowe; pełna bramka po szturchnięciu 21:06 trwa.**
 Integrator wykazał MIME **1/3**: oba importy z provenance czytają niezmienne
 bajty, ale tracą rozszerzenie obrazu. Poprawka zachowuje deklarowany format
 osobno od blobu; media API ma już `ocr_bytes`, więc nie trzeba zmian w W11.
-Równolegle naprawiamy kontrolę wersji migracji wewnątrz `BEGIN IMMEDIATE`
-i włączamy 8 regresji audytu do istniejącego CTest discovery bez zmian CMake.
+Naprawiono kontrolę wersji migracji wewnątrz `BEGIN IMMEDIATE`
+i włączono 8 regresji audytu do istniejącego CTest discovery bez zmian CMake.
 Pełna dawna linia zachowana pod
 `archive/2026-10-04/archive-import-before-mixed-w2` (**03cd52e**).
-Dotychczasowe bramki poniżej dotyczą starego źródła; nowych jeszcze nie wykonano.
+Historyczne bramki112/112 poniżej dotyczą starego źródła i nie zastępują nowych.
 
-Po szturchnięciu właściciela 18:51: świeży fetch, rebase (`up to date`), pełny
+Historycznie, po szturchnięciu właściciela 18:51: fetch, rebase (`up to date`), pełny
 build/CTest **112/112 w 307,19 s**, **696/25 341** natywnych przypadków/asercji,
 **1276 Python/0 skips**, nowe grupy **37/37 i 876/876**. Niezależny replay
 **2/2 scenariusze, 31/31 kontroli**, web TypeScript/Vite: **85 modułów**.
@@ -27,7 +27,7 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
 
 ## Poprawki po szturchnięciu 21:06
 
-1. **OCR:** `import_file` i bezpośredni `import_screenshot` przekazują do
+1. **OCR:** `import_file` i bezpośredni `import_screenshot` z provenance przekazują do
    istniejącego `ocr_bytes` bajty niezmiennego snapshotu i osobno deklarowane
    rozszerzenie źródła. SourceRecord zachowuje `mime` i
    `metadata.declared_image_format`; hash-only blob nadal zawiera identyczne
@@ -40,7 +40,7 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
    **przed 2/6; po 6/6 i 872/872 asercji**, bez live calls.
    To próba pomocnicza, nie pełny build po przyjęciu W2. Kod **bf8b620**.
 2. **Migracja:** oba klucze wersji ponownie sprawdzane wewnątrz
-   `BEGIN IMMEDIATE`, przed jakimkolwiek DDL lub zapisem wersji.
+   `BEGIN IMMEDIATE`, przed DDL tej migracji lub zapisem wersji.
    Deterministyczny writer zapisuje2 po preflight, przed uzyskaniem blokady:
    stary kod miał **6 błędów** (otwarcie/downgrade/DDL, oba klucze), poprawka
    zwraca `Unsupported` i zachowuje2, drugi klucz oraz rekordy.
@@ -52,13 +52,13 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
    evidence do `loom/tools/eval/test_archive_cost.py`; stare11 bez osłabiania.
    Zwykły discovery i adapter istniejącego CTest globu wykonały **19/19**.
    `compat.test_archive_cost` ładuje tę samą suite, bez kopii testów ani zmian
-   centralnego CMake. Kod **521ba0c**; pełny CTest jeszcze przed nami.
+   centralnego CMake. Kod **521ba0c**; grupa pełnego CTest także wykonała19/19.
 4. **Głębokość auxiliary/repair (finding INDEX):** prywatny `load_json_doc`
    wymaga jawnego `max_depth`; wszystkie6 ścieżek przekazują
    `ImportOptions.json_max_depth`. Usunięto ukryty default512 z
    `parse_tolerant`. Nowe regresje obejmują preset8, zero/unlimited, payload
    o głębokości550, wznowienie oraz naprawę powiązania z zachowaniem ID.
-   WERROR syntax zielony; native execution czeka na pełny build.
+   Pełny świeży build/WERROR i grupa natywna: **2/2,106/106 asercji**.
    Legacy JSON/JSONL i heurystyka generic finder nadal mają osobne mechanizmy;
    nie jest to claim kompletnej migracji wszystkich 52 grup.
 
@@ -72,7 +72,14 @@ Niezależne replaye na rzeczywistym świeżym rdzeniu W2+W5 **4e8c3de**
 oraz jawny niekompletny wynik malformed. Źródła/biblioteki przed/po bez zmian.
 [OCR replay](archive-import-2026-10-04-evidence/native/owner-nudge-2106/screenshot-replay/README.md),
 [checkpoint replay](archive-import-2026-10-04-evidence/native/owner-nudge-2106/checkpoint-replay/README.md).
-Pełny native build kończy jeszcze kompilację testów; pełnego CTest nie deklarujemy.
+Świeży pełny build/WERROR zakończony. Pierwszy pełny CTest **113/115,393,26 s**:
+oba błędy przed uruchomieniem serwera (`PermissionError`, mode0644). Samo
+przywrócenie0755 ujawniło `Exec format error`: pierwsze64 bajty wygenerowanego
+pliku zerowe, przyczyna uszkodzenia nieustalona. Ponowne linkowanie wyłącznie
+serwera z niezmienionych obiektów/bibliotek dało poprawny ELF i **2/2**
+ukierunkowanych testów. Core SHA i wszystkie źródła bez zmian; testów nie zmieniono.
+[Pierwszy negatyw i odtworzenie](archive-import-2026-10-04-evidence/native/owner-nudge-2106/mixed-native-first-failure/README.md).
+Nowy pełny przebieg115 trwa; gotowości jeszcze nie deklarujemy.
 Nowy fetch po wszystkich4 poprawkach: main30ad7d3 bez zmian, rebase up to date.
 
 ## Wdrożone
@@ -143,17 +150,21 @@ C++ domyślnie resume wyłącza, CLI włącza. Pamięć zależy od największej
 rozmowy/wartości/wrappera i list podsumowań; auxiliary mogą wymagać DOM.
 SQLite+WAL czyta oryginał, ale hash pliku głównego nie wiąże WAL/live query;
 spójny backup/cache sidecarów pozostaje. Nie badano prywatnych eksportów,
-OCR ani jakości semantycznej. Brak adaptera adnotacji GraphPacket/KB, C ABI/UI.
+jakości OCR ani semantyki. Transport OCR i tożsamość bajtów sprawdzono offline
+na strict mock; nie jest to ocena dekodowania wszystkich formatów przez model.
+Brak adaptera adnotacji GraphPacket/KB, C ABI/UI.
 Presety i interpretacja pól pozostają do migracji do packów/profili W11.
 [Instrukcja właściciela, API i przekazania](archive-import-2026-10-04-runbook.md).
 
 ## Do wątku 2
 
-Warunkowy adapter CLI korzysta z realnego W2; brak zależności to `unavailable`.
+Warunkowy adapter CLI korzysta z realnego W2, teraz przyjętego na main30ad7d3
+z kanonicznym `usage_policy.pack`; brak zależności to `unavailable`.
 Podłączyć `preflight/completed` w domyślnych adapterach C ABI/serwera/katalogu,
 trwałe ustawienia i wspólny atomic dispatch. Historyczny probe `34cc920` nie
-certyfikuje nowych presetów/startupu `910a1d6`; W11 `3cd3f47` dostarczył
-dane usage_policy/config/runtime_paths do ich podłączenia przez W2.
+certyfikuje aktualnego startupu; obecna bramka W5 korzysta z przyjętego W2.
+W11 powinien wyprowadzać usage defaults z jedynego autorytatywnego dokumentu2,
+bez utrzymywania drugiego ręcznego presetu.
 
 ## Do wątku 3
 
@@ -173,8 +184,9 @@ sam JSON diagnostyczny W5 tego nie realizuje. Wspólna regresja3/4 nadal wymagan
 ## Do wątku 9
 
 **Odebrano aktualny INDEX/main30ad7d3 i nowy negatyw OCR6e4bf03.**
-Gotowość starego przyrostu cofnięta do poprawienia OCR/migracji i nowych
-bramek na przyjętym W2. Rebase37 commitów czysty, każdy opublikowany;
+OCR/migrację poprawiono, regresje audit są zwykłymi testami; auxiliary/repair
+honorują caller depth. Gotowość pozostaje cofnięta do nowej pełnej bramki.
+Rebase37 commitów czysty, każdy opublikowany;
 oryginalny03cd52e zachowany w archiwum. INDEX/main/STATE pozostają własnością9.
 
 Nowe próby odtwarzają oba oryginalne reproduktory bez osłabiania kontroli

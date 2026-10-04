@@ -1,0 +1,3 @@
+build-final: exit 0
+ctest-registration: exit 0
+ctest-full: exit 8

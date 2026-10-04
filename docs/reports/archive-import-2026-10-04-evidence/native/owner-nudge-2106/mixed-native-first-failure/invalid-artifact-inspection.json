@@ -1,0 +1,11 @@
+{
+  "schema": "loom.generated_server_header_inspection/1",
+  "derivation": "Independent inspection after the failed run of the locally preserved original artifact; artifact bytes are not included in the public package.",
+  "sha256": "e6cd27065ec3b7f3832ae1a2139580444b4e7cb219323ae1e0f30228a73524d4",
+  "bytes": 32629112,
+  "header_bytes_examined": 64,
+  "header_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "examined_header_all_zero": true,
+  "entire_file_all_zero_claimed": false,
+  "cause": "unknown"
+}

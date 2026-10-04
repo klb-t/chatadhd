@@ -1,0 +1,47 @@
+UpdateCTestConfiguration  from :/workspace/scratch/943af489e102/thread5-mixed-build/DartConfiguration.tcl
+Test project /workspace/scratch/943af489e102/thread5-mixed-build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 112
+    Start 112: server.smoke
+
+112: Test command: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12 "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_server_smoke.py"
+112: Working Directory: /workspace/scratch/943af489e102/thread5-mixed-build
+112: Environment variables: 
+112:  LOOM_SERVER_BIN=/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server
+112: Test timeout computed to be: 60
+112: OK: loom-server knowledge/catalog/context checks passed
+112: OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed
+112: OK: all loom-server smoke checks passed
+112: OK: loom-server auth checks passed
+1/2 Test #112: server.smoke .....................   Passed    2.27 sec
+test 113
+    Start 113: server.chat_active_task
+
+113: Test command: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12 "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_chat_active_task_server.py"
+113: Working Directory: /workspace/scratch/943af489e102/thread5-mixed-build
+113: Environment variables: 
+113:  LOOM_SERVER_BIN=/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server
+113:  PYTHONDONTWRITEBYTECODE=1
+113: Test timeout computed to be: 90
+113: test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... ok
+113: 
+113: ----------------------------------------------------------------------
+113: Ran 1 test in 1.114s
+113: 
+113: OK
+113: W1 server transport: 1 scenario, 5 local provider calls, 0 remote; stale versions emit SSE error without start/persistence/transport; full server restart verified.
+113: Synthetic server fixture retained at /tmp/loom-w1-server-v91zgvk0
+2/2 Test #113: server.chat_active_task ..........   Passed    1.26 sec
+
+The following tests passed:
+	server.smoke
+	server.chat_active_task
+
+100% tests passed out of 2
+
+Total Test time (real) =   3.53 sec

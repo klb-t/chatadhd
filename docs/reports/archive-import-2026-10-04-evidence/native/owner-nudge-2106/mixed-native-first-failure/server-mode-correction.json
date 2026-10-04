@@ -1,0 +1,18 @@
+{
+  "schema": "loom.generated_binary_mode_correction/1",
+  "utc": "2026-10-04T19:37:53.231561+00:00",
+  "path": "/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server",
+  "before": {
+    "mode": "0o644",
+    "sha256": "e6cd27065ec3b7f3832ae1a2139580444b4e7cb219323ae1e0f30228a73524d4",
+    "executable": false
+  },
+  "after": {
+    "mode": "0o755",
+    "sha256": "e6cd27065ec3b7f3832ae1a2139580444b4e7cb219323ae1e0f30228a73524d4",
+    "executable": true
+  },
+  "binary_bytes_unchanged": true,
+  "source_changes": 0,
+  "reason": "Two full CTest server groups failed before process launch with PermissionError; mode0644 observed independently. Cause of prior mode change not determined."
+}

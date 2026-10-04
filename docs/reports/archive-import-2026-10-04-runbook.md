@@ -1,8 +1,9 @@
 # Wątek 5 — instrukcja importu archiwów i API adnotacji
 
 Gałąź: `gpt/archive-import-2026-10-04`. Baza kodu:
-`161cc22dfb84fe863389d6b90323bd44516a68dc`, z profilami aplikacji. Po rebase
-na main `7282437b1c88933977f64b3468b9f42f7b400494` (dokumenty integratora).
+`4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2`, po czystym rebase
+na main `30ad7d37337d6641cb7714b03e9feff0e6e25d25`
+(przyjęty W2 z danych, profile aplikacji i wymagania R39–R41).
 [Krótki raport](archive-import-2026-10-04.md) zawiera wyniki i status odbioru.
 Wszystkie dotychczasowe pomiary są offline i dotyczą danych syntetycznych;
 nie wykonano płatnych wywołań modeli.
@@ -86,7 +87,7 @@ wielkości, w zakresie reprezentacji użytych typów.
 | CLI | Pole `ImportOptions` | Domyślnie / znaczenie |
 |---|---|---|
 | `--json-read-chunk-bytes N` | `json_read_chunk_bytes` | 65 536 bajtów; wymagane `N > 0` |
-| `--json-max-depth N` | `json_max_depth` | 512; `0` wyłącza sufit preflight |
+| `--json-max-depth N` | `json_max_depth` | 512; `0` wyłącza sufit głębokości eksportu |
 | `--json-inline-threshold-bytes N` | `json_inline_threshold_bytes` | 1 000 000 bajtów; próg projekcji JSON |
 | `--generic-inference-max-bytes N` | `generic_inference_max_bytes` | 64 000 000 bajtów; `0` bez limitu tego kroku |
 | `--resume` / `--no-resume` | `resume` | CLI: `true`; biblioteka C++: `false`, jawny opt-in |
@@ -115,6 +116,11 @@ Oddzielny audyt istniejącej bazy, bez importowania:
 python3 loom/tools/eval/archive_cost.py --db /private/chatadhd-data/chatadhd.db --scope all --json
 ```
 
+Wszystkie19 regresji (stare11 oraz nowe8) są teraz w zwykłym
+`loom/tools/eval/test_archive_cost.py`. CTest uruchamia tę samą suite przez
+`compat.test_archive_cost`; historyczny plik w evidence zachowuje wcześniejszy
+przebieg, ale nie jest już jedynym miejscem tych testów.
+
 Python obsługuje zakresy `all|active|legacy`, `--no-tools`, `--no-versions`,
 `--no-unknown-status`, `--include-excluded`/`--no-include-excluded` i
 `--include-deleted`/`--no-include-deleted`. Można ustawić
@@ -133,8 +139,10 @@ Pojedyncza wiadomość może zostać zmaterializowana przy liczeniu jej tekstu.
 
 ## Warunkowy adapter polityki wątku 2
 
-Adapter CLI zaczyna korzystać z rzeczywistego nagłówka/implementacji wątku 2
-po ich integracji. Korzysta ze wspólnego `<data-root>/usage-policy.sqlite`,
+Adapter CLI korzysta z rzeczywistego nagłówka/implementacji wątku 2,
+przyjętego już na main30ad7d3. Autorytatywny preset jest w
+`loom/data/policy/usage_policy.pack`, z walidacją i nakładką W2 w config.json.
+Adapter korzysta ze wspólnego `<data-root>/usage-policy.sqlite`,
 zapisuje preflight z hashem i szacunkiem bajtów źródła oraz zmierzone bajty
 snapshotu. Przy skonfigurowanym wzroście zużycia (preset ×10) zatrzymuje się
 przed zapisem wierszy źródła/rozmów. Potwierdzenie wiąże dokładne pokwitowanie,
@@ -197,7 +205,31 @@ powiązań i dryfu jest diagnozowany. Korekty oraz wycofania pozostawiają histo
 Migracje są addytywne, forward-only:
 `loom_message_annotation_schema_version=1`,
 `loom_import_checkpoint_schema_version=1`; rdzeń v4 i ogólne Loom v1 pozostają.
+Oba znaczniki sprawdzane są ponownie po `BEGIN IMMEDIATE`, przed DDL lub
+zapisem1. Nowsza wersja daje `Unsupported`; nie ma cofania ani automatycznego
+przepisywania bazy. Deterministyczne regresje obejmują writer zapisujący2
+między pierwszym odczytem a uzyskaniem blokady, oddzielnie dla obu kluczy.
 Ten wątek nie dodaje C ABI ani UI dla adnotacji.
+
+## Obrazy, OCR i ustawienie głębokości
+
+`import_file` oraz `import_screenshot` z provenance przekazują OCR dokładne
+bajty niezmiennego blobu. Deklarowany format zachowują oddzielnie z nazwy
+oryginalnego pliku: `SourceRecord.mime` i `metadata.declared_image_format`.
+Nie otwierają ponownie oryginału po admission/snapshotcie. Rozszerzenie jest
+normalizowane do małych liter; historyczne `jpg` wysyła `image/jpg`.
+To deklaracja nazwy, nie wynik dekodera/sygnatury. Zachowane stare źródła/blob
+MIME nie są przepisywane. Mapowania formatów pozostają zadaniem profilu W11.
+Strict offline mock sprawdza pełne żądanie/MIME/base64 i zmianę/usunięcie
+oryginału; replay używa niezmienionego reproduktora integratora. Nie jest to
+ocena jakości OCR na prywatnych obrazach ani pozwolenie na płatny dispatch.
+
+`json_max_depth` dociera teraz także do wszystkich6 ścieżek całego dokumentu
+auxiliary/repair; prywatne `load_json_doc` wymaga jawnego parametru. Preset8
+odmawia interpretacji głębokiego auxiliary, a ponowienie z0 zachowuje ID i
+naprawia powiązania. Test obejmuje550 poziomów, powyżej starego ukrytego512.
+Legacy JSON/JSONL i głębokość heurystycznego generic finder mają nadal osobne
+mechanizmy. Pamięć auxiliary DOM zależy od rozmiaru dokumentu.
 
 ## Granice i dowody
 
@@ -292,7 +324,7 @@ stan bazy. Nie deklarujemy pełnego snapshotu SQLite na podstawie kopii samego
 pliku głównego. Spójny backup SQLite oraz jawna provenance plików towarzyszących
 pozostają zadaniem do wykonania, niezależnie od poprawnego odczytu bieżącego WAL.
 
-## Przegląd przekazań innych wątków
+## Historyczny przegląd przekazań innych wątków
 
 Sprawdzono raporty głównego `docs/reports/` na wszystkich pobranych gałęziach
 `origin/gpt/*-2026-10-04`. Stan poniżej jest przypięty do ich wskazanych tipów;
@@ -354,9 +386,10 @@ rewizją/schematem/hashem efektywnych danych; typy nullable mogą korzystać z u
 `loom/data/runtime/<domain>.pack`, generatorze `gen_runtime_profiles.py`.
 W5 nie edytuje tych cudzych ścieżek: potrzebny jest pack/schemat od W11 oraz
 porównanie identyczności domyślnych wyników przed podłączeniem. Nie tworzymy
-drugiego loadera. W2 także opisuje swoje stare dane jako
-`legacy_code_pending_pack_migration`; jego opaque refs w zdarzeniach nie są
-same w sobie encjami/krawędziami metod w grafie.
+drugiego loadera. Usage defaults W11 muszą pochodzić z kanonicznego dokumentu2;
+jego opaque refs w zdarzeniach nie są same w sobie encjami/krawędziami metod
+w grafie. Dawne `legacy_code_pending_pack_migration` w receipts W2 dotyczą
+historycznej wersji sprzed przyjęcia usage packa.
 
 
 W4 `reply_fragment` przyjmuje oryginalny base packet i kompilację oraz dokładnie
@@ -369,7 +402,7 @@ na `archive/2026-10-04/archive-import-before-main-refresh`; rebase zachował kod
 a wszystkie wyniki są przypięte do faktycznie zmierzonych bajtów.
 
 
-Ostatni fetch: W11 `3cd3f47` dostarczył dane `usage_policy`, `config` i
+Historyczny fetch: W11 `3cd3f47` dostarczył dane `usage_policy`, `config` i
 `runtime_paths` (łącznie 19 packów), z golden wartościami oraz izolowanym
 14/14 receipt autora. To dane do podłączenia przez W2, nie już aktywny
 bootstrap/adapter na main. Domyślna polityka ma float `10.0`; shallow override

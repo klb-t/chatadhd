@@ -1,0 +1,104 @@
+UpdateCTestConfiguration  from :/workspace/scratch/943af489e102/thread5-mixed-build/DartConfiguration.tcl
+Test project /workspace/scratch/943af489e102/thread5-mixed-build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 112
+    Start 112: server.smoke
+
+112: Test command: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12 "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_server_smoke.py"
+112: Working Directory: /workspace/scratch/943af489e102/thread5-mixed-build
+112: Environment variables: 
+112:  LOOM_SERVER_BIN=/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server
+112: Test timeout computed to be: 60
+112: Traceback (most recent call last):
+112:   File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_server_smoke.py", line 489, in <module>
+112:     rc = main()
+112:          ^^^^^^
+112:   File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_server_smoke.py", line 280, in main
+112:     proc = subprocess.Popen(
+112:            ^^^^^^^^^^^^^^^^^
+112:   File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1026, in __init__
+112:     self._execute_child(args, executable, preexec_fn, close_fds,
+112:   File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1955, in _execute_child
+112:     raise child_exception_type(errno_num, err_msg, err_filename)
+112: OSError: [Errno 8] Exec format error: '/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server'
+1/2 Test #112: server.smoke .....................***Failed    0.13 sec
+Traceback (most recent call last):
+  File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_server_smoke.py", line 489, in <module>
+    rc = main()
+         ^^^^^^
+  File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_server_smoke.py", line 280, in main
+    proc = subprocess.Popen(
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+OSError: [Errno 8] Exec format error: '/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server'
+
+test 113
+    Start 113: server.chat_active_task
+
+113: Test command: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12 "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_chat_active_task_server.py"
+113: Working Directory: /workspace/scratch/943af489e102/thread5-mixed-build
+113: Environment variables: 
+113:  LOOM_SERVER_BIN=/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server
+113:  PYTHONDONTWRITEBYTECODE=1
+113: Test timeout computed to be: 90
+113: test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... ERROR
+113: 
+113: ======================================================================
+113: ERROR: test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart)
+113: ----------------------------------------------------------------------
+113: Traceback (most recent call last):
+113:   File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_chat_active_task_server.py", line 65, in setUp
+113:     self.start_server()
+113:   File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_chat_active_task_server.py", line 83, in start_server
+113:     self.process = subprocess.Popen([self.binary, "--host", "127.0.0.1", "--port", str(port),
+113:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+113:   File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1026, in __init__
+113:     self._execute_child(args, executable, preexec_fn, close_fds,
+113:   File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1955, in _execute_child
+113:     raise child_exception_type(errno_num, err_msg, err_filename)
+113: OSError: [Errno 8] Exec format error: '/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server'
+113: 
+113: ----------------------------------------------------------------------
+113: Ran 1 test in 0.503s
+113: 
+113: FAILED (errors=1)
+2/2 Test #113: server.chat_active_task ..........***Failed    0.59 sec
+test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... ERROR
+
+======================================================================
+ERROR: test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_chat_active_task_server.py", line 65, in setUp
+    self.start_server()
+  File "/workspace/scratch/943af489e102/chatadhd/loom/server/tests/test_chat_active_task_server.py", line 83, in start_server
+    self.process = subprocess.Popen([self.binary, "--host", "127.0.0.1", "--port", str(port),
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+OSError: [Errno 8] Exec format error: '/workspace/scratch/943af489e102/thread5-mixed-build/server/loom-server'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.503s
+
+FAILED (errors=1)
+
+
+0% tests passed, 2 tests failed out of 2
+
+Total Test time (real) =   0.73 sec
+
+The following tests FAILED:
+	112 - server.smoke (Failed)
+	113 - server.chat_active_task (Failed)
+Errors while running CTest

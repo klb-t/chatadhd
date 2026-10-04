@@ -1,0 +1,15 @@
+[0/2] Re-checking globbed directories...
+-- GLOB mismatch!
+The following files were added:
+  +/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_aux_depth.cpp
+  +/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_screenshot.cpp
+[1/2] Re-running CMake...
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (0.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: /workspace/scratch/943af489e102/thread5-mixed-build
+[0/4] Re-checking globbed directories...
+[1/6] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_aux_depth.cpp.o
+[2/6] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_screenshot.cpp.o
+[3/6] Linking CXX executable loom_tests
