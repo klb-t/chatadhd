@@ -1,10 +1,11 @@
 # W8 — evidence policy inventory, 2026-10-04
 
 Requested by `docs/reports/INDEX.md` on public main `7282437`. Audited branch:
-`gpt/repo-hygiene-2026-10-04`, commit `2544cf3`. This report inventories the
-current guard; it does not implement or approve a policy migration.
+`gpt/repo-hygiene-2026-10-04`, commit `2544cf3`. The first inventory below pins
+the pre-migration guard. A subsequent authorized implementation is documented
+in the final section; those two stages must not be conflated.
 
-Audited bytes:
+Original audited bytes, preserved in the migration evidence's `before/` folder:
 
 - `.github/scripts/verify_ctest.py`: SHA-256
   `39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a`.
@@ -48,7 +49,7 @@ or measurements of the actual CI build:
   exceptions, unexpected skip rejection and the required unavailability reason.
   These examples must remain intact when their policy source moves to data.
 
-## Proposed successor, not implemented here
+## Original migration proposal
 
 Use one versioned, repository-owned `.github/ctest-evidence-policy.json` for
 preset names, ordered runner bindings and explicit capability exceptions. Keep
@@ -71,15 +72,63 @@ Retain default names, the exact two ABI skips, all-skip conditions and reason
 matching. Do not introduce a generic ignore list, wildcard skip waiver, or a
 setting that converts unavailable cases into executed coverage.
 
-Source code and tests are unchanged by this inventory. DIC-0692, the separate
-seeding dimensions/projection task, remains a distinct W8 implementation item;
-this guard inventory does not complete it or revise historical results.
+The initial inventory changed no code. DIC-0692, the separate seeding
+dimensions/projection task, remains a distinct W8 item; the guard migration
+does not implement it or revise historical results.
+
+## Implemented follow-up
+
+The guard now reads the versioned `.github/ctest-evidence-policy.json`, validated
+against `.github/ctest-evidence-policy.schema.json`. Preset names, ordered runner
+bindings and exact named availability conditions are data. The initial values
+are unchanged. The CLI accepts explicit `--policy PATH` and keeps the shipped
+descriptor as its default for existing invocations. A new declared preset and
+runner binding work without adding a preset-name branch to Python.
+
+The loader rejects malformed schema/policy, duplicate keys/selectors, ambiguous
+availability declarations, unsupported parser IDs and runner mismatches. The
+loaded JSON objects are recursive `MappingProxyType` snapshots and arrays are
+tuples, including nested availability entries and runner selectors. Regression
+checks reject appending an exception or editing nested selectors, and preserve
+the same negative `dev` result and provenance after mutation attempts. Receipts
+record schema ID, revision, exact-byte
+policy SHA-256, schema SHA-256 and path; valid policy provenance survives later
+manifest/JUnit failure. Invalid input produces a negative JSON receipt.
+
+Parsing, complete manifest identity, outer success, positive actual execution,
+skip subtraction and unexecuted classification remain universal operations.
+The schema exposes no generic ignore or wildcard availability waiver. Named
+unavailable cases still need their reason and skip condition; they never become
+coverage. This is evidence instrumentation, not a product/resource ceiling.
+
+| Verification | Before | After |
+|---|---:|---:|
+| Original regression methods | 16/16 | Same 16/16; method bodies unchanged |
+| Exact generated-input comparisons | — | 44/44 identical results, excluding added policy provenance |
+| Guard regression suite | 16/16 | 28/28, including 12 loader/policy regressions |
+| All `.github/scripts` suites | — | 38/38 |
+| Complete archived CI manifest/JUnit pairs | 2 | 2/2 exactly equivalent |
+
+The archived `dev` replay remains 108 outer / 107 executed entries, 659 native
+cases, 24,465 assertions and 1,276 Python cases. ASan remains 108 / 105,
+659 / 24,464 and 1,252 Python cases with 24 reported skips. This follow-up
+replays existing bytes; it does not perform another native build or CI run.
+The first archived dev/ASan manifests have no original JUnit and are explicitly
+excluded from XML equivalence claims. No XML was reconstructed.
+
+[Complete comparison and pinned source hashes](../verification/repo-hygiene-followup-2026-10-04/evidence-policy/comparison.json),
+[portable replay](../verification/repo-hygiene-followup-2026-10-04/evidence-policy/compare.py),
+[guard regressions](../verification/repo-hygiene-followup-2026-10-04/evidence-policy/regressions-after.log)
+and [all script regressions](../verification/repo-hygiene-followup-2026-10-04/evidence-policy/all-github-scripts.log)
+retain exact evidence. New cases cover invalid policies/schema, no fallback,
+declared presets/runners, reason mismatch, immutable provenance and exceptions
+that cannot hide outer failure or a missing manifest entry.
 
 ## Do wątku 9
 
-Record the explicit ASan/opt-in policy inventory alongside W11's W8 handoff.
-Coordinate a separately verified W8 data-loader increment when selected;
-retain the current guard semantics and publish before/after evidence. Track
-DIC-0692 separately and do not label this documentation as its implementation.
+Record the inventory and the separately verified implementation alongside W11's
+handoff. Select/rebase this W8 increment, retain exact guard semantics and the
+archived comparisons, and use explicit policy selection in CI. Track DIC-0692
+through its own implementation/receipt rather than this guard migration.
 
 Do wątku 9

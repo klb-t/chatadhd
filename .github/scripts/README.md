@@ -22,6 +22,7 @@ ctest --test-dir loom/build/dev --output-on-failure --no-tests=error \
   --test-output-size-passed 10485760 --test-output-size-failed 10485760 \
   --output-junit "$PWD/ctest.xml"
 python3 .github/scripts/verify_ctest.py --preset dev \
+  --policy .github/ctest-evidence-policy.json \
   --manifest ctest-manifest.json --junit ctest.xml --output executed-cases.json
 python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
 ```
@@ -37,3 +38,31 @@ SHA-256 of the native runner, CLI, server and available shared library. Required
 executables must exist. Receipts are retained with the manifest, JUnit and
 observed execution counts; the initial unsuccessful CI run predates this
 binary-pinning step and cannot supply a retrospective executable hash.
+
+## Versioned evidence policy
+
+`.github/ctest-evidence-policy.json` is the default descriptor. The local
+`ctest-evidence-policy.schema.json` validates its format using `jsonschema`,
+already included in the documented contract requirements. No external schema
+is fetched. `--policy PATH` explicitly selects another local descriptor;
+omitting it preserves the default behavior of existing invocations.
+
+Preset names, ordered runner bindings and exact named availability exceptions
+come from that data. Supported parsers and integrity/accounting operations
+remain code. A declared new preset needs no Python preset-name branch. Policy
+files cannot declare an ignore list or wildcard availability exception. Missing,
+malformed, duplicate or contradictory policy entries fail without fallback.
+
+The initial descriptor preserves all existing conditions: scale 0/0 remains
+unexecuted, ASan shared-library exceptions require the recorded reason, exactly
+two ABI skips still require a case to run, and all other skips remain errors.
+Unavailable cases never become coverage, and policy cannot waive outer
+failures, missing manifest entries or incomplete summaries.
+
+Each receipt records `policy_provenance`: schema ID, revision, exact-byte
+SHA-256, schema SHA-256 and resolved path. The loaded descriptor recursively
+copies JSON objects into read-only mappings and arrays into tuples, including
+the provenance metadata, so it cannot drift after hashing.
+A valid policy's provenance is retained even when the manifest/JUnit input
+fails. Invalid policies produce failure evidence without claiming a validated
+policy version.

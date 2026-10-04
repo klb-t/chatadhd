@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "loom.ctest_evidence_policy/1",
+  "title": "CTest execution-evidence policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "revision", "default_runner", "runner_bindings", "opt_in_entries", "presets"],
+  "properties": {
+    "schema": {"const": "loom.ctest_evidence_policy/1"},
+    "revision": {"type": "integer", "minimum": 1},
+    "default_runner": {"$ref": "#/$defs/runner"},
+    "runner_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["match", "runner"],
+        "properties": {
+          "runner": {"$ref": "#/$defs/runner"},
+          "match": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name"],
+                "properties": {"name": {"$ref": "#/$defs/exactName"}}
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["prefix"],
+                "properties": {"prefix": {"type": "string", "minLength": 1}}
+              }
+            ]
+          }
+        }
+      }
+    },
+    "opt_in_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "runner", "when", "reason"],
+        "properties": {
+          "name": {"$ref": "#/$defs/exactName"},
+          "runner": {"const": "doctest"},
+          "when": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["cases", "assertions"],
+            "properties": {"cases": {"const": 0}, "assertions": {"const": 0}}
+          },
+          "reason": {"$ref": "#/$defs/text"}
+        }
+      }
+    },
+    "presets": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"type": "string", "minLength": 1},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["unavailable_entries"],
+        "properties": {
+          "unavailable_entries": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/unavailableEntry"}
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "runner": {"enum": ["doctest", "unittest", "script"]},
+    "text": {"type": "string", "minLength": 1},
+    "exactName": {"type": "string", "minLength": 1, "pattern": "^[^*?\\[\\]]+$"},
+    "unavailableEntry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "mode", "required_output", "capability", "reason"],
+          "properties": {
+            "name": {"$ref": "#/$defs/exactName"},
+            "mode": {"const": "all_discovered_skipped"},
+            "required_output": {"$ref": "#/$defs/text"},
+            "capability": {"$ref": "#/$defs/text"},
+            "reason": {"$ref": "#/$defs/text"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "mode", "skipped_cases", "requires_execution", "required_output", "capability", "availability_note"],
+          "properties": {
+            "name": {"$ref": "#/$defs/exactName"},
+            "mode": {"const": "exact_skipped"},
+            "skipped_cases": {"type": "integer", "minimum": 1},
+            "requires_execution": {"const": true},
+            "required_output": {"$ref": "#/$defs/text"},
+            "capability": {"$ref": "#/$defs/text"},
+            "availability_note": {"$ref": "#/$defs/text"}
+          }
+        }
+      ]
+    }
+  }
+}
