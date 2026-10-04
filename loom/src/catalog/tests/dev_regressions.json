@@ -1,0 +1,548 @@
+{
+  "schema": "loom.catalog_dev_regressions/1",
+  "corpus": "public_synthetic_dev",
+  "baseline_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "baseline_library_sha256": "f7d8604b1352e32f30988a9cae07e7f285e79cbdd9e401fa513ca40adaf7539e",
+  "baseline_report_sha256": "3140396c63e0a1b94d42426def24bcffdb20094b0c22d93a244e747133df0eae",
+  "fixture_sha256": {
+    "chatgpt_export.zip": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+    "claude_export.zip": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+    "ground_truth.json": "2b8bcfc156662ca05e04e8103990fc72cc7398a9fac4b4ec651806b2e7574e0c"
+  },
+  "baseline_metrics": {
+    "tp": 31,
+    "fp": 0,
+    "fn": 14,
+    "tn": 20,
+    "recall": 0.6888888888888889,
+    "precision": 1.0
+  },
+  "scope": {
+    "known_omissions": 14,
+    "verified_lexical_rescues": 5,
+    "auxiliary_documents_included": 0,
+    "forbidden_datasets_read": false,
+    "model_quality_evaluation": false
+  },
+  "mock_policy_disclosure": "Mechanism tests deliberately assign matching synthetic vectors to the 14 known omissions. These are label-derived fixtures, not model responses or evidence of improved archive retrieval quality.",
+  "cases": [
+    {
+      "id": "lk-02-strategy",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.lokatorka",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/14",
+        "conversation_id": "lk-02-strategy"
+      },
+      "native_unit_id": "un_4384d4445216955a",
+      "content_sha256": "b8cb2362f8ee19ccad9f46e8cd8ec436f3a93577246e1a0c18305cb88eeb5ed6",
+      "baseline": {
+        "selected": false,
+        "score": 0.3383,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.2466,
+        "local_semantic_rank": 29,
+        "lexical_score": 0.0641,
+        "lexical_rank": 54,
+        "final_rank": 39
+      },
+      "why_expected_relevant": "Records the fictional tenancy project's revised escalation strategy and conditions for court action."
+    },
+    {
+      "id": "lk-03-deadline-computed",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.lokatorka",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/15",
+        "conversation_id": "lk-03-deadline-computed"
+      },
+      "native_unit_id": "un_4192649ecc19f13b",
+      "content_sha256": "9d4a64d912d477fa11ea62f08f4a4333ee37e6a2305ef456e9a2fff94b17bcac",
+      "baseline": {
+        "selected": false,
+        "score": 0.5353,
+        "label": "candidate",
+        "decided_by": "rule:sel.tiny",
+        "local_semantic_score": 0.37,
+        "local_semantic_rank": 24,
+        "lexical_score": 0.0826,
+        "lexical_rank": 40,
+        "final_rank": 35
+      },
+      "why_expected_relevant": "Computes the fictional tenancy case deadline from delivery and its stated fictional legal basis, including a reminder."
+    },
+    {
+      "id": "lk-04-contradiction",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.lokatorka",
+      "fixture_locator": {
+        "source_file": "claude_export.zip",
+        "source_sha256": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+        "member": "conversations.json",
+        "json_pointer": "/13",
+        "conversation_id": "lk-04-contradiction"
+      },
+      "native_unit_id": "un_07ab9155906cd7e4",
+      "content_sha256": "014ffa90035cff9514b1732abf58087e469466ad5025bbf5a7d52b1370fca435",
+      "baseline": {
+        "selected": false,
+        "score": 0.1968,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.1749,
+        "local_semantic_rank": 35,
+        "lexical_score": 0.0544,
+        "lexical_rank": 61,
+        "final_rank": 46
+      },
+      "why_expected_relevant": "Records contradictory claims about a mould report and the dated January email supporting the tenancy case."
+    },
+    {
+      "id": "lk-06-court-filing",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.lokatorka",
+      "fixture_locator": {
+        "source_file": "claude_export.zip",
+        "source_sha256": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+        "member": "conversations.json",
+        "json_pointer": "/14",
+        "conversation_id": "lk-06-court-filing"
+      },
+      "native_unit_id": "un_289362a2a57eb883",
+      "content_sha256": "b88fc84f06b51ef265c7e5ecbbd2edb5259e4ac1e5cef1975c0d9c61cbf9b02d",
+      "baseline": {
+        "selected": false,
+        "score": 0.5549,
+        "label": "candidate",
+        "decided_by": "rule:sel.tiny",
+        "local_semantic_score": 0.1558,
+        "local_semantic_rank": 38,
+        "lexical_score": 0.0949,
+        "lexical_rank": 27,
+        "final_rank": 34
+      },
+      "why_expected_relevant": "Records the tenancy project's move from an ignored formal letter to court, superseding the earlier strategy."
+    },
+    {
+      "id": "mu-02-key-open",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.analogghosts",
+      "fixture_locator": {
+        "source_file": "claude_export.zip",
+        "source_sha256": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+        "member": "conversations.json",
+        "json_pointer": "/17",
+        "conversation_id": "mu-02-key-open"
+      },
+      "native_unit_id": "un_7355396778b1e111",
+      "content_sha256": "f234acd80cd0ad0e76e89e4c5669e03c3d14cfdaf606ce007ecdecd1c0358b1d",
+      "baseline": {
+        "selected": false,
+        "score": 0.3566,
+        "label": "candidate",
+        "decided_by": "rule:sel.tiny",
+        "local_semantic_score": 0.1496,
+        "local_semantic_rank": 39,
+        "lexical_score": 0.1259,
+        "lexical_rank": 23,
+        "final_rank": 38
+      },
+      "why_expected_relevant": "Preserves two arrangements of the music project's Paper Weather track pending a later comparison."
+    },
+    {
+      "id": "mu-03-recording-medium",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.analogghosts",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/17",
+        "conversation_id": "mu-03-recording-medium"
+      },
+      "native_unit_id": "un_366b6fda881ecd0e",
+      "content_sha256": "ce6b7229d482e9094cc64abf6c1c6cdc47929c03ec811350e73038c052eaea43",
+      "baseline": {
+        "selected": false,
+        "score": 0.1083,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.0648,
+        "local_semantic_rank": 55,
+        "lexical_score": 0.0802,
+        "lexical_rank": 42,
+        "final_rank": 54
+      },
+      "why_expected_relevant": "Records the music project's choice of recording medium based on reversibility under arrangement uncertainty."
+    },
+    {
+      "id": "mu-04-abandon-slow-fracture",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.analogghosts",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/18",
+        "conversation_id": "mu-04-abandon-slow-fracture"
+      },
+      "native_unit_id": "un_8841b8c6d66c271e",
+      "content_sha256": "f91377a0d9b300f43026f42c08ee3171119bbeb4767a880cc5b7e3514ac50fbd",
+      "baseline": {
+        "selected": false,
+        "score": 0.2859,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.1613,
+        "local_semantic_rank": 36,
+        "lexical_score": 0.0939,
+        "lexical_rank": 29,
+        "final_rank": 40
+      },
+      "why_expected_relevant": "Records the music project's abandoned Slow Fracture track while retaining the demo and reason."
+    },
+    {
+      "id": "mu-05-key-final",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.analogghosts",
+      "fixture_locator": {
+        "source_file": "claude_export.zip",
+        "source_sha256": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+        "member": "conversations.json",
+        "json_pointer": "/18",
+        "conversation_id": "mu-05-key-final"
+      },
+      "native_unit_id": "un_b62e81cc8c8f0ac4",
+      "content_sha256": "353b9a48ed5ae30b926da8778e4d6590a88b9b2481bdae64ab35ba68b62f5aac",
+      "baseline": {
+        "selected": false,
+        "score": 0.2374,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.1292,
+        "local_semantic_rank": 43,
+        "lexical_score": 0.0841,
+        "lexical_rank": 39,
+        "final_rank": 43
+      },
+      "why_expected_relevant": "Records the final key choice for Paper Weather and retention of the rejected demo."
+    },
+    {
+      "id": "nf-02-storage",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.noteflow",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/0",
+        "conversation_id": "nf-02-storage"
+      },
+      "native_unit_id": "un_2f610822f4fd7505",
+      "content_sha256": "c5a5d0297bb79434d5fde2442ce535cb5ba6deee3e9b592bea1191bd92f1d7c3",
+      "baseline": {
+        "selected": false,
+        "score": 0.6812,
+        "label": "candidate",
+        "decided_by": "score",
+        "local_semantic_score": 0.2378,
+        "local_semantic_rank": 30,
+        "lexical_score": 0.0882,
+        "lexical_rank": 35,
+        "final_rank": 32
+      },
+      "why_expected_relevant": "Records the notes application's storage choice, schema and version 0.1.2."
+    },
+    {
+      "id": "nf-04-sync-v1",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.noteflow",
+      "fixture_locator": {
+        "source_file": "claude_export.zip",
+        "source_sha256": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+        "member": "conversations.json",
+        "json_pointer": "/1",
+        "conversation_id": "nf-04-sync-v1"
+      },
+      "native_unit_id": "un_bd10bee315aaab35",
+      "content_sha256": "ba817db74f872bb297d2da4f5162fca518d97224d5046eab05e8c5babfbe03ca",
+      "baseline": {
+        "selected": false,
+        "score": 0.5228,
+        "label": "candidate",
+        "decided_by": "score",
+        "local_semantic_score": 0.1824,
+        "local_semantic_rank": 34,
+        "lexical_score": 0.0639,
+        "lexical_rank": 55,
+        "final_rank": 36
+      },
+      "why_expected_relevant": "Records the notes application's first synchronization implementation and version 0.3.0."
+    },
+    {
+      "id": "nf-12-encryption-and-lost-again",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.noteflow",
+      "fixture_locator": {
+        "source_file": "claude_export.zip",
+        "source_sha256": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+        "member": "conversations.json",
+        "json_pointer": "/5",
+        "conversation_id": "nf-12-encryption-and-lost-again"
+      },
+      "native_unit_id": "un_4b1b98e2bcd92025",
+      "content_sha256": "eebe2b93b528364bc9a2fd85df42ca14f0c72d6785cb1e299eaaaa7a165a9cac",
+      "baseline": {
+        "selected": false,
+        "score": 0.6792,
+        "label": "candidate",
+        "decided_by": "score",
+        "local_semantic_score": 0.3298,
+        "local_semantic_rank": 25,
+        "lexical_score": 0.0618,
+        "lexical_rank": 59,
+        "final_rank": 33
+      },
+      "why_expected_relevant": "Records the notes application's cipher-provider implementation, version 1.2.0 and lost checklist status."
+    },
+    {
+      "id": "wd-03-v01",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.watchdog",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/10",
+        "conversation_id": "wd-03-v01"
+      },
+      "native_unit_id": "un_e05a7aff7e0005b7",
+      "content_sha256": "001c21f3c139bc8e85de80ecbf295b4503c8a43392b183ae6238a13e9b094f45",
+      "baseline": {
+        "selected": false,
+        "score": 0.1107,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.0749,
+        "local_semantic_rank": 51,
+        "lexical_score": 0.0711,
+        "lexical_rank": 50,
+        "final_rank": 53
+      },
+      "why_expected_relevant": "Records the watcher/restarter project's working version 0.1 and log/heartbeat implementation."
+    },
+    {
+      "id": "wd-04-summarizer",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.watchdog",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/11",
+        "conversation_id": "wd-04-summarizer"
+      },
+      "native_unit_id": "un_cae246a71b8db0af",
+      "content_sha256": "326185175bdd59dedf7a1d52793ea20d8eb4dabbbfa12fe80f4491e574c6f5b4",
+      "baseline": {
+        "selected": false,
+        "score": 0.2039,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.1459,
+        "local_semantic_rank": 40,
+        "lexical_score": 0.0695,
+        "lexical_rank": 52,
+        "final_rank": 45
+      },
+      "why_expected_relevant": "Records the watcher/restarter project's summarizer implementation and version 0.2."
+    },
+    {
+      "id": "wd-07-io-swap",
+      "regression_group": "known_omission",
+      "gold_group": "relevant",
+      "project": "proj.watchdog",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/13",
+        "conversation_id": "wd-07-io-swap"
+      },
+      "native_unit_id": "un_31be95f019852809",
+      "content_sha256": "30d50844aedf4a03ca4f32bc00c077f1b7f6da0a750e242cb0fc601f815bcb7e",
+      "baseline": {
+        "selected": false,
+        "score": 0.2535,
+        "label": "irrelevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.1379,
+        "local_semantic_rank": 42,
+        "lexical_score": 0.0956,
+        "lexical_rank": 26,
+        "final_rank": 42
+      },
+      "why_expected_relevant": "Records the watcher/restarter project's internal polling-to-inotify change with unchanged external behavior."
+    },
+    {
+      "id": "cx-04-venting",
+      "regression_group": "lexical_rescue",
+      "gold_group": "relevant",
+      "project": null,
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/21",
+        "conversation_id": "cx-04-venting"
+      },
+      "native_unit_id": "un_c10e2e05a92b0ab7",
+      "content_sha256": "f8a1a75dafec21069d358f64f226b831b010f8b27ff8e67722cab7513617976f",
+      "baseline": {
+        "selected": true,
+        "score": 0.9992,
+        "label": "relevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.6158,
+        "local_semantic_rank": 11,
+        "lexical_score": 0.9152,
+        "lexical_rank": 3,
+        "final_rank": 4
+      },
+      "why_expected_relevant": "Records project-related frustration and preferences that the public DEV gold classifies as relevant cross-project evidence."
+    },
+    {
+      "id": "mu-01-kickoff",
+      "regression_group": "lexical_rescue",
+      "gold_group": "relevant",
+      "project": "proj.analogghosts",
+      "fixture_locator": {
+        "source_file": "claude_export.zip",
+        "source_sha256": "167af67d709e577aa7e748ed7c00a0ba31f44e55fe808051e7c8bd28246fa299",
+        "member": "conversations.json",
+        "json_pointer": "/16",
+        "conversation_id": "mu-01-kickoff"
+      },
+      "native_unit_id": "un_e7c579ba8fc08dd1",
+      "content_sha256": "0adf9f6be1bfcd7b0c0c96c1419358151e62f388e94aa2a4d85eddca09ac9874",
+      "baseline": {
+        "selected": true,
+        "score": 0.9821,
+        "label": "relevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.2333,
+        "local_semantic_rank": 31,
+        "lexical_score": 0.7096,
+        "lexical_rank": 8,
+        "final_rank": 12
+      },
+      "why_expected_relevant": "Introduces the music project, instrumentation, sound palette and brainstorm constraints."
+    },
+    {
+      "id": "rt-02-storyboard",
+      "regression_group": "lexical_rescue",
+      "gold_group": "relevant",
+      "project": "proj.reeltime",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/6",
+        "conversation_id": "rt-02-storyboard"
+      },
+      "native_unit_id": "un_c15910292b0349f6",
+      "content_sha256": "f3f6648ab07806346c766cc94e9e748bf1be558e06b25584c260439b9afc4526",
+      "baseline": {
+        "selected": true,
+        "score": 0.9109,
+        "label": "relevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.1389,
+        "local_semantic_rank": 41,
+        "lexical_score": 0.7595,
+        "lexical_rank": 6,
+        "final_rank": 20
+      },
+      "why_expected_relevant": "Records the video pipeline's implemented storyboard stage and deferred final export."
+    },
+    {
+      "id": "rt-05-clips-gate",
+      "regression_group": "lexical_rescue",
+      "gold_group": "relevant",
+      "project": "proj.reeltime",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/8",
+        "conversation_id": "rt-05-clips-gate"
+      },
+      "native_unit_id": "un_0013895a80a1b2a7",
+      "content_sha256": "0608db80a96ea6c5ac2b1625dd519911718edf707fc04fd6baca884a2f7adc70",
+      "baseline": {
+        "selected": true,
+        "score": 0.9985,
+        "label": "relevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.6562,
+        "local_semantic_rank": 8,
+        "lexical_score": 0.7948,
+        "lexical_rank": 4,
+        "final_rank": 5
+      },
+      "why_expected_relevant": "Records the video pipeline's explicit cost gate before clip generation."
+    },
+    {
+      "id": "rt-07-stalled",
+      "regression_group": "lexical_rescue",
+      "gold_group": "relevant",
+      "project": "proj.reeltime",
+      "fixture_locator": {
+        "source_file": "chatgpt_export.zip",
+        "source_sha256": "318dc28ec02f4cd2871a7b5b0b057096e029086a1f96546ad965e6a9c1332637",
+        "member": "conversations.json",
+        "json_pointer": "/9",
+        "conversation_id": "rt-07-stalled"
+      },
+      "native_unit_id": "un_80835787f9aee81b",
+      "content_sha256": "0af050398e77cf83e6a407ea5fbb5457a46d1d221301658e49df4abf24a6f5ae",
+      "baseline": {
+        "selected": true,
+        "score": 0.9792,
+        "label": "relevant",
+        "decided_by": "score",
+        "local_semantic_score": 0.2199,
+        "local_semantic_rank": 32,
+        "lexical_score": 0.7245,
+        "lexical_rank": 7,
+        "final_rank": 14
+      },
+      "why_expected_relevant": "Records the video pipeline's stalled status while preserving its partially implemented stages."
+    }
+  ],
+  "ranking_population": {
+    "labeled_conversations": 65,
+    "auxiliary_documents_excluded": 3,
+    "tie_break": "id_ascending"
+  }
+}
