@@ -1,0 +1,926 @@
+{
+  "reason": "release generated storage after successful complete build, before CTest fixtures",
+  "removed": [
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/main.cpp.o",
+      "bytes": 255112
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_core.cpp.o",
+      "bytes": 1596240
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_db.cpp.o",
+      "bytes": 2362392
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_semantic.cpp.o",
+      "bytes": 1544000
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_graph.cpp.o",
+      "bytes": 1755496
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_active_task.cpp.o",
+      "bytes": 1028904
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_crypto.cpp.o",
+      "bytes": 1102944
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_selector.cpp.o",
+      "bytes": 880488
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_chat.cpp.o",
+      "bytes": 1306464
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_import.cpp.o",
+      "bytes": 1204656
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_memory.cpp.o",
+      "bytes": 1170008
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom.dir/src/capi/shared_anchor.c.o",
+      "bytes": 1256
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/runtime.cpp.o",
+      "bytes": 3079936
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/memory/memory_engine.cpp.o",
+      "bytes": 2150848
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/search/selector.cpp.o",
+      "bytes": 1854632
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o",
+      "bytes": 1832520
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o",
+      "bytes": 2877224
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o",
+      "bytes": 3133104
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o",
+      "bytes": 2160528
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o",
+      "bytes": 2808760
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o",
+      "bytes": 3152136
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o",
+      "bytes": 2434320
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/generalize/match.cpp.o",
+      "bytes": 3655248
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/generalize/common.cpp.o",
+      "bytes": 4712472
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o",
+      "bytes": 2635368
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o",
+      "bytes": 1968304
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o",
+      "bytes": 1889904
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o",
+      "bytes": 2341600
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/links.cpp.o",
+      "bytes": 1696544
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/select.cpp.o",
+      "bytes": 2756504
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/query.cpp.o",
+      "bytes": 2288048
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o",
+      "bytes": 2389600
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/score.cpp.o",
+      "bytes": 3403408
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o",
+      "bytes": 136360
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o",
+      "bytes": 143864
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o",
+      "bytes": 1625088
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o",
+      "bytes": 2230632
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o",
+      "bytes": 299496
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o",
+      "bytes": 1260184
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/import.cpp.o",
+      "bytes": 2178120
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o",
+      "bytes": 1634464
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o",
+      "bytes": 600440
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o",
+      "bytes": 1820472
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o",
+      "bytes": 1819928
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o",
+      "bytes": 3698112
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o",
+      "bytes": 2193272
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o",
+      "bytes": 1566864
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o",
+      "bytes": 4268240
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o",
+      "bytes": 2456352
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o",
+      "bytes": 2709808
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o",
+      "bytes": 1590432
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o",
+      "bytes": 2249176
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o",
+      "bytes": 2880400
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o",
+      "bytes": 1598192
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o",
+      "bytes": 3507328
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o",
+      "bytes": 1294208
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/core/relations.cpp.o",
+      "bytes": 1750216
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/core/config.cpp.o",
+      "bytes": 2158136
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/core/provenance.cpp.o",
+      "bytes": 2300800
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/core/tasks.cpp.o",
+      "bytes": 2493632
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o",
+      "bytes": 3120144
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o",
+      "bytes": 1374400
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o",
+      "bytes": 2286520
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o",
+      "bytes": 1382328
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o",
+      "bytes": 2599176
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o",
+      "bytes": 290480
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/exporter.cpp.o",
+      "bytes": 1088136
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o",
+      "bytes": 2567896
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o",
+      "bytes": 1425344
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o",
+      "bytes": 1786832
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o",
+      "bytes": 817056
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o",
+      "bytes": 1474928
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/import/export_common.cpp.o",
+      "bytes": 2452200
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/net/sse.cpp.o",
+      "bytes": 78760
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/net/http_default.cpp.o",
+      "bytes": 5058424
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/net/http_common.cpp.o",
+      "bytes": 1552496
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/db/fts.cpp.o",
+      "bytes": 1589872
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o",
+      "bytes": 388224
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/db/db.cpp.o",
+      "bytes": 3453536
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/text.cpp.o",
+      "bytes": 525048
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o",
+      "bytes": 5856760
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/synth.cpp.o",
+      "bytes": 3383000
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/items.cpp.o",
+      "bytes": 2005904
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o",
+      "bytes": 1905744
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o",
+      "bytes": 240360
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o",
+      "bytes": 3413888
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o",
+      "bytes": 2197952
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o",
+      "bytes": 4449192
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/extract/stage.cpp.o",
+      "bytes": 3481384
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/extract/extract.cpp.o",
+      "bytes": 2715296
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o",
+      "bytes": 3302376
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/extract/sources.cpp.o",
+      "bytes": 1470744
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o",
+      "bytes": 1727648
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o",
+      "bytes": 3992104
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/model/model_core.cpp.o",
+      "bytes": 3472416
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/model/model_action.cpp.o",
+      "bytes": 3822592
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/model/model_general.cpp.o",
+      "bytes": 4068008
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/model/model_pack.cpp.o",
+      "bytes": 1602256
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o",
+      "bytes": 632424
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o",
+      "bytes": 3047168
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o",
+      "bytes": 2048480
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o",
+      "bytes": 1090520
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o",
+      "bytes": 2368048
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o",
+      "bytes": 2005376
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o",
+      "bytes": 4989088
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o",
+      "bytes": 220640
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o",
+      "bytes": 1374456
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o",
+      "bytes": 3247648
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/kb/store.cpp.o",
+      "bytes": 6425888
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o",
+      "bytes": 1063872
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/kb/schema.cpp.o",
+      "bytes": 458232
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/kb/pack.cpp.o",
+      "bytes": 4331984
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o",
+      "bytes": 713608
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/providers/providers.cpp.o",
+      "bytes": 2081360
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/re/regex.cpp.o",
+      "bytes": 608736
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o",
+      "bytes": 1771624
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o",
+      "bytes": 1728584
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o",
+      "bytes": 2749424
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o",
+      "bytes": 1623256
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o",
+      "bytes": 1741896
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o",
+      "bytes": 1389920
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o",
+      "bytes": 1697016
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o",
+      "bytes": 3179792
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o",
+      "bytes": 1963896
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o",
+      "bytes": 1760504
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o",
+      "bytes": 1273784
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o",
+      "bytes": 2575120
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o",
+      "bytes": 750048
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/media/media_providers.cpp.o",
+      "bytes": 2654992
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/result.cpp.o",
+      "bytes": 54112
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/unicode.cpp.o",
+      "bytes": 74872
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/fs.cpp.o",
+      "bytes": 500000
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/base64.cpp.o",
+      "bytes": 75864
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/json.cpp.o",
+      "bytes": 1610640
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/sha256.cpp.o",
+      "bytes": 131248
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o",
+      "bytes": 94384
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/log.cpp.o",
+      "bytes": 293752
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_core.dir/src/util/utf8.cpp.o",
+      "bytes": 88584
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_candidate_graph_native_tool.dir/tests/compat/candidate_graph_native_tool.cpp.o",
+      "bytes": 778528
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o",
+      "bytes": 173312
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o",
+      "bytes": 1829552
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_validation.cpp.o",
+      "bytes": 3571576
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_catalog_retention.cpp.o",
+      "bytes": 1256680
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_knowledge_flow.cpp.o",
+      "bytes": 2754912
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o",
+      "bytes": 2787984
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_generalize.cpp.o",
+      "bytes": 4428960
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_event_bus.cpp.o",
+      "bytes": 1734344
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_plan.cpp.o",
+      "bytes": 3115248
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_extract.cpp.o",
+      "bytes": 3611240
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_model.cpp.o",
+      "bytes": 3969872
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic_graph.cpp.o",
+      "bytes": 3663168
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_counter.cpp.o",
+      "bytes": 2020640
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_tasks.cpp.o",
+      "bytes": 2064720
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_audit.cpp.o",
+      "bytes": 3127064
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_github.cpp.o",
+      "bytes": 2704208
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_diagnostics.cpp.o",
+      "bytes": 2576616
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o",
+      "bytes": 3790408
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_capi_knowledge_latest_run.cpp.o",
+      "bytes": 1548152
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_channel_integration.cpp.o",
+      "bytes": 2179480
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_knowledge_candidate_graph.cpp.o",
+      "bytes": 2925840
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_semantic_worker.cpp.o",
+      "bytes": 2005040
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_graph.cpp.o",
+      "bytes": 1892856
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o",
+      "bytes": 2612624
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o",
+      "bytes": 2031168
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_db.cpp.o",
+      "bytes": 3398744
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/main.cpp.o",
+      "bytes": 1028000
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_import_source_materialization.cpp.o",
+      "bytes": 2811160
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durable_audit.cpp.o",
+      "bytes": 3066840
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_resolve_lineage.cpp.o",
+      "bytes": 1390592
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_resolve_attribution.cpp.o",
+      "bytes": 3084424
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_retrieval_plan.cpp.o",
+      "bytes": 3910400
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_native_consumer.cpp.o",
+      "bytes": 3169512
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_memory.cpp.o",
+      "bytes": 1497504
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_import.cpp.o",
+      "bytes": 2007632
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_retrieval_dev.cpp.o",
+      "bytes": 2893432
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_crypto.cpp.o",
+      "bytes": 1645464
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_kb_pack.cpp.o",
+      "bytes": 2864728
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_controls.cpp.o",
+      "bytes": 2601776
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_reference.cpp.o",
+      "bytes": 2819808
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_pack_model.cpp.o",
+      "bytes": 1621976
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_import_exports.cpp.o",
+      "bytes": 3292360
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_util.cpp.o",
+      "bytes": 4184472
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_config.cpp.o",
+      "bytes": 1727352
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_net_sse.cpp.o",
+      "bytes": 256056
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_catalog_links.cpp.o",
+      "bytes": 950176
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_generalize_eval.cpp.o",
+      "bytes": 3192632
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_runtime.cpp.o",
+      "bytes": 2395408
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_catalog_scale.cpp.o",
+      "bytes": 503792
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic.cpp.o",
+      "bytes": 3453024
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_tfidf_reuse.cpp.o",
+      "bytes": 3707632
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o",
+      "bytes": 3245560
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_knowledge_store.cpp.o",
+      "bytes": 3944640
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_selector.cpp.o",
+      "bytes": 204976
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_materialize.cpp.o",
+      "bytes": 2834848
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_knowledge_candidates.cpp.o",
+      "bytes": 1516720
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_resolve.cpp.o",
+      "bytes": 2171752
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_media.cpp.o",
+      "bytes": 2354512
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_exceptional.cpp.o",
+      "bytes": 2679960
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o",
+      "bytes": 2282384
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_semantic_llm.cpp.o",
+      "bytes": 2581040
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_relations.cpp.o",
+      "bytes": 1284248
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_retention.cpp.o",
+      "bytes": 3462248
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durability.cpp.o",
+      "bytes": 3741360
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o",
+      "bytes": 2383952
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_extract_eval.cpp.o",
+      "bytes": 2038720
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_provenance.cpp.o",
+      "bytes": 2141376
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o",
+      "bytes": 2883880
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o",
+      "bytes": 2978232
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o",
+      "bytes": 1269616
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_fts.cpp.o",
+      "bytes": 1428216
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_revisions.cpp.o",
+      "bytes": 3451712
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o",
+      "bytes": 3175344
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_scale.cpp.o",
+      "bytes": 2645616
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_retrieval.cpp.o",
+      "bytes": 2080152
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_providers.cpp.o",
+      "bytes": 2031264
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o",
+      "bytes": 4339584
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_regex.cpp.o",
+      "bytes": 383624
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_engine.cpp.o",
+      "bytes": 3388072
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_context_eval.cpp.o",
+      "bytes": 2439264
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_scope_identity.cpp.o",
+      "bytes": 2672288
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o",
+      "bytes": 3541856
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_knowledge.cpp.o",
+      "bytes": 3180584
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/CMakeFiles/loom_tests.dir/tests/test_import_stream.cpp.o",
+      "bytes": 548808
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/server/CMakeFiles/loom-server.dir/src/main.cpp.o",
+      "bytes": 3410368
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/server/CMakeFiles/loom-server.dir/src/app.cpp.o",
+      "bytes": 6875144
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/cli/CMakeFiles/loom_cli.dir/main.cpp.o",
+      "bytes": 4136072
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/libloom_miniz.a",
+      "bytes": 176756
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/libloom_core.a",
+      "bytes": 55337314
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/libloom_sqlite3_amalgamation.a",
+      "bytes": 1836182
+    },
+    {
+      "path": "loom/build/w8-followup-vendored-gcc/libloom_core_thin.a",
+      "bytes": 55337314
+    }
+  ],
+  "bytes_released": 613848094
+}

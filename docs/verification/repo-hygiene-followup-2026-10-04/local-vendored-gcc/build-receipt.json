@@ -1,0 +1,106 @@
+{
+  "architecture": "x86_64",
+  "binaries": [
+    {
+      "bytes": 49381128,
+      "path": "build/w8-followup-vendored-gcc/loom_tests",
+      "present": true,
+      "sha256": "210b3228d0cb8282623fbf2d949e2aaf1621a022f8822ac27a5aad85c148b7f4"
+    },
+    {
+      "bytes": 32298096,
+      "path": "build/w8-followup-vendored-gcc/loom_compat_tool",
+      "present": true,
+      "sha256": "cfa2ae47af271f5c072cac5cb09c48409b2141d65f2ca215a40eba5f75a6bba6"
+    },
+    {
+      "bytes": 2008704,
+      "path": "build/w8-followup-vendored-gcc/loom_candidate_graph_native_tool",
+      "present": true,
+      "sha256": "86a728d31f0dcc206c7c3b5e5f9d6258e32e0bece2b8981f8cf036a4586a108c"
+    },
+    {
+      "bytes": 32111432,
+      "path": "build/w8-followup-vendored-gcc/cli/loom",
+      "present": true,
+      "sha256": "3c85b0eaa7546cb18c0d36469898d534ea4c19f47f6aded8ce46e10334c3820a"
+    },
+    {
+      "bytes": 34664192,
+      "path": "build/w8-followup-vendored-gcc/server/loom-server",
+      "present": true,
+      "sha256": "6ca09f707c142cf154011d863850767774167e68dd0e1292780e0d6477da29cd"
+    },
+    {
+      "bytes": 34138616,
+      "path": "build/w8-followup-vendored-gcc/libloom.so",
+      "present": true,
+      "sha256": "40ed716b3679d0409e9c2a6a45fb6a3cfa593d620a7bfce7f0780a926224daee"
+    }
+  ],
+  "cmake_configuration": {
+    "bytes": 19247,
+    "fields": {
+      "CMAKE_BUILD_TYPE": {
+        "type": "STRING",
+        "value": "Debug"
+      },
+      "CMAKE_CXX_COMPILER": {
+        "type": "UNINITIALIZED",
+        "value": "/usr/bin/g++"
+      },
+      "CMAKE_CXX_FLAGS": {
+        "type": "STRING",
+        "value": ""
+      },
+      "CMAKE_CXX_FLAGS_DEBUG": {
+        "type": "STRING",
+        "value": "-g0"
+      },
+      "CMAKE_C_COMPILER": {
+        "type": "UNINITIALIZED",
+        "value": "/usr/bin/gcc"
+      },
+      "CMAKE_C_FLAGS": {
+        "type": "STRING",
+        "value": ""
+      },
+      "CMAKE_C_FLAGS_DEBUG": {
+        "type": "STRING",
+        "value": "-g0"
+      },
+      "CMAKE_GENERATOR": {
+        "type": "INTERNAL",
+        "value": "Ninja"
+      },
+      "LOOM_BUILD_SERVER": {
+        "type": "BOOL",
+        "value": "ON"
+      },
+      "LOOM_SHARED": {
+        "type": "BOOL",
+        "value": "ON"
+      },
+      "LOOM_USE_SYSTEM_SQLITE": {
+        "type": "BOOL",
+        "value": "OFF"
+      },
+      "LOOM_WERROR": {
+        "type": "BOOL",
+        "value": "ON"
+      },
+      "Python3_EXECUTABLE": {
+        "type": "UNINITIALIZED",
+        "value": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3"
+      }
+    },
+    "path": "build/w8-followup-vendored-gcc/CMakeCache.txt",
+    "sha256": "026a04117115cd8dd27505c76589cccf7ad59adffd2e8960349b79f36ccfcc6b"
+  },
+  "platform": "Linux",
+  "preset": "vendored",
+  "python": "3.12.14",
+  "schema": "loom.build_evidence/1",
+  "source_commit": "57d9daa19591ba7008d3158c7ba49db1f609c110",
+  "source_tree": "39cf09083eac02049110bc122c4a7dab3f7e6bc2"
+}

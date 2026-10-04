@@ -1,0 +1,6 @@
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Found Python3: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 (found version "3.12.14") found components: Interpreter
+-- Configuring done (0.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /workspace/scratch/2a6e71927cf3/chatadhd/loom/build/w8-followup-vendored-gcc
