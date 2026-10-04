@@ -1,0 +1,6 @@
+Collector: os.wait4; peak RSS in KiB on linux
+Elapsed seconds: 60.149228097998275
+Peak RSS KiB: 25920
+User seconds: 29.405865
+System seconds: 0.899265
+Exit code: 0

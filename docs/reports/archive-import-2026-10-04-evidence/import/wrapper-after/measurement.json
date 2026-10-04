@@ -1,0 +1,103 @@
+{
+  "schema": "loom.offline_import_measurement/1",
+  "command": [
+    "/dev/shm/chatadhd-thread5/after-loom",
+    "--data-dir",
+    "/dev/shm/chatadhd-thread5/measure-wrapper-after/data",
+    "--json",
+    "--quiet",
+    "import",
+    "/dev/shm/chatadhd-thread5/fixture-wrapper.json",
+    "--export-mode",
+    "on",
+    "--audit",
+    "--audit-input-price",
+    "0.10",
+    "--audit-output-price",
+    "0.40"
+  ],
+  "baseline": false,
+  "binary": {
+    "path": "/dev/shm/chatadhd-thread5/after-loom",
+    "sha256": "0c8c54d1b9f29b7bb37fa917b86a78003511b07f757b41bd7a6e253643ab3742",
+    "bytes": 30437688,
+    "source_commit": "f50d01653c0331eac283fc0d983775df3397052a",
+    "build_description": "Release preset; -O0 -DNDEBUG; WERROR; thread5 branch; W2 unavailable"
+  },
+  "fixture": {
+    "schema": "loom.synthetic_import_benchmark/1",
+    "source": "offline synthetic generated fixture",
+    "shape": "wrapper",
+    "conversations": 64,
+    "messages": 128,
+    "normalized_text_characters": 7404,
+    "payload_site": "metadata",
+    "payload_bytes_per_message": 524288,
+    "whitespace_bytes_per_conversation": 0,
+    "source_bytes": 67161202,
+    "sha256": "f5819bf76e8586f7239456b157eb94edba9e79406a48239f5b644147538bdfb9",
+    "generator_elapsed_seconds": 1.2139844710000034,
+    "caveat": "Memory remains proportional to the largest conversation and result summaries, not mathematically constant."
+  },
+  "measurements": [
+    {
+      "run_index": 0,
+      "exit_code": 0,
+      "elapsed_seconds": 49.84722010800033,
+      "collector": "os.wait4; kernel ru_maxrss",
+      "peak_rss_kib": 25556,
+      "user_seconds": 28.983767,
+      "system_seconds": 0.985622,
+      "stdout_bytes": 17377
+    },
+    {
+      "run_index": 1,
+      "exit_code": 0,
+      "elapsed_seconds": 4.011720812999556,
+      "collector": "os.wait4; kernel ru_maxrss",
+      "peak_rss_kib": 13868,
+      "user_seconds": 2.295098,
+      "system_seconds": 0.075209,
+      "stdout_bytes": 17428
+    }
+  ],
+  "database": {
+    "path": "/dev/shm/chatadhd-thread5/measure-wrapper-after/data/chatadhd.db",
+    "file_bytes": 67792896,
+    "counts": {
+      "conversations": 64,
+      "messages": 128,
+      "normalized_text_characters": 7404,
+      "foreign_key_check_rows": 0,
+      "integrity_check": "ok",
+      "conversation_source_indices": 64,
+      "message_pointer_count": 128,
+      "checkpoints": 64,
+      "sources": [
+        {
+          "id": "src_7a3d04a0543b",
+          "blob_hash": "f5819bf76e8586f7239456b157eb94edba9e79406a48239f5b644147538bdfb9",
+          "source_bytes": 67161202,
+          "status": "complete"
+        }
+      ],
+      "source_blob_verified": true,
+      "raw_message_payloads_verified": 128
+    },
+    "checks": {
+      "conversations": true,
+      "messages": true,
+      "normalized_text_characters": true,
+      "integrity": true,
+      "source_blob": true,
+      "raw_message_payloads": true,
+      "source_indices": true,
+      "message_pointers": true,
+      "checkpoints": true,
+      "completed_source": true
+    },
+    "correct": true
+  },
+  "verification_elapsed_seconds": 0.660622837000119,
+  "caveat": "Peak RSS is the CLI process including source snapshotting, interpretation, audit, and JSON report output; file-system page cache is excluded."
+}
