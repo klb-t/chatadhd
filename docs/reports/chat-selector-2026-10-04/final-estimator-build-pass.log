@@ -1,0 +1,11 @@
+[0/2] Re-checking globbed directories...
+[1/11] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[2/11] Building CXX object CMakeFiles/loom_core.dir/src/context/unified_context.cpp.o
+[3/11] Linking CXX static library libloom_core.a
+[4/11] Linking CXX shared library libloom.so.0.1.0
+[5/11] Creating library symlink libloom.so.0 libloom.so
+[6/11] Linking CXX executable loom_tests
+[7/11] Linking CXX executable loom_compat_tool
+[8/11] Linking CXX executable loom_candidate_graph_native_tool
+[9/11] Linking CXX executable cli/loom
+[10/11] Linking CXX executable server/loom-server

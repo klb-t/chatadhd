@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="2"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="83"
+	timestamp="2026-10-04T22:03:21"
+	>
+	<testcase name="research.structure" classname="research.structure" time="48.9028" status="run">
+		<properties/>
+		<system-out>.............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="research.contracts" classname="research.contracts" time="34.909" status="run">
+		<properties/>
+		<system-out>.................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 209 tests in 34.452s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>
