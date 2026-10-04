@@ -4,11 +4,28 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'data' / 'prompts'
 TARGET = ROOT / 'src' / 'extract' / 'prompt_contract_data.inc'
+LEGACY_TARGET = ROOT / 'src' / 'extract' / 'semantic.cpp'
+LEGACY_START = '// BEGIN GENERATED LEGACY PROMPT EXPORT\n'
+LEGACY_END = '// END GENERATED LEGACY PROMPT EXPORT\n'
+
+def write_changed(path: Path, content: str) -> None:
+    if path.exists() and path.read_text(encoding='utf-8') == content:
+        return
+    temporary = path.with_name(path.name + '.tmp')
+    try:
+        with temporary.open('w', encoding='utf-8') as output:
+            output.write(content)
+            output.flush()
+            os.fsync(output.fileno())
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 def generated() -> str:
     contracts = {}
@@ -35,12 +52,34 @@ def main() -> int:
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
     text = generated()
+    # The historical W7 live_pilot reader extracts this source text with a
+    # fixed regex. Keep its bytes data-derived until its owner adopts .prompt.
+    graph = json.loads((SOURCE / 'occurrence_graph.prompt').read_text(encoding='utf-8'))
+    prompt = ''.join(part for message in graph['messages'] if message['role'] == 'system'
+                     for part in message['content'] if isinstance(part, str))
+    if ')PROMPT"' in prompt:
+        raise ValueError('legacy PROMPT delimiter collision; migrate the W7 reader before changing this builtin')
+    legacy = (LEGACY_START + '// Generated from data/prompts/occurrence_graph.prompt; never used by runtime.\n'
+              '// Compatibility for W7 tools/structure/live_pilot.py; canonical source is data.\n'
+              '#if 0\nconstexpr std::string_view kGraphPrompt = R"PROMPT(' + prompt + ')PROMPT";\n'
+              '#endif\n' + LEGACY_END)
+    current = LEGACY_TARGET.read_text(encoding='utf-8')
+    if LEGACY_START in current:
+        prefix, remainder = current.split(LEGACY_START, 1)
+        _, suffix = remainder.split(LEGACY_END, 1)
+        legacy_source = prefix + legacy + suffix
+    else:
+        legacy_source = legacy + '\n' + current
     if args.check:
         if not TARGET.exists() or TARGET.read_text(encoding='utf-8') != text:
             print('prompt_contract_data.inc is stale; run src/extract/gen_prompt_contracts.py')
             return 1
+        if current != legacy_source:
+            print('legacy source export is stale; run src/extract/gen_prompt_contracts.py')
+            return 1
     else:
-        TARGET.write_text(text, encoding='utf-8')
+        write_changed(TARGET, text)
+        write_changed(LEGACY_TARGET, legacy_source)
     return 0
 
 if __name__ == '__main__':

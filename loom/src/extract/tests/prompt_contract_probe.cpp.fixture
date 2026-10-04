@@ -44,6 +44,8 @@ int main(int argc, char** argv) {
   check(legacy_request && (*legacy_request)["body_json"]["messages"][0]["content"] == legacy_prefix + std::string(utf8::prefix(text,3000)), "legacy clipping counts Unicode codepoints");
   const Json expected_legacy{{"model", "test-model"}, {"messages", Json::array({Json{{"role", "user"}, {"content", legacy_prefix + std::string(utf8::prefix(text,3000))}}})}, {"temperature", 0.1}, {"max_tokens", 800}};
   check(legacy_request && (*legacy_request)["body_bytes"] == json::dump(expected_legacy), "legacy data-directed body order preserves historical builder bytes");
+  const Json legacy_headers{{"Content-Type", "application/json"}, {"HTTP-Referer", "https://github.com/chatadhd"}, {"X-Title", "ChatADHD-Semantic"}};
+  check(legacy_request && json::canonical((*legacy_request)["headers"]) == json::canonical(legacy_headers) && (*legacy_request)["method"] == "POST" && (*legacy_request)["url"] == "https://example.invalid/chat/completions" && (*legacy_request)["transport"]["timeout_ms"] == 30000, "legacy full nonsecret transport matches historical caller");
   check(!prompts::resolve("semantic.relation", {}, Json{{"transport", Json{{"body_field_order", Json::array({"model", "model"})}}}}), "duplicate body order field is an explicit syntax error");
   auto changed = prompts::resolve("semantic.relation", {}, Json{{"request_parameters", Json{{"temperature", 0.7}, {"custom_provider_option", true}}}});
   check(changed && changed->definition["request_parameters"]["max_tokens"] == 1600 && changed->hash != relation->hash, "recursive object overlay retains siblings and changes identity");

@@ -1,0 +1,285 @@
+// Conditional W1/W2 offline integration fixture. Link exact W2 policy/config
+// objects and freshly compiled semantic.cpp with W2's header before libloom_core.
+// No CTest registration or public ABI change is implied by this source file.
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+#include "loom/config.h"
+#include "loom/db.h"
+#include "loom/knowledge.h"
+#include "loom/knowledge_semantic.h"
+#include "loom/net/http.h"
+#include "loom/runtime.h"
+#include "loom/sqlite.h"
+#include "loom/usage_policy.h"
+#include "loom/util/fs.h"
+#include "loom/util/sha256.h"
+#include "extract/semantic_usage.h"
+
+using namespace loom;
+
+namespace {
+
+void check(bool condition, std::string_view why) {
+  if (!condition) throw std::runtime_error(std::string(why));
+}
+
+template <class T> T take(Result<T>&& result) {
+  if (!result) throw std::runtime_error(result.error().to_string());
+  return std::move(result).value();
+}
+
+struct Fixture {
+  fsutil::TempDir directory;
+  std::shared_ptr<net::ScriptedTransport> http = std::make_shared<net::ScriptedTransport>();
+  std::unique_ptr<Runtime> runtime;
+  std::shared_ptr<const kb::Pack> pack;
+  std::unique_ptr<kb::Normalizer> normalizer;
+  knowledge::KnowledgeConfig config;
+  std::string run;
+  std::vector<model::Observation> observations;
+  std::vector<model::Entity> entities;
+  std::vector<model::Claim> claims;
+  Json checkpoint = Json::object();
+  std::optional<Json> resume;
+  const std::string cohort = "offline/semantic/w2-integration";
+
+  Fixture() {
+    RuntimeOptions options;
+    options.data_dir = directory.path().string();
+    options.start_workers = false;
+    options.http = http;  // Every unmatched request fails; no live transport.
+    runtime = take(Runtime::open(options));
+    runtime->config().set("semantic_model", "offline/semantic-model");
+    runtime->config().set("base_url", "https://semantic.invalid/v1/");
+    runtime->config().set("semantic_analysis", true);
+    runtime->secrets().set("api_key", "offline-fixture-key");
+    // This root build has not merged W2's Config::get default wiring. Install
+    // W2's exact public preset as explicit caller configuration, not a shim.
+    runtime->config().set("loom_usage_policy", usage_policy_defaults());
+    pack = take(runtime->knowledge().pack());
+    normalizer = std::make_unique<kb::Normalizer>(*pack);
+    config.llm = "auto";
+    run = take(runtime->knowledge().store().begin_run(pack->hash(), Json{{"fixture", "w1-w2"}})).id;
+
+    model::Observation observation;
+    observation.id = "ob_w2";
+    observation.unit = "un_offline_source";
+    observation.text = "Parser preserves source bytes.";
+    observation.ordinal = 1;
+    observation.locator.source = "sha256:" + Sha256::hex("offline source bytes");
+    observation.locator.member = "offline.json";
+    observation.locator.json_pointer = "/messages/0";
+    observation.attrs = Json{{"branch", "main"}, {"seq", 1}};
+    observations.push_back(observation);
+
+    model::Entity entity;
+    entity.kind = "component";
+    entity.label = "Parser";
+    entity.canonical_key = "offline_parser";
+    entity.id = model::Entity::make_id(entity.kind, entity.canonical_key);
+    entity.attrs = Json{{"observations", Json::array({observation.id})},
+                        {"units", Json::array({observation.unit})}};
+    entities.push_back(entity);
+
+    model::Claim claim;
+    claim.subject = entity.id;
+    claim.predicate = "source_statement";
+    claim.value = observation.text;
+    claim.assessment.origin = model::Origin::Archive;
+    claim.assessment.evidence = model::EvidenceClass::Observed;
+    claim.assessment.confidence = 0.8;
+    model::Support support;
+    support.observation = observation.id;
+    support.quote = observation.text;
+    support.locator = observation.locator;
+    support.extractor = "offline-fixture@1";
+    claim.assessment.support = {support};
+    claim.id = model::Claim::make_id(claim.subject, claim.predicate, claim.object, claim.value, claim.qualifiers);
+    claims.push_back(claim);
+    take(runtime->knowledge().store().put_observations(run, observations));
+    take(runtime->knowledge().store().put_entities(run, entities));
+    take(runtime->knowledge().store().put_claims(run, claims));
+  }
+
+  Json parameters() const {
+    return Json{{"semantic", Json{{"require_usage_policy", true},
+        {"usage_estimate", Json{{"baseline_key", cohort}}}}}};
+  }
+
+  Json proposal() const {
+    const auto& observation = observations.front();
+    return Json{{"kind", "structure"}, {"unknowns", Json::array()},
+        {"claim", Json{{"subject", entities.front().id}, {"predicate", "states_requirement"},
+          {"object", ""}, {"value", observation.text},
+          {"qualifiers", Json{{"extra", Json{{"polarity", "positive"},
+            {"assertion_context", "asserted"}, {"topic", "parser"}}}}},
+          {"assessment", Json{{"basis", Json{{"support", Json::array({Json{
+            {"observation", observation.id}, {"quote", observation.text},
+            {"byte_start", 0}, {"byte_len", observation.text.size()}}})}}},
+            {"premises", Json{{"claims", Json::array()}}}}}}}};
+  }
+
+  void reply(std::optional<Json> usage = std::nullopt) {
+    Json result{{"choices", Json::array({Json{{"message", Json{{"content", json::dump(Json{
+        {"schema_version", 1}, {"proposals", Json::array({proposal()})}})}}}}})}};
+    if (usage) result["usage"] = *usage;
+    http->expect("POST", "https://semantic.invalid/v1/chat/completions",
+                 net::ScriptedTransport::Reply::json(200, result));
+  }
+
+  Json call() {
+    knowledge::StageContext context{*runtime, runtime->knowledge().store(), pack, *normalizer, config,
+        run, "extract", parameters(), Json::object(), config.prior_filter(), {}, {},
+        [this](const Json& value) -> Status { checkpoint = value; return {}; }, resume};
+    return take(extract::propose_semantics(context, observations, entities, claims));
+  }
+
+  std::unique_ptr<UsagePolicy> ledger() {
+    return take(UsagePolicy::open(runtime->paths().root / "usage-policy.sqlite",
+                                 take(effective_usage_policy_options(runtime->config()))));
+  }
+
+  Json inspect() { return take(ledger()->inspect(cohort)); }
+
+  void seed_input_baseline() {
+    Json options = usage_policy_defaults();
+    options["initial_baselines"][cohort] = Json{{"input_bytes", 1}};
+    runtime->config().set("loom_usage_policy", options);
+  }
+
+  std::int64_t count(std::string_view table) {
+    auto lock = runtime->db().lock();
+    return take(runtime->db().conn().query_int("SELECT COUNT(*) FROM " + std::string(table))).value_or(0);
+  }
+};
+
+Json cold_admission() {
+  Fixture fixture;
+  auto adapter = take(extract::detail::SemanticUsage::open(*fixture.runtime, true));
+  check(adapter->available(), "real W2 adapter must be available");
+  fixture.reply(Json{{"prompt_tokens", 32}, {"completion_tokens", 2}, {"cost", 0.004}});
+  const Json result = fixture.call();
+  check(result["usage_policy"]["available"] == true, "stage reports real W2 capability");
+  check(result["usage_policy"]["required"] == true, "stage requires W2");
+  check(result["requests"] == 1 && fixture.http->requests().size() == 1, "cold admission dispatches exactly once");
+  const Json decision = result["usage_decisions"].at(0).at("decision");
+  check(decision["status"] == "allowed" && decision["authorized"] == true, "W2 allowed receipt authorizes");
+  check(decision["resources"]["input_bytes"]["baseline_status"] == "unavailable", "cold baseline is honestly unavailable");
+  check(decision["estimate"]["resources"]["output_tokens"].is_null(), "configured output cap is not a consumption forecast");
+  check(decision["estimate"]["provenance"]["output_tokens_basis"] == "unknown_without_forecast", "unknown output forecast is explicit");
+  const Json body = take(json::parse(fixture.http->requests().at(0).body));
+  check(decision["estimate"]["provenance"]["output_tokens_cap"] == body["max_tokens"], "configured cap remains provenance data");
+  check(result["accepted"] == 1 && fixture.count("loom_kb_candidates") == 1, "grounded response enters candidate queue");
+  return Json{{"result", result}, {"ledger", fixture.inspect()}, {"http_calls", fixture.http->requests().size()}};
+}
+
+Json tenfold_no_http() {
+  Fixture fixture;
+  fixture.seed_input_baseline();
+  const Json first = fixture.call();
+  check(first["status"] == "requires_confirmation", "tenfold seed returns confirmation status");
+  check(first["requests"] == 0 && fixture.http->requests().empty(), "no dispatch before confirmation");
+  check(first["requests_spent"] == 0, "blocked operation does not consume attempt checkpoint");
+  const Json decision = first["usage_decisions"].at(0).at("decision");
+  check(decision["status"] == "requires_confirmation" && decision["authorized"] == false, "ledger records unapproved receipt");
+  check(decision["resources"]["input_bytes"]["baseline"] == 1, "exact configured baseline used");
+  check(decision["resources"]["input_bytes"]["requires_confirmation"] == true, "input-byte dimension requests approval");
+  const Json repeat = fixture.call();
+  check(repeat["usage_decisions"].at(0).at("decision").at("receipt_id") == decision["receipt_id"], "repeat binds same exact receipt");
+  check(fixture.http->requests().empty(), "unapproved repeat remains offline");
+  const Json ledger = fixture.inspect();
+  check(ledger["operations"].size() == 1, "ledger idempotency preserves single blocked operation");
+  return Json{{"result", first}, {"repeat", repeat}, {"ledger", ledger}, {"http_calls", 0}};
+}
+
+Json confirm_and_retry_same_run() {
+  Fixture fixture;
+  fixture.seed_input_baseline();
+  const Json blocked = fixture.call();
+  const Json decision = blocked["usage_decisions"].at(0).at("decision");
+  auto policy = fixture.ledger();
+  const auto wrong = policy->confirm(decision["operation_id"].get<std::string>(), "wrong-receipt", true, "offline-owner");
+  check(!wrong && wrong.error().code == Errc::Conflict, "wrong receipt cannot authorize");
+  const Json confirmed = take(policy->confirm(decision["operation_id"].get<std::string>(),
+      decision["receipt_id"].get<std::string>(), true, "offline-fixture-owner-confirmation"));
+  check(confirmed["authorized"] == true, "real ledger owner confirmation authorizes exact estimate");
+  fixture.reply(Json{{"prompt_tokens", 32}, {"completion_tokens", 2}, {"cost", 0.004}});
+  const Json admitted = fixture.call();
+  check(admitted["requests"] == 1 && fixture.http->requests().size() == 1, "confirmed same run dispatches once");
+  check(admitted["usage_decisions"].at(0).at("operation_id") == decision["operation_id"], "same run and request retain operation identity");
+  fixture.resume = fixture.checkpoint;
+  const Json replay = fixture.call();
+  check(replay["requests"] == 0 && replay["cache_hits"] == 1, "same run reuses checked response");
+  check(fixture.http->requests().size() == 1, "confirmation and replay never duplicate dispatch");
+  check(fixture.inspect()["operations"].size() == 1, "real ledger has exactly one request lifecycle");
+  return Json{{"blocked", blocked}, {"confirmation", confirmed}, {"admitted", admitted},
+              {"replay", replay}, {"ledger", fixture.inspect()}, {"http_calls", 1}};
+}
+
+Json provider_settles_actual() {
+  Fixture fixture;
+  fixture.reply(Json{{"prompt_tokens", 32}, {"completion_tokens", 2}, {"cost", 0.004}});
+  const Json result = fixture.call();
+  const Json inspection = fixture.inspect();
+  const Json operation = inspection["operations"].at(0);
+  check(operation["status"] == "completed" && operation["authorized"] == false, "known actual resources settle reservation");
+  check(operation["remaining"].empty(), "complete provider usage leaves no cap reservation");
+  check(operation["actual"]["output_tokens"]["value"] == 2, "provider usage replaces unknown actual, not estimate");
+  check(operation["actual"]["output_tokens"]["provenance"] == "provider_reported", "provider evidence class retained");
+  check(inspection["baseline"]["output_tokens"]["value"] == 2 && inspection["baseline"]["output_tokens"]["samples"] == 1,
+        "rolling baseline learns actual two tokens, not configured cap");
+  check(inspection["baseline"]["input_tokens"]["value"] == 32, "prompt token usage recorded");
+  check(inspection["baseline"]["money_usd"]["value"] == 0.004, "reported cost recorded");
+  check(!json::get_bool(result, "accounting_error"), "two-stage completion succeeds without source conflict");
+  return Json{{"result", result}, {"ledger", inspection}, {"http_calls", fixture.http->requests().size()}};
+}
+
+Json cap_stays_unknown_without_usage() {
+  Fixture fixture;
+  fixture.reply();
+  const Json result = fixture.call();
+  const Json inspection = fixture.inspect();
+  const Json operation = inspection["operations"].at(0);
+  const Json estimate = result["usage_decisions"].at(0).at("decision").at("estimate");
+  check(operation["status"] == "unresolved", "missing provider usage remains unresolved");
+  check(operation["actual"]["output_tokens"]["value"].is_null(), "unknown actual tokens are not zero");
+  check(inspection["baseline"]["output_tokens"]["value"].is_null() && inspection["baseline"]["output_tokens"]["samples"] == 0,
+        "configured output cap never trains actual-use baseline");
+  check(estimate["resources"]["output_tokens"].is_null(), "output forecast remains unknown");
+  check(operation["remaining"]["output_tokens"].is_null(), "unresolved token reservation remains unknown");
+  check(estimate["provenance"]["output_tokens_basis"] == "unknown_without_forecast", "cap is not substituted for expected use");
+  check(operation["remaining"]["money_usd"].is_null(), "unknown cost remains unknown");
+  check(inspection["baseline"]["requests"]["value"] == 1, "instrument learns actual one dispatch");
+  fixture.resume = fixture.checkpoint;
+  const Json replay = fixture.call();
+  check(replay["requests"] == 0 && fixture.http->requests().size() == 1, "unresolved reservation grants no repeated dispatch");
+  return Json{{"result", result}, {"replay", replay}, {"ledger", inspection}, {"http_calls", 1}};
+}
+
+}  // namespace
+
+int main() {
+  const std::vector<std::pair<std::string, std::function<Json()>>> tests{
+      {"cold ledger admission", cold_admission},
+      {"initial baseline1 confirmation without HTTP", tenfold_no_http},
+      {"owner-confirmed same-run dispatch once", confirm_and_retry_same_run},
+      {"provider usage settles exact actual", provider_settles_actual},
+      {"configured cap stays provenance and actual unknown", cap_stays_unknown_without_usage}};
+  Json rows = Json::array();
+  std::size_t passed = 0;
+  for (const auto& [name, test] : tests) {
+    try { rows.push_back(Json{{"case", name}, {"passed", true}, {"evidence", test()}}); ++passed; }
+    catch (const std::exception& error) { rows.push_back(Json{{"case", name}, {"passed", false}, {"error", error.what()}}); }
+  }
+  std::cout << json::dump(Json{{"status", "conditional_actual_W2_ledger_with_W1_semantic_source_offline"},
+      {"passed", passed}, {"total", tests.size()}, {"cases", rows}, {"paid_calls", 0},
+      {"limitations", Json::array({"W2 Config default getter and C ABI are not integrated into this root build; fixture installs exact W2 preset explicitly.",
+        "ScriptedTransport usage is fixture evidence, not observed provider expenditure.",
+        "Production integration still needs merged W2 header/objects and normal complete CTest."})}}, 2) << '\n';
+  return passed == tests.size() ? 0 : 1;
+}

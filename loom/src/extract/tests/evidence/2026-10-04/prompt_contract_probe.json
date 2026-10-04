@@ -1,9 +1,9 @@
 {
   "schema": "loom.prompt_contract_probe/1",
   "offline": true,
-  "expected_cases": 42,
-  "executed_cases": 42,
-  "passed_cases": 42,
+  "expected_cases": 43,
+  "executed_cases": 43,
+  "passed_cases": 43,
   "success": true,
   "compile_exit_code": 0,
   "run_exit_code": 0,
@@ -34,11 +34,11 @@
     "<scratch>/prompt_contract_probe"
   ],
   "source_sha256": {
-    "loom/src/extract/tests/prompt_contract_probe.cpp.fixture": "168546bb0dddc5f11594ca09834c9528bbccaa30cbf3d01dcf23172d6b38e3cf",
+    "loom/src/extract/tests/prompt_contract_probe.cpp.fixture": "63edc7f1ad3edc7927d98c462641b65555c38cce789cca845c2eaab38c2fdf2b",
     "loom/src/extract/prompt_contract.cpp": "73b7d5e4615725f0d119e6bfd1bf87ad794113650a7627d744222f2967ff5ac5",
     "loom/src/extract/prompt_contract.h": "41428317875ef45d0e668827a673d3fb4ce73303923e0aafe048925f2bd66d8f",
-    "loom/src/extract/prompt_contract_data.inc": "4aadae80fe4c7206c7cf8859fe0f8738c033aec13d2c565ccae3dde151abf546",
-    "loom/data/prompts/analysis.prompt": "8df9cf3c9d8132a44d3481baf9c80feaec97f1f640aa46582773984cb807a2e9",
+    "loom/src/extract/prompt_contract_data.inc": "3898ef9aac59ba7111b6802a1b32a9cccd53c8b1cab3712ad001f0b82b1aa86c",
+    "loom/data/prompts/analysis.prompt": "df58daa050454e3899b2df4fd92bf0cbf0220d10a8bd8ba5605c7774a20e358a",
     "loom/data/prompts/occurrence_graph.prompt": "cba2ebde93f9cc276fdf4f2305d04f1966b13f87f5367fc082c16728b252fe09",
     "loom/data/prompts/relation.prompt": "5ebc5952998387819fa8d8cf018a35af9039b967b15cd4f9a173525a056f1153"
   },
@@ -54,6 +54,7 @@
     "PASS default graph body bytes match historical builder",
     "PASS legacy clipping counts Unicode codepoints",
     "PASS legacy data-directed body order preserves historical builder bytes",
+    "PASS legacy full nonsecret transport matches historical caller",
     "PASS duplicate body order field is an explicit syntax error",
     "PASS recursive object overlay retains siblings and changes identity",
     "PASS request override replaces arrays and has no invented provider token ceiling",
@@ -85,7 +86,7 @@
     "PASS owner overlay can add a new full recipe",
     "PASS malformed user JSON returns explicit syntax error",
     "PASS duplicate overlay identities rejected",
-    "checks 42/42"
+    "checks 43/43"
   ],
   "diagnostics": "",
   "replay": "python3 loom/src/extract/tests/run_prompt_contract_probe.py --build-dir loom/build/dev"
