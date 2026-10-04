@@ -22,6 +22,8 @@ Result<ProviderManifest> manifest_for(const ProviderRegistry& registry,
     return Error(Errc::InvalidArgument, "embedding options cannot override explicit model or input");
   if (request.request_options.contains("encoding_format") && request.request_options["encoding_format"] != "float")
     return Error(Errc::Unsupported, "embedding adapter supports float encoding only");
+  for (const auto& model : request.accepted_reported_models)
+    if (model.empty()) return Error(Errc::InvalidArgument, "embedding model aliases must be nonempty strings");
   auto manifest = registry.get(request.provider_id);
   if (!manifest) return Error(Errc::Unavailable, "embedding provider not registered");
   bool supported = false;
@@ -55,6 +57,7 @@ std::string identity_for(const ProviderManifest& manifest, std::string_view cred
                          const EmbeddingRequest& request) {
   return Sha256::hex(json::canonical(Json{{"provider", manifest.id}, {"endpoint", endpoint(manifest)},
       {"model", request.model}, {"options", request.request_options},
+      {"accepted_reported_models", request.accepted_reported_models},
       {"headers", manifest.default_headers}, {"auth_scheme", manifest.auth_scheme},
       {"account_digest", Sha256::hex(credential)}}));
 }
@@ -74,7 +77,10 @@ Json embedding_capability(const ProviderRegistry& registry,
     const Secrets& secrets, const EmbeddingRequest& request) {
   auto identity = embedding_identity(registry, secrets, request);
   return Json{{"provider_id", request.provider_id}, {"model", request.model},
+      {"requested_model", request.model}, {"reported_model", nullptr},
       {"available", static_cast<bool>(identity)}, {"modalities", Json::array({"text"})},
+      {"readiness", identity ? "manifest_credential_adapter" : "unavailable"},
+      {"live_verification", "not_performed"}, {"model_attestation", "unknown"},
       {"calls_authorized", request.calls_authorized},
       {"reason", identity ? "" : std::string(errc_name(identity.error().code))}};
 }
@@ -91,7 +97,12 @@ Result<EmbeddingReply> provider_embed(const ProviderRegistry& registry,
     const auto identity = identity_for(manifest, key, request);
     if (!request.expected_identity.empty() && request.expected_identity != identity)
       return Error(Errc::Conflict, "embedding provider identity changed before request");
-    if (texts.empty()) return EmbeddingReply{{}, Json::object(), identity, Json::object()};
+    if (texts.empty()) {
+      EmbeddingReply reply;
+      reply.identity = identity;
+      reply.requested_model = request.model;
+      return reply;
+    }
     if (!request.calls_authorized) return Error(Errc::Unavailable, "embedding calls require explicit authorization");
     Json body = request.request_options;
     body["model"] = request.model;
@@ -137,10 +148,20 @@ Result<EmbeddingReply> provider_embed(const ProviderRegistry& registry,
     }
     Json source = Json::object();
     if (request.record_response && (received_headers || response || !received_body.empty())) {
+      // This optional inspection never rejects bytes before immutable capture.
+      // It records a provider report, not verification of the requested model.
+      Json reported_model = nullptr;
+      auto metadata_body = json::parse(received_body);
+      if (metadata_body && metadata_body->is_object()) {
+        const auto* reported = json::find(*metadata_body, "model");
+        if (reported && reported->is_string() && !reported->get_ref<const std::string&>().empty())
+          reported_model = *reported;
+      }
       Json input_hashes = Json::array();
       for (const auto& text : texts) input_hashes.push_back(Sha256::hex(text));
       auto recorded = request.record_response(received_body, Json{{"provider_id", request.provider_id},
-          {"model", request.model}, {"status", received_status}, {"complete", static_cast<bool>(response)},
+          {"model", request.model}, {"requested_model", request.model}, {"reported_model", reported_model},
+          {"status", received_status}, {"complete", static_cast<bool>(response)},
           {"identity", identity}, {"input_hashes", input_hashes}, {"request_sha256", Sha256::hex(http_request.body)},
           {"transport_error", response ? Json(nullptr) : Json(std::string(errc_name(response.error().code)))}});
       if (!recorded) return Error(recorded.error().code, "embedding first-response storage failed");
@@ -155,6 +176,16 @@ Result<EmbeddingReply> provider_embed(const ProviderRegistry& registry,
       return Error(Errc::Parse, "embedding response count mismatch");
     EmbeddingReply reply;
     reply.identity = identity;
+    reply.requested_model = request.model;
+    if (const auto* reported = json::find(*parsed, "model"); reported && !reported->is_null()) {
+      if (!reported->is_string() || reported->get_ref<const std::string&>().empty())
+        return Error(Errc::Parse, "embedding reported model invalid");
+      reply.reported_model = reported->get<std::string>();
+      if (*reply.reported_model != request.model &&
+          std::find(request.accepted_reported_models.begin(), request.accepted_reported_models.end(),
+                    *reply.reported_model) == request.accepted_reported_models.end())
+        return Error(Errc::Conflict, "embedding reported model does not match requested binding");
+    }
     reply.response_source = std::move(source);
     reply.vectors.resize(texts.size());
     std::set<std::size_t> seen;

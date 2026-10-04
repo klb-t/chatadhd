@@ -3,6 +3,7 @@
 
 #include <string>
 #include <functional>
+#include <optional>
 #include <vector>
 
 #include "loom/providers.h"
@@ -17,6 +18,9 @@ struct EmbeddingRequest {
   bool calls_authorized = false;
   // Binds a cached-space request to the exact manifest/account it inspected.
   std::string expected_identity;
+  // Explicit caller data for routed/aliased model names. Empty means that a
+  // reported model must equal the requested model; absence stays unknown.
+  std::vector<std::string> accepted_reported_models;
   // Production installs a raw-source recorder. Native callers may supply their
   // own recorder; only sanitized source references are returned or traced.
   std::function<Result<Json>(std::string_view, const Json&)> record_response;
@@ -27,6 +31,8 @@ struct EmbeddingReply {
   Json usage = Json::object();
   std::string identity;
   Json response_source = Json::object();
+  std::string requested_model;
+  std::optional<std::string> reported_model;
 };
 
 // The returned identity is an opaque digest, including endpoint, model,

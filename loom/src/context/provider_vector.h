@@ -20,13 +20,24 @@ class ProviderVectorCache {
  public:
   explicit ProviderVectorCache(std::filesystem::path directory = {});
   Result<std::optional<std::vector<float>>> get(std::string_view identity, std::string_view hash);
-  Status put(std::string_view identity, std::string_view hash, const std::vector<float>& vector);
+  Status put(std::string_view identity, std::string_view hash, const std::vector<float>& vector,
+             const std::optional<std::string>& reported_model = std::nullopt,
+             const Json& response_source = Json::object());
+  // Representation integrity is shared by all calls/spaces and persisted
+  // transactionally when this cache has a directory. Unknown is not attested.
+  Status observe(std::string_view identity, std::size_t dimensions,
+                 const std::optional<std::string>& reported_model = std::nullopt);
+  Result<Json> inspection(std::string_view identity);
   std::size_t size() const;
 
  private:
   std::filesystem::path directory_;
   mutable std::mutex mutex_;
   std::map<std::string, std::vector<float>, std::less<>> vectors_;
+  std::map<std::string, Json, std::less<>> representations_;
+  std::map<std::string, std::optional<std::string>, std::less<>> reported_models_;
+  Status observe_locked(std::string_view identity, std::size_t dimensions,
+                        const std::optional<std::string>& reported_model);
 };
 
 struct ProviderVectorPolicy {
@@ -49,7 +60,8 @@ std::shared_ptr<resolve::VectorSpace> make_provider_vector_space(
     ProviderVectorPolicy policy);
 std::shared_ptr<resolve::VectorSpace> make_injected_vector_space(
     std::shared_ptr<EmbeddingProvider> provider, std::shared_ptr<ProviderVectorCache> cache = nullptr,
-    std::function<bool()> callable_on_miss = {});
+    std::function<bool()> callable_on_miss = {},
+    std::optional<std::string> expected_model = std::nullopt);
 std::function<Result<Json>(std::string_view, const Json&)> make_embedding_response_recorder(Runtime& rt);
 
 // execution is context_execution JSON, with an optional embedding section.

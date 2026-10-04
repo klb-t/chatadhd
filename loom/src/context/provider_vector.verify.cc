@@ -44,6 +44,11 @@ struct EmbeddingFixture {
   void expect(std::vector<std::vector<float>> values) {
     transport.expect("POST", "https://openrouter.ai/api/v1/embeddings", net::ScriptedTransport::Reply::json(200, response(values)));
   }
+  void expect_reported(std::vector<std::vector<float>> values, std::string model) {
+    auto body = response(values);
+    body["model"] = std::move(model);
+    transport.expect("POST", "https://openrouter.ai/api/v1/embeddings", net::ScriptedTransport::Reply::json(200, body));
+  }
   ProviderVectorPolicy policy(std::string status = "allowed") {
     ProviderVectorPolicy policy;
     policy.admit = [this, status](const Json& estimate) -> Result<Json> {
@@ -69,10 +74,13 @@ class FakeEmbedding final : public EmbeddingProvider {
   std::vector<std::string> last;
   std::vector<float> value{1, 0};
   bool invalid_count = false;
-  std::string model_id() const override { return "synthetic/same-model"; }
+  bool change_model_during_embed = false;
+  std::string declared_model = "synthetic/same-model";
+  std::string model_id() const override { return declared_model; }
   Result<std::vector<std::vector<float>>> embed(const std::vector<std::string>& texts) override {
     ++calls;
     last = texts;
+    if (change_model_during_embed) declared_model = "synthetic/changed-during-embed";
     return std::vector<std::vector<float>>(texts.size() + (invalid_count ? 1 : 0), value);
   }
 };
@@ -299,6 +307,252 @@ TEST_CASE("provider vector: durable cache can serve offline after recreation") {
   CHECK(restarted->size() == 1);
 }
 
+TEST_CASE("provider vector: reported model binding rejects mismatch before cache and retains raw evidence") {
+  EmbeddingFixture f;
+  auto runtime = recording_runtime(f.directory.path() / "recording");
+  f.request.record_response = make_embedding_response_recorder(*runtime);
+  auto body = EmbeddingFixture::response({{1, 0}});
+  body["model"] = "synthetic/unrequested";
+  const auto raw = json::dump(body);
+  f.transport.expect("POST", "https://openrouter.ai/api/v1/embeddings", net::ScriptedTransport::Reply::text(200, raw));
+  auto cache = std::make_shared<ProviderVectorCache>();
+  auto reply = f.space(cache)->vectors({{"q", "text", "binding input", "", ""}});
+  REQUIRE_FALSE(reply);
+  CHECK(reply.error().code == Errc::Conflict);
+  CHECK(cache->size() == 0);
+  auto sources = runtime->provenance().find_sources_by_hash(Sha256::hex(raw));
+  REQUIRE(sources);
+  REQUIRE(sources->size() == 1);
+  CHECK(sources->front().metadata["requested_model"] == f.request.model);
+  CHECK(sources->front().metadata["reported_model"] == "synthetic/unrequested");
+  REQUIRE(f.actuals.size() == 1);
+  CHECK(f.actuals[0]["resources"]["cost_usd"].is_null());
+  CHECK(f.transport.requests().size() == 1);
+}
+
+TEST_CASE("provider vector: missing model is unknown and explicit aliases bind separate identities") {
+  EmbeddingFixture f;
+  f.expect({{1, 0}});
+  auto missing = providers::provider_embed(f.registry, f.secrets, f.transport, f.request, {"missing report"});
+  REQUIRE(missing);
+  CHECK(missing->requested_model == f.request.model);
+  CHECK_FALSE(missing->reported_model.has_value());
+  auto exact_identity = providers::embedding_identity(f.registry, f.secrets, f.request);
+  REQUIRE(exact_identity);
+  f.request.accepted_reported_models = {"synthetic/actual-route"};
+  auto routed_identity = providers::embedding_identity(f.registry, f.secrets, f.request);
+  REQUIRE(routed_identity);
+  CHECK(*exact_identity != *routed_identity);
+  f.expect_reported({{0, 1}}, "synthetic/actual-route");
+  auto routed = providers::provider_embed(f.registry, f.secrets, f.transport, f.request, {"routed report"});
+  REQUIRE(routed);
+  CHECK(routed->requested_model == f.request.model);
+  REQUIRE(routed->reported_model.has_value());
+  CHECK(*routed->reported_model == "synthetic/actual-route");
+  auto sent = json::parse(f.transport.requests().back().body);
+  REQUIRE(sent);
+  CHECK_FALSE(sent->contains("accepted_reported_models"));
+  auto capability = providers::embedding_capability(f.registry, f.secrets, f.request);
+  CHECK(capability["readiness"] == "manifest_credential_adapter");
+  CHECK(capability["live_verification"] == "not_performed");
+  CHECK(capability["reported_model"].is_null());
+  CHECK(capability["model_attestation"] == "unknown");
+}
+
+TEST_CASE("provider vector: corpus and later query dimensions share one representation binding") {
+  EmbeddingFixture f;
+  auto cache = std::make_shared<ProviderVectorCache>();
+  auto space = f.space(cache);
+  f.expect({{1, 0}});
+  REQUIRE(space->vectors({{"corpus", "text", "corpus bytes", "", ""}}));
+  f.expect({{1, 0, 1}});
+  auto query = space->vectors({{"query", "text", "separate query bytes", "", ""}});
+  REQUIRE_FALSE(query);
+  CHECK(query.error().code == Errc::Conflict);
+  CHECK(cache->size() == 1);
+  CHECK(f.transport.requests().size() == 2);
+  REQUIRE(f.actuals.size() == 2);  // actual attempted response remains accounted
+  auto native = std::make_shared<FakeEmbedding>();
+  REQUIRE(make_injected_vector_space(native)->vectors({{"c", "text", "native corpus", "", ""}}));
+  native->value = {1, 0, 1};
+  auto native_query = make_injected_vector_space(native)->vectors({{"q", "text", "native new query", "", ""}});
+  REQUIRE_FALSE(native_query);
+  CHECK(native_query.error().code == Errc::Conflict);
+}
+
+TEST_CASE("provider vector: dimension binding survives persistent reload without loading corpus hits") {
+  EmbeddingFixture f;
+  const auto directory = f.directory.path() / "representation";
+  auto first = std::make_shared<ProviderVectorCache>(directory);
+  f.expect({{1, 0}});
+  REQUIRE(f.space(first)->vectors({{"c", "text", "saved corpus", "", ""}}));
+  auto restarted = std::make_shared<ProviderVectorCache>(directory);
+  f.expect({{1, 0, 1}});
+  auto query = f.space(restarted)->vectors({{"q", "text", "uncached after reopen", "", ""}});
+  REQUIRE_FALSE(query);
+  CHECK(query.error().code == Errc::Conflict);
+  CHECK(restarted->size() == 0);
+  f.request.calls_authorized = false;
+  REQUIRE(f.space(restarted)->vectors({{"c", "text", "saved corpus", "", ""}}));
+  CHECK(restarted->size() == 1);
+  CHECK(f.transport.requests().size() == 2);
+}
+
+TEST_CASE("provider vector: routed reported model remains stable across cache reopen") {
+  EmbeddingFixture f;
+  f.request.accepted_reported_models = {"synthetic/route-a", "synthetic/route-b"};
+  const auto directory = f.directory.path() / "model-binding";
+  auto first = std::make_shared<ProviderVectorCache>(directory);
+  f.expect_reported({{1, 0}}, "synthetic/route-a");
+  REQUIRE(f.space(first)->vectors({{"c", "text", "route a corpus", "", ""}}));
+  auto reopened = std::make_shared<ProviderVectorCache>(directory);
+  f.expect_reported({{0, 1}}, "synthetic/route-b");
+  auto query = f.space(reopened)->vectors({{"q", "text", "different routed query", "", ""}});
+  REQUIRE_FALSE(query);
+  CHECK(query.error().code == Errc::Conflict);
+  CHECK(reopened->size() == 0);
+  auto identity = providers::embedding_identity(f.registry, f.secrets, f.request);
+  REQUIRE(identity);
+  auto observation = reopened->inspection(*identity);
+  REQUIRE(observation);
+  CHECK((*observation)["reported_model"] == "synthetic/route-a");
+  CHECK((*observation)["dimensions"] == 2);
+  f.request.calls_authorized = false;
+  REQUIRE(f.space(reopened)->vectors({{"c", "text", "route a corpus", "", ""}}));
+  CHECK(f.transport.requests().size() == 2);
+}
+
+TEST_CASE("provider vector: unknown cache entries are never retrospectively attested") {
+  EmbeddingFixture f;
+  auto cache = std::make_shared<ProviderVectorCache>(f.directory.path() / "unknown-model");
+  auto space = f.space(cache);
+  f.expect({{1, 0}});
+  REQUIRE(space->vectors({{"c", "text", "unknown model corpus", "", ""}}));
+  f.expect_reported({{0, 1}}, f.request.model);
+  REQUIRE(space->vectors({{"q", "text", "reported model query", "", ""}}));
+  REQUIRE(f.actuals.size() == 2);
+  CHECK(f.actuals[0]["reported_model"].is_null());
+  CHECK(f.actuals[0]["model_attestation"] == "unknown");
+  CHECK(f.actuals[1]["reported_model"] == f.request.model);
+  std::size_t unknown_entries = 0, reported_entries = 0;
+  for (const auto& entry : std::filesystem::directory_iterator(f.directory.path() / "unknown-model")) {
+    if (entry.path().extension() != ".json") continue;
+    auto raw = fsutil::read_file(entry.path());
+    REQUIRE(raw);
+    auto data = json::parse(*raw);
+    REQUIRE(data);
+    if ((*data)["reported_model"].is_null()) ++unknown_entries; else ++reported_entries;
+  }
+  CHECK(unknown_entries == 1);
+  CHECK(reported_entries == 1);
+}
+
+TEST_CASE("provider vector: live cache objects cannot replace another first model or dimension binding") {
+  fsutil::TempDir directory;
+  ProviderVectorCache first(directory.path() / "shared"), second(directory.path() / "shared");
+  REQUIRE(first.observe("same representation", 2));
+  REQUIRE(second.observe("same representation", 2, "synthetic/first-report"));
+  auto changed_model = first.observe("same representation", 2, "synthetic/other-report");
+  REQUIRE_FALSE(changed_model);
+  CHECK(changed_model.error().code == Errc::Conflict);
+  REQUIRE(first.observe("same representation", 2, "synthetic/first-report"));
+  auto changed_dimension = second.observe("same representation", 3, "synthetic/first-report");
+  REQUIRE_FALSE(changed_dimension);
+  CHECK(changed_dimension.error().code == Errc::Conflict);
+}
+
+TEST_CASE("provider vector: installed identity binding blocks provider drift even on cached input") {
+  EmbeddingFixture f;
+  auto cache = std::make_shared<ProviderVectorCache>();
+  auto identity = providers::embedding_identity(f.registry, f.secrets, f.request);
+  REQUIRE(identity);
+  f.request.expected_identity = *identity;
+  auto remote = f.space(cache);
+  f.expect({{1, 0}});
+  const std::vector<resolve::EmbedInput> query{{"q", "text", "bound source", "", ""}};
+  REQUIRE(remote->vectors(query));
+  f.secrets.set("api_key", "synthetic-account-drift");
+  auto drift = remote->vectors(query);
+  REQUIRE_FALSE(drift);
+  CHECK(drift.error().code == Errc::Conflict);
+  CHECK(f.transport.requests().size() == 1);
+  auto native = std::make_shared<FakeEmbedding>();
+  auto installed = make_injected_vector_space(native, nullptr, {}, native->model_id());
+  REQUIRE(installed->vectors(query));
+  native->declared_model = "synthetic/declaration-drift";
+  auto native_drift = installed->vectors(query);
+  REQUIRE_FALSE(native_drift);
+  CHECK(native_drift.error().code == Errc::Conflict);
+  CHECK(native->calls == 1);
+  auto changing = std::make_shared<FakeEmbedding>();
+  changing->change_model_during_embed = true;
+  auto changing_cache = std::make_shared<ProviderVectorCache>();
+  auto during_request = make_injected_vector_space(changing, changing_cache)->vectors(query);
+  REQUIRE_FALSE(during_request);
+  CHECK(during_request.error().code == Errc::Conflict);
+  CHECK(changing_cache->size() == 0);
+  CHECK(changing->calls == 1);
+  auto before_request = std::make_shared<FakeEmbedding>();
+  auto before_cache = std::make_shared<ProviderVectorCache>();
+  auto before = make_injected_vector_space(before_request, before_cache, [&] {
+    before_request->declared_model = "synthetic/changed-at-admission";
+    return true;
+  })->vectors(query);
+  REQUIRE_FALSE(before);
+  CHECK(before.error().code == Errc::Conflict);
+  CHECK(before_cache->size() == 0);
+  CHECK(before_request->calls == 0);
+}
+
+TEST_CASE("provider vector: install report captures only actual normalized controls and authorization") {
+  fsutil::TempDir directory;
+  auto runtime = recording_runtime(directory.path());
+  runtime->secrets().set("api_key", "synthetic-report-key");
+  auto loaded_pack = runtime->knowledge().pack();
+  REQUIRE(loaded_pack);
+  ContextEngine engine(*runtime, runtime->knowledge().store(), *loaded_pack);
+  Json section{{"enabled", true}, {"calls_authorized", false}, {"channel_id", "reported_vector"},
+      {"provider_id", "openrouter"}, {"model", "synthetic/requested"}, {"timeout_ms", 12345},
+      {"accepted_reported_models", Json::array({"synthetic/actual"})},
+      {"request_options", Json{{"dimensions", 3}}}, {"ignored_extra", "SIMULATED_PRIVATE_UNUSED"}};
+  Json options{{"embedding", section}};
+  ContextExecutionScope scope(options);
+  auto remote = install_provider_vector(engine, *runtime, options, true);
+  REQUIRE(remote["available"] == true);
+  CHECK(remote["installed_this_call"] == true);
+  CHECK(remote["binding_status"] == "installed_snapshot");
+  const auto& consumed = remote["actual_consumed_parameters"];
+  CHECK(consumed["model"] == "synthetic/requested");
+  CHECK(consumed["timeout_ms"] == 12345);
+  CHECK(consumed["accepted_reported_models"] == Json::array({"synthetic/actual"}));
+  CHECK(consumed["request_options"] == Json{{"dimensions", 3}});
+  CHECK(consumed["encoding_format"] == "float");
+  CHECK(consumed["calls_authorized"] == false);
+  CHECK_FALSE(consumed.contains("ignored_extra"));
+  CHECK_FALSE(remote["identity_sha256"].get<std::string>().empty());
+  CHECK(remote["authorization"]["scope_active"] == true);
+  CHECK(remote["authorization"]["scope_options_match"] == true);
+  CHECK(remote["miss_authorized"] == false);
+  CHECK(json::dump(remote).find("synthetic-report-key") == std::string::npos);
+  auto native = std::make_shared<FakeEmbedding>();
+  runtime->set_embedding_provider(native);
+  auto injection = install_provider_vector(engine, *runtime, options, true);
+  REQUIRE(injection["available"] == true);
+  const auto& native_consumed = injection["actual_consumed_parameters"];
+  CHECK(native_consumed["model"] == native->model_id());
+  CHECK_FALSE(native_consumed.contains("timeout_ms"));
+  CHECK_FALSE(native_consumed.contains("request_options"));
+  CHECK_FALSE(native_consumed.contains("accepted_reported_models"));
+  CHECK_FALSE(native_consumed.contains("ignored_extra"));
+  CHECK(injection["reported_model"].is_null());
+  CHECK(native->calls == 0);
+  auto preserved = install_provider_vector(engine, *runtime, Json::object(), true);
+  CHECK(preserved["installed_this_call"] == false);
+  CHECK(preserved["binding_status"] == "existing_channel_not_inspected");
+  CHECK_FALSE(preserved.contains("actual_consumed_parameters"));
+  CHECK_FALSE(preserved.contains("identity_sha256"));
+}
+
 TEST_CASE("provider vector: confirmation blocks transport and unknown charges survive failures") {
   EmbeddingFixture f;
   auto pending = f.space(nullptr, "requires_confirmation")->vectors({{"q", "text", "growth", "", ""}});
@@ -438,6 +692,11 @@ TEST_CASE("provider vector: runtime scope requires explicit injected call author
   auto provider = std::make_shared<FakeEmbedding>();
   runtime->set_embedding_provider(provider);
   ContextEngine engine(*runtime, store, pack);
+  auto preview_capability = install_provider_vector(engine, *runtime, Json::object(), false);
+  CHECK(preview_capability["readiness"] == "native_injection_declared");
+  CHECK(preview_capability["model_attestation"] == "unknown");
+  CHECK(preview_capability["cache_coverage"] == "unknown_until_inputs");
+  CHECK(preview_capability["miss_authorized"] == false);
   ContextRequest request;
   request.text = "synthetic component context";
   request.run = begun->id;
