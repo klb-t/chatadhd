@@ -1,0 +1,121 @@
+// Compile explicitly as C++ in scratch; this fixture is not a core source.
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <stdexcept>
+#include <string>
+#include "extract/prompt_contract.h"
+#include "loom/util/sha256.h"
+#include "loom/util/utf8.h"
+using namespace loom;
+namespace prompts = loom::extract::prompts;
+int main(int argc, char** argv) {
+  int checks = 0;
+  auto check = [&](bool ok, const char* label) {
+    ++checks;
+    if (!ok) throw std::runtime_error(std::string("FAIL ") + label);
+    std::cout << "PASS " << label << '\n';
+  };
+  auto relation = prompts::resolve("semantic.relation");
+  auto graph = prompts::resolve("semantic.occurrence_graph");
+  auto legacy = prompts::resolve("semantic.analysis");
+  check(bool(relation) && bool(graph) && bool(legacy), "three compiled defaults resolve without cwd assets");
+  check(prompts::builtin_ids().size() == 3 && prompts::builtin_catalog().size() == 3, "catalog lists all defaults");
+  Json input{{"z", "zażółć"}, {"a", 2}};
+  auto request = prompts::prepare_request(*relation, "test-model", "https://example.invalid/", Json{{"input_json", input}});
+  check(bool(request), "default request prepares offline");
+  const auto prompt = relation->definition["messages"][0]["content"][0].get<std::string>();
+  check(Sha256::hex(prompt) == "d8a6189156f49dcf1d11fe3bd112a85cc3d6000ba200404f7140da39eed18837" && Sha256::hex(graph->definition["messages"][0]["content"][0].get<std::string>()) == "7527ac8c051e53bc5d6cbd51ca92ac9ead6334381d03e4e6924582797df43a1a", "built-in relation and graph literal hashes match historical source");
+  const Json expected{{"model", "test-model"}, {"temperature", 0}, {"max_tokens", 1600}, {"messages", Json::array({Json{{"role", "system"}, {"content", prompt}}, Json{{"role", "user"}, {"content", json::canonical(input)}}})}};
+  check((*request)["body_bytes"] == json::dump(expected), "default relation body bytes and key order match historical builder");
+  check((*request)["url"] == "https://example.invalid/chat/completions", "endpoint and trailing slash normalize");
+  check(!(*request)["headers"].contains("Authorization"), "preview contains no authorization credential");
+  auto explicit_header = prompts::resolve("semantic.relation", {}, Json{{"transport", Json{{"headers", Json{{"Authorization", "explicit fixture value"}}}}}});
+  auto explicit_header_request = prompts::prepare_request(*explicit_header, "m", "https://example.invalid", Json{{"input_json", input}});
+  check(explicit_header_request && (*explicit_header_request)["headers"]["Authorization"] == "explicit fixture value", "explicit owner headers remain configurable and auth is never injected");
+  auto graph_request = prompts::prepare_request(*graph, "test-model", "https://example.invalid", Json{{"input_json", input}});
+  const Json expected_graph{{"model", "test-model"}, {"temperature", 0}, {"max_tokens", 1600}, {"messages", Json::array({Json{{"role", "system"}, {"content", graph->definition["messages"][0]["content"][0]}}, Json{{"role", "user"}, {"content", json::canonical(input)}}})}};
+  check(graph_request && (*graph_request)["body_bytes"] == json::dump(expected_graph), "default graph body bytes match historical builder");
+  std::string text;
+  for (int i=0;i<3100;++i) text += "ą";
+  auto legacy_request = prompts::prepare_request(*legacy, "test-model", "https://example.invalid", Json{{"text", text}});
+  const auto legacy_prefix = legacy->definition["messages"][0]["content"][0].get<std::string>();
+  check(legacy_request && (*legacy_request)["body_json"]["messages"][0]["content"] == legacy_prefix + std::string(utf8::prefix(text,3000)), "legacy clipping counts Unicode codepoints");
+  const Json expected_legacy{{"model", "test-model"}, {"messages", Json::array({Json{{"role", "user"}, {"content", legacy_prefix + std::string(utf8::prefix(text,3000))}}})}, {"temperature", 0.1}, {"max_tokens", 800}};
+  check(legacy_request && (*legacy_request)["body_bytes"] == json::dump(expected_legacy), "legacy data-directed body order preserves historical builder bytes");
+  check(!prompts::resolve("semantic.relation", {}, Json{{"transport", Json{{"body_field_order", Json::array({"model", "model"})}}}}), "duplicate body order field is an explicit syntax error");
+  auto changed = prompts::resolve("semantic.relation", {}, Json{{"request_parameters", Json{{"temperature", 0.7}, {"custom_provider_option", true}}}});
+  check(changed && changed->definition["request_parameters"]["max_tokens"] == 1600 && changed->hash != relation->hash, "recursive object overlay retains siblings and changes identity");
+  auto changed_request = prompts::prepare_request(*changed, "test-model", "https://example.invalid", Json{{"input_json", input}}, Json{{"max_tokens", 5000}, {"messages", Json::array({Json{{"role", "developer"}, {"content", "explicit override"}}})}});
+  check(changed_request && (*changed_request)["body_json"]["messages"].size() == 1 && (*changed_request)["body_json"]["max_tokens"] == 5000, "request override replaces arrays and has no invented provider token ceiling");
+  check((*changed_request)["request_hash"] != (*request)["request_hash"], "actual request overrides alter request hash");
+  check(!prompts::prepare_request(*relation, "m", "https://example.invalid", Json::object()), "missing binding returns explicit error");
+  check(bool(prompts::prepare_request(*relation, "m", "https://example.invalid", Json::object(), Json{{"messages", Json::array({Json{{"role", "user"}, {"content", "full explicit request"}}})}})), "complete message override needs no unused template bindings");
+  check(!prompts::resolve("does-not-exist"), "unknown preset returns explicit error");
+  check(!prompts::resolve("semantic.relation", {}, Json{{"unsupported_execution", true}}) && !prompts::resolve("semantic.relation", {}, Json{{"preserve_unknown_fields", false}}), "unknown execution fields and unsupported preservation toggle rejected");
+  auto stale = *relation; stale.hash = "wrong";
+  check(!prompts::prepare_request(stale, "m", "https://example.invalid", Json{{"input_json", input}}), "stale snapshot hash rejected");
+  check(prompts::validate_output(*relation, Json{{"schema_version", 1}, {"proposals", Json::array()}})["valid"] == true, "strict valid relation wrapper passes");
+  check(prompts::validate_output(*relation, Json{{"schema_version", 2}, {"proposals", Json::array()}})["valid"] == false, "strict wrong wrapper version fails");
+  check(prompts::validate_output(*relation, Json{{"schema_version", 1}, {"proposals", Json::array({nullptr, 1, Json::object()})}})["valid"] == true, "default schema leaves individual proposal handling to native validator");
+  auto lenient = prompts::resolve("semantic.relation", {}, Json{{"validation_mode", "lenient"}});
+  auto warning = prompts::validate_output(*lenient, Json{{"extra", true}});
+  check(warning["valid"] == true && warning["schema_valid"] == false && !warning["issues"].empty(), "lenient retains invalid output and reports warnings");
+  auto off = prompts::resolve("semantic.relation", {}, Json{{"validation_mode", "off"}});
+  auto bypass = prompts::validate_output(*off, Json("opaque"));
+  check(bypass["valid"] == true && bypass["checked"] == false && bypass["schema_valid"].is_null(), "off does not claim schema validation");
+  auto unsupported = prompts::resolve("semantic.relation", {}, Json{{"output_schema", Json{{"format", "email"}}}});
+  check(!unsupported, "unsupported schema execution keyword fails strict preflight");
+  Json complex_schema{{"type", "object"}, {"required", Json::array({"n", "s", "a"})}, {"additionalProperties", false}, {"properties", Json{{"n", Json{{"type", "integer"}, {"minimum", 2}, {"maximum", 8}, {"multipleOf", 2}}}, {"s", Json{{"type", "string"}, {"minLength", 1}, {"maxLength", 2}, {"pattern", "^ą"}}}, {"a", Json{{"type", "array"}, {"minItems", 1}, {"maxItems", 2}, {"uniqueItems", true}, {"items", Json{{"anyOf", Json::array({Json{{"const", "x"}}, Json{{"type", "integer"}}})}}}}}}}};
+  Json typed_def = relation->definition; typed_def["output_schema"] = complex_schema;
+  auto typed = prompts::from_snapshot(typed_def);
+  check(typed && prompts::validate_output(*typed, Json{{"n", 4}, {"s", "ą"}, {"a", Json::array({"x", 2})}})["valid"] == true, "generic object/array/number/Unicode/pattern/anyOf schema passes");
+  check(prompts::validate_output(*typed, Json{{"n", 3}, {"s", "bad"}, {"a", Json::array({"x", "x"})}, {"extra", true}})["valid"] == false, "generic bounds/multipleOf/pattern/unique/additional properties reject");
+  typed_def["output_schema"] = Json{{"oneOf", Json::array({Json{{"type", "number"}}, Json{{"type", "integer"}}})}};
+  auto one = prompts::from_snapshot(typed_def);
+  check(one && prompts::validate_output(*one, 2)["valid"] == false && prompts::validate_output(*one, 2.5)["valid"] == true, "oneOf requires exactly one successful branch");
+  typed_def["output_schema"] = Json{{"allOf", Json::array({Json{{"type", "number"}}, Json{{"exclusiveMinimum", 1}}, Json{{"exclusiveMaximum", 3}}})}};
+  auto all = prompts::from_snapshot(typed_def);
+  check(all && prompts::validate_output(*all, 2)["valid"] == true && prompts::validate_output(*all, 3)["valid"] == false, "allOf and exclusive bounds apply");
+  typed_def["output_schema"] = Json{{"maximum", std::uint64_t(9007199254740992ULL)}};
+  auto large = prompts::from_snapshot(typed_def);
+  check(large && prompts::validate_output(*large, std::uint64_t(9007199254740993ULL))["valid"] == false, "numeric bounds retain exact large integer distinction");
+  typed_def["output_schema"] = Json{{"multipleOf", 2}};
+  auto integer_multiple = prompts::from_snapshot(typed_def);
+  check(integer_multiple && prompts::validate_output(*integer_multiple, std::uint64_t(9007199254740993ULL))["valid"] == false && prompts::validate_output(*integer_multiple, std::numeric_limits<std::int64_t>::min())["valid"] == true, "integer multipleOf remains exact across large and negative values");
+  typed_def["output_schema"] = Json{{"multipleOf", 3}};
+  auto float_multiple = prompts::from_snapshot(typed_def);
+  check(float_multiple && prompts::validate_output(*float_multiple, 9007199254740992.0)["valid"] == false, "floating multipleOf does not lose remainder in a large quotient");
+  typed_def["output_schema"] = Json{{"multipleOf", 0.1}};
+  auto decimal_multiple = prompts::from_snapshot(typed_def);
+  check(decimal_multiple && prompts::validate_output(*decimal_multiple, 0.3)["valid"] == true && prompts::validate_output(*decimal_multiple, 0.31)["valid"] == false, "decimal multipleOf handles binary representation error");
+  typed_def["output_schema"] = Json{{"minimum", std::numeric_limits<double>::quiet_NaN()}};
+  check(!prompts::from_snapshot(typed_def), "nonfinite schema numeric bound is rejected in strict mode");
+  typed_def["output_schema"] = Json{{"const", Json{{"a", 1}, {"b", 2}}}};
+  auto reordered = prompts::from_snapshot(typed_def);
+  check(reordered && prompts::validate_output(*reordered, Json{{"b", 2.0}, {"a", 1.0}})["valid"] == true, "schema const ignores object key order and numeric representation");
+  typed_def["output_schema"] = Json{{"uniqueItems", true}};
+  auto unique = prompts::from_snapshot(typed_def);
+  check(unique && prompts::validate_output(*unique, Json::array({1, 1.0}))["valid"] == false, "schema uniqueItems treats integral floats and integers as equal");
+  if (argc > 1) {
+    std::filesystem::path dir(argv[1]); std::filesystem::create_directories(dir);
+    { std::ofstream f(dir/"override.prompt"); f << json::dump(Json{{"id", "semantic.relation"}, {"request_parameters", Json{{"temperature", 0.2}}}}); }
+    auto overlay_contract = prompts::resolve("semantic.relation", dir);
+    check(overlay_contract && overlay_contract->definition["request_parameters"]["temperature"] == 0.2 && overlay_contract->definition["request_parameters"]["max_tokens"] == 1600, "user partial .prompt overlay retains preset fields");
+    auto percall = prompts::resolve("semantic.relation", dir, Json{{"request_parameters", Json{{"temperature", 0.4}}}});
+    check(percall && percall->definition["request_parameters"]["temperature"] == 0.4, "per-call override takes precedence over user overlay");
+    auto custom_def = relation->definition; custom_def["id"] = "owner.custom";
+    { std::ofstream f(dir/"custom.prompt"); f << json::dump(custom_def); }
+    check(bool(prompts::resolve("owner.custom", dir)), "owner overlay can add a new full recipe");
+    std::filesystem::remove(dir/"custom.prompt");
+    { std::ofstream f(dir/"bad.prompt"); f << "{"; }
+    check(!prompts::resolve("semantic.relation", dir), "malformed user JSON returns explicit syntax error");
+    std::filesystem::remove(dir/"bad.prompt");
+    { std::ofstream f(dir/"duplicate.prompt"); f << json::dump(Json{{"id", "semantic.relation"}}); }
+    check(!prompts::resolve("semantic.relation", dir), "duplicate overlay identities rejected");
+    std::filesystem::remove(dir/"duplicate.prompt");
+    std::filesystem::remove(dir/"override.prompt");
+  }
+  std::cout << "checks " << checks << '/' << checks << '\n';
+}
