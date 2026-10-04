@@ -101,3 +101,18 @@ Whitespace padding models scanner traversal; a 2.15 GB temporary tmpfs copy lies
 outside CLI RSS. No private large export or realistic 2 GB stored-message corpus
 was evaluated. Full negative/positive stdout and the exact executed fidelity
 verifier are retained with compressed/original hashes.
+
+
+## Owner-nudge acceptance repeat
+
+After the owner requested a fresh replay/rebase/gates, main remained 7282437
+and rebase confirmed up-to-date. [New full receipt](owner-nudge-1851/receipt.json):
+**112/112 CTest in 307.19 s**, 696 native cases/25,341 assertions, 1,276 Python / 0 skips;
+the four new groups execute 37/37 cases and 876/876 assertions. The opt-in
+catalog_scale remains explicitly 0, as in the earlier run. Full build reports
+no work; actual sources and binaries remain byte-identical to the compiled
+1474b260. No test/threshold/timeout edits. [Web build](owner-nudge-1851/web-receipt.json)
+passes TypeScript+Vite, 85 modules, using an offline exact-lockfile install.
+[Independent replay repeat](probes/owner-nudge-1851/receipt.json) passes 2/2
+scenarios and 31/31 controls against the stable actual core; no importer overlay.
+Earlier positive/negative receipts remain unchanged.

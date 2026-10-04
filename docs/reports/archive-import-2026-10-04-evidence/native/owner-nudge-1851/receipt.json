@@ -1,0 +1,114 @@
+{
+  "schema": "loom.owner_nudge_verification/1",
+  "status": "passed",
+  "source_commit": "4314976396e78ae7ca04ad62a0ef9ec64cef16e6",
+  "code_commit": "1474b260582a80f006f99953baaad1b3253ca6e1",
+  "base": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "rebase": "up to date after fresh fetch",
+  "full_ctest": {
+    "executed": 112,
+    "failed": 0,
+    "passed": 112,
+    "exit_code": 0,
+    "seconds": 307.19,
+    "registered_entries": 112,
+    "log": "ctest-full.txt.gz"
+  },
+  "internal_native": {
+    "source_groups": 85,
+    "cases": 696,
+    "assertions": 25341,
+    "zero_case_groups": [
+      "unit.test_catalog_scale"
+    ],
+    "zero_case_reason": "existing opt-in scale corpus not enabled; not claimed executed"
+  },
+  "internal_python": {
+    "reported_unittest_groups": 25,
+    "cases": 1276,
+    "skips": 0
+  },
+  "focused_from_full_ctest": {
+    "test_db_annotations": {
+      "cases": 10,
+      "passed": 10,
+      "assertions": 147,
+      "source": "full verbose CTest;no separate retry"
+    },
+    "test_import_resume": {
+      "cases": 23,
+      "passed": 23,
+      "assertions": 696,
+      "source": "full verbose CTest;no separate retry"
+    },
+    "test_import_audit": {
+      "cases": 3,
+      "passed": 3,
+      "assertions": 28,
+      "source": "full verbose CTest;no separate retry"
+    },
+    "test_import_usage": {
+      "cases": 1,
+      "passed": 1,
+      "assertions": 5,
+      "source": "full verbose CTest;no separate retry"
+    }
+  },
+  "source_stable": true,
+  "source_expanded_files": 1186,
+  "source_expanded_sha256": "0a4ce318a8034411f37756cafe8fe84a6385565014f91f6a47140121835f5384",
+  "source_manifest_timing": "during and after the gate; preceding exact source equality/cached-object receipt is retained",
+  "binary_sha256": {
+    "loom_tests": "9d46b36a9602be8ab8304c2ee950be9caf2029cc7525618ca1299be0fee95198",
+    "cli/loom": "2ebe3323dcfb3f20868c781055b169a3e2611a5203ef26a39937e05fd3269e69",
+    "server/loom-server": "f6ca664a95e869d7092c792650cbf2e04abc0c8d3a05f3263ab510ba4546d106",
+    "libloom.so.0.1.0": "114390cfedb664f3a27469403fc9bed443420e24d42ba7f011f3ae13505aaf15",
+    "libloom_core.a": "f2002cbe0a527039bf9b1c03753c4707f5a85d0667da70b2cee805233f83a9c0",
+    "loom_compat_tool": "86be092fa8c800cba15ae92c72da32866a88b2c78e1be41987972daaf4c898dc",
+    "loom_candidate_graph_native_tool": "29fd17551577cc8bf590642655eff4d96a28987d7e4842340402705b72b3c37e"
+  },
+  "build_exit_code": 0,
+  "build_log": "native-build.txt",
+  "cached_objects": "full build reports ninja:no work; actual source and binary hashes match the previously compiled and measured code",
+  "profile": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_C_FLAGS_RELEASE": "-O0 -DNDEBUG",
+    "CMAKE_CXX_FLAGS_RELEASE": "-O0 -DNDEBUG",
+    "LOOM_WERROR": "ON",
+    "LOOM_USE_SYSTEM_SQLITE": "OFF",
+    "LOOM_BUILD_TESTS": "ON",
+    "LOOM_BUILD_CLI": "ON",
+    "LOOM_BUILD_SERVER": "ON",
+    "LOOM_SHARED": "ON"
+  },
+  "ctest_command": [
+    "env",
+    "-u",
+    "PYTHONPATH",
+    "-u",
+    "TMPDIR",
+    "ctest",
+    "--test-dir",
+    "/dev/shm/chatadhd-thread5/baseline-build",
+    "--output-on-failure",
+    "--no-tests=error",
+    "-j1",
+    "-V"
+  ],
+  "web_build": {
+    "exit_code": 0,
+    "modules": 85,
+    "receipt": "web-receipt.json"
+  },
+  "independent_checkpoint_replay": {
+    "scenarios": 2,
+    "passed": 2,
+    "checks": 31,
+    "passed_checks": 31,
+    "receipt": "../probes/owner-nudge-1851/receipt.json",
+    "receipt_sha256": "d17fe81e19c48215defc8cc9b7ce8c2c07aad2db3150f5186bb13b1fc2289386",
+    "actual_core_sha256": "f2002cbe0a527039bf9b1c03753c4707f5a85d0667da70b2cee805233f83a9c0"
+  },
+  "model_calls": 0,
+  "scope": "readiness of stream/resume/audit/annotations increment;not completion of52data-in-code migrations or canonical graph adapter"
+}
