@@ -1,0 +1,27 @@
+{
+  "schema": "loom.synthetic_import_fidelity/1",
+  "measurement_sha256": "99a8efc049043c213e29f14336ba09d124b33c3fd4a4409566e39fc1457da4e4",
+  "fixture_source_sha256": "5084c949b6765d95bf7f15d0fbc09435e2dec5e29a1694ba3ce43cfd085917f2",
+  "fixture_source_bytes": 2148031323,
+  "fixture_payload_site": "whitespace",
+  "benchmark_binary_sha256": "5b9e89f7465b61f549cb93e1af7d01743e6da0559a5809fc8cec9652cc1f8607",
+  "benchmark_source_commit": "9a8b88b29f3fd4754a01b329470372e87d24a8d3",
+  "verifier_sha256": "b73fbf360004ced95507c459b368502d34835a83f96141024ec7a0abd54e8973",
+  "generator_sha256": "321540a9b77e3803748e7fadcf3a983397ba573bf150fb432830ce0707efccf5",
+  "database": "/workspace/scratch/943af489e102/bench/thread5-large-after/data/chatadhd.db",
+  "source_byte_preservation": "covered by independently hashed retained blob in benchmark receipt",
+  "caveat": "Synthetic generator contract only; no claim of real archive semantic accuracy. Whitespace padding does not model realistic content density.",
+  "counts": {
+    "verified_conversations": 2047,
+    "verified_raw_messages": 4094,
+    "verified_raw_nodes": 4094,
+    "verified_normalized_messages": 4094,
+    "verified_parent_edges": 2047,
+    "verified_root_messages": 2047,
+    "verified_message_pointers": 4094,
+    "verified_wrapper_fields": 2047,
+    "normalized_text_characters": 243420
+  },
+  "correct": true,
+  "elapsed_seconds": 0.20857344600153738
+}
