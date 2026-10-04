@@ -1,4 +1,0 @@
-First failure: OSError [Errno 28] No space left on device
-run_logged: log.write_text(result.stdout + result.stderr) failed after compiler subprocess returned.
-finally: manifest.json write also failed. No regression executable was run.
-Compiler stdout/stderr and exit status were lost because output persistence failed.
