@@ -157,7 +157,7 @@ source application.
 | Project/artifact/browser/voice operations | Operations panel, native artifact listing/read, media status and explicit file-transcription route; per-operation `native/equivalent/limited/unavailable` evidence | Artifact editing, project execution, browser execution, microphone and realtime voice need actual adapters |
 | Queryable capability links | Explicit GraphPacket projection with separate profile/action/capability entities and native acceptance/readback | Evidence is the installed-adapter snapshot; acceptance does not establish original-service equivalence |
 | Server-backed workflow sessions | Explicit config-backed snapshots preserve definitions, exact sources, view selection, session traces, selected variables and recovery flags; restore performs no adapter dispatch | This config key has readback conflict detection rather than compare-and-swap. Concurrent writers can overwrite a snapshot |
-| Execution recovery | Atomic local pre-dispatch checkpoint records unknown outcomes; unknown/abandoned sessions block continuation. Restoring is blocked during native operations; closed views ignore late results | The public TaskEngine API lacks generic submit/checkpoint/result binding. Server-side exactly-once execution and reconciliation of successful remote effects remain core work |
+| Execution recovery | Atomic local pre-dispatch checkpoint records unknown outcomes; unknown/abandoned sessions block continuation. Restoring is blocked during native operations; closed views ignore late results | The public TaskEngine API reads checkpoint/result but lacks generic submit, checkpoint-write, complete and resume-one binding. Server-side exactly-once execution and reconciliation of successful remote effects remain core work |
 | Independent composed views | Per-view sidebar placement/width, independent/coupled conversation selection, stable adapter registrations, independent persistent model/context settings | Specialized screens still require trusted renderer registrations |
 
 **Workflow recovery** never marks an unknown remote outcome as successful.
@@ -176,7 +176,9 @@ sessions remain readable; malformed stored bytes are preserved and reported.
   weights, method combinations and capability discovery await the W3 registry;
   the UI does not silently drop unsupported weight fields.
 - **Settings / Usage policy** reads presets, effective settings and overrides
-  from W2, edits the complete policy JSON and inspects exact receipt decisions.
+  from the W2 data preset accepted on main, edits the complete policy JSON and
+  inspects exact receipt decisions. Read-only override preview and source/hash
+  metadata identify the embedded pack without writing config or opening its ledger.
   Approve/decline use receipt and operation identities; stale confirmations need
   inspection rather than an implicit new dispatch. The HTTP route calls the
   existing W2 dispatcher when compiled with that dependency, otherwise returns
@@ -188,13 +190,26 @@ sessions remain readable; malformed stored bytes are preserved and reported.
   candidate/automatic policy to a returned packet. Expand/correct puts a
   fragment address into the composer for review. Application is a packet
   projection, separate from a canonical knowledge-store write. W3 still owns
-  automatic chat reply modes and graph-context request assembly. Integration of
-  W4 also waits for its held replay-accounting regression to be resolved.
+  automatic chat reply modes and graph-context request assembly. Exact replay shows the retained result without another execution and distinguishes
+  original admission from current accounting. Interrupted or indeterminate outcomes
+  remain explicit. W4 awaits the shared method-graph contract gate with W3; its
+  original replay-accounting regression has been independently closed.
 - **Expert controls** show/edit the exact client ChatRequest for one subsequent
   send and accept generic config patches. A client preview is not the fully
   assembled provider prompt; native context traces remain separate. Credentials
   use the existing secret endpoints. Analysis prompt/schema/preset editing and
   full provider-query preview need W1/W11 descriptors and overlay APIs.
+
+R41 methods use the same graph inspection/editing model as other nodes. The
+canonical `loom.method_graph/1` / `loom.method_run_trace/1` contract belongs to
+W3/W4; their shared acceptance and public registry/prepared-request adapters
+remain dependencies. A method edit creates a new version, and results keep
+produced-by edges to the version that executed.
+
+Onboarding and R39–R40 now belong to W12. W10 integrates its exported component
+into App navigation and transport once supplied; no placeholder onboarding is
+advertised. The [TaskEngine adapter contract](reports/interface-2-task-engine-adapter-2026-10-04.md)
+records current callable operations and the missing execution binding.
 
 The [thread-10 report](reports/interface-2-2026-10-04.md) records fresh checks,
 before/after counts, negative evidence and concrete requests to other lanes.
