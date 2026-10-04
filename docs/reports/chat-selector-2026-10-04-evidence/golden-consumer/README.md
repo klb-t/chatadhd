@@ -49,3 +49,30 @@ Do odtworzenia opublikowanego wejścia użyj w poleceniu `--artifact`
 `docs/reports/chat-selector-2026-10-04-evidence/golden-consumer/input.json`.
 Dokładne pliki JSON są publicznymi danymi syntetycznymi. Jedyną zmianą logu jest
 zastąpienie losowego katalogu tymczasowej bazy znacznikiem `<TEMP_DATABASE>`.
+
+## Artefakt z końcowego przebiegu wszystkich regresji
+
+Pełny końcowy przebieg producenta: **121 przypadków / 1604 asercje, PASS**, 0 pominiętych.
+Niezależny konsument tego eksportu również **PASS**; jego wynik jest w
+`verification-full.json`, a polecenie, hashe i porównanie w `invocation-full.json`.
+Pełne wejście i pokwitowanie zachowano bez strat jako `producer-full.json.gz`
+i `receipt-full.json.gz` (gzip z `mtime=0`). Pierwsza para JSON pozostaje bez zmian.
+
+Oba eksporty mają identyczny pełny kontrakt, parametry, dokładne bajty wysłanego
+żądania, odpowiedź modelu, kompilację i węzły modelu. Zmienił się identyfikator
+nowego natywnego zapisu źródła w `raw_response_source_ref.source_id`; propaguje
+się on przez ślad, jego adnotacje i historię do hasha pakietu.
+
+Przed podaniem końcowego wejścia niezależnemu konsumentowi lub `reproduce.py`
+rozpakuj dokładne JSON:
+
+```bash
+gzip -cd docs/reports/chat-selector-2026-10-04-evidence/golden-consumer/producer-full.json.gz \
+  > /tmp/chatadhd-w3-producer-full.json
+gzip -cd docs/reports/chat-selector-2026-10-04-evidence/golden-consumer/receipt-full.json.gz \
+  > /tmp/chatadhd-w3-receipt-full.json
+```
+
+Nie skrócono pól ani historii. `invocation-full.json` podaje hashe zarówno gzip,
+jak i pełnych bajtów JSON. Zakres konsumenta nadal uczciwie wyklucza weryfikację
+samego wykonania producenta; to wykonanie sprawdza osobny przebieg W3.

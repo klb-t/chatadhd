@@ -1,0 +1,16 @@
+{"schema": "loom.method_graph_artifact_verification/1", "passed": true, "packet_id": "1298f77823e097298b07f1159fbe52f77d3584bf88a8842f81ec2edf08344144", "contract_sha256": "69f5366cf3700d0f5532042d1e020199e9de11de51e3ed1874ca8415e4c50ac2", "trace_sha256": "951f6866e199b0556dd9b8653595e5ead06d15b61998edac0e389948f45a2b93", "receipt_id": "gpr_b62028bfb029a893ce2816ed664a5e2398f3ba13df6032a9ab4aec2ab89f2c34", "receipt_sha256": "7928ef11a805098148a5d1b913c8d48ed9d04f9a742c54a092155ff6c4153e41", "result_count": 3, "native_records": {"entities": 19, "claims": 30, "sources": 17}, "producer_execution_verified": false, "verifier_provider_calls": 0, "scope": "declared graph consistency and actual native accept/restart/read/replay/retry", "input_sha256": "27dc7422709e176620e4ceecf58898afb0e02ec6c939f0a2ad189d81870476a2", "library_sha256": "57c1b549c260e14b4f31d21c36bec34690cdcbd16c47d4238079a9c0bb23be97", "contract_file_sha256": "b9a291868473a15dde6c97abf424ec934f6c08927fe898b136f12eadff9c8725"}
+01:54:21 [INFO ] loom.config: config.json not found - using defaults
+01:54:21 [INFO ] loom.config: secrets.json not found - using defaults
+01:54:21 [INFO ] loom.db: Schema upgraded: v0 -> v4
+01:54:21 [INFO ] loom.db: Database opened: <TEMP_DATABASE>/chatadhd.db
+01:54:21 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+01:54:21 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: <TEMP_DATABASE>)
+01:54:26 [INFO ] loom.db: Database closed
+01:54:26 [INFO ] loom.runtime: Loom runtime shut down
+01:54:26 [INFO ] loom.config: config.json not found - using defaults
+01:54:26 [INFO ] loom.config: secrets.json not found - using defaults
+01:54:26 [INFO ] loom.db: Database opened: <TEMP_DATABASE>/chatadhd.db
+01:54:26 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+01:54:26 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: <TEMP_DATABASE>)
+01:54:28 [INFO ] loom.db: Database closed
+01:54:28 [INFO ] loom.runtime: Loom runtime shut down

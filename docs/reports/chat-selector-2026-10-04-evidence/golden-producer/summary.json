@@ -1,0 +1,21 @@
+{
+  "schema": "loom.w3_golden_producer_verification/1",
+  "paid_calls": 0,
+  "fake_http_calls_per_golden": 1,
+  "cases": 121,
+  "cases_passed": 121,
+  "cases_skipped": 0,
+  "assertions": 1604,
+  "assertions_passed": 1604,
+  "elapsed_seconds": 397.53556532600123,
+  "actual_w2_commit": "5a73a360f44626333ce6510f26261c32239de73c",
+  "actual_w4_commit": "1377e20c71f200b01416c7c87f06c3ffdafb02b6",
+  "core_sha256": "328c75a89d1662a441e14336a17490d4f33470a748beaf03c052604c8e75bfe6",
+  "first_target_cases": 1,
+  "first_target_assertions": 97,
+  "first_target_artifact_sha256": "8db8175c3b70c3947711ddf5daee5073b99bc5a5114ce0075e06e51932cec54e",
+  "full_run_artifact_sha256": "27dc7422709e176620e4ceecf58898afb0e02ec6c939f0a2ad189d81870476a2",
+  "tested_base": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "rebase_base": "ba6eaf6244d2d4136fbb3534bc0d45a4900eeda1",
+  "rebase_scope": "owner requirements documentation only; production/test source hashes unchanged"
+}

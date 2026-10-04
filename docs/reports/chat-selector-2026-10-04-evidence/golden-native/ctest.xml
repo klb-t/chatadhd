@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="108"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="276"
+	timestamp="2026-10-05T01:31:15"
+	>
+	<testcase name="unit.test_archive" classname="unit.test_archive" time="1.18044" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 642 skipped
+[doctest] assertions: 270 | 270 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_batch_api" classname="unit.test_batch_api" time="0.093937" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped
+[doctest] assertions: 36 | 36 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi" classname="unit.test_capi" time="2.90691" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  12 |  12 passed | 0 failed | 648 skipped
+[doctest] assertions: 598 | 598 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge" classname="unit.test_capi_knowledge" time="0.500765" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 55 | 55 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge_latest_run" classname="unit.test_capi_knowledge_latest_run" time="0.598849" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 73 | 73 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog" classname="unit.test_catalog" time="1.92369" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped
+[doctest] assertions: 344 | 344 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_context" classname="unit.test_catalog_context" time="1.9151" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_eval" classname="unit.test_catalog_eval" time="1.01362" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_catalog_eval.cpp:118:
+TEST SUITE: catalog_eval
+TEST CASE:  synthetic_dev: recall/precision/noise-trap FP
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_catalog_eval.cpp:249: MESSAGE: ranking AUC final=0.965556 lexical=0.777222 semantic=0.981111
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_catalog_eval.cpp:250: MESSAGE: ranking hits@20=20/20 hits@45=42/45 (lexical hits@45=36, semantic hits@45=43)
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tes...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_links" classname="unit.test_catalog_links" time="6.5888" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_catalog_links.cpp:103:
+TEST SUITE: catalog_links
+TEST CASE:  candidate generation reproduces the exhaustive reference scan
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_catalog_links.cpp:130: MESSAGE: continuation links: reference=164 candidates=164 recall=1
+
+===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_catalog_links.cpp:166:
+TEST SUITE: catalog_links
+TEST CASE:  50k units: near-linear candidate generation, planted near-duplicates found
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_catalog_links.cpp:203: MESSAGE: 50k units: 3.42718 s, {"mode":"candidates","units":50000,"links":143314,"project_groups_aggregated":0,"minhash_pairs_verified":499,"lsh_candidates":499,"rare_term_candidates":506472}
+
+====================================================================...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_retention" classname="unit.test_catalog_retention" time="1.44616" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 179 | 179 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_scale" classname="unit.test_catalog_scale" time="0.00808498" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 660 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task" classname="unit.test_chat_active_task" time="1.01431" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 641 skipped
+[doctest] assertions: 197 | 197 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_audit" classname="unit.test_chat_active_task_acceptance_audit" time="0.423606" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 40 | 40 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_scale" classname="unit.test_chat_active_task_acceptance_scale" time="7.15278" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:    2 |    2 passed | 0 failed | 658 skipped
+[doctest] assertions: 2014 | 2014 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_validation" classname="unit.test_chat_active_task_acceptance_validation" time="0.8685" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped
+[doctest] assertions: 151 | 151 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_concurrency" classname="unit.test_chat_active_task_concurrency" time="0.276737" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durability" classname="unit.test_chat_active_task_durability" time="0.435047" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 106 | 106 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durable_audit" classname="unit.test_chat_active_task_durable_audit" time="6.62482" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_exceptional" classname="unit.test_chat_active_task_exceptional" time="0.205201" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_history_aba" classname="unit.test_chat_active_task_history_aba" time="0.0284217" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 659 skipped
+[doctest] assertions: 9 | 9 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_reference" classname="unit.test_chat_active_task_reference" time="0.0233493" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_retention" classname="unit.test_chat_active_task_retention" time="0.857174" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 649 skipped
+[doctest] assertions: 232 | 232 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_revisions" classname="unit.test_chat_active_task_revisions" time="1.16443" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_scope_identity" classname="unit.test_chat_active_task_scope_identity" time="0.152737" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 20 | 20 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_engine" classname="unit.test_chat_engine" time="0.0904625" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 645 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_knowledge_context" classname="unit.test_chat_knowledge_context" time="2.80829" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped
+[doctest] assertions: 212 | 212 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_retrieval_plan" classname="unit.test_chat_retrieval_plan" time="1.78155" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 244 | 244 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_config" classname="unit.test_config" time="0.0154084" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_channel_integration" classname="unit.test_context_channel_integration" time="1.13796" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 63 | 63 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_controls" classname="unit.test_context_controls" time="2.25299" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped
+[doctest] assertions: 153 | 153 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_counter" classname="unit.test_context_counter" time="0.701547" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 38 | 38 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_diagnostics" classname="unit.test_context_diagnostics" time="10.4441" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped
+[doctest] assertions: 335 | 335 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_engine" classname="unit.test_context_engine" time="10.856" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   18 |   18 passed | 0 failed | 642 skipped
+[doctest] assertions: 1364 | 1364 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_eval" classname="unit.test_context_eval" time="0.970034" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_context_eval.cpp:346:
+TEST SUITE: context_eval
+TEST CASE:  context efficiency vs naive full-history and flat-retrieval, coverage@budget, determinism
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=1/1 selected=551
+  logged: scenario: implement checklist feature (PL)
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=2/2 selected=667
+  logged: scenario: verify encryption claim
+
+===============================================================================
+[doctest] test cases:   2 |   2 passed | 0 failed | 658 skipped
+[doctest] assertions: 268 | 268 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_native_consumer" classname="unit.test_context_native_consumer" time="1.43585" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped
+[doctest] assertions: 105 | 105 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_plan" classname="unit.test_context_plan" time="4.51846" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped
+[doctest] assertions: 159 | 159 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval" classname="unit.test_context_retrieval" time="0.945511" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped
+[doctest] assertions: 130 | 130 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval_dev" classname="unit.test_context_retrieval_dev" time="1.47485" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_context_retrieval_dev.cpp:223:
+TEST SUITE: context_retrieval_dev
+TEST CASE:  synthetic DEV compares native graph tfidf union and lexical shadow without quality gates
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"checkpoint_union","mode":"graph","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full"},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"sele...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_tfidf_reuse" classname="unit.test_context_tfidf_reuse" time="5.00483" status="run">
+		<properties/>
+		<system-out>N2_RETAINED_PAYLOAD {"schema":"loom.n2.logical_cache_payload/1","sizes":[{"claims":64,"copied_document_id_bytes":704,"copied_document_text_bytes":14124,"normalized_vector_entries":1152,"normalized_vector_key_bytes":8576,"vector_numeric_bytes":9216,"state_bytes":256},{"claims":256,"copied_document_id_bytes":2816,"copied_document_text_bytes":56868,"normalized_vector_entries":4608,"normalized_vector_key_bytes":34304,"vector_numeric_bytes":36864,"state_bytes":1024},{"claims":1024,"copied_document_id_bytes":11264,"copied_document_text_bytes":228180,"normalized_vector_entries":18432,"normalized_vector_key_bytes":137216,"vector_numeric_bytes":147456,"state_bytes":4096}],"excludes":"container nodes, string capacity, allocator overhead, query id, temporary cold-fit copies and result JSON"}
+===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped
+[doctest] assertions: 219 | 219 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_crypto" classname="unit.test_crypto" time="4.68014" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 12 | 12 passed | 0 failed | 648 skipped
+[doctest] assertions: 66 | 66 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_db" classname="unit.test_db" time="0.300026" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   13 |   13 passed | 0 failed | 647 skipped
+[doctest] assertions: 5178 | 5178 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_event_bus" classname="unit.test_event_bus" time="0.0517484" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 28 | 28 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_extract" classname="unit.test_extract" time="2.89791" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped
+[doctest] assertions: 241 | 241 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_extract_eval" classname="unit.test_extract_eval" time="2.43296" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_extract_eval.cpp:92:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: entities and aliases (after resolution)
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_extract_eval.cpp:141: MESSAGE: project entity P/R/F1 = 0.833333 / 1 / 0.909091  (5 of 5, predicted 6)
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_extract_eval.cpp:143: MESSAGE: alias P/R/F1 = 0.545455 / 0.230769 / 0.324324
+
+===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_extract_eval.cpp:149:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: versions
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_extract_eval.cpp:191: MESSAGE: version precision/recall = 0.95 / 0.818182  (18/22)
+
+===============================================================================
+/workspace/scratch/f98faad71b9c/chat...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_fts" classname="unit.test_fts" time="0.075449" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_generalize" classname="unit.test_generalize" time="2.97113" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped
+[doctest] assertions: 199 | 199 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_generalize_eval" classname="unit.test_generalize_eval" time="1.43984" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_generalize_eval.cpp:68:
+TEST SUITE: generalize_eval
+TEST CASE:  synthetic_dev: principles, operators, predictions, false certainty, EP soundness
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.optionality_over_speed -&gt; p_4b48be69aa2f49d2 level value ok form invariant ok
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.honesty_over_comfort -&gt; p_e3a2d7988454a4aa level value ok form invariant ok
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.keep_both_branches -&gt; p_0c2b3b04100e4bd2 level epistemic ok form heuristic WRONG
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.data_over_branches -&gt; p.presets_are_data level strategy ok form invariant ok
+
+/workspac...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_github" classname="unit.test_github" time="0.025497" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 641 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_graph" classname="unit.test_graph" time="0.072163" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped
+[doctest] assertions: 30 | 30 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import" classname="unit.test_import" time="0.156219" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  23 |  23 passed | 0 failed | 637 skipped
+[doctest] assertions: 223 | 223 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_export_fidelity" classname="unit.test_import_export_fidelity" time="0.148173" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 327 | 327 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_exports" classname="unit.test_import_exports" time="1.45604" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_import_exports.cpp:723:
+TEST SUITE: import_exports
+TEST CASE:  completeness: every JSON leaf path of every fixture conversation is stored verbatim (independent recount)
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_import_exports.cpp:765: MESSAGE: completeness: 1604/1604 conversation JSON leaves preserved verbatim
+
+===============================================================================
+[doctest] test cases:   18 |   18 passed | 0 failed | 642 skipped
+[doctest] assertions: 2202 | 2202 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_source_materialization" classname="unit.test_import_source_materialization" time="0.207248" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 592 | 592 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_stream" classname="unit.test_import_stream" time="31.3087" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 13 | 13 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_kb_pack" classname="unit.test_kb_pack" time="7.58991" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  14 |  14 passed | 0 failed | 646 skipped
+[doctest] assertions: 184 | 184 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge" classname="unit.test_knowledge" time="6.26849" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 642 skipped
+[doctest] assertions: 150 | 150 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidate_graph" classname="unit.test_knowledge_candidate_graph" time="0.233848" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped
+[doctest] assertions: 114 | 114 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidates" classname="unit.test_knowledge_candidates" time="0.0238027" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 14 | 14 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_flow" classname="unit.test_knowledge_flow" time="1.52247" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic" classname="unit.test_knowledge_semantic" time="3.67252" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped
+[doctest] assertions: 125 | 125 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic_graph" classname="unit.test_knowledge_semantic_graph" time="3.41013" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 649 skipped
+[doctest] assertions: 100 | 100 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_store" classname="unit.test_knowledge_store" time="0.185741" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped
+[doctest] assertions: 124 | 124 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_materialize" classname="unit.test_materialize" time="1.16999" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_media" classname="unit.test_media" time="0.0112772" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 13 | 13 passed | 0 failed | 647 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_memory" classname="unit.test_memory" time="0.0161502" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  9 |  9 passed | 0 failed | 651 skipped
+[doctest] assertions: 40 | 40 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_model" classname="unit.test_model" time="0.0202951" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped
+[doctest] assertions: 137 | 137 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_net_sse" classname="unit.test_net_sse" time="0.00777533" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 650 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_pack_model" classname="unit.test_pack_model" time="1.12245" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped
+[doctest] assertions: 900 | 900 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_provenance" classname="unit.test_provenance" time="0.0647943" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 657 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_providers" classname="unit.test_providers" time="0.0131131" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 13 | 13 passed | 0 failed | 647 skipped
+[doctest] assertions: 61 | 61 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_regex" classname="unit.test_regex" time="0.0110425" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 645 skipped
+[doctest] assertions: 89 | 89 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_relations" classname="unit.test_relations" time="0.0151654" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 39 | 39 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve" classname="unit.test_resolve" time="0.284886" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped
+[doctest] assertions: 71 | 71 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_attribution" classname="unit.test_resolve_attribution" time="4.50066" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_resolve_attribution.cpp:327:
+TEST SUITE: resolve_attribution
+TEST CASE:  synthetic_dev: attribution of units that never name their project, before vs after
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_resolve_attribution.cpp:413: MESSAGE: noise conversations attributed to a project: 1/20
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_resolve_attribution.cpp:417: MESSAGE: method tfidf, stats {"method":"tfidf","units":68,"unattributed":56,"attributed":35,"ambiguous":2,"passes":17,"foundations":0,"inferred_aliases":0,"resubjected":91,"members":{"notatnik":["gdzie to trzymac@1","un_d92a70c431c9bf2b","notatki@2","un_f9cf3aaf24f1bdc9"],"Stroz":["un_4e5a46a0e672b6d3","watcher + restart dziala@4","ile razy w tym tygodniu recznie zabijalam zawieszony proces@1","podsumowania po restarcie@5","un_7b368a1dfb7f5866","buduje stroza@2","un_e9efb004cac9f0e7","powiadom...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_lineage" classname="unit.test_resolve_lineage" time="2.78485" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_resolve_lineage.cpp:42:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.8.3 forked from 0.7.9 (46d0ba7)
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_resolve_lineage.cpp:49: MESSAGE: 0.8.3 base 46d0ba7 confidence 1 votes {"revision":"46d0ba7474a2ea3edae8f402ce57f51934b94d73","label":"0.7.9","date":"2026-02-11T20:11:51Z","files":34,"weight":13860.98,"similarity":0.8825} / {"revision":"1e3fa2b6ed746a2252cd83182c47b5d7ae257505","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":31,"weight":13625.175,"similarity":0.8712}
+
+===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_resolve_lineage.cpp:66:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.9.0 forked from 0.7.10 (1e3fa2b), before the abspath fix
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_runtime" classname="unit.test_runtime" time="0.0418677" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 50 | 50 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_selector" classname="unit.test_selector" time="0.00882027" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 22 | 22 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_llm" classname="unit.test_semantic_llm" time="0.0640947" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 11 | 11 passed | 0 failed | 649 skipped
+[doctest] assertions: 91 | 91 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_worker" classname="unit.test_semantic_worker" time="0.252569" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  9 |  9 passed | 0 failed | 651 skipped
+[doctest] assertions: 34 | 34 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_tasks" classname="unit.test_tasks" time="0.0934945" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 56 | 56 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_util" classname="unit.test_util" time="0.0593005" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 650 skipped
+[doctest] assertions: 94 | 94 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="compat.test_abi_compat" classname="compat.test_abi_compat" time="0.367101" status="run">
+		<properties/>
+		<system-out>test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.268s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_active_task_compiler_compat" classname="compat.test_active_task_compiler_compat" time="0.854988" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.688s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_candidate_graph_native" classname="compat.test_candidate_graph_native" time="0.946758" status="run">
+		<properties/>
+		<system-out>.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.846s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_active_task_http" classname="compat.test_chat_active_task_http" time="3.02828" status="run">
+		<properties/>
+		<system-out>test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not) ... 01:34:01 [INFO ] loom.config: config.json not found - using defaults
+01:34:01 [INFO ] loom.config: secrets.json not found - using defaults
+01:34:01 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+01:34:01 [INFO ] loom.db: Database opened: /tmp/loom-w1-http-cmbe_8mw/chatadhd.db
+01:34:01 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+01:34:01 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-w1-http-cmbe_8mw)
+W1 transport receipt: 3 local provider calls, 0 remote calls; invalid binding adds 0 messages.
+01:34:01 [INFO ] loom.db: Database closed
+01:34:01 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding (__main__.ActiveTaskRevisionHttpTest.test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding) ... W1 retained synthetic HTTP ...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_compat" classname="compat.test_chat_compat" time="4.01125" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+..
+----------------------------------------------------------------------
+Ran 2 tests in 1.0...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_config_compat" classname="compat.test_config_compat" time="0.158283" status="run">
+		<properties/>
+		<system-out>test_corrupt_config_falls_back_to_defaults_like_python (__main__.ConfigCompatTest.test_corrupt_config_falls_back_to_defaults_like_python) ... ok
+test_data_dir_resolution_matches_python (__main__.ConfigCompatTest.test_data_dir_resolution_matches_python) ... ok
+test_loom_written_config_is_read_by_python_without_upgrade (__main__.ConfigCompatTest.test_loom_written_config_is_read_by_python_without_upgrade) ... ok
+test_python_written_config_is_read_by_loom (__main__.ConfigCompatTest.test_python_written_config_is_read_by_loom) ... ok
+test_user_model_preservation_is_identical (__main__.ConfigCompatTest.test_user_model_preservation_is_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.080s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_crypto_compat" classname="compat.test_crypto_compat" time="11.5198" status="run">
+		<properties/>
+		<system-out>test_cpp_encrypts_python_decrypts (__main__.CryptoCompatTest.test_cpp_encrypts_python_decrypts) ... ok
+test_encrypted_blob_wire_format_is_byte_identical (__main__.CryptoCompatTest.test_encrypted_blob_wire_format_is_byte_identical)
+Loom's EncryptedBlob.to_dict() must use the same keys/order/defaults ... ok
+test_known_answer_vector (__main__.CryptoCompatTest.test_known_answer_vector) ... ok
+test_python_encrypts_cpp_decrypts (__main__.CryptoCompatTest.test_python_encrypts_cpp_decrypts) ... ok
+test_tampered_ciphertext_fails_on_both_sides (__main__.CryptoCompatTest.test_tampered_ciphertext_fails_on_both_sides) ... ok
+test_wrong_password_fails_on_both_sides (__main__.CryptoCompatTest.test_wrong_password_fails_on_both_sides) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 8.758s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_db_compat" classname="compat.test_db_compat" time="1.08397" status="run">
+		<properties/>
+		<system-out>test_a_python_created_db_is_read_identically_by_loom (__main__.DbCompatTest.test_a_python_created_db_is_read_identically_by_loom) ... /workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["update...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_github_sync_defaults" classname="compat.test_github_sync_defaults" time="0.168177" status="run">
+		<properties/>
+		<system-out>..
+----------------------------------------------------------------------
+Ran 2 tests in 0.006s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_graph_compat" classname="compat.test_graph_compat" time="2.77885" status="run">
+		<properties/>
+		<system-out>test_empty_and_short_messages_produce_no_graph_writes (__main__.GraphCompat.test_empty_and_short_messages_produce_no_graph_writes) ... /workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updat...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_graph_packet_store" classname="compat.test_graph_packet_store" time="0.823355" status="run">
+		<properties/>
+		<system-out>test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity (__main__.GraphPacketStoreTests.test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity) ... 01:34:23 [INFO ] loom.config: config.json not found - using defaults
+01:34:23 [INFO ] loom.config: secrets.json not found - using defaults
+01:34:23 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+01:34:23 [INFO ] loom.db: Database opened: /tmp/loom_compat_yi92_nqx/graph-store/chatadhd.db
+01:34:23 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+01:34:23 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_yi92_nqx/graph-store)
+01:34:23 [INFO ] loom.db: Database closed
+01:34:23 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_cas_mismatch_rolls_back_new_packet_and_receipt (__main__.GraphPacketStoreTests.test_cas_mismatch_rolls_back_new_packet_and_receipt) ... 01:34:23 [INFO ] loom.config: config.json not found - using defaults
+01:34:23 [INFO ] loom.config: secrets.json not found - using defaults
+01:34:23 [INFO ] loom.d...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_import_compat" classname="compat.test_import_compat" time="0.764537" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+................./workspace/scratch/f98faad71b9c/chatadhd/engine/db.py:360: DeprecationWarni...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_memory_compat" classname="compat.test_memory_compat" time="2.73808" status="run">
+		<properties/>
+		<system-out>test_cpp_builds_python_reads (__main__.MemoryCompat.test_cpp_builds_python_reads) ... ok
+test_get_active_context_identical_with_deep_nesting (__main__.MemoryCompat.test_get_active_context_identical_with_deep_nesting) ... ok
+test_python_builds_cpp_reads (__main__.MemoryCompat.test_python_builds_cpp_reads) ... /workspace/scratch/f98faad71b9c/chatadhd/engine/memory_engine.py:38: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.created = datetime.utcnow().isoformat() + "Z"
+ok
+test_recursive_delete_orphaning_matches (__main__.MemoryCompat.test_recursive_delete_orphaning_matches) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.493s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_selector_compat" classname="compat.test_selector_compat" time="0.140446" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.049s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_compat" classname="compat.test_semantic_compat" time="5.13445" status="run">
+		<properties/>
+		<system-out>...../workspace/scratch/f98faad71b9c/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+.
+----------------------------------------------------------------------
+Ran 6 tests in 2.575s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_recovery" classname="compat.test_semantic_recovery" time="2.90549" status="run">
+		<properties/>
+		<system-out>test_config_identity_returning_to_old_value_still_rejects_old_completion (__main__.SemanticRecoveryTest.test_config_identity_returning_to_old_value_still_rejects_old_completion) ... /workspace/scratch/f98faad71b9c/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+ok
+test_each_relevant_change_recovers_without_automatic_replay (__main__.SemanticRecoveryTest.test_each_relevant_change_recovers_without_automatic_replay) ... ok
+test_manual_reset_invalidates_old_request (__main__.SemanticRecoveryTest.test_manual_reset_invalidates_old_request) ... ok
+test_old_failure_cannot_affect_changed_settings_without_enabled_poll (__main__.SemanticRecoveryTest.test_old_failure_cannot_affect_changed_settings_without_enabled_poll) ... ok
+test_old_success_cannot_clear_new_generation_failures (__main_...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_util_compat" classname="compat.test_util_compat" time="2.84098" status="run">
+		<properties/>
+		<system-out>test_embedded_contract_data_matches_python_sources (__main__.UtilCompatTest.test_embedded_contract_data_matches_python_sources) ... ok
+test_float_repr (__main__.UtilCompatTest.test_float_repr) ... ok
+test_generated_ids_have_python_shape (__main__.UtilCompatTest.test_generated_ids_have_python_shape) ... ok
+test_json_dumps_is_byte_identical (__main__.UtilCompatTest.test_json_dumps_is_byte_identical) ... ok
+test_timestamps_match_utcnow_isoformat (__main__.UtilCompatTest.test_timestamps_match_utcnow_isoformat) ... /workspace/scratch/f98faad71b9c/chatadhd/loom/tests/compat/test_util_compat.py:94: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.assertLess(abs((datetime.datetime.utcnow() - now).total_seconds()), 60)
+ok
+test_utf8_semantics_match_python_str (__main__.UtilCompatTest.test_utf8_semantics_match_python_str) ... ok
+
+--------------------------------...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="research.structure" classname="research.structure" time="30.2932" status="run">
+		<properties/>
+		<system-out>...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................{"attempts": 1, "stopped_reason": "fixture-stop"}
+..............................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="research.independent_protocol" classname="research.independent_protocol" time="0.275806" status="run">
+		<properties/>
+		<system-out>..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.080s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.graph_native_protocol" classname="research.graph_native_protocol" time="0.491818" status="run">
+		<properties/>
+		<system-out>............
+----------------------------------------------------------------------
+Ran 12 tests in 0.394s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.candidate_graph_protocol" classname="research.candidate_graph_protocol" time="0.54618" status="run">
+		<properties/>
+		<system-out>...............
+----------------------------------------------------------------------
+Ran 15 tests in 0.457s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.contracts" classname="research.contracts" time="28.129" status="run">
+		<properties/>
+		<system-out>.................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 209 tests in 27.886s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.seeding" classname="research.seeding" time="6.19795" status="run">
+		<properties/>
+		<system-out>....................................
+----------------------------------------------------------------------
+Ran 36 tests in 4.382s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="server.smoke" classname="server.smoke" time="2.00988" status="run">
+		<properties/>
+		<system-out>OK: loom-server knowledge/catalog/context checks passed
+OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed
+OK: all loom-server smoke checks passed
+OK: loom-server auth checks passed
+</system-out>
+	</testcase>
+	<testcase name="server.chat_active_task" classname="server.chat_active_task" time="1.24141" status="run">
+		<properties/>
+		<system-out>test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... W1 server transport: 1 scenario, 5 local provider calls, 0 remote; stale versions emit SSE error without start/persistence/transport; full server restart verified.
+Synthetic server fixture retained at /tmp/loom-w1-server-2dknyitb
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.129s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="cli.smoke" classname="cli.smoke" time="2.26851" status="run">
+		<properties/>
+		<system-out>cli smoke: ok
+</system-out>
+	</testcase>
+	<testcase name="eval.harness" classname="eval.harness" time="0.826311" status="run">
+		<properties/>
+		<system-out>.............cut 2026-03-06: unavailable -&gt; /tmp/tmpragl54i9/nested/result.json
+no verifiable snapshot on HEAD's mainline exists on or before 2026-03-06 (UTC)
+......
+----------------------------------------------------------------------
+Ran 19 tests in 0.668s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>

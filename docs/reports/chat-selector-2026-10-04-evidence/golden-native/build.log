@@ -1,0 +1,10 @@
+[0/2] Re-checking globbed directories...
+[1/10] Building CXX object CMakeFiles/loom_core.dir/src/context/method_registry.cpp.o
+[2/10] Linking CXX static library libloom_core.a
+[3/10] Linking CXX shared library libloom.so.0.1.0
+[4/10] Creating library symlink libloom.so.0 libloom.so
+[5/10] Linking CXX executable loom_tests
+[6/10] Linking CXX executable loom_compat_tool
+[7/10] Linking CXX executable loom_candidate_graph_native_tool
+[8/10] Linking CXX executable cli/loom
+[9/10] Linking CXX executable server/loom-server

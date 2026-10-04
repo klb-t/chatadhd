@@ -1,0 +1,19 @@
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 120 skipped
+[doctest] assertions: 97 | 97 passed | 0 failed |
+[doctest] Status: SUCCESS!
+01:44:52 [INFO ] loom.config: config.json not found - using defaults
+01:44:52 [INFO ] loom.config: secrets.json not found - using defaults
+01:44:52 [INFO ] loom.db: Schema upgraded: v0 -> v4
+01:44:52 [INFO ] loom.db: Database opened: /tmp/loom_36d8f917e14d/chatadhd.db
+01:44:52 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+01:44:52 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_36d8f917e14d)
+01:45:08 [INFO ] loom.db: Database closed
+01:45:08 [INFO ] loom.runtime: Loom runtime shut down
+01:45:08 [INFO ] loom.config: config.json not found - using defaults
+01:45:08 [INFO ] loom.config: secrets.json not found - using defaults
+01:45:08 [INFO ] loom.db: Database opened: /tmp/loom_36d8f917e14d/chatadhd.db
+01:45:08 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+01:45:08 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_36d8f917e14d)
+01:45:10 [INFO ] loom.db: Database closed
+01:45:10 [INFO ] loom.runtime: Loom runtime shut down
