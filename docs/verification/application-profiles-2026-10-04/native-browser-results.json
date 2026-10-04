@@ -1,0 +1,862 @@
+{
+  "groups": [
+    "profile changes preserve explicit model and native context selection",
+    "two simultaneous application views keep independent profile/model/context settings",
+    "profile Send reaches native completion and both views show the same saved conversation",
+    "profile edit and restore use native message versions and refresh both views",
+    "arbitrary versioned profile imports as data with right sidebar and explicit shortcut",
+    "a declared required capability without a real adapter cannot activate",
+    "declarative new conversation → knowledge → return reaches actual native/UI operations",
+    "two exact profile revisions and workflow state reload without provider/config mutation",
+    "completion for conversation A cannot replace selected conversation B",
+    "delayed old Stop failure cannot clear or report an error on a new Send",
+    "truncated transport EOF clears pending content and exposes failure",
+    "optional missing or absent Send stays disabled and preserves the draft"
+  ],
+  "counts": {
+    "passed_groups": 12,
+    "local_provider_calls": 6,
+    "remote_calls": 0
+  },
+  "synthetic_fixture": "synthetic_dev/chatgpt_export.zip",
+  "provider": "local fake only",
+  "browser_chat_requests": [
+    {
+      "message": "PROFILE_SHARED_ORIGINAL_4517",
+      "conv_id": "c_50f7ee7ac829",
+      "model": "mock/view-one",
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "knowledge_context": {
+        "text": "SYNTHETIC_PROFILE_CONTEXT",
+        "targets": [
+          "e_575a1716bd88d8b9"
+        ],
+        "budget_tokens": 1337,
+        "run": "kr_fe6da2dd927281a9",
+        "relation_hops": 2,
+        "detail_resolution": "full"
+      }
+    },
+    {
+      "message": "PROFILE_CUSTOM_SHORTCUT_7198",
+      "conv_id": "c_50f7ee7ac829",
+      "model": "mock/view-one",
+      "include_memory": false,
+      "include_graph_memory": false,
+      "include_history": false,
+      "knowledge_context": {
+        "text": "SYNTHETIC_PROFILE_CONTEXT",
+        "targets": [
+          "e_575a1716bd88d8b9"
+        ],
+        "budget_tokens": 1337,
+        "run": "kr_fe6da2dd927281a9",
+        "relation_hops": 2,
+        "detail_resolution": "full"
+      }
+    },
+    {
+      "message": "PROFILE_INDEPENDENT_VIEW_6413",
+      "conv_id": "c_50f7ee7ac829",
+      "model": "mock/view-two"
+    },
+    {
+      "message": "PROFILE_DELAYED_A_1873",
+      "conv_id": "c_5854f9055162"
+    },
+    {
+      "message": "PROFILE_STOP_2391",
+      "conv_id": "c_4e0828a51a43"
+    },
+    {
+      "message": "PROFILE_NEW_AFTER_STOP_8723",
+      "conv_id": "c_4e0828a51a43"
+    },
+    {
+      "message": "PROFILE_TRUNCATED_EOF_4819",
+      "conv_id": "c_4e0828a51a43"
+    }
+  ],
+  "captured_provider_requests": [
+    {
+      "model": "mock/view-one",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **Storyboard mentioned_in un_c15910292b0349f6 — \"storyboard\"**  <!-- why: one hop from 'Storyboard' via 'mentioned_in' -->\n"
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_SHARED_ORIGINAL_4517"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/view-one",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "system",
+          "content": "## This goal\n- **Storyboard mentioned_in un_c15910292b0349f6 — \"storyboard\"**  <!-- why: one hop from 'Storyboard' via 'mentioned_in' -->\n"
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_CUSTOM_SHORTCUT_7198"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/view-two",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_SHARED_ORIGINAL_4517"
+        },
+        {
+          "role": "assistant",
+          "content": "Local profile reply 1: native streaming completed."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_CUSTOM_SHORTCUT_7198"
+        },
+        {
+          "role": "assistant",
+          "content": "Local profile reply 2: native streaming completed."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_INDEPENDENT_VIEW_6413"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_DELAYED_A_1873"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_STOP_2391"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    },
+    {
+      "model": "mock/default",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant with access to the user's hierarchical memory."
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_STOP_2391"
+        },
+        {
+          "role": "user",
+          "content": "PROFILE_NEW_AFTER_STOP_8723"
+        }
+      ],
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "stream": true,
+      "include_reasoning": true
+    }
+  ],
+  "native_mutations": [
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_SHARED_ORIGINAL_4517",
+        "conv_id": "c_50f7ee7ac829",
+        "model": "mock/view-one",
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "knowledge_context": {
+          "text": "SYNTHETIC_PROFILE_CONTEXT",
+          "targets": [
+            "e_575a1716bd88d8b9"
+          ],
+          "budget_tokens": 1337,
+          "run": "kr_fe6da2dd927281a9",
+          "relation_hops": 2,
+          "detail_resolution": "full"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/messages/m_db880cd2e033/edit",
+      "body": {
+        "text": "PROFILE_SHARED_EDITED_8321"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/messages/m_db880cd2e033/restore",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_CUSTOM_SHORTCUT_7198",
+        "conv_id": "c_50f7ee7ac829",
+        "model": "mock/view-one",
+        "include_memory": false,
+        "include_graph_memory": false,
+        "include_history": false,
+        "knowledge_context": {
+          "text": "SYNTHETIC_PROFILE_CONTEXT",
+          "targets": [
+            "e_575a1716bd88d8b9"
+          ],
+          "budget_tokens": 1337,
+          "run": "kr_fe6da2dd927281a9",
+          "relation_hops": 2,
+          "detail_resolution": "full"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_INDEPENDENT_VIEW_6413",
+        "conv_id": "c_50f7ee7ac829",
+        "model": "mock/view-two"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/conversations",
+      "body": {
+        "title": "Profile conversation"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "entities"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "claims"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "principles"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "operators"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "instances"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "products"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "entities"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "claims"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "principles"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "operators"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "instances"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "products"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "entities"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "claims"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "principles"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "operators"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "instances"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/query",
+      "body": {
+        "run": "kr_fe6da2dd927281a9",
+        "limit": 1000,
+        "what": "products"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_DELAYED_A_1873",
+        "conv_id": "c_5854f9055162"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_STOP_2391",
+        "conv_id": "c_4e0828a51a43"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat/cancel",
+      "body": {
+        "request_id": "req_2515408819421_4"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_NEW_AFTER_STOP_8723",
+        "conv_id": "c_4e0828a51a43"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "body": {
+        "message": "PROFILE_TRUNCATED_EOF_4819",
+        "conv_id": "c_4e0828a51a43"
+      }
+    }
+  ],
+  "saved_views": {
+    "schema": "loom.application.views/1",
+    "views": [
+      {
+        "id": "primary",
+        "profile": "[\"synthetic-arbitrary-app-3.7\",1]"
+      },
+      {
+        "id": "33ecbd89-c4b5-4c20-a007-46197720e464",
+        "profile": "[\"gemini-inspired\",1]"
+      }
+    ],
+    "custom_profiles": [
+      {
+        "schema": "loom.application_profile/1",
+        "id": "synthetic-arbitrary-app-3.7",
+        "profile_revision": 1,
+        "label": "Synthetic arbitrary app 3.7",
+        "target": {
+          "application_id": "synthetic-any-application",
+          "version": "ui-release-3.7",
+          "platform": "web"
+        },
+        "evidence": {
+          "status": "partial",
+          "sources": [],
+          "gaps": [
+            "Synthetic editable profile; no external application fidelity claim."
+          ]
+        },
+        "presentation": {
+          "renderer": "chat",
+          "tokens": {
+            "background": "#0f0f14",
+            "surface": "#24242e",
+            "text": "#f2f2f2",
+            "muted": "#8c8c99",
+            "accent": "#4d8cf2",
+            "border": "#33333e"
+          },
+          "sidebar": {
+            "side": "right",
+            "width": 240
+          },
+          "content_width": 610,
+          "message_style": "bubble"
+        },
+        "composer": {
+          "submit": "mod-enter",
+          "placeholder": "Custom application composer"
+        },
+        "actions": [
+          {
+            "id": "create",
+            "label": "New conversation",
+            "operation": "chat.create",
+            "capability": "chat.create",
+            "required": true
+          },
+          {
+            "id": "select",
+            "label": "Return to conversation",
+            "operation": "chat.select",
+            "capability": "chat.select",
+            "required": true
+          },
+          {
+            "id": "send",
+            "label": "Send",
+            "operation": "chat.send",
+            "capability": "chat.send",
+            "required": true
+          },
+          {
+            "id": "cancel",
+            "label": "Stop",
+            "operation": "chat.cancel",
+            "capability": "chat.cancel",
+            "required": true
+          },
+          {
+            "id": "edit",
+            "label": "Edit message",
+            "operation": "message.edit",
+            "capability": "message.edit",
+            "required": true
+          },
+          {
+            "id": "restore",
+            "label": "Restore version",
+            "operation": "message.restore",
+            "capability": "message.restore",
+            "required": true
+          },
+          {
+            "id": "exclude",
+            "label": "Exclude message",
+            "operation": "message.exclude",
+            "capability": "message.exclude",
+            "required": true
+          },
+          {
+            "id": "knowledge",
+            "label": "Inspect knowledge",
+            "operation": "knowledge.open",
+            "capability": "knowledge.open",
+            "required": false
+          },
+          {
+            "id": "memory",
+            "label": "Memory",
+            "operation": "memory.open",
+            "capability": "memory.open",
+            "required": false
+          },
+          {
+            "id": "import",
+            "label": "Import",
+            "operation": "import.open",
+            "capability": "import.open",
+            "required": false
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "operation": "settings.open",
+            "capability": "settings.open",
+            "required": false
+          }
+        ],
+        "workflows": [
+          {
+            "id": "conversation-review",
+            "initial": "ready",
+            "states": [
+              "ready",
+              "chat",
+              "review"
+            ],
+            "transitions": [
+              {
+                "from": "ready",
+                "event": "create",
+                "action": "create",
+                "to": "chat"
+              },
+              {
+                "from": "chat",
+                "event": "inspect",
+                "action": "knowledge",
+                "to": "review"
+              },
+              {
+                "from": "review",
+                "event": "return",
+                "action": "select",
+                "to": "chat"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "schema": "loom.application_profile/1",
+        "id": "synthetic-unsupported-required",
+        "profile_revision": 1,
+        "label": "Unsupported required workflow",
+        "target": {
+          "application_id": "synthetic-any-application",
+          "version": "ui-release-3.7",
+          "platform": "web"
+        },
+        "evidence": {
+          "status": "partial",
+          "sources": [],
+          "gaps": [
+            "Synthetic editable profile; no external application fidelity claim."
+          ]
+        },
+        "presentation": {
+          "renderer": "chat",
+          "tokens": {
+            "background": "#0f0f14",
+            "surface": "#24242e",
+            "text": "#f2f2f2",
+            "muted": "#8c8c99",
+            "accent": "#4d8cf2",
+            "border": "#33333e"
+          },
+          "sidebar": {
+            "side": "right",
+            "width": 240
+          },
+          "content_width": 610,
+          "message_style": "bubble"
+        },
+        "composer": {
+          "submit": "mod-enter",
+          "placeholder": "Custom application composer"
+        },
+        "actions": [
+          {
+            "id": "create",
+            "label": "New conversation",
+            "operation": "chat.create",
+            "capability": "chat.create",
+            "required": true
+          },
+          {
+            "id": "select",
+            "label": "Return to conversation",
+            "operation": "chat.select",
+            "capability": "chat.select",
+            "required": true
+          },
+          {
+            "id": "send",
+            "label": "Send",
+            "operation": "chat.send",
+            "capability": "vendor-unimplemented-send",
+            "required": true
+          },
+          {
+            "id": "cancel",
+            "label": "Stop",
+            "operation": "chat.cancel",
+            "capability": "chat.cancel",
+            "required": true
+          },
+          {
+            "id": "edit",
+            "label": "Edit message",
+            "operation": "message.edit",
+            "capability": "message.edit",
+            "required": true
+          },
+          {
+            "id": "restore",
+            "label": "Restore version",
+            "operation": "message.restore",
+            "capability": "message.restore",
+            "required": true
+          },
+          {
+            "id": "exclude",
+            "label": "Exclude message",
+            "operation": "message.exclude",
+            "capability": "message.exclude",
+            "required": true
+          },
+          {
+            "id": "knowledge",
+            "label": "Inspect knowledge",
+            "operation": "knowledge.open",
+            "capability": "knowledge.open",
+            "required": false
+          },
+          {
+            "id": "memory",
+            "label": "Memory",
+            "operation": "memory.open",
+            "capability": "memory.open",
+            "required": false
+          },
+          {
+            "id": "import",
+            "label": "Import",
+            "operation": "import.open",
+            "capability": "import.open",
+            "required": false
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "operation": "settings.open",
+            "capability": "settings.open",
+            "required": false
+          }
+        ],
+        "workflows": [
+          {
+            "id": "conversation-review",
+            "initial": "ready",
+            "states": [
+              "ready",
+              "chat",
+              "review"
+            ],
+            "transitions": [
+              {
+                "from": "ready",
+                "event": "create",
+                "action": "create",
+                "to": "chat"
+              },
+              {
+                "from": "chat",
+                "event": "inspect",
+                "action": "knowledge",
+                "to": "review"
+              },
+              {
+                "from": "review",
+                "event": "return",
+                "action": "select",
+                "to": "chat"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "saved_workflow": {
+    "schema": "loom.application_profile_session/1",
+    "profile": {
+      "id": "synthetic-arbitrary-app-3.7",
+      "profile_revision": 1,
+      "target": {
+        "application_id": "synthetic-any-application",
+        "version": "ui-release-3.7",
+        "platform": "web"
+      },
+      "definition": "{\"actions\":[{\"capability\":\"chat.create\",\"id\":\"create\",\"label\":\"New conversation\",\"operation\":\"chat.create\",\"required\":true},{\"capability\":\"chat.select\",\"id\":\"select\",\"label\":\"Return to conversation\",\"operation\":\"chat.select\",\"required\":true},{\"capability\":\"chat.send\",\"id\":\"send\",\"label\":\"Send\",\"operation\":\"chat.send\",\"required\":true},{\"capability\":\"chat.cancel\",\"id\":\"cancel\",\"label\":\"Stop\",\"operation\":\"chat.cancel\",\"required\":true},{\"capability\":\"message.edit\",\"id\":\"edit\",\"label\":\"Edit message\",\"operation\":\"message.edit\",\"required\":true},{\"capability\":\"message.restore\",\"id\":\"restore\",\"label\":\"Restore version\",\"operation\":\"message.restore\",\"required\":true},{\"capability\":\"message.exclude\",\"id\":\"exclude\",\"label\":\"Exclude message\",\"operation\":\"message.exclude\",\"required\":true},{\"capability\":\"knowledge.open\",\"id\":\"knowledge\",\"label\":\"Inspect knowledge\",\"operation\":\"knowledge.open\",\"required\":false},{\"capability\":\"memory.open\",\"id\":\"memory\",\"label\":\"Memory\",\"operation\":\"memory.open\",\"required\":false},{\"capability\":\"import.open\",\"id\":\"import\",\"label\":\"Import\",\"operation\":\"import.open\",\"required\":false},{\"capability\":\"settings.open\",\"id\":\"settings\",\"label\":\"Settings\",\"operation\":\"settings.open\",\"required\":false}],\"composer\":{\"placeholder\":\"Custom application composer\",\"submit\":\"mod-enter\"},\"evidence\":{\"gaps\":[\"Synthetic editable profile; no external application fidelity claim.\"],\"sources\":[],\"status\":\"partial\"},\"id\":\"synthetic-arbitrary-app-3.7\",\"label\":\"Synthetic arbitrary app 3.7\",\"presentation\":{\"content_width\":610,\"message_style\":\"bubble\",\"renderer\":\"chat\",\"sidebar\":{\"side\":\"right\",\"width\":240},\"tokens\":{\"accent\":\"#4d8cf2\",\"background\":\"#0f0f14\",\"border\":\"#33333e\",\"muted\":\"#8c8c99\",\"surface\":\"#24242e\",\"text\":\"#f2f2f2\"}},\"profile_revision\":1,\"schema\":\"loom.application_profile/1\",\"target\":{\"application_id\":\"synthetic-any-application\",\"platform\":\"web\",\"version\":\"ui-release-3.7\"},\"workflows\":[{\"id\":\"conversation-review\",\"initial\":\"ready\",\"states\":[\"ready\",\"chat\",\"review\"],\"transitions\":[{\"action\":\"create\",\"event\":\"create\",\"from\":\"ready\",\"to\":\"chat\"},{\"action\":\"knowledge\",\"event\":\"inspect\",\"from\":\"chat\",\"to\":\"review\"},{\"action\":\"select\",\"event\":\"return\",\"from\":\"review\",\"to\":\"chat\"}]}]}"
+    },
+    "workflows": {
+      "conversation-review": "chat"
+    },
+    "sequence": 3,
+    "history": [
+      {
+        "sequence": 1,
+        "action": "create",
+        "operation": "chat.create",
+        "workflow": {
+          "id": "conversation-review",
+          "event": "create",
+          "from": "ready",
+          "to": "chat"
+        }
+      },
+      {
+        "sequence": 2,
+        "action": "knowledge",
+        "operation": "knowledge.open",
+        "workflow": {
+          "id": "conversation-review",
+          "event": "inspect",
+          "from": "chat",
+          "to": "review"
+        }
+      },
+      {
+        "sequence": 3,
+        "action": "select",
+        "operation": "chat.select",
+        "workflow": {
+          "id": "conversation-review",
+          "event": "return",
+          "from": "review",
+          "to": "chat"
+        }
+      }
+    ]
+  },
+  "config_unchanged": true,
+  "page_errors": [],
+  "external_requests": []
+}

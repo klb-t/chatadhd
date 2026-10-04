@@ -6,6 +6,7 @@ import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequ
 import "./chat-context.css";
 import ContextPlanEditor from "./ContextPlanEditor";
 import { buildRetrievalPlan, newPlan } from "../context/retrieval-plan";
+import { shouldSubmit, type ApplicationProfile } from "../profiles/runtime";
 
 marked.setOptions({ breaks: true });
 
@@ -39,12 +40,18 @@ function renderMarkdown(text: string): { __html: string } {
 interface Props {
   convId: string | null;
   onConversationCreated: (id: string) => void;
+  profile?: ApplicationProfile;
+  runProfileOperation?: (operation: string, payload?: unknown) => Promise<unknown>;
+  availableOperations?: string[];
+  refreshKey?: number;
+  onMessagesChanged?: () => void;
 }
 
 interface StreamState {
   reasoning: string;
   text: string;
   requestId: string | null;
+  convId: string | null;
 }
 
 function recordedContext(value: unknown): ChatContextTrace | null {
@@ -64,12 +71,12 @@ function ContextTrace({ trace }: { trace: ChatContextTrace }) {
   );
 }
 
-export default function ChatView({ convId, onConversationCreated }: Props) {
+export default function ChatView({ convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [model, setModel] = useState<string>("");
-  const [pendingUserText, setPendingUserText] = useState<string | null>(null);
+  const [pendingUserText, setPendingUserText] = useState<{ text: string; convId: string | null } | null>(null);
   const [stream, setStream] = useState<StreamState | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
@@ -95,6 +102,23 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
   const unsubRef = useRef<(() => void) | null>(null);
   const currentUserIdRef = useRef<string | null>(null);
   const currentConvIdRef = useRef<string | null>(null);
+  const selectedConvRef = useRef(convId);
+  selectedConvRef.current = convId;
+  const mountedRef = useRef(true);
+  const sendEpochRef = useRef(0);
+  const fetchEpochRef = useRef(0);
+  const available = useMemo(() => availableOperations ? new Set(availableOperations) : null, [availableOperations]);
+  const supports = useCallback((operation: string) => !available || available.has(operation), [available]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      sendEpochRef.current++;
+      fetchEpochRef.current++;
+      unsubRef.current?.();
+    };
+  }, []);
 
   useEffect(() => {
     api
@@ -104,28 +128,38 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
   }, []);
 
   const refreshMessages = useCallback(async (id: string) => {
+    if (!mountedRef.current || selectedConvRef.current !== id) return;
+    const epoch = ++fetchEpochRef.current;
     try {
       const list = await api.getMessages(id, false);
-      setMessages(list);
+      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) setMessages(list);
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
     }
   }, []);
 
   useEffect(() => {
+    setMessages([]);
+    setEditingId(null);
+    setVersionsById({});
+    setError(null);
+    fetchEpochRef.current++;
+  }, [convId]);
+
+  useEffect(() => {
     if (convId) refreshMessages(convId);
     else setMessages([]);
-  }, [convId, refreshMessages]);
+  }, [convId, refreshMessages, refreshKey]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, stream, pendingUserText]);
 
-  useEffect(() => () => unsubRef.current?.(), []);
-
   const send = useCallback(() => {
     const text = input.trim();
-    if (!text || stream) return;
+    if (!text || stream || !supports("chat.send")) return;
     const budget = Number(contextBudget);
     if (useKnowledge && (!Number.isSafeInteger(budget) || budget < 1 || budget > 2147483647)) {
       setError("Knowledge token budget must be a positive whole number within the supported integer range.");
@@ -160,85 +194,133 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
         ...(plan && { plan }),
       } }),
     };
+    const epoch = ++sendEpochRef.current;
+    const isCurrent = () => mountedRef.current && epoch === sendEpochRef.current;
+    let terminal = false;
+    let requestConvId = convId;
+    const refreshShared = () => {
+      if (requestConvId) void refreshMessages(requestConvId);
+      onMessagesChanged?.();
+    };
+    const finishError = (message: string | null) => {
+      if (!isCurrent() || terminal) return;
+      terminal = true;
+      setStream(null);
+      setPendingUserText(null);
+      if (message && selectedConvRef.current === requestConvId) setError(message);
+      refreshShared();
+    };
     setInput("");
     currentUserIdRef.current = null;
     currentConvIdRef.current = convId;
-    setPendingUserText(text);
-    setStream({ reasoning: "", text: "", requestId: null });
+    setPendingUserText({ text, convId });
+    setStream({ reasoning: "", text: "", requestId: null, convId });
     setError(null);
 
-    const unsub = api.chat(
-      request,
-      {
+    const handlers = {
         onChunk: (chunk: ChatChunk) => {
+          if (!isCurrent() || terminal) return;
           if (chunk.type === "start") {
             currentUserIdRef.current = chunk.user_message_id;
             currentConvIdRef.current = chunk.conv_id;
-            setStream((s) => (s ? { ...s, requestId: chunk.request_id } : s));
-            if (!convId) onConversationCreated(chunk.conv_id);
+            requestConvId = chunk.conv_id;
+            setStream((s) => (s ? { ...s, requestId: chunk.request_id, convId: chunk.conv_id } : s));
+            setPendingUserText((s) => s ? { ...s, convId: chunk.conv_id } : s);
+            if (!convId && selectedConvRef.current === null) onConversationCreated(chunk.conv_id);
+            onMessagesChanged?.();
           } else if (chunk.type === "reasoning") {
             setStream((s) => (s ? { ...s, reasoning: s.reasoning + chunk.text } : s));
           } else if (chunk.type === "delta") {
             setStream((s) => (s ? { ...s, text: s.text + chunk.text } : s));
           } else if (chunk.type === "done") {
+            terminal = true;
             if (chunk.context_trace) setLastTrace({ convId: chunk.conv_id, userId: currentUserIdRef.current, trace: chunk.context_trace });
             setStream(null);
             setPendingUserText(null);
-            refreshMessages(chunk.conv_id);
+            requestConvId = chunk.conv_id;
+            refreshShared();
           } else if (chunk.type === "error") {
-            setStream(null);
-            setPendingUserText(null);
-            setError(chunk.message);
-            if (currentConvIdRef.current) refreshMessages(currentConvIdRef.current);
+            finishError(chunk.message);
           }
         },
-        onError: (msg) => {
-          setStream(null);
-          setPendingUserText(null);
-          setError(msg);
-          if (currentConvIdRef.current) refreshMessages(currentConvIdRef.current);
-        },
-      },
-    );
-    unsubRef.current = unsub;
+        onError: (msg: string) => finishError(msg),
+        onDone: () => finishError("Chat stream ended before a done result."),
+      };
+    if (runProfileOperation) {
+      void runProfileOperation("chat.send", { request, handlers,
+        onSubscription: (unsub: () => void) => { if (isCurrent()) unsubRef.current = unsub; else unsub(); },
+      }).catch((err: unknown) => {
+        finishError(err instanceof Error && err.name === "AbortError" ? null : err instanceof Error ? err.message : String(err));
+      });
+    } else {
+      try { unsubRef.current = api.chat(request, handlers); }
+      catch (err) { finishError(err instanceof Error ? err.message : String(err)); }
+    }
   }, [input, stream, convId, model, onConversationCreated, refreshMessages,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
-    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext]);
+    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports]);
 
   const cancelStreaming = useCallback(() => {
-    if (stream?.requestId) api.cancelChat(stream.requestId).catch(() => {});
-    unsubRef.current?.();
+    const epoch = ++sendEpochRef.current;
+    const requestId = stream?.requestId;
+    const cancelledConv = stream?.convId ?? currentConvIdRef.current;
+    const unsubscribe = unsubRef.current;
+    unsubRef.current = null;
+    // Abort locally before awaiting the cancellation endpoint. Old callbacks
+    // cannot clear a later Send while that endpoint is still completing.
+    unsubscribe?.();
+    const cancel = runProfileOperation && supports("chat.cancel")
+      ? runProfileOperation("chat.cancel", { requestId: requestId ?? undefined, unsubscribe })
+      : requestId ? api.cancelChat(requestId) : Promise.resolve();
+    void cancel.catch(err => {
+      if (mountedRef.current && sendEpochRef.current === epoch && selectedConvRef.current === cancelledConv) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
+    }).finally(() => {
+      if (!mountedRef.current) return;
+      if (cancelledConv) void refreshMessages(cancelledConv);
+      onMessagesChanged?.();
+    });
     setStream(null);
-  }, [stream]);
+    setPendingUserText(null);
+  }, [stream, runProfileOperation, supports, refreshMessages, onMessagesChanged]);
 
   const startEdit = useCallback((m: Message) => {
+    if (!supports("message.edit")) return;
     setEditingId(m.id);
     setEditText(m.text);
-  }, []);
+  }, [supports]);
 
   const saveEdit = useCallback(
     async (id: string) => {
+      if (!supports("message.edit")) return;
       try {
-        await api.editMessage(id, editText);
-        setEditingId(null);
+        if (runProfileOperation) await runProfileOperation("message.edit", { id, text: editText });
+        else await api.editMessage(id, editText);
+        if (mountedRef.current && selectedConvRef.current === convId) setEditingId(current => current === id ? null : current);
         if (convId) await refreshMessages(convId);
+        onMessagesChanged?.();
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        if (mountedRef.current && selectedConvRef.current === convId) setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [editText, convId, refreshMessages],
+    [editText, convId, refreshMessages, runProfileOperation, onMessagesChanged, supports],
   );
 
   const toggleExclude = useCallback(
     async (m: Message) => {
+      if (!supports("message.exclude")) return;
       try {
-        await api.setMessageStatus(m.id, m.status === "excluded" ? "active" : "excluded");
+        const status = m.status === "excluded" ? "active" : "excluded";
+        if (runProfileOperation) await runProfileOperation("message.exclude", { id: m.id, status });
+        else await api.setMessageStatus(m.id, status);
         if (convId) await refreshMessages(convId);
+        onMessagesChanged?.();
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        if (mountedRef.current && selectedConvRef.current === convId) setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [convId, refreshMessages],
+    [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports],
   );
 
   const loadVersions = useCallback(
@@ -246,9 +328,9 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
       if (!m.version_group_id) return;
       try {
         const vs = await api.getVersions(m.version_group_id);
-        setVersionsById((prev) => ({ ...prev, [m.version_group_id as string]: vs }));
+        if (mountedRef.current && selectedConvRef.current === m.conv_id) setVersionsById((prev) => ({ ...prev, [m.version_group_id as string]: vs }));
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        if (mountedRef.current && selectedConvRef.current === m.conv_id) setError(err instanceof Error ? err.message : String(err));
       }
     },
     [],
@@ -256,22 +338,27 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
 
   const switchVersion = useCallback(
     async (targetId: string) => {
+      if (!supports("message.restore")) return;
       try {
-        await api.restoreVersion(targetId);
+        if (runProfileOperation) await runProfileOperation("message.restore", { id: targetId });
+        else await api.restoreVersion(targetId);
         if (convId) await refreshMessages(convId);
+        onMessagesChanged?.();
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        if (mountedRef.current && selectedConvRef.current === convId) setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [convId, refreshMessages],
+    [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports],
   );
 
-  const visibleMessages = useMemo(() => messages, [messages]);
+  const visibleMessages = useMemo(() => messages.filter(message => message.conv_id === convId), [messages, convId]);
+  const displayedStream = stream?.convId === convId ? stream : null;
+  const displayedPending = pendingUserText?.convId === convId ? pendingUserText : null;
 
   return (
     <div className="chat-view" data-testid="chat-view">
       <div className="chat-scroll" ref={scrollRef}>
-        {visibleMessages.length === 0 && !pendingUserText && !stream && (
+        {visibleMessages.length === 0 && !displayedPending && !displayedStream && (
           <div className="empty-state">Say something to start the conversation.</div>
         )}
         {visibleMessages.map((m) => {
@@ -293,7 +380,7 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
                         {versions.map((v) => (
                           <button
                             key={v.id}
-                            disabled={v.id === m.id}
+                            disabled={v.id === m.id || !supports("message.restore")}
                             onClick={() => switchVersion(v.id)}
                             data-testid="switch-version"
                           >
@@ -309,7 +396,7 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
                 <div>
                   <textarea value={editText} onChange={(e) => setEditText(e.target.value)} rows={3} />
                   <div className="actions">
-                    <button className="primary" onClick={() => saveEdit(m.id)} data-testid="save-edit">
+                    <button className="primary" onClick={() => saveEdit(m.id)} data-testid="save-edit" disabled={!supports("message.edit")}>
                       Save (new version)
                     </button>
                     <button onClick={() => setEditingId(null)}>Cancel</button>
@@ -320,11 +407,11 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
               )}
               <div className="actions">
                 {m.role === "user" && editingId !== m.id && (
-                  <button onClick={() => startEdit(m)} data-testid="edit-message">
+                  <button onClick={() => startEdit(m)} data-testid="edit-message" disabled={!supports("message.edit")}>
                     Edit
                   </button>
                 )}
-                <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude">
+                <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude" disabled={!supports("message.exclude")}>
                   {m.status === "excluded" ? "Restore" : "Exclude"}
                 </button>
               </div>
@@ -336,25 +423,27 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
           m.id === lastTrace.userId && recordedContext(m.metadata?.context_trace)) && (
           <ContextTrace trace={lastTrace.trace} />
         )}
-        {pendingUserText && (
+        {displayedPending && !visibleMessages.some(message => message.id === currentUserIdRef.current) && (
           <div className="msg user">
             <div className="meta">user</div>
-            <div className="body">{pendingUserText}</div>
+            <div className="body">{displayedPending.text}</div>
           </div>
         )}
-        {stream && (
+        {displayedStream && (
           <div className="msg assistant" data-testid="streaming-message">
-            {stream.reasoning && (
+            {displayedStream.reasoning && (
               <details className="reasoning" open>
                 <summary>Reasoning</summary>
-                <div className="reasoning-text">{stream.reasoning}</div>
+                <div className="reasoning-text">{displayedStream.reasoning}</div>
               </details>
             )}
             <div className="meta">assistant · streaming…</div>
-            <div className="body" dangerouslySetInnerHTML={renderMarkdown(stream.text)} />
+            <div className="body" dangerouslySetInnerHTML={renderMarkdown(displayedStream.text)} />
           </div>
         )}
       </div>
+
+      {stream && !displayedStream && <p className="empty-state" role="status">A request continues in another conversation. Stop remains available.</p>}
 
       {error && (
         <div className="empty-state" style={{ color: "var(--err)" }} data-testid="chat-error">
@@ -419,12 +508,13 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
         </select>
         <textarea
           value={input}
-          placeholder="Message Loom…"
+          placeholder={profile?.composer.placeholder ?? "Message Loom…"}
           rows={1}
           data-testid="chat-input"
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
+            if (supports("chat.send") && shouldSubmit(profile?.composer.submit ?? "enter", { key: e.key, shiftKey: e.shiftKey,
+              ctrlKey: e.ctrlKey, metaKey: e.metaKey, isComposing: e.nativeEvent.isComposing })) {
               e.preventDefault();
               send();
             }
@@ -435,7 +525,7 @@ export default function ChatView({ convId, onConversationCreated }: Props) {
             Stop
           </button>
         ) : (
-          <button className="primary" onClick={send} data-testid="send-chat" disabled={!input.trim()}>
+          <button className="primary" onClick={send} data-testid="send-chat" disabled={!input.trim() || !supports("chat.send")}>
             Send
           </button>
         )}

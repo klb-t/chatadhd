@@ -1,12 +1,14 @@
 # STATE — ChatADHD / Loom
 
-Updated 2026-10-03. **Claude owns the next development and integration cycle.**
+Updated 2026-10-04. **Claude owns the next development and integration cycle.**
+The owner explicitly requested the application profile increment described below.
 The owner additionally requested cheap-model analysis experiments in this
 recovery session. [432 paired requests are prepared](research/analysis_optimization_2026-10-02/README.md),
 with zero new model calls; restoring this programme's credential is the live
 execution blocker. This temporary research task is distinct from a permanent
 GPT integration/helper assignment.
-**Published on `main` in the existing public `klb-t/chatadhd` repository.**
+**The recovered base is published on `main` in the existing public
+`klb-t/chatadhd` repository; the profile increment is separately reviewable.**
 The first integration `ab581923` directly continues original main `b5f7eac`
 with one parent; N3 is a later increment on that line. The 40 original
 main-line commits retain their identities. Read
@@ -38,6 +40,26 @@ main-line commits retain their identities. Read
   No new paid provider calls were made.
 
 ## What is integrated
+
+### Owner-requested application profile increment (2026-10-04)
+
+Base: public main `421415f8b9a5c29e25fc4c5fda5b87ba8f5fb9cd`.
+The new work is on `gpt/application-profiles-2026-10-04`, separately reviewable
+from that main. [Application profile contract and handoff](APPLICATION_PROFILES.md)
+describe versioned JSON profiles, actual Loom operation adapters, simultaneous
+chat views, custom profile import, capability gaps and persisted local workflows.
+Changing a view preserves model/context controls. Original application versions
+in the bundled inspired examples are explicitly unverified. Typed source blocks,
+native graph profile persistence and complete source-service workflows remain
+open; existing core/KB schema and C ABI are unchanged. This owner request does
+not reassign ongoing integration ownership.
+
+Measured checks are recorded in
+[the profile verification](verification/application-profiles-2026-10-04/RESULTS.md).
+The native 108/108 CTest measurement below remains historical to its pinned
+source. No paid provider calls or GitHub Actions runs are required by this work.
+
+### Previously integrated on public main
 
 | Area | Current behavior and boundary |
 |---|---|

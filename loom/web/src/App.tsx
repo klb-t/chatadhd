@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import ChatView from "./components/ChatView";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import ApplicationProfiles, { profileStyle } from "./components/ApplicationProfiles";
+import type { ApplicationProfile } from "./profiles/runtime";
 import ConversationList from "./components/ConversationList";
 import GraphView from "./components/GraphView";
 import SettingsPanel from "./components/SettingsPanel";
@@ -48,6 +49,7 @@ export default function App() {
   const [convRefreshKey, setConvRefreshKey] = useState(0);
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
   const [chatVisible, setChatVisible] = useState(true);
+  const [primaryProfile, setPrimaryProfile] = useState<ApplicationProfile | null>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -72,8 +74,15 @@ export default function App() {
     if (window.innerWidth <= 720) setSidebarOpen(false);
   }, []);
 
+  const onMessagesChanged = useCallback(() => setConvRefreshKey(key => key + 1), []);
+  const profileUi = useMemo(() => ({
+    selectConversation: onSelectConversation, conversationCreated: onConversationCreated,
+    openKnowledge: () => setKnowledgeOpen(true), openPanel: (panel: PanelId) => setActivePanel(panel),
+  }), [onSelectConversation, onConversationCreated]);
+
   return (
-    <div className="app-root">
+    <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"}
+      style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
       <header className="app-header">
         <button
           className="icon-btn"
@@ -116,7 +125,9 @@ export default function App() {
 
         <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`}>
           <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
-            <ChatView convId={activeConvId} onConversationCreated={onConversationCreated} />
+            <ApplicationProfiles convId={activeConvId} onConversationCreated={onConversationCreated}
+              refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
+              onPrimaryProfile={setPrimaryProfile} />
           </div>
           {knowledgeOpen && <KnowledgeWorkbench onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />}
         </div>

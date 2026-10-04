@@ -58,3 +58,13 @@ reordering, provider-inspired layout profiles, knowledge judgement editors and
 automatic context injection into chat are not implemented here. Graph node and
 collection limits are owner controls and visible in their counts; a graph is a
 view of loaded records, not a claim that the entire knowledge base is on screen.
+## Application interface profiles
+
+The workbench includes data-defined application views and workflow actions.
+Use **Add application view** for simultaneous profiles, or **Import profile**
+for a JSON definition. Model/context controls remain independent of view style.
+The bundled ChatGPT/Claude/Gemini examples are inspired prototypes with unverified
+original versions. See [the contract and limits](../../docs/APPLICATION_PROFILES.md).
+Run `npm run test:application-profiles` for offline runtime/adapter checks and
+`npm run test:application-profiles-browser` for integration with the native server
+and a local scripted provider (build the server and web first).

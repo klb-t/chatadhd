@@ -1,0 +1,19 @@
+{
+  "docs/contracts/application_profile.schema.json": "51ceb0d6719e3d32a877aaad1bb5cc2bc27ef2675535f9b180f67331c968c348",
+  "loom/tools/contracts/test_application_profiles.py": "6c0cb9da737bc4134ebaf9558229d8ad8f3863d04e7cb3a350ac77320b9366b4",
+  "loom/web/e2e/application-profile-adapter.mjs": "48fa0c267c21a075dff175e7eb6bdca40de90531f60e7bba63b0dbfdd6b1b2b9",
+  "loom/web/e2e/application-profile-state.mjs": "f03185727398a7a5bf0fd573aeb724f9a17c3b561d5ff1c19f8a5eaab7064b78",
+  "loom/web/e2e/application-profiles.mjs": "d20135bde25832a4a43555bbebc218ef2354dc71c7232a7d1f59358ee8aae46c",
+  "loom/web/src/App.tsx": "090598e3a97991f0b9290dcf4e7915b613ae04181718efaec035032beb334a5a",
+  "loom/web/src/components/ApplicationProfiles.tsx": "3c8d4baa74ced8fa2ae35159d06acfa31e8b55d596d64ce3a499c7cea6d36182",
+  "loom/web/src/components/ChatView.tsx": "6759c5604570f731bb5beb3c0b96e5f6039a615b1c93923480b60754ebf065b5",
+  "loom/web/src/components/application-profiles.css": "7c8102cc766b1dd2e1c0d448b1833671f495742b6bee8b5b280ec9600573e3e8",
+  "loom/web/src/profiles/builtins.ts": "4622491e156516866354bfb60fc9502811741c72113544b21394eb0c5d8d7ec0",
+  "loom/web/src/profiles/data/chatgpt-inspired.json": "6ed1494edacd39cb98d6fa45fc1fe1159cb73e207ab2860e838e1776b966eba4",
+  "loom/web/src/profiles/data/claude-inspired.json": "ba0dc6d632e498f83736c6ca4b5d3cc2ffdeb281582221361c0c9d93cedd67ff",
+  "loom/web/src/profiles/data/gemini-inspired.json": "dfa93a94ec905a75a09f9da4049102cf48e5efbb434bd70e6e6e65f8a7a22cd2",
+  "loom/web/src/profiles/data/loom-default.json": "85702129bc4e93092794c4402caa8a3017f63653cc9371ab93ac3316eb016dd2",
+  "loom/web/src/profiles/loom-adapter.ts": "d939c1dee04d86ba230ad3fc5a8b201bf7e11c93484971d8f0bae3736f3fb304",
+  "loom/web/src/profiles/runtime.ts": "dec81fc1c2d5bd6bc0b56b9812766083ae61f92508b05d2f0579c7951d593d13",
+  "native_server_binary_sha256": "3d453f9d758246c3a43cb4d4df39ce9ea6dc9c7db2bf135dda4553847416f8e1"
+}

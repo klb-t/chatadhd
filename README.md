@@ -43,6 +43,12 @@ now writes selected entities, claims and observations to native KnowledgeStore,
 with atomic acceptance, immutable receipts and checked readback/replay.
 Full GraphPacket history validation remains in Python.
 
+[Application interface profiles](docs/APPLICATION_PROFILES.md) add versioned
+JSON views and declared workflows over registered Loom operations. Multiple
+views can share a conversation while keeping model/context controls independent.
+Bundled ChatGPT/Claude/Gemini examples are inspired prototypes with unverified
+original versions; they do not reproduce the services' private backends.
+
 ## Build and open a synthetic demo
 
 Requirements: CMake 3.25+, Ninja, a C++20 compiler, Python 3.11+ and Node.js
