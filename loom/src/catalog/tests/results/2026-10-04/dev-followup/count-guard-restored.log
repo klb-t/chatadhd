@@ -1,0 +1,5 @@
+Command: ['/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12', '/workspace/scratch/73a479acdbc0/catalog-ctest-count-guard-main.py', '--preset', 'dev', '--manifest', '/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/results/2026-10-04/dev-followup/ctest-manifest.json', '--junit', '/workspace/scratch/73a479acdbc0/catalog-final-ctest-108-serial-restored.xml', '--output', '/workspace/scratch/73a479acdbc0/catalog-final-ctest-108-serial-restored-cases.json']
+Exit: 0
+STDOUT:
+Verified 107 executed CTest entries; 1 explicitly unexecuted entries.
+STDERR:

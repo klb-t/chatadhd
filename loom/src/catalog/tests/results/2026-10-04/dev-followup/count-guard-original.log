@@ -1,0 +1,36 @@
+Command: ['/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12', '/workspace/scratch/73a479acdbc0/catalog-ctest-count-guard-main.py', '--preset', 'dev', '--manifest', '/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/results/2026-10-04/dev-followup/ctest-manifest.json', '--junit', '/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/results/2026-10-04/dev-followup/ctest-108-final.xml', '--output', '/workspace/scratch/73a479acdbc0/catalog-final-ctest-108-serial-cases.json']
+Exit: 1
+STDOUT:
+STDERR:
+unit.test_catalog_eval: truncated output cannot establish case coverage
+unit.test_catalog_eval: missing or ambiguous doctest summary
+unit.test_catalog_links: truncated output cannot establish case coverage
+unit.test_catalog_links: missing or ambiguous doctest summary
+unit.test_context_retrieval_dev: truncated output cannot establish case coverage
+unit.test_context_retrieval_dev: missing or ambiguous doctest summary
+unit.test_extract_eval: truncated output cannot establish case coverage
+unit.test_extract_eval: missing or ambiguous doctest summary
+unit.test_generalize_eval: truncated output cannot establish case coverage
+unit.test_generalize_eval: missing or ambiguous doctest summary
+unit.test_resolve_attribution: truncated output cannot establish case coverage
+unit.test_resolve_attribution: missing or ambiguous doctest summary
+unit.test_resolve_lineage: truncated output cannot establish case coverage
+unit.test_resolve_lineage: missing or ambiguous doctest summary
+compat.test_chat_active_task_http: truncated output cannot establish case coverage
+compat.test_chat_active_task_http: missing or ambiguous successful unittest summary
+compat.test_chat_compat: truncated output cannot establish case coverage
+compat.test_chat_compat: missing or ambiguous successful unittest summary
+compat.test_db_compat: truncated output cannot establish case coverage
+compat.test_db_compat: missing or ambiguous successful unittest summary
+compat.test_graph_compat: truncated output cannot establish case coverage
+compat.test_graph_compat: missing or ambiguous successful unittest summary
+compat.test_graph_packet_store: truncated output cannot establish case coverage
+compat.test_graph_packet_store: missing or ambiguous successful unittest summary
+compat.test_import_compat: truncated output cannot establish case coverage
+compat.test_import_compat: missing or ambiguous successful unittest summary
+compat.test_semantic_recovery: truncated output cannot establish case coverage
+compat.test_semantic_recovery: missing or ambiguous successful unittest summary
+compat.test_util_compat: truncated output cannot establish case coverage
+compat.test_util_compat: missing or ambiguous successful unittest summary
+research.structure: truncated output cannot establish case coverage
+research.structure: missing or ambiguous successful unittest summary

@@ -1,0 +1,75 @@
+{
+  "files": {
+    "catalog-ctest-count-guard-main.py": {
+      "bytes": 10308,
+      "sha256": "39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a"
+    },
+    "catalog-final-ctest-108-serial-cases.json": {
+      "bytes": 17478,
+      "sha256": "d71e8aa885e781fafdde4c6558cea627fea9400492abe5be342140688a2e6aaa"
+    },
+    "catalog-final-ctest-108-serial-count-guard.log": {
+      "bytes": 2892,
+      "sha256": "a95fec36907648f9c8f7bf083d70ce98e3ebcd1f672088bab1223862f607aa6b"
+    },
+    "catalog-final-ctest-108-serial-restoration-receipt.json": {
+      "bytes": 13216,
+      "sha256": "7aaf8319ac0ed67a93960aa1f78e11055c7c721b5a2d5688b0d8f28b2076b1b7"
+    },
+    "catalog-final-ctest-108-serial-restored-cases.json": {
+      "bytes": 15895,
+      "sha256": "e9591879e6692de0d2c0e5b6ab7af839a520b1cff6fa7a4edfc50b7ffe8d517a"
+    },
+    "catalog-final-ctest-108-serial-restored-count-guard.log": {
+      "bytes": 593,
+      "sha256": "6f9135bbcdccb5ea04ba7b47ddea1031a9281e81d5fd19b74d9215c48cf38d59"
+    },
+    "catalog-final-ctest-108-serial-restored.xml": {
+      "bytes": 182463,
+      "sha256": "2569a29965ec69f4c0f1c67bc1e6b2d9bdd81a6f91133a394e7680e800aecc38"
+    },
+    "catalog-restore-ctest-output.py": {
+      "bytes": 7375,
+      "sha256": "6e3d8c49c03b053b5c0ac00b43f91255d74a8ab85fa16c0d96f4a39af11c779d"
+    }
+  },
+  "guard_sha256": "39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a",
+  "guard_source": {
+    "member": "verify_ctest.py",
+    "path": "docs/reports/integrator-main-verification-2026-10-04/evidence.zip",
+    "ref": "30ad7d37337d6641cb7714b03e9feff0e6e25d25"
+  },
+  "notes": [
+    "No tests/evaluations were executed for restoration/guard. Only system-out from16truncated entries was restored from108unique same-run raw LastTest blocks.",
+    "XML attributes/statuses/counters and all other XML content are unchanged; original XML/raw/manifest remain unchanged.",
+    "Native reporter skipped counts include registered cases excluded by monolithic source-file filters and are not Python runtime skips. catalog_scale0/0 remains explicitly unexecuted."
+  ],
+  "original_guard_exit_code": 1,
+  "restoration_command": [
+    "python",
+    "/workspace/scratch/73a479acdbc0/catalog-restore-ctest-output.py",
+    "--manifest",
+    "/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/results/2026-10-04/dev-followup/ctest-manifest.json",
+    "--junit",
+    "/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/results/2026-10-04/dev-followup/ctest-108-final.xml",
+    "--last-test",
+    "/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/results/2026-10-04/dev-followup/ctest-108-final-raw.log",
+    "--output",
+    "/workspace/scratch/73a479acdbc0/catalog-final-ctest-108-serial-restored.xml",
+    "--receipt",
+    "/workspace/scratch/73a479acdbc0/catalog-final-ctest-108-serial-restoration-receipt.json"
+  ],
+  "restored_guard_command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+    "/workspace/scratch/73a479acdbc0/catalog-ctest-count-guard-main.py",
+    "--preset",
+    "dev",
+    "--manifest",
+    "/workspace/scratch/73a479acdbc0/chatadhd/loom/src/catalog/tests/results/2026-10-04/dev-followup/ctest-manifest.json",
+    "--junit",
+    "/workspace/scratch/73a479acdbc0/catalog-final-ctest-108-serial-restored.xml",
+    "--output",
+    "/workspace/scratch/73a479acdbc0/catalog-final-ctest-108-serial-restored-cases.json"
+  ],
+  "restored_guard_exit_code": 0
+}
