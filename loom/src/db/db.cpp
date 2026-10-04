@@ -304,6 +304,7 @@ Result<std::unique_ptr<Database>> Database::open(const std::filesystem::path& pa
     LOOM_TRY(db->init_schema());
     LOOM_TRY(db->migrate());
     LOOM_TRY(db->migrate_loom());
+    LOOM_TRY(db->migrate_message_extensions());
     LOOM_TRY(db->fts_open());
   }
   log::info(kLog, "Database opened: {}", path.string());
