@@ -136,6 +136,21 @@ Lexicons::Lexicons(const kb::Pack& pack, const Json& discovered) : norm(pack) {
     }
   }
   for (const auto& p : phrases("negated_item")) neg_particles_.push_back(p);
+  // Syntax policies share the already-loaded cue lexicon. The rule labels,
+  // entity kinds and artifact exceptions are pack data, not code vocabularies.
+  if (const Json* nr = json::find(pack.lexicon("cues"), "name_rules"); nr && nr->is_object()) {
+    name_rules_ = *nr;
+    auto compile_rejects = [](const Json& rule, std::vector<re::Regex>& out) {
+      for (const auto& pattern : strings_of(json::find(rule, "reject_regex") ? rule["reject_regex"] : Json())) {
+        if (auto r = re::Regex::compile(pattern)) out.push_back(std::move(*r));
+      }
+    };
+    if (const Json* all = json::find(name_rules_, "all")) compile_rejects(*all, name_reject_[""]);
+    if (const Json* kinds = json::find(name_rules_, "by_kind"); kinds && kinds->is_object()) {
+      for (auto it = kinds->begin(); it != kinds->end(); ++it) compile_rejects(it.value(), name_reject_[it.key()]);
+    }
+    if (const Json* prose = json::find(name_rules_, "prose")) compile_rejects(*prose, prose_reject_);
+  }
   // item cues
   const Json& ic = pack.lexicon("item_cues");
   item_types = strings_of(json::find(ic, "type_order") ? ic["type_order"] : Json());
@@ -242,6 +257,12 @@ Lexicons::Lexicons(const kb::Pack& pack, const Json& discovered) : norm(pack) {
 
   // versions
   const Json& vp = pack.lexicon("version_patterns");
+  for (const auto& s : strings_of(json::find(vp, "extra_observation_kinds") ? vp["extra_observation_kinds"] : Json())) {
+    version_extra_observation_kinds.insert(s);
+  }
+  for (const auto& s : strings_of(json::find(vp, "declaration_only_kinds") ? vp["declaration_only_kinds"] : Json())) {
+    version_declaration_only_kinds.insert(s);
+  }
   if (auto r = re::Regex::compile(json::get_string(vp, "regex", "\\b[vV]?(\\d{1,2}\\.\\d{1,2}(?:\\.\\d{1,3})?)\\b"))) {
     version_re = std::move(*r);
   }
@@ -260,6 +281,14 @@ Lexicons::Lexicons(const kb::Pack& pack, const Json& discovered) : norm(pack) {
   }
   for (const auto& s : strings_of(json::find(vp, "exclude_contexts") ? vp["exclude_contexts"] : Json())) {
     version_excludes.push_back(norm.fold(s));
+  }
+  if (const Json* b = json::find(vp, "entity_binding"); b && b->is_object()) {
+    for (const auto& s : strings_of(json::find(*b, "kinds") ? (*b)["kinds"] : Json())) version_entity_kinds.insert(s);
+    version_binding_max_gap = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(*b, "max_gap_chars", 0)));
+    if (auto r = re::Regex::compile(json::get_string(*b, "gap_regex")); r) version_binding_gap_re = std::move(*r);
+  }
+  if (const Json* s = json::find(vp, "reject_suffix_regex"); s && s->is_string()) {
+    if (auto r = re::Regex::compile(s->get<std::string>()); r) version_reject_suffix_re = std::move(*r);
   }
 
   // relation patterns
@@ -445,6 +474,71 @@ double Lexicons::score(std::string_view cls, std::string_view folded) const {
     if (!h.negated) s += h.w;
   }
   return s;
+}
+
+bool Lexicons::name_ok(std::string_view kind, std::string_view label, std::string_view artifact_type, bool strict) const {
+  const std::string l(utf8::strip(label));
+  if (l.empty()) return false;
+  if (!json::get_bool(name_rules_, "enabled", true)) return true;
+  const std::u32string u = utf8::decode(l);
+  const auto toks = norm.tokens(l);
+  auto accepts = [&](const Json& rule, std::string_view rule_key) {
+    if (!json::get_bool(rule, "enabled", true)) return true;
+    for (const auto& s : strings_of(json::find(rule, "reject_substrings") ? rule["reject_substrings"] : Json())) {
+      if (!s.empty() && l.find(s) != std::string::npos) return false;
+    }
+    auto rr = name_reject_.find(rule_key);
+    if (rr != name_reject_.end()) {
+      for (const auto& r : rr->second) {
+        if (r.search(u)) return false;
+      }
+    }
+    const auto min_chars = json::get_int(rule, "min_chars", 0);
+    const auto max_tokens = json::get_int(rule, "max_tokens", 0);
+    if (min_chars > 0 && u.size() < static_cast<std::size_t>(min_chars)) return false;
+    if (max_tokens > 0 && toks.size() > static_cast<std::size_t>(max_tokens)) return false;
+    if (!strict || toks.empty()) return true;
+    for (const auto& t : strings_of(json::find(rule, "lenient_types") ? rule["lenient_types"] : Json())) {
+      if (t == artifact_type) return true;
+    }
+    const auto stopword_min_tokens = json::get_int(rule, "stopword_min_tokens", 1);
+    if (json::get_bool(rule, "reject_stopword_edges") &&
+        (stopword_min_tokens <= 0 || toks.size() >= static_cast<std::size_t>(stopword_min_tokens)) &&
+        (norm.is_stopword(toks.front()) || norm.is_stopword(toks.back()))) return false;
+    if (json::get_bool(rule, "require_upper")) {
+      bool cased = false, upper = false;
+      for (char32_t cp : u) {
+        cased = cased || unicode::is_cased(cp);
+        upper = upper || unicode::simple_lower(cp) != cp;
+      }
+      // Scripts without letter case are valid names as well.
+      if (cased && !upper) return false;
+    }
+    return true;
+  };
+  if (const Json* all = json::find(name_rules_, "all"); all && !accepts(*all, "")) return false;
+  if (const Json* kinds = json::find(name_rules_, "by_kind"); kinds && kinds->is_object()) {
+    if (const Json* specific = json::find(*kinds, kind); specific && !accepts(*specific, kind)) return false;
+  }
+  return true;
+}
+
+bool Lexicons::prose_ok(std::string_view text) const {
+  if (!json::get_bool(name_rules_, "enabled", true)) return true;
+  const Json* rule = json::find(name_rules_, "prose");
+  if (!rule || !json::get_bool(*rule, "enabled", true)) return true;
+  const std::string t(utf8::strip(text));
+  if (t.empty()) return true;
+  for (const auto& p : strings_of(json::find(*rule, "reject_prefixes") ? (*rule)["reject_prefixes"] : Json())) {
+    if (!p.empty() && t.compare(0, p.size(), p) == 0) return false;
+  }
+  for (const auto& p : strings_of(json::find(*rule, "reject_suffixes") ? (*rule)["reject_suffixes"] : Json())) {
+    if (!p.empty() && t.size() >= p.size() && t.compare(t.size() - p.size(), p.size(), p) == 0) return false;
+  }
+  for (const auto& r : prose_reject_) {
+    if (r.search_utf8(t)) return false;
+  }
+  return true;
 }
 
 }  // namespace loom::extract::detail
