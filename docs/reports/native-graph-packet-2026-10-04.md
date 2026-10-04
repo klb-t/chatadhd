@@ -1,7 +1,7 @@
 # Thread 4 — native GraphPacket, 2026-10-04
 
 Branch: `gpt/native-graph-packet-2026-10-04`. Initial base: `161cc22`
-(includes PR9). Final main base: `7282437`, documentation-only integrator commits. No changes to main, STATE, profiles, UI, selector or core/KB database schema.
+(includes PR9). Current main base: `30ad7d3`, including accepted W2 and R39–R41. Historical gates below retain their original source bases. No changes to main, STATE, profiles, UI, selector or core/KB database schema.
 This continuation includes the newly assigned `kb/` scope and strengthens
 PR9 GraphPacket acceptance without replacing its store or historical receipts.
 
@@ -43,6 +43,29 @@ shared export registration. Integrator/client owners must expose that existing
 confirmation API if the chosen UI uses FFI; this lane does not register a
 second confirmation engine.
 
+
+## Owner nudge: shared gate intake on current main
+
+Fetched main `30ad7d37337d6641cb7714b03e9feff0e6e25d25` and W3
+`03c670caa6ee3d8ac2c478186548114f8e83927f`; read current INDEX and R39–R41.
+Rebased the existing 11 commits linearly onto main and published tip `2a7ad39`.
+Prior complete state `1377e20` is preserved at
+`archive/2026-10-04/native-graph-packet-before-usage-intake`.
+No other lane was reverted or edited. Fresh native build/gates are running;
+this checkpoint does not claim their result.
+
+W3 now supplies actual registry/checked fake-provider execution/native binding.
+The earlier pending-producer statements below describe the previous session.
+One canonical contract is `loom/src/packet/METHOD_GRAPH.md`. One canonical
+shared artifact, identical to W3’s report, is
+`docs/reports/chat-selector-2026-10-04-evidence/golden-consumer/input.json`
+from `32e2381`; SHA-256
+`8db8175c3b70c3947711ddf5daee5073b99bc5a5114ce0075e06e51932cec54e`.
+It has 19 Entities, 30 Claims, 17 Observations, 3 results and 4 history events.
+All 36 W3 recorded source/test hashes match pinned W3. The canonical exporter
+artifact is materialized byte-for-byte for verification on this branch.
+Requested/observed aliases and ordered nested combinations are being checked
+with additional real W3 registry adapter runs; no paid provider call is used.
 
 ## Continuation under the 11-thread assignment
 
@@ -433,8 +456,10 @@ settings/pack change, preserving mathematical and representation requirements.
 
 The native artifact consumer and KB window fix are independently complete.
 The KB increment is published as `78e43c2` on this branch.
-Keep the shared methods gate held: require W3's actual golden to traverse its
-registry/execution, then this consumer's real native persistence/restart proof.
+Current shared gate checkpoint: the actual W3 golden is available and its
+source/artifact hashes are verified. Native verification on the current W4
+build and alias/nested compatibility checks are in progress; final readiness
+will replace this checkpoint.
 Both reports must cite the single `loom/src/packet/METHOD_GRAPH.md` contract.
 For remaining KB candidate/query migration, coordinate the public knowledge
 header/CAPI owner and W11's data/profile loader: the existing runtime profile
