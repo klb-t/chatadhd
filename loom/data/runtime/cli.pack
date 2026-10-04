@@ -1,0 +1,1427 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "cli",
+  "revision": 1,
+  "defaults": {
+    "help": "loom — Loom kernel command line (ChatADHD engine)\n\nUsage: loom [--data-dir DIR] [--json] [--quiet] <command> [args]\n\nGlobal options:\n  --data-dir DIR   data directory (default: $CHATADHD_DATA, sentinel search, ~/.chatadhd)\n  --json           print JSON instead of text\n  --quiet          no progress output on stderr\n  --log-level L    debug | info | warning | error (default: warning)\n\nCommands:\n  init                                  create/open the data directory, print paths\n  version                               build info\n  conv list [--limit N]                 conversations (newest first)\n  conv create [TITLE]\n  conv show ID [--all]                  messages (--all: versions, excluded, deleted)\n  conv rename ID TITLE\n  conv delete ID\n  msg edit ID TEXT                      new version (old one kept)\n  msg restore ID                        make ID the active version\n  msg versions ID                       all versions of ID's group\n  msg status ID active|excluded|version|deleted\n  chat [--conv ID] [--model M] [--depth N] [--effort E] [--web] MESSAGE...\n                                        stream an answer (\"-\" reads the message from stdin)\n  import PATH [--title T] [--force] [--export-mode auto|off|on] [--audit]\n                                        universal importer (ChatGPT/Claude/HTML/MD/...); ChatGPT/Claude\n                                        export ZIPs are imported losslessly (on: bare .json too)\n  export CONV_ID [--format json|markdown|text|html] [--out FILE]\n  graph nodes [--kind K] [--limit N]\n  graph edges [--node ID] [--type T]\n  graph expand ID... [--depth N]\n  graph reindex [CONV_ID]\n  graph stats\n  context TEXT [--depth N] [--max-tokens N]      ContextSet for a prompt\n  search QUERY [--limit N] [--conv ID] [--all]   full-text search (FTS5/BM25)\n  semantic status|pause|resume|wake|run         background analysis (run = drain now)\n  memory list | add CONTENT [--parent ID] | delete ID | context\n  config get [KEY] | set KEY VALUE              VALUE is JSON (plain text = string)\n  secret set KEY | has KEY | delete KEY | list  set reads the value from stdin\n  models [--refresh]\n  tasks list [--kind K] [--status S] [--limit N] | show ID | resume | cancel ID\n  provenance ID                         sources + transformation records of an id\n  sources [--limit N]\n  artifacts list [--kind K] | show ID [--out FILE]\n  archive run [--source PATH]... [--repo DIR] [--out DIR] [--seed TERM]...\n              [--project NAME] [--max-passes N] [--max-new-terms N] [--max-hits N]\n              [--rounds N] [--exclude FRAGMENT]... [--no-git] [--no-code]\n              [--include-db] [--llm auto|off] [--force] [--config FILE.json]\n              [--knowledge]                  also run knowledge; failure of either pipeline fails the command\n  archive status [RUN_ID]\n  knowledge run [--source PATH]... [--repo DIR] [--out DIR] [--project NAME] [--cut YYYY-MM-DD]\n                [--no-priors] [--snapshot DIR[=LABEL]]... [--stage S]... [--llm auto|off]\n                [--force] [--config FILE.json]\n                catalog -> extract -> resolve -> assess -> generalize -> materialize (resumable)\n                --cut filters seed priors only; supply an independently date-filtered source corpus for holdout\n  knowledge status [TASK_ID]\n  catalog scan [--source PATH]... [--threads N] [--mobile] [--force]\n               stream files/dirs/zips into loom_cat_units + sketches (R1: no import)\n  catalog profile [--repo DIR]              build the self-profile from the pack + repo\n  catalog score [--profile ID] [--max-passes N]\n  catalog list [--label relevant|candidate|irrelevant] [--project ID] [--text Q]\n               [--sort score|date|id] [--limit N] [--offset N] [--run ID]\n  catalog show UNIT_ID                      metadata, score reasons, verified snippets\n  catalog include UNIT_ID [--reason R] | exclude UNIT_ID [--reason R] | pin UNIT_ID [--reason R]\n  catalog import [--run ID] [--dry-run] [--mode selective|full]\n                 [--include-project-siblings] [--time-window-hours N] [--store-mode copy|link]\n                 targeted import of the selected units (mode=full: every catalogued unit, lossless)\n  catalog watch --source PATH... [--interval SECONDS]\n                 rescans on an interval until Ctrl-C (new/changed files only; already incremental)\n  catalog status\n  catalog eval --truth ground_truth.json [--run ID]\n               recall/precision/noise-trap FP against a synthetic_dev-shaped ground truth\n  crypto status | setup | unlock | lock        passwords are read from stdin\n\nArchive example (the self-hosting run):\n  loom --data-dir /tmp/loom-selfhost archive run --repo . --out docs/selfhost \\\n       --seed ChatADHD --seed Loom --seed provenance --seed graph --seed importer\n",
+    "flags": [
+      "json",
+      "quiet",
+      "force",
+      "audit",
+      "all",
+      "refresh",
+      "no-git",
+      "no-code",
+      "include-db",
+      "web",
+      "help",
+      "deep",
+      "mobile",
+      "dry-run",
+      "knowledge",
+      "include-project-siblings",
+      "no-priors"
+    ],
+    "commands": {
+      "version": "version",
+      "init": "init",
+      "conv": "conv",
+      "msg": "msg",
+      "chat": "chat",
+      "import": "import",
+      "export": "export",
+      "graph": "graph",
+      "context": "context",
+      "search": "search",
+      "semantic": "semantic",
+      "memory": "memory",
+      "config": "config",
+      "secret": "secret",
+      "models": "models",
+      "tasks": "tasks",
+      "provenance": "provenance",
+      "sources": "sources",
+      "artifacts": "artifacts",
+      "archive": "archive",
+      "catalog": "catalog",
+      "knowledge": "knowledge",
+      "crypto": "crypto",
+      "profile": "profile"
+    },
+    "limits": {
+      "conversation_list": 50,
+      "graph_node_list": 200,
+      "graph_expansion_depth": 1,
+      "context_depth": 0,
+      "context_tokens": 4000,
+      "search_results": 20,
+      "task_list": 50,
+      "task_resume_scan": 1000,
+      "source_list": 100,
+      "artifact_list": 100,
+      "catalog_eval_scan": 1000000,
+      "catalog_list": 100,
+      "catalog_watch_seconds": 300,
+      "chat_depth": 2
+    },
+    "presentation": {
+      "widths": {
+        "default": 100,
+        "short": 70,
+        "wide": 80,
+        "brief": 60,
+        "summary": 160
+      },
+      "timestamps": {
+        "conversation": 16,
+        "message": 19,
+        "task": 19,
+        "artifact": 19,
+        "date": 10
+      },
+      "hash_chars": 12,
+      "ellipsis": "…",
+      "score_decimal_scale": 100.0
+    },
+    "creation": {
+      "conversation_title": "New Chat",
+      "memory_node_type": "text",
+      "export_format": "markdown"
+    },
+    "evaluation": {
+      "units_key": "units",
+      "relevant_key": "relevant",
+      "traps_key": "noise_traps",
+      "generic_key": "noise_generic",
+      "external_id_key": "conv_id"
+    },
+    "graph_stats": [
+      "conversations",
+      "messages",
+      "nodes",
+      "links"
+    ],
+    "logging": {
+      "default_level": "warning",
+      "levels": {
+        "debug": 10,
+        "info": 20,
+        "warning": 30,
+        "warn": 30,
+        "error": 40
+      },
+      "unknown_level": "warning"
+    },
+    "subcommands": {
+      "conv": {
+        "list": "list",
+        "create": "create",
+        "show": "show",
+        "rename": "rename",
+        "delete": "delete"
+      },
+      "msg": {
+        "edit": "edit",
+        "restore": "restore",
+        "versions": "versions",
+        "status": "status"
+      },
+      "graph": {
+        "nodes": "nodes",
+        "edges": "edges",
+        "expand": "expand",
+        "reindex": "reindex",
+        "stats": "stats"
+      },
+      "semantic": {
+        "pause": "pause",
+        "resume": "resume",
+        "wake": "wake",
+        "run": "run"
+      },
+      "memory": {
+        "list": "list",
+        "add": "add",
+        "delete": "delete",
+        "context": "context"
+      },
+      "config": {
+        "get": "get",
+        "set": "set"
+      },
+      "secret": {
+        "list": "list",
+        "set": "set",
+        "has": "has",
+        "delete": "delete"
+      },
+      "tasks": {
+        "list": "list",
+        "show": "show",
+        "resume": "resume",
+        "cancel": "cancel"
+      },
+      "artifacts": {
+        "list": "list",
+        "show": "show"
+      },
+      "archive": {
+        "status": "status"
+      },
+      "knowledge": {
+        "status": "status"
+      },
+      "catalog": {
+        "scan": "scan",
+        "profile": "profile",
+        "score": "score",
+        "list": "list",
+        "show": "show",
+        "include": "include",
+        "exclude": "exclude",
+        "pin": "pin",
+        "import": "import",
+        "status": "status",
+        "eval": "eval",
+        "watch": "watch"
+      },
+      "crypto": {
+        "setup": "setup",
+        "unlock": "unlock",
+        "lock": "lock"
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "help",
+      "flags",
+      "commands",
+      "limits",
+      "presentation",
+      "creation",
+      "evaluation",
+      "graph_stats",
+      "logging",
+      "subcommands"
+    ],
+    "properties": {
+      "help": {
+        "type": "string",
+        "title": "help",
+        "x-setting": "/help",
+        "x-consumer": "cli"
+      },
+      "flags": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "title": "flags",
+        "x-setting": "/flags",
+        "x-consumer": "cli"
+      },
+      "commands": {
+        "type": "object",
+        "required": [
+          "version",
+          "init",
+          "conv",
+          "msg",
+          "chat",
+          "import",
+          "export",
+          "graph",
+          "context",
+          "search",
+          "semantic",
+          "memory",
+          "config",
+          "secret",
+          "models",
+          "tasks",
+          "provenance",
+          "sources",
+          "artifacts",
+          "archive",
+          "catalog",
+          "knowledge",
+          "crypto",
+          "profile"
+        ],
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "version",
+            "x-setting": "/commands/version",
+            "x-consumer": "cli"
+          },
+          "init": {
+            "type": "string",
+            "title": "init",
+            "x-setting": "/commands/init",
+            "x-consumer": "cli"
+          },
+          "conv": {
+            "type": "string",
+            "title": "conv",
+            "x-setting": "/commands/conv",
+            "x-consumer": "cli"
+          },
+          "msg": {
+            "type": "string",
+            "title": "msg",
+            "x-setting": "/commands/msg",
+            "x-consumer": "cli"
+          },
+          "chat": {
+            "type": "string",
+            "title": "chat",
+            "x-setting": "/commands/chat",
+            "x-consumer": "cli"
+          },
+          "import": {
+            "type": "string",
+            "title": "import",
+            "x-setting": "/commands/import",
+            "x-consumer": "cli"
+          },
+          "export": {
+            "type": "string",
+            "title": "export",
+            "x-setting": "/commands/export",
+            "x-consumer": "cli"
+          },
+          "graph": {
+            "type": "string",
+            "title": "graph",
+            "x-setting": "/commands/graph",
+            "x-consumer": "cli"
+          },
+          "context": {
+            "type": "string",
+            "title": "context",
+            "x-setting": "/commands/context",
+            "x-consumer": "cli"
+          },
+          "search": {
+            "type": "string",
+            "title": "search",
+            "x-setting": "/commands/search",
+            "x-consumer": "cli"
+          },
+          "semantic": {
+            "type": "string",
+            "title": "semantic",
+            "x-setting": "/commands/semantic",
+            "x-consumer": "cli"
+          },
+          "memory": {
+            "type": "string",
+            "title": "memory",
+            "x-setting": "/commands/memory",
+            "x-consumer": "cli"
+          },
+          "config": {
+            "type": "string",
+            "title": "config",
+            "x-setting": "/commands/config",
+            "x-consumer": "cli"
+          },
+          "secret": {
+            "type": "string",
+            "title": "secret",
+            "x-setting": "/commands/secret",
+            "x-consumer": "cli"
+          },
+          "models": {
+            "type": "string",
+            "title": "models",
+            "x-setting": "/commands/models",
+            "x-consumer": "cli"
+          },
+          "tasks": {
+            "type": "string",
+            "title": "tasks",
+            "x-setting": "/commands/tasks",
+            "x-consumer": "cli"
+          },
+          "provenance": {
+            "type": "string",
+            "title": "provenance",
+            "x-setting": "/commands/provenance",
+            "x-consumer": "cli"
+          },
+          "sources": {
+            "type": "string",
+            "title": "sources",
+            "x-setting": "/commands/sources",
+            "x-consumer": "cli"
+          },
+          "artifacts": {
+            "type": "string",
+            "title": "artifacts",
+            "x-setting": "/commands/artifacts",
+            "x-consumer": "cli"
+          },
+          "archive": {
+            "type": "string",
+            "title": "archive",
+            "x-setting": "/commands/archive",
+            "x-consumer": "cli"
+          },
+          "catalog": {
+            "type": "string",
+            "title": "catalog",
+            "x-setting": "/commands/catalog",
+            "x-consumer": "cli"
+          },
+          "knowledge": {
+            "type": "string",
+            "title": "knowledge",
+            "x-setting": "/commands/knowledge",
+            "x-consumer": "cli"
+          },
+          "crypto": {
+            "type": "string",
+            "title": "crypto",
+            "x-setting": "/commands/crypto",
+            "x-consumer": "cli"
+          },
+          "profile": {
+            "type": "string",
+            "title": "profile",
+            "x-setting": "/commands/profile",
+            "x-consumer": "cli"
+          }
+        },
+        "additionalProperties": {
+          "type": "string"
+        },
+        "title": "commands",
+        "x-setting": "/commands",
+        "x-consumer": "cli"
+      },
+      "limits": {
+        "type": "object",
+        "required": [
+          "conversation_list",
+          "graph_node_list",
+          "graph_expansion_depth",
+          "context_depth",
+          "context_tokens",
+          "search_results",
+          "task_list",
+          "task_resume_scan",
+          "source_list",
+          "artifact_list",
+          "catalog_eval_scan",
+          "catalog_list",
+          "catalog_watch_seconds",
+          "chat_depth"
+        ],
+        "properties": {
+          "conversation_list": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "conversation list",
+            "x-setting": "/limits/conversation_list",
+            "x-consumer": "cli"
+          },
+          "graph_node_list": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "graph node list",
+            "x-setting": "/limits/graph_node_list",
+            "x-consumer": "cli"
+          },
+          "graph_expansion_depth": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "graph expansion depth",
+            "x-setting": "/limits/graph_expansion_depth",
+            "x-consumer": "cli"
+          },
+          "context_depth": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "context depth",
+            "x-setting": "/limits/context_depth",
+            "x-consumer": "cli"
+          },
+          "context_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "context tokens",
+            "x-setting": "/limits/context_tokens",
+            "x-consumer": "cli"
+          },
+          "search_results": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "search results",
+            "x-setting": "/limits/search_results",
+            "x-consumer": "cli"
+          },
+          "task_list": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "task list",
+            "x-setting": "/limits/task_list",
+            "x-consumer": "cli"
+          },
+          "task_resume_scan": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "task resume scan",
+            "x-setting": "/limits/task_resume_scan",
+            "x-consumer": "cli"
+          },
+          "source_list": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "source list",
+            "x-setting": "/limits/source_list",
+            "x-consumer": "cli"
+          },
+          "artifact_list": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "artifact list",
+            "x-setting": "/limits/artifact_list",
+            "x-consumer": "cli"
+          },
+          "catalog_eval_scan": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "catalog eval scan",
+            "x-setting": "/limits/catalog_eval_scan",
+            "x-consumer": "cli"
+          },
+          "catalog_list": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "catalog list",
+            "x-setting": "/limits/catalog_list",
+            "x-consumer": "cli"
+          },
+          "catalog_watch_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "catalog watch seconds",
+            "x-setting": "/limits/catalog_watch_seconds",
+            "x-consumer": "cli"
+          },
+          "chat_depth": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "chat depth",
+            "x-setting": "/limits/chat_depth",
+            "x-consumer": "cli"
+          }
+        },
+        "additionalProperties": false,
+        "title": "limits",
+        "x-setting": "/limits",
+        "x-consumer": "cli"
+      },
+      "presentation": {
+        "type": "object",
+        "required": [
+          "widths",
+          "timestamps",
+          "hash_chars",
+          "ellipsis",
+          "score_decimal_scale"
+        ],
+        "properties": {
+          "widths": {
+            "type": "object",
+            "required": [
+              "default",
+              "short",
+              "wide",
+              "brief",
+              "summary"
+            ],
+            "properties": {
+              "default": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "default",
+                "x-setting": "/presentation/widths/default",
+                "x-consumer": "cli"
+              },
+              "short": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "short",
+                "x-setting": "/presentation/widths/short",
+                "x-consumer": "cli"
+              },
+              "wide": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "wide",
+                "x-setting": "/presentation/widths/wide",
+                "x-consumer": "cli"
+              },
+              "brief": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "brief",
+                "x-setting": "/presentation/widths/brief",
+                "x-consumer": "cli"
+              },
+              "summary": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "summary",
+                "x-setting": "/presentation/widths/summary",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": false,
+            "title": "widths",
+            "x-setting": "/presentation/widths",
+            "x-consumer": "cli"
+          },
+          "timestamps": {
+            "type": "object",
+            "required": [
+              "conversation",
+              "message",
+              "task",
+              "artifact",
+              "date"
+            ],
+            "properties": {
+              "conversation": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "conversation",
+                "x-setting": "/presentation/timestamps/conversation",
+                "x-consumer": "cli"
+              },
+              "message": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "message",
+                "x-setting": "/presentation/timestamps/message",
+                "x-consumer": "cli"
+              },
+              "task": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "task",
+                "x-setting": "/presentation/timestamps/task",
+                "x-consumer": "cli"
+              },
+              "artifact": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "artifact",
+                "x-setting": "/presentation/timestamps/artifact",
+                "x-consumer": "cli"
+              },
+              "date": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "date",
+                "x-setting": "/presentation/timestamps/date",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": false,
+            "title": "timestamps",
+            "x-setting": "/presentation/timestamps",
+            "x-consumer": "cli"
+          },
+          "hash_chars": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "title": "hash chars",
+            "x-setting": "/presentation/hash_chars",
+            "x-consumer": "cli"
+          },
+          "ellipsis": {
+            "type": "string",
+            "title": "ellipsis",
+            "x-setting": "/presentation/ellipsis",
+            "x-consumer": "cli"
+          },
+          "score_decimal_scale": {
+            "type": "number",
+            "minimum": 1e-300,
+            "title": "score decimal scale",
+            "x-setting": "/presentation/score_decimal_scale",
+            "x-consumer": "cli"
+          }
+        },
+        "additionalProperties": false,
+        "title": "presentation",
+        "x-setting": "/presentation",
+        "x-consumer": "cli"
+      },
+      "creation": {
+        "type": "object",
+        "required": [
+          "conversation_title",
+          "memory_node_type",
+          "export_format"
+        ],
+        "properties": {
+          "conversation_title": {
+            "type": "string",
+            "title": "conversation title",
+            "x-setting": "/creation/conversation_title",
+            "x-consumer": "cli"
+          },
+          "memory_node_type": {
+            "type": "string",
+            "title": "memory node type",
+            "x-setting": "/creation/memory_node_type",
+            "x-consumer": "cli"
+          },
+          "export_format": {
+            "type": "string",
+            "title": "export format",
+            "x-setting": "/creation/export_format",
+            "x-consumer": "cli"
+          }
+        },
+        "additionalProperties": false,
+        "title": "creation",
+        "x-setting": "/creation",
+        "x-consumer": "cli"
+      },
+      "evaluation": {
+        "type": "object",
+        "required": [
+          "units_key",
+          "relevant_key",
+          "traps_key",
+          "generic_key",
+          "external_id_key"
+        ],
+        "properties": {
+          "units_key": {
+            "type": "string",
+            "title": "units key",
+            "x-setting": "/evaluation/units_key",
+            "x-consumer": "cli"
+          },
+          "relevant_key": {
+            "type": "string",
+            "title": "relevant key",
+            "x-setting": "/evaluation/relevant_key",
+            "x-consumer": "cli"
+          },
+          "traps_key": {
+            "type": "string",
+            "title": "traps key",
+            "x-setting": "/evaluation/traps_key",
+            "x-consumer": "cli"
+          },
+          "generic_key": {
+            "type": "string",
+            "title": "generic key",
+            "x-setting": "/evaluation/generic_key",
+            "x-consumer": "cli"
+          },
+          "external_id_key": {
+            "type": "string",
+            "title": "external id key",
+            "x-setting": "/evaluation/external_id_key",
+            "x-consumer": "cli"
+          }
+        },
+        "additionalProperties": false,
+        "title": "evaluation",
+        "x-setting": "/evaluation",
+        "x-consumer": "cli"
+      },
+      "graph_stats": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "title": "graph stats",
+        "x-setting": "/graph_stats",
+        "x-consumer": "cli"
+      },
+      "logging": {
+        "type": "object",
+        "required": [
+          "default_level",
+          "levels",
+          "unknown_level"
+        ],
+        "properties": {
+          "default_level": {
+            "type": "string",
+            "title": "default level",
+            "x-setting": "/logging/default_level",
+            "x-consumer": "cli"
+          },
+          "levels": {
+            "type": "object",
+            "required": [
+              "debug",
+              "info",
+              "warning",
+              "warn",
+              "error"
+            ],
+            "properties": {
+              "debug": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "debug",
+                "x-setting": "/logging/levels/debug",
+                "x-consumer": "cli"
+              },
+              "info": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "info",
+                "x-setting": "/logging/levels/info",
+                "x-consumer": "cli"
+              },
+              "warning": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "warning",
+                "x-setting": "/logging/levels/warning",
+                "x-consumer": "cli"
+              },
+              "warn": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "warn",
+                "x-setting": "/logging/levels/warn",
+                "x-consumer": "cli"
+              },
+              "error": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "title": "error",
+                "x-setting": "/logging/levels/error",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "title": "levels",
+            "x-setting": "/logging/levels",
+            "x-consumer": "cli"
+          },
+          "unknown_level": {
+            "type": "string",
+            "title": "unknown level",
+            "x-setting": "/logging/unknown_level",
+            "x-consumer": "cli"
+          }
+        },
+        "additionalProperties": false,
+        "title": "logging",
+        "x-setting": "/logging",
+        "x-consumer": "cli"
+      },
+      "subcommands": {
+        "type": "object",
+        "required": [
+          "conv",
+          "msg",
+          "graph",
+          "semantic",
+          "memory",
+          "config",
+          "secret",
+          "tasks",
+          "artifacts",
+          "archive",
+          "knowledge",
+          "catalog",
+          "crypto"
+        ],
+        "properties": {
+          "conv": {
+            "type": "object",
+            "required": [
+              "list",
+              "create",
+              "show",
+              "rename",
+              "delete"
+            ],
+            "properties": {
+              "list": {
+                "type": "string",
+                "title": "list",
+                "x-setting": "/subcommands/conv/list",
+                "x-consumer": "cli"
+              },
+              "create": {
+                "type": "string",
+                "title": "create",
+                "x-setting": "/subcommands/conv/create",
+                "x-consumer": "cli"
+              },
+              "show": {
+                "type": "string",
+                "title": "show",
+                "x-setting": "/subcommands/conv/show",
+                "x-consumer": "cli"
+              },
+              "rename": {
+                "type": "string",
+                "title": "rename",
+                "x-setting": "/subcommands/conv/rename",
+                "x-consumer": "cli"
+              },
+              "delete": {
+                "type": "string",
+                "title": "delete",
+                "x-setting": "/subcommands/conv/delete",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "conv",
+            "x-setting": "/subcommands/conv",
+            "x-consumer": "cli"
+          },
+          "msg": {
+            "type": "object",
+            "required": [
+              "edit",
+              "restore",
+              "versions",
+              "status"
+            ],
+            "properties": {
+              "edit": {
+                "type": "string",
+                "title": "edit",
+                "x-setting": "/subcommands/msg/edit",
+                "x-consumer": "cli"
+              },
+              "restore": {
+                "type": "string",
+                "title": "restore",
+                "x-setting": "/subcommands/msg/restore",
+                "x-consumer": "cli"
+              },
+              "versions": {
+                "type": "string",
+                "title": "versions",
+                "x-setting": "/subcommands/msg/versions",
+                "x-consumer": "cli"
+              },
+              "status": {
+                "type": "string",
+                "title": "status",
+                "x-setting": "/subcommands/msg/status",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "msg",
+            "x-setting": "/subcommands/msg",
+            "x-consumer": "cli"
+          },
+          "graph": {
+            "type": "object",
+            "required": [
+              "nodes",
+              "edges",
+              "expand",
+              "reindex",
+              "stats"
+            ],
+            "properties": {
+              "nodes": {
+                "type": "string",
+                "title": "nodes",
+                "x-setting": "/subcommands/graph/nodes",
+                "x-consumer": "cli"
+              },
+              "edges": {
+                "type": "string",
+                "title": "edges",
+                "x-setting": "/subcommands/graph/edges",
+                "x-consumer": "cli"
+              },
+              "expand": {
+                "type": "string",
+                "title": "expand",
+                "x-setting": "/subcommands/graph/expand",
+                "x-consumer": "cli"
+              },
+              "reindex": {
+                "type": "string",
+                "title": "reindex",
+                "x-setting": "/subcommands/graph/reindex",
+                "x-consumer": "cli"
+              },
+              "stats": {
+                "type": "string",
+                "title": "stats",
+                "x-setting": "/subcommands/graph/stats",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "graph",
+            "x-setting": "/subcommands/graph",
+            "x-consumer": "cli"
+          },
+          "semantic": {
+            "type": "object",
+            "required": [
+              "pause",
+              "resume",
+              "wake",
+              "run"
+            ],
+            "properties": {
+              "pause": {
+                "type": "string",
+                "title": "pause",
+                "x-setting": "/subcommands/semantic/pause",
+                "x-consumer": "cli"
+              },
+              "resume": {
+                "type": "string",
+                "title": "resume",
+                "x-setting": "/subcommands/semantic/resume",
+                "x-consumer": "cli"
+              },
+              "wake": {
+                "type": "string",
+                "title": "wake",
+                "x-setting": "/subcommands/semantic/wake",
+                "x-consumer": "cli"
+              },
+              "run": {
+                "type": "string",
+                "title": "run",
+                "x-setting": "/subcommands/semantic/run",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "semantic",
+            "x-setting": "/subcommands/semantic",
+            "x-consumer": "cli"
+          },
+          "memory": {
+            "type": "object",
+            "required": [
+              "list",
+              "add",
+              "delete",
+              "context"
+            ],
+            "properties": {
+              "list": {
+                "type": "string",
+                "title": "list",
+                "x-setting": "/subcommands/memory/list",
+                "x-consumer": "cli"
+              },
+              "add": {
+                "type": "string",
+                "title": "add",
+                "x-setting": "/subcommands/memory/add",
+                "x-consumer": "cli"
+              },
+              "delete": {
+                "type": "string",
+                "title": "delete",
+                "x-setting": "/subcommands/memory/delete",
+                "x-consumer": "cli"
+              },
+              "context": {
+                "type": "string",
+                "title": "context",
+                "x-setting": "/subcommands/memory/context",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "memory",
+            "x-setting": "/subcommands/memory",
+            "x-consumer": "cli"
+          },
+          "config": {
+            "type": "object",
+            "required": [
+              "get",
+              "set"
+            ],
+            "properties": {
+              "get": {
+                "type": "string",
+                "title": "get",
+                "x-setting": "/subcommands/config/get",
+                "x-consumer": "cli"
+              },
+              "set": {
+                "type": "string",
+                "title": "set",
+                "x-setting": "/subcommands/config/set",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "config",
+            "x-setting": "/subcommands/config",
+            "x-consumer": "cli"
+          },
+          "secret": {
+            "type": "object",
+            "required": [
+              "list",
+              "set",
+              "has",
+              "delete"
+            ],
+            "properties": {
+              "list": {
+                "type": "string",
+                "title": "list",
+                "x-setting": "/subcommands/secret/list",
+                "x-consumer": "cli"
+              },
+              "set": {
+                "type": "string",
+                "title": "set",
+                "x-setting": "/subcommands/secret/set",
+                "x-consumer": "cli"
+              },
+              "has": {
+                "type": "string",
+                "title": "has",
+                "x-setting": "/subcommands/secret/has",
+                "x-consumer": "cli"
+              },
+              "delete": {
+                "type": "string",
+                "title": "delete",
+                "x-setting": "/subcommands/secret/delete",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "secret",
+            "x-setting": "/subcommands/secret",
+            "x-consumer": "cli"
+          },
+          "tasks": {
+            "type": "object",
+            "required": [
+              "list",
+              "show",
+              "resume",
+              "cancel"
+            ],
+            "properties": {
+              "list": {
+                "type": "string",
+                "title": "list",
+                "x-setting": "/subcommands/tasks/list",
+                "x-consumer": "cli"
+              },
+              "show": {
+                "type": "string",
+                "title": "show",
+                "x-setting": "/subcommands/tasks/show",
+                "x-consumer": "cli"
+              },
+              "resume": {
+                "type": "string",
+                "title": "resume",
+                "x-setting": "/subcommands/tasks/resume",
+                "x-consumer": "cli"
+              },
+              "cancel": {
+                "type": "string",
+                "title": "cancel",
+                "x-setting": "/subcommands/tasks/cancel",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "tasks",
+            "x-setting": "/subcommands/tasks",
+            "x-consumer": "cli"
+          },
+          "artifacts": {
+            "type": "object",
+            "required": [
+              "list",
+              "show"
+            ],
+            "properties": {
+              "list": {
+                "type": "string",
+                "title": "list",
+                "x-setting": "/subcommands/artifacts/list",
+                "x-consumer": "cli"
+              },
+              "show": {
+                "type": "string",
+                "title": "show",
+                "x-setting": "/subcommands/artifacts/show",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "artifacts",
+            "x-setting": "/subcommands/artifacts",
+            "x-consumer": "cli"
+          },
+          "archive": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "title": "status",
+                "x-setting": "/subcommands/archive/status",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "archive",
+            "x-setting": "/subcommands/archive",
+            "x-consumer": "cli"
+          },
+          "knowledge": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "title": "status",
+                "x-setting": "/subcommands/knowledge/status",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "knowledge",
+            "x-setting": "/subcommands/knowledge",
+            "x-consumer": "cli"
+          },
+          "catalog": {
+            "type": "object",
+            "required": [
+              "scan",
+              "profile",
+              "score",
+              "list",
+              "show",
+              "include",
+              "exclude",
+              "pin",
+              "import",
+              "status",
+              "eval",
+              "watch"
+            ],
+            "properties": {
+              "scan": {
+                "type": "string",
+                "title": "scan",
+                "x-setting": "/subcommands/catalog/scan",
+                "x-consumer": "cli"
+              },
+              "profile": {
+                "type": "string",
+                "title": "profile",
+                "x-setting": "/subcommands/catalog/profile",
+                "x-consumer": "cli"
+              },
+              "score": {
+                "type": "string",
+                "title": "score",
+                "x-setting": "/subcommands/catalog/score",
+                "x-consumer": "cli"
+              },
+              "list": {
+                "type": "string",
+                "title": "list",
+                "x-setting": "/subcommands/catalog/list",
+                "x-consumer": "cli"
+              },
+              "show": {
+                "type": "string",
+                "title": "show",
+                "x-setting": "/subcommands/catalog/show",
+                "x-consumer": "cli"
+              },
+              "include": {
+                "type": "string",
+                "title": "include",
+                "x-setting": "/subcommands/catalog/include",
+                "x-consumer": "cli"
+              },
+              "exclude": {
+                "type": "string",
+                "title": "exclude",
+                "x-setting": "/subcommands/catalog/exclude",
+                "x-consumer": "cli"
+              },
+              "pin": {
+                "type": "string",
+                "title": "pin",
+                "x-setting": "/subcommands/catalog/pin",
+                "x-consumer": "cli"
+              },
+              "import": {
+                "type": "string",
+                "title": "import",
+                "x-setting": "/subcommands/catalog/import",
+                "x-consumer": "cli"
+              },
+              "status": {
+                "type": "string",
+                "title": "status",
+                "x-setting": "/subcommands/catalog/status",
+                "x-consumer": "cli"
+              },
+              "eval": {
+                "type": "string",
+                "title": "eval",
+                "x-setting": "/subcommands/catalog/eval",
+                "x-consumer": "cli"
+              },
+              "watch": {
+                "type": "string",
+                "title": "watch",
+                "x-setting": "/subcommands/catalog/watch",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "catalog",
+            "x-setting": "/subcommands/catalog",
+            "x-consumer": "cli"
+          },
+          "crypto": {
+            "type": "object",
+            "required": [
+              "setup",
+              "unlock",
+              "lock"
+            ],
+            "properties": {
+              "setup": {
+                "type": "string",
+                "title": "setup",
+                "x-setting": "/subcommands/crypto/setup",
+                "x-consumer": "cli"
+              },
+              "unlock": {
+                "type": "string",
+                "title": "unlock",
+                "x-setting": "/subcommands/crypto/unlock",
+                "x-consumer": "cli"
+              },
+              "lock": {
+                "type": "string",
+                "title": "lock",
+                "x-setting": "/subcommands/crypto/lock",
+                "x-consumer": "cli"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "crypto",
+            "x-setting": "/subcommands/crypto",
+            "x-consumer": "cli"
+          }
+        },
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "title": "subcommands",
+        "x-setting": "/subcommands",
+        "x-consumer": "cli"
+      }
+    },
+    "additionalProperties": false,
+    "title": "",
+    "x-setting": "",
+    "x-consumer": "cli"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "net",
+  "revision": 1,
+  "description": "HTTP transport recipe. TLS certificate verification is an engine invariant. Positive request timeouts are explicit; nonpositive requests use default_timeout_ms. Profile-aware JSON parsing uses this timeout when omitted. The legacy aggregate initializer uses the immutable builtin recipe. Environment lists choose the first nonempty value. Proxy sources are keyed by URI scheme; builtin HTTP has no proxy mapping, retaining historical behavior. A configured zero timeout is passed to the native HTTP adapter without claiming an unbounded connection timeout.",
+  "defaults": {
+    "default_timeout_ms": 30000,
+    "follow_redirects": true,
+    "keep_alive": false,
+    "ca_environment": ["SSL_CERT_FILE", "REQUESTS_CA_BUNDLE"],
+    "proxy_environment": {"https": ["HTTPS_PROXY"]}
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["default_timeout_ms", "follow_redirects", "keep_alive", "ca_environment", "proxy_environment"],
+    "additionalProperties": false,
+    "properties": {
+      "default_timeout_ms": {"type": "integer", "minimum": 0, "maximum": 2147483647, "x-setting": "default_timeout_ms", "x-unit": "milliseconds", "x-consumer": "HttpRequest and default transport"},
+      "follow_redirects": {"type": "boolean", "x-setting": "follow_redirects", "x-consumer": "default transport"},
+      "keep_alive": {"type": "boolean", "x-setting": "keep_alive", "x-consumer": "default transport"},
+      "ca_environment": {"type": "array", "items": {"type": "string", "minLength": 1}, "x-setting": "ca_environment", "x-consumer": "default TLS adapter"},
+      "proxy_environment": {
+        "type": "object",
+        "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "x-setting": "proxy_environment.<scheme>",
+        "x-consumer": "default transport"
+      }
+    }
+  }
+}

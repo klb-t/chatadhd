@@ -1,0 +1,2300 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "archive",
+  "revision": 1,
+  "description": "Exact legacy archive pipeline defaults. Objects merge recursively; lists replace. Existing KB lexicons stopwords_base and item_cues remain canonical and are read with their KB overlay. Reopen runtime after changing either profile.",
+  "defaults": {
+    "text": {
+      "abbreviations": [
+        "e",
+        "g",
+        "i",
+        "np",
+        "itd",
+        "itp",
+        "tzn",
+        "etc",
+        "vs",
+        "cf",
+        "dr",
+        "mr",
+        "ms",
+        "prof",
+        "tj",
+        "in",
+        "al",
+        "no",
+        "nr",
+        "ok",
+        "ang",
+        "pl"
+      ],
+      "glossary": {
+        "pamięć": "memory",
+        "pamięci": "memory",
+        "graf": "graph",
+        "grafu": "graph",
+        "grafie": "graph",
+        "zadanie": "task",
+        "zadania": "task",
+        "zadań": "task",
+        "źródło": "source",
+        "źródła": "source",
+        "źródeł": "source",
+        "szyfrowanie": "encryption",
+        "szyfrowania": "encryption",
+        "wyszukiwanie": "search",
+        "wyszukiwania": "search",
+        "rozmowa": "conversation",
+        "rozmowy": "conversation",
+        "rozmów": "conversation",
+        "załączniki": "attachment",
+        "załączników": "attachment",
+        "głos": "voice",
+        "synchronizacja": "sync",
+        "synchronizacji": "sync",
+        "wykonanie": "execution",
+        "wykonania": "execution",
+        "środowisko": "environment",
+        "środowiska": "environment",
+        "wtyczka": "plugin",
+        "wtyczki": "plugin",
+        "logi": "log",
+        "logów": "log",
+        "kontekst": "context",
+        "kontekstu": "context",
+        "dostawca": "provider",
+        "providerzy": "provider",
+        "providerów": "provider",
+        "wersja": "version",
+        "wersje": "version",
+        "gałąź": "branch",
+        "historia": "history",
+        "historii": "history",
+        "tytuł": "title",
+        "tytuły": "title",
+        "surowy": "raw",
+        "szablon": "template",
+        "szablony": "template",
+        "polityka": "policy",
+        "zdarzenie": "event",
+        "zdarzenia": "event",
+        "decyzja": "decision",
+        "decyzje": "decision",
+        "wymagania": "requirement",
+        "panele": "panel",
+        "model": "model",
+        "modele": "model",
+        "import": "import",
+        "eksport": "export",
+        "eksporty": "export",
+        "sprzeczności": "contradiction",
+        "braki": "gap",
+        "chronologia": "timeline",
+        "pliki": "file",
+        "plików": "file",
+        "kod": "code",
+        "kodu": "code",
+        "testy": "test",
+        "testów": "test",
+        "magazyn": "store",
+        "klucz": "key",
+        "klucze": "key",
+        "tożsamość": "identity",
+        "artefakt": "artifact",
+        "artefakty": "artifact",
+        "artefaktów": "artifact",
+        "widok": "view",
+        "widoki": "view",
+        "agent": "agent",
+        "agenta": "agent",
+        "przeglądarka": "browser",
+        "terminal": "terminal",
+        "punkt": "checkpoint",
+        "surowych": "raw",
+        "surowe": "raw",
+        "surowego": "raw",
+        "eksportów": "export",
+        "eksportu": "export",
+        "oryginału": "source",
+        "oryginał": "source",
+        "chronologię": "timeline",
+        "forków": "fork",
+        "forki": "fork",
+        "słownika": "vocabulary",
+        "słownik": "vocabulary",
+        "terminów": "term",
+        "tematów": "theme",
+        "idei": "idea",
+        "decyzji": "decision",
+        "scalenie": "merge",
+        "materializacja": "materialize",
+        "wznowienie": "resume",
+        "ponowienie": "retry",
+        "wycofanie": "rollback"
+      },
+      "stem_min_extra_bytes": 2,
+      "stem_rules": [
+        {
+          "suffixes": [
+            "ies"
+          ],
+          "exclude": [],
+          "remove": 3,
+          "replacement": "y"
+        },
+        {
+          "suffixes": [
+            "sses",
+            "xes",
+            "ches",
+            "shes"
+          ],
+          "exclude": [],
+          "remove": 2,
+          "replacement": ""
+        },
+        {
+          "suffixes": [
+            "s"
+          ],
+          "exclude": [
+            "ss",
+            "us",
+            "is"
+          ],
+          "remove": 1,
+          "replacement": ""
+        }
+      ],
+      "min_token_codepoints": 3,
+      "min_sentence_codepoints": 8,
+      "min_sentence_tokens": 2
+    },
+    "items": {
+      "types": [
+        "decision",
+        "rejected_option",
+        "open_question",
+        "requirement",
+        "invariant",
+        "idea",
+        "rationale",
+        "implementation",
+        "bug"
+      ],
+      "contains_headings": [
+        "otwarte decyzje",
+        "open question",
+        "open decision",
+        "nie wolno zgubić",
+        "must not lose",
+        "otwarte pytania"
+      ],
+      "requirement_penalty_phrases": [
+        "must not",
+        "must never"
+      ],
+      "requirement_penalty": 1.5,
+      "question_suffix": "?",
+      "question_suffix_score": 2.5,
+      "question_prefix": "czy ",
+      "question_prefix_cue": "czy",
+      "question_prefix_score": 1.0,
+      "min_score": 1.5,
+      "min_sentence_score": 1.0,
+      "min_list_tokens": 3,
+      "min_heading_tokens": 5,
+      "confidence_base": 0.35,
+      "confidence_slope": 0.15,
+      "ambiguity_margin": 0.5,
+      "ambiguity_penalty": 0.1,
+      "confidence_min": 0.3,
+      "confidence_max": 0.95,
+      "subject_min_token_codepoints": 3,
+      "negation_lookback": 3,
+      "bug_markers": [
+        "FIXME",
+        "XXX",
+        "HACK"
+      ],
+      "todo_confidence": 0.6,
+      "commit_bug_phrases": [
+        "fix",
+        "bug",
+        "crash*",
+        "regression"
+      ],
+      "commit_confidence": 0.9,
+      "text_max_codepoints": 320,
+      "sentence_max_bytes": 1200,
+      "sentence_min_tokens": 3,
+      "relation_types": [
+        "decision",
+        "rejected_option",
+        "requirement",
+        "invariant"
+      ],
+      "idf_offset": 0.1,
+      "distinctive_df_min": 3.0,
+      "distinctive_df_fraction": 0.3,
+      "max_shared_token_items": 200,
+      "min_shared_distinctive": 2,
+      "min_longer_share": 0.2,
+      "supersede_threshold": 0.3,
+      "contradict_threshold": 0.5,
+      "resolution_threshold": 0.35
+    },
+    "code": {
+      "extensions": {
+        ".c": "c",
+        ".h": "cpp",
+        ".cc": "cpp",
+        ".cpp": "cpp",
+        ".cxx": "cpp",
+        ".hh": "cpp",
+        ".hpp": "cpp",
+        ".hxx": "cpp",
+        ".ipp": "cpp",
+        ".py": "python",
+        ".pyi": "python",
+        ".kt": "kotlin",
+        ".kts": "kotlin",
+        ".java": "java",
+        ".js": "javascript",
+        ".mjs": "javascript",
+        ".jsx": "javascript",
+        ".ts": "typescript",
+        ".tsx": "typescript",
+        ".go": "go",
+        ".rs": "rust",
+        ".swift": "swift",
+        ".m": "objc",
+        ".mm": "objc",
+        ".cs": "csharp",
+        ".rb": "ruby",
+        ".php": "php",
+        ".sh": "shell",
+        ".bash": "shell",
+        ".cmake": "cmake",
+        ".gradle": "gradle",
+        ".proto": "proto",
+        ".sql": "sql",
+        ".dart": "dart",
+        ".scala": "scala",
+        ".lua": "lua",
+        ".r": "r",
+        ".jl": "julia",
+        ".zig": "zig",
+        ".vue": "vue",
+        ".svelte": "svelte"
+      },
+      "filenames": {
+        "CMakeLists.txt": "cmake",
+        "Makefile": "make",
+        "makefile": "make",
+        "Dockerfile": "docker"
+      },
+      "non_functions": [
+        "if",
+        "for",
+        "while",
+        "switch",
+        "return",
+        "catch",
+        "sizeof",
+        "decltype",
+        "static_assert",
+        "alignof",
+        "defined",
+        "else",
+        "do",
+        "new",
+        "delete",
+        "throw",
+        "assert",
+        "LOOM_TRY",
+        "LOOM_TRY_ASSIGN",
+        "TEST_CASE",
+        "SUBCASE",
+        "CHECK",
+        "REQUIRE",
+        "extern"
+      ],
+      "modifiers": [
+        "export ",
+        "public ",
+        "private ",
+        "internal ",
+        "open ",
+        "abstract ",
+        "final ",
+        "data ",
+        "sealed ",
+        "static ",
+        "pub ",
+        "async ",
+        "inline ",
+        "template<",
+        "extern \"C\" "
+      ],
+      "type_words": [
+        "class",
+        "struct",
+        "interface",
+        "enum class",
+        "enum struct",
+        "enum",
+        "object",
+        "trait",
+        "protocol",
+        "union",
+        "namespace",
+        "fun",
+        "func",
+        "fn",
+        "function",
+        "typealias",
+        "type"
+      ],
+      "todo_markers": [
+        "TODO",
+        "FIXME",
+        "XXX",
+        "HACK"
+      ],
+      "cmake_commands": [
+        "add_library(",
+        "add_executable(",
+        "option(",
+        "project("
+      ],
+      "c_like": [
+        "c",
+        "cpp",
+        "java",
+        "kotlin",
+        "javascript",
+        "typescript",
+        "go",
+        "rust",
+        "swift",
+        "objc",
+        "csharp",
+        "php",
+        "gradle",
+        "proto",
+        "dart",
+        "scala",
+        "zig",
+        "vue",
+        "svelte"
+      ],
+      "hash_comments": [
+        "python",
+        "shell",
+        "cmake",
+        "ruby",
+        "make",
+        "docker",
+        "r",
+        "julia"
+      ],
+      "max_uses": 500,
+      "min_comment_tokens": 3,
+      "max_digest_symbols": 200,
+      "comment_budget_bytes": 12000,
+      "max_extra_symbols": 400
+    },
+    "scan": {
+      "skip_dirs": [
+        ".git",
+        "build",
+        "node_modules",
+        "third_party",
+        "vendor",
+        "__pycache__",
+        ".venv",
+        "venv",
+        "env",
+        "dist",
+        "target",
+        ".gradle",
+        ".idea",
+        ".vscode",
+        ".cache",
+        ".pytest_cache",
+        ".mypy_cache",
+        "Pods",
+        "DerivedData",
+        ".tox",
+        "site-packages",
+        "fixtures",
+        "testdata",
+        ".next",
+        ".svn",
+        ".hg",
+        "out",
+        ".claude"
+      ],
+      "document_extensions": [
+        ".md",
+        ".markdown",
+        ".txt",
+        ".rst",
+        ".adoc",
+        ".org"
+      ],
+      "import_extensions": [
+        ".jsonl",
+        ".ndjson",
+        ".html",
+        ".htm",
+        ".mht",
+        ".mhtml",
+        ".db",
+        ".sqlite",
+        ".sqlite3",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".webp"
+      ],
+      "max_unknown_text_bytes": 2000000,
+      "text_user_threshold": 2,
+      "text_assistant_threshold": 2,
+      "title_lines": 3,
+      "db_query_limit": 1000000,
+      "readme_seed_limit": 6,
+      "checkpoint_seconds": 10
+    },
+    "synthesis": {
+      "external_names": [
+        "ChatGPT",
+        "GitHub",
+        "PolyForm",
+        "ThreadSanitizer",
+        "UBSan",
+        "AddressSanitizer",
+        "CMakeLists",
+        "OpenSSL",
+        "CPython",
+        "MiniLM",
+        "CamelCase",
+        "OpenRouter",
+        "SQLite",
+        "JavaScript",
+        "TypeScript",
+        "PyPI",
+        "OpenAI",
+        "DeepSeek",
+        "MacOS",
+        "iOS",
+        "YouTube",
+        "LinkedIn",
+        "PowerPoint",
+        "JSONL",
+        "WebSocket",
+        "OkHttp",
+        "CMake",
+        "LLMs",
+        "APIs",
+        "IDs",
+        "URLs",
+        "UUIDs",
+        "JSONs",
+        "PDFs",
+        "GPUs",
+        "VMs",
+        "macOS",
+        "iPhone",
+        "WhatsApp",
+        "LaTeX",
+        "NumPy",
+        "PyTorch",
+        "GitLab"
+      ],
+      "source_extensions": [
+        ".py",
+        ".cpp",
+        ".h",
+        ".hpp",
+        ".kt",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".md",
+        ".cc",
+        ".java",
+        ".swift",
+        ".rs",
+        ".go"
+      ],
+      "sections": [
+        {
+          "title": "5. Decisions",
+          "type": "decision",
+          "cap": 40,
+          "inactive": true
+        },
+        {
+          "title": "6. Rejected options",
+          "type": "rejected_option",
+          "cap": 25,
+          "inactive": true
+        },
+        {
+          "title": "7. Open questions",
+          "type": "open_question",
+          "cap": 40,
+          "inactive": false
+        },
+        {
+          "title": "8. Requirements",
+          "type": "requirement",
+          "cap": 40,
+          "inactive": false
+        },
+        {
+          "title": "9. Invariants",
+          "type": "invariant",
+          "cap": 30,
+          "inactive": false
+        },
+        {
+          "title": "10. Ideas",
+          "type": "idea",
+          "cap": 20,
+          "inactive": false
+        }
+      ],
+      "kind_labels": {
+        "chat": "chat messages",
+        "doc": "document sections",
+        "code": "code files",
+        "commit": "commits",
+        "project": "project docs",
+        "memory": "memories"
+      },
+      "spec_kinds": [
+        "doc",
+        "project",
+        "memory"
+      ],
+      "prefix_match_bytes": 6,
+      "evidence_files": 3,
+      "partial_fraction": 0.5,
+      "named_min_bytes": 4,
+      "inflection_max_bytes": 2,
+      "title_phrase_min_tokens": 2,
+      "title_phrase_max_tokens": 3,
+      "title_word_min_bytes": 3,
+      "feature_max_codepoints": 70,
+      "section_min_features": 2,
+      "theme_gap_min_docs": 3,
+      "todo_limit": 60,
+      "reason_limit": 3,
+      "theme_term_limit": 10,
+      "theme_doc_limit": 4,
+      "timeline_head": 6,
+      "timeline_tail": 6,
+      "edge_limit": 40,
+      "phrase_gap_limit": 15,
+      "component_gap_limit": 20,
+      "section_gap_limit": 10,
+      "missing_feature_limit": 4,
+      "section_gap_min_features": 3,
+      "section_gap_coverage_fraction": 0.5,
+      "discovered_min_df": 2,
+      "discovered_limit": 8
+    },
+    "vocabulary": {
+      "camel_min_length": 4,
+      "camel_min_uppercase": 2,
+      "salient_min_df": 2,
+      "salient_max_df_fraction": 0.5,
+      "salient_phrase_boost": 1.15,
+      "ner_max_codepoints": 4000,
+      "ner_types": [
+        "code_ref",
+        "organisation",
+        "person",
+        "hashtag"
+      ],
+      "ner_max_tokens": 2,
+      "large_hit_count": 50,
+      "min_hit_df": 2,
+      "large_min_hit_df": 3,
+      "generic_min_corpus": 10,
+      "generic_df_fraction": 0.6,
+      "min_lift": 1.3,
+      "phrase_boost": 1.2,
+      "pool_multiplier": 6,
+      "cooccurrence_base": 0.5,
+      "ner_boost": 1.5,
+      "evidence_limit": 5
+    },
+    "pipeline": {
+      "corpus_cache_entries": 4,
+      "stats_cache_entries": 4,
+      "search_query_limit": 5000,
+      "unit_min_docs": 2,
+      "unit_max_docs": 300,
+      "unit_relevance_fraction": 0.3,
+      "prose_preference_threshold": 20,
+      "analysis_max_codepoints": 20000,
+      "graph_salient_terms": 10,
+      "graph_max_entities": 20,
+      "fallback_term_weight": 0.5,
+      "global_min_docs": 10,
+      "global_df_fraction": 0.35,
+      "cluster_min_df": 2,
+      "cluster_min_docs": 3,
+      "theme_terms": 12,
+      "label_terms": 3,
+      "max_themes": 12,
+      "global_terms": 15,
+      "manifest_seed_limit": 12,
+      "auto_hits_divisor": 10,
+      "auto_hits_min": 25,
+      "auto_hits_max": 200,
+      "standalone_hits": 150,
+      "synthesis_seed_weight": 0.5,
+      "theme_link_weight": 0.5,
+      "graph_poll_interval": 25,
+      "items_poll_interval": 200,
+      "status_artifact_limit": 1000
+    },
+    "refinement": {
+      "model_keys": [
+        "semantic_model",
+        "default_model"
+      ],
+      "confidence_threshold": 0.6,
+      "excluded_types": [
+        "implementation"
+      ],
+      "max_items": 100,
+      "batch_size": 25,
+      "max_item_codepoints": 300,
+      "temperature": 0,
+      "max_tokens": 1500,
+      "timeout_ms": 60000,
+      "confidence_floor": 0.7,
+      "title": "ChatADHD-Archive",
+      "prompt": "Classify each numbered sentence from a project archive as one of: idea, decision, rejected_option, open_question, implementation, bug, requirement, invariant, rationale, none. Sentences may be Polish or English. Reply with only a JSON array of objects {\"i\": <number>, \"type\": <label>}.\n\n"
+    },
+    "clustering": {
+      "max_local_passes": 100,
+      "max_levels": 10,
+      "gain_tolerance": 1e-12
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "text",
+      "items",
+      "code",
+      "scan",
+      "synthesis",
+      "vocabulary",
+      "pipeline",
+      "refinement",
+      "clustering"
+    ],
+    "properties": {
+      "text": {
+        "type": "object",
+        "required": [
+          "abbreviations",
+          "glossary",
+          "stem_min_extra_bytes",
+          "stem_rules",
+          "min_token_codepoints",
+          "min_sentence_codepoints",
+          "min_sentence_tokens"
+        ],
+        "properties": {
+          "abbreviations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/text/abbreviations",
+            "x-consumer": "archive",
+            "title": "abbreviations"
+          },
+          "glossary": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "type": "string"
+            },
+            "x-setting": "/text/glossary",
+            "x-consumer": "archive",
+            "title": "glossary"
+          },
+          "stem_min_extra_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/text/stem_min_extra_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "stem min extra bytes",
+            "x-unit": "bytes"
+          },
+          "stem_rules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "suffixes",
+                "exclude",
+                "remove",
+                "replacement"
+              ],
+              "properties": {
+                "suffixes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "exclude": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "remove": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "x-setting": "/text/stem_rules/*/remove",
+                  "x-consumer": "archive",
+                  "maximum": 2147483647
+                },
+                "replacement": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "x-setting": "/text/stem_rules",
+            "x-consumer": "archive",
+            "title": "stem rules"
+          },
+          "min_token_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/text/min_token_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min token codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "min_sentence_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/text/min_sentence_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min sentence codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "min_sentence_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/text/min_sentence_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min sentence tokens"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/text",
+        "x-consumer": "archive",
+        "title": "text"
+      },
+      "items": {
+        "type": "object",
+        "required": [
+          "types",
+          "contains_headings",
+          "requirement_penalty_phrases",
+          "requirement_penalty",
+          "question_suffix",
+          "question_suffix_score",
+          "question_prefix",
+          "question_prefix_cue",
+          "question_prefix_score",
+          "min_score",
+          "min_sentence_score",
+          "min_list_tokens",
+          "min_heading_tokens",
+          "confidence_base",
+          "confidence_slope",
+          "ambiguity_margin",
+          "ambiguity_penalty",
+          "confidence_min",
+          "confidence_max",
+          "subject_min_token_codepoints",
+          "negation_lookback",
+          "bug_markers",
+          "todo_confidence",
+          "commit_bug_phrases",
+          "commit_confidence",
+          "text_max_codepoints",
+          "sentence_max_bytes",
+          "sentence_min_tokens",
+          "relation_types",
+          "idf_offset",
+          "distinctive_df_min",
+          "distinctive_df_fraction",
+          "max_shared_token_items",
+          "min_shared_distinctive",
+          "min_longer_share",
+          "supersede_threshold",
+          "contradict_threshold",
+          "resolution_threshold"
+        ],
+        "properties": {
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/items/types",
+            "x-consumer": "archive",
+            "title": "types"
+          },
+          "contains_headings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/items/contains_headings",
+            "x-consumer": "archive",
+            "title": "contains headings"
+          },
+          "requirement_penalty_phrases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/items/requirement_penalty_phrases",
+            "x-consumer": "archive",
+            "title": "requirement penalty phrases"
+          },
+          "requirement_penalty": {
+            "type": "number",
+            "x-setting": "/items/requirement_penalty",
+            "x-consumer": "archive",
+            "title": "requirement penalty"
+          },
+          "question_suffix": {
+            "type": "string",
+            "x-setting": "/items/question_suffix",
+            "x-consumer": "archive",
+            "title": "question suffix"
+          },
+          "question_suffix_score": {
+            "type": "number",
+            "x-setting": "/items/question_suffix_score",
+            "x-consumer": "archive",
+            "title": "question suffix score"
+          },
+          "question_prefix": {
+            "type": "string",
+            "x-setting": "/items/question_prefix",
+            "x-consumer": "archive",
+            "title": "question prefix"
+          },
+          "question_prefix_cue": {
+            "type": "string",
+            "x-setting": "/items/question_prefix_cue",
+            "x-consumer": "archive",
+            "title": "question prefix cue"
+          },
+          "question_prefix_score": {
+            "type": "number",
+            "x-setting": "/items/question_prefix_score",
+            "x-consumer": "archive",
+            "title": "question prefix score"
+          },
+          "min_score": {
+            "type": "number",
+            "x-setting": "/items/min_score",
+            "x-consumer": "archive",
+            "title": "min score"
+          },
+          "min_sentence_score": {
+            "type": "number",
+            "x-setting": "/items/min_sentence_score",
+            "x-consumer": "archive",
+            "title": "min sentence score"
+          },
+          "min_list_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/min_list_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min list tokens"
+          },
+          "min_heading_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/min_heading_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min heading tokens"
+          },
+          "confidence_base": {
+            "type": "number",
+            "x-setting": "/items/confidence_base",
+            "x-consumer": "archive",
+            "title": "confidence base"
+          },
+          "confidence_slope": {
+            "type": "number",
+            "x-setting": "/items/confidence_slope",
+            "x-consumer": "archive",
+            "title": "confidence slope"
+          },
+          "ambiguity_margin": {
+            "type": "number",
+            "x-setting": "/items/ambiguity_margin",
+            "x-consumer": "archive",
+            "title": "ambiguity margin"
+          },
+          "ambiguity_penalty": {
+            "type": "number",
+            "x-setting": "/items/ambiguity_penalty",
+            "x-consumer": "archive",
+            "title": "ambiguity penalty"
+          },
+          "confidence_min": {
+            "type": "number",
+            "x-setting": "/items/confidence_min",
+            "x-consumer": "archive",
+            "title": "confidence min"
+          },
+          "confidence_max": {
+            "type": "number",
+            "x-setting": "/items/confidence_max",
+            "x-consumer": "archive",
+            "title": "confidence max"
+          },
+          "subject_min_token_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/subject_min_token_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "subject min token codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "negation_lookback": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/negation_lookback",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "negation lookback"
+          },
+          "bug_markers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/items/bug_markers",
+            "x-consumer": "archive",
+            "title": "bug markers"
+          },
+          "todo_confidence": {
+            "type": "number",
+            "x-setting": "/items/todo_confidence",
+            "x-consumer": "archive",
+            "title": "todo confidence"
+          },
+          "commit_bug_phrases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/items/commit_bug_phrases",
+            "x-consumer": "archive",
+            "title": "commit bug phrases"
+          },
+          "commit_confidence": {
+            "type": "number",
+            "x-setting": "/items/commit_confidence",
+            "x-consumer": "archive",
+            "title": "commit confidence"
+          },
+          "text_max_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/text_max_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "text max codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "sentence_max_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/sentence_max_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "sentence max bytes",
+            "x-unit": "bytes"
+          },
+          "sentence_min_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/sentence_min_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "sentence min tokens"
+          },
+          "relation_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/items/relation_types",
+            "x-consumer": "archive",
+            "title": "relation types"
+          },
+          "idf_offset": {
+            "type": "number",
+            "x-setting": "/items/idf_offset",
+            "x-consumer": "archive",
+            "title": "idf offset"
+          },
+          "distinctive_df_min": {
+            "type": "number",
+            "x-setting": "/items/distinctive_df_min",
+            "x-consumer": "archive",
+            "title": "distinctive df min"
+          },
+          "distinctive_df_fraction": {
+            "type": "number",
+            "x-setting": "/items/distinctive_df_fraction",
+            "x-consumer": "archive",
+            "title": "distinctive df fraction"
+          },
+          "max_shared_token_items": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/max_shared_token_items",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max shared token items"
+          },
+          "min_shared_distinctive": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/items/min_shared_distinctive",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min shared distinctive"
+          },
+          "min_longer_share": {
+            "type": "number",
+            "x-setting": "/items/min_longer_share",
+            "x-consumer": "archive",
+            "title": "min longer share"
+          },
+          "supersede_threshold": {
+            "type": "number",
+            "x-setting": "/items/supersede_threshold",
+            "x-consumer": "archive",
+            "title": "supersede threshold"
+          },
+          "contradict_threshold": {
+            "type": "number",
+            "x-setting": "/items/contradict_threshold",
+            "x-consumer": "archive",
+            "title": "contradict threshold"
+          },
+          "resolution_threshold": {
+            "type": "number",
+            "x-setting": "/items/resolution_threshold",
+            "x-consumer": "archive",
+            "title": "resolution threshold"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/items",
+        "x-consumer": "archive",
+        "title": "items"
+      },
+      "code": {
+        "type": "object",
+        "required": [
+          "extensions",
+          "filenames",
+          "non_functions",
+          "modifiers",
+          "type_words",
+          "todo_markers",
+          "cmake_commands",
+          "c_like",
+          "hash_comments",
+          "max_uses",
+          "min_comment_tokens",
+          "max_digest_symbols",
+          "comment_budget_bytes",
+          "max_extra_symbols"
+        ],
+        "properties": {
+          "extensions": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "type": "string"
+            },
+            "x-setting": "/code/extensions",
+            "x-consumer": "archive",
+            "title": "extensions"
+          },
+          "filenames": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "type": "string"
+            },
+            "x-setting": "/code/filenames",
+            "x-consumer": "archive",
+            "title": "filenames"
+          },
+          "non_functions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/code/non_functions",
+            "x-consumer": "archive",
+            "title": "non functions"
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/code/modifiers",
+            "x-consumer": "archive",
+            "title": "modifiers"
+          },
+          "type_words": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/code/type_words",
+            "x-consumer": "archive",
+            "title": "type words"
+          },
+          "todo_markers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/code/todo_markers",
+            "x-consumer": "archive",
+            "title": "todo markers"
+          },
+          "cmake_commands": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/code/cmake_commands",
+            "x-consumer": "archive",
+            "title": "cmake commands"
+          },
+          "c_like": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/code/c_like",
+            "x-consumer": "archive",
+            "title": "c like"
+          },
+          "hash_comments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/code/hash_comments",
+            "x-consumer": "archive",
+            "title": "hash comments"
+          },
+          "max_uses": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/code/max_uses",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max uses"
+          },
+          "min_comment_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/code/min_comment_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min comment tokens"
+          },
+          "max_digest_symbols": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/code/max_digest_symbols",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max digest symbols"
+          },
+          "comment_budget_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/code/comment_budget_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "comment budget bytes",
+            "x-unit": "bytes"
+          },
+          "max_extra_symbols": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/code/max_extra_symbols",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max extra symbols"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/code",
+        "x-consumer": "archive",
+        "title": "code"
+      },
+      "scan": {
+        "type": "object",
+        "required": [
+          "skip_dirs",
+          "document_extensions",
+          "import_extensions",
+          "max_unknown_text_bytes",
+          "text_user_threshold",
+          "text_assistant_threshold",
+          "title_lines",
+          "db_query_limit",
+          "readme_seed_limit",
+          "checkpoint_seconds"
+        ],
+        "properties": {
+          "skip_dirs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/scan/skip_dirs",
+            "x-consumer": "archive",
+            "title": "skip dirs"
+          },
+          "document_extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/scan/document_extensions",
+            "x-consumer": "archive",
+            "title": "document extensions"
+          },
+          "import_extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/scan/import_extensions",
+            "x-consumer": "archive",
+            "title": "import extensions"
+          },
+          "max_unknown_text_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/scan/max_unknown_text_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max unknown text bytes",
+            "x-unit": "bytes"
+          },
+          "text_user_threshold": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/scan/text_user_threshold",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "text user threshold"
+          },
+          "text_assistant_threshold": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/scan/text_assistant_threshold",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "text assistant threshold"
+          },
+          "title_lines": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/scan/title_lines",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "title lines"
+          },
+          "db_query_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/scan/db_query_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "db query limit"
+          },
+          "readme_seed_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/scan/readme_seed_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "readme seed limit"
+          },
+          "checkpoint_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/scan/checkpoint_seconds",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "checkpoint seconds"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/scan",
+        "x-consumer": "archive",
+        "title": "scan"
+      },
+      "synthesis": {
+        "type": "object",
+        "required": [
+          "external_names",
+          "source_extensions",
+          "sections",
+          "kind_labels",
+          "spec_kinds",
+          "prefix_match_bytes",
+          "evidence_files",
+          "partial_fraction",
+          "named_min_bytes",
+          "inflection_max_bytes",
+          "title_phrase_min_tokens",
+          "title_phrase_max_tokens",
+          "title_word_min_bytes",
+          "feature_max_codepoints",
+          "section_min_features",
+          "theme_gap_min_docs",
+          "todo_limit",
+          "reason_limit",
+          "theme_term_limit",
+          "theme_doc_limit",
+          "timeline_head",
+          "timeline_tail",
+          "edge_limit",
+          "phrase_gap_limit",
+          "component_gap_limit",
+          "section_gap_limit",
+          "missing_feature_limit",
+          "section_gap_min_features",
+          "section_gap_coverage_fraction",
+          "discovered_min_df",
+          "discovered_limit"
+        ],
+        "properties": {
+          "external_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/synthesis/external_names",
+            "x-consumer": "archive",
+            "title": "external names"
+          },
+          "source_extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/synthesis/source_extensions",
+            "x-consumer": "archive",
+            "title": "source extensions"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "title",
+                "type",
+                "cap",
+                "inactive"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "cap": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "x-setting": "/synthesis/sections/*/cap",
+                  "x-consumer": "archive",
+                  "maximum": 2147483647
+                },
+                "inactive": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "x-setting": "/synthesis/sections",
+            "x-consumer": "archive",
+            "title": "sections"
+          },
+          "kind_labels": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "type": "string"
+            },
+            "x-setting": "/synthesis/kind_labels",
+            "x-consumer": "archive",
+            "title": "kind labels"
+          },
+          "spec_kinds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/synthesis/spec_kinds",
+            "x-consumer": "archive",
+            "title": "spec kinds"
+          },
+          "prefix_match_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/prefix_match_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "prefix match bytes",
+            "x-unit": "bytes"
+          },
+          "evidence_files": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/evidence_files",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "evidence files"
+          },
+          "partial_fraction": {
+            "type": "number",
+            "x-setting": "/synthesis/partial_fraction",
+            "x-consumer": "archive",
+            "title": "partial fraction"
+          },
+          "named_min_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/named_min_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "named min bytes",
+            "x-unit": "bytes"
+          },
+          "inflection_max_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/inflection_max_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "inflection max bytes",
+            "x-unit": "bytes"
+          },
+          "title_phrase_min_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/title_phrase_min_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "title phrase min tokens"
+          },
+          "title_phrase_max_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/title_phrase_max_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "title phrase max tokens"
+          },
+          "title_word_min_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/title_word_min_bytes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "title word min bytes",
+            "x-unit": "bytes"
+          },
+          "feature_max_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/feature_max_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "feature max codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "section_min_features": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/section_min_features",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "section min features"
+          },
+          "theme_gap_min_docs": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/theme_gap_min_docs",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "theme gap min docs"
+          },
+          "todo_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/todo_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "todo limit"
+          },
+          "reason_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/reason_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "reason limit"
+          },
+          "theme_term_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/theme_term_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "theme term limit"
+          },
+          "theme_doc_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/theme_doc_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "theme doc limit"
+          },
+          "timeline_head": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/timeline_head",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "timeline head"
+          },
+          "timeline_tail": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/timeline_tail",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "timeline tail"
+          },
+          "edge_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/edge_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "edge limit"
+          },
+          "phrase_gap_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/phrase_gap_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "phrase gap limit"
+          },
+          "component_gap_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/component_gap_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "component gap limit"
+          },
+          "section_gap_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/section_gap_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "section gap limit"
+          },
+          "missing_feature_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/missing_feature_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "missing feature limit"
+          },
+          "section_gap_min_features": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/section_gap_min_features",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "section gap min features"
+          },
+          "section_gap_coverage_fraction": {
+            "type": "number",
+            "x-setting": "/synthesis/section_gap_coverage_fraction",
+            "x-consumer": "archive",
+            "title": "section gap coverage fraction"
+          },
+          "discovered_min_df": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/discovered_min_df",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "discovered min df"
+          },
+          "discovered_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/synthesis/discovered_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "discovered limit"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/synthesis",
+        "x-consumer": "archive",
+        "title": "synthesis"
+      },
+      "vocabulary": {
+        "type": "object",
+        "required": [
+          "camel_min_length",
+          "camel_min_uppercase",
+          "salient_min_df",
+          "salient_max_df_fraction",
+          "salient_phrase_boost",
+          "ner_max_codepoints",
+          "ner_types",
+          "ner_max_tokens",
+          "large_hit_count",
+          "min_hit_df",
+          "large_min_hit_df",
+          "generic_min_corpus",
+          "generic_df_fraction",
+          "min_lift",
+          "phrase_boost",
+          "pool_multiplier",
+          "cooccurrence_base",
+          "ner_boost",
+          "evidence_limit"
+        ],
+        "properties": {
+          "camel_min_length": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/camel_min_length",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "camel min length"
+          },
+          "camel_min_uppercase": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/camel_min_uppercase",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "camel min uppercase"
+          },
+          "salient_min_df": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/salient_min_df",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "salient min df"
+          },
+          "salient_max_df_fraction": {
+            "type": "number",
+            "x-setting": "/vocabulary/salient_max_df_fraction",
+            "x-consumer": "archive",
+            "title": "salient max df fraction"
+          },
+          "salient_phrase_boost": {
+            "type": "number",
+            "x-setting": "/vocabulary/salient_phrase_boost",
+            "x-consumer": "archive",
+            "title": "salient phrase boost"
+          },
+          "ner_max_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/ner_max_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "ner max codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "ner_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/vocabulary/ner_types",
+            "x-consumer": "archive",
+            "title": "ner types"
+          },
+          "ner_max_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/ner_max_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "ner max tokens"
+          },
+          "large_hit_count": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/large_hit_count",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "large hit count"
+          },
+          "min_hit_df": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/min_hit_df",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "min hit df"
+          },
+          "large_min_hit_df": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/large_min_hit_df",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "large min hit df"
+          },
+          "generic_min_corpus": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/generic_min_corpus",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "generic min corpus"
+          },
+          "generic_df_fraction": {
+            "type": "number",
+            "x-setting": "/vocabulary/generic_df_fraction",
+            "x-consumer": "archive",
+            "title": "generic df fraction"
+          },
+          "min_lift": {
+            "type": "number",
+            "x-setting": "/vocabulary/min_lift",
+            "x-consumer": "archive",
+            "title": "min lift"
+          },
+          "phrase_boost": {
+            "type": "number",
+            "x-setting": "/vocabulary/phrase_boost",
+            "x-consumer": "archive",
+            "title": "phrase boost"
+          },
+          "pool_multiplier": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/pool_multiplier",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "pool multiplier"
+          },
+          "cooccurrence_base": {
+            "type": "number",
+            "x-setting": "/vocabulary/cooccurrence_base",
+            "x-consumer": "archive",
+            "title": "cooccurrence base"
+          },
+          "ner_boost": {
+            "type": "number",
+            "x-setting": "/vocabulary/ner_boost",
+            "x-consumer": "archive",
+            "title": "ner boost"
+          },
+          "evidence_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/vocabulary/evidence_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "evidence limit"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/vocabulary",
+        "x-consumer": "archive",
+        "title": "vocabulary"
+      },
+      "pipeline": {
+        "type": "object",
+        "required": [
+          "corpus_cache_entries",
+          "stats_cache_entries",
+          "search_query_limit",
+          "unit_min_docs",
+          "unit_max_docs",
+          "unit_relevance_fraction",
+          "prose_preference_threshold",
+          "analysis_max_codepoints",
+          "graph_salient_terms",
+          "graph_max_entities",
+          "fallback_term_weight",
+          "global_min_docs",
+          "global_df_fraction",
+          "cluster_min_df",
+          "cluster_min_docs",
+          "theme_terms",
+          "label_terms",
+          "max_themes",
+          "global_terms",
+          "manifest_seed_limit",
+          "auto_hits_divisor",
+          "auto_hits_min",
+          "auto_hits_max",
+          "standalone_hits",
+          "synthesis_seed_weight",
+          "theme_link_weight",
+          "graph_poll_interval",
+          "items_poll_interval",
+          "status_artifact_limit"
+        ],
+        "properties": {
+          "corpus_cache_entries": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/corpus_cache_entries",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "corpus cache entries"
+          },
+          "stats_cache_entries": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/stats_cache_entries",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "stats cache entries"
+          },
+          "search_query_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/search_query_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "search query limit"
+          },
+          "unit_min_docs": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/unit_min_docs",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "unit min docs"
+          },
+          "unit_max_docs": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/unit_max_docs",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "unit max docs"
+          },
+          "unit_relevance_fraction": {
+            "type": "number",
+            "x-setting": "/pipeline/unit_relevance_fraction",
+            "x-consumer": "archive",
+            "title": "unit relevance fraction"
+          },
+          "prose_preference_threshold": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/prose_preference_threshold",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "prose preference threshold"
+          },
+          "analysis_max_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/analysis_max_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "analysis max codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "graph_salient_terms": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/graph_salient_terms",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "graph salient terms"
+          },
+          "graph_max_entities": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/graph_max_entities",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "graph max entities"
+          },
+          "fallback_term_weight": {
+            "type": "number",
+            "x-setting": "/pipeline/fallback_term_weight",
+            "x-consumer": "archive",
+            "title": "fallback term weight"
+          },
+          "global_min_docs": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/global_min_docs",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "global min docs"
+          },
+          "global_df_fraction": {
+            "type": "number",
+            "x-setting": "/pipeline/global_df_fraction",
+            "x-consumer": "archive",
+            "title": "global df fraction"
+          },
+          "cluster_min_df": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/cluster_min_df",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "cluster min df"
+          },
+          "cluster_min_docs": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/cluster_min_docs",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "cluster min docs"
+          },
+          "theme_terms": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/theme_terms",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "theme terms"
+          },
+          "label_terms": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/label_terms",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "label terms"
+          },
+          "max_themes": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/max_themes",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max themes"
+          },
+          "global_terms": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/global_terms",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "global terms"
+          },
+          "manifest_seed_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/manifest_seed_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "manifest seed limit"
+          },
+          "auto_hits_divisor": {
+            "type": "integer",
+            "minimum": 1,
+            "x-setting": "/pipeline/auto_hits_divisor",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "auto hits divisor"
+          },
+          "auto_hits_min": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/auto_hits_min",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "auto hits min"
+          },
+          "auto_hits_max": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/auto_hits_max",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "auto hits max"
+          },
+          "standalone_hits": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/standalone_hits",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "standalone hits"
+          },
+          "synthesis_seed_weight": {
+            "type": "number",
+            "x-setting": "/pipeline/synthesis_seed_weight",
+            "x-consumer": "archive",
+            "title": "synthesis seed weight"
+          },
+          "theme_link_weight": {
+            "type": "number",
+            "x-setting": "/pipeline/theme_link_weight",
+            "x-consumer": "archive",
+            "title": "theme link weight"
+          },
+          "graph_poll_interval": {
+            "type": "integer",
+            "minimum": 1,
+            "x-setting": "/pipeline/graph_poll_interval",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "graph poll interval"
+          },
+          "items_poll_interval": {
+            "type": "integer",
+            "minimum": 1,
+            "x-setting": "/pipeline/items_poll_interval",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "items poll interval"
+          },
+          "status_artifact_limit": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/pipeline/status_artifact_limit",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "status artifact limit"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/pipeline",
+        "x-consumer": "archive",
+        "title": "pipeline"
+      },
+      "refinement": {
+        "type": "object",
+        "required": [
+          "model_keys",
+          "confidence_threshold",
+          "excluded_types",
+          "max_items",
+          "batch_size",
+          "max_item_codepoints",
+          "temperature",
+          "max_tokens",
+          "timeout_ms",
+          "confidence_floor",
+          "title",
+          "prompt"
+        ],
+        "properties": {
+          "model_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/refinement/model_keys",
+            "x-consumer": "archive",
+            "title": "model keys"
+          },
+          "confidence_threshold": {
+            "type": "number",
+            "x-setting": "/refinement/confidence_threshold",
+            "x-consumer": "archive",
+            "title": "confidence threshold"
+          },
+          "excluded_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/refinement/excluded_types",
+            "x-consumer": "archive",
+            "title": "excluded types"
+          },
+          "max_items": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/refinement/max_items",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max items"
+          },
+          "batch_size": {
+            "type": "integer",
+            "minimum": 1,
+            "x-setting": "/refinement/batch_size",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "batch size"
+          },
+          "max_item_codepoints": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/refinement/max_item_codepoints",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max item codepoints",
+            "x-unit": "Unicode codepoints"
+          },
+          "temperature": {
+            "type": "number",
+            "x-setting": "/refinement/temperature",
+            "x-consumer": "archive",
+            "title": "temperature"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/refinement/max_tokens",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "max tokens"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "x-setting": "/refinement/timeout_ms",
+            "x-consumer": "archive",
+            "maximum": 2147483647,
+            "title": "timeout ms",
+            "x-unit": "milliseconds"
+          },
+          "confidence_floor": {
+            "type": "number",
+            "x-setting": "/refinement/confidence_floor",
+            "x-consumer": "archive",
+            "title": "confidence floor"
+          },
+          "title": {
+            "type": "string",
+            "x-setting": "/refinement/title",
+            "x-consumer": "archive",
+            "title": "title"
+          },
+          "prompt": {
+            "type": "string",
+            "x-setting": "/refinement/prompt",
+            "x-consumer": "archive",
+            "title": "prompt"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/refinement",
+        "x-consumer": "archive",
+        "title": "refinement"
+      },
+      "clustering": {
+        "type": "object",
+        "required": [
+          "max_local_passes",
+          "max_levels",
+          "gain_tolerance"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "max_local_passes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "x-unit": "iterations",
+            "x-setting": "/clustering/max_local_passes",
+            "x-consumer": "archive",
+            "title": "max local passes"
+          },
+          "max_levels": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "x-unit": "levels",
+            "x-setting": "/clustering/max_levels",
+            "x-consumer": "archive",
+            "title": "max levels"
+          },
+          "gain_tolerance": {
+            "type": "number",
+            "minimum": 0,
+            "x-unit": "gain",
+            "x-setting": "/clustering/gain_tolerance",
+            "x-consumer": "archive",
+            "title": "gain tolerance"
+          }
+        },
+        "x-setting": "/clustering",
+        "x-consumer": "archive",
+        "title": "clustering"
+      }
+    },
+    "additionalProperties": false
+  }
+}
