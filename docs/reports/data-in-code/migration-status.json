@@ -1,0 +1,2720 @@
+{
+  "schema": "loom.data_in_code.migration-status/1",
+  "date": "2026-10-04",
+  "base_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "inventory": "docs/reports/data-in-code/inventory.json",
+  "inventory_scope": "original thread11 groups only; other owners and post-baseline supplements remain separate",
+  "reviewed_groups": 213,
+  "review_status": "source audit complete; full current build/CTest verification is recorded separately by integrator",
+  "status_definitions": {
+    "migrated": "Identified mutable values use a canonical profile with exact default presets; trusted executable or wire operations may remain and are noted per row.",
+    "partially-migrated": "Some data moved; specific caller wiring or compiled policy/contract portions remain and are stated explicitly.",
+    "retained-wire": "The listed decoder/format portion preserves compatibility. A per-row follow_up can separately identify creation policy not implemented.",
+    "retained-algorithm": "Existing universal executable operation/dependency wiring retained, not domain presets.",
+    "deferred-to-other-thread": "Identified source edit belongs to another assigned owner and was not made in thread11.",
+    "remaining-policy": "Identified adjustable policy still remains compiled."
+  },
+  "counts": {
+    "deferred-to-other-thread": 1,
+    "migrated": 187,
+    "partially-migrated": 19,
+    "retained-algorithm": 1,
+    "retained-wire": 5
+  },
+  "open_follow_up_counts": {
+    "external-creation-producer-wiring-pending": 5
+  },
+  "snapshot": {
+    "source_head": "49e5e65cb734e60d5bcaff9bb51a1ca7ffcb6ee2",
+    "working_tree_reviewed": true,
+    "source_sha256": {
+      "loom/cli/main.cpp": "c3616a5af609c156c914c827a2646b85e27081c1412c7635037a12494a7aed23",
+      "loom/data/runtime/cli.pack": "56998afe641e43c8950c4520aef423bf8916e51aa2974f1a9b46a91ed5015a2b",
+      "loom/data/runtime/memory.pack": "a45496645536944f1f0b5069a4d143693878fa0cdb21c4e2440408058beeaf89",
+      "loom/data/runtime/model.pack": "051e961438dc6c5723860492c4ea03c352c1a880caf6bfdeb30835e26612311b",
+      "loom/data/runtime/re.pack": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508",
+      "loom/data/runtime/selector.pack": "f0894d5359db0d7ee4b94a2e27b3d25381253696744f5d9254af5a094c9ebae2",
+      "loom/data/runtime/util.pack": "b1b11b72251aa5afa0b90c128e7fc5d6571cde81d964da2e8aa3a2aa0600181f",
+      "loom/include/loom/graph_memory.h": "5059c7c68e339a7529242be86f33d4186e205eab5b6a86f4bf74c4a3898d3b78",
+      "loom/include/loom/knowledge.h": "a9a9318e992645ab877d6c8ba8b50be6cd5e4336b5f4122c609c9f2406c64054",
+      "loom/include/loom/memory_engine.h": "752870eb21ad5a5834a8f668bdb39af062dc97a25200e07fd3de9af34810920f",
+      "loom/include/loom/model_profile.h": "388e716cfa32cf48f7ba23ef2f8a4ae33d591525386f7d868a057d2ed5bf805f",
+      "loom/include/loom/selector.h": "30f19de462691a3cb4a17c788835a9b33414262335cff1bcdbc4b385cb162816",
+      "loom/include/loom/util/fs.h": "117cc8d3cfba55fbfeff55f64a1696ee96c4da12aadb738989be4ca047503359",
+      "loom/src/archive/items.cpp": "b9d6ce2d37e7e6763e8755f86abc83ce306a19a34f6b17aa1b68d2123a6723e8",
+      "loom/src/archive/synth.cpp": "3ed3e49624db62eca55f79fac517806dec33181f8f49f244c9954aebc8f0a549",
+      "loom/src/archive/text.cpp": "4ea36cbce7645821c9cbbd437bafbb70112f04956cfe4fc4395d38be6c62766a",
+      "loom/src/archive/vocab.cpp": "5f3b06c75728f613651a24a8772f797698d04d058326d0f47a337cff5f4e7b9a",
+      "loom/src/context/ctx_common.cpp": "27d0f04412cb37b26afc966aa4b304ef46a31d62527dfce0e657eb5204da5fb0",
+      "loom/src/generalize/stage.cpp": "d55619a77b89911c6e0a51150750e6056c58cc7645e63c867257a27f224dcd12",
+      "loom/src/github/github_sync.cpp": "b18dd8d5ec7d6a47b7de6baf4bf468e0f1d874b5a7e8e16ebe98f929a7a2d760",
+      "loom/src/graph/graph_engine.cpp": "157e5e92c3d8fec46202be447d5e91d9d263a07b9a0341b3077b6fd8a8d27223",
+      "loom/src/graph/graph_memory.cpp": "bfaa1f9ab0a47dec31baa076505e0e86ee090d8f58266a5d8ff538589aacbaf8",
+      "loom/src/kb/store.cpp": "a15552c07d6777cad9fe43d87432eb9251d7887d21afa058caa8073f19baee90",
+      "loom/src/knowledge/engine.cpp": "4000baf026c378bc2be4d1488c73d7d3d2307360445d6c1553403a84a671bc16",
+      "loom/src/materialize/materialize.cpp": "7be9894a225e3e8969b5f7cb61cac3ee3ac7ee6a5993a600b424694a192e9753",
+      "loom/src/media/media_providers.cpp": "592927c283ca413e76825e1479f8dbda023077121578fd6b4483bc0e698c5025",
+      "loom/src/memory/memory_engine.cpp": "5654bd80060eda6aeaa147d16e57e546ce4896e0baa2f01a8bc3e0f1ad78a40b",
+      "loom/src/model/model_action.cpp": "9b41cf20e5317462c946f878d2ae9be222eb6c9b18b0e7ec9083c4885405bac9",
+      "loom/src/model/model_core.cpp": "87ee8f1545aadeb7cafb09cf4dd2bffda4d49ce2a6f778ef146b980ccfea1a39",
+      "loom/src/model/model_pack.cpp": "229a5bffd7da30d1f7df7ddbee663129c394f3b70a4ecf0c5f18617c30e86492",
+      "loom/src/net/http_common.cpp": "9c81f0959b00624e60899f56f2797f9891cef5e56895207d1678107766a384c4",
+      "loom/src/net/http_default.cpp": "767f3c5053d7f38996e3e9d4712be9a5c98a511355fffa85d0b99a5a69ec1694",
+      "loom/src/net/sse.cpp": "9491adc32e7d182b5ba232eade12c37b639911d26ea45372e4d78446a59077b2",
+      "loom/src/re/regex.cpp": "9cd9ca1bf75e2f299340fb15ece058298f7f27ac4fc476ebd0248e5a21b3b104",
+      "loom/src/resolve/assess.cpp": "2349a70c689845bc4d52d3f8a50e45a5832f1a2a7345b9469b2842ae141407cd",
+      "loom/src/resolve/stage.cpp": "67a972f48d6596c476abe5aa1504bb723ba4adb2ef18845fc9874acb3ec53843",
+      "loom/src/search/selector.cpp": "bb3154db769164177fa733cc13ab9b37f511028fd4eccb59f124c461e7a92719",
+      "loom/src/semantic/analyzer.cpp": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2",
+      "loom/src/semantic/semantic_llm.cpp": "2b93b269fc2a0a9c5cdcf624ce61bff99571fbab374351f6251ef321965c235c",
+      "loom/src/util/fs.cpp": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa",
+      "loom/src/util/log.cpp": "5c63aeb87b5bfcf626b1cc68904d47532a767c57d8f49c5ec845c0ba75f03dfc",
+      "loom/src/worker/semantic_worker.cpp": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85",
+      "loom/tests/test_archive_synthesis_policy.cpp": "bc9516e5b74b375cee94de8c2e24066a43bd06d40cd17fe797d663e89e85102a",
+      "loom/tests/test_model_creation_profile.cpp": "ccc382d5a81a04b12ece149ba441aa9ea5b7709dff502dadf1a0cadd3928d4c8"
+    },
+    "canonical_profile_file_sha256": {
+      "loom/data/runtime/archive.pack": "c1d34a47b5f6a5a57bf2d969338bccf7a0065e45df268d896de6e85f49489c67",
+      "loom/data/runtime/cli.pack": "56998afe641e43c8950c4520aef423bf8916e51aa2974f1a9b46a91ed5015a2b",
+      "loom/data/runtime/config.pack": "6f7c11c5ad857e3e3936df7667fcc0c673ddf2e2f652ae5aef8c3d3f4d1c20cd",
+      "loom/data/runtime/github.pack": "2f2d72f6fe94f57ebe11ab90883a530266188180bd803cc72a7697f336a108f3",
+      "loom/data/runtime/graph_ingest.pack": "3860f807fb21dc150a09660d0d6ad452d0cd066e970462b2f4530a1a3c60e987",
+      "loom/data/runtime/graph_memory.pack": "4224741a5014c5454ef0c24d36304d172fc74fe468afd4f0b0b1f541ca143a23",
+      "loom/data/runtime/knowledge.pack": "ce1516d9fde3aa2bb0145bb9c6c1261e3422628a898cce5273f185e558f912e7",
+      "loom/data/runtime/materialize.pack": "4dbb1e4d99a6f2332b45cbb243361cb831bd021e6a744071b3cff8732012a8f3",
+      "loom/data/runtime/media.pack": "f70e9c6fef0507a731da6074e764e115cf4cb84e3a81690d95258b06395ea0af",
+      "loom/data/runtime/memory.pack": "a45496645536944f1f0b5069a4d143693878fa0cdb21c4e2440408058beeaf89",
+      "loom/data/runtime/model.pack": "051e961438dc6c5723860492c4ea03c352c1a880caf6bfdeb30835e26612311b",
+      "loom/data/runtime/net.pack": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389",
+      "loom/data/runtime/re.pack": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508",
+      "loom/data/runtime/runtime_paths.pack": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22",
+      "loom/data/runtime/selector.pack": "f0894d5359db0d7ee4b94a2e27b3d25381253696744f5d9254af5a094c9ebae2",
+      "loom/data/runtime/semantic_analyzer.pack": "e1855a8646b51903d1b33da6a138773c233f163a5da8b501273f0aa003b08fcb",
+      "loom/data/runtime/usage_policy.pack": "85bea77d6f935c098ef3cb6de7ffc9fc9a07282e065bd9c10834f04b7d957335",
+      "loom/data/runtime/util.pack": "b1b11b72251aa5afa0b90c128e7fc5d6571cde81d964da2e8aa3a2aa0600181f",
+      "loom/data/runtime/worker.pack": "569b54b601dcf8c64e97bddab8e6d99a6239bb831372fc31a9ea9a7bbbd12c8f"
+    },
+    "inventory_sha256": "a2ee7cfcdcc71791e12e855ce73553eb6428c83a67a70a39c89463fad43604e3",
+    "baseline_inventory_sha256": "8e00f74bc64ab4a989331a9dbf2df3d3249bb373c6b44f7bd27b83f823cea1f0",
+    "baseline_inventory_git_blob": "2b6a3dad56777b13983c1f73bab90d345f0e332c",
+    "note": "Hashes identify reviewed files including uncommitted final followups; source_head alone is not the full reviewed tree."
+  },
+  "implementation_reports": [
+    "docs/reports/data-in-code/implementation-semantics.md",
+    "docs/reports/data-in-code/implementation-memory-selector.md",
+    "docs/reports/data-in-code/implementation-archive.md",
+    "docs/reports/data-in-code/implementation-archive-text-policy.md",
+    "docs/reports/data-in-code/implementation-archive-synthesis-policy.md",
+    "docs/reports/data-in-code/implementation-knowledge-net-model.md",
+    "docs/reports/data-in-code/implementation-model-creation-policy.md",
+    "docs/reports/data-in-code/implementation-worker-media-github.md",
+    "docs/reports/data-in-code/implementation-regex.md",
+    "docs/reports/data-in-code/implementation-util.md"
+  ],
+  "postscan": [
+    {
+      "id": "POST-SEMANTIC-GRAMMAR",
+      "status": "retained-algorithm",
+      "notes": "Entity capture1/whole match, relation capture1/2, lowercase dedup and substring topic extraction are the supported trusted extraction operations, not a claim of arbitrary DSL capabilities. Regex opcode/syntax tables and JSON field names preserve grammar/wire contracts.",
+      "evidence": "docs/reports/data-in-code/semantic-regex-remaining.json"
+    },
+    {
+      "id": "POST-GITHUB-ACTIONS",
+      "status": "migrated",
+      "notes": "Named sync direction/status execution choices now come from github.sync_policy mappings to trusted action dispatch; arbitrary executable code is not supplied by profile.",
+      "evidence": [
+        "loom/src/github/github_sync.cpp:24",
+        "loom/data/runtime/github.pack"
+      ]
+    },
+    {
+      "id": "POST-SELECTOR-EMBEDDING-VALIDATION",
+      "status": "fixed-correctness",
+      "notes": "Shared validation checks embedding row count, dimensions and finite components at index/query/profile-change boundaries; failures are explicit and transactional. Original adjustable policy status0033 still remains partial for method combinations/caller wiring.",
+      "evidence": [
+        "loom/src/search/selector.cpp:21",
+        "loom/src/search/selector.cpp:283",
+        "loom/src/search/selector.cpp:303",
+        "loom/src/search/selector.cpp:369",
+        "loom/tests/test_selector.cpp"
+      ]
+    },
+    {
+      "id": "POST-W2-CANONICAL-DEPENDENCIES",
+      "status": "data-ready-core-wiring-pending",
+      "notes": "Canonical runtime_paths,config,usage_policy descriptors and checked inspection/tests exist; active core consumers/composition root remain outside thread11 and need thread2/thread9 integration. Data presence alone does not activate user-root overlays or usage preflight.",
+      "evidence": "docs/reports/data-in-code/runtime-bootstrap-profile-handoff.md"
+    },
+    {
+      "id": "POST-MATERIALIZE-OMISSIONS",
+      "status": "fixed-correctness",
+      "notes": "Configurable renderer omission records complete:false with renderer/key/error receipts; no-error default response shape/hash remains identical. Actual stage regression is part of full Runtime consumer suite.",
+      "evidence": [
+        "loom/src/materialize/materialize.cpp:644",
+        "loom/tests/test_runtime_recipe_consumers.cpp:190"
+      ]
+    }
+  ],
+  "verification_receipts": {
+    "source_reference_closure": "docs/reports/data-in-code/evidence/archive-source-references-policy/receipt.json",
+    "source_reference_scope": "Frozen pre-followup synth.cpp versus current synth.cpp with common current helpers/defaults;8/8cases235/235assertions,142841B exact; no Runtime/transport and no full-main gate claim.",
+    "model_creation": "docs/reports/data-in-code/evidence/model-creation-policy/receipt.json",
+    "semantic_graph_scoped": "docs/reports/data-in-code/evidence/semantics-scoped-receipt.json",
+    "archive_text": "docs/reports/data-in-code/evidence/archive-text-policy/receipt.json",
+    "full_current_gate": "docs/reports/data-in-code/evidence/final-validation/receipt.json",
+    "full_raw_count_coverage": "docs/reports/data-in-code/evidence/final-validation/coverage-full.json",
+    "full_output_restoration": "docs/reports/data-in-code/evidence/final-validation/output-restoration-receipt.json",
+    "semantic_graph_full_runtime": "docs/reports/data-in-code/evidence/fullcore161/receipt-after-semantics_graph_materialize.json"
+  },
+  "by_id": {
+    "DIC-0001": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults/rules/entity_patterns",
+      "notes": "All11 ordered patterns and labels now profile data; deleted old independent generated blob; existing generic regex capability compiles them.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:54",
+        "loom/src/semantic/analyzer.cpp:174"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/builtin_rules.json.inc:2",
+      "destination_before": "loom/data/lexicons/semantic_analyzer.json"
+    },
+    "DIC-0002": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults/rules/topics",
+      "notes": "All7 topic dictionaries preserved as ordered data; whole-array replacement is supported.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:97"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/builtin_rules.json.inc:68",
+      "destination_before": "loom/data/lexicons/semantic_analyzer.json"
+    },
+    "DIC-0003": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults/rules/relation_patterns",
+      "notes": "Both patterns/flags/confidence moved unchanged; actual capture mapping1/2 remains current extraction-operation contract.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:102"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/builtin_rules.json.inc:169",
+      "destination_before": "loom/data/lexicons/semantic_analyzer.json"
+    },
+    "DIC-0004": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults",
+      "notes": "Builtin/data-dir/explicit-profile APIs and GraphEngine/GraphMemory regex routes implemented. Runtime-owned SemanticLLM still holds builtin analyzer and static conversion; effective overlay wiring through model merge/fallback belongs to thread1. No claim of full Runtime overlay coverage.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:186",
+        "loom/src/graph/graph_engine.cpp:132",
+        "loom/src/semantic/semantic_llm.cpp:196"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/analyzer.cpp:53",
+      "destination_before": "pack semantic analyzer profile"
+    },
+    "DIC-0005": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults/parameters/relation_confidence",
+      "notes": "Profile conversion resolves missing per-pattern confidence before decoding. Old from_json literal0.5 remains a historical compatibility decoder default, not mutable interpretation of stored records.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:105",
+        "loom/src/semantic/analyzer.cpp:119"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/analyzer.cpp:103",
+      "destination_before": "semantic analyzer preset.defaults.relation_confidence"
+    },
+    "DIC-0006": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults/parameters/entity_confidence + /rules/entity_patterns/*/confidence",
+      "notes": "Matched entities use resolved default or per-pattern confidence. Legacy ExtractedEntity DTO default1.0 remains, but extraction explicitly writes profile value.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:176"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/analyzer.cpp:187",
+      "destination_before": "semantic analyzer preset.defaults.entity_confidence and entity_patterns[].confidence"
+    },
+    "DIC-0007": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults/parameters/topic_threshold",
+      "notes": "One-argument extract_topics resolves instance threshold from profile; original two-argument API remains explicit call override.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:234"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/include/loom/semantic_analyzer.h:124",
+      "destination_before": "semantic analyzer preset.defaults.topic_threshold"
+    },
+    "DIC-0008": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/semantic_analyzer.pack#/defaults/parameters/{topic_confidence,sentiment}",
+      "notes": "Instance-aware conversion uses these values and preserves source=regex provenance. Graph/Memory regex paths consume it, but SemanticLLM static compatibility conversion still uses builtin parameters; handoff1.",
+      "current_evidence": [
+        "loom/src/semantic/analyzer.cpp:278",
+        "loom/src/semantic/semantic_llm.cpp:196"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/analyzer.cpp:242",
+      "destination_before": "semantic analyzer preset.defaults.topic_confidence and neutral sentiment label"
+    },
+    "DIC-0011": {
+      "status": "deferred-to-other-thread",
+      "destination": "thread1 semantic prompt/request profile",
+      "notes": "HTTP-Referer/X-Title are still literal provider request branding. Deferred to thread1 because user explicitly assigns complete semantic_llm prompt/request composer there; no production edit in thread11.",
+      "current_evidence": [
+        "loom/src/semantic/semantic_llm.cpp:130"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/semantic/semantic_llm.cpp:130",
+      "destination_before": "semantic analysis provider/profile.request_headers"
+    },
+    "DIC-0015": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_ingest.pack#/defaults/entities",
+      "notes": "Default kind/relevance and length/relevance gates read from effective data profile; bindings support arbitrary field/kind strings.",
+      "current_evidence": [
+        "loom/src/graph/graph_engine.cpp:22"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_engine.cpp:27",
+      "destination_before": "loom/data/policy/graph_ingest.json entities"
+    },
+    "DIC-0016": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_ingest.pack#/defaults/entities/predicate",
+      "notes": "mentions moved into entity-binding data; graph linking stays universal.",
+      "current_evidence": [
+        "loom/src/graph/graph_engine.cpp:39"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_engine.cpp:35",
+      "destination_before": "loom/data/policy/graph_ingest.json entity_binding"
+    },
+    "DIC-0017": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_ingest.pack#/defaults/topics",
+      "notes": "Confidence/gate/kind/lowercase transform/predicate are effective profile data.",
+      "current_evidence": [
+        "loom/src/graph/graph_engine.cpp:45"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_engine.cpp:44",
+      "destination_before": "loom/data/policy/graph_ingest.json topics"
+    },
+    "DIC-0018": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_ingest.pack#/defaults/relations + /membership",
+      "notes": "Related fallback and weights/predicates moved; relation endpoint fields are data bindings.",
+      "current_evidence": [
+        "loom/src/graph/graph_engine.cpp:68"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_engine.cpp:67",
+      "destination_before": "loom/data/policy/graph_ingest.json relation_binding and membership_binding"
+    },
+    "DIC-0019": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_ingest.pack#/defaults/min_input_codepoints",
+      "notes": "10-codepoint minimum is mutable preset; checked method loads/validates profile before writes.",
+      "current_evidence": [
+        "loom/src/graph/graph_engine.cpp:128"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_engine.cpp:115",
+      "destination_before": "loom/data/policy/graph_ingest.json min_input_chars"
+    },
+    "DIC-0020": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_ingest.pack#/defaults/reindex_conversation_limit",
+      "notes": "9999 is mutable setting and0 maps to list_convs(-1), unbounded. No paginated traversal implemented, no fixed9999 cap remains.",
+      "current_evidence": [
+        "loom/src/graph/graph_engine.cpp:217"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_engine.cpp:191",
+      "destination_before": "graph reindex setting / usage policy"
+    },
+    "DIC-0021": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/seed_min_label_codepoints",
+      "notes": "Seed minimum now data; own regex-seed route loads semantic overlay.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:35"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:28",
+      "destination_before": "context retrieval preset.seed_min_label_codepoints"
+    },
+    "DIC-0022": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/{default_max_nodes,default_depth,zero_as_default}",
+      "notes": "Fallback values/zero semantics moved, but existing Config graph_memory_max_nodes/depth always shadow fallback on fresh Config (legacy Config defaults20/2). Explicit opts remain authoritative; active-settings distinction/UsagePolicy and unified selector require threads2/3.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:78"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:48",
+      "destination_before": "context selector legacy preset"
+    },
+    "DIC-0023": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/{title_codepoints,snippet_codepoints,header,row,separator}",
+      "notes": "Title/snippet lengths and full prompt renderer are effective data;0 length means untruncated; inert placeholders preserve literal text.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:137"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:106",
+      "destination_before": "loom/data/prompts/graph_memory_context.json"
+    },
+    "DIC-0024": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/graph_label_codepoints",
+      "notes": "Graph display label projection length resolves from effective profile.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:163"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:142",
+      "destination_before": "graph view profile.label_max_codepoints"
+    },
+    "DIC-0025": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/default_expand_max_nodes",
+      "notes": "New two-argument expand resolves data default; old explicit three-argument operation preserved;0 is unlimited.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:156"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/include/loom/graph_memory.h:54",
+      "destination_before": "graph expansion preset"
+    },
+    "DIC-0026": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/context/{max_tokens,include_memory,include_graph,include_search}",
+      "notes": "Parsed JSON omissions now resolve effective profile at selection; explicit fields win and checked from_json_with_profile is available. Public direct C++ DTO still has4000/true compatibility member defaults and is treated as explicit; full shared caller wiring belongs to3. Both JSON parsers now preserve provided_fields including depth; omitted depth stays profile-derived even when explicit zero is enabled.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:210",
+        "loom/src/graph/graph_memory.cpp:262",
+        "loom/include/loom/graph_memory.h:83"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:175",
+      "destination_before": "context selector legacy preset"
+    },
+    "DIC-0027": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/context/codepoints_per_token",
+      "notes": "Heuristic divisor moved; generic integer ceil operation unchanged. Static compatibility estimator uses builtin, effective selector uses current profile; method identity/trace registry belongs to3.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:252"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:198",
+      "destination_before": "context token estimator preset"
+    },
+    "DIC-0028": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/context/{source_order,memory_score,graph_score,search_limit}",
+      "notes": "Source order/scores/FTS limit are configurable. Still three implemented channels and source-order insertion, not arbitrary weighted method fusion/per-hit parameter trace; registry/combinations belong to3.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:304"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:208",
+      "destination_before": "context method-combination preset"
+    },
+    "DIC-0029": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/graph_memory.pack#/defaults/context/{zero_as_default,max_tokens,oversized_candidate,failure_policy}",
+      "notes": "Profile selects legacy nonpositive fallback or explicit0/unlimited with negative rejection, oversized stop/skip, and error/omit per channel. Defaults preserve memory/graph error and search omission. Config fallback fields are typed checked reads and explicit depth0 presence is preserved; malformed used Config fields return InvalidArgument.",
+      "current_evidence": [
+        "loom/src/graph/graph_memory.cpp:266",
+        "loom/src/graph/graph_memory.cpp:328"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/graph/graph_memory.cpp:242",
+      "destination_before": "context selector legacy preset.budget_behavior"
+    },
+    "DIC-0030": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/selector.pack#/defaults/tfidf and /keyword",
+      "notes": "Current tokenizer reads lowercase and min_token_length for both methods; Unicode word-run classification is an algorithm capability, not domain lexicon.",
+      "current_evidence": [
+        "loom/src/search/selector.cpp:56-58; loom/src/search/selector.cpp:151; loom/data/runtime/selector.pack:7-17"
+      ],
+      "inventory_source": "loom/src/search/selector.cpp:39",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "selector method presets.tokenization"
+    },
+    "DIC-0031": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/selector.pack#/defaults/tfidf/max_features",
+      "notes": "5000 is data preset; 0 means unlimited. Truncation reads max_features. Remaining INT_MAX is native vocabulary/index representation, not product policy.",
+      "current_evidence": [
+        "loom/src/search/selector.cpp:162-169; loom/data/runtime/selector.pack:9,58-62"
+      ],
+      "inventory_source": "loom/src/search/selector.cpp:141",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "selector TF-IDF preset.max_features"
+    },
+    "DIC-0032": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/selector.pack#/defaults/ranking/minimum_score and /threshold_inclusive",
+      "notes": "Threshold value and strict/inclusive equality are data for all three existing methods. Preset threshold0 + inclusivefalse preserves exact legacy output; negative cosine can be selected with configured threshold. Method combinations remain thread3.",
+      "current_evidence": [
+        "loom/src/search/selector.cpp:130-135; loom/data/runtime/selector.pack:20-22"
+      ],
+      "inventory_source": "loom/src/search/selector.cpp:112",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "selector method preset.min_score"
+    },
+    "DIC-0033": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/selector.pack#/defaults/tiers; method registry/combinations -> thread 3",
+      "notes": "Automatic with/without-embedding choice and failure target are profile values. Unavailable configured embedding capability is explicit; same-tier embedding failure propagates error transactionally. Closed three implemented capability IDs and single-method selection remain; arbitrary combinations/weights/traces are thread 3 scope. User overlay requires explicit profile injection today, runtime wiring -> thread 9.",
+      "current_evidence": [
+        "loom/src/search/selector.cpp:223-249; loom/src/search/selector.cpp:280-290; loom/src/search/selector.cpp:351-375; loom/data/runtime/selector.pack:23-27"
+      ],
+      "inventory_source": "loom/src/search/selector.cpp:194",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "selector combination/default/fallback preset"
+    },
+    "DIC-0034": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/selector.pack#/defaults/ranking/top_k",
+      "notes": "Header accepts optional top_k=nullopt; omitted count resolves to profile top_k, explicit old calls retain their count. No compiled top_k=5 fallback in signature.",
+      "current_evidence": [
+        "loom/include/loom/selector.h:69-71; loom/src/search/selector.cpp:296-303; loom/data/runtime/selector.pack:21"
+      ],
+      "inventory_source": "loom/include/loom/selector.h:65",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "selector preset.top_k"
+    },
+    "DIC-0035": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/memory.pack#/defaults/auto_tag_node_types and /auto_tag_threshold",
+      "notes": "Auto-tag eligibility is data membership rather than node_type==text. Topic threshold, creation default type and default weight are profile data. Existing stored missing-field schema defaults remain canonical wire compatibility.",
+      "current_evidence": [
+        "loom/src/memory/memory_engine.cpp:145-168; loom/data/runtime/memory.pack:6-12"
+      ],
+      "inventory_source": "loom/src/memory/memory_engine.cpp:147",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "memory profile.auto_tags"
+    },
+    "DIC-0036": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/memory.pack#/defaults/weight_precision,/weight_template,/tag_prefix,/tag_separator,/default_weight,/show_weights,/show_default_weight",
+      "notes": "Weight template/precision, tag delimiters and independent visibility are data. show_weights=true/show_default_weight=false preset preserves hiding reference weights; custom settings always show or suppress annotation without changing retained node weights.",
+      "current_evidence": [
+        "loom/src/memory/memory_engine.cpp:278-288; loom/data/runtime/memory.pack:21-24,35-36"
+      ],
+      "inventory_source": "loom/src/memory/memory_engine.cpp:247",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "memory context renderer profile"
+    },
+    "DIC-0037": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/memory.pack#/defaults/renderers,/default_renderer,/indent,/line_separator",
+      "notes": "Named folder/file/dir branches removed. Arbitrary type keys select safe templates; fallback template and indent/separator are profile data. Missing template variables return explicit error with source records retained.",
+      "current_evidence": [
+        "loom/src/memory/memory_engine.cpp:276,294-298,307; loom/data/runtime/memory.pack:19-30"
+      ],
+      "inventory_source": "loom/src/memory/memory_engine.cpp:269",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "memory profile.node_renderers"
+    },
+    "DIC-0038": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/memory.pack#/defaults/sort_priorities and /default_sort_priority and /sort_keys",
+      "notes": "Type priority and all secondary ordered node-field keys/directions are data. Default created ascending preserves old stable order; empty keys keep insertion ties. Keys precomputed once outside comparator; registered fields are actual MemoryNode wire fields, not domain names.",
+      "current_evidence": [
+        "loom/src/memory/memory_engine.cpp:320-365; loom/data/runtime/memory.pack:31-42,169-204"
+      ],
+      "inventory_source": "loom/src/memory/memory_engine.cpp:306",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "memory profile.sort"
+    },
+    "DIC-0039": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/memory.pack#/defaults/graph_label_chars,/graph_node_type,/graph_child_relation,/graph_child_weight",
+      "notes": "Projection label length, node/edge types and child edge weight all read data; canonical node/edge field keys and parent-child source semantics remain wire contract.",
+      "current_evidence": [
+        "loom/src/memory/memory_engine.cpp:365-372; loom/data/runtime/memory.pack:15-18"
+      ],
+      "inventory_source": "loom/src/memory/memory_engine.cpp:338",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "memory graph-view profile"
+    },
+    "DIC-0040": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/memory.pack#/defaults/context_max_chars and /search_limit",
+      "notes": "Optional call arguments resolve omitted context length and search result count through loaded profile. Explicit calls preserve old meanings, including atomic whole-line cutoff and zero-result edge behavior documented by differential probe.",
+      "current_evidence": [
+        "loom/include/loom/memory_engine.h:88-91; loom/src/memory/memory_engine.cpp:269,373; loom/data/runtime/memory.pack:13-14"
+      ],
+      "inventory_source": "loom/include/loom/memory_engine.h:81",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "memory profile.context_budget and search_limit"
+    },
+    "DIC-0041": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/languages",
+      "notes": "Exact14-extension→6-language map in profile, arbitrary extension/language additions possible.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:61"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:48",
+      "destination_before": "loom/data/lexicons/materialize_languages.json"
+    },
+    "DIC-0042": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/detectors/{max_hits_per_file,excerpt_codepoints}",
+      "notes": "Fallback cap/excerpt moved; max_hits0 and excerpt0 unbounded/unclipped. Check params continue to override default.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:96"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:83",
+      "destination_before": "materialize detector preset"
+    },
+    "DIC-0043": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/detectors/min_array_entries + /templates/array_literal",
+      "notes": "Min entries and diagnostic text are data; regex construction remains universal string-array detector operation.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:125"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:113",
+      "destination_before": "rules/checks.json detector params + materialize diagnostic profile"
+    },
+    "DIC-0044": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/templates/self_* and report section/row templates",
+      "notes": "Full self-description title/sections/row text moved; honest evidence marker renderer remains trusted shared operation.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:160"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:144",
+      "destination_before": "loom/data/profiles/materialize/self_description.json"
+    },
+    "DIC-0045": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/language",
+      "notes": "Preferred language read from profile; existing pick_text fallback preserved.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:227"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:210",
+      "destination_before": "materialize profile.language"
+    },
+    "DIC-0046": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/project_kind",
+      "notes": "Project entity query kind read from profile, arbitrary supported kind string.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:169"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:150",
+      "destination_before": "materialize self_description profile.project_query.kind"
+    },
+    "DIC-0047": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/templates/dossier_* and slot/coverage/conflict",
+      "notes": "Dossier headings/title/rows moved to inert data templates.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:291"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:271",
+      "destination_before": "loom/data/profiles/materialize/dossier.json"
+    },
+    "DIC-0048": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/templates/backlog_* and missing_branch/oscillation",
+      "notes": "Backlog prose and missing-branch display value moved; no stored branch rewrite.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:405"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:316",
+      "destination_before": "loom/data/profiles/materialize/backlog.json"
+    },
+    "DIC-0049": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/violations_predicate",
+      "notes": "Preference violation query predicate now data binding.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:369"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:345",
+      "destination_before": "materialize backlog profile.violations_query"
+    },
+    "DIC-0050": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/templates/extrapolated_* and no_proposals",
+      "notes": "Title/sections/warning/empty-proposal prose in data; I3 evidence-class restriction remains engine invariant.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:438"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:413",
+      "destination_before": "loom/data/profiles/materialize/extrapolated_spec.json"
+    },
+    "DIC-0051": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/detectors/detail_hits + /templates/detail_*",
+      "notes": "Diagnostic hit projection and formatting read from effective profile;0 detail means all retained hits.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:517"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:486",
+      "destination_before": "materialize diagnostics profile"
+    },
+    "DIC-0052": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/materialize.pack#/defaults/products + /outputs + /mime",
+      "notes": "Trusted4-renderer registry with configurable enabled/order/on_error recipe. Consecutive instance operations interleave per-instance to preserve old default order. Names incl disabled and all planned filenames validate before artifact writes; unknown renderer=>Unavailable. Existing profile-hash hardening preserved. Renderer omissions return complete:false plus renderer/key/error receipts and affect incomplete output hash; successful default output remains byte-identical.",
+      "current_evidence": [
+        "loom/src/materialize/materialize.cpp:552",
+        "loom/src/materialize/materialize.cpp:644",
+        "loom/src/materialize/materialize.cpp:674"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/materialize/materialize.cpp:533",
+      "destination_before": "materialize profile.products"
+    },
+    "DIC-0053": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/authority_ranks",
+      "notes": "Ranks moved and checked explicit-profile lookup exists, but current resolve/generalize/context callers still call builtin legacy API, so user-root overlay is not active there. Other-owner wiring needed1/3/9.",
+      "current_evidence": [
+        "loom/src/model/model_core.cpp:45",
+        "loom/src/model/model_core.cpp:63",
+        "loom/src/resolve/assess.cpp:166",
+        "loom/src/context/ctx_common.cpp:68"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/model/model_core.cpp:43",
+      "destination_before": "loom/data/policy/authority.json"
+    },
+    "DIC-0054": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/status_history",
+      "notes": "Present/lost classes moved with checked explicit profile overload; current kb/extract/resolve callers still use builtin wrapper. Actual stored StatusValue remains wire enum; other-owner wiring1/4/9.",
+      "current_evidence": [
+        "loom/src/model/model_action.cpp:334",
+        "loom/src/kb/store.cpp:677",
+        "loom/src/resolve/stage.cpp:134"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/model/model_action.cpp:335",
+      "destination_before": "model status semantics preset"
+    },
+    "DIC-0055": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/principle",
+      "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+      "current_evidence": [
+        "loom/include/loom/model_profile.h:13",
+        "loom/src/model/model_pack.cpp:33",
+        "loom/src/model/model_pack.cpp:56",
+        "loom/src/model/model_pack.cpp:155",
+        "loom/data/runtime/model.pack:27",
+        "loom/tests/test_model_creation_profile.cpp:42"
+      ],
+      "review_fragment": "migration-status-model-creation-followup.json",
+      "inventory_source": "loom/src/model/model_general.cpp:83",
+      "destination_before": "model creation preset.principle",
+      "retained_contract": "historical missing-field decoder compatibility",
+      "follow_up": {
+        "classification": "external-creation-producer-wiring-pending",
+        "threads": [
+          1,
+          4,
+          9
+        ],
+        "notes": "Checked creation normalization API/data is implemented; active external constructors have not yet been routed through it. Historic decoder reads stay unchanged."
+      }
+    },
+    "DIC-0056": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/operator",
+      "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+      "current_evidence": [
+        "loom/include/loom/model_profile.h:13",
+        "loom/src/model/model_pack.cpp:33",
+        "loom/src/model/model_pack.cpp:56",
+        "loom/src/model/model_pack.cpp:155",
+        "loom/data/runtime/model.pack:27",
+        "loom/tests/test_model_creation_profile.cpp:42"
+      ],
+      "review_fragment": "migration-status-model-creation-followup.json",
+      "inventory_source": "loom/src/model/model_general.cpp:157",
+      "destination_before": "model creation preset.operator",
+      "retained_contract": "historical missing-field decoder compatibility",
+      "follow_up": {
+        "classification": "external-creation-producer-wiring-pending",
+        "threads": [
+          1,
+          4,
+          9
+        ],
+        "notes": "Checked creation normalization API/data is implemented; active external constructors have not yet been routed through it. Historic decoder reads stay unchanged."
+      }
+    },
+    "DIC-0057": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/morphism",
+      "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+      "current_evidence": [
+        "loom/include/loom/model_profile.h:13",
+        "loom/src/model/model_pack.cpp:33",
+        "loom/src/model/model_pack.cpp:56",
+        "loom/src/model/model_pack.cpp:155",
+        "loom/data/runtime/model.pack:27",
+        "loom/tests/test_model_creation_profile.cpp:42"
+      ],
+      "review_fragment": "migration-status-model-creation-followup.json",
+      "inventory_source": "loom/src/model/model_general.cpp:219",
+      "destination_before": "model creation preset.morphism",
+      "retained_contract": "historical missing-field decoder compatibility",
+      "follow_up": {
+        "classification": "external-creation-producer-wiring-pending",
+        "threads": [
+          1,
+          4,
+          9
+        ],
+        "notes": "Checked creation normalization API/data is implemented; active external constructors have not yet been routed through it. Historic decoder reads stay unchanged."
+      }
+    },
+    "DIC-0058": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/slot; /defaults/creation_defaults/domain_kind; /defaults/creation_defaults/domain_relation",
+      "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+      "current_evidence": [
+        "loom/include/loom/model_profile.h:13",
+        "loom/src/model/model_pack.cpp:33",
+        "loom/src/model/model_pack.cpp:56",
+        "loom/src/model/model_pack.cpp:155",
+        "loom/data/runtime/model.pack:27",
+        "loom/tests/test_model_creation_profile.cpp:42"
+      ],
+      "review_fragment": "migration-status-model-creation-followup.json",
+      "inventory_source": "loom/src/model/model_general.cpp:254",
+      "destination_before": "model creation preset.slot/domain_kind",
+      "retained_contract": "historical missing-field decoder compatibility",
+      "follow_up": {
+        "classification": "external-creation-producer-wiring-pending",
+        "threads": [
+          1,
+          4,
+          9
+        ],
+        "notes": "Checked creation normalization API/data is implemented; active external constructors have not yet been routed through it. Historic decoder reads stay unchanged."
+      }
+    },
+    "DIC-0059": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/project_kind",
+      "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+      "current_evidence": [
+        "loom/include/loom/model_profile.h:13",
+        "loom/src/model/model_pack.cpp:33",
+        "loom/src/model/model_pack.cpp:56",
+        "loom/src/model/model_pack.cpp:155",
+        "loom/data/runtime/model.pack:27",
+        "loom/tests/test_model_creation_profile.cpp:42"
+      ],
+      "review_fragment": "migration-status-model-creation-followup.json",
+      "inventory_source": "loom/src/model/model_general.cpp:384",
+      "destination_before": "project_kinds/*.json explicit subject_kind + creation preset",
+      "retained_contract": "historical missing-field decoder compatibility",
+      "follow_up": {
+        "classification": "external-creation-producer-wiring-pending",
+        "threads": [
+          1,
+          4,
+          9
+        ],
+        "notes": "Checked creation normalization API/data is implemented; active external constructors have not yet been routed through it. Historic decoder reads stay unchanged."
+      }
+    },
+    "DIC-0060": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/model.pack#/defaults/anchoring_rationale",
+      "notes": "Rationale template moved with explicit profile overload; stable m.anchor ID and literal role-binding confidence1 retained representation invariants. Current typed pack/generalize consumers use builtin wrapper, so user overlay wiring remains with1/9.",
+      "current_evidence": [
+        "loom/src/model/model_pack.cpp:251",
+        "loom/src/model/model_pack.cpp:269",
+        "loom/src/generalize/stage.cpp:232"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/model/model_pack.cpp:146",
+      "destination_before": "model derived-label template profile"
+    },
+    "DIC-0061": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/re.pack#/defaults/step_limit",
+      "notes": "Program constructor reads profile step_limit; compile(profile), isolated with_profile and inspection consume checked settings. Legacy setter/copy sharing and explicit hit-limit trace preserved. Existing callers use builtin until caller/runtime overlay wiring (threads 1/2/3/6/9).",
+      "current_evidence": [
+        "loom/src/re/regex.cpp:579-591,1027-1034,1038-1077; loom/data/runtime/re.pack:6,12-19"
+      ],
+      "inventory_source": "loom/src/re/regex.cpp:587",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "runtime regex preset.step_limit"
+    },
+    "DIC-0062": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/util.pack#/defaults/log/ring_capacity and /recent_lines",
+      "notes": "Initial 500/recent count are builtin data. Scoped recent_checked and set_ring_capacity_checked consume user profile; profile0 disables retention. Existing scalar setter0->1 kept only legacy compatibility; no mutable global domain profile introduced. UI/composition-root settings wiring remains threads 9/10.",
+      "current_evidence": [
+        "loom/src/util/log.cpp:67,153-168,177-190; loom/data/runtime/util.pack:16-17"
+      ],
+      "inventory_source": "loom/src/util/log.cpp:39",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "runtime diagnostic preset.log_ring_capacity"
+    },
+    "DIC-0063": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/util.pack#/defaults/log/level_names,/default_level_name,/level_width,/record_template",
+      "notes": "Human label map/padding/template are data, per-record checked renderer uses effective profile. Structured Record fields and local clock HH:MM:SS from timeutil::local_clock_hms remain canonical operation/wire values; arbitrary supplied Record.time is rendered without changing source.",
+      "current_evidence": [
+        "loom/src/util/log.cpp:33-43,105-121,193-204; loom/data/runtime/util.pack:23-37"
+      ],
+      "inventory_source": "loom/src/util/log.cpp:63",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "diagnostic renderer profile"
+    },
+    "DIC-0064": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/util.pack#/defaults/temp/base_root,/fallback_root,/attempts,/id_chars,/prefix",
+      "notes": "Retry16/fallback/tmp/id12 moved to data and per-call TempDir::create. Legacy constructor still takes source-default prefix=\"loom_\" to preserve ABI/source usage (root explicitly requested); new checked creation can configure prefix independently. Failed legacy creation still yields invalid object; checked creation returns filesystem/schema error.",
+      "current_evidence": [
+        "loom/src/util/fs.cpp:134-166; loom/include/loom/util/fs.h:45-47; loom/data/runtime/util.pack:9-13"
+      ],
+      "inventory_source": "loom/src/util/fs.cpp:134",
+      "review_fragment": "migration-status-memory-re-util.json",
+      "destination_before": "runtime filesystem preset.tempdir"
+    },
+    "DIC-0065": {
+      "status": "migrated",
+      "destination": "loom/data/lexicons/stopwords_base.json",
+      "notes": "loom/src/archive/text.cpp:50 — Exact597entriesinclduplicates now existing scoped KBpack; no Normalizer expansion.",
+      "current_path": "loom/src/archive/text.cpp",
+      "current_line": 50,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/text.cpp:29",
+      "destination_before": "pack: lexicons/stopwords_base.json",
+      "current_evidence": []
+    },
+    "DIC-0066": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /text/min_token_codepoints",
+      "notes": "loom/src/archive/text.cpp:59 — Content and candidate token minimum configurable.",
+      "current_path": "loom/src/archive/text.cpp",
+      "current_line": 59,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/text.cpp:116",
+      "destination_before": "pack: policy/archive_text.json",
+      "current_evidence": []
+    },
+    "DIC-0067": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/phrase_orders, phrase_separators, phrase_output_separator, phrase_distinct_adjacent",
+      "notes": "Ordered n-gram lengths, input delimiter codepoints, output delimiter and repeated-neighbor eligibility are data; empty orders disables candidates. Preset [2,1] preserves legacy emission ordering.",
+      "current_evidence": [
+        "loom/src/archive/text.cpp:67-122"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/text.cpp:124",
+      "destination_before": "pack: policy/archive_text.json"
+    },
+    "DIC-0068": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/bullet_max_digits",
+      "notes": "Numeric bullet width is profile data, default4; no product cap beyond native size_t representation. Markdown scanner remains a trusted grammar operation.",
+      "current_evidence": [
+        "loom/src/archive/text.cpp:146-151"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/text.cpp:179",
+      "destination_before": "profile: archive document syntax"
+    },
+    "DIC-0069": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /text/abbreviations",
+      "notes": "loom/src/archive/text.cpp:143 — Exact abbreviation list, replaceable array.",
+      "current_path": "loom/src/archive/text.cpp",
+      "current_line": 143,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/text.cpp:195",
+      "destination_before": "pack: lexicons/archive_text.json",
+      "current_evidence": []
+    },
+    "DIC-0070": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /text/min_sentence_codepoints + min_sentence_tokens",
+      "notes": "loom/src/archive/text.cpp:151 — Emission thresholds configurable, defaults unchanged.",
+      "current_path": "loom/src/archive/text.cpp",
+      "current_line": 151,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/text.cpp:207",
+      "destination_before": "pack: policy/archive_text.json",
+      "current_evidence": []
+    },
+    "DIC-0071": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/sentence_terminals, sentence_closers, sentence_openers, sentence_opener_classes, abbreviation_terminals",
+      "notes": "Unicode codepoint punctuation sets and trusted opener category names are data; default sets/category order preserve boundaries. Unicode category predicates remain algorithm capabilities.",
+      "current_evidence": [
+        "loom/src/archive/text.cpp:166-212"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/text.cpp:211",
+      "destination_before": "profile: archive sentence segmentation"
+    },
+    "DIC-0072": {
+      "status": "retained-wire",
+      "destination": "Markdown parser grammar",
+      "notes": "loom/src/archive/text.cpp:199 — ATX/fence/table markup is format grammar; optional parser registry remains future work.",
+      "current_path": "loom/src/archive/text.cpp",
+      "current_line": 199,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/text.cpp:252",
+      "destination_before": "profile: archive document syntax",
+      "current_evidence": []
+    },
+    "DIC-0073": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/year_min and year_max",
+      "notes": "Accepted year bounds are nullable settings (1990/2100 presets), separate from ISO 4-digit shape and month/day syntax; historical full timestamps also pass the new configured epoch policy.",
+      "current_evidence": [
+        "loom/src/archive/text.cpp:285-311; loom/src/archive/text.cpp:338-373"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/text.cpp:318",
+      "destination_before": "pack: policy/archive_text.json"
+    },
+    "DIC-0074": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/allow_nonpositive_epoch",
+      "notes": "Newly discovered positive-only epoch admission is configurable false by default; true accepts Unix epoch/history. Nonfinite/native time_t/gmtime/strftime conversion failures are representation checks. Fixed UTC ISO timestamp shape remains a wire contract; legacy one-argument symbol retained.",
+      "current_evidence": [
+        "loom/src/archive/text.cpp:313-336; loom/src/archive/text.cpp:373"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/text.cpp:330",
+      "destination_before": "retain: date serialization ABI"
+    },
+    "DIC-0075": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /text/stem_rules",
+      "notes": "loom/src/archive/text.cpp:378 — Ordered exact legacy suffix rewrites, exclusions and minimum extra bytes configurable.",
+      "current_path": "loom/src/archive/text.cpp",
+      "current_line": 378,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/text.cpp:428",
+      "destination_before": "pack: lexicons/archive_text.json",
+      "current_evidence": []
+    },
+    "DIC-0076": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /text/glossary",
+      "notes": "loom/src/archive/text.cpp:390 — Exact glossary map; recursive merge plus RFC6902 removal.",
+      "current_path": "loom/src/archive/text.cpp",
+      "current_line": 390,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/text.cpp:437",
+      "destination_before": "pack: lexicons/archive_text.json",
+      "current_evidence": []
+    },
+    "DIC-0077": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/vocabulary/camel_min_length, camel_min_uppercase; vocab_closure/camel_min_lowercase and camel_require_inner_uppercase",
+      "notes": "All four CamelCase eligibility predicates are data; Unicode case/category operations remain trusted universal operations. Existing length4/upper2 plus lower1/innertrue presets unchanged.",
+      "current_evidence": [
+        "loom/src/archive/vocab.cpp:39-70"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:34",
+      "destination_before": "pack: policy/archive_text.json"
+    },
+    "DIC-0078": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /vocabulary/salient_*",
+      "notes": "loom/src/archive/vocab.cpp:112 — DF cutoff/maxfraction/phrase multiplier data.",
+      "current_path": "loom/src/archive/vocab.cpp",
+      "current_line": 112,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:104",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0079": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /vocabulary/ner_max_codepoints",
+      "notes": "loom/src/archive/vocab.cpp:162 — NER text clipping configurable.",
+      "current_path": "loom/src/archive/vocab.cpp",
+      "current_line": 162,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:151",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0080": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /vocabulary/ner_types + ner_max_tokens",
+      "notes": "loom/src/archive/vocab.cpp:163 — NER types/token width configurable; generic token joining preserves defaults.",
+      "current_path": "loom/src/archive/vocab.cpp",
+      "current_line": 163,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:152",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0081": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /vocabulary thresholds",
+      "notes": "loom/src/archive/vocab.cpp:184 — DF,corpus fraction,large-hit threshold,lift data.",
+      "current_path": "loom/src/archive/vocab.cpp",
+      "current_line": 184,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:173",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0082": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /vocabulary weights",
+      "notes": "loom/src/archive/vocab.cpp:207 — Phrase boost/pool multiplier/cooccurrence/NER boost data.",
+      "current_path": "loom/src/archive/vocab.cpp",
+      "current_line": 207,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:189",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0083": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /vocabulary/evidence_limit",
+      "notes": "loom/src/archive/vocab.cpp:291 — Evidence projection cap configurable.",
+      "current_path": "loom/src/archive/vocab.cpp",
+      "current_line": 291,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:280",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0084": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/vocab_closure/score_multiplier, reason_score_precision, reason_lift_precision",
+      "notes": "Final score encoder multiplier10000 and diagnostic fixed precisions3/1 are data; multiplier0 disables rounding. Computation/ranking unchanged; finite scaling overflow is an explicit native representation error. Legacy TermRecord::to_json() symbol retained.",
+      "current_evidence": [
+        "loom/src/archive/vocab.cpp:19-25; loom/src/archive/vocab.cpp:91-98; loom/src/archive/vocab.cpp:282-284"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/vocab.cpp:17",
+      "destination_before": "profile: archive output formatting"
+    },
+    "DIC-0085": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /clustering/max_local_passes",
+      "notes": "loom/src/archive/cluster.cpp:29 — Pass count setting.",
+      "current_path": "loom/src/archive/cluster.cpp",
+      "current_line": 29,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/cluster.cpp:28",
+      "destination_before": "pack: policy/archive_clustering.json",
+      "current_evidence": []
+    },
+    "DIC-0086": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /clustering/gain_tolerance",
+      "notes": "loom/src/archive/cluster.cpp:45 — Nonnegative numerical gain tolerance setting.",
+      "current_path": "loom/src/archive/cluster.cpp",
+      "current_line": 45,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/cluster.cpp:44",
+      "destination_before": "setting: clustering numerical tolerance",
+      "current_evidence": []
+    },
+    "DIC-0087": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /clustering/max_levels",
+      "notes": "loom/src/archive/archive_internal.h:186 — Default level count comes from scoped profile.",
+      "current_path": "loom/src/archive/archive_internal.h",
+      "current_line": 186,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/archive_internal.h:184",
+      "destination_before": "pack: policy/archive_clustering.json",
+      "current_evidence": []
+    },
+    "DIC-0088": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /items/types",
+      "notes": "loom/src/archive/archive_internal.h:190 — Closed C++typearray removed; refinement validates against profile.",
+      "current_path": "loom/src/archive/archive_internal.h",
+      "current_line": 190,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/archive_internal.h:187",
+      "destination_before": "pack: schema/archive_item_types.json",
+      "current_evidence": []
+    },
+    "DIC-0089": {
+      "status": "migrated",
+      "destination": "KB lexicons/item_cues.json cues",
+      "notes": "loom/src/archive/items.cpp:69 — Exact206cue rows/order/weights.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 69,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:22",
+      "destination_before": "pack: lexicons/item_cues.json",
+      "current_evidence": []
+    },
+    "DIC-0090": {
+      "status": "migrated",
+      "destination": "KB lexicons/item_cues.json heading_hints",
+      "notes": "loom/src/archive/items.cpp:111 — Exact26heading rows.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 111,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:245",
+      "destination_before": "pack: lexicons/archive_items.json",
+      "current_evidence": []
+    },
+    "DIC-0091": {
+      "status": "migrated",
+      "destination": "KB lexicons/item_cues.json type_order",
+      "notes": "loom/src/archive/items.cpp:18 — Exact9priority order; unknown types followknown.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 18,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:263",
+      "destination_before": "pack: lexicons/item_cues.json /type_order",
+      "current_evidence": []
+    },
+    "DIC-0092": {
+      "status": "migrated",
+      "destination": "KB lexicons/item_cues.json negators",
+      "notes": "loom/src/archive/items.cpp:138 — Exact39negators.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 138,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:300",
+      "destination_before": "pack: lexicons/archive_items.json",
+      "current_evidence": []
+    },
+    "DIC-0093": {
+      "status": "migrated",
+      "destination": "KB lexicons/item_cues.json generic_subject_words",
+      "notes": "loom/src/archive/items.cpp:198 — Exact78subject exclusions.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 198,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:311",
+      "destination_before": "pack: lexicons/archive_items.json",
+      "current_evidence": []
+    },
+    "DIC-0094": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/requirement_penalty_phrases, requirement_penalty, question_*; text_item_closure/penalty_target_type, question_target_type, question_closing_suffixes",
+      "notes": "Existing phrase/prefix/suffix weights plus destination type labels and closing suffix eligibility are data; trusted match modes preserve historical phrase-boundary semantics.",
+      "current_evidence": [
+        "loom/src/archive/items.cpp:87-116"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/items.cpp:342",
+      "destination_before": "pack: rules/archive_items.json"
+    },
+    "DIC-0095": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /items/contains_headings",
+      "notes": "loom/src/archive/items.cpp:115 — Contains/prefix heading strategy list configurable.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 115,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:372",
+      "destination_before": "pack: lexicons/archive_items.json",
+      "current_evidence": []
+    },
+    "DIC-0096": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /items thresholds",
+      "notes": "loom/src/archive/items.cpp:143 — Score and heading-token thresholds configurable.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 143,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:401",
+      "destination_before": "pack: policy/archive_items.json",
+      "current_evidence": []
+    },
+    "DIC-0097": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/confidence_* and ambiguity_*; text_item_closure/confidence_multiplier",
+      "notes": "Calibration base/slope/clamp/ambiguity were previously migrated; final multiplier100 two-decimal encoder now data with0 meaning no rounding.",
+      "current_evidence": [
+        "loom/src/archive/items.cpp:57-65; loom/src/archive/items.cpp:160-162"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/items.cpp:405",
+      "destination_before": "pack: policy/archive_items.json"
+    },
+    "DIC-0098": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /items subject/negation settings",
+      "notes": "loom/src/archive/items.cpp:201 — Subject minimum and lookback configurable.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 201,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:456",
+      "destination_before": "pack: policy/archive_items.json",
+      "current_evidence": []
+    },
+    "DIC-0099": {
+      "status": "partially-migrated",
+      "destination": "runtime/archive.pack /items/text_max_codepoints; IDwire codec",
+      "notes": "loom/src/archive/items.cpp:229 — Displayclip moved; stable IDprefix width10 remains wire contract.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 229,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:484",
+      "destination_before": "pack: policy/archive_items.json; retain ID serialization contract",
+      "current_evidence": []
+    },
+    "DIC-0100": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/bug_markers, todo_confidence; text_item_closure/todo_source_kinds, todo_bug_binding, todo_default_binding",
+      "notes": "Marker predicate, confidence, source kinds and output type/cue bindings are data. New source alias annotation is tested; stable source-based IDs intentionally unchanged.",
+      "current_evidence": [
+        "loom/src/archive/items.cpp:254-266"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/items.cpp:500",
+      "destination_before": "pack: rules/archive_items.json"
+    },
+    "DIC-0101": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/commit_bug_phrases, commit_confidence; text_item_closure/commit_source_kinds, commit_bug_binding, commit_default_binding",
+      "notes": "Phrase predicate, confidence, source kinds and output type/cue bindings are data. New source alias change is tested; existing commit source field codec retained.",
+      "current_evidence": [
+        "loom/src/archive/items.cpp:268-278"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/items.cpp:509",
+      "destination_before": "pack: rules/archive_items.json"
+    },
+    "DIC-0102": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/sentence_max_bytes, sentence_min_tokens; text_item_closure/list_intro_suffixes",
+      "notes": "Existing byte/token selection settings plus list-introduction suffix array now data; empty suffix array disables introduction rejection.",
+      "current_evidence": [
+        "loom/src/archive/items.cpp:283-290"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/items.cpp:518",
+      "destination_before": "pack: policy/archive_items.json"
+    },
+    "DIC-0103": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /items IDF/distinctiveness settings",
+      "notes": "loom/src/archive/items.cpp:288 — IDF offset and distinctive DF thresholds data.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 288,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:540",
+      "destination_before": "pack: policy/archive_relations.json",
+      "current_evidence": []
+    },
+    "DIC-0104": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/relation_types; text_item_closure/question_role_types, answer_role_types, superseding_role_types, resolution_relation, resolution_status, resolution_reason_template",
+      "notes": "Relation eligibility and question/answer/superseding roles are data, including custom answer roles outside default relation types. Resolution label/status/reason renderer are data. Other established relation wire kinds and universal chronological overlap algorithm are unchanged.",
+      "current_evidence": [
+        "loom/src/archive/items.cpp:317-319; loom/src/archive/items.cpp:339-341; loom/src/archive/items.cpp:375-393"
+      ],
+      "review_fragment": "migration-status-archive-text-followup.json",
+      "inventory_source": "loom/src/archive/items.cpp:549",
+      "destination_before": "pack: rules/archive_relations.json"
+    },
+    "DIC-0105": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /items/max_shared_token_items",
+      "notes": "loom/src/archive/items.cpp:322 — Candidate pool limit configurable.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 322,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:576",
+      "destination_before": "pack: policy/archive_relations.json",
+      "current_evidence": []
+    },
+    "DIC-0106": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /items relation thresholds",
+      "notes": "loom/src/archive/items.cpp:344 — Overlap/share/supersede/contradict/resolution thresholds configurable.",
+      "current_path": "loom/src/archive/items.cpp",
+      "current_line": 344,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/items.cpp:598",
+      "destination_before": "pack: policy/archive_relations.json",
+      "current_evidence": []
+    },
+    "DIC-0107": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /scan/skip_dirs",
+      "notes": "loom/src/archive/ingest.cpp:197 — Traversal directory list configurable.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 197,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:31",
+      "destination_before": "profile: archive scan preset",
+      "current_evidence": []
+    },
+    "DIC-0108": {
+      "status": "partially-migrated",
+      "destination": "runtime/archive.pack /scan extension lists",
+      "notes": "loom/src/archive/ingest.cpp:38 — Document/importextensions moved; ZIP/JSON trusted format dispatch remains.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 38,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:46",
+      "destination_before": "pack: profiles/archive_formats.json",
+      "current_evidence": []
+    },
+    "DIC-0109": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest.cpp:217 — scan skip_dir_prefixes/skip_dir_sentinels; output.marker_file keeps generated marker identity default.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 217,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:210",
+      "destination_before": "profile: archive scan preset",
+      "current_evidence": []
+    },
+    "DIC-0110": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /scan/max_unknown_text_bytes",
+      "notes": "loom/src/archive/ingest.cpp:224 — Unknown-extension size check data; whole-file I/O is separate import scalability work.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 224,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:237",
+      "destination_before": "setting: archive scan max_unknown_text_bytes",
+      "current_evidence": []
+    },
+    "DIC-0111": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /scan/db_query_limit",
+      "notes": "loom/src/archive/ingest.cpp:266 — Fingerprint + ingestion row cap configurable; usagepolicy coupling remains Do2.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 266,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:279",
+      "destination_before": "setting: archive DB pagination",
+      "current_evidence": []
+    },
+    "DIC-0112": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /scan text thresholds/title_lines",
+      "notes": "loom/src/archive/ingest.cpp:454 — Message-frequency/title-line thresholds data.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 454,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:463",
+      "destination_before": "profile: archive text conversation detection",
+      "current_evidence": []
+    },
+    "DIC-0113": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code/max_extra_symbols",
+      "notes": "loom/src/archive/ingest.cpp:522 — Codeextra symbols cap configurable.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 522,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:531",
+      "destination_before": "pack: policy/archive_code.json",
+      "current_evidence": []
+    },
+    "DIC-0114": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest.cpp:567 — Local array-stream adapter chunk configurable; whole-wrapper fallback remains shared streaming work Do5.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 567,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:548",
+      "destination_before": "setting: archive ingestion buffers",
+      "current_evidence": []
+    },
+    "DIC-0115": {
+      "status": "retained-wire",
+      "destination": "Export JSON wire schema / future parser registry",
+      "notes": "loom/src/archive/ingest.cpp:563 — Formal export wrapper names and kind parsing retained; registry generalization remains Do5.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 563,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:572",
+      "destination_before": "pack: profiles/archive_formats.json",
+      "current_evidence": []
+    },
+    "DIC-0116": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest.cpp:33 — titles named templates, import prefix cleanup, projection label limits; generic one-pass interpolation.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 33,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:615",
+      "destination_before": "profile: archive presentation",
+      "current_evidence": []
+    },
+    "DIC-0117": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest.cpp:886 — projection git hash/subject/text-files/extra-files and more-files text; full source blob preserved.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 886,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:866",
+      "destination_before": "pack: policy/archive_git.json",
+      "current_evidence": []
+    },
+    "DIC-0118": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /scan/checkpoint_seconds",
+      "notes": "loom/src/archive/ingest.cpp:1002 — Checkpoint interval configurable.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 1002,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:1011",
+      "destination_before": "setting: archive checkpoint_interval",
+      "current_evidence": []
+    },
+    "DIC-0119": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest.cpp:1052 — README eligibility kinds/prefix/casefold and existing seed count from data.",
+      "current_path": "loom/src/archive/ingest.cpp",
+      "current_line": 1052,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest.cpp:1041",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0120": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code extension/filename maps",
+      "notes": "loom/src/archive/ingest_parse.cpp:201 — Language lookup uses data maps.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 201,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:192",
+      "destination_before": "pack: profiles/archive_code_languages.json",
+      "current_evidence": []
+    },
+    "DIC-0121": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code/non_functions",
+      "notes": "loom/src/archive/ingest_parse.cpp:234 — Keyword/macro exclusion list data.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 234,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:229",
+      "destination_before": "pack: lexicons/archive_code.json",
+      "current_evidence": []
+    },
+    "DIC-0122": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code/c_like + hash_comments",
+      "notes": "loom/src/archive/ingest_parse.cpp:275 — Language families data; actual parsers separate finding457.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 275,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:288",
+      "destination_before": "pack: profiles/archive_code_languages.json",
+      "current_evidence": []
+    },
+    "DIC-0123": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code max_uses/min_comment_tokens",
+      "notes": "loom/src/archive/ingest_parse.cpp:280 — Identifier/comment thresholds data.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 280,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:299",
+      "destination_before": "pack: policy/archive_code.json",
+      "current_evidence": []
+    },
+    "DIC-0124": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code/todo_markers",
+      "notes": "loom/src/archive/ingest_parse.cpp:319 — Marker list data.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 319,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:337",
+      "destination_before": "pack: lexicons/archive_code.json",
+      "current_evidence": []
+    },
+    "DIC-0125": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest_parse.cpp:433 — Code modifiers/types/exclusions/function-language eligibility from data; structural trusted parser operators retained.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 433,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:412",
+      "destination_before": "pack: profiles/archive_code_languages.json",
+      "current_evidence": []
+    },
+    "DIC-0126": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest_parse.cpp:285 — Language→registered trusted strategy routing, special-name prefix/min/allowlist and excluded-method policy from data. Python/CMake/shell syntax remains trusted grammar operations.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 285,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:457",
+      "destination_before": "pack: profiles/archive_code_languages.json",
+      "current_evidence": []
+    },
+    "DIC-0127": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code/cmake_commands",
+      "notes": "loom/src/archive/ingest_parse.cpp:503 — CMake command list configurable.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 503,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:523",
+      "destination_before": "pack: profiles/archive_code_languages.json",
+      "current_evidence": []
+    },
+    "DIC-0128": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /code digest limits",
+      "notes": "loom/src/archive/ingest_parse.cpp:528 — Symbol cap/comment budget data; zero cap retains structural symbols.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 528,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:549",
+      "destination_before": "pack: policy/archive_code.json",
+      "current_evidence": []
+    },
+    "DIC-0129": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest_parse.cpp:605 — Trailer enabled/key length/forbidden/required fragments are explicit profile policy; git delimiter wire codec preserved.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 605,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:600",
+      "destination_before": "profile: archive git trailer parsing",
+      "current_evidence": []
+    },
+    "DIC-0130": {
+      "status": "retained-wire",
+      "destination": "OpenAI/Anthropic export wire schema",
+      "notes": "loom/src/archive/ingest_parse.cpp:807 — Official export keys/role mappings remain trusted wire parsers; data-described formats future Do5.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 807,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/ingest_parse.cpp:636",
+      "destination_before": "pack: profiles/archive_formats.json",
+      "current_evidence": []
+    },
+    "DIC-0131": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/pipeline.cpp:74 — Complete config_defaults invocation DTO in data; native default constructor reads builtin, checked parser uses active omitted defaults, explicit arrays replace and repo:null clears.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 74,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/include/loom/archive.h:75",
+      "destination_before": "pack: profiles/archive_default.json",
+      "current_evidence": []
+    },
+    "DIC-0132": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /config_bounds",
+      "notes": "loom/src/archive/pipeline.cpp:138 — Existingcaps moved to min/max preset; nullable max unbounded; profileparser used by archive tasks, CLIroot wiring pending, CAPIpreclamp Do9.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 138,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:122",
+      "destination_before": "setting: archive run policy",
+      "current_evidence": []
+    },
+    "DIC-0133": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/pipeline.cpp:55 — Ordered suffix MIME registry + fallback, marker/file/text/task-log names; exact legacy suffix prefix rule preserved.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 55,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:52",
+      "destination_before": "pack: profiles/archive_artifacts.json",
+      "current_evidence": []
+    },
+    "DIC-0134": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /refinement/model_keys",
+      "notes": "loom/src/archive/pipeline.cpp:229 — Model fallback list data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 229,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:205",
+      "destination_before": "profile: archive refinement provider selection",
+      "current_evidence": []
+    },
+    "DIC-0135": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /refinement selection/batching",
+      "notes": "loom/src/archive/pipeline.cpp:241 — Confidence/excluded-types/batch/max-item limits data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 241,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:216",
+      "destination_before": "pack: policy/archive_refinement.json",
+      "current_evidence": []
+    },
+    "DIC-0136": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /refinement/prompt",
+      "notes": "loom/src/archive/pipeline.cpp:245 — Exact legacy concatenated prompt data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 245,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:220",
+      "destination_before": "pack: prompts/archive_item_refinement.json",
+      "current_evidence": []
+    },
+    "DIC-0137": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /refinement call settings",
+      "notes": "loom/src/archive/pipeline.cpp:257 — Textclip,temperature,max_tokens,timeout,confidence floor data; defaulttemperature JSONint0 preserved.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 257,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:225",
+      "destination_before": "pack: policy/archive_refinement.json",
+      "current_evidence": []
+    },
+    "DIC-0138": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /refinement/title",
+      "notes": "loom/src/archive/pipeline.cpp:253 — HTTPclient title data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 253,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:231",
+      "destination_before": "profile: archive refinement provider",
+      "current_evidence": []
+    },
+    "DIC-0139": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline caches",
+      "notes": "loom/src/archive/pipeline.cpp:309 — Corpus/stats cache capacities data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 309,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:286",
+      "destination_before": "setting: archive cache policy",
+      "current_evidence": []
+    },
+    "DIC-0140": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline/search_query_limit",
+      "notes": "loom/src/archive/pipeline.cpp:383 — Search row cap configurable.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 383,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:359",
+      "destination_before": "setting: archive retrieval query page",
+      "current_evidence": []
+    },
+    "DIC-0141": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline unit settings",
+      "notes": "loom/src/archive/pipeline.cpp:414 — Unitmin/max docs + relevance fraction data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 414,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:390",
+      "destination_before": "pack: policy/archive_retrieval.json",
+      "current_evidence": []
+    },
+    "DIC-0142": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/pipeline.cpp:491 — Prose eligibility list joins existing configurable minimum hit count.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 491,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:434",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0143": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline graph projection",
+      "notes": "loom/src/archive/pipeline.cpp:512 — Analysisclip,entitycap,fallback weight,salient count data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 512,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:488",
+      "destination_before": "pack: policy/archive_analysis.json",
+      "current_evidence": []
+    },
+    "DIC-0144": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline cluster thresholds",
+      "notes": "loom/src/archive/pipeline.cpp:571 — GlobalDF/corpus/minDF/mincluster docs data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 571,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:547",
+      "destination_before": "pack: policy/archive_clustering.json",
+      "current_evidence": []
+    },
+    "DIC-0145": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline cluster caps",
+      "notes": "loom/src/archive/pipeline.cpp:646 — Theme terms/label count/max themes/global terms data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 646,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:622",
+      "destination_before": "pack: policy/archive_clustering.json",
+      "current_evidence": []
+    },
+    "DIC-0146": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/pipeline.cpp:941 — Derived_from/item_relation/theme weights + materialization exclusion and label cap explicit.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 941,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:883",
+      "destination_before": "pack: policy/archive_materialization.json",
+      "current_evidence": []
+    },
+    "DIC-0147": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline/manifest_seed_limit",
+      "notes": "loom/src/archive/pipeline.cpp:1022 — Seed cap data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 1022,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:994",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0148": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/pipeline.cpp:1089 — Initial and synthesis-discovered seed weights explicit; TermRecord serialization uses scoped profile.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 1089,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:1109",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0149": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/display",
+      "notes": "Separate display260, dedup120 and superseded90 presets; named additional clip lengths are independently configurable. Generic Markdown escaping/clipping remains compiled.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:234",
+        "loom/src/archive/synth.cpp:268",
+        "loom/src/archive/synth.cpp:289"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:28",
+      "destination_before": "profile: archive report formatting"
+    },
+    "DIC-0150": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis/kind_labels + spec_kinds",
+      "notes": "loom/src/archive/synth.cpp:63 — Kindlabel mapping + spec-kind list now data.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 63,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:61",
+      "destination_before": "profile: archive report and analysis source-kind policy",
+      "current_evidence": []
+    },
+    "DIC-0151": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis evidence matching",
+      "notes": "loom/src/archive/synth.cpp:144 — Prefixlength/evidencefiles/partialfraction data.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 144,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:147",
+      "destination_before": "pack: policy/archive_gap_analysis.json",
+      "current_evidence": []
+    },
+    "DIC-0152": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis/external_names",
+      "notes": "loom/src/archive/synth.cpp:187 — External brand/name list data.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 187,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:191",
+      "destination_before": "pack: lexicons/archive_gap.json",
+      "current_evidence": []
+    },
+    "DIC-0153": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/identifiers; /defaults/synthesis/named_min_bytes; /defaults/synthesis/inflection_max_bytes",
+      "notes": "Initial-case, plural-acronym suffix list, project-name suppression, suffix-case and minimum inflection-base length are data; existing byte thresholds remain data. Default names are unchanged.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:343",
+        "loom/src/archive/synth.cpp:344",
+        "loom/src/archive/synth.cpp:347",
+        "loom/src/archive/synth.cpp:370"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:319",
+      "destination_before": "pack: policy/archive_gap_analysis.json"
+    },
+    "DIC-0154": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/interfaces",
+      "notes": "Shared generic configured-prefix/case/length matcher drives both factual component interpretation and sorting; I/minimum3/uppercase is only the default preset.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:77",
+        "loom/src/archive/synth.cpp:402",
+        "loom/src/archive/synth.cpp:949"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:368",
+      "destination_before": "profile: archive code naming conventions"
+    },
+    "DIC-0155": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/component_evidence",
+      "notes": "Declaration3/use2/comment2 projection caps are settings; zero omits evidence without fabricating status; higher counts allowed through native representation.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:406",
+        "loom/src/archive/synth.cpp:410",
+        "loom/src/archive/synth.cpp:414",
+        "loom/src/archive/synth.cpp:418"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:371",
+      "destination_before": "pack: policy/archive_gap_analysis.json"
+    },
+    "DIC-0156": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis TitleCase settings",
+      "notes": "loom/src/archive/synth.cpp:410 — Phrase min/max tokens and minwordbytes configurable.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 410,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:419",
+      "destination_before": "pack: policy/archive_gap_analysis.json",
+      "current_evidence": []
+    },
+    "DIC-0157": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/feature_terms; /defaults/synthesis/feature_max_codepoints; /defaults/synthesis/section_min_features",
+      "notes": "Description called this numeric prefix, but current operation counts tokens in a term before a description separator. Ordered separators and token interval1..5 now data; existing70-codepoint and minimum2-feature thresholds already data. Markdown fence/bullet grammar remains compiled.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:554",
+        "loom/src/archive/synth.cpp:560",
+        "loom/src/archive/synth.cpp:566",
+        "loom/src/archive/synth.cpp:571"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:529",
+      "destination_before": "pack: policy/archive_gap_analysis.json"
+    },
+    "DIC-0158": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/source_references; /defaults/synthesis/source_extensions",
+      "notes": "All nine source-reference scanner/eligibility/known-suffix settings are data. Empty exclusion lists and required-marker boolean permit alternatives including absolute/http/dot paths. Scanner only reports strings compared with known corpus URIs; no filesystem or URL resolution is performed, source provenance remains the real source-doc key. Alphanumeric byte classification and extension-suffix grammar remain universal operations.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:629",
+        "loom/src/archive/synth.cpp:635",
+        "loom/src/archive/synth.cpp:656",
+        "loom/src/archive/synth.cpp:662",
+        "loom/tests/test_archive_synthesis_policy.cpp:253",
+        "loom/tests/test_archive_synthesis_policy.cpp:276"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:606",
+      "destination_before": "pack: profiles/archive_code_languages.json; retain path policy"
+    },
+    "DIC-0159": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis/theme_gap_min_docs",
+      "notes": "loom/src/archive/synth.cpp:625 — Themegap docminimum configurable.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 625,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:635",
+      "destination_before": "pack: policy/archive_gap_analysis.json",
+      "current_evidence": []
+    },
+    "DIC-0160": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis rendering caps",
+      "notes": "loom/src/archive/synth.cpp:692 — TODO/reasons/themeterms/samples caps data; zero sample cap supported.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 692,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:702",
+      "destination_before": "profile: archive report formatting",
+      "current_evidence": []
+    },
+    "DIC-0161": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis/timeline_head + tail",
+      "notes": "loom/src/archive/synth.cpp:818 — Head/tail settings, safe size_t addition; zero supported.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 818,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:830",
+      "destination_before": "profile: archive report formatting",
+      "current_evidence": []
+    },
+    "DIC-0162": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis/sections",
+      "notes": "loom/src/archive/synth.cpp:846 — Report section templates/title/type/inactive/cap data.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 846,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:859",
+      "destination_before": "profile: archive report sections",
+      "current_evidence": []
+    },
+    "DIC-0163": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis gap/edge limits",
+      "notes": "loom/src/archive/synth.cpp:870 — Edge/phrase/component/section/missing-feature caps data.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 870,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:885",
+      "destination_before": "profile: archive report formatting",
+      "current_evidence": []
+    },
+    "DIC-0164": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis section gap settings",
+      "notes": "loom/src/archive/synth.cpp:926 — Minfeatures/coveragefraction data; divisionzero guarded.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 926,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:941",
+      "destination_before": "pack: policy/archive_gap_analysis.json",
+      "current_evidence": []
+    },
+    "DIC-0165": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/display; /defaults/synthesis_rendering/selection/manifest_items",
+      "notes": "Manifesttext240/graphlabel100/picker80 are independently configurable. Stable JSON fields, factual status strings and graph relation tags remain the wire contract.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:1084",
+        "loom/src/archive/synth.cpp:1103",
+        "loom/src/archive/synth.cpp:1104"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:1042",
+      "destination_before": "profile: archive artifact projections"
+    },
+    "DIC-0166": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /synthesis discovery settings",
+      "notes": "loom/src/archive/synth.cpp:1076 — Occurrence threshold and count cap data.",
+      "current_path": "loom/src/archive/synth.cpp",
+      "current_line": 1076,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/synth.cpp:1091",
+      "destination_before": "pack: policy/archive_vocabulary.json",
+      "current_evidence": []
+    },
+    "DIC-0167": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/files; /defaults/synthesis_rendering/csv; /defaults/synthesis_rendering/strings",
+      "notes": "Seven filenames, ordered CSV projections/quote flags/score precision/term separator and105 report strings are data. Empty filenames disable projections; collisions/missing fields/template variables are explicit errors. RFC CSV/Markdown writers and immutable archive graph schema/JSON keys remain universal wire operations. Templates substitute once without evaluation.",
+      "current_evidence": [
+        "loom/src/archive/synth.cpp:70",
+        "loom/src/archive/synth.cpp:91",
+        "loom/src/archive/synth.cpp:232",
+        "loom/src/archive/synth.cpp:1004",
+        "loom/src/archive/synth.cpp:1027",
+        "loom/src/archive/synth.cpp:1159"
+      ],
+      "review_fragment": "migration-status-archive-synth-followup.json",
+      "inventory_source": "loom/src/archive/synth.cpp:1097",
+      "destination_before": "profile: archive artifact layout"
+    },
+    "DIC-0168": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/knowledge.pack#/defaults/source_filters",
+      "notes": "Name/prefix filters moved, explicitly supplied files remain fingerprint inputs. Shared catalog source-directory exclusion contract retained; changing directory traversal policy belongs to6.",
+      "current_evidence": [
+        "loom/src/knowledge/engine.cpp:67"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/knowledge/engine.cpp:67",
+      "destination_before": "profile: source fingerprint inclusion"
+    },
+    "DIC-0169": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/knowledge.pack#/defaults/attempts",
+      "notes": "Per-mode/per-stage and run retry counts are presets; explicit stage params continue to win. Model-budget reservation semantics remain separate thread2/7 concerns.",
+      "current_evidence": [
+        "loom/src/knowledge/engine.cpp:529"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/knowledge/engine.cpp:457",
+      "destination_before": "setting: execution retry preset"
+    },
+    "DIC-0170": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/knowledge.pack#/defaults/query/stage_tasks",
+      "notes": "100-task discovery limit now configurable; recorded stage task IDs are also reconstructed. No automatic pagination/completeness report implemented; actual TaskFilter semantics are retained.",
+      "current_evidence": [
+        "loom/src/knowledge/engine.cpp:709"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/src/knowledge/engine.cpp:624",
+      "destination_before": "setting: knowledge status pagination"
+    },
+    "DIC-0171": {
+      "status": "retained-algorithm",
+      "destination": "trusted knowledge pipeline capability wiring",
+      "notes": "Six stages and dependency order remain actual executable wiring; caller stage subset already supported. They are neither domain dictionary nor model-name switch.",
+      "current_evidence": [
+        "loom/include/loom/knowledge.h:65"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/include/loom/knowledge.h:65",
+      "destination_before": "retain: registered pipeline capability"
+    },
+    "DIC-0172": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/knowledge.pack#/defaults/config_defaults",
+      "notes": "Builtin DTO initialization reads validated data defaults; checked explicit-profile parser resolves omitted priors/llm and preserves explicit values. Native direct fields remain explicit caller input. Framework review agent owns implementation/test receipt.",
+      "current_evidence": [
+        "loom/include/loom/knowledge.h:72",
+        "loom/src/knowledge/engine.cpp:246",
+        "loom/src/knowledge/engine.cpp:261"
+      ],
+      "review_fragment": "migration-status-semantics-model-knowledge.json",
+      "inventory_source": "loom/include/loom/knowledge.h:75",
+      "destination_before": "pack: profiles/knowledge_default.json"
+    },
+    "DIC-0173": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults",
+      "notes": "WorkerOptions constructor/from_profile and consumer load typed values; explicit options are merged into effective profile. Usage guard belongs to2 and remains separate. Current evidence: loom/src/worker/semantic_worker.cpp:40, loom/src/worker/semantic_worker.cpp:271.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:40",
+        "loom/src/worker/semantic_worker.cpp:271"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/semantic_worker.h:61",
+      "destination_before": "pack: profiles/semantic_worker.json"
+    },
+    "DIC-0174": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{batch_endpoint,headers,batch_secret_key}",
+      "notes": "Submit, polling and results all derive from effective endpoint and headers; canonical Anthropic protocol path suffixes remain executable adapter contract. Current evidence: loom/src/worker/semantic_worker.cpp:65, loom/src/worker/semantic_worker.cpp:33.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:65",
+        "loom/src/worker/semantic_worker.cpp:33"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:47",
+      "destination_before": "pack: profiles/semantic_batch_providers.json"
+    },
+    "DIC-0175": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{submit_timeout_ms,poll_timeout_ms,results_timeout_ms}",
+      "notes": "All three timeout presets are data; API int representation bound is declared. Current evidence: loom/src/worker/semantic_worker.cpp:67, loom/src/worker/semantic_worker.cpp:146, loom/src/worker/semantic_worker.cpp:205.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:67",
+        "loom/src/worker/semantic_worker.cpp:146",
+        "loom/src/worker/semantic_worker.cpp:205"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:49",
+      "destination_before": "pack: profiles/semantic_worker.json"
+    },
+    "DIC-0176": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{batch_output_tokens,batch_input_chars}; thread1 prompts API",
+      "notes": "Tokens/chars are data, but batch still concatenates kAnalysisPrompt directly. Shared prompt preview/hash/per-call API is not consumed; prompt owned thread1. Current evidence: loom/src/worker/semantic_worker.cpp:194, loom/src/worker/semantic_worker.cpp:196.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:194",
+        "loom/src/worker/semantic_worker.cpp:196"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:175",
+      "destination_before": "pack: prompts analysis preset shared with semantic LLM"
+    },
+    "DIC-0177": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/batch_estimate_per_message; thread2/7 pricing recipe",
+      "notes": "The old flat estimate is now configurable and remains a labeled estimate; no model/token/timestamp-specific pricing calculation or measured charge has been implemented. Current evidence: loom/src/worker/semantic_worker.cpp:216, loom/src/worker/semantic_worker.cpp:223.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:216",
+        "loom/src/worker/semantic_worker.cpp:223"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:198",
+      "destination_before": "pack: policy/provider_pricing.json"
+    },
+    "DIC-0178": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{pause_poll_ms,error_backoff_ms}",
+      "notes": "Pause/error/exception waits read profile values and preserve cancellation predicates. Current evidence: loom/src/worker/semantic_worker.cpp:422, loom/src/worker/semantic_worker.cpp:432.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:422",
+        "loom/src/worker/semantic_worker.cpp:432"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:378",
+      "destination_before": "pack: profiles/semantic_worker.json"
+    },
+    "DIC-0179": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/{format_map,default_format}",
+      "notes": "Overlayable format lookup and explicit configured fallback, including dictionary deletion via validated profile patch. Current evidence: loom/src/media/media_providers.cpp:130, loom/src/media/media_providers.cpp:132.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:130",
+        "loom/src/media/media_providers.cpp:132"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:82",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0180": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/{endpoint,response_format,timeout_ms}",
+      "notes": "Endpoint, response-format, headers and timeout selected from descriptor; multipart JSON parser is supported adapter capability. Current evidence: loom/src/media/media_providers.cpp:137, loom/src/media/media_providers.cpp:143, loom/src/media/media_providers.cpp:147.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:137",
+        "loom/src/media/media_providers.cpp:143",
+        "loom/src/media/media_providers.cpp:147"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:97",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0181": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/model",
+      "notes": "Constructor no longer embeds model-name default; optional explicit legacy model takes precedence over descriptor. Current evidence: loom/src/media/media_providers.cpp:120, loom/src/media/media_providers.cpp:122.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:120",
+        "loom/src/media/media_providers.cpp:122"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/media_providers.h:88",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0182": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/{placeholder_confidence,max_segments}",
+      "notes": "Both values moved to descriptor. Confidence remains explicitly described as a compatibility placeholder in pack/report, not a new measurement; legacy result JSON field shape is unchanged. Current evidence: loom/src/media/media_providers.cpp:160, loom/src/media/media_providers.cpp:164.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:160",
+        "loom/src/media/media_providers.cpp:164"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:113",
+      "destination_before": "pack: policy/media_results.json"
+    },
+    "DIC-0183": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/google/{encoding_map,default_encoding}",
+      "notes": "Encoding map and fallback are data, arbitrary aliases and removal supported. Current evidence: loom/src/media/media_providers.cpp:195, loom/src/media/media_providers.cpp:197.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:195",
+        "loom/src/media/media_providers.cpp:197"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:141",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0184": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/google",
+      "notes": "Default language, alternatives, word flags, endpoint, timeout and headers all read descriptor. Current evidence: loom/src/media/media_providers.cpp:201, loom/src/media/media_providers.cpp:202, loom/src/media/media_providers.cpp:209.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:201",
+        "loom/src/media/media_providers.cpp:202",
+        "loom/src/media/media_providers.cpp:209"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:148",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0185": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/ocr.space/{language_map,default_language}",
+      "notes": "No in-code language dictionary; provider IDs/fallback declared in data. Current evidence: loom/src/media/media_providers.cpp:265, loom/src/media/media_providers.cpp:267.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:265",
+        "loom/src/media/media_providers.cpp:267"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:202",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0186": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/ocr.space",
+      "notes": "Engine, is_table/scale, endpoint/timeouts and headers are data; explicit engine constructor still wins. Current evidence: loom/src/media/media_providers.cpp:255, loom/src/media/media_providers.cpp:275, loom/src/media/media_providers.cpp:276.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:255",
+        "loom/src/media/media_providers.cpp:275",
+        "loom/src/media/media_providers.cpp:276"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:216",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0187": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/ocr.space/{overlay_placeholder_confidence,text_placeholder_confidence}",
+      "notes": "Both priors moved. Comment/report/pack explicitly distinguish placeholders from provider observations; unchanged DTO still exposes legacy confidence field. Current evidence: loom/src/media/media_providers.cpp:332, loom/src/media/media_providers.cpp:334.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:332",
+        "loom/src/media/media_providers.cpp:334"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:273",
+      "destination_before": "pack: policy/media_results.json"
+    },
+    "DIC-0188": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/{providers,asr_order,ocr_order,defaults_by_adapter}",
+      "notes": "Trusted factory registry supplies implemented adapters; descriptors select names, secret references/order. Arbitrary descriptors for implemented adapters supported, unknown adapters explicitly Unsupported. Current evidence: loom/src/media/media_providers.cpp:362, loom/src/media/media_providers.cpp:367, loom/src/media/media_providers.cpp:376, loom/src/media/media_providers.cpp:373.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:362",
+        "loom/src/media/media_providers.cpp:367",
+        "loom/src/media/media_providers.cpp:376",
+        "loom/src/media/media_providers.cpp:373"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:294",
+      "destination_before": "pack: profiles/media_provider_registry.json"
+    },
+    "DIC-0189": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/error_body_chars",
+      "notes": "Error body excerpt size is profile setting; raw provider response handling remains local. Current evidence: loom/src/media/media_providers.cpp:152.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:152"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:55",
+      "destination_before": "setting: media diagnostic projection"
+    },
+    "DIC-0190": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/{branch,sync_direction,auto_sync,include_patterns,exclude_patterns}",
+      "notes": "SyncConfig applies canonical profile; manager user overlay selects defaults. Explicit config vectors including empty remain authoritative; no token serialization. Current evidence: loom/src/github/github_sync.cpp:116, loom/src/github/github_sync.cpp:511, loom/src/github/github_sync.cpp:130.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:116",
+        "loom/src/github/github_sync.cpp:511",
+        "loom/src/github/github_sync.cpp:130"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/github_sync.h:67",
+      "destination_before": "pack: profiles/github_sync.json"
+    },
+    "DIC-0191": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/base_url",
+      "notes": "kBaseUrl is compatibility view only; injected/manager-selected profile base_url is used by requests. Current evidence: loom/src/github/github_sync.cpp:193, loom/src/github/github_sync.cpp:186, loom/src/github/github_sync.cpp:207.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:193",
+        "loom/src/github/github_sync.cpp:186",
+        "loom/src/github/github_sync.cpp:207"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/github_sync.h:81",
+      "destination_before": "pack: profiles/source_sync_providers.json"
+    },
+    "DIC-0192": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/{headers,authorization_template,secret_key}",
+      "notes": "Header map and inert authorization template are data; secret content stays in memory/secrets. Current evidence: loom/src/github/github_sync.cpp:171, loom/src/github/github_sync.cpp:177, loom/src/github/github_sync.cpp:549.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:171",
+        "loom/src/github/github_sync.cpp:177",
+        "loom/src/github/github_sync.cpp:549"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/github/github_sync.cpp:147",
+      "destination_before": "pack: profiles/source_sync_providers.json"
+    },
+    "DIC-0193": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/{connection_timeout_ms,request_timeout_ms}",
+      "notes": "Connection/list/fetch/push read profile timeout values. Current evidence: loom/src/github/github_sync.cpp:211, loom/src/github/github_sync.cpp:223.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:211",
+        "loom/src/github/github_sync.cpp:223"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/github/github_sync.cpp:169",
+      "destination_before": "pack: profiles/github_sync.json"
+    },
+    "DIC-0194": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/commit_message_template",
+      "notes": "Default commit text uses inert path template; explicit message including empty wins. Current evidence: loom/src/github/github_sync.cpp:410, loom/src/github/github_sync.cpp:412.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:410",
+        "loom/src/github/github_sync.cpp:412"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/github/github_sync.cpp:364",
+      "destination_before": "pack: profiles/github_sync.json"
+    },
+    "DIC-0195": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/net.pack#/defaults/default_timeout_ms",
+      "notes": "HttpRequest default and JSON omitted default use recipe, real policy resolves nonpositive explicit request to recipe default. Profile default=0 reaches native adapter; unbounded native timeout semantics are not claimed. Current evidence: loom/src/net/http_common.cpp:54, loom/src/net/http_common.cpp:93, loom/src/net/http_common.cpp:116.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:54",
+        "loom/src/net/http_common.cpp:93",
+        "loom/src/net/http_common.cpp:116"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_common.cpp:60",
+      "destination_before": "setting: transport timeouts"
+    },
+    "DIC-0196": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/net.pack#/defaults/{ca_environment,proxy_environment}",
+      "notes": "Environment precedence and scheme-keyed proxy sources are data. TLS verification remains explicit engine invariant, trust root configurable via CA source. Current evidence: loom/src/net/http_common.cpp:105, loom/src/net/http_common.cpp:119, loom/src/net/http_common.cpp:120, loom/src/net/http_default.cpp:60.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:105",
+        "loom/src/net/http_common.cpp:119",
+        "loom/src/net/http_common.cpp:120",
+        "loom/src/net/http_default.cpp:60"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_default.cpp:72",
+      "destination_before": "profile: transport environment integration"
+    },
+    "DIC-0197": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/net.pack#/defaults/{follow_redirects,keep_alive}",
+      "notes": "Both transport booleans are validated recipe settings used by native adapter. Current evidence: loom/src/net/http_common.cpp:117, loom/src/net/http_common.cpp:118, loom/src/net/http_default.cpp:78, loom/src/net/http_default.cpp:79.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:117",
+        "loom/src/net/http_common.cpp:118",
+        "loom/src/net/http_default.cpp:78",
+        "loom/src/net/http_default.cpp:79"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_default.cpp:91",
+      "destination_before": "profile: transport behavior"
+    },
+    "DIC-0198": {
+      "status": "retained-wire",
+      "destination": "HTTP/URI protocol contract, no preset migration",
+      "notes": "80/443 default ports, 16-bit port representation and hexadecimal escaping alphabet remain wire constants; not a consumption cap. Current evidence: loom/src/net/http_common.cpp:161, loom/src/net/http_common.cpp:165, loom/src/net/http_common.cpp:171.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:161",
+        "loom/src/net/http_common.cpp:165",
+        "loom/src/net/http_common.cpp:171"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_common.cpp:104",
+      "destination_before": "retain: HTTP wire standard"
+    },
+    "DIC-0199": {
+      "status": "retained-wire",
+      "destination": "SSE grammar + existing OpenAI-style is_done wire extension",
+      "notes": "BOM, SSE reserved field names/newlines remain grammar. [DONE] is existing adapter extension in is_done, not configurable generic SSE termination; changing it would require versioned/additive API. Current evidence: loom/src/net/sse.cpp:7, loom/src/net/sse.cpp:14, loom/src/net/sse.cpp:38.",
+      "current_evidence": [
+        "loom/src/net/sse.cpp:7",
+        "loom/src/net/sse.cpp:14",
+        "loom/src/net/sse.cpp:38"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/sse.cpp:7",
+      "destination_before": "retain: SSE grammar; profile done sentinel if protocol extended"
+    },
+    "DIC-0200": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline auto/standalone hits",
+      "notes": "loom/src/archive/pipeline.cpp:1051 — Corpushits divisor/min/max and standalonehits data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 1051,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:1023",
+      "destination_before": "pack: policy/archive_retrieval.json",
+      "current_evidence": []
+    },
+    "DIC-0201": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline/status_artifact_limit",
+      "notes": "loom/src/archive/pipeline.cpp:1343 — Artifactlisting cap data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 1343,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:1301",
+      "destination_before": "setting: archive artifact pagination",
+      "current_evidence": []
+    },
+    "DIC-0202": {
+      "status": "migrated",
+      "destination": "runtime/archive.pack /pipeline/items_poll_interval",
+      "notes": "loom/src/archive/pipeline.cpp:755 — Progress/cancel polling intervals data.",
+      "current_path": "loom/src/archive/pipeline.cpp",
+      "current_line": 755,
+      "review_fragment": "migration-status-archive.json",
+      "inventory_source": "loom/src/archive/pipeline.cpp:730",
+      "destination_before": "setting: archive progress_interval",
+      "current_evidence": []
+    },
+    "DIC-0203": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack",
+      "notes": "loom/src/archive/ingest_parse.cpp:80 — Default Markdown section limit data; explicit size overload unchanged. Stable hash width12 intentionally retained identity wire contract.",
+      "current_path": "loom/src/archive/ingest_parse.cpp",
+      "current_line": 80,
+      "review_fragment": "archive-runtime-followup-status.json",
+      "inventory_source": "loom/src/archive/archive_internal.h:107",
+      "destination_before": "pack: policy/archive_document.json; retain stable ID contract",
+      "current_evidence": []
+    },
+    "DIC-0500": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/help",
+      "notes": "kUsage removed; full legacy help/examples/format labels now data blob rendered from selected CLI profile. Other per-operation English diagnostics are not claimed migrated by this finding. Current evidence: loom/cli/main.cpp:1149, loom/cli/main.cpp:1168, loom/cli/main.cpp:1183, loom/data/runtime/cli.pack:6.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1149",
+        "loom/cli/main.cpp:1168",
+        "loom/cli/main.cpp:1183",
+        "loom/data/runtime/cli.pack:6"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:51",
+      "destination_before": "loom/data/profiles/cli.json + localized help data"
+    },
+    "DIC-0501": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/flags",
+      "notes": "Parser arity for booleans comes from profile flags collection; value-taking options follow generic parser. Current evidence: loom/cli/main.cpp:147, loom/cli/main.cpp:160, loom/cli/main.cpp:1174, loom/cli/main.cpp:1175, loom/data/runtime/cli.pack:7.",
+      "current_evidence": [
+        "loom/cli/main.cpp:147",
+        "loom/cli/main.cpp:160",
+        "loom/cli/main.cpp:1174",
+        "loom/cli/main.cpp:1175",
+        "loom/data/runtime/cli.pack:7"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:131",
+      "destination_before": "CLI command schema/profile"
+    },
+    "DIC-0502": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/presentation",
+      "notes": "Widths, timestamp prefix lengths, hash_chars, ellipsis and decimal scale now profile data; UTF8 prefix and round are universal operations. Current evidence: loom/cli/main.cpp:60, loom/cli/main.cpp:63, loom/cli/main.cpp:190, loom/cli/main.cpp:544, loom/cli/main.cpp:739, loom/cli/main.cpp:87, loom/data/runtime/cli.pack:695.",
+      "current_evidence": [
+        "loom/cli/main.cpp:60",
+        "loom/cli/main.cpp:63",
+        "loom/cli/main.cpp:190",
+        "loom/cli/main.cpp:544",
+        "loom/cli/main.cpp:739",
+        "loom/cli/main.cpp:87",
+        "loom/data/runtime/cli.pack:695"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:203",
+      "destination_before": "CLI presentation preset"
+    },
+    "DIC-0503": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits",
+      "notes": "All enumerated listing/search limits resolve CLI profile and explicit --limit wins. Data limits remain independent transport presets, not fixed C++ maxima. Current evidence: loom/cli/main.cpp:258, loom/cli/main.cpp:279, loom/cli/main.cpp:464, loom/cli/main.cpp:535, loom/cli/main.cpp:679, loom/cli/main.cpp:732, loom/cli/main.cpp:750, loom/cli/main.cpp:1014.",
+      "current_evidence": [
+        "loom/cli/main.cpp:258",
+        "loom/cli/main.cpp:279",
+        "loom/cli/main.cpp:464",
+        "loom/cli/main.cpp:535",
+        "loom/cli/main.cpp:679",
+        "loom/cli/main.cpp:732",
+        "loom/cli/main.cpp:750",
+        "loom/cli/main.cpp:1014"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:282",
+      "destination_before": "CLI operation preset/config"
+    },
+    "DIC-0504": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/creation/conversation_title",
+      "notes": "Fallback title is profile value; supplied title bytes passed verbatim. Current evidence: loom/cli/main.cpp:288.",
+      "current_evidence": [
+        "loom/cli/main.cpp:288"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:291",
+      "destination_before": "CLI locale/profile data"
+    },
+    "DIC-0505": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/creation/export_format",
+      "notes": "CLI export default now data with explicit --format override. HTTP/exporter format capabilities owned elsewhere unchanged. Current evidence: loom/cli/main.cpp:446.",
+      "current_evidence": [
+        "loom/cli/main.cpp:446"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:449",
+      "destination_before": "CLI/export transport preset"
+    },
+    "DIC-0506": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits/{graph_expansion_depth,chat_depth,context_depth,context_tokens}; thread3 shared request presets",
+      "notes": "CLI profile owns the graph/context/chat depth and budget preset precedence; explicitly omitted chat fields let shared APIs choose their own defaults. Graph/context CLI defaults are intentional independent presets, configurable in cli.pack rather than inherited implicitly from selector data. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:363, loom/cli/main.cpp:486, loom/cli/main.cpp:522, loom/cli/main.cpp:523.",
+      "current_evidence": [
+        "loom/cli/main.cpp:363",
+        "loom/cli/main.cpp:486",
+        "loom/cli/main.cpp:522",
+        "loom/cli/main.cpp:523"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:489",
+      "destination_before": "CLI contextual operation presets"
+    },
+    "DIC-0507": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/creation/memory_node_type; loom/data/runtime/memory.pack default_node_type integration",
+      "notes": "CLI memory creation type is configurable in cli.pack creation.memory_node_type and overridden by --type. This is an intentional independent CLI preset with explicit API precedence, not implicit inheritance from memory.pack. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:592.",
+      "current_evidence": [
+        "loom/cli/main.cpp:592"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:589",
+      "destination_before": "Memory/CLI preset"
+    },
+    "DIC-0508": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits/task_resume_scan",
+      "notes": "Old1000 resume scan is configurable profile preset and --limit. One scan remains, not complete pagination; this finding permits explicit exposed total instead of all-task traversal. Current evidence: loom/cli/main.cpp:702.",
+      "current_evidence": [
+        "loom/cli/main.cpp:702"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:699",
+      "destination_before": "task resume settings/preset"
+    },
+    "DIC-0509": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/graph_stats",
+      "notes": "Selected stats IDs come from data and execute trusted prepared-SQL registry; unsupported ID explicit Unavailable. SQL tables are structural capabilities. Current evidence: loom/cli/main.cpp:494, loom/cli/main.cpp:497, loom/cli/main.cpp:500.",
+      "current_evidence": [
+        "loom/cli/main.cpp:494",
+        "loom/cli/main.cpp:497",
+        "loom/cli/main.cpp:500"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:497",
+      "destination_before": "stats profile/catalog of available metrics"
+    },
+    "DIC-0510": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits/catalog_eval_scan",
+      "notes": "Old1M query limit moved to preset and explicit --limit. Eval remains one query and does not report queried/total catalog coverage; truth denominator is reported. Adjustable cap resolved, coverage reporting remains separate quality follow-up. Current evidence: loom/cli/main.cpp:931, loom/cli/main.cpp:933, loom/cli/main.cpp:970.",
+      "current_evidence": [
+        "loom/cli/main.cpp:931",
+        "loom/cli/main.cpp:933",
+        "loom/cli/main.cpp:970"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:925",
+      "destination_before": "CLI eval settings/preset"
+    },
+    "DIC-0511": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/evaluation",
+      "notes": "Truth cohort paths and external-ID key come from recipe; confusion calculations operate on selected cohorts. Current evidence: loom/cli/main.cpp:926, loom/cli/main.cpp:927, loom/cli/main.cpp:953, loom/cli/main.cpp:958, loom/cli/main.cpp:960, loom/cli/main.cpp:962.",
+      "current_evidence": [
+        "loom/cli/main.cpp:926",
+        "loom/cli/main.cpp:927",
+        "loom/cli/main.cpp:953",
+        "loom/cli/main.cpp:958",
+        "loom/cli/main.cpp:960",
+        "loom/cli/main.cpp:962"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:952",
+      "destination_before": "evaluation schema/profile"
+    },
+    "DIC-0512": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/{limits/catalog_watch_seconds,watch/sleep_slice_ms}",
+      "notes": "Both interval300sec and cancellation sleep1000ms are data presets; --interval overrides the period, slice is truncated to remaining time. The positive integer-seconds and duration requirements are API/arithmetic validity, not a product budget ceiling. Unit conversion constants remain representation operations. Current evidence: loom/cli/main.cpp:1058, loom/cli/main.cpp:1059, loom/cli/main.cpp:1073, loom/cli/main.cpp:1075, loom/cli/main.cpp:1078, loom/data/runtime/cli.pack:196, loom/data/runtime/cli.pack:1444.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1058",
+        "loom/cli/main.cpp:1059",
+        "loom/cli/main.cpp:1073",
+        "loom/cli/main.cpp:1075",
+        "loom/cli/main.cpp:1078",
+        "loom/data/runtime/cli.pack:196",
+        "loom/data/runtime/cli.pack:1444"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:1052",
+      "destination_before": "watch runtime settings/preset"
+    },
+    "DIC-0513": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/logging",
+      "notes": "Default severity, alias vocabulary and fallback are data; fallback must be registered. Unknown-name fallback behavior remains configurable for exact legacy defaults. Current evidence: loom/cli/main.cpp:1193, loom/cli/main.cpp:1194, loom/cli/main.cpp:1196, loom/cli/main.cpp:1198.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1193",
+        "loom/cli/main.cpp:1194",
+        "loom/cli/main.cpp:1196",
+        "loom/cli/main.cpp:1198"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:1101",
+      "destination_before": "CLI logging preset + shared log-level descriptors"
+    },
+    "DIC-0514": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/{commands,subcommands}; trusted CLI handler registry",
+      "notes": "Top-level name aliases and subcommand aliases resolve from profile; dispatch now handler registry for top-level methods. Canonical subcommand branches remain trusted capability IDs, not user-editable policy or invented support. Current evidence: loom/cli/main.cpp:1171, loom/cli/main.cpp:1209, loom/cli/main.cpp:1212, loom/cli/main.cpp:1221, loom/cli/main.cpp:1244.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1171",
+        "loom/cli/main.cpp:1209",
+        "loom/cli/main.cpp:1212",
+        "loom/cli/main.cpp:1221",
+        "loom/cli/main.cpp:1244"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:1168",
+      "destination_before": "command metadata in CLI profile, executable handler registry in code"
+    }
+  }
+}

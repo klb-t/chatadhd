@@ -15,7 +15,8 @@ The generic interpreter supports only `type`, `required`, `properties`, `items`,
 `additionalProperties`, `minimum`, `maximum`, `minLength`, `minItems`, `enum`;
 `type` can also be a nonempty array of supported names (for example integer/null
 for a nullable bound); unsupported assertions fail. UI annotations are `title`, `description`, `x-setting`
-(RFC 6901 pointer), `x-unit`, `x-consumer`. Do not label an absent annotation as a
+(RFC 6901 pointer; `<index>` and `<key>` are placeholders to instantiate for array
+and dictionary entries), `x-unit`, `x-consumer`. Do not label an absent annotation as a
 measured quantity. Numeric validation compares integer/double values exactly;
 large unsigned integers do not wrap or round when checked against bounds.
 
@@ -78,6 +79,13 @@ Selector reconfiguration rebuilds its derived index transactionally; failure ret
 the prior working configuration and index. A new profile is not a live mutation of
 an operation already in progress.
 
+Immutable builtin descriptors are parsed, validated and hashed once for a binary;
+user overlay files are read afresh. Archive legacy helpers share an immutable
+builtin view instead of reconstructing dictionaries per token. Exact replacement
+still validates every field: numerically equal floating values cannot bypass an
+integer schema. Embedding index, query and reconfiguration share count, dimension
+and finite-coordinate validation; malformed batches preserve the prior index.
+
 CLI entry points:
 
 ```sh
@@ -109,6 +117,13 @@ Archive effective lexicons/settings enter its existing stage input identity only
 when changed. Rendering inspection exposes content hashes even for builtin values.
 A version hash is evidence of the recipe, not evidence that model statements are
 correct. Regex output remains regex; model output must not be relabeled as recorded.
+
+Knowledge and materialization verify their planned recipe hash before execution,
+after handlers and before each product write. A profile changed during an operation
+returns conflict instead of storing a result under the earlier cache key. Materialize
+products are ordered entries from the four registered renderers. `on_error: error`
+propagates an error; `omit` records `complete: false` and structured
+`omitted_products`. Error-free default products retain their historical shape.
 
 ## Do wątku 1
 
@@ -143,8 +158,9 @@ are not that query-preview API.
 
 ## Do wątku 9
 
-Wire profile-aware constructors at runtime/application entry points outside thread
-11; add server/C ABI adapters only in their owners' scopes. Integrate consumer
+Assign profile-aware runtime/application entry points outside thread11 to their
+implementation owners; server/C ABI adapters must also stay in their owners' scopes.
+Integration ownership does not grant permission to edit otherwise unassigned code. Integrate consumer
 commits together with the profile engine and generated canonical data. Run full
 ctest and web build on the rebased branch before fast-forwarding main. Inventory
 anchors deliberately refer to the original baseline, even after source movement.

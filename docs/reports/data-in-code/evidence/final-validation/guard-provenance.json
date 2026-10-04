@@ -1,0 +1,8 @@
+{
+  "source_branch": "gpt/repo-hygiene-2026-10-04",
+  "source_commit": "2544cf3a75c1477797213328f7279b3e8576579e",
+  "source_path": ".github/scripts/verify_ctest.py",
+  "sha256": "39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a",
+  "read_only_snapshot": true,
+  "scope": "Evidence coverage validator retained unchanged; no test thresholds or exception changes."
+}

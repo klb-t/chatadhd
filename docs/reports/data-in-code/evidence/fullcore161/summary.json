@@ -1,0 +1,58 @@
+{
+  "schema": "loom.fullcore_parity_summary/1",
+  "baseline_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "current_commit": "3cbc4b6e16e01fdeddb970bf3b866fb70e95a5dd",
+  "current_library_sha256": "e32c82f3fbc6eb62d60ed3074070c20a99e31fdb1a099dd2528d19bd7efdc5e9",
+  "valid": true,
+  "counts": {
+    "probes": 6,
+    "byte_identical_probes": 6,
+    "bytes_per_side": 1208469,
+    "semantics_products": 4,
+    "util_environment_cases": 6
+  },
+  "probes": [
+    {
+      "name": "memory_selector",
+      "before_bytes": 59955,
+      "after_bytes": 59955,
+      "sha256": "caec4bb87a68e1f284978793feceffa8a5b42445db38776c691561e425150360",
+      "byte_parity": true
+    },
+    {
+      "name": "semantics_graph_materialize",
+      "before_bytes": 11766,
+      "after_bytes": 11766,
+      "sha256": "0db70356e9c30dfb937353908f2f6c79f464215f386d1a4fad5a5f86768b787d",
+      "byte_parity": true
+    },
+    {
+      "name": "worker_media_github",
+      "before_bytes": 604681,
+      "after_bytes": 604681,
+      "sha256": "d947a102fbdd04aa5d6343c8020755e1a63d22ff9ca80d80c5c05c5e50f1b7d2",
+      "byte_parity": true
+    },
+    {
+      "name": "net_model",
+      "before_bytes": 264606,
+      "after_bytes": 264606,
+      "sha256": "6eb6f00d3c398870a15f350a918d7558eb20d68e31b64af82ca745d250b0b7a4",
+      "byte_parity": true
+    },
+    {
+      "name": "util",
+      "before_bytes": 13295,
+      "after_bytes": 13295,
+      "sha256": "a6fd124a827744adc68e08fa771cc9fc2b4548128713c9de8ef12aa58b7c1dbf",
+      "byte_parity": true
+    },
+    {
+      "name": "regex",
+      "before_bytes": 254166,
+      "after_bytes": 254166,
+      "sha256": "d54343319fe07946c4e2d023a9bb09ccc8461bcd03aa6b92548c4351b6163381",
+      "byte_parity": true
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+ninja: warning: premature end of file; recovering
+[0/2] Re-checking globbed directories...
+-- GLOB mismatch!
+The following files were added:
+  +/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_archive_runtime_policy.cpp
+  +/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_archive_text_policy.cpp
+  +/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_bootstrap_profiles.cpp
+[1/2] Re-running CMake...
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (1.0s)
+-- Generating done (0.1s)
+-- Build files have been written to: /workspace/scratch/72fc60ad1cc5/current-build
+ninja: warning: premature end of file; recovering
+[0/4] Re-checking globbed directories...
+[1/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[2/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[3/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[4/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[5/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[6/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[7/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[8/210] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[9/210] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[10/210] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[11/210] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[12/210] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[13/210] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[14/210] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[15/210] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o

@@ -1,0 +1,5 @@
+[0/2] Re-checking globbed directories...
+[1/181] Building CXX object CMakeFiles/loom_core.dir/src/extract/extract.cpp.o
+[2/181] Building CXX object CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o
+[3/181] Building CXX object CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o
+[4/181] Building CXX object CMakeFiles/loom_core.dir/src/extract/sources.cpp.o

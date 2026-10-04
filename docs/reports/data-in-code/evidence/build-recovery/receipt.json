@@ -1,0 +1,283 @@
+{
+  "schema": "loom.build_recovery_evidence/1",
+  "captured_at_utc": "2026-10-04T16:44:44.939895+00:00",
+  "base_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "files": [
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/baseline-build-final.log",
+      "file": "baseline-build-final.log",
+      "bytes": 3729,
+      "sha256": "35c536c02350f77349b2f129b4c7562fb0680cda7600839d69cbfc4f1547fdbc",
+      "source_mtime_utc": "2026-10-04T15:43:36.524643+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/baseline-build-retry.log",
+      "file": "baseline-build-retry.log",
+      "bytes": 9283,
+      "sha256": "694c6aa68ef42170acbe20241382031d2542cdbbd94091d49db791673a1d3566",
+      "source_mtime_utc": "2026-10-04T15:37:29.227798+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/baseline-build.log",
+      "file": "baseline-build.log",
+      "bytes": 3906,
+      "sha256": "c32e2a64eb1429cf8d091e2adc1283b0a073ee7928d158890e5a1dda98ac7853",
+      "source_mtime_utc": "2026-10-04T15:02:18.510722+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/build-before.log",
+      "file": "build-before.log",
+      "bytes": 1566,
+      "sha256": "ce127694b330a1ea645cc2ec845e5597de2d45315828c7003a1239df39289f78",
+      "source_mtime_utc": "2026-10-04T14:58:06.537119+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-closed-policies.log",
+      "file": "current-build-closed-policies.log",
+      "bytes": 1929,
+      "sha256": "515a8a41ced27fbf6b904b969821cf76feb50f569d885fdd9f6c19882af02d36",
+      "source_mtime_utc": "2026-10-04T16:18:43.137774+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-complete.log",
+      "file": "current-build-complete.log",
+      "bytes": 23465,
+      "sha256": "b2ac379126695f33c905332b9b837bdc350789fc1bce7ff2eaf1074821f1302c",
+      "source_mtime_utc": "2026-10-04T16:02:05.443556+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-final-core.log",
+      "file": "current-build-final-core.log",
+      "bytes": 17893,
+      "sha256": "9ce75b6608c0f9adc45057f605a7e5be69aaa8aad32a622ee2c4648a0b9b6e61",
+      "source_mtime_utc": "2026-10-04T16:30:07.677454+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-final-server.log",
+      "file": "current-build-final-server.log",
+      "bytes": 1211,
+      "sha256": "62e7a3dcd8ac56f0a2dd32dae81d944c6d53f644c0ad12efbc78c88d8cfcca66",
+      "source_mtime_utc": "2026-10-04T16:31:27.266174+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-final.log",
+      "file": "current-build-final.log",
+      "bytes": 360,
+      "sha256": "46068008b25507834a9d383aa6f06a2130c56e28ddaa09917f97c6b58f8d24ee",
+      "source_mtime_utc": "2026-10-04T15:51:28.650913+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-refresh.log",
+      "file": "current-build-refresh.log",
+      "bytes": 17566,
+      "sha256": "e2c1caf96ec5ddcea1f962a731eb1b7bab045e710401e744d7c158694e709440",
+      "source_mtime_utc": "2026-10-04T16:12:17.249780+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-retry.log",
+      "file": "current-build-retry.log",
+      "bytes": 2214,
+      "sha256": "5b9af33f593b30cf4cf5d60aa5c4f65be07d74c00f9be6097a914df61a21beec",
+      "source_mtime_utc": "2026-10-04T15:51:32.881401+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build-sourcefreeze.log",
+      "file": "current-build-sourcefreeze.log",
+      "bytes": 17931,
+      "sha256": "33beb35e896f9c9347e57dc80620d360a057349df0107565e96ee635b52850eb",
+      "source_mtime_utc": "2026-10-04T16:44:35.114228+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/current-build.log",
+      "file": "current-build.log",
+      "bytes": 6841,
+      "sha256": "c56445570c421323c725cc94261db2108ed14d83b6f70befcc55538e404caccf",
+      "source_mtime_utc": "2026-10-04T15:43:39.540519+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/framework-build-final.log",
+      "file": "framework-build-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_utc": "2026-10-04T15:50:11.792632+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/framework-build.log",
+      "file": "framework-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_mtime_utc": "2026-10-04T15:15:22.374881+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/ninja-recompact.log",
+      "file": "ninja-recompact.log",
+      "bytes": 50,
+      "sha256": "14d907f03cdfcfcd6f33309e6ec61793f55543e32ad4a63d93aeb2949ca42cbb",
+      "source_mtime_utc": "2026-10-04T16:33:17.300217+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/ninja-after-recompact-dry.log",
+      "file": "ninja-after-recompact-dry.log",
+      "bytes": 141,
+      "sha256": "b0b29bf103b729abd91d839ad731abc304969939df36099f71de6ecb4212a225",
+      "source_mtime_utc": "2026-10-04T16:33:17.309629+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/ninja-deps-before-recompact.bin",
+      "file": "ninja-deps-before-recompact.bin",
+      "bytes": 151244,
+      "sha256": "5b426cd3df75f2a3b4065d736410853567ef93198cd9e87b42c727b82f7840f8",
+      "source_mtime_utc": "2026-10-04T16:33:17.291863+00:00",
+      "capture_note": "Snapshot only. Log ending/progress is preserved; none establishes final source-frozen build/ctest success."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/final-validation/ctest.log",
+      "file": "ctest-negative-no-execute.log",
+      "bytes": 30922,
+      "sha256": "d1183ba8408ea6908f7550e9034e3ff9afa613da5968d7883afd54f1b10108b8",
+      "source_mtime_utc": "2026-10-04T16:56:05.525195+00:00",
+      "capture_note": "Actual completed negative ctest:122 wrappers,95 failures at process start permission denied; no native assertions executed in these95."
+    },
+    {
+      "source": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/final-validation/ctest.xml",
+      "file": "ctest-negative-no-execute.xml",
+      "bytes": 39148,
+      "sha256": "1ba42b794ee821c897968465212f6bc53592accbc385d5767e89f78d51ee67fd",
+      "source_mtime_utc": "2026-10-04T16:56:05.525195+00:00",
+      "capture_note": "Actual completed negative ctest:122 wrappers,95 failures at process start permission denied; no native assertions executed in these95."
+    }
+  ],
+  "failure_commands": [
+    {
+      "log": "baseline-build-final.log",
+      "failure_line": 26,
+      "failed_target": "FAILED: [code=1] CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o ",
+      "command_line": 27,
+      "executed_command": "/usr/bin/c++ -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_TEST_FIXTURES=\\\"/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/tests/fixtures\\\" -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\\\"0.1.0\\\" -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/tests -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/doctest -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/nlohmann -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/sqlite -g -std=c++20 -fPIE -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o -MF CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o.d -o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o -c /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/tests/test_chat_active_task_history_aba.cpp"
+    },
+    {
+      "log": "baseline-build-retry.log",
+      "failure_line": 109,
+      "failed_target": "FAILED: [code=1] libloom.so.0.1.0 ",
+      "command_line": 110,
+      "executed_command": ": && /usr/bin/c++ -fPIC -g  -shared -Wl,--no-undefined -Wl,--dependency-file=CMakeFiles/loom.dir/link.d -Wl,-soname,libloom.so.0 -o libloom.so.0.1.0 CMakeFiles/loom.dir/src/capi/shared_anchor.c.o  -Wl,--push-state,--whole-archive  libloom_core.a  -Wl,--pop-state  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so && :"
+    },
+    {
+      "log": "baseline-build.log",
+      "failure_line": 30,
+      "failed_target": "FAILED: [code=1] CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o ",
+      "command_line": 31,
+      "executed_command": "/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\\\"0.1.0\\\" -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/nlohmann -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/cpp-httplib -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/sqlite -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/miniz -g -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o -MF CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o.d -o CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o -c /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src/capi/capi_knowledge.cpp"
+    },
+    {
+      "log": "current-build-complete.log",
+      "failure_line": 181,
+      "failed_target": "FAILED: [code=1] loom_tests ",
+      "command_line": 182,
+      "executed_command": ": && /usr/bin/c++ -g0 -Wl,--dependency-file=CMakeFiles/loom_tests.dir/link.d CMakeFiles/loom_tests.dir/tests/main.cpp.o CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o CMakeFiles/loom_tests.dir/tests/test_archive_profiles.cpp.o CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o CMakeFiles/loom_tests.dir/tests/test_capi_knowledge_latest_run.cpp.o CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o CMakeFiles/loom_tests.dir/tests/test_catalog_links.cpp.o CMakeFiles/loom_tests.dir/tests/test_catalog_retention.cpp.o CMakeFiles/loom_tests.dir/tests/test_catalog_scale.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_audit.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_scale.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_validation.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durability.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durable_audit.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_exceptional.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_reference.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_retention.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_revisions.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_scope_identity.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o CMakeFiles/loom_tests.dir/tests/test_chat_retrieval_plan.cpp.o CMakeFiles/loom_tests.dir/tests/test_config.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_channel_integration.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_controls.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_counter.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_diagnostics.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_engine.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_eval.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_native_consumer.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_plan.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_retrieval.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_retrieval_dev.cpp.o CMakeFiles/loom_tests.dir/tests/test_context_tfidf_reuse.cpp.o CMakeFiles/loom_tests.dir/tests/test_crypto.cpp.o CMakeFiles/loom_tests.dir/tests/test_db.cpp.o CMakeFiles/loom_tests.dir/tests/test_event_bus.cpp.o CMakeFiles/loom_tests.dir/tests/test_extract.cpp.o CMakeFiles/loom_tests.dir/tests/test_extract_eval.cpp.o CMakeFiles/loom_tests.dir/tests/test_fts.cpp.o CMakeFiles/loom_tests.dir/tests/test_generalize.cpp.o CMakeFiles/loom_tests.dir/tests/test_generalize_eval.cpp.o CMakeFiles/loom_tests.dir/tests/test_github.cpp.o CMakeFiles/loom_tests.dir/tests/test_graph.cpp.o CMakeFiles/loom_tests.dir/tests/test_import.cpp.o CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o CMakeFiles/loom_tests.dir/tests/test_import_exports.cpp.o CMakeFiles/loom_tests.dir/tests/test_import_source_materialization.cpp.o CMakeFiles/loom_tests.dir/tests/test_import_stream.cpp.o CMakeFiles/loom_tests.dir/tests/test_kb_pack.cpp.o CMakeFiles/loom_tests.dir/tests/test_knowledge.cpp.o CMakeFiles/loom_tests.dir/tests/test_knowledge_candidate_graph.cpp.o CMakeFiles/loom_tests.dir/tests/test_knowledge_candidates.cpp.o CMakeFiles/loom_tests.dir/tests/test_knowledge_flow.cpp.o CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic.cpp.o CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic_graph.cpp.o CMakeFiles/loom_tests.dir/tests/test_knowledge_store.cpp.o CMakeFiles/loom_tests.dir/tests/test_materialize.cpp.o CMakeFiles/loom_tests.dir/tests/test_media.cpp.o CMakeFiles/loom_tests.dir/tests/test_memory.cpp.o CMakeFiles/loom_tests.dir/tests/test_model.cpp.o CMakeFiles/loom_tests.dir/tests/test_model_profile.cpp.o CMakeFiles/loom_tests.dir/tests/test_net_profile.cpp.o CMakeFiles/loom_tests.dir/tests/test_net_sse.cpp.o CMakeFiles/loom_tests.dir/tests/test_pack_model.cpp.o CMakeFiles/loom_tests.dir/tests/test_provenance.cpp.o CMakeFiles/loom_tests.dir/tests/test_providers.cpp.o CMakeFiles/loom_tests.dir/tests/test_regex.cpp.o CMakeFiles/loom_tests.dir/tests/test_relations.cpp.o CMakeFiles/loom_tests.dir/tests/test_resolve.cpp.o CMakeFiles/loom_tests.dir/tests/test_resolve_attribution.cpp.o CMakeFiles/loom_tests.dir/tests/test_resolve_lineage.cpp.o CMakeFiles/loom_tests.dir/tests/test_runtime.cpp.o CMakeFiles/loom_tests.dir/tests/test_runtime_profile.cpp.o CMakeFiles/loom_tests.dir/tests/test_runtime_recipe_consumers.cpp.o CMakeFiles/loom_tests.dir/tests/test_selector.cpp.o CMakeFiles/loom_tests.dir/tests/test_semantic_llm.cpp.o CMakeFiles/loom_tests.dir/tests/test_semantic_worker.cpp.o CMakeFiles/loom_tests.dir/tests/test_tasks.cpp.o CMakeFiles/loom_tests.dir/tests/test_util.cpp.o CMakeFiles/loom_tests.dir/tests/test_util_profiles.cpp.o -o loom_tests  libloom_core.a  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so && :"
+    },
+    {
+      "log": "current-build-refresh.log",
+      "failure_line": 195,
+      "failed_target": "FAILED: [code=1] server/loom-server ",
+      "command_line": 196,
+      "executed_command": ": && /usr/bin/c++ -g0 -Wl,--dependency-file=server/CMakeFiles/loom-server.dir/link.d server/CMakeFiles/loom-server.dir/src/main.cpp.o server/CMakeFiles/loom-server.dir/src/app.cpp.o -o server/loom-server  libloom_core.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a && :"
+    },
+    {
+      "log": "current-build.log",
+      "failure_line": 67,
+      "failed_target": "FAILED: [code=1] CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o ",
+      "command_line": 68,
+      "executed_command": "/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\\\"0.1.0\\\" -I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/include -I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/miniz -g0 -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o -MF CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o.d -o CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o -c /workspace/scratch/72fc60ad1cc5/chatadhd/loom/src/extract/candidate_graph.cpp"
+    }
+  ],
+  "observed_by_parent": [
+    {
+      "action": "copy .ninja_deps before recovery",
+      "command": "copy /workspace/scratch/72fc60ad1cc5/current-build/.ninja_deps to /workspace/scratch/72fc60ad1cc5/ninja-deps-before-recompact.bin",
+      "attribution": "Parent explicitly reported action; exact shell copy arguments not retained"
+    },
+    {
+      "action": "Ninja dependency log recovery",
+      "command": "/root/.local/bin/ninja -C /workspace/scratch/72fc60ad1cc5/current-build -t recompact > /workspace/scratch/72fc60ad1cc5/ninja-recompact.log 2>&1",
+      "attribution": "Exact command reported by parent; complete tool output retained"
+    },
+    {
+      "action": "latest source freeze build",
+      "command": "/root/.local/bin/cmake --build /workspace/scratch/72fc60ad1cc5/current-build -j2 > /workspace/scratch/72fc60ad1cc5/current-build-sourcefreeze.log 2>&1",
+      "attribution": "Exact command reported by parent; log is an incomplete snapshot captured during build"
+    },
+    {
+      "action": "zero-sized server object inspection and removal",
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/server/CMakeFiles/loom-server.dir/app.cpp.o",
+      "observed_size": 0,
+      "attribution": "Parent explicitly observed size0 and deleted only this object. Original file was deleted before this proof capture; no claim that its original bytes were independently preserved"
+    },
+    {
+      "action": "server retry",
+      "command": "cmake --build /workspace/scratch/72fc60ad1cc5/current-build -j1",
+      "attribution": "Reconstructed equivalent; parent reported -j1 retry but exact executable/target args not retained"
+    },
+    {
+      "action": "baseline-only cleanup",
+      "bytes_reported": 868000000,
+      "preserved": [
+        "libloom_core.a",
+        "libloom.so.0.1.0"
+      ],
+      "attribution": "Parent reported removing baseline .o files after ENOSPC; figure is parent estimate868MB, not a new byte measurement"
+    }
+  ],
+  "limits": "No compiler, linker, original build directory mutation, or candidate Runtime invocation was performed to prepare this evidence. Final build/ctest proof is separate.",
+  "copy_only_replay": {
+    "command": "python docs/reports/data-in-code/evidence/build-recovery/zero_object_replay.py docs/reports/data-in-code/evidence/build-recovery/input-object.bin --receipt /tmp/zero-object-replay.json",
+    "result": "PASS4 assertions; source unchanged; no compiler/linker; synthetic copy only",
+    "input_origin": "/workspace/scratch/72fc60ad1cc5/baseline-build/CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o",
+    "input_source": "Public vendored miniz/miniz.c; declared exact compiler entry retained separately",
+    "input_sha256": "dc496983d518fe6ee013fd0465b9ca21251da9cccf6261d702df39463c63de4d",
+    "input_bytes": 356888
+  },
+  "negative_ctest_no_execute": {
+    "schema": "loom.negative_executable_mode/1",
+    "path": "/workspace/scratch/72fc60ad1cc5/current-build/loom_tests",
+    "bytes": 54783640,
+    "mode": "0o755",
+    "execute_allowed": true,
+    "magic_hex": "7f454c46",
+    "classification": "Independent readonly observations before and after execute bit recovery; this child performed no chmod or build mutation",
+    "observation_utc": "2026-10-04T16:58:43.551021+00:00",
+    "earlier_observation": {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/loom_tests",
+      "bytes": 54783640,
+      "mode": "0o644",
+      "execute_allowed": false,
+      "magic_hex": "7f454c46",
+      "mtime_utc": "2026-10-04T16:50:36.798692+00:00",
+      "source": "Readonly exec_command stat output of this child before reporting failure to parent; capture of full log/xml occurred later, after parent restored execute bit."
+    },
+    "junit_summary": {
+      "tests": 122,
+      "failures": 95,
+      "disabled": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-05T00:52:26"
+    }
+  }
+}

@@ -1,0 +1,335 @@
+{
+  "library_sha256": "9ff144fb7455937100a8dd4ce35c8ed61159fb869bd7b97b90c3016e404f149c",
+  "config": {
+    "sources": [
+      "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive/exports",
+      "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive/docs"
+    ],
+    "repo": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive/repo",
+    "git": false,
+    "seed_terms": [
+      "ChatADHD",
+      "graph",
+      "kivy",
+      "importer"
+    ],
+    "project": "fixture"
+  },
+  "materialized_dir": "/workspace/scratch/72fc60ad1cc5/archive-parity-materialized",
+  "status": "done",
+  "summary": {
+    "project": "fixture",
+    "docs": 26,
+    "sources": 8,
+    "hits": 26,
+    "vocabulary": 4,
+    "passes": [
+      {
+        "pass": 1,
+        "terms": 4,
+        "hits": 26,
+        "new_hits": 26,
+        "added": []
+      }
+    ],
+    "themes": [
+      {
+        "id": "T1",
+        "label": "knowledge · sqlite · local",
+        "size": 13
+      },
+      {
+        "id": "T2",
+        "label": "importer · conversation · bytes",
+        "size": 8
+      },
+      {
+        "id": "T3",
+        "label": "kivy · mobile · android",
+        "size": 3
+      },
+      {
+        "id": "T4",
+        "label": "other",
+        "size": 2
+      }
+    ],
+    "items": {
+      "edges": 2,
+      "by_type": {
+        "resolves": 1,
+        "supersedes": 1
+      }
+    },
+    "gap": {
+      "components_implemented": 0,
+      "components_partial": 1,
+      "components_missing": 2,
+      "features_total": 5,
+      "features_with_evidence": 2,
+      "features_partial": 0,
+      "features_missing": 3,
+      "todos": 2
+    },
+    "discovered_terms": [],
+    "artifacts": [
+      {
+        "id": "a_df7bcb3b31c4",
+        "name": "MASTER.md",
+        "hash": "bc62aff6209eb66d5ee1aa8547f246e464d37142667d6176924aa052724382bb"
+      },
+      {
+        "id": "a_16413846797f",
+        "name": "gap_report.md",
+        "hash": "72411320d5c290537acf0cb996f29de6f128202a36e8302d2220b283a58a9966"
+      },
+      {
+        "id": "a_e36f513a3062",
+        "name": "graph.json",
+        "hash": "dc6b33137f31cb70fcdd93e80870b7b6c53aeb891e2c3ef98f3f68ddf7d486b9"
+      },
+      {
+        "id": "a_8c34e4cb7fbc",
+        "name": "items.jsonl",
+        "hash": "370dcca519d6e00598900fdadf749e7aa716607714fc2c6657b885210b2e81f7"
+      },
+      {
+        "id": "a_a524ae22b442",
+        "name": "project_manifest.json",
+        "hash": "a8fbf95e291cdd8e8c2df6e12d1d4ed0fd8b8c787b0a6a629cceea997c1bdedc"
+      },
+      {
+        "id": "a_78b9109498bd",
+        "name": "source_map.csv",
+        "hash": "6ad7945f24435e8c0cf5e101547bb5044174229ad175c2b96a66fb51cb1a1a25"
+      },
+      {
+        "id": "a_b3f2fffab8f3",
+        "name": "timeline.json",
+        "hash": "edacbca11c7d4eacf1b4798cbef4ccf3e9f095ae8ee51dd45a03a3944f6bf57f"
+      },
+      {
+        "id": "a_23866d584be1",
+        "name": "task_log.jsonl",
+        "hash": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf"
+      }
+    ],
+    "out_dir": "/workspace/scratch/72fc60ad1cc5/archive-parity-materialized",
+    "warnings": []
+  },
+  "artifacts": [
+    {
+      "name": "MASTER.md",
+      "bytes": 7545,
+      "sha256": "bc62aff6209eb66d5ee1aa8547f246e464d37142667d6176924aa052724382bb"
+    },
+    {
+      "name": "gap_report.md",
+      "bytes": 2456,
+      "sha256": "72411320d5c290537acf0cb996f29de6f128202a36e8302d2220b283a58a9966"
+    },
+    {
+      "name": "graph.json",
+      "bytes": 14493,
+      "sha256": "dc6b33137f31cb70fcdd93e80870b7b6c53aeb891e2c3ef98f3f68ddf7d486b9"
+    },
+    {
+      "name": "items.jsonl",
+      "bytes": 6164,
+      "sha256": "370dcca519d6e00598900fdadf749e7aa716607714fc2c6657b885210b2e81f7"
+    },
+    {
+      "name": "project_manifest.json",
+      "bytes": 6936,
+      "sha256": "a8fbf95e291cdd8e8c2df6e12d1d4ed0fd8b8c787b0a6a629cceea997c1bdedc"
+    },
+    {
+      "name": "source_map.csv",
+      "bytes": 4015,
+      "sha256": "6ad7945f24435e8c0cf5e101547bb5044174229ad175c2b96a66fb51cb1a1a25"
+    },
+    {
+      "name": "task_log.jsonl",
+      "bytes": 2036,
+      "sha256": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf"
+    },
+    {
+      "name": "timeline.json",
+      "bytes": 3738,
+      "sha256": "edacbca11c7d4eacf1b4798cbef4ccf3e9f095ae8ee51dd45a03a3944f6bf57f"
+    }
+  ],
+  "stage_input_hashes": [
+    "1fc9d8512e241a9f3bc8861a7c1580d9b0d46f087cc8c01fea0673a767a67a23",
+    "511709bbe59b50e9ea0d9350c841a4630fe9fca47edeba96c096d37bc0627b6e",
+    "59e0eed94201dabac809e0d8157e50064a33bcb2801eac3d7550e671ee4a95a9",
+    "21811432ebb70e29a40f8147e8bebbcb92e0473c49f9b25d7b94661a97638bc0",
+    "a4b5848df68efc6488db4d86b1677b99a15de74c624a25401ca830f2c795a27b",
+    "83c8f975649ba46486b257a0d60bbd5cdcab93662a0a48f51d0e2400150c5f21",
+    "4efa6df73c01e2a0ce3838bc5003db6c2ae07e89692f01a2ad3e0ce1ef2c22c2",
+    "6fc96ce9c3b9ab8579b116800798ffe95a72c6b2e0f494ef6546ea713e3eace9",
+    "88f57b86e1f09864fdc1bc1e3a09bd96de29aaa42a2eb2d888f019e491da54af",
+    "fa2a1cc5d4bf2a51d4b2b58baee431748a3591f519bcabd0554684b95ad9c4ba"
+  ],
+  "stage_output_hashes": [
+    "527ded80d952b3694623e41be7dfd7a700dceff77b94640e6b134ee6a30ad0f8",
+    "b3b9341f7f4e593a3f91c5523592b00ba3822d11c6209380b757ccdb6b289ecf",
+    "3b9522f253adc2834b2d0e009a2f0051a14114e459f4ecd78a9a8298500fec06",
+    "c8feefacd0a4a03279b8f285dc0c86b290082258d716b1a7a9e9e893cc1d0f5f",
+    "b0aed0ba2e4c86cf54b8f03f8820d446633271ecec1471b7ea1edc92fb8c9e28",
+    "631f4aad2d18530ef51a2efe9be8b00d42c71f5c9b22054abfb53fe1acb04a75",
+    "5328253adc18d35793d2821d8a8b16b5ca824de2a2771b983e1a2801e482e306",
+    "edf5f0c1e82ed8d64639c0515b346491e1497b58221ea4bfca4c3934030ec7ca",
+    "5f3c4e00204160bdba5e4bbd96fd0eca8240a1f0ae73e017841ee990874bac93",
+    ""
+  ],
+  "stage_names": [
+    "ingest",
+    "retrieve#1",
+    "expand#1",
+    "graph",
+    "cluster",
+    "timeline",
+    "items",
+    "relate",
+    "synthesize",
+    "materialize"
+  ],
+  "stable_stage_input_hashes": {
+    "ingest": "1fc9d8512e241a9f3bc8861a7c1580d9b0d46f087cc8c01fea0673a767a67a23",
+    "retrieve#1": "511709bbe59b50e9ea0d9350c841a4630fe9fca47edeba96c096d37bc0627b6e",
+    "expand#1": "59e0eed94201dabac809e0d8157e50064a33bcb2801eac3d7550e671ee4a95a9",
+    "graph": "21811432ebb70e29a40f8147e8bebbcb92e0473c49f9b25d7b94661a97638bc0",
+    "cluster": "a4b5848df68efc6488db4d86b1677b99a15de74c624a25401ca830f2c795a27b",
+    "timeline": "83c8f975649ba46486b257a0d60bbd5cdcab93662a0a48f51d0e2400150c5f21",
+    "items": "4efa6df73c01e2a0ce3838bc5003db6c2ae07e89692f01a2ad3e0ce1ef2c22c2",
+    "relate": "6fc96ce9c3b9ab8579b116800798ffe95a72c6b2e0f494ef6546ea713e3eace9",
+    "synthesize": "88f57b86e1f09864fdc1bc1e3a09bd96de29aaa42a2eb2d888f019e491da54af"
+  },
+  "materialize_input_raw": {
+    "synthesis": "5f3c4e00204160bdba5e4bbd96fd0eca8240a1f0ae73e017841ee990874bac93",
+    "relate": "edf5f0c1e82ed8d64639c0515b346491e1497b58221ea4bfca4c3934030ec7ca",
+    "cluster": "b0aed0ba2e4c86cf54b8f03f8820d446633271ecec1471b7ea1edc92fb8c9e28",
+    "bindings": "78b749801dddb0f74f728db76407a2c99bba75db9810ff8a6069b6c0c80f4f06",
+    "task_log": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf",
+    "out_dir": "/workspace/scratch/72fc60ad1cc5/archive-parity-materialized",
+    "project": "fixture",
+    "run_id": "t_9861316a6d22"
+  },
+  "materialize_input_normalized": {
+    "synthesis": "5f3c4e00204160bdba5e4bbd96fd0eca8240a1f0ae73e017841ee990874bac93",
+    "relate": "edf5f0c1e82ed8d64639c0515b346491e1497b58221ea4bfca4c3934030ec7ca",
+    "cluster": "b0aed0ba2e4c86cf54b8f03f8820d446633271ecec1471b7ea1edc92fb8c9e28",
+    "bindings": {
+      "c0495a36af8a8": {
+        "msg": "message:c0495a36af8a8",
+        "conv": "conversation:0"
+      },
+      "c075abae0fc17": {
+        "msg": "message:c075abae0fc17",
+        "conv": "conversation:1"
+      },
+      "c301a4a75ec67": {
+        "msg": "message:c301a4a75ec67",
+        "conv": "conversation:0"
+      },
+      "c3b68ad8dcc0d": {
+        "msg": "message:c3b68ad8dcc0d",
+        "conv": "conversation:1"
+      },
+      "c5a8276a7c4eb": {
+        "msg": "message:c5a8276a7c4eb",
+        "conv": "conversation:1"
+      },
+      "c7ecafb225af2": {
+        "msg": "message:c7ecafb225af2",
+        "conv": "conversation:1"
+      },
+      "ca2a1e345ad9e": {
+        "msg": "message:ca2a1e345ad9e",
+        "conv": "conversation:0"
+      },
+      "cb11c09557b0c": {
+        "msg": "message:cb11c09557b0c",
+        "conv": "conversation:2"
+      },
+      "cc5ab3aaa7985": {
+        "msg": "message:cc5ab3aaa7985",
+        "conv": "conversation:0"
+      },
+      "cdbd9f6a8ed17": {
+        "msg": "message:cdbd9f6a8ed17",
+        "conv": "conversation:0"
+      },
+      "cec18ba61ac87": {
+        "msg": "message:cec18ba61ac87",
+        "conv": "conversation:1"
+      },
+      "cf125ccfef3f4": {
+        "msg": "message:cf125ccfef3f4",
+        "conv": "conversation:1"
+      },
+      "cf5fe3408ad90": {
+        "msg": "message:cf5fe3408ad90",
+        "conv": "conversation:1"
+      },
+      "cf8d567bbd070": {
+        "msg": "message:cf8d567bbd070",
+        "conv": "conversation:2"
+      },
+      "cfd8ad3318086": {
+        "msg": "message:cfd8ad3318086",
+        "conv": "conversation:0"
+      },
+      "d642ee19b1f77": {
+        "msg": "message:d642ee19b1f77",
+        "conv": "conversation:3"
+      },
+      "d6ac4ace25ec9": {
+        "msg": "message:d6ac4ace25ec9",
+        "conv": "conversation:4"
+      },
+      "d8dde4f565f7b": {
+        "msg": "message:d8dde4f565f7b",
+        "conv": "conversation:3"
+      },
+      "da196540d0031": {
+        "msg": "message:da196540d0031",
+        "conv": "conversation:3"
+      },
+      "k17df22dccae2": {
+        "msg": "message:k17df22dccae2",
+        "conv": "conversation:5"
+      },
+      "k9f6621cc2870": {
+        "msg": "message:k9f6621cc2870",
+        "conv": "conversation:6"
+      },
+      "p1bc14068adb5": {
+        "msg": "message:p1bc14068adb5",
+        "conv": "conversation:7"
+      },
+      "p6fe17a88f676": {
+        "msg": "message:p6fe17a88f676",
+        "conv": "conversation:7"
+      },
+      "pd4b42d4db906": {
+        "msg": "message:pd4b42d4db906",
+        "conv": "conversation:7"
+      },
+      "y3e0110e1fdaf": {
+        "msg": "message:y3e0110e1fdaf",
+        "conv": "conversation:8"
+      },
+      "ye2682e9c5deb": {
+        "msg": "message:ye2682e9c5deb",
+        "conv": "conversation:8"
+      }
+    },
+    "task_log": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf",
+    "out_dir": "/workspace/scratch/72fc60ad1cc5/archive-parity-materialized",
+    "project": "fixture",
+    "run_id": "generated run identity"
+  },
+  "materialize_normalization": "Generated run/message/conversation IDs become stable symbols; conversation equivalence and every doc key are preserved."
+}

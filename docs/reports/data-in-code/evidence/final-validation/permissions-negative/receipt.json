@@ -1,0 +1,11 @@
+{
+  "schema": "loom.thread11_test_artifact_permission_negative/1",
+  "test_executable": "/workspace/scratch/72fc60ad1cc5/current-build/loom_tests",
+  "bytes": 54783640,
+  "sha256": "2182eaabb6e5677173cd041822e9f20fbcee3edae3f6030d91de3077f0375ce2",
+  "mode_before": "0o644",
+  "executable_before": false,
+  "failure": "95 native CTest entries failed BAD_COMMAND/permission denied; native case execution is not claimed for this run.",
+  "cause_scope": "Missing execute bit on built ELF, not a test assertion failure. Mode origin unknown; no inferred product cause.",
+  "repair": "chmod755 only this build executable; identical SHA checked before rerunning complete CTest."
+}

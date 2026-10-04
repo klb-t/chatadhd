@@ -1,0 +1,149 @@
+{
+  "schema": "loom.data_in_code_branch_supplement/1",
+  "baseline_inventory": "docs/reports/data-in-code/inventory.json",
+  "baseline_inventory_base_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "baseline_inventory_groups": 695,
+  "included_in_before_edit_inventory": false,
+  "reason": "W8 introduced .github/scripts/verify_ctest.py on its parallel branch after the pinned main inventory. Separate branch supplement requested by W8 and refreshed after git fetch.",
+  "observed_at_utc": "2026-10-04T16:05:52.904733+00:00",
+  "fetch": {
+    "command": [
+      "git",
+      "fetch",
+      "origin"
+    ],
+    "exit": 0
+  },
+  "branch": "origin/gpt/repo-hygiene-2026-10-04",
+  "branch_commit": "2544cf3a75c1477797213328f7279b3e8576579e",
+  "read_only": true,
+  "sources": [
+    {
+      "path": ".github/scripts/verify_ctest.py",
+      "sha256": "39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a",
+      "bytes": 10308
+    },
+    {
+      "path": ".github/scripts/test_verify_ctest.py",
+      "sha256": "1a7f17c942ecf74378ef3b4f6bab599f5471416731ff88124ccda645b2b6d170",
+      "bytes": 8269
+    },
+    {
+      "path": "docs/reports/repo-hygiene-2026-10-04.md",
+      "sha256": "a1fdb1e8dd0ba4738722a93ca3c70c0d5f474499fd44be1c682cc13473ab4bf9",
+      "bytes": 6419
+    }
+  ],
+  "counts": {
+    "reviewed_groups": 5,
+    "branch_inventory_only": 4,
+    "retained_format": 1
+  },
+  "findings": [
+    {
+      "path": ".github/scripts/verify_ctest.py",
+      "thread_owner": 8,
+      "thread": 8,
+      "status": "branch_inventory_only",
+      "priority": "P2",
+      "id": "DIC-W8-POST-0001",
+      "line": 21,
+      "category": "preset_registry",
+      "description": "Evidence validator accepts the named CI presets dev/asan/vendored; main CLI choices reuse this closed tuple.",
+      "destination": "loom/data/verification/ctest_evidence.pack: presets",
+      "mechanism": "Versioned preset registry consumed by validation and CLI choices; retain the exact current preset names and reject unregistered names."
+    },
+    {
+      "path": ".github/scripts/verify_ctest.py",
+      "thread_owner": 8,
+      "thread": 8,
+      "status": "branch_inventory_only",
+      "priority": "P2",
+      "id": "DIC-W8-POST-0002",
+      "line": 22,
+      "end_line": 24,
+      "additional_sites": [
+        {
+          "line": 134,
+          "end_line": 145
+        }
+      ],
+      "category": "availability_policy",
+      "description": "ASan non-shared availability table names two fully unavailable FFI entries and exactly two ABI skips; requires the LOOM_LIBRARY-not-set diagnostic and positive discovered counts; skipped cases are subtracted from executed counts.",
+      "destination": "loom/data/verification/ctest_evidence.pack: availability_rules",
+      "mechanism": "Declared preset/entry/diagnostic/count rules drive a generic validator. Canonical rules preserve all-skipped versus exactly-two-skips distinction, reasons, executed>0 requirement for ABI, and rejection of every unexpected skip. Store the effective rule hash in the receipt."
+    },
+    {
+      "path": ".github/scripts/verify_ctest.py",
+      "thread_owner": 8,
+      "thread": 8,
+      "status": "branch_inventory_only",
+      "priority": "P2",
+      "id": "DIC-W8-POST-0003",
+      "line": 109,
+      "end_line": 112,
+      "category": "availability_policy",
+      "description": "unit.test_catalog_scale with exactly zero cases and zero assertions is classified unexecuted because the existing test is opt-in; every other native entry requires positive cases and assertions.",
+      "destination": "loom/data/verification/ctest_evidence.pack: availability_rules",
+      "mechanism": "Declared opt-in entry and its exact zero/zero absence signature; generic evidence classification explicitly lists unexecuted entries without counting them as executed. Keep positive evidence checks and rejection of ambiguous summaries."
+    },
+    {
+      "path": ".github/scripts/verify_ctest.py",
+      "thread_owner": 8,
+      "thread": 8,
+      "status": "branch_inventory_only",
+      "priority": "P2",
+      "id": "DIC-W8-POST-0004",
+      "line": 98,
+      "additional_sites": [
+        {
+          "line": 113,
+          "end_line": 114
+        },
+        {
+          "line": 146,
+          "end_line": 149
+        },
+        {
+          "line": 161,
+          "end_line": 166
+        }
+      ],
+      "category": "test_adapter_registry",
+      "description": "Entry-name dispatch chooses native doctest by unit. prefix, Python unittest by compat./research. prefixes and two exact names; unknown names fall through to script-only status without an inner count.",
+      "destination": "loom/data/verification/ctest_evidence.pack: adapters",
+      "mechanism": "Registry binds exact names/prefixes to doctest, unittest or script parser IDs. Use the same adapter classification for summary totals; review new CTest registrations so unknown entries cannot silently claim inner-case coverage."
+    },
+    {
+      "path": ".github/scripts/verify_ctest.py",
+      "thread_owner": 8,
+      "thread": 8,
+      "status": "retained_format",
+      "priority": "P2",
+      "id": "DIC-W8-POST-0005",
+      "line": 20,
+      "additional_sites": [
+        {
+          "line": 25,
+          "end_line": 33
+        },
+        {
+          "line": 92,
+          "end_line": 96
+        },
+        {
+          "line": 124
+        }
+      ],
+      "category": "evidence_format",
+      "description": "Evidence schema name, doctest/unittest summary regexes, ANSI escape cleanup, truncation/SKIP markers and skipped=N syntax encode evidence serialization/parsing formats, not semantic analysis prompts or tunable quality thresholds.",
+      "destination": "Versioned evidence/parser contract; retain canonical parser code unless adopting a declared new evidence format.",
+      "mechanism": "Named parser adapters implement a documented evidence format. Freeze representative positive/negative fixtures; preserve complete-output validation and ambiguity rejection. Do not treat these parser regexes as semantic-analysis method data."
+    }
+  ],
+  "handoff": {
+    "thread8": "Own any future validator refactor; preserve existing exact classifications, skip counts, reasons, full-output checks and rejection fixtures. This supplement changes no production source, evidence gate or test threshold.",
+    "thread9": "Register new CTest entries against declared parser adapters and retain unexecuted-entry accounting. This report does not independently certify W8 CI, only records its reported results and current branch source.",
+    "thread11": "Keep supplement separate from the 695-group before-edit baseline and its migration totals."
+  }
+}

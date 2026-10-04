@@ -1,0 +1,57 @@
+{
+  "schema": "loom.offline_evidence_commands/1",
+  "test_execution": false,
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "docs/reports/data-in-code/evidence/final-validation/restore_ctest_output.py",
+        "--raw-log",
+        "docs/reports/data-in-code/evidence/final-validation/LastTest.full.log",
+        "--junit",
+        "docs/reports/data-in-code/evidence/final-validation/ctest.xml",
+        "--manifest",
+        "docs/reports/data-in-code/evidence/final-validation/manifest.json",
+        "--output",
+        "docs/reports/data-in-code/evidence/final-validation/ctest-full-output.xml",
+        "--receipt",
+        "docs/reports/data-in-code/evidence/final-validation/output-restoration-receipt.json",
+        "--original-coverage",
+        "docs/reports/data-in-code/evidence/final-validation/coverage.json",
+        "--verifier",
+        "docs/reports/data-in-code/evidence/final-validation/verify_ctest_thread8.py",
+        "--guard-provenance",
+        "docs/reports/data-in-code/evidence/final-validation/guard-provenance.json"
+      ],
+      "cwd": "repository root",
+      "exit": 0,
+      "combined_output": {
+        "file": "output-restoration.log",
+        "bytes": 207,
+        "sha256": "b480e653df9b70f5807e2a3158658fca47664631e6486c0606829d956f886f27"
+      }
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/reports/data-in-code/evidence/final-validation/verify_ctest_thread8.py",
+        "--manifest",
+        "docs/reports/data-in-code/evidence/final-validation/manifest.json",
+        "--junit",
+        "docs/reports/data-in-code/evidence/final-validation/ctest-full-output.xml",
+        "--output",
+        "docs/reports/data-in-code/evidence/final-validation/coverage-full.json",
+        "--preset",
+        "vendored"
+      ],
+      "cwd": "repository root",
+      "exit": 0,
+      "combined_output": {
+        "file": "coverage-full.log",
+        "bytes": 70,
+        "sha256": "7c04ed315f6dad5d392d4f217b96f9c8e1452cfdd1e5a302e9f1f48e3b0fd52a"
+      }
+    }
+  ],
+  "purpose": "Restore output capture from the same passed CTest run, then run the unchanged evidence verifier; no tests rerun."
+}

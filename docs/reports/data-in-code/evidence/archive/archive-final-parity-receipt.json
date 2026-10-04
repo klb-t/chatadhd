@@ -1,0 +1,75 @@
+{
+  "schema": "archive.final_exact_parity/1",
+  "baseline_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "candidate_commit": "3cbc4b6",
+  "baseline_library_sha256": "4902cecd7cf9142408853fccc7a9170adc1b709ea715fe1a8da7288221ffb5a9",
+  "candidate_library_sha256": "9ff144fb7455937100a8dd4ce35c8ed61159fb869bd7b97b90c3016e404f149c",
+  "status": "PASS",
+  "artifact_count": 8,
+  "artifact_bytes": 47383,
+  "stable_stage_inputs": 9,
+  "stage_outputs": 10,
+  "materialize_request": "Identical after explicit generated-ID normalization; full raw requests retained",
+  "baseline_evidence": "archive-parity-161-ready-before/",
+  "candidate_evidence": "archive-parity-final-after/",
+  "candidate_timed_repeats": 3,
+  "script": "loom/tests/archive_artifact_parity.py",
+  "command": "python loom/tests/archive_artifact_parity.py /workspace/scratch/72fc60ad1cc5/current-build/libloom.so.0.1.0 /workspace/scratch/72fc60ad1cc5/archive-parity-final-after --compare /workspace/scratch/72fc60ad1cc5/archive-parity-161-ready-before --materialized-dir /workspace/scratch/72fc60ad1cc5/archive-parity-materialized",
+  "files": [
+    {
+      "file": "archive-parity-final-after/MASTER.md",
+      "bytes": 7545,
+      "sha256": "bc62aff6209eb66d5ee1aa8547f246e464d37142667d6176924aa052724382bb"
+    },
+    {
+      "file": "archive-parity-final-after/gap_report.md",
+      "bytes": 2456,
+      "sha256": "72411320d5c290537acf0cb996f29de6f128202a36e8302d2220b283a58a9966"
+    },
+    {
+      "file": "archive-parity-final-after/graph.json",
+      "bytes": 14493,
+      "sha256": "dc6b33137f31cb70fcdd93e80870b7b6c53aeb891e2c3ef98f3f68ddf7d486b9"
+    },
+    {
+      "file": "archive-parity-final-after/items.jsonl",
+      "bytes": 6164,
+      "sha256": "370dcca519d6e00598900fdadf749e7aa716607714fc2c6657b885210b2e81f7"
+    },
+    {
+      "file": "archive-parity-final-after/parity-receipt.json",
+      "bytes": 10820,
+      "sha256": "976ac23198c992f6d49827377212e103e3ce271749bd5b0d9c8f2cacb18d8a8f"
+    },
+    {
+      "file": "archive-parity-final-after/project_manifest.json",
+      "bytes": 6936,
+      "sha256": "a8fbf95e291cdd8e8c2df6e12d1d4ed0fd8b8c787b0a6a629cceea997c1bdedc"
+    },
+    {
+      "file": "archive-parity-final-after/run.stderr",
+      "bytes": 1181,
+      "sha256": "e8ecf2fe65b1aef3c7a7c2bf8f72e8e31df8fb91bda86fb005e6b9479c125aac"
+    },
+    {
+      "file": "archive-parity-final-after/run.stdout",
+      "bytes": 1163,
+      "sha256": "b0adfd1dbf2b81f6160ae717940760798a07e5e10ae87e3c4a142bdf3d1dce2e"
+    },
+    {
+      "file": "archive-parity-final-after/source_map.csv",
+      "bytes": 4015,
+      "sha256": "6ad7945f24435e8c0cf5e101547bb5044174229ad175c2b96a66fb51cb1a1a25"
+    },
+    {
+      "file": "archive-parity-final-after/task_log.jsonl",
+      "bytes": 2036,
+      "sha256": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf"
+    },
+    {
+      "file": "archive-parity-final-after/timeline.json",
+      "bytes": 3738,
+      "sha256": "edacbca11c7d4eacf1b4798cbef4ccf3e9f095ae8ee51dd45a03a3944f6bf57f"
+    }
+  ]
+}

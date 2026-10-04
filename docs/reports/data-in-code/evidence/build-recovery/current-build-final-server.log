@@ -1,0 +1,16 @@
+ninja: warning: premature end of file; recovering
+[0/2] Re-checking globbed directories...
+[1/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[2/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[3/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[4/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[5/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[6/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/profile.cpp.o
+[7/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[8/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[9/212] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[10/212] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[11/212] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[12/212] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[13/212] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[14/212] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o

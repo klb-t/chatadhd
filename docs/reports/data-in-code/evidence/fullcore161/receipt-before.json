@@ -1,0 +1,356 @@
+{
+  "schema": "loom.offline_fullcore_parity_receipt/1",
+  "created_at_utc": "2026-10-04T16:06:52.585693+00:00",
+  "variant": "before",
+  "baseline_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "library_mode": "actual whole libloom_core.a; no changed-object/older-library fallback",
+  "synthetic": true,
+  "network": "Offline fixtures/ScriptedTransport only; Runtime start_workers=false.",
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "build": "/workspace/scratch/72fc60ad1cc5/baseline-build",
+  "libraries": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+      "bytes": 788160792,
+      "sha256": "7f8c73caf1f8a8bdb393d10299ce638479d9f2673663e4ca4e9a135039faed2b"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+      "bytes": 360332,
+      "sha256": "c53facc475d2e7d96a065e3d6c000a90c52f558ec945d93f7a9f433deac96cee"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+      "bytes": 3509494,
+      "sha256": "5f3e1fbf1f6c38cbca909fc1bb2f7f54cc9c4a5cf24e32668f2acd6264ab245f"
+    }
+  ],
+  "build_metadata": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/compile_commands.json",
+      "bytes": 294772,
+      "sha256": "85d8f6d94cab108f6da63570b791ce52c069f978c68f3b6718211f8167cbcc82"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/CMakeCache.txt",
+      "bytes": 18641,
+      "sha256": "bbac5ff1d216684275d772272c4fa70286dea50f42aed9882d56928946458307"
+    }
+  ],
+  "probe_receipts": [
+    {
+      "name": "net_model",
+      "source": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_net_model_parity.cc",
+        "bytes": 4333,
+        "sha256": "69680851938d501cbef6ac88e1667cbad0a7775420d33bb674e96fe38562e11f"
+      },
+      "compile_command": [
+        "c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/miniz",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_net_model_parity.cc",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+        "-pthread",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-o",
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-net_model-before-probe"
+      ],
+      "compile_cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+      "run_command": [
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-net_model-before-probe"
+      ],
+      "run_cwd": "/workspace/scratch/72fc60ad1cc5/fullcore161-net_model-before-work",
+      "core_only": false,
+      "runtime_path": false,
+      "compile_exit": 0,
+      "run_exit": 0,
+      "stderr": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/net_model.before.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/net_model.before.json",
+        "bytes": 264606,
+        "sha256": "6eb6f00d3c398870a15f350a918d7558eb20d68e31b64af82ca745d250b0b7a4"
+      },
+      "valid": true,
+      "top_level_keys": [
+        "authority_ranks",
+        "status_histories",
+        "anchoring_morphisms",
+        "http_requests",
+        "aggregate_request",
+        "default_request",
+        "default_transport_name"
+      ]
+    },
+    {
+      "name": "util",
+      "source": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_util_parity.cc",
+        "bytes": 3548,
+        "sha256": "3346ea3fd9a3b23f00d48b73cf2a455f45ad96a78a9057da9aa39a5d4c5dc3b1"
+      },
+      "compile_command": [
+        "c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/miniz",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_util_parity.cc",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+        "-pthread",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-o",
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-util-before-probe"
+      ],
+      "compile_cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+      "run_command": [
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-util-before-probe"
+      ],
+      "run_cwd": "/workspace/scratch/72fc60ad1cc5/fullcore161-util-before-work",
+      "core_only": false,
+      "runtime_path": false,
+      "compile_exit": 0,
+      "runs": [
+        {
+          "scenario": "default",
+          "exit": 0,
+          "environment_overrides": {
+            "LOOM_LOG_STDERR": "0"
+          },
+          "stdout": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-default.before.json",
+            "bytes": 2206,
+            "sha256": "669faf4427e433188182c756ee8b3d3f945c560ac045995f3396b37bfc730cdd"
+          },
+          "stderr": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-default.before.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "scenario": "debug",
+          "exit": 0,
+          "environment_overrides": {
+            "LOOM_LOG_STDERR": "0",
+            "LOOM_LOG_LEVEL": "DEBUG"
+          },
+          "stdout": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-debug.before.json",
+            "bytes": 2206,
+            "sha256": "99b3780de1c70050d256e521d38cbc62620221fdc99474bfcaab3da2c73b411a"
+          },
+          "stderr": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-debug.before.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "scenario": "warning",
+          "exit": 0,
+          "environment_overrides": {
+            "LOOM_LOG_STDERR": "0",
+            "LOOM_LOG_LEVEL": "warn"
+          },
+          "stdout": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-warning.before.json",
+            "bytes": 2206,
+            "sha256": "122f38f71c225a222b6e836680306b2aed85530458be9b8ce95338afd6081d1a"
+          },
+          "stderr": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-warning.before.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "scenario": "error",
+          "exit": 0,
+          "environment_overrides": {
+            "LOOM_LOG_STDERR": "0",
+            "LOOM_LOG_LEVEL": "error"
+          },
+          "stdout": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-error.before.json",
+            "bytes": 2206,
+            "sha256": "253b77f271acb9e54abde920e3047da31ef3cae1b3f5b78ab6acd598c0c7780f"
+          },
+          "stderr": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-error.before.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "scenario": "unknown",
+          "exit": 0,
+          "environment_overrides": {
+            "LOOM_LOG_STDERR": "0",
+            "LOOM_LOG_LEVEL": "unrecognized"
+          },
+          "stdout": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-unknown.before.json",
+            "bytes": 2206,
+            "sha256": "669faf4427e433188182c756ee8b3d3f945c560ac045995f3396b37bfc730cdd"
+          },
+          "stderr": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-unknown.before.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "scenario": "fallback",
+          "exit": 0,
+          "environment_overrides": {
+            "LOOM_LOG_STDERR": "0",
+            "TMPDIR": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/absent-system-temp-fixture"
+          },
+          "stdout": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-fallback.before.json",
+            "bytes": 2206,
+            "sha256": "669faf4427e433188182c756ee8b3d3f945c560ac045995f3396b37bfc730cdd"
+          },
+          "stderr": {
+            "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util-fallback.before.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ],
+      "run_exit": 0,
+      "environment_cases": 6,
+      "stdout": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/util.before.json",
+        "bytes": 13295,
+        "sha256": "a6fd124a827744adc68e08fa771cc9fc2b4548128713c9de8ef12aa58b7c1dbf"
+      },
+      "valid": true,
+      "top_level_keys": [
+        "default",
+        "debug",
+        "warning",
+        "error",
+        "unknown",
+        "fallback"
+      ]
+    },
+    {
+      "name": "regex",
+      "source": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_regex_parity.cc",
+        "bytes": 3890,
+        "sha256": "642f2d25804f57967ac5bd3aa4a83b901dd8ca3686b8e327b5f496ee2451c84a"
+      },
+      "compile_command": [
+        "c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/miniz",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_regex_parity.cc",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+        "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+        "-pthread",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-o",
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-regex-before-probe"
+      ],
+      "compile_cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+      "run_command": [
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-regex-before-probe"
+      ],
+      "run_cwd": "/workspace/scratch/72fc60ad1cc5/fullcore161-regex-before-work",
+      "core_only": false,
+      "runtime_path": false,
+      "compile_exit": 0,
+      "run_exit": 0,
+      "stderr": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/regex.before.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/regex.before.json",
+        "bytes": 254166,
+        "sha256": "d54343319fe07946c4e2d023a9bb09ccc8461bcd03aa6b92548c4351b6163381"
+      },
+      "valid": true,
+      "top_level_keys": [
+        "schema",
+        "rows",
+        "budgets"
+      ],
+      "rows": 523,
+      "budgets": 4
+    }
+  ],
+  "baseline_three_receipt": "../baseline161/receipt.json",
+  "valid": true
+}
