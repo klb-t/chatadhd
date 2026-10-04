@@ -173,6 +173,76 @@ cross-lane execution regression only when W3's actual adapter produces this
 envelope/trace from its registry and the same checked effective recipe. Until
 then, the contract is supplied to W3 and production adoption remains open.
 
+## Shared producer artifact and native verifier
+
+This file is the single W3/W4 format reference. Both reports must link here;
+W3 adoption and the owner's joint execution gate remain pending until the actual
+registry exports its executed golden. The offline reference builder is explicitly
+W4-only evidence, not a replacement registry or evidence of W3 execution.
+
+`loom.method_graph_fixture/1` is the test envelope already used by the synthetic
+golden. A producer exports these additional concrete output fields:
+
+| Field | Required captured value |
+|---|---|
+| `schema` | `loom.method_graph_fixture/1` |
+| `contract` | Prepared `loom.method_graph/1` manifest, including graph bindings and exact definitions. |
+| `trace` | Final `loom.method_run_trace/1`, with the actual effective parameters and complete declared `result_bindings`. |
+| `packet` | Final native GraphPacket with definitions, run, sources, results, real provenance Claims and reversible history. |
+| `result_entity_ids` | All outputs declared by this execution. Must equal the trace's result bindings without duplicates. |
+| `definition_capture_source_id` | Native Observation whose exact text parses to `contract`. |
+| `trace_capture_source_id` | Native Observation whose exact text parses to `trace`. |
+| `producer_evidence` | Optional opaque diagnostic data; its presence does not verify execution. |
+
+The current golden requires a parameter-set-version Entity and its two real
+edges, even though earlier v1 shape schemas permit omission. Recipe/prompt/model/
+preset/combination/compiler records apply only when those mechanisms contributed.
+No model or prompt is fabricated for lexical execution. The versioned definition
+attrs conventions checked by this profile are:
+
+| Role | Captured attrs/definition |
+|---|---|
+| Method version | `definition`, `definition_sha256`; applicable parameter/recipe/preset hashes within the definition must identify the effective versions. |
+| Parameter set | `definition`, `definition_sha256`; definition contains `effective_parameters` and captured `user_overrides`. |
+| Recipe | `definition`, `definition_sha256`; definition contains effective `parameters` and applicable `prompt_sha256`. |
+| Preset / combination | `definition`, `definition_sha256`; combination `members` identifies each included `method_version_id`. |
+| Prompt | Exact UTF-8 `text` and `text_sha256`. |
+| Run | Final trace fields in attrs. `result_bindings` may live in the immutable trace Observation plus real edges; when also present in run attrs, it must match. |
+
+Kinds, predicates, parameter names, combination sizes and weights remain caller
+data. Method identity, method version and run have distinct native identities.
+Version definitions are immutable across the packet's validated history; a
+change followed by restoration cannot conceal reuse of a version identity.
+
+Run from the repository root, using a new evidence directory:
+
+```sh
+python3 loom/src/packet/tests/verify_method_graph_artifact.py \
+  --library loom/build/dev/libloom.so.0.1.0 \
+  --artifact /path/to/w3-golden-artifact.json \
+  --evidence-dir /path/to/new-w3-w4-evidence
+```
+
+The verifier uses the existing offline validator dependencies in
+`loom/tools/contracts/requirements.txt`. It checks schema/date formats, exact
+canonical hashes and UTF-8 prompt hashes, applicable binding equality, actual
+native Claims, source captures and result model/compiler provenance. Prepared
+and final traces retain fixed identities/settings; only measured/projection
+phase fields may change. It then calls the real C ABI store directly, with
+closed selection and expected-row CAS, restarts it, reads/replays the entire
+receipt and verifies an identical acceptance retry. It makes no provider call.
+
+`input.json` retains the exact supplied bytes. Success records `receipt.json`
+and `verification.json`; failure records `error.json`. A nonempty evidence
+directory is refused before writing, preserving earlier inputs and receipts.
+The verification result always says `producer_execution_verified:false`:
+`verifier_provider_calls:0` measures this consumer only, not the producer.
+Declaring the complete output set is a producer responsibility. W3's joint test
+must independently compare registry definitions/settings with the invocation,
+actual execution/transport instrumentation and emitted result set before invoking
+this consumer. W9 must inspect that producer proof and this native receipt before
+closing the joint gate. No acceptance receipt establishes content truth.
+
 ## Pack and producer ownership
 
 Builtin method definitions are pack data. W3 reads definitions and user

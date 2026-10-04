@@ -208,6 +208,87 @@ collision. The published packet-side
 contract and fixtures are ready for the owning producers; joint adoption is not
 claimed by this full gate.
 
+## Owner nudge — executable native consumer and pack window
+
+Fetched and read `7282437:docs/reports/INDEX.md`, including the held W3/W4 gate
+and the W11 inventory for this lane. Main remains `7282437`. Initial W3 was
+`8293fc7`; the subsequent fetch found `c4a9412` with caller-parameterized channel
+operations/fusion and `chat/graph_reply` composition. Its callbacks still require
+the producing method registry/binder; no actual `MethodRegistry` implementation
+or exported joint golden exists at that published tip. The W3 report still
+contains its earlier selector receipt. W11 is now `49e5e65`; no packet/KB source
+collision was found. These are observations of published refs, not promises
+about parallel uncommitted work.
+
+The one common format file is
+[`loom/src/packet/METHOD_GRAPH.md`](../../loom/src/packet/METHOD_GRAPH.md), using
+`loom.method_graph/1` and `loom.method_run_trace/1`. It now specifies the concrete
+`loom.method_graph_fixture/1` producer artifact and exact invocation of
+`verify_method_graph_artifact.py`. The independently executable native consumer
+checks schema/date formats, canonical/UTF-8 hashes, effective parameters,
+applicable graph bindings and real provenance edges, exact definition/trace
+captures, complete declared results and immutable version definitions across
+history. Both outer input and inner captures use strict JSON parsing.
+
+The consumer calls the real C ABI store directly, verifies exact native
+acceptance, closes/reopens it, reads/replays the complete receipt and checks
+identical acceptance retry. An existing evidence directory cannot be overwritten.
+The proof explicitly says `producer_execution_verified:false` and reports
+`verifier_provider_calls:0`; opaque producer diagnostics do not verify execution.
+The local reference builder uses the retained synthetic response and pinned
+native fixture, with no substitute W3 registry. Production defaults remain pack
+and producer work in their assigned lanes.
+
+| Measure | Before (`14eccaf`) | Current increment |
+|---|---:|---:|
+| Standalone producer-artifact/native consumer | absent | available, native acceptance + restart/read/replay/retry |
+| Native store test methods | 23/23 | 26/26; 12 native-valid semantic counterexamples plus CLI evidence cases |
+| Final synthetic graph Entities / Claims / Sources | 14 / 22 / 5 | 14 / 22 / 5, exact pinned identity retained |
+| Declared outputs / actual result→run/version/compiler edges | 3 / 9 | 3 / 9 |
+| Joint actual W3 registry → execution → W4 persistence | pending | pending; consumer is ready |
+| Default `window_tokens` preset and loader/hash parity | 12 | 12, unchanged across embedded/directory/documents/unchanged overlay |
+| Accepted configurable window domain | 1…200 | 0…native `int` maximum; no preset ceiling |
+| Standalone regression against actual old / new core | 201 rejected | 6 accepted values and 11 malformed rejections, plus missing field/bad overlay |
+| Full CTest | 110/110, prior receipt | 110/110, fresh final 99.95 s |
+| Provider calls | 0 | 0 |
+
+The independent KB change resolves the arbitrary window ceiling in DIC-0395.
+The preset already lives in `loom/data/lexicons/version_patterns.json`; no data
+or extraction file was edited. The existing consumer gives zero an empty local
+`anchor_word` scan (`lo == hi`); message-wide `project_alias` matching remains.
+Validation checks the full signed/unsigned integer before narrowing to its
+existing `int` representation. Negative, fractional, malformed and overflowing
+settings are rejected with the exact source pointer, rather than clamped.
+This does not close the rest of the pack/query inventory.
+
+Fresh `dev` builds, including shared core/server/CLI/tests, passed with `-Werror`,
+bundled SQLite and unchanged gates. KB reproduction is in
+`loom/src/kb/tests/pack_window.verify.cc` and its `evidence/2026-10-04/` commands,
+baseline/final outputs, manifest and exact source/binary hashes. The baseline
+probe links the actual old archive; it is not described as a fresh old-checkout
+build. It is one standalone executable, not an invented CTest case count.
+
+Packet receipts are separate in
+`loom/src/packet/tests/evidence/2026-10-04-artifact/`. The first focused store run
+failed because the newly written negative-test removal omitted the required
+`reason` field; its log and exact test/verifier snapshots are retained. To replay,
+restore those snapshots to their original source paths in a disposable checkout
+and run the recorded focused command with the real shared library. The corrected
+focused suite passed 26/26 in 27.32 s. The first full run also completed 110/110
+in 96.87 s, before the final zero-window/strict-capture checks; its receipt is
+labelled `before-zero`, not an interrupted or final run. The final CLI reference
+has the current library hash and retained exact input/full receipt in
+`reference-final/`; earlier positive reference proof remains pinned separately.
+The final full gate passed **110/110 in 99.95 s**; its store entry ran **26/26**
+cases in 48.62 s. All 12 semantic counterexamples use native-valid packet heads
+and reversible histories and leave no canonical KB records on rejection. The
+CLI cases retain failed duplicate-key/non-object inputs and preserve prior proof
+on an attempted evidence-directory reuse. No thresholds or timeouts changed.
+
+No main/STATE/README/UI/profile files were changed, and no provider calls or
+GitHub Actions runs were made. The owner's shared W3/W4 gate remains open until
+W3 actually exports its registry/execution golden and cites this same contract.
+
 ## Do wątku 1
 
 Represent effective prompt and recipe definitions as ordinary versioned Entities,
@@ -222,6 +303,10 @@ parameters bound separately and accurately. No new `compile_reply.host` fields
 are required: method/version/run bindings are ordinary native Entities/Claims
 composed through packet diffs, as in the fixture. The existing recipe hash field
 does not establish provider execution or a verified first-response identity.
+
+KB now accepts zero and large representable `window_tokens` through existing
+pack/overlay loading. Zero empties the local anchor-word scan only; review any
+new extraction semantics in your lane without changing default preset 12.
 
 ## Do wątku 2
 
@@ -253,8 +338,9 @@ using your actual registry/trace adapter before W9 admits the combination. Do no
 stamp a builtin recipe hash on a result from different effective user settings.
 The current fixture also binds a parameter-set-version Entity and real
 version/run→parameters and run→combination Claims. Preserve these in registry
-output. `8293fc7` still lacks this adapter; declaring fields in message metadata
-does not fulfill the owner requirement for graph edges. All producer paths,
+output. At `c4a9412`, binder callbacks exist but the producing registry is not
+published; declaring fields in message metadata does not fulfill the owner
+requirement for graph edges. All producer paths,
 including non-model methods, must supply applicable identities/edges; no fake
 model or prompt is required for lexical methods.
 
@@ -265,6 +351,16 @@ content provenance for response annotations, and retain compiler provenance.
 Semantic links remain unverified draft attributes; acceptance never confirms
 content. An unresolved authorized usage reservation is not a new dispatch grant;
 chat must preserve its own first responses/execution identity before paid work. Do not map system containment to model factual claims.
+
+The single format reference for the held gate is
+[`loom/src/packet/METHOD_GRAPH.md`](../../loom/src/packet/METHOD_GRAPH.md).
+At `c4a9412`, graph-reply composition and binder callbacks are present, but the
+actual registry and golden exporter are not published. Export the artifact
+specified there from your real registry/execution path, including native packet,
+final trace, declared result IDs and immutable capture-source IDs. Invoke the
+provided native consumer; independently prove the actual request settings,
+execution/transport instrumentation and complete result set. Add that same file
+link to your report. A W4 offline reference pass does not close this gate.
 
 ## Do wątku 7
 
@@ -293,12 +389,22 @@ main `161cc22`: 27 reviewed groups. DIC-0383–0389 describe language/stemming;
 DIC-0390–0404 pack descriptors/validation; DIC-0405–0406 query limits.
 DIC-0484–0485 are `capi_knowledge`, outside our literal C ABI scope.
 DIC-0526 identifies the existing universal store route, retained here.
-Those inherited normalization/pack/query migrations were not implemented in
-this GraphPacket increment. Their proposed `loom/data/**` destinations need a
+DIC-0395's window ceiling is now removed with native loader/default-overlay
+parity evidence; zero is valid in the existing local scan. Other inherited
+normalization/pack/query migrations remain open. Their proposed `loom/data/**` destinations need a
 coordinated owner; this lane does not write another lane's policy/lexicon files.
 Keep representation/schema/source/audit invariants distinct from adjustable
 policy. Prompt/output-schema recipes belong in data/profiles with overlays;
 packet compilation performs local contract operations and no provider request.
+
+## Do wątku 8
+
+The artifact consumer uses the existing strict-validator dependencies. Install
+`loom/tools/contracts/requirements.txt` for the CTest environment; at current
+main `.github/workflows/loom.yml` installs only `requests cryptography`.
+Date-time checks fail explicitly without their validator. This lane does not
+edit CI or silently skip the new proof. `unit.test_catalog_scale` still selects
+zero cases in the inherited full gate; its registration remains your task.
 
 ## Do wątku 9
 
@@ -319,8 +425,18 @@ after taking this native increment.
 
 Further inherited KB policy work found during audit is not claimed fixed:
 `kb/candidates.cpp:10` candidate page maximum 1000; `kb/store.cpp:69,615` silently
-maps unlimited queries to 1,000,000; `kb/pack.cpp` contains window/count/primitive
-ceilings (200, 100000, 1000000, 1000 and option-set 100) and alpha/beta maxima
+maps unlimited queries to 1,000,000; `kb/pack.cpp` still contains count/primitive
+ceilings (100000, 1000000, 1000 and option-set 100) and alpha/beta maxima
 1e9. This continuation implements the assigned GraphPacket deliverable. Route
 these through thread 11's inventory back to the KB owner for a separate measured
 settings/pack change, preserving mathematical and representation requirements.
+
+The native artifact consumer and KB window fix are independently complete.
+The KB increment is published as `78e43c2` on this branch.
+Keep the shared methods gate held: require W3's actual golden to traverse its
+registry/execution, then this consumer's real native persistence/restart proof.
+Both reports must cite the single `loom/src/packet/METHOD_GRAPH.md` contract.
+For remaining KB candidate/query migration, coordinate the public knowledge
+header/CAPI owner and W11's data/profile loader: the existing runtime profile
+knowledge descriptor lacks query-policy fields. This lane adds no private loader
+and does not edit `capi_knowledge`, public query defaults or another lane's data.
