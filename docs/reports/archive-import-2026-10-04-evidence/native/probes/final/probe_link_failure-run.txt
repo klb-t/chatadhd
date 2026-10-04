@@ -1,0 +1,5 @@
+00:24:13 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:24:13 [INFO ] loom.db: Database opened: /dev/shm/chatadhd-thread5/checkpoint-probes-final/probe_link_failure-data/probe.db
+00:24:13 [WARN ] loom.import.export: link failed: step: synthetic link failure
+00:24:13 [INFO ] loom.db: Database closed
+first_partial=true second_partial=false third_cached=1
