@@ -1,0 +1,23 @@
+{
+  "source_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "files": [
+    {
+      "original_path": ".github/workflows/loom-openrouter-jev-pilot.yml",
+      "archived_path": "docs/archive/retired-workflows-2026-10-04/loom-openrouter-jev-pilot.yml",
+      "bytes": 10745,
+      "sha256": "85b4ecdaad1a09581c5480447f9596855624bb5ac9b9832ac49176a99b1c395a"
+    },
+    {
+      "original_path": ".github/workflows/loom-openrouter-key-check.yml",
+      "archived_path": "docs/archive/retired-workflows-2026-10-04/loom-openrouter-key-check.yml",
+      "bytes": 899,
+      "sha256": "4ce068f2f125884aa35789dd39b493750c14e0ddc459bb0866f728bfab040635"
+    },
+    {
+      "original_path": ".github/workflows/loom-openrouter-pilot.yml",
+      "archived_path": "docs/archive/retired-workflows-2026-10-04/loom-openrouter-pilot.yml",
+      "bytes": 10673,
+      "sha256": "d53243e36118b44fc976a6e1c44577167839c97042de3477ebfe96b0ac6049a2"
+    }
+  ]
+}
