@@ -71,6 +71,9 @@ try {
     records.set(`${pureKey}:checkpoint`, bad);
     assert.throws(() => checkpoints.readWorkflowCheckpoint(pureKey, "offline", profile, registry), /pending|ready/);
     assert.equal(records.get(`${pureKey}:checkpoint`), bad);
+    records.set(`${pureKey}:checkpoint`, "");
+    assert.throws(() => checkpoints.readWorkflowCheckpoint(pureKey, "offline", profile, registry));
+    assert.equal(records.get(`${pureKey}:checkpoint`), "");
   });
   await check("failed multi-view restore rolls back prior writes including previously absent checkpoint keys", () => {
     for (const firstExisted of [true, false]) {
