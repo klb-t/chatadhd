@@ -1,0 +1,131 @@
+{
+  "schema": "loom.native_verification/1",
+  "status": "passed",
+  "source_commit": "1474b260582a80f006f99953baaad1b3253ca6e1",
+  "base": "7282437b1c88933977f64b3468b9f42f7b400494",
+  "source_dirty": false,
+  "source_stable": true,
+  "source_identical_to_isolated_build": true,
+  "copied_loom_paths": 27,
+  "expanded_source_files": 1186,
+  "expanded_source_sha256": "0a4ce318a8034411f37756cafe8fe84a6385565014f91f6a47140121835f5384",
+  "expanded_snapshot_timing": "during gate and after gate;27changedpaths separately captured before and after gate",
+  "full_ctest": {
+    "executed": 112,
+    "failed": 0,
+    "passed": 112,
+    "registered_entries": 112,
+    "exit_code": 0,
+    "seconds": 316.2,
+    "log": "ctest-final-green.txt.gz",
+    "uncompressed_log_sha256": "16fdce405d94d72a4e9d1d75436fde206bf3aa34362bbf1b06ce6e09b6ae68bc"
+  },
+  "internal_native": {
+    "source_groups": 85,
+    "cases": 696,
+    "assertions": 25341,
+    "zero_case_groups": [
+      "unit.test_catalog_scale"
+    ],
+    "zero_case_reason": "pre-existing opt-in catalog scale corpus not enabled;not claimed executed"
+  },
+  "internal_python": {
+    "reported_unittest_groups": 25,
+    "cases": 1276,
+    "skips": 0
+  },
+  "focused": {
+    "test_db_annotations": {
+      "cases": 10,
+      "passed": 10,
+      "failed": 0,
+      "assertions": 147,
+      "exit_code": 0,
+      "log_sha256": "15275ffb12155d8c12cbf5b9df81697c646ce381798c3b9e34b4d0b803ca910e"
+    },
+    "test_import_resume": {
+      "cases": 23,
+      "passed": 23,
+      "failed": 0,
+      "assertions": 696,
+      "exit_code": 0,
+      "log_sha256": "9df3b6d3c1067d92c72acecae58a823e94f8c2e59bbb5228077c92939361e827"
+    },
+    "test_import_audit": {
+      "cases": 3,
+      "passed": 3,
+      "failed": 0,
+      "assertions": 28,
+      "exit_code": 0,
+      "log_sha256": "5582cfae229abdd3cbcdb0c4e7831ce8ea79737f2160215210a41c4f607d8db7"
+    },
+    "test_import_usage": {
+      "cases": 1,
+      "passed": 1,
+      "failed": 0,
+      "assertions": 5,
+      "exit_code": 0,
+      "log_sha256": "372bd13885ddff1d3ae772425b3de37fb4205eaf88c83650b157212301babf97"
+    }
+  },
+  "focused_cases": 37,
+  "focused_assertions": 876,
+  "binary_sha256": {
+    "loom_tests": "9d46b36a9602be8ab8304c2ee950be9caf2029cc7525618ca1299be0fee95198",
+    "cli/loom": "2ebe3323dcfb3f20868c781055b169a3e2611a5203ef26a39937e05fd3269e69",
+    "server/loom-server": "f6ca664a95e869d7092c792650cbf2e04abc0c8d3a05f3263ab510ba4546d106",
+    "libloom.so.0.1.0": "114390cfedb664f3a27469403fc9bed443420e24d42ba7f011f3ae13505aaf15",
+    "libloom_core.a": "f2002cbe0a527039bf9b1c03753c4707f5a85d0667da70b2cee805233f83a9c0",
+    "loom_compat_tool": "86be092fa8c800cba15ae92c72da32866a88b2c78e1be41987972daaf4c898dc",
+    "loom_candidate_graph_native_tool": "29fd17551577cc8bf590642655eff4d96a28987d7e4842340402705b72b3c37e"
+  },
+  "cmake_cache_sha256": "cdfe2ecabdf5995c70e2dfe286ff3f9738e6fd663cea7238a3225ef419837970",
+  "profile": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_C_FLAGS_RELEASE": "-O0 -DNDEBUG",
+    "CMAKE_CXX_FLAGS_RELEASE": "-O0 -DNDEBUG",
+    "LOOM_WERROR": "ON",
+    "LOOM_USE_SYSTEM_SQLITE": "OFF",
+    "LOOM_BUILD_TESTS": "ON",
+    "LOOM_BUILD_CLI": "ON",
+    "LOOM_BUILD_SERVER": "ON",
+    "LOOM_SHARED": "ON"
+  },
+  "commands": [
+    {
+      "argv": [
+        "env",
+        "-u",
+        "PYTHONPATH",
+        "-u",
+        "TMPDIR",
+        "PATH=/root/.local/bin:$PATH",
+        "ctest",
+        "--test-dir",
+        "/dev/shm/chatadhd-thread5/baseline-build",
+        "--output-on-failure",
+        "--no-tests=error",
+        "-j1",
+        "-V"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "/dev/shm/chatadhd-thread5/baseline-build",
+        "-j2"
+      ],
+      "exit_code": 0,
+      "log": "checkpoint-dag-final-build.txt"
+    }
+  ],
+  "model_calls": 0,
+  "caveats": [
+    "O0 preparation build;not optimized production throughput",
+    "No integrated real W2 in full gate;separate historical W2 proof retained",
+    "Portable full-build runner has8controlchecks;not itself freshly executed end-to-end",
+    "Snapshot source path/main docs pinning recorded;tests and thresholds unchanged"
+  ]
+}
