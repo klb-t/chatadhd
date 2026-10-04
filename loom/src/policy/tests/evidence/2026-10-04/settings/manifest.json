@@ -1,0 +1,265 @@
+{
+  "schema": "loom.usage_policy_verification/2",
+  "date": "2026-10-04",
+  "base_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "runtime_implementation_commit": "03b0c4ed954e53cb72ec7947fe6e5d9ad28d495f",
+  "focused_contract_source_commit": "648a4e9a3413979764e6f9107cf624db03deb671",
+  "build": {
+    "preset": "dev",
+    "server": true,
+    "cli": true,
+    "shared": true,
+    "tests": true,
+    "werror": true,
+    "assertions": true,
+    "sqlite": "bundled",
+    "build_type": "Debug",
+    "c_flags_debug": "-O0 -g0",
+    "cxx_flags_debug": "-O0 -g0"
+  },
+  "ctest_attempts": {
+    "first": {
+      "passed": 95,
+      "total": 108,
+      "failures": [
+        "compat.test_active_task_compiler_compat",
+        "compat.test_chat_compat",
+        "compat.test_config_compat",
+        "compat.test_crypto_compat",
+        "compat.test_db_compat",
+        "compat.test_graph_compat",
+        "compat.test_import_compat",
+        "compat.test_memory_compat",
+        "compat.test_selector_compat",
+        "compat.test_semantic_compat",
+        "compat.test_util_compat",
+        "research.structure",
+        "research.contracts"
+      ],
+      "junit_reported_seconds": 183.0,
+      "text_elapsed_seconds": 183.36
+    },
+    "serial": {
+      "passed": 106,
+      "total": 108,
+      "failures": [
+        "research.structure",
+        "research.contracts"
+      ],
+      "junit_reported_seconds": 657.0,
+      "text_elapsed_seconds": 657.57
+    },
+    "research_retry": {
+      "passed": 1,
+      "total": 2,
+      "failures": [
+        "research.structure"
+      ],
+      "junit_reported_seconds": 115.0,
+      "text_elapsed_seconds": 115.72
+    },
+    "passed": {
+      "passed": 108,
+      "total": 108,
+      "failures": [],
+      "junit_reported_seconds": 350.0,
+      "text_elapsed_seconds": 350.64
+    }
+  },
+  "focused_groups": {
+    "original_retained": 19,
+    "settings_continuation_passed": 23,
+    "graph_continuation_passed": 24
+  },
+  "paid_calls": 0,
+  "github_actions_executed": 0,
+  "fake_http_calls": 0,
+  "sources": {
+    "loom/include/loom/usage_policy.h": {
+      "bytes": 4308,
+      "sha256": "2c7f9e00556f729e835dba2b9fb0cdac124b7e7c7ccf90ef29adb794c983c129"
+    },
+    "loom/src/core/config.cpp": {
+      "bytes": 9287,
+      "sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7"
+    },
+    "loom/src/core/config_usage_policy.cpp": {
+      "bytes": 5258,
+      "sha256": "8e401b1a6504ed73ca10bfafe72bb664a5fd1cb8bda2da05e6696571855ecd04"
+    },
+    "loom/src/capi/capi_core.cpp": {
+      "bytes": 21248,
+      "sha256": "3ff90b721f9d10d9f158a1a9acb4cecdede9130b944ed665c3143aabbeaaa31f"
+    },
+    "loom/src/capi/capi_config.cpp": {
+      "bytes": 3353,
+      "sha256": "566fed065b1115b96e325c54f4fa9bb3ee1d40275b40990f2610566cfd24f4f2"
+    },
+    "loom/src/policy/usage_policy.cpp": {
+      "bytes": 22755,
+      "sha256": "790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9"
+    },
+    "loom/src/policy/tests/test_usage_policy.cc": {
+      "bytes": 52810,
+      "sha256": "398da03301f4fd7574e385bb52355c3c1820fbb31d03b8bbdd674fd54e555c45"
+    }
+  },
+  "binaries": {
+    "loom/build/dev/libloom_core.a": {
+      "bytes": 325376196,
+      "sha256": "f15933be4ecde08e46feb9b9b85a2c5afb57285d7320b1cd4920e5a8141e3615"
+    },
+    "loom/build/dev/libloom.so.0.1.0": {
+      "bytes": 34428616,
+      "sha256": "2dca8ca6147296e0fa036c015c2114e54cca03fdb71fc134a2b1da02b39f8e78"
+    },
+    "loom/build/dev/loom_tests": {
+      "bytes": 49432192,
+      "sha256": "b64297311545c621dbb3cec5a329937f76c09ce1c1c3b87cd42f1fb6f7326f05"
+    },
+    "loom/build/dev/loom_compat_tool": {
+      "bytes": 32348920,
+      "sha256": "d0f95786c7bd18c110a698196cc141eb3452cb494bed1363cc537081ac23b668"
+    },
+    "loom/build/dev/server/loom-server": {
+      "bytes": 34715256,
+      "sha256": "40fb9d5539a58bd0d3480d8cea132be00e32adf0ead59f4d7fbac2c254095023"
+    },
+    "loom/build/dev/cli/loom": {
+      "bytes": 32162256,
+      "sha256": "fe635e0bc06c6426b9bb84148cf0098533b5c601a09913ef1fe7c4e838ae2e7c"
+    },
+    "policy-contracts-24": {
+      "bytes": 32756168,
+      "sha256": "da75696578cab42c58370fdc900d8afa5bf2f8704398f7ddef7424176c89717c"
+    }
+  },
+  "logs": {
+    "checkout-move-failure.txt": {
+      "bytes": 60,
+      "sha256": "51012c881b0abb55dbaab3aec3c8f977e6c8ea674ac7103d00038a5317bfb443"
+    },
+    "completed-build.txt": {
+      "bytes": 16901,
+      "sha256": "b7f7e44a7e9227e00441de7cd2e7ced903444652dbd010defe78371dcb026a7f"
+    },
+    "configure.txt": {
+      "bytes": 215,
+      "sha256": "3d1f820d340682a3935b50d29ebfda833349c336460dc7c91d247745dbea3842"
+    },
+    "contracts-diagnostic.txt": {
+      "bytes": 119611,
+      "sha256": "a591c5516d9b650cfb16e72f337448c9ba9896dd36bf17d9af788d74b919f9b1"
+    },
+    "ctest-first-negative.txt": {
+      "bytes": 277127,
+      "sha256": "83a607272622e0755a1180bf7d23652b962c77fe240e0410077d7a466c4fb5bb",
+      "stored_as": "ctest-first-negative.txt.json",
+      "encoding": "gzip_base64",
+      "stored_bytes": 13682,
+      "stored_sha256": "80f3c0b10f7bb6f9943205d91e82cb2d3a01c225663897bfadb39e0da9f0f3b0"
+    },
+    "ctest-first-negative.xml": {
+      "bytes": 311801,
+      "sha256": "1d80043f2a4318526179d13588ad726d0234bb4982e67ba79c5741cfb3dcae6d",
+      "stored_as": "ctest-first-negative.xml.json",
+      "encoding": "gzip_base64",
+      "stored_bytes": 20130,
+      "stored_sha256": "53ccc20ec13d5d39680c14299ea13aa78137509f265bc665e4b232b5cdfdb392"
+    },
+    "ctest-passed.txt": {
+      "bytes": 15033,
+      "sha256": "8719ca845b0177a1bc3537ef9e7e1ed4e52cad5d5ca94eba1664fbfcca907120"
+    },
+    "ctest-passed.xml": {
+      "bytes": 60074,
+      "sha256": "51f12fd7eea6fcfa865ac46e51a5ad2fc13afb2b2d6feb1259e7214886a3339f"
+    },
+    "ctest-research-retry.txt": {
+      "bytes": 452,
+      "sha256": "0788a76ed81b18c0f820ef8790ac3059ddd5241d4b596396d573d5c1250ae17a"
+    },
+    "ctest-research-retry.xml": {
+      "bytes": 841,
+      "sha256": "276f753d950e522e3dba043f9e3388c8ec2b6071a5e7c60a50873f92bb052e06"
+    },
+    "ctest-serial-negative.txt": {
+      "bytes": 15178,
+      "sha256": "d9dadaaab91e1b80641ae5a843d052f14243845a2d6a1d91495e1e3d0709a2f1"
+    },
+    "ctest-serial-negative.xml": {
+      "bytes": 58627,
+      "sha256": "ec02364995c06a9edcf76dff21f5447ef94bd197f5fa5f880a89e6c01b97e9a8"
+    },
+    "graph-contract-compile.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "graph-contract-link.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "interrupted-debug-build.txt": {
+      "bytes": 3030,
+      "sha256": "33a9ee342f3cabea6f3833c89c6e6d9e78b50be8aada1425a7a361bacdbe2c1d"
+    },
+    "interrupted-g0-build.txt": {
+      "bytes": 3424,
+      "sha256": "f72ba4f60ed8b8d45c6b771c0482f55a61cf9648bb230d378a6c31d86f1b32ea"
+    },
+    "policy-contracts-24.txt": {
+      "bytes": 6118,
+      "sha256": "1b992c4c0089ddd3d368f27ac65cea92e80111dd7d81a9adc59a6c7826053aae"
+    },
+    "settings-contracts-23.txt": {
+      "bytes": 5621,
+      "sha256": "d2a935ae5c6fa33a351e772ab05fc4d32ef6b7b3708e97a435a39e81a28ed828"
+    },
+    "structure-enospc-diagnostic.txt": {
+      "bytes": 220665,
+      "sha256": "82f072599f861fabaefa972ba16bd060f306619b27c54d8806d30809c42f4c48",
+      "stored_as": "structure-enospc-diagnostic.txt.json",
+      "encoding": "gzip_base64",
+      "stored_bytes": 37153,
+      "stored_sha256": "b46fd69ec156c343134ce4622332ecd0515a9f22a9f29d03b1668901a6dfa41d"
+    },
+    "structure-ram-diagnostic.txt": {
+      "bytes": 142324,
+      "sha256": "2293ac9212574f57df17ede6a84a4d803b6be2bc1f08a6ba917816498748459b"
+    },
+    "environment.txt": {
+      "bytes": 505,
+      "sha256": "cebb7791418cf4392754f97b2912f378ded0e27c710900a9e322bb153bbb859c"
+    }
+  },
+  "fetched_gpt_refs": [
+    "origin/gpt/application-profiles-2026-10-04 161cc22dfb84fe863389d6b90323bd44516a68dc",
+    "origin/gpt/archive-import-2026-10-04 9a8b88b29f3fd4754a01b329470372e87d24a8d3",
+    "origin/gpt/catalog-selection-2026-10-04 e0caa3b7447a39c3c25c1226f7e3f0ff8ea77115",
+    "origin/gpt/chat-selector-2026-10-04 36ec2a8f6340ba3d7873d3c4864e3af23178bcd6",
+    "origin/gpt/data-profiles-2026-10-04 b88154c2caaeac676a4fbd19aefcc60eb546ff20",
+    "origin/gpt/ecosystem-agent-research-2026-10-01 157762ef60be8b14fe75c6a9c922d6df7ffe97a1",
+    "origin/gpt/graph-replies-2026-10-02 d49e05fd484e1a0af8432a5512762107ff633c1e",
+    "origin/gpt/integrator-2026-10-04 0bbea7bda718e1676b83c323f3932c3b50eebf77",
+    "origin/gpt/interface-2-2026-10-04 2f251450d00649990a178c807903ce8df5b07fd0",
+    "origin/gpt/knowledge-precision-2026-10-04 f407a7c79a17135f16a87fcfcb5a17565f06d561",
+    "origin/gpt/model-research-2026-10-04 5753d2cf93dcba4edd5c35534b667f23b915c9b7",
+    "origin/gpt/native-graph-packet-2026-10-04 3caa6b4dcfb6412294bf816c1105bcf99afacdbc",
+    "origin/gpt/night-development-2026-10-01 33fb30a5e8c226b64e67ee6531304046392b6ad2",
+    "origin/gpt/repo-hygiene-2026-10-04 2544cf3a75c1477797213328f7279b3e8576579e",
+    "origin/gpt/usage-policy-2026-10-04 648a4e9a3413979764e6f9107cf624db03deb671"
+  ],
+  "notes": [
+    "Original receipt and its108/108 plus19/19 observations remain unchanged.",
+    "Runtime source03b0c4e. Subsequent648a4e9 changes only header comments, API/handoff docs and standalone contract source; production cpp files unchanged.",
+    "Finished static archive checkpointed on RAM and hashed under logical build path. Identical copies compared before deleting disk copy to recover space.",
+    "Generated compat ELF lacked executable permission; restoring0755 changes no file bytes or source tests.",
+    "Contracts diagnostic209/209 took65.811seconds with90second diagnostic watchdog; not a CTest60second gate pass.",
+    "Structure full-/tmp diagnostic ran842cases,65errors+1failure with ENOSPC. Same suite with RAM TMPDIR ran859cases successfully; initialization failures explain different count.",
+    "Final full CTest: j1, no external PYTHONPATH, TMPDIR=/dev/shm/usage-policy-test-temp. All timeouts and thresholds unchanged.",
+    "Debug build interrupted for shared disk pressure. Fresh g0 build interrupted after38/240tasks for checkout move; RAM-path command failed without a CMake cache. Restored normal checkout and completed202tasks successfully; separate logs retained.",
+    "Timings are environmental observations, not matched performance benchmarks.",
+    "Authoritative profile and Config-origin migrations remain open. See PROFILE_HANDOFF and lane report.",
+    "Three raw negative logs are stored in lossless gzip_base64 JSON envelopes because their original unittest output contains trailing whitespace. Raw-byte hashes and decoding instructions preserve every byte; source whitespace checks stay strict."
+  ]
+}
