@@ -1,0 +1,113 @@
+{
+  "schema": "loom.offline_import_measurement/1",
+  "baseline": false,
+  "command": [
+    "/dev/shm/chatadhd-thread5/baseline-build/cli/loom",
+    "--data-dir",
+    "/workspace/scratch/943af489e102/bench/thread5-large-after/data",
+    "--json",
+    "--quiet",
+    "import",
+    "/workspace/scratch/943af489e102/bench/thread5-scan-wrapper.json",
+    "--export-mode",
+    "on",
+    "--audit",
+    "--audit-input-price",
+    "0.10",
+    "--audit-output-price",
+    "0.40"
+  ],
+  "binary": {
+    "path": "/dev/shm/chatadhd-thread5/baseline-build/cli/loom",
+    "sha256": "f20ef0f52ea642c3efd89c70d77b0cf234259274eae7b2aeff709eab350b5d1a",
+    "bytes": 30437032,
+    "source_commit": "6bfa65208b3b3688ba3cfa947f9f4fa8563728e6",
+    "build_description": "Release; -O0 -DNDEBUG; WERROR; final thread5; W2 unavailable"
+  },
+  "fixture": {
+    "schema": "loom.synthetic_import_benchmark/1",
+    "source": "offline synthetic generated fixture",
+    "shape": "wrapper",
+    "conversations": 2047,
+    "messages": 4094,
+    "normalized_text_characters": 243420,
+    "payload_site": "whitespace",
+    "payload_bytes_per_message": 0,
+    "whitespace_bytes_per_conversation": 1048576,
+    "source_bytes": 2148031323,
+    "sha256": "5084c949b6765d95bf7f15d0fbc09435e2dec5e29a1694ba3ce43cfd085917f2",
+    "generator_elapsed_seconds": 10.384997795001254,
+    "caveat": "Whitespace padding measures scanner traversal, not realistic stored-content memory."
+  },
+  "measurements": [
+    {
+      "run_index": 0,
+      "exit_code": 0,
+      "elapsed_seconds": 218.29413352900156,
+      "collector": "os.wait4; kernel ru_maxrss",
+      "peak_rss_kib": 18412.0,
+      "user_seconds": 176.03801,
+      "system_seconds": 5.311388,
+      "stdout_bytes": 388958
+    }
+  ],
+  "database": {
+    "path": "/workspace/scratch/943af489e102/bench/thread5-large-after/data/chatadhd.db",
+    "file_bytes": 10936320,
+    "counts": {
+      "conversations": 1477,
+      "messages": 2954,
+      "normalized_text_characters": 176376,
+      "foreign_key_check_rows": 0,
+      "integrity_check": "ok",
+      "conversation_source_indices": 1477,
+      "message_pointer_count": 2954,
+      "checkpoints": 1477,
+      "sources": [
+        {
+          "id": "src_64d039763675",
+          "blob_hash": "5084c949b6765d95bf7f15d0fbc09435e2dec5e29a1694ba3ce43cfd085917f2",
+          "source_bytes": 2148031323,
+          "status": "partial"
+        }
+      ],
+      "source_blob_verified": true
+    },
+    "checks": {
+      "conversations": false,
+      "messages": false,
+      "normalized_text_characters": false,
+      "integrity": true,
+      "source_blob": true,
+      "source_indices": false,
+      "message_pointers": false,
+      "checkpoints": false,
+      "completed_source": false
+    },
+    "correct": false
+  },
+  "verification_elapsed_seconds": 3.441053718001058,
+  "repeat_attempt": {
+    "schema": "loom.local_resource_interruption/1",
+    "reason": "Second invocation attempted to resume the partial first import and was stopped while a temporary source recapture plus workspace transfer copies exhausted disk; it was not a completed-source cache hit.",
+    "exec_exit_code": 130,
+    "first_result_preserved": true,
+    "retained_temp_inventory": [
+      {
+        "relative": ".stream.a1ee6550611e.part.MdCj1Y",
+        "bytes": 1739063296
+      },
+      {
+        "relative": "stream.c4b147cbfdb4.part",
+        "bytes": 1013055488
+      },
+      {
+        "relative": ".rsync-tmp/.stream.a1ee6550611e.part.MdCj1Y.Xg9ljX",
+        "bytes": 14090240
+      }
+    ],
+    "partial_temp_deleted": true
+  },
+  "receipt_reconstruction": "The original collector recorded exit code 0 for the first invocation, but its unchanged stdout reports commit_failed disk-full errors and independent SQL verification shows a partial source with 1477/2047 conversations and 2954/4094 messages. This was an incomplete import, not a successful first import. The collector was stopped during a second resume attempt before final verification; this derived receipt preserves its kernel time/stdout and independent post-stop SQL/blob verification. No completed second invocation is claimed.",
+  "caveat": "The whitespace-padded source blob was preserved and verified, but only 1477/2047 conversations committed before disk-full errors. This does not prove a complete 2.15GB import, complete scanner traversal, or realistic stored-content memory."
+}
