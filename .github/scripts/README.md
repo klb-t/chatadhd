@@ -20,7 +20,7 @@ From the repository root, after building the selected preset:
 ctest --test-dir loom/build/dev --show-only=json-v1 > ctest-manifest.json
 ctest --test-dir loom/build/dev --output-on-failure --no-tests=error \
   --test-output-size-passed 10485760 --test-output-size-failed 10485760 \
-  --output-junit ctest.xml
+  --output-junit "$PWD/ctest.xml"
 python3 .github/scripts/verify_ctest.py --preset dev \
   --manifest ctest-manifest.json --junit ctest.xml --output executed-cases.json
 python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
