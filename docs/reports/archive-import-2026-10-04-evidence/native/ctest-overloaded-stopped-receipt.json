@@ -1,0 +1,10 @@
+{
+  "schema": "loom.native_interruption/1",
+  "exit_code": 130,
+  "full_suite_completed": false,
+  "registered": 112,
+  "observed_timeout": "research.contracts,60seconds",
+  "interrupted_after_timeout": true,
+  "reason": "Concurrent2GiBcopyandcompetingworkspacework; rerunfullsuiteafterlargework withj1, unchangedtesttimeouts",
+  "quality_thresholds_changed": false
+}

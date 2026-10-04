@@ -1,0 +1,301 @@
+Test project /dev/shm/chatadhd-thread5/baseline-build
+        Start   1: unit.test_archive
+        Start   2: unit.test_batch_api
+  1/112 Test   #2: unit.test_batch_api ................................   Passed    0.27 sec
+        Start   3: unit.test_capi
+  2/112 Test   #1: unit.test_archive ..................................   Passed    4.64 sec
+        Start   4: unit.test_capi_knowledge
+  3/112 Test   #4: unit.test_capi_knowledge ...........................   Passed    1.77 sec
+        Start   5: unit.test_capi_knowledge_latest_run
+  4/112 Test   #5: unit.test_capi_knowledge_latest_run ................   Passed    3.09 sec
+        Start   6: unit.test_catalog
+  5/112 Test   #3: unit.test_capi .....................................   Passed   10.83 sec
+        Start   7: unit.test_catalog_context
+  6/112 Test   #6: unit.test_catalog ..................................   Passed    9.10 sec
+        Start   8: unit.test_catalog_eval
+  7/112 Test   #7: unit.test_catalog_context ..........................   Passed    8.05 sec
+        Start   9: unit.test_catalog_links
+  8/112 Test   #8: unit.test_catalog_eval .............................   Passed    3.80 sec
+        Start  10: unit.test_catalog_retention
+  9/112 Test  #10: unit.test_catalog_retention ........................   Passed    7.88 sec
+        Start  11: unit.test_catalog_scale
+ 10/112 Test  #11: unit.test_catalog_scale ............................   Passed    0.04 sec
+        Start  12: unit.test_chat_active_task
+ 11/112 Test  #12: unit.test_chat_active_task .........................   Passed    3.78 sec
+        Start  13: unit.test_chat_active_task_acceptance_audit
+ 12/112 Test  #13: unit.test_chat_active_task_acceptance_audit ........   Passed    1.92 sec
+        Start  14: unit.test_chat_active_task_acceptance_scale
+ 13/112 Test   #9: unit.test_catalog_links ............................   Passed   27.16 sec
+        Start  15: unit.test_chat_active_task_acceptance_validation
+ 14/112 Test  #15: unit.test_chat_active_task_acceptance_validation ...   Passed    3.38 sec
+        Start  16: unit.test_chat_active_task_concurrency
+ 15/112 Test  #16: unit.test_chat_active_task_concurrency .............   Passed    0.99 sec
+        Start  17: unit.test_chat_active_task_durability
+ 16/112 Test  #17: unit.test_chat_active_task_durability ..............   Passed    1.44 sec
+        Start  18: unit.test_chat_active_task_durable_audit
+ 17/112 Test  #14: unit.test_chat_active_task_acceptance_scale ........   Passed   29.32 sec
+        Start  19: unit.test_chat_active_task_exceptional
+ 18/112 Test  #19: unit.test_chat_active_task_exceptional .............   Passed    0.81 sec
+        Start  20: unit.test_chat_active_task_history_aba
+ 19/112 Test  #20: unit.test_chat_active_task_history_aba .............   Passed    0.07 sec
+        Start  21: unit.test_chat_active_task_reference
+ 20/112 Test  #21: unit.test_chat_active_task_reference ...............   Passed    0.15 sec
+        Start  22: unit.test_chat_active_task_retention
+ 21/112 Test  #22: unit.test_chat_active_task_retention ...............   Passed    2.02 sec
+        Start  23: unit.test_chat_active_task_revisions
+ 22/112 Test  #23: unit.test_chat_active_task_revisions ...............   Passed    6.49 sec
+        Start  24: unit.test_chat_active_task_scope_identity
+ 23/112 Test  #24: unit.test_chat_active_task_scope_identity ..........   Passed    1.29 sec
+        Start  25: unit.test_chat_engine
+ 24/112 Test  #25: unit.test_chat_engine ..............................   Passed    0.35 sec
+        Start  26: unit.test_chat_knowledge_context
+ 25/112 Test  #26: unit.test_chat_knowledge_context ...................   Passed    6.41 sec
+        Start  27: unit.test_chat_retrieval_plan
+ 26/112 Test  #27: unit.test_chat_retrieval_plan ......................   Passed    4.65 sec
+        Start  28: unit.test_config
+ 27/112 Test  #28: unit.test_config ...................................   Passed    0.04 sec
+        Start  29: unit.test_context_channel_integration
+ 28/112 Test  #18: unit.test_chat_active_task_durable_audit ...........   Passed   35.76 sec
+        Start  30: unit.test_context_controls
+ 29/112 Test  #29: unit.test_context_channel_integration ..............   Passed    4.27 sec
+        Start  31: unit.test_context_counter
+ 30/112 Test  #31: unit.test_context_counter ..........................   Passed    2.45 sec
+        Start  32: unit.test_context_diagnostics
+ 31/112 Test  #30: unit.test_context_controls .........................   Passed    7.44 sec
+        Start  33: unit.test_context_engine
+ 32/112 Test  #33: unit.test_context_engine ...........................   Passed   41.11 sec
+        Start  34: unit.test_context_eval
+ 33/112 Test  #34: unit.test_context_eval .............................   Passed    3.45 sec
+        Start  35: unit.test_context_native_consumer
+ 34/112 Test  #32: unit.test_context_diagnostics ......................   Passed   47.68 sec
+        Start  36: unit.test_context_plan
+ 35/112 Test  #35: unit.test_context_native_consumer ..................   Passed    5.50 sec
+        Start  37: unit.test_context_retrieval
+ 36/112 Test  #37: unit.test_context_retrieval ........................   Passed    3.75 sec
+        Start  38: unit.test_context_retrieval_dev
+ 37/112 Test  #38: unit.test_context_retrieval_dev ....................   Passed    3.80 sec
+        Start  39: unit.test_context_tfidf_reuse
+ 38/112 Test  #36: unit.test_context_plan .............................   Passed   17.21 sec
+        Start  40: unit.test_crypto
+ 39/112 Test  #39: unit.test_context_tfidf_reuse ......................   Passed   15.44 sec
+        Start  41: unit.test_db
+ 40/112 Test  #41: unit.test_db .......................................   Passed    0.49 sec
+        Start  42: unit.test_db_annotations
+ 41/112 Test  #42: unit.test_db_annotations ...........................   Passed    0.41 sec
+        Start  43: unit.test_event_bus
+ 42/112 Test  #43: unit.test_event_bus ................................   Passed    0.14 sec
+        Start  44: unit.test_extract
+ 43/112 Test  #40: unit.test_crypto ...................................   Passed   16.33 sec
+        Start  45: unit.test_extract_eval
+ 44/112 Test  #44: unit.test_extract ..................................   Passed   10.23 sec
+        Start  46: unit.test_fts
+ 45/112 Test  #46: unit.test_fts ......................................   Passed    0.33 sec
+        Start  47: unit.test_generalize
+ 46/112 Test  #45: unit.test_extract_eval .............................   Passed    9.71 sec
+        Start  48: unit.test_generalize_eval
+ 47/112 Test  #48: unit.test_generalize_eval ..........................   Passed    4.21 sec
+        Start  49: unit.test_github
+ 48/112 Test  #49: unit.test_github ...................................   Passed    0.10 sec
+        Start  50: unit.test_graph
+ 49/112 Test  #50: unit.test_graph ....................................   Passed    0.24 sec
+        Start  51: unit.test_import
+ 50/112 Test  #51: unit.test_import ...................................   Passed    0.57 sec
+        Start  52: unit.test_import_audit
+ 51/112 Test  #52: unit.test_import_audit .............................   Passed    0.10 sec
+        Start  53: unit.test_import_export_fidelity
+ 52/112 Test  #53: unit.test_import_export_fidelity ...................   Passed    0.90 sec
+        Start  54: unit.test_import_exports
+ 53/112 Test  #47: unit.test_generalize ...............................   Passed   11.52 sec
+        Start  55: unit.test_import_resume
+ 54/112 Test  #55: unit.test_import_resume ............................   Passed    1.44 sec
+        Start  56: unit.test_import_source_materialization
+ 55/112 Test  #56: unit.test_import_source_materialization ............***Failed    1.00 sec
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:105:
+TEST SUITE: import_source_materialization
+TEST CASE:  prefix scan retains nonobject values UTF8 errors cancellation and streaming stop
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:119: ERROR: CHECK( stats.invalid_utf8 ) is NOT correct!
+  values: CHECK( false )
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:123: ERROR: CHECK( got.empty() ) is NOT correct!
+  values: CHECK( false )
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:126: FATAL ERROR: REQUIRE( got.size() == 1 ) is NOT correct!
+  values: REQUIRE( 2 == 1 )
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:191:
+TEST SUITE: import_source_materialization
+TEST CASE:  cancel during materialization retains prior bytes and retries without a false cache hit
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:201: ERROR: CHECK( retry.source_id != partial.source_id ) is NOT correct!
+  values: CHECK( src_2c67dc10844e != src_2c67dc10844e )
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:202: ERROR: CHECK( fx.source(partial.source_id).metadata["import_status"] == "cancelled" ) is NOT correct!
+  values: CHECK( "complete" == cancelled )
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:205:
+TEST SUITE: import_source_materialization
+TEST CASE:  cancelled and malformed partial imports keep prior conversations and retry explicitly
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:213: ERROR: CHECK( unwrap(fx.db->list_convs(100)).size() == 3 ) is NOT correct!
+  values: CHECK( 2 == 3 )
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:220: ERROR: CHECK( second.conversations[0].id != first.conversations[0].id ) is NOT correct!
+  values: CHECK( c_09f6e0ab5432 != c_09f6e0ab5432 )
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:221: ERROR: CHECK( fx.source(first.source_id).metadata["import_status"] == "partial" ) is NOT correct!
+  values: CHECK( "complete" == partial )
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_source_materialization.cpp:228: ERROR: CHECK( prefix_retry.conversations[0].id != prefix.conversations[0].id ) is NOT correct!
+  values: CHECK( c_6454a87129a0 != c_6454a87129a0 )
+
+===============================================================================
+[doctest] test cases:   8 |   5 passed | 3 failed | 682 skipped
+[doctest] assertions: 590 | 581 passed | 9 failed |
+[doctest] Status: FAILURE!
+
+        Start  57: unit.test_import_stream
+ 56/112 Test  #54: unit.test_import_exports ...........................***Failed    5.88 sec
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_exports.cpp:682:
+TEST SUITE: import_exports
+TEST CASE:  truncated / invalid bare JSON is a structured error, not a crash
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_exports.cpp:690: ERROR: CHECK_FALSE( r.has_value() ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_exports.cpp:723:
+TEST SUITE: import_exports
+TEST CASE:  completeness: every JSON leaf path of every fixture conversation is stored verbatim (independent recount)
+
+/workspace/scratch/943af489e102/chatadhd-baseline/loom/tests/test_import_exports.cpp:765: MESSAGE: completeness: 1604/1604 conversation JSON leaves preserved verbatim
+
+===============================================================================
+[doctest] test cases:   18 |   17 passed | 1 failed | 672 skipped
+[doctest] assertions: 2202 | 2201 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+        Start  58: unit.test_import_usage
+ 57/112 Test  #58: unit.test_import_usage .............................   Passed    0.07 sec
+        Start  59: unit.test_kb_pack
+ 58/112 Test  #59: unit.test_kb_pack ..................................   Passed   21.17 sec
+        Start  60: unit.test_knowledge
+ 59/112 Test  #60: unit.test_knowledge ................................   Passed   14.62 sec
+        Start  61: unit.test_knowledge_candidate_graph
+ 60/112 Test  #61: unit.test_knowledge_candidate_graph ................   Passed    0.68 sec
+        Start  62: unit.test_knowledge_candidates
+ 61/112 Test  #62: unit.test_knowledge_candidates .....................   Passed    0.09 sec
+        Start  63: unit.test_knowledge_flow
+ 62/112 Test  #63: unit.test_knowledge_flow ...........................   Passed    3.18 sec
+        Start  64: unit.test_knowledge_semantic
+ 63/112 Test  #64: unit.test_knowledge_semantic .......................   Passed    7.23 sec
+        Start  65: unit.test_knowledge_semantic_graph
+ 64/112 Test  #65: unit.test_knowledge_semantic_graph .................   Passed    6.31 sec
+        Start  66: unit.test_knowledge_store
+ 65/112 Test  #66: unit.test_knowledge_store ..........................   Passed    0.58 sec
+        Start  67: unit.test_materialize
+ 66/112 Test  #67: unit.test_materialize ..............................   Passed    1.91 sec
+        Start  68: unit.test_media
+ 67/112 Test  #68: unit.test_media ....................................   Passed    0.02 sec
+        Start  69: unit.test_memory
+ 68/112 Test  #69: unit.test_memory ...................................   Passed    0.03 sec
+        Start  70: unit.test_model
+ 69/112 Test  #70: unit.test_model ....................................   Passed    0.03 sec
+        Start  71: unit.test_net_sse
+ 70/112 Test  #71: unit.test_net_sse ..................................   Passed    0.02 sec
+        Start  72: unit.test_pack_model
+ 71/112 Test  #72: unit.test_pack_model ...............................   Passed    3.34 sec
+        Start  73: unit.test_provenance
+ 72/112 Test  #73: unit.test_provenance ...............................   Passed    0.25 sec
+        Start  74: unit.test_providers
+ 73/112 Test  #74: unit.test_providers ................................   Passed    0.06 sec
+        Start  75: unit.test_regex
+ 74/112 Test  #75: unit.test_regex ....................................   Passed    0.05 sec
+        Start  76: unit.test_relations
+ 75/112 Test  #76: unit.test_relations ................................   Passed    0.05 sec
+        Start  77: unit.test_resolve
+ 76/112 Test  #77: unit.test_resolve ..................................   Passed    0.91 sec
+        Start  78: unit.test_resolve_attribution
+ 77/112 Test  #57: unit.test_import_stream ............................   Passed   64.46 sec
+        Start  79: unit.test_resolve_lineage
+ 78/112 Test  #79: unit.test_resolve_lineage ..........................   Passed    6.35 sec
+        Start  80: unit.test_runtime
+ 79/112 Test  #80: unit.test_runtime ..................................   Passed    0.15 sec
+        Start  81: unit.test_selector
+ 80/112 Test  #81: unit.test_selector .................................   Passed    0.04 sec
+        Start  82: unit.test_semantic_llm
+ 81/112 Test  #82: unit.test_semantic_llm .............................   Passed    0.16 sec
+        Start  83: unit.test_semantic_worker
+ 82/112 Test  #78: unit.test_resolve_attribution ......................   Passed    7.41 sec
+        Start  84: unit.test_tasks
+ 83/112 Test  #83: unit.test_semantic_worker ..........................   Passed    0.37 sec
+        Start  85: unit.test_util
+ 84/112 Test  #84: unit.test_tasks ....................................   Passed    0.20 sec
+        Start  86: compat.test_abi_compat
+ 85/112 Test  #85: unit.test_util .....................................   Passed    0.08 sec
+        Start  87: compat.test_active_task_compiler_compat
+ 86/112 Test  #86: compat.test_abi_compat .............................   Passed    0.63 sec
+        Start  88: compat.test_candidate_graph_native
+ 87/112 Test  #87: compat.test_active_task_compiler_compat ............   Passed    1.93 sec
+        Start  89: compat.test_chat_active_task_http
+ 88/112 Test  #88: compat.test_candidate_graph_native .................   Passed    1.78 sec
+        Start  90: compat.test_chat_compat
+ 89/112 Test  #89: compat.test_chat_active_task_http ..................   Passed    3.75 sec
+        Start  91: compat.test_config_compat
+ 90/112 Test  #91: compat.test_config_compat ..........................   Passed    0.16 sec
+        Start  92: compat.test_crypto_compat
+ 91/112 Test  #90: compat.test_chat_compat ............................   Passed    5.92 sec
+        Start  93: compat.test_db_compat
+ 92/112 Test  #93: compat.test_db_compat ..............................   Passed    1.50 sec
+        Start  94: compat.test_github_sync_defaults
+ 93/112 Test  #94: compat.test_github_sync_defaults ...................   Passed    0.23 sec
+        Start  95: compat.test_graph_compat
+ 94/112 Test  #95: compat.test_graph_compat ...........................   Passed    3.68 sec
+        Start  96: compat.test_graph_packet_store
+ 95/112 Test  #96: compat.test_graph_packet_store .....................   Passed    1.42 sec
+        Start  97: compat.test_import_compat
+ 96/112 Test  #97: compat.test_import_compat ..........................   Passed    2.00 sec
+        Start  98: compat.test_memory_compat
+ 97/112 Test  #98: compat.test_memory_compat ..........................   Passed    3.37 sec
+        Start  99: compat.test_selector_compat
+ 98/112 Test  #99: compat.test_selector_compat ........................   Passed    0.27 sec
+        Start 100: compat.test_semantic_compat
+ 99/112 Test  #92: compat.test_crypto_compat ..........................   Passed   17.16 sec
+        Start 101: compat.test_semantic_recovery
+100/112 Test #101: compat.test_semantic_recovery ......................   Passed    4.45 sec
+        Start 102: compat.test_util_compat
+101/112 Test #100: compat.test_semantic_compat ........................   Passed    9.77 sec
+        Start 103: research.structure
+102/112 Test #102: compat.test_util_compat ............................   Passed    4.53 sec
+        Start 104: research.independent_protocol
+103/112 Test #104: research.independent_protocol ......................   Passed    0.18 sec
+        Start 105: research.graph_native_protocol
+104/112 Test #105: research.graph_native_protocol .....................   Passed    0.83 sec
+        Start 106: research.candidate_graph_protocol
+105/112 Test #106: research.candidate_graph_protocol ..................   Passed    1.06 sec
+        Start 107: research.contracts
+106/112 Test #103: research.structure .................................   Passed   45.96 sec
+        Start 108: research.seeding
+107/112 Test #107: research.contracts .................................   Passed   49.27 sec
+        Start 109: server.smoke
+108/112 Test #108: research.seeding ...................................   Passed   10.31 sec
+        Start 110: server.chat_active_task
+109/112 Test #110: server.chat_active_task ............................   Passed    1.89 sec
+        Start 111: cli.smoke
+110/112 Test #109: server.smoke .......................................   Passed    5.63 sec
+        Start 112: eval.harness
+111/112 Test #112: eval.harness .......................................   Passed    3.16 sec
+112/112 Test #111: cli.smoke ..........................................   Passed    5.73 sec
+
+98% tests passed, 2 tests failed out of 112
+
+Total Test time (real) = 359.99 sec
+
+The following tests FAILED:
+	 54 - unit.test_import_exports (Failed)
+	 56 - unit.test_import_source_materialization (Failed)
+Errors while running CTest
