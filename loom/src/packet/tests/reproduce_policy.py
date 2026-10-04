@@ -15,7 +15,7 @@ from pathlib import Path
 repo=Path(__file__).resolve().parents[4]
 p=argparse.ArgumentParser()
 p.add_argument('--build-dir',type=Path,default=repo/'loom/build/dev')
-p.add_argument('--policy-ref',default='34cc920dd3cdb0c0fca0a514569b19111429583f')
+p.add_argument('--policy-ref',default='03b0c4ed954e53cb72ec7947fe6e5d9ad28d495f')
 args=p.parse_args()
 loom=repo/'loom'
 with tempfile.TemporaryDirectory(prefix='loom-packet-policy-') as t:
@@ -26,10 +26,13 @@ with tempfile.TemporaryDirectory(prefix='loom-packet-policy-') as t:
         dest.write_bytes(data)
         print(f'{source} SHA-256 {hashlib.sha256(data).hexdigest()}',flush=True)
     include=['-I'+str(tmp/'include'),'-I'+str(loom/'include'),'-I'+str(loom/'src'),'-isystem',str(loom/'third_party/nlohmann'),'-isystem',str(loom/'third_party/sqlite')]
+    warnings=['-Wall','-Wextra','-Wpedantic','-Wshadow','-Wnon-virtual-dtor',
+              '-Wold-style-cast','-Wcast-align','-Woverloaded-virtual',
+              '-Wnull-dereference','-Wimplicit-fallthrough','-Wno-unused-parameter','-Werror']
     objects=[]
     for source in [tmp/'usage.cpp',tmp/'config_usage.cpp',loom/'src/capi/capi_packet.cpp',loom/'src/packet/packet.cpp']:
         obj=tmp/(source.stem+'.o');objects.append(obj)
-        subprocess.run(['g++','-std=c++20','-fPIC','-fvisibility=hidden',*include,'-c',str(source),'-o',str(obj)],check=True)
+        subprocess.run(['g++','-std=c++20','-fPIC','-fvisibility=hidden',*warnings,*include,'-c',str(source),'-o',str(obj)],check=True)
     exe=tmp/'check'
-    subprocess.run(['g++','-std=c++20',*include,str(loom/'src/packet/tests/policy_integration.cc'),*map(str,objects),str(args.build_dir/'libloom_core.a'),str(args.build_dir/'libloom_sqlite3_amalgamation.a'),str(args.build_dir/'libloom_miniz.a'),'-lssl','-lcrypto','-lpthread','-ldl','-o',str(exe)],check=True)
+    subprocess.run(['g++','-std=c++20',*warnings,*include,str(loom/'src/packet/tests/policy_integration.cc'),*map(str,objects),str(args.build_dir/'libloom_core.a'),str(args.build_dir/'libloom_sqlite3_amalgamation.a'),str(args.build_dir/'libloom_miniz.a'),'-Wl,--no-keep-memory','-lssl','-lcrypto','-lpthread','-ldl','-o',str(exe)],check=True)
     subprocess.run([str(exe),str(tmp/'data')],check=True)
