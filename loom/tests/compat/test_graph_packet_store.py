@@ -1,6 +1,7 @@
 """N3 real FFI/store boundary, immutable receipts, CAS and atomic drift checks."""
 from copy import deepcopy
 import ctypes
+import gzip
 import hashlib
 import json
 import os
@@ -222,6 +223,108 @@ class GraphPacketStoreTests(CompatTestCase):
                                   definition_source_id=fixture['expected']['source_ids'][0],
                                   trace_source_id=fixture['expected']['source_ids'][1])
 
+    def update_method_artifact_entity(self, artifact, id_, attrs):
+        from loom.src.packet.tests.verify_method_graph_artifact import packet_call
+        packet = artifact['packet']
+        before = next(row for row in packet['entities'] if row['id'] == id_)
+        after = deepcopy(before)
+        after['attrs'] = attrs
+        diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': packet,
+                                       'proposal_id': 'artifact-entity-update', 'origin': MODEL})
+        diff['entities']['update'].append({'id': id_, 'before_sha256': codec.digest(before),
+                                          'after': after})
+        artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': packet,
+                                                     'diff': diff, 'policy': AUTO})['packet']
+
+    def registry_artifact(self, name):
+        path = Path(__file__).resolve().parents[2] / 'src/packet/tests/method-registry-variants'
+        return json.loads(gzip.decompress((path / (name + '.json.gz')).read_bytes()))
+
+    def test_real_registry_exports_preserve_aliases_and_nested_combinations(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import verify_artifact
+        for name in ('canonical-w3-export', 'observed-model-alias', 'nested-combination',
+                     'nested-combination-alias'):
+            with self.subTest(name=name):
+                artifact = self.registry_artifact(name)
+                summary, receipt = verify_artifact(artifact, os.environ['LOOM_LIBRARY'], self.tmp.path / name)
+                self.assertTrue(summary['passed'])
+                self.assertEqual(summary['result_count'], 3)
+                self.assertFalse(summary['producer_execution_verified'])
+                self.assertEqual(summary['verifier_provider_calls'], 0)
+                self.assertEqual(receipt['packet'], artifact['packet'])
+
+    def test_registry_exports_reject_false_observations_and_reused_nested_versions(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import ArtifactError, packet_call, verify_artifact
+        original = self.registry_artifact('nested-combination-alias')
+
+        def trace_change(artifact, **values):
+            artifact['trace'].update(values)
+            run_id = artifact['contract']['bindings']['run_id']
+            before = next(row for row in artifact['packet']['entities'] if row['id'] == run_id)
+            after = deepcopy(before)
+            after['attrs'].update(values)
+            old = next(row for row in artifact['packet']['sources']
+                       if row['observation']['id'] == artifact['trace_capture_source_id'])
+            source = deepcopy(old)
+            trace_bytes = codec.safe.canonical(artifact['trace'])
+            text = trace_bytes.decode('utf-8')
+            trace_sha256 = hashlib.sha256(trace_bytes).hexdigest()
+            id_ = 'synthetic_negative_trace_' + trace_sha256
+            source['observation'].update(id=id_, text=text)
+            source['observation']['locator'].update(source='sha256:' + trace_sha256,
+                                                    byte_start=0, byte_len=len(trace_bytes))
+            source['text_sha256'] = trace_sha256
+            diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': artifact['packet'],
+                                           'proposal_id': 'false-observation-capture', 'origin': MODEL})
+            diff['entities']['update'].append({'id': run_id, 'before_sha256': codec.digest(before),
+                                              'after': after})
+            diff['sources']['add'].append(source)
+            artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': artifact['packet'],
+                                                         'diff': diff, 'policy': AUTO})['packet']
+            artifact['trace_capture_source_id'] = id_
+
+        def inactive_original_membership(artifact):
+            packet = artifact['packet']
+            path = artifact['trace']['selection_path']
+            predicate = artifact['contract']['vocabulary']['predicates']['includes_method']
+            before = next(row for row in packet['claims'] if row['subject'] == path[0]['id']
+                          and row['object'] == path[1]['id'] and row['predicate'] == predicate)
+            after = deepcopy(before)
+            after['assessment']['status'] = 'rejected'
+            diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': packet,
+                                           'proposal_id': 'inactive-original-membership', 'origin': MODEL})
+            diff['claims']['update'].append({'id': before['id'], 'before_sha256': codec.digest(before), 'after': after})
+            artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': packet,
+                                                         'diff': diff, 'policy': AUTO})['packet']
+
+        def restored_original_combination(artifact):
+            id_ = artifact['trace']['selection_path'][1]['id']
+            before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            after = deepcopy(before)
+            after['definition']['members'][1]['weight'] = 9.0
+            after['definition_sha256'] = codec.digest(after['definition'])
+            self.update_method_artifact_entity(artifact, id_, after)
+            self.update_method_artifact_entity(artifact, id_, before)
+
+        requested_id = original['contract']['bindings']['model_identity_id']
+        changes = [
+            ('actual_models', lambda a: trace_change(a, actual_models=['synthetic/false-observed-model'])),
+            ('requested_model', lambda a: trace_change(a, requested_model='synthetic/false-requested-model')),
+            ('alias_descriptor_reused', lambda a: trace_change(a, model_identity_id=requested_id,
+                                                               actual_model_identity_id=requested_id)),
+            ('request_hash', lambda a: trace_change(a, request_sha256='f' * 64)),
+            ('missing_edge:includes_method', inactive_original_membership),
+            ('version_overwritten', restored_original_combination),
+        ]
+        for index, (error, change) in enumerate(changes):
+            with self.subTest(error=error):
+                artifact = deepcopy(original)
+                change(artifact)
+                self.assertEqual(packet_call(self.store, {'operation': 'validate', 'packet': artifact['packet']}),
+                                 artifact['packet'])
+                with self.assertRaisesRegex(ArtifactError, error):
+                    verify_artifact(artifact, os.environ['LOOM_LIBRARY'], self.tmp.path / ('registry-reject-' + str(index)))
+
     def test_shared_method_artifact_is_persisted_without_claiming_registry_execution(self):
         from loom.src.packet.tests.verify_method_graph_artifact import verify_artifact
         artifact = self.method_artifact()
@@ -236,22 +339,43 @@ class GraphPacketStoreTests(CompatTestCase):
             self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_graph_receipts').fetchone()[0], 1)
             self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_runs').fetchone()[0], 1)
 
+    def test_method_version_annotations_preserve_identity_and_survive_native_replay(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import packet_call, verify_artifact
+        artifact = self.method_artifact()
+        original_contract = deepcopy(artifact['contract'])
+        expected_attrs = {}
+        for role in ('method_version_id', 'prompt_version_id', 'parameter_set_version_id'):
+            id_ = artifact['contract']['bindings'][role]
+            before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            annotated = deepcopy(before)
+            annotated['annotation'] = {'reviewer': 'synthetic-owner', 'note': 'first inspection'}
+            self.update_method_artifact_entity(artifact, id_, annotated)
+            revised = deepcopy(annotated)
+            revised['annotation']['note'] = 'updated inspection'
+            self.update_method_artifact_entity(artifact, id_, revised)
+            expected_attrs[id_] = revised
+            for field in ('definition', 'definition_sha256', 'text', 'text_sha256', 'encoding'):
+                self.assertEqual(revised.get(field), before.get(field))
+        self.assertEqual(artifact['contract'], original_contract)
+        self.assertEqual(packet_call(self.store, {'operation': 'validate', 'packet': artifact['packet']}),
+                         artifact['packet'])
+        summary, receipt = verify_artifact(artifact, os.environ['LOOM_LIBRARY'], self.data)
+        self.assertTrue(summary['passed'])
+        self.assertFalse(summary['producer_execution_verified'])
+        self.assertEqual(receipt['packet'], artifact['packet'])
+        self.assertEqual({row['id']: row['attrs'] for row in receipt['packet']['entities']
+                          if row['id'] in expected_attrs}, expected_attrs)
+        replayed = self.store.replay(receipt['id'])
+        self.assertEqual(replayed['receipt'], receipt)
+        self.assertTrue(replayed['row_drift']['matches'])
+
     def test_shared_method_artifact_rejects_consistent_native_packets_with_false_bindings(self):
         from loom.src.packet.tests.verify_method_graph_artifact import (
             ArtifactError, packet_call, verify_artifact)
         original = self.method_artifact()
 
         def update_entity(artifact, id_, attrs):
-            packet = artifact['packet']
-            before = next(row for row in packet['entities'] if row['id'] == id_)
-            after = deepcopy(before)
-            after['attrs'] = attrs
-            diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': packet,
-                                           'proposal_id': 'artifact-counterexample', 'origin': MODEL})
-            diff['entities']['update'].append({'id': id_, 'before_sha256': codec.digest(before),
-                                                'after': after})
-            artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': packet,
-                                                         'diff': diff, 'policy': AUTO})['packet']
+            self.update_method_artifact_entity(artifact, id_, attrs)
 
         def missing_edge(artifact):
             packet = artifact['packet']
@@ -273,7 +397,18 @@ class GraphPacketStoreTests(CompatTestCase):
         def overwritten_version(artifact):
             id_ = artifact['contract']['bindings']['method_version_id']
             before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
-            altered = dict(before, unversioned_change=True)
+            altered = deepcopy(before)
+            altered['definition']['method_key'] = 'synthetic/different-method-under-same-version'
+            altered['definition_sha256'] = codec.digest(altered['definition'])
+            update_entity(artifact, id_, altered)
+            update_entity(artifact, id_, before)
+
+        def overwritten_prompt(artifact):
+            id_ = artifact['contract']['bindings']['prompt_version_id']
+            before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            altered = deepcopy(before)
+            altered['text'] += '\nSynthetic changed prompt under the same version ID.'
+            altered['text_sha256'] = hashlib.sha256(altered['text'].encode()).hexdigest()
             update_entity(artifact, id_, altered)
             update_entity(artifact, id_, before)
 
@@ -311,6 +446,7 @@ class GraphPacketStoreTests(CompatTestCase):
             ('result_origin_capture', lambda a: a['trace']['result_bindings'][0].pop('model_origin')),
             ('result_compiler', lambda a: a['trace']['result_bindings'][0].pop('compiler_transform_id')),
             ('version_overwritten', overwritten_version),
+            ('version_overwritten', overwritten_prompt),
             ('run_trace:result_bindings', conflicting_result_attrs),
             ('method_preset_hash', wrong_method_preset),
         ]

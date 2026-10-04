@@ -102,6 +102,50 @@
       "additionalProperties": true,
       "description": "Retained native model-origin fields. Native codec origin semantics still apply; this data schema adds no domain vocabulary or evidence truth assertion."
     },
+    "combinationMember": {
+      "type": "object",
+      "oneOf": [
+        { "required": ["method_version_id"], "not": { "required": ["combination_version_id"] } },
+        { "required": ["combination_version_id"], "not": { "required": ["method_version_id"] } }
+      ],
+      "properties": {
+        "method_version_id": { "$ref": "#/$defs/entityId" },
+        "combination_version_id": { "$ref": "#/$defs/entityId" },
+        "weight": { "type": "number" },
+        "parameters": {},
+        "preset_version_id": { "$ref": "#/$defs/nullableEntityId" }
+      },
+      "additionalProperties": true,
+      "description": "An ordered occurrence identifies exactly one method version or nested combination version. Signed finite weights and arbitrary parameters are data; repeated occurrences and shared subgraphs are retained. Native graph validation and traversal establish kind, definition/hash, active membership edges and acyclicity, without a fixed size or depth limit."
+    },
+    "combinationDefinition": {
+      "type": "object",
+      "required": ["members"],
+      "properties": {
+        "members": { "type": "array", "items": { "$ref": "#/$defs/combinationMember" } },
+        "parameters": {},
+        "fusion": {},
+        "composition": {}
+      },
+      "additionalProperties": true,
+      "description": "Exact immutable combination data. Ordered member occurrences, weights, parameter overrides and fusion data participate in the canonical definition hash. Shared or repeated members are not deduplicated."
+    },
+    "effectiveCombinationVersion": {
+      "type": "object",
+      "required": ["id", "kind", "attrs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/entityId" },
+        "kind": { "type": "string" },
+        "attrs": {
+          "type": "object",
+          "required": ["definition", "definition_sha256"],
+          "properties": { "definition": { "$ref": "#/$defs/combinationDefinition" }, "definition_sha256": { "$ref": "#/$defs/sha256" } },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true,
+      "description": "Captured native Entity DTO for an effective combination, created bottom-up for the consumed path occurrence. Native codec validation still checks the full Entity shape; this schema checks only the client definition fields."
+    },
     "resultBinding": {
       "type": "object",
       "required": ["result_entity_id", "run_id", "method_version_id"],
@@ -131,8 +175,27 @@
         "run_id": { "$ref": "#/$defs/entityId" },
         "method_identity_id": { "$ref": "#/$defs/entityId" },
         "method_version_id": { "$ref": "#/$defs/entityId" },
-        "model_identity_id": { "$ref": "#/$defs/nullableEntityId" },
-        "model": { "type": ["string", "null"] },
+        "model_identity_id": {
+          "$ref": "#/$defs/nullableEntityId",
+          "description": "Prepared model descriptor, or the final observed descriptor when explicitly known. A reported alias does not establish descriptor equivalence; an unknown final descriptor is null."
+        },
+        "requested_model_identity_id": { "$ref": "#/$defs/nullableEntityId" },
+        "actual_model_identity_id": { "$ref": "#/$defs/nullableEntityId" },
+        "model_identity_basis": {
+          "description": "Caller-captured basis for the requested or observed descriptor, as arbitrary JSON data. It does not establish model equivalence or content truth."
+        },
+        "model": {
+          "type": ["string", "null"],
+          "description": "Prepared request model; after model result binding, the one distinct observed result-origin model, or null for differing or unknown observations. requested_model preserves the request value."
+        },
+        "requested_model": {
+          "type": ["string", "null"],
+          "description": "Immutable prepared request control. A later reported alias never rewrites the requested model, effective recipe or definition hash."
+        },
+        "actual_model": { "type": ["string", "null"] },
+        "actual_models": { "type": "array", "items": { "type": ["string", "null"] } },
+        "model_origin": { "anyOf": [{ "$ref": "#/$defs/modelOrigin" }, { "type": "null" }] },
+        "actual_model_origins": { "type": "array", "items": { "$ref": "#/$defs/modelOrigin" } },
         "recipe_sha256": { "$ref": "#/$defs/nullableSha256" },
         "prompt_sha256": { "$ref": "#/$defs/nullableSha256" },
         "effective_parameters": {
@@ -144,6 +207,11 @@
         "preset_sha256": { "$ref": "#/$defs/nullableSha256" },
         "combination_version_id": { "$ref": "#/$defs/nullableEntityId" },
         "combination_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "effective_combination_versions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/effectiveCombinationVersion" },
+          "description": "Optional exact effective combination DTOs in bottom-up construction order. selection_path preserves original resolved occurrence identities; final combination binding identifies the effective root."
+        },
         "compiler_transform_id": { "$ref": "#/$defs/nullableEntityId" },
         "user_overrides": {
           "description": "Captured caller overlays or one-call changes as arbitrary JSON data; the effective result is separately recorded in effective_parameters."
@@ -161,6 +229,14 @@
         "measurement_scope": { "type": ["string", "null"] },
         "projected_at": { "type": ["string", "null"], "format": "date-time" },
         "response_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "response_hash_scope": {
+          "type": ["string", "null"],
+          "description": "For compiled model results, response_sha256 covers the exact compiler input, independently of transport wire bytes and rendered response text. Unknown or differing input hashes remain null."
+        },
+        "raw_response_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "response_text_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "request_sha256": { "$ref": "#/$defs/nullableSha256" },
+        "request_bytes_sha256": { "$ref": "#/$defs/nullableSha256" },
         "compilation_sha256": { "$ref": "#/$defs/nullableSha256" },
         "result_bindings": {
           "type": "array",

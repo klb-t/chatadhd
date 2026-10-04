@@ -1,11 +1,12 @@
 # Method, version and run graph — packet-side contract v1
 
-Status: a versioned **client data pattern**, with a synthetic native-DTO fixture.
+Status: the single W3/W4 **client data contract**, adopted by W3's production
+registry at `03c670c` and exercised by its published synthetic execution golden.
 It uses existing `make`, `empty_diff`, `compile_reply`, `apply_compiled_reply`,
 `apply` and native GraphPacket store operations. It adds no dispatcher, host field,
-algorithm-name branch or closed method/type/predicate vocabulary. W3 must adopt
-the pattern in its registry and execution trace; its production adapter is not
-implemented or verified by this document.
+algorithm-name branch or closed method/type/predicate vocabulary. This document
+defines provenance representation; producer execution and native persistence
+have separate proofs. The shared artifact is identified below.
 
 ## Client envelope
 
@@ -46,7 +47,7 @@ lexical shapes, open caller data and invalid contracts.
 | Prompt version | Separate Entity with exact text, byte hash and encoding; an Observation retains the captured definition bytes. |
 | Recipe version | Separate Entity with canonical definition/hash, including the prompt binding and effective parameters. |
 | Preset version | Separate Entity with declared defaults and hash. It is distinct from a run's one-call overrides. |
-| Combination version | Separate Entity with ordered member-version IDs, weights, fusion/selection parameters and hash. No combination label invokes code. |
+| Combination version | Separate Entity with ordered method-version or nested combination-version occurrences, weights, fusion/selection parameters and hash. No combination label invokes code. |
 | Run | Separate Entity for a concrete attempt/replay, with input identity, effective settings and available instrumentation. Retry/replay semantics must be explicit. Missing measurements are null/unknown, not zero. |
 | Model identity/content | Model identity is a descriptor Entity. Response nodes are the existing compiler's `node_ids`; supplied model output retains native `model_knowledge` and exact `model_origin`. |
 | Compiler transform | Separate descriptor Entity identifying the existing projection implementation. It is not the model that produced the text and is not the caller's analysis method. |
@@ -70,7 +71,7 @@ acceptance is expressed by application policy, not an invented enum value.
 |---|---|
 | Version of method | Method-version Entity → method-identity Entity |
 | Uses recipe/prompt/preset | Version/recipe Entity → corresponding version Entity |
-| Combination member | Combination-version Entity → specific method-version Entity |
+| Combination member | Combination-version Entity → specific method-version or nested combination-version Entity |
 | Run requested method | Run Entity → specific method-version Entity, with prepared/captured state explicit |
 | Uses effective parameters | Method-version Entity and run Entity → exact parameter-set-version Entity |
 | Run used combination | Run Entity → exact combination-version Entity, when a combination contributed |
@@ -79,7 +80,9 @@ acceptance is expressed by application policy, not an invented enum value.
 | Result projected by compiler | Each compiled result Entity → compiler-transform Entity |
 
 Every relation is a real Claim with native `subject`, `predicate`, `object` and
-`value:null`; it is not just a reference hidden in an attrs object. Native
+`value:null`; it is not just a reference hidden in an attrs object. Relations
+used for execution need active Claims and active endpoints of the declared
+caller kinds. A rejected membership does not authorize execution. Native
 sources supply reproducible supporting quotes/locators. Structural claims use
 `confidence_scope: structure_only` and an identified projection operator.
 Confidence in a verified binding does not confer confidence in model content.
@@ -98,6 +101,77 @@ Current producer adoption must emit the applicable graph records and edges;
 schema acceptance alone does not verify their equality or execution provenance.
 Changing weights, order or composition creates a new combination version, even
 when the member-method list stays the same. Old runs retain their original edge.
+
+Version immutability protects `definition` together with `definition_sha256`,
+and exact prompt `text` together with `text_sha256`. Changing or stripping those
+protected fields requires a new version identity; changing them and restoring
+them later cannot conceal identity reuse in packet history. Separate metadata
+annotations can change under the same version identity, with ordinary history
+and CAS. Captured `definition_records` still preserve the exact attrs snapshot
+they describe; an annotation change does not rewrite an earlier Observation.
+
+## Requested and observed models
+
+The prepared trace's `requested_model` captures the model control actually
+consumed by the instantiated request. When present, recipe/request/parameter
+model controls must agree. It remains unchanged after execution, together with
+the effective recipe, prompt, parameters and version hashes. The prepared
+`model` is that request value; the final `model` describes observed native result
+origins, rather than silently replacing the requested control in its definition.
+
+| Final trace field | Required interpretation |
+|---|---|
+| `actual_models` | Distinct observed `model_origin.model` values, including null when the model report is unavailable. Values derive from actual result records. |
+| `model`, `actual_model` | The one distinct observed model; null when observations differ or are unknown. |
+| `actual_model_origins` | Distinct exact native model-origin records retained on the results. |
+| `model_origin` | The one distinct native origin; null when origins differ. |
+| `requested_model_identity_id` | The prepared descriptor identity retained when the requested and observed models differ. |
+| `model_identity_id`, `actual_model_identity_id` | If requested and observed models agree, `model_identity_id` may retain the prepared descriptor and `actual_model_identity_id` may be absent. Otherwise an explicitly supplied matching native observed descriptor is used, or both fields are null when unknown. A reported alias does not authorize reuse of the requested descriptor. |
+
+A reported alias or version name is an observation, not proof that two model
+descriptors are equivalent. No name table or inferred equivalence is installed
+by this format. Requested and observed names, exact result origins and captures
+remain separate. The prepared artifact contract retains its requested bindings;
+the final trace may change its model descriptor only according to the observed
+result origins and an explicitly supplied matching descriptor. Other method,
+version, run and compiler bindings remain fixed. Lexical execution supplies no
+invented model trace.
+
+`response_sha256` for compiled model results covers the exact compiler input;
+`response_hash_scope` records `compiler_input`. It is the common known hash from
+native result origins, or null if hashes are unknown or differ.
+`raw_response_sha256` covers transport response bytes and
+`response_text_sha256` covers rendered text; neither substitutes for compiler
+input. `request_sha256` covers canonical parsed sent payload, while
+`request_bytes_sha256` covers its exact captured bytes. These scopes remain
+distinct even when a particular payload happens to give equal hashes.
+
+## Ordered nested combinations
+
+A combination definition's `members` array preserves ordered occurrences. Each
+member supplies exactly one of `method_version_id` or `combination_version_id`,
+with optional signed finite weight, arbitrary parameter data and preset binding.
+Each target needs a real active `includes_method` Claim; the target's caller kind
+and canonical definition hash must match the selected version role. A nested
+combination is another ordinary version Entity, not hidden executable JSON.
+
+The membership graph is a DAG for executable combinations. Cycle detection uses
+the ancestors of the current traversal path. A shared child reached through two
+branches is valid, as are repeated members within one array. Repeated paths are
+not deduplicated: their member indices, order, signed weights, parameter layers
+and fusion data retain distinct occurrences. There is no preset count, depth,
+weight range or fixed method vocabulary imposed by the format. Arithmetic
+representation failures remain explicit errors.
+
+W3's `selection_path` captures original resolved IDs, member indices and
+definition hashes. Preparing a consumed leaf creates effective method/parameter/
+recipe versions and then effective combination versions from that leaf upward.
+Only that occurrence is replaced; repeated siblings continue to reference their
+original versions. Optional `effective_combination_versions` contains the exact
+new native Entity DTOs in bottom-up construction order. The final
+`combination_version_id` and `combination_sha256` bind the effective root, and the
+run has its real `uses_combination` edge. Original path captures and old versions
+remain intact; they are not restamped with the new root hash.
 
 ## Composition with existing reply compilation
 
@@ -168,17 +242,27 @@ pattern through the real packet C ABI and KB store:
    reject the dangling reference while preserving the earlier packet. The five
    original pinned compiler comparisons continue to run unchanged.
 
-This is a native graph construction/persistence regression. It becomes a
-cross-lane execution regression only when W3's actual adapter produces this
-envelope/trace from its registry and the same checked effective recipe. Until
-then, the contract is supplied to W3 and production adoption remains open.
+This W4 reference is a native graph construction/persistence regression. W3's
+separate actual execution export below is the shared execution artifact; the
+offline reference builder does not replace that producer proof.
 
 ## Shared producer artifact and native verifier
 
 This file is the single W3/W4 format reference. Both reports must link here;
-W3 adoption and the owner's joint execution gate remain pending until the actual
-registry exports its executed golden. The offline reference builder is explicitly
-W4-only evidence, not a replacement registry or evidence of W3 execution.
+the published W3 export is the shared artifact, and W9 reviews the producer proof
+together with W4's native receipt before closing the owner's joint gate. The
+offline reference builder is explicitly W4-only evidence, not a replacement
+registry or evidence of W3 execution.
+
+The one canonical exported artifact is W3 `32e2381`:
+[`docs/reports/chat-selector-2026-10-04-evidence/golden-consumer/input.json`](https://github.com/klb-t/chatadhd/blob/32e2381/docs/reports/chat-selector-2026-10-04-evidence/golden-consumer/input.json).
+Its exact byte SHA-256 is
+`8db8175c3b70c3947711ddf5daee5073b99bc5a5114ce0075e06e51932cec54e`.
+The producer evidence beside it records 1 case / 97 assertions, one checked fake
+HTTP call, zero paid calls and 3 results / 19 Entities / 30 Claims /
+17 Observations. This artifact uses equal requested/observed model names and a
+single-member combination. W3 has separate alias and nested-DAG regressions;
+their existence does not make this artifact proof of those variant executions.
 
 `loom.method_graph_fixture/1` is the test envelope already used by the synthetic
 golden. A producer exports these additional concrete output fields:
@@ -205,14 +289,15 @@ attrs conventions checked by this profile are:
 | Method version | `definition`, `definition_sha256`; applicable parameter/recipe/preset hashes within the definition must identify the effective versions. |
 | Parameter set | `definition`, `definition_sha256`; definition contains `effective_parameters` and captured `user_overrides`. |
 | Recipe | `definition`, `definition_sha256`; definition contains effective `parameters` and applicable `prompt_sha256`. |
-| Preset / combination | `definition`, `definition_sha256`; combination `members` identifies each included `method_version_id`. |
+| Preset / combination | `definition`, `definition_sha256`; each ordered combination member identifies exactly one `method_version_id` or nested `combination_version_id`. |
 | Prompt | Exact UTF-8 `text` and `text_sha256`. |
 | Run | Final trace fields in attrs. `result_bindings` may live in the immutable trace Observation plus real edges; when also present in run attrs, it must match. |
 
 Kinds, predicates, parameter names, combination sizes and weights remain caller
 data. Method identity, method version and run have distinct native identities.
-Version definitions are immutable across the packet's validated history; a
-change followed by restoration cannot conceal reuse of a version identity.
+Protected version definitions, hashes and prompt bytes are immutable across
+the packet's validated history; metadata annotations remain mutable as described
+above. A change followed by restoration cannot conceal version identity reuse.
 
 Run from the repository root, using a new evidence directory:
 
@@ -226,9 +311,10 @@ python3 loom/src/packet/tests/verify_method_graph_artifact.py \
 The verifier uses the existing offline validator dependencies in
 `loom/tools/contracts/requirements.txt`. It checks schema/date formats, exact
 canonical hashes and UTF-8 prompt hashes, applicable binding equality, actual
-native Claims, source captures and result model/compiler provenance. Prepared
-and final traces retain fixed identities/settings; only measured/projection
-phase fields may change. It then calls the real C ABI store directly, with
+native Claims, source captures, nested membership and result model/compiler
+provenance. Prepared and final traces retain fixed requested identities/settings;
+observed model fields may change only as witnessed by native results, alongside
+measured/projection phase fields. It then calls the real C ABI store directly, with
 closed selection and expected-row CAS, restarts it, reads/replays the entire
 receipt and verifies an identical acceptance retry. It makes no provider call.
 
@@ -251,5 +337,6 @@ versioned prompt/recipe nodes. W7 records measured experiments and model
 profiles as dated Claims using the same native evidence structure. W4 preserves
 these ordinary records, references and history. The synthetic fixture installs
 no production defaults and does not replace a pack. Pack/profile data and the
-registry adapter stay with their assigned lanes; the W3→W4 shared execution
-regression is still a prerequisite before integration by W9.
+registry adapter stay with their assigned lanes. W9's joint review uses the
+canonical artifact named above, its actual W3 execution proof and W4's fresh
+native persistence receipt.
