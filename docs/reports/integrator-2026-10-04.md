@@ -1,79 +1,78 @@
-# Integrator9 — 2026-10-04
+# Integrator — 2026-10-04
 
-Baza kodu: `161cc22dfb84fe863389d6b90323bd44516a68dc` z zachowanym INTERFEJS/PR9.
-Gotowych gałęzi kodu przyjęto **0**. Aktualizacja main obejmuje tylko dokumentację
-koordynacji, po jej osobnych bramkach. Nie edytowano implementacji innych wątków,
-README ani profili aplikacji. [INDEX](INDEX.md) zawiera sprawdzone commity11 wątków.
+Przyjęto liniowo dokumentację R39–R41 Claude (`ba6eaf6`) oraz pierwszy przyrost
+polityki zużycia wątku 2 (`6930fd2`). Zachowano INTERFEJS/PR9. Pozostałe
+implementacje pozostają na swoich gałęziach. [INDEX](INDEX.md) przypina źródła,
+statusy wszystkich 11 wątków, inwentarz i konkretne przekazania.
 
-## Co wykonano
+## Co wykonano i liczby przed / po
 
-- Świeży fetch, przegląd wszystkich gałęzi/raportów i liniowy rebase kandydata2.
-- Niezależne wykonanie19/19 kontraktów2, pełnego CTest z kontrolą rzeczywistych
-  liczników i build web; kandydat pozostaje poza main z powodu presetu w C++.
-- Odtwarzalne reprodukcje błędów4/5/7, pełne źródła/dane/wyniki/hash w archive.
-  Nowa poprawka7 zweryfikowana na trzech oryginalnych kontrolach; historia
-  negatywna zachowana. Cały negatywny checkpoint6 także zachowany w archive.
-- Inwentarz11 (695 grup/559 plików) przekazano każdemu z11 wątków w INDEX;
-  ponowne zadania1/2 i jawne luki zakresów zapisano, bez udawania ich odbioru.
-- Przed odbiorem3/4 wymagany wspólny wersjonowany format metod/pochodzenia
-  w grafie i regresja przechodząca przez oba API. Same ślady JSON nie wystarczą.
-
-## Liczby i granice dowodów
-
-| Pomiar | Wynik |
+| Pomiar integratora | Wynik |
 |---|---|
-| Pierwsza pełna baza161cc22 | 106/108; structure/contracts timeout60s;907.42s |
-| Pierwszy pełny kandydat2 (34cc920 rebased) | 106/108; te same timeouty;620.91s |
-| Osobny końcowy pełny kandydat2 | 108/108;339.14s;659 native/24465 assertions,1276 Python,0 skips |
-| Kontrakty kernel2 poza CTest | 19/19; fake HTTP sentinels0 |
-| Build web kandydata2 | 85 modułów; zakończony powodzeniem |
-| Czysta linia161cc22 + dokumenty9 | Build/web zielony;108/108 w351.36s;659 native/24465 assertions,1276 Python/0 skips; osobny pomiar |
-| Płatne wywołania integratora | 0 |
+| Dokumentacja Claude: rebase, build, pełny CTest, web | 48 linii; 108/108 w 315.71s; web 85 modułów |
+| W2: ręcznie inicjalizowane wartości presetu C++ | 6 → 0; kanoniczny dokument danych i generator |
+| W2: kontrakty / generator / native source-edit proof | stare 19 zachowane → 25/25; 5/5; 4/4 warianty |
+| W2: pełny aktualny CTest / web | 108/108 w 265.33s; web 85 modułów w 2.44s |
+| W2: kontrola rzeczywistych przypadków | 107 wykonanych wpisów; 659 native / 24465 assertions; 1276 Python, 0 skips |
+| W2: rzeczywista budowa | 129 niepustych obiektów, dokładny zbiór wejść Ninja; hashe obiektów i 7 binariów/archiwów zachowane po testach |
+| W4: oryginalny P1 replay | podwójne wykonanie → pojedyncze; drugie executed=false, ledger calls=1/unresolved |
+| W5: dwa oryginalne checkpoint reproduktory | historyczny błąd → 2/2 scenariusze, 29/29 niezależnych kontroli |
+| W5: nowy OCR/provenance replay | MIME 1/3; dwie błędne ścieżki, 11 kontroli diagnostycznych |
+| Nowe płatne wywołania integratora | 0 |
 
-Guard potwierdził107 wykonanych outer entries kandydata2; istniejący opt-in
-catalog_scale ma0/0 i jest jawnie niewykonany. Context i knowledge mają po18
-rzeczywistych przypadków. Żadnych testów, progów ani timeoutów nie zmieniono.
-Powtórka to nowy pełny przebieg, nie suma wybranych retry. Obciążenie hosta
-wpływało na czas: structure po spadku obciążenia29.15s, contracts36.27s.
-Wcześniejsze disk-full/OOM/timeout są zachowane jako oddzielne wyniki.
-Nowe24 grupy2 z648a4e9 nie są objęte naszym wykonaniem19/19.
+W2 zrebazowano na aktualny main z Claude. Wszystkie 16 wybranych plików
+kodu/danych/testów/API są identyczne ze źródłem `5a73a36`. Pełny pierwotny
+checkpoint, niewybrane historyczne dowody i ówczesny raport zachowano na
+`archive/2026-10-04/usage-policy-before-intake`; końcowy raport autora: `cc6a758`.
+Pięć domyślnych ścieżek odczytu, nakładka config.json/loom_usage_policy i restart
+przeszły niezależną próbę zmiany danych. Shared/JNI eksport i startup/config
+nie są częścią tego przyrostu.
 
-Oryginalne dowody czystego main z dokumentami9:
-[pełny gate351.36s](integrator-main-verification-2026-10-04/README.md).
-Pełne źródło/pokwitowania nieprzyjętego kandydata2:
-[archive przed migracją danych](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-usage-policy-before-data/docs/reports/integrator-usage-review-2026-10-04/README.md).
-Pierwsza nieudana baza:
-[archive timeoutów](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-baseline-timeouts/docs/reports/integrator-baseline-timeouts-2026-10-04.md).
-Reprodukcje4/5 i pozytywny replay7 są przypięte w INDEX. Wszystkie wejścia
-integratora są publiczne lub syntetyczne; brak kluczy i prywatnych eksportów.
+Dwa wcześniejsze pełne przebiegi W2 dały 107/108 przez CLI ELF z trybem 0644.
+Przyczyna zmiany trybu między wywołaniami nie została ustalona. Korekta do 0755
+wewnątrz jednego nowego pełnego przebiegu zachowała hash i 32182400 bajtów ELF;
+ten przebieg dał 108/108. Drugie stdout jest niepełne, jego pełny XML zachowano.
+Oba nieudane wyniki są [wyłącznie w archive](https://github.com/klb-t/chatadhd/blob/c1166c51e54ee71727fb74765d448f8ae88fa8a2/docs/reports/integrator-usage-permission-2026-10-04.md).
+Zielony wynik jest osobnym pełnym przebiegiem. Nie zmieniono testów, progów ani
+timeoutów; istniejący opt-in catalog_scale 0/0 pozostaje jawnie niewykonany.
+
+Dowody: [R39–R41](integrator-requirements-verification-2026-10-04/README.md),
+[W2](integrator-usage-acceptance-2026-10-04/README.md),
+[replay W4](integrator-packet-fix-2026-10-04/README.md),
+[checkpoint W5](integrator-import-fix-2026-10-04/README.md).
+Wcześniejsze reprodukcje, timeouty i negatyw katalogowy zachowano w archive.
 
 ## Czego nie przyjęto i dlaczego
 
-2: autorytatywny preset nadal w kodzie; autor910a1d6 jawnie wstrzymuje odbiór.
-3: pierwszy selektor ukończony, rozszerzony rejestr/graf i data defaults niegotowe.
-4: b8f29bf zawiera replay fix i packet-side graph-method contract; wspólny
-adapter/regresja3 nadal nie istnieją. 5: abade80 usuwa przyczynę błędnego
-checkpointu i naprawia stare journale; nowe regresje/finalny raport/bramki czekają.
-Poprawki4/5 oceniono źródłowo, nie przypisujemy im starego negatywu ani własnego
-niewykonanego pozytywnego rerunu. 6:14 pominięć, autor wstrzymał po jakości.
-7: orphan fix zweryfikowany, reszta badań/raport/graf w toku. 8: CI Clang blokuje.
-10/11: zakresy/bramki nieukończone; materialize nadal ukrywa błędy szablonów.
-1: aed85b8 podłącza production prompt registry; brakuje wspólnego grafu metod,
-legacy/public adapterów i końcowej weryfikacji z aktualnym2. Zapisane nowe
-receipts autora sprawdzono hashem. Kolejność2→3/4/5→reszta nadal obowiązuje.
+3/4: rzeczywisty golden, producent 1/97 i pełny 121/1604 oraz oba natywne
+konsumery PASS już opublikowano i sprawdzono. Raport 3 jest aktualny; nadal
+wymagane potwierdzenie 4, uzgodnienie aliasów modeli / nested combinations i
+pełne bramki połączonego źródła. Pierwotny P1 replay 4 niezależnie zamknięty.
+
+5: wznawianie naprawione, ale nowy replay actual importer/OCR z atrapy transportu
+wykazał pusty format MIME przy immutable blob w obu ścieżkach provenance.
+[Pełny negatywny dowód](https://github.com/klb-t/chatadhd/blob/6e4bf03d6294719de8df4e9477e417d232c7b87b/docs/reports/integrator-import-screenshot-2026-10-04.md)
+został wyłącznie w archive. Raport, instrukcja, autor 112/112 i rzeczywisty
+2.15GB ENOSPC→resume istnieją; dawnych braków nie przypisujemy obecnemu kodowi.
+
+1 czeka na miejsce w kolejce; 6 ma 14 pominięć DEV; 7 kończy offline i rozliczenie;
+8/10 nadal bez poprawki vendored Clang; 11 wymaga pełnych bramek i deduplikacji
+usage danych. Loader/CLI oraz poprawka materialize 11 są już opublikowane:
+usunięto nieaktualne zarzuty z indeksu. README prezentacyjny czeka na odbiór funkcji.
+
+Kontrole fetch rozdzielają czas committera i obserwację zmiany ref od dokładnego
+czasu push, którego Git nie udostępnia. Nie stwierdzono przerwy ≥2h dla 2/3/4.
+Żadnego kodu innych wątków nie poprawiano w zakresie integratora. Nie czytano
+ślepego korpusu ani real-holdout-key. Wyłącznie dane publiczne i syntetyczne.
 
 ## Do wątku N
 
-- **2:** preset z danych/profilu, jeden rzeczywisty loader i nakładka; nowy receipt24 grup.
-- **3/4:** wspólny kontrakt method/version/run/result w grafie, pack defaults,
-  krawędzie pochodzenia i regresja obu API przed odbiorem.
-- **4/5:** wykonać niezależny replay nowych poprawek oraz pełne bramki po rebase;
-  5 końcowy raport i instrukcja właściciela.
-- **1/7:** prompty/przepisy/oceny jako wersjonowane byty i twierdzenia z dowodami;
-  7 końcowy raport, rozliczenie i przygotowanie graph-reply vs tekst+JSON.
-- **6:** nowy wynik DEV, zachować negatyw i jednokrotnie wykorzystane pierwsze spojrzenie.
-- **8/10:** poprawka dwóch unused[this], świeży CI i końcowe receipts; bez suppressions.
-- **11:** błędy materialize stage muszą być jawne; poprawić nieaktualne linki/opisy
-  CLI, pełne parity/current-source/fullCTest i runtime injection.
-- **3/11:** wspólna walidacja embeddingów (liczność/wymiar/wartości) we wszystkich
-  wejściach providera; checked APIs i overlay. Wszystkie zadania inwentarza w INDEX.
+- **2:** osobny przyrost pięciu grup startup/config oraz ownership header/bootstrap/public export; usage jest już na main.
+- **3/4:** W4 potwierdza opublikowany golden i jeden METHOD_GRAPH.md w swoim raporcie. Uzgodnić requested/observed model i nested DAG; potem rebase i pełne bramki. Nie trzeba czekać na wzajemny main.
+- **3/11:** domyślne pack/profile, legacy typing i immutable PreparedRequest/resume; checked embedding APIs i injection nakładki. Konkretne luki w INDEX.
+- **5:** zachować format obrazu przy immutable bytes, strict mock obu import paths; wersję migracji sprawdzić wewnątrz transakcji; osiem audit regresji do regularnego suite. Potem świeży rebase/full gates/replay.
+- **1/7:** prompty, przepisy i datowane oceny jako wersje metod/twierdzenia. W7 plan wszystkich etapów i kosztów, rozliczenie starego $1.098135722; osobny klucz 5€ dopiero od właściciela.
+- **6:** nowy przyrost tylko DEV; zachować pierwszy ślepy wynik, bez ponownego strojenia.
+- **8/10:** Clang app.cpp:835/839, warunkowo :515 bez W2; pełna świeża macierz. UI R39–R41 i ustawienia/potwierdzenie usage.
+- **11:** źródłowe parity i pełne bramki; usage.defaults z kanonicznego dokumentu 2; foundation osobno jeśli potrzebny; warstwy/wykluczenia R40 i media API z 5.
+- **9:** następny odbiór według kolejki w INDEX; zachować historię negatywów i wpisy INTERFEJS, README oprzeć na przyjętych funkcjach.

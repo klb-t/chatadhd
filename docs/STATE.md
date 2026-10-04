@@ -210,3 +210,40 @@ szkic8 nie jest dowodem ukończenia aplikacji.
 Płatne badania tylko w7 w osobnym budżecie5€ i na kluczu z limitem5€;
 integrator wykonał0 płatnych wywołań. Nie czytał ślepego korpusu ani
 `eval/real-holdout-key`; starsze zapisy badań powyżej pozostają historią.
+
+## Integrator9 — wznowienie i R39–R41 (2026-10-04, druga sesja)
+
+Powyższy stan7282437 jest historyczny. Dokumentacyjny przyrost Claude62cfd3a
+(R39–R41,48 linii) przyjęto po czystym rebase jako ba6eaf6, bez cofania INTERFEJS.
+Pełny CTest108/108315.71s, guard659 native/24465 assertions/1276 Python0skip
+i web85 zielone; [dowód](reports/integrator-requirements-verification-2026-10-04/README.md).
+
+**Przyjęto pierwszy przyrost2: usage policy z autorytatywnych danych**. Autorytatywny usage_policy.pack i checked decoder zastępują
+wszystkie6 ręcznych wartości C++; zgodne5 default paths i config overlay/restart.
+Niezależny actual129-object build,25/25 kontraktów,5/5 generatora,4/4 source-edit
+i bad-preset variants; 108/108265.33s;107 executed,659 native/24465 assertions,1276 Python0skip; web85.
+[Dowód odbioru](reports/integrator-usage-acceptance-2026-10-04/README.md).
+Stare próby i pierwszy nowy107/108 (lokalny CLI0644, hash bez zmian po0755)
+zostały w archive; pełny nowy przebieg nie jest sumą pojedynczych retry.
+Startup/config0/5, shared public export i dalsze profily nie są tym odbiorem.
+
+3 ma grafowy rejestr/wykonanie/eksporter golden;4 ma jeden kontrakt i konsumenta.
+Golden i natywny consumer PASS są w32e2381; raw producer1/97 i pełny121/1604 też zapisane; acknowledgment4
+i mixed gates nadal wymagane. Autorzy mogą wykonać je offline
+na obecnym2, bez czekania na wzajemny main. Pierwotny P1 replay4 niezależnie
+przeszedł: drugie wykonanie false, ledger calls=1/unresolved;
+[dowód](reports/integrator-packet-fix-2026-10-04/README.md).2/3/4 wypchnęły nowe refs w tej sesji;
+nie stwierdzono przerwy≥2h; INDEX rozdziela committer time od obserwacji fetch.
+
+5 checkpoint naprawiony i niezależnie sprawdzony (2 scenariusze/29 kontroli),
+ale nowy actual mock replay wykazał format OCR utracony przy immutable blob:
+MIME1/3, dwa błędne import paths. Negatyw wyłącznie w archive;5 nadalwstrzymany
+do poprawki i mixed gates. Raport/runbook5 już istnieją.11 opublikował loader,
+CLI profile i naprawił materialize; dawne blockers zastąpiono aktualnymi zadaniami.
+8/10 Clang nadal niezielony.6 dalej tylko DEV, blind nie używany ponownie.
+
+[INDEX](reports/INDEX.md) i [raport9](reports/integrator-2026-10-04.md) zawierają
+aktualne przekazania R39–R41 i właściwe commity. Kolejność kodu2→3/4/5→reszta.
+README czeka na odbiór funkcji; kod innych wątków nie jest dopisywany przez9.
+Nowe płatne wywołania0;7 dokańcza offline i czeka wyłącznie z płatnym wykonaniem
+na osobny klucz5€ przekazany przez właściciela.
