@@ -1,0 +1,22 @@
+{
+  "source_revision": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "archive_source_baseline_9d15_equality": {
+    "paths": 11,
+    "different": 0
+  },
+  "before_bytes": 35626,
+  "after_bytes": 35626,
+  "exact_equal": true,
+  "sha256": "29f8cb8e794adda24ecc72a41864641d580e5eeaacad47c9db4c6ff408f66a92",
+  "coverage": {
+    "texts": 18,
+    "words": 126,
+    "salient": 18,
+    "added": 5,
+    "items": 11,
+    "edges": 1,
+    "communities": 6,
+    "digests": 4
+  },
+  "execution_note": "Pure archive helpers only; no Runtime constructed and no paid network calls. Updated helper objects plus RuntimeProfile linked against old static universal dependencies."
+}

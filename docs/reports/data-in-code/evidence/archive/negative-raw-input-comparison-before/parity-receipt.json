@@ -1,0 +1,185 @@
+{
+  "library_sha256": "4902cecd7cf9142408853fccc7a9170adc1b709ea715fe1a8da7288221ffb5a9",
+  "config": {
+    "sources": [
+      "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive/exports",
+      "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive/docs"
+    ],
+    "repo": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive/repo",
+    "git": false,
+    "seed_terms": [
+      "ChatADHD",
+      "graph",
+      "kivy",
+      "importer"
+    ],
+    "project": "fixture"
+  },
+  "status": "done",
+  "summary": {
+    "project": "fixture",
+    "docs": 26,
+    "sources": 8,
+    "hits": 26,
+    "vocabulary": 4,
+    "passes": [
+      {
+        "pass": 1,
+        "terms": 4,
+        "hits": 26,
+        "new_hits": 26,
+        "added": []
+      }
+    ],
+    "themes": [
+      {
+        "id": "T1",
+        "label": "knowledge · sqlite · local",
+        "size": 13
+      },
+      {
+        "id": "T2",
+        "label": "importer · conversation · bytes",
+        "size": 8
+      },
+      {
+        "id": "T3",
+        "label": "kivy · mobile · android",
+        "size": 3
+      },
+      {
+        "id": "T4",
+        "label": "other",
+        "size": 2
+      }
+    ],
+    "items": {
+      "edges": 2,
+      "by_type": {
+        "resolves": 1,
+        "supersedes": 1
+      }
+    },
+    "gap": {
+      "components_implemented": 0,
+      "components_partial": 1,
+      "components_missing": 2,
+      "features_total": 5,
+      "features_with_evidence": 2,
+      "features_partial": 0,
+      "features_missing": 3,
+      "todos": 2
+    },
+    "discovered_terms": [],
+    "artifacts": [
+      {
+        "id": "a_fd07fc7f72da",
+        "name": "MASTER.md",
+        "hash": "bc62aff6209eb66d5ee1aa8547f246e464d37142667d6176924aa052724382bb"
+      },
+      {
+        "id": "a_9444d95341f9",
+        "name": "gap_report.md",
+        "hash": "72411320d5c290537acf0cb996f29de6f128202a36e8302d2220b283a58a9966"
+      },
+      {
+        "id": "a_2ad8036addc6",
+        "name": "graph.json",
+        "hash": "dc6b33137f31cb70fcdd93e80870b7b6c53aeb891e2c3ef98f3f68ddf7d486b9"
+      },
+      {
+        "id": "a_9db80d1ddf4b",
+        "name": "items.jsonl",
+        "hash": "370dcca519d6e00598900fdadf749e7aa716607714fc2c6657b885210b2e81f7"
+      },
+      {
+        "id": "a_6f5f7ffe87d5",
+        "name": "project_manifest.json",
+        "hash": "a8fbf95e291cdd8e8c2df6e12d1d4ed0fd8b8c787b0a6a629cceea997c1bdedc"
+      },
+      {
+        "id": "a_6c7bbdd6d891",
+        "name": "source_map.csv",
+        "hash": "6ad7945f24435e8c0cf5e101547bb5044174229ad175c2b96a66fb51cb1a1a25"
+      },
+      {
+        "id": "a_82531bec0257",
+        "name": "timeline.json",
+        "hash": "edacbca11c7d4eacf1b4798cbef4ccf3e9f095ae8ee51dd45a03a3944f6bf57f"
+      },
+      {
+        "id": "a_5b306151fb90",
+        "name": "task_log.jsonl",
+        "hash": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf"
+      }
+    ],
+    "out_dir": "/workspace/scratch/72fc60ad1cc5/archive-parity-materialized",
+    "warnings": []
+  },
+  "artifacts": [
+    {
+      "name": "MASTER.md",
+      "bytes": 7545,
+      "sha256": "bc62aff6209eb66d5ee1aa8547f246e464d37142667d6176924aa052724382bb"
+    },
+    {
+      "name": "gap_report.md",
+      "bytes": 2456,
+      "sha256": "72411320d5c290537acf0cb996f29de6f128202a36e8302d2220b283a58a9966"
+    },
+    {
+      "name": "graph.json",
+      "bytes": 14493,
+      "sha256": "dc6b33137f31cb70fcdd93e80870b7b6c53aeb891e2c3ef98f3f68ddf7d486b9"
+    },
+    {
+      "name": "items.jsonl",
+      "bytes": 6164,
+      "sha256": "370dcca519d6e00598900fdadf749e7aa716607714fc2c6657b885210b2e81f7"
+    },
+    {
+      "name": "project_manifest.json",
+      "bytes": 6936,
+      "sha256": "a8fbf95e291cdd8e8c2df6e12d1d4ed0fd8b8c787b0a6a629cceea997c1bdedc"
+    },
+    {
+      "name": "source_map.csv",
+      "bytes": 4015,
+      "sha256": "6ad7945f24435e8c0cf5e101547bb5044174229ad175c2b96a66fb51cb1a1a25"
+    },
+    {
+      "name": "task_log.jsonl",
+      "bytes": 2036,
+      "sha256": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf"
+    },
+    {
+      "name": "timeline.json",
+      "bytes": 3738,
+      "sha256": "edacbca11c7d4eacf1b4798cbef4ccf3e9f095ae8ee51dd45a03a3944f6bf57f"
+    }
+  ],
+  "stage_input_hashes": [
+    "1fc9d8512e241a9f3bc8861a7c1580d9b0d46f087cc8c01fea0673a767a67a23",
+    "511709bbe59b50e9ea0d9350c841a4630fe9fca47edeba96c096d37bc0627b6e",
+    "59e0eed94201dabac809e0d8157e50064a33bcb2801eac3d7550e671ee4a95a9",
+    "21811432ebb70e29a40f8147e8bebbcb92e0473c49f9b25d7b94661a97638bc0",
+    "a4b5848df68efc6488db4d86b1677b99a15de74c624a25401ca830f2c795a27b",
+    "83c8f975649ba46486b257a0d60bbd5cdcab93662a0a48f51d0e2400150c5f21",
+    "4efa6df73c01e2a0ce3838bc5003db6c2ae07e89692f01a2ad3e0ce1ef2c22c2",
+    "6fc96ce9c3b9ab8579b116800798ffe95a72c6b2e0f494ef6546ea713e3eace9",
+    "88f57b86e1f09864fdc1bc1e3a09bd96de29aaa42a2eb2d888f019e491da54af",
+    "78299c62819da6e3fce3c6f1cf4235d753021753ac45f3ab94ac3a3ed50b5dc9"
+  ],
+  "stage_output_hashes": [
+    "527ded80d952b3694623e41be7dfd7a700dceff77b94640e6b134ee6a30ad0f8",
+    "b3b9341f7f4e593a3f91c5523592b00ba3822d11c6209380b757ccdb6b289ecf",
+    "3b9522f253adc2834b2d0e009a2f0051a14114e459f4ecd78a9a8298500fec06",
+    "c8feefacd0a4a03279b8f285dc0c86b290082258d716b1a7a9e9e893cc1d0f5f",
+    "b0aed0ba2e4c86cf54b8f03f8820d446633271ecec1471b7ea1edc92fb8c9e28",
+    "631f4aad2d18530ef51a2efe9be8b00d42c71f5c9b22054abfb53fe1acb04a75",
+    "5328253adc18d35793d2821d8a8b16b5ca824de2a2771b983e1a2801e482e306",
+    "edf5f0c1e82ed8d64639c0515b346491e1497b58221ea4bfca4c3934030ec7ca",
+    "5f3c4e00204160bdba5e4bbd96fd0eca8240a1f0ae73e017841ee990874bac93",
+    ""
+  ]
+}

@@ -1,0 +1,20 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/archive_profile_pure_subset.cpp:41:
+TEST SUITE: archive.profiles
+TEST CASE:  explicit overrides change lexical behavior without changing another instance
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: invalid_argument: runtime profile /overlay/overrides: required
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/archive_profile_pure_subset.cpp:70:
+TEST SUITE: archive.profiles
+TEST CASE:  KB user tables reach the archive without normalizer expansion
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: invalid_argument: runtime profile /overlay/overrides: required
+
+===============================================================================
+[doctest] test cases:  4 |  2 passed | 2 failed | 0 skipped
+[doctest] assertions: 37 | 35 passed | 2 failed |
+[doctest] Status: FAILURE!

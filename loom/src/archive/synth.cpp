@@ -4,12 +4,15 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <optional>
 #include <set>
 #include <sstream>
+#include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
 
 #include "archive/archive_runtime.h"
+#include "archive/profile.h"
 #include "loom/util/utf8.h"
 
 namespace loom::archive {
@@ -25,7 +28,7 @@ std::string esc_ref(std::string s) {
   return s;
 }
 
-std::string md_text(std::string_view s, std::size_t max_cp = 260) {
+std::string markdown_text(std::string_view s, std::size_t max_cp) {
   std::string t = clip(s, max_cp);
   std::string out;
   for (char c : t) {
@@ -50,22 +53,45 @@ std::string csv(std::string_view s) {
   return out + "\"";
 }
 
-std::string fmt2(double v) {
+std::string format_number(double v, int precision) {
   std::ostringstream os;
   os.setf(std::ios::fixed);
-  os.precision(2);
+  os.precision(precision);
   os << v;
   return os.str();
 }
 
-const char* kind_name(const std::string& k) {
-  if (k == "chat") return "chat messages";
-  if (k == "doc") return "document sections";
-  if (k == "code") return "code files";
-  if (k == "commit") return "commits";
-  if (k == "project") return "project docs";
-  if (k == "memory") return "memories";
-  return "other";
+std::string kind_name(const std::string& k, const ArchiveProfile& policy) {
+  const auto& labels = policy.value("/synthesis/kind_labels");
+  auto it = labels.find(k);
+  return it == labels.end() ? policy.text("/synthesis_rendering/unknown_kind_label") : it->get<std::string>();
+}
+
+std::string render_text(const ArchiveProfile& policy, std::string_view name, const Json& variables) {
+  const auto& values = policy.value("/synthesis_rendering/strings");
+  auto result = render_profile_template(values.at(std::string(name)).get<std::string>(), variables);
+  if (!result) throw std::invalid_argument(result.error().to_string());
+  return std::move(*result);
+}
+
+std::optional<std::size_t> interface_prefix(const std::string& name, const ArchiveProfile& policy) {
+  if (name.size() < static_cast<std::size_t>(policy.integer("/synthesis_rendering/interfaces/minimum_bytes"))) return std::nullopt;
+  const bool uppercase = policy.value("/synthesis_rendering/interfaces/require_uppercase_after_prefix").get<bool>();
+  for (const auto& value : policy.value("/synthesis_rendering/interfaces/prefixes")) {
+    const auto& prefix = value.get_ref<const std::string&>();
+    if (name.rfind(prefix, 0) != 0 || name.size() <= prefix.size()) continue;
+    if (uppercase && !std::isupper(static_cast<unsigned char>(name[prefix.size()]))) continue;
+    return prefix.size();
+  }
+  return std::nullopt;
+}
+
+std::string reference(const Doc& d, const ArchiveProfile& policy) {
+  const auto location = !d.label.empty() && d.label != d.title
+                            ? render_text(policy, "source_location", Json{{"label", esc_ref(d.label)}}) : "";
+  const auto day = date_only(d.date);
+  const auto date = day.empty() ? "" : render_text(policy, "source_date", Json{{"date", day}});
+  return render_text(policy, "source_reference", Json{{"title", esc_ref(d.title)}, {"location", location}, {"date", date}});
 }
 
 struct CodeIndex {
@@ -81,16 +107,16 @@ struct CodeIndex {
   std::set<std::string> uris;
 };
 
-std::string norm_word(const std::string& t) { return stem(gloss(t)); }
+std::string norm_word(const std::string& t, const ArchiveProfile& policy) { return stem(gloss(t, &policy), &policy); }
 
-CodeIndex build_code_index(const Corpus& c) {
+CodeIndex build_code_index(const Corpus& c, const ArchiveProfile& policy) {
   CodeIndex ix;
   for (const auto& d : c.docs) {
     if (d.kind != "code") continue;
     CodeIndex::File f;
     f.uri = d.uri;
-    for (const auto& t : tokenize(d.uri)) f.strong.insert(norm_word(t));
-    for (const auto& t : split_identifier(d.uri)) f.strong.insert(norm_word(t));
+    for (const auto& t : tokenize(d.uri)) f.strong.insert(norm_word(t, policy));
+    for (const auto& t : split_identifier(d.uri)) f.strong.insert(norm_word(t, policy));
     if (const Json* syms = json::find(d.extra, "symbols"); syms && syms->is_array()) {
       for (const auto& s : *syms) {
         std::string name = s.get<std::string>();
@@ -99,12 +125,12 @@ CodeIndex build_code_index(const Corpus& c) {
         if (auto p = last.rfind('.'); p != std::string::npos) last = last.substr(p + 1);
         f.symbols.insert(name);
         f.symbols.insert(last);
-        for (const auto& w : split_identifier(name)) f.strong.insert(norm_word(w));
+        for (const auto& w : split_identifier(name)) f.strong.insert(norm_word(w, policy));
       }
     }
     f.weak = f.strong;
-    for (const auto& t : content_tokens(d.text)) f.weak.insert(norm_word(t));
-    for (const auto& id : camel_identifiers(d.text)) f.weak.insert(norm_word(utf8::to_lower(id)));
+    for (const auto& t : content_tokens(d.text, &policy)) f.weak.insert(norm_word(t, policy));
+    for (const auto& id : camel_identifiers(d.text, &policy)) f.weak.insert(norm_word(utf8::to_lower(id), policy));
     std::size_t idx = ix.files.size();
     for (const auto& s : f.symbols) ix.symbol_owner[utf8::to_lower(s)].push_back(idx);
     if (const Json* uses = json::find(d.extra, "uses"); uses && uses->is_array()) {
@@ -123,11 +149,11 @@ struct Evidence {
   std::size_t words = 0;
 };
 
-Evidence phrase_evidence(const CodeIndex& ix, std::string_view phrase) {
+Evidence phrase_evidence(const CodeIndex& ix, std::string_view phrase, const ArchiveProfile& policy) {
   Evidence ev;
   std::vector<std::string> words;
-  for (const auto& t : content_tokens(phrase)) {
-    std::string w = norm_word(t);
+  for (const auto& t : content_tokens(phrase, &policy)) {
+    std::string w = norm_word(t, policy);
     if (std::find(words.begin(), words.end(), w) == words.end()) words.push_back(w);
   }
   ev.words = words.size();
@@ -142,10 +168,10 @@ Evidence phrase_evidence(const CodeIndex& ix, std::string_view phrase) {
   for (const auto& f : ix.files) {
     std::size_t s = 0, w = 0;
     std::vector<std::string> m;
-    auto has_prefix = [](const std::set<std::string>& set, const std::string& word) {
+    auto has_prefix = [&](const std::set<std::string>& set, const std::string& word) {
       // same 6-letter stem ("retrieval" ~ "retrieve", "normalizacja" ~ "normalize")
-      if (word.size() < 6) return false;
-      std::string pre = word.substr(0, 6);
+      if (word.size() < static_cast<std::size_t>(policy.integer("/synthesis/prefix_match_bytes"))) return false;
+      std::string pre = word.substr(0, static_cast<std::size_t>(policy.integer("/synthesis/prefix_match_bytes")));
       auto it = set.lower_bound(pre);
       return it != set.end() && it->compare(0, pre.size(), pre) == 0;
     };
@@ -166,7 +192,7 @@ Evidence phrase_evidence(const CodeIndex& ix, std::string_view phrase) {
   }
   auto take = [&](std::vector<std::pair<std::size_t, std::string>>& v) {
     std::sort(v.begin(), v.end());  // smaller (more specific) files first, then path
-    for (std::size_t i = 0; i < v.size() && i < 3; ++i) ev.files.push_back(v[i].second);
+    for (std::size_t i = 0; i < v.size() && i < static_cast<std::size_t>(policy.integer("/synthesis/evidence_files")); ++i) ev.files.push_back(v[i].second);
   };
   if (!full_strong.empty()) {
     ev.status = "implemented";
@@ -174,7 +200,7 @@ Evidence phrase_evidence(const CodeIndex& ix, std::string_view phrase) {
   } else if (!full_weak.empty()) {
     ev.status = "mentioned";
     take(full_weak);
-  } else if (best_strong * 2 >= words.size() && best_strong > 0) {
+  } else if (static_cast<double>(best_strong) >= policy.number("/synthesis/partial_fraction") * static_cast<double>(words.size()) && best_strong > 0) {
     ev.status = "partial";
     ev.files.push_back(best_file);
     ev.matched = best_matched;
@@ -184,35 +210,35 @@ Evidence phrase_evidence(const CodeIndex& ix, std::string_view phrase) {
   return ev;
 }
 
-bool is_spec_doc(const Doc& d) { return d.kind == "doc" || d.kind == "project" || d.kind == "memory"; }
+bool is_spec_doc(const Doc& d, const ArchiveProfile& policy) { return policy.contains("/synthesis/spec_kinds", d.kind); }
 
 // Words that are products/formats rather than components of this project.
-bool is_brand(const std::string& id) {
-  static const std::set<std::string> k = {"ChatGPT", "GitHub", "PolyForm", "ThreadSanitizer", "UBSan",
-                                          "AddressSanitizer", "CMakeLists", "OpenSSL", "CPython", "MiniLM", "CamelCase", "OpenRouter", "SQLite", "JavaScript", "TypeScript",
-                                          "PyPI",    "OpenAI", "DeepSeek",   "MacOS",  "iOS",        "YouTube",
-                                          "LinkedIn", "PowerPoint", "JSONL", "WebSocket", "OkHttp", "CMake",
-                                          "LLMs", "APIs", "IDs", "URLs", "UUIDs", "JSONs", "PDFs", "GPUs", "VMs",
-                                          "macOS", "iPhone", "WhatsApp", "LaTeX", "NumPy", "PyTorch", "GitLab"};
-  return k.count(id) > 0;
-}
+bool is_brand(const std::string& id, const ArchiveProfile& policy) { return policy.contains("/synthesis/external_names", id); }
 
 }  // namespace
 
 std::string source_ref(const Doc& d) {
-  std::string r = "[" + esc_ref(d.title);
-  if (!d.label.empty() && d.label != d.title) r += " › " + esc_ref(d.label);
-  std::string day = date_only(d.date);
-  if (!day.empty()) r += " @ " + day;
-  return r + "]";
+  ProfileScope scope(nullptr);
+  return reference(d, scope.get());
 }
 
 SynthesisOutput synthesize(const SynthesisInput& in) {
+  ProfileScope scope(in.profile);
+  const auto& policy = scope.get();
   SynthesisOutput out;
   const Corpus& c = *in.corpus;
+  const Json variables{{"files", policy.value("/synthesis_rendering/files")}, {"project", in.project},
+                       {"pipeline_version", std::string(kPipelineVersion)}, {"round", in.round}};
+  auto text = [&](std::string_view name) { return render_text(policy, name, variables); };
+  auto length = [&](std::string_view name) {
+    return static_cast<std::size_t>(policy.integer("/synthesis_rendering/display/" + std::string(name)));
+  };
+  auto md_text = [&](std::string_view value, std::optional<std::size_t> maximum = std::nullopt) {
+    return markdown_text(value, maximum.value_or(length("item_codepoints")));
+  };
   auto ref = [&](const std::string& key) {
     const Doc* d = c.find(key);
-    return d ? source_ref(*d) : "[" + key + "]";
+    return d ? reference(*d, policy) : render_text(policy, "missing_source", Json{{"key", key}});
   };
   std::map<std::string, std::string> theme_label;
   for (const auto& t : in.themes) theme_label[json::get_string(t, "id")] = json::get_string(t, "label");
@@ -229,14 +255,14 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     std::vector<const Item*> v;
     for (const auto& it : in.items) {
       if (it.type != type) continue;
-      if (!include_inactive && it.status != "active" && it.status != "contested") continue;
+      if (!include_inactive && !policy.contains("/synthesis_rendering/selection/active_statuses", it.status)) continue;
       v.push_back(&it);
     }
     std::sort(v.begin(), v.end(), [&](const Item* a, const Item* b) {
       const Doc* da = c.find(a->doc);
       const Doc* db = c.find(b->doc);
-      int pa = da && (da->kind == "code" || da->kind == "commit") ? 1 : 0;
-      int pb = db && (db->kind == "code" || db->kind == "commit") ? 1 : 0;
+      int pa = da && policy.contains("/synthesis_rendering/selection/deprioritized_doc_kinds", da->kind) ? 1 : 0;
+      int pb = db && policy.contains("/synthesis_rendering/selection/deprioritized_doc_kinds", db->kind) ? 1 : 0;
       if (pa != pb) return pa < pb;
       if (a->confidence != b->confidence) return a->confidence > b->confidence;
       if (a->date != b->date) return a->date > b->date;
@@ -245,7 +271,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     std::vector<const Item*> uniq;
     std::set<std::string> seen;
     for (const Item* it : v) {
-      std::string norm = utf8::to_lower(clip(it->text, 120));
+      std::string norm = utf8::to_lower(clip(it->text, length("dedup_codepoints")));
       if (!seen.insert(norm).second) continue;
       uniq.push_back(it);
     }
@@ -260,17 +286,17 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     if (it->status == "superseded") {
       for (const auto* e : edges_to[it->id]) {
         if (e->type == "supersedes") {
-          s += " — **superseded** by " + md_text(item_by_id.count(e->src) ? item_by_id[e->src]->text : e->src, 90);
+          s += text("superseded_by") + md_text(item_by_id.count(e->src) ? item_by_id[e->src]->text : e->src, length("superseded_codepoints"));
           if (item_by_id.count(e->src)) s += " " + ref(item_by_id[e->src]->doc);
           break;
         }
       }
     } else if (it->status == "contested") {
-      s += " — **contested** (see §11)";
+      s += text("contested_see_11");
     } else if (it->status == "resolved") {
       for (const auto* e : edges_to[it->id]) {
         if (e->type == "resolves" && item_by_id.count(e->src)) {
-          s += " — resolved by " + ref(item_by_id[e->src]->doc);
+          s += text("resolved_by") + ref(item_by_id[e->src]->doc);
           break;
         }
       }
@@ -279,7 +305,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
   };
 
   // ── Gap analysis ─────────────────────────────────────────────────
-  CodeIndex ix = build_code_index(c);
+  CodeIndex ix = build_code_index(c, policy);
   Json gap = Json::object();
   std::string gap_md;
   {
@@ -287,12 +313,12 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     std::size_t spec_docs = 0;
     std::map<std::string, int> langs;
     for (const auto& d : c.docs) {
-      if (is_spec_doc(d) || d.kind == "chat") ++spec_docs;
+      if (is_spec_doc(d, policy) || d.kind == "chat") ++spec_docs;
       if (d.kind == "code") ++langs[json::get_string(d.extra, "language")];
     }
-    g << "# Gap report — spec ↔ repository (" << in.project << ")\n\n";
-    g << "> Generated by `loom archive` (deterministic). Spec side: " << spec_docs
-      << " document sections / chat messages. Repository side: " << ix.files.size() << " code files";
+    g << text("gap_report_spec_repository") << in.project << ")\n\n";
+    g << text("generated_by_loom_archive_deterministic_spec_side") << spec_docs
+      << text("document_sections_chat_messages_repository_side") << ix.files.size() << text("code_files");
     if (!langs.empty()) {
       g << " (";
       bool first = true;
@@ -302,9 +328,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       }
       g << ")";
     }
-    g << ".\n> Evidence levels: **implemented** = every word of the component appears in one file's path or declared "
-         "symbols; **mentioned** = only in comments; **partial** = at least half of the words in paths/symbols; "
-         "**missing** = no file covers it.\n\n";
+    g << text("evidence_levels_implemented_every_word_of_the_component_appears");
 
     // 1. named components / interfaces
     struct Named {
@@ -314,15 +338,22 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     };
     std::map<std::string, Named> named;
     for (const auto& d : c.docs) {
-      if (!is_spec_doc(d) && d.kind != "chat") continue;
-      for (const auto& id : camel_identifiers(d.text)) {
-        if (id.size() <= 3 || is_brand(id) || utf8::to_lower(id) == utf8::to_lower(in.project)) continue;
-        if (!std::isupper(static_cast<unsigned char>(id[0]))) continue;  // mixedCase = code-level name
-        if (id.back() == 's' && std::all_of(id.begin(), id.end() - 1, [](char ch) {
-              return std::isupper(static_cast<unsigned char>(ch));
-            })) {
-          continue;  // plural acronym ("ABIs")
+      if (!is_spec_doc(d, policy) && d.kind != "chat") continue;
+      for (const auto& id : camel_identifiers(d.text, &policy)) {
+        if (id.empty() || id.size() < static_cast<std::size_t>(policy.integer("/synthesis/named_min_bytes")) || is_brand(id, policy) || (policy.value("/synthesis_rendering/identifiers/exclude_project_name").get<bool>() && utf8::to_lower(id) == utf8::to_lower(in.project))) continue;
+        if (policy.value("/synthesis_rendering/identifiers/require_uppercase_initial").get<bool>() &&
+            !std::isupper(static_cast<unsigned char>(id[0]))) continue;
+        bool plural_acronym = false;
+        if (policy.value("/synthesis_rendering/identifiers/exclude_plural_acronyms").get<bool>()) {
+          for (const auto& value : policy.value("/synthesis_rendering/identifiers/plural_acronym_suffixes")) {
+            const auto& suffix = value.get_ref<const std::string&>();
+            if (id.size() < suffix.size() || id.compare(id.size() - suffix.size(), suffix.size(), suffix) != 0) continue;
+            if (std::all_of(id.begin(), id.end() - static_cast<std::ptrdiff_t>(suffix.size()), [](char ch) {
+                  return std::isupper(static_cast<unsigned char>(ch));
+                })) plural_acronym = true;
+          }
         }
+        if (plural_acronym) continue;
         auto& n = named[id];
         if (n.name.empty()) {
           n.name = id;
@@ -334,16 +365,19 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     // Polish inflections ("WatchDoga", "GitHuba") fold into the base name.
     for (auto it = named.begin(); it != named.end();) {
       bool merged = false;
-      for (std::size_t cut = 1; cut <= 2 && it->first.size() > cut + 3; ++cut) {
+      for (std::size_t cut = 1; cut <= static_cast<std::size_t>(policy.integer("/synthesis/inflection_max_bytes")) &&
+                              it->first.size() > cut && it->first.size() - cut >=
+                              static_cast<std::size_t>(policy.integer("/synthesis_rendering/identifiers/inflection_min_base_bytes")); ++cut) {
         std::string base = it->first.substr(0, it->first.size() - cut);
-        if (!std::islower(static_cast<unsigned char>(it->first.back()))) break;
+        if (policy.value("/synthesis_rendering/identifiers/inflection_require_lowercase_suffix").get<bool>() &&
+            !std::islower(static_cast<unsigned char>(it->first.back()))) break;
         auto b = named.find(base);
         if (b != named.end() && b != it) {
           b->second.mentions += it->second.mentions;
           merged = true;
           break;
         }
-        if (is_brand(base)) {
+        if (is_brand(base, policy)) {
           merged = true;
           break;
         }
@@ -365,27 +399,28 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       std::string low = utf8::to_lower(id);
       std::string status, note;
       std::vector<std::string> files;
-      bool iface = id.size() > 2 && id[0] == 'I' && std::isupper(static_cast<unsigned char>(id[1]));
+      const auto prefix = interface_prefix(id, policy);
+      bool iface = prefix.has_value();
       if (auto it = ix.symbol_owner.find(low); it != ix.symbol_owner.end()) {
         status = "implemented";
-        for (std::size_t k = 0; k < it->second.size() && k < 3; ++k) files.push_back(ix.files[it->second[k]].uri);
-      } else if (iface && ix.symbol_owner.count(utf8::to_lower(id.substr(1)))) {
+        for (std::size_t k = 0; k < it->second.size() && k < static_cast<std::size_t>(policy.integer("/synthesis_rendering/component_evidence/declaration_files")); ++k) files.push_back(ix.files[it->second[k]].uri);
+      } else if (iface && ix.symbol_owner.count(utf8::to_lower(id.substr(*prefix)))) {
         status = "partial";
-        const auto& own = ix.symbol_owner.at(utf8::to_lower(id.substr(1)));
-        for (std::size_t k = 0; k < own.size() && k < 3; ++k) files.push_back(ix.files[own[k]].uri);
-        note = "concrete `" + id.substr(1) + "` exists, no `" + id + "` interface";
+        const auto& own = ix.symbol_owner.at(utf8::to_lower(id.substr(*prefix)));
+        for (std::size_t k = 0; k < own.size() && k < static_cast<std::size_t>(policy.integer("/synthesis_rendering/component_evidence/declaration_files")); ++k) files.push_back(ix.files[own[k]].uri);
+        note = text("concrete") + id.substr(*prefix) + text("exists_no") + id + text("interface");
       } else if (auto u = ix.used_by.find(low); u != ix.used_by.end()) {
         status = "used";  // external API used by the code (declared elsewhere)
-        for (std::size_t k = 0; k < u->second.size() && k < 2; ++k) files.push_back(ix.files[u->second[k]].uri);
+        for (std::size_t k = 0; k < u->second.size() && k < static_cast<std::size_t>(policy.integer("/synthesis_rendering/component_evidence/used_files")); ++k) files.push_back(ix.files[u->second[k]].uri);
       } else {
         status = "missing";
         for (const auto& f : ix.files) {
-          if (f.weak.count(norm_word(low))) {
+          if (files.size() >= static_cast<std::size_t>(policy.integer("/synthesis_rendering/component_evidence/comment_files"))) break;
+          if (f.weak.count(norm_word(low, policy))) {
             files.push_back(f.uri);
-            if (files.size() >= 2) break;
           }
         }
-        if (!files.empty()) note = "no declaration, only named in code comments";
+        if (!files.empty()) note = text("no_declaration_only_named_in_code_comments");
       }
       comps.push_back(Json{{"name", id}, {"kind", "identifier"}, {"status", status}, {"evidence", files},
                            {"mentions", n.mentions}, {"source", n.first_key}, {"note", note}});
@@ -413,10 +448,10 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     // 1b. named technologies / products: capitalised multi-word phrases
     std::map<std::string, std::pair<int, std::string>> phrases;  // phrase -> (mentions, first doc)
     for (const auto& d : c.docs) {
-      if (!is_spec_doc(d) && d.kind != "chat") continue;
+      if (!is_spec_doc(d, policy) && d.kind != "chat") continue;
       std::vector<std::string> run;
       auto flush_run = [&] {
-        if (run.size() >= 2 && run.size() <= 3) {
+        if (run.size() >= static_cast<std::size_t>(policy.integer("/synthesis/title_phrase_min_tokens")) && run.size() <= static_cast<std::size_t>(policy.integer("/synthesis/title_phrase_max_tokens"))) {
           std::string ph;
           for (const auto& w : run) ph += (ph.empty() ? "" : " ") + w;
           auto& e = phrases[ph];
@@ -454,9 +489,9 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
         }
         std::string w = t.substr(b, i - b);
         bool glued = i < t.size() && static_cast<unsigned char>(t[i]) >= 0x80;  // Polish letter follows
-        bool cap = !glued && w.size() >= 3 && std::isupper(static_cast<unsigned char>(w[0])) &&
+        bool cap = !glued && w.size() >= static_cast<std::size_t>(policy.integer("/synthesis/title_word_min_bytes")) && std::isupper(static_cast<unsigned char>(w[0])) &&
                    std::all_of(w.begin() + 1, w.end(), [](char ch) { return std::islower(static_cast<unsigned char>(ch)); }) &&
-                   !is_stopword(utf8::to_lower(w));
+                   !is_stopword(utf8::to_lower(w), &policy);
         if (!cap) {
           flush_run();
           continue;
@@ -471,7 +506,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       std::string joined;
       for (const auto& w : tokenize(ph)) joined += w;
       bool sym = ix.symbol_owner.count(joined) > 0;
-      Evidence ev = phrase_evidence(ix, ph);
+      Evidence ev = phrase_evidence(ix, ph, policy);
       std::string status = sym || ev.status == "implemented" ? "implemented" : "missing";
       std::string where = sym ? ix.files[ix.symbol_owner.at(joined).front()].uri : (ev.files.empty() ? "" : ev.files[0]);
       comps.push_back(Json{{"name", ph}, {"kind", "named_phrase"}, {"status", status},
@@ -493,7 +528,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     std::vector<SecRow> secs;
     std::size_t f_total = 0, f_impl = 0, f_part = 0, f_missing = 0;
     for (const auto& d : c.docs) {
-      if (!is_spec_doc(d)) continue;
+      if (!is_spec_doc(d, policy)) continue;
       SecRow row;
       row.heading = d.title + " › " + d.label;
       row.key = d.key;
@@ -516,22 +551,24 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
           feat.pop_back();
         }
         // "Term — description" / "Term: description": the term is the feature
-        for (std::string_view sep : {" — ", " – ", " - ", ": "}) {
+        for (const auto& value : policy.value("/synthesis_rendering/feature_terms/separators")) {
+          const auto& sep = value.get_ref<const std::string&>();
           std::size_t k = feat.find(sep);
           if (k == std::string::npos || k == 0) continue;
           std::string head = feat.substr(0, k);
           std::size_t n = tokenize(head).size();
-          if (n >= 1 && n <= 5) {
+          if (n >= static_cast<std::size_t>(policy.integer("/synthesis_rendering/feature_terms/minimum_tokens")) &&
+              n <= static_cast<std::size_t>(policy.integer("/synthesis_rendering/feature_terms/maximum_tokens"))) {
             feat = head;
             break;
           }
         }
-        if (utf8::length(feat) > 70 || content_tokens(feat).empty()) continue;
-        Evidence ev = phrase_evidence(ix, feat);
+        if (utf8::length(feat) > static_cast<std::size_t>(policy.integer("/synthesis/feature_max_codepoints")) || content_tokens(feat, &policy).empty()) continue;
+        Evidence ev = phrase_evidence(ix, feat, policy);
         if (ev.status.empty()) continue;
         row.feats.emplace_back(feat, ev);
       }
-      if (row.feats.size() >= 2) secs.push_back(std::move(row));
+      if (row.feats.size() >= static_cast<std::size_t>(policy.integer("/synthesis/section_min_features"))) secs.push_back(std::move(row));
     }
     // worst coverage first
     auto covered = [](const SecRow& r) {
@@ -540,8 +577,8 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       return ok;
     };
     std::stable_sort(secs.begin(), secs.end(), [&](const SecRow& a, const SecRow& b) {
-      double ra = static_cast<double>(covered(a)) / static_cast<double>(a.feats.size());
-      double rb = static_cast<double>(covered(b)) / static_cast<double>(b.feats.size());
+      double ra = a.feats.empty() ? 0.0 : static_cast<double>(covered(a)) / static_cast<double>(a.feats.size());
+      double rb = b.feats.empty() ? 0.0 : static_cast<double>(covered(b)) / static_cast<double>(b.feats.size());
       if (ra != rb) return ra < rb;
       if (a.feats.size() != b.feats.size()) return a.feats.size() > b.feats.size();
       return a.heading < b.heading;
@@ -562,25 +599,25 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
         }
       }
       Json feats = Json::array();
-      secmd << "### " << md_text(s.heading, 140) << " — " << ok << "/" << s.feats.size() << " with code evidence\n\n";
+      secmd << "### " << md_text(s.heading, length("section_heading_codepoints")) << " — " << ok << "/" << s.feats.size() << text("with_code_evidence");
       std::string implemented_list;
       for (const auto& [f, e] : s.feats) {
         feats.push_back(Json{{"feature", f}, {"status", e.status}, {"evidence", e.files}, {"matched", e.matched}});
         if (e.status == "missing") {
-          secmd << "- **missing**: " << md_text(f, 100) << "\n";
+          secmd << text("missing") << md_text(f, length("feature_codepoints")) << "\n";
         } else if (e.status == "partial") {
           std::string m;
           for (const auto& x : e.matched) m += (m.empty() ? "" : ", ") + x;
-          secmd << "- partial: " << md_text(f, 100) << " (closest `" << (e.files.empty() ? "" : e.files[0])
-                << "`, matches " << m << ")\n";
+          secmd << text("partial") << md_text(f, length("feature_codepoints")) << text("closest") << (e.files.empty() ? "" : e.files[0])
+                << text("matches") << m << ")\n";
         } else {
-          implemented_list += (implemented_list.empty() ? "" : "; ") + md_text(f, 60) + " → `" +
+          implemented_list += (implemented_list.empty() ? "" : "; ") + md_text(f, length("evidence_feature_codepoints")) + " → `" +
                               (e.files.empty() ? "" : e.files[0]) + "`" +
-                              (e.status == "mentioned" ? " (comment)" : "");
+                              (e.status == "mentioned" ? text("comment") : "");
         }
       }
-      if (!implemented_list.empty()) secmd << "- evidence: " << implemented_list << "\n";
-      secmd << "\nSource: " << ref(s.key) << "\n\n";
+      if (!implemented_list.empty()) secmd << text("evidence") << implemented_list << "\n";
+      secmd << text("source") << ref(s.key) << "\n\n";
       sections.push_back(Json{{"section", s.heading}, {"source", s.key}, {"covered", ok},
                               {"features", feats}});
     }
@@ -590,7 +627,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     for (const auto& d : c.docs) known.insert(d.uri);
     std::map<std::string, std::string> missing_files;  // path -> first doc key
     for (const auto& d : c.docs) {
-      if (!is_spec_doc(d) && d.kind != "chat") continue;
+      if (!is_spec_doc(d, policy) && d.kind != "chat") continue;
       const std::string& t = d.text;
       std::size_t i = 0;
       while (i < t.size()) {
@@ -603,9 +640,8 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
           std::string tok = t.substr(b, i - b);
           while (!tok.empty() && (tok.back() == '.' || tok.back() == '/')) tok.pop_back();
           std::string ext = tok.find('.') != std::string::npos ? tok.substr(tok.rfind('.')) : "";
-          static const std::set<std::string> kExts = {".py", ".cpp", ".h", ".hpp", ".kt", ".ts", ".tsx", ".js",
-                                                      ".md", ".cc", ".java", ".swift", ".rs", ".go"};
-          if (tok.find('/') != std::string::npos && kExts.count(ext) && tok.find("//") == std::string::npos &&
+
+          if (tok.find('/') != std::string::npos && policy.contains("/synthesis/source_extensions", ext) && tok.find("//") == std::string::npos &&
               tok.find("..") == std::string::npos && tok[0] != '/' && tok.find("http") != 0) {
             bool found = false;
             for (const auto& k : known) {
@@ -632,9 +668,9 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
         ++total;
         if (d->kind == "code") ++code;
       }
-      if (code == 0 && total >= 3) {
+      if (code == 0 && total >= policy.integer("/synthesis/theme_gap_min_docs")) {
         theme_rows.push_back("- `" + json::get_string(t, "id") + "` " + json::get_string(t, "label") + " — " +
-                             std::to_string(total) + " documents, no code file in the theme\n");
+                             std::to_string(total) + text("documents_no_code_file_in_the_theme"));
       }
     }
 
@@ -645,62 +681,61 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
       if (const Json* td = json::find(d.extra, "todos"); td && td->is_array()) {
         for (const auto& x : *td) {
           todos.push_back("- `" + d.uri + ":" + std::to_string(json::get_int(x, "line")) + "` " +
-                          md_text(json::get_string(x, "text"), 140) + "\n");
+                          md_text(json::get_string(x, "text"), length("todo_codepoints")) + "\n");
         }
       }
     }
 
-    g << "## Summary\n\n| Check | Result |\n|---|---|\n";
-    g << "| Named components / interfaces in the spec | " << n_impl << " implemented, " << n_part << " partial, "
-      << n_miss << " missing |\n";
-    g << "| Named technologies / products (capitalised phrases) | " << phrase_ok.size() << " with code evidence, "
-      << phrase_missing.size() << " without |\n";
-    g << "| Spec features (bullets in " << secs.size() << " sections) | " << f_impl << " with evidence, " << f_part
-      << " partial, " << f_missing << " missing (of " << f_total << ") |\n";
-    g << "| Files referenced by the spec but absent | " << missing_files.size() << " |\n";
-    g << "| Themes without any code | " << theme_rows.size() << " |\n";
-    g << "| TODO/FIXME markers in code | " << todos.size() << " |\n\n";
+    g << text("summary_check_result");
+    g << text("named_components_interfaces_in_the_spec") << n_impl << text("implemented") << n_part << text("partial_2")
+      << n_miss << text("missing_2");
+    g << text("named_technologies_products_capitalised_phrases") << phrase_ok.size() << text("with_code_evidence_2")
+      << phrase_missing.size() << text("without");
+    g << text("spec_features_bullets_in") << secs.size() << text("sections") << f_impl << text("with_evidence") << f_part
+      << text("partial_2") << f_missing << text("missing_of") << f_total << ") |\n";
+    g << text("files_referenced_by_the_spec_but_absent") << missing_files.size() << " |\n";
+    g << text("themes_without_any_code") << theme_rows.size() << " |\n";
+    g << text("todo_fixme_markers_in_code") << todos.size() << " |\n\n";
 
-    g << "## 1. Named components and interfaces\n\n";
-    g << "CamelCase names used in documents and conversations, checked against declared symbols.\n\n";
+    g << text("1_named_components_and_interfaces");
+    g << text("camelcase_names_used_in_documents_and_conversations_checked_against");
     if (!rows_bad.empty()) {
-      g << "### Missing or partial (interfaces first)\n\n| Name | Status | Evidence | Mentioned in |\n|---|---|---|---|\n";
+      g << text("missing_or_partial_interfaces_first_name_status_evidence_mentioned");
       for (const auto& r : rows_bad) g << r.text;
       g << "\n";
     }
     if (!rows_used.empty()) {
-      g << "### External APIs used by the code (not gaps)\n\n";
+      g << text("external_apis_used_by_the_code_not_gaps");
       for (std::size_t i = 0; i < rows_used.size(); ++i) g << (i ? ", " : "") << rows_used[i];
       g << "\n\n";
     }
     if (!rows_ok.empty()) {
-      g << "### Implemented\n\n| Name | Status | Evidence | Mentioned in |\n|---|---|---|---|\n";
+      g << text("implemented_name_status_evidence_mentioned_in");
       for (const auto& r : rows_ok) g << r;
       g << "\n";
     }
-    g << "### Named technologies without code evidence\n\n";
-    if (phrase_missing.empty()) g << "None.\n";
+    g << text("named_technologies_without_code_evidence");
+    if (phrase_missing.empty()) g << text("none");
     for (const auto& r : phrase_missing) g << r;
     if (!phrase_ok.empty()) {
-      g << "\nWith evidence: ";
+      g << text("with_evidence_2");
       for (std::size_t i = 0; i < phrase_ok.size(); ++i) g << (i ? "; " : "") << phrase_ok[i];
       g << ".\n";
     }
-    g << "\n## 2. Spec sections — feature coverage\n\n";
-    g << "Each bullet of a spec section is treated as a feature (for \"term — description\" bullets, the term; "
-         "Polish terms glossed to English). Sections with the least evidence come first.\n\n";
+    g << text("2_spec_sections_feature_coverage");
+    g << text("each_bullet_of_a_spec_section_is_treated_as");
     g << secmd.str();
-    g << "## 3. Files referenced but not present\n\n";
-    if (missing_files.empty()) g << "None.\n\n";
+    g << text("3_files_referenced_but_not_present");
+    if (missing_files.empty()) g << text("none_2");
     for (const auto& [p, k] : missing_files) g << "- `" << p << "` — " << ref(k) << "\n";
     if (!missing_files.empty()) g << "\n";
-    g << "## 4. Themes without code\n\n";
-    if (theme_rows.empty()) g << "None.\n";
+    g << text("4_themes_without_code");
+    if (theme_rows.empty()) g << text("none");
     for (const auto& r : theme_rows) g << r;
-    g << "\n## 5. Open work in code (TODO / FIXME)\n\n";
-    if (todos.empty()) g << "None.\n";
-    for (std::size_t i = 0; i < todos.size() && i < 60; ++i) g << todos[i];
-    if (todos.size() > 60) g << "- … " << todos.size() - 60 << " more in items.jsonl\n";
+    g << text("5_open_work_in_code_todo_fixme");
+    if (todos.empty()) g << text("none");
+    for (std::size_t i = 0; i < todos.size() && i < static_cast<std::size_t>(policy.integer("/synthesis/todo_limit")); ++i) g << todos[i];
+    if (todos.size() > static_cast<std::size_t>(policy.integer("/synthesis/todo_limit"))) g << "- … " << todos.size() - static_cast<std::size_t>(policy.integer("/synthesis/todo_limit")) << text("more_in_files_items");
     gap_md = g.str();
     Json mf = Json::array();
     for (const auto& [p, k] : missing_files) mf.push_back(Json{{"path", p}, {"source", k}});
@@ -728,17 +763,16 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     if (dmin.empty() || day < dmin) dmin = day;
     if (dmax.empty() || day > dmax) dmax = day;
   }
-  m << "# " << in.project << " — MASTER (generated)\n\n";
-  m << "> Generated by `loom archive` (pipeline v" << kPipelineVersion << ", synthesis round " << in.round
-    << ") from " << c.docs.size() << " documents in " << c.sources.size()
-    << " sources. Deterministic: the same inputs give the same file. Every claim links to its source as "
-       "`[title › location @ date]`; `source_map.csv` resolves each one. Titles were never used to filter.\n\n";
-  m << "## 1. Corpus\n\n| Kind | Documents |\n|---|---|\n";
-  for (const auto& [k, n] : kinds) m << "| " << kind_name(k) << " | " << n << " |\n";
-  m << "\nDate range: " << (dmin.empty() ? "unknown" : dmin + " → " + dmax) << ". Retrieved (relevant) documents: "
-    << in.hits.size() << ". Forks found: " << c.forks.size() << ".\n\n";
+  m << "# " << in.project << text("master_generated");
+  m << text("generated_by_loom_archive_pipeline_v") << kPipelineVersion << text("synthesis_round") << in.round
+    << text("from") << c.docs.size() << text("documents_in") << c.sources.size()
+    << text("sources_deterministic_the_same_inputs_give_the_same_file");
+  m << text("1_corpus_kind_documents");
+  for (const auto& [k, n] : kinds) m << "| " << kind_name(k, policy) << " | " << n << " |\n";
+  m << text("date_range") << (dmin.empty() ? text("unknown") : dmin + " → " + dmax) << text("retrieved_relevant_documents")
+    << in.hits.size() << text("forks_found") << c.forks.size() << ".\n\n";
 
-  m << "## 2. Retrieval passes and vocabulary\n\n| Pass | Terms | Hits | New hits | Terms added |\n|---|---|---|---|---|\n";
+  m << text("2_retrieval_passes_and_vocabulary_pass_terms_hits_new");
   for (const auto& p : in.passes) {
     std::string added;
     if (const Json* a = json::find(p, "added"); a && a->is_array()) {
@@ -747,7 +781,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     m << "| " << json::get_int(p, "pass") << " | " << json::get_int(p, "terms") << " | " << json::get_int(p, "hits")
       << " | " << json::get_int(p, "new_hits") << " | " << (added.empty() ? "—" : added) << " |\n";
   }
-  m << "\n**Seed terms:** ";
+  m << text("seed_terms");
   {
     std::string seeds;
     for (const auto& v : in.vocab) {
@@ -755,15 +789,15 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     }
     m << seeds << "\n\n";
   }
-  m << "**Expansion** (why each term was added):\n\n";
+  m << text("expansion_why_each_term_was_added");
   for (const auto& v : in.vocab) {
     if (v.origin == "seed") continue;
-    m << "- `" << v.term << "` (" << v.origin << ", pass " << v.pass << ") — ";
-    for (std::size_t i = 0; i < v.reasons.size() && i < 3; ++i) m << (i ? "; " : "") << v.reasons[i];
-    if (!v.evidence.empty()) m << " — e.g. " << ref(v.evidence[0]);
+    m << "- `" << v.term << "` (" << v.origin << text("pass") << v.pass << ") — ";
+    for (std::size_t i = 0; i < v.reasons.size() && i < static_cast<std::size_t>(policy.integer("/synthesis/reason_limit")); ++i) m << (i ? "; " : "") << v.reasons[i];
+    if (!v.evidence.empty()) m << text("e_g") << ref(v.evidence[0]);
     m << "\n";
   }
-  m << "\n## 3. Themes\n\n";
+  m << text("3_themes");
   std::map<std::string, const Json*> tl_by_theme;
   for (const auto& t : in.timeline) tl_by_theme[json::get_string(t, "id")] = &t;
   std::map<std::string, double> hit_score;
@@ -773,7 +807,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     std::string terms;
     int k = 0;
     for (const auto& x : t["terms"]) {
-      if (k++ >= 10) break;
+      if (k++ >= policy.integer("/synthesis/theme_term_limit")) break;
       terms += (terms.empty() ? "" : ", ") + x.get<std::string>();
     }
     std::string span;
@@ -791,28 +825,29 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     }
     std::sort(top.begin(), top.end());
     std::string mix;
-    for (const auto& [kk, n] : tk) mix += (mix.empty() ? "" : ", ") + std::to_string(n) + " " + kind_name(kk);
+    for (const auto& [kk, n] : tk) mix += (mix.empty() ? "" : ", ") + std::to_string(n) + " " + kind_name(kk, policy);
     m << "### " << id << " · " << json::get_string(t, "label") << "\n\n";
-    m << json::get_int(t, "size") << " documents (" << mix << ")" << span << ". Key terms: " << terms << ".\n\n";
-    m << "Top sources:\n";
+    m << json::get_int(t, "size") << text("documents") << mix << ")" << span << text("key_terms") << terms << ".\n\n";
+    m << text("top_sources");
     std::set<std::string> shown_units;
     int shown = 0;
     for (const auto& [s, key] : top) {
+      if (shown >= policy.integer("/synthesis/theme_doc_limit")) break;
       const Doc* d = c.find(key);
       if (!d || !shown_units.insert(d->unit).second) continue;
       m << "- " << ref(key) << "\n";
-      if (++shown >= 4) break;
+      if (++shown >= policy.integer("/synthesis/theme_doc_limit")) break;
     }
     m << "\n";
   }
   if (!in.global_terms.empty()) {
-    m << "Project-wide terms (present across most themes, not clustered): ";
+    m << text("project_wide_terms_present_across_most_themes_not_clustered");
     std::string g;
     for (const auto& x : in.global_terms) g += (g.empty() ? "" : ", ") + x.get<std::string>();
     m << g << ".\n\n";
   }
 
-  m << "## 4. Timeline and forks\n\n";
+  m << text("4_timeline_and_forks");
   for (const auto& t : in.timeline) {
     const Json& ev = t["events"];
     if (ev.empty()) continue;
@@ -821,28 +856,30 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     auto line = [&](const Json& e) {
       std::string day = json::get_string(e, "date");
       const Doc* d = c.find(json::get_string(e, "key"));
-      m << "- " << (day.empty() ? "undated" : day) << " — " << (d ? kind_name(d->kind) : "") << ": "
+      m << "- " << (day.empty() ? text("undated") : day) << " — " << (d ? kind_name(d->kind, policy) : "") << ": "
         << ref(json::get_string(e, "key")) << "\n";
     };
-    if (n <= 12) {
+    const auto head = static_cast<std::size_t>(policy.integer("/synthesis/timeline_head"));
+    const auto tail = static_cast<std::size_t>(policy.integer("/synthesis/timeline_tail"));
+    if (n <= head + tail) {
       for (const auto& e : ev) line(e);
     } else {
-      for (std::size_t i = 0; i < 6; ++i) line(ev[i]);
-      m << "- … " << (n - 12) << " more events (timeline.json)\n";
-      for (std::size_t i = n - 6; i < n; ++i) line(ev[i]);
+      for (std::size_t i = 0; i < head; ++i) line(ev[i]);
+      m << "- … " << (n - head - tail) << text("more_events_files_timeline");
+      for (std::size_t i = n - tail; i < n; ++i) line(ev[i]);
     }
     if (const Json* fk = json::find(t, "forks"); fk && !fk->empty()) {
-      m << "\nForks:\n";
+      m << text("forks");
       for (const auto& f : *fk) {
         std::string after = json::get_string(f, "after");
-        m << "- " << json::get_string(f, "origin") << " fork in " << md_text(json::get_string(f, "title"), 60);
-        if (!after.empty()) m << " after " << ref(after);
+        m << "- " << json::get_string(f, "origin") << text("fork_in") << md_text(json::get_string(f, "title"), length("fork_title_codepoints"));
+        if (!after.empty()) m << text("after") << ref(after);
         m << ": ";
         int ai = 0;
         for (const auto& a : f["alternatives"]) {
           std::string first = json::get_string(a, "first");
-          m << (ai++ ? " | " : "") << (json::get_bool(a, "current") ? "**kept** " : "abandoned ")
-            << (first.empty() ? "" : ref(first)) << " (" << json::get_int(a, "messages") << " msg)";
+          m << (ai++ ? " | " : "") << (json::get_bool(a, "current") ? text("kept") : text("abandoned"))
+            << (first.empty() ? "" : ref(first)) << " (" << json::get_int(a, "messages") << text("message_count_suffix");
         }
         m << "\n";
       }
@@ -850,53 +887,45 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     m << "\n";
   }
 
-  struct Sect {
-    const char* title;
-    const char* type;
-    std::size_t cap;
-    bool inactive;
-  };
-  const Sect kSects[] = {{"5. Decisions", "decision", 40, true},
-                         {"6. Rejected options", "rejected_option", 25, true},
-                         {"7. Open questions", "open_question", 40, false},
-                         {"8. Requirements", "requirement", 40, false},
-                         {"9. Invariants", "invariant", 30, false},
-                         {"10. Ideas", "idea", 20, false}};
-  for (const auto& s : kSects) {
+  for (const auto& section : policy.value("/synthesis/sections")) {
+    const auto title = section.at("title").get<std::string>();
+    const auto type = section.at("type").get<std::string>();
+    const auto cap = section.at("cap").get<std::size_t>();
+    const auto inactive = section.at("inactive").get<bool>();
     std::size_t total = 0;
-    auto v = pick(s.type, s.cap, s.inactive, &total);
-    m << "## " << s.title << "\n\n";
-    if (std::string_view(s.type) == "open_question") {
+    auto v = pick(type, cap, inactive, &total);
+    m << "## " << title << "\n\n";
+    if (policy.contains("/synthesis_rendering/selection/question_summary_types", type)) {
       std::size_t resolved = 0;
-      for (const auto& it : in.items) resolved += it.type == "open_question" && it.status == "resolved";
-      m << "Unresolved questions (" << total << "); " << resolved
-        << " earlier questions were answered by later decisions and are omitted.\n\n";
+      for (const auto& it : in.items) resolved += it.type == type && policy.contains("/synthesis_rendering/selection/answered_statuses", it.status);
+      m << text("unresolved_questions") << total << "); " << resolved
+        << text("earlier_questions_were_answered_by_later_decisions_and_are");
     }
-    if (v.empty()) m << "None found.\n";
+    if (v.empty()) m << text("none_found");
     for (const Item* it : v) m << item_line(it);
-    if (total > v.size()) m << "- … " << total - v.size() << " more in items.jsonl\n";
+    if (total > v.size()) m << "- … " << total - v.size() << text("more_in_files_items");
     m << "\n";
   }
-  m << "## 11. Supersessions and contradictions\n\n";
-  if (in.edges.empty()) m << "None detected.\n";
+  m << text("11_supersessions_and_contradictions");
+  if (in.edges.empty()) m << text("none_detected");
   std::size_t shown_edges = 0;
   for (const auto& e : in.edges) {
     if (e.type == "resolves") continue;
-    if (++shown_edges > 40) break;
+    if (++shown_edges > static_cast<std::size_t>(policy.integer("/synthesis/edge_limit"))) break;
     const Item* a = item_by_id.count(e.src) ? item_by_id[e.src] : nullptr;
     const Item* b = item_by_id.count(e.dst) ? item_by_id[e.dst] : nullptr;
     if (!a || !b) continue;
-    m << "- **" << e.type << "**: " << md_text(a->text, 140) << " " << ref(a->doc) << "  \n  "
-      << (e.type == "supersedes" ? "over" : "vs") << ": " << md_text(b->text, 140) << " " << ref(b->doc)
-      << "  \n  _" << e.reason << "_\n";
+    m << "- **" << e.type << "**: " << md_text(a->text, length("edge_codepoints")) << " " << ref(a->doc) << "  \n  "
+      << (e.type == "supersedes" ? text("edge_over") : text("edge_vs")) << ": " << md_text(b->text, length("edge_codepoints")) << " " << ref(b->doc)
+      << text("blank") << e.reason << "_\n";
   }
-  m << "\n## 12. Gaps (spec ↔ code)\n\n";
+  m << text("12_gaps_spec_code");
   const Json& gs = gap["summary"];
-  m << "- Named components and technologies: " << json::get_int(gs, "components_implemented") << " implemented, "
-    << json::get_int(gs, "components_partial") << " partial, " << json::get_int(gs, "components_missing")
-    << " missing.\n";
-  m << "- Spec features: " << json::get_int(gs, "features_with_evidence") << " of " << json::get_int(gs, "features_total")
-    << " have code evidence, " << json::get_int(gs, "features_missing") << " have none.\n";
+  m << text("named_components_and_technologies") << json::get_int(gs, "components_implemented") << text("implemented")
+    << json::get_int(gs, "components_partial") << text("partial_2") << json::get_int(gs, "components_missing")
+    << text("missing_3");
+  m << text("spec_features") << json::get_int(gs, "features_with_evidence") << " of " << json::get_int(gs, "features_total")
+    << text("have_code_evidence") << json::get_int(gs, "features_missing") << text("have_none");
   std::vector<const Json*> bad;
   std::vector<std::pair<std::int64_t, std::string>> phrase_gaps;
   for (const auto& comp : gap["components"]) {
@@ -910,14 +939,14 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
   }
   std::sort(phrase_gaps.begin(), phrase_gaps.end());
   std::string missing_phrases;
-  for (std::size_t i = 0; i < phrase_gaps.size() && i < 15; ++i) {
+  for (std::size_t i = 0; i < phrase_gaps.size() && i < static_cast<std::size_t>(policy.integer("/synthesis/phrase_gap_limit")); ++i) {
     missing_phrases += (i ? ", " : "") + phrase_gaps[i].second;
   }
-  if (phrase_gaps.size() > 15) missing_phrases += " (+" + std::to_string(phrase_gaps.size() - 15) + " more)";
-  std::stable_sort(bad.begin(), bad.end(), [](const Json* a, const Json* b) {
-    auto key = [](const Json* x) {
+  if (phrase_gaps.size() > static_cast<std::size_t>(policy.integer("/synthesis/phrase_gap_limit"))) missing_phrases += " (+" + std::to_string(phrase_gaps.size() - static_cast<std::size_t>(policy.integer("/synthesis/phrase_gap_limit"))) + text("more");
+  std::stable_sort(bad.begin(), bad.end(), [&](const Json* a, const Json* b) {
+    auto key = [&](const Json* x) {
       std::string n = json::get_string(*x, "name");
-      bool iface = n.size() > 2 && n[0] == 'I' && std::isupper(static_cast<unsigned char>(n[1]));
+      bool iface = interface_prefix(n, policy).has_value();
       return std::make_tuple(json::get_string(*x, "status") == "missing" ? 0 : 1, iface ? 0 : 1,
                              -json::get_int(*x, "mentions"), n);
     };
@@ -926,38 +955,44 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
   int listed = 0;
   for (const Json* cp : bad) {
     const Json& comp = *cp;
-    if (listed++ >= 20) break;
+    if (listed++ >= policy.integer("/synthesis/component_gap_limit")) break;
     m << "- `" << json::get_string(comp, "name") << "`: " << json::get_string(comp, "status");
     std::string note = json::get_string(comp, "note");
     if (!note.empty()) m << " — " << note;
     m << " " << ref(json::get_string(comp, "source")) << "\n";
   }
-  if (!missing_phrases.empty()) m << "- Named technologies without code evidence: " << missing_phrases << ".\n";
+  if (!missing_phrases.empty()) m << text("named_technologies_without_code_evidence_2") << missing_phrases << ".\n";
   {
     int shown_secs = 0;
     for (const auto& sec : gap["sections"]) {
       std::size_t total = sec["features"].size();
       std::int64_t cov = json::get_int(sec, "covered");
-      if (total < 3 || cov * 2 >= static_cast<std::int64_t>(total)) continue;
-      if (shown_secs++ == 0) m << "- Spec sections with the least code evidence:\n";
-      if (shown_secs > 10) break;
+      if (total < static_cast<std::size_t>(policy.integer("/synthesis/section_gap_min_features")) || static_cast<double>(cov) >= policy.number("/synthesis/section_gap_coverage_fraction") * static_cast<double>(total)) continue;
+      if (shown_secs++ == 0) m << text("spec_sections_with_the_least_code_evidence");
+      if (shown_secs > policy.integer("/synthesis/section_gap_limit")) break;
       std::string missing;
       int k = 0;
       for (const auto& f : sec["features"]) {
         if (json::get_string(f, "status") != "missing") continue;
-        if (k++ >= 4) break;
+        if (k++ >= policy.integer("/synthesis/missing_feature_limit")) break;
         missing += (missing.empty() ? "" : "; ") + json::get_string(f, "feature");
       }
       m << "  - " << cov << "/" << total << " " << ref(json::get_string(sec, "source"));
-      if (!missing.empty()) m << " — missing: " << md_text(missing, 160);
+      if (!missing.empty()) m << text("missing_4") << md_text(missing, length("missing_features_codepoints"));
       m << "\n";
     }
   }
-  m << "\nFull details: `gap_report.md`.\n";
+  m << text("full_details_files_gap");
 
   // ── source_map.csv ───────────────────────────────────────────────
   std::ostringstream sm;
-  sm << "ref,key,kind,title,location,date,uri,theme,score,terms\n";
+  const auto& columns = policy.value("/synthesis_rendering/csv/columns");
+  for (std::size_t i = 0; i < columns.size(); ++i) {
+    if (i) sm << ",";
+    const auto name = columns[i].at("name").get<std::string>();
+    sm << (name.find_first_of(",\"\r\n") == std::string::npos ? name : csv(name));
+  }
+  sm << "\n";
   std::set<std::string> cited;
   for (const auto& h : in.hits) cited.insert(json::get_string(h, "key"));
   for (const auto& it : in.items) cited.insert(it.doc);
@@ -972,11 +1007,23 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     double score = 0;
     if (auto it = hit_by_key.find(d.key); it != hit_by_key.end()) {
       score = json::get_number(*it->second, "score");
-      for (const auto& t : (*it->second)["terms"]) terms += (terms.empty() ? "" : ";") + t.get<std::string>();
+      for (const auto& t : (*it->second)["terms"]) terms += (terms.empty() ? "" : policy.text("/synthesis_rendering/csv/term_separator")) + t.get<std::string>();
     }
-    sm << csv(source_ref(d)) << "," << d.key << "," << d.kind << "," << csv(d.title) << "," << csv(d.label) << ","
-       << date_only(d.date) << "," << csv(d.uri) << "," << json::get_string(in.doc_theme, d.key) << ","
-       << fmt2(score) << "," << csv(terms) << "\n";
+    const Json row{{"ref", reference(d, policy)}, {"key", d.key}, {"kind", d.kind}, {"title", d.title},
+                   {"location", d.label}, {"date", date_only(d.date)}, {"uri", d.uri},
+                   {"theme", json::get_string(in.doc_theme, d.key)},
+                   {"score", format_number(score, policy.integer("/synthesis_rendering/csv/score_precision"))}, {"terms", terms}};
+    for (std::size_t i = 0; i < columns.size(); ++i) {
+      if (i) sm << ",";
+      const auto& field = columns[i];
+      const auto pointer = field.at("path").get<std::string>();
+      const Json::json_pointer path(pointer);
+      if (!row.contains(path)) throw std::invalid_argument("archive CSV selects missing row field " + pointer);
+      const auto& value = row.at(path);
+      const auto serialized = value.is_string() ? value.get<std::string>() : json::dump(value);
+      sm << (field.at("quote").get<bool>() ? csv(serialized) : serialized);
+    }
+    sm << "\n";
   }
 
   // ── items.jsonl ──────────────────────────────────────────────────
@@ -1013,13 +1060,13 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     std::string key = json::get_string(h, "key");
     const Doc* d = c.find(key);
     if (!d) continue;
-    nodes.push_back(Json{{"id", key}, {"kind", d->kind}, {"label", source_ref(*d)}, {"date", date_only(d->date)}});
+    nodes.push_back(Json{{"id", key}, {"kind", d->kind}, {"label", reference(*d, policy)}, {"date", date_only(d->date)}});
     std::string th = json::get_string(in.doc_theme, key);
     if (!th.empty()) gedges.push_back(Json{{"src", key}, {"dst", th}, {"type", "part_of"}});
   }
   for (const auto& it : in.items) {
-    if (it.type == "implementation") continue;  // commits are already doc nodes
-    nodes.push_back(Json{{"id", it.id}, {"kind", it.type}, {"label", clip(it.text, 100)}, {"status", it.status}});
+    if (policy.contains("/synthesis_rendering/selection/graph_excluded_item_types", it.type)) continue;  // commits are already doc nodes
+    nodes.push_back(Json{{"id", it.id}, {"kind", it.type}, {"label", clip(it.text, length("graph_item_codepoints"))}, {"status", it.status}});
     gedges.push_back(Json{{"src", it.id}, {"dst", it.doc}, {"type", "derived_from"}});
   }
   for (const auto& e : in.edges) gedges.push_back(Json{{"src", e.src}, {"dst", e.dst}, {"type", e.type}});
@@ -1038,8 +1085,8 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
   auto items_of = [&](const std::string& type, bool active_only) {
     Json a = Json::array();
     std::size_t total = 0;
-    for (const Item* it : pick(type, 80, !active_only, &total)) {
-      a.push_back(Json{{"id", it->id}, {"text", clip(it->text, 240)}, {"theme", it->theme}, {"status", it->status},
+    for (const Item* it : pick(type, static_cast<std::size_t>(policy.integer("/synthesis_rendering/selection/manifest_items")), !active_only, &total)) {
+      a.push_back(Json{{"id", it->id}, {"text", clip(it->text, length("manifest_item_codepoints"))}, {"theme", it->theme}, {"status", it->status},
                        {"confidence", it->confidence}, {"source", ref(it->doc)}});
     }
     return a;
@@ -1051,7 +1098,7 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     themes_j.push_back(Json{{"id", t["id"]}, {"label", t["label"]}, {"terms", t["terms"]}, {"size", t["size"]}});
   }
   Json manifest{{"project", in.project},
-                {"generated_by", "loom archive v" + std::string(kPipelineVersion)},
+                {"generated_by", text("manifest_generated_by")},
                 {"settings", in.settings},
                 {"vocabulary", vocab_j},
                 {"themes", themes_j},
@@ -1071,36 +1118,43 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
   {
     std::set<std::string> vstems;
     for (const auto& v : in.vocab) {
-      vstems.insert(stem(v.term));
-      for (const auto& t : tokenize(v.term)) vstems.insert(stem(t));
+      vstems.insert(stem(v.term, &policy));
+      for (const auto& t : tokenize(v.term)) vstems.insert(stem(t, &policy));
     }
     std::map<std::string, int> cnt;
     for (const auto& it : in.items) {
-      if (it.type != "decision" && it.type != "requirement" && it.type != "open_question" && it.type != "invariant") {
+      if (!policy.contains("/synthesis_rendering/selection/discovery_item_types", it.type)) {
         continue;
       }
       std::set<std::string> seen;
-      for (const auto& id : camel_identifiers(it.text)) {
+      for (const auto& id : camel_identifiers(it.text, &policy)) {
         std::string low = utf8::to_lower(id);
-        if (id.size() <= 3 || is_brand(id) || vstems.count(stem(low)) || !seen.insert(low).second) continue;
+        if (id.size() < static_cast<std::size_t>(policy.integer("/synthesis/named_min_bytes")) || is_brand(id, policy) || vstems.count(stem(low, &policy)) || !seen.insert(low).second) continue;
         ++cnt[low];
       }
     }
     std::vector<std::pair<int, std::string>> v;
     for (const auto& [t, n] : cnt) {
-      if (n >= 2) v.emplace_back(-n, t);
+      if (n >= policy.integer("/synthesis/discovered_min_df")) v.emplace_back(-n, t);
     }
     std::sort(v.begin(), v.end());
-    for (std::size_t i = 0; i < v.size() && i < 8; ++i) out.discovered_terms.push_back(v[i].second);
+    for (std::size_t i = 0; i < v.size() && i < static_cast<std::size_t>(policy.integer("/synthesis/discovered_limit")); ++i) out.discovered_terms.push_back(v[i].second);
   }
 
-  out.files["MASTER.md"] = m.str();
-  out.files["gap_report.md"] = gap_md;
-  out.files["source_map.csv"] = sm.str();
-  out.files["items.jsonl"] = items_jsonl;
-  out.files["graph.json"] = json::dump(graph, 1) + "\n";
-  out.files["timeline.json"] = json::dump(timeline, 1) + "\n";
-  out.files["project_manifest.json"] = json::dump(manifest, 1) + "\n";
+  auto emit = [&](std::string_view kind, std::string content) {
+    const auto name = policy.value("/synthesis_rendering/files").at(std::string(kind)).get<std::string>();
+    if (name.empty()) return;  // a disabled projection
+    if (!out.files.emplace(name, std::move(content)).second) {
+      throw std::invalid_argument("archive artifact projections select the same filename: " + name);
+    }
+  };
+  emit("master", m.str());
+  emit("gap", gap_md);
+  emit("source_map", sm.str());
+  emit("items", items_jsonl);
+  emit("graph", json::dump(graph, policy.integer("/synthesis_rendering/json_indent")) + "\n");
+  emit("timeline", json::dump(timeline, policy.integer("/synthesis_rendering/json_indent")) + "\n");
+  emit("manifest", json::dump(manifest, policy.integer("/synthesis_rendering/json_indent")) + "\n");
   out.gap = std::move(gap);
   return out;
 }

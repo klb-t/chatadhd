@@ -2,270 +2,23 @@
 // contradiction detection (MEGA MASTER §4.9 steps 8-9). Deterministic.
 #include <algorithm>
 #include <cmath>
+#include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
 
 #include "archive/archive_internal.h"
+#include "archive/profile.h"
 #include "loom/util/utf8.h"
 
 namespace loom::archive {
 
 namespace {
 
-struct Cue {
-  const char* type;
-  const char* phrase;  // lowercase; trailing '*' = word prefix
-  double weight;
-};
-
-// Policy data: cue phrases per item type (EN + PL).
-const Cue kCues[] = {
-    // decision
-    {"decision", "we decided", 2},
-    {"decision", "decided to", 1.5},
-    {"decision", "decision:", 2},
-    {"decision", "the decision is", 2},
-    {"decision", "we chose", 2},
-    {"decision", "we choose", 1.5},
-    {"decision", "we will use", 1.5},
-    {"decision", "we'll use", 1.5},
-    {"decision", "let's go with", 2},
-    {"decision", "let's use", 1.5},
-    {"decision", "going with", 1.5},
-    {"decision", "we go with", 2},
-    {"decision", "settled on", 2},
-    {"decision", "we agreed", 1.5},
-    {"decision", "agreed to", 1.5},
-    {"decision", "switched to", 1.5},
-    {"decision", "we switch to", 1.5},
-    {"decision", "we adopt", 1.5},
-    {"decision", "we keep", 1},
-    {"decision", "chosen", 1},
-    {"decision", "zdecydowa*", 2},
-    {"decision", "postanowi*", 2},
-    {"decision", "decyzja", 1.5},
-    {"decision", "decyzję", 1.5},
-    {"decision", "wybieramy", 2},
-    {"decision", "wybraliśmy", 2},
-    {"decision", "wybrałem", 1.5},
-    {"decision", "idziemy w", 2},
-    {"decision", "zostajemy przy", 2},
-    {"decision", "przechodzimy na", 2},
-    {"decision", "stawiamy na", 2},
-    {"decision", "ustaliliśmy", 2},
-    {"decision", "będziemy używać", 1.5},
-    {"decision", "używamy", 1},
-    {"decision", "definiujemy", 1},
-    {"decision", "budujemy", 1},
-    // rejected option
-    {"rejected_option", "rejected", 2},
-    {"rejected_option", "we reject", 2},
-    {"rejected_option", "decided against", 2.5},
-    {"rejected_option", "ruled out", 2},
-    {"rejected_option", "we won't", 1.5},
-    {"rejected_option", "we will not", 1.5},
-    {"rejected_option", "not going to", 1.5},
-    {"rejected_option", "we drop", 2},
-    {"rejected_option", "dropped", 1.5},
-    {"rejected_option", "abandon*", 1.5},
-    {"rejected_option", "no longer", 1},
-    {"rejected_option", "instead of", 1},
-    {"rejected_option", "rather than", 1},
-    {"rejected_option", "don't use", 1.5},
-    {"rejected_option", "do not use", 1.5},
-    {"rejected_option", "discard*", 1.5},
-    {"rejected_option", "not worth", 1},
-    {"rejected_option", "odrzuca*", 2},
-    {"rejected_option", "odrzucon*", 2},
-    {"rejected_option", "rezygnuj*", 2},
-    {"rejected_option", "porzuca*", 2},
-    {"rejected_option", "porzucon*", 1.5},
-    {"rejected_option", "zamiast", 1},
-    {"rejected_option", "nie używamy", 1.5},
-    {"rejected_option", "nie będziemy", 1.5},
-    {"rejected_option", "nie wybieramy", 2},
-    {"rejected_option", "odpada", 1.5},
-    {"rejected_option", "nie jako", 1.5},
-    {"rejected_option", "nie budujemy", 2},
-    // open question
-    {"open_question", "open question", 2.5},
-    {"open_question", "open decision", 2},
-    {"open_question", "open issue", 2},
-    {"open_question", "tbd", 2},
-    {"open_question", "to be decided", 2},
-    {"open_question", "to be determined", 2},
-    {"open_question", "unresolved", 2},
-    {"open_question", "undecided", 2},
-    {"open_question", "not yet decided", 2},
-    {"open_question", "we need to decide", 2},
-    {"open_question", "unclear", 1},
-    {"open_question", "should we", 1.5},
-    {"open_question", "do ustalenia", 2},
-    {"open_question", "do decyzji", 2},
-    {"open_question", "nie wiadomo", 1.5},
-    {"open_question", "nierozstrzygnięt*", 2},
-    {"open_question", "nie zamknięte", 2},
-    {"open_question", "otwarte pytanie", 2.5},
-    {"open_question", "otwarta kwestia", 2.5},
-    {"open_question", "pytanie", 1},
-    // requirement
-    {"requirement", "must", 1.5},
-    {"requirement", "should", 1},
-    {"requirement", "needs to", 1.5},
-    {"requirement", "need to", 1},
-    {"requirement", "has to", 1.5},
-    {"requirement", "have to", 1},
-    {"requirement", "required", 1.5},
-    {"requirement", "requirement", 2},
-    {"requirement", "shall", 1.5},
-    {"requirement", "musi", 1.5},
-    {"requirement", "muszą", 1.5},
-    {"requirement", "musimy", 1.5},
-    {"requirement", "powinien", 1},
-    {"requirement", "powinna", 1},
-    {"requirement", "powinno", 1},
-    {"requirement", "powinny", 1},
-    {"requirement", "wymaga", 1.5},
-    {"requirement", "wymóg", 2},
-    {"requirement", "wymagani*", 1.5},
-    {"requirement", "trzeba", 1},
-    {"requirement", "należy", 1},
-    {"requirement", "ma mieć", 1.5},
-    {"requirement", "mają mieć", 1.5},
-    {"requirement", "ma być", 1},
-    {"requirement", "mają być", 1},
-    {"requirement", "potrzebujemy", 1},
-    // invariant
-    {"invariant", "invariant", 3},
-    {"invariant", "never", 1.5},
-    {"invariant", "always", 1},
-    {"invariant", "must not", 2},
-    {"invariant", "must never", 2.5},
-    {"invariant", "immutable", 2},
-    {"invariant", "append-only", 2},
-    {"invariant", "append only", 2},
-    {"invariant", "hard contract", 2},
-    {"invariant", "guarantee*", 1},
-    {"invariant", "nigdy", 1.5},
-    {"invariant", "zawsze", 1},
-    {"invariant", "nie wolno", 2},
-    {"invariant", "niezmienn*", 2},
-    {"invariant", "inwariant*", 3},
-    {"invariant", "nie może", 1.5},
-    {"invariant", "nie mogą", 1.5},
-    // idea
-    {"idea", "idea", 1.5},
-    {"idea", "what if", 2},
-    {"idea", "we could", 1.5},
-    {"idea", "maybe", 1},
-    {"idea", "perhaps", 1},
-    {"idea", "consider", 1},
-    {"idea", "proposal", 1.5},
-    {"idea", "propose", 1.5},
-    {"idea", "it would be nice", 2},
-    {"idea", "would be good", 1.5},
-    {"idea", "suggest*", 1},
-    {"idea", "in the future", 1},
-    {"idea", "later", 0.5},
-    {"idea", "pomysł", 2},
-    {"idea", "pomysły", 2},
-    {"idea", "można by", 2},
-    {"idea", "warto", 1.5},
-    {"idea", "propozycja", 1.5},
-    {"idea", "proponuję", 1.5},
-    {"idea", "dobrze byłoby", 2},
-    {"idea", "fajnie by", 2},
-    {"idea", "w przyszłości", 1},
-    {"idea", "kiedyś", 1},
-    {"idea", "później", 0.5},
-    {"idea", "może być", 1},
-    // rationale
-    {"rationale", "because", 1.5},
-    {"rationale", "so that", 1.5},
-    {"rationale", "the reason", 2},
-    {"rationale", "reason:", 2},
-    {"rationale", "rationale", 2.5},
-    {"rationale", "in order to", 1},
-    {"rationale", "that's why", 1.5},
-    {"rationale", "this avoids", 1.5},
-    {"rationale", "this allows", 1},
-    {"rationale", "to avoid", 1},
-    {"rationale", "why:", 1.5},
-    {"rationale", "ponieważ", 1.5},
-    {"rationale", "bo", 1},
-    {"rationale", "dlatego", 1.5},
-    {"rationale", "uzasadnienie", 2.5},
-    {"rationale", "powód", 2},
-    {"rationale", "dzięki temu", 1.5},
-    {"rationale", "co pozwala", 1.5},
-    {"rationale", "to pozwala", 1.5},
-    // implementation
-    {"implementation", "implemented", 2},
-    {"implementation", "we added", 1.5},
-    {"implementation", "added", 1},
-    {"implementation", "now supports", 1.5},
-    {"implementation", "refactor*", 1.5},
-    {"implementation", "ported", 1.5},
-    {"implementation", "port of", 1.5},
-    {"implementation", "landed", 1},
-    {"implementation", "merged", 1},
-    {"implementation", "works now", 1.5},
-    {"implementation", "zaimplementowa*", 2},
-    {"implementation", "dodałem", 1.5},
-    {"implementation", "dodano", 1.5},
-    {"implementation", "dodaliśmy", 1.5},
-    {"implementation", "działa już", 1.5},
-    {"implementation", "zrobione", 1.5},
-    // bug
-    {"bug", "bug", 2},
-    {"bug", "crash*", 2},
-    {"bug", "fails", 1},
-    {"bug", "failing", 1},
-    {"bug", "broken", 1.5},
-    {"bug", "regression", 2},
-    {"bug", "doesn't work", 2},
-    {"bug", "does not work", 2},
-    {"bug", "leak", 1.5},
-    {"bug", "race condition", 2},
-    {"bug", "deadlock", 2},
-    {"bug", "segfault", 2},
-    {"bug", "błąd", 2},
-    {"bug", "błędy", 1.5},
-    {"bug", "nie działa", 2},
-    {"bug", "wysypuje", 2},
-    {"bug", "crashuje", 2},
-    {"bug", "zawiesza", 1.5},
-};
-
-struct HeadingHint {
-  const char* phrase;
-  const char* type;
-  double weight;
-};
-const HeadingHint kHeadingHints[] = {
-    {"open decision", "open_question", 2.5},     {"otwarte decyzje", "open_question", 2.5},
-    {"open question", "open_question", 2.5},     {"otwarte pytania", "open_question", 2.5},
-    {"unresolved", "open_question", 2},          {"do ustalenia", "open_question", 2},
-    {"nie zamknięte", "open_question", 2},       {"rejected", "rejected_option", 2},
-    {"odrzucone", "rejected_option", 2},         {"alternatives", "rejected_option", 1},
-    {"invariant", "invariant", 2},               {"inwariant", "invariant", 2},
-    {"konstytucja", "invariant", 1.5},           {"nie wolno zgubić", "requirement", 2},
-    {"must not lose", "requirement", 2},         {"requirement", "requirement", 2},
-    {"wymagania", "requirement", 2},             {"decision", "decision", 1.5},
-    {"decyzj", "decision", 1.5},                 {"idea", "idea", 1.5},
-    {"pomysł", "idea", 1.5},                     {"known issue", "bug", 1.5},
-    {"bugs", "bug", 1.5},                        {"rationale", "rationale", 1.5},
-    {"uzasadnienie", "rationale", 1.5},          {"zasady", "requirement", 1},
-};
-
 // Tie-break priority (lower index wins).
-int type_rank(std::string_view t) {
-  static const char* kOrder[] = {"invariant", "decision",       "rejected_option", "open_question", "requirement",
-                                 "bug",       "implementation", "rationale",       "idea"};
-  for (int i = 0; i < 9; ++i) {
-    if (t == kOrder[i]) return i;
-  }
-  return 99;
+int type_rank(std::string_view t, const ArchiveProfile& policy) {
+  const auto& order = policy.items().at("type_order");
+  for (std::size_t i = 0; i < order.size(); ++i) if (order[i].get_ref<const std::string&>() == t) return static_cast<int>(i);
+  return static_cast<int>(order.size());
 }
 
 bool boundary_before(std::string_view s, std::size_t p) {
@@ -296,61 +49,63 @@ bool has_phrase(std::string_view s, std::string_view phrase) {
   return false;
 }
 
-const std::unordered_set<std::string>& negators() {
-  static const std::unordered_set<std::string> k = {
-      "not",     "no",       "never",    "don",      "won",       "without", "against",   "drop",
-      "drops",   "dropped",  "dropping", "reject",   "rejected",  "rejects", "rejecting", "abandon",
-      "abandoned", "remove", "removed",  "instead",  "replace",   "replaced", "nie",      "bez",
-      "zamiast", "rezygnujemy", "rezygnuję", "odrzucamy", "odrzucone", "odrzucony", "porzucamy",
-      "porzucone", "nigdy", "stop",    "stopped",  "ditch",     "ditched", "deprecated", "deprecate"};
-  return k;
+bool in_lexicon(const ArchiveProfile& policy, std::string_view name, std::string_view word) {
+  for (const auto& item : policy.items().at(std::string(name))) if (item.get_ref<const std::string&>() == word) return true;
+  return false;
 }
 
-// Tokens that never define an item's subject.
-const std::unordered_set<std::string>& generic_subject_words() {
-  static const std::unordered_set<std::string> k = {
-      "decided", "decision", "decide", "chose", "choose", "chosen", "going", "agreed", "switch", "switched",
-      "adopt", "rejected", "reject", "dropped", "drop", "abandon", "abandoned", "question", "open", "unclear",
-      "required", "requirement", "invariant", "idea", "maybe", "perhaps", "consider", "proposal", "propose",
-      "reason", "rationale", "implemented", "added", "bug", "system", "thing", "zdecydowaliśmy", "decyzja",
-      "decyzję", "wybieramy", "wybraliśmy", "odrzucamy", "rezygnujemy", "zamiast", "pomysł", "warto",
-      "pytanie", "ponieważ", "dlatego", "musi", "powinien", "trzeba", "należy", "otwarte", "używamy", "będziemy",
-      "używać", "kept", "keep", "later", "because", "should", "could", "would", "will", "instead", "rather",
-      "support", "supports", "want", "wanted", "need", "needs", "make", "made", "new", "also", "still"};
-  return k;
+double encode_confidence(double value, const ArchiveProfile& policy) {
+  const auto multiplier = policy.number("/text_item_closure/confidence_multiplier");
+  if (multiplier == 0) return value;
+  const auto scaled = value * multiplier;
+  if (std::isfinite(value) && !std::isfinite(scaled))
+    throw std::invalid_argument("archive confidence encoder exceeds numeric representation");
+  return std::round(scaled) / multiplier;
 }
-
-double round2(double v) { return std::round(v * 100.0) / 100.0; }
 
 }  // namespace
 
-Classification classify_sentence(std::string_view sentence, std::string_view heading) {
+Classification classify_sentence(std::string_view sentence, std::string_view heading, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  profile = scope.ptr();
   Classification c;
   std::string s = utf8::to_lower(sentence);
   std::string h = utf8::to_lower(heading);
   std::map<std::string, double> score;
   std::map<std::string, std::vector<std::string>> cues;
-  for (const Cue& cue : kCues) {
-    if (has_phrase(s, cue.phrase)) {
-      score[cue.type] += cue.weight;
-      std::string p = cue.phrase;
+  for (const auto& cue : policy.items().at("cues")) {
+    const std::string phrase = cue.at("phrase").get<std::string>();
+    const std::string type = cue.at("type").get<std::string>();
+    if (has_phrase(s, phrase)) {
+      score[type] += cue.at("weight").get<double>();
+      std::string p = phrase;
       if (!p.empty() && p.back() == '*') p.pop_back();
-      cues[cue.type].push_back(p);
+      cues[type].push_back(p);
     }
   }
   // "must not" also matches "must": keep it an invariant, not a requirement.
-  if (has_phrase(s, "must not") || has_phrase(s, "must never")) score["requirement"] -= 1.5;
+  bool suppress = false;
+  for (const auto& phrase : policy.value("/items/requirement_penalty_phrases")) suppress = suppress || has_phrase(s, phrase.get_ref<const std::string&>());
+  if (suppress) score[policy.text("/text_item_closure/penalty_target_type")] -= policy.number("/items/requirement_penalty");
   std::string_view trimmed = utf8::rstrip(sentence);
-  while (!trimmed.empty() && (trimmed.back() == ')' || trimmed.back() == '*' || trimmed.back() == '"')) {
-    trimmed.remove_suffix(1);
+  bool removed = true;
+  while (!trimmed.empty() && removed) {
+    removed = false;
+    for (const auto& closer : policy.value("/text_item_closure/question_closing_suffixes")) {
+      const auto& suffix = closer.get_ref<const std::string&>();
+      if (trimmed.ends_with(suffix)) { trimmed.remove_suffix(suffix.size()); removed = true; break; }
+    }
   }
-  if (!trimmed.empty() && trimmed.back() == '?') {
-    score["open_question"] += 2.5;
-    cues["open_question"].push_back("?");
+  const auto question_type = policy.text("/text_item_closure/question_target_type");
+  const auto question_suffix = policy.text("/items/question_suffix");
+  if (!question_suffix.empty() && trimmed.size() >= question_suffix.size() && trimmed.substr(trimmed.size() - question_suffix.size()) == question_suffix) {
+    score[question_type] += policy.number("/items/question_suffix_score");
+    cues[question_type].push_back(policy.text("/items/question_suffix"));
   }
-  if (s.rfind("czy ", 0) == 0) {
-    score["open_question"] += 1.0;
-    cues["open_question"].push_back("czy");
+  if (s.rfind(policy.text("/items/question_prefix"), 0) == 0) {
+    score[question_type] += policy.number("/items/question_prefix_score");
+    cues[question_type].push_back(policy.text("/items/question_prefix_cue"));
   }
   bool list_heading = false;  // an explicit list heading ("10. Otwarte decyzje")
   double sentence_best = 0;
@@ -367,15 +122,16 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
     }
     std::string_view lead(last);
     lead.remove_prefix(k);
-    for (const HeadingHint& hh : kHeadingHints) {
-      std::string_view ph(hh.phrase);
-      bool anywhere = ph == "otwarte decyzje" || ph == "open question" || ph == "open decision" ||
-                      ph == "nie wolno zgubić" || ph == "must not lose" || ph == "otwarte pytania";
+    for (const auto& hh : policy.items().at("heading_hints")) {
+      const std::string phrase = hh.at("phrase").get<std::string>();
+      const std::string type = hh.at("type").get<std::string>();
+      std::string_view ph(phrase);
+      bool anywhere = policy.contains("/items/contains_headings", ph);
       bool hit = anywhere ? lead.find(ph) != std::string_view::npos : lead.substr(0, ph.size()) == ph;
       if (hit) {
         list_heading = list_heading || anywhere;
-        score[hh.type] += hh.weight;
-        cues[hh.type].push_back(std::string("§") + hh.phrase);
+        score[type] += hh.at("weight").get<double>();
+        cues[type].push_back(std::string("§") + phrase);
       }
     }
   }
@@ -383,7 +139,7 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
   double best_score = 0;
   double second = 0;
   for (const auto& [t, v] : score) {
-    if (v > best_score || (v == best_score && v > 0 && type_rank(t) < type_rank(best))) {
+    if (v > best_score || (v == best_score && v > 0 && type_rank(t, policy) < type_rank(best, policy))) {
       second = std::max(second, best_score);
       best = t;
       best_score = v;
@@ -393,18 +149,18 @@ Classification classify_sentence(std::string_view sentence, std::string_view hea
   }
   // polarity: sentence-level rejection / negation
   for (const auto& t : tokenize(s)) {
-    if (negators().count(t)) {
+    if (in_lexicon(policy, "negators", t)) {
       c.polarity = -1;
       break;
     }
   }
-  if (best.empty() || best_score < 1.5) return c;
+  if (best.empty() || best_score < policy.number("/items/min_score")) return c;
   // A heading alone classifies only full statements, not noun-phrase bullets.
-  if (sentence_best < 1.0 && tokenize(s).size() < (list_heading ? 3u : 5u)) return c;
+  if (sentence_best < policy.number("/items/min_sentence_score") && tokenize(s).size() < static_cast<std::size_t>(policy.integer(list_heading ? "/items/min_list_tokens" : "/items/min_heading_tokens"))) return c;
   c.type = best;
-  double conf = 0.35 + 0.15 * best_score;
-  if (best_score - second < 0.5) conf -= 0.1;
-  c.confidence = round2(std::clamp(conf, 0.3, 0.95));
+  double conf = policy.number("/items/confidence_base") + policy.number("/items/confidence_slope") * best_score;
+  if (best_score - second < policy.number("/items/ambiguity_margin")) conf -= policy.number("/items/ambiguity_penalty");
+  c.confidence = encode_confidence(std::clamp(conf, policy.number("/items/confidence_min"), policy.number("/items/confidence_max")), policy);
   c.cues = cues[best];
   return c;
 }
@@ -447,17 +203,17 @@ Item Item::from_json(const Json& j) {
 
 namespace {
 
-void fill_subject(Item& it, std::string_view sentence) {
+void fill_subject(Item& it, std::string_view sentence, const ArchiveProfile& policy) {
   auto toks = tokenize(sentence);
   std::set<std::string> subj;
-  const auto& neg = negators();
+  auto neg = [&](std::string_view word) { return in_lexicon(policy, "negators", word); };
   for (std::size_t p = 0; p < toks.size(); ++p) {
     const std::string& t = toks[p];
-    if (utf8::length(t) < 3 || is_stopword(t) || generic_subject_words().count(t) || neg.count(t)) continue;
-    std::string st = stem(t);
+    if (utf8::length(t) < static_cast<std::size_t>(policy.integer("/items/subject_min_token_codepoints")) || is_stopword(t, &policy) || in_lexicon(policy, "generic_subject_words", t) || neg(t)) continue;
+    std::string st = stem(t, &policy);
     int pol = 1;
-    for (std::size_t back = 1; back <= 3 && back <= p; ++back) {
-      if (neg.count(toks[p - back])) {
+    for (std::size_t back = 1; back <= static_cast<std::size_t>(policy.integer("/items/negation_lookback")) && back <= p; ++back) {
+      if (neg(toks[p - back])) {
         pol = -1;
         break;
       }
@@ -476,12 +232,15 @@ std::string doc_heading(const Doc& d) {
 
 }  // namespace
 
-std::vector<Item> extract_items(const Doc& doc, std::string_view theme) {
+std::vector<Item> extract_items(const Doc& doc, std::string_view theme, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  profile = scope.ptr();
   std::vector<Item> out;
   auto make = [&](std::string type, std::string_view text, double conf, std::vector<std::string> cues, int idx) {
     Item it;
     it.type = std::move(type);
-    it.text = clip(text, 320);
+    it.text = clip(text, static_cast<std::size_t>(policy.integer("/items/text_max_codepoints")));
     it.doc = doc.key;
     it.unit = doc.unit;
     it.theme = std::string(theme);
@@ -489,38 +248,46 @@ std::vector<Item> extract_items(const Doc& doc, std::string_view theme) {
     it.confidence = conf;
     it.cues = std::move(cues);
     it.id = "i_" + hash_prefix(doc.key + "#" + std::to_string(idx) + "#" + it.text, 10);
-    fill_subject(it, text);
+    fill_subject(it, text, policy);
     return it;
   };
-  if (doc.kind == "code") {
+  if (policy.contains("/text_item_closure/todo_source_kinds", doc.kind)) {
     if (const Json* todos = json::find(doc.extra, "todos"); todos && todos->is_array()) {
       int idx = 0;
       for (const auto& t : *todos) {
         std::string text = json::get_string(t, "text");
-        bool fix = text.rfind("FIXME", 0) == 0 || text.rfind("XXX", 0) == 0 || text.rfind("HACK", 0) == 0;
-        out.push_back(make(fix ? "bug" : "requirement", text, 0.6, {fix ? "fixme" : "todo"}, idx++));
+        bool fix = false;
+        for (const auto& marker : policy.value("/items/bug_markers")) fix = fix || text.rfind(marker.get_ref<const std::string&>(), 0) == 0;
+        const auto& binding = policy.value(fix ? "/text_item_closure/todo_bug_binding" : "/text_item_closure/todo_default_binding");
+        out.push_back(make(binding.at("type").get<std::string>(), text, policy.number("/items/todo_confidence"),
+                           {binding.at("cue").get<std::string>()}, idx++));
       }
     }
     return out;
   }
-  if (doc.kind == "commit") {
+  if (policy.contains("/text_item_closure/commit_source_kinds", doc.kind)) {
     std::string subject = json::get_string(doc.extra, "subject", doc.label);
     std::string low = utf8::to_lower(subject);
-    bool fix = has_phrase(low, "fix") || has_phrase(low, "bug") || has_phrase(low, "crash*") ||
-               has_phrase(low, "regression");
-    out.push_back(make(fix ? "bug" : "implementation", subject, 0.9, {"commit"}, 0));
+    bool fix = false;
+    for (const auto& phrase : policy.value("/items/commit_bug_phrases")) fix = fix || has_phrase(low, phrase.get_ref<const std::string&>());
+    const auto& binding = policy.value(fix ? "/text_item_closure/commit_bug_binding" : "/text_item_closure/commit_default_binding");
+    out.push_back(make(binding.at("type").get<std::string>(), subject, policy.number("/items/commit_confidence"),
+                       {binding.at("cue").get<std::string>()}, 0));
     return out;
   }
   std::string heading = doc_heading(doc);
   int idx = 0;
-  for (const auto& sent : split_sentences(doc.text)) {
+  for (const auto& sent : split_sentences(doc.text, profile)) {
     ++idx;
-    if (sent.size() > 1200) continue;
+    if (sent.size() > static_cast<std::size_t>(policy.integer("/items/sentence_max_bytes"))) continue;
     // list intros ("Each decision is one of:") and bare noun-phrase bullets
     std::string_view tail = utf8::rstrip(sent);
-    if (!tail.empty() && tail.back() == ':') continue;
-    if (tokenize(sent).size() < 3) continue;
-    Classification c = classify_sentence(sent, heading);
+    bool introduction = false;
+    for (const auto& suffix : policy.value("/text_item_closure/list_intro_suffixes"))
+      introduction = introduction || tail.ends_with(suffix.get_ref<const std::string&>());
+    if (introduction) continue;
+    if (tokenize(sent).size() < static_cast<std::size_t>(policy.integer("/items/sentence_min_tokens"))) continue;
+    Classification c = classify_sentence(sent, heading, profile);
     if (c.type.empty()) continue;
     out.push_back(make(c.type, sent, c.confidence, c.cues, idx));
   }
@@ -529,7 +296,9 @@ std::vector<Item> extract_items(const Doc& doc, std::string_view theme) {
 
 Json ItemEdge::to_json() const { return Json{{"src", src}, {"dst", dst}, {"type", type}, {"reason", reason}}; }
 
-std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* stats) {
+std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* stats, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
   std::vector<ItemEdge> edges;
   const double n = stats ? static_cast<double>(std::max<std::size_t>(stats->n, 1)) : 100.0;
   auto idf = [&](const std::string& t) {
@@ -537,17 +306,17 @@ std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* 
     auto it = stats->df.find(t);
     if (it == stats->df.end()) it = stats->df.find(t + "s");
     double df = it == stats->df.end() ? 1.0 : it->second;
-    return std::log((n + 1.0) / (df + 1.0)) + 0.1;
+    return std::log((n + 1.0) / (df + 1.0)) + policy.number("/items/idf_offset");
   };
   auto distinctive = [&](const std::string& t) {
     if (!stats) return true;
     auto it = stats->df.find(t);
     if (it == stats->df.end()) it = stats->df.find(t + "s");
-    return it == stats->df.end() || it->second <= std::max(3.0, 0.3 * n);
+    return it == stats->df.end() || it->second <= std::max(policy.number("/items/distinctive_df_min"), policy.number("/items/distinctive_df_fraction") * n);
   };
-  auto in_s = [](const std::string& t) {
-    return t == "decision" || t == "rejected_option" || t == "requirement" || t == "invariant";
-  };
+  auto in_s = [&](const std::string& t) { return policy.contains("/items/relation_types", t); };
+  auto question_role = [&](const std::string& t) { return policy.contains("/text_item_closure/question_role_types", t); };
+  auto answer_role = [&](const std::string& t) { return policy.contains("/text_item_closure/answer_role_types", t); };
 
   // order: by date (undated last), then id
   std::vector<std::size_t> order(items.size());
@@ -566,14 +335,14 @@ std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* 
   std::map<std::string, std::vector<std::size_t>> inv;  // distinctive subject token -> items
   for (std::size_t i = 0; i < items.size(); ++i) {
     const auto& it = items[i];
-    if (!in_s(it.type) && it.type != "open_question") continue;
+    if (!in_s(it.type) && !question_role(it.type) && !answer_role(it.type)) continue;
     for (const auto& t : it.subject) {
       if (distinctive(t)) inv[t].push_back(i);
     }
   }
   std::set<std::pair<std::size_t, std::size_t>> seen;
   for (const auto& [tok, list] : inv) {
-    if (list.size() > 200) continue;
+    if (list.size() > static_cast<std::size_t>(policy.integer("/items/max_shared_token_items"))) continue;
     for (std::size_t x = 0; x < list.size(); ++x) {
       for (std::size_t y = x + 1; y < list.size(); ++y) {
         std::size_t a = list[x], b = list[y];
@@ -595,14 +364,14 @@ std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* 
         }
         double sim = shared / std::max(1e-9, std::min(wa, wb));
         // one shared word is coincidence, not the same subject
-        if (shared_distinct < 2) continue;
+        if (shared_distinct < policy.integer("/items/min_shared_distinctive")) continue;
         // and it must be a real share of the longer item too
-        if (shared / std::max(1e-9, std::max(wa, wb)) < 0.2) continue;
+        if (shared / std::max(1e-9, std::max(wa, wb)) < policy.number("/items/min_longer_share")) continue;
         std::string da = date_only(A.date), db = date_only(B.date);
         bool later = !da.empty() && !db.empty() && da < db;
         bool same_unit = !A.unit.empty() && A.unit == B.unit;
-        bool supersede = later && (B.type == "decision" || B.type == "rejected_option") && sim >= 0.3;
-        bool contradict = !later && !same_unit && sim >= 0.5;
+        bool supersede = later && policy.contains("/text_item_closure/superseding_role_types", B.type) && sim >= policy.number("/items/supersede_threshold");
+        bool contradict = !later && !same_unit && sim >= policy.number("/items/contradict_threshold");
         if (in_s(A.type) && in_s(B.type) && !conflict.empty() && (supersede || contradict)) {
           std::string terms;
           for (const auto& t : conflict) terms += (terms.empty() ? "'" : ", '") + t + "'";
@@ -615,9 +384,12 @@ std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* 
             if (A.status == "active") A.status = "contested";
             if (B.status == "active") B.status = "contested";
           }
-        } else if (A.type == "open_question" && B.type == "decision" && later && sim >= 0.35) {
-          edges.push_back({B.id, A.id, "resolves", "decision (" + db + ") answers question (" + da + ")"});
-          if (A.status == "active") A.status = "resolved";
+        } else if (question_role(A.type) && answer_role(B.type) && later && sim >= policy.number("/items/resolution_threshold")) {
+          auto reason = render_profile_template(policy.text("/text_item_closure/resolution_reason_template"),
+              Json{{"answer_type", B.type}, {"question_type", A.type}, {"answer_date", db}, {"question_date", da}});
+          if (!reason) throw std::invalid_argument(reason.error().to_string());
+          edges.push_back({B.id, A.id, policy.text("/text_item_closure/resolution_relation"), std::move(*reason)});
+          if (A.status == "active") A.status = policy.text("/text_item_closure/resolution_status");
         }
       }
     }

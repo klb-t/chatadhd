@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <cmath>
 #include <sstream>
+#include <stdexcept>
 #include <unordered_set>
 
 #include "archive/archive_internal.h"
+#include "archive/profile.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/util/unicode.h"
 #include "loom/util/utf8.h"
@@ -14,7 +16,14 @@
 namespace loom::archive {
 
 namespace {
-double round4(double v) { return std::round(v * 10000.0) / 10000.0; }
+double encode_score(double value, const ArchiveProfile& policy) {
+  const auto multiplier = policy.number("/vocab_closure/score_multiplier");
+  if (multiplier == 0) return value;
+  const auto scaled = value * multiplier;
+  if (std::isfinite(value) && !std::isfinite(scaled))
+    throw std::invalid_argument("archive score encoder exceeds numeric representation");
+  return std::round(scaled) / multiplier;
+}
 
 std::string fmt(double v, int prec) {
   std::ostringstream os;
@@ -26,12 +35,15 @@ std::string fmt(double v, int prec) {
 
 }  // namespace
 
-std::vector<std::string> camel_identifiers(std::string_view text) {
+std::vector<std::string> camel_identifiers(std::string_view text, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
   std::vector<std::string> out;
   std::u32string s = utf8::decode(text);
   std::u32string cur;
   auto flush = [&] {
-    if (cur.size() >= 4) {
+    if (cur.empty()) return;
+    if (cur.size() >= static_cast<std::size_t>(policy.integer("/vocabulary/camel_min_length"))) {
       int upper = 0, lower = 0;
       bool inner_upper = false;
       for (std::size_t i = 0; i < cur.size(); ++i) {
@@ -42,7 +54,9 @@ std::vector<std::string> camel_identifiers(std::string_view text) {
         lower += lo;
         if (i > 0 && up) inner_upper = true;
       }
-      if (inner_upper && lower > 0 && upper >= 2) out.push_back(utf8::encode(cur));
+      if ((!policy.value("/vocab_closure/camel_require_inner_uppercase").get<bool>() || inner_upper) &&
+          lower >= policy.integer("/vocab_closure/camel_min_lowercase") &&
+          upper >= policy.integer("/vocabulary/camel_min_uppercase")) out.push_back(utf8::encode(cur));
     }
     cur.clear();
   };
@@ -57,13 +71,15 @@ std::vector<std::string> camel_identifiers(std::string_view text) {
   return out;
 }
 
-CorpusStats compute_stats(const Corpus& corpus) {
+CorpusStats compute_stats(const Corpus& corpus, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  profile = scope.ptr();
   CorpusStats st;
   st.n = corpus.docs.size();
   st.docs.resize(corpus.docs.size());
   for (std::size_t i = 0; i < corpus.docs.size(); ++i) {
     DocTerms& dt = st.docs[i];
-    for (auto& t : candidate_terms(corpus.docs[i].text)) {
+    for (auto& t : candidate_terms(corpus.docs[i].text, profile)) {
       auto [it, inserted] = dt.tf.emplace(t, 0);
       ++it->second;
       if (inserted) dt.terms.push_back(t);
@@ -73,10 +89,13 @@ CorpusStats compute_stats(const Corpus& corpus) {
   return st;
 }
 
-Json TermRecord::to_json() const {
+Json TermRecord::to_json(const ArchiveProfile* profile) const {
+  ProfileScope scope(profile);
   return Json{{"term", term},       {"pass", pass},         {"origin", origin},
-              {"score", round4(score)}, {"reasons", reasons}, {"evidence", evidence}};
+              {"score", encode_score(score, scope.get())}, {"reasons", reasons}, {"evidence", evidence}};
 }
+
+Json TermRecord::to_json() const { return to_json(nullptr); }
 
 TermRecord TermRecord::from_json(const Json& j) {
   TermRecord r;
@@ -93,7 +112,9 @@ TermRecord TermRecord::from_json(const Json& j) {
   return r;
 }
 
-std::vector<std::pair<std::string, double>> salient_terms(const CorpusStats& stats, std::size_t i, int k) {
+std::vector<std::pair<std::string, double>> salient_terms(const CorpusStats& stats, std::size_t i, int k, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
   std::vector<std::pair<std::string, double>> v;
   if (i >= stats.docs.size()) return v;
   const DocTerms& dt = stats.docs[i];
@@ -101,10 +122,10 @@ std::vector<std::pair<std::string, double>> salient_terms(const CorpusStats& sta
   for (const auto& t : dt.terms) {
     auto df_it = stats.df.find(t);
     int df = df_it == stats.df.end() ? 1 : df_it->second;
-    if (df < 2 || df > std::max(2.0, 0.5 * n)) continue;
+    if (df < policy.integer("/vocabulary/salient_min_df") || df > std::max(static_cast<double>(policy.integer("/vocabulary/salient_min_df")), policy.number("/vocabulary/salient_max_df_fraction") * n)) continue;
     double tf = dt.tf.at(t);
     double w = (1.0 + std::log(tf)) * std::log((n + 1.0) / (df + 1.0));
-    if (t.find(' ') != std::string::npos) w *= 1.15;  // phrases are more specific
+    if (t.find(' ') != std::string::npos) w *= policy.number("/vocabulary/salient_phrase_boost");  // phrases are more specific
     if (w <= 0) continue;
     v.emplace_back(t, w);
   }
@@ -118,7 +139,10 @@ std::vector<std::pair<std::string, double>> salient_terms(const CorpusStats& sta
 
 std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStats& stats,
                                           const std::vector<std::size_t>& hits, const std::set<std::string>& vocab,
-                                          int pass, int max_new, const SemanticAnalyzer* analyzer) {
+                                          int pass, int max_new, const SemanticAnalyzer* analyzer, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  profile = scope.ptr();
   std::vector<TermRecord> out;
   if (hits.empty() || max_new <= 0) return out;
   const double n = static_cast<double>(stats.n);
@@ -128,10 +152,10 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
   std::set<std::string> vocab_words;
   for (const auto& v : vocab) {
     for (const auto& t : tokenize(v)) {
-      vocab_stems.insert(stem(t));
+      vocab_stems.insert(stem(t, profile));
       vocab_words.insert(t);
     }
-    vocab_stems.insert(stem(v));
+    vocab_stems.insert(stem(v, profile));
   }
 
   std::unordered_map<std::string, int> df_hits;
@@ -143,19 +167,19 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
   std::unordered_map<std::string, std::string> ner;  // term -> reason
   for (std::size_t i : hits) {
     const std::string& text = corpus.docs[i].text;
-    for (const auto& id : camel_identifiers(text)) {
+    for (const auto& id : camel_identifiers(text, profile)) {
       std::string low = utf8::to_lower(id);
       if (!ner.count(low)) ner[low] = "identifier " + id;
     }
     if (analyzer) {
-      for (const auto& e : analyzer->extract_entities(utf8::prefix(text, 4000))) {
-        if (e.entity_type != "code_ref" && e.entity_type != "organisation" && e.entity_type != "person" &&
-            e.entity_type != "hashtag") {
+      for (const auto& e : analyzer->extract_entities(utf8::prefix(text, static_cast<std::size_t>(policy.integer("/vocabulary/ner_max_codepoints"))))) {
+        if (!policy.contains("/vocabulary/ner_types", e.entity_type)) {
           continue;
         }
         auto toks = tokenize(e.text);
-        if (toks.empty() || toks.size() > 2) continue;
-        std::string low = toks.size() == 1 ? toks[0] : toks[0] + " " + toks[1];
+        if (toks.empty() || toks.size() > static_cast<std::size_t>(policy.integer("/vocabulary/ner_max_tokens"))) continue;
+        std::string low;
+        for (const auto& token : toks) low += (low.empty() ? "" : " ") + token;
         if (!ner.count(low)) ner[low] = "ner:" + e.entity_type;
       }
     }
@@ -170,30 +194,30 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
     double score = 0;
   };
   std::vector<Cand> cands;
-  const int min_h = h > 50 ? 3 : 2;
+  const int min_h = policy.integer(h > policy.number("/vocabulary/large_hit_count") ? "/vocabulary/large_min_hit_df" : "/vocabulary/min_hit_df");
   for (const auto& [t, dfh] : df_hits) {
     if (dfh < min_h) continue;
-    if (vocab.count(t) || vocab_stems.count(stem(t))) continue;
+    if (vocab.count(t) || vocab_stems.count(stem(t, profile))) continue;
     bool bigram = t.find(' ') != std::string::npos;
     if (bigram) {
       auto parts = tokenize(t);
       if (parts.size() == 2 && vocab_words.count(parts[0]) && vocab_words.count(parts[1])) continue;
     }
     int df = stats.df.count(t) ? stats.df.at(t) : dfh;
-    if (df > 0.6 * n && n > 10) continue;  // generic in this corpus
+    if (df > policy.number("/vocabulary/generic_df_fraction") * n && n > policy.number("/vocabulary/generic_min_corpus")) continue;  // generic in this corpus
     double ph = dfh / h;
     double pc = df / n;
     double lift = pc > 0 ? ph / pc : 0;
-    if (lift < 1.3) continue;
+    if (lift < policy.number("/vocabulary/min_lift")) continue;
     double base = ph * std::log(1.0 + n / df);
-    if (bigram) base *= 1.2;
+    if (bigram) base *= policy.number("/vocabulary/phrase_boost");
     cands.push_back({t, dfh, df, lift, base, base});
   }
   std::sort(cands.begin(), cands.end(), [](const Cand& a, const Cand& b) {
     if (a.base != b.base) return a.base > b.base;
     return a.term < b.term;
   });
-  std::size_t pool = std::min<std::size_t>(cands.size(), static_cast<std::size_t>(max_new) * 6);
+  std::size_t pool = std::min<std::size_t>(cands.size(), static_cast<std::size_t>(max_new) * static_cast<std::size_t>(policy.integer("/vocabulary/pool_multiplier")));
   cands.resize(pool);
 
   // Sentence-level co-occurrence with the current vocabulary (pool only).
@@ -202,8 +226,8 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
   std::vector<int> cooc(cands.size(), 0);
   std::vector<std::map<std::string, int>> partners(cands.size());
   for (std::size_t i : hits) {
-    for (const auto& sent : split_sentences(corpus.docs[i].text)) {
-      auto terms = candidate_terms(sent);
+    for (const auto& sent : split_sentences(corpus.docs[i].text, profile)) {
+      auto terms = candidate_terms(sent, profile);
       std::set<std::string> ts(terms.begin(), terms.end());
       std::string partner;
       for (const auto& t : ts) {
@@ -225,7 +249,7 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
   for (std::size_t i = 0; i < cands.size(); ++i) {
     Cand& c = cands[i];
     double ratio = std::min(1.0, static_cast<double>(cooc[i]) / std::max(1, c.dfh));
-    c.score = c.base * (0.5 + ratio) * (ner.count(c.term) ? 1.5 : 1.0);
+    c.score = c.base * (policy.number("/vocabulary/cooccurrence_base") + ratio) * (ner.count(c.term) ? policy.number("/vocabulary/ner_boost") : 1.0);
   }
   std::vector<std::size_t> order(cands.size());
   for (std::size_t i = 0; i < order.size(); ++i) order[i] = i;
@@ -239,7 +263,7 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
   for (std::size_t oi : order) {
     if (static_cast<int>(out.size()) >= max_new) break;
     const Cand& c = cands[oi];
-    std::string st = stem(c.term);
+    std::string st = stem(c.term, profile);
     if (chosen_stems.count(st)) continue;
     bool bigram = c.term.find(' ') != std::string::npos;
     if (!bigram) {
@@ -255,9 +279,9 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
     r.pass = pass;
     r.origin = "expansion";
     r.score = c.score;
-    r.reasons.push_back("tfidf-contrast " + fmt(c.base, 3) + ": in " + std::to_string(c.dfh) + "/" +
+    r.reasons.push_back("tfidf-contrast " + fmt(c.base, policy.integer("/vocab_closure/reason_score_precision")) + ": in " + std::to_string(c.dfh) + "/" +
                         std::to_string(hits.size()) + " hits vs " + std::to_string(c.df) + "/" +
-                        std::to_string(stats.n) + " docs (lift " + fmt(c.lift, 1) + ")");
+                        std::to_string(stats.n) + " docs (lift " + fmt(c.lift, policy.integer("/vocab_closure/reason_lift_precision")) + ")");
     if (auto it = ner.find(c.term); it != ner.end()) r.reasons.push_back(it->second);
     if (cooc[oi] > 0) {
       std::string best;
@@ -277,7 +301,7 @@ std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStat
       if (it != stats.docs[i].tf.end()) ev.emplace_back(-it->second, corpus.docs[i].key);
     }
     std::sort(ev.begin(), ev.end());
-    for (std::size_t k = 0; k < ev.size() && k < 5; ++k) r.evidence.push_back(ev[k].second);
+    for (std::size_t k = 0; k < ev.size() && k < static_cast<std::size_t>(policy.integer("/vocabulary/evidence_limit")); ++k) r.evidence.push_back(ev[k].second);
     chosen_stems.insert(st);
     if (bigram) chosen_bigrams.push_back(c.term);
     out.push_back(std::move(r));

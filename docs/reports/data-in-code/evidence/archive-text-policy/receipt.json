@@ -1,0 +1,47 @@
+{
+  "schema": "loom.archive_text_policy.parity/1",
+  "baseline_commit": "161cc22",
+  "scope": "pure text/items/vocab old API; fresh161 archive plus new scoped objects; no Runtime or SemanticAnalyzer construction",
+  "byte_identical": true,
+  "before_bytes": 49458,
+  "after_bytes": 49458,
+  "before_sha256": "b255c284ded3bd942d68a5b80b8a0f91950ccb0aecd0406df585cfeb0b47ad2f",
+  "after_sha256": "b255c284ded3bd942d68a5b80b8a0f91950ccb0aecd0406df585cfeb0b47ad2f",
+  "output_counts": {
+    "texts": 77,
+    "dates": 13,
+    "epochs": 7,
+    "items": 18,
+    "relation_cases": 12,
+    "scores": 25,
+    "salient": 6,
+    "added": 6
+  },
+  "tests": {
+    "cases": 9,
+    "passed": 9,
+    "assertions": 94,
+    "assertions_passed": 94,
+    "skipped": 0
+  },
+  "baseline_core_sha256": "7f8c73caf1f8a8bdb393d10299ce638479d9f2673663e4ca4e9a135039faed2b",
+  "source_sha256": {
+    "loom/src/archive/text.cpp": "4ea36cbce7645821c9cbbd437bafbb70112f04956cfe4fc4395d38be6c62766a",
+    "loom/src/archive/items.cpp": "b9d6ce2d37e7e6763e8755f86abc83ce306a19a34f6b17aa1b68d2123a6723e8",
+    "loom/src/archive/vocab.cpp": "5f3b06c75728f613651a24a8772f797698d04d058326d0f47a337cff5f4e7b9a",
+    "loom/src/archive/profile.cpp": "26af69c70e127704cd475b421a90df900732d592a5cb19c54ac72366ac20767a",
+    "loom/src/model/runtime_profile.cpp": "ec3aef039df11407a9383c4ee7cd600d5e0e0917d9eb45283c53459f6916e7cf",
+    "loom/src/archive/archive_internal.h": "eab61286e3ddd62b132b12edb0d0b3523da9243aba520f87a001caee82ec790c",
+    "loom/tests/test_archive_text_policy.cpp": "4ce0639e7f591ab34347b7c01f1a1e598f590f0ebf1a3ac113fe5bd70d465712",
+    "loom/tests/compat/profile_archive_text_parity.cc": "f5eb974b717a21137cf57fc640052fde9428e8ecf6c0ceee1255fe7e3d6f42d3",
+    "loom/data/runtime/archive.pack": "bc5ae9af97099b866d77677110ee2e1385d65a5cf6b9a55f155d074b11884fb4",
+    "loom/src/model/runtime_profiles_embedded.inc": "03ed46e13d469f34f7710ec6c7102cecdd49c060295cc949089a51c61100cb05"
+  },
+  "object_sha256": {
+    "archive-text.cpp.o": "6842435113f942bbbd72a3d76bc902b76dde9265f8b0e11af106309c3a2c75ed",
+    "archive-items.cpp.o": "99f9f123a015b2835c8143b8590c47b1d8bbd7b8eaf76fe4310c879fa9f3091b",
+    "archive-vocab.cpp.o": "6822cfeb4734caaad2e7ef11dfc2e65e224bbca181ee340e6d5feba688eabb41",
+    "model-runtime_profile.cpp.o": "6275de696aaadecba7a6eb864b986a3a4bca5b5421280b62493d5364bbe28b0b",
+    "archive-profile-final.cpp.o": "cb532d122c527c87e8d90b98c08bee749947a710537bb832d806bc242fda453f"
+  }
+}

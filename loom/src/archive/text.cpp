@@ -4,10 +4,13 @@
 #include <algorithm>
 #include <cmath>
 #include <ctime>
+#include <deque>
+#include <limits>
 #include <unordered_map>
 #include <unordered_set>
 
 #include "archive/archive_internal.h"
+#include "archive/profile.h"
 #include "loom/util/sha256.h"
 #include "loom/util/unicode.h"
 #include "loom/util/utf8.h"
@@ -20,70 +23,6 @@ bool all_digits(std::u32string_view s) {
     if (!unicode::is_decimal(c) && !unicode::is_digit(c)) return false;
   }
   return !s.empty();
-}
-
-const std::unordered_set<std::string>& stopwords() {
-  static const std::unordered_set<std::string> kSet = [] {
-    // English + Polish function words, discourse filler, and code keywords
-    // that carry no topical signal. Policy data.
-    const char* words[] = {
-        // English
-        "a", "about", "above", "after", "again", "against", "all", "also", "am", "an", "and", "any", "are",
-        "aren", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by",
-        "can", "cannot", "could", "did", "didn", "do", "does", "doesn", "doing", "don", "down", "during", "each",
-        "else", "etc", "even", "ever", "every", "few", "for", "from", "further", "get", "gets", "got", "had",
-        "has", "have", "having", "he", "her", "here", "hers", "him", "his", "how", "however", "i", "if", "in",
-        "into", "is", "isn", "it", "its", "itself", "just", "let", "like", "ll", "make", "makes", "many", "may",
-        "me", "might", "more", "most", "much", "my", "no", "nor", "not", "now", "of", "off", "on", "once", "one",
-        "only", "or", "other", "our", "ours", "out", "over", "own", "per", "same", "she", "should", "so", "some",
-        "such", "than", "that", "the", "their", "theirs", "them", "then", "there", "these", "they", "this",
-        "those", "through", "to", "too", "under", "until", "up", "upon", "us", "use", "used", "uses", "using",
-        "very", "via", "was", "wasn", "we", "were", "what", "when", "where", "whether", "which", "while", "who",
-        "whom", "why", "will", "with", "within", "without", "won", "would", "yes", "yet", "you", "your", "yours",
-        "ve", "re", "s", "t", "d", "m", "e", "g", "ie", "eg", "vs", "new", "two", "three", "first", "second",
-        "last", "next", "still", "already", "always", "never", "must", "need", "needs", "want", "wants", "way",
-        "thing", "things", "something", "anything", "everything", "nothing", "see", "say", "says", "said",
-        "okay", "ok", "sure", "well", "really", "lot", "lots", "done", "able", "instead", "rather", "less",
-        "part", "parts", "case", "cases", "set", "sets", "put", "run", "runs", "go", "goes", "going", "come",
-        "take", "takes", "give", "gives", "keep", "keeps", "find", "found", "know", "look", "looks", "think",
-        "try", "tries", "call", "calls", "called", "work", "works", "working", "good", "better", "best", "long",
-        "short", "small", "large", "big", "high", "low", "full", "empty", "true", "false", "null", "none",
-        "note", "notes", "example", "examples", "e.g", "i.e", "symbols", "time", "times", "file", "files",
-        "line", "lines", "function", "functions", "method", "methods", "test", "tests", "unit",
-        // Polish
-        "aby", "albo", "ale", "ani", "bardzo", "bez", "bo", "by", "być", "był", "była", "było", "były", "będzie",
-        "będą", "chce", "chcę", "co", "czy", "czyli", "dla", "do", "dzięki", "gdy", "gdzie", "go", "i", "ich",
-        "im", "inne", "inny", "iż", "ja", "jak", "jako", "je", "jego", "jej", "jest", "jeśli", "jeszcze", "już",
-        "każdy", "kiedy", "kto", "która", "które", "którego", "której", "który", "których", "którym", "lub",
-        "ma", "mają", "mam", "mi", "mnie", "może", "można", "mu", "na", "nad", "nam", "nas", "nawet", "nic",
-        "nich", "nie", "niech", "niż", "no", "np", "o", "od", "oraz", "po", "pod", "potem", "przed", "przez",
-        "przy", "się", "są", "ta", "tak", "także", "tam", "te", "tego", "tej", "ten", "też", "to", "tu", "tutaj",
-        "tylko", "tym", "tzn", "u", "w", "we", "wiec", "więc", "wszystko", "wszystkie", "z", "za", "ze", "że",
-        "żeby", "itd", "itp", "sobie", "siebie", "jakie", "jaki", "jaka", "tych", "tymi", "temu", "mieć", "musi",
-        "muszą", "powinien", "powinno", "powinna", "trzeba", "należy", "zawsze", "nigdy", "wolno", "można",
-        "jednak", "bardziej", "raz", "dwa", "gdyż", "oraz", "obecnie", "teraz", "dopiero", "zamiast", "czym",
-        "tym", "cały", "cała", "całe", "sam", "sama", "samo", "nasz", "nasza", "nasze", "wasz", "jeden", "jedna",
-        "jedno", "ich", "moje", "mój", "moja", "które", "wtedy", "gdyby", "jeżeli", "każdej", "każda", "każde",
-        "każdego", "każdym", "swoje", "swój", "swoją", "tego", "tym", "ale", "dopóki", "dopiero", "jedynie",
-        // code keywords / boilerplate
-        "std", "const", "return", "returns", "include", "auto", "int", "void", "bool", "string", "str",
-        "nullptr", "self", "def", "class", "struct", "public", "private", "protected", "namespace", "template",
-        "typename", "static", "inline", "virtual", "override", "elif", "while", "import", "lambda", "except",
-        "catch", "throw", "this", "len", "dict", "print", "size", "size_t", "int64", "uint8", "char", "double",
-        "float", "unsigned", "explicit", "noexcept", "constexpr", "pragma", "once", "endif", "ifdef", "ifndef",
-        "define", "typedef", "enum", "operator", "delete", "default", "case", "break", "continue", "switch",
-        "optional", "vector", "unique_ptr", "shared_ptr", "string_view", "json", "value", "values", "args",
-        "kwargs", "cls", "http", "https", "www", "com", "org", "txt", "cpp", "hpp", "py", "md", "todo", "fixme",
-        "loom_api", "status", "result", "error", "errors", "data", "name", "names", "type", "types", "text",
-        "list", "item", "key", "keys", "id", "ids", "fn", "ptr", "ref", "refs", "obj", "tmp", "buf", "len",
-        "arg", "param", "params", "var", "val", "src", "dst", "idx", "num", "cur", "out", "min", "max", "ret",
-        "res", "req", "resp", "msg", "cfg", "ctx", "impl", "info", "debug", "warn", "warning", "log", "logger",
-    };
-    std::unordered_set<std::string> s;
-    for (const char* w : words) s.insert(w);
-    return s;
-  }();
-  return kSet;
 }
 
 bool is_upper_cp(char32_t c) { return unicode::simple_lower(c) != c; }
@@ -108,38 +47,66 @@ std::vector<std::string> tokenize(std::string_view text) {
   return out;
 }
 
-bool is_stopword(std::string_view lower_token) { return stopwords().count(std::string(lower_token)) > 0; }
+bool is_stopword(std::string_view lower_token, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  return scope.get().stopword(lower_token);
+}
 
-std::vector<std::string> content_tokens(std::string_view text) {
+std::vector<std::string> content_tokens(std::string_view text, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  profile = scope.ptr();
   std::vector<std::string> out;
   for (auto& t : tokenize(text)) {
-    if (utf8::length(t) < 3 || is_stopword(t)) continue;
+    if (utf8::length(t) < static_cast<std::size_t>(policy.integer("/text/min_token_codepoints")) || is_stopword(t, profile)) continue;
     out.push_back(std::move(t));
   }
   return out;
 }
 
-std::vector<std::string> candidate_terms(std::string_view text) {
+std::vector<std::string> candidate_terms(std::string_view text, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  profile = scope.ptr();
   // Unigrams plus bigrams of adjacent content tokens separated only by
   // spaces or a hyphen ("knowledge graph", "append-only"); paths, "::",
   // punctuation and line breaks end a phrase.
   std::vector<std::string> out;
-  std::string prev;
+  const auto& orders = policy.value("/text_item_closure/phrase_orders");
+  const auto separators = utf8::decode(policy.text("/text_item_closure/phrase_separators"));
+  const auto separator = policy.text("/text_item_closure/phrase_output_separator");
+  const auto distinct = policy.value("/text_item_closure/phrase_distinct_adjacent").get<bool>();
+  std::size_t max_order = 0;
+  for (const auto& order : orders) max_order = std::max(max_order, order.get<std::size_t>());
+  std::deque<std::string> previous;
   bool joinable = false;  // only spaces/hyphen since the previous token
   std::u32string cur;
   auto flush = [&] {
     if (cur.empty()) return;
     std::string t = utf8::encode(cur);
     cur.clear();
-    bool content = !all_digits(utf8::decode(t)) && utf8::length(t) >= 3 && !is_stopword(t);
+    bool content = !all_digits(utf8::decode(t)) && utf8::length(t) >= static_cast<std::size_t>(policy.integer("/text/min_token_codepoints")) && !is_stopword(t, profile);
     if (!content) {
-      prev.clear();
+      previous.clear();
       joinable = false;
       return;
     }
-    if (!prev.empty() && joinable && prev != t) out.push_back(prev + " " + t);
-    out.push_back(t);
-    prev = t;
+    if (!joinable) previous.clear();
+    previous.push_back(t);
+    while (previous.size() > max_order) previous.pop_front();
+    for (const auto& order : orders) {
+      const auto count = order.get<std::size_t>();
+      if (count > previous.size()) continue;
+      const auto start = previous.size() - count;
+      bool eligible = true;
+      std::string phrase;
+      for (std::size_t k = start; k < previous.size(); ++k) {
+        if (distinct && k > start && previous[k] == previous[k - 1]) eligible = false;
+        if (k > start) phrase += separator;
+        phrase += previous[k];
+      }
+      if (eligible) out.push_back(std::move(phrase));
+    }
     joinable = true;
   };
   for (char32_t c : utf8::decode(text)) {
@@ -148,7 +115,7 @@ std::vector<std::string> candidate_terms(std::string_view text) {
       continue;
     }
     flush();
-    if (!(c == ' ' || c == '-')) joinable = false;
+    if (separators.find(c) == std::u32string::npos) joinable = false;
   }
   flush();
   return out;
@@ -156,7 +123,7 @@ std::vector<std::string> candidate_terms(std::string_view text) {
 
 namespace {
 
-std::string strip_line_marker(std::string_view line, bool* is_bullet, bool* is_heading) {
+std::string strip_line_marker(std::string_view line, bool* is_bullet, bool* is_heading, const ArchiveProfile& policy) {
   std::string_view s = utf8::strip(line);
   *is_bullet = false;
   *is_heading = false;
@@ -176,7 +143,7 @@ std::string strip_line_marker(std::string_view line, bool* is_bullet, bool* is_h
     s.remove_prefix(2);
   } else {
     std::size_t d = 0;
-    while (d < s.size() && d < 4 && s[d] >= '0' && s[d] <= '9') ++d;
+    while (d < s.size() && d < policy.value("/text_item_closure/bullet_max_digits").get<std::size_t>() && s[d] >= '0' && s[d] <= '9') ++d;
     if (d > 0 && d + 1 < s.size() && (s[d] == '.' || s[d] == ')') && s[d + 1] == ' ') {
       *is_bullet = true;
       s.remove_prefix(d + 2);
@@ -186,33 +153,46 @@ std::string strip_line_marker(std::string_view line, bool* is_bullet, bool* is_h
   return std::string(utf8::strip(s));
 }
 
-bool is_abbrev_before(const std::u32string& s, std::size_t dot) {
+bool is_abbrev_before(const std::u32string& s, std::size_t dot, const ArchiveProfile& policy) {
   // word immediately before the dot
   std::size_t b = dot;
   while (b > 0 && unicode::is_alpha(s[b - 1])) --b;
   std::u32string w = s.substr(b, dot - b);
   for (auto& c : w) c = unicode::simple_lower(c);
-  static const std::vector<std::u32string> kAbbr = {U"e", U"g", U"i", U"np", U"itd", U"itp", U"tzn", U"etc", U"vs",
-                                                   U"cf", U"dr", U"mr", U"ms", U"prof", U"tj", U"in", U"al", U"no",
-                                                   U"nr", U"ok", U"ang", U"pl"};
+
   if (w.size() <= 1 && b > 0 && s[b - 1] == '.') return true;  // "e.g." / "m.in."
-  return std::find(kAbbr.begin(), kAbbr.end(), w) != kAbbr.end();
+  return policy.contains("/text/abbreviations", utf8::encode(w));
 }
 
-void split_paragraph(std::string_view para, std::vector<std::string>& out) {
+void split_paragraph(std::string_view para, std::vector<std::string>& out, const ArchiveProfile& policy) {
   std::u32string s = utf8::decode(para);
+  const auto terminals = utf8::decode(policy.text("/text_item_closure/sentence_terminals"));
+  const auto closers = utf8::decode(policy.text("/text_item_closure/sentence_closers"));
+  const auto openers = utf8::decode(policy.text("/text_item_closure/sentence_openers"));
+  const auto abbreviation_terminals = utf8::decode(policy.text("/text_item_closure/abbreviation_terminals"));
+  auto opener_class = [&](char32_t cp) {
+    for (const auto& cls : policy.value("/text_item_closure/sentence_opener_classes")) {
+      if (cls == "uppercase" && is_upper_cp(cp)) return true;
+      if (cls == "lowercase" && unicode::simple_upper(cp) != cp) return true;
+      if (cls == "decimal" && unicode::is_decimal(cp)) return true;
+      if (cls == "alpha" && unicode::is_alpha(cp)) return true;
+      if (cls == "alnum" && unicode::is_alnum(cp)) return true;
+      if (cls == "space" && unicode::is_space(cp)) return true;
+      if (cls == "any") return true;
+    }
+    return false;
+  };
   std::size_t start = 0;
   auto emit = [&](std::size_t end) {
     std::string piece(utf8::strip(utf8::encode(std::u32string_view(s).substr(start, end - start))));
-    if (utf8::length(piece) >= 8 && tokenize(piece).size() >= 2) out.push_back(std::move(piece));
+    if (utf8::length(piece) >= static_cast<std::size_t>(policy.integer("/text/min_sentence_codepoints")) && tokenize(piece).size() >= static_cast<std::size_t>(policy.integer("/text/min_sentence_tokens"))) out.push_back(std::move(piece));
   };
   for (std::size_t i = 0; i < s.size(); ++i) {
     char32_t c = s[i];
-    if (c != '.' && c != '!' && c != '?') continue;
+    if (terminals.find(c) == std::u32string::npos) continue;
     // consume closing punctuation
     std::size_t j = i + 1;
-    while (j < s.size() && (s[j] == '.' || s[j] == '!' || s[j] == '?' || s[j] == ')' || s[j] == '"' ||
-                            s[j] == U'”' || s[j] == '\'')) {
+    while (j < s.size() && closers.find(s[j]) != std::u32string::npos) {
       ++j;
     }
     if (j >= s.size()) break;
@@ -221,10 +201,9 @@ void split_paragraph(std::string_view para, std::vector<std::string>& out) {
     while (k < s.size() && unicode::is_space(s[k])) ++k;
     if (k >= s.size()) break;
     char32_t n = s[k];
-    bool starts = is_upper_cp(n) || unicode::is_decimal(n) || n == '"' || n == U'„' || n == U'“' || n == '(' ||
-                  n == '[' || n == '*' || n == '`';
+    bool starts = opener_class(n) || openers.find(n) != std::u32string::npos;
     if (!starts) continue;
-    if (c == '.' && is_abbrev_before(s, i)) continue;
+    if (abbreviation_terminals.find(c) != std::u32string::npos && is_abbrev_before(s, i, policy)) continue;
     emit(j);
     start = k;
     i = k - 1;
@@ -234,12 +213,15 @@ void split_paragraph(std::string_view para, std::vector<std::string>& out) {
 
 }  // namespace
 
-std::vector<std::string> split_sentences(std::string_view text) {
+std::vector<std::string> split_sentences(std::string_view text, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  profile = scope.ptr();
   std::vector<std::string> out;
   std::string para;
   bool in_fence = false;
   auto flush = [&] {
-    if (!para.empty()) split_paragraph(para, out);
+    if (!para.empty()) split_paragraph(para, out, policy);
     para.clear();
   };
   std::size_t pos = 0;
@@ -264,7 +246,7 @@ std::vector<std::string> split_sentences(std::string_view text) {
     } else {
       bool bullet = false;
       bool heading = false;
-      std::string body = strip_line_marker(line, &bullet, &heading);
+      std::string body = strip_line_marker(line, &bullet, &heading, policy);
       if (heading) {
         flush();
       } else if (!body.empty() && body.front() == '|') {
@@ -300,7 +282,11 @@ std::vector<std::string> split_sentences(std::string_view text) {
   return out;
 }
 
-std::string first_date(std::string_view t) {
+std::string first_date(std::string_view t, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  const auto& min_year = policy.value("/text_item_closure/year_min");
+  const auto& max_year = policy.value("/text_item_closure/year_max");
   auto dig = [&](std::size_t i) { return i < t.size() && t[i] >= '0' && t[i] <= '9'; };
   for (std::size_t i = 0; i + 10 <= t.size(); ++i) {
     if (!(dig(i) && dig(i + 1) && dig(i + 2) && dig(i + 3) && t[i + 4] == '-' && dig(i + 5) && dig(i + 6) &&
@@ -315,26 +301,44 @@ std::string first_date(std::string_view t) {
     int y = std::stoi(std::string(t.substr(i, 4)));
     int m = std::stoi(std::string(t.substr(i + 5, 2)));
     int d = std::stoi(std::string(t.substr(i + 8, 2)));
-    if (y < 1990 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) continue;
+    if ((!min_year.is_null() && y < min_year.get<int>()) || (!max_year.is_null() && y > max_year.get<int>()) ||
+        m < 1 || m > 12 || d < 1 || d > 31) continue;
     return std::string(t.substr(i, 10));
   }
   return "";
 }
 
-std::string iso_from_epoch(double seconds) {
-  if (!std::isfinite(seconds) || seconds <= 0) return "";
-  std::time_t tt = static_cast<std::time_t>(std::floor(seconds));
+std::string first_date(std::string_view t) { return first_date(t, nullptr); }
+
+std::string iso_from_epoch(double seconds, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  if (!std::isfinite(seconds) ||
+      (!scope.get().value("/text_item_closure/allow_nonpositive_epoch").get<bool>() && seconds <= 0)) return "";
+  const auto floored = std::floor(static_cast<long double>(seconds));
+  if constexpr (std::numeric_limits<std::time_t>::is_integer) {
+    // Exclusive power-of-two upper bound remains exact even when long double
+    // cannot represent the largest time_t integer without rounding upward.
+    const auto upper = std::ldexp(1.0L, std::numeric_limits<std::time_t>::digits);
+    const auto lower = std::numeric_limits<std::time_t>::is_signed ? -upper : 0.0L;
+    if (floored < lower || floored >= upper) return "";
+  } else {
+    if (floored < static_cast<long double>(std::numeric_limits<std::time_t>::lowest()) ||
+        floored > static_cast<long double>(std::numeric_limits<std::time_t>::max())) return "";
+  }
+  std::time_t tt = static_cast<std::time_t>(floored);
   std::tm tm{};
   if (!gmtime_r(&tt, &tm)) return "";
   char buf[32];
-  std::strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%SZ", &tm);
+  if (std::strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%SZ", &tm) == 0) return "";
   return buf;
 }
 
-std::string normalize_date(std::string_view s) {
+std::string iso_from_epoch(double seconds) { return iso_from_epoch(seconds, nullptr); }
+
+std::string normalize_date(std::string_view s, const ArchiveProfile* profile) {
   s = utf8::strip(s);
   if (s.size() < 10) return "";
-  std::string d = first_date(s.substr(0, 10));
+  std::string d = first_date(s.substr(0, 10), profile);
   if (d.empty()) return "";
   if (s.size() < 19 || (s[10] != 'T' && s[10] != ' ')) return d;
   auto num = [&](std::size_t i, std::size_t n) -> int {
@@ -366,8 +370,10 @@ std::string normalize_date(std::string_view s) {
     if (hh >= 0 && mm >= 0) offset = sign * (hh * 3600L + mm * 60L);
   }
   std::time_t t = timegm(&tm) - offset;
-  return iso_from_epoch(static_cast<double>(t));
+  return iso_from_epoch(static_cast<double>(t), profile);
 }
+
+std::string normalize_date(std::string_view s) { return normalize_date(s, nullptr); }
 
 std::string date_only(std::string_view iso) { return iso.size() >= 10 ? std::string(iso.substr(0, 10)) : ""; }
 
@@ -420,59 +426,29 @@ std::vector<std::string> split_identifier(std::string_view ident) {
   return out;
 }
 
-std::string stem(std::string_view t) {
+std::string stem(std::string_view t, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
   std::string s(t);
   auto ends = [&](std::string_view suf) {
-    return s.size() > suf.size() + 2 && s.compare(s.size() - suf.size(), suf.size(), suf) == 0;
+    return s.size() > suf.size() + static_cast<std::size_t>(policy.integer("/text/stem_min_extra_bytes")) &&
+           s.compare(s.size() - suf.size(), suf.size(), suf) == 0;
   };
-  if (ends("ies")) return s.substr(0, s.size() - 3) + "y";
-  if (ends("sses") || ends("xes") || ends("ches") || ends("shes")) return s.substr(0, s.size() - 2);
-  if (ends("s") && !ends("ss") && !ends("us") && !ends("is")) return s.substr(0, s.size() - 1);
+  for (const auto& rule : policy.value("/text/stem_rules")) {
+    bool matched = false, excluded = false;
+    for (const auto& suffix : rule.at("suffixes")) matched = matched || ends(suffix.get_ref<const std::string&>());
+    for (const auto& suffix : rule.at("exclude")) excluded = excluded || ends(suffix.get_ref<const std::string&>());
+    const auto remove = rule.at("remove").get<std::size_t>();
+    if (matched && !excluded && remove <= s.size()) return s.substr(0, s.size() - remove) + rule.at("replacement").get<std::string>();
+  }
   return s;
 }
 
-std::string gloss(std::string_view t) {
-  // Domain PL -> EN glossary (policy data) so Polish spec text can be matched
-  // against English code identifiers in the gap report.
-  static const std::unordered_map<std::string, std::string> kGloss = {
-      {"pamięć", "memory"},       {"pamięci", "memory"},        {"graf", "graph"},
-      {"grafu", "graph"},         {"grafie", "graph"},          {"zadanie", "task"},
-      {"zadania", "task"},        {"zadań", "task"},            {"źródło", "source"},
-      {"źródła", "source"},       {"źródeł", "source"},         {"szyfrowanie", "encryption"},
-      {"szyfrowania", "encryption"}, {"wyszukiwanie", "search"}, {"wyszukiwania", "search"},
-      {"rozmowa", "conversation"}, {"rozmowy", "conversation"},  {"rozmów", "conversation"},
-      {"załączniki", "attachment"}, {"załączników", "attachment"}, {"głos", "voice"},
-      {"synchronizacja", "sync"}, {"synchronizacji", "sync"},   {"wykonanie", "execution"},
-      {"wykonania", "execution"}, {"środowisko", "environment"}, {"środowiska", "environment"},
-      {"wtyczka", "plugin"},      {"wtyczki", "plugin"},        {"logi", "log"},
-      {"logów", "log"},           {"kontekst", "context"},      {"kontekstu", "context"},
-      {"dostawca", "provider"},   {"providerzy", "provider"},   {"providerów", "provider"},
-      {"wersja", "version"},      {"wersje", "version"},        {"gałąź", "branch"},
-      {"historia", "history"},    {"historii", "history"},      {"tytuł", "title"},
-      {"tytuły", "title"},        {"surowy", "raw"},            {"szablon", "template"},
-      {"szablony", "template"},   {"polityka", "policy"},       {"zdarzenie", "event"},
-      {"zdarzenia", "event"},     {"decyzja", "decision"},      {"decyzje", "decision"},
-      {"wymagania", "requirement"}, {"panele", "panel"},        {"model", "model"},
-      {"modele", "model"},        {"import", "import"},         {"eksport", "export"},
-      {"eksporty", "export"},     {"sprzeczności", "contradiction"}, {"braki", "gap"},
-      {"chronologia", "timeline"}, {"pliki", "file"},           {"plików", "file"},
-      {"kod", "code"},            {"kodu", "code"},             {"testy", "test"},
-      {"testów", "test"},         {"magazyn", "store"},         {"klucz", "key"},
-      {"klucze", "key"},          {"tożsamość", "identity"},    {"artefakt", "artifact"},
-      {"artefakty", "artifact"},  {"artefaktów", "artifact"},   {"widok", "view"},
-      {"widoki", "view"},         {"agent", "agent"},           {"agenta", "agent"},
-      {"przeglądarka", "browser"}, {"terminal", "terminal"},    {"punkt", "checkpoint"},
-      {"surowych", "raw"},         {"surowe", "raw"},             {"surowego", "raw"},
-      {"eksportów", "export"},     {"eksportu", "export"},        {"oryginału", "source"},
-      {"oryginał", "source"},      {"chronologię", "timeline"},   {"forków", "fork"},
-      {"forki", "fork"},           {"słownika", "vocabulary"},    {"słownik", "vocabulary"},
-      {"wyszukiwania", "search"},  {"terminów", "term"},          {"sprzeczności", "contradiction"},
-      {"tematów", "theme"},        {"idei", "idea"},              {"decyzji", "decision"},
-      {"scalenie", "merge"},       {"materializacja", "materialize"}, {"grafie", "graph"},
-      {"wznowienie", "resume"},   {"ponowienie", "retry"},      {"wycofanie", "rollback"},
-  };
-  auto it = kGloss.find(std::string(t));
-  return it == kGloss.end() ? std::string(t) : it->second;
+std::string gloss(std::string_view t, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& words = scope.get().value("/text/glossary");
+  auto it = words.find(std::string(t));
+  return it == words.end() ? std::string(t) : it->get<std::string>();
 }
 
 }  // namespace loom::archive
