@@ -366,4 +366,86 @@ TEST_CASE("goal execution: exact x10 receipt pauses then resumes the default ope
   }
   CHECK(fixture.transport->requests().size() == 1);
 }
+
+TEST_CASE("goal execution: paused receipt cannot authorize a changed HTTP endpoint") {
+  GoalUsageFixture fixture;
+  Json policy = usage_policy_defaults();
+  policy["initial_baselines"] = Json{{"goal.endpoint", Json{{"cost_usd", 0.1}}}};
+  fixture.runtime->config().set("loom_usage_policy", policy);
+  Json options = unrestricted_options();
+  options["goal_typing"]["estimated_cost_usd"] = 1.0;
+  options["goal_typing"]["usage"] = Json{{"baseline_key", "goal.endpoint"}};
+  Json receipt;
+  {
+    ContextExecutionScope scope(options);
+    auto paused = unwrap(fixture.engine->build(fixture.request));
+    REQUIRE(paused["goal"]["params"]["external_goal_typing"]["status"] == "requires_confirmation");
+    receipt = scope.usage_decisions().at(0);
+  }
+  options["goal_typing"]["usage"]["resume_operation_id"] = receipt["operation_id"];
+  options["goal_typing"]["usage"]["confirmation"] = Json{{"receipt_id", receipt["receipt_id"]},
+      {"approved", true}, {"ref", "synthetic-endpoint-owner-confirmation"}};
+  options["goal_typing"]["base_url"] = "https://different-goal.fixture.test";
+  {
+    ContextExecutionScope scope(options);
+    auto changed = unwrap(fixture.engine->build(fixture.request));
+    const auto& attempt = changed["goal"]["params"]["external_goal_typing"];
+    CHECK(changed["goal"]["params"]["classifier"] == "cue");
+    CHECK(attempt["status"] == "usage_policy_error");
+    CHECK(attempt["usage_error"] == "conflict");
+    CHECK(scope.goal_typing_requests() == 0);
+  }
+  CHECK(fixture.transport->requests().empty());
+  options["goal_typing"].erase("base_url");
+  fixture.response();
+  {
+    ContextExecutionScope scope(options);
+    auto restored = unwrap(fixture.engine->build(fixture.request));
+    CHECK(restored["goal"]["params"]["classifier"] == "llm");
+    CHECK(restored["goal"]["params"]["external_goal_typing"]["usage_policy"]["operation_id"] == receipt["operation_id"]);
+  }
+  CHECK(fixture.transport->requests().size() == 1);
+}
+
+TEST_CASE("goal execution: paused receipt cannot authorize a changed provider account") {
+  GoalUsageFixture fixture;
+  Json policy = usage_policy_defaults();
+  policy["initial_baselines"] = Json{{"goal.account", Json{{"cost_usd", 0.1}}}};
+  fixture.runtime->config().set("loom_usage_policy", policy);
+  Json options = unrestricted_options();
+  options["goal_typing"]["estimated_cost_usd"] = 1.0;
+  options["goal_typing"]["usage"] = Json{{"baseline_key", "goal.account"}};
+  Json receipt;
+  {
+    ContextExecutionScope scope(options);
+    auto paused = unwrap(fixture.engine->build(fixture.request));
+    REQUIRE(paused["goal"]["params"]["external_goal_typing"]["status"] == "requires_confirmation");
+    receipt = scope.usage_decisions().at(0);
+    CHECK(receipt.dump().find("synthetic-goal-token") == std::string::npos);
+  }
+  options["goal_typing"]["usage"]["resume_operation_id"] = receipt["operation_id"];
+  options["goal_typing"]["usage"]["confirmation"] = Json{{"receipt_id", receipt["receipt_id"]},
+      {"approved", true}, {"ref", "synthetic-account-owner-confirmation"}};
+  fixture.runtime->secrets().set("api_key", "different-synthetic-goal-account");
+  {
+    ContextExecutionScope scope(options);
+    auto changed = unwrap(fixture.engine->build(fixture.request));
+    const auto& attempt = changed["goal"]["params"]["external_goal_typing"];
+    CHECK(changed["goal"]["params"]["classifier"] == "cue");
+    CHECK(attempt["status"] == "usage_policy_error");
+    CHECK(attempt["usage_error"] == "conflict");
+    CHECK(scope.goal_typing_requests() == 0);
+    CHECK(changed.dump().find("different-synthetic-goal-account") == std::string::npos);
+  }
+  CHECK(fixture.transport->requests().empty());
+  fixture.runtime->secrets().set("api_key", "synthetic-goal-token");
+  fixture.response();
+  {
+    ContextExecutionScope scope(options);
+    auto restored = unwrap(fixture.engine->build(fixture.request));
+    CHECK(restored["goal"]["params"]["classifier"] == "llm");
+    CHECK(restored["goal"]["params"]["external_goal_typing"]["usage_policy"]["operation_id"] == receipt["operation_id"]);
+  }
+  CHECK(fixture.transport->requests().size() == 1);
+}
 #endif
