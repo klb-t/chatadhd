@@ -1,0 +1,15 @@
+{
+  "schema": "loom.synthetic_import_benchmark/1",
+  "source": "offline synthetic generated fixture",
+  "shape": "wrapper",
+  "conversations": 2047,
+  "messages": 4094,
+  "normalized_text_characters": 243420,
+  "payload_site": "whitespace",
+  "payload_bytes_per_message": 0,
+  "whitespace_bytes_per_conversation": 1048576,
+  "source_bytes": 2148031323,
+  "sha256": "5084c949b6765d95bf7f15d0fbc09435e2dec5e29a1694ba3ce43cfd085917f2",
+  "generator_elapsed_seconds": 10.384997795001254,
+  "caveat": "Whitespace padding measures scanner traversal, not realistic stored-content memory."
+}
