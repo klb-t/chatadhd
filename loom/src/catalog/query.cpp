@@ -5,6 +5,7 @@
 #include <cctype>
 
 #include "catalog_internal.h"
+#include "relevance_recipe.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
@@ -281,6 +282,10 @@ Result<Json> Catalog::status() {
 
 Status Catalog::add_profile_terms(const Json& terms) {
   if (!terms.is_array()) return Error(Errc::InvalidArgument, "add_profile_terms: expected a JSON array");
+  LOOM_TRY_ASSIGN(auto recipe, load_relevance_recipe(pack_->policy("relevance")));
+  const auto expansion = recipe.class_weights.find("expansion");
+  if (expansion == recipe.class_weights.end())
+    return Error(Errc::InvalidArgument, "catalog relevance recipe: /term_class_weights/expansion is required");
   LOOM_TRY(ensure_schema(rt_.db()));
   kb::Normalizer norm(*pack_);
 
@@ -299,7 +304,7 @@ Status Catalog::add_profile_terms(const Json& terms) {
     profile.terms.push_back(Json{{"term", surface},
                                  {"key", norm.fold(surface)},
                                  {"class", "expansion"},
-                                 {"weight", 0.8},
+                                 {"weight", expansion->second},
                                  {"project", json::get_string(t, "project")},
                                  {"provenance", "expansion"},
                                  {"ambiguous", false}});
