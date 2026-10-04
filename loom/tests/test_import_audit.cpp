@@ -32,6 +32,9 @@ TEST_SUITE("import.audit") {
     CHECK(report["by_status"]["deleted"]["messages"] == 1);
     CHECK(report["estimates"]["low"]["input_tokens_estimate"] == 5.0);
     CHECK(report["estimates"]["low"]["model_cost_usd_estimate"].is_null());
+    CHECK(report["model_calls"] == 0);
+    CHECK(report["local_import_model_cost_usd"] == 0);
+    CHECK(report["local_compute_cost_usd"].is_null());
     for (const auto& id : ids) CHECK(unwrap(db->get_msg(id))->text == text);
   }
   TEST_CASE("active projection and caller prices remain explicit") {
