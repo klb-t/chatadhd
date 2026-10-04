@@ -2,6 +2,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 #include <vector>
 
 #include "loom/providers.h"
@@ -16,12 +17,16 @@ struct EmbeddingRequest {
   bool calls_authorized = false;
   // Binds a cached-space request to the exact manifest/account it inspected.
   std::string expected_identity;
+  // Production installs a raw-source recorder. Native callers may supply their
+  // own recorder; only sanitized source references are returned or traced.
+  std::function<Result<Json>(std::string_view, const Json&)> record_response;
 };
 
 struct EmbeddingReply {
   std::vector<std::vector<float>> vectors;
   Json usage = Json::object();
   std::string identity;
+  Json response_source = Json::object();
 };
 
 // The returned identity is an opaque digest, including endpoint, model,
