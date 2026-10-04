@@ -1,3 +1,5 @@
+import contextlib
+import io
 import json
 from copy import deepcopy
 import sqlite3
@@ -142,6 +144,94 @@ class ArchiveCostTest(unittest.TestCase):
             archive_cost.estimate(huge,pricing,output_ratio=1e300)
         for key in ("prefix_cache","batch"):
             self.assertIn("unverified",out["assumptions"][key])
+
+
+class ArchiveCostRegressionTest(unittest.TestCase):
+    """Eight synthetic audit regressions retained from the W5 evidence suite."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.db = Path(self.tmp.name) / "audit.db"
+        with sqlite3.connect(self.db) as con:
+            con.execute("CREATE TABLE messages(conv_id TEXT, role TEXT, text TEXT, status TEXT)")
+            con.executemany("INSERT INTO messages VALUES (?,?,?,?)", [
+                ("a", "user", "ą\x00🙂", "active"),
+                ("a", "tool", "tools", "excluded"),
+                ("a", "assistant", "saved", "version"),
+                ("b", "user", "gone", "deleted"),
+                ("c", "function", "call", "active"),
+                ("d", None, "future", "new"),
+                ("e", None, None, None),
+            ])
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_complete(self):
+        stats = archive_cost.archive_stats(self.db)
+        self.assertEqual(stats["raw"], {"conversations": 5, "messages": 7, "chars": 27})
+        self.assertEqual(stats["tool_messages"], 2)
+        self.assertEqual(stats["chars_tools"], 9)
+        self.assertEqual(stats["chars_active"], 7)
+
+    def test_nul_unicode(self):
+        self.assertEqual(archive_cost.archive_stats(self.db)["chars_active"],
+                         len("ą\x00🙂") + len("call"))
+
+    def test_exact_projection_conversations(self):
+        stats = archive_cost.archive_stats(self.db)
+        projected = archive_cost.project_stats(stats, include_versions=False,
+                                              include_unknown_status=False, include_tools=False)
+        self.assertEqual((projected["conversations"], projected["messages"], projected["chars"]),
+                         (1, 1, 3))
+        projected = archive_cost.project_stats(stats, include_active=False, include_versions=False,
+                                              include_unknown_status=False, include_deleted=True)
+        self.assertEqual((projected["conversations"], projected["messages"], projected["chars"]),
+                         (1, 1, 4))
+
+    def test_no_rates(self):
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            archive_cost.main(["--db", str(self.db), "--json"])
+        result = json.loads(output.getvalue())
+        self.assertIsNone(result["estimate"]["models"])
+        self.assertEqual(result["stats"]["projected"]["chars"], 27)
+        self.assertEqual(result["estimate"]["model_calls"], 0)
+        self.assertEqual(result["estimate"]["local_import_model_cost_usd"], 0)
+        self.assertIsNone(result["estimate"]["local_compute_cost_usd"])
+        self.assertNotIn("local_import_cost_usd", result["estimate"])
+
+    def test_rates_and_estimator(self):
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            archive_cost.main(["--db", str(self.db), "--input-price", "2", "--output-price", "10",
+                               "--chars-per-token-low", "5", "--chars-per-token-high", "2",
+                               "--prefix-tokens", "4", "--scope", "active", "--no-tools", "--json"])
+        estimate = json.loads(output.getvalue())["estimate"]
+        self.assertEqual(estimate["prefix_tokens"], 4)
+        self.assertAlmostEqual(estimate["models_unrounded"]["configured"]["high"],
+                               (3 / 2 * 2 + 3 / 2 * .4 * 10 + 4 * 2) / 1e6)
+
+    def test_bad_estimator_cache(self):
+        for value in (0, -1, True):
+            with self.assertRaises(ValueError):
+                archive_cost.archive_stats(self.db, sqlite_cache_kib=value)
+        stats = archive_cost.archive_stats(self.db)
+        for low, high in ((0, 0), (3, 4), (4, float("nan"))):
+            with self.assertRaises(ValueError):
+                archive_cost.estimate(stats, chars_per_token_low=low, chars_per_token_high=high)
+
+    def test_file_identical(self):
+        before = self.db.read_bytes()
+        names = list(Path(self.tmp.name).iterdir())
+        archive_cost.archive_stats(self.db)
+        self.assertEqual(self.db.read_bytes(), before)
+        self.assertEqual(list(Path(self.tmp.name).iterdir()), names)
+
+    def test_empty(self):
+        with sqlite3.connect(self.db) as con:
+            con.execute("DELETE FROM messages")
+        stats = archive_cost.archive_stats(self.db)
+        self.assertEqual(stats["raw"], {"conversations": 0, "messages": 0, "chars": 0})
+        self.assertEqual(stats["conversation_chars"], {"median": 0, "max": 0})
 
 
 if __name__ == "__main__":

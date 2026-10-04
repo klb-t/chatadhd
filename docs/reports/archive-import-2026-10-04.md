@@ -47,6 +47,12 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
    Ukierunkowana próba z nowym obiektem i historycznym archive:
    **11/11 przypadków, 189/189 asercji**; niezależny review bez uwag.
    Rdzeńv4 i oba additive schema1 bez zmiany; nie obniżamy nowszych wersji.
+   Kod **f18af911**.
+3. **Stałe regresje audytu:** 8 zachowanych przypadków przeniesiono z
+   evidence do `loom/tools/eval/test_archive_cost.py`; stare11 bez osłabiania.
+   Zwykły discovery i adapter istniejącego CTest globu wykonały **19/19**.
+   `compat.test_archive_cost` ładuje tę samą suite, bez kopii testów ani zmian
+   centralnego CMake. Pełny CTest z tą rejestracją jeszcze trwa/przed nami.
 
 ## Wdrożone
 
