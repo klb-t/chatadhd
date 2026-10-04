@@ -1,0 +1,89 @@
+23:12:48 [INFO ] loom.config: config.json not found - using defaults
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095440-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095440-0)
+23:12:48 [ERROR] loom.capi: loom_set_config: invalid usage policy
+23:12:48 [ERROR] loom.capi: loom_set_config: invalid usage policy
+23:12:48 [ERROR] loom.capi: loom_set_config: invalid usage policy
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+23:12:48 [INFO ] loom.config: Loaded config.json (13 keys)
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095440-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095440-0)
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+23:12:48 [INFO ] loom.config: config.json not found - using defaults
+23:12:48 [INFO ] loom.config: config.json not found - using defaults
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095488-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095488-0)
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+23:12:48 [INFO ] loom.config: config.json not found - using defaults
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095440-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095440-0)
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+23:12:48 [INFO ] loom.config: config.json not found - using defaults
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095408-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095408-0)
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+23:12:48 [INFO ] loom.config: Loaded config.json (13 keys)
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095408-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095408-0)
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+23:12:48 [INFO ] loom.config: config.json not found - using defaults
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095440-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095440-0)
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+23:12:48 [INFO ] loom.config: Loaded config.json (13 keys)
+23:12:48 [INFO ] loom.config: secrets.json not found - using defaults
+23:12:48 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-contract-140727652095440-0/chatadhd.db
+23:12:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:12:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-contract-140727652095440-0)
+23:12:48 [INFO ] loom.db: Database closed
+23:12:48 [INFO ] loom.runtime: Loom runtime shut down
+PASS growth boundary 9.999/10/10.001
+PASS decimal money tenfold boundary
+PASS multiple dimensions and open names
+PASS cold start, zero and unknown
+PASS sliding window and declared seed
+PASS provenance and read-only preview
+PASS idempotency, conflict and restart
+PASS two instances, reservation drift
+PASS simultaneous instances serialize admission
+PASS confirmation binding, denial, options
+PASS partial completion without duplicate training
+PASS actual overrun and cancellation
+PASS empty resource completion
+PASS empty actual retains unresolved reservation
+PASS finite aggregate overflow rollback
+PASS invalid quantities and configurable presets
+PASS C API settings and atomic policy patch
+PASS settings default identity and canonical hashes
+PASS C API settings reset and shallow replacement preview
+PASS C API invalid settings preview is read-only
+PASS C API settings preview matches save and restart
+PASS C API receipt lifecycle dispatcher
+PASS corrupt record returns Result error
+UsagePolicy contract: 23/23 passed
