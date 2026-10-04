@@ -5,6 +5,7 @@
 #include "unified_context.h"
 
 #include <limits>
+#include <cmath>
 
 #include "loom/config.h"
 #include "loom/db.h"
@@ -371,4 +372,39 @@ TEST_CASE("unified selector current-conversation exclusion is a configurable pre
   options["legacy_include_current_conversation"] = "invalid boolean";
   CHECK_FALSE(context::compile_unified_context(*f.db, f.cfg, &f.graph, &f.memory,
       f.request, nullptr, stored->conv_id, false, true, options));
+}
+
+TEST_CASE("unified selector token estimator is configurable finite fractional and overflow checked") {
+  Fixture f;
+  const auto original = knowledge_fixture(Json::array({knowledge_item("estimator_claim", "raw α🙂 source bytes") }));
+  const auto baseline = f.build(original);
+  REQUIRE(baseline["selected"].size() == 1);
+  const auto prompt = baseline["prompt"].get<std::string>();
+  const auto points = utf8::length(prompt);
+  CHECK(baseline["token_metric"] == "ceil_rendered_prompt_codepoints_div_4");
+  CHECK(baseline["token_codepoints_per_token"] == 4.0);
+  for (const double divisor : {8.0, 2.5}) {
+    const auto result = f.build(original, Json{{"token_codepoints_per_token", divisor}});
+    CHECK(result["prompt"] == prompt);
+    CHECK(result["budget_tokens"] == baseline["budget_tokens"]);
+    CHECK(result["token_codepoints_per_token"] == divisor);
+    CHECK(result["token_metric"] == "ceil_rendered_prompt_codepoints_div_configured");
+    CHECK(result["used_tokens"].get<std::size_t>() == static_cast<std::size_t>(std::ceil(static_cast<long double>(points) / divisor)));
+    CHECK(result["selected"][0]["prompt_tokens"] == result["used_tokens"]);
+    const auto exact = f.build(original, Json{{"token_codepoints_per_token", divisor}, {"budget_tokens", result["used_tokens"]}});
+    CHECK(exact["prompt"] == prompt);
+    const auto below = f.build(original, Json{{"token_codepoints_per_token", divisor}, {"budget_tokens", result["used_tokens"].get<std::size_t>() - 1}});
+    CHECK(below["selected"].empty());
+  }
+  for (const auto divisor : {0.0, std::numeric_limits<double>::quiet_NaN()}) {
+    const auto invalid = context::compile_unified_context(*f.db, f.cfg, &f.graph, &f.memory,
+        f.request, original, "", false, false, Json{{"token_codepoints_per_token", divisor}});
+    REQUIRE_FALSE(invalid);
+    CHECK(invalid.error().code == Errc::InvalidArgument);
+  }
+  const auto overflow = context::compile_unified_context(*f.db, f.cfg, &f.graph, &f.memory,
+      f.request, original, "", false, false,
+      Json{{"token_codepoints_per_token", std::numeric_limits<double>::denorm_min()}});
+  REQUIRE_FALSE(overflow);
+  CHECK(overflow.error().message.find("token estimate unavailable (representation overflow)") != std::string::npos);
 }
